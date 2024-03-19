@@ -3039,7 +3039,7 @@ class ProsesPayrollController extends AdminBaseController
                         RekapKehadiranKaryawan::create($y);
                     }
                 }
-                return $y;
+
                 // rekap perhitungan kehadiran karyawan
                 $data_kehadiran=RekapKehadiranKaryawan::selectRaw('uuid,kode_rekap_kehadiran,periode_payroll,periode_tahun,periode_bulan,enroll_id,nik,employee_name,site_nirwana_id,site_nirwana_name,department_id,department_name,sub_dept_id,sub_dept_name,join_date,tanggal_resign,status_aktif,status_staff,kehadiran_iby,kehadiran_itb,kehadiran_lby,kehadiran_lsm,kehadiran_dt,kehadiran_pc,kehadiran_dtpc,kehadiran_m,kehadiran_r,kehadiran_tk,kehadiran_ok,total_kehadiran,total_kehadiran_net,jumlah_hari,jumlah_hari_kerja,kehadiran_dl,kehadiran_cb,kehadiran_cbd,kehadiran_cg,kehadiran_ch,kehadiran_cm,kehadiran_cn,kehadiran_ct,kehadiran_ig,kehadiran_im,kehadiran_ka,kehadiran_km,kehadiran_kr,kehadiran_na,kehadiran_pp,kehadiran_i,kehadiran_lp,kehadiran_l,kehadiran_tl,kehadiran_iks,kehadiran_s,kehadiran_m_estimasi,operator,created_at,updated_at,deleted_at')->whereRaw('periode_bulan = "'.$bulan.'" and periode_tahun = "'.$tahun.'" and periode_umk = "'.$periode_umk.'"'.$inEnrollId.'')->groupby('enroll_id')->get();
                 foreach ($data_kehadiran as $key => $value) {
@@ -4826,7 +4826,7 @@ class ProsesPayrollController extends AdminBaseController
                     $l3_rupiah=$l3*($salary_bulanan/173*1);
                     $l4_rupiah=$l4*($salary_bulanan/173*1);
                 }
-                $record_lemburan[$key2]=[
+                $record_lemburan=[
                     'uuid'=>Str::uuid('uuid'),
                     'periode_umk'=>null,
                     'tanggal_berjalan'=>$value2['tanggal_berjalan'],
