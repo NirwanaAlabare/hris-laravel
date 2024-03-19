@@ -2493,7 +2493,6 @@ class ProsesPayrollController extends AdminBaseController
                     $query->where('periode_payroll', $priode);
                 }])->get();
             }
-            return $all_karyawan;
             $data_payroll=[];
             foreach ($all_karyawan as $key => $value) {
                 $kode_grade2=$value->kode_grade;
