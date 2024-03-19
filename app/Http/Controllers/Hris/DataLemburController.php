@@ -832,6 +832,27 @@ class DataLemburController extends AdminBaseController
             }else if($lembur->data_lembur->is_verifikasi==1){
                 $is_verifikasi='VERIFIED';
             }
+            $lembur_1='';
+            if(isset($lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('lembur_1')[0])){
+                $lembur_1=$lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('lembur_1')[0];
+            }
+            $lembur_2='';
+            if(isset($lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('lembur_2')[0])){
+                $lembur_2=$lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('lembur_2')[0];
+            }
+            $lembur_3='';
+            if(isset($lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('lembur_3')[0])){
+                $lembur_3=$lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('lembur_3')[0];
+            }
+            $lembur_4='';
+            if(isset($lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('lembur_4')[0])){
+                $lembur_4=$lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('lembur_4')[0];
+            }
+            $total_lembur_1234='';
+            if(isset($lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('total_lembur_1234')[0])){
+                $total_lembur_1234=$lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('total_lembur_1234')[0];
+            }
+            
             $data = [
                 Date::stringToExcel($lembur->tanggal_berjalan),
                 $lembur->nama_hari,
@@ -851,11 +872,11 @@ class DataLemburController extends AdminBaseController
                 substr($lembur->data_lembur->akhir_jam_lembur, 11, 5),
                 $lembur->data_lembur->jumlah_jam_lembur,
                 $lembur['data_lembur']->catatan,
-                $lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('lembur_1')[0],
-                $lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('lembur_2')[0],
-                $lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('lembur_3')[0],
-                $lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('lembur_4')[0],
-                $lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('total_lembur_1234')[0],
+                $lembur_1,
+                $lembur_2,
+                $lembur_3,
+                $lembur_4,
+                $total_lembur_1234,
                 $is_verifikasi
             ];
             $sheet->writeRow($data);
