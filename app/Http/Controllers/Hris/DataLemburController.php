@@ -783,7 +783,7 @@ class DataLemburController extends AdminBaseController
         $sheet->writeAreas();
 
         $sheet->setColOptions([
-            'A' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 12],
+            'A' => ['format' => NumberFormat::FORMAT_DATE_YYYYMMDD, 'width' => 12],
             'C' => ['width' => 18],
             'D' => ['width' => 13],
             'F' => ['width' => 30],
