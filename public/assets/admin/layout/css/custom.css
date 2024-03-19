@@ -1,0 +1,35 @@
+.fa-xof:before {
+    content: "CFA";
+    font-size: .7em;
+    vertical-align: -16%;
+}
+
+.fa-myr:before {
+    content: "MR";
+    font-size: .7em;
+    vertical-align: -16%;
+}
+.fa-pkr:before {
+    content: "Rs";
+    font-size: .7em;
+    vertical-align: -16%;
+}
+.fa-ghana:before {
+    content: "¢";
+    font-size: 1.5em;
+    vertical-align: -16%;
+}
+.list-index{
+    width: 90px
+}
+.tools{
+    padding: 5px;
+}
+.thumbnail {
+    width: 200px;
+    height: 150px;
+}
+.scroller{
+    height: 250px;
+}
+/* here you can put your own css to customize and override the theme */

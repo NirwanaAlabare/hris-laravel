@@ -1,0 +1,440 @@
+@extends('admin.adminlayouts.adminlayout')
+
+@section('head')
+    <!-- Data table css -->
+    <link href="{{ URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
+    <link href="{{ URL::asset('assets/plugins/datatable/css/buttons.bootstrap4.min.css') }}" rel="stylesheet">
+    <link href="{{ URL::asset('assets/plugins/datatable/responsivebootstrap4.min.css') }}" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/fixedheader/3.2.4/css/fixedHeader.dataTables.min.css" rel="stylesheet" />
+
+    <!--Select2 css -->
+    <link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
+
+    <!-- Date Picker css-->
+    <link href="{{URL::asset('assets/plugins/spectrum-date-picker/spectrum.css')}}" rel="stylesheet" />
+
+    <!--Mutipleselect css-->
+    <link rel="stylesheet" href="{{URL::asset('assets/plugins/multipleselect/multiple-select.css')}}">
+
+@stop
+@section('mainarea')
+    <!-- page-header -->
+    <div class="page-header p-3 shadow">
+        <ol class="breadcrumb breadcrumb-arrow mt-0">
+            <li><a href="#">Kehadiran Karyawan</a></li>
+            <li class="active"><span>Data Kehadiran</span></li>
+        </ol>
+        <div class="ml-auto">
+            <div class="input-group">
+                <a href="{{ url('lockscreen') }}" class="btn btn-primary text-white mr-0 btn-icon" data-toggle="tooltip"
+                    title="" data-placement="bottom" data-original-title="lock">
+                    <span>
+                        <i class="fa fa-lock"></i>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- End page-header -->
+
+    <!-- row -->
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="card shadow">
+                <div class="card-header p-3">
+                    <div class="card-title">FILTER KEHADIRAN KARYAWAN</div>
+                </div>
+                <div class="card-body border-top p-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="expanel expanel-default">
+                                <div class="expanel-body mr-0 mt-0 mb-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Tanggal Absen : </label>
+                                        <input id="daterange1" name="daterange1" type="text" class="form-control" placeholder="Tanggal Absen" maxlength="50" size="50">
+                                    </div>
+                                </div>
+                                <div class="expanel-footer mr-0 mt-0 mb-0">
+                                    <a href="javascript:void(0)" id="cancel-formSaveChanges1" class="btn btn-app btn-primary mr-2 mt-0 mb-2" data-toggle="tooltip" title="Cetak Data"><i class="ion-printer"></i> Preview</a>
+                                    <a href="javascript:void(0)" id="cancel-formSaveChanges1" class="btn btn-app btn-primary mr-2 mt-0 mb-2" data-toggle="tooltip" title="Export Data ke File"><i class="ion-ios7-download"></i> Export</a>
+                                    <a href="javascript:void(0)" id="cancel-formSaveChanges1" class="btn btn-app btn-primary mr-2 mt-0 mb-2" data-toggle="tooltip" title="Import Data dari File"><i class="ion-ios7-upload"></i> Import</a>
+                                    <a href="javascript:void(0)" id="cancel-formSaveChanges1" class="btn btn-app btn-primary mr-2 mt-0 mb-2" data-toggle="tooltip" title="Ke Menu Payroll"><i class="ion-thumbsup"></i> Ke Payroll</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="expanel expanel-default">
+                                <div class="expanel-body mr-0 mt-0 mb-0">
+                                    <div class="form-group">
+                                        <label class="form-label">Department : </label>
+                                        <select id="selectDepartment" name="selectDepartment" class="form-control select2-show-search">
+                                            <option value="" selected>--- Pilih Department ---</option>
+                                            @foreach ($department as $r_dept)
+                                                <option  value="{{$r_dept->department_id}}">{{$r_dept->department_name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Sub Department : </label>
+                                        <select id="selectSubDep" name="selectSubDep" class="form-control select2-show-search">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body pb-0">
+                            <label class="form-label">Pilih Karyawan : </label>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12 col-lg-11 col-xl-11">
+                                    <div class="form-group">
+                                        <select id="selectEmployeeID" name="selectEmployeeID" multiple="multiple" class="filter-multi">
+                                            @foreach ($selectemployee as $r_empl)
+                                                <option  value="{{$r_empl->nik}}">{{$r_empl->select_employee}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-12 col-lg-1 col-xl-1">
+                                    <div class="form-group">
+                                        <a href="javascript:void(0)" id="btn-caridata" class="btn btn-app btn-primary mr-2 mt-0 mb-2" data-toggle="tooltip" title="Cari Data"><i class="ion-search"></i> Cari</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- col end -->
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="card shadow">
+                <div class="card-header p-3">
+                    <div class="card-title">DATA ABSENSI KARYAWAN</div>
+                </div>
+                <div class="card-body border-top p-3">
+                    <div class="table-responsive" id="datatable-data-karyawan">
+                        <table id="datatable-ajax-crud"
+                            class="table table-sm table-striped table-hover table-bordered w-100">
+                            <thead>
+                                <tr class="text-center">
+                                    <th scope="col">UUID</th>
+                                    <th scope="col">Employee ID</th>
+                                    <th scope="col">NIK</th>
+                                    <th scope="col">Nomor<br>Absen</th>
+                                    <th scope="col">Nama<br>Karyawan</th>
+                                    <th scope="col">Tanggal<br>Absen</th>
+                                    <th scope="col">Kerja/Libur</th>
+                                    <th scope="col">Jadwal<br>Jam Kerja</th>
+                                    <th scope="col">Absensi<br>Jam Kerja</th>
+                                    <th scope="col">Datang<br>Terlambat</th>
+                                    <th scope="col">Pulang<br>Cepat</th>
+                                    <th scope="col">Jam<br>Efektif</th>
+                                    <th scope="col">Nama<br>Absen</th>
+                                    <th scope="col">Alasan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer p-3 text-left">
+                    Footter Data Tables
+                </div>
+            </div>
+        </div><!-- col end -->
+
+    </div>
+
+@endsection
+
+@section('footerjs')
+
+    <!--Jquery Sparkline js-->
+    <script src="{{ URL::asset('assets/plugins/vendors/jquery.sparkline.min.js') }}"></script>
+
+    <!-- Chart Circle js-->
+    <script src="{{ URL::asset('assets/plugins/vendors/circle-progress.min.js') }}"></script>
+
+    <!--Time Counter js-->
+    <script src="{{ URL::asset('assets/plugins/counters/jquery.missofis-countdown.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/counters/counter.js') }}"></script>
+
+    <!-- INTERNAL Data tables -->
+    <script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/jszip.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/vfs_fonts.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.print.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.colVis.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.js') }}"></script>
+    <script src="https://cdn.datatables.net/fixedheader/3.2.4/js/dataTables.fixedHeader.min.js"></script>
+
+    <!--Select2 js -->
+    <script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
+
+    <!--MutipleSelect js-->
+    <script src="{{URL::asset('assets/plugins/multipleselect/multiple-select.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/multipleselect/multi-select.js')}}"></script>
+
+    <!-- Datepicker js -->
+    <script src="{{URL::asset('assets/plugins/spectrum-date-picker/spectrum.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/spectrum-date-picker/jquery-ui.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/input-mask/jquery.maskedinput.js')}}"></script>
+
+    <script type="text/javascript">
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $(document).ready(function() {
+            $("#selectSubDep").append('<option>--- Pilih Sub Dept ---</option>');
+            $("#daterange1").val('');
+
+            $('#datatable-ajax-crud').DataTable({
+                processing: true,
+                serverSide: true,
+                fixedHeader: {
+                    header: true,
+                    footer: true
+                },
+                "ajax": {
+                    "url": "{{ route('hris.mdabsenhadir.ajax_datahadir') }}",
+                    "dataType": "json",
+                    "type": "POST",
+                    "headers": {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    "dataSrc": "data"
+                },
+                columns: [
+                    {
+                        data: 'uuid',
+                        name: 'uuid'
+                    },
+                    {
+                        data: 'employee_id',
+                        name: 'employee_id'
+                    },
+                    {
+                        data: 'nik',
+                        name: 'nik'
+                    },
+                    {
+                        data: 'enroll_id',
+                        name: 'enroll_id'
+                    },
+                    {
+                        data: 'employee_name',
+                        name: 'employee_name'
+                    },
+                    {
+                        data: 'tanggal_berjalan',
+                        name: 'tanggal_berjalan'
+                    },
+                    {
+                        data: 'kerjalibur',
+                        name: 'kerjalibur'
+                    },
+                    {
+                        data: 'jadwal_jam_kerja',
+                        name: 'jadwal_jam_kerja'
+                    },
+                    {
+                        data: 'absen_jam_kerja',
+                        name: 'absen_jam_kerja'
+                    },
+                    {
+                        data: 'absen_dt_datang_terlambat',
+                        name: 'absen_dt_datang_terlambat'
+                    },
+                    {
+                        data: 'absen_dtpc_datang_terlambat_pulang_cepat',
+                        name: 'absen_dtpc_datang_terlambat_pulang_cepat'
+                    },
+                    {
+                        data: 'jumlah_jam_kerja',
+                        name: 'jumlah_jam_kerja'
+                    },
+                    {
+                        data: 'absen_m_mangkir',
+                        name: 'absen_m_mangkir'
+                    },
+                    {
+                        data: 'alasan',
+                        name: 'alasan'
+                    },
+                ],
+                columnDefs: [
+                    {
+                        'visible': false,
+                        'targets': [0,1]
+                    }
+                ],
+                order: [
+                    [5, 'desc'],[4, 'asc']
+                ]
+            });
+        });
+
+        $('body').on('change', '#selectDepartment', function () {
+            var department_id = $('#selectDepartment').val();
+            $("#selectSubDep").empty();
+            $("#selectSubDep").append('<option value="">--- Pilih Sub Dept ---</option>');
+            var sub_dept_id = $('#selectSubDep').val();
+            $("#selectEmployeeID").empty();
+
+            if(department_id){
+                // ajax
+                $.ajax({
+                    type:"POST",
+                    url: "{{route('hris.mdabsenhadir.ajax_getselectsubdept')}}",
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    data: {
+                        department_id:department_id,
+                    },
+                    dataType: 'json',
+                    success: function(res){
+                        if(res){
+                            $.each(res,function(sub_dept_name,sub_dept_id){
+                                $("#selectSubDep").append('<option value="'+sub_dept_id+'">'+sub_dept_name+'</option>');
+                            });
+                            $.ajax({
+                                type:"POST",
+                                url: "{{route('hris.mdabsenhadir.ajax_getselectemployee')}}",
+                                dataType: 'json',
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                                data: {
+                                    department_id:department_id,
+                                    sub_dept_id:sub_dept_id,
+                                },
+                                dataType: 'json',
+                                success: function(resA){
+                                    if(resA){
+                                        for(i=0;i<resA.length;i++) {
+                                            $("#selectEmployeeID").append(new Option(resA[i].select_employee, resA[i].nik));
+                                        }
+                                    }
+                                    $('#selectEmployeeID').multipleSelect({
+                                        selectAll: true,
+                                        width: "100%",
+                                        filter: true,
+                                        sort: true,
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
+            } else {
+                $.ajax({
+                    type:"POST",
+                    url: "{{route('hris.mdabsenhadir.ajax_getallemployeeatribut')}}",
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    data: {
+                        department_id:department_id,
+                    },
+                    dataType: 'json',
+                    success: function(res){
+                        if(res){
+                            for(i=0;i<res.length;i++) {
+                                $("#selectEmployeeID").append(new Option(res[i].select_employee, res[i].nik));
+                            }
+                        }
+                        $('#selectEmployeeID').multipleSelect({
+                            selectAll: true,
+                            width: "100%",
+                            filter: true,
+                            sort: true,
+                        });
+                    }
+                });
+            }
+        });
+
+        // Select2 by showing the search
+        $('.select2-show-search').select2({
+            minimumResultsForSearch: ''
+        });
+
+        $('body').on('change', '#selectSubDep', function () {
+            var department_id = $('#selectDepartment').val();
+            var sub_dept_id = $('#selectSubDep').val();
+
+            if(department_id){
+                $.ajax({
+                    type:"POST",
+                    url: "{{route('hris.mdabsenhadir.ajax_getselectemployee')}}",
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    data: {
+                        department_id:department_id,
+                        sub_dept_id:sub_dept_id,
+                    },
+                    dataType: 'json',
+                    success: function(res){
+                        $("#selectEmployeeID").empty();
+                        if(res){
+                            for(i=0;i<res.length;i++) {
+                                $("#selectEmployeeID").append(new Option(res[i].select_employee, res[i].nik));
+                            }
+                        }
+                        $('#selectEmployeeID').multipleSelect({
+                            selectAll: true,
+                            width: "100%",
+                            filter: true,
+                            sort: true,
+                        });
+                    }
+                });
+            }
+        });
+
+
+        //Date range as a button
+        $('#daterange1').daterangepicker({
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            startDate: moment().subtract(29, 'days'),
+            endDate: moment()
+        }, function(start, end) {
+            $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+        })
+
+        $('#datatable-ajax-crud tbody').on('dblclick', 'tr', function () {
+            var data = $("#datatable-ajax-crud").DataTable().row(this).data();
+            alert(data['uuid']);
+         });
+
+         $('#datatable-ajax-crud tbody').on('click', 'tr', function () {
+            $("#datatable-ajax-crud tbody tr").removeClass('bg-cyan');
+            $(this).addClass('bg-cyan');
+         });
+
+
+         $('body').on('click', '#btn-caridata', function (event) {
+            alert("Cari Data");
+        });
+
+    </script>
+
+@endsection

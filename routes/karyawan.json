@@ -1,0 +1,5996 @@
+[
+    {
+        "no_pin": "2732",
+        "nik": "NAG212732",
+        "employee_name": "AAN ANISA",
+        "select_employee": "2732 - NAG212732 - AAN ANISA"
+    },
+    {
+        "no_pin": "2531",
+        "nik": "NAG212531",
+        "employee_name": "AAN FEBRIANTI",
+        "select_employee": "2531 - NAG212531 - AAN FEBRIANTI"
+    },
+    {
+        "no_pin": "2808",
+        "nik": "NAG212808",
+        "employee_name": "AAN JUHAELIS",
+        "select_employee": "2808 - NAG212808 - AAN JUHAELIS"
+    },
+    {
+        "no_pin": "1",
+        "nik": "NAG130001",
+        "employee_name": "AAN NASRUDIN",
+        "select_employee": "1 - NAG130001 - AAN NASRUDIN"
+    },
+    {
+        "no_pin": "4478",
+        "nik": "NAG224478",
+        "employee_name": "AAN NURHASANAH",
+        "select_employee": "4478 - NAG224478 - AAN NURHASANAH"
+    },
+    {
+        "no_pin": "1865",
+        "nik": "NAG191865",
+        "employee_name": "AAN SRIMULYATI",
+        "select_employee": "1865 - NAG191865 - AAN SRIMULYATI"
+    },
+    {
+        "no_pin": "4502",
+        "nik": "NAG224502",
+        "employee_name": "AAS ARISKA",
+        "select_employee": "4502 - NAG224502 - AAS ARISKA"
+    },
+    {
+        "no_pin": "748",
+        "nik": "NAG160748",
+        "employee_name": "AAS KARMANAH",
+        "select_employee": "748 - NAG160748 - AAS KARMANAH"
+    },
+    {
+        "no_pin": "2864",
+        "nik": "NAG212864",
+        "employee_name": "AAS RUKMININGSIH",
+        "select_employee": "2864 - NAG212864 - AAS RUKMININGSIH"
+    },
+    {
+        "no_pin": "3024",
+        "nik": "NAG213024",
+        "employee_name": "AAS SULASTRI",
+        "select_employee": "3024 - NAG213024 - AAS SULASTRI"
+    },
+    {
+        "no_pin": "4413",
+        "nik": "NAG224413",
+        "employee_name": "ADE FANI",
+        "select_employee": "4413 - NAG224413 - ADE FANI"
+    },
+    {
+        "no_pin": "3650",
+        "nik": "NAG213650",
+        "employee_name": "ADE IRMA",
+        "select_employee": "3650 - NAG213650 - ADE IRMA"
+    },
+    {
+        "no_pin": "1898",
+        "nik": "NAG191898",
+        "employee_name": "ADE IRMA NURMALASARI",
+        "select_employee": "1898 - NAG191898 - ADE IRMA NURMALASARI"
+    },
+    {
+        "no_pin": "574",
+        "nik": "NAG160574",
+        "employee_name": "ADE ISNIE NURJANAH",
+        "select_employee": "574 - NAG160574 - ADE ISNIE NURJANAH"
+    },
+    {
+        "no_pin": "314",
+        "nik": "NAG180314",
+        "employee_name": "ADE LISNA",
+        "select_employee": "314 - NAG180314 - ADE LISNA"
+    },
+    {
+        "no_pin": "2940",
+        "nik": "NAG212940",
+        "employee_name": "ADE PRASETYO",
+        "select_employee": "2940 - NAG212940 - ADE PRASETYO"
+    },
+    {
+        "no_pin": "1069",
+        "nik": "NAG161069",
+        "employee_name": "ADE ROHAENDI",
+        "select_employee": "1069 - NAG161069 - ADE ROHAENDI"
+    },
+    {
+        "no_pin": "4447",
+        "nik": "NAG224447",
+        "employee_name": "ADE YANI YULIYANTI",
+        "select_employee": "4447 - NAG224447 - ADE YANI YULIYANTI"
+    },
+    {
+        "no_pin": "3756",
+        "nik": "NAG223756",
+        "employee_name": "ADI SUGANDA PRAJA",
+        "select_employee": "3756 - NAG223756 - ADI SUGANDA PRAJA"
+    },
+    {
+        "no_pin": "2047",
+        "nik": "NAG202047",
+        "employee_name": "ADI SURYADI",
+        "select_employee": "2047 - NAG202047 - ADI SURYADI"
+    },
+    {
+        "no_pin": "2993",
+        "nik": "NAG212993",
+        "employee_name": "ADY SEPTIAN",
+        "select_employee": "2993 - NAG212993 - ADY SEPTIAN"
+    },
+    {
+        "no_pin": "1538",
+        "nik": "NAG171538",
+        "employee_name": "AE SUKAESIH",
+        "select_employee": "1538 - NAG171538 - AE SUKAESIH"
+    },
+    {
+        "no_pin": "1755",
+        "nik": "NAG171755",
+        "employee_name": "AEP SAEPUDIN",
+        "select_employee": "1755 - NAG171755 - AEP SAEPUDIN"
+    },
+    {
+        "no_pin": "49",
+        "nik": "NAG160049",
+        "employee_name": "AEP SAEPUDIN",
+        "select_employee": "49 - NAG160049 - AEP SAEPUDIN"
+    },
+    {
+        "no_pin": "107",
+        "nik": "NAG190107",
+        "employee_name": "AEP SUTARSA",
+        "select_employee": "107 - NAG190107 - AEP SUTARSA"
+    },
+    {
+        "no_pin": "4011",
+        "nik": "NAG224011",
+        "employee_name": "AGIS FEBIYANTI",
+        "select_employee": "4011 - NAG224011 - AGIS FEBIYANTI"
+    },
+    {
+        "no_pin": "3623",
+        "nik": "NAG213623",
+        "employee_name": "AGISTINA SRI NURHIDAYATI",
+        "select_employee": "3623 - NAG213623 - AGISTINA SRI NURHIDAYATI"
+    },
+    {
+        "no_pin": "2330",
+        "nik": "NAG202330",
+        "employee_name": "AGUNG GUMELAR",
+        "select_employee": "2330 - NAG202330 - AGUNG GUMELAR"
+    },
+    {
+        "no_pin": "4382",
+        "nik": "NAG224382",
+        "employee_name": "AGUS EPENDI",
+        "select_employee": "4382 - NAG224382 - AGUS EPENDI"
+    },
+    {
+        "no_pin": "2034",
+        "nik": "NAG202034",
+        "employee_name": "AGUS JULIANA",
+        "select_employee": "2034 - NAG202034 - AGUS JULIANA"
+    },
+    {
+        "no_pin": "1563",
+        "nik": "NAG181563",
+        "employee_name": "AGUS SELAMAT",
+        "select_employee": "1563 - NAG181563 - AGUS SELAMAT"
+    },
+    {
+        "no_pin": "1564",
+        "nik": "NAG171564",
+        "employee_name": "AHMAD AZIS",
+        "select_employee": "1564 - NAG171564 - AHMAD AZIS"
+    },
+    {
+        "no_pin": "3942",
+        "nik": "NAG223942",
+        "employee_name": "AHMAD FAUZI",
+        "select_employee": "3942 - NAG223942 - AHMAD FAUZI"
+    },
+    {
+        "no_pin": "1065",
+        "nik": "NAG161065",
+        "employee_name": "AHMAD JAMALUDIN",
+        "select_employee": "1065 - NAG161065 - AHMAD JAMALUDIN"
+    },
+    {
+        "no_pin": "4311",
+        "nik": "NAG224311",
+        "employee_name": "AI AMINAH",
+        "select_employee": "4311 - NAG224311 - AI AMINAH"
+    },
+    {
+        "no_pin": "4414",
+        "nik": "NAG224414",
+        "employee_name": "AI ATIKAH REGAWATI",
+        "select_employee": "4414 - NAG224414 - AI ATIKAH REGAWATI"
+    },
+    {
+        "no_pin": "1013",
+        "nik": "NAG181013",
+        "employee_name": "AI CAHYATI",
+        "select_employee": "1013 - NAG181013 - AI CAHYATI"
+    },
+    {
+        "no_pin": "3659",
+        "nik": "NAG213659",
+        "employee_name": "AI DEWI PATMAWATI",
+        "select_employee": "3659 - NAG213659 - AI DEWI PATMAWATI"
+    },
+    {
+        "no_pin": "3405",
+        "nik": "NAG213405",
+        "employee_name": "AI ELAS",
+        "select_employee": "3405 - NAG213405 - AI ELAS"
+    },
+    {
+        "no_pin": "2943",
+        "nik": "NAG212943",
+        "employee_name": "AI ENGKAR",
+        "select_employee": "2943 - NAG212943 - AI ENGKAR"
+    },
+    {
+        "no_pin": "4350",
+        "nik": "NAG224350",
+        "employee_name": "AI EUIS NURHAYATI",
+        "select_employee": "4350 - NAG224350 - AI EUIS NURHAYATI"
+    },
+    {
+        "no_pin": "4188",
+        "nik": "NAG224188",
+        "employee_name": "AI FATMAWATI",
+        "select_employee": "4188 - NAG224188 - AI FATMAWATI"
+    },
+    {
+        "no_pin": "142",
+        "nik": "NAG160142",
+        "employee_name": "AI HAMIDAH",
+        "select_employee": "142 - NAG160142 - AI HAMIDAH"
+    },
+    {
+        "no_pin": "810",
+        "nik": "NAG180810",
+        "employee_name": "AI HAYATI (A)",
+        "select_employee": "810 - NAG180810 - AI HAYATI (A)"
+    },
+    {
+        "no_pin": "1456",
+        "nik": "NAG161456",
+        "employee_name": "AI HAYATI (B)",
+        "select_employee": "1456 - NAG161456 - AI HAYATI (B)"
+    },
+    {
+        "no_pin": "2687",
+        "nik": "NAG212687",
+        "employee_name": "AI HENI",
+        "select_employee": "2687 - NAG212687 - AI HENI"
+    },
+    {
+        "no_pin": "1066",
+        "nik": "NAG161066",
+        "employee_name": "AI IDANINGSIH",
+        "select_employee": "1066 - NAG161066 - AI IDANINGSIH"
+    },
+    {
+        "no_pin": "3840",
+        "nik": "NAG223840",
+        "employee_name": "AI INEU",
+        "select_employee": "3840 - NAG223840 - AI INEU"
+    },
+    {
+        "no_pin": "2865",
+        "nik": "NAG212865",
+        "employee_name": "AI KARTINI",
+        "select_employee": "2865 - NAG212865 - AI KARTINI"
+    },
+    {
+        "no_pin": "2958",
+        "nik": "NAG212958",
+        "employee_name": "AI KARTINI",
+        "select_employee": "2958 - NAG212958 - AI KARTINI"
+    },
+    {
+        "no_pin": "2519",
+        "nik": "NAG212519",
+        "employee_name": "AI KARWATI",
+        "select_employee": "2519 - NAG212519 - AI KARWATI"
+    },
+    {
+        "no_pin": "2048",
+        "nik": "NAG202048",
+        "employee_name": "AI KHOFIPAH",
+        "select_employee": "2048 - NAG202048 - AI KHOFIPAH"
+    },
+    {
+        "no_pin": "4003",
+        "nik": "NAG224003",
+        "employee_name": "AI KUSMIATI",
+        "select_employee": "4003 - NAG224003 - AI KUSMIATI"
+    },
+    {
+        "no_pin": "3638",
+        "nik": "NAG213638",
+        "employee_name": "AI MARYANI",
+        "select_employee": "3638 - NAG213638 - AI MARYANI"
+    },
+    {
+        "no_pin": "4312",
+        "nik": "NAG224312",
+        "employee_name": "AI MAYA",
+        "select_employee": "4312 - NAG224312 - AI MAYA"
+    },
+    {
+        "no_pin": "4189",
+        "nik": "NAG224189",
+        "employee_name": "AI MIA KUSMIATI",
+        "select_employee": "4189 - NAG224189 - AI MIA KUSMIATI"
+    },
+    {
+        "no_pin": "547",
+        "nik": "NAG180547",
+        "employee_name": "AI MULYANI",
+        "select_employee": "547 - NAG180547 - AI MULYANI"
+    },
+    {
+        "no_pin": "4351",
+        "nik": "NAG224351",
+        "employee_name": "AI NANIH",
+        "select_employee": "4351 - NAG224351 - AI NANIH"
+    },
+    {
+        "no_pin": "2809",
+        "nik": "NAG212809",
+        "employee_name": "AI NENAH",
+        "select_employee": "2809 - NAG212809 - AI NENAH"
+    },
+    {
+        "no_pin": "752",
+        "nik": "NAG160752",
+        "employee_name": "AI NURHAYATI",
+        "select_employee": "752 - NAG160752 - AI NURHAYATI"
+    },
+    {
+        "no_pin": "621",
+        "nik": "NAG180621",
+        "employee_name": "AI RATNA SARI",
+        "select_employee": "621 - NAG180621 - AI RATNA SARI"
+    },
+    {
+        "no_pin": "1014",
+        "nik": "NAG191014",
+        "employee_name": "AI ROFIKOH",
+        "select_employee": "1014 - NAG191014 - AI ROFIKOH"
+    },
+    {
+        "no_pin": "3137",
+        "nik": "NAG213137",
+        "employee_name": "AI ROHIMAH",
+        "select_employee": "3137 - NAG213137 - AI ROHIMAH"
+    },
+    {
+        "no_pin": "4157",
+        "nik": "NAG224157",
+        "employee_name": "AI ROSITA",
+        "select_employee": "4157 - NAG224157 - AI ROSITA"
+    },
+    {
+        "no_pin": "1875",
+        "nik": "NAG191875",
+        "employee_name": "AI SITI FATIMAH",
+        "select_employee": "1875 - NAG191875 - AI SITI FATIMAH"
+    },
+    {
+        "no_pin": "2810",
+        "nik": "NAG212810",
+        "employee_name": "AI SITI NURLELA",
+        "select_employee": "2810 - NAG212810 - AI SITI NURLELA"
+    },
+    {
+        "no_pin": "4242",
+        "nik": "NAG224242",
+        "employee_name": "AI SOLEHA",
+        "select_employee": "4242 - NAG224242 - AI SOLEHA"
+    },
+    {
+        "no_pin": "1866",
+        "nik": "NAG191866",
+        "employee_name": "AI SOLIHAH",
+        "select_employee": "1866 - NAG191866 - AI SOLIHAH"
+    },
+    {
+        "no_pin": "4074",
+        "nik": "NAG224074",
+        "employee_name": "AI SULASTRI",
+        "select_employee": "4074 - NAG224074 - AI SULASTRI"
+    },
+    {
+        "no_pin": "3297",
+        "nik": "NAG213297",
+        "employee_name": "AI SURYATI",
+        "select_employee": "3297 - NAG213297 - AI SURYATI"
+    },
+    {
+        "no_pin": "3699",
+        "nik": "NAG213698",
+        "employee_name": "AI SUSANTI",
+        "select_employee": "3699 - NAG213698 - AI SUSANTI"
+    },
+    {
+        "no_pin": "2408",
+        "nik": "NAG212408",
+        "employee_name": "AI TATING",
+        "select_employee": "2408 - NAG212408 - AI TATING"
+    },
+    {
+        "no_pin": "3556",
+        "nik": "NAG213556",
+        "employee_name": "AI TITA YULIANA",
+        "select_employee": "3556 - NAG213556 - AI TITA YULIANA"
+    },
+    {
+        "no_pin": "3130",
+        "nik": "NAG213130",
+        "employee_name": "AI WIWI",
+        "select_employee": "3130 - NAG213130 - AI WIWI"
+    },
+    {
+        "no_pin": "4383",
+        "nik": "NAG224383",
+        "employee_name": "AINI MULYANI",
+        "select_employee": "4383 - NAG224383 - AINI MULYANI"
+    },
+    {
+        "no_pin": "1384",
+        "nik": "NAG161384",
+        "employee_name": "AISAH",
+        "select_employee": "1384 - NAG161384 - AISAH"
+    },
+    {
+        "no_pin": "2409",
+        "nik": "NAG212409",
+        "employee_name": "AJENG NISA SOLIHAH",
+        "select_employee": "2409 - NAG212409 - AJENG NISA SOLIHAH"
+    },
+    {
+        "no_pin": "4075",
+        "nik": "NAG224075",
+        "employee_name": "AJENG NURAENI",
+        "select_employee": "4075 - NAG224075 - AJENG NURAENI"
+    },
+    {
+        "no_pin": "2486",
+        "nik": "NAG212486",
+        "employee_name": "AJENG NURAHAYU",
+        "select_employee": "2486 - NAG212486 - AJENG NURAHAYU"
+    },
+    {
+        "no_pin": "3281",
+        "nik": "NAG213281",
+        "employee_name": "AJENG RAHMAWATI",
+        "select_employee": "3281 - NAG213281 - AJENG RAHMAWATI"
+    },
+    {
+        "no_pin": "4270",
+        "nik": "SGT224270",
+        "employee_name": "AJENG RATNA GUMILANG",
+        "select_employee": "4270 - SGT224270 - AJENG RATNA GUMILANG"
+    },
+    {
+        "no_pin": "64",
+        "nik": "NAG170064",
+        "employee_name": "ALEX HERDIAN",
+        "select_employee": "64 - NAG170064 - ALEX HERDIAN"
+    },
+    {
+        "no_pin": "3988",
+        "nik": "NAG223988",
+        "employee_name": "ALIMATUSSAKDIAH",
+        "select_employee": "3988 - NAG223988 - ALIMATUSSAKDIAH"
+    },
+    {
+        "no_pin": "3389",
+        "nik": "NAG213389",
+        "employee_name": "ALYA ARYANTI",
+        "select_employee": "3389 - NAG213389 - ALYA ARYANTI"
+    },
+    {
+        "no_pin": "3989",
+        "nik": "NAG223989",
+        "employee_name": "AMELIA NURPADILA",
+        "select_employee": "3989 - NAG223989 - AMELIA NURPADILA"
+    },
+    {
+        "no_pin": "4448",
+        "nik": "NAG224448",
+        "employee_name": "AMINI",
+        "select_employee": "4448 - NAG224448 - AMINI"
+    },
+    {
+        "no_pin": "1064",
+        "nik": "NAG161064",
+        "employee_name": "AMIR SAHRUL",
+        "select_employee": "1064 - NAG161064 - AMIR SAHRUL"
+    },
+    {
+        "no_pin": "43",
+        "nik": "NAG160043",
+        "employee_name": "AMUD",
+        "select_employee": "43 - NAG160043 - AMUD"
+    },
+    {
+        "no_pin": "2593",
+        "nik": "NAG212593",
+        "employee_name": "ANA ANJELIKA",
+        "select_employee": "2593 - NAG212593 - ANA ANJELIKA"
+    },
+    {
+        "no_pin": "4479",
+        "nik": "NAG224479",
+        "employee_name": "ANAH TRILIYAH",
+        "select_employee": "4479 - NAG224479 - ANAH TRILIYAH"
+    },
+    {
+        "no_pin": "1900",
+        "nik": "NAG191900",
+        "employee_name": "ANANDA PUTRI",
+        "select_employee": "1900 - NAG191900 - ANANDA PUTRI"
+    },
+    {
+        "no_pin": "2992",
+        "nik": "NAG212992",
+        "employee_name": "ANANDA SALSYA BILLA",
+        "select_employee": "2992 - NAG212992 - ANANDA SALSYA BILLA"
+    },
+    {
+        "no_pin": "3731",
+        "nik": "NAG223730",
+        "employee_name": "ANANGSIH",
+        "select_employee": "3731 - NAG223730 - ANANGSIH"
+    },
+    {
+        "no_pin": "3552",
+        "nik": "NAG213552",
+        "employee_name": "ANAY SITI FATIMAH",
+        "select_employee": "3552 - NAG213552 - ANAY SITI FATIMAH"
+    },
+    {
+        "no_pin": "4076",
+        "nik": "NAG224076",
+        "employee_name": "ANDI FAUZI",
+        "select_employee": "4076 - NAG224076 - ANDI FAUZI"
+    },
+    {
+        "no_pin": "4252",
+        "nik": "NAG224252",
+        "employee_name": "ANDINI DESVITA",
+        "select_employee": "4252 - NAG224252 - ANDINI DESVITA"
+    },
+    {
+        "no_pin": "3467",
+        "nik": "NAG213467",
+        "employee_name": "ANDINI SAFITRI",
+        "select_employee": "3467 - NAG213467 - ANDINI SAFITRI"
+    },
+    {
+        "no_pin": "1918",
+        "nik": "NAG201918",
+        "employee_name": "ANDIYANA YANUAR",
+        "select_employee": "1918 - NAG201918 - ANDIYANA YANUAR"
+    },
+    {
+        "no_pin": "3500",
+        "nik": "NAG213500",
+        "employee_name": "ANDRI",
+        "select_employee": "3500 - NAG213500 - ANDRI"
+    },
+    {
+        "no_pin": "1757",
+        "nik": "NAG171757",
+        "employee_name": "ANDRI GINANJAR",
+        "select_employee": "1757 - NAG171757 - ANDRI GINANJAR"
+    },
+    {
+        "no_pin": "4",
+        "nik": "NAG100004",
+        "employee_name": "ANDRIAWAN",
+        "select_employee": "4 - NAG100004 - ANDRIAWAN"
+    },
+    {
+        "no_pin": "79",
+        "nik": "NAG180079",
+        "employee_name": "ANDRIYATI",
+        "select_employee": "79 - NAG180079 - ANDRIYATI"
+    },
+    {
+        "no_pin": "3501",
+        "nik": "NAG213501",
+        "employee_name": "ANDY RACHMADAN",
+        "select_employee": "3501 - NAG213501 - ANDY RACHMADAN"
+    },
+    {
+        "no_pin": "3908",
+        "nik": "NAG213908",
+        "employee_name": "Ane Wartini",
+        "select_employee": "3908 - NAG213908 - Ane Wartini"
+    },
+    {
+        "no_pin": "2766",
+        "nik": "NAG212766",
+        "employee_name": "ANENG",
+        "select_employee": "2766 - NAG212766 - ANENG"
+    },
+    {
+        "no_pin": "4336",
+        "nik": "NAG224336",
+        "employee_name": "ANGGHITA AMELIA",
+        "select_employee": "4336 - NAG224336 - ANGGHITA AMELIA"
+    },
+    {
+        "no_pin": "3909",
+        "nik": "NAG223909",
+        "employee_name": "ANGGI",
+        "select_employee": "3909 - NAG223909 - ANGGI"
+    },
+    {
+        "no_pin": "4412",
+        "nik": "NAG224412",
+        "employee_name": "ANGGI ANGGRAENI",
+        "select_employee": "4412 - NAG224412 - ANGGI ANGGRAENI"
+    },
+    {
+        "no_pin": "3584",
+        "nik": "NAG213584",
+        "employee_name": "ANGGI ANGGRAENI",
+        "select_employee": "3584 - NAG213584 - ANGGI ANGGRAENI"
+    },
+    {
+        "no_pin": "3660",
+        "nik": "NAG213660",
+        "employee_name": "ANGGI FITRIANI",
+        "select_employee": "3660 - NAG213660 - ANGGI FITRIANI"
+    },
+    {
+        "no_pin": "4530",
+        "nik": "NAG224530",
+        "employee_name": "ANGGI MUHAMAD SAPULLOH",
+        "select_employee": "4530 - NAG224530 - ANGGI MUHAMAD SAPULLOH"
+    },
+    {
+        "no_pin": "2756",
+        "nik": "NAG212756",
+        "employee_name": "ANGGIT ISNAINAR",
+        "select_employee": "2756 - NAG212756 - ANGGIT ISNAINAR"
+    },
+    {
+        "no_pin": "2559",
+        "nik": "NAG212559",
+        "employee_name": "ANGGUN NINA PUSPITASARI",
+        "select_employee": "2559 - NAG212559 - ANGGUN NINA PUSPITASARI"
+    },
+    {
+        "no_pin": "3672",
+        "nik": "NAG213672",
+        "employee_name": "ANI HERLINA",
+        "select_employee": "3672 - NAG213672 - ANI HERLINA"
+    },
+    {
+        "no_pin": "1015",
+        "nik": "NAG171015",
+        "employee_name": "ANI MULYANI",
+        "select_employee": "1015 - NAG171015 - ANI MULYANI"
+    },
+    {
+        "no_pin": "482",
+        "nik": "NAG170482",
+        "employee_name": "ANI MULYANI",
+        "select_employee": "482 - NAG170482 - ANI MULYANI"
+    },
+    {
+        "no_pin": "3236",
+        "nik": "NAG213236",
+        "employee_name": "ANI RAENI",
+        "select_employee": "3236 - NAG213236 - ANI RAENI"
+    },
+    {
+        "no_pin": "873",
+        "nik": "NAG160873",
+        "employee_name": "ANI RINDAYANI",
+        "select_employee": "873 - NAG160873 - ANI RINDAYANI"
+    },
+    {
+        "no_pin": "4243",
+        "nik": "NAG224243",
+        "employee_name": "ANI SITI JULAEHA",
+        "select_employee": "4243 - NAG224243 - ANI SITI JULAEHA"
+    },
+    {
+        "no_pin": "4077",
+        "nik": "NAG224077",
+        "employee_name": "ANI SUMARNI",
+        "select_employee": "4077 - NAG224077 - ANI SUMARNI"
+    },
+    {
+        "no_pin": "4384",
+        "nik": "NAG224384",
+        "employee_name": "ANI SURYANI",
+        "select_employee": "4384 - NAG224384 - ANI SURYANI"
+    },
+    {
+        "no_pin": "4484",
+        "nik": "NAG224484",
+        "employee_name": "ANI SURYANI",
+        "select_employee": "4484 - NAG224484 - ANI SURYANI"
+    },
+    {
+        "no_pin": "4128",
+        "nik": "NAG224128",
+        "employee_name": "ANI YUNINGSIH",
+        "select_employee": "4128 - NAG224128 - ANI YUNINGSIH"
+    },
+    {
+        "no_pin": "4474",
+        "nik": "NAG224474",
+        "employee_name": "ANILAH",
+        "select_employee": "4474 - NAG224474 - ANILAH"
+    },
+    {
+        "no_pin": "2532",
+        "nik": "NAG212532",
+        "employee_name": "ANIN IRNAWATI",
+        "select_employee": "2532 - NAG212532 - ANIN IRNAWATI"
+    },
+    {
+        "no_pin": "3179",
+        "nik": "NAG213179",
+        "employee_name": "ANINDA DWI PUTRI YANTI",
+        "select_employee": "3179 - NAG213179 - ANINDA DWI PUTRI YANTI"
+    },
+    {
+        "no_pin": "332",
+        "nik": "NAG160332",
+        "employee_name": "ANING",
+        "select_employee": "332 - NAG160332 - ANING"
+    },
+    {
+        "no_pin": "2487",
+        "nik": "NAG212487",
+        "employee_name": "ANIS AMALIA",
+        "select_employee": "2487 - NAG212487 - ANIS AMALIA"
+    },
+    {
+        "no_pin": "2734",
+        "nik": "NAG212734",
+        "employee_name": "ANIS MARSELA",
+        "select_employee": "2734 - NAG212734 - ANIS MARSELA"
+    },
+    {
+        "no_pin": "1893",
+        "nik": "NAG191893",
+        "employee_name": "ANIS MULYANI",
+        "select_employee": "1893 - NAG191893 - ANIS MULYANI"
+    },
+    {
+        "no_pin": "3139",
+        "nik": "NAG213139",
+        "employee_name": "ANIS SITI FATIMAH",
+        "select_employee": "3139 - NAG213139 - ANIS SITI FATIMAH"
+    },
+    {
+        "no_pin": "3870",
+        "nik": "NAG223870",
+        "employee_name": "ANIS SITI ROHIMAH",
+        "select_employee": "3870 - NAG223870 - ANIS SITI ROHIMAH"
+    },
+    {
+        "no_pin": "4276",
+        "nik": "NAG224276",
+        "employee_name": "ANIS ZULIANA",
+        "select_employee": "4276 - NAG224276 - ANIS ZULIANA"
+    },
+    {
+        "no_pin": "3973",
+        "nik": "NAG223973",
+        "employee_name": "ANISA",
+        "select_employee": "3973 - NAG223973 - ANISA"
+    },
+    {
+        "no_pin": "3891",
+        "nik": "NAG223891",
+        "employee_name": "ANISA ANJARSARI",
+        "select_employee": "3891 - NAG223891 - ANISA ANJARSARI"
+    },
+    {
+        "no_pin": "4028",
+        "nik": "NAG224028",
+        "employee_name": "ANISA DEWI",
+        "select_employee": "4028 - NAG224028 - ANISA DEWI"
+    },
+    {
+        "no_pin": "619",
+        "nik": "NAG180619",
+        "employee_name": "ANISA DEWI KUSUMAH",
+        "select_employee": "619 - NAG180619 - ANISA DEWI KUSUMAH"
+    },
+    {
+        "no_pin": "3651",
+        "nik": "NAG213651",
+        "employee_name": "ANISA FRIHASTINI",
+        "select_employee": "3651 - NAG213651 - ANISA FRIHASTINI"
+    },
+    {
+        "no_pin": "3508",
+        "nik": "NAG213508",
+        "employee_name": "ANISA INDRIYANI",
+        "select_employee": "3508 - NAG213508 - ANISA INDRIYANI"
+    },
+    {
+        "no_pin": "4337",
+        "nik": "NAG224337",
+        "employee_name": "ANISA LESTARI",
+        "select_employee": "4337 - NAG224337 - ANISA LESTARI"
+    },
+    {
+        "no_pin": "3732",
+        "nik": "NAG223731",
+        "employee_name": "ANISA NUR AZIZAH",
+        "select_employee": "3732 - NAG223731 - ANISA NUR AZIZAH"
+    },
+    {
+        "no_pin": "3249",
+        "nik": "NAG213249",
+        "employee_name": "ANISA RISKI",
+        "select_employee": "3249 - NAG213249 - ANISA RISKI"
+    },
+    {
+        "no_pin": "4277",
+        "nik": "NAG224277",
+        "employee_name": "ANISA SALAMAH",
+        "select_employee": "4277 - NAG224277 - ANISA SALAMAH"
+    },
+    {
+        "no_pin": "3932",
+        "nik": "NAG223932",
+        "employee_name": "ANISA SEPTIANI",
+        "select_employee": "3932 - NAG223932 - ANISA SEPTIANI"
+    },
+    {
+        "no_pin": "4130",
+        "nik": "NAG224130",
+        "employee_name": "ANISAH BELLA DAMAYANTI",
+        "select_employee": "4130 - NAG224130 - ANISAH BELLA DAMAYANTI"
+    },
+    {
+        "no_pin": "2630",
+        "nik": "NAG212630",
+        "employee_name": "ANISYA",
+        "select_employee": "2630 - NAG212630 - ANISYA"
+    },
+    {
+        "no_pin": "3532",
+        "nik": "NAG213532",
+        "employee_name": "ANITA",
+        "select_employee": "3532 - NAG213532 - ANITA"
+    },
+    {
+        "no_pin": "4060",
+        "nik": "NAG224060",
+        "employee_name": "ANNIS RISKA",
+        "select_employee": "4060 - NAG224060 - ANNIS RISKA"
+    },
+    {
+        "no_pin": "1949",
+        "nik": "NAG201949",
+        "employee_name": "ANNISA NURAENI",
+        "select_employee": "1949 - NAG201949 - ANNISA NURAENI"
+    },
+    {
+        "no_pin": "3141",
+        "nik": "NAG213141",
+        "employee_name": "ANNISA NURHANIFAH",
+        "select_employee": "3141 - NAG213141 - ANNISA NURHANIFAH"
+    },
+    {
+        "no_pin": "3734",
+        "nik": "NAG223733",
+        "employee_name": "ANNISA RAHMI",
+        "select_employee": "3734 - NAG223733 - ANNISA RAHMI"
+    },
+    {
+        "no_pin": "3943",
+        "nik": "NAG223943",
+        "employee_name": "ANNISA SILMI ZUMIRATIN",
+        "select_employee": "3943 - NAG223943 - ANNISA SILMI ZUMIRATIN"
+    },
+    {
+        "no_pin": "4190",
+        "nik": "NAG224190",
+        "employee_name": "ANNISA TRI ANANDA",
+        "select_employee": "4190 - NAG224190 - ANNISA TRI ANANDA"
+    },
+    {
+        "no_pin": "4225",
+        "nik": "NAG224225",
+        "employee_name": "ANTON RIANTO",
+        "select_employee": "4225 - NAG224225 - ANTON RIANTO"
+    },
+    {
+        "no_pin": "2375",
+        "nik": "NAG202375",
+        "employee_name": "ARI NUR ALIYAH",
+        "select_employee": "2375 - NAG202375 - ARI NUR ALIYAH"
+    },
+    {
+        "no_pin": "1995",
+        "nik": "NAG201995",
+        "employee_name": "ARIA YAHYA ZAKARIA",
+        "select_employee": "1995 - NAG201995 - ARIA YAHYA ZAKARIA"
+    },
+    {
+        "no_pin": "3509",
+        "nik": "NAG213509",
+        "employee_name": "ARINI APRILIA WULANDARI",
+        "select_employee": "3509 - NAG213509 - ARINI APRILIA WULANDARI"
+    },
+    {
+        "no_pin": "2136",
+        "nik": "NAG202136",
+        "employee_name": "ARIS PURNAMA",
+        "select_employee": "2136 - NAG202136 - ARIS PURNAMA"
+    },
+    {
+        "no_pin": "3026",
+        "nik": "NAG213026",
+        "employee_name": "ARITA ADRIANTI",
+        "select_employee": "3026 - NAG213026 - ARITA ADRIANTI"
+    },
+    {
+        "no_pin": "4144",
+        "nik": "NAG224144",
+        "employee_name": "ASEP MULYADI",
+        "select_employee": "4144 - NAG224144 - ASEP MULYADI"
+    },
+    {
+        "no_pin": "3234",
+        "nik": "NAG213234",
+        "employee_name": "ASEP MUSLIH",
+        "select_employee": "3234 - NAG213234 - ASEP MUSLIH"
+    },
+    {
+        "no_pin": "1264",
+        "nik": "NAG191264",
+        "employee_name": "ASEP NURJAMAN",
+        "select_employee": "1264 - NAG191264 - ASEP NURJAMAN"
+    },
+    {
+        "no_pin": "4095",
+        "nik": "NAG224095",
+        "employee_name": "ASEP PARMIN",
+        "select_employee": "4095 - NAG224095 - ASEP PARMIN"
+    },
+    {
+        "no_pin": "3572",
+        "nik": "NAG213572",
+        "employee_name": "ASEP RUKMANA",
+        "select_employee": "3572 - NAG213572 - ASEP RUKMANA"
+    },
+    {
+        "no_pin": "4381",
+        "nik": "NAG224381",
+        "employee_name": "ASEP SAEPUDIN",
+        "select_employee": "4381 - NAG224381 - ASEP SAEPUDIN"
+    },
+    {
+        "no_pin": "3585",
+        "nik": "NAG213585",
+        "employee_name": "ASEP SAEPUL AJIS",
+        "select_employee": "3585 - NAG213585 - ASEP SAEPUL AJIS"
+    },
+    {
+        "no_pin": "1758",
+        "nik": "NAG181758",
+        "employee_name": "ASEP SUDRAJAT",
+        "select_employee": "1758 - NAG181758 - ASEP SUDRAJAT"
+    },
+    {
+        "no_pin": "2560",
+        "nik": "NAG212560",
+        "employee_name": "ASIH PURNAMASARI",
+        "select_employee": "2560 - NAG212560 - ASIH PURNAMASARI"
+    },
+    {
+        "no_pin": "3828",
+        "nik": "NAG223828",
+        "employee_name": "ASRI",
+        "select_employee": "3828 - NAG223828 - ASRI"
+    },
+    {
+        "no_pin": "4191",
+        "nik": "NAG224191",
+        "employee_name": "ASRI SRI MULYATI",
+        "select_employee": "4191 - NAG224191 - ASRI SRI MULYATI"
+    },
+    {
+        "no_pin": "4078",
+        "nik": "NAG224078",
+        "employee_name": "ASRI SUKMA",
+        "select_employee": "4078 - NAG224078 - ASRI SUKMA"
+    },
+    {
+        "no_pin": "2767",
+        "nik": "NAG212767",
+        "employee_name": "ASRI WILASTRI",
+        "select_employee": "2767 - NAG212767 - ASRI WILASTRI"
+    },
+    {
+        "no_pin": "3142",
+        "nik": "NAG213142",
+        "employee_name": "ASTINI UMAYAH",
+        "select_employee": "3142 - NAG213142 - ASTINI UMAYAH"
+    },
+    {
+        "no_pin": "3351",
+        "nik": "NAG213351",
+        "employee_name": "ASTRI LESTARI SUMIATI",
+        "select_employee": "3351 - NAG213351 - ASTRI LESTARI SUMIATI"
+    },
+    {
+        "no_pin": "4523",
+        "nik": "NAG224523",
+        "employee_name": "ASTRI SANIAWATI",
+        "select_employee": "4523 - NAG224523 - ASTRI SANIAWATI"
+    },
+    {
+        "no_pin": "3237",
+        "nik": "NAG213237",
+        "employee_name": "ASTRI SULASTRI",
+        "select_employee": "3237 - NAG213237 - ASTRI SULASTRI"
+    },
+    {
+        "no_pin": "3938",
+        "nik": "NAG223938",
+        "employee_name": "ASTRI WIDIYANTI",
+        "select_employee": "3938 - NAG223938 - ASTRI WIDIYANTI"
+    },
+    {
+        "no_pin": "1575",
+        "nik": "NAG181575",
+        "employee_name": "ATEP ROHMAN",
+        "select_employee": "1575 - NAG181575 - ATEP ROHMAN"
+    },
+    {
+        "no_pin": "3784",
+        "nik": "NAG223784",
+        "employee_name": "ATI ROHAETI",
+        "select_employee": "3784 - NAG223784 - ATI ROHAETI"
+    },
+    {
+        "no_pin": "725",
+        "nik": "NAG180725",
+        "employee_name": "ATI SYAMSIAH",
+        "select_employee": "725 - NAG180725 - ATI SYAMSIAH"
+    },
+    {
+        "no_pin": "1070",
+        "nik": "NAG161070",
+        "employee_name": "ATIN",
+        "select_employee": "1070 - NAG161070 - ATIN"
+    },
+    {
+        "no_pin": "681",
+        "nik": "NAG180681",
+        "employee_name": "ATING",
+        "select_employee": "681 - NAG180681 - ATING"
+    },
+    {
+        "no_pin": "3044",
+        "nik": "NAG213044",
+        "employee_name": "ATRIA ANGGRAENI",
+        "select_employee": "3044 - NAG213044 - ATRIA ANGGRAENI"
+    },
+    {
+        "no_pin": "4271",
+        "nik": "NAG224271",
+        "employee_name": "AULIA UNNISA NURFADHILAH",
+        "select_employee": "4271 - NAG224271 - AULIA UNNISA NURFADHILAH"
+    },
+    {
+        "no_pin": "4300",
+        "nik": "NAG224300",
+        "employee_name": "AURA CITRA AWALIA",
+        "select_employee": "4300 - NAG224300 - AURA CITRA AWALIA"
+    },
+    {
+        "no_pin": "2331",
+        "nik": "NAG202331",
+        "employee_name": "AYI ANITA",
+        "select_employee": "2331 - NAG202331 - AYI ANITA"
+    },
+    {
+        "no_pin": "1581",
+        "nik": "NAG181581",
+        "employee_name": "AYU CAHANI",
+        "select_employee": "1581 - NAG181581 - AYU CAHANI"
+    },
+    {
+        "no_pin": "3316",
+        "nik": "NAG213316",
+        "employee_name": "AYU FITRI TAUFIK",
+        "select_employee": "3316 - NAG213316 - AYU FITRI TAUFIK"
+    },
+    {
+        "no_pin": "4385",
+        "nik": "NAG224385",
+        "employee_name": "AYU NUR ANDIA",
+        "select_employee": "4385 - NAG224385 - AYU NUR ANDIA"
+    },
+    {
+        "no_pin": "1801",
+        "nik": "SGT191801",
+        "employee_name": "AYU PIPIT NURHAYATI",
+        "select_employee": "1801 - SGT191801 - AYU PIPIT NURHAYATI"
+    },
+    {
+        "no_pin": "3363",
+        "nik": "NAG213363",
+        "employee_name": "AYU RIFANI AWALIAH",
+        "select_employee": "3363 - NAG213363 - AYU RIFANI AWALIAH"
+    },
+    {
+        "no_pin": "3317",
+        "nik": "NAG213317",
+        "employee_name": "AYU SANTINI",
+        "select_employee": "3317 - NAG213317 - AYU SANTINI"
+    },
+    {
+        "no_pin": "3352",
+        "nik": "NAG213352",
+        "employee_name": "AYU SETIAWATI",
+        "select_employee": "3352 - NAG213352 - AYU SETIAWATI"
+    },
+    {
+        "no_pin": "1911",
+        "nik": "NAG191911",
+        "employee_name": "AYU SRI MULYANI",
+        "select_employee": "1911 - NAG191911 - AYU SRI MULYANI"
+    },
+    {
+        "no_pin": "3143",
+        "nik": "NAG213143",
+        "employee_name": "AYU TIYARA SANTI",
+        "select_employee": "3143 - NAG213143 - AYU TIYARA SANTI"
+    },
+    {
+        "no_pin": "951",
+        "nik": "NAG180951",
+        "employee_name": "AYU TRIANA",
+        "select_employee": "951 - NAG180951 - AYU TRIANA"
+    },
+    {
+        "no_pin": "2842",
+        "nik": "NAG212842",
+        "employee_name": "AYUNI NURAJIZAH",
+        "select_employee": "2842 - NAG212842 - AYUNI NURAJIZAH"
+    },
+    {
+        "no_pin": "3858",
+        "nik": "NAG223858",
+        "employee_name": "BARLIN NOPIYANTI",
+        "select_employee": "3858 - NAG223858 - BARLIN NOPIYANTI"
+    },
+    {
+        "no_pin": "4047",
+        "nik": "NAG224047",
+        "employee_name": "BELLA GUSMEIDINA",
+        "select_employee": "4047 - NAG224047 - BELLA GUSMEIDINA"
+    },
+    {
+        "no_pin": "2091",
+        "nik": "NAG202091",
+        "employee_name": "BENI FERMADIN",
+        "select_employee": "2091 - NAG202091 - BENI FERMADIN"
+    },
+    {
+        "no_pin": "1092",
+        "nik": "NAG181092",
+        "employee_name": "BETI ROHIMAH",
+        "select_employee": "1092 - NAG181092 - BETI ROHIMAH"
+    },
+    {
+        "no_pin": "3701",
+        "nik": "NAG213700",
+        "employee_name": "BETTY AMBARWATI",
+        "select_employee": "3701 - NAG213700 - BETTY AMBARWATI"
+    },
+    {
+        "no_pin": "4096",
+        "nik": "NAG224096",
+        "employee_name": "BINTANG MERI ANDINI",
+        "select_employee": "4096 - NAG224096 - BINTANG MERI ANDINI"
+    },
+    {
+        "no_pin": "2972",
+        "nik": "NAG212972",
+        "employee_name": "BUNGA ROSA INDAH",
+        "select_employee": "2972 - NAG212972 - BUNGA ROSA INDAH"
+    },
+    {
+        "no_pin": "223",
+        "nik": "NAG180223",
+        "employee_name": "CACAH CAHYATI",
+        "select_employee": "223 - NAG180223 - CACAH CAHYATI"
+    },
+    {
+        "no_pin": "3131",
+        "nik": "NAG213131",
+        "employee_name": "CAHYANA",
+        "select_employee": "3131 - NAG213131 - CAHYANA"
+    },
+    {
+        "no_pin": "4509",
+        "nik": "NAG224509",
+        "employee_name": "CAHYANA AYU",
+        "select_employee": "4509 - NAG224509 - CAHYANA AYU"
+    },
+    {
+        "no_pin": "1583",
+        "nik": "NAG181583",
+        "employee_name": "CAHYANI",
+        "select_employee": "1583 - NAG181583 - CAHYANI"
+    },
+    {
+        "no_pin": "2511",
+        "nik": "NAG212511",
+        "employee_name": "CAHYAWATI NINGSIH",
+        "select_employee": "2511 - NAG212511 - CAHYAWATI NINGSIH"
+    },
+    {
+        "no_pin": "1386",
+        "nik": "NAG171386",
+        "employee_name": "CARYANI",
+        "select_employee": "1386 - NAG171386 - CARYANI"
+    },
+    {
+        "no_pin": "2994",
+        "nik": "NAG212994",
+        "employee_name": "CEMI WIGIARTINI",
+        "select_employee": "2994 - NAG212994 - CEMI WIGIARTINI"
+    },
+    {
+        "no_pin": "3684",
+        "nik": "NAG213684",
+        "employee_name": "CHACHA ANTA MAHELSA",
+        "select_employee": "3684 - NAG213684 - CHACHA ANTA MAHELSA"
+    },
+    {
+        "no_pin": "2441",
+        "nik": "NAG212441",
+        "employee_name": "CHAH AISAH",
+        "select_employee": "2441 - NAG212441 - CHAH AISAH"
+    },
+    {
+        "no_pin": "3944",
+        "nik": "NAG223944",
+        "employee_name": "CHESYA LAURA NABILA",
+        "select_employee": "3944 - NAG223944 - CHESYA LAURA NABILA"
+    },
+    {
+        "no_pin": "4097",
+        "nik": "NAG224097",
+        "employee_name": "CICA",
+        "select_employee": "4097 - NAG224097 - CICA"
+    },
+    {
+        "no_pin": "2410",
+        "nik": "NAG212410",
+        "employee_name": "CICA CAHYANI",
+        "select_employee": "2410 - NAG212410 - CICA CAHYANI"
+    },
+    {
+        "no_pin": "3859",
+        "nik": "NAG223859",
+        "employee_name": "CICA NURHAYATI",
+        "select_employee": "3859 - NAG223859 - CICA NURHAYATI"
+    },
+    {
+        "no_pin": "2627",
+        "nik": "NAG212627",
+        "employee_name": "CICA WARNAISAH",
+        "select_employee": "2627 - NAG212627 - CICA WARNAISAH"
+    },
+    {
+        "no_pin": "2595",
+        "nik": "NAG212595",
+        "employee_name": "CICI DIANA NINGSIH",
+        "select_employee": "2595 - NAG212595 - CICI DIANA NINGSIH"
+    },
+    {
+        "no_pin": "4007",
+        "nik": "NAG224007",
+        "employee_name": "CICI KARTIKA",
+        "select_employee": "4007 - NAG224007 - CICI KARTIKA"
+    },
+    {
+        "no_pin": "3767",
+        "nik": "NAG223767",
+        "employee_name": "CICI NURCAHYATI",
+        "select_employee": "3767 - NAG223767 - CICI NURCAHYATI"
+    },
+    {
+        "no_pin": "4098",
+        "nik": "NAG224098",
+        "employee_name": "CICI NURHALIZAH",
+        "select_employee": "4098 - NAG224098 - CICI NURHALIZAH"
+    },
+    {
+        "no_pin": "4227",
+        "nik": "NAG224227",
+        "employee_name": "CICI SOLEHA",
+        "select_employee": "4227 - NAG224227 - CICI SOLEHA"
+    },
+    {
+        "no_pin": "2673",
+        "nik": "NAG212673",
+        "employee_name": "CICI SRI KUSMAWATI",
+        "select_employee": "2673 - NAG212673 - CICI SRI KUSMAWATI"
+    },
+    {
+        "no_pin": "3639",
+        "nik": "NAG213639",
+        "employee_name": "CICI SURYANI",
+        "select_employee": "3639 - NAG213639 - CICI SURYANI"
+    },
+    {
+        "no_pin": "355",
+        "nik": "NAG160355",
+        "employee_name": "CICIH SETIA ASIH",
+        "select_employee": "355 - NAG160355 - CICIH SETIA ASIH"
+    },
+    {
+        "no_pin": "4272",
+        "nik": "NAG224272",
+        "employee_name": "CITRA BUDIAWATI SAPUTRI",
+        "select_employee": "4272 - NAG224272 - CITRA BUDIAWATI SAPUTRI"
+    },
+    {
+        "no_pin": "3537",
+        "nik": "NAG213537",
+        "employee_name": "CITRA KARMENITA",
+        "select_employee": "3537 - NAG213537 - CITRA KARMENITA"
+    },
+    {
+        "no_pin": "2973",
+        "nik": "NAG212973",
+        "employee_name": "CITRA LESTARI",
+        "select_employee": "2973 - NAG212973 - CITRA LESTARI"
+    },
+    {
+        "no_pin": "3544",
+        "nik": "NAG213544",
+        "employee_name": "CITRA NUR ASRIANI",
+        "select_employee": "3544 - NAG213544 - CITRA NUR ASRIANI"
+    },
+    {
+        "no_pin": "4313",
+        "nik": "NAG224313",
+        "employee_name": "CITRA SORAYA",
+        "select_employee": "4313 - NAG224313 - CITRA SORAYA"
+    },
+    {
+        "no_pin": "4493",
+        "nik": "NAG224493",
+        "employee_name": "CUCU",
+        "select_employee": "4493 - NAG224493 - CUCU"
+    },
+    {
+        "no_pin": "2909",
+        "nik": "NAG212909",
+        "employee_name": "CUCU",
+        "select_employee": "2909 - NAG212909 - CUCU"
+    },
+    {
+        "no_pin": "4257",
+        "nik": "NAG224257",
+        "employee_name": "CUCU AMINAH",
+        "select_employee": "4257 - NAG224257 - CUCU AMINAH"
+    },
+    {
+        "no_pin": "2870",
+        "nik": "NAG212870",
+        "employee_name": "CUCU CAHYATI",
+        "select_employee": "2870 - NAG212870 - CUCU CAHYATI"
+    },
+    {
+        "no_pin": "2546",
+        "nik": "NAG212546",
+        "employee_name": "CUCU CUNAYA",
+        "select_employee": "2546 - NAG212546 - CUCU CUNAYA"
+    },
+    {
+        "no_pin": "2974",
+        "nik": "NAG212974",
+        "employee_name": "CUCU CUNAYAH",
+        "select_employee": "2974 - NAG212974 - CUCU CUNAYAH"
+    },
+    {
+        "no_pin": "2768",
+        "nik": "NAG212768",
+        "employee_name": "CUCU CUNAYASARI",
+        "select_employee": "2768 - NAG212768 - CUCU CUNAYASARI"
+    },
+    {
+        "no_pin": "3587",
+        "nik": "NAG213587",
+        "employee_name": "CUCU JULAEHA",
+        "select_employee": "3587 - NAG213587 - CUCU JULAEHA"
+    },
+    {
+        "no_pin": "3673",
+        "nik": "NAG213673",
+        "employee_name": "CUCU LIANI",
+        "select_employee": "3673 - NAG213673 - CUCU LIANI"
+    },
+    {
+        "no_pin": "2735",
+        "nik": "NAG212735",
+        "employee_name": "CUCU NURCAHYATI",
+        "select_employee": "2735 - NAG212735 - CUCU NURCAHYATI"
+    },
+    {
+        "no_pin": "2843",
+        "nik": "NAG212843",
+        "employee_name": "CUCU SOPIAH SONANSAH",
+        "select_employee": "2843 - NAG212843 - CUCU SOPIAH SONANSAH"
+    },
+    {
+        "no_pin": "3045",
+        "nik": "NAG213045",
+        "employee_name": "CUCU SULASTRI",
+        "select_employee": "3045 - NAG213045 - CUCU SULASTRI"
+    },
+    {
+        "no_pin": "4210",
+        "nik": "NAG224210",
+        "employee_name": "CUCU YANI",
+        "select_employee": "4210 - NAG224210 - CUCU YANI"
+    },
+    {
+        "no_pin": "3391",
+        "nik": "NAG213391",
+        "employee_name": "CUCUN SUTIJAH",
+        "select_employee": "3391 - NAG213391 - CUCUN SUTIJAH"
+    },
+    {
+        "no_pin": "2269",
+        "nik": "NAG202269",
+        "employee_name": "CUCUP MAHTIAR",
+        "select_employee": "2269 - NAG202269 - CUCUP MAHTIAR"
+    },
+    {
+        "no_pin": "3519",
+        "nik": "NAG213519",
+        "employee_name": "CUT YANTI HANDAYANI",
+        "select_employee": "3519 - NAG213519 - CUT YANTI HANDAYANI"
+    },
+    {
+        "no_pin": "3180",
+        "nik": "NAG213180",
+        "employee_name": "CYNTIA DEWINA",
+        "select_employee": "3180 - NAG213180 - CYNTIA DEWINA"
+    },
+    {
+        "no_pin": "1162",
+        "nik": "NAG181162",
+        "employee_name": "DADAH DASIMAH",
+        "select_employee": "1162 - NAG181162 - DADAH DASIMAH"
+    },
+    {
+        "no_pin": "4099",
+        "nik": "NAG224099",
+        "employee_name": "DADAN DARMAWAN",
+        "select_employee": "4099 - NAG224099 - DADAN DARMAWAN"
+    },
+    {
+        "no_pin": "1587",
+        "nik": "NAG181587",
+        "employee_name": "DADAN HAMDANI",
+        "select_employee": "1587 - NAG181587 - DADAN HAMDANI"
+    },
+    {
+        "no_pin": "4483",
+        "nik": "NAG224483",
+        "employee_name": "DADAN KARDIMAN",
+        "select_employee": "4483 - NAG224483 - DADAN KARDIMAN"
+    },
+    {
+        "no_pin": "4175",
+        "nik": "NAG224175",
+        "employee_name": "DADAN SURYANA",
+        "select_employee": "4175 - NAG224175 - DADAN SURYANA"
+    },
+    {
+        "no_pin": "3364",
+        "nik": "NAG213364",
+        "employee_name": "DADANG GALIH EPEMDI",
+        "select_employee": "3364 - NAG213364 - DADANG GALIH EPEMDI"
+    },
+    {
+        "no_pin": "2137",
+        "nik": "NAG202137",
+        "employee_name": "DADANG SETIAWAN",
+        "select_employee": "2137 - NAG202137 - DADANG SETIAWAN"
+    },
+    {
+        "no_pin": "3361",
+        "nik": "NAG213361",
+        "employee_name": "DADANG SUTISNA",
+        "select_employee": "3361 - NAG213361 - DADANG SUTISNA"
+    },
+    {
+        "no_pin": "3017",
+        "nik": "NAG213017",
+        "employee_name": "DAFFA AL FARIZ RANDRIANSYAH",
+        "select_employee": "3017 - NAG213017 - DAFFA AL FARIZ RANDRIANSYAH"
+    },
+    {
+        "no_pin": "2960",
+        "nik": "NAG212960",
+        "employee_name": "DALIAH",
+        "select_employee": "2960 - NAG212960 - DALIAH"
+    },
+    {
+        "no_pin": "2965",
+        "nik": "NAG212965",
+        "employee_name": "DAMAYANTI",
+        "select_employee": "2965 - NAG212965 - DAMAYANTI"
+    },
+    {
+        "no_pin": "2035",
+        "nik": "NAG202035",
+        "employee_name": "DANA",
+        "select_employee": "2035 - NAG202035 - DANA"
+    },
+    {
+        "no_pin": "2151",
+        "nik": "NAG202151",
+        "employee_name": "DANDI",
+        "select_employee": "2151 - NAG202151 - DANDI"
+    },
+    {
+        "no_pin": "2050",
+        "nik": "NAG202050",
+        "employee_name": "DANDI HADIANSAH",
+        "select_employee": "2050 - NAG202050 - DANDI HADIANSAH"
+    },
+    {
+        "no_pin": "3018",
+        "nik": "NAG213018",
+        "employee_name": "DANI KUSTIWA",
+        "select_employee": "3018 - NAG213018 - DANI KUSTIWA"
+    },
+    {
+        "no_pin": "3360",
+        "nik": "NAG213360",
+        "employee_name": "DARYANA",
+        "select_employee": "3360 - NAG213360 - DARYANA"
+    },
+    {
+        "no_pin": "4079",
+        "nik": "NAG224079",
+        "employee_name": "DAVID FIRMANSYAH",
+        "select_employee": "4079 - NAG224079 - DAVID FIRMANSYAH"
+    },
+    {
+        "no_pin": "2370",
+        "nik": "NAG202370",
+        "employee_name": "DEA NUR AULIA",
+        "select_employee": "2370 - NAG202370 - DEA NUR AULIA"
+    },
+    {
+        "no_pin": "4494",
+        "nik": "NAG224494",
+        "employee_name": "DEA NURJANAH",
+        "select_employee": "4494 - NAG224494 - DEA NURJANAH"
+    },
+    {
+        "no_pin": "4386",
+        "nik": "NAG224386",
+        "employee_name": "DEA NURUL HABIBAH",
+        "select_employee": "4386 - NAG224386 - DEA NURUL HABIBAH"
+    },
+    {
+        "no_pin": "3640",
+        "nik": "NAG213640",
+        "employee_name": "DEA SUSAN",
+        "select_employee": "3640 - NAG213640 - DEA SUSAN"
+    },
+    {
+        "no_pin": "4183",
+        "nik": "NAG224183",
+        "employee_name": "DEBI SINTIA",
+        "select_employee": "4183 - NAG224183 - DEBI SINTIA"
+    },
+    {
+        "no_pin": "4485",
+        "nik": "NAG224485",
+        "employee_name": "DEDAH JUARIAH",
+        "select_employee": "4485 - NAG224485 - DEDAH JUARIAH"
+    },
+    {
+        "no_pin": "4301",
+        "nik": "NAG224301",
+        "employee_name": "DEDAH JUARIAH",
+        "select_employee": "4301 - NAG224301 - DEDAH JUARIAH"
+    },
+    {
+        "no_pin": "3963",
+        "nik": "NAG223963",
+        "employee_name": "DEDAH JUBAEDAH",
+        "select_employee": "3963 - NAG223963 - DEDAH JUBAEDAH"
+    },
+    {
+        "no_pin": "3046",
+        "nik": "NAG213046",
+        "employee_name": "DEDAH PARIDATUL HASANAH",
+        "select_employee": "3046 - NAG213046 - DEDAH PARIDATUL HASANAH"
+    },
+    {
+        "no_pin": "8",
+        "nik": "NAG120008",
+        "employee_name": "DEDDY ARIANTO GUNAWAN",
+        "select_employee": "8 - NAG120008 - DEDDY ARIANTO GUNAWAN"
+    },
+    {
+        "no_pin": "2051",
+        "nik": "NAG202051",
+        "employee_name": "DEDE CAHYADI",
+        "select_employee": "2051 - NAG202051 - DEDE CAHYADI"
+    },
+    {
+        "no_pin": "1267",
+        "nik": "NAG161267",
+        "employee_name": "DEDE KARYATI",
+        "select_employee": "1267 - NAG161267 - DEDE KARYATI"
+    },
+    {
+        "no_pin": "3991",
+        "nik": "NAG223991",
+        "employee_name": "DEDE MULYANI",
+        "select_employee": "3991 - NAG223991 - DEDE MULYANI"
+    },
+    {
+        "no_pin": "2910",
+        "nik": "NAG212910",
+        "employee_name": "DEDE NURJANAH",
+        "select_employee": "2910 - NAG212910 - DEDE NURJANAH"
+    },
+    {
+        "no_pin": "2827",
+        "nik": "NAG212827",
+        "employee_name": "DEDE RAHAYU",
+        "select_employee": "2827 - NAG212827 - DEDE RAHAYU"
+    },
+    {
+        "no_pin": "3097",
+        "nik": "NAG213097",
+        "employee_name": "DEDE RUHIAT",
+        "select_employee": "3097 - NAG213097 - DEDE RUHIAT"
+    },
+    {
+        "no_pin": "3809",
+        "nik": "NAG223809",
+        "employee_name": "DEDE SITI",
+        "select_employee": "3809 - NAG223809 - DEDE SITI"
+    },
+    {
+        "no_pin": "2680",
+        "nik": "NAG212680",
+        "employee_name": "DEDE SRI WAHYUNI",
+        "select_employee": "2680 - NAG212680 - DEDE SRI WAHYUNI"
+    },
+    {
+        "no_pin": "3790",
+        "nik": "NAG223790",
+        "employee_name": "DEDE SULASTRI",
+        "select_employee": "3790 - NAG223790 - DEDE SULASTRI"
+    },
+    {
+        "no_pin": "3818",
+        "nik": "NAG223818",
+        "employee_name": "DEDE YANI SURYANI",
+        "select_employee": "3818 - NAG223818 - DEDE YANI SURYANI"
+    },
+    {
+        "no_pin": "601",
+        "nik": "NAG170601",
+        "employee_name": "DEDEH",
+        "select_employee": "601 - NAG170601 - DEDEH"
+    },
+    {
+        "no_pin": "3925",
+        "nik": "NAG223925",
+        "employee_name": "DEDEH",
+        "select_employee": "3925 - NAG223925 - DEDEH"
+    },
+    {
+        "no_pin": "31",
+        "nik": "NAG160031",
+        "employee_name": "DEDEH AISYAH",
+        "select_employee": "31 - NAG160031 - DEDEH AISYAH"
+    },
+    {
+        "no_pin": "4480",
+        "nik": "NAG224480",
+        "employee_name": "DEDEH DAHLIA",
+        "select_employee": "4480 - NAG224480 - DEDEH DAHLIA"
+    },
+    {
+        "no_pin": "3308",
+        "nik": "NAG213308",
+        "employee_name": "DEDEH DARWATI",
+        "select_employee": "3308 - NAG213308 - DEDEH DARWATI"
+    },
+    {
+        "no_pin": "1919",
+        "nik": "NAG201919",
+        "employee_name": "DEDEH KURNIASIH",
+        "select_employee": "1919 - NAG201919 - DEDEH KURNIASIH"
+    },
+    {
+        "no_pin": "2572",
+        "nik": "NAG212572",
+        "employee_name": "DEDEH WIDIANENGSIH",
+        "select_employee": "2572 - NAG212572 - DEDEH WIDIANENGSIH"
+    },
+    {
+        "no_pin": "2109",
+        "nik": "NAG202109",
+        "employee_name": "DEDEN",
+        "select_employee": "2109 - NAG202109 - DEDEN"
+    },
+    {
+        "no_pin": "2158",
+        "nik": "NAG202158",
+        "employee_name": "DEDEN",
+        "select_employee": "2158 - NAG202158 - DEDEN"
+    },
+    {
+        "no_pin": "2067",
+        "nik": "NAG202067",
+        "employee_name": "DEDEN SULAEMAN",
+        "select_employee": "2067 - NAG202067 - DEDEN SULAEMAN"
+    },
+    {
+        "no_pin": "1947",
+        "nik": "NAG201947",
+        "employee_name": "DEDI KUSWARA",
+        "select_employee": "1947 - NAG201947 - DEDI KUSWARA"
+    },
+    {
+        "no_pin": "4145",
+        "nik": "NAG224145",
+        "employee_name": "DELA PERMATASARI",
+        "select_employee": "4145 - NAG224145 - DELA PERMATASARI"
+    },
+    {
+        "no_pin": "4449",
+        "nik": "NAG224449",
+        "employee_name": "DELIA DAHLIANA",
+        "select_employee": "4449 - NAG224449 - DELIA DAHLIANA"
+    },
+    {
+        "no_pin": "4439",
+        "nik": "NAG224439",
+        "employee_name": "DELIA NOPIANTI",
+        "select_employee": "4439 - NAG224439 - DELIA NOPIANTI"
+    },
+    {
+        "no_pin": "4415",
+        "nik": "NAG224415",
+        "employee_name": "DEN RIDHO",
+        "select_employee": "4415 - NAG224415 - DEN RIDHO"
+    },
+    {
+        "no_pin": "1293",
+        "nik": "NAG161293",
+        "employee_name": "DENI",
+        "select_employee": "1293 - NAG161293 - DENI"
+    },
+    {
+        "no_pin": "4416",
+        "nik": "NAG224416",
+        "employee_name": "DENI GUNAWAN",
+        "select_employee": "4416 - NAG224416 - DENI GUNAWAN"
+    },
+    {
+        "no_pin": "1592",
+        "nik": "NAG161592",
+        "employee_name": "DENI HERMAWAN",
+        "select_employee": "1592 - NAG161592 - DENI HERMAWAN"
+    },
+    {
+        "no_pin": "2336",
+        "nik": "NAG202336",
+        "employee_name": "DENI KIRANA",
+        "select_employee": "2336 - NAG202336 - DENI KIRANA"
+    },
+    {
+        "no_pin": "3182",
+        "nik": "NAG213182",
+        "employee_name": "DENISA NADYA JULIANI",
+        "select_employee": "3182 - NAG213182 - DENISA NADYA JULIANI"
+    },
+    {
+        "no_pin": "3538",
+        "nik": "NAG213538",
+        "employee_name": "DENNY PRIADI",
+        "select_employee": "3538 - NAG213538 - DENNY PRIADI"
+    },
+    {
+        "no_pin": "4192",
+        "nik": "NAG224192",
+        "employee_name": "DEPI HARTIAN",
+        "select_employee": "4192 - NAG224192 - DEPI HARTIAN"
+    },
+    {
+        "no_pin": "4486",
+        "nik": "NAG224486",
+        "employee_name": "DEPI WIDARTI",
+        "select_employee": "4486 - NAG224486 - DEPI WIDARTI"
+    },
+    {
+        "no_pin": "3353",
+        "nik": "NAG213353",
+        "employee_name": "DERI",
+        "select_employee": "3353 - NAG213353 - DERI"
+    },
+    {
+        "no_pin": "3652",
+        "nik": "NAG213652",
+        "employee_name": "DESI",
+        "select_employee": "3652 - NAG213652 - DESI"
+    },
+    {
+        "no_pin": "3219",
+        "nik": "NAG213219",
+        "employee_name": "DESI AISYAH",
+        "select_employee": "3219 - NAG213219 - DESI AISYAH"
+    },
+    {
+        "no_pin": "3924",
+        "nik": "NAG223924",
+        "employee_name": "DESI NURFITRI",
+        "select_employee": "3924 - NAG223924 - DESI NURFITRI"
+    },
+    {
+        "no_pin": "3238",
+        "nik": "NAG213238",
+        "employee_name": "DESI SUMIATI",
+        "select_employee": "3238 - NAG213238 - DESI SUMIATI"
+    },
+    {
+        "no_pin": "2583",
+        "nik": "NAG212583",
+        "employee_name": "DESINTA SRI RAHAYU",
+        "select_employee": "2583 - NAG212583 - DESINTA SRI RAHAYU"
+    },
+    {
+        "no_pin": "1388",
+        "nik": "NAG181388",
+        "employee_name": "DESRI",
+        "select_employee": "1388 - NAG181388 - DESRI"
+    },
+    {
+        "no_pin": "3019",
+        "nik": "NAG213019",
+        "employee_name": "DESTI MAULANI",
+        "select_employee": "3019 - NAG213019 - DESTI MAULANI"
+    },
+    {
+        "no_pin": "3450",
+        "nik": "NAG213450",
+        "employee_name": "DESTI NURHAYATI",
+        "select_employee": "3450 - NAG213450 - DESTI NURHAYATI"
+    },
+    {
+        "no_pin": "3892",
+        "nik": "NAG223892",
+        "employee_name": "DESTINA BERYAN",
+        "select_employee": "3892 - NAG223892 - DESTINA BERYAN"
+    },
+    {
+        "no_pin": "2520",
+        "nik": "NAG212520",
+        "employee_name": "DESYANA AMBARWATI WAHYU",
+        "select_employee": "2520 - NAG212520 - DESYANA AMBARWATI WAHYU"
+    },
+    {
+        "no_pin": "98",
+        "nik": "NAG180098",
+        "employee_name": "DETI DANIATI",
+        "select_employee": "98 - NAG180098 - DETI DANIATI"
+    },
+    {
+        "no_pin": "3910",
+        "nik": "NAG223910",
+        "employee_name": "DETI KURNIA",
+        "select_employee": "3910 - NAG223910 - DETI KURNIA"
+    },
+    {
+        "no_pin": "2536",
+        "nik": "NAG212536",
+        "employee_name": "DETI KURNIA",
+        "select_employee": "2536 - NAG212536 - DETI KURNIA"
+    },
+    {
+        "no_pin": "1509",
+        "nik": "NAG181509",
+        "employee_name": "DETI PARMAWATI",
+        "select_employee": "1509 - NAG181509 - DETI PARMAWATI"
+    },
+    {
+        "no_pin": "2641",
+        "nik": "NAG212641",
+        "employee_name": "DETI PEBRIYANA",
+        "select_employee": "2641 - NAG212641 - DETI PEBRIYANA"
+    },
+    {
+        "no_pin": "2642",
+        "nik": "NAG212642",
+        "employee_name": "DETI SARIPAH",
+        "select_employee": "2642 - NAG212642 - DETI SARIPAH"
+    },
+    {
+        "no_pin": "3933",
+        "nik": "NAG223933",
+        "employee_name": "DETINA",
+        "select_employee": "3933 - NAG223933 - DETINA"
+    },
+    {
+        "no_pin": "3819",
+        "nik": "NAG223819",
+        "employee_name": "DEVI ANDRIANI",
+        "select_employee": "3819 - NAG223819 - DEVI ANDRIANI"
+    },
+    {
+        "no_pin": "2315",
+        "nik": "NAG202315",
+        "employee_name": "DEVI FITRIANI",
+        "select_employee": "2315 - NAG202315 - DEVI FITRIANI"
+    },
+    {
+        "no_pin": "2736",
+        "nik": "NAG212736",
+        "employee_name": "DEVI HARTATI",
+        "select_employee": "2736 - NAG212736 - DEVI HARTATI"
+    },
+    {
+        "no_pin": "2111",
+        "nik": "NAG202111",
+        "employee_name": "DEVI MARTINI",
+        "select_employee": "2111 - NAG202111 - DEVI MARTINI"
+    },
+    {
+        "no_pin": "2547",
+        "nik": "NAG212547",
+        "employee_name": "DEVI MELIANI",
+        "select_employee": "2547 - NAG212547 - DEVI MELIANI"
+    },
+    {
+        "no_pin": "2488",
+        "nik": "NAG212488",
+        "employee_name": "DEVI NURFITRIYANTI",
+        "select_employee": "2488 - NAG212488 - DEVI NURFITRIYANTI"
+    },
+    {
+        "no_pin": "4029",
+        "nik": "NAG224029",
+        "employee_name": "DEVI PUSPITASARI",
+        "select_employee": "4029 - NAG224029 - DEVI PUSPITASARI"
+    },
+    {
+        "no_pin": "4273",
+        "nik": "NAG224273",
+        "employee_name": "DEVI SUSILAWATI",
+        "select_employee": "4273 - NAG224273 - DEVI SUSILAWATI"
+    },
+    {
+        "no_pin": "2261",
+        "nik": "NAG202261",
+        "employee_name": "DEVI WIDIANTI",
+        "select_employee": "2261 - NAG202261 - DEVI WIDIANTI"
+    },
+    {
+        "no_pin": "3877",
+        "nik": "NAG223877",
+        "employee_name": "DEVIA FITRIYANI",
+        "select_employee": "3877 - NAG223877 - DEVIA FITRIYANI"
+    },
+    {
+        "no_pin": "2996",
+        "nik": "NAG212996",
+        "employee_name": "DEVIA MELANI",
+        "select_employee": "2996 - NAG212996 - DEVIA MELANI"
+    },
+    {
+        "no_pin": "2912",
+        "nik": "NAG212912",
+        "employee_name": "DEVIANA DWI PUTRI",
+        "select_employee": "2912 - NAG212912 - DEVIANA DWI PUTRI"
+    },
+    {
+        "no_pin": "4278",
+        "nik": "NAG224278",
+        "employee_name": "DEWANTI SUKMA WARDANI",
+        "select_employee": "4278 - NAG224278 - DEWANTI SUKMA WARDANI"
+    },
+    {
+        "no_pin": "4127",
+        "nik": "NAG224127",
+        "employee_name": "DEWI",
+        "select_employee": "4127 - NAG224127 - DEWI"
+    },
+    {
+        "no_pin": "2345",
+        "nik": "NAG202345",
+        "employee_name": "DEWI",
+        "select_employee": "2345 - NAG202345 - DEWI"
+    },
+    {
+        "no_pin": "2514",
+        "nik": "NAG212514",
+        "employee_name": "DEWI ANDIANI",
+        "select_employee": "2514 - NAG212514 - DEWI ANDIANI"
+    },
+    {
+        "no_pin": "4237",
+        "nik": "NAG224237",
+        "employee_name": "DEWI ANDINI",
+        "select_employee": "4237 - NAG224237 - DEWI ANDINI"
+    },
+    {
+        "no_pin": "4100",
+        "nik": "NAG224100",
+        "employee_name": "DEWI CHANIA",
+        "select_employee": "4100 - NAG224100 - DEWI CHANIA"
+    },
+    {
+        "no_pin": "2737",
+        "nik": "NAG212737",
+        "employee_name": "DEWI DAWIYAH",
+        "select_employee": "2737 - NAG212737 - DEWI DAWIYAH"
+    },
+    {
+        "no_pin": "4167",
+        "nik": "NAG224167",
+        "employee_name": "DEWI JULIANTI",
+        "select_employee": "4167 - NAG224167 - DEWI JULIANTI"
+    },
+    {
+        "no_pin": "505",
+        "nik": "NAG170505",
+        "employee_name": "DEWI KOMALASARI",
+        "select_employee": "505 - NAG170505 - DEWI KOMALASARI"
+    },
+    {
+        "no_pin": "2657",
+        "nik": "NAG212657",
+        "employee_name": "DEWI LESTARI",
+        "select_employee": "2657 - NAG212657 - DEWI LESTARI"
+    },
+    {
+        "no_pin": "1328",
+        "nik": "NAG191328",
+        "employee_name": "DEWI MULYANI",
+        "select_employee": "1328 - NAG191328 - DEWI MULYANI"
+    },
+    {
+        "no_pin": "831",
+        "nik": "NAG180831",
+        "employee_name": "DEWI NINGRAT",
+        "select_employee": "831 - NAG180831 - DEWI NINGRAT"
+    },
+    {
+        "no_pin": "3321",
+        "nik": "NAG213321",
+        "employee_name": "DEWI NURAENI",
+        "select_employee": "3321 - NAG213321 - DEWI NURAENI"
+    },
+    {
+        "no_pin": "783",
+        "nik": "NAG180783",
+        "employee_name": "DEWI NURHAYATI",
+        "select_employee": "783 - NAG180783 - DEWI NURHAYATI"
+    },
+    {
+        "no_pin": "3299",
+        "nik": "NAG213299",
+        "employee_name": "DEWI NURYANTINI",
+        "select_employee": "3299 - NAG213299 - DEWI NURYANTINI"
+    },
+    {
+        "no_pin": "2997",
+        "nik": "NAG212997",
+        "employee_name": "DEWI RATNA SARI",
+        "select_employee": "2997 - NAG212997 - DEWI RATNA SARI"
+    },
+    {
+        "no_pin": "3027",
+        "nik": "NAG213027",
+        "employee_name": "DEWI SUPRIATIN",
+        "select_employee": "3027 - NAG213027 - DEWI SUPRIATIN"
+    },
+    {
+        "no_pin": "2871",
+        "nik": "NAG212871",
+        "employee_name": "DEWI SUSANTI",
+        "select_employee": "2871 - NAG212871 - DEWI SUSANTI"
+    },
+    {
+        "no_pin": "354",
+        "nik": "NAG160354",
+        "employee_name": "DEWI SUSANTI",
+        "select_employee": "354 - NAG160354 - DEWI SUSANTI"
+    },
+    {
+        "no_pin": "3871",
+        "nik": "NAG223871",
+        "employee_name": "DEWI SUSILAWATI",
+        "select_employee": "3871 - NAG223871 - DEWI SUSILAWATI"
+    },
+    {
+        "no_pin": "2872",
+        "nik": "NAG212872",
+        "employee_name": "DEWI YANTI",
+        "select_employee": "2872 - NAG212872 - DEWI YANTI"
+    },
+    {
+        "no_pin": "2873",
+        "nik": "NAG212873",
+        "employee_name": "DEWI YULI",
+        "select_employee": "2873 - NAG212873 - DEWI YULI"
+    },
+    {
+        "no_pin": "4081",
+        "nik": "NAG224081",
+        "employee_name": "DEWI YULIANTI",
+        "select_employee": "4081 - NAG224081 - DEWI YULIANTI"
+    },
+    {
+        "no_pin": "1019",
+        "nik": "NAG181019",
+        "employee_name": "DEWI YUNINGSIH",
+        "select_employee": "1019 - NAG181019 - DEWI YUNINGSIH"
+    },
+    {
+        "no_pin": "4009",
+        "nik": "NAG224009",
+        "employee_name": "DEWITA OKTAVIAN",
+        "select_employee": "4009 - NAG224009 - DEWITA OKTAVIAN"
+    },
+    {
+        "no_pin": "3028",
+        "nik": "NAG213028",
+        "employee_name": "DEZRIAN HERLINA",
+        "select_employee": "3028 - NAG213028 - DEZRIAN HERLINA"
+    },
+    {
+        "no_pin": "4352",
+        "nik": "NAG224352",
+        "employee_name": "DHEA AMANDA PUTRI",
+        "select_employee": "4352 - NAG224352 - DHEA AMANDA PUTRI"
+    },
+    {
+        "no_pin": "3735",
+        "nik": "NAG223734",
+        "employee_name": "DHEA WIRA RAHMIA",
+        "select_employee": "3735 - NAG223734 - DHEA WIRA RAHMIA"
+    },
+    {
+        "no_pin": "4353",
+        "nik": "NAG224353",
+        "employee_name": "DHINA DINATA",
+        "select_employee": "4353 - NAG224353 - DHINA DINATA"
+    },
+    {
+        "no_pin": "2770",
+        "nik": "NAG212770",
+        "employee_name": "DIAH",
+        "select_employee": "2770 - NAG212770 - DIAH"
+    },
+    {
+        "no_pin": "3354",
+        "nik": "NAG213354",
+        "employee_name": "DIAH",
+        "select_employee": "3354 - NAG213354 - DIAH"
+    },
+    {
+        "no_pin": "2971",
+        "nik": "NAG212971",
+        "employee_name": "DIAN ANDRIANI",
+        "select_employee": "2971 - NAG212971 - DIAN ANDRIANI"
+    },
+    {
+        "no_pin": "3122",
+        "nik": "NAG213122",
+        "employee_name": "DIAN ANJANI",
+        "select_employee": "3122 - NAG213122 - DIAN ANJANI"
+    },
+    {
+        "no_pin": "3992",
+        "nik": "NAG223992",
+        "employee_name": "DIAN MARDIANI",
+        "select_employee": "3992 - NAG223992 - DIAN MARDIANI"
+    },
+    {
+        "no_pin": "4314",
+        "nik": "NAG224314",
+        "employee_name": "DIAN WIDIANI",
+        "select_employee": "4314 - NAG224314 - DIAN WIDIANI"
+    },
+    {
+        "no_pin": "4354",
+        "nik": "NAG224354",
+        "employee_name": "DIAN WIDYASARI EFFENDI",
+        "select_employee": "4354 - NAG224354 - DIAN WIDYASARI EFFENDI"
+    },
+    {
+        "no_pin": "3427",
+        "nik": "NAG213427",
+        "employee_name": "DIANA NOVITASARI",
+        "select_employee": "3427 - NAG213427 - DIANA NOVITASARI"
+    },
+    {
+        "no_pin": "2248",
+        "nik": "NAG202248",
+        "employee_name": "DIANA PONIMAN",
+        "select_employee": "2248 - NAG202248 - DIANA PONIMAN"
+    },
+    {
+        "no_pin": "3144",
+        "nik": "NAG213144",
+        "employee_name": "DIANA YULIA",
+        "select_employee": "3144 - NAG213144 - DIANA YULIA"
+    },
+    {
+        "no_pin": "2523",
+        "nik": "NAG212523",
+        "employee_name": "DIANDRA ANISA PURNAMA",
+        "select_employee": "2523 - NAG212523 - DIANDRA ANISA PURNAMA"
+    },
+    {
+        "no_pin": "2539",
+        "nik": "NAG212539",
+        "employee_name": "DIANTINI",
+        "select_employee": "2539 - NAG212539 - DIANTINI"
+    },
+    {
+        "no_pin": "2337",
+        "nik": "NAG202337",
+        "employee_name": "DIDIN NURDIN",
+        "select_employee": "2337 - NAG202337 - DIDIN NURDIN"
+    },
+    {
+        "no_pin": "23",
+        "nik": "NAG160023",
+        "employee_name": "DIKI RUKIMAN",
+        "select_employee": "23 - NAG160023 - DIKI RUKIMAN"
+    },
+    {
+        "no_pin": "1460",
+        "nik": "NAG181460",
+        "employee_name": "DINA AJENG GUSTINA",
+        "select_employee": "1460 - NAG181460 - DINA AJENG GUSTINA"
+    },
+    {
+        "no_pin": "2364",
+        "nik": "NAG202364",
+        "employee_name": "DINA AMELIA",
+        "select_employee": "2364 - NAG202364 - DINA AMELIA"
+    },
+    {
+        "no_pin": "3861",
+        "nik": "NAG223861",
+        "employee_name": "DINA ANDRIANI",
+        "select_employee": "3861 - NAG223861 - DINA ANDRIANI"
+    },
+    {
+        "no_pin": "3768",
+        "nik": "NAG223768",
+        "employee_name": "DINA HERLINA",
+        "select_employee": "3768 - NAG223768 - DINA HERLINA"
+    },
+    {
+        "no_pin": "2771",
+        "nik": "NAG212771",
+        "employee_name": "DINA MIRANDA",
+        "select_employee": "2771 - NAG212771 - DINA MIRANDA"
+    },
+    {
+        "no_pin": "3975",
+        "nik": "NAG223975",
+        "employee_name": "DINA MONITA",
+        "select_employee": "3975 - NAG223975 - DINA MONITA"
+    },
+    {
+        "no_pin": "4302",
+        "nik": "NAG224302",
+        "employee_name": "DINA SUMIATI",
+        "select_employee": "4302 - NAG224302 - DINA SUMIATI"
+    },
+    {
+        "no_pin": "3322",
+        "nik": "NAG213322",
+        "employee_name": "DINAR KAMALIAWATI",
+        "select_employee": "3322 - NAG213322 - DINAR KAMALIAWATI"
+    },
+    {
+        "no_pin": "1390",
+        "nik": "NAG161390",
+        "employee_name": "DINAR PRAWATI",
+        "select_employee": "1390 - NAG161390 - DINAR PRAWATI"
+    },
+    {
+        "no_pin": "3408",
+        "nik": "NAG213408",
+        "employee_name": "DINI APRILIANI",
+        "select_employee": "3408 - NAG213408 - DINI APRILIANI"
+    },
+    {
+        "no_pin": "4279",
+        "nik": "NAG224279",
+        "employee_name": "DINI AYU DIANI",
+        "select_employee": "4279 - NAG224279 - DINI AYU DIANI"
+    },
+    {
+        "no_pin": "2005",
+        "nik": "NAG202005",
+        "employee_name": "DINI NURHABIBAH",
+        "select_employee": "2005 - NAG202005 - DINI NURHABIBAH"
+    },
+    {
+        "no_pin": "2548",
+        "nik": "NAG212548",
+        "employee_name": "DINI SAFITRI",
+        "select_employee": "2548 - NAG212548 - DINI SAFITRI"
+    },
+    {
+        "no_pin": "4258",
+        "nik": "NAG224258",
+        "employee_name": "DINI SUKMAWATI",
+        "select_employee": "4258 - NAG224258 - DINI SUKMAWATI"
+    },
+    {
+        "no_pin": "3715",
+        "nik": "NAG213714",
+        "employee_name": "DINI WAHYUNI",
+        "select_employee": "3715 - NAG213714 - DINI WAHYUNI"
+    },
+    {
+        "no_pin": "4450",
+        "nik": "NAG224450",
+        "employee_name": "DINI WAHYUNI",
+        "select_employee": "4450 - NAG224450 - DINI WAHYUNI"
+    },
+    {
+        "no_pin": "3491",
+        "nik": "NAG213491",
+        "employee_name": "DONI HOLIK",
+        "select_employee": "3491 - NAG213491 - DONI HOLIK"
+    },
+    {
+        "no_pin": "1123",
+        "nik": "NAG161123",
+        "employee_name": "DWI MAWARSIH RAHAYU",
+        "select_employee": "1123 - NAG161123 - DWI MAWARSIH RAHAYU"
+    },
+    {
+        "no_pin": "3511",
+        "nik": "NAG213511",
+        "employee_name": "DWI RIANTI",
+        "select_employee": "3511 - NAG213511 - DWI RIANTI"
+    },
+    {
+        "no_pin": "3145",
+        "nik": "NAG213145",
+        "employee_name": "DWI SALMA AYU WANDARI",
+        "select_employee": "3145 - NAG213145 - DWI SALMA AYU WANDARI"
+    },
+    {
+        "no_pin": "3829",
+        "nik": "NAG223829",
+        "employee_name": "E RISMAYANTI",
+        "select_employee": "3829 - NAG223829 - E RISMAYANTI"
+    },
+    {
+        "no_pin": "2581",
+        "nik": "NAG212581",
+        "employee_name": "EDI KURNAEDI",
+        "select_employee": "2581 - NAG212581 - EDI KURNAEDI"
+    },
+    {
+        "no_pin": "2333",
+        "nik": "NAG202333",
+        "employee_name": "EDI SETIA BUDIMAN",
+        "select_employee": "2333 - NAG202333 - EDI SETIA BUDIMAN"
+    },
+    {
+        "no_pin": "4274",
+        "nik": "NAG224274",
+        "employee_name": "EEM NURJANAH",
+        "select_employee": "4274 - NAG224274 - EEM NURJANAH"
+    },
+    {
+        "no_pin": "3365",
+        "nik": "NAG213365",
+        "employee_name": "EEN",
+        "select_employee": "3365 - NAG213365 - EEN"
+    },
+    {
+        "no_pin": "2474",
+        "nik": "NAG212474",
+        "employee_name": "EEN RISMAWATI",
+        "select_employee": "2474 - NAG212474 - EEN RISMAWATI"
+    },
+    {
+        "no_pin": "1763",
+        "nik": "NAG161763",
+        "employee_name": "EENG HERMAWAN",
+        "select_employee": "1763 - NAG161763 - EENG HERMAWAN"
+    },
+    {
+        "no_pin": "1764",
+        "nik": "NAG161764",
+        "employee_name": "EEP SUPARMAN",
+        "select_employee": "1764 - NAG161764 - EEP SUPARMAN"
+    },
+    {
+        "no_pin": "1601",
+        "nik": "NAG181601",
+        "employee_name": "EGI TAUFIK HIDAYAT",
+        "select_employee": "1601 - NAG181601 - EGI TAUFIK HIDAYAT"
+    },
+    {
+        "no_pin": "3076",
+        "nik": "NAG213076",
+        "employee_name": "EHA JULAEHA",
+        "select_employee": "3076 - NAG213076 - EHA JULAEHA"
+    },
+    {
+        "no_pin": "50",
+        "nik": "SGT160050",
+        "employee_name": "EKA DARMAWAN",
+        "select_employee": "50 - SGT160050 - EKA DARMAWAN"
+    },
+    {
+        "no_pin": "3894",
+        "nik": "NAG223894",
+        "employee_name": "EKA FAZRIWATI SADIQOH",
+        "select_employee": "3894 - NAG223894 - EKA FAZRIWATI SADIQOH"
+    },
+    {
+        "no_pin": "3557",
+        "nik": "NAG213557",
+        "employee_name": "EKA KARTIKA",
+        "select_employee": "3557 - NAG213557 - EKA KARTIKA"
+    },
+    {
+        "no_pin": "4387",
+        "nik": "NAG224387",
+        "employee_name": "EKA KARTIKASARI",
+        "select_employee": "4387 - NAG224387 - EKA KARTIKASARI"
+    },
+    {
+        "no_pin": "2475",
+        "nik": "NAG212475",
+        "employee_name": "EKA KUSMIAWATI",
+        "select_employee": "2475 - NAG212475 - EKA KUSMIAWATI"
+    },
+    {
+        "no_pin": "3323",
+        "nik": "NAG213323",
+        "employee_name": "EKA NUR CANTIKA",
+        "select_employee": "3323 - NAG213323 - EKA NUR CANTIKA"
+    },
+    {
+        "no_pin": "3503",
+        "nik": "NAG213503",
+        "employee_name": "EKA OKTAPIA",
+        "select_employee": "3503 - NAG213503 - EKA OKTAPIA"
+    },
+    {
+        "no_pin": "965",
+        "nik": "NAG170965",
+        "employee_name": "ELA",
+        "select_employee": "965 - NAG170965 - ELA"
+    },
+    {
+        "no_pin": "3686",
+        "nik": "NAG213686",
+        "employee_name": "ELA TAMALA",
+        "select_employee": "3686 - NAG213686 - ELA TAMALA"
+    },
+    {
+        "no_pin": "4219",
+        "nik": "NAG224219",
+        "employee_name": "ELA WATI",
+        "select_employee": "4219 - NAG224219 - ELA WATI"
+    },
+    {
+        "no_pin": "4292",
+        "nik": "NAG224292",
+        "employee_name": "ELAH NURAENI",
+        "select_employee": "4292 - NAG224292 - ELAH NURAENI"
+    },
+    {
+        "no_pin": "4159",
+        "nik": "NAG224159",
+        "employee_name": "ELAS SARTIKA",
+        "select_employee": "4159 - NAG224159 - ELAS SARTIKA"
+    },
+    {
+        "no_pin": "2069",
+        "nik": "NAG202069",
+        "employee_name": "ELGA ELGIANA",
+        "select_employee": "2069 - NAG202069 - ELGA ELGIANA"
+    },
+    {
+        "no_pin": "4303",
+        "nik": "NAG224303",
+        "employee_name": "ELI",
+        "select_employee": "4303 - NAG224303 - ELI"
+    },
+    {
+        "no_pin": "1539",
+        "nik": "NAG171539",
+        "employee_name": "ELI",
+        "select_employee": "1539 - NAG171539 - ELI"
+    },
+    {
+        "no_pin": "400",
+        "nik": "NAG160400",
+        "employee_name": "ELI JUARIAH",
+        "select_employee": "400 - NAG160400 - ELI JUARIAH"
+    },
+    {
+        "no_pin": "3300",
+        "nik": "NAG213300",
+        "employee_name": "ELI KARLINA",
+        "select_employee": "3300 - NAG213300 - ELI KARLINA"
+    },
+    {
+        "no_pin": "2633",
+        "nik": "NAG212633",
+        "employee_name": "ELI YANTI NUR",
+        "select_employee": "2633 - NAG212633 - ELI YANTI NUR"
+    },
+    {
+        "no_pin": "4228",
+        "nik": "NAG224228",
+        "employee_name": "ELIN RISNAWATI",
+        "select_employee": "4228 - NAG224228 - ELIN RISNAWATI"
+    },
+    {
+        "no_pin": "4524",
+        "nik": "NAG224524",
+        "employee_name": "ELINA",
+        "select_employee": "4524 - NAG224524 - ELINA"
+    },
+    {
+        "no_pin": "3494",
+        "nik": "NAG213494",
+        "employee_name": "ELIS",
+        "select_employee": "3494 - NAG213494 - ELIS"
+    },
+    {
+        "no_pin": "3591",
+        "nik": "NAG213591",
+        "employee_name": "ELIS FITRI",
+        "select_employee": "3591 - NAG213591 - ELIS FITRI"
+    },
+    {
+        "no_pin": "2466",
+        "nik": "NAG212466",
+        "employee_name": "ELIS HERAYANTI",
+        "select_employee": "2466 - NAG212466 - ELIS HERAYANTI"
+    },
+    {
+        "no_pin": "2772",
+        "nik": "NAG212772",
+        "employee_name": "ELIS HERMAYANTI",
+        "select_employee": "2772 - NAG212772 - ELIS HERMAYANTI"
+    },
+    {
+        "no_pin": "4355",
+        "nik": "NAG224355",
+        "employee_name": "ELIS MARYATI",
+        "select_employee": "4355 - NAG224355 - ELIS MARYATI"
+    },
+    {
+        "no_pin": "3148",
+        "nik": "NAG213148",
+        "employee_name": "ELIS ROSITA",
+        "select_employee": "3148 - NAG213148 - ELIS ROSITA"
+    },
+    {
+        "no_pin": "3149",
+        "nik": "NAG213149",
+        "employee_name": "ELIS ROSMIATI",
+        "select_employee": "3149 - NAG213149 - ELIS ROSMIATI"
+    },
+    {
+        "no_pin": "1416",
+        "nik": "NAG181416",
+        "employee_name": "ELIS SARTIKA",
+        "select_employee": "1416 - NAG181416 - ELIS SARTIKA"
+    },
+    {
+        "no_pin": "1332",
+        "nik": "NAG171332",
+        "employee_name": "ELIS SITI NUR HASANAH",
+        "select_employee": "1332 - NAG171332 - ELIS SITI NUR HASANAH"
+    },
+    {
+        "no_pin": "2442",
+        "nik": "NAG212442",
+        "employee_name": "ELIS SULASTRI",
+        "select_employee": "2442 - NAG212442 - ELIS SULASTRI"
+    },
+    {
+        "no_pin": "4131",
+        "nik": "NAG224131",
+        "employee_name": "ELIS SUMIATI",
+        "select_employee": "4131 - NAG224131 - ELIS SUMIATI"
+    },
+    {
+        "no_pin": "4481",
+        "nik": "NAG224481",
+        "employee_name": "ELIS SUMIATI",
+        "select_employee": "4481 - NAG224481 - ELIS SUMIATI"
+    },
+    {
+        "no_pin": "1867",
+        "nik": "NAG191867",
+        "employee_name": "ELLEN DWI JAYANTI",
+        "select_employee": "1867 - NAG191867 - ELLEN DWI JAYANTI"
+    },
+    {
+        "no_pin": "4315",
+        "nik": "NAG224315",
+        "employee_name": "ELSA DUFITARIANI",
+        "select_employee": "4315 - NAG224315 - ELSA DUFITARIANI"
+    },
+    {
+        "no_pin": "2674",
+        "nik": "NAG212674",
+        "employee_name": "ELSA NATASHA",
+        "select_employee": "2674 - NAG212674 - ELSA NATASHA"
+    },
+    {
+        "no_pin": "4280",
+        "nik": "NAG224280",
+        "employee_name": "ELSA NOVIYANTI",
+        "select_employee": "4280 - NAG224280 - ELSA NOVIYANTI"
+    },
+    {
+        "no_pin": "3239",
+        "nik": "NAG213239",
+        "employee_name": "ELSA TRIKRESNA",
+        "select_employee": "3239 - NAG213239 - ELSA TRIKRESNA"
+    },
+    {
+        "no_pin": "3220",
+        "nik": "NAG213220",
+        "employee_name": "ELSA WAHYUNI",
+        "select_employee": "3220 - NAG213220 - ELSA WAHYUNI"
+    },
+    {
+        "no_pin": "4293",
+        "nik": "NAG224293",
+        "employee_name": "EMA MARYANA",
+        "select_employee": "4293 - NAG224293 - EMA MARYANA"
+    },
+    {
+        "no_pin": "2711",
+        "nik": "NAG212711",
+        "employee_name": "EMA MARYANI",
+        "select_employee": "2711 - NAG212711 - EMA MARYANI"
+    },
+    {
+        "no_pin": "3150",
+        "nik": "NAG213150",
+        "employee_name": "EMAS PANI",
+        "select_employee": "3150 - NAG213150 - EMAS PANI"
+    },
+    {
+        "no_pin": "3324",
+        "nik": "NAG213324",
+        "employee_name": "EMI SUHAENI",
+        "select_employee": "3324 - NAG213324 - EMI SUHAENI"
+    },
+    {
+        "no_pin": "4356",
+        "nik": "NAG224356",
+        "employee_name": "ENCI SUCIHATI",
+        "select_employee": "4356 - NAG224356 - ENCI SUCIHATI"
+    },
+    {
+        "no_pin": "3736",
+        "nik": "NAG223735",
+        "employee_name": "ENDANG LESTARI N",
+        "select_employee": "3736 - NAG223735 - ENDANG LESTARI N"
+    },
+    {
+        "no_pin": "551",
+        "nik": "NAG180551",
+        "employee_name": "ENENG",
+        "select_employee": "551 - NAG180551 - ENENG"
+    },
+    {
+        "no_pin": "1829",
+        "nik": "NAG191829",
+        "employee_name": "ENENG AMANAH",
+        "select_employee": "1829 - NAG191829 - ENENG AMANAH"
+    },
+    {
+        "no_pin": "1962",
+        "nik": "NAG201962",
+        "employee_name": "ENENG HAYANI",
+        "select_employee": "1962 - NAG201962 - ENENG HAYANI"
+    },
+    {
+        "no_pin": "2876",
+        "nik": "NAG212876",
+        "employee_name": "ENENG HENI",
+        "select_employee": "2876 - NAG212876 - ENENG HENI"
+    },
+    {
+        "no_pin": "4440",
+        "nik": "NAG224440",
+        "employee_name": "ENENG HERLIN",
+        "select_employee": "4440 - NAG224440 - ENENG HERLIN"
+    },
+    {
+        "no_pin": "4475",
+        "nik": "NAG224475",
+        "employee_name": "ENENG HILMI FAUZIAH",
+        "select_employee": "4475 - NAG224475 - ENENG HILMI FAUZIAH"
+    },
+    {
+        "no_pin": "2976",
+        "nik": "NAG212976",
+        "employee_name": "ENENG KARWATI",
+        "select_employee": "2976 - NAG212976 - ENENG KARWATI"
+    },
+    {
+        "no_pin": "2913",
+        "nik": "NAG212913",
+        "employee_name": "ENENG KULSUM",
+        "select_employee": "2913 - NAG212913 - ENENG KULSUM"
+    },
+    {
+        "no_pin": "4357",
+        "nik": "NAG224357",
+        "employee_name": "ENENG LELA SARI",
+        "select_employee": "4357 - NAG224357 - ENENG LELA SARI"
+    },
+    {
+        "no_pin": "4101",
+        "nik": "NAG224101",
+        "employee_name": "ENENG NOVIA DEWI",
+        "select_employee": "4101 - NAG224101 - ENENG NOVIA DEWI"
+    },
+    {
+        "no_pin": "2549",
+        "nik": "NAG212549",
+        "employee_name": "ENENG RENI",
+        "select_employee": "2549 - NAG212549 - ENENG RENI"
+    },
+    {
+        "no_pin": "3702",
+        "nik": "NAG213701",
+        "employee_name": "ENENG ROHIMAH",
+        "select_employee": "3702 - NAG213701 - ENENG ROHIMAH"
+    },
+    {
+        "no_pin": "3393",
+        "nik": "NAG213393",
+        "employee_name": "ENENG ROSITA",
+        "select_employee": "3393 - NAG213393 - ENENG ROSITA"
+    },
+    {
+        "no_pin": "4304",
+        "nik": "NAG224304",
+        "employee_name": "ENENG SANTI SUSANTI",
+        "select_employee": "4304 - NAG224304 - ENENG SANTI SUSANTI"
+    },
+    {
+        "no_pin": "3911",
+        "nik": "NAG223911",
+        "employee_name": "ENENG SARI WULANSARIPAH",
+        "select_employee": "3911 - NAG223911 - ENENG SARI WULANSARIPAH"
+    },
+    {
+        "no_pin": "605",
+        "nik": "NAG180605",
+        "employee_name": "ENENG SARIMANAH",
+        "select_employee": "605 - NAG180605 - ENENG SARIMANAH"
+    },
+    {
+        "no_pin": "3132",
+        "nik": "NAG213132",
+        "employee_name": "ENENG SITI NURHALIPAH",
+        "select_employee": "3132 - NAG213132 - ENENG SITI NURHALIPAH"
+    },
+    {
+        "no_pin": "4193",
+        "nik": "NAG224193",
+        "employee_name": "ENENG SUSANTI",
+        "select_employee": "4193 - NAG224193 - ENENG SUSANTI"
+    },
+    {
+        "no_pin": "4417",
+        "nik": "NAG224417",
+        "employee_name": "ENENG SUSILAWATI",
+        "select_employee": "4417 - NAG224417 - ENENG SUSILAWATI"
+    },
+    {
+        "no_pin": "1830",
+        "nik": "NAG191830",
+        "employee_name": "ENENG WIDANINGSIH",
+        "select_employee": "1830 - NAG191830 - ENENG WIDANINGSIH"
+    },
+    {
+        "no_pin": "2086",
+        "nik": "NAG202086",
+        "employee_name": "ENGKUS KUSNADI",
+        "select_employee": "2086 - NAG202086 - ENGKUS KUSNADI"
+    },
+    {
+        "no_pin": "1221",
+        "nik": "NAG161221",
+        "employee_name": "ENI",
+        "select_employee": "1221 - NAG161221 - ENI"
+    },
+    {
+        "no_pin": "510",
+        "nik": "NAG170510",
+        "employee_name": "ENI NURYANI",
+        "select_employee": "510 - NAG170510 - ENI NURYANI"
+    },
+    {
+        "no_pin": "1902",
+        "nik": "NAG191902",
+        "employee_name": "ENI ROHAENI",
+        "select_employee": "1902 - NAG191902 - ENI ROHAENI"
+    },
+    {
+        "no_pin": "1537",
+        "nik": "NAG191537",
+        "employee_name": "ENI ROHAENI",
+        "select_employee": "1537 - NAG191537 - ENI ROHAENI"
+    },
+    {
+        "no_pin": "3183",
+        "nik": "NAG213183",
+        "employee_name": "ENI SUMARNI",
+        "select_employee": "3183 - NAG213183 - ENI SUMARNI"
+    },
+    {
+        "no_pin": "3078",
+        "nik": "NAG213078",
+        "employee_name": "ENI SURYANI",
+        "select_employee": "3078 - NAG213078 - ENI SURYANI"
+    },
+    {
+        "no_pin": "2689",
+        "nik": "NAG212689",
+        "employee_name": "ENIS NISVU LESTARI",
+        "select_employee": "2689 - NAG212689 - ENIS NISVU LESTARI"
+    },
+    {
+        "no_pin": "13",
+        "nik": "NAG160013",
+        "employee_name": "ENJANG DIAN",
+        "select_employee": "13 - NAG160013 - ENJANG DIAN"
+    },
+    {
+        "no_pin": "3267",
+        "nik": "NAG213267",
+        "employee_name": "ENOK FATIMAH",
+        "select_employee": "3267 - NAG213267 - ENOK FATIMAH"
+    },
+    {
+        "no_pin": "3268",
+        "nik": "NAG213268",
+        "employee_name": "ENTAT",
+        "select_employee": "3268 - NAG213268 - ENTAT"
+    },
+    {
+        "no_pin": "499",
+        "nik": "NAG170499",
+        "employee_name": "ENTIN KARTINI",
+        "select_employee": "499 - NAG170499 - ENTIN KARTINI"
+    },
+    {
+        "no_pin": "3637",
+        "nik": "NAG213637",
+        "employee_name": "ENTIN SUHARTINI",
+        "select_employee": "3637 - NAG213637 - ENTIN SUHARTINI"
+    },
+    {
+        "no_pin": "2618",
+        "nik": "NAG212618",
+        "employee_name": "ENTIN SUMARNI",
+        "select_employee": "2618 - NAG212618 - ENTIN SUMARNI"
+    },
+    {
+        "no_pin": "3367",
+        "nik": "NAG213367",
+        "employee_name": "ENTIN SUPARTINI",
+        "select_employee": "3367 - NAG213367 - ENTIN SUPARTINI"
+    },
+    {
+        "no_pin": "84",
+        "nik": "NAG180084",
+        "employee_name": "ENTOH TOHIDIN",
+        "select_employee": "84 - NAG180084 - ENTOH TOHIDIN"
+    },
+    {
+        "no_pin": "4451",
+        "nik": "NAG224451",
+        "employee_name": "ENUNG CAHYANI",
+        "select_employee": "4451 - NAG224451 - ENUNG CAHYANI"
+    },
+    {
+        "no_pin": "527",
+        "nik": "NAG180527",
+        "employee_name": "ENUNG ERMALA",
+        "select_employee": "527 - NAG180527 - ENUNG ERMALA"
+    },
+    {
+        "no_pin": "4388",
+        "nik": "NAG224388",
+        "employee_name": "ENUNG MULYANI",
+        "select_employee": "4388 - NAG224388 - ENUNG MULYANI"
+    },
+    {
+        "no_pin": "2938",
+        "nik": "NAG212938",
+        "employee_name": "ENUNG NUR HASANAH",
+        "select_employee": "2938 - NAG212938 - ENUNG NUR HASANAH"
+    },
+    {
+        "no_pin": "2522",
+        "nik": "NAG212522",
+        "employee_name": "ENUNG SITI HODAMAH",
+        "select_employee": "2522 - NAG212522 - ENUNG SITI HODAMAH"
+    },
+    {
+        "no_pin": "2774",
+        "nik": "NAG212774",
+        "employee_name": "ENUNG TURSINI",
+        "select_employee": "2774 - NAG212774 - ENUNG TURSINI"
+    },
+    {
+        "no_pin": "692",
+        "nik": "NAG190692",
+        "employee_name": "ENUR AZIZAH",
+        "select_employee": "692 - NAG190692 - ENUR AZIZAH"
+    },
+    {
+        "no_pin": "3151",
+        "nik": "NAG213151",
+        "employee_name": "ENUR CAHYATI",
+        "select_employee": "3151 - NAG213151 - ENUR CAHYATI"
+    },
+    {
+        "no_pin": "4525",
+        "nik": "NAG224525",
+        "employee_name": "ENUR FITRIA",
+        "select_employee": "4525 - NAG224525 - ENUR FITRIA"
+    },
+    {
+        "no_pin": "2844",
+        "nik": "NAG212844",
+        "employee_name": "ENUR NURHAYATI",
+        "select_employee": "2844 - NAG212844 - ENUR NURHAYATI"
+    },
+    {
+        "no_pin": "4132",
+        "nik": "NAG224132",
+        "employee_name": "ENUR WIDIA",
+        "select_employee": "4132 - NAG224132 - ENUR WIDIA"
+    },
+    {
+        "no_pin": "497",
+        "nik": "NAG170497",
+        "employee_name": "ENURHAYATI",
+        "select_employee": "497 - NAG170497 - ENURHAYATI"
+    },
+    {
+        "no_pin": "4283",
+        "nik": "NAG224283",
+        "employee_name": "ENYI HAYATI",
+        "select_employee": "4283 - NAG224283 - ENYI HAYATI"
+    },
+    {
+        "no_pin": "4133",
+        "nik": "NAG224133",
+        "employee_name": "ENYI SANTIKA",
+        "select_employee": "4133 - NAG224133 - ENYI SANTIKA"
+    },
+    {
+        "no_pin": "2393",
+        "nik": "NAG212393",
+        "employee_name": "EPA KOMALASARI",
+        "select_employee": "2393 - NAG212393 - EPA KOMALASARI"
+    },
+    {
+        "no_pin": "4452",
+        "nik": "NAG224452",
+        "employee_name": "EPA KUSHERAWATI",
+        "select_employee": "4452 - NAG224452 - EPA KUSHERAWATI"
+    },
+    {
+        "no_pin": "3879",
+        "nik": "NAG223879",
+        "employee_name": "EPA MARDIYAH",
+        "select_employee": "3879 - NAG223879 - EPA MARDIYAH"
+    },
+    {
+        "no_pin": "3847",
+        "nik": "NAG223847",
+        "employee_name": "EPA PUSPAFIYA",
+        "select_employee": "3847 - NAG223847 - EPA PUSPAFIYA"
+    },
+    {
+        "no_pin": "3977",
+        "nik": "NAG223977",
+        "employee_name": "EPI PEBRIYANTI",
+        "select_employee": "3977 - NAG223977 - EPI PEBRIYANTI"
+    },
+    {
+        "no_pin": "3184",
+        "nik": "NAG213184",
+        "employee_name": "EPI SOPIAH",
+        "select_employee": "3184 - NAG213184 - EPI SOPIAH"
+    },
+    {
+        "no_pin": "3221",
+        "nik": "NAG213221",
+        "employee_name": "EPI SUPRIYATIN",
+        "select_employee": "3221 - NAG213221 - EPI SUPRIYATIN"
+    },
+    {
+        "no_pin": "1855",
+        "nik": "NAG191855",
+        "employee_name": "ERIN PEBRIANI",
+        "select_employee": "1855 - NAG191855 - ERIN PEBRIANI"
+    },
+    {
+        "no_pin": "2945",
+        "nik": "NAG212945",
+        "employee_name": "ERINA NATALIA",
+        "select_employee": "2945 - NAG212945 - ERINA NATALIA"
+    },
+    {
+        "no_pin": "4358",
+        "nik": "NAG224358",
+        "employee_name": "ERISA MEILANI",
+        "select_employee": "4358 - NAG224358 - ERISA MEILANI"
+    },
+    {
+        "no_pin": "2604",
+        "nik": "NAG212604",
+        "employee_name": "ERMA LESMAWATI",
+        "select_employee": "2604 - NAG212604 - ERMA LESMAWATI"
+    },
+    {
+        "no_pin": "2424",
+        "nik": "NAG212424",
+        "employee_name": "ERMAYA PEBRIANI",
+        "select_employee": "2424 - NAG212424 - ERMAYA PEBRIANI"
+    },
+    {
+        "no_pin": "3737",
+        "nik": "NAG223736",
+        "employee_name": "ERNA",
+        "select_employee": "3737 - NAG223736 - ERNA"
+    },
+    {
+        "no_pin": "671",
+        "nik": "NAG170671",
+        "employee_name": "ERNA",
+        "select_employee": "671 - NAG170671 - ERNA"
+    },
+    {
+        "no_pin": "3912",
+        "nik": "NAG223912",
+        "employee_name": "ERNA FEBRIANTI",
+        "select_employee": "3912 - NAG223912 - ERNA FEBRIANTI"
+    },
+    {
+        "no_pin": "4305",
+        "nik": "NAG224305",
+        "employee_name": "ERNA ISMAYANTI",
+        "select_employee": "4305 - NAG224305 - ERNA ISMAYANTI"
+    },
+    {
+        "no_pin": "4102",
+        "nik": "NAG224102",
+        "employee_name": "ERNA LISNAWATI",
+        "select_employee": "4102 - NAG224102 - ERNA LISNAWATI"
+    },
+    {
+        "no_pin": "2596",
+        "nik": "NAG212596",
+        "employee_name": "ERNA NURHALIMAH",
+        "select_employee": "2596 - NAG212596 - ERNA NURHALIMAH"
+    },
+    {
+        "no_pin": "4507",
+        "nik": "NAG224507",
+        "employee_name": "ERNA PURNA SARI",
+        "select_employee": "4507 - NAG224507 - ERNA PURNA SARI"
+    },
+    {
+        "no_pin": "2998",
+        "nik": "NAG212998",
+        "employee_name": "ERNA ROHAENA",
+        "select_employee": "2998 - NAG212998 - ERNA ROHAENA"
+    },
+    {
+        "no_pin": "3123",
+        "nik": "NAG213123",
+        "employee_name": "ERNA WULANDARI",
+        "select_employee": "3123 - NAG213123 - ERNA WULANDARI"
+    },
+    {
+        "no_pin": "2643",
+        "nik": "NAG212643",
+        "employee_name": "ERNA YULIA",
+        "select_employee": "2643 - NAG212643 - ERNA YULIA"
+    },
+    {
+        "no_pin": "1616",
+        "nik": "NAG181616",
+        "employee_name": "ERNI DAMAYANTI",
+        "select_employee": "1616 - NAG181616 - ERNI DAMAYANTI"
+    },
+    {
+        "no_pin": "4482",
+        "nik": "NAG224482",
+        "employee_name": "ERNI ENJELINA",
+        "select_employee": "4482 - NAG224482 - ERNI ENJELINA"
+    },
+    {
+        "no_pin": "1975",
+        "nik": "NAG201975",
+        "employee_name": "ERNI HAERANI",
+        "select_employee": "1975 - NAG201975 - ERNI HAERANI"
+    },
+    {
+        "no_pin": "4281",
+        "nik": "NAG224281",
+        "employee_name": "ERNI HERNAWATI",
+        "select_employee": "4281 - NAG224281 - ERNI HERNAWATI"
+    },
+    {
+        "no_pin": "4389",
+        "nik": "NAG224389",
+        "employee_name": "ERNI NURAENI",
+        "select_employee": "4389 - NAG224389 - ERNI NURAENI"
+    },
+    {
+        "no_pin": "2562",
+        "nik": "NAG212562",
+        "employee_name": "ERNI NURHAENI",
+        "select_employee": "2562 - NAG212562 - ERNI NURHAENI"
+    },
+    {
+        "no_pin": "4390",
+        "nik": "NAG224390",
+        "employee_name": "ERNI NURHASANAH",
+        "select_employee": "4390 - NAG224390 - ERNI NURHASANAH"
+    },
+    {
+        "no_pin": "3325",
+        "nik": "NAG213325",
+        "employee_name": "ERNI OKTAVIANI",
+        "select_employee": "3325 - NAG213325 - ERNI OKTAVIANI"
+    },
+    {
+        "no_pin": "2675",
+        "nik": "NAG212675",
+        "employee_name": "ERNI SUSANTI",
+        "select_employee": "2675 - NAG212675 - ERNI SUSANTI"
+    },
+    {
+        "no_pin": "2597",
+        "nik": "NAG212597",
+        "employee_name": "EROS ROSITA",
+        "select_employee": "2597 - NAG212597 - EROS ROSITA"
+    },
+    {
+        "no_pin": "1885",
+        "nik": "NAG191885",
+        "employee_name": "ERSA REGINA NUGRAHA",
+        "select_employee": "1885 - NAG191885 - ERSA REGINA NUGRAHA"
+    },
+    {
+        "no_pin": "4103",
+        "nik": "NAG224103",
+        "employee_name": "ESA PEBIYANTI",
+        "select_employee": "4103 - NAG224103 - ESA PEBIYANTI"
+    },
+    {
+        "no_pin": "3473",
+        "nik": "NAG213473",
+        "employee_name": "ESA YULIANA WATI",
+        "select_employee": "3473 - NAG213473 - ESA YULIANA WATI"
+    },
+    {
+        "no_pin": "3153",
+        "nik": "NAG213153",
+        "employee_name": "ESIN KURAESIN",
+        "select_employee": "3153 - NAG213153 - ESIN KURAESIN"
+    },
+    {
+        "no_pin": "4545",
+        "nik": "NAG224545",
+        "employee_name": "ESRA FITRIYANI",
+        "select_employee": "4545 - NAG224545 - ESRA FITRIYANI"
+    },
+    {
+        "no_pin": "2644",
+        "nik": "NAG212644",
+        "employee_name": "ESSY CAHYATI",
+        "select_employee": "2644 - NAG212644 - ESSY CAHYATI"
+    },
+    {
+        "no_pin": "3846",
+        "nik": "NAG223846",
+        "employee_name": "ETI HERLINA",
+        "select_employee": "3846 - NAG223846 - ETI HERLINA"
+    },
+    {
+        "no_pin": "4359",
+        "nik": "NAG224359",
+        "employee_name": "ETI KUSMIATI",
+        "select_employee": "4359 - NAG224359 - ETI KUSMIATI"
+    },
+    {
+        "no_pin": "1832",
+        "nik": "NAG191832",
+        "employee_name": "ETI ROHAETI",
+        "select_employee": "1832 - NAG191832 - ETI ROHAETI"
+    },
+    {
+        "no_pin": "4467",
+        "nik": "NAG224467",
+        "employee_name": "ETI ROHAETI",
+        "select_employee": "4467 - NAG224467 - ETI ROHAETI"
+    },
+    {
+        "no_pin": "4211",
+        "nik": "NAG224211",
+        "employee_name": "ETI SURYATI",
+        "select_employee": "4211 - NAG224211 - ETI SURYATI"
+    },
+    {
+        "no_pin": "4306",
+        "nik": "NAG224306",
+        "employee_name": "EUIS DARIAH",
+        "select_employee": "4306 - NAG224306 - EUIS DARIAH"
+    },
+    {
+        "no_pin": "4316",
+        "nik": "NAG224316",
+        "employee_name": "EUIS DARLIAH",
+        "select_employee": "4316 - NAG224316 - EUIS DARLIAH"
+    },
+    {
+        "no_pin": "4048",
+        "nik": "NAG224048",
+        "employee_name": "EUIS KOMARIAH",
+        "select_employee": "4048 - NAG224048 - EUIS KOMARIAH"
+    },
+    {
+        "no_pin": "2645",
+        "nik": "NAG212645",
+        "employee_name": "EUIS NURHAYANI",
+        "select_employee": "2645 - NAG212645 - EUIS NURHAYANI"
+    },
+    {
+        "no_pin": "2823",
+        "nik": "NAG212823",
+        "employee_name": "EUIS NURJANAH",
+        "select_employee": "2823 - NAG212823 - EUIS NURJANAH"
+    },
+    {
+        "no_pin": "2775",
+        "nik": "NAG212775",
+        "employee_name": "EUIS RITA",
+        "select_employee": "2775 - NAG212775 - EUIS RITA"
+    },
+    {
+        "no_pin": "4432",
+        "nik": "NAG224432",
+        "employee_name": "EUIS SITI KARLINA",
+        "select_employee": "4432 - NAG224432 - EUIS SITI KARLINA"
+    },
+    {
+        "no_pin": "2966",
+        "nik": "NAG212966",
+        "employee_name": "EUIS SOLIHAT",
+        "select_employee": "2966 - NAG212966 - EUIS SOLIHAT"
+    },
+    {
+        "no_pin": "1145",
+        "nik": "NAG161145",
+        "employee_name": "EUIS SUGIARTI",
+        "select_employee": "1145 - NAG161145 - EUIS SUGIARTI"
+    },
+    {
+        "no_pin": "3049",
+        "nik": "NAG213049",
+        "employee_name": "EUIS SUMARNI",
+        "select_employee": "3049 - NAG213049 - EUIS SUMARNI"
+    },
+    {
+        "no_pin": "3485",
+        "nik": "NAG213485",
+        "employee_name": "EUIS SUSI",
+        "select_employee": "3485 - NAG213485 - EUIS SUSI"
+    },
+    {
+        "no_pin": "3428",
+        "nik": "NAG213428",
+        "employee_name": "EUIS YANTI",
+        "select_employee": "3428 - NAG213428 - EUIS YANTI"
+    },
+    {
+        "no_pin": "3722",
+        "nik": "NAG213721",
+        "employee_name": "EUIS YULIANI HAMIMAH",
+        "select_employee": "3722 - NAG213721 - EUIS YULIANI HAMIMAH"
+    },
+    {
+        "no_pin": "2776",
+        "nik": "NAG212776",
+        "employee_name": "EULIS MULYATI",
+        "select_employee": "2776 - NAG212776 - EULIS MULYATI"
+    },
+    {
+        "no_pin": "1336",
+        "nik": "NAG171336",
+        "employee_name": "EULIS YATI",
+        "select_employee": "1336 - NAG171336 - EULIS YATI"
+    },
+    {
+        "no_pin": "4008",
+        "nik": "NAG224008",
+        "employee_name": "EVA ANGGRAENI",
+        "select_employee": "4008 - NAG224008 - EVA ANGGRAENI"
+    },
+    {
+        "no_pin": "2777",
+        "nik": "NAG212777",
+        "employee_name": "EVA HANIPAH",
+        "select_employee": "2777 - NAG212777 - EVA HANIPAH"
+    },
+    {
+        "no_pin": "4184",
+        "nik": "NAG224184",
+        "employee_name": "EVA SAPITRI",
+        "select_employee": "4184 - NAG224184 - EVA SAPITRI"
+    },
+    {
+        "no_pin": "4418",
+        "nik": "NAG224418",
+        "employee_name": "EVA SETIAWATI",
+        "select_employee": "4418 - NAG224418 - EVA SETIAWATI"
+    },
+    {
+        "no_pin": "573",
+        "nik": "NAG180573",
+        "employee_name": "EVA SRI NURHASANAH",
+        "select_employee": "573 - NAG180573 - EVA SRI NURHASANAH"
+    },
+    {
+        "no_pin": "3533",
+        "nik": "NAG213533",
+        "employee_name": "EVA SUSI SETIAWATI",
+        "select_employee": "3533 - NAG213533 - EVA SUSI SETIAWATI"
+    },
+    {
+        "no_pin": "4294",
+        "nik": "NAG224294",
+        "employee_name": "EVI FITRIYANI",
+        "select_employee": "4294 - NAG224294 - EVI FITRIYANI"
+    },
+    {
+        "no_pin": "3993",
+        "nik": "NAG223993",
+        "employee_name": "EVI LESTARI",
+        "select_employee": "3993 - NAG223993 - EVI LESTARI"
+    },
+    {
+        "no_pin": "2563",
+        "nik": "NAG212563",
+        "employee_name": "EVI SRI NURJANAH",
+        "select_employee": "2563 - NAG212563 - EVI SRI NURJANAH"
+    },
+    {
+        "no_pin": "4391",
+        "nik": "NAG224391",
+        "employee_name": "EYA KONSTANTIA",
+        "select_employee": "4391 - NAG224391 - EYA KONSTANTIA"
+    },
+    {
+        "no_pin": "3951",
+        "nik": "NAG223951",
+        "employee_name": "FADILA ALIFTA AS'ARY",
+        "select_employee": "3951 - NAG223951 - FADILA ALIFTA AS'ARY"
+    },
+    {
+        "no_pin": "3429",
+        "nik": "NAG213429",
+        "employee_name": "FADILA FITRIANI",
+        "select_employee": "3429 - NAG213429 - FADILA FITRIANI"
+    },
+    {
+        "no_pin": "3558",
+        "nik": "NAG213558",
+        "employee_name": "FAHRI HERDIAWAN",
+        "select_employee": "3558 - NAG213558 - FAHRI HERDIAWAN"
+    },
+    {
+        "no_pin": "1439",
+        "nik": "NAG191439",
+        "employee_name": "FAHRIL FAUZI HIDAYAT",
+        "select_employee": "1439 - NAG191439 - FAHRIL FAUZI HIDAYAT"
+    },
+    {
+        "no_pin": "2502",
+        "nik": "NAG212502",
+        "employee_name": "FAJAR MUHAMAD FAISAL",
+        "select_employee": "2502 - NAG212502 - FAJAR MUHAMAD FAISAL"
+    },
+    {
+        "no_pin": "51",
+        "nik": "NAG160051",
+        "employee_name": "FAJAR SULISTIONO",
+        "select_employee": "51 - NAG160051 - FAJAR SULISTIONO"
+    },
+    {
+        "no_pin": "4030",
+        "nik": "NAG224030",
+        "employee_name": "FAJRIAH NURUL HUSNA",
+        "select_employee": "4030 - NAG224030 - FAJRIAH NURUL HUSNA"
+    },
+    {
+        "no_pin": "2564",
+        "nik": "NAG212564",
+        "employee_name": "FANI FADILAH",
+        "select_employee": "2564 - NAG212564 - FANI FADILAH"
+    },
+    {
+        "no_pin": "3504",
+        "nik": "NAG213504",
+        "employee_name": "FANI FEBRIANI",
+        "select_employee": "3504 - NAG213504 - FANI FEBRIANI"
+    },
+    {
+        "no_pin": "4104",
+        "nik": "NAG224104",
+        "employee_name": "FANISYA ANANDA PUTRI",
+        "select_employee": "4104 - NAG224104 - FANISYA ANANDA PUTRI"
+    },
+    {
+        "no_pin": "2462",
+        "nik": "NAG212462",
+        "employee_name": "FANNY RAHMAWATI",
+        "select_employee": "2462 - NAG212462 - FANNY RAHMAWATI"
+    },
+    {
+        "no_pin": "2778",
+        "nik": "NAG212778",
+        "employee_name": "FANTI PUSPITA",
+        "select_employee": "2778 - NAG212778 - FANTI PUSPITA"
+    },
+    {
+        "no_pin": "2412",
+        "nik": "NAG212412",
+        "employee_name": "FANY NURRENSA",
+        "select_employee": "2412 - NAG212412 - FANY NURRENSA"
+    },
+    {
+        "no_pin": "2071",
+        "nik": "NAG202071",
+        "employee_name": "FARID HASANUDIN",
+        "select_employee": "2071 - NAG202071 - FARID HASANUDIN"
+    },
+    {
+        "no_pin": "2579",
+        "nik": "NAG212579",
+        "employee_name": "FARIDA RAHMAH",
+        "select_employee": "2579 - NAG212579 - FARIDA RAHMAH"
+    },
+    {
+        "no_pin": "3430",
+        "nik": "NAG213430",
+        "employee_name": "FARLINA",
+        "select_employee": "3430 - NAG213430 - FARLINA"
+    },
+    {
+        "no_pin": "3098",
+        "nik": "NAG213098",
+        "employee_name": "FATIMAH TUNISA",
+        "select_employee": "3098 - NAG213098 - FATIMAH TUNISA"
+    },
+    {
+        "no_pin": "3369",
+        "nik": "NAG213369",
+        "employee_name": "FAUZIAH DEA ANANDA",
+        "select_employee": "3369 - NAG213369 - FAUZIAH DEA ANANDA"
+    },
+    {
+        "no_pin": "4419",
+        "nik": "NAG224419",
+        "employee_name": "FENTI AYU FADHILA",
+        "select_employee": "4419 - NAG224419 - FENTI AYU FADHILA"
+    },
+    {
+        "no_pin": "3626",
+        "nik": "NAG213626",
+        "employee_name": "FENY SALSABILA",
+        "select_employee": "3626 - NAG213626 - FENY SALSABILA"
+    },
+    {
+        "no_pin": "2690",
+        "nik": "NAG212690",
+        "employee_name": "FERI MULYANA",
+        "select_employee": "2690 - NAG212690 - FERI MULYANA"
+    },
+    {
+        "no_pin": "2584",
+        "nik": "NAG212584",
+        "employee_name": "FESTI CIKALIANI PUTRI",
+        "select_employee": "2584 - NAG212584 - FESTI CIKALIANI PUTRI"
+    },
+    {
+        "no_pin": "2347",
+        "nik": "NAG202347",
+        "employee_name": "FIKRI AMARULLAH",
+        "select_employee": "2347 - NAG202347 - FIKRI AMARULLAH"
+    },
+    {
+        "no_pin": "3326",
+        "nik": "NAG213326",
+        "employee_name": "FINI MAUDINA",
+        "select_employee": "3326 - NAG213326 - FINI MAUDINA"
+    },
+    {
+        "no_pin": "3099",
+        "nik": "NAG213099",
+        "employee_name": "FIRMAN ROSIDIN PUTRA",
+        "select_employee": "3099 - NAG213099 - FIRMAN ROSIDIN PUTRA"
+    },
+    {
+        "no_pin": "4134",
+        "nik": "NAG224134",
+        "employee_name": "FITRI ANDRIANTI",
+        "select_employee": "4134 - NAG224134 - FITRI ANDRIANTI"
+    },
+    {
+        "no_pin": "3964",
+        "nik": "NAG223964",
+        "employee_name": "FITRI FAJARIN",
+        "select_employee": "3964 - NAG223964 - FITRI FAJARIN"
+    },
+    {
+        "no_pin": "3407",
+        "nik": "NAG213407",
+        "employee_name": "FITRI HASANAH",
+        "select_employee": "3407 - NAG213407 - FITRI HASANAH"
+    },
+    {
+        "no_pin": "375",
+        "nik": "NAG160375",
+        "employee_name": "FITRI INDRIANI",
+        "select_employee": "375 - NAG160375 - FITRI INDRIANI"
+    },
+    {
+        "no_pin": "4282",
+        "nik": "NAG224282",
+        "employee_name": "FITRI JALI SOLIHAH",
+        "select_employee": "4282 - NAG224282 - FITRI JALI SOLIHAH"
+    },
+    {
+        "no_pin": "2264",
+        "nik": "NAG202264",
+        "employee_name": "FITRI KOMALASARI",
+        "select_employee": "2264 - NAG202264 - FITRI KOMALASARI"
+    },
+    {
+        "no_pin": "1462",
+        "nik": "NAG171462",
+        "employee_name": "FITRI LATIFAH",
+        "select_employee": "1462 - NAG171462 - FITRI LATIFAH"
+    },
+    {
+        "no_pin": "2279",
+        "nik": "NAG202279",
+        "employee_name": "FITRI LUCYANA",
+        "select_employee": "2279 - NAG202279 - FITRI LUCYANA"
+    },
+    {
+        "no_pin": "4546",
+        "nik": "NAG224546",
+        "employee_name": "FITRI NUR PRAMANIK",
+        "select_employee": "4546 - NAG224546 - FITRI NUR PRAMANIK"
+    },
+    {
+        "no_pin": "3717",
+        "nik": "NAG213716",
+        "employee_name": "FITRI SRI RAHAYU",
+        "select_employee": "3717 - NAG213716 - FITRI SRI RAHAYU"
+    },
+    {
+        "no_pin": "3880",
+        "nik": "NAG223880",
+        "employee_name": "FITRIA",
+        "select_employee": "3880 - NAG223880 - FITRIA"
+    },
+    {
+        "no_pin": "3545",
+        "nik": "NAG213545",
+        "employee_name": "FITRIA DELIS APRILIANTI",
+        "select_employee": "3545 - NAG213545 - FITRIA DELIS APRILIANTI"
+    },
+    {
+        "no_pin": "3978",
+        "nik": "NAG223978",
+        "employee_name": "FITRIA NINGSIH",
+        "select_employee": "3978 - NAG223978 - FITRIA NINGSIH"
+    },
+    {
+        "no_pin": "57",
+        "nik": "NAG170057",
+        "employee_name": "FITRIA NINGSIH",
+        "select_employee": "57 - NAG170057 - FITRIA NINGSIH"
+    },
+    {
+        "no_pin": "3830",
+        "nik": "NAG223830",
+        "employee_name": "FITRIA NUGRAHENI",
+        "select_employee": "3830 - NAG223830 - FITRIA NUGRAHENI"
+    },
+    {
+        "no_pin": "54",
+        "nik": "NAG160054",
+        "employee_name": "FITRIA SARI",
+        "select_employee": "54 - NAG160054 - FITRIA SARI"
+    },
+    {
+        "no_pin": "4049",
+        "nik": "NAG224049",
+        "employee_name": "FITRIANI",
+        "select_employee": "4049 - NAG224049 - FITRIANI"
+    },
+    {
+        "no_pin": "3546",
+        "nik": "NAG213546",
+        "employee_name": "FITRIANI",
+        "select_employee": "3546 - NAG213546 - FITRIANI"
+    },
+    {
+        "no_pin": "2504",
+        "nik": "NAG212504",
+        "employee_name": "FITRIANI FAUZIAH YELANDANI",
+        "select_employee": "2504 - NAG212504 - FITRIANI FAUZIAH YELANDANI"
+    },
+    {
+        "no_pin": "2676",
+        "nik": "NAG212676",
+        "employee_name": "FITRIANI SITI HARJAH",
+        "select_employee": "2676 - NAG212676 - FITRIANI SITI HARJAH"
+    },
+    {
+        "no_pin": "1338",
+        "nik": "NAG171338",
+        "employee_name": "FITRIANINGSIH",
+        "select_employee": "1338 - NAG171338 - FITRIANINGSIH"
+    },
+    {
+        "no_pin": "3520",
+        "nik": "NAG213520",
+        "employee_name": "FITRIYANI",
+        "select_employee": "3520 - NAG213520 - FITRIYANI"
+    },
+    {
+        "no_pin": "2605",
+        "nik": "NAG212605",
+        "employee_name": "FITRIYANI",
+        "select_employee": "2605 - NAG212605 - FITRIYANI"
+    },
+    {
+        "no_pin": "3240",
+        "nik": "NAG213240",
+        "employee_name": "FITRIYANI",
+        "select_employee": "3240 - NAG213240 - FITRIYANI"
+    },
+    {
+        "no_pin": "4105",
+        "nik": "NAG224105",
+        "employee_name": "FRISCA SHELBHITA SETIAWAN",
+        "select_employee": "4105 - NAG224105 - FRISCA SHELBHITA SETIAWAN"
+    },
+    {
+        "no_pin": "4031",
+        "nik": "NAG224031",
+        "employee_name": "FRISKILA FEBRIANTI",
+        "select_employee": "4031 - NAG224031 - FRISKILA FEBRIANTI"
+    },
+    {
+        "no_pin": "2879",
+        "nik": "NAG212879",
+        "employee_name": "FUFUT SRIPINA",
+        "select_employee": "2879 - NAG212879 - FUFUT SRIPINA"
+    },
+    {
+        "no_pin": "2712",
+        "nik": "NAG212712",
+        "employee_name": "FUJI",
+        "select_employee": "2712 - NAG212712 - FUJI"
+    },
+    {
+        "no_pin": "3370",
+        "nik": "NAG213370",
+        "employee_name": "FUTRI FEBBY RIANTI",
+        "select_employee": "3370 - NAG213370 - FUTRI FEBBY RIANTI"
+    },
+    {
+        "no_pin": "3831",
+        "nik": "NAG223831",
+        "employee_name": "FUZARISMA M. SETYA",
+        "select_employee": "3831 - NAG223831 - FUZARISMA M. SETYA"
+    },
+    {
+        "no_pin": "4453",
+        "nik": "NAG224453",
+        "employee_name": "GESTI ISNAENI",
+        "select_employee": "4453 - NAG224453 - GESTI ISNAENI"
+    },
+    {
+        "no_pin": "3969",
+        "nik": "NAG223969",
+        "employee_name": "GEUGEU PENTI ARIYANTI",
+        "select_employee": "3969 - NAG223969 - GEUGEU PENTI ARIYANTI"
+    },
+    {
+        "no_pin": "3284",
+        "nik": "NAG213284",
+        "employee_name": "GHINA AYU MUFIDAH",
+        "select_employee": "3284 - NAG213284 - GHINA AYU MUFIDAH"
+    },
+    {
+        "no_pin": "2880",
+        "nik": "NAG212880",
+        "employee_name": "GIMA NOPIANTI",
+        "select_employee": "2880 - NAG212880 - GIMA NOPIANTI"
+    },
+    {
+        "no_pin": "2550",
+        "nik": "NAG212550",
+        "employee_name": "GINA SRI WANGSIH",
+        "select_employee": "2550 - NAG212550 - GINA SRI WANGSIH"
+    },
+    {
+        "no_pin": "2677",
+        "nik": "NAG212677",
+        "employee_name": "GITA AGUSTINA",
+        "select_employee": "2677 - NAG212677 - GITA AGUSTINA"
+    },
+    {
+        "no_pin": "2881",
+        "nik": "NAG212881",
+        "employee_name": "GITA WATI LESTARI",
+        "select_employee": "2881 - NAG212881 - GITA WATI LESTARI"
+    },
+    {
+        "no_pin": "1963",
+        "nik": "NAG201963",
+        "employee_name": "GLORIA ANGELIA KRISMAS",
+        "select_employee": "1963 - NAG201963 - GLORIA ANGELIA KRISMAS"
+    },
+    {
+        "no_pin": "3534",
+        "nik": "NAG213534",
+        "employee_name": "GRACE ADINDA PUTRI SIBARANI",
+        "select_employee": "3534 - NAG213534 - GRACE ADINDA PUTRI SIBARANI"
+    },
+    {
+        "no_pin": "85",
+        "nik": "NAG180085",
+        "employee_name": "GUMGUM GUMBIRA",
+        "select_employee": "85 - NAG180085 - GUMGUM GUMBIRA"
+    },
+    {
+        "no_pin": "3285",
+        "nik": "NAG213285",
+        "employee_name": "GUMILANG CAHYA INTAN NURHAKIKI",
+        "select_employee": "3285 - NAG213285 - GUMILANG CAHYA INTAN NURHAKIKI"
+    },
+    {
+        "no_pin": "4106",
+        "nik": "NAG224106",
+        "employee_name": "HAMIDA",
+        "select_employee": "4106 - NAG224106 - HAMIDA"
+    },
+    {
+        "no_pin": "4037",
+        "nik": "NAG224037",
+        "employee_name": "HANA KRISTINA",
+        "select_employee": "4037 - NAG224037 - HANA KRISTINA"
+    },
+    {
+        "no_pin": "286",
+        "nik": "NAG160286",
+        "employee_name": "HANDIYANI",
+        "select_employee": "286 - NAG160286 - HANDIYANI"
+    },
+    {
+        "no_pin": "3952",
+        "nik": "NAG223952",
+        "employee_name": "HANI INDRIYANI",
+        "select_employee": "3952 - NAG223952 - HANI INDRIYANI"
+    },
+    {
+        "no_pin": "2882",
+        "nik": "NAG212882",
+        "employee_name": "HANI RAHMA SANTINI",
+        "select_employee": "2882 - NAG212882 - HANI RAHMA SANTINI"
+    },
+    {
+        "no_pin": "2978",
+        "nik": "NAG212978",
+        "employee_name": "HANI RINANDA",
+        "select_employee": "2978 - NAG212978 - HANI RINANDA"
+    },
+    {
+        "no_pin": "2812",
+        "nik": "NAG212812",
+        "employee_name": "HANI SURYANI",
+        "select_employee": "2812 - NAG212812 - HANI SURYANI"
+    },
+    {
+        "no_pin": "3559",
+        "nik": "NAG213559",
+        "employee_name": "HANIFAH NOVIANTI",
+        "select_employee": "3559 - NAG213559 - HANIFAH NOVIANTI"
+    },
+    {
+        "no_pin": "4265",
+        "nik": "NAG224265",
+        "employee_name": "HANIFAH NUR FITRI",
+        "select_employee": "4265 - NAG224265 - HANIFAH NUR FITRI"
+    },
+    {
+        "no_pin": "766",
+        "nik": "NAG180766",
+        "employee_name": "HANIFAH NUR SALAMAH",
+        "select_employee": "766 - NAG180766 - HANIFAH NUR SALAMAH"
+    },
+    {
+        "no_pin": "4229",
+        "nik": "NAG224229",
+        "employee_name": "HANIPAH",
+        "select_employee": "4229 - NAG224229 - HANIPAH"
+    },
+    {
+        "no_pin": "2634",
+        "nik": "NAG212634",
+        "employee_name": "HAQI DWITA SARI",
+        "select_employee": "2634 - NAG212634 - HAQI DWITA SARI"
+    },
+    {
+        "no_pin": "2506",
+        "nik": "NAG212506",
+        "employee_name": "HARI GUNAWAN",
+        "select_employee": "2506 - NAG212506 - HARI GUNAWAN"
+    },
+    {
+        "no_pin": "18",
+        "nik": "NAG160018",
+        "employee_name": "HAYUN KURNIA",
+        "select_employee": "18 - NAG160018 - HAYUN KURNIA"
+    },
+    {
+        "no_pin": "4174",
+        "nik": "NAG224174",
+        "employee_name": "HELMA NURIYAH",
+        "select_employee": "4174 - NAG224174 - HELMA NURIYAH"
+    },
+    {
+        "no_pin": "3738",
+        "nik": "NAG223737",
+        "employee_name": "HELSA YULIARTI",
+        "select_employee": "3738 - NAG223737 - HELSA YULIARTI"
+    },
+    {
+        "no_pin": "2999",
+        "nik": "NAG212999",
+        "employee_name": "HENDRAYANTO",
+        "select_employee": "2999 - NAG212999 - HENDRAYANTO"
+    },
+    {
+        "no_pin": "2681",
+        "nik": "NAG212681",
+        "employee_name": "HENI",
+        "select_employee": "2681 - NAG212681 - HENI"
+    },
+    {
+        "no_pin": "2658",
+        "nik": "NAG212658",
+        "employee_name": "HENI HANDAYANI",
+        "select_employee": "2658 - NAG212658 - HENI HANDAYANI"
+    },
+    {
+        "no_pin": "3309",
+        "nik": "NAG213309",
+        "employee_name": "HENI MARYANI",
+        "select_employee": "3309 - NAG213309 - HENI MARYANI"
+    },
+    {
+        "no_pin": "4125",
+        "nik": "NAG224125",
+        "employee_name": "HENI MARYANI",
+        "select_employee": "4125 - NAG224125 - HENI MARYANI"
+    },
+    {
+        "no_pin": "3739",
+        "nik": "NAG223738",
+        "employee_name": "HENI ROHAENI",
+        "select_employee": "3739 - NAG223738 - HENI ROHAENI"
+    },
+    {
+        "no_pin": "4107",
+        "nik": "NAG224107",
+        "employee_name": "HENI ROHAENI",
+        "select_employee": "4107 - NAG224107 - HENI ROHAENI"
+    },
+    {
+        "no_pin": "994",
+        "nik": "NAG160994",
+        "employee_name": "HENI ROHAYATI",
+        "select_employee": "994 - NAG160994 - HENI ROHAYATI"
+    },
+    {
+        "no_pin": "3155",
+        "nik": "NAG213155",
+        "employee_name": "HERA HERDIYANTI",
+        "select_employee": "3155 - NAG213155 - HERA HERDIYANTI"
+    },
+    {
+        "no_pin": "3872",
+        "nik": "NAG223872",
+        "employee_name": "HERLIN",
+        "select_employee": "3872 - NAG223872 - HERLIN"
+    },
+    {
+        "no_pin": "352",
+        "nik": "NAG160352",
+        "employee_name": "HERLINA",
+        "select_employee": "352 - NAG160352 - HERLINA"
+    },
+    {
+        "no_pin": "2678",
+        "nik": "NAG212678",
+        "employee_name": "HERLINA MEILANI",
+        "select_employee": "2678 - NAG212678 - HERLINA MEILANI"
+    },
+    {
+        "no_pin": "2251",
+        "nik": "NAG202251",
+        "employee_name": "HERMAN JAELANI",
+        "select_employee": "2251 - NAG202251 - HERMAN JAELANI"
+    },
+    {
+        "no_pin": "53",
+        "nik": "NAG160053",
+        "employee_name": "HERMAN SETIAWAN",
+        "select_employee": "53 - NAG160053 - HERMAN SETIAWAN"
+    },
+    {
+        "no_pin": "3792",
+        "nik": "NAG223792",
+        "employee_name": "HERNI NATALIAH",
+        "select_employee": "3792 - NAG223792 - HERNI NATALIAH"
+    },
+    {
+        "no_pin": "1419",
+        "nik": "NAG181419",
+        "employee_name": "HERNI WISMAJAYA",
+        "select_employee": "1419 - NAG181419 - HERNI WISMAJAYA"
+    },
+    {
+        "no_pin": "4284",
+        "nik": "NAG224284",
+        "employee_name": "HESTI",
+        "select_employee": "4284 - NAG224284 - HESTI"
+    },
+    {
+        "no_pin": "3372",
+        "nik": "NAG213372",
+        "employee_name": "HESTI SITI MARYAM",
+        "select_employee": "3372 - NAG213372 - HESTI SITI MARYAM"
+    },
+    {
+        "no_pin": "3873",
+        "nik": "NAG223873",
+        "employee_name": "HESTI SRI PURWANTI",
+        "select_employee": "3873 - NAG223873 - HESTI SRI PURWANTI"
+    },
+    {
+        "no_pin": "3409",
+        "nik": "NAG213409",
+        "employee_name": "HESTI SUSANTI",
+        "select_employee": "3409 - NAG213409 - HESTI SUSANTI"
+    },
+    {
+        "no_pin": "3604",
+        "nik": "NAG213604",
+        "employee_name": "HETI ROHAETI",
+        "select_employee": "3604 - NAG213604 - HETI ROHAETI"
+    },
+    {
+        "no_pin": "2914",
+        "nik": "NAG212914",
+        "employee_name": "HILDA ANGGRAENI",
+        "select_employee": "2914 - NAG212914 - HILDA ANGGRAENI"
+    },
+    {
+        "no_pin": "3373",
+        "nik": "NAG213373",
+        "employee_name": "HILDA SESKIA",
+        "select_employee": "3373 - NAG213373 - HILDA SESKIA"
+    },
+    {
+        "no_pin": "3979",
+        "nik": "NAG223979",
+        "employee_name": "HOPIPAH NURUL HIKMAH",
+        "select_employee": "3979 - NAG223979 - HOPIPAH NURUL HIKMAH"
+    },
+    {
+        "no_pin": "1932",
+        "nik": "NAG201932",
+        "employee_name": "IBRAHIM TRI STATISTIANTO",
+        "select_employee": "1932 - NAG201932 - IBRAHIM TRI STATISTIANTO"
+    },
+    {
+        "no_pin": "4032",
+        "nik": "NAG224032",
+        "employee_name": "ICAN FIRNALISIS",
+        "select_employee": "4032 - NAG224032 - ICAN FIRNALISIS"
+    },
+    {
+        "no_pin": "3965",
+        "nik": "NAG223965",
+        "employee_name": "ICEU SANTINI",
+        "select_employee": "3965 - NAG223965 - ICEU SANTINI"
+    },
+    {
+        "no_pin": "3186",
+        "nik": "NAG213186",
+        "employee_name": "ICEU YULIYANTI",
+        "select_employee": "3186 - NAG213186 - ICEU YULIYANTI"
+    },
+    {
+        "no_pin": "3848",
+        "nik": "NAG223848",
+        "employee_name": "IDA NURAENI",
+        "select_employee": "3848 - NAG223848 - IDA NURAENI"
+    },
+    {
+        "no_pin": "3050",
+        "nik": "NAG213050",
+        "employee_name": "IDA ROSIDA",
+        "select_employee": "3050 - NAG213050 - IDA ROSIDA"
+    },
+    {
+        "no_pin": "4254",
+        "nik": "NAG224254",
+        "employee_name": "IDAH ROSI",
+        "select_employee": "4254 - NAG224254 - IDAH ROSI"
+    },
+    {
+        "no_pin": "2425",
+        "nik": "NAG212425",
+        "employee_name": "II PATIMAH",
+        "select_employee": "2425 - NAG212425 - II PATIMAH"
+    },
+    {
+        "no_pin": "4360",
+        "nik": "NAG224360",
+        "employee_name": "IID ABDUL HAFID",
+        "select_employee": "4360 - NAG224360 - IID ABDUL HAFID"
+    },
+    {
+        "no_pin": "4361",
+        "nik": "NAG224361",
+        "employee_name": "IIM MARLINA",
+        "select_employee": "4361 - NAG224361 - IIM MARLINA"
+    },
+    {
+        "no_pin": "3222",
+        "nik": "NAG213222",
+        "employee_name": "IIM RAHMAWATI",
+        "select_employee": "3222 - NAG213222 - IIM RAHMAWATI"
+    },
+    {
+        "no_pin": "2831",
+        "nik": "NAG212831",
+        "employee_name": "IIN GUSTINI",
+        "select_employee": "2831 - NAG212831 - IIN GUSTINI"
+    },
+    {
+        "no_pin": "4146",
+        "nik": "NAG224146",
+        "employee_name": "IIN SOLIHATIN",
+        "select_employee": "4146 - NAG224146 - IIN SOLIHATIN"
+    },
+    {
+        "no_pin": "3223",
+        "nik": "NAG213223",
+        "employee_name": "IIN SUTIA MARINA",
+        "select_employee": "3223 - NAG213223 - IIN SUTIA MARINA"
+    },
+    {
+        "no_pin": "4420",
+        "nik": "NAG224420",
+        "employee_name": "IIP KANIA",
+        "select_employee": "4420 - NAG224420 - IIP KANIA"
+    },
+    {
+        "no_pin": "3452",
+        "nik": "NAG213452",
+        "employee_name": "IIP LAILA IVANKA",
+        "select_employee": "3452 - NAG213452 - IIP LAILA IVANKA"
+    },
+    {
+        "no_pin": "377",
+        "nik": "NAG160377",
+        "employee_name": "IIP SARIPAH",
+        "select_employee": "377 - NAG160377 - IIP SARIPAH"
+    },
+    {
+        "no_pin": "3051",
+        "nik": "NAG213051",
+        "employee_name": "IIS AISAH",
+        "select_employee": "3051 - NAG213051 - IIS AISAH"
+    },
+    {
+        "no_pin": "3849",
+        "nik": "NAG223849",
+        "employee_name": "IIS ANISAH",
+        "select_employee": "3849 - NAG223849 - IIS ANISAH"
+    },
+    {
+        "no_pin": "1516",
+        "nik": "NAG181516",
+        "employee_name": "IIS ANITA",
+        "select_employee": "1516 - NAG181516 - IIS ANITA"
+    },
+    {
+        "no_pin": "818",
+        "nik": "NAG170818",
+        "employee_name": "IIS DANIAR",
+        "select_employee": "818 - NAG170818 - IIS DANIAR"
+    },
+    {
+        "no_pin": "3453",
+        "nik": "NAG213453",
+        "employee_name": "IIS DIYANTI",
+        "select_employee": "3453 - NAG213453 - IIS DIYANTI"
+    },
+    {
+        "no_pin": "3187",
+        "nik": "NAG213187",
+        "employee_name": "IIS HERLINA",
+        "select_employee": "3187 - NAG213187 - IIS HERLINA"
+    },
+    {
+        "no_pin": "4392",
+        "nik": "NAG224392",
+        "employee_name": "IIS IKA SUMIATI",
+        "select_employee": "4392 - NAG224392 - IIS IKA SUMIATI"
+    },
+    {
+        "no_pin": "4421",
+        "nik": "NAG224421",
+        "employee_name": "IIS ISMAWATI",
+        "select_employee": "4421 - NAG224421 - IIS ISMAWATI"
+    },
+    {
+        "no_pin": "367",
+        "nik": "NAG190367",
+        "employee_name": "IIS ISMAYA",
+        "select_employee": "367 - NAG190367 - IIS ISMAYA"
+    },
+    {
+        "no_pin": "3913",
+        "nik": "NAG223913",
+        "employee_name": "IIS JUBAEDAH",
+        "select_employee": "3913 - NAG223913 - IIS JUBAEDAH"
+    },
+    {
+        "no_pin": "2713",
+        "nik": "NAG212713",
+        "employee_name": "IIS KOMARIAH",
+        "select_employee": "2713 - NAG212713 - IIS KOMARIAH"
+    },
+    {
+        "no_pin": "4510",
+        "nik": "NAG224510",
+        "employee_name": "IIS LISTIANI",
+        "select_employee": "4510 - NAG224510 - IIS LISTIANI"
+    },
+    {
+        "no_pin": "2443",
+        "nik": "NAG212443",
+        "employee_name": "IIS NURJANAH",
+        "select_employee": "2443 - NAG212443 - IIS NURJANAH"
+    },
+    {
+        "no_pin": "2845",
+        "nik": "NAG212845",
+        "employee_name": "IIS ROYANI",
+        "select_employee": "2845 - NAG212845 - IIS ROYANI"
+    },
+    {
+        "no_pin": "3914",
+        "nik": "NAG223914",
+        "employee_name": "IIS SITI KOSARAH",
+        "select_employee": "3914 - NAG223914 - IIS SITI KOSARAH"
+    },
+    {
+        "no_pin": "1976",
+        "nik": "NAG201976",
+        "employee_name": "IIS SITI KULSUM MUJAENAH",
+        "select_employee": "1976 - NAG201976 - IIS SITI KULSUM MUJAENAH"
+    },
+    {
+        "no_pin": "2779",
+        "nik": "NAG212779",
+        "employee_name": "IIS SITI RODIAH",
+        "select_employee": "2779 - NAG212779 - IIS SITI RODIAH"
+    },
+    {
+        "no_pin": "2758",
+        "nik": "NAG212758",
+        "employee_name": "IIS SITI TARMIDAH",
+        "select_employee": "2758 - NAG212758 - IIS SITI TARMIDAH"
+    },
+    {
+        "no_pin": "2646",
+        "nik": "NAG212646",
+        "employee_name": "IIS SUMIATI",
+        "select_employee": "2646 - NAG212646 - IIS SUMIATI"
+    },
+    {
+        "no_pin": "4540",
+        "nik": "NAG224540",
+        "employee_name": "IIS SUMIATI",
+        "select_employee": "4540 - NAG224540 - IIS SUMIATI"
+    },
+    {
+        "no_pin": "4194",
+        "nik": "NAG224194",
+        "employee_name": "IIS SUMIATI",
+        "select_employee": "4194 - NAG224194 - IIS SUMIATI"
+    },
+    {
+        "no_pin": "2203",
+        "nik": "NAG202203",
+        "employee_name": "IIS SUSANTI",
+        "select_employee": "2203 - NAG202203 - IIS SUSANTI"
+    },
+    {
+        "no_pin": "3241",
+        "nik": "NAG213241",
+        "employee_name": "IIT SITI NURKAIDAH",
+        "select_employee": "3241 - NAG213241 - IIT SITI NURKAIDAH"
+    },
+    {
+        "no_pin": "4532",
+        "nik": "NAG224532",
+        "employee_name": "IJAL YUSUPANI",
+        "select_employee": "4532 - NAG224532 - IJAL YUSUPANI"
+    },
+    {
+        "no_pin": "3703",
+        "nik": "NAG213702",
+        "employee_name": "IKA",
+        "select_employee": "3703 - NAG213702 - IKA"
+    },
+    {
+        "no_pin": "2573",
+        "nik": "NAG212573",
+        "employee_name": "IKA KARTIKA",
+        "select_employee": "2573 - NAG212573 - IKA KARTIKA"
+    },
+    {
+        "no_pin": "3895",
+        "nik": "NAG223895",
+        "employee_name": "IKA KARTIKA",
+        "select_employee": "3895 - NAG223895 - IKA KARTIKA"
+    },
+    {
+        "no_pin": "4503",
+        "nik": "NAG224503",
+        "employee_name": "IKA NURAENI",
+        "select_employee": "4503 - NAG224503 - IKA NURAENI"
+    },
+    {
+        "no_pin": "2846",
+        "nik": "NAG212846",
+        "employee_name": "IKA ROSTIKA",
+        "select_employee": "2846 - NAG212846 - IKA ROSTIKA"
+    },
+    {
+        "no_pin": "2524",
+        "nik": "NAG212524",
+        "employee_name": "IKA SAKENA",
+        "select_employee": "2524 - NAG212524 - IKA SAKENA"
+    },
+    {
+        "no_pin": "4038",
+        "nik": "NAG224038",
+        "employee_name": "IKA SANDRALIKA",
+        "select_employee": "4038 - NAG224038 - IKA SANDRALIKA"
+    },
+    {
+        "no_pin": "4454",
+        "nik": "NAG224454",
+        "employee_name": "IKA SANTIKA",
+        "select_employee": "4454 - NAG224454 - IKA SANTIKA"
+    },
+    {
+        "no_pin": "2413",
+        "nik": "NAG212413",
+        "employee_name": "IKA TURIKAH",
+        "select_employee": "2413 - NAG212413 - IKA TURIKAH"
+    },
+    {
+        "no_pin": "393",
+        "nik": "NAG160393",
+        "employee_name": "IKAH SULASTRI",
+        "select_employee": "393 - NAG160393 - IKAH SULASTRI"
+    },
+    {
+        "no_pin": "3275",
+        "nik": "NAG213275",
+        "employee_name": "IKE SUGIARTI RAHAYU",
+        "select_employee": "3275 - NAG213275 - IKE SUGIARTI RAHAYU"
+    },
+    {
+        "no_pin": "4325",
+        "nik": "NAG224325",
+        "employee_name": "IKEU NURJANAH",
+        "select_employee": "4325 - NAG224325 - IKEU NURJANAH"
+    },
+    {
+        "no_pin": "3560",
+        "nik": "NAG213560",
+        "employee_name": "IKEU ROLISTA",
+        "select_employee": "3560 - NAG213560 - IKEU ROLISTA"
+    },
+    {
+        "no_pin": "4082",
+        "nik": "NAG224082",
+        "employee_name": "ILA",
+        "select_employee": "4082 - NAG224082 - ILA"
+    },
+    {
+        "no_pin": "4061",
+        "nik": "NAG224061",
+        "employee_name": "ILHAM ARYANTO",
+        "select_employee": "4061 - NAG224061 - ILHAM ARYANTO"
+    },
+    {
+        "no_pin": "3653",
+        "nik": "NAG213653",
+        "employee_name": "ILHAM KURNIAWAN",
+        "select_employee": "3653 - NAG213653 - ILHAM KURNIAWAN"
+    },
+    {
+        "no_pin": "1047",
+        "nik": "NAG181047",
+        "employee_name": "ILHAM NUGRAHA",
+        "select_employee": "1047 - NAG181047 - ILHAM NUGRAHA"
+    },
+    {
+        "no_pin": "4393",
+        "nik": "NAG224393",
+        "employee_name": "ILIS ROHAYATI",
+        "select_employee": "4393 - NAG224393 - ILIS ROHAYATI"
+    },
+    {
+        "no_pin": "2863",
+        "nik": "NAG212863",
+        "employee_name": "IMA RAHMAWATI",
+        "select_employee": "2863 - NAG212863 - IMA RAHMAWATI"
+    },
+    {
+        "no_pin": "2659",
+        "nik": "NAG212659",
+        "employee_name": "IMA SAMROTUL FUADAH",
+        "select_employee": "2659 - NAG212659 - IMA SAMROTUL FUADAH"
+    },
+    {
+        "no_pin": "1636",
+        "nik": "NAG191636",
+        "employee_name": "IMAN NURAHMAN",
+        "select_employee": "1636 - NAG191636 - IMAN NURAHMAN"
+    },
+    {
+        "no_pin": "2323",
+        "nik": "NAG202323",
+        "employee_name": "IMAN SOMANTRI",
+        "select_employee": "2323 - NAG202323 - IMAN SOMANTRI"
+    },
+    {
+        "no_pin": "3327",
+        "nik": "NAG213327",
+        "employee_name": "IMAR",
+        "select_employee": "3327 - NAG213327 - IMAR"
+    },
+    {
+        "no_pin": "2620",
+        "nik": "NAG212620",
+        "employee_name": "IMAS",
+        "select_employee": "2620 - NAG212620 - IMAS"
+    },
+    {
+        "no_pin": "4495",
+        "nik": "NAG224495",
+        "employee_name": "IMAS",
+        "select_employee": "4495 - NAG224495 - IMAS"
+    },
+    {
+        "no_pin": "4441",
+        "nik": "NAG224441",
+        "employee_name": "IMAS ADAH",
+        "select_employee": "4441 - NAG224441 - IMAS ADAH"
+    },
+    {
+        "no_pin": "3242",
+        "nik": "NAG213242",
+        "employee_name": "IMAS AMALIA",
+        "select_employee": "3242 - NAG213242 - IMAS AMALIA"
+    },
+    {
+        "no_pin": "3374",
+        "nik": "NAG213374",
+        "employee_name": "IMAS DEVI NOVI YANI",
+        "select_employee": "3374 - NAG213374 - IMAS DEVI NOVI YANI"
+    },
+    {
+        "no_pin": "2660",
+        "nik": "NAG212660",
+        "employee_name": "IMAS DIANTINI",
+        "select_employee": "2660 - NAG212660 - IMAS DIANTINI"
+    },
+    {
+        "no_pin": "1420",
+        "nik": "NAG181420",
+        "employee_name": "IMAS ENTING NURAINI",
+        "select_employee": "1420 - NAG181420 - IMAS ENTING NURAINI"
+    },
+    {
+        "no_pin": "4326",
+        "nik": "NAG224326",
+        "employee_name": "IMAS HOPIPAH",
+        "select_employee": "4326 - NAG224326 - IMAS HOPIPAH"
+    },
+    {
+        "no_pin": "3939",
+        "nik": "NAG223939",
+        "employee_name": "IMAS IDAH",
+        "select_employee": "3939 - NAG223939 - IMAS IDAH"
+    },
+    {
+        "no_pin": "3539",
+        "nik": "NAG213539",
+        "employee_name": "IMAS KARLIAH",
+        "select_employee": "3539 - NAG213539 - IMAS KARLIAH"
+    },
+    {
+        "no_pin": "2507",
+        "nik": "NAG212507",
+        "employee_name": "IMAS KARMINI",
+        "select_employee": "2507 - NAG212507 - IMAS KARMINI"
+    },
+    {
+        "no_pin": "3157",
+        "nik": "NAG213157",
+        "employee_name": "IMAS KURNIASIH",
+        "select_employee": "3157 - NAG213157 - IMAS KURNIASIH"
+    },
+    {
+        "no_pin": "3486",
+        "nik": "NAG213486",
+        "employee_name": "IMAS MASRIAH",
+        "select_employee": "3486 - NAG213486 - IMAS MASRIAH"
+    },
+    {
+        "no_pin": "3695",
+        "nik": "NAG213694",
+        "employee_name": "IMAS MINTARSIH",
+        "select_employee": "3695 - NAG213694 - IMAS MINTARSIH"
+    },
+    {
+        "no_pin": "2824",
+        "nik": "NAG212824",
+        "employee_name": "IMAS NENI",
+        "select_employee": "2824 - NAG212824 - IMAS NENI"
+    },
+    {
+        "no_pin": "3000",
+        "nik": "NAG213000",
+        "employee_name": "IMAS NIAH",
+        "select_employee": "3000 - NAG213000 - IMAS NIAH"
+    },
+    {
+        "no_pin": "1342",
+        "nik": "NAG171342",
+        "employee_name": "IMAS ROHIMAS",
+        "select_employee": "1342 - NAG171342 - IMAS ROHIMAS"
+    },
+    {
+        "no_pin": "368",
+        "nik": "NAG170368",
+        "employee_name": "IMAS SARTIKA",
+        "select_employee": "368 - NAG170368 - IMAS SARTIKA"
+    },
+    {
+        "no_pin": "2740",
+        "nik": "NAG212740",
+        "employee_name": "IMAS SITI AISYAH",
+        "select_employee": "2740 - NAG212740 - IMAS SITI AISYAH"
+    },
+    {
+        "no_pin": "2585",
+        "nik": "NAG212585",
+        "employee_name": "IMAS SITI MAESAROH",
+        "select_employee": "2585 - NAG212585 - IMAS SITI MAESAROH"
+    },
+    {
+        "no_pin": "2551",
+        "nik": "NAG212551",
+        "employee_name": "IMAS SITI ROHMAH",
+        "select_employee": "2551 - NAG212551 - IMAS SITI ROHMAH"
+    },
+    {
+        "no_pin": "483",
+        "nik": "NAG170483",
+        "employee_name": "IMAS WIDANINGSIH",
+        "select_employee": "483 - NAG170483 - IMAS WIDANINGSIH"
+    },
+    {
+        "no_pin": "2390",
+        "nik": "NAG212390",
+        "employee_name": "INA ANGGRAENI",
+        "select_employee": "2390 - NAG212390 - INA ANGGRAENI"
+    },
+    {
+        "no_pin": "391",
+        "nik": "NAG160391",
+        "employee_name": "INA MARLINA",
+        "select_employee": "391 - NAG160391 - INA MARLINA"
+    },
+    {
+        "no_pin": "3521",
+        "nik": "NAG213521",
+        "employee_name": "INA MARLINA",
+        "select_employee": "3521 - NAG213521 - INA MARLINA"
+    },
+    {
+        "no_pin": "2376",
+        "nik": "NAG202376",
+        "employee_name": "INA MARLINA",
+        "select_employee": "2376 - NAG202376 - INA MARLINA"
+    },
+    {
+        "no_pin": "4039",
+        "nik": "NAG224039",
+        "employee_name": "INA NURAENI",
+        "select_employee": "4039 - NAG224039 - INA NURAENI"
+    },
+    {
+        "no_pin": "2171",
+        "nik": "NAG202171",
+        "employee_name": "INDRA LESMANA",
+        "select_employee": "2171 - NAG202171 - INDRA LESMANA"
+    },
+    {
+        "no_pin": "4108",
+        "nik": "NAG224108",
+        "employee_name": "INDRI LASMANAWATI",
+        "select_employee": "4108 - NAG224108 - INDRI LASMANAWATI"
+    },
+    {
+        "no_pin": "3432",
+        "nik": "NAG213432",
+        "employee_name": "INDRI SITI LATIFAH",
+        "select_employee": "3432 - NAG213432 - INDRI SITI LATIFAH"
+    },
+    {
+        "no_pin": "3654",
+        "nik": "NAG213654",
+        "employee_name": "INDRI YULIANI",
+        "select_employee": "3654 - NAG213654 - INDRI YULIANI"
+    },
+    {
+        "no_pin": "4295",
+        "nik": "NAG224295",
+        "employee_name": "INDRIANI",
+        "select_employee": "4295 - NAG224295 - INDRIANI"
+    },
+    {
+        "no_pin": "3689",
+        "nik": "NAG213689",
+        "employee_name": "INDRIANI SETIAWAN PUTRI",
+        "select_employee": "3689 - NAG213689 - INDRIANI SETIAWAN PUTRI"
+    },
+    {
+        "no_pin": "2980",
+        "nik": "NAG212980",
+        "employee_name": "INDRIYANI",
+        "select_employee": "2980 - NAG212980 - INDRIYANI"
+    },
+    {
+        "no_pin": "2402",
+        "nik": "NAG212402",
+        "employee_name": "INEU HANIPAH",
+        "select_employee": "2402 - NAG212402 - INEU HANIPAH"
+    },
+    {
+        "no_pin": "2578",
+        "nik": "NAG212578",
+        "employee_name": "INEU NURANI",
+        "select_employee": "2578 - NAG212578 - INEU NURANI"
+    },
+    {
+        "no_pin": "4394",
+        "nik": "NAG224394",
+        "employee_name": "INTAN",
+        "select_employee": "4394 - NAG224394 - INTAN"
+    },
+    {
+        "no_pin": "4327",
+        "nik": "NAG224327",
+        "employee_name": "INTAN FITRI ANDINI",
+        "select_employee": "4327 - NAG224327 - INTAN FITRI ANDINI"
+    },
+    {
+        "no_pin": "4455",
+        "nik": "NAG224455",
+        "employee_name": "INTAN FITRI NURHAPITA",
+        "select_employee": "4455 - NAG224455 - INTAN FITRI NURHAPITA"
+    },
+    {
+        "no_pin": "2172",
+        "nik": "NAG202172",
+        "employee_name": "INTAN MARLIANI",
+        "select_employee": "2172 - NAG202172 - INTAN MARLIANI"
+    },
+    {
+        "no_pin": "2916",
+        "nik": "NAG212916",
+        "employee_name": "INTAN NURHELISTA",
+        "select_employee": "2916 - NAG212916 - INTAN NURHELISTA"
+    },
+    {
+        "no_pin": "2291",
+        "nik": "NAG202291",
+        "employee_name": "INTAN NURJANAH",
+        "select_employee": "2291 - NAG202291 - INTAN NURJANAH"
+    },
+    {
+        "no_pin": "2759",
+        "nik": "NAG212759",
+        "employee_name": "INTAN NURJANAH",
+        "select_employee": "2759 - NAG212759 - INTAN NURJANAH"
+    },
+    {
+        "no_pin": "3224",
+        "nik": "NAG213224",
+        "employee_name": "INTAN NURLAELA",
+        "select_employee": "3224 - NAG213224 - INTAN NURLAELA"
+    },
+    {
+        "no_pin": "1113",
+        "nik": "NAG181113",
+        "employee_name": "INTAN PERMATASARI",
+        "select_employee": "1113 - NAG181113 - INTAN PERMATASARI"
+    },
+    {
+        "no_pin": "3487",
+        "nik": "NAG213487",
+        "employee_name": "INTAN PURWANTI",
+        "select_employee": "3487 - NAG213487 - INTAN PURWANTI"
+    },
+    {
+        "no_pin": "1835",
+        "nik": "NAG191835",
+        "employee_name": "INTAN PUSPITASARI",
+        "select_employee": "1835 - NAG191835 - INTAN PUSPITASARI"
+    },
+    {
+        "no_pin": "3822",
+        "nik": "NAG223822",
+        "employee_name": "INTAN RISTI",
+        "select_employee": "3822 - NAG223822 - INTAN RISTI"
+    },
+    {
+        "no_pin": "3329",
+        "nik": "NAG213329",
+        "employee_name": "INTAN SOENJAYA",
+        "select_employee": "3329 - NAG213329 - INTAN SOENJAYA"
+    },
+    {
+        "no_pin": "2832",
+        "nik": "NAG212832",
+        "employee_name": "IPAH SARIPAH",
+        "select_employee": "2832 - NAG212832 - IPAH SARIPAH"
+    },
+    {
+        "no_pin": "3310",
+        "nik": "NAG213310",
+        "employee_name": "IPAH SOPIAH",
+        "select_employee": "3310 - NAG213310 - IPAH SOPIAH"
+    },
+    {
+        "no_pin": "2000",
+        "nik": "NAG202000",
+        "employee_name": "IPAN SAIDINA ALI",
+        "select_employee": "2000 - NAG202000 - IPAN SAIDINA ALI"
+    },
+    {
+        "no_pin": "1965",
+        "nik": "NAG201965",
+        "employee_name": "IPUL SAEPULLOH",
+        "select_employee": "1965 - NAG201965 - IPUL SAEPULLOH"
+    },
+    {
+        "no_pin": "3575",
+        "nik": "NAG213575",
+        "employee_name": "IQNA HABIBAH MA'WA",
+        "select_employee": "3575 - NAG213575 - IQNA HABIBAH MA'WA"
+    },
+    {
+        "no_pin": "3444",
+        "nik": "NAG213444",
+        "employee_name": "IRA GUSTIAWATI",
+        "select_employee": "3444 - NAG213444 - IRA GUSTIAWATI"
+    },
+    {
+        "no_pin": "39",
+        "nik": "NAG160039",
+        "employee_name": "IRA ROSTIANA",
+        "select_employee": "39 - NAG160039 - IRA ROSTIANA"
+    },
+    {
+        "no_pin": "4051",
+        "nik": "NAG224051",
+        "employee_name": "IRA SRI NURJANAH",
+        "select_employee": "4051 - NAG224051 - IRA SRI NURJANAH"
+    },
+    {
+        "no_pin": "2741",
+        "nik": "NAG212741",
+        "employee_name": "IRMA HERMAWATI",
+        "select_employee": "2741 - NAG212741 - IRMA HERMAWATI"
+    },
+    {
+        "no_pin": "3980",
+        "nik": "NAG223980",
+        "employee_name": "IRMA ISMAYANTI",
+        "select_employee": "3980 - NAG223980 - IRMA ISMAYANTI"
+    },
+    {
+        "no_pin": "2833",
+        "nik": "NAG212833",
+        "employee_name": "IRMA NURAENI",
+        "select_employee": "2833 - NAG212833 - IRMA NURAENI"
+    },
+    {
+        "no_pin": "4307",
+        "nik": "NAG224307",
+        "employee_name": "IRMA NURLIANA",
+        "select_employee": "4307 - NAG224307 - IRMA NURLIANA"
+    },
+    {
+        "no_pin": "3741",
+        "nik": "NAG223740",
+        "employee_name": "IRMA NURLINA",
+        "select_employee": "3741 - NAG223740 - IRMA NURLINA"
+    },
+    {
+        "no_pin": "4362",
+        "nik": "NAG224362",
+        "employee_name": "IRMA RAHMAWATI",
+        "select_employee": "4362 - NAG224362 - IRMA RAHMAWATI"
+    },
+    {
+        "no_pin": "4018",
+        "nik": "NAG224018",
+        "employee_name": "IRMA ROHMAH",
+        "select_employee": "4018 - NAG224018 - IRMA ROHMAH"
+    },
+    {
+        "no_pin": "3945",
+        "nik": "NAG223945",
+        "employee_name": "IRMA RUSMAYANTI",
+        "select_employee": "3945 - NAG223945 - IRMA RUSMAYANTI"
+    },
+    {
+        "no_pin": "3954",
+        "nik": "NAG223954",
+        "employee_name": "IRMA YASARI",
+        "select_employee": "3954 - NAG223954 - IRMA YASARI"
+    },
+    {
+        "no_pin": "3411",
+        "nik": "NAG213411",
+        "employee_name": "IRNA KARLINA",
+        "select_employee": "3411 - NAG213411 - IRNA KARLINA"
+    },
+    {
+        "no_pin": "3286",
+        "nik": "NAG213286",
+        "employee_name": "IRNI HILMIYANTI",
+        "select_employee": "3286 - NAG213286 - IRNI HILMIYANTI"
+    },
+    {
+        "no_pin": "987",
+        "nik": "NAG160987",
+        "employee_name": "IRVAN SETIAWAN",
+        "select_employee": "987 - NAG160987 - IRVAN SETIAWAN"
+    },
+    {
+        "no_pin": "2661",
+        "nik": "NAG212661",
+        "employee_name": "ISAH ANISAH",
+        "select_employee": "2661 - NAG212661 - ISAH ANISAH"
+    },
+    {
+        "no_pin": "3915",
+        "nik": "NAG223915",
+        "employee_name": "ISAK MAULANI",
+        "select_employee": "3915 - NAG223915 - ISAK MAULANI"
+    },
+    {
+        "no_pin": "2515",
+        "nik": "NAG212515",
+        "employee_name": "ISLAH REINA",
+        "select_employee": "2515 - NAG212515 - ISLAH REINA"
+    },
+    {
+        "no_pin": "3970",
+        "nik": "NAG223970",
+        "employee_name": "ISMA ISTIQOMAH",
+        "select_employee": "3970 - NAG223970 - ISMA ISTIQOMAH"
+    },
+    {
+        "no_pin": "2780",
+        "nik": "NAG212780",
+        "employee_name": "ISMAH LAELANI",
+        "select_employee": "2780 - NAG212780 - ISMAH LAELANI"
+    },
+    {
+        "no_pin": "4040",
+        "nik": "NAG224040",
+        "employee_name": "ISMAILAH",
+        "select_employee": "4040 - NAG224040 - ISMAILAH"
+    },
+    {
+        "no_pin": "4363",
+        "nik": "NAG224363",
+        "employee_name": "ISMARANI PUTRI WANGGE",
+        "select_employee": "4363 - NAG224363 - ISMARANI PUTRI WANGGE"
+    },
+    {
+        "no_pin": "3259",
+        "nik": "NAG213259",
+        "employee_name": "ITA NURFITRI",
+        "select_employee": "3259 - NAG213259 - ITA NURFITRI"
+    },
+    {
+        "no_pin": "3454",
+        "nik": "NAG213454",
+        "employee_name": "ITA PUSPITA",
+        "select_employee": "3454 - NAG213454 - ITA PUSPITA"
+    },
+    {
+        "no_pin": "19",
+        "nik": "NAG160019",
+        "employee_name": "ITA ROSITA",
+        "select_employee": "19 - NAG160019 - ITA ROSITA"
+    },
+    {
+        "no_pin": "4122",
+        "nik": "NAG224122",
+        "employee_name": "IWAN KURNIAWAN",
+        "select_employee": "4122 - NAG224122 - IWAN KURNIAWAN"
+    },
+    {
+        "no_pin": "1547",
+        "nik": "NAG171547",
+        "employee_name": "IYAN WIDIA",
+        "select_employee": "1547 - NAG171547 - IYAN WIDIA"
+    },
+    {
+        "no_pin": "1836",
+        "nik": "NAG191836",
+        "employee_name": "IYAY",
+        "select_employee": "1836 - NAG191836 - IYAY"
+    },
+    {
+        "no_pin": "1769",
+        "nik": "NAG161769",
+        "employee_name": "JAENUDIN",
+        "select_employee": "1769 - NAG161769 - JAENUDIN"
+    },
+    {
+        "no_pin": "2001",
+        "nik": "NAG202001",
+        "employee_name": "JAJA ABDUL KOHAR",
+        "select_employee": "2001 - NAG202001 - JAJA ABDUL KOHAR"
+    },
+    {
+        "no_pin": "2499",
+        "nik": "NAG212499",
+        "employee_name": "JAJANG AHMUDIN",
+        "select_employee": "2499 - NAG212499 - JAJANG AHMUDIN"
+    },
+    {
+        "no_pin": "2153",
+        "nik": "NAG202153",
+        "employee_name": "JAJANG IDAN",
+        "select_employee": "2153 - NAG202153 - JAJANG IDAN"
+    },
+    {
+        "no_pin": "2340",
+        "nik": "NAG202340",
+        "employee_name": "JAJANG SOPANDI",
+        "select_employee": "2340 - NAG202340 - JAJANG SOPANDI"
+    },
+    {
+        "no_pin": "1137",
+        "nik": "NAG161137",
+        "employee_name": "JALAL ZAELANI",
+        "select_employee": "1137 - NAG161137 - JALAL ZAELANI"
+    },
+    {
+        "no_pin": "2683",
+        "nik": "NAG212683",
+        "employee_name": "JANAH LISNAWATI",
+        "select_employee": "2683 - NAG212683 - JANAH LISNAWATI"
+    },
+    {
+        "no_pin": "1871",
+        "nik": "NAG191871",
+        "employee_name": "JEJEH WIDYAWATI",
+        "select_employee": "1871 - NAG191871 - JEJEH WIDYAWATI"
+    },
+    {
+        "no_pin": "1770",
+        "nik": "NAG161770",
+        "employee_name": "JERRY MIFTAH IDZARULHAQ",
+        "select_employee": "1770 - NAG161770 - JERRY MIFTAH IDZARULHAQ"
+    },
+    {
+        "no_pin": "2981",
+        "nik": "NAG212981",
+        "employee_name": "JIHAN OKTAVIANI",
+        "select_employee": "2981 - NAG212981 - JIHAN OKTAVIANI"
+    },
+    {
+        "no_pin": "3029",
+        "nik": "NAG213029",
+        "employee_name": "JUARTI",
+        "select_employee": "3029 - NAG213029 - JUARTI"
+    },
+    {
+        "no_pin": "3484",
+        "nik": "NAG213484",
+        "employee_name": "JUJU WATI",
+        "select_employee": "3484 - NAG213484 - JUJU WATI"
+    },
+    {
+        "no_pin": "3576",
+        "nik": "NAG213576",
+        "employee_name": "JULIANA JAMILAH",
+        "select_employee": "3576 - NAG213576 - JULIANA JAMILAH"
+    },
+    {
+        "no_pin": "2599",
+        "nik": "NAG212599",
+        "employee_name": "JULY SAPARTIWI",
+        "select_employee": "2599 - NAG212599 - JULY SAPARTIWI"
+    },
+    {
+        "no_pin": "3592",
+        "nik": "NAG213592",
+        "employee_name": "JUMINAH",
+        "select_employee": "3592 - NAG213592 - JUMINAH"
+    },
+    {
+        "no_pin": "1838",
+        "nik": "NAG191838",
+        "employee_name": "JUWITA",
+        "select_employee": "1838 - NAG191838 - JUWITA"
+    },
+    {
+        "no_pin": "1839",
+        "nik": "NAG191839",
+        "employee_name": "K. AISYAH",
+        "select_employee": "1839 - NAG191839 - K. AISYAH"
+    },
+    {
+        "no_pin": "2426",
+        "nik": "NAG212426",
+        "employee_name": "KAMELIA ANDRIANI",
+        "select_employee": "2426 - NAG212426 - KAMELIA ANDRIANI"
+    },
+    {
+        "no_pin": "3547",
+        "nik": "NAG213547",
+        "employee_name": "KANIA FEBIYANTI",
+        "select_employee": "3547 - NAG213547 - KANIA FEBIYANTI"
+    },
+    {
+        "no_pin": "2781",
+        "nik": "NAG212781",
+        "employee_name": "KANIA NURHAYATI",
+        "select_employee": "2781 - NAG212781 - KANIA NURHAYATI"
+    },
+    {
+        "no_pin": "1923",
+        "nik": "NAG201923",
+        "employee_name": "KARINA PRIANTIKA",
+        "select_employee": "1923 - NAG201923 - KARINA PRIANTIKA"
+    },
+    {
+        "no_pin": "3455",
+        "nik": "NAG213455",
+        "employee_name": "KARLINA",
+        "select_employee": "3455 - NAG213455 - KARLINA"
+    },
+    {
+        "no_pin": "2263",
+        "nik": "NAG202263",
+        "employee_name": "KARLINA MILIAWATI",
+        "select_employee": "2263 - NAG202263 - KARLINA MILIAWATI"
+    },
+    {
+        "no_pin": "2444",
+        "nik": "NAG212444",
+        "employee_name": "KARMILA",
+        "select_employee": "2444 - NAG212444 - KARMILA"
+    },
+    {
+        "no_pin": "3548",
+        "nik": "NAG213548",
+        "employee_name": "KARNI",
+        "select_employee": "3548 - NAG213548 - KARNI"
+    },
+    {
+        "no_pin": "4052",
+        "nik": "NAG224052",
+        "employee_name": "KARTIKA AGUSTIN",
+        "select_employee": "4052 - NAG224052 - KARTIKA AGUSTIN"
+    },
+    {
+        "no_pin": "2377",
+        "nik": "NAG202377",
+        "employee_name": "KASTORI",
+        "select_employee": "2377 - NAG202377 - KASTORI"
+    },
+    {
+        "no_pin": "3311",
+        "nik": "NAG213311",
+        "employee_name": "KASWATI",
+        "select_employee": "3311 - NAG213311 - KASWATI"
+    },
+    {
+        "no_pin": "1654",
+        "nik": "NAG181654",
+        "employee_name": "KHONSA LABIBAH",
+        "select_employee": "1654 - NAG181654 - KHONSA LABIBAH"
+    },
+    {
+        "no_pin": "2154",
+        "nik": "NAG202154",
+        "employee_name": "KIKI ABDUL MALIK",
+        "select_employee": "2154 - NAG202154 - KIKI ABDUL MALIK"
+    },
+    {
+        "no_pin": "15",
+        "nik": "NAG160015",
+        "employee_name": "KIKI AGUSTINA",
+        "select_employee": "15 - NAG160015 - KIKI AGUSTINA"
+    },
+    {
+        "no_pin": "56",
+        "nik": "NAG170056",
+        "employee_name": "KIKI WAHYUDIN",
+        "select_employee": "56 - NAG170056 - KIKI WAHYUDIN"
+    },
+    {
+        "no_pin": "2122",
+        "nik": "NAG202122",
+        "employee_name": "KLARISA FATASYA",
+        "select_employee": "2122 - NAG202122 - KLARISA FATASYA"
+    },
+    {
+        "no_pin": "1000",
+        "nik": "NAG181000",
+        "employee_name": "KODI NUR ADILAH",
+        "select_employee": "1000 - NAG181000 - KODI NUR ADILAH"
+    },
+    {
+        "no_pin": "3412",
+        "nik": "NAG213412",
+        "employee_name": "KOKOM",
+        "select_employee": "3412 - NAG213412 - KOKOM"
+    },
+    {
+        "no_pin": "3158",
+        "nik": "NAG213158",
+        "employee_name": "KOKOM KODARIAH",
+        "select_employee": "3158 - NAG213158 - KOKOM KODARIAH"
+    },
+    {
+        "no_pin": "4261",
+        "nik": "NAG224261",
+        "employee_name": "KOKOM KOMARIAH",
+        "select_employee": "4261 - NAG224261 - KOKOM KOMARIAH"
+    },
+    {
+        "no_pin": "2742",
+        "nik": "NAG212742",
+        "employee_name": "KOKOM KOMARIAH",
+        "select_employee": "2742 - NAG212742 - KOKOM KOMARIAH"
+    },
+    {
+        "no_pin": "118",
+        "nik": "NAG190118",
+        "employee_name": "KRISTIAN WIDIASTUTI",
+        "select_employee": "118 - NAG190118 - KRISTIAN WIDIASTUTI"
+    },
+    {
+        "no_pin": "2368",
+        "nik": "NAG202368",
+        "employee_name": "KULSUM ROSIDAH",
+        "select_employee": "2368 - NAG202368 - KULSUM ROSIDAH"
+    },
+    {
+        "no_pin": "4395",
+        "nik": "NAG224395",
+        "employee_name": "KURNIAWATI",
+        "select_employee": "4395 - NAG224395 - KURNIAWATI"
+    },
+    {
+        "no_pin": "3868",
+        "nik": "NAG223868",
+        "employee_name": "KUSMAYADI",
+        "select_employee": "3868 - NAG223868 - KUSMAYADI"
+    },
+    {
+        "no_pin": "4411",
+        "nik": "NAG224411",
+        "employee_name": "KUSNANDAR ROHIM",
+        "select_employee": "4411 - NAG224411 - KUSNANDAR ROHIM"
+    },
+    {
+        "no_pin": "1841",
+        "nik": "NAG191841",
+        "employee_name": "KUSNIAWATI",
+        "select_employee": "1841 - NAG191841 - KUSNIAWATI"
+    },
+    {
+        "no_pin": "3030",
+        "nik": "NAG213030",
+        "employee_name": "KUSTINI",
+        "select_employee": "3030 - NAG213030 - KUSTINI"
+    },
+    {
+        "no_pin": "113",
+        "nik": "NAG190113",
+        "employee_name": "KUSWORO",
+        "select_employee": "113 - NAG190113 - KUSWORO"
+    },
+    {
+        "no_pin": "1814",
+        "nik": "SGT191814",
+        "employee_name": "LALA INDRIANA KUSUMAH",
+        "select_employee": "1814 - SGT191814 - LALA INDRIANA KUSUMAH"
+    },
+    {
+        "no_pin": "3021",
+        "nik": "NAG213021",
+        "employee_name": "LASMANAH",
+        "select_employee": "3021 - NAG213021 - LASMANAH"
+    },
+    {
+        "no_pin": "2918",
+        "nik": "NAG212918",
+        "employee_name": "LASTRI JULIANTI",
+        "select_employee": "2918 - NAG212918 - LASTRI JULIANTI"
+    },
+    {
+        "no_pin": "4396",
+        "nik": "NAG224396",
+        "employee_name": "LASTRI SUSILAWATI",
+        "select_employee": "4396 - NAG224396 - LASTRI SUSILAWATI"
+    },
+    {
+        "no_pin": "4147",
+        "nik": "NAG224147",
+        "employee_name": "LATIFAH GUNAWAN",
+        "select_employee": "4147 - NAG224147 - LATIFAH GUNAWAN"
+    },
+    {
+        "no_pin": "9",
+        "nik": "NAG130009",
+        "employee_name": "LATIFAH RAHMAYANI",
+        "select_employee": "9 - NAG130009 - LATIFAH RAHMAYANI"
+    },
+    {
+        "no_pin": "3031",
+        "nik": "NAG213031",
+        "employee_name": "LELA LAESARI",
+        "select_employee": "3031 - NAG213031 - LELA LAESARI"
+    },
+    {
+        "no_pin": "4541",
+        "nik": "NAG224541",
+        "employee_name": "LELA PAJAR LESTARI",
+        "select_employee": "4541 - NAG224541 - LELA PAJAR LESTARI"
+    },
+    {
+        "no_pin": "3605",
+        "nik": "NAG213605",
+        "employee_name": "LELASARI",
+        "select_employee": "3605 - NAG213605 - LELASARI"
+    },
+    {
+        "no_pin": "4154",
+        "nik": "NAG224154",
+        "employee_name": "LELI CERLIENI",
+        "select_employee": "4154 - NAG224154 - LELI CERLIENI"
+    },
+    {
+        "no_pin": "4212",
+        "nik": "NAG224212",
+        "employee_name": "LENI ANGGRAENI",
+        "select_employee": "4212 - NAG224212 - LENI ANGGRAENI"
+    },
+    {
+        "no_pin": "4002",
+        "nik": "NAG224002",
+        "employee_name": "LENI CAHYANI",
+        "select_employee": "4002 - NAG224002 - LENI CAHYANI"
+    },
+    {
+        "no_pin": "4364",
+        "nik": "NAG224364",
+        "employee_name": "LENI MARLINA",
+        "select_employee": "4364 - NAG224364 - LENI MARLINA"
+    },
+    {
+        "no_pin": "66",
+        "nik": "NAG170066",
+        "employee_name": "LENI NURAENI",
+        "select_employee": "66 - NAG170066 - LENI NURAENI"
+    },
+    {
+        "no_pin": "2885",
+        "nik": "NAG212885",
+        "employee_name": "LENI SRI RAHAYU",
+        "select_employee": "2885 - NAG212885 - LENI SRI RAHAYU"
+    },
+    {
+        "no_pin": "917",
+        "nik": "NAG170917",
+        "employee_name": "LENNY MARLIANI",
+        "select_employee": "917 - NAG170917 - LENNY MARLIANI"
+    },
+    {
+        "no_pin": "2743",
+        "nik": "NAG212743",
+        "employee_name": "LIA ANDRIANI",
+        "select_employee": "2743 - NAG212743 - LIA ANDRIANI"
+    },
+    {
+        "no_pin": "4148",
+        "nik": "NAG224148",
+        "employee_name": "LIA JULAEHA",
+        "select_employee": "4148 - NAG224148 - LIA JULAEHA"
+    },
+    {
+        "no_pin": "4244",
+        "nik": "NAG224244",
+        "employee_name": "LIA KARTIKA",
+        "select_employee": "4244 - NAG224244 - LIA KARTIKA"
+    },
+    {
+        "no_pin": "3159",
+        "nik": "NAG213159",
+        "employee_name": "LIA KARTINI",
+        "select_employee": "3159 - NAG213159 - LIA KARTINI"
+    },
+    {
+        "no_pin": "42",
+        "nik": "NAG160042",
+        "employee_name": "LIA NURHASANAH",
+        "select_employee": "42 - NAG160042 - LIA NURHASANAH"
+    },
+    {
+        "no_pin": "4185",
+        "nik": "NAG224185",
+        "employee_name": "LIA SAFITRI",
+        "select_employee": "4185 - NAG224185 - LIA SAFITRI"
+    },
+    {
+        "no_pin": "846",
+        "nik": "NAG160846",
+        "employee_name": "LIA SULASTRI",
+        "select_employee": "846 - NAG160846 - LIA SULASTRI"
+    },
+    {
+        "no_pin": "4490",
+        "nik": "NAG224490",
+        "employee_name": "LIA TALIA",
+        "select_employee": "4490 - NAG224490 - LIA TALIA"
+    },
+    {
+        "no_pin": "3287",
+        "nik": "NAG213287",
+        "employee_name": "LILIH SUNDARI",
+        "select_employee": "3287 - NAG213287 - LILIH SUNDARI"
+    },
+    {
+        "no_pin": "1422",
+        "nik": "NAG181422",
+        "employee_name": "LILIS",
+        "select_employee": "1422 - NAG181422 - LILIS"
+    },
+    {
+        "no_pin": "3101",
+        "nik": "NAG213101",
+        "employee_name": "LILIS",
+        "select_employee": "3101 - NAG213101 - LILIS"
+    },
+    {
+        "no_pin": "3793",
+        "nik": "NAG223793",
+        "employee_name": "LILIS ANGGRAENI",
+        "select_employee": "3793 - NAG223793 - LILIS ANGGRAENI"
+    },
+    {
+        "no_pin": "1395",
+        "nik": "NAG191395",
+        "employee_name": "LILIS HERMINA",
+        "select_employee": "1395 - NAG191395 - LILIS HERMINA"
+    },
+    {
+        "no_pin": "3758",
+        "nik": "NAG223758",
+        "employee_name": "LILIS INDRIANI",
+        "select_employee": "3758 - NAG223758 - LILIS INDRIANI"
+    },
+    {
+        "no_pin": "4019",
+        "nik": "NAG224019",
+        "employee_name": "LILIS KARLINA",
+        "select_employee": "4019 - NAG224019 - LILIS KARLINA"
+    },
+    {
+        "no_pin": "2621",
+        "nik": "NAG212621",
+        "employee_name": "LILIS KURNIAWATI",
+        "select_employee": "2621 - NAG212621 - LILIS KURNIAWATI"
+    },
+    {
+        "no_pin": "750",
+        "nik": "NAG170750",
+        "employee_name": "LILIS LISNAWATI",
+        "select_employee": "750 - NAG170750 - LILIS LISNAWATI"
+    },
+    {
+        "no_pin": "2744",
+        "nik": "NAG212744",
+        "employee_name": "LILIS NURJANAH",
+        "select_employee": "2744 - NAG212744 - LILIS NURJANAH"
+    },
+    {
+        "no_pin": "3102",
+        "nik": "NAG213102",
+        "employee_name": "LILIS NURLINA",
+        "select_employee": "3102 - NAG213102 - LILIS NURLINA"
+    },
+    {
+        "no_pin": "3081",
+        "nik": "NAG213081",
+        "employee_name": "LILIS RENI",
+        "select_employee": "3081 - NAG213081 - LILIS RENI"
+    },
+    {
+        "no_pin": "3413",
+        "nik": "NAG213413",
+        "employee_name": "LILIS RISNAWATI",
+        "select_employee": "3413 - NAG213413 - LILIS RISNAWATI"
+    },
+    {
+        "no_pin": "3433",
+        "nik": "NAG213433",
+        "employee_name": "LILIS ROSMAYATI",
+        "select_employee": "3433 - NAG213433 - LILIS ROSMAYATI"
+    },
+    {
+        "no_pin": "4422",
+        "nik": "NAG224422",
+        "employee_name": "LILIS SUMARNI",
+        "select_employee": "4422 - NAG224422 - LILIS SUMARNI"
+    },
+    {
+        "no_pin": "4397",
+        "nik": "NAG224397",
+        "employee_name": "LINA KARLINA",
+        "select_employee": "4397 - NAG224397 - LINA KARLINA"
+    },
+    {
+        "no_pin": "1424",
+        "nik": "NAG181424",
+        "employee_name": "LINA KARLINA",
+        "select_employee": "1424 - NAG181424 - LINA KARLINA"
+    },
+    {
+        "no_pin": "824",
+        "nik": "NAG180824",
+        "employee_name": "LINA KARLINA",
+        "select_employee": "824 - NAG180824 - LINA KARLINA"
+    },
+    {
+        "no_pin": "3331",
+        "nik": "NAG213331",
+        "employee_name": "LINA MARDIANA",
+        "select_employee": "3331 - NAG213331 - LINA MARDIANA"
+    },
+    {
+        "no_pin": "2886",
+        "nik": "NAG212886",
+        "employee_name": "LINA MAYASARI",
+        "select_employee": "2886 - NAG212886 - LINA MAYASARI"
+    },
+    {
+        "no_pin": "4317",
+        "nik": "NAG224317",
+        "employee_name": "LINA NURJANAH",
+        "select_employee": "4317 - NAG224317 - LINA NURJANAH"
+    },
+    {
+        "no_pin": "2383",
+        "nik": "NAG212383",
+        "employee_name": "LINDA AGUSTINA",
+        "select_employee": "2383 - NAG212383 - LINDA AGUSTINA"
+    },
+    {
+        "no_pin": "1660",
+        "nik": "NAG161660",
+        "employee_name": "LINDA HERNAWATI",
+        "select_employee": "1660 - NAG161660 - LINDA HERNAWATI"
+    },
+    {
+        "no_pin": "62",
+        "nik": "NAG170062",
+        "employee_name": "LINDA MARLINA",
+        "select_employee": "62 - NAG170062 - LINDA MARLINA"
+    },
+    {
+        "no_pin": "3723",
+        "nik": "NAG213722",
+        "employee_name": "LINDA MARLINDA",
+        "select_employee": "3723 - NAG213722 - LINDA MARLINDA"
+    },
+    {
+        "no_pin": "3161",
+        "nik": "NAG213161",
+        "employee_name": "LINDA MELYANI",
+        "select_employee": "3161 - NAG213161 - LINDA MELYANI"
+    },
+    {
+        "no_pin": "4041",
+        "nik": "NAG224041",
+        "employee_name": "LINDA OCTAPIA",
+        "select_employee": "4041 - NAG224041 - LINDA OCTAPIA"
+    },
+    {
+        "no_pin": "3001",
+        "nik": "NAG213001",
+        "employee_name": "LINDA SARI",
+        "select_employee": "3001 - NAG213001 - LINDA SARI"
+    },
+    {
+        "no_pin": "4109",
+        "nik": "NAG224109",
+        "employee_name": "LINDA SURYAMAH",
+        "select_employee": "4109 - NAG224109 - LINDA SURYAMAH"
+    },
+    {
+        "no_pin": "3488",
+        "nik": "NAG213488",
+        "employee_name": "LIPA SOPIAH",
+        "select_employee": "3488 - NAG213488 - LIPA SOPIAH"
+    },
+    {
+        "no_pin": "3103",
+        "nik": "NAG213103",
+        "employee_name": "LISA NURLIANTI",
+        "select_employee": "3103 - NAG213103 - LISA NURLIANTI"
+    },
+    {
+        "no_pin": "3627",
+        "nik": "NAG213627",
+        "employee_name": "LISNA NURAIDA",
+        "select_employee": "3627 - NAG213627 - LISNA NURAIDA"
+    },
+    {
+        "no_pin": "4285",
+        "nik": "NAG224285",
+        "employee_name": "LISNA TRIANA",
+        "select_employee": "4285 - NAG224285 - LISNA TRIANA"
+    },
+    {
+        "no_pin": "4487",
+        "nik": "NAG224487",
+        "employee_name": "LISNASARI",
+        "select_employee": "4487 - NAG224487 - LISNASARI"
+    },
+    {
+        "no_pin": "3190",
+        "nik": "NAG213190",
+        "employee_name": "LISNAYANTI PURNAMA SARI",
+        "select_employee": "3190 - NAG213190 - LISNAYANTI PURNAMA SARI"
+    },
+    {
+        "no_pin": "4501",
+        "nik": "NAG224501",
+        "employee_name": "LISTIA",
+        "select_employee": "4501 - NAG224501 - LISTIA"
+    },
+    {
+        "no_pin": "4286",
+        "nik": "NAG224286",
+        "employee_name": "LITA GARSELI SEPTRIATNA",
+        "select_employee": "4286 - NAG224286 - LITA GARSELI SEPTRIATNA"
+    },
+    {
+        "no_pin": "4213",
+        "nik": "NAG224213",
+        "employee_name": "LOLA MARLINA",
+        "select_employee": "4213 - NAG224213 - LOLA MARLINA"
+    },
+    {
+        "no_pin": "2782",
+        "nik": "NAG212782",
+        "employee_name": "LULU LUSIANA",
+        "select_employee": "2782 - NAG212782 - LULU LUSIANA"
+    },
+    {
+        "no_pin": "2574",
+        "nik": "NAG212574",
+        "employee_name": "LUSI APRILIANI",
+        "select_employee": "2574 - NAG212574 - LUSI APRILIANI"
+    },
+    {
+        "no_pin": "48",
+        "nik": "NAG160048",
+        "employee_name": "LUSI EXTIAVISCA",
+        "select_employee": "48 - NAG160048 - LUSI EXTIAVISCA"
+    },
+    {
+        "no_pin": "4053",
+        "nik": "NAG224053",
+        "employee_name": "LUSI NURFAUZIAH",
+        "select_employee": "4053 - NAG224053 - LUSI NURFAUZIAH"
+    },
+    {
+        "no_pin": "2526",
+        "nik": "NAG212526",
+        "employee_name": "M. ABDULLAH HAFIZH",
+        "select_employee": "2526 - NAG212526 - M. ABDULLAH HAFIZH"
+    },
+    {
+        "no_pin": "2587",
+        "nik": "NAG212587",
+        "employee_name": "MAESAROH",
+        "select_employee": "2587 - NAG212587 - MAESAROH"
+    },
+    {
+        "no_pin": "4423",
+        "nik": "NAG224423",
+        "employee_name": "MAESYAROH",
+        "select_employee": "4423 - NAG224423 - MAESYAROH"
+    },
+    {
+        "no_pin": "2360",
+        "nik": "NAG202360",
+        "employee_name": "MAHARANI",
+        "select_employee": "2360 - NAG202360 - MAHARANI"
+    },
+    {
+        "no_pin": "3775",
+        "nik": "NAG223775",
+        "employee_name": "MAHARANI DWI PUTRI",
+        "select_employee": "3775 - NAG223775 - MAHARANI DWI PUTRI"
+    },
+    {
+        "no_pin": "4214",
+        "nik": "NAG224214",
+        "employee_name": "MARIAH",
+        "select_employee": "4214 - NAG224214 - MARIAH"
+    },
+    {
+        "no_pin": "3434",
+        "nik": "NAG213434",
+        "employee_name": "MARLINA",
+        "select_employee": "3434 - NAG213434 - MARLINA"
+    },
+    {
+        "no_pin": "4149",
+        "nik": "NAG224149",
+        "employee_name": "MARLINA ELISABETH SIAHAAN",
+        "select_employee": "4149 - NAG224149 - MARLINA ELISABETH SIAHAAN"
+    },
+    {
+        "no_pin": "890",
+        "nik": "NAG180890",
+        "employee_name": "MARNI",
+        "select_employee": "890 - NAG180890 - MARNI"
+    },
+    {
+        "no_pin": "4287",
+        "nik": "NAG224287",
+        "employee_name": "MARTINI",
+        "select_employee": "4287 - NAG224287 - MARTINI"
+    },
+    {
+        "no_pin": "4169",
+        "nik": "NAG224169",
+        "employee_name": "MARY MARYATI",
+        "select_employee": "4169 - NAG224169 - MARY MARYATI"
+    },
+    {
+        "no_pin": "719",
+        "nik": "NAG180719",
+        "employee_name": "MARYATI",
+        "select_employee": "719 - NAG180719 - MARYATI"
+    },
+    {
+        "no_pin": "3273",
+        "nik": "NAG213273",
+        "employee_name": "MAYA MARYANI",
+        "select_employee": "3273 - NAG213273 - MAYA MARYANI"
+    },
+    {
+        "no_pin": "3435",
+        "nik": "NAG213435",
+        "employee_name": "MAYA TRIANA",
+        "select_employee": "3435 - NAG213435 - MAYA TRIANA"
+    },
+    {
+        "no_pin": "4456",
+        "nik": "NAG224456",
+        "employee_name": "MEGA DWI CIPTA",
+        "select_employee": "4456 - NAG224456 - MEGA DWI CIPTA"
+    },
+    {
+        "no_pin": "4241",
+        "nik": "NAG224241",
+        "employee_name": "MEGA FITRIANA HARYONO",
+        "select_employee": "4241 - NAG224241 - MEGA FITRIANA HARYONO"
+    },
+    {
+        "no_pin": "2484",
+        "nik": "NAG212484",
+        "employee_name": "MEGA HERAWATI",
+        "select_employee": "2484 - NAG212484 - MEGA HERAWATI"
+    },
+    {
+        "no_pin": "3191",
+        "nik": "NAG213191",
+        "employee_name": "MEGA PUTRI NABILA",
+        "select_employee": "3191 - NAG213191 - MEGA PUTRI NABILA"
+    },
+    {
+        "no_pin": "194",
+        "nik": "NAG170194",
+        "employee_name": "MEGA SUKMA DEWI",
+        "select_employee": "194 - NAG170194 - MEGA SUKMA DEWI"
+    },
+    {
+        "no_pin": "2715",
+        "nik": "NAG212715",
+        "employee_name": "MEGA TIA LESTARI",
+        "select_employee": "2715 - NAG212715 - MEGA TIA LESTARI"
+    },
+    {
+        "no_pin": "4220",
+        "nik": "NAG224220",
+        "employee_name": "MELA OCTAVIANI DEWI",
+        "select_employee": "4220 - NAG224220 - MELA OCTAVIANI DEWI"
+    },
+    {
+        "no_pin": "4511",
+        "nik": "NAG224511",
+        "employee_name": "MELAN MEILANI",
+        "select_employee": "4511 - NAG224511 - MELAN MEILANI"
+    },
+    {
+        "no_pin": "10",
+        "nik": "NAG140010",
+        "employee_name": "MELANDA",
+        "select_employee": "10 - NAG140010 - MELANDA"
+    },
+    {
+        "no_pin": "4155",
+        "nik": "NAG224155",
+        "employee_name": "MELANI",
+        "select_employee": "4155 - NAG224155 - MELANI"
+    },
+    {
+        "no_pin": "3874",
+        "nik": "NAG223874",
+        "employee_name": "MELDA SIMANGUNSONG",
+        "select_employee": "3874 - NAG223874 - MELDA SIMANGUNSONG"
+    },
+    {
+        "no_pin": "4424",
+        "nik": "NAG224424",
+        "employee_name": "MELDHA NURFADILAH",
+        "select_employee": "4424 - NAG224424 - MELDHA NURFADILAH"
+    },
+    {
+        "no_pin": "4425",
+        "nik": "NAG224425",
+        "employee_name": "MELI AMELIA",
+        "select_employee": "4425 - NAG224425 - MELI AMELIA"
+    },
+    {
+        "no_pin": "4457",
+        "nik": "NAG224457",
+        "employee_name": "MELI SAFITRI",
+        "select_employee": "4457 - NAG224457 - MELI SAFITRI"
+    },
+    {
+        "no_pin": "2445",
+        "nik": "NAG212445",
+        "employee_name": "MELI SUSANTI",
+        "select_employee": "2445 - NAG212445 - MELI SUSANTI"
+    },
+    {
+        "no_pin": "4288",
+        "nik": "NAG224288",
+        "employee_name": "MELIA",
+        "select_employee": "4288 - NAG224288 - MELIA"
+    },
+    {
+        "no_pin": "2468",
+        "nik": "NAG212468",
+        "employee_name": "MELIN MERLINA",
+        "select_employee": "2468 - NAG212468 - MELIN MERLINA"
+    },
+    {
+        "no_pin": "3776",
+        "nik": "NAG223776",
+        "employee_name": "MELINDA ANGGRAENI",
+        "select_employee": "3776 - NAG223776 - MELINDA ANGGRAENI"
+    },
+    {
+        "no_pin": "2537",
+        "nik": "NAG212537",
+        "employee_name": "MELISA",
+        "select_employee": "2537 - NAG212537 - MELISA"
+    },
+    {
+        "no_pin": "3850",
+        "nik": "NAG223850",
+        "employee_name": "MELIYANI",
+        "select_employee": "3850 - NAG223850 - MELIYANI"
+    },
+    {
+        "no_pin": "728",
+        "nik": "NAG180728",
+        "employee_name": "MELLA MAYASARI",
+        "select_employee": "728 - NAG180728 - MELLA MAYASARI"
+    },
+    {
+        "no_pin": "3436",
+        "nik": "NAG213436",
+        "employee_name": "MELLY NOVIANTI",
+        "select_employee": "3436 - NAG213436 - MELLY NOVIANTI"
+    },
+    {
+        "no_pin": "2357",
+        "nik": "NAG202357",
+        "employee_name": "MEMED REZA PERMANA",
+        "select_employee": "2357 - NAG202357 - MEMED REZA PERMANA"
+    },
+    {
+        "no_pin": "2286",
+        "nik": "NAG202286",
+        "employee_name": "MERI SELIANA",
+        "select_employee": "2286 - NAG202286 - MERI SELIANA"
+    },
+    {
+        "no_pin": "3593",
+        "nik": "NAG213593",
+        "employee_name": "MERY ANGGRAENI",
+        "select_employee": "3593 - NAG213593 - MERY ANGGRAENI"
+    },
+    {
+        "no_pin": "3083",
+        "nik": "NAG213083",
+        "employee_name": "MIA KURNIANINGSIH",
+        "select_employee": "3083 - NAG213083 - MIA KURNIANINGSIH"
+    },
+    {
+        "no_pin": "2745",
+        "nik": "NAG212745",
+        "employee_name": "MIA PADILAH",
+        "select_employee": "2745 - NAG212745 - MIA PADILAH"
+    },
+    {
+        "no_pin": "2647",
+        "nik": "NAG212647",
+        "employee_name": "MIA SUMIATI",
+        "select_employee": "2647 - NAG212647 - MIA SUMIATI"
+    },
+    {
+        "no_pin": "4426",
+        "nik": "NAG224426",
+        "employee_name": "MIA YULIA",
+        "select_employee": "4426 - NAG224426 - MIA YULIA"
+    },
+    {
+        "no_pin": "2636",
+        "nik": "NAG212636",
+        "employee_name": "MILA KARMILA",
+        "select_employee": "2636 - NAG212636 - MILA KARMILA"
+    },
+    {
+        "no_pin": "4549",
+        "nik": "NAG224549",
+        "employee_name": "MILA KARMILA SARI",
+        "select_employee": "4549 - NAG224549 - MILA KARMILA SARI"
+    },
+    {
+        "no_pin": "3888",
+        "nik": "NAG223888",
+        "employee_name": "MILA NURCAHYANI",
+        "select_employee": "3888 - NAG223888 - MILA NURCAHYANI"
+    },
+    {
+        "no_pin": "4160",
+        "nik": "NAG224160",
+        "employee_name": "MILA RISMANTI",
+        "select_employee": "4160 - NAG224160 - MILA RISMANTI"
+    },
+    {
+        "no_pin": "1116",
+        "nik": "NAG181116",
+        "employee_name": "MILA ROSMAYANTI",
+        "select_employee": "1116 - NAG181116 - MILA ROSMAYANTI"
+    },
+    {
+        "no_pin": "2889",
+        "nik": "NAG212889",
+        "employee_name": "MILA SAVIRA",
+        "select_employee": "2889 - NAG212889 - MILA SAVIRA"
+    },
+    {
+        "no_pin": "4547",
+        "nik": "NAG224547",
+        "employee_name": "MILAH HOTIMAH",
+        "select_employee": "4547 - NAG224547 - MILAH HOTIMAH"
+    },
+    {
+        "no_pin": "3002",
+        "nik": "NAG213002",
+        "employee_name": "MIMIH SUMIATI",
+        "select_employee": "3002 - NAG213002 - MIMIH SUMIATI"
+    },
+    {
+        "no_pin": "3589",
+        "nik": "NAG213589",
+        "employee_name": "MIMIN",
+        "select_employee": "3589 - NAG213589 - MIMIN"
+    },
+    {
+        "no_pin": "3192",
+        "nik": "NAG213192",
+        "employee_name": "MIMIN",
+        "select_employee": "3192 - NAG213192 - MIMIN"
+    },
+    {
+        "no_pin": "3742",
+        "nik": "NAG223741",
+        "employee_name": "MIMIN CUCU KOMALA",
+        "select_employee": "3742 - NAG223741 - MIMIN CUCU KOMALA"
+    },
+    {
+        "no_pin": "3691",
+        "nik": "NAG213690",
+        "employee_name": "MIMIN MINTARSIH",
+        "select_employee": "3691 - NAG213690 - MIMIN MINTARSIH"
+    },
+    {
+        "no_pin": "2746",
+        "nik": "NAG212746",
+        "employee_name": "MIMIN MULYANI",
+        "select_employee": "2746 - NAG212746 - MIMIN MULYANI"
+    },
+    {
+        "no_pin": "3724",
+        "nik": "NAG213723",
+        "employee_name": "MIMIN SUMIATI",
+        "select_employee": "3724 - NAG213723 - MIMIN SUMIATI"
+    },
+    {
+        "no_pin": "3540",
+        "nik": "NAG213540",
+        "employee_name": "MIMIN WINARTI",
+        "select_employee": "3540 - NAG213540 - MIMIN WINARTI"
+    },
+    {
+        "no_pin": "4021",
+        "nik": "NAG224021",
+        "employee_name": "MINDI WISAMSYAH",
+        "select_employee": "4021 - NAG224021 - MINDI WISAMSYAH"
+    },
+    {
+        "no_pin": "2173",
+        "nik": "NAG202173",
+        "employee_name": "MINTARSIH",
+        "select_employee": "2173 - NAG202173 - MINTARSIH"
+    },
+    {
+        "no_pin": "3839",
+        "nik": "NAG213839",
+        "employee_name": "MIRA ASARAH",
+        "select_employee": "3839 - NAG213839 - MIRA ASARAH"
+    },
+    {
+        "no_pin": "3930",
+        "nik": "NAG223930",
+        "employee_name": "MIRA KARMILA",
+        "select_employee": "3930 - NAG223930 - MIRA KARMILA"
+    }
+]

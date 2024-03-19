@@ -1,0 +1,480 @@
+<?php
+
+namespace App\Http\Controllers\Hris;
+
+use App\Http\Controllers\AdminBaseController;
+use App\Models\MasterDataAbsenKehadiran;
+use App\Models\EmployeeAtribut;
+use App\Models\DepartmentAll;
+use App\Models\RefAbsenIjin;
+use App\Models\WorkTimeTable;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\File;
+use Illuminate\Http\Request;
+use Datatables;
+use App\Exports\DepartmentAllExport;
+use App\Exports\MasterDataAbsenKehadiranExport;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Reader\Exception;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
+/**
+ * Class MdAbsenHadirController
+ * @package App\Http\Controllers\Hris
+ */
+class MdAbsenHadirController extends AdminBaseController
+{
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->dashboardActive = 'active';
+        $this->pageTitle = 'Data Kehadiran Karyawan';
+    }
+
+    public function index()
+    {
+
+        //return View::make('admin/dashboard', $this->data);
+    }
+
+    public function datahadir()
+    {
+        $this->department = $this->ajax_getselectdepart();
+        $this->selectemployee = $this->ajax_getallemployeeatribut();
+        $this->refabsenijin = $this->ajax_getselectrefabsenijin();
+        return View::make('hris/datahadir', $this->data);
+    }
+
+    public function print()
+    {
+        $selectemployee = $this->ajax_getallemployeeatribut();
+        echo json_encode($selectemployee);
+    }
+
+    public function laporan_harian_kehadiran()
+    {
+        $this->department = $this->ajax_getselectdepart();
+        return view('hris/laporan_harian_kehadiran', $this->data);
+    }
+
+    public function lihatabsen()
+    {
+
+        return View::make('hris/lihatabsen', $this->data);
+    }
+
+    public function ajax_datahadir(Request $request)
+    {
+        $department_id = $request->department_id;
+        $daterange1 = explode(" - ", $request->daterange1);
+        $tanggalMulai = date('Y-m-d', strtotime($daterange1[0]));
+        $tanggalSampai = date('Y-m-d', strtotime($daterange1[1]));
+        $selectEmployeeID = "";
+        $dataEmployee = "";
+
+        $department_id = $request->department_id;
+        $inDepartmentID = "";
+        if($department_id) {
+            $dataDepartment = implode('","',$department_id);
+            $inDepartmentID = ' and department_id in ("' . $dataDepartment . '")';
+        }
+
+        $inEmployee = "";
+        if($request->selectEmployeeID) {
+            $selectEmployeeID = $request->selectEmployeeID;
+            $dataEmployee = implode('","',$selectEmployeeID);
+            $inEmployee = ' and enroll_id in ("' . $dataEmployee . '")';
+
+        }
+
+        if(request()->ajax()) {
+
+            $columns = array(
+                0 => 'uuid',
+                1 => 'employee_id',
+                2 => 'nik',
+                3 => 'enroll_id',
+                4 => 'tanggal_berjalan',
+                5 => 'nama_hari',
+                6 => 'employee_name',
+                7 => 'kode_hari',
+                8 => 'work_status',
+                9 => 'tanggal_absen',
+                10 => 'mulai_jam_kerja',
+                11 => 'akhir_jam_kerja',
+                12 => 'absen_masuk_kerja',
+                13 => 'absen_pulang_kerja',
+                14 => 'jumlah_menit_absen_dt',
+                15 => 'jumlah_menit_absen_pc',
+                16 => 'jumlah_menit_absen_dtpc',
+                17 => 'status_absen'
+            );
+
+
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $order = $columns[$request->input('order.0.column')];
+            $dir = $request->input('order.0.dir');
+
+            if(empty($department_id)) {
+                $totalData = MasterDataAbsenKehadiran::
+                whereRaw('
+                    substr(tanggal_berjalan, 1, 10) between "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                    ' . $inEmployee . '
+                ')
+                ->count();
+                $totalFiltered = $totalData;
+
+                $query = MasterDataAbsenKehadiran::
+                whereRaw('
+                    substr(tanggal_berjalan, 1, 10) between "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                    ' . $inEmployee . '
+                ')
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order,$dir)
+                ->get();
+            } else {
+                $totalData = MasterDataAbsenKehadiran::
+                whereRaw('
+                    substr(tanggal_berjalan, 1, 10) between "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                    ' . $inEmployee . ' ' . $inDepartmentID . '
+                ')
+                ->count();
+                $totalFiltered = $totalData;
+
+                $query =  MasterDataAbsenKehadiran::
+                whereRaw('
+                    (substr(tanggal_berjalan, 1, 10) between "' . $tanggalMulai . '" and "' . $tanggalSampai . '")
+                    ' . $inEmployee . ' ' . $inDepartmentID . '
+                ')
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order,$dir)
+                ->get();
+
+            }
+
+            $data = array();
+            if(!empty($query))
+            {
+                foreach ($query as $q)
+                {
+                    $tanggal_absen = $q->tanggal_absen;
+                    $kode_hari = $q->kode_hari;
+                    $liburnasional = $q->holiday_name;
+                    $kerjalibur = "KERJA";
+                    if($tanggal_absen <> "") {
+                        $kerjalibur = "KERJA";
+                        switch ($kode_hari) {
+                            case '5':
+                                $kerjalibur = "LIBUR";
+                                break;
+                            case '6':
+                                $kerjalibur = "LIBUR";
+                                break;
+                        }
+                    } else if($tanggal_absen <> null) {
+                        $kerjalibur = "KERJA";
+                        switch ($kode_hari) {
+                            case '5':
+                                $kerjalibur = "LIBUR";
+                                break;
+                            case '6':
+                                $kerjalibur = "LIBUR";
+                                break;
+                        }
+                    } else {
+                        switch ($kode_hari) {
+                            case '5':
+                                $kerjalibur = "LIBUR";
+                                break;
+                            case '6':
+                                $kerjalibur = "LIBUR";
+                                break;
+                        }
+                    }
+
+                    if($liburnasional <> "") {
+                        $kerjalibur = "LIBUR";
+                    }
+
+                    $nestedData['uuid'] = $q->uuid;
+                    $nestedData['employee_id'] = $q->employee_id;
+                    $nestedData['nik'] = $q->nik;
+                    $nestedData['enroll_id'] = $q->enroll_id;
+                    $nestedData['employee_name'] = $q->employee_name;
+                    $nestedData['tanggal_berjalan'] = $q->tanggal_berjalan;
+                    $nestedData['kode_hari'] = $q->kode_hari;
+                    $nestedData['nama_hari'] = $q->nama_hari;
+                    $nestedData['kerjalibur'] = $kerjalibur;
+                    $nestedData['mulai_jam_kerja'] = $q->mulai_jam_kerja;
+                    $nestedData['akhir_jam_kerja'] = $q->akhir_jam_kerja;
+                    $nestedData['absen_masuk_kerja'] = $q->absen_masuk_kerja;
+                    $nestedData['absen_pulang_kerja'] = $q->absen_pulang_kerja;
+                    $nestedData['absen_dt_datang_terlambat'] = $q->absen_dt_datang_terlambat;
+                    $nestedData['absen_dtpc_datang_terlambat_pulang_cepat'] = $q->absen_dtpc_datang_terlambat_pulang_cepat;
+                    $nestedData['jumlah_jam_kerja'] = $q->jumlah_jam_kerja;
+                    $nestedData['status_absen'] = strtoupper($q->status_absen);
+                    $nestedData['nama_absen_ijin'] = strtoupper($q->nama_absen_ijin);
+                    $nestedData['kode_ijin_payroll'] = strtoupper($q->kode_ijin_payroll);
+                    $nestedData['absen_alasan'] = $q->absen_alasan;
+                    $nestedData['nomor_form_perubahan_absen'] = $q->nomor_form_perubahan_absen;
+                    $nestedData['nomor_absen_ijin'] = $q->nomor_absen_ijin;
+                    $nestedData['nomor_form_lembur'] = $q->nomor_form_lembur;
+                    $nestedData['tanggal_mulai_ijin'] = $q->tanggal_mulai_ijin;
+                    $nestedData['tanggal_akhir_ijin'] = $q->tanggal_akhir_ijin;
+                    $nestedData['permits_dari_pukul'] = $q->permits_dari_pukul;
+                    $nestedData['permits_sampai_pukul'] = $q->permits_sampai_pukul;
+                    $nestedData['total_menit_permits'] = $q->total_menit_permits;
+                    $nestedData['updated_absen_ijin'] = $q->updated_absen_ijin;
+                    $nestedData['updated_at'] = substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 8);
+                    $nestedData['operator'] = $q->operator;
+                    $nestedData['holiday_name'] = $q->holiday_name;
+                    $nestedData['catatan_hrd'] = $q->catatan_hrd;
+                    $nestedData['site_nirwana_name'] = $q->site_nirwana_name;
+                    $nestedData['department_name'] = $q->department_name;
+                    $nestedData['sub_dept_name'] = $q->sub_dept_name;
+                    $nestedData['tanggal_absen'] = $q->tanggal_absen;
+                    $nestedData['jumlah_menit_absen_dt'] = $q->jumlah_menit_absen_dt;
+                    $nestedData['jumlah_menit_absen_pc'] = $q->jumlah_menit_absen_pc;
+                    $nestedData['jumlah_menit_absen_dtpc'] = $q->jumlah_menit_absen_dtpc;
+                    $nestedData['jumlah_absen_menit_kerja'] = $q->jumlah_absen_menit_kerja;
+                    $nestedData['posisi_name'] = $q->posisi_name;
+                    $nestedData['work_status'] = $q->work_status;
+                    $nestedData['employee_status'] = $q->employee_status;
+                    $nestedData['mulai_jam_lembur'] = $q->mulai_jam_lembur;
+                    $nestedData['akhir_jam_lembur'] = $q->akhir_jam_lembur;
+                    $nestedData['jumlah_jam_lembur'] = $q->jumlah_jam_lembur;
+                    $nestedData['created_at'] = $q->created_at;
+                    $nestedData['updated_at'] = $q->updated_at;
+
+                    $data[] = $nestedData;
+
+                }
+            }
+
+            $json_data = array(
+                "draw"            => intval($request->input('draw')),
+                "recordsTotal"    => intval($totalData),
+                "recordsFiltered" => intval($totalFiltered),
+                "data"            => $data
+                );
+
+            echo json_encode($json_data);
+        }
+    }
+
+    private function ajax_getselectdepart()
+    {
+        $query =  DepartmentAll::selectRaw('department_id,
+                                           concat("[",CASE WHEN site_nirwana_id="ADR208"
+                                                            THEN "NAG" WHEN site_nirwana_id="ADR210"
+                                                            THEN "SGT" ELSE "UNKNOWN SITE" END,"] "
+                                                  ,department_name) department_name')
+                                 ->groupby('department_name')
+                                 ->orderby('department_name', 'asc')
+                                 ->get();
+
+        return $query;
+
+    }
+
+    private function ajax_getselectrefabsenijin()
+    {
+        $query =  RefAbsenIjin::selectRaw('kode_absen_ijin,
+                                           concat(kode_absen_ijin," - "
+                                                  ,nama_absen_ijin) kode_nama_absen_ijin')
+                                 ->orderby('nama_absen_ijin', 'asc')
+                                 ->get();
+
+        return $query;
+
+    }
+
+    public function ajax_exportexceldeptall()
+    {
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '4000M');
+
+       /*  $fileName = 'DepartmentAll.xlsx';
+        return (new DepartmentAllExport)->download($fileName); */
+
+        //$fileName = 'DepartmentAll.xlsx';
+        //return (new DepartmentAllExport)->download($fileName);
+        return Excel::download(new DepartmentAllExport, 'DepartmentAll.xlsx');
+
+    }
+
+    public function ajax_exportexcel(Request $request)
+    {
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '4000M');
+
+        $selDepVal = $request->input('selDepVal');
+        $selectEmployeeID = $request->input('selectEmployeeID');
+        $daterange1 = explode(" - ", $request->input('daterange1'));
+        $dataEmployee = "";
+        $dataDepartment = "";
+        $inDepartmentID = "";
+
+        if($selDepVal) {
+            $dataDepartment = explode(',',$selDepVal);
+            $dataDepartment = str_replace(',','","',$selDepVal);
+            $inDepartmentID = '"' . $dataDepartment . '"';
+        }
+
+        if($request->input('selectPosisiName')) {
+            $posisi = $request->input('selectPosisiName');
+        } else {
+            $posisi = '';
+        }
+
+       /*  $fileName = 'DepartmentAll.xlsx';
+        return (new DepartmentAllExport)->download($fileName); */
+
+        $fileName = 'DataAbsensiKaryawan_' . time() . '.xlsx';
+        return (new MasterDataAbsenKehadiranExport)->exportParams($daterange1,$inDepartmentID,$posisi)->download($fileName);
+
+    }
+
+    public function ajax_getselectsubdept(Request $request)
+    {
+        $department_id = $request->department_id;
+        $query =  DepartmentAll::where('department_id','=',$department_id)
+                                 ->groupby('sub_dept_id')
+                                 ->orderby('sub_dept_name', 'asc')
+                                 ->pluck('sub_dept_id','sub_dept_name');
+        return $query;
+
+    }
+
+    public function ajax_getallemployeeatribut()
+    {
+        $query =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name,
+                                           concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')
+                                    ->groupby('enroll_id')
+                                    ->orderby('employee_name', 'asc')
+                                    ->get();
+        return $query;
+
+    }
+
+    public function ajax_getselectemployee(Request $request)
+    {
+        $department_id = $request->department_id;
+        $sub_dept_id = $request->sub_dept_id;
+
+        if(($department_id) && (!$sub_dept_id)) {
+            $query =  EmployeeAtribut::selectRaw('enroll_id no_pin, nik, employee_name,
+                                            concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')
+                                        ->where('department_id','=',$department_id)
+                                        ->groupby('nik')
+                                        ->orderby('employee_name', 'asc')
+                                        ->get();
+
+            return $query;
+        } else if(($department_id) && ($sub_dept_id)) {
+            $query =  EmployeeAtribut::selectRaw('enroll_id no_pin, nik, employee_name,
+                                            concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')
+                                        ->where('department_id','=',$department_id)
+                                        ->where('sub_dept_id','=',$sub_dept_id)
+                                        ->groupby('nik')
+                                        ->orderby('employee_name', 'asc')
+                                        ->get();
+
+            return $query;
+        } else {
+            $query =  EmployeeAtribut::selectRaw('enroll_id no_pin, nik, employee_name,
+                                            concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')
+                                        ->groupby('nik')
+                                        ->orderby('employee_name', 'asc')
+                                        ->get();
+
+            return $query;
+        }
+
+        //return $query;
+
+    }
+
+    public function ajax_getemployeselectdeptid(Request $request)
+    {
+        $department_id = $request->department_id;
+        $dataDepartment = "";
+        $inDepartmentID = '';
+
+        if($department_id) {
+            $dataDepartment = implode('","',$department_id);
+            $inDepartmentID = '"' . $dataDepartment . '"';
+
+            $query =  EmployeeAtribut::
+            selectRaw('enroll_id no_pin, nik, employee_name,
+                            concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')
+            ->whereRaw('
+                department_id in (' . $inDepartmentID . ')
+            ')
+            ->groupby('nik')
+            ->orderby('employee_name', 'asc')
+            ->get();
+
+        } else {
+            $query =  EmployeeAtribut::
+            selectRaw('enroll_id no_pin, nik, employee_name,
+                            concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')
+            ->groupby('nik')
+            ->orderby('employee_name', 'asc')
+            ->get();
+        }
+
+        //info('Query :' . $query);
+        return $query;
+
+    }
+
+    public function ajax_getemployeselectposisi(Request $request)
+    {
+        $selectPosisiName = $request->input('selectPosisiName');
+        $posisi = '';
+
+        if($selectPosisiName) {
+            $posisi = ' posisi_name = "' . $selectPosisiName . '" ';
+            $query =  EmployeeAtribut::selectRaw('enroll_id no_pin, nik, employee_name,
+                            concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')
+                            ->whereRaw('
+                                ' . $posisi . '
+                            ')
+                            ->groupby('nik')
+                            ->orderby('employee_name', 'asc')
+                            ->get();
+            info("Posisi : " . $posisi);
+        } else {
+            $query =  EmployeeAtribut::selectRaw('enroll_id no_pin, nik, employee_name,
+                            concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')
+                            ->groupby('nik')
+                            ->orderby('employee_name', 'asc')
+                            ->get();
+        }
+
+        return $query;
+
+    }
+
+    /*    Screen lock controller.When screen lock button from menu is cliked this controller is called.
+    *     lock variable is set to 1 when screen is locked.SET to 0  if you dont want screen variable
+    */
+
+    public function screenlock()
+    {
+        Session::put('lock', '1');
+        return View::make('admin/screen_lock', $this->data);
+    }
+
+
+}
