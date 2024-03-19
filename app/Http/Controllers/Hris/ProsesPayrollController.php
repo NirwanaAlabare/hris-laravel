@@ -2436,34 +2436,74 @@ class ProsesPayrollController extends AdminBaseController
             }
 
             //rekap payroll
-            $all_karyawan=EmployeeAtribut::selectRaw('employee_id,employee_name,jenis_kelamin,tempat_lahir,tanggal_lahir,golongan_darah,email,nomor_tlpn,agama,status_kawin,npwp,nomor_ktp,nomor_kk,ptkp,nama_sekolah_terakhir,pendidikan_terakhir,jurusan_pendidikan,nama_bank,nomor_rekening_bank,ibu_kandung,propinsi,kota_kab,kecamatan,kelurahan_desa,alamat_rumah,alamat_sementara,site_nirwana_id,site_nirwana_name,department_id,department_name,sub_dept_id,sub_dept_name,enroll_id,join_date,nik,status_aktif,status_jabatan,status_kontrak_tetap,status_staff,tanggal_resign,tunjangan,kode_grade,referensi,employee_name_atasan,status_aktif_bpjs_tk,tanggal_bpjs_ketenagakerjaan,nomor_bpjs_ketenagakerjaan,status_aktif_bpjs_ks,tanggal_bpjs_kesehatan,nomor_bpjs_kesehatan,pengalaman_bekerja,lokasi_file_cv,nama_kerabat,nomor_tlpn_kerabat,hubungan_kerabat,alamat_kerabat,tanggal_vaccine1,nama_vaksin1,tanggal_vaccine2,nama_vaksin2,tanggal_vaccine3,nama_vaksin3,golongan_sim,nomor_sim,tanggal_expire_sim,catatan,lokasi_foto,operator,tanggal_mulai_kontrak,tanggal_akhir_kontrak,catatan_kontrak,created_at,updated_at,deleted_at,shift_work_id,work_status,employee_status,posisi_name,hamlet,kode_pos,saudara_yang_bisa_dihubungi,allowance,pola_kerja,premi')->whereRaw('((status_aktif="AKTIF" and join_date <= "'.$tanggal_akhir.'") or tanggal_resign>"'.$tanggal_awal.'")'.$inEnrollId.'')->get();
+            if($selectedEnrollId){
+                $all_karyawan=EmployeeAtribut::whereIn('enroll_id',$selectedEnrollId)->where(function ($query)use($tanggal_awal,$tanggal_akhir){
+                    $query->where(function ($querys)use($tanggal_akhir){
+                        $querys->where('status_aktif','AKTIF')
+                        ->where('join_date','<=',$tanggal_akhir);
+                    })->orWhere('tanggal_resign','>=',$tanggal_awal);
+                })
+                ->with(['grading_salary' => function ($query) {
+                    $query->where('periode_umk', '2024-01');
+                }])->with(['rekap_kehadiran' => function ($query) use ($priode) {
+                    $query->where('periode_payroll', $priode);
+                }])->with(['rekap_lembur' => function ($query) use ($tanggal_awal,$tanggal_akhir) {
+                    $query->where('tanggal_berjalan','>=', $tanggal_awal)
+                    ->where('tanggal_berjalan','<=',$tanggal_akhir);
+                }])->with(['rekap_iks' => function ($query) use ($tanggal_awal,$tanggal_akhir) {
+                    $query->where('tanggal_berjalan','>=', $tanggal_awal)
+                    ->where('tanggal_berjalan','<=',$tanggal_akhir);
+                }])->with(['rekap_dtpc' => function ($query) use ($tanggal_awal,$tanggal_akhir) {
+                    $query->where('tanggal_berjalan','>=', $tanggal_awal)
+                    ->where('tanggal_berjalan','<=',$tanggal_akhir);
+                }])->with(['bpjs' => function ($query) use ($priode) {
+                    $query->where('periode_kehadiran', $priode);
+                }])->with(['koreksi_upah' => function ($query) use ($periode_payroll2) {
+                    $query->where('periode_tanggal_koreksi', $periode_payroll2);
+                }])->with(['koreksi_potongan' => function ($query) use ($periode_payroll2) {
+                    $query->where('periode_tanggal_koreksi', $periode_payroll2);
+                }])->with(['tunjangan' => function ($query) use ($priode) {
+                    $query->where('periode_payroll', $priode);
+                }])->get();
+            }else{
+                $all_karyawan=EmployeeAtribut::where(function ($query)use($tanggal_akhir){
+                    $query->where('status_aktif','AKTIF')
+                    ->where('join_date','<=',$tanggal_akhir);
+                })->orWhere('tanggal_resign','>=',$tanggal_awal)
+                ->with(['grading_salary' => function ($query) {
+                    $query->where('periode_umk', '2024-01');
+                }])->with(['rekap_kehadiran' => function ($query) use ($priode) {
+                    $query->where('periode_payroll', $priode);
+                }])->with(['rekap_lembur' => function ($query) use ($tanggal_awal,$tanggal_akhir) {
+                    $query->where('tanggal_berjalan','>=', $tanggal_awal)
+                    ->where('tanggal_berjalan','<=',$tanggal_akhir);
+                }])->with(['rekap_iks' => function ($query) use ($tanggal_awal,$tanggal_akhir) {
+                    $query->where('tanggal_berjalan','>=', $tanggal_awal)
+                    ->where('tanggal_berjalan','<=',$tanggal_akhir);
+                }])->with(['rekap_dtpc' => function ($query) use ($tanggal_awal,$tanggal_akhir) {
+                    $query->where('tanggal_berjalan','>=', $tanggal_awal)
+                    ->where('tanggal_berjalan','<=',$tanggal_akhir);
+                }])->with(['bpjs' => function ($query) use ($priode) {
+                    $query->where('periode_kehadiran', $priode);
+                }])->with(['koreksi_upah' => function ($query) use ($periode_payroll2) {
+                    $query->where('periode_tanggal_koreksi', $periode_payroll2);
+                }])->with(['koreksi_potongan' => function ($query) use ($periode_payroll2) {
+                    $query->where('periode_tanggal_koreksi', $periode_payroll2);
+                }])->with(['tunjangan' => function ($query) use ($priode) {
+                    $query->where('periode_payroll', $priode);
+                }])->get();
+            }
+            $data_payroll=[];
             foreach ($all_karyawan as $key => $value) {
+                $kode_grade2=$value->kode_grade;
                 $premi_karyawan=0;
-                $kode_grade2=EmployeeAtribut::select('kode_grade')->where('enroll_id',$value->enroll_id)->pluck('kode_grade')[0];
-                $premis=GradingSalary::select('insentif')->where('kode_grade',$kode_grade2)->where('periode_umk','2024-01')->pluck('insentif')[0];
-                if($premis!=0 && $premis==''){
-                    $premi_karyawan=($premis/$rekap_kehadiran->jumlah_hari_kerja)*$rekap_kehadiran->total_kehadiran_net;
+                if($value->grading_salary[0]->insentif){
+                    $premis=$value->grading_salary[0]->insentif;
+                    $premi_karyawan=($premis/$value->rekap_kehadiran[0]->jumlah_hari_kerja)*$value->rekap_kehadiran[0]->total_kehadiran_net;
                 }
-
-                $rekap_kehadiran=RekapPerhitunganKehadiranKaryawan::where('enroll_id',$value->enroll_id)->where('periode_payroll',$priode)->first();
-    
-                $rekap_lembur=RekapPerhitunganLembur::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->get();
-    
-                $rekap_iks=RekapPerhitunganIKS::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->get();
-    
-                $rekap_dtpc=RekapPerhitunganDTPC::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->get();
-    
-                $Bpjs=EmployeeBpjs::where('enroll_id',$value->enroll_id)->where('periode_kehadiran',$priode)->first();
-    
-    
-                $koreksi_upah=DataKoreksiUpah::where('enroll_id',$value->enroll_id)->where('periode_tanggal_koreksi',$periode_payroll2)->get();
-    
-                $koreksi_potongan=DataKoreksiPotongan::where('enroll_id',$value->enroll_id)->where('periode_tanggal_koreksi',$periode_payroll2)->get();
-    
-                $tunjangan=TunjanganKaryawan::where('enroll_id',$value->enroll_id)->where('periode_payroll',$priode)->first();
-    
-                if($rekap_kehadiran!=null){
-                    list($periode_tahun_payroll, $periode_bulan_payroll) = explode("-", $rekap_kehadiran->periode_tahun_bulan);
+                
+                if($value->rekap_kehadiran[0]){
+                    list($periode_tahun_payroll, $periode_bulan_payroll) = explode("-", $value->rekap_kehadiran[0]->periode_tahun_bulan);
                     //tunjangan
                     $tanggal_masuk = $value->join_date;
     
@@ -2485,25 +2525,34 @@ class ProsesPayrollController extends AdminBaseController
                         $tunjangan = 12500;
                     }
     
-    
-                    $bpjs_tk_jkm_bruto_rupiah=$Bpjs->bpjs_tk_jkm_bruto_rupiah??0;
-                    $bpjs_tk_jkm_neto_rupiah=$Bpjs->bpjs_tk_jkm_neto_rupiah??0;
-                    $bpjs_tk_jkk_bruto_rupiah=$Bpjs->bpjs_tk_jkk_bruto_rupiah??0;
-                    $bpjs_tk_jkk_neto_rupiah=$Bpjs->bpjs_tk_jkk_neto_rupiah??0;
-                    $bpjs_tk_jht_bruto_rupiah=$Bpjs->bpjs_tk_jht_bruto_rupiah??0;
-                    $bpjs_tk_jht_neto_rupiah=$Bpjs->bpjs_tk_jht_neto_rupiah??0;
-                    $bpjs_tk_jpn_bruto_rupiah=$Bpjs->bpjs_tk_jpn_bruto_rupiah??0;
-                    $bpjs_tk_jpn_neto_rupiah=$Bpjs->bpjs_tk_jpn_neto_rupiah??0;
-                    $bpjs_ks_jkn_bruto_rupiah=$Bpjs->bpjs_ks_jkn_bruto_rupiah??0;
-                    $bpjs_ks_jkn_neto_rupiah=$Bpjs->bpjs_ks_jkn_neto_rupiah??0;
-    
-    
+                    $bpjs_tk_jkm_bruto_rupiah=0;
+                    $bpjs_tk_jkm_neto_rupiah=0;
+                    $bpjs_tk_jkk_bruto_rupiah=0;
+                    $bpjs_tk_jkk_neto_rupiah=0;
+                    $bpjs_tk_jht_bruto_rupiah=0;
+                    $bpjs_tk_jht_neto_rupiah=0;
+                    $bpjs_tk_jpn_bruto_rupiah=0;
+                    $bpjs_tk_jpn_neto_rupiah=0;
+                    $bpjs_ks_jkn_bruto_rupiah=0;
+                    $bpjs_ks_jkn_neto_rupiah=0;
+                    if($value->bpjs[0]){
+                        $bpjs_tk_jkm_bruto_rupiah=$value->bpjs[0]->bpjs_tk_jkm_bruto_rupiah;
+                        $bpjs_tk_jkm_neto_rupiah=$value->bpjs[0]->bpjs_tk_jkm_neto_rupiah;
+                        $bpjs_tk_jkk_bruto_rupiah=$value->bpjs[0]->bpjs_tk_jkk_bruto_rupiah;
+                        $bpjs_tk_jkk_neto_rupiah=$value->bpjs[0]->bpjs_tk_jkk_neto_rupiah;
+                        $bpjs_tk_jht_bruto_rupiah=$value->bpjs[0]->bpjs_tk_jht_bruto_rupiah;
+                        $bpjs_tk_jht_neto_rupiah=$value->bpjs[0]->bpjs_tk_jht_neto_rupiah;
+                        $bpjs_tk_jpn_bruto_rupiah=$value->bpjs[0]->bpjs_tk_jpn_bruto_rupiah;
+                        $bpjs_tk_jpn_neto_rupiah=$value->bpjs[0]->bpjs_tk_jpn_neto_rupiah;
+                        $bpjs_ks_jkn_bruto_rupiah=$value->bpjs[0]->bpjs_ks_jkn_bruto_rupiah;
+                        $bpjs_ks_jkn_neto_rupiah=$value->bpjs[0]->bpjs_ks_jkn_neto_rupiah;
+                    }
     
                     $data_payroll[]=[
-                        'kode_rekap_payroll'=>$rekap_kehadiran->kode_rekap,
-                        'periode_kehadiran'=>$rekap_kehadiran->periode_payroll,
-                        'periode_tahun_payroll'=>$periode_tahun_payroll,
-                        'periode_bulan_payroll'=>$periode_bulan_payroll,
+                        'kode_rekap_payroll'=>$value->rekap_kehadiran[0]->kode_rekap,
+                        'periode_kehadiran'=>$value->rekap_kehadiran[0]->periode_payroll,
+                        'periode_tahun_payroll'=>$value->rekap_kehadiran[0]->periode_tahun_payroll,
+                        'periode_bulan_payroll'=>$value->rekap_kehadiran[0]->periode_bulan_payroll,
                         'enroll_id'=>$value->enroll_id,
                         'nik'=>$value->nik,
                         'kode_grade'=>$value->kode_grade,
@@ -2526,57 +2575,49 @@ class ProsesPayrollController extends AdminBaseController
                         'sub_dept_id'=>$value->sub_dept_id,
                         'tunjangan_karyawan_rupiah'=>$tunjangan,
                         'premi_karyawan'=>$premi_karyawan,
-                        'kehadiran_iby'=>$rekap_kehadiran->kehadiran_iby,
-                        'kehadiran_itb'=>$rekap_kehadiran->kehadiran_itb,
-                        'kehadiran_m'=>$rekap_kehadiran->kehadiran_m,
-                        'kehadiran_dt'=>$rekap_kehadiran->kehadiran_dt,
-                        'kehadiran_pc'=>$rekap_kehadiran->kehadiran_pc,
-                        'kehadiran_dtpc'=>$rekap_kehadiran->kehadiran_dtpc,
-                        'kehadiran_lby'=>$rekap_kehadiran->kehadiran_lby,
-                        'kehadiran_lsm'=>$rekap_kehadiran->kehadiran_lsm,
-                        'kehadiran_r'=>$rekap_kehadiran->kehadiran_r,
-                        'kehadiran_ok'=>$rekap_kehadiran->kehadiran_ok,
-                        'kehadiran_tk'=>$rekap_kehadiran->kehadiran_tk,
-                        'total_kehadiran'=>$rekap_kehadiran->total_kehadiran,
-                        'total_kehadiran_net'=>$rekap_kehadiran->total_kehadiran_net,
-                        'upah_per_bulan'=>$rekap_kehadiran->gaji_pokok,
-                        'upah_per_hari'=>$rekap_kehadiran->gaji_harian,
-                        'upah_per_menit'=>$rekap_kehadiran->gaji_menit,
-                        'potongan_kehadiran_rupiah'=>$rekap_kehadiran->potongan_kehadiran_rupiah,
-                        'kehadiran_m_estimasi'=>$rekap_kehadiran->kehadiran_m_estimasi,
+                        'kehadiran_iby'=>$value->rekap_kehadiran[0]->kehadiran_iby,
+                        'kehadiran_itb'=>$value->rekap_kehadiran[0]->kehadiran_itb,
+                        'kehadiran_m'=>$value->rekap_kehadiran[0]->kehadiran_m,
+                        'kehadiran_dt'=>$value->rekap_kehadiran[0]->kehadiran_dt,
+                        'kehadiran_pc'=>$value->rekap_kehadiran[0]->kehadiran_pc,
+                        'kehadiran_dtpc'=>$value->rekap_kehadiran[0]->kehadiran_dtpc,
+                        'kehadiran_lby'=>$value->rekap_kehadiran[0]->kehadiran_lby,
+                        'kehadiran_lsm'=>$value->rekap_kehadiran[0]->kehadiran_lsm,
+                        'kehadiran_r'=>$value->rekap_kehadiran[0]->kehadiran_r,
+                        'kehadiran_ok'=>$value->rekap_kehadiran[0]->kehadiran_ok,
+                        'kehadiran_tk'=>$value->rekap_kehadiran[0]->kehadiran_tk,
+                        'total_kehadiran'=>$value->rekap_kehadiran[0]->total_kehadiran,
+                        'total_kehadiran_net'=>$value->rekap_kehadiran[0]->total_kehadiran_net,
+                        'upah_per_bulan'=>$value->rekap_kehadiran[0]->gaji_pokok,
+                        'upah_per_hari'=>$value->rekap_kehadiran[0]->gaji_harian,
+                        'upah_per_menit'=>$value->rekap_kehadiran[0]->gaji_menit,
+                        'potongan_kehadiran_rupiah'=>$value->rekap_kehadiran[0]->potongan_kehadiran_rupiah,
+                        'kehadiran_m_estimasi'=>$value->rekap_kehadiran[0]->kehadiran_m_estimasi,
     
-                        'lembur_1'=>$rekap_lembur->sum('lembur_1')??0,
-                        'lembur_2'=>$rekap_lembur->sum('lembur_2')??0,
-                        'lembur_3'=>$rekap_lembur->sum('lembur_3')??0,
-                        'lembur_4'=>$rekap_lembur->sum('lembur_4')??0,
-                        'total_lembur_1234'=>$rekap_lembur->sum('total_lembur_1234')??0,
-                        'lembur1_rupiah'=>$rekap_lembur->sum('lembur1_rupiah')??0,
-                        'lembur2_rupiah'=>$rekap_lembur->sum('lembur2_rupiah')??0,
-                        'lembur3_rupiah'=>$rekap_lembur->sum('lembur3_rupiah')??0,
-                        'lembur4_rupiah'=>$rekap_lembur->sum('lembur4_rupiah')??0,
-                        'total_lembur_rupiah'=>$rekap_lembur->sum('total_lembur_rupiah')??0,
+                        'lembur_1'=>$value->rekap_lembur->sum('lembur_1'),
+                        'lembur_2'=>$value->rekap_lembur->sum('lembur_2'),
+                        'lembur_3'=>$value->rekap_lembur->sum('lembur_3'),
+                        'lembur_4'=>$value->rekap_lembur->sum('lembur_4'),
+                        'total_lembur_1234'=>$value->rekap_lembur->sum('total_lembur_1234'),
+                        'lembur1_rupiah'=>$value->rekap_lembur->sum('lembur1_rupiah'),
+                        'lembur2_rupiah'=>$value->rekap_lembur->sum('lembur2_rupiah'),
+                        'lembur3_rupiah'=>$value->rekap_lembur->sum('lembur3_rupiah'),
+                        'lembur4_rupiah'=>$value->rekap_lembur->sum('lembur4_rupiah'),
+                        'total_lembur_rupiah'=>$value->rekap_lembur->sum('total_lembur_rupiah'),
     
                         'pendapatan_lainnya_rupiah'=>0,
     
-                        'koreksi_upah_rupiah'=>$koreksi_upah->sum('jumlah_rp_potongan')??0,
-                        'koreksi_potongan_rupiah'=>$koreksi_potongan->sum('jumlah_rp_potongan')??0,
+                        'koreksi_upah_rupiah'=>$value->koreksi_upah->sum('jumlah_rp_potongan'),
+                        'koreksi_potongan_rupiah'=>$value->koreksi_potongan->sum('jumlah_rp_potongan'),
     
-                        'potongan_iks_menit'=>$rekap_iks->sum('lama_ijin_menit')??0,
-                        'potongan_iks_rupiah'=>$rekap_iks->sum('potongan_iks_rupiah')??0,
-                        'potongan_dt_menit'=>$rekap_dtpc->sum('jumlah_menit_absen_dt')??0,
-                        'potongan_pc_menit'=>$rekap_dtpc->sum('jumlah_menit_absen_pc')??0,
-                        'potongan_dtpc_menit'=>$rekap_dtpc->sum('jumlah_menit_absen_dtpc')??0,
-                        'potongan_dt_rupiah'=>$rekap_dtpc->sum('potongan_dt_rupiah')??0,
-                        'potongan_pc_rupiah'=>$rekap_dtpc->sum('potongan_pc_rupiah')??0,
-                        'potongan_dtpc_rupiah'=>$rekap_dtpc->sum('potongan_dtpc_rupiah')??0,
-    
-                        // 'upah_bruto_rupiah'=>$value,
-                        // 'upah_neto_rupiah'=>$value,
-    
-                        // 'upah_bersih_rupiah'=>$value,
-                        // 'total_upah_thp_rupiah'=>$value,
-                        // 'jumlah_potongan_rupiah'=>$value,
-    
+                        'potongan_iks_menit'=>$value->rekap_iks->sum('lama_ijin_menit'),
+                        'potongan_iks_rupiah'=>$value->rekap_iks->sum('potongan_iks_rupiah'),
+                        'potongan_dt_menit'=>$value->rekap_dtpc->sum('jumlah_menit_absen_dt'),
+                        'potongan_pc_menit'=>$value->rekap_dtpc->sum('jumlah_menit_absen_pc'),
+                        'potongan_dtpc_menit'=>$value->rekap_dtpc->sum('jumlah_menit_absen_dtpc'),
+                        'potongan_dt_rupiah'=>$value->rekap_dtpc->sum('potongan_dt_rupiah'),
+                        'potongan_pc_rupiah'=>$value->rekap_dtpc->sum('potongan_pc_rupiah'),
+                        'potongan_dtpc_rupiah'=>$value->rekap_dtpc->sum('potongan_dtpc_rupiah'),
     
                         'pph21'=>0, // dari mana?
                         'iuran_serikat_rupiah'=>0, // dari mana?
