@@ -202,6 +202,29 @@ class EmployeeAtribut extends \Eloquent
     public function grading_salary(){
         return $this->hasMany(GradingSalary::class, 'kode_grade','kode_grade');
     }
-
+    public function rekap_kehadiran(){
+        return $this->hasMany(RekapPerhitunganKehadiranKaryawan::class,'enroll_id','enroll_id');
+    }
+    public function rekap_lembur(){
+        return $this->hasMany(RekapPerhitunganLembur::class, 'enroll_id','enroll_id');
+    }
+    public function rekap_iks(){
+        return $this->hasMany(RekapPerhitunganIKS::class,'enroll_id','enroll_id');
+    }
+    public function rekap_dtpc(){
+        return $this->hasMany(RekapPerhitunganDTPC::class,'enroll_id','enroll_id');
+    }
+    public function bpjs(){
+        return $this->hasMany(EmployeeBPJS::class,'enroll_id','enroll_id');
+    }
+    public function koreksi_upah(){
+        return $this->hasMany(DataKoreksiUpah::class,'enroll_id','enroll_id');
+    }
+    public function koreksi_potongan(){
+        return $this->hasMany(DataKoreksiPotongan::class, 'enroll_id','enroll_id');
+    }
+    public function tunjangan(){
+        return $this->hasMany(TunjanganKaryawan::class, 'enroll_id','enroll_id');
+    }
 
 }
