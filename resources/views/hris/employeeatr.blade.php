@@ -42,12 +42,13 @@
             <div class="input-group">
                 
                 @php
-                    if (($loggedAdmin->role_user == "admin") || ($loggedAdmin->role_user == "superadmin") || ($loggedAdmin->role_user == "absensi")) {
+                    if (($loggedAdmin->role_user == "admin") || ($loggedAdmin->role_user == "superadmin") || ($loggedAdmin->role_user == "absensi")){
                 @endphp
                 
                 <div class="text-white">
                     @if($loggedAdmin->email=='mega@ptnag.com' || $loggedAdmin->email=='rudy@ptnag.com' || $loggedAdmin->email=='rifqi@ptnag.com')
                     <button type="button" id="btn-import-employee" class="btn btn-icon btn-success text-white p-0 mr-1"  data-target="#import_employee" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Karyawan</button>
+                    <button type="button" class="btn btn-icon btn-warning text-white p-0 mr-1"  data-target="#import_employees" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Karyawan</button>
                     @endif
                     <a href="{{route('hris.employeeatr.format')}}" id="btn-examimport" class="btn btn-icon btn-orange text-white p-0 mr-1" data-toggle="tooltip" title="" data-original-title="Format File Excel"><i class="fa fa-file-excel-o"></i>Format File </a>
                     <button type="button" id="btn-import" class="btn btn-icon btn-warning text-white p-0 mr-1"  data-target="#import_grade" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Data</button>
@@ -119,6 +120,79 @@
                                                     </div>
                                                 </div>
                                             </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="import_employees" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog" role="document" style="max-width: 1330px">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-warning p-2">
+                                                <h4 class="modal-title pl-2 font-weight-bold" >Import Employee</h4>
+                                                <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
+                                                    <i class="fa fa-remove"></i>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body p-5">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <input class="form-control" ref="excel_filess" name="excel_filess" id="excel_filess" type="file" accept=".xlsx, .xls, .csv" required>
+                                                    </div>
+                                                </div>
+                                                <div class="row pt-2" id="row_tabler">
+                                                    <div class="col-12">
+                                                        <table class="table table-bordered" style="overflow-x:auto">
+                                                            <thead id="head_karyawan">
+                                                                <tr>
+                                                                    <td width="68px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ID</td>
+                                                                    <td width="120px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NIK</td>
+                                                                    <td width="250px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NAMA KARYAWAN</td>
+                                                                    <td width="150px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">JENIS KELAMIN</td>
+                                                                    <td width="150px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">JABATAN</td>
+                                                                    <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">DEPARTMENT</td>
+                                                                    <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">BAGIAN</td>
+                                                                    <td width="120px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">AKTIF/NON</td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="tabel_karyawan">
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="col-12 text-center">
+                                                        <div id="loading_karyawan">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row justify-content-end" id="row_error_handle" style="visibility: hidden">
+                                                    <div class="col-2">
+                                                    </div>
+                                                    <div class="col-8 text-center">
+                                                        <button type="button" id="employeeImportButton" class="btn btn-success py-1" style="visibility: hidden"><i class="fa fa-upload" aria-hidden="true"></i> IMPORT</button>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <table>
+                                                            <tr>
+                                                                <td valign="top" width="150px" style="background-color: red;font-size:9pt;font-weight:bold; color:white;padding-left:4px;border:1px solid grey">
+                                                                    <i class="fa fa-times"></i>&nbsp;DEPARTMENT/SUB
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td valign="top" style="background-color:lightblue;black;font-size:9pt;font-weight:bold;padding-left:4px;border:1px solid grey">
+                                                                    <i class="fa fa-check"></i>&nbsp;NEW EMPLOYEE
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td valign="top" style="background-color:rgb(255, 255, 255);font-size:9pt;font-weight:bold;padding-left:4px;border:1px solid grey">
+                                                                    <i class="fa fa-check"></i>&nbsp;UPDATE EMPLOYEE
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -882,6 +956,100 @@
     <!---Tabs js-->
     <script src="{{URL::asset('assets/plugins/tabs/jquery.multipurpose_tabcontent.js')}}"></script>
     <script src="{{URL::asset('assets/plugins/tabs/tabs.js')}}"></script>
+    <style>
+        #head_karyawan, #tabel_karyawan { display: block; }
+
+        #tabel_karyawan {
+            height: 1px;       /* Just for the demo          */
+            overflow-y: auto;    /* Trigger vertical scroll    */
+            overflow-x: hidden;
+            font-size: 9pt; /* Hide the horizontal scroll */
+        }
+    </style>
+    <script type="text/javascript">
+        function fill_the_table(){
+            $('#loading_karyawan').addClass("spinner-border");
+            $('#tabel_karyawan').empty();
+            var formData = new FormData();
+            var excelFile=document.getElementById("excel_filess");
+            var myFile=excelFile.files[0];
+            var error_handle = $("input[name='error_handle']:checked").val();
+            formData.append("excel_file",myFile);
+            formData.append("error_handle",error_handle);
+            document.getElementById('row_tabler').style.height='67px';
+            document.getElementById('tabel_karyawan').style.height='1px';
+            document.getElementById('employeeImportButton').style.visibility='hidden';
+            if(typeof myFile=='undefined'){
+                notif({
+                    msg: "<b>Error:</b> Pilih File terlebih dahulu!",
+                    type: "error"
+                });
+                document.getElementById('tabel_karyawan').style.height='1px';
+                document.getElementById('row_error_handle').style.visibility='hidden';
+                document.getElementById('employeeImportButton').style.visibility='hidden';
+                $('#loading_karyawan').removeClass("spinner-border");
+                document.getElementById('row_tabler').style.height='67px';
+            }else{
+                $.ajax({
+                    type: 'POST',
+                    url: '{{route('hris.employeeatr.import_employees')}}',
+                    contentType: false,
+                    processData: false,
+                    data: formData,
+                    success:function(data){
+                         jQuery.each(data, function(key,value){
+                            $('#tabel_karyawan').append("<tr style='background-color:"+data[key].status_department+"'>\
+                                <td width='68px'>"+data[key].enroll_id+"</td>\
+                                <td width='120px'>"+data[key].nik+"</td>\
+                                <td width='250px'>"+data[key].nama_karyawan+"</td>\
+                                <td width='150px'>"+data[key].jenis_kelamin+"</td>\
+                                <td width='150px'>"+data[key].jabatan+"</td>\
+                                <td width='200px'>"+data[key].department+"</td>\
+                                <td width='200px'>"+data[key].bagian+"</td>\
+                                <td width='120px'>"+data[key].status_aktif+"</td>\
+                            </tr>");
+                        });
+                        document.getElementById('tabel_karyawan').style.height='330px';
+                        document.getElementById('employeeImportButton').style.visibility='visible';
+                        document.getElementById('row_error_handle').style.visibility='visible';
+                        $('#loading_karyawan').removeClass("spinner-border");
+                        document.getElementById('row_tabler').style.height='400px';
+                    }
+                })
+            }
+        }
+        $('#excel_filess').change(function() {
+            fill_the_table();
+        });
+        $('#employeeImportButton').click(function(){
+            var formData = new FormData();
+            var excelFile=document.getElementById("excel_filess");
+            var myFile=excelFile.files[0];
+            formData.append("excel_file",myFile);
+            $('#employeeImportButton').addClass("btn-loading");
+            $("#employeeImportButton").html('Please wait...');
+            $("#employeeImportButton").attr("disabled", true);
+            $.ajax({
+                type: 'POST',
+                url: '{{route('hris.employeeatr.import_employee_to_database')}}',
+                contentType: false,
+                processData: false,
+                data: formData,
+                success:function(data){
+                    $('#employeeImportButton').removeClass("btn-loading");
+                    $("#employeeImportButton").html('<i class="fa fa-upload" aria-hidden="true"></i> IMPORT');
+                    $("#employeeImportButton").attr("disabled", false);
+                    swal("", "IMPORT KARYAWAN BERHASIL!", "success")
+                },
+                error: function(res){
+                    swal("", "IMPORT KARYAWAN GAGAL!", "error")
+                    $('#employeeImportButton').removeClass("btn-loading");
+                    $("#employeeImportButton").html('<i class="fa fa-upload" aria-hidden="true"></i> IMPORT');
+                    $("#employeeImportButton").attr("disabled", false);
+                }
+            });
+        });
+    </script>
 
     <script type="text/javascript">
 

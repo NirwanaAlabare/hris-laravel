@@ -146,6 +146,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('employeeatr/replace/',['as'=>'hris.employeeatr.replace','uses'=> 'EmployeeAtrController@replace']);
     Route::post('employeeatr/destroy/',['as'=>'hris.employeeatr.destroy','uses'=> 'EmployeeAtrController@destroy']);
     Route::post('employeeatr/ajax_exportexcel/',['as'=>'hris.employeeatr.ajax_exportexcel','uses'=> 'EmployeeAtrController@ajax_exportexcel']);
+    Route::post('employeeatr/import_employees/',['as'=>'hris.employeeatr.import_employees','uses'=> 'EmployeeAtrController@import_employees']);
+    Route::post('employeeatr/import_employee_to_database/',['as'=>'hris.employeeatr.import_employee_to_database','uses'=> 'EmployeeAtrController@import_employee_to_database']);
 
     // REF ABSEN IJIN
     Route::get('refabsenijin/index',['as'=>'hris.refabsenijin.index','uses'=>'RefAbsenIjinController@index']);

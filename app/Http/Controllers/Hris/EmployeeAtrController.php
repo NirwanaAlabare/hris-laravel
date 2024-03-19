@@ -955,6 +955,130 @@ class EmployeeAtrController extends AdminBaseController
         ]);
         dd('success : ',$employee_id);
     }
+    public function import_employees(Request $request)
+    {
+        $data=Excel::toArray([],$request->file('excel_file'));
+        $enroll_id=[];
+        $nik=[];
+        $nama_karyawan=[];
+        $jenis_kelamin=[];
+        $jabatan=[];
+        $department=[];
+        $bagian=[];
+        $status_aktif=[];
+        $tanggal_masuk=[];
+        $status_department=[];
+        $arrayDeptName=DepartmentAll::where('site_nirwana_id','NAG')->pluck('department_name')->toArray();
+        $arraySubDeptName=DepartmentAll::where('site_nirwana_id','NAG')->pluck('sub_dept_name')->toArray();
+        $arrayEnrollId=EmployeeAtribut::pluck('enroll_id')->toArray();
+        for($i=5;$i<count($data[0]);$i++){
+            array_push($enroll_id,$data[0][$i][1]);
+            array_push($nik,$data[0][$i][2]);
+            array_push($nama_karyawan,$data[0][$i][3]);
+            array_push($jenis_kelamin,$data[0][$i][4]);
+            array_push($jabatan,$data[0][$i][5]);
+            array_push($department,$data[0][$i][7]);
+            array_push($bagian,$data[0][$i][9]);
+            array_push($status_aktif,$data[0][$i][10]);
+            array_push($tanggal_masuk,$data[0][$i][11]);
+            if((!in_array($data[0][$i][7],$arrayDeptName) || !in_array($data[0][$i][9],$arraySubDeptName)) && in_array($data[0][$i][1],$arrayEnrollId)){
+                array_push($status_department,'red');
+            }else if((!in_array($data[0][$i][7],$arrayDeptName) || !in_array($data[0][$i][9],$arraySubDeptName)) && !in_array($data[0][$i][1],$arrayEnrollId)){
+                array_push($status_department,'red');
+            }else if(in_array($data[0][$i][7],$arrayDeptName) && in_array($data[0][$i][9],$arraySubDeptName) && !in_array($data[0][$i][1],$arrayEnrollId)){
+                if($data[0][$i][1]==''){
+                    array_push($status_department, 'orange');
+                }else{
+                    array_push($status_department, 'lightblue');
+                }
+            }else if(in_array($data[0][$i][7],$arrayDeptName) && in_array($data[0][$i][9],$arraySubDeptName) && in_array($data[0][$i][1],$arrayEnrollId)){
+                array_push($status_department, 'white');
+            }
+        }
+        $arrayEmployee=[];
+        foreach($enroll_id as $key=>$value){
+            if($value==''){
+                continue;
+            }
+            $arrayEmployee[$key]=[
+                'enroll_id'=>$enroll_id[$key],
+                'nik'=>$nik[$key],
+                'nama_karyawan'=>$nama_karyawan[$key],
+                'jenis_kelamin'=>$jenis_kelamin[$key],
+                'jabatan'=>$jabatan[$key],
+                'department'=>$department[$key],
+                'bagian'=>$bagian[$key],
+                'status_aktif'=>$status_aktif[$key],
+                'tanggal_masuk'=>$tanggal_masuk[$key],
+                'status_department'=>$status_department[$key],
+            ];
+        }
+        return $arrayEmployee;
+    }
+    
+    public function import_employee_to_database(){
+        $data=Excel::toArray([],$request->file('excel_file'));
+        $enroll_id=[];
+        $nik=[];
+        $nama_karyawan=[];
+        $jenis_kelamin=[];
+        $jabatan=[];
+        $department=[];
+        $bagian=[];
+        $status_aktif=[];
+        $tanggal_masuk=[];
+        $status_department=[];
+        $arrayDeptName=DepartmentAll::where('site_nirwana_id','NAG')->pluck('department_name')->toArray();
+        $arraySubDeptName=DepartmentAll::where('site_nirwana_id','NAG')->pluck('sub_dept_name')->toArray();
+        $arrayEnrollId=EmployeeAtribut::pluck('enroll_id')->toArray();
+        for($i=5;$i<count($data[0]);$i++){
+            array_push($enroll_id,$data[0][$i][1]);
+            array_push($nik,$data[0][$i][2]);
+            array_push($nama_karyawan,$data[0][$i][3]);
+            array_push($jenis_kelamin,$data[0][$i][4]);
+            array_push($jabatan,$data[0][$i][5]);
+            array_push($department,$data[0][$i][7]);
+            array_push($bagian,$data[0][$i][9]);
+            array_push($status_aktif,$data[0][$i][10]);
+            array_push($tanggal_masuk,$data[0][$i][11]);
+            if((!in_array($data[0][$i][7],$arrayDeptName) || !in_array($data[0][$i][9],$arraySubDeptName)) && in_array($data[0][$i][1],$arrayEnrollId)){
+                array_push($status_department,'red');
+            }else if((!in_array($data[0][$i][7],$arrayDeptName) || !in_array($data[0][$i][9],$arraySubDeptName)) && !in_array($data[0][$i][1],$arrayEnrollId)){
+                array_push($status_department,'red');
+            }else if(in_array($data[0][$i][7],$arrayDeptName) && in_array($data[0][$i][9],$arraySubDeptName) && !in_array($data[0][$i][1],$arrayEnrollId)){
+                if($data[0][$i][1]==''){
+                    array_push($status_department, 'orange');
+                }else{
+                    array_push($status_department, 'lightblue');
+                }
+            }else if(in_array($data[0][$i][7],$arrayDeptName) && in_array($data[0][$i][9],$arraySubDeptName) && in_array($data[0][$i][1],$arrayEnrollId)){
+                array_push($status_department, 'white');
+            }
+        }
+        $arrayEmployee=[];
+        foreach($enroll_id as $key=>$value){
+            if($value==''){
+                continue;
+            }
+            $arrayEmployee[$key]=[
+                'enroll_id'=>$enroll_id[$key],
+                'nik'=>$nik[$key],
+                'nama_karyawan'=>$nama_karyawan[$key],
+                'jenis_kelamin'=>$jenis_kelamin[$key],
+                'jabatan'=>$jabatan[$key],
+                'department'=>$department[$key],
+                'bagian'=>$bagian[$key],
+                'status_aktif'=>$status_aktif[$key],
+                'tanggal_masuk'=>$tanggal_masuk[$key],
+                'status_department'=>$status_department[$key],
+            ];
+        }
+        foreach($arrayEmployee as $key=>$value){
+            if($value->status_department=='white'){
+                
+            }
+        }
+    }
     public function uploadEmployee(Request $request)
     {
         ini_set('max_execution_time', 0);

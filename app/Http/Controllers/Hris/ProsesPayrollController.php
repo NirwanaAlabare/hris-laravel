@@ -4616,7 +4616,6 @@ class ProsesPayrollController extends AdminBaseController
         }else{
             $periode_payroll = '2024-01';
         }
-            $periode_payroll='2024-02';
         $bulan_sekarang1 = strtotime(date($periode_payroll));
         $tanggal_sekarang=date('Y-m-d');
         $bulan_sebelum = strtotime("-1 month", $bulan_sekarang1);
@@ -4827,7 +4826,7 @@ class ProsesPayrollController extends AdminBaseController
                     $l3_rupiah=$l3*($salary_bulanan/173*1);
                     $l4_rupiah=$l4*($salary_bulanan/173*1);
                 }
-                $record_lemburan=[
+                $record_lemburan[$key2]=[
                     'uuid'=>Str::uuid('uuid'),
                     'periode_umk'=>null,
                     'tanggal_berjalan'=>$value2['tanggal_berjalan'],
@@ -4882,7 +4881,6 @@ class ProsesPayrollController extends AdminBaseController
                     RekapPerhitunganLembur::create($record_lemburan);
                 }
             }
-            return count($data_lemburan);
         }
     }
     public function index3(Request $request)
