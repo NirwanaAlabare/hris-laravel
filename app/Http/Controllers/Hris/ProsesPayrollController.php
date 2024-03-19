@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 
-use App\Test;
 use App\Models\MasterDataAbsenKehadiran;
 use App\Models\RefAbsenIjin;
 use App\Models\DataKoreksiPotongan;
@@ -2594,7 +2593,6 @@ class ProsesPayrollController extends AdminBaseController
                         'upah_per_menit'=>$value->rekap_kehadiran[0]->gaji_menit,
                         'potongan_kehadiran_rupiah'=>$value->rekap_kehadiran[0]->potongan_kehadiran_rupiah,
                         'kehadiran_m_estimasi'=>$value->rekap_kehadiran[0]->kehadiran_m_estimasi,
-                        //esoifosidojgoag
                         'lembur_1'=>$value->rekap_lembur->sum('lembur_1'),
                         'lembur_2'=>$value->rekap_lembur->sum('lembur_2'),
                         'lembur_3'=>$value->rekap_lembur->sum('lembur_3'),
