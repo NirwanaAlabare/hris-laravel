@@ -2551,8 +2551,8 @@ class ProsesPayrollController extends AdminBaseController
                     $data_payroll[]=[
                         'kode_rekap_payroll'=>$value->rekap_kehadiran[0]->kode_rekap,
                         'periode_kehadiran'=>$value->rekap_kehadiran[0]->periode_payroll,
-                        'periode_tahun_payroll'=>$value->rekap_kehadiran[0]->periode_tahun,
-                        'periode_bulan_payroll'=>$value->rekap_kehadiran[0]->periode_bulan,
+                        'periode_tahun_payroll'=>$periode_tahun_payroll,
+                        'periode_bulan_payroll'=>$periode_bulan_payroll,
                         'enroll_id'=>$value->enroll_id,
                         'nik'=>$value->nik,
                         'kode_grade'=>$value->kode_grade,
