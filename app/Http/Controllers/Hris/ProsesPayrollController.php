@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 
+use App\Test;
 use App\Models\MasterDataAbsenKehadiran;
 use App\Models\RefAbsenIjin;
 use App\Models\DataKoreksiPotongan;
