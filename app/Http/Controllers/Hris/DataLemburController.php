@@ -722,7 +722,7 @@ class DataLemburController extends AdminBaseController
         $dataLembur = MasterDataAbsenKehadiran::whereNotNull('nomor_form_lembur')->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->with('data_lembur')->with(['rekap_lembur' => function ($query)use($tanggal_awal,$tanggal_akhir) {
             $query->where('tanggal_berjalan', '>=', $tanggal_awal)
             ->where('tanggal_berjalan','<=',$tanggal_akhir);
-        }])->whereIn('nomor_form_lembur',$nomor_form_lembur_rekap)->get();
+        }])->whereIn('nomor_form_lembur',$nomor_form_lembur_rekap)->orderBy('tanggal_berjalan')->orderBy('nomor_form_lembur')->orderBy('employee_name')->get();
         $excel = FastExcel::create('dataLembur');
         $sheet = $excel->getSheet();
         $sheet->writeTo('A1', 'PT NIRWANA ALABARE GARMENT',['font-size' => 14]);
