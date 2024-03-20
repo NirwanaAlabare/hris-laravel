@@ -129,7 +129,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="modal-content">
-                                            <div class="modal-header bg-warning p-2">
+                                            <div class="modal-header bg-success p-2">
                                                 <h4 class="modal-title pl-2 font-weight-bold" >Import Employee</h4>
                                                 <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
                                                     <i class="fa fa-remove"></i>
