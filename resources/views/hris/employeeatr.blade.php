@@ -47,8 +47,7 @@
                 
                 <div class="text-white">
                     @if($loggedAdmin->email=='mega@ptnag.com' || $loggedAdmin->email=='rudy@ptnag.com' || $loggedAdmin->email=='rifqi@ptnag.com')
-                    <button type="button" id="btn-import-employee" class="btn btn-icon btn-success text-white p-0 mr-1"  data-target="#import_employee" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Karyawan</button>
-                    <button type="button" class="btn btn-icon btn-warning text-white p-0 mr-1"  data-target="#import_employees" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Karyawan</button>
+                    <button type="button" class="btn btn-icon btn-success text-white p-0 mr-1"  data-target="#import_employees" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Karyawan</button>
                     @endif
                     <a href="{{route('hris.employeeatr.format')}}" id="btn-examimport" class="btn btn-icon btn-orange text-white p-0 mr-1" data-toggle="tooltip" title="" data-original-title="Format File Excel"><i class="fa fa-file-excel-o"></i>Format File </a>
                     <button type="button" id="btn-import" class="btn btn-icon btn-warning text-white p-0 mr-1"  data-target="#import_grade" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Data</button>
@@ -1036,10 +1035,17 @@
                 processData: false,
                 data: formData,
                 success:function(data){
+                    console.log(data);
                     $('#employeeImportButton').removeClass("btn-loading");
                     $("#employeeImportButton").html('<i class="fa fa-upload" aria-hidden="true"></i> IMPORT');
                     $("#employeeImportButton").attr("disabled", false);
-                    swal("", "IMPORT KARYAWAN BERHASIL!", "success")
+                    swal("", "IMPORT KARYAWAN BERHASIL!", "success");
+                    $('#import_employees').modal('hide');
+                    $('#excel_filess').val('');
+                    document.getElementById('tabel_karyawan').style.height='1px';
+                    document.getElementById('row_error_handle').style.visibility='hidden';
+                    document.getElementById('employeeImportButton').style.visibility='hidden';
+                    document.getElementById('row_tabler').style.height='67px';
                 },
                 error: function(res){
                     swal("", "IMPORT KARYAWAN GAGAL!", "error")

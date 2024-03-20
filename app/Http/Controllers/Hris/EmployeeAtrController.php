@@ -993,6 +993,8 @@ class EmployeeAtrController extends AdminBaseController
                 }
             }else if(in_array($data[0][$i][7],$arrayDeptName) && in_array($data[0][$i][9],$arraySubDeptName) && in_array($data[0][$i][1],$arrayEnrollId)){
                 array_push($status_department, 'white');
+            }else{
+                array_push($status_department, 'green');
             }
         }
         $arrayEmployee=[];
@@ -1016,68 +1018,171 @@ class EmployeeAtrController extends AdminBaseController
         return $arrayEmployee;
     }
     
-    public function import_employee_to_database(){
+    public function import_employee_to_database(Request $request){
         $data=Excel::toArray([],$request->file('excel_file'));
-        $enroll_id=[];
-        $nik=[];
-        $nama_karyawan=[];
-        $jenis_kelamin=[];
-        $jabatan=[];
-        $department=[];
-        $bagian=[];
-        $status_aktif=[];
-        $tanggal_masuk=[];
-        $status_department=[];
         $arrayDeptName=DepartmentAll::where('site_nirwana_id','NAG')->pluck('department_name')->toArray();
         $arraySubDeptName=DepartmentAll::where('site_nirwana_id','NAG')->pluck('sub_dept_name')->toArray();
         $arrayEnrollId=EmployeeAtribut::pluck('enroll_id')->toArray();
+        $dataArray=[];
         for($i=5;$i<count($data[0]);$i++){
-            array_push($enroll_id,$data[0][$i][1]);
-            array_push($nik,$data[0][$i][2]);
-            array_push($nama_karyawan,$data[0][$i][3]);
-            array_push($jenis_kelamin,$data[0][$i][4]);
-            array_push($jabatan,$data[0][$i][5]);
-            array_push($department,$data[0][$i][7]);
-            array_push($bagian,$data[0][$i][9]);
-            array_push($status_aktif,$data[0][$i][10]);
-            array_push($tanggal_masuk,$data[0][$i][11]);
             if((!in_array($data[0][$i][7],$arrayDeptName) || !in_array($data[0][$i][9],$arraySubDeptName)) && in_array($data[0][$i][1],$arrayEnrollId)){
-                array_push($status_department,'red');
+                $status_department='red';
             }else if((!in_array($data[0][$i][7],$arrayDeptName) || !in_array($data[0][$i][9],$arraySubDeptName)) && !in_array($data[0][$i][1],$arrayEnrollId)){
-                array_push($status_department,'red');
+                $status_department='red';
             }else if(in_array($data[0][$i][7],$arrayDeptName) && in_array($data[0][$i][9],$arraySubDeptName) && !in_array($data[0][$i][1],$arrayEnrollId)){
                 if($data[0][$i][1]==''){
-                    array_push($status_department, 'orange');
+                    $status_department= 'orange';
                 }else{
-                    array_push($status_department, 'lightblue');
+                    $status_department= 'lightblue';
                 }
             }else if(in_array($data[0][$i][7],$arrayDeptName) && in_array($data[0][$i][9],$arraySubDeptName) && in_array($data[0][$i][1],$arrayEnrollId)){
-                array_push($status_department, 'white');
+                $status_department='white';
+            }else{
+                $status_department= 'green';
             }
-        }
-        $arrayEmployee=[];
-        foreach($enroll_id as $key=>$value){
-            if($value==''){
-                continue;
+            $site_nirwana_id=preg_replace('/[0-9]+/', '', $data[0][$i][2]);
+            $department_id='';
+            $sub_dept_id='';
+            if(count(DepartmentAll::where('site_nirwana_id',$site_nirwana_id)->where('department_name',$data[0][$i][7])->where('sub_dept_name',$data[0][$i][9])->get())>0){
+                $department_id=DepartmentAll::where('site_nirwana_id',$site_nirwana_id)->where('department_name',$data[0][$i][7])->where('sub_dept_name',$data[0][$i][9])->pluck('department_id')[0];
+                $sub_dept_id=DepartmentAll::where('site_nirwana_id',$site_nirwana_id)->where('department_name',$data[0][$i][7])->where('sub_dept_name',$data[0][$i][9])->pluck('sub_dept_id')[0];
             }
-            $arrayEmployee[$key]=[
-                'enroll_id'=>$enroll_id[$key],
-                'nik'=>$nik[$key],
-                'nama_karyawan'=>$nama_karyawan[$key],
-                'jenis_kelamin'=>$jenis_kelamin[$key],
-                'jabatan'=>$jabatan[$key],
-                'department'=>$department[$key],
-                'bagian'=>$bagian[$key],
-                'status_aktif'=>$status_aktif[$key],
-                'tanggal_masuk'=>$tanggal_masuk[$key],
-                'status_department'=>$status_department[$key],
+            if($data[0][$i][11]==''){
+                $join_date=null;
+            }else{
+                $join_date=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][11])->format('Y-m-d');
+            }
+            if($data[0][$i][12]==''){
+                $tanggal_resign=null;
+            }else{
+                $tanggal_resign=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][12])->format('Y-m-d');
+            }
+            if($data[0][$i][16]==''){
+                $tanggal_lahir=null;
+            }else{
+                $tanggal_lahir=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][16])->format('Y-m-d');
+            }
+            if($data[0][$i][44]==''){
+                $tanggal_bpjs_tk=null;
+            }else{
+                $tanggal_bpjs_tk=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][44])->format('Y-m-d');
+            }
+            if($data[0][$i][47]==''){
+                $tanggal_bpjs_ks=null;
+            }else{
+                $tanggal_bpjs_ks=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][47])->format('Y-m-d');
+            }
+            if($data[0][$i][54]==''){
+                $tanggal_vaccine1=null;
+            }else{
+                $tanggal_vaccine1=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][54])->format('Y-m-d');
+            }
+            if($data[0][$i][56]==''){
+                $tanggal_vaccine2=null;
+            }else{
+                $tanggal_vaccine2=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][56])->format('Y-m-d');
+            }
+            if($data[0][$i][58]==''){
+                $tanggal_vaccine3=null;
+            }else{
+                $tanggal_vaccine3=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][58])->format('Y-m-d');
+            }
+            if($data[0][$i][62]==''){
+                $tanggal_expire_sim=null;
+            }else{
+                $tanggal_expire_sim=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][62])->format('Y-m-d');
+            }
+            if($data[0][$i][64]==''){
+                $tanggal_mulai_kontrak=null;
+            }else{
+                $tanggal_mulai_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][64])->format('Y-m-d');
+            }
+            if($data[0][$i][65]==''){
+                $tanggal_akhir_kontrak=null;
+            }else{
+                $tanggal_akhir_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][65])->format('Y-m-d');
+            }
+            $dataArray[$i]=[
+                'status_department'=>$status_department,
+                'enroll_id'=>$data[0][$i][1],
+                'nik'=>$data[0][$i][2],
+                'employee_name'=>$data[0][$i][3],
+                'jenis_kelamin'=>$data[0][$i][4],
+                'status_jabatan'=>$data[0][$i][5],
+                'department_id'=>$department_id,
+                'department_name'=>$data[0][$i][7],
+                'sub_dept_id'=>$sub_dept_id,
+                'sub_dept_name'=>$data[0][$i][9],
+                'status_aktif'=>$data[0][$i][10],
+                'join_date'=>$join_date,
+                'tanggal_resign'=>$tanggal_resign,
+                'status_kontrak_tetap'=>$data[0][$i][13],
+                'status_staff'=>$data[0][$i][14],
+                'tempat_lahir'=>$data[0][$i][15],
+                'tanggal_lahir'=>$tanggal_lahir,
+                'agama'=>$data[0][$i][17],
+                'ibu_kandung'=>$data[0][$i][18],
+                'status_kawin'=>$data[0][$i][19],
+                'ptkp'=>$data[0][$i][20],
+                'npwp'=>$data[0][$i][21],
+                'nomor_ktp'=>$data[0][$i][22],
+                'nomor_kk'=>$data[0][$i][23],
+                'golongan_darah'=>$data[0][$i][24],
+                'nomor_tlpn'=>$data[0][$i][25],
+                'email'=>$data[0][$i][26],
+                'pendidikan_terakhir'=>$data[0][$i][27],
+                'jurusan_pendidikan'=>$data[0][$i][28],
+                'nama_bank'=>$data[0][$i][29],
+                'nomor_rekening_bank'=>$data[0][$i][30],
+                'alamat_rumah'=>$data[0][$i][31],
+                'propinsi'=>$data[0][$i][32],
+                'kota_kab'=>$data[0][$i][33],
+                'kecamatan'=>$data[0][$i][34],
+                'kelurahan_desa'=>$data[0][$i][35],
+                'alamat_sementara'=>$data[0][$i][36],
+                'tunjangan'=>$data[0][$i][37],
+                'kode_grade'=>$data[0][$i][38],
+                'referensi'=>$data[0][$i][41],
+                'employee_name_atasan'=>$data[0][$i][42],
+                'status_aktif_bpjs_tk'=>$data[0][$i][43],
+                'tanggal_bpjs_ketenagakerjaan'=>$tanggal_bpjs_tk,
+                'nomor_bpjs_ketenagakerjaan'=>$data[0][$i][45],
+                'status_aktif_bpjs_ks'=>$data[0][$i][46],
+                'tanggal_bpjs_kesehatan'=>$tanggal_bpjs_ks,
+                'nomor_bpjs_kesehatan'=>$data[0][$i][48],
+                'pengalaman_bekerja'=>$data[0][$i][49],
+                'nama_kerabat'=>$data[0][$i][50],
+                'nomor_tlpn_kerabat'=>$data[0][$i][51],
+                'hubungan_kerabat'=>$data[0][$i][52],
+                'alamat_kerabat'=>$data[0][$i][53],
+                'tanggal_vaccine1'=>$tanggal_vaccine1,
+                'nama_vaksin1'=>$data[0][$i][55],
+                'tanggal_vaccine2'=>$tanggal_vaccine2,
+                'nama_vaksin2'=>$data[0][$i][57],
+                'tanggal_vaccine3'=>$tanggal_vaccine3,
+                'nama_vaksin3'=>$data[0][$i][59],
+                'golongan_sim'=>$data[0][$i][60],
+                'nomor_sim'=>$data[0][$i][61],
+                'tanggal_expire_sim'=>$tanggal_expire_sim,
+                'catatan'=>$data[0][$i][63],
+                'tanggal_mulai_kontrak'=>$tanggal_mulai_kontrak,
+                'tanggal_akhir_kontrak'=>$tanggal_akhir_kontrak,
+                'catatan_kontrak'=>$data[0][$i][66]
             ];
         }
-        foreach($arrayEmployee as $key=>$value){
-            if($value->status_department=='white'){
-                
+        foreach($dataArray as $key=>$value){
+            if($value['enroll_id']=='' || $value['status_department']=='red'){
+                continue;
+            }
+            else if($value['status_department']=='lightblue'){
+                array_shift($value);
+                EmployeeAtribut::create($value);
+            }else if($value['status_department']=='white'){
+                array_shift($value);
+                EmployeeAtribut::where('enroll_id',$value['enroll_id'])->update($value);
             }
         }
+        return 'success';
     }
     public function uploadEmployee(Request $request)
     {
