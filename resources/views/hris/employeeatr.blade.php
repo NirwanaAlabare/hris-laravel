@@ -165,33 +165,49 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="row justify-content-end" id="row_error_handle" style="visibility: hidden">
-                                                    <div class="col-2">
-                                                    </div>
-                                                    <div class="col-8 text-center">
-                                                        <button type="button" id="employeeImportButton" class="btn btn-success py-1" style="visibility: hidden"><i class="fa fa-upload" aria-hidden="true"></i> IMPORT</button>
-                                                    </div>
-                                                    <div class="col-2">
+                                                <div class="row" id="row_error_handle" style="visibility: hidden">
+                                                    <div class="col-4">
                                                         <table>
                                                             <tr>
-                                                                <td valign="top" width="150px" style="background-color: red;font-size:9pt;font-weight:bold; color:white;padding-left:4px;border:1px solid grey">
-                                                                    <i class="fa fa-times"></i>&nbsp;DEPARTMENT/SUB
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td valign="top" style="background-color:lightblue;black;font-size:9pt;font-weight:bold;padding-left:4px;border:1px solid grey">
-                                                                    <i class="fa fa-check"></i>&nbsp;NEW EMPLOYEE
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td valign="top" style="background-color:rgb(255, 255, 255);font-size:9pt;font-weight:bold;padding-left:4px;border:1px solid grey">
-                                                                    <i class="fa fa-check"></i>&nbsp;UPDATE EMPLOYEE
-                                                                </td>
+                                                                <td width="70" style="font-weight: bold">Length : </td>
+                                                                <td id="length_karyawan"></td>
+                                                                <td width="50"></td>
+                                                                <td width="100" style="font-weight: bold">Correct Data :</td>
+                                                                <td id="correct_data"></td>
                                                             </tr>
                                                         </table>
                                                     </div>
+                                                    <div class="col-4 text-center">
+                                                        <button type="button" id="employeeImportButton" class="btn btn-success py-1" style="visibility: hidden"><i class="fa fa-upload" aria-hidden="true"></i> IMPORT</button>
+                                                    </div>
+                                                    <div class="col-4 text-right">
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                            </div>
+                                                            <div class="col-6 pl-6">
+                                                                <table>
+                                                                    <tr>
+                                                                        <td valign="top" width="150px" style="background-color: red;font-size:9pt;font-weight:bold; color:white;padding-left:4px;border:1px solid grey">
+                                                                            <i class="fa fa-times"></i>&nbsp;DEPARTMENT/SUB &nbsp;&nbsp;
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td valign="top" style="background-color:lightblue;black;font-size:9pt;font-weight:bold;padding-left:4px;border:1px solid grey">
+                                                                            <i class="fa fa-check"></i>&nbsp;NEW EMPLOYEE &nbsp;&nbsp;
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td valign="top" style="background-color:rgb(255, 255, 255);font-size:9pt;font-weight:bold;padding-left:4px;border:1px solid grey">
+                                                                            <i class="fa fa-check"></i>&nbsp;UPDATE EMPLOYEE&nbsp;&nbsp;
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <div class="modal-footer py-2 bg-success"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -996,7 +1012,9 @@
                     processData: false,
                     data: formData,
                     success:function(data){
-                         jQuery.each(data, function(key,value){
+                        $('#length_karyawan').text(data.length);
+                        var count=0;
+                        jQuery.each(data, function(key,value){
                             $('#tabel_karyawan').append("<tr style='background-color:"+data[key].status_department+"'>\
                                 <td width='68px'>"+data[key].enroll_id+"</td>\
                                 <td width='120px'>"+data[key].nik+"</td>\
@@ -1007,7 +1025,11 @@
                                 <td width='200px'>"+data[key].bagian+"</td>\
                                 <td width='120px'>"+data[key].status_aktif+"</td>\
                             </tr>");
+                            if(data[key].status_department!='red'){
+                                count++;
+                            }
                         });
+                        $('#correct_data').text(count);
                         document.getElementById('tabel_karyawan').style.height='330px';
                         document.getElementById('employeeImportButton').style.visibility='visible';
                         document.getElementById('row_error_handle').style.visibility='visible';
