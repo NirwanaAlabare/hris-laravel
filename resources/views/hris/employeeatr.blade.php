@@ -1311,8 +1311,8 @@
                 $("#btn-periksa_enroll_id").attr("disabled", true);
                 $("#enroll_id").attr("readonly", true);
                 $('#is_periksaenroll_id').val(1);
-                $("#btn-periksa_nik").attr("disabled", true);
-                $("#nik").attr("readonly", true);
+                // $("#btn-periksa_nik").attr("disabled", true);
+                // $("#nik").attr("readonly", true);
                 $('#is_periksanik').val(1);
                 
             } else {
@@ -1725,7 +1725,9 @@ $(document).ready(function() {
         });
 
         $('body').on('click', '#btn-periksa_nik', function () {
+            $('#is_periksanik').val(0);
             var nik = $('#nik').val();
+            var enroll_id = $('#enroll_id').val();
             var is_periksanik = $('#is_periksanik').val();
             $('#btn-periksa_nik').addClass("btn-loading");
             $("#btn-periksa_nik").html('Please wait...');
@@ -1741,6 +1743,7 @@ $(document).ready(function() {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         data: {
                             nik:nik,
+                            enroll_id:enroll_id
                         },
                         dataType: 'json',
                         success: function(res){
@@ -1754,11 +1757,12 @@ $(document).ready(function() {
                         },
                         error: function(res){
                             notif({
-                                msg: "<b>Error:</b> NIK SUDAH ADA.",
+                                msg: "NIK SUDAH ADA / NIRWANA ID SALAH / ID TIDAK SAMA",
                                 type: "error"
                             });
                             $("#btn-periksa_nik").attr("disabled", false);
                             $("#nik").attr("readonly", false);
+                            $('#is_periksanik').val(0);
                         }
                     });
                 } else {
@@ -1783,7 +1787,9 @@ $(document).ready(function() {
 
         });
 
-
+        $('body').on('change', '#nik',function(event){
+            $('#is_periksanik').val(0);
+        });
         $('body').on('click', '#btn-save', function (event) {
             var is_periksaenroll_id = $('#is_periksaenroll_id').val();
             var is_periksanik = $('#is_periksanik').val();
