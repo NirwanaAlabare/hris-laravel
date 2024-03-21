@@ -654,7 +654,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                 $sheet->setCellValue('AV5', 'Rp Lembur 1');
 
                 $sheet->mergeCells('AW5:AW6');
-                $sheet->setCellValue('AV5', 'Rp Lembur 2');
+                $sheet->setCellValue('AW5', 'Rp Lembur 2');
 
                 $sheet->mergeCells('AX5:AX6');
                 $sheet->setCellValue('AX5', 'Rp Lembur 3');
