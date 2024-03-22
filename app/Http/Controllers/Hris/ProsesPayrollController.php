@@ -2078,106 +2078,104 @@ class ProsesPayrollController extends AdminBaseController
             // rekap lembur
             if($selectedEnrollId){
                 $data_lemburan=[];
-                MasterDataAbsenKehadiran::where('nomor_form_lembur','!=',null)->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->whereIn('enroll_id',$selectedEnrollId)->with('data_lembur')->chunkById(1, function ($lemburan) use (&$data_lemburan){
-                    foreach($lemburan as $key=>$value){
-                        if($value->kode_hari==5 || $value->kode_hari==6 || $value->status_absen=='LN'){
-                            $kerjalibur='LIBUR';
-                        }else{
-                            $kerjalibur='KERJA';
-                        }
-                        $jumlah_jam_kerja=date_diff(date_create($value->mulai_jam_kerja),date_create($value->akhir_jam_kerja));
-                        $jam_efektif_kerja=date_diff(date_create($value->absen_masuk_kerja),date_create($value->absen_pulang_kerja));
-                        $spl_in=date('H:i:s', strtotime($value->mulai_jam_lembur));
-                        $jam_in=$value->absen_masuk_kerja;
-                        $spl_out=date('H:i:s', strtotime($value->akhir_jam_lembur));
-                        $jam_out=$value->absen_pulang_kerja;
-                        $jadwal_in=$value->mulai_jam_kerja;
-                        $jadwal_out=$value->akhir_jam_kerja;
-                        if($jadwal_in==null || $value->status_absen=='LN'){
-                            $finish_in=max([$spl_in,$jam_in]);
-                            $finish_out=min([$spl_out,$jam_out]);
-                        }
-                        elseif ( $spl_in<$jadwal_in) {
-                            $finish_in=max([$spl_in,$jam_in]);
-                            $finish_out=min([$spl_out,$jam_out]);
-                        }
-                        else{
-                            $finish_in=max([$jadwal_out,$spl_in,$jam_in]);
-                            $finish_out=min([$spl_out,$jam_out]);
-                        }
-                        $jam1 = strtotime($finish_in);
-                        $jam2 = strtotime($finish_out);
-            
-                        // Jika $jam2 lebih kecil dari $jam1, tambahkan 1 hari (86400 detik)
-                        if ($jam2 < $jam1) {
-                            $jam2 += 86400;
-                        }
-            
-                        $selisih_detik = max($jam2 - $jam1, 0);
-            
-                        $selisih_jam = floor($selisih_detik / 3600);
-                        $selisih_detik %= 3600;
-            
-                        $selisih_menit = floor($selisih_detik / 60);
-                        $selisih_detik %= 60;
-            
-                        $final_total=sprintf("%02d:%02d:%02d", $selisih_jam, $selisih_menit, $selisih_detik);
-                        if($final_total>='20:00:00'){
-                            $final_total_jam_lembur ='00:00:00';
-                        }else{
-                            $final_total_jam_lembur = sprintf("%02d:%02d:%02d", $selisih_jam, $selisih_menit, $selisih_detik);
-                        }
-                        $data_l=[
-                            'tanggal_berjalan'=>$value->tanggal_berjalan,
-                            'kode_hari'=>$value->kode_hari,
-                            'nama_hari'=>$value->nama_hari,
-                            'kerjalibur'=>$kerjalibur,
-                            'holiday_name'=>$value->holiday_name,
-                            'nomor_form_lembur'=>$value->nomor_form_lembur,
-                            'enroll_id'=>$value->enroll_id,
-                            'nik'=>$value->nik,
-                            'employee_name'=>$value->employee_name,
-                            'site_nirwana_id'=>$value->site_nirwana_id,
-                            'site_nirwana_name'=>$value->site_nirwana_name,
-                            'department_id'=>$value->department_id,
-                            'department_name'=>$value->department_name,
-                            'sub_dept_id'=>$value->sub_dept_id,
-                            'sub_dept_name'=>$value->sub_dept_name,
-                            'posisi_name'=>$value->posisi_name,
-                            'mulai_jam_kerja'=>$value->mulai_jam_kerja,
-                            'akhir_jam_kerja'=>$value->akhir_jam_kerja,
-                            'jumlah_jam_kerja'=>sprintf('%02d:%02d:%02d', $jumlah_jam_kerja->h, $jumlah_jam_kerja->i, $jumlah_jam_kerja->s),
-                            'absen_masuk_kerja'=>$value->absen_masuk_kerja,
-                            'absen_pulang_kerja'=>$value->absen_pulang_kerja,
-                            'jam_efektif_kerja'=>sprintf('%02d:%02d:%02d', $jam_efektif_kerja->h, $jam_efektif_kerja->i, $jam_efektif_kerja->s),
-                            'mulai_jam_lembur'=>$value->mulai_jam_lembur,
-                            'akhir_jam_lembur'=>$value->akhir_jam_lembur,
-                            'final_mulai_jam_lembur'=>$finish_in,
-                            'final_selesai_jam_lembur'=>$value->absen_pulang_kerja,
-                            'final_total_jam_lembur'=>$final_total_jam_lembur,
-                            'final_jam_istirahat_lembur'=>0,
-                            'final_total_menit_lembur'=>($selisih_jam*60)+$selisih_menit,
-                            'final_jam_lembur_roundown'=> $selisih_jam,
-                            'final_menit_lembur_roundown'=>$selisih_menit,
-                            'lembur_1'=>0,
-                            'lembur_2'=>0,
-                            'lembur_3'=>0,
-                            'lembur_4'=>0,
-                            'total_lembur_1234'=>0,
-                            'salary'=>0,
-                            'lembur1_rupiah'=>0,
-                            'lembur2_rupiah'=> 0,
-                            'lembur3_rupiah'=> 0,
-                            'lembur4_rupiah'=> 0,
-                            'total_lembur_rupiah'=> 0,
-                            'operator'=>'system',
-                            'jumlah_jam_istirahat_form'=>$value->data_lembur->jumlah_jam_istirahat??0,
-                            'jumlah_jam_lembur_form'=>$value->data_lembur->jumlah_jam_lembur??0,
-                            'status_absen'=>$value->status_absen
-                        ];
-                        array_push($data_lemburan,$data_l);
+                $lemburan=MasterDataAbsenKehadiran::where('nomor_form_lembur','!=',null)->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->whereIn('enroll_id',$selectedEnrollId)->with('data_lembur')->get();
+                foreach($lemburan as $key=>$value){
+                    if($value->kode_hari==5 || $value->kode_hari==6 || $value->status_absen=='LN'){
+                        $kerjalibur='LIBUR';
+                    }else{
+                        $kerjalibur='KERJA';
                     }
-                }, $column = 'enroll_id');
+                    $jumlah_jam_kerja=date_diff(date_create($value->mulai_jam_kerja),date_create($value->akhir_jam_kerja));
+                    $jam_efektif_kerja=date_diff(date_create($value->absen_masuk_kerja),date_create($value->absen_pulang_kerja));
+                    $spl_in=date('H:i:s', strtotime($value->mulai_jam_lembur));
+                    $jam_in=$value->absen_masuk_kerja;
+                    $spl_out=date('H:i:s', strtotime($value->akhir_jam_lembur));
+                    $jam_out=$value->absen_pulang_kerja;
+                    $jadwal_in=$value->mulai_jam_kerja;
+                    $jadwal_out=$value->akhir_jam_kerja;
+                    if($jadwal_in==null || $value->status_absen=='LN'){
+                        $finish_in=max([$spl_in,$jam_in]);
+                        $finish_out=min([$spl_out,$jam_out]);
+                    }
+                    elseif ( $spl_in<$jadwal_in) {
+                        $finish_in=max([$spl_in,$jam_in]);
+                        $finish_out=min([$spl_out,$jam_out]);
+                    }
+                    else{
+                        $finish_in=max([$jadwal_out,$spl_in,$jam_in]);
+                        $finish_out=min([$spl_out,$jam_out]);
+                    }
+                    $jam1 = strtotime($finish_in);
+                    $jam2 = strtotime($finish_out);
+        
+                    // Jika $jam2 lebih kecil dari $jam1, tambahkan 1 hari (86400 detik)
+                    if ($jam2 < $jam1) {
+                        $jam2 += 86400;
+                    }
+        
+                    $selisih_detik = max($jam2 - $jam1, 0);
+        
+                    $selisih_jam = floor($selisih_detik / 3600);
+                    $selisih_detik %= 3600;
+        
+                    $selisih_menit = floor($selisih_detik / 60);
+                    $selisih_detik %= 60;
+        
+                    $final_total=sprintf("%02d:%02d:%02d", $selisih_jam, $selisih_menit, $selisih_detik);
+                    if($final_total>='20:00:00'){
+                        $final_total_jam_lembur ='00:00:00';
+                    }else{
+                        $final_total_jam_lembur = sprintf("%02d:%02d:%02d", $selisih_jam, $selisih_menit, $selisih_detik);
+                    }
+                    $data_lemburan[$key]=[
+                        'tanggal_berjalan'=>$value->tanggal_berjalan,
+                        'kode_hari'=>$value->kode_hari,
+                        'nama_hari'=>$value->nama_hari,
+                        'kerjalibur'=>$kerjalibur,
+                        'holiday_name'=>$value->holiday_name,
+                        'nomor_form_lembur'=>$value->nomor_form_lembur,
+                        'enroll_id'=>$value->enroll_id,
+                        'nik'=>$value->nik,
+                        'employee_name'=>$value->employee_name,
+                        'site_nirwana_id'=>$value->site_nirwana_id,
+                        'site_nirwana_name'=>$value->site_nirwana_name,
+                        'department_id'=>$value->department_id,
+                        'department_name'=>$value->department_name,
+                        'sub_dept_id'=>$value->sub_dept_id,
+                        'sub_dept_name'=>$value->sub_dept_name,
+                        'posisi_name'=>$value->posisi_name,
+                        'mulai_jam_kerja'=>$value->mulai_jam_kerja,
+                        'akhir_jam_kerja'=>$value->akhir_jam_kerja,
+                        'jumlah_jam_kerja'=>sprintf('%02d:%02d:%02d', $jumlah_jam_kerja->h, $jumlah_jam_kerja->i, $jumlah_jam_kerja->s),
+                        'absen_masuk_kerja'=>$value->absen_masuk_kerja,
+                        'absen_pulang_kerja'=>$value->absen_pulang_kerja,
+                        'jam_efektif_kerja'=>sprintf('%02d:%02d:%02d', $jam_efektif_kerja->h, $jam_efektif_kerja->i, $jam_efektif_kerja->s),
+                        'mulai_jam_lembur'=>$value->mulai_jam_lembur,
+                        'akhir_jam_lembur'=>$value->akhir_jam_lembur,
+                        'final_mulai_jam_lembur'=>$finish_in,
+                        'final_selesai_jam_lembur'=>$value->absen_pulang_kerja,
+                        'final_total_jam_lembur'=>$final_total_jam_lembur,
+                        'final_jam_istirahat_lembur'=>0,
+                        'final_total_menit_lembur'=>($selisih_jam*60)+$selisih_menit,
+                        'final_jam_lembur_roundown'=> $selisih_jam,
+                        'final_menit_lembur_roundown'=>$selisih_menit,
+                        'lembur_1'=>0,
+                        'lembur_2'=>0,
+                        'lembur_3'=>0,
+                        'lembur_4'=>0,
+                        'total_lembur_1234'=>0,
+                        'salary'=>0,
+                        'lembur1_rupiah'=>0,
+                        'lembur2_rupiah'=> 0,
+                        'lembur3_rupiah'=> 0,
+                        'lembur4_rupiah'=> 0,
+                        'total_lembur_rupiah'=> 0,
+                        'operator'=>'system',
+                        'jumlah_jam_istirahat_form'=>$value->data_lembur->jumlah_jam_istirahat??0,
+                        'jumlah_jam_lembur_form'=>$value->data_lembur->jumlah_jam_lembur??0,
+                        'status_absen'=>$value->status_absen
+                    ];
+                }
                 foreach ($data_lemburan as $key2 => $value2) {
                     if ($value2['final_menit_lembur_roundown'] <= 15) {
                         $konveri_jam = 0;
@@ -2285,106 +2283,104 @@ class ProsesPayrollController extends AdminBaseController
                 }
             }else{
                 $data_lemburan=[];
-                MasterDataAbsenKehadiran::where('nomor_form_lembur','!=',null)->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->with('data_lembur')->chunkById(100, function ($lemburan) use (&$data_lemburan){
-                    foreach($lemburan as $key=>$value){
-                        if($value->kode_hari==5 || $value->kode_hari==6 || $value->status_absen=='LN'){
-                            $kerjalibur='LIBUR';
-                        }else{
-                            $kerjalibur='KERJA';
-                        }
-                        $jumlah_jam_kerja=date_diff(date_create($value->mulai_jam_kerja),date_create($value->akhir_jam_kerja));
-                        $jam_efektif_kerja=date_diff(date_create($value->absen_masuk_kerja),date_create($value->absen_pulang_kerja));
-                        $spl_in=date('H:i:s', strtotime($value->mulai_jam_lembur));
-                        $jam_in=$value->absen_masuk_kerja;
-                        $spl_out=date('H:i:s', strtotime($value->akhir_jam_lembur));
-                        $jam_out=$value->absen_pulang_kerja;
-                        $jadwal_in=$value->mulai_jam_kerja;
-                        $jadwal_out=$value->akhir_jam_kerja;
-                        if($jadwal_in==null || $value->status_absen=='LN'){
-                            $finish_in=max([$spl_in,$jam_in]);
-                            $finish_out=min([$spl_out,$jam_out]);
-                        }
-                        elseif ( $spl_in<$jadwal_in) {
-                            $finish_in=max([$spl_in,$jam_in]);
-                            $finish_out=min([$spl_out,$jam_out]);
-                        }
-                        else{
-                            $finish_in=max([$jadwal_out,$spl_in,$jam_in]);
-                            $finish_out=min([$spl_out,$jam_out]);
-                        }
-                        $jam1 = strtotime($finish_in);
-                        $jam2 = strtotime($finish_out);
-            
-                        // Jika $jam2 lebih kecil dari $jam1, tambahkan 1 hari (86400 detik)
-                        if ($jam2 < $jam1) {
-                            $jam2 += 86400;
-                        }
-            
-                        $selisih_detik = max($jam2 - $jam1, 0);
-            
-                        $selisih_jam = floor($selisih_detik / 3600);
-                        $selisih_detik %= 3600;
-            
-                        $selisih_menit = floor($selisih_detik / 60);
-                        $selisih_detik %= 60;
-            
-                        $final_total=sprintf("%02d:%02d:%02d", $selisih_jam, $selisih_menit, $selisih_detik);
-                        if($final_total>='20:00:00'){
-                            $final_total_jam_lembur ='00:00:00';
-                        }else{
-                            $final_total_jam_lembur = sprintf("%02d:%02d:%02d", $selisih_jam, $selisih_menit, $selisih_detik);
-                        }
-                        $data_l=[
-                            'tanggal_berjalan'=>$value->tanggal_berjalan,
-                            'kode_hari'=>$value->kode_hari,
-                            'nama_hari'=>$value->nama_hari,
-                            'kerjalibur'=>$kerjalibur,
-                            'holiday_name'=>$value->holiday_name,
-                            'nomor_form_lembur'=>$value->nomor_form_lembur,
-                            'enroll_id'=>$value->enroll_id,
-                            'nik'=>$value->nik,
-                            'employee_name'=>$value->employee_name,
-                            'site_nirwana_id'=>$value->site_nirwana_id,
-                            'site_nirwana_name'=>$value->site_nirwana_name,
-                            'department_id'=>$value->department_id,
-                            'department_name'=>$value->department_name,
-                            'sub_dept_id'=>$value->sub_dept_id,
-                            'sub_dept_name'=>$value->sub_dept_name,
-                            'posisi_name'=>$value->posisi_name,
-                            'mulai_jam_kerja'=>$value->mulai_jam_kerja,
-                            'akhir_jam_kerja'=>$value->akhir_jam_kerja,
-                            'jumlah_jam_kerja'=>sprintf('%02d:%02d:%02d', $jumlah_jam_kerja->h, $jumlah_jam_kerja->i, $jumlah_jam_kerja->s),
-                            'absen_masuk_kerja'=>$value->absen_masuk_kerja,
-                            'absen_pulang_kerja'=>$value->absen_pulang_kerja,
-                            'jam_efektif_kerja'=>sprintf('%02d:%02d:%02d', $jam_efektif_kerja->h, $jam_efektif_kerja->i, $jam_efektif_kerja->s),
-                            'mulai_jam_lembur'=>$value->mulai_jam_lembur,
-                            'akhir_jam_lembur'=>$value->akhir_jam_lembur,
-                            'final_mulai_jam_lembur'=>$finish_in,
-                            'final_selesai_jam_lembur'=>$value->absen_pulang_kerja,
-                            'final_total_jam_lembur'=>$final_total_jam_lembur,
-                            'final_jam_istirahat_lembur'=>0,
-                            'final_total_menit_lembur'=>($selisih_jam*60)+$selisih_menit,
-                            'final_jam_lembur_roundown'=> $selisih_jam,
-                            'final_menit_lembur_roundown'=>$selisih_menit,
-                            'lembur_1'=>0,
-                            'lembur_2'=>0,
-                            'lembur_3'=>0,
-                            'lembur_4'=>0,
-                            'total_lembur_1234'=>0,
-                            'salary'=>0,
-                            'lembur1_rupiah'=>0,
-                            'lembur2_rupiah'=> 0,
-                            'lembur3_rupiah'=> 0,
-                            'lembur4_rupiah'=> 0,
-                            'total_lembur_rupiah'=> 0,
-                            'operator'=>'system',
-                            'jumlah_jam_istirahat_form'=>$value->data_lembur->jumlah_jam_istirahat??0,
-                            'jumlah_jam_lembur_form'=>$value->data_lembur->jumlah_jam_lembur??0,
-                            'status_absen'=>$value->status_absen
-                        ];
-                        array_push($data_lemburan,$data_l);
+                $lemburan=MasterDataAbsenKehadiran::where('nomor_form_lembur','!=',null)->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->with('data_lembur')->get();
+                foreach($lemburan as $key=>$value){
+                    if($value->kode_hari==5 || $value->kode_hari==6 || $value->status_absen=='LN'){
+                        $kerjalibur='LIBUR';
+                    }else{
+                        $kerjalibur='KERJA';
                     }
-                }, $column = 'enroll_id');
+                    $jumlah_jam_kerja=date_diff(date_create($value->mulai_jam_kerja),date_create($value->akhir_jam_kerja));
+                    $jam_efektif_kerja=date_diff(date_create($value->absen_masuk_kerja),date_create($value->absen_pulang_kerja));
+                    $spl_in=date('H:i:s', strtotime($value->mulai_jam_lembur));
+                    $jam_in=$value->absen_masuk_kerja;
+                    $spl_out=date('H:i:s', strtotime($value->akhir_jam_lembur));
+                    $jam_out=$value->absen_pulang_kerja;
+                    $jadwal_in=$value->mulai_jam_kerja;
+                    $jadwal_out=$value->akhir_jam_kerja;
+                    if($jadwal_in==null || $value->status_absen=='LN'){
+                        $finish_in=max([$spl_in,$jam_in]);
+                        $finish_out=min([$spl_out,$jam_out]);
+                    }
+                    elseif ( $spl_in<$jadwal_in) {
+                        $finish_in=max([$spl_in,$jam_in]);
+                        $finish_out=min([$spl_out,$jam_out]);
+                    }
+                    else{
+                        $finish_in=max([$jadwal_out,$spl_in,$jam_in]);
+                        $finish_out=min([$spl_out,$jam_out]);
+                    }
+                    $jam1 = strtotime($finish_in);
+                    $jam2 = strtotime($finish_out);
+        
+                    // Jika $jam2 lebih kecil dari $jam1, tambahkan 1 hari (86400 detik)
+                    if ($jam2 < $jam1) {
+                        $jam2 += 86400;
+                    }
+        
+                    $selisih_detik = max($jam2 - $jam1, 0);
+        
+                    $selisih_jam = floor($selisih_detik / 3600);
+                    $selisih_detik %= 3600;
+        
+                    $selisih_menit = floor($selisih_detik / 60);
+                    $selisih_detik %= 60;
+        
+                    $final_total=sprintf("%02d:%02d:%02d", $selisih_jam, $selisih_menit, $selisih_detik);
+                    if($final_total>='20:00:00'){
+                        $final_total_jam_lembur ='00:00:00';
+                    }else{
+                        $final_total_jam_lembur = sprintf("%02d:%02d:%02d", $selisih_jam, $selisih_menit, $selisih_detik);
+                    }
+                    $data_lemburan[]=[
+                        'tanggal_berjalan'=>$value->tanggal_berjalan,
+                        'kode_hari'=>$value->kode_hari,
+                        'nama_hari'=>$value->nama_hari,
+                        'kerjalibur'=>$kerjalibur,
+                        'holiday_name'=>$value->holiday_name,
+                        'nomor_form_lembur'=>$value->nomor_form_lembur,
+                        'enroll_id'=>$value->enroll_id,
+                        'nik'=>$value->nik,
+                        'employee_name'=>$value->employee_name,
+                        'site_nirwana_id'=>$value->site_nirwana_id,
+                        'site_nirwana_name'=>$value->site_nirwana_name,
+                        'department_id'=>$value->department_id,
+                        'department_name'=>$value->department_name,
+                        'sub_dept_id'=>$value->sub_dept_id,
+                        'sub_dept_name'=>$value->sub_dept_name,
+                        'posisi_name'=>$value->posisi_name,
+                        'mulai_jam_kerja'=>$value->mulai_jam_kerja,
+                        'akhir_jam_kerja'=>$value->akhir_jam_kerja,
+                        'jumlah_jam_kerja'=>sprintf('%02d:%02d:%02d', $jumlah_jam_kerja->h, $jumlah_jam_kerja->i, $jumlah_jam_kerja->s),
+                        'absen_masuk_kerja'=>$value->absen_masuk_kerja,
+                        'absen_pulang_kerja'=>$value->absen_pulang_kerja,
+                        'jam_efektif_kerja'=>sprintf('%02d:%02d:%02d', $jam_efektif_kerja->h, $jam_efektif_kerja->i, $jam_efektif_kerja->s),
+                        'mulai_jam_lembur'=>$value->mulai_jam_lembur,
+                        'akhir_jam_lembur'=>$value->akhir_jam_lembur,
+                        'final_mulai_jam_lembur'=>$finish_in,
+                        'final_selesai_jam_lembur'=>$value->absen_pulang_kerja,
+                        'final_total_jam_lembur'=>$final_total_jam_lembur,
+                        'final_jam_istirahat_lembur'=>0,
+                        'final_total_menit_lembur'=>($selisih_jam*60)+$selisih_menit,
+                        'final_jam_lembur_roundown'=> $selisih_jam,
+                        'final_menit_lembur_roundown'=>$selisih_menit,
+                        'lembur_1'=>0,
+                        'lembur_2'=>0,
+                        'lembur_3'=>0,
+                        'lembur_4'=>0,
+                        'total_lembur_1234'=>0,
+                        'salary'=>0,
+                        'lembur1_rupiah'=>0,
+                        'lembur2_rupiah'=> 0,
+                        'lembur3_rupiah'=> 0,
+                        'lembur4_rupiah'=> 0,
+                        'total_lembur_rupiah'=> 0,
+                        'operator'=>'system',
+                        'jumlah_jam_istirahat_form'=>$value->data_lembur->jumlah_jam_istirahat??0,
+                        'jumlah_jam_lembur_form'=>$value->data_lembur->jumlah_jam_lembur??0,
+                        'status_absen'=>$value->status_absen
+                    ];
+                }
                 foreach ($data_lemburan as $key2 => $value2) {
                     if ($value2['final_menit_lembur_roundown'] <= 15) {
                         $konveri_jam = 0;
@@ -2480,11 +2476,12 @@ class ProsesPayrollController extends AdminBaseController
                         'lembur3_rupiah'=> $l3_rupiah,
                         'lembur4_rupiah'=> $l4_rupiah,
                         'total_lembur_rupiah'=> $l1_rupiah+$l2_rupiah+$l3_rupiah+$l4_rupiah,
-                        'operator'=>'system',
+                        'operator'=>'system'
                     ];
                     $count=RekapPerhitunganLembur::where('tanggal_berjalan',$value2['tanggal_berjalan'])->where('enroll_id',$value2['enroll_id'])->count();
                     if($count){
-                        RekapPerhitunganLembur::where('tanggal_berjalan',$value2['tanggal_berjalan'])->where('enroll_id',$value2['enroll_id'])->update($record_lemburan);
+                        RekapPerhitunganLembur::where('tanggal_berjalan',$value2['tanggal_berjalan'])->where('enroll_id',$value2['enroll_id'])
+                        ->update($record_lemburan);
                     }
                     else{
                         RekapPerhitunganLembur::create($record_lemburan);
