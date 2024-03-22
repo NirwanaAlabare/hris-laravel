@@ -1053,9 +1053,9 @@ class EmployeeAtrController extends AdminBaseController
             $site_nirwana_id=preg_replace('/[0-9]+/', '', $data[0][$i][2]);
             $department_id='';
             $sub_dept_id='';
-            if(count(DepartmentAll::where('site_nirwana_id',$site_nirwana_id)->where('department_name',$data[0][$i][7])->where('sub_dept_name',$data[0][$i][9])->get())>0){
-                $department_id=DepartmentAll::where('site_nirwana_id',$site_nirwana_id)->where('department_name',$data[0][$i][7])->where('sub_dept_name',$data[0][$i][9])->pluck('department_id')[0];
-                $sub_dept_id=DepartmentAll::where('site_nirwana_id',$site_nirwana_id)->where('department_name',$data[0][$i][7])->where('sub_dept_name',$data[0][$i][9])->pluck('sub_dept_id')[0];
+            if(count(DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][7])->where('sub_dept_name',$data[0][$i][9])->get())>0){
+                $department_id=DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][7])->where('sub_dept_name',$data[0][$i][9])->pluck('department_id')[0];
+                $sub_dept_id=DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][7])->where('sub_dept_name',$data[0][$i][9])->pluck('sub_dept_id')[0];
             }
             if($data[0][$i][11]==''){
                 $join_date=null;
