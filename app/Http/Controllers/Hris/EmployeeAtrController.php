@@ -982,64 +982,54 @@ class EmployeeAtrController extends AdminBaseController
     public function import_employees(Request $request)
     {
         $data=Excel::toArray([],$request->file('excel_file'));
-        $enroll_id=[];
-        $nik=[];
-        $nama_karyawan=[];
-        $jenis_kelamin=[];
-        $jabatan=[];
-        $department=[];
-        $bagian=[];
-        $status_aktif=[];
-        $tanggal_masuk=[];
-        $status_department=[];
-        $arrayDeptName=DepartmentAll::where('site_nirwana_id','NAG')->pluck('department_name')->toArray();
-        $arraySubDeptName=DepartmentAll::where('site_nirwana_id','NAG')->pluck('sub_dept_name')->toArray();
-        $arrayEnrollId=EmployeeAtribut::pluck('enroll_id')->toArray();
-        for($i=5;$i<count($data[0]);$i++){
-            array_push($enroll_id,$data[0][$i][1]);
-            array_push($nik,$data[0][$i][2]);
-            array_push($nama_karyawan,$data[0][$i][3]);
-            array_push($jenis_kelamin,$data[0][$i][4]);
-            array_push($jabatan,$data[0][$i][5]);
-            array_push($department,$data[0][$i][7]);
-            array_push($bagian,$data[0][$i][9]);
-            array_push($status_aktif,$data[0][$i][10]);
-            array_push($tanggal_masuk,$data[0][$i][11]);
-            if((!in_array($data[0][$i][7],$arrayDeptName) || !in_array($data[0][$i][9],$arraySubDeptName)) && in_array($data[0][$i][1],$arrayEnrollId)){
-                array_push($status_department,'red');
-            }else if((!in_array($data[0][$i][7],$arrayDeptName) || !in_array($data[0][$i][9],$arraySubDeptName)) && !in_array($data[0][$i][1],$arrayEnrollId)){
-                array_push($status_department,'red');
-            }else if(in_array($data[0][$i][7],$arrayDeptName) && in_array($data[0][$i][9],$arraySubDeptName) && !in_array($data[0][$i][1],$arrayEnrollId)){
-                if($data[0][$i][1]==''){
-                    array_push($status_department, 'orange');
-                }else{
-                    array_push($status_department, 'lightblue');
-                }
-            }else if(in_array($data[0][$i][7],$arrayDeptName) && in_array($data[0][$i][9],$arraySubDeptName) && in_array($data[0][$i][1],$arrayEnrollId)){
-                array_push($status_department, 'white');
-            }else{
-                array_push($status_department, 'green');
-            }
-        }
         $arrayEmployee=[];
-        foreach($enroll_id as $key=>$value){
-            if($value==''){
+        for($i=5;$i<count($data[0]);$i++){
+            $department=DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][7])->where('sub_dept_name',$data[0][$i][9])->count();
+            $employee=EmployeeAtribut::where('enroll_id',$data[0][$i][1])->count();
+
+            if($department==0 && ($employee==1 || $employee==0)){
+                $status_department='red';
+            }else{
+                if($employee==0){
+                    $status_department='lightblue';
+                }else{
+                    $status_department='white';
+                }
+            }
+            if($data[0][$i][1]==''){
                 continue;
             }
-            $arrayEmployee[$key]=[
-                'enroll_id'=>$enroll_id[$key],
-                'nik'=>$nik[$key],
-                'nama_karyawan'=>$nama_karyawan[$key],
-                'jenis_kelamin'=>$jenis_kelamin[$key],
-                'jabatan'=>$jabatan[$key],
-                'department'=>$department[$key],
-                'bagian'=>$bagian[$key],
-                'status_aktif'=>$status_aktif[$key],
-                'tanggal_masuk'=>$tanggal_masuk[$key],
-                'status_department'=>$status_department[$key],
+            $arrayEmployee[$i]=[
+                'enroll_id'=>$data[0][$i][1],
+                'nik'=>$data[0][$i][2],
+                'nama_karyawan'=>$data[0][$i][3],
+                'jenis_kelamin'=>$data[0][$i][4],
+                'jabatan'=>$data[0][$i][5],
+                'department'=>$data[0][$i][7],
+                'bagian'=>$data[0][$i][9],
+                'status_aktif'=>$data[0][$i][10],
+                'tanggal_masuk'=>$data[0][$i][11],
+                'status_department'=>$status_department
             ];
         }
-        return $arrayEmployee;
+        $arrEmp=[];
+        $no=0;
+        foreach($arrayEmployee as $key=>$value){
+            $no++;
+            $arrEmp[$no]=[
+                'enroll_id'=>$value['enroll_id'],
+                'nik'=>$value['nik'],
+                'nama_karyawan'=>$value['nama_karyawan'],
+                'jenis_kelamin'=>$value['jenis_kelamin'],
+                'jabatan'=>$value['jabatan'],
+                'department'=>$value['department'],
+                'bagian'=>$value['bagian'],
+                'status_aktif'=>$value['status_aktif'],
+                'tanggal_masuk'=>$value['tanggal_masuk'],
+                'status_department'=>$value['status_department']
+            ];
+        }
+        return $arrEmp;
     }
     
     public function import_employee_to_database(Request $request){
@@ -1049,20 +1039,16 @@ class EmployeeAtrController extends AdminBaseController
         $arrayEnrollId=EmployeeAtribut::pluck('enroll_id')->toArray();
         $dataArray=[];
         for($i=5;$i<count($data[0]);$i++){
-            if((!in_array($data[0][$i][7],$arrayDeptName) || !in_array($data[0][$i][9],$arraySubDeptName)) && in_array($data[0][$i][1],$arrayEnrollId)){
+            $department=DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][7])->where('sub_dept_name',$data[0][$i][9])->count();
+            $employee=EmployeeAtribut::where('enroll_id',$data[0][$i][1])->count();
+            if($department==0 && ($employee==1 || $employee==0)){
                 $status_department='red';
-            }else if((!in_array($data[0][$i][7],$arrayDeptName) || !in_array($data[0][$i][9],$arraySubDeptName)) && !in_array($data[0][$i][1],$arrayEnrollId)){
-                $status_department='red';
-            }else if(in_array($data[0][$i][7],$arrayDeptName) && in_array($data[0][$i][9],$arraySubDeptName) && !in_array($data[0][$i][1],$arrayEnrollId)){
-                if($data[0][$i][1]==''){
-                    $status_department= 'orange';
-                }else{
-                    $status_department= 'lightblue';
-                }
-            }else if(in_array($data[0][$i][7],$arrayDeptName) && in_array($data[0][$i][9],$arraySubDeptName) && in_array($data[0][$i][1],$arrayEnrollId)){
-                $status_department='white';
             }else{
-                $status_department= 'green';
+                if($employee==0){
+                    $status_department='lightblue';
+                }else{
+                    $status_department='white';
+                }
             }
             $site_nirwana_id=preg_replace('/[0-9]+/', '', $data[0][$i][2]);
             $department_id='';

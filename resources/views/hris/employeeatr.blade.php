@@ -1012,9 +1012,11 @@
                     processData: false,
                     data: formData,
                     success:function(data){
-                        $('#length_karyawan').text(data.length);
+                        console.log(data);
                         var count=0;
+                        var count2=0;
                         jQuery.each(data, function(key,value){
+                            count2++;
                             $('#tabel_karyawan').append("<tr style='background-color:"+data[key].status_department+"'>\
                                 <td width='68px'>"+data[key].enroll_id+"</td>\
                                 <td width='120px'>"+data[key].nik+"</td>\
@@ -1029,6 +1031,7 @@
                                 count++;
                             }
                         });
+                        $('#length_karyawan').text(count2);
                         $('#correct_data').text(count);
                         document.getElementById('tabel_karyawan').style.height='330px';
                         document.getElementById('employeeImportButton').style.visibility='visible';
