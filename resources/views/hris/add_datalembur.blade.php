@@ -189,14 +189,15 @@
                                                 <td width="60px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ID</td>
                                                 <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NIK</td>
                                                 <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">TANGGAL</td>
-                                                <td width="250px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NAMA KARYAWAN</td>
+                                                <td width="150px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NAMA KARYAWAN</td>
                                                 <td width="90px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">DARI</td>
                                                 <td width="90px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">SAMPAI</td>
                                                 <td width="90px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ACT IN</td>
                                                 <td width="90px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ACT OUT</td>
                                                 <td width="50px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">L</td>
                                                 <td width="50px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">I</td>
-                                                <td width="250px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">KETERANGAN</td>
+                                                <td width="150px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">KETERANGAN</td>
+                                                <td width="150px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">STATUS ABSEN</td>
                                             </tr>
                                         </thead>
                                         <tbody id="tabel_data_lembur">
@@ -1318,14 +1319,15 @@
                                 <td width='60px'>"+data[key].enroll_id+"</td>\
                                 <td width='100px'>"+data[key].nik+"</td>\
                                 <td width='100px'>"+data[key].tanggal+"</td>\
-                                <td width='250px'>"+data[key].employee_name+"</td>\
+                                <td width='150px'>"+data[key].employee_name+"</td>\
                                 <td width='90px'>"+data[key].dari+"</td>\
                                 <td width='90px'>"+data[key].sampai+"</td>\
                                 <td width='90px'>"+data[key].act_in+"</td>\
                                 <td width='90px'>"+data[key].act_out+"</td>\
                                 <td width='50px'>"+data[key].jumlah_lembur+"</td>\
                                 <td width='50px'>"+data[key].jumlah_jam_istirahat+"</td>\
-                                <td width='250px'>"+data[key].keterangan_lembur+"</td>\
+                                <td width='150px'>"+data[key].keterangan_lembur+"</td>\
+                                <td width='150px'>"+data[key].status_absen+"</td>\
                             </tr>");
                             myarray.push(data[key].absen_lembur);
                         });

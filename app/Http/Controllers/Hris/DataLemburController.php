@@ -2133,7 +2133,7 @@ class DataLemburController extends AdminBaseController
         $jumlah_lembur=[];
         $jumlah_jam_istirahat=[];
         $keterangan_lembur=[];
-        $actual_absen=[];
+        $status_absen=[];
         for($i=4;$i<count($data[0]);$i++){
             array_push($enroll_id,(int)substr($data[0][$i][3],-4));
             array_push($nik,$data[0][$i][3]);
@@ -2198,6 +2198,7 @@ class DataLemburController extends AdminBaseController
             array_push($jumlah_lembur,$hour_lembur);
             array_push($jumlah_jam_istirahat,$hour_istirahat);
             array_push($keterangan_lembur,$data[0][$i][5]);
+            array_push($status_absen,$actual->status_absen);
         }
         $arrayEmployee=[];
         foreach($enroll_id as $key=>$value){
@@ -2222,7 +2223,8 @@ class DataLemburController extends AdminBaseController
                 'act_out'=>$actual_out,
                 'jumlah_lembur'=>$jumlah_lembur[$key],
                 'jumlah_jam_istirahat'=>$jumlah_jam_istirahat[$key],
-                'keterangan_lembur'=>$keterangan_lembur[$key]
+                'keterangan_lembur'=>$keterangan_lembur[$key],
+                'status_absen'=>$status_absen[$key]
             ];
         }
         
@@ -2261,6 +2263,7 @@ class DataLemburController extends AdminBaseController
                 'jumlah_lembur'=>$value['jumlah_lembur'],
                 'jumlah_jam_istirahat'=>$value['jumlah_jam_istirahat'],
                 'keterangan_lembur'=>$value['keterangan_lembur'],
+                'status_absen'=>$value['status_absen'],
             ];
         }
         $arrayOvertimeEnrollId=[];
@@ -2282,6 +2285,7 @@ class DataLemburController extends AdminBaseController
                 'jumlah_lembur'=>$value['jumlah_lembur'],
                 'jumlah_jam_istirahat'=>$value['jumlah_jam_istirahat'],
                 'keterangan_lembur'=>$value['keterangan_lembur'],
+                'status_absen'=>$value['status_absen'],
             ];
         }
         $ArrayOvertimeEnrollId=array_unique($arrayOvertimeEnrollId);
@@ -2313,7 +2317,8 @@ class DataLemburController extends AdminBaseController
                 'jumlah_jam_istirahat'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['jumlah_jam_istirahat'],
                 'jumlah_data'=>$jumlah_data,
                 'keterangan_lembur'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['keterangan_lembur'],
-                'absen_lembur'=>$absen_lembur
+                'status_absen'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['status_absen'],
+                'absen_lembur'=>$absen_lembur,
             ];
         }
         return $overtimeResult;
