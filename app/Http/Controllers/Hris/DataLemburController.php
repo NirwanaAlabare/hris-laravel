@@ -2198,7 +2198,9 @@ class DataLemburController extends AdminBaseController
             array_push($jumlah_lembur,$hour_lembur);
             array_push($jumlah_jam_istirahat,$hour_istirahat);
             array_push($keterangan_lembur,$data[0][$i][5]);
-            array_push($status_absen,$actual->status_absen);
+            if(isset($actual->status_absen)){
+                array_push($status_absen,$actual->status_absen);
+            }
         }
         $arrayEmployee=[];
         foreach($enroll_id as $key=>$value){
