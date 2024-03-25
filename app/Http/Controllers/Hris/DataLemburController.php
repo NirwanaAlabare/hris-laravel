@@ -2170,10 +2170,14 @@ class DataLemburController extends AdminBaseController
             $displays = $hours_displays . ":" . $minutes_displays. ":" . $seconds_displays;
             array_push($sampai,$displays);
             $actual=MasterDataAbsenKehadiran::where('enroll_id',(int)substr($data[0][$i][3],-4))->where('tanggal_berjalan',gmdate("Y-m-d", $unix_date))->first();
-            if(isset($actual->absen_masuk_kerja)){
+            if($actual->absen_masuk_kerja==''){
+                array_push($act_in,'');
+            }else{
                 array_push($act_in,$actual->absen_masuk_kerja);
             }
-            if(isset($actual->absen_pulang_kerja)){
+            if($actual->absen_pulang_kerja==''){
+                array_push($act_out,'');
+            }else{
                 array_push($act_out,$actual->absen_pulang_kerja);
             }
             $starttimestamp = strtotime($display);
