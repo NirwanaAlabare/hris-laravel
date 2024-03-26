@@ -240,16 +240,6 @@
                 return false;
             }
 
-            if ((password_new.length <= 5) || (password_new.length >= 9)) {
-                $("#password_new").addClass("is-invalid state-invalid");
-                $("#password_confirm").addClass("is-invalid state-invalid");
-
-                notif({
-                    msg: "<b>Warning:</b> Panjang password baru harus 6 s/d 8 digit!!!",
-                    type: "warning"
-                });        
-                return false;
-            }
 
             $("#btn-simpan").html('Please Wait...');
             $('#btn-simpan').addClass("btn-loading");
