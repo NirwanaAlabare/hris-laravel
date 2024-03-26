@@ -1057,57 +1057,57 @@ class EmployeeAtrController extends AdminBaseController
                 $department_id=DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][7])->where('sub_dept_name',$data[0][$i][9])->pluck('department_id')[0];
                 $sub_dept_id=DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][7])->where('sub_dept_name',$data[0][$i][9])->pluck('sub_dept_id')[0];
             }
-            if($data[0][$i][11]==''){
+            if($data[0][$i][11]==''|| $data[0][$i][11]=='-'){
                 $join_date=null;
             }else{
                 $join_date=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][11])->format('Y-m-d');
             }
-            if($data[0][$i][12]==''){
+            if($data[0][$i][12]==''|| $data[0][$i][12]=='-'){
                 $tanggal_resign=null;
             }else{
                 $tanggal_resign=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][12])->format('Y-m-d');
             }
-            if($data[0][$i][16]==''){
+            if($data[0][$i][16]==''|| $data[0][$i][16]=='-'){
                 $tanggal_lahir=null;
             }else{
                 $tanggal_lahir=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][16])->format('Y-m-d');
             }
-            if($data[0][$i][42]==''){
+            if($data[0][$i][42]=='' || $data[0][$i][42]=='-'){
                 $tanggal_bpjs_tk=null;
             }else{
                 $tanggal_bpjs_tk=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][42])->format('Y-m-d');
             }
-            if($data[0][$i][45]==''){
+            if($data[0][$i][45]=='' || $data[0][$i][45]=='-'){
                 $tanggal_bpjs_ks=null;
             }else{
                 $tanggal_bpjs_ks=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][45])->format('Y-m-d');
             }
-            if($data[0][$i][52]==''){
+            if($data[0][$i][52]=='' || $data[0][$i][52]=='-'){
                 $tanggal_vaccine1=null;
             }else{
                 $tanggal_vaccine1=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][52])->format('Y-m-d');
             }
-            if($data[0][$i][56]==''){
+            if($data[0][$i][56]=='' || $data[0][$i][56]=='-'){
                 $tanggal_vaccine2=null;
             }else{
                 $tanggal_vaccine2=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][56])->format('Y-m-d');
             }
-            if($data[0][$i][58]==''){
-                $tanggal_vaccine3=null;
-            }else{
-                $tanggal_vaccine3=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][58])->format('Y-m-d');
-            }
-            if($data[0][$i][60]==''){
+            // if($data[0][$i][58]=='' || $data[0][$i][58]=='-'){
+            //     $tanggal_vaccine3=null;
+            // }else{
+            //     $tanggal_vaccine3=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][58])->format('Y-m-d');
+            // }
+            if($data[0][$i][60]=='' || $data[0][$i][60]=='-'){
                 $tanggal_expire_sim=null;
             }else{
                 $tanggal_expire_sim=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][60])->format('Y-m-d');
             }
-            if($data[0][$i][62]==''){
+            if($data[0][$i][62]=='' || $data[0][$i][62]=='-'){
                 $tanggal_mulai_kontrak=null;
             }else{
                 $tanggal_mulai_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][62])->format('Y-m-d');
             }
-            if($data[0][$i][63]==''){
+            if($data[0][$i][63]=='' || $data[0][$i][63]=='-'){
                 $tanggal_akhir_kontrak=null;
             }else{
                 $tanggal_akhir_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][63])->format('Y-m-d');
@@ -1169,7 +1169,7 @@ class EmployeeAtrController extends AdminBaseController
                 'nama_vaksin1'=>$data[0][$i][53],
                 'tanggal_vaccine2'=>$tanggal_vaccine2,
                 'nama_vaksin2'=>$data[0][$i][55],
-                'tanggal_vaccine3'=>$tanggal_vaccine3,
+                // 'tanggal_vaccine3'=>$tanggal_vaccine3,
                 'nama_vaksin3'=>$data[0][$i][57],
                 'golongan_sim'=>$data[0][$i][58],
                 'nomor_sim'=>$data[0][$i][59],
@@ -1192,7 +1192,7 @@ class EmployeeAtrController extends AdminBaseController
                 EmployeeAtribut::where('enroll_id',$value['enroll_id'])->update($value);
             }
         }
-        return 'success';
+        return $dataArray;
     }
     public function uploadEmployee(Request $request)
     {
