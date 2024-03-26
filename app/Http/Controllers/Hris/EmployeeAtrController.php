@@ -1072,20 +1072,20 @@ class EmployeeAtrController extends AdminBaseController
             }else{
                 $tanggal_lahir=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][16])->format('Y-m-d');
             }
-            if($data[0][$i][44]==''){
+            if($data[0][$i][42]==''){
                 $tanggal_bpjs_tk=null;
             }else{
-                $tanggal_bpjs_tk=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][44])->format('Y-m-d');
+                $tanggal_bpjs_tk=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][42])->format('Y-m-d');
             }
-            if($data[0][$i][47]==''){
+            if($data[0][$i][45]==''){
                 $tanggal_bpjs_ks=null;
             }else{
-                $tanggal_bpjs_ks=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][47])->format('Y-m-d');
+                $tanggal_bpjs_ks=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][45])->format('Y-m-d');
             }
-            if($data[0][$i][54]==''){
+            if($data[0][$i][52]==''){
                 $tanggal_vaccine1=null;
             }else{
-                $tanggal_vaccine1=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][54])->format('Y-m-d');
+                $tanggal_vaccine1=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][52])->format('Y-m-d');
             }
             if($data[0][$i][56]==''){
                 $tanggal_vaccine2=null;
@@ -1097,20 +1097,20 @@ class EmployeeAtrController extends AdminBaseController
             }else{
                 $tanggal_vaccine3=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][58])->format('Y-m-d');
             }
-            if($data[0][$i][62]==''){
+            if($data[0][$i][60]==''){
                 $tanggal_expire_sim=null;
             }else{
-                $tanggal_expire_sim=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][62])->format('Y-m-d');
+                $tanggal_expire_sim=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][60])->format('Y-m-d');
             }
-            if($data[0][$i][64]==''){
+            if($data[0][$i][62]==''){
                 $tanggal_mulai_kontrak=null;
             }else{
-                $tanggal_mulai_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][64])->format('Y-m-d');
+                $tanggal_mulai_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][62])->format('Y-m-d');
             }
-            if($data[0][$i][65]==''){
+            if($data[0][$i][63]==''){
                 $tanggal_akhir_kontrak=null;
             }else{
-                $tanggal_akhir_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][65])->format('Y-m-d');
+                $tanggal_akhir_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][63])->format('Y-m-d');
             }
             $dataArray[$i]=[
                 'status_department'=>$status_department,
@@ -1152,32 +1152,32 @@ class EmployeeAtrController extends AdminBaseController
                 'alamat_sementara'=>$data[0][$i][36],
                 'tunjangan'=>$data[0][$i][37],
                 'kode_grade'=>$data[0][$i][38],
-                'referensi'=>$data[0][$i][41],
-                'employee_name_atasan'=>$data[0][$i][42],
-                'status_aktif_bpjs_tk'=>$data[0][$i][43],
+                'referensi'=>$data[0][$i][39],
+                'employee_name_atasan'=>$data[0][$i][40],
+                'status_aktif_bpjs_tk'=>$data[0][$i][41],
                 'tanggal_bpjs_ketenagakerjaan'=>$tanggal_bpjs_tk,
-                'nomor_bpjs_ketenagakerjaan'=>$data[0][$i][45],
-                'status_aktif_bpjs_ks'=>$data[0][$i][46],
+                'nomor_bpjs_ketenagakerjaan'=>$data[0][$i][43],
+                'status_aktif_bpjs_ks'=>$data[0][$i][44],
                 'tanggal_bpjs_kesehatan'=>$tanggal_bpjs_ks,
-                'nomor_bpjs_kesehatan'=>$data[0][$i][48],
-                'pengalaman_bekerja'=>$data[0][$i][49],
-                'nama_kerabat'=>$data[0][$i][50],
-                'nomor_tlpn_kerabat'=>$data[0][$i][51],
-                'hubungan_kerabat'=>$data[0][$i][52],
-                'alamat_kerabat'=>$data[0][$i][53],
+                'nomor_bpjs_kesehatan'=>$data[0][$i][46],
+                'pengalaman_bekerja'=>$data[0][$i][47],
+                'nama_kerabat'=>$data[0][$i][48],
+                'nomor_tlpn_kerabat'=>$data[0][$i][49],
+                'hubungan_kerabat'=>$data[0][$i][50],
+                'alamat_kerabat'=>$data[0][$i][51],
                 'tanggal_vaccine1'=>$tanggal_vaccine1,
-                'nama_vaksin1'=>$data[0][$i][55],
+                'nama_vaksin1'=>$data[0][$i][53],
                 'tanggal_vaccine2'=>$tanggal_vaccine2,
-                'nama_vaksin2'=>$data[0][$i][57],
+                'nama_vaksin2'=>$data[0][$i][55],
                 'tanggal_vaccine3'=>$tanggal_vaccine3,
-                'nama_vaksin3'=>$data[0][$i][59],
-                'golongan_sim'=>$data[0][$i][60],
-                'nomor_sim'=>$data[0][$i][61],
+                'nama_vaksin3'=>$data[0][$i][57],
+                'golongan_sim'=>$data[0][$i][58],
+                'nomor_sim'=>$data[0][$i][59],
                 'tanggal_expire_sim'=>$tanggal_expire_sim,
-                'catatan'=>$data[0][$i][63],
+                'catatan'=>$data[0][$i][61],
                 'tanggal_mulai_kontrak'=>$tanggal_mulai_kontrak,
                 'tanggal_akhir_kontrak'=>$tanggal_akhir_kontrak,
-                'catatan_kontrak'=>$data[0][$i][66]
+                'catatan_kontrak'=>$data[0][$i][64]
             ];
         }
         foreach($dataArray as $key=>$value){
