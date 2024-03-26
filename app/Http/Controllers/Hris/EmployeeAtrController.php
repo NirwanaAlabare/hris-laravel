@@ -1294,7 +1294,6 @@ class EmployeeAtrController extends AdminBaseController
                 'alamat_sementara'=>$data[0][$i][36],
                 'tunjangan'=>$data[0][$i][37],
                 'kode_grade'=>$data[0][$i][38],
-                'premi'=>$data[0][$i][40],
                 'referensi'=>$data[0][$i][41],
                 'employee_name_atasan'=>$data[0][$i][42],
                 'status_aktif_bpjs_tk'=>$data[0][$i][43],
