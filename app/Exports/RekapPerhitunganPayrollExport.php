@@ -342,11 +342,11 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         if($pot_hari_kerja==0){$pot_hari_kerja='0';}
         $gapok=$upah_per_bulan+$tunjangan_karyawan_rupiah;
 
-        if( $total_kehadiran_net<=0){
+        if( $total_kehadiran_net<=0 && $koreksi_upah_rupiah==0){
             $tunjangan_karyawan_rupiah=0;
             $gapok=$upah_per_bulan;
-            $upah_neto_rupiah=0;
-            $upah_bruto_rupiah=0;
+            $upah_neto_rupiah='0';
+            $upah_bruto_rupiah='0';
             $pembulatan='0';
             $total_upah_thp_rupiah_pembulatan='0';
             $total_upah_thp_rupiah_employee='0';
