@@ -80,6 +80,16 @@ class UpdateDTPC extends Command
                     }else{
                         $total_dt_real=$total_dt;
                     }
+                }else if($jadwal_in=='06:00:00'){
+                    if($absen_in>'11:00:00'){
+                        $total_dt_real=$total_dt-60;
+                    }else if($absen_in>'10:00:00' && $absen_in<='11:00:00'){
+                        $selisih_menit=strtotime($absen_in)-strtotime('11:00:00');
+                        $selisih_menit=round($selisih_menit/60);
+                        $total_dt_real=$total_dt-$selisih_menit;
+                    }else{
+                        $total_dt_real=$total_dt;
+                    }
                 }else{
                     $total_dt_real=$total_dt;
                 }
@@ -94,6 +104,16 @@ class UpdateDTPC extends Command
                         $total_pc_real=$total_pc-60;
                     }else if($absen_out>'12:00:00' && $absen_out<='13:00:00'){
                         $selisih_menit=strtotime('13:00:00')-strtotime($absen_out);
+                        $selisih_menit=round($selisih_menit/60);
+                        $total_pc_real=$total_pc-$selisih_menit;
+                    }else{
+                        $total_pc_real=$total_pc;
+                    }
+                }else if($jadwal_in=='06:00:00'){
+                    if($v->absen_pulang_kerja<='11:00:00'){
+                        $total_pc_real=$total_pc-60;
+                    }else if($absen_out>'10:00:00' && $absen_out<='11:00:00'){
+                        $selisih_menit=strtotime('11:00:00')-strtotime($absen_out);
                         $selisih_menit=round($selisih_menit/60);
                         $total_pc_real=$total_pc-$selisih_menit;
                     }else{
