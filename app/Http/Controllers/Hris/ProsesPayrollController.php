@@ -2195,7 +2195,7 @@ class ProsesPayrollController extends AdminBaseController
                     $total_jam_lembur=$value2['final_jam_lembur_roundown'] + $konveri_jam;
                     $total_jam_lembur_finis=$total_jam_lembur-$value2['jumlah_jam_istirahat_form'];
                     $total_jam_lembur_finis=min($value2['jumlah_jam_lembur_form'],$total_jam_lembur_finis);
-                    if($value2['kode_hari']==5 || $value2['kode_hari']==6 || $value2['status_absen']=='LN'){
+                    if($value2['kode_hari']==6 || $value2['status_absen']=='LN'){
                         $kerjalibur='LIBUR';
                         $l1=0;
                         $l2=($total_jam_lembur_finis <= 8) ? $total_jam_lembur_finis : 8;
@@ -2213,7 +2213,11 @@ class ProsesPayrollController extends AdminBaseController
                         }
                     }
                     else{
-                        $kerjalibur='KERJA';
+                        if($value['kode_hari']==5){
+                            $kerjalibur='LIBUR';
+                        }else{
+                            $kerjalibur='KERJA';
+                        }
                         $l1 = ($total_jam_lembur_finis <= 1) ? $total_jam_lembur_finis : 1;
                         $l2 = max($total_jam_lembur_finis - 1, 0);
                         $l3=0;
@@ -2222,7 +2226,7 @@ class ProsesPayrollController extends AdminBaseController
                     
                     $kode_grade=EmployeeAtribut::select('kode_grade')->where('enroll_id',$value2['enroll_id'])->pluck('kode_grade')[0];
                     $salary_bulanan=GradingSalary::select('salary_bulanan')->where('kode_grade',$kode_grade)->where('periode_umk','2024-01')->pluck('salary_bulanan')[0];
-                    if($value2['status_absen']=='LN'){
+                    if($value2['kode_hari']==6 || $value2['status_absen']=='LN'){
                         $l1_rupiah=$l1*($salary_bulanan/173*1);
                         $l2_rupiah=$l2*($salary_bulanan/173*2);
                         $l3_rupiah=$l3*($salary_bulanan/173*2);
@@ -2401,7 +2405,7 @@ class ProsesPayrollController extends AdminBaseController
                     $total_jam_lembur=$value2['final_jam_lembur_roundown'] + $konveri_jam;
                     $total_jam_lembur_finis=$total_jam_lembur-$value2['jumlah_jam_istirahat_form'];
                     $total_jam_lembur_finis=min($value2['jumlah_jam_lembur_form'],$total_jam_lembur_finis);
-                    if($value2['kode_hari']==5 || $value2['kode_hari']==6 || $value2['status_absen']=='LN'){
+                    if($value2['kode_hari']==6 || $value2['status_absen']=='LN'){
                         $kerjalibur='LIBUR';
                         $l1=0;
                         $l2=($total_jam_lembur_finis <= 8) ? $total_jam_lembur_finis : 8;
@@ -2419,7 +2423,11 @@ class ProsesPayrollController extends AdminBaseController
                         }
                     }
                     else{
-                        $kerjalibur='KERJA';
+                        if($value['kode_hari']==5){
+                            $kerjalibur='LIBUR';
+                        }else{
+                            $kerjalibur='KERJA';
+                        }
                         $l1 = ($total_jam_lembur_finis <= 1) ? $total_jam_lembur_finis : 1;
                         $l2 = max($total_jam_lembur_finis - 1, 0);
                         $l3=0;
@@ -2428,7 +2436,7 @@ class ProsesPayrollController extends AdminBaseController
                     
                     $kode_grade=EmployeeAtribut::select('kode_grade')->where('enroll_id',$value2['enroll_id'])->pluck('kode_grade')[0];
                     $salary_bulanan=GradingSalary::select('salary_bulanan')->where('kode_grade',$kode_grade)->where('periode_umk','2024-01')->pluck('salary_bulanan')[0];
-                    if($value2['status_absen']=='LN'){
+                    if($value2['kode_hari']==6 || $value2['status_absen']=='LN'){
                         $l1_rupiah=$l1*($salary_bulanan/173*1);
                         $l2_rupiah=$l2*($salary_bulanan/173*2);
                         $l3_rupiah=$l3*($salary_bulanan/173*2);
