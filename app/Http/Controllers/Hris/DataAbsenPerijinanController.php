@@ -267,6 +267,9 @@ class DataAbsenPerijinanController extends AdminBaseController
                 'absen_alasan' => $absen_alasan,
                 'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
                 'tanggal_akhir_ijin' => $tanggal_akhir_ijin,
+                'jumlah_menit_absen_dt'=>0,
+                'jumlah_menit_absen_pc'=>0,
+                'jumlah_menit_absen_dtpc'=>0,
                 'operator' => $email,
                 'updated_absen_ijin' => now()
             ]);

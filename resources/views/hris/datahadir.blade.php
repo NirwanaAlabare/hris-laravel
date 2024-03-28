@@ -835,7 +835,7 @@
         $('.fc-datepicker').datepicker({
             showOtherMonths: true,
             selectOtherMonths: true,
-            dateFormat: 'dd-mm-yy'
+            dateFormat: 'yy-mm-dd'
         });
 
         $(function(){
@@ -1734,7 +1734,7 @@
             $.ajax({
                 type:"POST",
                 url: "{{route('hris.dataabsenperijinan.create_perizinan')}}",
-                dataType: 'json',
+                // dataType: 'json',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 data: {
@@ -1749,8 +1749,9 @@
                     tanggal_mulai_ijin:tanggal_mulai_ijin,
                     tanggal_akhir_ijin:tanggal_akhir_ijin,
                 },
-                dataType: 'json',
+                // dataType: 'json',
                 success: function(res){
+                    console.log(res);
                     notif({
                         msg: "<b>Info:</b> Data berhasil di simpan.",
                         type: "info"
@@ -1767,9 +1768,9 @@
             $('#progress-show-1').hide();
             $('#progress-hide-1').show();
             $('#btn-save').removeClass("btn-loading");
-            $('#ajax-absenijin-model-add').modal('hide');
+            // $('#ajax-absenijin-model-add').modal('hide');
             $("#btn-save").html('<span><i class="fa fa-save"></i></span> Simpan');
-            $("#datatable-ajax-crud").DataTable().ajax.reload();
+            // $("#datatable-ajax-crud").DataTable().ajax.reload();
 
         });
 
