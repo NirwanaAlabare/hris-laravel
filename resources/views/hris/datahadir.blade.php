@@ -835,7 +835,7 @@
         $('.fc-datepicker').datepicker({
             showOtherMonths: true,
             selectOtherMonths: true,
-            dateFormat: 'yy-mm-dd'
+            dateFormat: 'dd-mm-yy'
         });
 
         $(function(){
@@ -1487,7 +1487,7 @@
                     } else {
 
                         var tanggal = res['tanggal_berjalan'];
-                        
+                        var tanggal_resmi=tanggal.substr(8,2)+'-'+tanggal.substr(5,2)+'-'+tanggal.substr(0,4);
                         $.ajax({
                             type:"POST",
                             url: "{{route('hris.dataclosingpayroll.ajax_getclosing')}}",
@@ -1512,9 +1512,9 @@
                                     });
                                 } else {
 
-                                    $('#tanggal_perijinan').val(res['tanggal_berjalan']);
-                                    $('#tanggal_mulai_ijin').val(res['tanggal_berjalan']);
-                                    $('#tanggal_akhir_ijin').val(res['tanggal_berjalan']);
+                                    $('#tanggal_perijinan').val(tanggal_resmi);
+                                    $('#tanggal_mulai_ijin').val(tanggal_resmi);
+                                    $('#tanggal_akhir_ijin').val(tanggal_resmi);
                                     $('#enroll_id').val(res['enroll_id']);
                                     $('#nik').val(res['nik']);
                                     $('#employee_name').val(res['employee_name']);
