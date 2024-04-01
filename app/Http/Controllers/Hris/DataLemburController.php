@@ -737,71 +737,91 @@ class DataLemburController extends AdminBaseController
         $sheet->mergeCells('A4:D4');
 
         $sheet->writeTo('A6', 'TANGGAL');
-        $sheet->mergeCells('A6:A7');
+        $sheet->mergeCells('A6:A7')->applyTextCenter();
         $sheet->writeTo('B6', 'HARI');
-        $sheet->mergeCells('B6:B7');
+        $sheet->mergeCells('B6:B7')->applyTextCenter();
         $sheet->writeTo('C6', 'NO. SPL');
-        $sheet->mergeCells('C6:C7');
+        $sheet->mergeCells('C6:C7')->applyTextCenter();
         $sheet->writeTo('D6', 'NIK');
-        $sheet->mergeCells('D6:D7');
+        $sheet->mergeCells('D6:D7')->applyTextCenter();
         $sheet->writeTo('E6', 'NO. ABSEN');
-        $sheet->mergeCells('E6:E7');
+        $sheet->mergeCells('E6:E7')->applyTextCenter();
         $sheet->writeTo('F6', 'NAMA KARYAWAN');
-        $sheet->mergeCells('F6:F7');
+        $sheet->mergeCells('F6:F7')->applyTextCenter();
         $sheet->writeTo('G6', 'KERJA/LIBUR');
-        $sheet->mergeCells('G6:G7');
+        $sheet->mergeCells('G6:G7')->applyTextCenter();
         $sheet->writeTo('H6', 'STATUS');
-        $sheet->mergeCells('H6:H7');
+        $sheet->mergeCells('H6:H7')->applyTextCenter();
         $sheet->writeTo('I6', 'DEPARTMENT');
-        $sheet->mergeCells('I6:I7');
+        $sheet->mergeCells('I6:I7')->applyTextCenter();
         $sheet->writeTo('J6', 'BAGIAN');
-        $sheet->mergeCells('J6:J7');
+        $sheet->mergeCells('J6:J7')->applyTextCenter();
 
         $sheet->writeTo('K6', 'JADWAL KERJA');
-        $sheet->mergeCells('K6:L6');
-        $sheet->writeTo('K7', 'IN');
-        $sheet->writeTo('L7', 'OUT');
+        $sheet->mergeCells('K6:L6')->applyTextCenter();
+        $sheet->writeTo('K7', 'IN')->applyTextCenter();
+        $sheet->writeTo('L7', 'OUT')->applyTextCenter();
 
         $sheet->writeTo('M6', 'ABSEN');
-        $sheet->mergeCells('M6:N6');
-        $sheet->writeTo('M7', 'IN');
-        $sheet->writeTo('N7', 'OUT');
+        $sheet->mergeCells('M6:N6')->applyTextCenter();
+        $sheet->writeTo('M7', 'IN')->applyTextCenter();
+        $sheet->writeTo('N7', 'OUT')->applyTextCenter();
         $sheet->writeTo('O6', 'JAM LEMBUR');
-        $sheet->mergeCells('O6:P6');
-        $sheet->writeTo('O7', 'MULAI');
+        $sheet->mergeCells('O6:P6')->applyTextCenter();
+        $sheet->writeTo('O7', 'MULAI')->applyTextCenter();
         $sheet->writeTo('P7', 'SELESAI');
         $sheet->writeTo('Q6', 'RINCIAN PENGAJUAN LEMBUR');
-        $sheet->mergeCells('Q6:U6');
-        $sheet->writeTo('Q7', 'LEMBUR 1');
-        $sheet->writeTo('R7', 'LEMBUR 2');
-        $sheet->writeTo('S7', 'LEMBUR 3');
-        $sheet->writeTo('T7', 'LEMBUR 4');
-        $sheet->writeTo('U7', 'TOTAL LEMBUR');
-        $sheet->writeTo('V6', 'CATATAN');
-        $sheet->mergeCells('V6:V7');
+        $sheet->mergeCells('Q6:U6')->applyTextCenter();
+        $sheet->writeTo('Q7', 'LEMBUR 1')->applyTextCenter();
+        $sheet->writeTo('R7', 'LEMBUR 2')->applyTextCenter();
+        $sheet->writeTo('S7', 'LEMBUR 3')->applyTextCenter();
+        $sheet->writeTo('T7', 'LEMBUR 4')->applyTextCenter();
+        $sheet->writeTo('U7', 'TOTAL LEMBUR')->applyTextCenter();
+        $sheet->writeTo('V6', 'CATATAN')->applyTextCenter();
+        $sheet->mergeCells('V6:V7')->applyTextCenter();
         $sheet->writeTo('X6', 'TOTAL LEMBUR VERIFIKASI');
         $sheet->mergeCells('X6:X7');
 
         $sheet->writeTo('Z6', 'GRADE');
-        $sheet->mergeCells('Z6:Z7');
+        $sheet->mergeCells('Z6:Z7')->applyTextCenter();
         $sheet->writeTo('AA6', 'BIAYA LEMBUR');
-        $sheet->mergeCells('AA6:AF6');
-        $sheet->writeTo('AA7', 'RP. LEMBUR 1');
-        $sheet->writeTo('AB7', 'RP. LEMBUR 2');
-        $sheet->writeTo('AC7', 'RP. LEMBUR 3');
-        $sheet->writeTo('AD7', 'RP. LEMBUR 4');
-        $sheet->writeTo('AE7', 'TOTAL LEMBUR');
-        $sheet->writeTo('AF7', 'VERIFY STATUS');
+        $sheet->mergeCells('AA6:AF6')->applyTextCenter();
+        $sheet->writeTo('AA7', 'RP. LEMBUR 1')->applyTextCenter();
+        $sheet->writeTo('AB7', 'RP. LEMBUR 2')->applyTextCenter();
+        $sheet->writeTo('AC7', 'RP. LEMBUR 3')->applyTextCenter();
+        $sheet->writeTo('AD7', 'RP. LEMBUR 4')->applyTextCenter();
+        $sheet->writeTo('AE7', 'TOTAL LEMBUR')->applyTextCenter();
+        $sheet->writeTo('AF7', 'VERIFY STATUS')->applyTextCenter();
         $sheet->writeAreas();
 
         $sheet->setColOptions([
+            'A' => ['width' => 11],
+            'B' => ['width' => 7],
             'C' => ['width' => 18],
-            'D' => ['width' => 13],
-            'F' => ['width' => 30],
-            'G' => ['width' => 13],
+            'D' => ['width' => 12],
+            'E' => ['width' => 10],
+            'F' => ['width' => 32],
+            'G' => ['width' => 12],
             'H' => ['width' => 13],
-            'I' => ['width' => 25],
-            'J' => ['width' => 25],
+            'I' => ['width' => 27],
+            'J' => ['width' => 27],
+            'J' => ['width' => 27],
+            'K' => ['width' => 7],
+            'L' => ['width' => 7],
+            'M' => ['width' => 7],
+            'N' => ['width' => 7],
+            'O' => ['width' => 7],
+            'P' => ['width' => 7],
+            'V' => ['width' => 34],
+            'W' => ['width' => 6],
+            'X' => ['width' => 23],
+            'X' => ['width' => 23],
+            'AA7' => ['width' => 15],
+            'AB7' => ['width' => 15],
+            'AC7' => ['width' => 15],
+            'AD7' => ['width' => 15],
+            'AE7' => ['width' => 15],
+            'AF7' => ['width' => 15],
             'K' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             'L' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             'M' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
