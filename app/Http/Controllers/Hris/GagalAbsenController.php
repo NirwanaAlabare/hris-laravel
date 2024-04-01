@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Hris;
 use App\Http\Controllers\AdminBaseController;
 use App\Models\MasterDataAbsenKehadiran;
 use App\Models\LogDataGagalAbsen;
+use App\Models\RefHariLibur;
 use App\Models\EmployeeAtribut;
 use App\Models\DepartmentAll;
 use App\Models\WorkTimeTable;
@@ -333,7 +334,11 @@ class GagalAbsenController extends AdminBaseController
         $uuid = $request->uuid;
         $tanggal_absen = $request->tanggal_absen;
         $status_absen = $request->status_absen;
-
+        if(isset(RefHariLibur::where('tanggal_libur',$tanggal_absen)->pluck('status_absen')[0])){
+            if(RefHariLibur::where('tanggal_libur',$tanggal_absen)->pluck('status_absen')[0]=='LN'){
+                $status_absen='LN';
+            }
+        }
         if ($status_absen == 'KERJA') { $status_absen = null; $absen_alasan = null; }
 
             $absen_masuk_kerja = $request->absen_masuk_kerja;
