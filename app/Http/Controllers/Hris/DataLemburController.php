@@ -8,6 +8,7 @@ use App\Models\MasterDataAbsenKehadiran;
 use App\Models\EmployeeAtribut;
 use App\Models\DepartmentAll;
 use App\Models\WorkTimeTable;
+use App\Models\GradingSalary;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -765,21 +766,32 @@ class DataLemburController extends AdminBaseController
         $sheet->mergeCells('M6:N6');
         $sheet->writeTo('M7', 'IN');
         $sheet->writeTo('N7', 'OUT');
-        $sheet->writeTo('O6', 'WAKTU LEMBUR PENGAJUAN');
-        $sheet->mergeCells('O6:Q6');
+        $sheet->writeTo('O6', 'JAM LEMBUR');
+        $sheet->mergeCells('O6:P6');
         $sheet->writeTo('O7', 'MULAI');
         $sheet->writeTo('P7', 'SELESAI');
-        $sheet->writeTo('Q7', 'TOTAL LEMBUR');
-        $sheet->writeTo('R6', 'CATATAN');
-        $sheet->mergeCells('R6:R7');
-        $sheet->writeTo('S6', 'WAKTU LEMBUR ACTUAL');
-        $sheet->mergeCells('S6:X6');
-        $sheet->writeTo('S7', 'LEMBUR 1');
-        $sheet->writeTo('T7', 'LEMBUR 2');
-        $sheet->writeTo('U7', 'LEMBUR 3');
-        $sheet->writeTo('V7', 'LEMBUR 4');
-        $sheet->writeTo('W7', 'TOTAL LEMBUR');
-        $sheet->writeTo('X7', 'Verify Status');
+        $sheet->writeTo('Q6', 'RINCIAN PENGAJUAN LEMBUR');
+        $sheet->mergeCells('Q6:U6');
+        $sheet->writeTo('Q7', 'LEMBUR 1');
+        $sheet->writeTo('R7', 'LEMBUR 2');
+        $sheet->writeTo('S7', 'LEMBUR 3');
+        $sheet->writeTo('T7', 'LEMBUR 4');
+        $sheet->writeTo('U7', 'TOTAL LEMBUR');
+        $sheet->writeTo('V6', 'CATATAN');
+        $sheet->mergeCells('V6:V7');
+        $sheet->writeTo('X6', 'TOTAL LEMBUR VERIFIKASI');
+        $sheet->mergeCells('X6:X7');
+
+        $sheet->writeTo('Z6', 'GRADE');
+        $sheet->mergeCells('Z6:Z7');
+        $sheet->writeTo('AA6', 'BIAYA LEMBUR');
+        $sheet->mergeCells('AA6:AF6');
+        $sheet->writeTo('AA7', 'RP. LEMBUR 1');
+        $sheet->writeTo('AB7', 'RP. LEMBUR 2');
+        $sheet->writeTo('AC7', 'RP. LEMBUR 3');
+        $sheet->writeTo('AD7', 'RP. LEMBUR 4');
+        $sheet->writeTo('AE7', 'TOTAL LEMBUR');
+        $sheet->writeTo('AF7', 'VERIFY STATUS');
         $sheet->writeAreas();
 
         $sheet->setColOptions([
@@ -796,7 +808,11 @@ class DataLemburController extends AdminBaseController
             'N' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             'O' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             'P' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
-            'R' => ['width' => 30],
+            'Z' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3],
+            'AA' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3],
+            'AB' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3],
+            'AC' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3],
+            'AD' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3],
         ]);
         foreach($dataLembur as $lembur){
             $kode_hari = $lembur->kode_hari;
@@ -851,6 +867,28 @@ class DataLemburController extends AdminBaseController
             if(isset($lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('total_lembur_1234')[0])){
                 $total_lembur_1234=$lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('total_lembur_1234')[0];
             }
+            $lembur1_rupiah='';
+            if(isset($lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('lembur1_rupiah')[0])){
+                $lembur1_rupiah=$lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('lembur1_rupiah')[0];
+            }
+            $lembur2_rupiah='';
+            if(isset($lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('lembur2_rupiah')[0])){
+                $lembur2_rupiah=$lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('lembur2_rupiah')[0];
+            }
+            $lembur3_rupiah='';
+            if(isset($lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('lembur3_rupiah')[0])){
+                $lembur3_rupiah=$lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('lembur3_rupiah')[0];
+            }
+            $lembur4_rupiah='';
+            if(isset($lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('lembur4_rupiah')[0])){
+                $lembur4_rupiah=$lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('lembur4_rupiah')[0];
+            }
+            $total_lembur_rupiah='';
+            if(isset($lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('total_lembur_rupiah')[0])){
+                $total_lembur_rupiah=$lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('total_lembur_rupiah')[0];
+            }
+            $kode_grade=EmployeeAtribut::where('enroll_id',$lembur->enroll_id)->pluck('kode_grade')[0];
+            $salary=GradingSalary::where('kode_grade',$kode_grade)->where('periode_umk','2024-01')->pluck('salary_bulanan')[0];
             
             $data = [
                 $lembur->tanggal_berjalan,
@@ -869,21 +907,28 @@ class DataLemburController extends AdminBaseController
                 substr($lembur->absen_pulang_kerja, 0, 5),
                 substr($lembur->data_lembur->mulai_jam_lembur, 11, 5),
                 substr($lembur->data_lembur->akhir_jam_lembur, 11, 5),
-                $lembur->data_lembur->jumlah_jam_lembur,
-                $lembur['data_lembur']->catatan,
                 $lembur_1,
                 $lembur_2,
                 $lembur_3,
                 $lembur_4,
                 $total_lembur_1234,
+                $lembur['data_lembur']->catatan,
+                '',
+                $total_lembur_1234,
+                '',
+                $salary,
+                $lembur1_rupiah,
+                $lembur2_rupiah,
+                $lembur3_rupiah,
+                $lembur4_rupiah,
+                $total_lembur_rupiah,
                 $is_verifikasi
             ];
             $sheet->writeRow($data);
         }
-        $finename=substr($request->periode_lembur,0,7).' - PT.NAG OVERTIME DATA '.rand(10,10000000).'xlsx';
+        $finename=substr($request->periode_lembur,0,7).' - PT.NAG OVERTIME DATA '.rand(10,10000000);
         ob_end_clean();
         $excel->download($finename);
-
     }
 
     public function ajax_gettanggalnfl(Request $request)
