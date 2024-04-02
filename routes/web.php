@@ -306,6 +306,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'admin','names
     Route::post('datakehadiraninoutedited/ajax_abseninout_edited/',['as'=>'admin.datakehadiraninoutedited.ajax_abseninout_edited','uses'=> 'DataKehadiranInOutEditedController@ajax_abseninout_edited']);
     Route::post('datakehadiraninoutedited/form_kehadiraninout_edited/',['as'=>'admin.datakehadiraninoutedited.form_kehadiraninout_edited','uses'=> 'DataKehadiranInOutEditedController@form_kehadiraninout_edited']);
     Route::post('datakehadiraninoutedited/store/',['as'=>'admin.datakehadiraninoutedited.store','uses'=> 'DataKehadiranInOutEditedController@store']);
+    Route::post('datakehadiraninoutedited/status_kerja/',['as'=>'admin.datakehadiraninoutedited.status_kerja','uses'=> 'DataKehadiranInOutEditedController@status_kerja']);
 
 
 
