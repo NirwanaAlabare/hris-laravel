@@ -2195,7 +2195,7 @@ class ProsesPayrollController extends AdminBaseController
                     $total_jam_lembur=$value2['final_jam_lembur_roundown'] + $konveri_jam;
                     $total_jam_lembur_finis=$total_jam_lembur-$value2['jumlah_jam_istirahat_form'];
                     $total_jam_lembur_finis=min($value2['jumlah_jam_lembur_form'],$total_jam_lembur_finis);
-                    if($value2['kode_hari']==6 || $value2['status_absen']=='LN'){
+                    if($value2['kode_hari']==5 || $value2['kode_hari']==6 || $value2['status_absen']=='LN' || ($value2['mulai_jam_kerja']==null && $value2['akhir_jam_kerja']==null)){
                         $kerjalibur='LIBUR';
                         $l1=0;
                         $l2=($total_jam_lembur_finis <= 8) ? $total_jam_lembur_finis : 8;
@@ -2213,11 +2213,7 @@ class ProsesPayrollController extends AdminBaseController
                         }
                     }
                     else{
-                        if($value['kode_hari']==5){
-                            $kerjalibur='LIBUR';
-                        }else{
-                            $kerjalibur='KERJA';
-                        }
+                        $kerjalibur='KERJA';
                         $l1 = ($total_jam_lembur_finis <= 1) ? $total_jam_lembur_finis : 1;
                         $l2 = max($total_jam_lembur_finis - 1, 0);
                         $l3=0;
@@ -2297,7 +2293,7 @@ class ProsesPayrollController extends AdminBaseController
                 $data_lemburan=[];
                 $lemburan=MasterDataAbsenKehadiran::where('nomor_form_lembur','!=',null)->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->with('data_lembur')->get();
                 foreach($lemburan as $key=>$value){
-                    if($value->kode_hari==5 || $value->kode_hari==6 || $value->status_absen=='LN'){
+                    if($value->kode_hari==5 || $value->kode_hari==6 || $value->status_absen=='LN' || ($value2['mulai_jam_kerja']==null && $value2['akhir_jam_kerja']==null)){
                         $kerjalibur='LIBUR';
                     }else{
                         $kerjalibur='KERJA';
@@ -2405,7 +2401,7 @@ class ProsesPayrollController extends AdminBaseController
                     $total_jam_lembur=$value2['final_jam_lembur_roundown'] + $konveri_jam;
                     $total_jam_lembur_finis=$total_jam_lembur-$value2['jumlah_jam_istirahat_form'];
                     $total_jam_lembur_finis=min($value2['jumlah_jam_lembur_form'],$total_jam_lembur_finis);
-                    if($value2['kode_hari']==6 || $value2['status_absen']=='LN'){
+                    if($value2['kode_hari']==5 || $value2['kode_hari']==6 || $value2['status_absen']=='LN'){
                         $kerjalibur='LIBUR';
                         $l1=0;
                         $l2=($total_jam_lembur_finis <= 8) ? $total_jam_lembur_finis : 8;
@@ -5148,7 +5144,7 @@ class ProsesPayrollController extends AdminBaseController
                 $total_jam_lembur=$value2['final_jam_lembur_roundown'] + $konveri_jam;
                 $total_jam_lembur_finis=$total_jam_lembur-$value2['jumlah_jam_istirahat_form'];
                 $total_jam_lembur_finis=min($value2['jumlah_jam_lembur_form'],$total_jam_lembur_finis);
-                if($value2['kode_hari']==5 || $value2['kode_hari']==6 || $value2['status_absen']=='LN'){
+                if($value2['kode_hari']==5 || $value2['kode_hari']==6 || $value2['status_absen']=='LN' || ($value2['mulai_jam_kerja']==null && $value2['akhir_jam_kerja']==null)){
                     $kerjalibur='LIBUR';
                     $l1=0;
                     $l2=($total_jam_lembur_finis <= 8) ? $total_jam_lembur_finis : 8;
@@ -5427,7 +5423,7 @@ class ProsesPayrollController extends AdminBaseController
                 $total_jam_lembur=$value2['final_jam_lembur_roundown'] + $konveri_jam;
                 $total_jam_lembur_finis=$total_jam_lembur-$value2['jumlah_jam_istirahat_form'];
                 $total_jam_lembur_finis=min($value2['jumlah_jam_lembur_form'],$total_jam_lembur_finis);
-                if($value2['kode_hari']==5 || $value2['kode_hari']==6 || $value2['status_absen']=='LN'){
+                if($value2['kode_hari']==5 || $value2['kode_hari']==6 || $value2['status_absen']=='LN' || ($value2['mulai_jam_kerja']==null && $value2['akhir_jam_kerja']==null)){
                     $kerjalibur='LIBUR';
                     $l1=0;
                     $l2=($total_jam_lembur_finis <= 8) ? $total_jam_lembur_finis : 8;
