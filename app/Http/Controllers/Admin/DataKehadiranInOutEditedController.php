@@ -59,7 +59,17 @@ class DataKehadiranInOutEditedController extends AdminBaseController
             return View::make('hris/dashboard', $this->data);
         }
     }
-
+    public function status_kerja(){
+        $jam_kerja=MasterDataAbsenKehadiran::select('mulai_jam_kerja','akhir_jam_kerja')->where('enroll_id',request()->enroll_id)->where('mulai_jam_kerja','!=','')->where('akhir_jam_kerja','!=','')->orderBy('tanggal_berjalan','desc')->limit(1)->get();
+        $jam_absen=MasterDataAbsenKehadiran::select('absen_masuk_kerja','absen_pulang_kerja')->where('tanggal_berjalan',request()->tanggal_berjalan)->where('enroll_id',request()->enroll_id)->orderBy('tanggal_berjalan','desc')->limit(1)->get();
+        $jam=[
+            'mulai_jam_kerja'=>$jam_kerja[0]['mulai_jam_kerja'],
+            'akhir_jam_kerja'=>$jam_kerja[0]['akhir_jam_kerja'],
+            'absen_masuk_kerja'=>$jam_absen[0]['absen_masuk_kerja'],
+            'absen_pulang_kerja'=>$jam_absen[0]['absen_pulang_kerja']
+        ];
+        return $jam;
+    }
     public function ajax_getallemployeeatribut()
     {
         $query =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name,

@@ -280,10 +280,17 @@
                             <tr>
                                 <th>JADWAL (IN)</th>
                                 <th>JADWAL (OUT)</th>
+                                <th>KERJA/LIBUR</th>
                             </tr>
                             <tr>
                                 <td><input class="form-control" id="mulai_jam_kerja" name="mulai_jam_kerja" placeholder="--:--" type="text"></td>
                                 <td><input class="form-control" id="akhir_jam_kerja" name="akhir_jam_kerja" placeholder="--:--" type="text"></td>
+                                <td>
+                                    <select id="status_kerja" class="form-control">
+                                        <option value="kerja">KERJA</option>
+                                        <option value="libur">LIBUR</option>
+                                    </select>
+                                </td>
                             </tr>
                             <tr>
                                 <th>ABSEN IN</th>
@@ -690,6 +697,11 @@
                                     $('#nama_hari').val(res[0]['nama_hari']);
                                     $('#mulai_jam_kerja').val(res[0]['mulai_jam_kerja']);
                                     $('#akhir_jam_kerja').val(res[0]['akhir_jam_kerja']);
+                                    if(res[0]['mulai_jam_kerja']!=null && res[0]['akhir_jam_kerja']!=null){
+                                        $('#status_kerja').val('kerja');
+                                    }else if(res[0]['mulai_jam_kerja']==null && res[0]['akhir_jam_kerja']==null){
+                                        $('#status_kerja').val('libur');
+                                    }
                                     $('#absen_masuk_kerja').val(res[0]['absen_masuk_kerja']);
                                     $('#absen_pulang_kerja').val(res[0]['absen_pulang_kerja']);
                                     $("#status_absen").val(data['status_absen']).trigger("change");
@@ -720,7 +732,51 @@
                 });                                           
 
              });
-
+             $('#status_kerja').on('change',function(){
+                var status_kerja=$('#status_kerja').val();
+                if(status_kerja=='kerja'){
+                    let enroll_id=$('#enroll_id').val();
+                    let tanggal_berjalan=$('#tanggal_berjalan').val();
+                    $.ajax({
+                        type: "post",
+                        url: '{{route('admin.datakehadiraninoutedited.status_kerja')}}',
+                        data: {
+                            enroll_id: enroll_id,
+                            tanggal_berjalan: tanggal_berjalan,
+                        },
+                        success: function(res) {
+                            $('#mulai_jam_kerja').val(res.mulai_jam_kerja.substring(0,5));
+                            $('#akhir_jam_kerja').val(res.akhir_jam_kerja.substring(0,5));
+                            if(res.absen_masuk_kerja!=null){
+                                $('#absen_masuk_kerja').val(res.absen_masuk_kerja.substring(0,5));
+                            }
+                            if(res.absen_pulang_kerja!=null){
+                                $('#absen_pulang_kerja').val(res.absen_pulang_kerja.substring(0,5));
+                            }
+                            if(res.absen_masuk_kerja==null && res.absen_pulang_kerja==null){
+                                $('#status_absen').val('M');
+                            }
+                            if(res.absen_masuk_kerja!=null && res.absen_pulang_kerja==null){
+                                $('#status_absen').val('TL');
+                            }
+                            if(res.absen_masuk_kerja==null && res.absen_pulang_kerja!=null){
+                                $('#status_absen').val('TL');
+                            }
+                        }
+                    });
+                }else{
+                    $('#mulai_jam_kerja').val('');
+                    $('#akhir_jam_kerja').val('');
+                    $('#absen_masuk_kerja').val('');
+                    $('#absen_pulang_kerja').val('');
+                    $('#absen_masuk_kerja').val('');
+                    $('#status_absen').val('');
+                }
+             });
+             $('#datatable-ajax-crud tbody').on('click', 'tr', function () {
+                $("#datatable-ajax-crud tbody tr").removeClass('bg-cyan');
+                $(this).addClass('bg-cyan');
+             });
              var table2 = $('#datatable-ajax-kehadiraninout-edited').DataTable({
                 processing: true,
                 serverSide: true,
