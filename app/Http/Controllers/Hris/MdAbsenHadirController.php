@@ -888,8 +888,9 @@ class MdAbsenHadirController extends AdminBaseController
     // laravel fast excel
     public function ajax_exportexcel(Request $request)
     {
-        ini_set("max_execution_time", 3600);
-
+        ini_set("max_execution_time", 5210);
+        ini_set('memory_limit', '5120000M');
+        
         setlocale(LC_ALL, 'id-ID', 'id_ID');
 
         if($request->selectDepartment) {
@@ -961,7 +962,6 @@ class MdAbsenHadirController extends AdminBaseController
             ';
 
         }
-
         $dataAbsen = DB::select('
             SELECT
                 master_data_absen_kehadiran.tanggal_berjalan,
@@ -1012,7 +1012,12 @@ class MdAbsenHadirController extends AdminBaseController
                 rekap_perhitungan_lembur.lembur_2,
                 rekap_perhitungan_lembur.lembur_3,
                 rekap_perhitungan_lembur.lembur_4,
-                rekap_perhitungan_lembur.total_lembur_1234
+                rekap_perhitungan_lembur.total_lembur_1234,
+                rekap_perhitungan_lembur.lembur1_rupiah,
+                rekap_perhitungan_lembur.lembur2_rupiah,
+                rekap_perhitungan_lembur.lembur3_rupiah,
+                rekap_perhitungan_lembur.lembur4_rupiah,
+                rekap_perhitungan_lembur.total_lembur_rupiah
             FROM
                 `master_data_absen_kehadiran`
                 LEFT JOIN `data_lembur` ON `master_data_absen_kehadiran`.`enroll_id`= `data_lembur`.`enroll_id` AND `master_data_absen_kehadiran`.`tanggal_berjalan`=`data_lembur`.`tanggal_berjalan`
@@ -1027,11 +1032,10 @@ class MdAbsenHadirController extends AdminBaseController
                 `employee_atribut`.`employee_name` ASC,
                 `master_data_absen_kehadiran`.`tanggal_berjalan` ASC
         ');
-
         $excel = FastExcel::create('dataAbsen');
         $sheet = $excel->getSheet();
 
-        // $area = $sheet->beginArea();
+        $area = $sheet->beginArea();
 
         $sheet->writeTo('A1', 'PT NIRWANA ALABARE GARMENT', ['font-size' => 18]);
         $sheet->writeTo('A2', 'LAPORAN ABSENSI KARYAWAN', ['font-size' => 16]);
@@ -1129,34 +1133,43 @@ class MdAbsenHadirController extends AdminBaseController
 
         $sheet->mergeCells('AL6:AL7');
 
-        $sheet->mergeCells('AM6:AP6');
-        $sheet->writeTo('AM6', 'DATA LEMBUR VERIFIKASI');
-        $sheet->writeTo('AM7', 'MULAI JAM LEMBUR');
-        $sheet->writeTo('AN7', 'AKHIR JAM LEMBUR');
-        $sheet->writeTo('AO7', 'JUMLAH JAM ISTIRAHAT');
-        $sheet->writeTo('AP7', 'JUMLAH JAM LEMBUR');
+        $sheet->mergeCells('AM6:AQ6');
+        $sheet->writeTo('AM6', 'BIAYA LEMBUR');
+        $sheet->writeTo('AM7', 'RP LEMBUR 1');
+        $sheet->writeTo('AN7', 'RP LEMBUR 2');
+        $sheet->writeTo('AO7', 'RP LEMBUR 3');
+        $sheet->writeTo('AP7', 'RP LEMBUR 4');
+        $sheet->writeTo('AQ7', 'TOTAL LEMBUR');
+
+        $sheet->mergeCells('AR6:AR7');
+
+        $sheet->mergeCells('AS6:AS6');
+        $sheet->writeTo('AS6', 'DATA LEMBUR VERIFIKASI');
+        $sheet->writeTo('AS7', 'MULAI JAM LEMBUR');
+        $sheet->writeTo('AT7', 'AKHIR JAM LEMBUR');
+        $sheet->writeTo('AU7', 'JUMLAH JAM ISTIRAHAT');
+        $sheet->writeTo('AV7', 'JUMLAH JAM LEMBUR');
 
         $sheet->writeAreas();
 
         $sheet->setColOptions([
             'A' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 12],
-            'E' => ['width' => 50],
             'K' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             'L' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
+            'M' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
+            'N' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             'O' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             'P' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             'R' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             'S' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
-            'T' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3],
-            'U' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3],
-            'V' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3],
             'AC' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             'AD' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
-            'AE' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
-            'AF' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED4],
-            'AM' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
-            'AN' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
-            'AO' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
+            'AM' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED4],
+            'AN' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED4],
+            'AO' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED4],
+            'AP' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED4],
+            'AS' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
+            'AT' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             // 'K' => ['format' => '0.00'],
             // 'L' => ['format' => '0.00'],
         ]);
@@ -1223,7 +1236,6 @@ class MdAbsenHadirController extends AdminBaseController
             $lembur_4=$Kehadiran->lembur_4;
             $total_lembur_1234=$Kehadiran->total_lembur_1234;
             $total_lembur_12345='';
-            if($Kehadiran->is_verifikasi==1){
                 $final_mulai_jam_lembur=substr($Kehadiran->mulai_jam_lembur_rekap, 11, 5);
                 $final_akhir_jam_lembur=substr($Kehadiran->akhir_jam_lembur_rekap, 11, 5);
                 if ($Kehadiran->final_jam_istirahat_lembur == 0) {
@@ -1243,7 +1255,6 @@ class MdAbsenHadirController extends AdminBaseController
                     $final_jam_istirahat = ((strlen($hours) < 2) ? "0{$hours}" : $hours).":".((strlen($minutes) < 2) ? "0{$minutes}" : $minutes);
                 }
                 $total_lembur_12345=$Kehadiran->total_lembur_1234;
-            }
 
             $data = [
                 Date::stringToExcel($Kehadiran->tanggal_berjalan),
@@ -1283,6 +1294,12 @@ class MdAbsenHadirController extends AdminBaseController
                 $lembur_3,
                 $lembur_4,
                 $total_lembur_1234,
+                "",
+                $Kehadiran->lembur1_rupiah,
+                $Kehadiran->lembur2_rupiah,
+                $Kehadiran->lembur3_rupiah,
+                $Kehadiran->lembur4_rupiah,
+                $Kehadiran->total_lembur_rupiah,
                 "",
                 $final_mulai_jam_lembur,
                 $final_akhir_jam_lembur,
@@ -2780,5 +2797,339 @@ class MdAbsenHadirController extends AdminBaseController
         ]);
 
         return true;
+    }
+    public function export_excel(Request $request)
+    {
+        ini_set("max_execution_time", 3600);
+
+        setlocale(LC_ALL, 'id-ID', 'id_ID');
+
+        if($request->selectDepartment) {
+            $selectDepartment = $request->selectDepartment;
+        } else {
+            $selectDepartment = "";
+        }
+
+        if($request->selectBagian) {
+            $selectBagian = $request->selectBagian;
+        } else {
+            $selectBagian = "";
+        }
+
+        if($request->status_staff) {
+            $status_staff = $request->status_staff;
+        } else {
+            $status_staff = "";
+        }
+
+        if($request->searchData) {
+            $searchData = strtoupper($request->searchData);
+        } else {
+            $searchData = "";
+        }
+
+        if($request->daterange1) {
+            $daterange1 = $request->daterange1;
+        } else {
+            $daterange1 = "";
+        }
+
+        $daterange1 = $daterange1;
+        $daterange1 = explode(" s/d ", $daterange1);
+        $tanggalMulai = date('Y-m-d', strtotime($daterange1[0]));
+        $tanggalSampai = date('Y-m-d', strtotime($daterange1[1]));
+        $tanggalMulai = $tanggalMulai;
+        $tanggalSampai = $tanggalSampai;
+
+        $selectDepartment = $selectDepartment;
+
+        $status_staff = $status_staff;
+        $searchData = strtoupper($searchData);
+
+        $filterStaff = "";
+        if($status_staff) {
+            $filterStaff = " AND employee_atribut.status_staff = '" . $status_staff . "'";
+        }
+
+        $inDepartment = "";
+        if($selectDepartment) {
+            $inDepartment = ' AND employee_atribut.department_name = "' . $selectDepartment . '"';
+
+        }
+
+        $inBagian = "";
+        if($selectBagian) {
+            $inBagian = ' AND employee_atribut.sub_dept_name = "' . $selectBagian . '"';
+
+        }
+
+        $inSearchData = "";
+        if($searchData) {
+            $inSearchData = '
+                AND (
+                    UPPER(master_data_absen_kehadiran.enroll_id) LIKE ("%' . $searchData . '%")
+                    OR UPPER(master_data_absen_kehadiran.nik) LIKE ("%' . $searchData . '%")
+                    OR UPPER(master_data_absen_kehadiran.employee_name) LIKE ("%' . $searchData . '%")
+                )
+            ';
+
+        }
+
+        $dataAbsen = DB::select('
+            SELECT
+                master_data_absen_kehadiran.tanggal_berjalan,
+                master_data_absen_kehadiran.kode_hari,
+                master_data_absen_kehadiran.nama_hari,
+                employee_atribut.nik,
+                employee_atribut.enroll_id,
+                employee_atribut.employee_name,
+                employee_atribut.status_staff,
+                employee_atribut.department_name,
+                master_data_absen_kehadiran.mulai_jam_kerja,
+                master_data_absen_kehadiran.akhir_jam_kerja,
+                master_data_absen_kehadiran.absen_masuk_kerja,
+                master_data_absen_kehadiran.absen_pulang_kerja,
+                master_data_absen_kehadiran.jumlah_absen_menit_kerja,
+                master_data_absen_kehadiran.permits_dari_pukul,
+                master_data_absen_kehadiran.permits_sampai_pukul,
+                master_data_absen_kehadiran.total_menit_permits,
+                master_data_absen_kehadiran.jumlah_menit_absen_dt,
+                master_data_absen_kehadiran.jumlah_menit_absen_pc,
+                master_data_absen_kehadiran.jumlah_menit_absen_dtpc,
+                master_data_absen_kehadiran.status_absen,
+                master_data_absen_kehadiran.absen_alasan,
+                master_data_absen_kehadiran.catatan_hrd,
+                master_data_absen_kehadiran.mulai_jam_lembur,
+                master_data_absen_kehadiran.akhir_jam_lembur,
+                substr( master_data_absen_kehadiran.jumlah_jam_lembur_approved, 1, 5 ) jumlah_jam_lembur_approved,
+                substr( master_data_absen_kehadiran.jumlah_jam_istirahat_lembur, 1, 5 ) jumlah_jam_istirahat_lembur,
+                rekap_perhitungan_lembur.nomor_form_lembur,
+                rekap_perhitungan_lembur.final_mulai_jam_lembur,
+                rekap_perhitungan_lembur.final_selesai_jam_lembur,
+                rekap_perhitungan_lembur.final_total_jam_lembur,
+                rekap_perhitungan_lembur.final_jam_istirahat_lembur,
+                rekap_perhitungan_lembur.final_total_menit_lembur,
+                rekap_perhitungan_lembur.final_jam_lembur_roundown,
+                rekap_perhitungan_lembur.final_menit_lembur_roundown,
+                rekap_perhitungan_lembur.lembur_1,
+                rekap_perhitungan_lembur.lembur_2,
+                rekap_perhitungan_lembur.lembur_3,
+                rekap_perhitungan_lembur.lembur_4,
+                rekap_perhitungan_lembur.total_lembur_1234
+            FROM
+                `master_data_absen_kehadiran`
+                LEFT JOIN `employee_atribut` ON `master_data_absen_kehadiran`.`enroll_id` = `employee_atribut`.`enroll_id`
+                LEFT JOIN `department_all` ON `employee_atribut`.`sub_dept_id` = `department_all`.`sub_dept_id`
+                LEFT JOIN `rekap_perhitungan_lembur` ON `master_data_absen_kehadiran`.`tanggal_berjalan` = `rekap_perhitungan_lembur`.`tanggal_berjalan`
+                AND `master_data_absen_kehadiran`.`enroll_id` = `rekap_perhitungan_lembur`.`enroll_id`
+            WHERE
+                substr(master_data_absen_kehadiran.tanggal_berjalan, 1, 10) between "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                ' . $filterStaff . ' ' . $inDepartment . ' ' . $inBagian . ' ' . $inSearchData . '
+            ORDER BY
+                `employee_atribut`.`employee_name` ASC,
+                `master_data_absen_kehadiran`.`tanggal_berjalan` ASC
+        ');
+
+        $excel = FastExcel::create('dataAbsen');
+        $sheet = $excel->getSheet();
+
+        // $area = $sheet->beginArea();
+
+        $sheet->writeTo('A1', 'PT NIRWANA ALABARE GARMENT', ['font-size' => 18]);
+        $sheet->writeTo('A2', 'LAPORAN ABSENSI KARYAWAN', ['font-size' => 16]);
+
+        $sheet->writeTo('A3', 'TANGGAL ABSENSI : ' . strtoupper(strftime("%d %b %Y", strtotime($tanggalMulai)) . ' s/d ' . strftime("%d %b %Y", strtotime($tanggalSampai))), ['font-size' => 14]);
+        $sheet->writeTo('A4', 'STAFF / NON STAFF : ' . ($status_staff ? $status_staff : "SEMUA KARYAWAN"), ['font-size' => 14]);
+        $sheet->mergeCells('A1:E1');
+        $sheet->mergeCells('A2:E2');
+        $sheet->mergeCells('A3:E3');
+        $sheet->mergeCells('A4:E4');
+        $sheet->mergeCells('A6:A7');
+        $sheet->writeTo('A6', 'TANGGAL');
+
+        $sheet->mergeCells('B6:B7');
+        $sheet->writeTo('B6', 'HARI');
+
+        $sheet->mergeCells('C6:C7');
+        $sheet->writeTo('C6', 'NIK');
+
+        $sheet->mergeCells('D6:D7');
+        $sheet->writeTo('D6', 'NO. ABSEN');
+
+        $sheet->mergeCells('E6:E7');
+        $sheet->writeTo('E6', 'NAMA KARYAWAN');
+
+        $sheet->mergeCells('F6:F7');
+        $sheet->writeTo('F6', 'STAFF / NON STAFF');
+
+        $sheet->mergeCells('G6:G7');
+        $sheet->writeTo('G6', 'DEPARTMENT');
+
+        $sheet->mergeCells('H6:H7');
+        $sheet->writeTo('H6', 'KERJA/LIBUR');
+
+        $sheet->mergeCells('I6:L6');
+        $sheet->writeTo('I6', 'JADWAL KERJA');
+        $sheet->writeTo('I7', 'IN');
+        $sheet->writeTo('J7', 'OUT');
+        $sheet->writeTo('K7', 'DURASI ISTIRAHAT');
+        $sheet->writeTo('L7', 'DURASI KERJA');
+
+        $sheet->mergeCells('M6:O6');
+        $sheet->writeTo('M6', 'ABSENSI');
+        $sheet->writeTo('M7', 'IN');
+        $sheet->writeTo('N7', 'OUT');
+        $sheet->writeTo('O7', 'EFEKTIF KERJA');
+
+        $sheet->mergeCells('P6:R6');
+        $sheet->writeTo('P6', 'IJIN KELUAR SEMENTARA (IKS)');
+        $sheet->writeTo('P7', 'DARI');
+        $sheet->writeTo('Q7', 'SAMPAI');
+        $sheet->writeTo('R7', 'TOTAL');
+
+        $sheet->mergeCells('S6:U6');
+        $sheet->writeTo('S6', 'POTONGAN MENIT');
+        $sheet->writeTo('S7', 'DT');
+        $sheet->writeTo('T7', 'PC');
+        $sheet->writeTo('U7', 'Total');
+
+        $sheet->mergeCells('V6:V7');
+        $sheet->writeTo('V6', 'STATUS ABSEN');
+
+        $sheet->mergeCells('W6:W7');
+        $sheet->writeTo('W6', 'ALASAN ABSEN');
+
+        $sheet->mergeCells('X6:X7');
+        $sheet->writeTo('X6', 'KETERANGAN');
+
+        $sheet->mergeCells('Y6:Y7');
+
+        $sheet->mergeCells('Z6:AJ6');
+        $sheet->writeTo('Z6', 'DATA LEMBUR (ACTUAL)');
+        $sheet->writeTo('Z7', 'NO. SPL');
+        $sheet->writeTo('AA7', 'MULAI');
+        $sheet->writeTo('AB7', 'SELESAI');
+        $sheet->writeTo('AC7', 'JUMLAH JAM');
+        $sheet->writeTo('AD7', 'ISTIRAHAT');
+        $sheet->writeTo('AE7', 'TOTAL LEMBUR');
+        $sheet->writeTo('AF7', 'L1');
+        $sheet->writeTo('AG7', 'L2');
+        $sheet->writeTo('AH7', 'L3');
+        $sheet->writeTo('AI7', 'L4');
+        $sheet->writeTo('AJ7', 'TOTAL L');
+        $sheet->mergeCells('AK6:AN6');
+        $sheet->writeTo('AK6', 'DATA LEMBUR (PENGAJUAN)');
+        $sheet->writeTo('AK7', 'MULAI JAM LEMBUR');
+        $sheet->writeTo('AL7', 'AKHIR JAM LEMBUR');
+        $sheet->writeTo('AM7', 'JUMLAH JAM LEMBUR');
+        $sheet->writeTo('AN7', 'JUMLAH JAM ISTIRAHAT');
+
+        $sheet->writeAreas();
+
+        $sheet->setColOptions([
+            'A' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 12],
+            'E' => ['width' => 50],
+            'K' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
+            'L' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
+            'O' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
+            'P' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
+            'R' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
+            'S' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
+            'T' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3],
+            'U' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3],
+            'V' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3],
+            'AC' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
+            'AD' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
+            'AE' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
+            'AF' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED4],
+            'AM' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
+            'AN' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
+            'AO' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
+        ]);
+
+        foreach($dataAbsen as $Kehadiran) {
+            $interval = date_diff(date_create(substr($Kehadiran->mulai_jam_kerja, 0, 5)), date_create(substr($Kehadiran->akhir_jam_kerja, 0, 5)));
+            $minutes = $interval->days * 24 * 60;
+            $minutes += $interval->h * 60;
+            $minutes += $interval->i;
+            $jumlah_menit_kerja = $minutes;
+            $jumlah_menit_istirahat = 60;
+            $kerjalibur = "KERJA";
+            if(($Kehadiran->mulai_jam_kerja == null) || ($Kehadiran->status_absen == "LN" || $Kehadiran->status_absen == "CG" || $Kehadiran->status_absen == "CM" || $Kehadiran->status_absen == "CT" ||$Kehadiran->status_absen == "L") || (($Kehadiran->status_absen == "LP" ) && ($Kehadiran->absen_masuk_kerja==null) && ($Kehadiran->absen_pulang_kerja==null))) {
+                $kerjalibur = "LIBUR";
+            } else if(($Kehadiran->kode_hari=='6' || $Kehadiran->kode_hari=='5' ) && ($Kehadiran->mulai_jam_kerja!=null)){
+                $kerjalibur = "KERJA";
+            } else {
+                if(($Kehadiran->absen_masuk_kerja <> null) || ($Kehadiran->absen_masuk_kerja <> "") || ($Kehadiran->absen_pulang_kerja <> null) || ($Kehadiran->absen_pulang_kerja <> "")) {
+                    $kerjalibur = "KERJA";
+                    switch ($Kehadiran->kode_hari) {
+                        case '5':
+                            $kerjalibur = "LIBUR";
+                            $jumlah_menit_istirahat = 30;
+                            break;
+                        case '6':
+                            $kerjalibur = "LIBUR";
+                            $jumlah_menit_istirahat = 30;
+                            break;
+                    }
+                }
+            }
+
+            $total_jam_lembur = "";
+            if ($Kehadiran->final_total_jam_lembur == 0) {
+                $total_jam_lembur = "";
+            } else {
+                $hms = $Kehadiran->final_total_jam_lembur;
+                $final_total_jam_lembur = explode(":", $hms);
+                $total_jam_lembur=intval($final_total_jam_lembur[0])+(intval($final_total_jam_lembur[1])/60);
+            }
+
+            $data = [
+                Date::stringToExcel($Kehadiran->tanggal_berjalan),
+                $Kehadiran->nama_hari,
+                $Kehadiran->nik,
+                $Kehadiran->enroll_id,
+                $Kehadiran->employee_name,
+                $Kehadiran->status_staff,
+                $Kehadiran->department_name,
+                $kerjalibur,
+                $Kehadiran->mulai_jam_kerja,
+                substr($Kehadiran->akhir_jam_kerja, 0, 5),
+                $jumlah_menit_istirahat,
+                $jumlah_menit_kerja,
+                substr($Kehadiran->absen_masuk_kerja, 0, 5),
+                substr($Kehadiran->absen_pulang_kerja, 0, 5),
+                $Kehadiran->jumlah_absen_menit_kerja,
+                substr($Kehadiran->permits_dari_pukul, 0, 5),
+                substr($Kehadiran->permits_sampai_pukul, 0, 5),
+                $Kehadiran->total_menit_permits,
+                $Kehadiran->jumlah_menit_absen_dt,
+                $Kehadiran->jumlah_menit_absen_pc,
+                $Kehadiran->jumlah_menit_absen_dtpc,
+                $Kehadiran->status_absen,
+                $Kehadiran->absen_alasan,
+                $Kehadiran->catatan_hrd,
+                "",
+                $Kehadiran->nomor_form_lembur,
+                $Kehadiran->final_mulai_jam_lembur,
+                $Kehadiran->final_selesai_jam_lembur,
+                $total_jam_lembur,
+                $Kehadiran->final_jam_istirahat_lembur,
+                $Kehadiran->final_jam_lembur_roundown,
+                $Kehadiran->lembur_1,
+                $Kehadiran->lembur_2,
+                $Kehadiran->lembur_3,
+                $Kehadiran->lembur_4,
+                $Kehadiran->total_lembur_1234,
+                $Kehadiran->mulai_jam_lembur,
+                $Kehadiran->akhir_jam_lembur,
+                $Kehadiran->jumlah_jam_lembur_approved,
+                $Kehadiran->jumlah_jam_istirahat_lembur,
+            ];
+
+            $sheet->writeRow($data);
+        }
+
+        $excel->download('data_absensi.xlsx');
     }
 }
