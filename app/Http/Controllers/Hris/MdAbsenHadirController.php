@@ -1143,7 +1143,7 @@ class MdAbsenHadirController extends AdminBaseController
 
         $sheet->mergeCells('AR6:AR7');
 
-        $sheet->mergeCells('AS6:AS6');
+        $sheet->mergeCells('AS6:AV6');
         $sheet->writeTo('AS6', 'DATA LEMBUR VERIFIKASI');
         $sheet->writeTo('AS7', 'MULAI JAM LEMBUR');
         $sheet->writeTo('AT7', 'AKHIR JAM LEMBUR');
