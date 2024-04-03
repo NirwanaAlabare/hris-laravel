@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminBaseController;
 use App\Models\RefAbsenIjin;
 use App\Models\MasterDataAbsenKehadiran;
 use App\Models\DataAbsenPerijinan;
+use App\Models\EmployeeAtribut;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -1136,6 +1137,59 @@ class DataAbsenPerijinanController extends AdminBaseController
         $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
         $nomor_form_perizinan =  $nomor_form_perizinan . $nomorform;
         return $nomor_form_perizinan;
+    }
+    public function import_data_perizinan(){
+        $data=Excel::toArray([],request()->file('excel_file'));
+        $arrayPerizinan=[];
+        for($i=6;$i<count($data[0]);$i++){
+            if(count(EmployeeAtribut::where('enroll_id',$data[0][$i][5])->get())<1){
+                continue;
+            }
+            if($data[0][$i][0]=='' || $data[0][$i][0]=='-'){
+                $tanggal_perizinan=null;
+            }else{
+                $tanggal_perizinan=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][0])->format('Y-m-d');
+            }
+            if($data[0][$i][2]=='' || $data[0][$i][2]=='-'){
+                $tanggal_mulai_ijin=null;
+            }else{
+                $tanggal_mulai_ijin=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][2])->format('Y-m-d');
+            }
+            if($data[0][$i][3]=='' || $data[0][$i][3]=='-'){
+                $tanggal_akhir_ijin=null;
+            }else{
+                $tanggal_akhir_ijin=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][3])->format('Y-m-d');
+            }
+            $from=date($tanggal_mulai_ijin);
+            $to=date($tanggal_akhir_ijin);
+            $dataperizinan=DataAbsenPerijinan::where('enroll_id',$data[0][$i][5])->where(function($query)use($from,$to){
+                $query->whereBetween('tanggal_mulai_ijin',[$from,$to])
+                ->orWhereBetween('tanggal_akhir_ijin',[$from,$to]);
+            })->get();
+            if(count($dataperizinan)>0){
+                $style='red';
+            }else{
+                $style='white';
+            }
+            $employee=EmployeeAtribut::where('enroll_id',$data[0][$i][5])->get();
+            foreach($employee as $value){
+                $enroll_id=$data[0][$i][5];
+                $nik=$value->nik;
+                $employee_name=$value->employee_name;
+            }
+            $arrayPerizinan[$i]=[
+                'tanggal_perizinan'=>$tanggal_perizinan,
+                'tanggal_mulai_ijin'=>$tanggal_mulai_ijin,
+                'tanggal_akhir_ijin'=>$tanggal_akhir_ijin,
+                'nik'=>$nik,
+                'enroll_id'=>$enroll_id,
+                'employee_name'=>$employee_name,
+                'kode_absen_ijin'=>$data[0][$i][7],
+                'absen_alasan'=>$data[0][$i][8],
+                'style_color'=>$style
+            ];
+        }
+        return $arrayPerizinan;
     }
 
 }

@@ -186,6 +186,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('dataabsenperijinan/destroy',['as'=>'hris.dataabsenperijinan.destroy','uses'=>'DataAbsenPerijinanController@destroy']);
     Route::post('dataabsenperijinan/ajax_exportexcel/',['as'=>'hris.dataabsenperijinan.ajax_exportexcel','uses'=> 'DataAbsenPerijinanController@ajax_exportexcel']);
     Route::post('dataabsenperijinan/ajax_exportexcel2/',['as'=>'hris.dataabsenperijinan.ajax_exportexcel2','uses'=> 'DataAbsenPerijinanController@ajax_exportexcel2']);
+    Route::post('dataabsenperijinan/import_data_perizinan/',['as'=>'hris.dataabsenperijinan.import_data_perizinan','uses'=> 'DataAbsenPerijinanController@import_data_perizinan']);
 
     Route::get('koreksiupah/index',['as'=>'hris.koreksiupah.index','uses'=>'KoreksiUpahController@index']);
     Route::post('koreksiupah/ajax_datakoreksiupah',['as'=>'hris.koreksiupah.ajax_datakoreksiupah','uses'=>'KoreksiUpahController@ajax_datakoreksiupah']);

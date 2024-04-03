@@ -76,16 +76,81 @@
                     </form>
                     <!-- end modal -->
 
+                    <div class="modal fade" id="import_data_perizinan" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog" role="document" style="max-width: 1330px">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-success p-2">
+                                            <h4 class="modal-title pl-2 font-weight-bold" >Import Perizinan</h4>
+                                            <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
+                                                <i class="fa fa-remove"></i>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body p-5">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <input class="form-control" ref="excel_filess" name="excel_filess" id="excel_filess" type="file" accept=".xlsx, .xls, .csv" required>
+                                                </div>
+                                            </div>
+                                            <div class="row pt-2" id="row_tabler">
+                                                <div class="col-12">
+                                                    <table class="table table-bordered" style="overflow-x:auto">
+                                                        <thead id="head_perizinan">
+                                                            <tr>
+                                                                <td width="40px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">No</td>
+                                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">TANGGAL IZIN</td>
+                                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">HARI</td>
+                                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">DARI</td>
+                                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">SAMPAI</td>
+                                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NIK</td>
+                                                                <td width="150px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NAMA KARYAWAN</td>
+                                                                <td width="80px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">STATUS ABSEN</td>
+                                                                <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">KETERANGAN</td>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="tabel_perizinan">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="col-12 text-center">
+                                                    <div id="loading_perizinan">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" id="row_error_handle" style="visibility: hidden">
+                                                <div class="col-4">
+                                                    <table>
+                                                        <tr>
+                                                            <td width="70" style="font-weight: bold">Length : </td>
+                                                            <td id="length_perizinan"></td>
+                                                            <td width="50"></td>
+                                                            <td width="100" style="font-weight: bold">Correct Data :</td>
+                                                            <td id="correct_data"></td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="col-4 text-center">
+                                                    <button type="button" id="permitImportButton" class="btn btn-success py-1" style="visibility: hidden"><i class="fa fa-upload" aria-hidden="true"></i> IMPORT</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 <a class="btn btn-primary mr-1 mt-0 mb-1 text-white btn-icon" id="daterange-btn1" data-toggle="tooltip"
                 title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal perizinan">
                 </a>
-                <!-- BEGIN FORM-->
                 {!! Form::open(['route' => 'hris.dataabsenperijinan.ajax_exportexcel', 'id' => 'formExport1', 'name' => 'formExport1','method'=>'post']) !!}
                     <input type="hidden" id="daterange1" name="daterange1">
+                    <button type="button" class="btn btn-primary mr-1 mt-0 mb-0 text-white btn-icon"  data-target="#import_data_perizinan" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> IMPORT IZIN</button>
                     <button type="submit" id="btn-exportexcel" class="btn btn-primary mr-1 mt-0 mb-0 text-white btn-icon" data-toggle="tooltip" title="Export Data Perizinan ke Excel"><i class="fa fa-file-excel-o"></i> EXPORT IZIN</button>
                 {{-- </form> --}}
                 {!! Form::close() !!}
                 <!-- END FORM-->
+                
 
                 {!! Form::open(['route' => 'hris.dataabsenperijinan.ajax_exportexcel2', 'id' => 'formExport2', 'name' => 'formExport2','method'=>'post']) !!}
                     <input type="hidden" id="daterange2" name="daterange2">
@@ -499,7 +564,70 @@
     <script src="{{URL::asset('assets/js/popover.js')}}"></script>
 
     <script type="text/javascript">
-
+        function fill_the_table(){
+            $('#loading_perizinan').addClass("spinner-border");
+            $('#tabel_perizinan').empty();
+            var formData = new FormData();
+            var excelFile=document.getElementById("excel_filess");
+            var myFile=excelFile.files[0];
+            // var error_handle = $("input[name='error_handle']:checked").val();
+            formData.append("excel_file",myFile);
+            // formData.append("error_handle",error_handle);
+            document.getElementById('row_tabler').style.height='67px';
+            document.getElementById('tabel_perizinan').style.height='1px';
+            // document.getElementById('employeeImportButton').style.visibility='hidden';
+            if(typeof myFile=='undefined'){
+                notif({
+                    msg: "<b>Error:</b> Pilih File terlebih dahulu!",
+                    type: "error"
+                });
+                document.getElementById('tabel_perizinan').style.height='1px';
+                document.getElementById('row_error_handle').style.visibility='hidden';
+                document.getElementById('permitImportButton').style.visibility='hidden';
+                $('#loading_perizinan').removeClass("spinner-border");
+                document.getElementById('row_tabler').style.height='67px';
+            }else{
+                $.ajax({
+                    type: 'POST',
+                    url: '{{route('hris.dataabsenperijinan.import_data_perizinan')}}',
+                    contentType: false,
+                    processData: false,
+                    data: formData,
+                    success:function(data){
+                        console.log(data);
+            //             var count=0;
+            //             var count2=0;
+                        jQuery.each(data, function(key,value){
+            //                 count2++;
+                            $('#tabel_perizinan').append("<tr style='background-color:"+data[key].status_department+"'>\
+                                <td width='40px'></td>\
+                                <td width='100px'>"+data[key].tanggal_perizinan+"</td>\
+                                <td width='100px'></td>\
+                                <td width='100px'>"+data[key].tanggal_mulai_ijin+"</td>\
+                                <td width='100px'>"+data[key].tanggal_akhir_ijin+"</td>\
+                                <td width='100px'>"+data[key].nik+"</td>\
+                                <td width='150px'>"+data[key].employee_name+"</td>\
+                                <td width='80px'>"+data[key].kode_absen_ijin+"</td>\
+                                <td width='200px'>"+data[key].absen_alasan+"</td>\
+                            </tr>");
+            //                 if(data[key].status_department!='red'){
+            //                     count++;
+            //                 }
+                        });
+            //             $('#length_karyawan').text(count2);
+            //             $('#correct_data').text(count);
+                        document.getElementById('tabel_perizinan').style.height='330px';
+                        document.getElementById('permitImportButton').style.visibility='visible';
+                        document.getElementById('row_error_handle').style.visibility='visible';
+                        $('#loading_perizinan').removeClass("spinner-border");
+                        document.getElementById('row_tabler').style.height='400px';
+                    }
+                })
+            }
+        }
+        $('#excel_filess').change(function() {
+            fill_the_table();
+        });
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
