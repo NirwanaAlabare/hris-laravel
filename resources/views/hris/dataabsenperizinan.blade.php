@@ -588,6 +588,7 @@
             document.getElementById('row_tabler').style.height='67px';
             document.getElementById('tabel_perizinan').style.height='10px';
             document.getElementById('permitImportButton').style.visibility='hidden';
+            document.getElementById('row_error_handle').style.visibility='hidden';
             if(typeof myFile=='undefined'){
                 notif({
                     msg: "<b>Error:</b> Pilih File terlebih dahulu!",
