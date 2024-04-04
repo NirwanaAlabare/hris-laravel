@@ -519,6 +519,16 @@
 @endsection
 
 @section('footerjs')
+    <style>
+        #head_perizinan, #tabel_perizinan { display: block; }
+
+        #tabel_perizinan {
+            height: 1px;       /* Just for the demo          */
+            overflow-y: auto;    /* Trigger vertical scroll    */
+            overflow-x: hidden;
+            font-size: 9pt; /* Hide the horizontal scroll */
+        }
+    </style>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.0/jquery.mask.min.js"></script>
 
     <!--Jquery Sparkline js-->
@@ -594,7 +604,6 @@
                     processData: false,
                     data: formData,
                     success:function(data){
-                        console.log(data[6].style_color);
                         var count=0;
                         var count2=0;
                         jQuery.each(data, function(key,value){
@@ -618,10 +627,19 @@
                         });
                         $('#length_data_perizinan').text(count);
                         $('#correct_data').text(count2);
+                        document.getElementById('tabel_perizinan').style.height='330px';
                         document.getElementById('permitImportButton').style.visibility='visible';
                         document.getElementById('row_error_handle').style.visibility='visible';
                         $('#loading_perizinan').removeClass("spinner-border");
                         document.getElementById('row_tabler').style.height='400px';
+                    },
+                    error: function(res){
+                        swal("", "IMPORT FILE GAGAL!", "error")
+                        document.getElementById('tabel_perizinan').style.height='1px';
+                        document.getElementById('row_error_handle').style.visibility='hidden';
+                        document.getElementById('permitImportButton').style.visibility='hidden';
+                        $('#loading_perizinan').removeClass("spinner-border");
+                        document.getElementById('row_tabler').style.height='67px';
                     }
                 })
             }
