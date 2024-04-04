@@ -135,6 +135,8 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="modal-footer bg-success py-2">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -611,7 +613,7 @@
                             var day=date.toLocaleDateString("id-ID", { weekday: 'long' });
                             count++;
                             $('#tabel_perizinan').append("<tr style='background-color:"+value.style_color+"; font-size:9pt'>\
-                                <td width='40px'>"+count+"</td>\
+                                <td width='46px'>"+count+"</td>\
                                 <td width='120px'>"+value.tanggal_perizinan+"</td>\
                                 <td width='100px'>"+day+"</td>\
                                 <td width='100px'>"+value.tanggal_mulai_ijin+"</td>\
