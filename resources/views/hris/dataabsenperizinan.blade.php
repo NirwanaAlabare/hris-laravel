@@ -644,13 +644,13 @@
                     $('#permitImportButton').removeClass("btn-loading");
                     $("#permitImportButton").html('<i class="fa fa-upload" aria-hidden="true"></i> IMPORT');
                     $("#permitImportButton").attr("disabled", false);
-                    // swal("", "IMPORT PERIZINAN BERHASIL!", "success");
-                    // $('#import_data_perizinan').modal('hide');
-                    // $('#excel_filess').val('');
-                    // document.getElementById('tabel_karyawan').style.height='1px';
-                    // document.getElementById('row_error_handle').style.visibility='hidden';
-                    // document.getElementById('employeeImportButton').style.visibility='hidden';
-                    // document.getElementById('row_tabler').style.height='67px';
+                    swal("", "IMPORT PERIZINAN BERHASIL!", "success");
+                    $('#import_data_perizinan').modal('hide');
+                    $('#excel_filess').val('');
+                    document.getElementById('tabel_karyawan').style.height='1px';
+                    document.getElementById('row_error_handle').style.visibility='hidden';
+                    document.getElementById('employeeImportButton').style.visibility='hidden';
+                    document.getElementById('row_tabler').style.height='67px';
                 },
                 error: function(res){
                     swal("", "IMPORT PERIZINAN GAGAL!", "error")
