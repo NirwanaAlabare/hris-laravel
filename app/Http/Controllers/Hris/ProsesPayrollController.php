@@ -2239,7 +2239,7 @@ class ProsesPayrollController extends AdminBaseController
                         $l3_rupiah=$l3*($salary_bulanan/173*1);
                         $l4_rupiah=$l4*($salary_bulanan/173*1);
                     }
-                    $record_lemburan[$key2]=[
+                    $record_lemburan=[
                         'uuid'=>Str::uuid('uuid'),
                         'periode_umk'=>null,
                         'tanggal_berjalan'=>$value2['tanggal_berjalan'],
