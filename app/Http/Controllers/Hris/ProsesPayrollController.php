@@ -1747,348 +1747,348 @@ class ProsesPayrollController extends AdminBaseController
         $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->get();
         if(request()->periode_payrols){
             // rekap kehadiran
-            // if($selectedEnrollId){
-            //     EmployeeAtribut::whereIn('enroll_id',$selectedEnrollId)->where(function($query)use($tanggal_awal){
-            //         $query->where('status_aktif','AKTIF')
-            //         ->orWhere('tanggal_resign','>=',$tanggal_awal)
-            //         ->orWhere('tanggal_resign',null);
-            //     })->with(['absensi' => function ($query) use ($tanggal_awal,$tanggal_akhir) {
-            //         $query->where('tanggal_berjalan', '>=', $tanggal_awal)
-            //         ->where('tanggal_berjalan','<=',$tanggal_akhir);
-            //     }])->orderBy('enroll_id', 'asc')->chunkById(1, function ($employees) use (&$rows,$bulan_sekarang,$IBY,$ITB,$jumlah_hari_total,$security,$jumlah_hari_sabtu_minggu_total,$priode,$tahun,$bulan) {
-            //         foreach ($employees as $key => $value) {
-            //             $enroll_id=$value->enroll_id;
-            //             $unik=sprintf("%04d", $enroll_id);
-            //             $kode_rekap_kehadiran=$bulan_sekarang.$unik;
-            //             $libur_sabtu_minggu=$value['absensi']->whereIn('status_absen',$IBY)->count();
-            //             $libur=$value['absensi']->where('status_absen','M')->where('mulai_jam_kerja',null)->count();
-            //             $lsm_security=$libur_sabtu_minggu+$libur;
-            //             $lsm_employe=$value['absensi']->whereIn('kode_hari', ['5','6'])->count();
-            //             $absen_M_security=$value['absensi']->where('status_absen','M')->where('mulai_jam_kerja','!=',null)->count();
-            //             $absen_M=$value['absensi']->where('status_absen','M')->count();
+            if($selectedEnrollId){
+                EmployeeAtribut::whereIn('enroll_id',$selectedEnrollId)->where(function($query)use($tanggal_awal){
+                    $query->where('status_aktif','AKTIF')
+                    ->orWhere('tanggal_resign','>=',$tanggal_awal)
+                    ->orWhere('tanggal_resign',null);
+                })->with(['absensi' => function ($query) use ($tanggal_awal,$tanggal_akhir) {
+                    $query->where('tanggal_berjalan', '>=', $tanggal_awal)
+                    ->where('tanggal_berjalan','<=',$tanggal_akhir);
+                }])->orderBy('enroll_id', 'asc')->chunkById(1, function ($employees) use (&$rows,$bulan_sekarang,$IBY,$ITB,$jumlah_hari_total,$security,$jumlah_hari_sabtu_minggu_total,$priode,$tahun,$bulan) {
+                    foreach ($employees as $key => $value) {
+                        $enroll_id=$value->enroll_id;
+                        $unik=sprintf("%04d", $enroll_id);
+                        $kode_rekap_kehadiran=$bulan_sekarang.$unik;
+                        $libur_sabtu_minggu=$value['absensi']->whereIn('status_absen',$IBY)->count();
+                        $libur=$value['absensi']->where('status_absen','M')->where('mulai_jam_kerja',null)->count();
+                        $lsm_security=$libur_sabtu_minggu+$libur;
+                        $lsm_employe=$value['absensi']->whereIn('kode_hari', ['5','6'])->count();
+                        $absen_M_security=$value['absensi']->where('status_absen','M')->where('mulai_jam_kerja','!=',null)->count();
+                        $absen_M=$value['absensi']->where('status_absen','M')->count();
                         
-            //             $absen_TL=$value['absensi']->where('status_absen','TL')->where('mulai_jam_kerja','!=',null)->count();
-            //             $absen_R=$value['absensi']->where('status_absen','R')->count();
+                        $absen_TL=$value['absensi']->where('status_absen','TL')->where('mulai_jam_kerja','!=',null)->count();
+                        $absen_R=$value['absensi']->where('status_absen','R')->count();
                         
-            //             $absen_ok=$value['absensi']->whereNotin('kode_hari', ['5','6'])->where('status_absen',null)->where('jumlah_menit_absen_dtpc','0')->count();
-            //             $absen_IKS=$value['absensi']->where('status_absen','IKS')->where('jumlah_menit_absen_dtpc','0')->count();
-            //             $absen_ok_employee=$absen_ok+$absen_IKS;
+                        $absen_ok=$value['absensi']->whereNotin('kode_hari', ['5','6'])->where('status_absen',null)->where('jumlah_menit_absen_dtpc','0')->count();
+                        $absen_IKS=$value['absensi']->where('status_absen','IKS')->where('jumlah_menit_absen_dtpc','0')->count();
+                        $absen_ok_employee=$absen_ok+$absen_IKS;
     
-            //             $absen_ok_security=$value['absensi']->where('mulai_jam_kerja','!=',null)->where('status_absen',null)->where('jumlah_menit_absen_dtpc','0')->count();
+                        $absen_ok_security=$value['absensi']->where('mulai_jam_kerja','!=',null)->where('status_absen',null)->where('jumlah_menit_absen_dtpc','0')->count();
                         
-            //             $absen_ok_security_total=$absen_ok_security+$absen_IKS;
+                        $absen_ok_security_total=$absen_ok_security+$absen_IKS;
     
-            //             $dt_employe=$value['absensi']->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','0')->where('status_absen',null)->count();
-            //             $pc_employe=$value['absensi']->where('jumlah_menit_absen_pc','>','0')->where('jumlah_menit_absen_dt','0')->where('status_absen',null)->count();
-            //             $dtpc_employe=$value['absensi']->where('enroll_id',$value->enroll_id)->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','>','0')->where('status_absen',null)->count();
+                        $dt_employe=$value['absensi']->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','0')->where('status_absen',null)->count();
+                        $pc_employe=$value['absensi']->where('jumlah_menit_absen_pc','>','0')->where('jumlah_menit_absen_dt','0')->where('status_absen',null)->count();
+                        $dtpc_employe=$value['absensi']->where('enroll_id',$value->enroll_id)->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','>','0')->where('status_absen',null)->count();
     
-            //             $LBY_employe=$value['absensi']->where('status_absen','LN')->whereNotin('kode_hari', ['5','6'])->count();
-            //             $IBY_employe=$value['absensi']->whereIn('status_absen',$IBY)->count();
-            //             $ITB_employe=$value['absensi']->wherein('status_absen', $ITB)->count();
+                        $LBY_employe=$value['absensi']->where('status_absen','LN')->whereNotin('kode_hari', ['5','6'])->count();
+                        $IBY_employe=$value['absensi']->whereIn('status_absen',$IBY)->count();
+                        $ITB_employe=$value['absensi']->wherein('status_absen', $ITB)->count();
     
-            //             $total_kehadiran_net_security=$absen_ok_security+$dt_employe+$pc_employe+$dtpc_employe;
-            //             $aa_security=$total_kehadiran_net_security+$ITB_employe+$LBY_employe+$IBY_employe+$lsm_security+$absen_M_security+$absen_TL+$absen_R;
+                        $total_kehadiran_net_security=$absen_ok_security+$dt_employe+$pc_employe+$dtpc_employe;
+                        $aa_security=$total_kehadiran_net_security+$ITB_employe+$LBY_employe+$IBY_employe+$lsm_security+$absen_M_security+$absen_TL+$absen_R;
         
-            //             $total_kehadiran_net=$absen_ok+$dt_employe+$pc_employe+$dtpc_employe;
-            //             $aa=$total_kehadiran_net+$ITB_employe+$LBY_employe+$IBY_employe+$lsm_employe+$absen_M+$absen_TL+$absen_R;
+                        $total_kehadiran_net=$absen_ok+$dt_employe+$pc_employe+$dtpc_employe;
+                        $aa=$total_kehadiran_net+$ITB_employe+$LBY_employe+$IBY_employe+$lsm_employe+$absen_M+$absen_TL+$absen_R;
         
-            //             $kehadiran_tk_security=$jumlah_hari_total-$aa_security;
-            //             $kehadiran_tk=$jumlah_hari_total-$aa;
+                        $kehadiran_tk_security=$jumlah_hari_total-$aa_security;
+                        $kehadiran_tk=$jumlah_hari_total-$aa;
     
-            //             $total_kehadiran_security=$IBY_employe+$ITB_employe+$lsm_security+$dtpc_employe+$absen_M_security+$absen_R+$absen_ok_security+$LBY_employe+$dt_employe+$pc_employe+$absen_TL;
-            //             $total_kehadiran=$IBY_employe+$ITB_employe+$lsm_employe+$dtpc_employe+$absen_M+$absen_R+$absen_ok+$LBY_employe+$dt_employe+$pc_employe+$absen_TL;
-            //             $M_estimasi=$value['absensi']->where('status_absen','M')->count();
-            //             $TL_estimasi=$value['absensi']->where('status_absen','TL')->where('mulai_jam_kerja','!=',null)->count();
+                        $total_kehadiran_security=$IBY_employe+$ITB_employe+$lsm_security+$dtpc_employe+$absen_M_security+$absen_R+$absen_ok_security+$LBY_employe+$dt_employe+$pc_employe+$absen_TL;
+                        $total_kehadiran=$IBY_employe+$ITB_employe+$lsm_employe+$dtpc_employe+$absen_M+$absen_R+$absen_ok+$LBY_employe+$dt_employe+$pc_employe+$absen_TL;
+                        $M_estimasi=$value['absensi']->where('status_absen','M')->count();
+                        $TL_estimasi=$value['absensi']->where('status_absen','TL')->where('mulai_jam_kerja','!=',null)->count();
     
-            //             if($security->where('enroll_id',$value->enroll_id)->count()){
-            //                 $lsm=$lsm_security;
-            //                 $m=$absen_M_security;
-            //                 $ok=$absen_ok_security_total;
-            //                 $tk=$kehadiran_tk_security;
-            //                 $total_kh=$total_kehadiran_security;
-            //                 $jumlah_hari_kerja=25;
-            //             }else{
-            //                 $lsm=$lsm_employe;
-            //                 $m=$absen_M;
-            //                 $ok=$absen_ok_employee;
-            //                 $tk=$kehadiran_tk;
-            //                 $total_kh=$total_kehadiran;
-            //                 $jumlah_hari_kerja=$jumlah_hari_total-$jumlah_hari_sabtu_minggu_total;
-            //             }
-            //             $row=[
-            //                 'uuid'=>Str::uuid('uuid'),
-            //                 'kode_rekap_kehadiran'=> $kode_rekap_kehadiran,
-            //                 'periode_umk'=>null,
-            //                 'periode_payroll'=>$priode,
-            //                 'periode_tahun'=>$tahun,
-            //                 'periode_bulan'=>$bulan,
-            //                 'enroll_id'=>$value['enroll_id'],
-            //                 'nik'=>$value['nik'],
-            //                 'employee_name'=>$value['employee_name'],
-            //                 'site_nirwana_id'=>$value['site_nirwana_id'],
-            //                 'site_nirwana_name'=>$value['site_nirwana_name'],
-            //                 'department_id'=>$value['department_id'],
-            //                 'department_name'=>$value['department_name'],
-            //                 'sub_dept_id'=>$value['sub_dept_id'],
-            //                 'sub_dept_name'=>$value['sub_dept_name'],
-            //                 'join_date'=>$value['join_date'],
-            //                 'tanggal_resign'=>$value['tanggal_resign'],
-            //                 'status_aktif'=>$value['status_aktif'],
-            //                 'status_staff'=>$value['status_staff'],
-            //                 'kehadiran_iby'=>$value['absensi']->whereIn('status_absen',$IBY)->count(),
-            //                 'kehadiran_itb'=>$value['absensi']->whereIn('status_absen',$ITB)->count(),
-            //                 'kehadiran_lby'=>$value['absensi']->where('status_absen','LN')->whereNotin('kode_hari', ['5','6'])->count(),
-            //                 'kehadiran_lsm'=>$lsm,
-            //                 'kehadiran_dt'=> $value['absensi']->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','0')->where('status_absen',null)->count(),
-            //                 'kehadiran_pc'=> $value['absensi']->where('jumlah_menit_absen_pc','>','0')->where('jumlah_menit_absen_dt','0')->where('status_absen',null)->count(),
-            //                 'kehadiran_dtpc'=>$value['absensi']->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','>','0')->where('status_absen',null)->count(),
-            //                 'kehadiran_m'=>$m+$absen_TL,
-            //                 'kehadiran_r'=>$absen_R,
-            //                 'kehadiran_ok'=>$ok,
-            //                 'total_kehadiran_net'=>$ok+$dt_employe+$pc_employe+$dtpc_employe+$LBY_employe+$IBY_employe,
-            //                 'kehadiran_tk'=>$tk,
-            //                 'total_kehadiran'=> $total_kh,
-            //                 'jumlah_hari'=>$jumlah_hari_total,
-            //                 'jumlah_hari_kerja'=>$jumlah_hari_kerja,
-            //                 'kehadiran_dl'=>$value['absensi']->where('status_absen','DL')->count(),
-            //                 'kehadiran_cb'=>$value['absensi']->where('status_absen','CB')->count(),
-            //                 'kehadiran_cbd'=>$value['absensi']->where('status_absen','CBD')->count(),
-            //                 'kehadiran_cg'=>$value['absensi']->where('status_absen','CG')->count(),
-            //                 'kehadiran_ch'=>$value['absensi']->where('status_absen','CH')->count(),
-            //                 'kehadiran_cm'=>$value['absensi']->where('status_absen','CM')->count(),
-            //                 'kehadiran_cn'=>$value['absensi']->where('status_absen','CN')->count(),
-            //                 'kehadiran_ct'=>$value['absensi']->where('status_absen','CT')->count(),
-            //                 'kehadiran_ig'=>$value['absensi']->where('status_absen','IG')->count(),
-            //                 'kehadiran_im'=>$value['absensi']->where('status_absen','IM')->count(),
-            //                 'kehadiran_ka'=>$value['absensi']->where('status_absen','KA')->count(),
-            //                 'kehadiran_km'=>$value['absensi']->where('status_absen','KM')->count(),
-            //                 'kehadiran_kr'=>$value['absensi']->where('status_absen','KR')->count(),
-            //                 'kehadiran_na'=>$value['absensi']->where('status_absen','NA')->count(),
-            //                 'kehadiran_pp'=>$value['absensi']->where('status_absen','PP')->count(),
-            //                 'kehadiran_i'=>$value['absensi']->where('status_absen','I')->count(),
-            //                 'kehadiran_lp'=>$value['absensi']->where('status_absen','LP')->count(),
-            //                 'kehadiran_l'=>$value['absensi']->where('status_absen','L')->count(),
-            //                 'kehadiran_tl'=>$value['absensi']->where('status_absen','TL')->count(),
-            //                 'kehadiran_iks'=>$value['absensi']->where('status_absen','IKS')->count(),
-            //                 'kehadiran_s'=>$value['absensi']->where('status_absen','S')->count(),
-            //                 'kehadiran_m_estimasi'=> $TL_estimasi+$M_estimasi,
-            //             ];
-            //             $count=RekapKehadiranKaryawan::where( 'kode_rekap_kehadiran',$kode_rekap_kehadiran)->count();
-            //             if($count){
-            //                 RekapKehadiranKaryawan::where( 'kode_rekap_kehadiran',$kode_rekap_kehadiran)->update($row);
-            //             }
-            //             else{
-            //                 RekapKehadiranKaryawan::create($row);
-            //             }
-            //         }
-            //     }, $column = 'enroll_id');
-            // }else{
-            //     $employees=EmployeeAtribut::where(function($query)use($tanggal_awal){
-            //         $query->where('status_aktif','AKTIF')
-            //         ->orWhere('tanggal_resign','>=',$tanggal_awal)
-            //         ->orWhere('tanggal_resign',null);
-            //     })->with(['absensi' => function ($query) use ($tanggal_awal,$tanggal_akhir) {
-            //         $query->where('tanggal_berjalan', '>=', $tanggal_awal)
-            //         ->where('tanggal_berjalan','<=',$tanggal_akhir);
-            //     }])->orderBy('enroll_id', 'asc')->get();
-            //     // $data_absensi=[];
-            //     foreach ($employees as $key => $value) {
-            //         $enroll_id=$value->enroll_id;
-            //         $unik=sprintf("%04d", $enroll_id);
-            //         $kode_rekap_kehadiran=$bulan_sekarang.$unik;
-            //         $libur_sabtu_minggu=$value['absensi']->whereIn('status_absen',$IBY)->count();
-            //         $libur=$value['absensi']->where('status_absen','M')->where('mulai_jam_kerja',null)->count();
-            //         $lsm_security=$libur_sabtu_minggu+$libur;
-            //         $lsm_employe=$value['absensi']->whereIn('kode_hari', ['5','6'])->count();
-            //         $absen_M_security=$value['absensi']->where('status_absen','M')->where('mulai_jam_kerja','!=',null)->count();
-            //         $absen_M=$value['absensi']->where('status_absen','M')->count();
+                        if($security->where('enroll_id',$value->enroll_id)->count()){
+                            $lsm=$lsm_security;
+                            $m=$absen_M_security;
+                            $ok=$absen_ok_security_total;
+                            $tk=$kehadiran_tk_security;
+                            $total_kh=$total_kehadiran_security;
+                            $jumlah_hari_kerja=25;
+                        }else{
+                            $lsm=$lsm_employe;
+                            $m=$absen_M;
+                            $ok=$absen_ok_employee;
+                            $tk=$kehadiran_tk;
+                            $total_kh=$total_kehadiran;
+                            $jumlah_hari_kerja=$jumlah_hari_total-$jumlah_hari_sabtu_minggu_total;
+                        }
+                        $row=[
+                            'uuid'=>Str::uuid('uuid'),
+                            'kode_rekap_kehadiran'=> $kode_rekap_kehadiran,
+                            'periode_umk'=>null,
+                            'periode_payroll'=>$priode,
+                            'periode_tahun'=>$tahun,
+                            'periode_bulan'=>$bulan,
+                            'enroll_id'=>$value['enroll_id'],
+                            'nik'=>$value['nik'],
+                            'employee_name'=>$value['employee_name'],
+                            'site_nirwana_id'=>$value['site_nirwana_id'],
+                            'site_nirwana_name'=>$value['site_nirwana_name'],
+                            'department_id'=>$value['department_id'],
+                            'department_name'=>$value['department_name'],
+                            'sub_dept_id'=>$value['sub_dept_id'],
+                            'sub_dept_name'=>$value['sub_dept_name'],
+                            'join_date'=>$value['join_date'],
+                            'tanggal_resign'=>$value['tanggal_resign'],
+                            'status_aktif'=>$value['status_aktif'],
+                            'status_staff'=>$value['status_staff'],
+                            'kehadiran_iby'=>$value['absensi']->whereIn('status_absen',$IBY)->count(),
+                            'kehadiran_itb'=>$value['absensi']->whereIn('status_absen',$ITB)->count(),
+                            'kehadiran_lby'=>$value['absensi']->where('status_absen','LN')->whereNotin('kode_hari', ['5','6'])->count(),
+                            'kehadiran_lsm'=>$lsm,
+                            'kehadiran_dt'=> $value['absensi']->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','0')->where('status_absen',null)->count(),
+                            'kehadiran_pc'=> $value['absensi']->where('jumlah_menit_absen_pc','>','0')->where('jumlah_menit_absen_dt','0')->where('status_absen',null)->count(),
+                            'kehadiran_dtpc'=>$value['absensi']->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','>','0')->where('status_absen',null)->count(),
+                            'kehadiran_m'=>$m+$absen_TL,
+                            'kehadiran_r'=>$absen_R,
+                            'kehadiran_ok'=>$ok,
+                            'total_kehadiran_net'=>$ok+$dt_employe+$pc_employe+$dtpc_employe+$LBY_employe+$IBY_employe,
+                            'kehadiran_tk'=>$tk,
+                            'total_kehadiran'=> $total_kh,
+                            'jumlah_hari'=>$jumlah_hari_total,
+                            'jumlah_hari_kerja'=>$jumlah_hari_kerja,
+                            'kehadiran_dl'=>$value['absensi']->where('status_absen','DL')->count(),
+                            'kehadiran_cb'=>$value['absensi']->where('status_absen','CB')->count(),
+                            'kehadiran_cbd'=>$value['absensi']->where('status_absen','CBD')->count(),
+                            'kehadiran_cg'=>$value['absensi']->where('status_absen','CG')->count(),
+                            'kehadiran_ch'=>$value['absensi']->where('status_absen','CH')->count(),
+                            'kehadiran_cm'=>$value['absensi']->where('status_absen','CM')->count(),
+                            'kehadiran_cn'=>$value['absensi']->where('status_absen','CN')->count(),
+                            'kehadiran_ct'=>$value['absensi']->where('status_absen','CT')->count(),
+                            'kehadiran_ig'=>$value['absensi']->where('status_absen','IG')->count(),
+                            'kehadiran_im'=>$value['absensi']->where('status_absen','IM')->count(),
+                            'kehadiran_ka'=>$value['absensi']->where('status_absen','KA')->count(),
+                            'kehadiran_km'=>$value['absensi']->where('status_absen','KM')->count(),
+                            'kehadiran_kr'=>$value['absensi']->where('status_absen','KR')->count(),
+                            'kehadiran_na'=>$value['absensi']->where('status_absen','NA')->count(),
+                            'kehadiran_pp'=>$value['absensi']->where('status_absen','PP')->count(),
+                            'kehadiran_i'=>$value['absensi']->where('status_absen','I')->count(),
+                            'kehadiran_lp'=>$value['absensi']->where('status_absen','LP')->count(),
+                            'kehadiran_l'=>$value['absensi']->where('status_absen','L')->count(),
+                            'kehadiran_tl'=>$value['absensi']->where('status_absen','TL')->count(),
+                            'kehadiran_iks'=>$value['absensi']->where('status_absen','IKS')->count(),
+                            'kehadiran_s'=>$value['absensi']->where('status_absen','S')->count(),
+                            'kehadiran_m_estimasi'=> $TL_estimasi+$M_estimasi,
+                        ];
+                        $count=RekapKehadiranKaryawan::where( 'kode_rekap_kehadiran',$kode_rekap_kehadiran)->count();
+                        if($count){
+                            RekapKehadiranKaryawan::where( 'kode_rekap_kehadiran',$kode_rekap_kehadiran)->update($row);
+                        }
+                        else{
+                            RekapKehadiranKaryawan::create($row);
+                        }
+                    }
+                }, $column = 'enroll_id');
+            }else{
+                $employees=EmployeeAtribut::where(function($query)use($tanggal_awal){
+                    $query->where('status_aktif','AKTIF')
+                    ->orWhere('tanggal_resign','>=',$tanggal_awal)
+                    ->orWhere('tanggal_resign',null);
+                })->with(['absensi' => function ($query) use ($tanggal_awal,$tanggal_akhir) {
+                    $query->where('tanggal_berjalan', '>=', $tanggal_awal)
+                    ->where('tanggal_berjalan','<=',$tanggal_akhir);
+                }])->orderBy('enroll_id', 'asc')->get();
+                // $data_absensi=[];
+                foreach ($employees as $key => $value) {
+                    $enroll_id=$value->enroll_id;
+                    $unik=sprintf("%04d", $enroll_id);
+                    $kode_rekap_kehadiran=$bulan_sekarang.$unik;
+                    $libur_sabtu_minggu=$value['absensi']->whereIn('status_absen',$IBY)->count();
+                    $libur=$value['absensi']->where('status_absen','M')->where('mulai_jam_kerja',null)->count();
+                    $lsm_security=$libur_sabtu_minggu+$libur;
+                    $lsm_employe=$value['absensi']->whereIn('kode_hari', ['5','6'])->count();
+                    $absen_M_security=$value['absensi']->where('status_absen','M')->where('mulai_jam_kerja','!=',null)->count();
+                    $absen_M=$value['absensi']->where('status_absen','M')->count();
                     
-            //         $absen_TL=$value['absensi']->where('status_absen','TL')->where('mulai_jam_kerja','!=',null)->count();
-            //         $absen_R=$value['absensi']->where('status_absen','R')->count();
+                    $absen_TL=$value['absensi']->where('status_absen','TL')->where('mulai_jam_kerja','!=',null)->count();
+                    $absen_R=$value['absensi']->where('status_absen','R')->count();
                     
-            //         $absen_ok=$value['absensi']->whereNotin('kode_hari', ['5','6'])->where('status_absen',null)->where('jumlah_menit_absen_dtpc','0')->count();
-            //         $absen_IKS=$value['absensi']->where('status_absen','IKS')->where('jumlah_menit_absen_dtpc','0')->count();
-            //         $absen_ok_employee=$absen_ok+$absen_IKS;
+                    $absen_ok=$value['absensi']->whereNotin('kode_hari', ['5','6'])->where('status_absen',null)->where('jumlah_menit_absen_dtpc','0')->count();
+                    $absen_IKS=$value['absensi']->where('status_absen','IKS')->where('jumlah_menit_absen_dtpc','0')->count();
+                    $absen_ok_employee=$absen_ok+$absen_IKS;
 
-            //         $absen_ok_security=$value['absensi']->where('mulai_jam_kerja','!=',null)->where('status_absen',null)->where('jumlah_menit_absen_dtpc','0')->count();
+                    $absen_ok_security=$value['absensi']->where('mulai_jam_kerja','!=',null)->where('status_absen',null)->where('jumlah_menit_absen_dtpc','0')->count();
                     
-            //         $absen_ok_security_total=$absen_ok_security+$absen_IKS;
+                    $absen_ok_security_total=$absen_ok_security+$absen_IKS;
 
-            //         $dt_employe=$value['absensi']->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','0')->where('status_absen',null)->count();
-            //         $pc_employe=$value['absensi']->where('jumlah_menit_absen_pc','>','0')->where('jumlah_menit_absen_dt','0')->where('status_absen',null)->count();
-            //         $dtpc_employe=$value['absensi']->where('enroll_id',$value->enroll_id)->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','>','0')->where('status_absen',null)->count();
+                    $dt_employe=$value['absensi']->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','0')->where('status_absen',null)->count();
+                    $pc_employe=$value['absensi']->where('jumlah_menit_absen_pc','>','0')->where('jumlah_menit_absen_dt','0')->where('status_absen',null)->count();
+                    $dtpc_employe=$value['absensi']->where('enroll_id',$value->enroll_id)->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','>','0')->where('status_absen',null)->count();
 
-            //         $LBY_employe=$value['absensi']->where('status_absen','LN')->whereNotin('kode_hari', ['5','6'])->count();
-            //         $IBY_employe=$value['absensi']->whereIn('status_absen',$IBY)->count();
-            //         $ITB_employe=$value['absensi']->wherein('status_absen', $ITB)->count();
+                    $LBY_employe=$value['absensi']->where('status_absen','LN')->whereNotin('kode_hari', ['5','6'])->count();
+                    $IBY_employe=$value['absensi']->whereIn('status_absen',$IBY)->count();
+                    $ITB_employe=$value['absensi']->wherein('status_absen', $ITB)->count();
 
-            //         $total_kehadiran_net_security=$absen_ok_security+$dt_employe+$pc_employe+$dtpc_employe;
-            //         $aa_security=$total_kehadiran_net_security+$ITB_employe+$LBY_employe+$IBY_employe+$lsm_security+$absen_M_security+$absen_TL+$absen_R;
+                    $total_kehadiran_net_security=$absen_ok_security+$dt_employe+$pc_employe+$dtpc_employe;
+                    $aa_security=$total_kehadiran_net_security+$ITB_employe+$LBY_employe+$IBY_employe+$lsm_security+$absen_M_security+$absen_TL+$absen_R;
     
-            //         $total_kehadiran_net=$absen_ok+$dt_employe+$pc_employe+$dtpc_employe;
-            //         $aa=$total_kehadiran_net+$ITB_employe+$LBY_employe+$IBY_employe+$lsm_employe+$absen_M+$absen_TL+$absen_R;
+                    $total_kehadiran_net=$absen_ok+$dt_employe+$pc_employe+$dtpc_employe;
+                    $aa=$total_kehadiran_net+$ITB_employe+$LBY_employe+$IBY_employe+$lsm_employe+$absen_M+$absen_TL+$absen_R;
     
-            //         $kehadiran_tk_security=$jumlah_hari_total-$aa_security;
-            //         $kehadiran_tk=$jumlah_hari_total-$aa;
+                    $kehadiran_tk_security=$jumlah_hari_total-$aa_security;
+                    $kehadiran_tk=$jumlah_hari_total-$aa;
 
-            //         $total_kehadiran_security=$IBY_employe+$ITB_employe+$lsm_security+$dtpc_employe+$absen_M_security+$absen_R+$absen_ok_security+$LBY_employe+$dt_employe+$pc_employe+$absen_TL;
-            //         $total_kehadiran=$IBY_employe+$ITB_employe+$lsm_employe+$dtpc_employe+$absen_M+$absen_R+$absen_ok+$LBY_employe+$dt_employe+$pc_employe+$absen_TL;
-            //         $M_estimasi=$value['absensi']->where('status_absen','M')->count();
-            //         $TL_estimasi=$value['absensi']->where('status_absen','TL')->where('mulai_jam_kerja','!=',null)->count();
+                    $total_kehadiran_security=$IBY_employe+$ITB_employe+$lsm_security+$dtpc_employe+$absen_M_security+$absen_R+$absen_ok_security+$LBY_employe+$dt_employe+$pc_employe+$absen_TL;
+                    $total_kehadiran=$IBY_employe+$ITB_employe+$lsm_employe+$dtpc_employe+$absen_M+$absen_R+$absen_ok+$LBY_employe+$dt_employe+$pc_employe+$absen_TL;
+                    $M_estimasi=$value['absensi']->where('status_absen','M')->count();
+                    $TL_estimasi=$value['absensi']->where('status_absen','TL')->where('mulai_jam_kerja','!=',null)->count();
 
-            //         if($security->where('enroll_id',$value->enroll_id)->count()){
-            //             $lsm=$lsm_security;
-            //             $m=$absen_M_security;
-            //             $ok=$absen_ok_security_total;
-            //             $tk=$kehadiran_tk_security;
-            //             $total_kh=$total_kehadiran_security;
-            //             $jumlah_hari_kerja=25;
-            //         }else{
-            //             $lsm=$lsm_employe;
-            //             $m=$absen_M;
-            //             $ok=$absen_ok_employee;
-            //             $tk=$kehadiran_tk;
-            //             $total_kh=$total_kehadiran;
-            //             $jumlah_hari_kerja=$jumlah_hari_total-$jumlah_hari_sabtu_minggu_total;
-            //         }
-            //         $row=[
-            //             'uuid'=>Str::uuid('uuid'),
-            //             'kode_rekap_kehadiran'=> $kode_rekap_kehadiran,
-            //             'periode_umk'=>null,
-            //             'periode_payroll'=>$priode,
-            //             'periode_tahun'=>$tahun,
-            //             'periode_bulan'=>$bulan,
-            //             'enroll_id'=>$value['enroll_id'],
-            //             'nik'=>$value['nik'],
-            //             'employee_name'=>$value['employee_name'],
-            //             'site_nirwana_id'=>$value['site_nirwana_id'],
-            //             'site_nirwana_name'=>$value['site_nirwana_name'],
-            //             'department_id'=>$value['department_id'],
-            //             'department_name'=>$value['department_name'],
-            //             'sub_dept_id'=>$value['sub_dept_id'],
-            //             'sub_dept_name'=>$value['sub_dept_name'],
-            //             'join_date'=>$value['join_date'],
-            //             'tanggal_resign'=>$value['tanggal_resign'],
-            //             'status_aktif'=>$value['status_aktif'],
-            //             'status_staff'=>$value['status_staff'],
-            //             'kehadiran_iby'=>$value['absensi']->whereIn('status_absen',$IBY)->count(),
-            //             'kehadiran_itb'=>$value['absensi']->whereIn('status_absen',$ITB)->count(),
-            //             'kehadiran_lby'=>$value['absensi']->where('status_absen','LN')->whereNotin('kode_hari', ['5','6'])->count(),
-            //             'kehadiran_lsm'=>$lsm,
-            //             'kehadiran_dt'=> $value['absensi']->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','0')->where('status_absen',null)->count(),
-            //             'kehadiran_pc'=> $value['absensi']->where('jumlah_menit_absen_pc','>','0')->where('jumlah_menit_absen_dt','0')->where('status_absen',null)->count(),
-            //             'kehadiran_dtpc'=>$value['absensi']->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','>','0')->where('status_absen',null)->count(),
-            //             'kehadiran_m'=>$m+$absen_TL,
-            //             'kehadiran_r'=>$absen_R,
-            //             'kehadiran_ok'=>$ok,
-            //             'total_kehadiran_net'=>$ok+$dt_employe+$pc_employe+$dtpc_employe+$LBY_employe+$IBY_employe,
-            //             'kehadiran_tk'=>$tk,
-            //             'total_kehadiran'=> $total_kh,
-            //             'jumlah_hari'=>$jumlah_hari_total,
-            //             'jumlah_hari_kerja'=>$jumlah_hari_kerja,
-            //             'kehadiran_dl'=>$value['absensi']->where('status_absen','DL')->count(),
-            //             'kehadiran_cb'=>$value['absensi']->where('status_absen','CB')->count(),
-            //             'kehadiran_cbd'=>$value['absensi']->where('status_absen','CBD')->count(),
-            //             'kehadiran_cg'=>$value['absensi']->where('status_absen','CG')->count(),
-            //             'kehadiran_ch'=>$value['absensi']->where('status_absen','CH')->count(),
-            //             'kehadiran_cm'=>$value['absensi']->where('status_absen','CM')->count(),
-            //             'kehadiran_cn'=>$value['absensi']->where('status_absen','CN')->count(),
-            //             'kehadiran_ct'=>$value['absensi']->where('status_absen','CT')->count(),
-            //             'kehadiran_ig'=>$value['absensi']->where('status_absen','IG')->count(),
-            //             'kehadiran_im'=>$value['absensi']->where('status_absen','IM')->count(),
-            //             'kehadiran_ka'=>$value['absensi']->where('status_absen','KA')->count(),
-            //             'kehadiran_km'=>$value['absensi']->where('status_absen','KM')->count(),
-            //             'kehadiran_kr'=>$value['absensi']->where('status_absen','KR')->count(),
-            //             'kehadiran_na'=>$value['absensi']->where('status_absen','NA')->count(),
-            //             'kehadiran_pp'=>$value['absensi']->where('status_absen','PP')->count(),
-            //             'kehadiran_i'=>$value['absensi']->where('status_absen','I')->count(),
-            //             'kehadiran_lp'=>$value['absensi']->where('status_absen','LP')->count(),
-            //             'kehadiran_l'=>$value['absensi']->where('status_absen','L')->count(),
-            //             'kehadiran_tl'=>$value['absensi']->where('status_absen','TL')->count(),
-            //             'kehadiran_iks'=>$value['absensi']->where('status_absen','IKS')->count(),
-            //             'kehadiran_s'=>$value['absensi']->where('status_absen','S')->count(),
-            //             'kehadiran_m_estimasi'=> $TL_estimasi+$M_estimasi,
-            //         ];
-            //         // array_push($data_absensi, $row);
-            //         $count=RekapKehadiranKaryawan::where( 'kode_rekap_kehadiran',$kode_rekap_kehadiran)->count();
-            //         if($count){
-            //             RekapKehadiranKaryawan::where( 'kode_rekap_kehadiran',$kode_rekap_kehadiran)->update($row);
-            //         }
-            //         else{
-            //             RekapKehadiranKaryawan::create($row);
-            //         }
-            //     }
+                    if($security->where('enroll_id',$value->enroll_id)->count()){
+                        $lsm=$lsm_security;
+                        $m=$absen_M_security;
+                        $ok=$absen_ok_security_total;
+                        $tk=$kehadiran_tk_security;
+                        $total_kh=$total_kehadiran_security;
+                        $jumlah_hari_kerja=25;
+                    }else{
+                        $lsm=$lsm_employe;
+                        $m=$absen_M;
+                        $ok=$absen_ok_employee;
+                        $tk=$kehadiran_tk;
+                        $total_kh=$total_kehadiran;
+                        $jumlah_hari_kerja=$jumlah_hari_total-$jumlah_hari_sabtu_minggu_total;
+                    }
+                    $row=[
+                        'uuid'=>Str::uuid('uuid'),
+                        'kode_rekap_kehadiran'=> $kode_rekap_kehadiran,
+                        'periode_umk'=>null,
+                        'periode_payroll'=>$priode,
+                        'periode_tahun'=>$tahun,
+                        'periode_bulan'=>$bulan,
+                        'enroll_id'=>$value['enroll_id'],
+                        'nik'=>$value['nik'],
+                        'employee_name'=>$value['employee_name'],
+                        'site_nirwana_id'=>$value['site_nirwana_id'],
+                        'site_nirwana_name'=>$value['site_nirwana_name'],
+                        'department_id'=>$value['department_id'],
+                        'department_name'=>$value['department_name'],
+                        'sub_dept_id'=>$value['sub_dept_id'],
+                        'sub_dept_name'=>$value['sub_dept_name'],
+                        'join_date'=>$value['join_date'],
+                        'tanggal_resign'=>$value['tanggal_resign'],
+                        'status_aktif'=>$value['status_aktif'],
+                        'status_staff'=>$value['status_staff'],
+                        'kehadiran_iby'=>$value['absensi']->whereIn('status_absen',$IBY)->count(),
+                        'kehadiran_itb'=>$value['absensi']->whereIn('status_absen',$ITB)->count(),
+                        'kehadiran_lby'=>$value['absensi']->where('status_absen','LN')->whereNotin('kode_hari', ['5','6'])->count(),
+                        'kehadiran_lsm'=>$lsm,
+                        'kehadiran_dt'=> $value['absensi']->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','0')->where('status_absen',null)->count(),
+                        'kehadiran_pc'=> $value['absensi']->where('jumlah_menit_absen_pc','>','0')->where('jumlah_menit_absen_dt','0')->where('status_absen',null)->count(),
+                        'kehadiran_dtpc'=>$value['absensi']->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','>','0')->where('status_absen',null)->count(),
+                        'kehadiran_m'=>$m+$absen_TL,
+                        'kehadiran_r'=>$absen_R,
+                        'kehadiran_ok'=>$ok,
+                        'total_kehadiran_net'=>$ok+$dt_employe+$pc_employe+$dtpc_employe+$LBY_employe+$IBY_employe,
+                        'kehadiran_tk'=>$tk,
+                        'total_kehadiran'=> $total_kh,
+                        'jumlah_hari'=>$jumlah_hari_total,
+                        'jumlah_hari_kerja'=>$jumlah_hari_kerja,
+                        'kehadiran_dl'=>$value['absensi']->where('status_absen','DL')->count(),
+                        'kehadiran_cb'=>$value['absensi']->where('status_absen','CB')->count(),
+                        'kehadiran_cbd'=>$value['absensi']->where('status_absen','CBD')->count(),
+                        'kehadiran_cg'=>$value['absensi']->where('status_absen','CG')->count(),
+                        'kehadiran_ch'=>$value['absensi']->where('status_absen','CH')->count(),
+                        'kehadiran_cm'=>$value['absensi']->where('status_absen','CM')->count(),
+                        'kehadiran_cn'=>$value['absensi']->where('status_absen','CN')->count(),
+                        'kehadiran_ct'=>$value['absensi']->where('status_absen','CT')->count(),
+                        'kehadiran_ig'=>$value['absensi']->where('status_absen','IG')->count(),
+                        'kehadiran_im'=>$value['absensi']->where('status_absen','IM')->count(),
+                        'kehadiran_ka'=>$value['absensi']->where('status_absen','KA')->count(),
+                        'kehadiran_km'=>$value['absensi']->where('status_absen','KM')->count(),
+                        'kehadiran_kr'=>$value['absensi']->where('status_absen','KR')->count(),
+                        'kehadiran_na'=>$value['absensi']->where('status_absen','NA')->count(),
+                        'kehadiran_pp'=>$value['absensi']->where('status_absen','PP')->count(),
+                        'kehadiran_i'=>$value['absensi']->where('status_absen','I')->count(),
+                        'kehadiran_lp'=>$value['absensi']->where('status_absen','LP')->count(),
+                        'kehadiran_l'=>$value['absensi']->where('status_absen','L')->count(),
+                        'kehadiran_tl'=>$value['absensi']->where('status_absen','TL')->count(),
+                        'kehadiran_iks'=>$value['absensi']->where('status_absen','IKS')->count(),
+                        'kehadiran_s'=>$value['absensi']->where('status_absen','S')->count(),
+                        'kehadiran_m_estimasi'=> $TL_estimasi+$M_estimasi,
+                    ];
+                    // array_push($data_absensi, $row);
+                    $count=RekapKehadiranKaryawan::where( 'kode_rekap_kehadiran',$kode_rekap_kehadiran)->count();
+                    if($count){
+                        RekapKehadiranKaryawan::where( 'kode_rekap_kehadiran',$kode_rekap_kehadiran)->update($row);
+                    }
+                    else{
+                        RekapKehadiranKaryawan::create($row);
+                    }
+                }
+            }
+            // $rekapAbsenArrChunk = array_chunk($data_absensi, 1000);
+            // foreach ($rekapAbsenArrChunk as $data) {
+            //     RekapKehadiranKaryawan::upsert(
+            //         $data,
+            //         "uuid"
+            //     );
             // }
-            // // $rekapAbsenArrChunk = array_chunk($data_absensi, 1000);
-            // // foreach ($rekapAbsenArrChunk as $data) {
-            // //     RekapKehadiranKaryawan::upsert(
-            // //         $data,
-            // //         "uuid"
-            // //     );
-            // // }
             
-            // // rekap perhitungan kehadiran karyawan
-            // $kehadiran=RekapKehadiranKaryawan::selectRaw('uuid,kode_rekap_kehadiran,periode_payroll,periode_tahun,periode_bulan,enroll_id,nik,employee_name,site_nirwana_id,site_nirwana_name,department_id,department_name,sub_dept_id,sub_dept_name,join_date,tanggal_resign,status_aktif,status_staff,kehadiran_iby,kehadiran_itb,kehadiran_lby,kehadiran_lsm,kehadiran_dt,kehadiran_pc,kehadiran_dtpc,kehadiran_m,kehadiran_r,kehadiran_tk,kehadiran_ok,total_kehadiran,total_kehadiran_net,jumlah_hari,jumlah_hari_kerja,kehadiran_dl,kehadiran_cb,kehadiran_cbd,kehadiran_cg,kehadiran_ch,kehadiran_cm,kehadiran_cn,kehadiran_ct,kehadiran_ig,kehadiran_im,kehadiran_ka,kehadiran_km,kehadiran_kr,kehadiran_na,kehadiran_pp,kehadiran_i,kehadiran_lp,kehadiran_l,kehadiran_tl,kehadiran_iks,kehadiran_s,kehadiran_m_estimasi,operator,created_at,updated_at,deleted_at')->whereRaw('periode_bulan = "'.$bulan.'" and periode_tahun = "'.$tahun.'"'.$inEnrollId.'')->groupby('enroll_id')->get();
-            // foreach ($kehadiran as $key => $value) {
-            //     $periode = $value->periode_payroll;
-            //     $enroll_id = $value->enroll_id;
-            //     $kode = str_replace(array('-', ' '), '', $periode) . str_pad($enroll_id, 5, '0', STR_PAD_LEFT);
-            //     $kode_rekap = date('Ymd', strtotime(substr($kode, 0, 8))) . date('Ymd', strtotime(substr($kode, 11, 8))) . substr($kode, 19);
-            //     $kode_grade=EmployeeAtribut::select('kode_grade')->where('enroll_id',$value->enroll_id)->pluck('kode_grade')[0];
-            //     $salary_bulanan=GradingSalary::select('salary_bulanan')->where('kode_grade',$kode_grade)->where('periode_umk','2024-01')->pluck('salary_bulanan')[0];
-            //     $hari_potongan=max($value->jumlah_hari_kerja-$value->total_kehadiran_net, 0);
-            //     $hari_potongan_security=max($value->kehadiran_m+$value->kehadiran_r+$value->kehadiran_itb, 0);
-            //     $hp='';
-            //     if($security->where('enroll_id',$value->enroll_id)->count()){
-            //         $hp=$hari_potongan_security;
-            //         $jumlah_menit_kerja=420;
-            //     }else{
-            //         $hp=$hari_potongan;
-            //         $jumlah_menit_kerja=480;
-            //     }
-            //     $perhitungan_gaji=[
-            //         'uuid'=>Str::uuid('uuid'),
-            //         'periode_umk'=>null,
-            //         'kode_rekap'=>$kode_rekap,
-            //         'periode_payroll'=>$value->periode_payroll,
-            //         'periode_tahun_bulan'=>$value->periode_tahun.'-'.$value->periode_bulan,
-            //         'enroll_id'=>$value->enroll_id,
-            //         'employee_name'=>$value->employee_name,
-            //         'kehadiran_iby'=>$value->kehadiran_iby,
-            //         'kehadiran_itb'=>$value->kehadiran_itb,
-            //         'kehadiran_lby'=>$value->kehadiran_lby,
-            //         'kehadiran_lsm'=>$value->kehadiran_lsm,
-            //         'kehadiran_dt'=>$value->kehadiran_dt,
-            //         'kehadiran_pc'=>$value->kehadiran_pc,
-            //         'kehadiran_dtpc'=>$value->kehadiran_dtpc,
-            //         'kehadiran_m'=>$value->kehadiran_m,
-            //         'kehadiran_r'=>$value->kehadiran_r,
-            //         'kehadiran_tk'=>$value->kehadiran_tk,
-            //         'kehadiran_ok'=>$value->kehadiran_ok,
-            //         'total_kehadiran'=>$value->total_kehadiran,
-            //         'total_kehadiran_net'=>$value->total_kehadiran_net,
-            //         'jumlah_hari'=>$value->jumlah_hari,
-            //         'jumlah_hari_kerja'=>$value->jumlah_hari_kerja,
-            //         'gaji_pokok'=>$salary_bulanan,
-            //         'gaji_harian'=>$salary_bulanan/$value->jumlah_hari_kerja,
-            //         'gaji_menit'=>($salary_bulanan/$value->jumlah_hari_kerja)/$jumlah_menit_kerja,
-            //         'potongan_kehadiran_rupiah'=>($salary_bulanan/$value->jumlah_hari_kerja)*$hp,
-            //     ];
-            //     $count=RekapPerhitunganKehadiranKaryawan::where( 'kode_rekap',$kode_rekap)->count();
-            //     if($count){
-            //         RekapPerhitunganKehadiranKaryawan::where('kode_rekap',$kode_rekap)->update($perhitungan_gaji);
-            //     }
-            //     else{
-            //         RekapPerhitunganKehadiranKaryawan::create($perhitungan_gaji);
-            //     }
-            // }
+            // rekap perhitungan kehadiran karyawan
+            $kehadiran=RekapKehadiranKaryawan::selectRaw('uuid,kode_rekap_kehadiran,periode_payroll,periode_tahun,periode_bulan,enroll_id,nik,employee_name,site_nirwana_id,site_nirwana_name,department_id,department_name,sub_dept_id,sub_dept_name,join_date,tanggal_resign,status_aktif,status_staff,kehadiran_iby,kehadiran_itb,kehadiran_lby,kehadiran_lsm,kehadiran_dt,kehadiran_pc,kehadiran_dtpc,kehadiran_m,kehadiran_r,kehadiran_tk,kehadiran_ok,total_kehadiran,total_kehadiran_net,jumlah_hari,jumlah_hari_kerja,kehadiran_dl,kehadiran_cb,kehadiran_cbd,kehadiran_cg,kehadiran_ch,kehadiran_cm,kehadiran_cn,kehadiran_ct,kehadiran_ig,kehadiran_im,kehadiran_ka,kehadiran_km,kehadiran_kr,kehadiran_na,kehadiran_pp,kehadiran_i,kehadiran_lp,kehadiran_l,kehadiran_tl,kehadiran_iks,kehadiran_s,kehadiran_m_estimasi,operator,created_at,updated_at,deleted_at')->whereRaw('periode_bulan = "'.$bulan.'" and periode_tahun = "'.$tahun.'"'.$inEnrollId.'')->groupby('enroll_id')->get();
+            foreach ($kehadiran as $key => $value) {
+                $periode = $value->periode_payroll;
+                $enroll_id = $value->enroll_id;
+                $kode = str_replace(array('-', ' '), '', $periode) . str_pad($enroll_id, 5, '0', STR_PAD_LEFT);
+                $kode_rekap = date('Ymd', strtotime(substr($kode, 0, 8))) . date('Ymd', strtotime(substr($kode, 11, 8))) . substr($kode, 19);
+                $kode_grade=EmployeeAtribut::select('kode_grade')->where('enroll_id',$value->enroll_id)->pluck('kode_grade')[0];
+                $salary_bulanan=GradingSalary::select('salary_bulanan')->where('kode_grade',$kode_grade)->where('periode_umk','2024-01')->pluck('salary_bulanan')[0];
+                $hari_potongan=max($value->jumlah_hari_kerja-$value->total_kehadiran_net, 0);
+                $hari_potongan_security=max($value->kehadiran_m+$value->kehadiran_r+$value->kehadiran_itb, 0);
+                $hp='';
+                if($security->where('enroll_id',$value->enroll_id)->count()){
+                    $hp=$hari_potongan_security;
+                    $jumlah_menit_kerja=420;
+                }else{
+                    $hp=$hari_potongan;
+                    $jumlah_menit_kerja=480;
+                }
+                $perhitungan_gaji=[
+                    'uuid'=>Str::uuid('uuid'),
+                    'periode_umk'=>null,
+                    'kode_rekap'=>$kode_rekap,
+                    'periode_payroll'=>$value->periode_payroll,
+                    'periode_tahun_bulan'=>$value->periode_tahun.'-'.$value->periode_bulan,
+                    'enroll_id'=>$value->enroll_id,
+                    'employee_name'=>$value->employee_name,
+                    'kehadiran_iby'=>$value->kehadiran_iby,
+                    'kehadiran_itb'=>$value->kehadiran_itb,
+                    'kehadiran_lby'=>$value->kehadiran_lby,
+                    'kehadiran_lsm'=>$value->kehadiran_lsm,
+                    'kehadiran_dt'=>$value->kehadiran_dt,
+                    'kehadiran_pc'=>$value->kehadiran_pc,
+                    'kehadiran_dtpc'=>$value->kehadiran_dtpc,
+                    'kehadiran_m'=>$value->kehadiran_m,
+                    'kehadiran_r'=>$value->kehadiran_r,
+                    'kehadiran_tk'=>$value->kehadiran_tk,
+                    'kehadiran_ok'=>$value->kehadiran_ok,
+                    'total_kehadiran'=>$value->total_kehadiran,
+                    'total_kehadiran_net'=>$value->total_kehadiran_net,
+                    'jumlah_hari'=>$value->jumlah_hari,
+                    'jumlah_hari_kerja'=>$value->jumlah_hari_kerja,
+                    'gaji_pokok'=>$salary_bulanan,
+                    'gaji_harian'=>$salary_bulanan/$value->jumlah_hari_kerja,
+                    'gaji_menit'=>($salary_bulanan/$value->jumlah_hari_kerja)/$jumlah_menit_kerja,
+                    'potongan_kehadiran_rupiah'=>($salary_bulanan/$value->jumlah_hari_kerja)*$hp,
+                ];
+                $count=RekapPerhitunganKehadiranKaryawan::where( 'kode_rekap',$kode_rekap)->count();
+                if($count){
+                    RekapPerhitunganKehadiranKaryawan::where('kode_rekap',$kode_rekap)->update($perhitungan_gaji);
+                }
+                else{
+                    RekapPerhitunganKehadiranKaryawan::create($perhitungan_gaji);
+                }
+            }
 
             // rekap lembur
             if($selectedEnrollId){
                 $data_lemburan=[];
                 $lemburan=MasterDataAbsenKehadiran::where('nomor_form_lembur','!=',null)->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->whereIn('enroll_id',$selectedEnrollId)->with('data_lembur')->get();
                 foreach($lemburan as $key=>$value){
-                    if($value->kode_hari==5 || $value->kode_hari==6 || $value->status_absen=='LN' || ($value->mulai_jam_kerja==null && $value->akhir_jam_kerja==null)){
+                    if($value->kode_hari==5 || $value->kode_hari==6 || $value->status_absen=='LN'){
                         $kerjalibur='LIBUR';
                     }else{
                         $kerjalibur='KERJA';
