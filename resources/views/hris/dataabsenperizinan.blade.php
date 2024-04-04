@@ -98,15 +98,15 @@
                                                     <table class="table table-bordered" style="overflow-x:auto">
                                                         <thead id="head_perizinan">
                                                             <tr>
-                                                                <td width="40px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">No</td>
-                                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">TANGGAL IZIN</td>
-                                                                <td width="80px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">HARI</td>
-                                                                <td width="80px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">DARI</td>
-                                                                <td width="80px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">SAMPAI</td>
-                                                                <td width="80px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">NIK</td>
-                                                                <td width="170px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">NAMA KARYAWAN</td>
-                                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">STATUS ABSEN</td>
-                                                                <td width="230px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">KETERANGAN</td>
+                                                                <td width="46px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">No</td>
+                                                                <td width="120px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">TANGGAL IZIN</td>
+                                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">HARI</td>
+                                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">DARI</td>
+                                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">SAMPAI</td>
+                                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">NIK</td>
+                                                                <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">NAMA KARYAWAN</td>
+                                                                <td width="120px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;padding-left:11px;font-size:10pt">STATUS ABSEN</td>
+                                                                <td width="300px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">KETERANGAN</td>
                                                             </tr>
                                                         </thead>
                                                         <tbody id="tabel_perizinan">
@@ -612,14 +612,14 @@
                             count++;
                             $('#tabel_perizinan').append("<tr style='background-color:"+value.style_color+"; font-size:9pt'>\
                                 <td width='40px'>"+count+"</td>\
-                                <td width='100px'>"+value.tanggal_perizinan+"</td>\
-                                <td width='80px'>"+day+"</td>\
-                                <td width='80px'>"+value.tanggal_mulai_ijin+"</td>\
-                                <td width='80px'>"+value.tanggal_akhir_ijin+"</td>\
-                                <td width='80px'>"+value.nik+"</td>\
-                                <td width='170px'>"+value.employee_name+"</td>\
-                                <td width='100px'>"+value.kode_absen_ijin+"</td>\
-                                <td width='230px'>"+value.absen_alasan+"</td>\
+                                <td width='120px'>"+value.tanggal_perizinan+"</td>\
+                                <td width='100px'>"+day+"</td>\
+                                <td width='100px'>"+value.tanggal_mulai_ijin+"</td>\
+                                <td width='100px'>"+value.tanggal_akhir_ijin+"</td>\
+                                <td width='100px'>"+value.nik+"</td>\
+                                <td width='200px'>"+value.employee_name+"</td>\
+                                <td width='120px'>"+value.kode_absen_ijin+"</td>\
+                                <td width='300px'>"+value.absen_alasan+"</td>\
                             </tr>");
                             if(value.style_color!='red'){
                                 count2++;
