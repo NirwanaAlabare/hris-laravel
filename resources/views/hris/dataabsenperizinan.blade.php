@@ -100,13 +100,13 @@
                                                             <tr>
                                                                 <td width="40px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">No</td>
                                                                 <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">TANGGAL IZIN</td>
-                                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">HARI</td>
-                                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">DARI</td>
-                                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">SAMPAI</td>
-                                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NIK</td>
-                                                                <td width="150px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NAMA KARYAWAN</td>
-                                                                <td width="80px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">STATUS ABSEN</td>
-                                                                <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">KETERANGAN</td>
+                                                                <td width="80px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">HARI</td>
+                                                                <td width="80px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">DARI</td>
+                                                                <td width="80px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">SAMPAI</td>
+                                                                <td width="80px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">NIK</td>
+                                                                <td width="170px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">NAMA KARYAWAN</td>
+                                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">STATUS ABSEN</td>
+                                                                <td width="230px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">KETERANGAN</td>
                                                             </tr>
                                                         </thead>
                                                         <tbody id="tabel_perizinan">
@@ -123,7 +123,7 @@
                                                     <table>
                                                         <tr>
                                                             <td width="70" style="font-weight: bold">Length : </td>
-                                                            <td id="length_perizinan"></td>
+                                                            <td id="length_data_perizinan"></td>
                                                             <td width="50"></td>
                                                             <td width="100" style="font-weight: bold">Correct Data :</td>
                                                             <td id="correct_data"></td>
@@ -574,8 +574,8 @@
             formData.append("excel_file",myFile);
             // formData.append("error_handle",error_handle);
             document.getElementById('row_tabler').style.height='67px';
-            document.getElementById('tabel_perizinan').style.height='1px';
-            // document.getElementById('employeeImportButton').style.visibility='hidden';
+            document.getElementById('tabel_perizinan').style.height='10px';
+            document.getElementById('permitImportButton').style.visibility='hidden';
             if(typeof myFile=='undefined'){
                 notif({
                     msg: "<b>Error:</b> Pilih File terlebih dahulu!",
@@ -594,29 +594,29 @@
                     processData: false,
                     data: formData,
                     success:function(data){
-                        console.log(data);
-            //             var count=0;
-            //             var count2=0;
+                        var count=0;
+                        var count2=0;
                         jQuery.each(data, function(key,value){
-            //                 count2++;
-                            $('#tabel_perizinan').append("<tr style='background-color:"+data[key].status_department+"'>\
-                                <td width='40px'></td>\
-                                <td width='100px'>"+data[key].tanggal_perizinan+"</td>\
-                                <td width='100px'></td>\
-                                <td width='100px'>"+data[key].tanggal_mulai_ijin+"</td>\
-                                <td width='100px'>"+data[key].tanggal_akhir_ijin+"</td>\
-                                <td width='100px'>"+data[key].nik+"</td>\
-                                <td width='150px'>"+data[key].employee_name+"</td>\
-                                <td width='80px'>"+data[key].kode_absen_ijin+"</td>\
-                                <td width='200px'>"+data[key].absen_alasan+"</td>\
+                            var date = new Date(value.tanggal_perizinan);
+                            var day=date.toLocaleDateString("id-ID", { weekday: 'long' });
+                            count++;
+                            $('#tabel_perizinan').append("<tr style='background-color:"+value.style_color+" font-size:9pt'>\
+                                <td width='40px'>"+count+"</td>\
+                                <td width='100px'>"+value.tanggal_perizinan+"</td>\
+                                <td width='80px'>"+day+"</td>\
+                                <td width='80px'>"+value.tanggal_mulai_ijin+"</td>\
+                                <td width='80px'>"+value.tanggal_akhir_ijin+"</td>\
+                                <td width='80px'>"+value.nik+"</td>\
+                                <td width='170px'>"+value.employee_name+"</td>\
+                                <td width='100px'>"+value.kode_absen_ijin+"</td>\
+                                <td width='230px'>"+value.absen_alasan+"</td>\
                             </tr>");
-            //                 if(data[key].status_department!='red'){
-            //                     count++;
-            //                 }
+                            if(value.style_color!='red'){
+                                count2++;
+                            }
                         });
-            //             $('#length_karyawan').text(count2);
-            //             $('#correct_data').text(count);
-                        document.getElementById('tabel_perizinan').style.height='330px';
+                        $('#length_data_perizinan').text(count);
+                        $('#correct_data').text(count2);
                         document.getElementById('permitImportButton').style.visibility='visible';
                         document.getElementById('row_error_handle').style.visibility='visible';
                         $('#loading_perizinan').removeClass("spinner-border");
@@ -625,6 +625,41 @@
                 })
             }
         }
+        $('#permitImportButton').click(function(){
+            var formData = new FormData();
+            var excelFile=document.getElementById("excel_filess");
+            var myFile=excelFile.files[0];
+            formData.append("excel_file",myFile);
+            $('#permitImportButton').addClass('btn-loading');
+            $("#permitImportButton").html('Please wait...');
+            $("#permitImportButton").attr("disabled", true);
+            $.ajax({
+                type: 'POST',
+                url: '{{route('hris.dataabsenperijinan.import_perizinan_to_database')}}',
+                contentType: false,
+                processData: false,
+                data: formData,
+                success:function(data){
+                    console.log(data);
+                    $('#permitImportButton').removeClass("btn-loading");
+                    $("#permitImportButton").html('<i class="fa fa-upload" aria-hidden="true"></i> IMPORT');
+                    $("#permitImportButton").attr("disabled", false);
+                    // swal("", "IMPORT PERIZINAN BERHASIL!", "success");
+                    // $('#import_data_perizinan').modal('hide');
+                    // $('#excel_filess').val('');
+                    // document.getElementById('tabel_karyawan').style.height='1px';
+                    // document.getElementById('row_error_handle').style.visibility='hidden';
+                    // document.getElementById('employeeImportButton').style.visibility='hidden';
+                    // document.getElementById('row_tabler').style.height='67px';
+                },
+                error: function(res){
+                    swal("", "IMPORT PERIZINAN GAGAL!", "error")
+                    $('#permitImportButton').removeClass("btn-loading");
+                    $("#permitImportButton").html('<i class="fa fa-upload" aria-hidden="true"></i> IMPORT');
+                    $("#permitImportButton").attr("disabled", false);
+                }
+            });
+        });
         $('#excel_filess').change(function() {
             fill_the_table();
         });
@@ -847,158 +882,158 @@
             var tanggal_mulai_ijin = $('#tanggal_mulai_ijin').val();
             var tanggal_akhir_ijin = $('#tanggal_akhir_ijin').val();
 
-            if (!enroll_id) {
-                notif({
-                    msg: "<b>Warning:</b> Anda belum memilih data karyawan.",
-                    type: "warning"
-                });
-                return false;
-            }
+            // if (!enroll_id) {
+            //     notif({
+            //         msg: "<b>Warning:</b> Anda belum memilih data karyawan.",
+            //         type: "warning"
+            //     });
+            //     return false;
+            // }
 
-            if (!tanggal_perizinan) {
-                notif({
-                    msg: "<b>Warning:</b> Anda belum memilih Tanggal Perizinan.",
-                    type: "warning"
-                });
-                return false;
-            }
+            // if (!tanggal_perizinan) {
+            //     notif({
+            //         msg: "<b>Warning:</b> Anda belum memilih Tanggal Perizinan.",
+            //         type: "warning"
+            //     });
+            //     return false;
+            // }
 
-            if (!kode_absen_ijin) {
-                notif({
-                    msg: "<b>Warning:</b> Anda belum memilih Nama Izin.",
-                    type: "warning"
-                });
-                return false;
-            }
+            // if (!kode_absen_ijin) {
+            //     notif({
+            //         msg: "<b>Warning:</b> Anda belum memilih Nama Izin.",
+            //         type: "warning"
+            //     });
+            //     return false;
+            // }
 
-            if (!tanggal_mulai_ijin) {
-                notif({
-                    msg: "<b>Warning:</b> Anda belum memilih Tanggal Mulai Izin.",
-                    type: "warning"
-                });
-                return false;
-            }
+            // if (!tanggal_mulai_ijin) {
+            //     notif({
+            //         msg: "<b>Warning:</b> Anda belum memilih Tanggal Mulai Izin.",
+            //         type: "warning"
+            //     });
+            //     return false;
+            // }
 
-            if (!tanggal_akhir_ijin) {
-                notif({
-                    msg: "<b>Warning:</b> Anda belum memilih Tanggal Akhir Izin.",
-                    type: "warning"
-                });
-                return false;
-            }
+            // if (!tanggal_akhir_ijin) {
+            //     notif({
+            //         msg: "<b>Warning:</b> Anda belum memilih Tanggal Akhir Izin.",
+            //         type: "warning"
+            //     });
+            //     return false;
+            // }
 
             var tanggal = tanggal_perizinan;
 
             // LAGI COBA TEST CLOSING PAYROLL
-            $.ajax({
-                type:"POST",
-                url: "{{route('hris.dataclosingpayroll.ajax_getclosing')}}",
-                dataType: 'json',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                data: {
-                    tanggal:tanggal,
-                },
-                dataType: 'json',
-                success: function(resA){
+            // $.ajax({
+            //     type:"POST",
+            //     url: "{{route('hris.dataclosingpayroll.ajax_getclosing')}}",
+            //     dataType: 'json',
+            //     headers: {
+            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            //     data: {
+            //         tanggal:tanggal,
+            //     },
+            //     dataType: 'json',
+            //     success: function(resA){
 
-                    if(resA["ada"]) {
-                        notif({
-                            type: resA["status"],
-                            msg: resA["message"],
-                            position: "center",
-                            width: 800,
-                            height: 120,
-                            opacity: 0.6,
-                            autohide: false
-                        });
-                    } else {
+            //         if(resA["ada"]) {
+            //             notif({
+            //                 type: resA["status"],
+            //                 msg: resA["message"],
+            //                 position: "center",
+            //                 width: 800,
+            //                 height: 120,
+            //                 opacity: 0.6,
+            //                 autohide: false
+            //             });
+            //         } else {
 
-                        var TglMulaiIzin = new Date(tanggal_mulai_ijin);
-                        var TglAkhirIzin = new Date(tanggal_akhir_ijin);
-                        var TglPerizinan = new Date(tanggal_perizinan);
+            //             var TglMulaiIzin = new Date(tanggal_mulai_ijin);
+            //             var TglAkhirIzin = new Date(tanggal_akhir_ijin);
+            //             var TglPerizinan = new Date(tanggal_perizinan);
 
-                        if (TglMulaiIzin.getDate() != TglPerizinan.getDate()) {
-                            notif({
-                                msg: "<b>Warning:</b> Tanggal Mulai Izin tidak sesuai.",
-                                type: "warning"
-                            });
+            //             if (TglMulaiIzin.getDate() != TglPerizinan.getDate()) {
+            //                 notif({
+            //                     msg: "<b>Warning:</b> Tanggal Mulai Izin tidak sesuai.",
+            //                     type: "warning"
+            //                 });
 
-                            $('#tanggal_mulai_ijin').val(tanggal_perizinan);
-                            $('#tanggal_akhir_ijin').val(tanggal_perizinan);
+            //                 $('#tanggal_mulai_ijin').val(tanggal_perizinan);
+            //                 $('#tanggal_akhir_ijin').val(tanggal_perizinan);
 
-                            return false;
-                        }
+            //                 return false;
+            //             }
 
-                        if (TglAkhirIzin.getDate() < TglMulaiIzin.getDate()) {
-                            notif({
-                                msg: "<b>Warning:</b> Tanggal Akhir Izin tidak sesuai.",
-                                type: "warning"
-                            });
+            //             if (TglAkhirIzin.getDate() < TglMulaiIzin.getDate()) {
+            //                 notif({
+            //                     msg: "<b>Warning:</b> Tanggal Akhir Izin tidak sesuai.",
+            //                     type: "warning"
+            //                 });
 
-                            $('#tanggal_mulai_ijin').val(tanggal_perizinan);
-                            $('#tanggal_akhir_ijin').val(tanggal_perizinan);
+            //                 $('#tanggal_mulai_ijin').val(tanggal_perizinan);
+            //                 $('#tanggal_akhir_ijin').val(tanggal_perizinan);
 
-                            return false;
-                        }
+            //                 return false;
+            //             }
 
-                        $('#btn-save-izin').addClass("btn-loading");
-                        $("#btn-save-izin").html('Please wait...');
-                        $("#btn-save-izin").attr("disabled", true);
-                        $('#progress-show-1').show();
-                        $('#progress-hide-1').hide();
+            //             $('#btn-save-izin').addClass("btn-loading");
+            //             $("#btn-save-izin").html('Please wait...');
+            //             $("#btn-save-izin").attr("disabled", true);
+            //             $('#progress-show-1').show();
+            //             $('#progress-hide-1').hide();
 
-                        $.ajax({
-                            type:"POST",
-                            url: "{{route('hris.dataabsenperijinan.cekperizinan')}}",
-                            dataType: 'json',
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                            data: {
-                                enroll_id:enroll_id,
-                                tanggal_mulai_ijin:tanggal_mulai_ijin,
-                                tanggal_akhir_ijin:tanggal_akhir_ijin,
-                            },
-                            dataType: 'json',
-                            success: function(res){
-                                if (res > 0) {
-                                    $.ajax({
-                                        type:"POST",
-                                        url: "{{route('hris.dataabsenperijinan.update_perizinan_menu')}}",
-                                        headers: {
-                                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                                        data: {
-                                            uuid:uuid,
-                                            uuid_master:uuid_master,
-                                            tanggal_perizinan:tanggal_perizinan,
-                                            nomor_form_perizinan:nomor_form_perizinan,
-                                            enroll_id:enroll_id,
-                                            nik:nik,
-                                            employee_name:employee_name,
-                                            kode_absen_ijin:kode_absen_ijin,
-                                            absen_alasan:absen_alasan,
-                                            tanggal_mulai_ijin:tanggal_mulai_ijin,
-                                            tanggal_akhir_ijin:tanggal_akhir_ijin,
-                                        },
-                                        success: function(res){
-                                            notif({
-                                                msg: "<b>Info:</b> Data berhasil di simpan.",
-                                                type: "success"
-                                            });
-                                        },
-                                        error: function(res){
-                                            console.log(res);
-                                            notif({
-                                                msg: "<b>Error:</b> Oops data gagal di simpan.",
-                                                type: "error"
-                                            });
-                                        }
-                                    });
-                                } else {
+            //             $.ajax({
+            //                 type:"POST",
+            //                 url: "{{route('hris.dataabsenperijinan.cekperizinan')}}",
+            //                 dataType: 'json',
+            //                 headers: {
+            //                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            //                 data: {
+            //                     enroll_id:enroll_id,
+            //                     tanggal_mulai_ijin:tanggal_mulai_ijin,
+            //                     tanggal_akhir_ijin:tanggal_akhir_ijin,
+            //                 },
+            //                 dataType: 'json',
+            //                 success: function(res){
+            //                     if (res > 0) {
+            //                         $.ajax({
+            //                             type:"POST",
+            //                             url: "{{route('hris.dataabsenperijinan.update_perizinan_menu')}}",
+            //                             headers: {
+            //                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            //                             data: {
+            //                                 uuid:uuid,
+            //                                 uuid_master:uuid_master,
+            //                                 tanggal_perizinan:tanggal_perizinan,
+            //                                 nomor_form_perizinan:nomor_form_perizinan,
+            //                                 enroll_id:enroll_id,
+            //                                 nik:nik,
+            //                                 employee_name:employee_name,
+            //                                 kode_absen_ijin:kode_absen_ijin,
+            //                                 absen_alasan:absen_alasan,
+            //                                 tanggal_mulai_ijin:tanggal_mulai_ijin,
+            //                                 tanggal_akhir_ijin:tanggal_akhir_ijin,
+            //                             },
+            //                             success: function(res){
+            //                                 notif({
+            //                                     msg: "<b>Info:</b> Data berhasil di simpan.",
+            //                                     type: "success"
+            //                                 });
+            //                             },
+            //                             error: function(res){
+            //                                 console.log(res);
+            //                                 notif({
+            //                                     msg: "<b>Error:</b> Oops data gagal di simpan.",
+            //                                     type: "error"
+            //                                 });
+            //                             }
+            //                         });
+            //                     } else {
                                     $.ajax({
                                         type:"POST",
                                         url: "{{route('hris.dataabsenperijinan.create_perizinan_menu')}}",
-                                        dataType: 'json',
+                                        // dataType: 'json',
                                         headers: {
                                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                                         data: {
@@ -1013,12 +1048,13 @@
                                             tanggal_mulai_ijin:tanggal_mulai_ijin,
                                             tanggal_akhir_ijin:tanggal_akhir_ijin,
                                         },
-                                        dataType: 'json',
+                                        // dataType: 'json',
                                         success: function(res){
-                                            notif({
-                                                msg: "<b>Info:</b> Data berhasil di simpan.",
-                                                type: "info"
-                                            });
+                                            console.log(res);
+                                            // notif({
+                                            //     msg: "<b>Info:</b> Data berhasil di simpan.",
+                                            //     type: "info"
+                                            // });
                                         },
                                         error: function(res){
                                             notif({
@@ -1027,35 +1063,35 @@
                                             });
                                         }
                                     });
-                                }
-                            },
-                            error: function(res){
-                                notif({
-                                    msg: "<b>Error:</b> Oops Cek Data Perizinan GAGAL.",
-                                    type: "error"
-                                });
-                            }
-                        });
+                                // }
+                            // },
+                        //     error: function(res){
+                        //         notif({
+                        //             msg: "<b>Error:</b> Oops Cek Data Perizinan GAGAL.",
+                        //             type: "error"
+                        //         });
+                        //     }
+                        // });
 
-                        $('#progress-show-1').hide();
-                        $('#progress-hide-1').show();
-                        $('#btn-save-izin').removeClass("btn-loading");
-                        $("#btn-save-izin").html('<span><i class="fa fa-save"></i></span> Save');
-                        $("#form1 :input").prop("disabled", true);
-                        $("#btn-save-izin").prop("disabled", true);
-                        $("#btn-save-iks").prop("disabled", true);
-                        $("#btn-cancel-izin").prop("disabled", true);
-                        $("#btn-cancel-iks").prop("disabled", true);
-                        setTimeout(function myFunction() {
-                            location.reload();
-                        }, 3000);
-                    }
+            //             $('#progress-show-1').hide();
+            //             $('#progress-hide-1').show();
+            //             $('#btn-save-izin').removeClass("btn-loading");
+            //             $("#btn-save-izin").html('<span><i class="fa fa-save"></i></span> Save');
+            //             $("#form1 :input").prop("disabled", true);
+            //             $("#btn-save-izin").prop("disabled", true);
+            //             $("#btn-save-iks").prop("disabled", true);
+            //             $("#btn-cancel-izin").prop("disabled", true);
+            //             $("#btn-cancel-iks").prop("disabled", true);
+            //             setTimeout(function myFunction() {
+            //                 location.reload();
+            //             }, 3000);
+            //         }
 
-                },
-                error: function(resA){
+            //     },
+            //     error: function(resA){
 
-                }
-            });
+            //     }
+            // });
 
         });
 
