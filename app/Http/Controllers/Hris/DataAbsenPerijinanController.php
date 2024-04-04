@@ -1275,60 +1275,62 @@ class DataAbsenPerijinanController extends AdminBaseController
             }
             $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
             $nomor_form_perizinan =  $nomor_form_perizinan . $nomorform;
-            DataAbsenPerijinan::create([
-                'uuid' => Str::uuid(),
-                'tanggal_perizinan' => $tanggal_perizinan,
-                'nomor_form_perizinan' => $nomor_form_perizinan,
-                'enroll_id' => $enroll_id,
-                'nik' => $nik,
-                'employee_name' => $employee_name,
-                'kode_absen_ijin' => $data[0][$i][7],
-                'absen_alasan' => $data[0][$i][8],
-                'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
-                'tanggal_akhir_ijin' => $tanggal_akhir_ijin,
-                'is_verifikasi'=>$is_verifikasi,
-                'verifikasi_by'=>$verifikasi_by,
-                'operator' => $email
-            ]);
-            if($data[0][$i][7]=='DL') {
-                $query1 = MasterDataAbsenKehadiran::whereBetween('tanggal_berjalan', [$tanggal_mulai_ijin, $tanggal_akhir_ijin])
-                ->where('enroll_id', $enroll_id)
-                ->where(function ($query3) {
-                    $query3->whereNotIn('kode_hari', [6, 5]);
-                })->where('status_absen','!=','LN')->update([
-                    'nomor_absen_ijin' => $nomor_form_perizinan,
-                    'status_absen' => $data[0][$i][7],
+            if($style=='white'){
+                DataAbsenPerijinan::create([
+                    'uuid' => Str::uuid(),
+                    'tanggal_perizinan' => $tanggal_perizinan,
+                    'nomor_form_perizinan' => $nomor_form_perizinan,
+                    'enroll_id' => $enroll_id,
+                    'nik' => $nik,
+                    'employee_name' => $employee_name,
+                    'kode_absen_ijin' => $data[0][$i][7],
                     'absen_alasan' => $data[0][$i][8],
                     'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
                     'tanggal_akhir_ijin' => $tanggal_akhir_ijin,
-                    'operator' => $email,
-                    'absen_masuk_kerja'=>null,
-                    'absen_pulang_kerja'=>null,
-                    'jumlah_menit_absen_dt'=>0,
-                    'jumlah_menit_absen_pc'=>0,
-                    'jumlah_menit_absen_dtpc'=>0,
-                    'updated_absen_ijin' => now()
-                ]);    
-            }else{
-                $query1 = MasterDataAbsenKehadiran::whereBetween('tanggal_berjalan', [$tanggal_mulai_ijin, $tanggal_akhir_ijin])
-                ->where('enroll_id', $enroll_id)
-                ->where(function ($query3) {
-                    $query3->whereNotIn('kode_hari', [6, 5])
-                          ->orWhereNotNull('mulai_jam_kerja');
-                })->where('status_absen','!=','LN')->update([
-                    'nomor_absen_ijin' => $nomor_form_perizinan,
-                    'status_absen' => $data[0][$i][7],
-                    'absen_alasan' => $data[0][$i][8],
-                    'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
-                    'tanggal_akhir_ijin' => $tanggal_akhir_ijin,
-                    'operator' => $email,
-                    'absen_masuk_kerja'=>null,
-                    'absen_pulang_kerja'=>null,
-                    'jumlah_menit_absen_dt'=>0,
-                    'jumlah_menit_absen_pc'=>0,
-                    'jumlah_menit_absen_dtpc'=>0,
-                    'updated_absen_ijin' => now()
+                    'is_verifikasi'=>$is_verifikasi,
+                    'verifikasi_by'=>$verifikasi_by,
+                    'operator' => $email
                 ]);
+                if($data[0][$i][7]=='DL') {
+                    $query1 = MasterDataAbsenKehadiran::whereBetween('tanggal_berjalan', [$tanggal_mulai_ijin, $tanggal_akhir_ijin])
+                    ->where('enroll_id', $enroll_id)
+                    ->where(function ($query3) {
+                        $query3->whereNotIn('kode_hari', [6, 5]);
+                    })->where('status_absen','!=','LN')->update([
+                        'nomor_absen_ijin' => $nomor_form_perizinan,
+                        'status_absen' => $data[0][$i][7],
+                        'absen_alasan' => $data[0][$i][8],
+                        'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
+                        'tanggal_akhir_ijin' => $tanggal_akhir_ijin,
+                        'operator' => $email,
+                        'absen_masuk_kerja'=>null,
+                        'absen_pulang_kerja'=>null,
+                        'jumlah_menit_absen_dt'=>0,
+                        'jumlah_menit_absen_pc'=>0,
+                        'jumlah_menit_absen_dtpc'=>0,
+                        'updated_absen_ijin' => now()
+                    ]);    
+                }else{
+                    $query1 = MasterDataAbsenKehadiran::whereBetween('tanggal_berjalan', [$tanggal_mulai_ijin, $tanggal_akhir_ijin])
+                    ->where('enroll_id', $enroll_id)
+                    ->where(function ($query3) {
+                        $query3->whereNotIn('kode_hari', [6, 5])
+                            ->orWhereNotNull('mulai_jam_kerja');
+                    })->where('status_absen','!=','LN')->update([
+                        'nomor_absen_ijin' => $nomor_form_perizinan,
+                        'status_absen' => $data[0][$i][7],
+                        'absen_alasan' => $data[0][$i][8],
+                        'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
+                        'tanggal_akhir_ijin' => $tanggal_akhir_ijin,
+                        'operator' => $email,
+                        'absen_masuk_kerja'=>null,
+                        'absen_pulang_kerja'=>null,
+                        'jumlah_menit_absen_dt'=>0,
+                        'jumlah_menit_absen_pc'=>0,
+                        'jumlah_menit_absen_dtpc'=>0,
+                        'updated_absen_ijin' => now()
+                    ]);
+                }
             }
         }
     }

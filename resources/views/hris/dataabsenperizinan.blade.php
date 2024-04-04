@@ -594,13 +594,14 @@
                     processData: false,
                     data: formData,
                     success:function(data){
+                        console.log(data[6].style_color);
                         var count=0;
                         var count2=0;
                         jQuery.each(data, function(key,value){
                             var date = new Date(value.tanggal_perizinan);
                             var day=date.toLocaleDateString("id-ID", { weekday: 'long' });
                             count++;
-                            $('#tabel_perizinan').append("<tr style='background-color:"+value.style_color+" font-size:9pt'>\
+                            $('#tabel_perizinan').append("<tr style='background-color:"+value.style_color+"; font-size:9pt'>\
                                 <td width='40px'>"+count+"</td>\
                                 <td width='100px'>"+value.tanggal_perizinan+"</td>\
                                 <td width='80px'>"+day+"</td>\
