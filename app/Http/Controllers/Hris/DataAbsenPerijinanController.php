@@ -1224,7 +1224,7 @@ class DataAbsenPerijinanController extends AdminBaseController
             $dataperizinan=DataAbsenPerijinan::where('enroll_id',$data[0][$i][5])->where(function($query)use($from,$to){
                 $query->whereBetween('tanggal_mulai_ijin',[$from,$to])
                 ->orWhereBetween('tanggal_akhir_ijin',[$from,$to]);
-            })->get();
+            })->whereNotIn('kode_absen_ijin',['R'])->get();
             if(count($dataperizinan)>0){
                 $style='red';
             }else{
@@ -1309,7 +1309,7 @@ class DataAbsenPerijinanController extends AdminBaseController
                         'jumlah_menit_absen_pc'=>0,
                         'jumlah_menit_absen_dtpc'=>0,
                         'updated_absen_ijin' => now()
-                    ]);    
+                    ]);
                 }else{
                     $query1 = MasterDataAbsenKehadiran::whereBetween('tanggal_berjalan', [$tanggal_mulai_ijin, $tanggal_akhir_ijin])
                     ->where('enroll_id', $enroll_id)
