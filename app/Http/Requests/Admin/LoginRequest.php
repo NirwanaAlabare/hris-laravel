@@ -23,7 +23,7 @@ class LoginRequest extends CoreRequest
     public function rules()
     {
         return [
-            'email'	    => 'required|email',
+            'email'	    => 'required',
             'password'	=>	'required'
         ];
     }
