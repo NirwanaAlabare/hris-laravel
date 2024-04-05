@@ -212,6 +212,8 @@ class DataKehadiranInOutEditedController extends AdminBaseController
                 foreach ($query as $q)
                 {
                     $tanggal_absen = $q->tanggal_absen;
+                    $mulai_jam_kerja = $q->mulai_jam_kerja;
+                    $akhir_jam_kerja = $q->akhir_jam_kerja;
                     $kode_hari = $q->kode_hari;
                     $liburnasional = $q->holiday_name;
                     $kerjalibur = "KERJA";
@@ -235,6 +237,8 @@ class DataKehadiranInOutEditedController extends AdminBaseController
                                 $kerjalibur = "LIBUR";
                                 break;
                         }
+                    }else if($mulai_jam_kerja == null && $akhir_jam_kerja==null){
+                        $kerjalibur = "LIBUR";
                     } else {
                         switch ($kode_hari) {
                             case '5':
