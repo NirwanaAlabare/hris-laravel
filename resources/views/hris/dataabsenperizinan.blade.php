@@ -1205,11 +1205,11 @@
                         });
                     } else {
 
-                        // $('#btn-save-izin').addClass("btn-loading");
-                        // $("#btn-save-izin").html('Please wait...');
-                        // $("#btn-save-izin").attr("disabled", true);
-                        // $('#progress-show-1').show();
-                        // $('#progress-hide-1').hide();
+                        $('#btn-save-izin').addClass("btn-loading");
+                        $("#btn-save-izin").html('Please wait...');
+                        $("#btn-save-izin").attr("disabled", true);
+                        $('#progress-show-1').show();
+                        $('#progress-hide-1').hide();
 
                         $.ajax({
                             type:"POST",
@@ -1301,19 +1301,19 @@
                             }
                         });
 
-                        // $('#progress-show-1').hide();
-                        // $('#progress-hide-1').show();
-                        // $('#btn-save-izin').removeClass("btn-loading");
-                        // $("#btn-save-izin").html('<span><i class="fa fa-save"></i></span> Save');
-                        // $("#form1 :input").prop("disabled", true);
-                        // $("#btn-save-izin").prop("disabled", true);
-                        // $("#btn-save-iks").prop("disabled", true);
-                        // $("#btn-cancel-izin").prop("disabled", true);
-                        // $("#btn-cancel-iks").prop("disabled", true);
+                        $('#progress-show-1').hide();
+                        $('#progress-hide-1').show();
+                        $('#btn-save-izin').removeClass("btn-loading");
+                        $("#btn-save-izin").html('<span><i class="fa fa-save"></i></span> Save');
+                        $("#form1 :input").prop("disabled", true);
+                        $("#btn-save-izin").prop("disabled", true);
+                        $("#btn-save-iks").prop("disabled", true);
+                        $("#btn-cancel-izin").prop("disabled", true);
+                        $("#btn-cancel-iks").prop("disabled", true);
 
-                        // setTimeout(function myFunction() {
-                        //     location.reload();
-                        // }, 3000);
+                        setTimeout(function myFunction() {
+                            location.reload();
+                        }, 3000);
 
                     }
 
