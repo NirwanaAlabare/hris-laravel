@@ -2406,7 +2406,7 @@ class ProsesPayrollController extends AdminBaseController
                     $total_jam_lembur=$value2['final_jam_lembur_roundown'] + $konveri_jam;
                     $total_jam_lembur_finis=$total_jam_lembur-$value2['jumlah_jam_istirahat_form'];
                     $total_jam_lembur_finis=min($value2['jumlah_jam_lembur_form'],$total_jam_lembur_finis);
-                    if($value2['kode_hari']==5 || $value2['kode_hari']==6 || $value2['status_absen']=='LN'){
+                    if($value2['kode_hari']==5 || $value2['kode_hari']==6 || $value2['status_absen']=='LN' || ($value2['mulai_jam_kerja']==null && $value2['akhir_jam_kerja']==null)){
                         $kerjalibur='LIBUR';
                         $l1=0;
                         $le2=($total_jam_lembur_finis <= 8) ? $total_jam_lembur_finis : 8;
@@ -5158,26 +5158,35 @@ class ProsesPayrollController extends AdminBaseController
                 if($value2['kode_hari']==5 || $value2['kode_hari']==6 || $value2['status_absen']=='LN' || ($value2['mulai_jam_kerja']==null && $value2['akhir_jam_kerja']==null)){
                     $kerjalibur='LIBUR';
                     $l1=0;
-                    $l2=($total_jam_lembur_finis <= 8) ? $total_jam_lembur_finis : 8;
+                    $le2=($total_jam_lembur_finis <= 8) ? $total_jam_lembur_finis : 8;
+                    $l2=$le2<0?0:$le2;
                     if($total_jam_lembur_finis > 9){
-                        $l3=1;
-                        $l4=max($total_jam_lembur_finis -9, 0);
+                        $le3=1;
+                        $le4=max($total_jam_lembur_finis -9, 0);
                     }
                     else if($total_jam_lembur_finis > 8 && $total_jam_lembur_finis <=9 ){
-                        $l3=max($total_jam_lembur_finis -8, 0);
-                        $l4=0;
+                        $le3=max($total_jam_lembur_finis -8, 0);
+                        $le4=0;
                     }
                     else{
-                        $l3=0;
-                        $l4=0;
+                        $le3=0;
+                        $le4=0;
                     }
+                    $l3=$le3<0?0:$le3;
+                    $l4=$le4<0?0:$le4;
                 }
                 else{
-                    $kerjalibur='KERJA';
-                    $l1 = ($total_jam_lembur_finis <= 1) ? $total_jam_lembur_finis : 1;
-                    $l2 = max($total_jam_lembur_finis - 1, 0);
+                    if($value['kode_hari']==5){
+                        $kerjalibur='LIBUR';
+                    }else{
+                        $kerjalibur='KERJA';
+                    }
+                    $le1 = ($total_jam_lembur_finis <= 1) ? $total_jam_lembur_finis : 1;
+                    $le2 = max($total_jam_lembur_finis - 1, 0);
                     $l3=0;
                     $l4=0;
+                    $l1=$le1<0?0:$le1;
+                    $l2=$le2<0?0:$le2;
                 }
                 
                 $kode_grade=EmployeeAtribut::select('kode_grade')->where('enroll_id',$value2['enroll_id'])->pluck('kode_grade')[0];
@@ -5437,26 +5446,35 @@ class ProsesPayrollController extends AdminBaseController
                 if($value2['kode_hari']==5 || $value2['kode_hari']==6 || $value2['status_absen']=='LN' || ($value2['mulai_jam_kerja']==null && $value2['akhir_jam_kerja']==null)){
                     $kerjalibur='LIBUR';
                     $l1=0;
-                    $l2=($total_jam_lembur_finis <= 8) ? $total_jam_lembur_finis : 8;
+                    $le2=($total_jam_lembur_finis <= 8) ? $total_jam_lembur_finis : 8;
+                    $l2=$le2<0?0:$le2;
                     if($total_jam_lembur_finis > 9){
-                        $l3=1;
-                        $l4=max($total_jam_lembur_finis -9, 0);
+                        $le3=1;
+                        $le4=max($total_jam_lembur_finis -9, 0);
                     }
                     else if($total_jam_lembur_finis > 8 && $total_jam_lembur_finis <=9 ){
-                        $l3=max($total_jam_lembur_finis -8, 0);
-                        $l4=0;
+                        $le3=max($total_jam_lembur_finis -8, 0);
+                        $le4=0;
                     }
                     else{
-                        $l3=0;
-                        $l4=0;
+                        $le3=0;
+                        $le4=0;
                     }
+                    $l3=$le3<0?0:$le3;
+                    $l4=$le4<0?0:$le4;
                 }
                 else{
-                    $kerjalibur='KERJA';
-                    $l1 = ($total_jam_lembur_finis <= 1) ? $total_jam_lembur_finis : 1;
-                    $l2 = max($total_jam_lembur_finis - 1, 0);
+                    if($value['kode_hari']==5){
+                        $kerjalibur='LIBUR';
+                    }else{
+                        $kerjalibur='KERJA';
+                    }
+                    $le1 = ($total_jam_lembur_finis <= 1) ? $total_jam_lembur_finis : 1;
+                    $le2 = max($total_jam_lembur_finis - 1, 0);
                     $l3=0;
                     $l4=0;
+                    $l1=$le1<0?0:$le1;
+                    $l2=$le2<0?0:$le2;
                 }
                 
                 $kode_grade=EmployeeAtribut::select('kode_grade')->where('enroll_id',$value2['enroll_id'])->pluck('kode_grade')[0];
