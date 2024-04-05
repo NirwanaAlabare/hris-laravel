@@ -1224,7 +1224,7 @@ class DataAbsenPerijinanController extends AdminBaseController
             $dataperizinan=DataAbsenPerijinan::where('enroll_id',$data[0][$i][5])->where(function($query)use($from,$to){
                 $query->whereBetween('tanggal_mulai_ijin',[$from,$to])
                 ->orWhereBetween('tanggal_akhir_ijin',[$from,$to]);
-            })->whereNotIn('kode_absen_ijin',['R'])->get();
+            })->get();
             if(count($dataperizinan)>0){
                 $style='red';
             }else{
