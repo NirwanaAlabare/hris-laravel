@@ -98,11 +98,10 @@
                                                     <table class="table table-bordered" style="overflow-x:auto">
                                                         <thead id="head_perizinan">
                                                             <tr>
-                                                                <td width="46px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">No</td>
-                                                                <td width="120px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">TANGGAL IZIN</td>
-                                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">HARI</td>
+                                                                <td width="55px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">No</td>
                                                                 <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">DARI</td>
                                                                 <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">SAMPAI</td>
+                                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">ID</td>
                                                                 <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">NIK</td>
                                                                 <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">NAMA KARYAWAN</td>
                                                                 <td width="120px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;padding-left:11px;font-size:10pt">STATUS ABSEN</td>
@@ -125,8 +124,6 @@
                                                             <td width="70" style="font-weight: bold">Length : </td>
                                                             <td id="length_data_perizinan"></td>
                                                             <td width="50"></td>
-                                                            <td width="100" style="font-weight: bold">Correct Data :</td>
-                                                            <td id="correct_data"></td>
                                                         </tr>
                                                     </table>
                                                 </div>
@@ -608,28 +605,26 @@
                     data: formData,
                     success:function(data){
                         var count=0;
-                        var count2=0;
-                        jQuery.each(data, function(key,value){
-                            var date = new Date(value.tanggal_perizinan);
-                            var day=date.toLocaleDateString("id-ID", { weekday: 'long' });
+                        for (let i = 4; i < data[0].length; i++){
+                            if (data[0][i][1] === null) continue;
                             count++;
-                            $('#tabel_perizinan').append("<tr style='background-color:"+value.style_color+"; font-size:9pt'>\
-                                <td width='46px'>"+count+"</td>\
-                                <td width='120px'>"+value.tanggal_perizinan+"</td>\
-                                <td width='100px'>"+day+"</td>\
-                                <td width='100px'>"+value.tanggal_mulai_ijin+"</td>\
-                                <td width='100px'>"+value.tanggal_akhir_ijin+"</td>\
-                                <td width='100px'>"+value.nik+"</td>\
-                                <td width='200px'>"+value.employee_name+"</td>\
-                                <td width='120px'>"+value.kode_absen_ijin+"</td>\
-                                <td width='300px'>"+value.absen_alasan+"</td>\
+                            let tanggal_mulai_izin=new Date(Math.round((data[0][i][0] - 25569)*86400*1000));
+                            let month = ('0' + tanggal_mulai_izin.getMonth()).slice(-2);
+                            let day = ('0' + tanggal_mulai_izin.getDate()).slice(-2);
+                            let year = tanggal_mulai_izin.getFullYear();
+                            let tanggal_mulai=day+'/'+month+'/'+year;
+                            $('#tabel_perizinan').append("<tr>\
+                                <td width='55px'>"+count+"</td>\
+                                <td width='100px'>"+tanggal_mulai+"</td>\
+                                <td width='100px'>"+tanggal_mulai+"</td>\
+                                <td width='100px'>"+data[0][i][1]+"</td>\
+                                <td width='100px'>"+data[0][i][2]+"</td>\
+                                <td width='200px'>"+data[0][i][3]+"</td>\
+                                <td width='120px'>"+data[0][i][4]+"</td>\
+                                <td width='300px'>"+data[0][i][5]+"</td>\
                             </tr>");
-                            if(value.style_color!='red'){
-                                count2++;
-                            }
-                        });
+                        };
                         $('#length_data_perizinan').text(count);
-                        $('#correct_data').text(count2);
                         document.getElementById('tabel_perizinan').style.height='330px';
                         document.getElementById('permitImportButton').style.visibility='visible';
                         document.getElementById('row_error_handle').style.visibility='visible';
