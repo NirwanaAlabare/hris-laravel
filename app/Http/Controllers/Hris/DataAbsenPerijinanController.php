@@ -1296,7 +1296,7 @@ class DataAbsenPerijinanController extends AdminBaseController
                     ->where('enroll_id', $enroll_id)
                     ->where(function ($query3) {
                         $query3->whereNotIn('kode_hari', [6, 5]);
-                    })->where('status_absen','!=','LN')->update([
+                    })->whereNotIn('status_absen',['LN','R'])->update([
                         'nomor_absen_ijin' => $nomor_form_perizinan,
                         'status_absen' => $data[0][$i][7],
                         'absen_alasan' => $data[0][$i][8],
@@ -1316,7 +1316,7 @@ class DataAbsenPerijinanController extends AdminBaseController
                     ->where(function ($query3) {
                         $query3->whereNotIn('kode_hari', [6, 5])
                             ->orWhereNotNull('mulai_jam_kerja');
-                    })->where('status_absen','!=','LN')->update([
+                    })->whereNotIn('status_absen',['LN','R'])->update([
                         'nomor_absen_ijin' => $nomor_form_perizinan,
                         'status_absen' => $data[0][$i][7],
                         'absen_alasan' => $data[0][$i][8],
