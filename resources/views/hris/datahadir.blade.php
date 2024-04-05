@@ -456,7 +456,7 @@
                                                             <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
                                                         </div>
                                                     </div>
-                                                    <input id="tanggal_mulai_ijin" name="tanggal_mulai_ijin" type="text" class="form-control fc-datepicker" placeholder="Tanggal Mulai Izin" maxlength="50" size="50">
+                                                    <input id="tanggal_mulai_ijin" name="tanggal_mulai_ijin" type="text" class="form-control fc-datepicker" maxlength="50" size="50">
                                                 </div>
                                             </div>
                                         </div>
@@ -469,7 +469,7 @@
                                                             <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
                                                         </div>
                                                     </div>
-                                                    <input id="tanggal_akhir_ijin" name="tanggal_akhir_ijin" type="text" class="form-control fc-datepicker" placeholder="Tanggal Mulai Izin" maxlength="50" size="50">
+                                                    <input id="tanggal_akhir_ijin" name="tanggal_akhir_ijin" type="text" class="form-control fc-datepicker" maxlength="50" size="50">
                                                 </div>
                                             </div>
                                         </div>
@@ -835,7 +835,7 @@
         $('.fc-datepicker').datepicker({
             showOtherMonths: true,
             selectOtherMonths: true,
-            dateFormat: 'dd-mm-yy'
+            dateFormat: 'yy-mm-dd'
         });
 
         $(function(){
@@ -1487,7 +1487,7 @@
                     } else {
 
                         var tanggal = res['tanggal_berjalan'];
-                        var tanggal_resmi=tanggal.substr(8,2)+'-'+tanggal.substr(5,2)+'-'+tanggal.substr(0,4);
+                        var tanggal_resmi=tanggal.substr(0,4)+'-'+tanggal.substr(5,2)+'-'+tanggal.substr(8,2);
                         $.ajax({
                             type:"POST",
                             url: "{{route('hris.dataclosingpayroll.ajax_getclosing')}}",
@@ -1734,7 +1734,7 @@
             $.ajax({
                 type:"POST",
                 url: "{{route('hris.dataabsenperijinan.create_perizinan')}}",
-                // dataType: 'json',
+                dataType: 'json',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 data: {
@@ -1749,7 +1749,7 @@
                     tanggal_mulai_ijin:tanggal_mulai_ijin,
                     tanggal_akhir_ijin:tanggal_akhir_ijin,
                 },
-                // dataType: 'json',
+                dataType: 'json',
                 success: function(res){
                     console.log(res);
                     notif({
@@ -1768,9 +1768,9 @@
             $('#progress-show-1').hide();
             $('#progress-hide-1').show();
             $('#btn-save').removeClass("btn-loading");
-            // $('#ajax-absenijin-model-add').modal('hide');
+            $('#ajax-absenijin-model-add').modal('hide');
             $("#btn-save").html('<span><i class="fa fa-save"></i></span> Simpan');
-            // $("#datatable-ajax-crud").DataTable().ajax.reload();
+            $("#datatable-ajax-crud").DataTable().ajax.reload();
 
         });
 
