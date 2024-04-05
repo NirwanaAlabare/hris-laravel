@@ -1147,17 +1147,17 @@ class DataAbsenPerijinanController extends AdminBaseController
             if($data[0][$i][0]=='' || $data[0][$i][0]=='-'){
                 $tanggal_perizinan=null;
             }else{
-                $tanggal_perizinan=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][0])->format('Y-m-d');
+                $tanggal_perizinan=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][0])->format('d-m-Y');
             }
             if($data[0][$i][2]=='' || $data[0][$i][2]=='-'){
                 $tanggal_mulai_ijin=null;
             }else{
-                $tanggal_mulai_ijin=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][2])->format('Y-m-d');
+                $tanggal_mulai_ijin=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][2])->format('d-m-Y');
             }
             if($data[0][$i][3]=='' || $data[0][$i][3]=='-'){
                 $tanggal_akhir_ijin=null;
             }else{
-                $tanggal_akhir_ijin=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][3])->format('Y-m-d');
+                $tanggal_akhir_ijin=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][3])->format('d-m-Y');
             }
             $from=date($tanggal_mulai_ijin);
             $to=date($tanggal_akhir_ijin);
