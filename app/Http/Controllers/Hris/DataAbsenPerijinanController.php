@@ -165,15 +165,15 @@ class DataAbsenPerijinanController extends AdminBaseController
         info('Tambah Permohonan Perizinan by ' . $email);
 
         $uuid_master = $request->uuid;
-        $tanggal_perizinan = $request->tanggal_perizinan;
+        $tanggal_perizinan=substr($request->tanggal_perizinan,6,4).'-'.substr($request->tanggal_perizinan,3,2).'-'.substr($request->tanggal_perizinan,0,2);
+        $tanggal_mulai_ijin=substr($request->tanggal_mulai_ijin,6,4).'-'.substr($request->tanggal_mulai_ijin,3,2).'-'.substr($request->tanggal_mulai_ijin,0,2);
+        $tanggal_akhir_ijin=substr($request->tanggal_akhir_ijin,6,4).'-'.substr($request->tanggal_akhir_ijin,3,2).'-'.substr($request->tanggal_akhir_ijin,0,2);
         $nomor_form_perizinan = $request->nomor_form_perizinan;
         $enroll_id = $request->enroll_id;
         $nik = $request->nik;
         $employee_name = $request->employee_name;
         $kode_absen_ijin = $request->kode_absen_ijin;
         $absen_alasan = $request->absen_alasan;
-        $tanggal_mulai_ijin = $request->tanggal_mulai_ijin;
-        $tanggal_akhir_ijin = $request->tanggal_akhir_ijin;
         $query = false;
 
         switch ($kode_absen_ijin) {
@@ -289,14 +289,13 @@ class DataAbsenPerijinanController extends AdminBaseController
 
     public function create_iks(Request $request)
     {
-
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
         info('START TAMBAH IKS');
         info('Tambah Permohonan IKS by ' . $email);
 
         $uuid_master = $request->uuid;
-        $tanggal_perizinan = $request->tanggal_perizinan;
+        $tanggal_perizinan=substr($request->tanggal_perizinan,6,4).'-'.substr($request->tanggal_perizinan,3,2).'-'.substr($request->tanggal_perizinan    ,0,2);
         $nomor_form_perizinan = $request->nomor_form_perizinan;
         $enroll_id = $request->enroll_id;
         $nik = $request->nik;

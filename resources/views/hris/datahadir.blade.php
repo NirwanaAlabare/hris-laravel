@@ -835,7 +835,7 @@
         $('.fc-datepicker').datepicker({
             showOtherMonths: true,
             selectOtherMonths: true,
-            dateFormat: 'yy-mm-dd'
+            dateFormat: 'dd-mm-yy'
         });
 
         $(function(){
@@ -1139,7 +1139,7 @@
             var end = moment();
             var htmlDateRange = '<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>'
             var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
-            var dateUpdateKehadiran = end.format("YYYY-MM-DD");
+            var dateUpdateKehadiran = end.format("DD-MM-YYYY");
 
             $('#daterange-btn1').html(htmlDateRange);
             $('#daterange1').val(daterange1);
@@ -1487,7 +1487,7 @@
                     } else {
 
                         var tanggal = res['tanggal_berjalan'];
-                        var tanggal_resmi=tanggal.substr(0,4)+'-'+tanggal.substr(5,2)+'-'+tanggal.substr(8,2);
+                        var tanggal_resmi=tanggal.substr(8,2)+'-'+tanggal.substr(5,2)+'-'+tanggal.substr(0,4);
                         $.ajax({
                             type:"POST",
                             url: "{{route('hris.dataclosingpayroll.ajax_getclosing')}}",
@@ -1616,7 +1616,7 @@
 
         $('body').on('click', '#btn-updateKehadiran', function (event) {
 
-            var tgl = $('#tanggal_mesin_absensi').val();
+            var tgl = defaultDate($('#tanggal_mesin_absensi').val());
             var tanggal = tgl.split(' s/d ');
             
             // LAGI COBA TEST CLOSING PAYROLL
@@ -1643,8 +1643,7 @@
                         });
                     } else {
                         var enroll_id=$('select[name="selectEmployee[]"]').val();
-
-                        var tanggal_mesin_absensi = $('#tanggal_mesin_absensi').val();
+                        var tanggal_mesin_absensi = defaultDate($('#tanggal_mesin_absensi').val());
                         var tgl_absensi_pilih = new Date(tanggal_mesin_absensi);
                         var days = ['MINGGU', 'SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU'];
                         var months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
