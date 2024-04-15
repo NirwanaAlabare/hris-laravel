@@ -26,13 +26,14 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use \Maatwebsite\Excel\Sheet;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Illuminate\Support\Facades\DB;
 
 use Auth;
 
-class RekapPerhitunganLemburExport implements FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle
+class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormatting, FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle
 {
     use Exportable;
 
@@ -111,11 +112,35 @@ class RekapPerhitunganLemburExport implements FromQuery, WithMapping, ShouldAuto
         $sub_dept_name = $Data->sub_dept_name;
         $tanggal_berjalan = $Data->tanggal_berjalan;
         $mulai_jam_kerja = $Data->mulai_jam_kerja;
+        $timestamp = new \DateTime($mulai_jam_kerja);
+        $excelTimestamp = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp);
+        $excelDate = floor($excelTimestamp);
+        $time = $excelTimestamp - $excelDate;
         $akhir_jam_kerja = $Data->akhir_jam_kerja;
+        $timestamp2 = new \DateTime($akhir_jam_kerja);
+        $excelTimestamp2 = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp2);
+        $excelDate2 = floor($excelTimestamp2);
+        $time2 = $excelTimestamp2 - $excelDate2;
         $jumlah_jam_kerja = $Data->jumlah_jam_kerja;
+        $timestamp3 = new \DateTime($jumlah_jam_kerja);
+        $excelTimestamp3 = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp3);
+        $excelDate3 = floor($excelTimestamp3);
+        $time3 = $excelTimestamp3 - $excelDate3;
         $absen_in = $Data->absen_masuk_kerja;
+        $timestamp4 = new \DateTime($absen_in);
+        $excelTimestamp4 = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp4);
+        $excelDate4 = floor($excelTimestamp4);
+        $time4 = $excelTimestamp4 - $excelDate4;
         $absen_out = $Data->absen_pulang_kerja;
+        $timestamp5 = new \DateTime($absen_out);
+        $excelTimestamp5 = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp5);
+        $excelDate5 = floor($excelTimestamp4);
+        $time5 = $excelTimestamp5 - $excelDate5;
         $jam_efektif_kerja = $Data->jam_efektif_kerja;
+        $timestamp6 = new \DateTime($jam_efektif_kerja);
+        $excelTimestamp6 = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp6);
+        $excelDate6 = floor($excelTimestamp6);
+        $time6 = $excelTimestamp6 - $excelDate6;
         $mulai_jam_lembur = $Data->mulai_jam_lembur;
         $akhir_jam_lembur = $Data->akhir_jam_lembur;
         $nama_hari = $Data->nama_hari;
@@ -160,13 +185,13 @@ class RekapPerhitunganLemburExport implements FromQuery, WithMapping, ShouldAuto
             $status_staff,
             $department_name,
             $sub_dept_name,
-            $tanggal_berjalan,
-            $mulai_jam_kerja,
-            $akhir_jam_kerja,
-            $jumlah_jam_kerja,
-            $absen_in,
-            $absen_out,
-            $jam_efektif_kerja,
+            Date::PHPToExcel($tanggal_berjalan),
+            $time,
+            $time2,
+            $time3,
+            $time4,
+            $time5,
+            $time6,
             $mulai_jam_lembur,
             $akhir_jam_lembur,
             $nama_hari,
@@ -195,6 +220,13 @@ class RekapPerhitunganLemburExport implements FromQuery, WithMapping, ShouldAuto
     public function title(): string
     {
         return 'REKAPPERHITUNGANLEMBUR';
+    }
+    public function columnWidths(): array
+    {
+        return [
+            'H' => 6,
+            'J' => 6,            
+        ];
     }
 
     public function registerEvents() : array
@@ -274,6 +306,18 @@ class RekapPerhitunganLemburExport implements FromQuery, WithMapping, ShouldAuto
                 $sheet->mergeCells('AE5:AI5');
 
             },
+        ];
+    }
+    public function columnFormats(): array
+    {
+        return [
+            'G' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'H' => NumberFormat::FORMAT_DATE_TIME3,
+            'I' => NumberFormat::FORMAT_DATE_TIME3,
+            'J' => NumberFormat::FORMAT_DATE_TIME3,
+            'K' => NumberFormat::FORMAT_DATE_TIME3,
+            'L' => NumberFormat::FORMAT_DATE_TIME3,
+            'M' => NumberFormat::FORMAT_DATE_TIME3,
         ];
     }
 
