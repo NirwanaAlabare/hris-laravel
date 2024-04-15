@@ -111,36 +111,54 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
         $department_name = $Data->department_name;
         $sub_dept_name = $Data->sub_dept_name;
         $tanggal_berjalan = $Data->tanggal_berjalan;
-        $mulai_jam_kerja = $Data->mulai_jam_kerja;
-        $timestamp = new \DateTime($mulai_jam_kerja);
-        $excelTimestamp = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp);
-        $excelDate = floor($excelTimestamp);
-        $time = $excelTimestamp - $excelDate;
-        $akhir_jam_kerja = $Data->akhir_jam_kerja;
-        $timestamp2 = new \DateTime($akhir_jam_kerja);
-        $excelTimestamp2 = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp2);
-        $excelDate2 = floor($excelTimestamp2);
-        $time2 = $excelTimestamp2 - $excelDate2;
-        $jumlah_jam_kerja = $Data->jumlah_jam_kerja;
-        $timestamp3 = new \DateTime($jumlah_jam_kerja);
-        $excelTimestamp3 = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp3);
-        $excelDate3 = floor($excelTimestamp3);
-        $time3 = $excelTimestamp3 - $excelDate3;
-        $absen_in = $Data->absen_masuk_kerja;
-        $timestamp4 = new \DateTime($absen_in);
-        $excelTimestamp4 = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp4);
-        $excelDate4 = floor($excelTimestamp4);
-        $time4 = $excelTimestamp4 - $excelDate4;
-        $absen_out = $Data->absen_pulang_kerja;
-        $timestamp5 = new \DateTime($absen_out);
-        $excelTimestamp5 = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp5);
-        $excelDate5 = floor($excelTimestamp4);
-        $time5 = $excelTimestamp5 - $excelDate5;
-        $jam_efektif_kerja = $Data->jam_efektif_kerja;
-        $timestamp6 = new \DateTime($jam_efektif_kerja);
-        $excelTimestamp6 = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp6);
-        $excelDate6 = floor($excelTimestamp6);
-        $time6 = $excelTimestamp6 - $excelDate6;
+        $time='';
+        if($Data->mulai_jam_kerja!=null || $Data->mulai_jam_kerja!=''){
+            $mulai_jam_kerja = $Data->mulai_jam_kerja;
+            $timestamp = new \DateTime($mulai_jam_kerja);
+            $excelTimestamp = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp);
+            $excelDate = floor($excelTimestamp);
+            $time = $excelTimestamp - $excelDate;
+        }
+        $time2='';
+        if($Data->akhir_jam_kerja!=null || $Data->akhir_jam_kerja!=''){
+            $akhir_jam_kerja = $Data->akhir_jam_kerja;
+            $timestamp2 = new \DateTime($akhir_jam_kerja);
+            $excelTimestamp2 = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp2);
+            $excelDate2 = floor($excelTimestamp2);
+            $time2 = $excelTimestamp2 - $excelDate2;
+        }
+        $time3='';
+        if($Data->jumlah_jam_kerja!=null || $Data->jumlah_jam_kerja!=''){
+            $jumlah_jam_kerja = $Data->jumlah_jam_kerja;
+            $timestamp3 = new \DateTime($jumlah_jam_kerja);
+            $excelTimestamp3 = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp3);
+            $excelDate3 = floor($excelTimestamp3);
+            $time3 = $excelTimestamp3 - $excelDate3;
+        }
+        $time4='';
+        if($Data->absen_masuk_kerja!=null || $Data->absen_masuk_kerja!=''){
+            $absen_in = $Data->absen_masuk_kerja;
+            $timestamp4 = new \DateTime($absen_in);
+            $excelTimestamp4 = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp4);
+            $excelDate4 = floor($excelTimestamp4);
+            $time4 = $excelTimestamp4 - $excelDate4;
+        }
+        $time5='';
+        if($Data->absen_pulang_kerja!=null || $Data->absen_pulang_kerja!=''){
+            $absen_out = $Data->absen_pulang_kerja;
+            $timestamp5 = new \DateTime($absen_out);
+            $excelTimestamp5 = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp5);
+            $excelDate5 = floor($excelTimestamp4);
+            $time5 = $excelTimestamp5 - $excelDate5;
+        }
+        $time6='';
+        if($Data->jam_efektif_kerja!=null || $Data->jam_efektif_kerja!=''){
+            $jam_efektif_kerja = $Data->jam_efektif_kerja;
+            $timestamp6 = new \DateTime($jam_efektif_kerja);
+            $excelTimestamp6 = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp6);
+            $excelDate6 = floor($excelTimestamp6);
+            $time6 = $excelTimestamp6 - $excelDate6;
+        }
         $mulai_jam_lembur = $Data->mulai_jam_lembur;
         $akhir_jam_lembur = $Data->akhir_jam_lembur;
         $nama_hari = $Data->nama_hari;
