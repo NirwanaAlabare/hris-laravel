@@ -220,9 +220,6 @@ class RekapPerhitunganLemburExport implements FromQuery, WithMapping, ShouldAuto
                 $sheet->setCellValue('E5', 'Department');
                 $sheet->setCellValue('F5', 'Bagian');
                 $sheet->setCellValue('G5', 'Tanggal Lembur');
-                $sheet->setColOptions([
-                    'G' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY],
-                ]);
                 $sheet->setCellValue('H5', 'Jadwal Kerja');
                 $sheet->setCellValue('H6', 'IN');
                 $sheet->setCellValue('I6', 'OUT');
