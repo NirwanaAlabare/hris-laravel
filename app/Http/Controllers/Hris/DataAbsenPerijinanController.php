@@ -195,24 +195,6 @@ class DataAbsenPerijinanController extends AdminBaseController
                 break;
         }
 
-        $getlastnomorform =  DataAbsenPerijinan::selectRaw('nomor_form_perizinan')
-                                            ->whereRaw('nomor_form_perizinan like "' . $nomor_form_perizinan . '%"')
-                                            ->groupby('nomor_form_perizinan')
-                                            ->orderby('nomor_form_perizinan', 'desc')
-                                            ->first();
-
-        if ($getlastnomorform) {
-            info('Get the latest nomor form permohonan perizinan from database : ' . $getlastnomorform);
-        } else {
-            info('FAILED to Get the latest nomor form permohonan perizinan from database');
-        }
-
-        if($getlastnomorform == "") {
-            //info("Count : Kosong");
-            $nomor = "0000";
-        } else {
-            $nomor = $getlastnomorform->nomor_form_perizinan;
-        }
 
         if ($kode_absen_ijin=='LP') {
             $is_verifikasi=1;
@@ -222,10 +204,19 @@ class DataAbsenPerijinanController extends AdminBaseController
             $is_verifikasi=0;
             $verifikasi_by=null;
         }
+        $query=DB::select('select nomor_form_perizinan,CAST(substring(nomor_form_perizinan,13) AS int) as nomor_form from data_absen_perijinan where nomor_form_perizinan LIKE "'.$nomor_form_perizinan.'%" order by nomor_form desc limit 1');
 
-        $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
+        if($query == "") {
+            $nomor = "0000";
+        } else {
+            $nomor = $query[0]->nomor_form_perizinan;
+        }
+        if(strlen($query[0]->nomor_form)<5){
+            $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
+        }else{
+            $nomorform = str_pad(substr($nomor, -5) + 1,4,"0",STR_PAD_LEFT);
+        }
         $nomor_form_perizinan =  $nomor_form_perizinan . $nomorform;
-        info('Nomor Form Perizinan : ' . $nomor_form_perizinan);
 
         $query = DataAbsenPerijinan::create([
             'uuid' => Str::uuid(),
@@ -397,7 +388,6 @@ class DataAbsenPerijinanController extends AdminBaseController
             'tanggal_akhir_ijin' => request()->tanggal_akhir_ijin,
             'operator' => $email
         ]);
-        
         if(request()->kode_absen_ijin=='DL')
         {
             MasterDataAbsenKehadiran::whereBetween('tanggal_berjalan', [request()->tanggal_mulai_ijin, request()->tanggal_akhir_ijin])
@@ -586,25 +576,6 @@ class DataAbsenPerijinanController extends AdminBaseController
                 break;
         }
 
-        $getlastnomorform =  DataAbsenPerijinan::selectRaw('nomor_form_perizinan')
-                                            ->whereRaw('nomor_form_perizinan like "' . $nomor_form_perizinan . '%"')
-                                            ->groupby('nomor_form_perizinan')
-                                            ->orderby('nomor_form_perizinan', 'desc')
-                                            ->first();
-
-        if ($getlastnomorform) {
-            info('Get the latest nomor form permohonan perizinan from database : ' . $getlastnomorform);
-        } else {
-            info('FAILED to Get the latest nomor form permohonan perizinan from database');
-        }
-
-        if($getlastnomorform == "") {
-            //info("Count : Kosong");
-            $nomor = "0000";
-        } else {
-            $nomor = $getlastnomorform->nomor_form_perizinan;
-        }
-
         if ($kode_absen_ijin=='LP') {
             $is_verifikasi=1;
             $verifikasi_by='system';
@@ -614,9 +585,19 @@ class DataAbsenPerijinanController extends AdminBaseController
             $verifikasi_by=null;
         }
 
-        $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
+        $query=DB::select('select nomor_form_perizinan,CAST(substring(nomor_form_perizinan,13) AS int) as nomor_form from data_absen_perijinan where nomor_form_perizinan LIKE "'.$nomor_form_perizinan.'%" order by nomor_form desc limit 1');
+
+        if($query == "") {
+            $nomor = "0000";
+        } else {
+            $nomor = $query[0]->nomor_form_perizinan;
+        }
+        if(strlen($query[0]->nomor_form)<5){
+            $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
+        }else{
+            $nomorform = str_pad(substr($nomor, -5) + 1,4,"0",STR_PAD_LEFT);
+        }
         $nomor_form_perizinan =  $nomor_form_perizinan . $nomorform;
-        info('Nomor Form Perizinan : ' . $nomor_form_perizinan);
 
         $query = DataAbsenPerijinan::create([
             'uuid' => Str::uuid(),
