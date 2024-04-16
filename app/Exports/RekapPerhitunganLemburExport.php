@@ -115,7 +115,7 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
         $sub_dept_name = $Data->sub_dept_name;
         $tanggal_eber = $Data->tanggal_berjalan;
         $tanggal_berjalan = Date::PHPToExcel($tanggal_eber);
-        if($role_user=='payroll' || $email='willy@ptnag.com' || $email='rifqi@ptnag.com'){
+        if($role_user=='payroll' || $email='willy@ptnag.com'){
             $tanggal_berjalan = $Data->tanggal_berjalan;
         }
         $time='';
@@ -338,7 +338,7 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
         $role_user=$loggedAdmin->role_user;
-        if($role_user=='payroll' || $email='willy@ptnag.com' || $email='rifqi@ptnag.com'){
+        if($role_user=='payroll' || $email='willy@ptnag.com'){
             return [
                 'H' => NumberFormat::FORMAT_DATE_TIME3,
                 'I' => NumberFormat::FORMAT_DATE_TIME3,
