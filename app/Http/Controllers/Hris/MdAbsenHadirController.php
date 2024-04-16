@@ -10,6 +10,7 @@ use App\Models\RefAbsenIjin;
 use App\Models\CheckInOut;
 use App\Models\CheckInOutServer;
 use App\Models\AttCheckInOut;
+use App\Models\LogDataGagalAbsen;
 use App\Models\AttUserInfo;
 use App\Models\WorkTimeTable;
 use GuzzleHttp\Client;
@@ -1615,14 +1616,17 @@ class MdAbsenHadirController extends AdminBaseController
                                 'absen_pulang_kerja' => $value->absen_out,
                                 'status_absen' => $status_absen
                             ]);
-                        }
-                        else{
-                            MasterDataAbsenKehadiran::where('tanggal_berjalan','=', $tanggal_mesin_absensi)
-                            ->where('enroll_id','=', $val["enroll_id"])
-                            ->update([
-                                'absen_masuk_kerja' => $value->absen_in,
-                                'absen_pulang_kerja' => $value->absen_out,
-                            ]);
+                        }else{
+                            $count=LogDataGagalAbsen::where('tanggal_absen',$tanggal_mesin_absensi)->where('enroll_id',$val["enroll_id"])->count();
+                            return $count;
+                            if($count<1){
+                                MasterDataAbsenKehadiran::where('tanggal_berjalan','=', $tanggal_mesin_absensi)
+                                ->where('enroll_id','=', $val["enroll_id"])
+                                ->update([
+                                    'absen_masuk_kerja' => $value->absen_in,
+                                    'absen_pulang_kerja' => $value->absen_out
+                                ]);
+                            }
                         }
                     }
                 }
@@ -1812,7 +1816,6 @@ class MdAbsenHadirController extends AdminBaseController
                 }
             }
         }
-        return 'ok';
     }
 
     // public function download_mesin_kehadiran(Request $request)
