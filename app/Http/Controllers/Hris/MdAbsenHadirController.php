@@ -1618,7 +1618,6 @@ class MdAbsenHadirController extends AdminBaseController
                             ]);
                         }else{
                             $count=LogDataGagalAbsen::where('tanggal_absen',$tanggal_mesin_absensi)->where('enroll_id',$val["enroll_id"])->count();
-                            return $count;
                             if($count<1){
                                 MasterDataAbsenKehadiran::where('tanggal_berjalan','=', $tanggal_mesin_absensi)
                                 ->where('enroll_id','=', $val["enroll_id"])
