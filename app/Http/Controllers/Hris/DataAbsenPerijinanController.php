@@ -1103,18 +1103,24 @@ class DataAbsenPerijinanController extends AdminBaseController
                 }
                 break;
         }
-        $getlastnomorform =  DataAbsenPerijinan::selectRaw('nomor_form_perizinan')
-                                            ->whereRaw('nomor_form_perizinan like "' . $nomor_form_perizinan . '%"')
-                                            ->groupby('nomor_form_perizinan')
-                                            ->orderby('nomor_form_perizinan', 'desc')
-                                            ->first();
+        // $getlastnomorform =  DataAbsenPerijinan::selectRaw('nomor_form_perizinan')
+        //                                     ->whereRaw('nomor_form_perizinan like "' . $nomor_form_perizinan . '%"')
+        //                                     ->groupby('nomor_form_perizinan')
+        //                                     ->orderby('nomor_form_perizinan', 'desc')
+        //                                     ->first();
+        
+        $query=DB::select('select nomor_form_perizinan,CAST(substring(nomor_form_perizinan,13) AS int) as nomor_form from data_absen_perijinan where nomor_form_perizinan LIKE "'.$nomor_form_perizinan.'%" order by nomor_form desc limit 1');
 
-        if($getlastnomorform == "") {
+        if($query == "") {
             $nomor = "0000";
         } else {
-            $nomor = $getlastnomorform->nomor_form_perizinan;
+            $nomor = $query[0]->nomor_form_perizinan;
         }
-        $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
+        if(strlen($query[0]->nomor_form)<5){
+            $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
+        }else{
+            $nomorform = str_pad(substr($nomor, -5) + 1,4,"0",STR_PAD_LEFT);
+        }
         $nomor_form_perizinan =  $nomor_form_perizinan . $nomorform;
         return $nomor_form_perizinan;
     }
@@ -1138,33 +1144,6 @@ class DataAbsenPerijinanController extends AdminBaseController
     }
     public function import_data_perizinan(){
         $data=Excel::toArray([],request()->file('excel_file'));
-        // $arrayPerizinan=[];
-        // for($i=4;$i<count($data[0]);$i++){
-        //     if(count(EmployeeAtribut::where('enroll_id',$data[0][$i][1])->get())<1){
-        //         continue;
-        //     }
-        //     if($data[0][$i][0]=='' || $data[0][$i][0]=='-'){
-        //         $tanggal_mulai_ijin=null;
-        //     }else{
-        //         $tanggal_mulai_ijin=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][0])->format('d-m-Y');
-        //     }
-        //     if($data[0][$i][0]=='' || $data[0][$i][0]=='-'){
-        //         $tanggal_akhir_ijin=null;
-        //     }else{
-        //         $tanggal_akhir_ijin=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][0])->format('d-m-Y');
-        //     }
-        //     $from=date($tanggal_mulai_ijin);
-        //     $to=date($tanggal_akhir_ijin);
-        //     $arrayPerizinan[$i]=[
-        //         'tanggal_mulai_ijin'=>$tanggal_mulai_ijin,
-        //         'tanggal_akhir_ijin'=>$tanggal_akhir_ijin,
-        //         'enroll_id'=>$data[0][$i][1],
-        //         'nik'=>$data[0][$i][2],
-        //         'employee_name'=>$data[0][$i][3],
-        //         'kode_absen_ijin'=>$data[0][$i][4],
-        //         'absen_alasan'=>$data[0][$i][5],
-        //     ];
-        // }
         return $data;
     }
     public function import_perizinan_to_database(){
@@ -1201,16 +1180,20 @@ class DataAbsenPerijinanController extends AdminBaseController
                 }
                 break;
             }
-            $getlastnomorform =  DataAbsenPerijinan::selectRaw('nomor_form_perizinan')
-            ->whereRaw('nomor_form_perizinan like "' . $nomor_form_perizinan . '%"')
-            ->groupby('nomor_form_perizinan')
-            ->orderby('nomor_form_perizinan', 'desc')
-            ->first();
-            if($getlastnomorform == "") {
+            
+            $query=DB::select('select nomor_form_perizinan,CAST(substring(nomor_form_perizinan,13) AS int) as nomor_form from data_absen_perijinan where nomor_form_perizinan LIKE "'.$nomor_form_perizinan.'%" order by nomor_form desc limit 1');
+
+            if($query == "") {
                 $nomor = "0000";
             } else {
-                $nomor = $getlastnomorform->nomor_form_perizinan;
+                $nomor = $query[0]->nomor_form_perizinan;
             }
+            if(strlen($query[0]->nomor_form)<5){
+                $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
+            }else{
+                $nomorform = str_pad(substr($nomor, -5) + 1,4,"0",STR_PAD_LEFT);
+            }
+            $nomor_form_perizinan =  $nomor_form_perizinan . $nomorform;
     
             if ($data[0][$i][4]=='LP') {
                 $is_verifikasi=1;
