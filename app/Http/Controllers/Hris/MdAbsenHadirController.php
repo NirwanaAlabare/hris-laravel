@@ -1616,6 +1616,14 @@ class MdAbsenHadirController extends AdminBaseController
                                 'status_absen' => $status_absen
                             ]);
                         }
+                        else{
+                            MasterDataAbsenKehadiran::where('tanggal_berjalan','=', $tanggal_mesin_absensi)
+                            ->where('enroll_id','=', $val["enroll_id"])
+                            ->update([
+                                'absen_masuk_kerja' => $value->absen_in,
+                                'absen_pulang_kerja' => $value->absen_out,
+                            ]);
+                        }
                     }
                 }
             }
@@ -1804,6 +1812,7 @@ class MdAbsenHadirController extends AdminBaseController
                 }
             }
         }
+        return 'ok';
     }
 
     // public function download_mesin_kehadiran(Request $request)
