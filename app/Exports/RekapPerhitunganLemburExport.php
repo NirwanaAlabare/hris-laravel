@@ -104,13 +104,20 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
 
     public function map($Data): array
     {
+        $loggedAdmin = Auth::guard('admin')->user();
+        $email = $loggedAdmin->email;
+        $role_user=$loggedAdmin->role_user;
         $enroll_id = $Data->enroll_id;
         $nomor_form_lembur = $Data->nomor_form_lembur;
         $employee_name = $Data->employee_name;
         $status_staff = $Data->status_staff;
         $department_name = $Data->department_name;
         $sub_dept_name = $Data->sub_dept_name;
-        $tanggal_berjalan = $Data->tanggal_berjalan;
+        $tanggal_eber = $Data->tanggal_berjalan;
+        $tanggal_berjalan = Date::PHPToExcel($tanggal_eber);
+        if($role_user=='payroll' || $email='willy@ptnag.com'){
+            $tanggal_berjalan = $Data->tanggal_berjalan;
+        }
         $time='';
         if($Data->mulai_jam_kerja!=null || $Data->mulai_jam_kerja!=''){
             $mulai_jam_kerja = $Data->mulai_jam_kerja;
