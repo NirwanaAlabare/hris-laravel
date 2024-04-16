@@ -115,7 +115,7 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
         $sub_dept_name = $Data->sub_dept_name;
         $tanggal_eber = $Data->tanggal_berjalan;
         $tanggal_berjalan = Date::PHPToExcel($tanggal_eber);
-        if($role_user=='payroll' || $email='willy@ptnag.com'){
+        if($role_user=='payroll' || $email='willy@ptnag.com' || $email='rifqi@ptnag.com'){
             $tanggal_berjalan = $Data->tanggal_berjalan;
         }
         $time='';
@@ -210,7 +210,7 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
             $status_staff,
             $department_name,
             $sub_dept_name,
-            Date::PHPToExcel($tanggal_berjalan),
+            $tanggal_berjalan,
             $time,
             $time2,
             $time3,
@@ -335,15 +335,29 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
     }
     public function columnFormats(): array
     {
-        return [
-            'G' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'H' => NumberFormat::FORMAT_DATE_TIME3,
-            'I' => NumberFormat::FORMAT_DATE_TIME3,
-            'J' => NumberFormat::FORMAT_DATE_TIME3,
-            'K' => NumberFormat::FORMAT_DATE_TIME3,
-            'L' => NumberFormat::FORMAT_DATE_TIME3,
-            'M' => NumberFormat::FORMAT_DATE_TIME3,
-        ];
+        $loggedAdmin = Auth::guard('admin')->user();
+        $email = $loggedAdmin->email;
+        $role_user=$loggedAdmin->role_user;
+        if($role_user=='payroll' || $email='willy@ptnag.com' || $email='rifqi@ptnag.com'){
+            return [
+                'H' => NumberFormat::FORMAT_DATE_TIME3,
+                'I' => NumberFormat::FORMAT_DATE_TIME3,
+                'J' => NumberFormat::FORMAT_DATE_TIME3,
+                'K' => NumberFormat::FORMAT_DATE_TIME3,
+                'L' => NumberFormat::FORMAT_DATE_TIME3,
+                'M' => NumberFormat::FORMAT_DATE_TIME3,
+            ];
+        }else{
+            return [
+                'G' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+                'H' => NumberFormat::FORMAT_DATE_TIME3,
+                'I' => NumberFormat::FORMAT_DATE_TIME3,
+                'J' => NumberFormat::FORMAT_DATE_TIME3,
+                'K' => NumberFormat::FORMAT_DATE_TIME3,
+                'L' => NumberFormat::FORMAT_DATE_TIME3,
+                'M' => NumberFormat::FORMAT_DATE_TIME3,
+            ];
+        }
     }
 
     public function properties(): array
