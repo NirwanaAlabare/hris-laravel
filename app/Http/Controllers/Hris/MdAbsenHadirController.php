@@ -102,7 +102,7 @@ class MdAbsenHadirController extends AdminBaseController
         }])->whereRaw('status_aktif is not null '.$inEnrollId.'')->get();
         $customPaper = array(0,0,56.70,28.38);
         $pdf = PDF::loadView('hris.Laporan.rincian_kehadiran_karyawan')->setPaper($customPaper);
-        $path = public_path();
+        $path = public_path('format_import/');
         $fileName = '-Numbering.pdf';
         $pdf->save($path . '/' . $fileName);
         $generatedFilePath = public_path('format_import/'.$fileName);
