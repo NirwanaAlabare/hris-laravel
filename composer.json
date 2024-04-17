@@ -10,6 +10,7 @@
         "avadim/fast-excel-laravel": "^2.6",
         "avadim/fast-excel-reader": "^2.14",
         "avadim/fast-excel-writer": "^4.11",
+        "barryvdh/laravel-dompdf": "^2.1",
         "cviebrock/eloquent-sluggable": "^8.0",
         "fideloper/proxy": "^4.0",
         "froiden/envato": "^1.0",
