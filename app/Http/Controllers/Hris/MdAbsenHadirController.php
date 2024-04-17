@@ -13,6 +13,7 @@ use App\Models\AttCheckInOut;
 use App\Models\LogDataGagalAbsen;
 use App\Models\AttUserInfo;
 use App\Models\WorkTimeTable;
+use Spipu\Html2Pdf\Html2Pdf;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -48,6 +49,59 @@ class MdAbsenHadirController extends AdminBaseController
         parent::__construct();
         $this->dashboardActive = 'active';
         $this->pageTitle = 'Data Kehadiran Karyawan';
+    }
+    public function export_pdf(){
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '400000M');
+        $tanggal = request()->tanggal_awal;
+        $tanggal_array=explode(" s/d ",$tanggal);
+        $tanggal_awal = $tanggal_array[0];
+        $tanggal_akhir = $tanggal_array[1];
+        $tanggal_awal_absen = Carbon::parse($tanggal_awal)->translatedFormat('d F Y');
+        $tanggal_akhir_absen = Carbon::parse($tanggal_akhir)->translatedFormat('d F Y');
+        $selectedEnrollId=request()->employee;
+        $inEnrollId='';
+        if($selectedEnrollId){
+            $enroll_id = implode(", ", $selectedEnrollId);
+            $allEnroll_id= '('.$enroll_id.')';
+            $inEnrollId = ' AND enroll_id IN '.$allEnroll_id.'';
+        }
+        $selectedDepartment=request()->department;
+        $inDepartment='';
+        if($selectedDepartment){
+            $inDepartment = ' AND department_name = "'.$selectedDepartment.'"';
+        }
+        $selectedSection=request()->section;
+        $inSection='';
+        if($selectedSection){
+            $inSection = ' AND sub_dept_name = "'.$selectedSection.'"';
+        }
+        $selectedStatusStaff=request()->status_staff;
+        $inStatusStaff='';
+        if($selectedStatusStaff){
+            $inStatusStaff = ' AND status_staff = "'.$selectedStatusStaff.'"';
+        }
+        $selectedFactory=request()->factory;
+        $inFactory='';
+        if($selectedFactory){
+            $inFactory = ' AND site_nirwana_id = "'.$selectedFactory.'"';
+        }
+        $employee=EmployeeAtribut::where(function ($query)use($tanggal_awal,$tanggal_akhir){
+            $query->where(function ($querys)use($tanggal_akhir){
+                $querys->where('status_aktif','AKTIF')
+                ->where('join_date','<=',$tanggal_akhir);
+            })->orWhere('tanggal_resign','>=',$tanggal_awal);
+        })->with(['absensi' => function ($query) use ($tanggal_awal,$tanggal_akhir) {
+            $query->where('tanggal_berjalan', '>=', $tanggal_awal)
+            ->where('tanggal_berjalan','<=',$tanggal_akhir);
+        }])->with(['rekap_lembur'=>function($query)use($tanggal_awal,$tanggal_akhir){
+            $query->where('tanggal_berjalan','>=',$tanggal_awal)
+            ->where('tanggal_berjalan','<=',$tanggal_akhir);
+        }])->whereRaw('status_aktif is not null '.$inEnrollId.''.$inDepartment.''.$inSection.''.$inStatusStaff.''.$inFactory.'')->get();
+        $html2pdf=new Html2Pdf('P', 'A4', 'en', true, 'UTF-8', array(8, 14, 1, 1));
+        $html2pdf->writeHTML(view('hris.Laporan.rincian_kehadiran_karyawan',compact('tanggal_awal_absen','tanggal_akhir_absen','employee')));
+        $html2pdf->output('it_asset_.pdf');
+        // return view('hris.Laporan.rincian_kehadiran_karyawan',compact('employee'));
     }
     public function import_datahadir(Request $request){
         $data=Excel::toArray([],$request->file('excel_file'));
@@ -441,8 +495,7 @@ class MdAbsenHadirController extends AdminBaseController
         $selectSiteNirwana = $request->siteNirwana;
         $daterange1 = $request->daterange1;
         $status_staff = $request->status_staff;
-        $searchData = strtoupper($request->searchData);
-
+        $searchData = $request->searchData;
         $daterange1 = explode(" s/d ", $request->daterange1);
         $tanggalMulai = date('Y-m-d', strtotime($daterange1[0]));
         $tanggalSampai = date('Y-m-d', strtotime($daterange1[1]));
@@ -466,17 +519,12 @@ class MdAbsenHadirController extends AdminBaseController
         if($selectSiteNirwana) {
             $inSiteNirwana = ' AND employee_atribut.site_nirwana_id = "' . $selectSiteNirwana . '"';
         }
-
-        $inSearchData = "";
-        if($searchData) {
-            $inSearchData = '
-                AND (
-                    UPPER(master_data_absen_kehadiran.enroll_id) LIKE ("%' . $searchData . '%")
-                    OR UPPER(master_data_absen_kehadiran.nik) LIKE ("%' . $searchData . '%")
-                    OR UPPER(master_data_absen_kehadiran.employee_name) LIKE ("%' . $searchData . '%")
-                )
-            ';
-
+        
+        $inSearchData='';
+        if($searchData){
+            $enroll_id = implode(", ", $searchData);
+            $allEnroll_id= '('.$enroll_id.')';
+            $inSearchData = ' AND employee_atribut.enroll_id IN '.$allEnroll_id.'';
         }
 
         if(request()->ajax()) {
@@ -911,9 +959,8 @@ class MdAbsenHadirController extends AdminBaseController
         } else {
             $status_staff = "";
         }
-
-        if($request->searchData) {
-            $searchData = strtoupper($request->searchData);
+        if($request->selectEmployeeID) {
+            $searchData = $request->selectEmployeeID;
         } else {
             $searchData = "";
         }
@@ -934,7 +981,6 @@ class MdAbsenHadirController extends AdminBaseController
         $selectDepartment = $selectDepartment;
 
         $status_staff = $status_staff;
-        $searchData = strtoupper($searchData);
 
         $filterStaff = "";
         if($status_staff) {
@@ -952,16 +998,11 @@ class MdAbsenHadirController extends AdminBaseController
             $inBagian = ' AND employee_atribut.sub_dept_name = "' . $selectBagian . '"';
         }
 
-        $inSearchData = "";
-        if($searchData) {
-            $inSearchData = '
-                AND (
-                    UPPER(master_data_absen_kehadiran.enroll_id) LIKE ("%' . $searchData . '%")
-                    OR UPPER(master_data_absen_kehadiran.nik) LIKE ("%' . $searchData . '%")
-                    OR UPPER(master_data_absen_kehadiran.employee_name) LIKE ("%' . $searchData . '%")
-                )
-            ';
-
+        $inSearchData='';
+        if($searchData){
+            $enroll_id = implode(", ", $searchData);
+            $allEnroll_id= '('.$enroll_id.')';
+            $inSearchData = ' AND employee_atribut.enroll_id IN '.$allEnroll_id.'';
         }
         $dataAbsen = DB::select('
             SELECT

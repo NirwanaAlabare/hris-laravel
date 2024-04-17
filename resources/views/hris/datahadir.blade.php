@@ -222,7 +222,11 @@
                         <div class="col-md-8">
                             <div class="form-group">
                                 <label class="form-label">CARI DATA : </label>
-                                <input id="searchData" name="searchData" class="form-control" type="text">
+                                <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID" required>
+                                    @foreach ($selectemployee as $r_empl)
+                                        <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -243,6 +247,7 @@
                         <button type="submit" id="btn-exportexcel" class="btn btn-app btn-primary mr-0 mt-0 mb-0" data-toggle="tooltip" title="Export Data ke File Excel"><i class="ion-ios7-download"></i> EXPORT</button>
                         <button type="button" id="btn-importexcel" class="btn btn-app btn-success mr-0 mt-0 mb-0" title="Import ke database" data-target="#import_data_kehadiran" data-toggle="modal"><i class="fa fa-file-excel-o"></i> IMPORT</button>
                         <a id="btn-caridata" class="btn btn-app btn-primary mr-0 mt-0 mb-0 text-white" data-toggle="tooltip" title="Cari Data"><i class="ion-search"></i> CARI</a>
+                        <a id="btn-exportpdf" class="btn btn-app mr-0 mt-0 mb-0 text-white" style="background-color: #e73a3a" data-toggle="tooltip" title="Preview by pdf"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> View PDF</a>
                     </div>
                 </div>
 
@@ -752,7 +757,43 @@
         $('#excel_filess').change(function() {
             fill_the_table();
         });
-        
+        $('#btn-exportpdf').click(function(e){
+            $('#btn-exportpdf').addClass("btn-loading");
+            $("#btn-exportpdf").html('Please wait...');
+            $("#btn-exportpdf").attr("disabled", true);
+            var employee = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+            var department = $('#selectDepartment').val();
+            var section = $('#selectBagian').val();
+            var status_staff = $('#status_staff').val();
+            var siteNirwana = $('#siteNirwana').val();
+            var tanggal_awal=$('#daterange1').val();
+            var factory=$('#siteNirwana').val();
+            $.ajax({
+                url: "{{route('hris.mdabsenhadir.export_pdf')}}",
+                type:"POST",
+                data : {
+                    tanggal_awal: tanggal_awal,
+                    employee: employee,
+                    department: department,
+                    section: section,
+                    status_staff: status_staff,
+                    factory: factory
+                },
+                success: function(res){
+                    console.log(res);
+                    swal("", "Export PDF berhasil", "success");
+                    $('#btn-exportpdf').removeClass("btn-loading");
+                    $("#btn-exportpdf").html('<i class="fa fa-file-pdf-o" aria-hidden="true"></i> View PDF');
+                    $("#btn-exportpdf").attr("disabled", false);
+                },
+                error: function(res){
+                    swal("", "Export PDF gagal", "error");
+                    $('#btn-exportpdf').removeClass("btn-loading");
+                    $("#btn-exportpdf").attr("disabled", false);
+                    $("#btn-exportpdf").html('<i class="fa fa-file-pdf-o" aria-hidden="true"></i> View PDF');
+                }
+            });
+        });
         $('#presenceImportButton').click(function(e){
             var formData = new FormData();
             var excelFile=document.getElementById("excel_filess");
@@ -1241,7 +1282,7 @@
             var selectBagian = $('#selectBagian').val();
             var daterange1 = $('#daterange1').val();
             var status_staff = $('#status_staff').val();
-            var searchData = $('#searchData').val();
+            var searchData = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
             var siteNirwana = $('#siteNirwana').val();
 
             var table = $('#datatable-ajax-crud').DataTable({
