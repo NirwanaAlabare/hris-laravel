@@ -52,7 +52,7 @@ class MdAbsenHadirController extends AdminBaseController
     }
     public function export_pdf(){
         ini_set('max_execution_time', 0);
-        ini_set('memory_limit', '400000M');
+        ini_set('memory_limit', '1000000M');
         // $tanggal = request()->tanggal_awal;
         // $tanggal_array=explode(" s/d ",$tanggal);
         // $tanggal_awal = $tanggal_array[0];
