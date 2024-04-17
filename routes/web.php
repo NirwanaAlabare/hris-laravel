@@ -86,6 +86,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('mdabsenhadir/download_mesin_kehadiran/',['as'=>'hris.mdabsenhadir.download_mesin_kehadiran','uses'=> 'MdAbsenHadirController@download_mesin_kehadiran']);
     Route::post('mdabsenhadir/ajax_getdashkehadiran',['as'=>'hris.mdabsenhadir.ajax_getdashkehadiran','uses'=>'MdAbsenHadirController@ajax_getdashkehadiran']);
     Route::post('mdabsenhadir/ajax_getTanggalKehadiranSekarang',['as'=>'hris.mdabsenhadir.ajax_getTanggalKehadiranSekarang','uses'=>'MdAbsenHadirController@ajax_getTanggalKehadiranSekarang']);
+    Route::post('mdabsenhadir/export_pdf',['as'=>'hris.mdabsenhadir.export_pdf','uses'=>'MdAbsenHadirController@export_pdf']);
 
     // DATA GAGAL ABSEN
     Route::get('gagalabsen/index/',['as'=>'hris.gagalabsen.index','uses'=> 'GagalAbsenController@index']);
