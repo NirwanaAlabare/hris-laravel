@@ -152,7 +152,7 @@
                                 <label class="form-label">PILIH KARYAWAN  : </label>
                                 <div class="form-group">
                                     <span class="input-group">
-                                        <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID" style="width: 699.238px;" required>
+                                        <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID" style="width: 699.238px;">
                                             @foreach ($selectemployee as $r_empl)
                                                 <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
                                             @endforeach
@@ -779,8 +779,24 @@
                     status_staff: status_staff,
                     factory: factory
                 },
+                xhrFields: { responseType : 'blob' },
                 success: function(res){
-                    console.log(res);
+                    var d = new Date(),
+                        month = '' + (d.getMonth() + 1),
+                        day = '' + d.getDate(),
+                        year = d.getFullYear();
+
+                    if (month.length < 2) 
+                        month = '0' + month;
+                    if (day.length < 2) 
+                        day = '0' + day;
+
+                    var full_date= [year, month, day].join('-');
+                    var blob = new Blob([res], {type: 'application/pdf'});
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "PT.NAG ATTENDANCE DETAIL_"+tanggal_awal+"_"+Math.ceil(Math.random()*1000000)+".pdf";
+                    link.click();
                     swal("", "Export PDF berhasil", "success");
                     $('#btn-exportpdf').removeClass("btn-loading");
                     $("#btn-exportpdf").html('<i class="fa fa-file-pdf-o" aria-hidden="true"></i> View PDF');
