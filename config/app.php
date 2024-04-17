@@ -152,7 +152,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         Alfa6661\AutoNumber\AutoNumberServiceProvider::class,
-
+        Barryvdh\DomPDF\ServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -221,7 +221,7 @@ return [
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Zip' => Macellan\Zip\ZipFacade::class,
-
+        'PDF' => Barryvdh\DomPDF\Facade::class,
     ],
     'debug_blacklist' => [
         '_ENV' => [
