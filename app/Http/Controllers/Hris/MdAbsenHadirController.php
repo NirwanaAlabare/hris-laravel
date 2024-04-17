@@ -35,7 +35,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Carbon\Carbon;
 use \avadim\FastExcelLaravel\Excel as FastExcel;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 
 /**
  * Class MdAbsenHadirController
@@ -53,39 +53,41 @@ class MdAbsenHadirController extends AdminBaseController
     public function export_pdf(){
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '400000M');
-        $tanggal = request()->tanggal_awal;
-        $tanggal_array=explode(" s/d ",$tanggal);
-        $tanggal_awal = $tanggal_array[0];
-        $tanggal_akhir = $tanggal_array[1];
-        $tanggal_awal_absen = Carbon::parse($tanggal_awal)->translatedFormat('d F Y');
-        $tanggal_akhir_absen = Carbon::parse($tanggal_akhir)->translatedFormat('d F Y');
-        $selectedEnrollId=request()->employee;
-        $inEnrollId='';
-        if($selectedEnrollId){
-            $enroll_id = implode(", ", $selectedEnrollId);
-            $allEnroll_id= '('.$enroll_id.')';
-            $inEnrollId = ' AND enroll_id IN '.$allEnroll_id.'';
-        }
-        $selectedDepartment=request()->department;
-        $inDepartment='';
-        if($selectedDepartment){
-            $inDepartment = ' AND department_name = "'.$selectedDepartment.'"';
-        }
-        $selectedSection=request()->section;
-        $inSection='';
-        if($selectedSection){
-            $inSection = ' AND sub_dept_name = "'.$selectedSection.'"';
-        }
-        $selectedStatusStaff=request()->status_staff;
-        $inStatusStaff='';
-        if($selectedStatusStaff){
-            $inStatusStaff = ' AND status_staff = "'.$selectedStatusStaff.'"';
-        }
-        $selectedFactory=request()->factory;
-        $inFactory='';
-        if($selectedFactory){
-            $inFactory = ' AND site_nirwana_id = "'.$selectedFactory.'"';
-        }
+        // $tanggal = request()->tanggal_awal;
+        // $tanggal_array=explode(" s/d ",$tanggal);
+        // $tanggal_awal = $tanggal_array[0];
+        // $tanggal_akhir = $tanggal_array[1];
+        // $tanggal_awal_absen = Carbon::parse($tanggal_awal)->translatedFormat('d F Y');
+        // $tanggal_akhir_absen = Carbon::parse($tanggal_akhir)->translatedFormat('d F Y');
+        // $selectedEnrollId=request()->employee;
+        // $inEnrollId='';
+        // if($selectedEnrollId){
+        //     $enroll_id = implode(", ", $selectedEnrollId);
+        //     $allEnroll_id= '('.$enroll_id.')';
+            $inEnrollId = ' AND enroll_id IN (5321)';
+        // }
+        // $selectedDepartment=request()->department;
+        // $inDepartment='';
+        // if($selectedDepartment){
+        //     $inDepartment = ' AND department_name = "'.$selectedDepartment.'"';
+        // }
+        // $selectedSection=request()->section;
+        // $inSection='';
+        // if($selectedSection){
+        //     $inSection = ' AND sub_dept_name = "'.$selectedSection.'"';
+        // }
+        // $selectedStatusStaff=request()->status_staff;
+        // $inStatusStaff='';
+        // if($selectedStatusStaff){
+        //     $inStatusStaff = ' AND status_staff = "'.$selectedStatusStaff.'"';
+        // }
+        // $selectedFactory=request()->factory;
+        // $inFactory='';
+        // if($selectedFactory){
+        //     $inFactory = ' AND site_nirwana_id = "'.$selectedFactory.'"';
+        // }
+        $tanggal_awal='2024-03-26';
+        $tanggal_akhir='2024-04-25';
         $employee=EmployeeAtribut::where(function ($query)use($tanggal_awal,$tanggal_akhir){
             $query->where(function ($querys)use($tanggal_akhir){
                 $querys->where('status_aktif','AKTIF')
@@ -97,10 +99,19 @@ class MdAbsenHadirController extends AdminBaseController
         }])->with(['rekap_lembur'=>function($query)use($tanggal_awal,$tanggal_akhir){
             $query->where('tanggal_berjalan','>=',$tanggal_awal)
             ->where('tanggal_berjalan','<=',$tanggal_akhir);
-        }])->whereRaw('status_aktif is not null '.$inEnrollId.''.$inDepartment.''.$inSection.''.$inStatusStaff.''.$inFactory.'')->get();
-        $html2pdf=new Html2Pdf('P', 'A4', 'en', true, 'UTF-8', array(8, 14, 1, 1));
-        $html2pdf->writeHTML(view('hris.Laporan.rincian_kehadiran_karyawan',compact('tanggal_awal_absen','tanggal_akhir_absen','employee')));
-        $html2pdf->output('it_asset_.pdf');
+        }])->whereRaw('status_aktif is not null '.$inEnrollId.'')->get();
+        $customPaper = array(0,0,56.70,28.38);
+        $pdf = PDF::loadView('hris.Laporan.rincian_kehadiran_karyawan')->setPaper($customPaper);
+        $path = public_path();
+        $fileName = '-Numbering.pdf';
+        $pdf->save($path . '/' . $fileName);
+        $generatedFilePath = public_path('format_import/'.$fileName);
+        ob_end_clean();
+        return response()->download($generatedFilePath);
+
+        // $html2pdf=new Html2Pdf('P', 'A4', 'en', true, 'UTF-8', array(8, 14, 1, 1));
+        // $html2pdf->writeHTML(view('hris.Laporan.rincian_kehadiran_karyawan',compact('tanggal_awal_absen','tanggal_akhir_absen','employee')));
+        // $html2pdf->output('it_asset_.pdf');
         // return view('hris.Laporan.rincian_kehadiran_karyawan',compact('employee'));
     }
     public function import_datahadir(Request $request){

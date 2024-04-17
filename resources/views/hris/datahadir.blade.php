@@ -781,17 +781,6 @@
                 },
                 xhrFields: { responseType : 'blob' },
                 success: function(res){
-                    var d = new Date(),
-                        month = '' + (d.getMonth() + 1),
-                        day = '' + d.getDate(),
-                        year = d.getFullYear();
-
-                    if (month.length < 2) 
-                        month = '0' + month;
-                    if (day.length < 2) 
-                        day = '0' + day;
-
-                    var full_date= [year, month, day].join('-');
                     var blob = new Blob([res], {type: 'application/pdf'});
                     var link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
