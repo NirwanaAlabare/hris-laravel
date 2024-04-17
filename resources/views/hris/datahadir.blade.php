@@ -152,7 +152,7 @@
                                 <label class="form-label">PILIH KARYAWAN  : </label>
                                 <div class="form-group">
                                     <span class="input-group">
-                                        <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID" style="width: 699.238px;">
+                                        <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID" style="width: 699.238px;" required>
                                             @foreach ($selectemployee as $r_empl)
                                                 <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
                                             @endforeach
@@ -222,7 +222,7 @@
                         <div class="col-md-8">
                             <div class="form-group">
                                 <label class="form-label">CARI DATA : </label>
-                                <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID" required>
+                                <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID">
                                     @foreach ($selectemployee as $r_empl)
                                         <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
                                     @endforeach
