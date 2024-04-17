@@ -811,6 +811,9 @@
             });
         });
         $('#presenceImportButton').click(function(e){
+            $('#presenceImportButton').addClass("btn-loading");
+            $("#presenceImportButton").html('Please wait...');
+            $("#presenceImportButton").attr("disabled", true);
             var formData = new FormData();
             var excelFile=document.getElementById("excel_filess");
             var myFile=excelFile.files[0];
@@ -822,6 +825,7 @@
                 processData: false,
                 data: formData,
                 success:function(data){
+                    console.log(data);
                     swal({
                         title: "Update Absensi",
                         text: "Data Kehadiran berhasil di update",
@@ -833,6 +837,9 @@
                     $('#excel_filess').val('');
                     $('#length').text('');
                     $("#import_data_kehadiran").modal('hide');
+                    $('#presenceImportButton').removeClass("btn-loading");
+                    $("#presenceImportButton").html('<i class="fa fa-upload" aria-hidden="true"></i> IMPORT');
+                    $("#presenceImportButton").attr("disabled", false);
                 }
             });
         });
