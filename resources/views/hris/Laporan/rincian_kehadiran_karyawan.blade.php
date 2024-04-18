@@ -1,6 +1,12 @@
 
+<?php $no=0; ?>
 @foreach ($employee as $value)
+<?php $no++; ?>
+@if($no!=count($employee))
 <div class="wrapper-page">
+@else
+<div>
+@endif
 	<table>
 		<tr>
 			<td style="font-weight: bold">PT. NIRWANA ALABARE GARMENT</td>
@@ -37,9 +43,9 @@
 	</table>
 	<table border="1" class="textkecilbanget">
 		<tr>
-			<td width="46">&nbsp;Tanggal</td>
+			<td width="74">&nbsp;Tanggal</td>
 			<td width="34">&nbsp;Hari</td>
-			<td width="68">&nbsp;Keterangan</td>
+			<td width="56">&nbsp;Keterangan</td>
 			<td width="45">&nbsp;Jam masuk</td>
 			<td width="45">&nbsp;Jam keluar</td>
 			<td width="17">&nbsp;DT</td>
@@ -48,10 +54,11 @@
 			<td width="38">&nbsp;Lembur 2</td>
 			<td width="38">&nbsp;Lembur 3</td>
 			<td width="38">&nbsp;Lembur 4</td>
-			<td width="70">&nbsp;Total jam lembur</td>
+			<td width="55">&nbsp;Total Lembur</td>
 		</tr>
 		@foreach ($value->absensi as $val)
 		<?php 
+		$tanggal_berjalan=Carbon\Carbon::parse($val->tanggal_berjalan)->translatedFormat('d F Y');
 		$absen_masuk=substr($val->absen_masuk_kerja,0,5);
 		$absen_pulang=substr($val->absen_pulang_kerja,0,5);
 		$jumlah_menit_absen_dt='';
@@ -84,18 +91,18 @@
 		}
 		?>
 		<tr>
-			<td>&nbsp;{{$val->tanggal_berjalan}}</td>
+			<td>&nbsp;{{$tanggal_berjalan}}</td>
 			<td>&nbsp;{{$val->nama_hari}}</td>
 			<td>&nbsp;{{$val->status_absen}}</td>
-			<td>&nbsp;{{$absen_masuk}}</td>
-			<td>&nbsp;{{$absen_pulang}}</td>
-			<td>&nbsp;{{$jumlah_menit_absen_dt}}</td>
-			<td>&nbsp;{{$jumlah_menit_absen_pc}}</td>
-			<td>&nbsp;{{$lembur1}}</td>
-			<td>&nbsp;{{$lembur2}}</td>
-			<td>&nbsp;{{$lembur3}}</td>
-			<td>&nbsp;{{$lembur4}}</td>
-			<td>&nbsp;{{$total_lembur_1234}}</td>
+			<td align="center">{{$absen_masuk}}</td>
+			<td align="center">{{$absen_pulang}}</td>
+			<td align="center">{{$jumlah_menit_absen_dt}}</td>
+			<td align="center">{{$jumlah_menit_absen_pc}}</td>
+			<td align="center">{{$lembur1}}</td>
+			<td align="center">{{$lembur2}}</td>
+			<td align="center">{{$lembur3}}</td>
+			<td align="center">{{$lembur4}}</td>
+			<td align="center">{{$total_lembur_1234}}</td>
 		</tr>
 		@endforeach
 	</table>
