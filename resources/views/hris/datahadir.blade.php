@@ -758,9 +758,6 @@
             fill_the_table();
         });
         $('#btn-exportpdf').click(function(e){
-            $('#btn-exportpdf').addClass("btn-loading");
-            $("#btn-exportpdf").html('Please wait...');
-            $("#btn-exportpdf").attr("disabled", true);
             var employee = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
             var department = $('#selectDepartment').val();
             var section = $('#selectBagian').val();
@@ -768,36 +765,8 @@
             var siteNirwana = $('#siteNirwana').val();
             var tanggal_awal=$('#daterange1').val();
             var factory=$('#siteNirwana').val();
-            $.ajax({
-                url: "{{route('hris.mdabsenhadir.export_pdf')}}",
-                type:"POST",
-                data : {
-                    tanggal_awal: tanggal_awal,
-                    employee: employee,
-                    department: department,
-                    section: section,
-                    status_staff: status_staff,
-                    factory: factory
-                },
-                xhrFields: { responseType : 'blob' },
-                success: function(res){
-                    var blob = new Blob([res], {type: 'application/pdf'});
-                    var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = "PT.NAG ATTENDANCE DETAIL_"+tanggal_awal+"_"+Math.ceil(Math.random()*1000000)+".pdf";
-                    link.click();
-                    swal("", "Export PDF berhasil", "success");
-                    $('#btn-exportpdf').removeClass("btn-loading");
-                    $("#btn-exportpdf").html('<i class="fa fa-file-pdf-o" aria-hidden="true"></i> View PDF');
-                    $("#btn-exportpdf").attr("disabled", false);
-                },
-                error: function(res){
-                    swal("", "Export PDF gagal", "error");
-                    $('#btn-exportpdf').removeClass("btn-loading");
-                    $("#btn-exportpdf").attr("disabled", false);
-                    $("#btn-exportpdf").html('<i class="fa fa-file-pdf-o" aria-hidden="true"></i> View PDF');
-                }
-            });
+            var url = 'export_pdf?employee='+employee+'&department='+department+'&section='+section+'&status_staff='+status_staff+'&siteNirwana='+siteNirwana+'&tanggal_awal='+tanggal_awal+'&factory='+factory;
+            window.open(url, '_blank');
         });
         $('#presenceImportButton').click(function(e){
             $('#presenceImportButton').addClass("btn-loading");
