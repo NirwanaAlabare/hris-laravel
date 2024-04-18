@@ -100,7 +100,32 @@ class MdAbsenHadirController extends AdminBaseController
             $query->where('tanggal_berjalan','>=',$tanggal_awal)
             ->where('tanggal_berjalan','<=',$tanggal_akhir);
         }])->whereRaw('status_aktif is not null '.$inEnrollId.''.$inDepartment.''.$inSection.''.$inStatusStaff.''.$inFactory)->get();
-        $pdf = PDF::loadView('hris.Laporan.rincian_kehadiran_karyawan',["tanggal_awal_absen" => $tanggal_awal_absen, "tanggal_akhir_absen" => $tanggal_akhir_absen, "employee" => $employee])->stream();
+        $jumlah_absen=[];
+        $ijin_bayar=RefAbsenIjin::where('kode_ijin_payroll','IBY')->get()->toArray();
+        $IBY=array_column($ijin_bayar,'kode_absen_ijin');
+        $null_absen='';
+        $ln_absen='LN';
+        array_push($IBY,$null_absen,$ln_absen);
+        $tidak_bayar=RefAbsenIjin::where('kode_ijin_payroll','ITB')->where('kode_absen_ijin','!=','M')->where('kode_absen_ijin','!=','IKS')->get()->toArray();
+        $ITB=array_column($tidak_bayar,'kode_absen_ijin');
+        $tl_absen='TL';
+        $m_absen='M';
+        array_push($ITB,$tl_absen,$m_absen);
+        foreach($employee as $emp){
+            $jumlah_absen[]=[
+                'enroll_id'=>$emp->enroll_id,
+                'employee_name'=>$emp->employee_name,
+                'hari_kerja'=>$emp->absensi->whereIn('status_absen',$IBY)->whereNotIn('kode_hari',[5,6])->count(),
+                'hari_absen'=>$emp->absensi->whereIn('status_absen',$ITB)->whereNotIn('kode_hari',[5,6])->count()
+            ];
+        }
+        if(str_contains($selectedEnrollId, ',') || $selectedEnrollId==null){
+            $fileName=substr($tanggal_akhir,2,2).substr($tanggal_akhir,5,2).' TNA DETAIL';
+        }else{
+            $employee_name=EmployeeAtribut::where('enroll_id',$selectedEnrollId)->pluck('employee_name')[0];
+            $fileName=substr($tanggal_akhir,2,2).substr($tanggal_akhir,5,2).' '.$selectedEnrollId.' '.$employee_name;
+        }
+        $pdf = PDF::loadView('hris.Laporan.rincian_kehadiran_karyawan',["tanggal_awal_absen" => $tanggal_awal_absen, "tanggal_akhir_absen" => $tanggal_akhir_absen, "employee" => $employee, "jumlah_absen" => $jumlah_absen])->stream($fileName.'.pdf',array('Attachment'=>0));
         return $pdf;
     }
     public function import_datahadir(Request $request){
