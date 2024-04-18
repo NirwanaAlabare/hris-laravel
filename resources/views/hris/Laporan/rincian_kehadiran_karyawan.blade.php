@@ -1,6 +1,6 @@
 
 <?php $no=0; ?>
-@foreach ($employee as $value)
+@foreach ($employee as $key=> $value)
 <?php $no++; ?>
 @if($no!=count($employee))
 <div class="wrapper-page">
@@ -29,7 +29,7 @@
 			<td width="90">NIP</td>
 			<td width="160">: {{$value->nik}}</td>
 			<td width="90">JABATAN</td>
-			<td>: {{$value->status_staff}}</td>
+			<td>: {{$value->status_jabatan}}</td>
 		</tr>
 		<tr>
 			<td>NAMA KARYAWAN</td>
@@ -70,19 +70,19 @@
 			$jumlah_menit_absen_pc=$val->jumlah_menit_absen_pc;
 		}
 		$lembur1='';
-		if(isset($val->rekap_lembur->where('tanggal_berjalan',$val['tanggal_berjalan'])->pluck('lembur_1')[0])){
+		if(isset($val->rekap_lembur->where('tanggal_berjalan',$val['tanggal_berjalan'])->pluck('lembur_1')[0]) && $val->rekap_lembur->where('tanggal_berjalan',$val['tanggal_berjalan'])->pluck('lembur_1')[0]!=0){
 			$lembur1=$val->rekap_lembur->where('tanggal_berjalan',$val['tanggal_berjalan'])->pluck('lembur_1')[0];
 		}
 		$lembur2='';
-		if(isset($val->rekap_lembur->where('tanggal_berjalan',$val['tanggal_berjalan'])->pluck('lembur_2')[0])){
+		if(isset($val->rekap_lembur->where('tanggal_berjalan',$val['tanggal_berjalan'])->pluck('lembur_2')[0]) && $val->rekap_lembur->where('tanggal_berjalan',$val['tanggal_berjalan'])->pluck('lembur_2')[0]!=0){
 			$lembur2=$val->rekap_lembur->where('tanggal_berjalan',$val['tanggal_berjalan'])->pluck('lembur_2')[0];
 		}
 		$lembur3='';
-		if(isset($val->rekap_lembur->where('tanggal_berjalan',$val['tanggal_berjalan'])->pluck('lembur_3')[0])){
+		if(isset($val->rekap_lembur->where('tanggal_berjalan',$val['tanggal_berjalan'])->pluck('lembur_3')[0]) && $val->rekap_lembur->where('tanggal_berjalan',$val['tanggal_berjalan'])->pluck('lembur_3')[0]!=0){
 			$lembur3=$val->rekap_lembur->where('tanggal_berjalan',$val['tanggal_berjalan'])->pluck('lembur_3')[0];
 		}
 		$lembur4='';
-		if(isset($val->rekap_lembur->where('tanggal_berjalan',$val['tanggal_berjalan'])->pluck('lembur_4')[0])){
+		if(isset($val->rekap_lembur->where('tanggal_berjalan',$val['tanggal_berjalan'])->pluck('lembur_4')[0]) && $val->rekap_lembur->where('tanggal_berjalan',$val['tanggal_berjalan'])->pluck('lembur_4')[0]!=0){
 			$lembur4=$val->rekap_lembur->where('tanggal_berjalan',$val['tanggal_berjalan'])->pluck('lembur_4')[0];
 		}
 		$total_lembur_1234='';
@@ -105,6 +105,21 @@
 			<td align="center">{{$total_lembur_1234}}</td>
 		</tr>
 		@endforeach
+	</table>
+	<table>
+		<tr>
+			<td style="height: 10px"></td>
+		</tr>
+	</table>
+	<table>
+		<tr>
+			<td>Hari kerja</td>
+			<td>{{$jumlah_absen[$key]['hari_kerja']}}</td>
+		</tr>
+		<tr>
+			<td>Absen</td>
+			<td>{{$jumlah_absen[$key]['hari_absen']}}</td>
+		</tr>
 	</table>
 </div>
 @endforeach
