@@ -111,9 +111,9 @@
 			<td style="height: 10px"></td>
 		</tr>
 	</table>
-	<table>
+	<table class="textkecil">
 		<tr>
-			<td>Hari kerja</td>
+			<td width="120">Hari kerja</td>
 			<td>{{$jumlah_absen[$key]['hari_kerja']}}</td>
 		</tr>
 		<tr>
