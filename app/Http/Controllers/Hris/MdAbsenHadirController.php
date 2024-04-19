@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use Datatables;
 use App\Exports\DepartmentAllExport;
+use App\Exports\rincianKehadiranKaryawan;
 use App\Exports\MasterDataAbsenKehadiranExport;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -128,6 +129,80 @@ class MdAbsenHadirController extends AdminBaseController
         }
         $pdf = PDF::loadView('hris.Laporan.rincian_kehadiran_karyawan',["tanggal_awal_absen" => $tanggal_awal_absen, "tanggal_akhir_absen" => $tanggal_akhir_absen, "employee" => $employee, "jumlah_absen" => $jumlah_absen])->stream($fileName.'.pdf',array('Attachment'=>0));
         return $pdf;
+    }
+    public function view_excel(){
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '1024M');
+        $tanggal = request()->tanggal_awal;
+        $tanggal_array=explode(" s/d ",$tanggal);
+        $tanggal_awal = $tanggal_array[0];
+        $tanggal_akhir = $tanggal_array[1];
+        $tanggal_awal_absen = Carbon::parse($tanggal_awal)->translatedFormat('d F Y');
+        $tanggal_akhir_absen = Carbon::parse($tanggal_akhir)->translatedFormat('d F Y');
+        $selectedEnrollId=request()->employee;
+        $selectedFactory=request()->factory;
+        $inEnrollId='';
+        if($selectedEnrollId){
+            $enroll_id = implode(", ", $selectedEnrollId);
+            $allEnroll_id= '('.$enroll_id.')';
+            $inEnrollId = ' AND enroll_id IN '.$allEnroll_id.'';
+        }
+        $selectedDepartment=request()->department;
+        $inDepartment='';
+        if($selectedDepartment){
+            $inDepartment = ' AND department_name = "'.$selectedDepartment.'"';
+        }
+        $selectedSection=request()->section;
+        $inSection='';
+        if($selectedSection){
+            $inSection = ' AND sub_dept_name = "'.$selectedSection.'"';
+        }
+        $selectedStatusStaff=request()->status_staff;
+        $inStatusStaff='';
+        if($selectedStatusStaff){
+            $inStatusStaff = ' AND status_staff = "'.$selectedStatusStaff.'"';
+        }
+        $selectedFactory=request()->factory;
+        $inFactory='';
+        if($selectedFactory){
+            $inFactory = ' AND site_nirwana_id = "'.$selectedFactory.'"';
+        }
+        $tanggal_awal_absen = Carbon::parse($tanggal_awal)->translatedFormat('d F Y');
+        $tanggal_akhir_absen = Carbon::parse($tanggal_akhir)->translatedFormat('d F Y');
+        $employee=EmployeeAtribut::where(function ($query)use($tanggal_awal,$tanggal_akhir){
+            $query->where(function ($querys)use($tanggal_akhir){
+                $querys->where('status_aktif','AKTIF')
+                ->where('join_date','<=',$tanggal_akhir);
+            })->orWhere('tanggal_resign','>=',$tanggal_awal);
+        })->with(['absensi' => function ($query) use ($tanggal_awal,$tanggal_akhir) {
+            $query->where('tanggal_berjalan', '>=', $tanggal_awal)
+            ->where('tanggal_berjalan','<=',$tanggal_akhir);
+        }])->with(['rekap_lembur'=>function($query)use($tanggal_awal,$tanggal_akhir){
+            $query->where('tanggal_berjalan','>=',$tanggal_awal)
+            ->where('tanggal_berjalan','<=',$tanggal_akhir);
+        }])->whereRaw('status_aktif is not null '.$inEnrollId.''.$inDepartment.''.$inSection.''.$inStatusStaff.''.$inFactory)->get();
+        $jumlah_absen=[];
+        $ijin_bayar=RefAbsenIjin::where('kode_ijin_payroll','IBY')->get()->toArray();
+        $IBY=array_column($ijin_bayar,'kode_absen_ijin');
+        $null_absen='';
+        $ln_absen='LN';
+        array_push($IBY,$null_absen,$ln_absen);
+        $tidak_bayar=RefAbsenIjin::where('kode_ijin_payroll','ITB')->where('kode_absen_ijin','!=','M')->where('kode_absen_ijin','!=','IKS')->get()->toArray();
+        $ITB=array_column($tidak_bayar,'kode_absen_ijin');
+        $tl_absen='TL';
+        $m_absen='M';
+        array_push($ITB,$tl_absen,$m_absen);
+        foreach($employee as $emp){
+            $jumlah_absen[]=[
+                'enroll_id'=>$emp->enroll_id,
+                'employee_name'=>$emp->employee_name,
+                'hari_kerja'=>$emp->absensi->whereIn('status_absen',$IBY)->whereNotIn('kode_hari',[5,6])->count(),
+                'hari_absen'=>$emp->absensi->whereIn('status_absen',$ITB)->whereNotIn('kode_hari',[5,6])->count()
+            ];
+        }
+        $fileName = 'DataRincianKehadiran.xlsx';
+        // return view('hris.Laporan.rincian_kehadiran_karyawan',compact("tanggal_awal_absen", "tanggal_akhir_absen", "employee", "jumlah_absen"));
+        return (new rincianKehadiranKaryawan)->exportParams($tanggal_awal_absen,$tanggal_akhir_absen,$employee,$jumlah_absen)->download($fileName);
     }
     public function import_datahadir(Request $request){
         $data=Excel::toArray([],$request->file('excel_file'));
@@ -1710,7 +1785,6 @@ class MdAbsenHadirController extends AdminBaseController
                 tanggal_berjalan = '" . $tanggal_mesin_absensi . "'
             ")
             ->count();
-
         if($countData > 0 ) {
             $checkinout =  DB::connection('sqlsrv2')->select(
             DB::raw("
@@ -1752,7 +1826,7 @@ class MdAbsenHadirController extends AdminBaseController
                 foreach($kehadiran as $val) {
                     $countEditedData=DataKehadiranInOutEdited::where('tanggal_absen','=', $tanggal_mesin_absensi)->where('enroll_id','=', $val["enroll_id"])->count();
                     $count=LogDataGagalAbsen::where('tanggal_absen',$tanggal_mesin_absensi)->where('enroll_id',$val["enroll_id"])->count();
-                    if($countEditedData<1 || $count<1){
+                    if($countEditedData<1 && $count<1){
                         if($val["operator"]=='system' || $val["operator"]=='system_injek_lebaran') {
                             if($val["status_absen"] == "TL" || $val["status_absen"] == "M" || $val["status_absen"] == "IKS" || $val["status_absen"] == "" || $val["status_absen"] == null || !$val["status_absen"] || $val["status_absen"] == "LN" || $val["status_absen"] == "LP" || $val["status_absen"] == "CT" || $val["status_absen"] == "L") {
                                 if($val["status_absen"] == "LN"){
@@ -1803,7 +1877,7 @@ class MdAbsenHadirController extends AdminBaseController
                 $countEditedData1=DataKehadiranInOutEdited::where('tanggal_absen','=', $tanggal_mesin_absensi)->where('enroll_id','=', $v->enroll_id)->count();
                 $count1=LogDataGagalAbsen::where('tanggal_absen',$tanggal_mesin_absensi)->where('enroll_id','=', $v->enroll_id)->count();
                 
-                if($countEditedData1<1 || $count1<1){
+                if($countEditedData1<1 && $count1<1){
                     $jadwal_in=$v->mulai_jam_kerja;
                     $jadwal_out=$v->akhir_jam_kerja;
 
@@ -1914,7 +1988,7 @@ class MdAbsenHadirController extends AdminBaseController
                 $countEditedData2=DataKehadiranInOutEdited::where('tanggal_absen','=', $tanggal_mesin_absensi)->where('enroll_id','=', $value['enroll_id'])->count();
                 $count2=LogDataGagalAbsen::where('tanggal_absen',$tanggal_mesin_absensi)->where('enroll_id','=', $value['enroll_id'])->count();
                 
-                if($countEditedData2<1 || $count2<1){
+                if($countEditedData2<1 && $count2<1){
                     MasterDataAbsenKehadiran::where('tanggal_berjalan','=', $tanggal_mesin_absensi)
                     ->where('enroll_id','=', $value["enroll_id"])
                     ->update([
@@ -1940,7 +2014,7 @@ class MdAbsenHadirController extends AdminBaseController
                 $countEditedData3=DataKehadiranInOutEdited::where('tanggal_absen','=', $tanggal_mesin_absensi)->where('enroll_id','=', $value['enroll_id'])->count();
                 $count3=LogDataGagalAbsen::where('tanggal_absen',$tanggal_mesin_absensi)->where('enroll_id','=', $value['enroll_id'])->count();
                 
-                if($countEditedData3<1 || $count3<1){
+                if($countEditedData3<1 && $count3<1){
                     MasterDataAbsenKehadiran::where('tanggal_berjalan','=', $tanggal_mesin_absensi)
                     ->where('enroll_id','=', $value["enroll_id"])
                     ->update([
@@ -1974,7 +2048,7 @@ class MdAbsenHadirController extends AdminBaseController
                 $countEditedData4=DataKehadiranInOutEdited::where('tanggal_absen','=', $tanggal_mesin_absensi)->where('enroll_id','=', $value->enroll_id)->count();
                 $count4=LogDataGagalAbsen::where('tanggal_absen',$tanggal_mesin_absensi)->where('enroll_id','=', $value->enroll_id)->count();
                 
-                if($countEditedData4<1 || $count4<1){
+                if($countEditedData4<1 && $count4<1){
                     $checkinoutAttCount = CheckInOut::whereRaw("
                         tanggal_absen = '" . $tanggal_mesin_absensi . "'
                         AND enroll_id = '" . $value->enroll_id . "'
@@ -2635,7 +2709,7 @@ class MdAbsenHadirController extends AdminBaseController
             foreach ($kehadiran as $key4 => $value4) {
                 $countEditedData=DataKehadiranInOutEdited::where('tanggal_absen','=', $value4->tanggal_berjalan)->where('enroll_id','=', $value4->enroll_id)->count();
                 $count=LogDataGagalAbsen::where('tanggal_absen', $value4->tanggal_berjalan)->where('enroll_id',$value4->enroll_id)->count();
-                if($countEditedData<1 || $count<1){
+                if($countEditedData<1 && $count<1){
                 // if(($value4->nomor_form_lembur==null) &&(($value4->operator=='system') || ($value4->operator=='system_lintashari') || ($value4->operator=='system_injek_lebaran') )) {
                     if($value4->status_absen == "TL" || $value4->status_absen == "M" || $value4->status_absen == "IKS" || $value4->status_absen == "" || !$value4->status_absen|| $value4->status_absen == "LN" || $value4->status_absen == "LP" || $value4->status_absen == "CT" || $value4->status_absen == "L") {
 
@@ -2725,7 +2799,7 @@ class MdAbsenHadirController extends AdminBaseController
             foreach ($kehadiran2 as $k => $v) {
                 $countEditedData2=DataKehadiranInOutEdited::where('tanggal_absen','=',  $v->tanggal_berjalan)->where('enroll_id','=', $v->enroll_id)->count();
                 $count2=LogDataGagalAbsen::where('tanggal_absen', $v->tanggal_berjalan)->where('enroll_id',$v->enroll_id)->count();
-                if($countEditedData<1 || $count<1){
+                if($countEditedData<1 && $count<1){
                     $jadwal_in=$v->mulai_jam_kerja;
                     $jadwal_out=$v->akhir_jam_kerja;
 
