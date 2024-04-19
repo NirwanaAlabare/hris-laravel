@@ -202,7 +202,9 @@ class MdAbsenHadirController extends AdminBaseController
         }
         $fileName = 'DataRincianKehadiran.xlsx';
         // return view('hris.Laporan.rincian_kehadiran_karyawan',compact("tanggal_awal_absen", "tanggal_akhir_absen", "employee", "jumlah_absen"));
-        return (new rincianKehadiranKaryawan)->exportParams($tanggal_awal_absen,$tanggal_akhir_absen,$employee,$jumlah_absen)->download($fileName);
+        $response= Excel::download(new rincianKehadiranKaryawan($tanggal_awal_absen,$tanggal_akhir_absen,$employee,$jumlah_absen), $fileName, \Maatwebsite\Excel\Excel::XLSX);
+        ob_end_clean();
+        return $response;
     }
     public function import_datahadir(Request $request){
         $data=Excel::toArray([],$request->file('excel_file'));

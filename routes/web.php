@@ -87,6 +87,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('mdabsenhadir/ajax_getdashkehadiran',['as'=>'hris.mdabsenhadir.ajax_getdashkehadiran','uses'=>'MdAbsenHadirController@ajax_getdashkehadiran']);
     Route::post('mdabsenhadir/ajax_getTanggalKehadiranSekarang',['as'=>'hris.mdabsenhadir.ajax_getTanggalKehadiranSekarang','uses'=>'MdAbsenHadirController@ajax_getTanggalKehadiranSekarang']);
     Route::get('mdabsenhadir/export_pdf',['as'=>'hris.mdabsenhadir.export_pdf','uses'=>'MdAbsenHadirController@export_pdf']);
+    Route::post('mdabsenhadir/view_excel',['as'=>'hris.mdabsenhadir.view_excel','uses'=>'MdAbsenHadirController@view_excel']);
 
     // DATA GAGAL ABSEN
     Route::get('gagalabsen/index/',['as'=>'hris.gagalabsen.index','uses'=> 'GagalAbsenController@index']);
@@ -123,6 +124,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('datalembur/updatelemburall',['as'=>'hris.datalembur.updatelemburall','uses'=>'DataLemburController@updatelemburall']);
     Route::post('datalembur/tambahkaryawan',['as'=>'hris.datalembur.tambahkaryawan','uses'=>'DataLemburController@tambahkaryawan']);
     Route::post('datalembur/removenospl',['as'=>'hris.datalembur.removenospl','uses'=>'DataLemburController@removenospl']);
+    Route::post('datalembur/getnomorform',['as'=>'hris.datalembur.getnomorform','uses'=>'DataLemburController@getnomorform']);
+    Route::post('datalembur/getkaryawanlembur',['as'=>'hris.datalembur.getkaryawanlembur','uses'=>'DataLemburController@getkaryawanlembur']);
 
     // DATA PAYROLL
     Route::get('payroll/lembur/',['as'=>'hris.payroll.lembur','uses'=> 'PayrollController@lembur']);
