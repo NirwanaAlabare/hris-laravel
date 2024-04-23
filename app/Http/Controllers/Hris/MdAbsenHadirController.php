@@ -97,7 +97,7 @@ class MdAbsenHadirController extends AdminBaseController
             })->orWhere('tanggal_resign','>=',$tanggal_awal);
         })->with(['absensi' => function ($query) use ($tanggal_awal,$tanggal_akhir) {
             $query->where('tanggal_berjalan', '>=', $tanggal_awal)
-            ->where('tanggal_berjalan','<=',$tanggal_akhir);
+            ->where('tanggal_berjalan','<=',$tanggal_akhir)->orderBy('tanggal_berjalan');
         }])->with(['rekap_lembur'=>function($query)use($tanggal_awal,$tanggal_akhir){
             $query->where('tanggal_berjalan','>=',$tanggal_awal)
             ->where('tanggal_berjalan','<=',$tanggal_akhir);
