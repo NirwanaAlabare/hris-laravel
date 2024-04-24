@@ -33,7 +33,7 @@ use Illuminate\Support\Facades\DB;
 
 use Auth;
 
-class DataAbsenPerijinanExport implements FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle
+class DataAbsenPerijinanExport implements WithColumnFormatting, FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle
 {
     use Exportable;
 
@@ -93,7 +93,6 @@ class DataAbsenPerijinanExport implements FromQuery, WithMapping, ShouldAutoSize
     {
         return 'A7';
     }
-
     public function map($Data): array
     {
         $tanggal_perizinan = $Data->tanggal_berjalan;
@@ -109,15 +108,15 @@ class DataAbsenPerijinanExport implements FromQuery, WithMapping, ShouldAutoSize
         $nama_ijin_payroll = $Data->nama_ijin_payroll;
         $nama_absen_ijin = $Data->nama_absen_ijin;
         $status_absen = $Data->status_absen;
-        $tanggal_mulai_ijin = date('Y-m-d', strtotime($Data->tanggal_mulai_ijin));
+        $tanggal_mulai_ijin = $Data->tanggal_mulai_ijin;
         $tanggal_akhir_ijin = $Data->tanggal_akhir_ijin;
 
         return [
             $nomor_form_perizinan,
             $tanggal_perizinan,
             $nama_hari,
-            $tanggal_mulai_ijin,
-            $tanggal_akhir_ijin,
+            Date::stringToExcel($tanggal_mulai_ijin),
+            Date::stringToExcel($tanggal_akhir_ijin),
             $nik,
             $enroll_id,
             $employee_name,
@@ -130,7 +129,13 @@ class DataAbsenPerijinanExport implements FromQuery, WithMapping, ShouldAutoSize
             $absen_alasan,
         ];
     }
-
+    public function columnFormats(): array
+    {
+        return [
+            'D' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+        ];
+    }
     public function title(): string
     {
         return 'DATAPERIZINAN';
