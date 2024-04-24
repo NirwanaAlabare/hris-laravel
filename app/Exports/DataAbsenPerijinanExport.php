@@ -109,7 +109,7 @@ class DataAbsenPerijinanExport implements FromQuery, WithMapping, ShouldAutoSize
         $nama_ijin_payroll = $Data->nama_ijin_payroll;
         $nama_absen_ijin = $Data->nama_absen_ijin;
         $status_absen = $Data->status_absen;
-        $tanggal_mulai_ijin = $Data->tanggal_mulai_ijin;
+        $tanggal_mulai_ijin = date('Y-m-d', strtotime($Data->tanggal_mulai_ijin));
         $tanggal_akhir_ijin = $Data->tanggal_akhir_ijin;
 
         return [
