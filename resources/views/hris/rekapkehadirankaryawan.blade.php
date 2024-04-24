@@ -536,7 +536,7 @@
                     var blob = new Blob([data]);
                     var link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
-                    link.download = "Summary_report_"+full_date+'_'+Math.random()*1000+".xlsx";
+                    link.download = "Summary_report_"+full_date+'_'+Math.ceil(Math.random()*1000000)+".xlsx";
                     link.click();
                     notif({
                         msg: "Summary report export telah selesai",
