@@ -2805,7 +2805,7 @@ class MdAbsenHadirController extends AdminBaseController
                     if( $absen_in!=null && $absen_in>$jadwal_in ){
                         $total_DT = $DT->i +($DT->h*60);
                         if($v->status_absen='LN'){
-                            $total_DT=0;
+                            $total_DT=$total_DT;
                         }
                     }else{
                         $total_DT=0;
