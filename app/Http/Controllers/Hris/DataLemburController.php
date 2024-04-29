@@ -9,6 +9,8 @@ use App\Models\EmployeeAtribut;
 use App\Models\DepartmentAll;
 use App\Models\WorkTimeTable;
 use App\Models\GradingSalary;
+use App\Models\MutKaryawanInputFormLembur;
+use App\Models\MutKaryawanInputFormLemburDet;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -92,6 +94,99 @@ class DataLemburController extends AdminBaseController
     //     return $query;
     // }
 
+    public function getnomorform()
+    {
+        $tanggal_lembur = request()->tanggal_lembur;
+        $query =  DB::select("
+        SELECT count(mut_karyawan_input_form_lembur_det.no_form) as jumlah_karyawan,mut_karyawan_input_form_lembur.* FROM mut_karyawan_input_form_lembur_det inner join mut_karyawan_input_form_lembur on mut_karyawan_input_form_lembur_det.no_form=mut_karyawan_input_form_lembur.no_form where mut_karyawan_input_form_lembur.tgl_lembur='".$tanggal_lembur."' group by mut_karyawan_input_form_lembur_det.no_form");
+        return $query;
+    }
+    public function getkaryawanlembur(){
+        $tanggal_lembur=request()->tanggal_lembur;
+        $karyawanLembur=MutKaryawanInputFormLemburDet::where('no_form',request()->no_form)->with('employee','keterangan')->with(['absen' => function ($query) use($tanggal_lembur) {
+            $query->where('tanggal_berjalan', $tanggal_lembur);
+        }])->get();
+        return $karyawanLembur;
+    }
+    public function importkaryawanlembur(){
+        $loggedAdmin = Auth::guard('admin')->user();
+        $email = $loggedAdmin->email;
+        $no_form=request()->no_form;
+        $tanggal_lembur=request()->tanggal_lembur;
+        $karyawan_lembur=MutKaryawanInputFormLemburDet::where('no_form',request()->no_form)->with('employee','keterangan')->with(['absen' => function ($query) use($tanggal_lembur) {
+            $query->where('tanggal_berjalan', $tanggal_lembur);
+        }])->get();
+        $nomor_form_lembur=[];
+        $kodelembur = "SPL/HR";
+        $thnbln = date("ym");
+
+        $getlastnomorform =  DataLembur::select('nomor_form_lembur')
+                                            ->groupby('nomor_form_lembur')
+                                            ->orderby('nomor_form_lembur', 'desc')
+                                            ->first();
+
+        if($getlastnomorform == "") {
+            //info("Count : Kosong");
+            $nomor = "0000";
+        } else {
+            $nomor = $getlastnomorform->nomor_form_lembur;
+        }
+
+        $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
+        $nomor_form_lembur = $kodelembur . "/" . $thnbln . "/" . $nomorform;
+        foreach($karyawan_lembur as $key=> $value){
+            $jumlah_jam_istirahat=$value->jam_lembur_istirahat/60;
+            $starttimestamp = strtotime($value->jam_lembur_awal_rencana);
+            $endtimestamp = strtotime($value->jam_lembur_akhir_rencana);
+            $difference = abs($endtimestamp - $starttimestamp)/3600;
+            $jumlah_jam_lembur=$difference-$jumlah_jam_istirahat;
+            if($value->absen[0]->nomor_form_lembur==null){
+                DataLembur::create([
+                    'uuid'=>Str::uuid(),
+                    'uuid'=>$value->absen[0]->uuid,
+                    'nomor_form_lembur'=>$nomor_form_lembur,
+                    'tanggal_absen'=>$value->absen[0]->tanggal_berjalan,
+                    'nomor_form_lembur'=>$nomor_form_lembur,
+                    'kode_hari'=>$value->absen[0]->kode_hari,
+                    'nama_hari'=>$value->absen[0]->nama_hari,
+                    'mulai_jam_kerja'=>$value->absen[0]->mulai_jam_kerja,
+                    'akhir_jam_kerja'=>$value->absen[0]->akhir_jam_kerja,
+                    'absen_masuk_kerja'=>$value->absen[0]->absen_masuk_kerja,
+                    'absen_pulang_kerja'=>$value->absen[0]->absen_pulang_kerja,
+                    'enroll_id'=>$value->absen[0]->enroll_id,
+                    'nik'=>$value->absen[0]->nik,
+                    'employee_id' => $value->absen[0]->employee_id,
+                    'employee_name' => $value->absen[0]->employee_name,
+                    'site_nirwana_id' => $value->absen[0]->site_nirwana_id,
+                    'site_nirwana_name' => $value->absen[0]->site_nirwana_name,
+                    'department_id' => $value->absen[0]->department_id,
+                    'department_name' => $value->absen[0]->department_name,
+                    'sub_dept_id' => $value->absen[0]->sub_dept_id,
+                    'sub_dept_name' => $value->absen[0]->sub_dept_name,
+                    'mulai_jam_lembur' => $tanggal_lembur.' '.$value->jam_lembur_awal_rencana,
+                    'akhir_jam_lembur' => $tanggal_lembur.' '.$value->jam_lembur_akhir_rencana,
+                    'jumlah_jam_lembur' => $jumlah_jam_lembur,
+                    'jumlah_jam_istirahat' => $jumlah_jam_istirahat,
+                    'catatan' => strtoupper($value->keterangan->ket),
+                    'operator' => $email
+                ]);
+                MasterDataAbsenKehadiran::where('enroll_id',$value->absen[0]->enroll_id)->where('tanggal_berjalan',$tanggal_lembur)->update([
+                    'nomor_form_lembur'=>$nomor_form_lembur,
+                    'kelebihan_jam_kerja_l1' => '0',
+                    'kelebihan_jam_kerja_l2' => '0',
+                    'kelebihan_jam_kerja_l3' => '0',
+                    'kelebihan_jam_kerja_l4' => '0',
+                    'mulai_jam_lembur' => $tanggal_lembur.' '.$value->jam_lembur_awal_rencana,
+                    'akhir_jam_lembur' => $tanggal_lembur.' '.$value->jam_lembur_akhir_rencana,
+                    'jumlah_jam_lembur' => $jumlah_jam_lembur,
+                    'jumlah_jam_lembur_approved' => $jumlah_jam_lembur,
+                    'jumlah_jam_istirahat_lembur' => $jumlah_jam_istirahat,
+                    'catatan_hrd' => strtoupper($value->keterangan->ket),
+                    'operator' => $email
+                ]);
+            }
+        }
+    }
     public function ajax_getnomorspl(Request $request)
     {
 

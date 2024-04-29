@@ -142,6 +142,7 @@
                 <button type="submit" id="btn-import" class="btn btn-app btn-warning mr-0 mt-0 mb-0" data-toggle="tooltip" title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import</button>
                 @endif -->
                 <button type="button" class="btn btn-app btn-success mr-0 mt-0 mb-0" data-target="#import_data_lembur" data-toggle="modal"><i class="fa fa-file-excel-o"></i> Import</button>
+                <button type="button" class="btn btn-app btn-success mr-0 mt-0 mb-0" data-target="#import_data_lembur_from_nds" data-toggle="modal"><i class="fa fa-database"></i> Import From NDS</button>
                 <a href="javascript:void(0)" id="btn-paste" class="btn btn-app btn-secondary mr-0 mt-0 mb-0" data-toggle="tooltip" title="Tempel Data"><i class="fa fa-paste"></i> Tempel</a>
             </div>
         </div>
@@ -217,6 +218,99 @@
                             </div>
                         </div>
                         <div class="modal-footer bg-success pt-3 pb-2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="import_data_lembur_from_nds" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="max-width: 1330px">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success">
+                            <h4 class="modal-title pl-2 font-weight-bold" >Import data lembur dari NDS</h4>
+                            <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
+                                <i class="fa fa-remove"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-2">
+                                    <h5 class="modal-title pl-2 pt-1 font-weight-bold" >Tanggal Lembur</h5>
+                                </div>
+                                <div class="col-3">
+                                    <input type="date" class="form-control" id="tanggal_lembur_nds" style="background-color: white">
+                                </div>
+                            </div>
+                            <div class="row pt-3">
+                                <div class="col-2">
+                                    <h5 class="modal-title pl-2 pt-1 font-weight-bold" >Daftar Karyawan</h5>
+                                </div>
+                                <div class="col-3">
+                                    <select id="selectNoForm" name="selectNoForm" class="form-control" style="background-color: white">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row pt-3">
+                                <div class="col-2">
+                                    <h5 class="modal-title pl-2 pt-1 font-weight-bold" >Nomor Form Lembur</h5>
+                                </div>
+                                <div class="col-3">
+                                    <input class="form-control pt-1" id="new_nomor_form_lembur" readonly>
+                                </div>
+                                <div class="col-1 pt-1 pl-0">
+                                    <a href="#" onclick="get_new_nomor_form_lembur()" id="btn-icon-refresh_new_form_lembur" style="visibility: hidden; font-size: 12pt"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                </div>
+                            </div>
+                            <div class="row pt-3">
+                                <div class="col-12">
+                                    <table class="table table-bordered" style="overflow-x:auto">
+                                        <thead id="head_overtime_from_nds">
+                                            <tr>
+                                                <td width="45px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NO</td>
+                                                <td width="60px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ID</td>
+                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NIK</td>
+                                                <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NAMA KARYAWAN</td>
+                                                <td width="90px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">DARI</td>
+                                                <td width="90px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">SAMPAI</td>
+                                                <td width="90px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ACT IN</td>
+                                                <td width="90px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ACT OUT</td>
+                                                <td width="50px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">L</td>
+                                                <td width="50px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">I</td>
+                                                <td width="230px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">KETERANGAN</td>
+                                                <td width="130px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">STATUS ABSEN</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabel_overtime_from_nds">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row py-0">
+                                <div class="col-4" id="data_ada_dan_tidak" style="visibility: hidden">
+                                    <table style="font-weight: bold">
+                                        <tr>
+                                            <td>Total</td>
+                                            <td id="total_new_data_lembur"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="150">Data will be import </td>
+                                            <td id="total_new_data_lembur_import"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-4 text-center pt-1">
+                                    <button class="btn btn-success py-1" style="visibility: hidden" id="import_data_lembur_button">IMPORT</button>
+                                </div>
+                                <div class="col-2"></div>
+                                <div class="col-2 pt-1" id="data_sudah_ada" style="visibility: hidden">
+                                    <i class="fa fa-square" aria-hidden="true" style="color:red;"></i>&nbsp;Data Sudah ada
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-success">
                         </div>
                     </div>
                 </div>
@@ -470,7 +564,7 @@
     <script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
     
     <style>
-        #head_karyawan, #tabel_data_lembur { display: block; }
+        #head_karyawan, #tabel_data_lembur, #head_overtime_from_nds, #tabel_overtime_from_nds { display: block; }
 
         #tabel_data_lembur {
             height: 1px;
@@ -478,8 +572,174 @@
             overflow-x: hidden;
             font-size: 9pt; /* Hide the horizontal scroll */
         }
+        #tabel_overtime_from_nds {
+            height: 1px;
+            overflow-y: auto;    /* Trigger vertical scroll    */
+            overflow-x: hidden;
+            font-size: 9pt; /* Hide the horizontal scroll */
+        }
     </style>
     <script type="text/javascript">
+        
+        $('body').on('change', '#tanggal_lembur_nds', function () {
+            var tanggal_lembur = $('#tanggal_lembur_nds').val();
+            $("#selectNoForm").empty();
+            $("#selectNoForm").val(null).trigger("change");
+            document.getElementById('tabel_overtime_from_nds').style.height='1px';
+            document.getElementById('import_data_lembur_button').style.visibility='hidden';
+            document.getElementById('data_sudah_ada').style.visibility='hidden';
+            document.getElementById('data_ada_dan_tidak').style.visibility='hidden';
+            getnomorform();
+        });
+        function getnomorform()
+        {
+            var tanggal_lembur = $('#tanggal_lembur_nds').val();
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.datalembur.getnomorform')}}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                data: {
+                    tanggal_lembur:tanggal_lembur,
+                },
+                success: function(response){
+                    $("#selectNoForm").append("<option value=''>Daftar karyawan</option>");
+                    for(i=0;i<response.length;i++) {
+                        $("#selectNoForm").append("<option value="+response[i].no_form+">"+response[i].line+" => "+response[i].jumlah_karyawan+" karyawan</option>");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    swal("", "Pilih nomor form gagal!", "error");
+                }
+            });
+        }
+        function get_new_nomor_form_lembur(){
+            $.ajax({
+                type:"GET",
+                url: "/get_last_nomor_form_lembur",
+                success: function(res){
+                    $('#new_nomor_form_lembur').val(res);
+                    document.getElementById('btn-icon-refresh_new_form_lembur').style.visibility='visible';
+                }
+            });
+        }
+        $('#selectNoForm').on('change',function(){
+            var tanggal_lembur = $('#tanggal_lembur_nds').val();
+            $('#tabel_overtime_from_nds').empty();
+            let no_form=$('#selectNoForm').val();
+            document.getElementById('tabel_overtime_from_nds').style.height='1px';
+            document.getElementById('import_data_lembur_button').style.visibility='hidden';
+            document.getElementById('data_sudah_ada').style.visibility='hidden';
+            document.getElementById('data_ada_dan_tidak').style.visibility='hidden';
+            document.getElementById('btn-icon-refresh_new_form_lembur').style.visibility='hidden';
+            $('#new_nomor_form_lembur').val('');
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.datalembur.getkaryawanlembur')}}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                data: {
+                    no_form:no_form,
+                    tanggal_lembur:tanggal_lembur
+                },
+                success: function(data){
+                    let total_data=data.length;
+                    let total_data_imported=0;
+                    jQuery.each(data, function(key,value){
+                        let status_absen=data[key].absen[0].status_absen;
+                        if(data[key].absen[0].status_absen==null){
+                            status_absen='';
+                        }
+                        let time1 = data[key].jam_lembur_awal_rencana;
+                        let time2 = data[key].jam_lembur_akhir_rencana;
+                        let date1 = new Date(`2000-01-01T${time1}Z`);
+                        let date2 = new Date(`2000-01-01T${time2}Z`);
+                        if (date2 < date1) {
+                            date2.setDate(date2.getDate() + 1);
+                        }
+                        let jam_lembur = ((date2 - date1)/3600000)-(data[key].jam_lembur_istirahat/60);
+                        let jam_lembur_istirahat=data[key].jam_lembur_istirahat/60;
+                        let absen_masuk_kerja=data[key].absen[0].absen_masuk_kerja;
+                        if(data[key].absen[0].absen_masuk_kerja==null){
+                            absen_masuk_kerja='';
+                        }
+                        let absen_pulang_kerja=data[key].absen[0].absen_pulang_kerja;
+                        if(data[key].absen[0].absen_pulang_kerja==null){
+                            absen_pulang_kerja='';
+                        }
+                        let textcolor='';
+                        if(data[key].absen[0].nomor_form_lembur!=null){
+                            textcolor='red';
+                        }else{
+                            total_data_imported+=1;
+                            textcolor='black';
+                        }
+                        $('#tabel_overtime_from_nds').append("<tr style='color:"+textcolor+"'>\
+                            <td width='45px'>"+(key+1)+"</td>\
+                            <td width='60px'>"+data[key].enroll_id+"</td>\
+                            <td width='100px'>"+data[key].employee.nik+"</td>\
+                            <td width='200px'>"+data[key].employee.employee_name+"</td>\
+                            <td width='90px'>"+data[key].jam_lembur_awal_rencana+"</td>\
+                            <td width='90px'>"+data[key].jam_lembur_akhir_rencana+"</td>\
+                            <td width='90px'>"+absen_masuk_kerja+"</td>\
+                            <td width='90px'>"+absen_pulang_kerja+"</td>\
+                            <td width='50px'>"+jam_lembur+"</td>\
+                            <td width='50px'>"+jam_lembur_istirahat+"</td>\
+                            <td width='230px'>"+data[key].keterangan.ket+"</td>\
+                            <td width='130px'>"+status_absen+"</td>\
+                        </tr>");
+                        document.getElementById('tabel_overtime_from_nds').style.height='300px';
+                        document.getElementById('import_data_lembur_button').style.visibility='visible';
+                        document.getElementById('data_sudah_ada').style.visibility='visible';
+                        document.getElementById('data_ada_dan_tidak').style.visibility='visible';
+                        $('#total_new_data_lembur').text(': '+total_data);
+                        $('#total_new_data_lembur_import').text(': '+total_data_imported);
+                        get_new_nomor_form_lembur();
+                    });
+                },
+                error: function (xhr, status, error) {
+                    swal("", "Pilih nomor form gagal!", "error");
+                }
+            });
+        });
+        $('#import_data_lembur_button').on('click',function(){
+            $("#import_data_lembur_button").addClass("btn-loading");
+            $("#import_data_lembur_button").html('Loading...');
+            $("#import_data_lembur_button").attr("disabled", true);
+            var tanggal_lembur = $('#tanggal_lembur_nds').val();
+            let no_form=$('#selectNoForm').val();
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.datalembur.importkaryawanlembur')}}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                data: {
+                    no_form:no_form,
+                    tanggal_lembur:tanggal_lembur
+                },
+                success: function(data){
+                    swal("", "Data lembur berhasil di import", "success");
+                    $('#tabel_overtime_from_nds').empty();
+                    document.getElementById('tabel_overtime_from_nds').style.height='1px';
+                    document.getElementById('import_data_lembur_button').style.visibility='hidden';
+                    document.getElementById('data_sudah_ada').style.visibility='hidden';
+                    $("#import_data_lembur_button").removeClass("btn-loading");
+                    $("#import_data_lembur_button").html('IMPORT');
+                    $("#import_data_lembur_button").attr("disabled", false);
+                    $('#import_data_lembur_from_nds').modal('hide');
+                    document.getElementById('tanggal_lembur_nds').value='';
+                    document.getElementById('selectNoForm').value='';
+                    document.getElementById('btn-icon-refresh_new_form_lembur').style.visibility='hidden';
+                    $('#new_nomor_form_lembur').val('');
+                },
+                error: function (xhr, status, error) {
+                    swal("", "Data lembur gagal di import", "error");
+                    $("#import_data_lembur_button").removeClass("btn-loading");
+                    $("#import_data_lembur_button").html('IMPORT');
+                    $("#import_data_lembur_button").attr("disabled", false);
+                }
+            });
+        });
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
