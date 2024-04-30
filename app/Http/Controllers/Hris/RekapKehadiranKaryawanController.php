@@ -531,160 +531,556 @@ class RekapKehadiranKaryawanController extends AdminBaseController
         $periode=[];
         $periode_bulan=[];
         $grand_total=[];
-        $data_tanggal_absensi=MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->where('enroll_id','5321')->pluck('tanggal_berjalan');
+        $data_tanggal_absensi=MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->where('enroll_id','5321')->pluck('tanggal_berjalan');
         $jumlah_tanggal_absensi=count($data_tanggal_absensi)+1;
         $ijin_bayar=RefAbsenIjin::where('kode_ijin_payroll','IBY')->get()->toArray();
         $IBY=array_column($ijin_bayar,'kode_absen_ijin');
         $total_karyawan_sakit=[
             'tanggal'=>'2002-02-19',
-            'total'=>MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$date_now)->where('status_absen','S')->count()
+            'total'=>MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan','<=',$date_now)->where('status_absen','S')->count()
         ];
         $total_karyawan_izin=[
             'tanggal'=>'2002-02-19',
-            'total'=>MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$date_now)->where('status_absen','I')->count()
+            'total'=>MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan','<=',$date_now)->where('status_absen','I')->count()
         ];
         $total_karyawan_cuti=[
             'tanggal'=>'2002-02-19',
-            'total'=>MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$date_now)->whereIn('status_absen',$IBY)->count()
+            'total'=>MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan','<=',$date_now)->whereIn('status_absen',$IBY)->count()
         ];
         $total_karyawan_mangkir=[
             'tanggal'=>'2002-02-19',
-            'total'=>MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$date_now)->where('status_absen','M')->count()
+            'total'=>MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan','<=',$date_now)->where('status_absen','M')->count()
         ];
         $total_karyawan_dinas_luar=[
             'tanggal'=>'2002-02-19',
-            'total'=>MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$date_now)->where('status_absen','DL')->count()
+            'total'=>MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan','<=',$date_now)->where('status_absen','DL')->count()
         ];
         $total_karyawan_libur=[
             'tanggal'=>'2002-02-19',
-            'total'=>MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$date_now)->where('mulai_jam_kerja',null)->where('absen_masuk_kerja',null)->where('status_absen',null)->count()
+            'total'=>MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan','<=',$date_now)->where('mulai_jam_kerja',null)->where('absen_masuk_kerja',null)->where('status_absen',null)->count()
         ];
         $total_karyawan_resign=[
             'tanggal'=>'2002-02-19',
-            'total'=>MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$date_now)->where('status_absen','R')->count()
+            'total'=>MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan','<=',$date_now)->where('status_absen','R')->count()
         ];
         foreach($data_tanggal_absensi as $key=>$value){
             $tanggal_absensi[$key]=$value;
             $month_year[$key]=substr($value,0,7);
             $non_sewing_staff[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('tanggal_berjalan',$value)->where('status_staff','STAFF')->count()
+                'total'=>EmployeeAtribut::where('department_name','!=','SEWING')->where('site_nirwana_id','!=','SA')->where('status_staff','STAFF')->where(function($query)use($value){
+                    $query->where(function($queryes)use($value){
+                        $queryes->where('status_aktif','AKTIF')
+                        ->orWhere('tanggal_resign','>',$value);
+                    })->where('join_date','<=',$value);
+                })->count()
             ];
             $non_sewing_nonstaff[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('tanggal_berjalan',$value)->where('status_staff','NON STAFF')->count()
+                'total'=>EmployeeAtribut::where('department_name','!=','SEWING')->where('site_nirwana_id','!=','SA')->where('status_staff','NON STAFF')->where(function($query)use($value){
+                    $query->where(function($queryes)use($value){
+                        $queryes->where('status_aktif','AKTIF')
+                        ->orWhere('tanggal_resign','>',$value);
+                    })->where('join_date','<=',$value);
+                })->count()
             ];
             $non_sewing_total[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('tanggal_berjalan',$value)->count()
+                'total'=>EmployeeAtribut::where('department_name','!=','SEWING')->where('site_nirwana_id','!=','SA')->where('status_staff','STAFF')->where(function($query)use($value){
+                    $query->where(function($queryes)use($value){
+                        $queryes->where('status_aktif','AKTIF')
+                        ->orWhere('tanggal_resign','>',$value);
+                    })->where('join_date','<=',$value);
+                })->count()+EmployeeAtribut::where('department_name','!=','SEWING')->where('site_nirwana_id','!=','SA')->where('status_staff','NON STAFF')->where(function($query)use($value){
+                    $query->where(function($queryes)use($value){
+                        $queryes->where('status_aktif','AKTIF')
+                        ->orWhere('tanggal_resign','>',$value);
+                    })->where('join_date','<=',$value);
+                })->count()
             ];
             $sewing_staff[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('department_name','SEWING')->where('tanggal_berjalan',$value)->where('status_staff','STAFF')->count()
+                'total'=>EmployeeAtribut::where('department_name','SEWING')->where('site_nirwana_id','!=','SA')->where('status_staff','STAFF')->where(function($query)use($value){
+                    $query->where(function($queryes)use($value){
+                        $queryes->where('status_aktif','AKTIF')
+                        ->orWhere('tanggal_resign','>',$value);
+                    })->where('join_date','<=',$value);
+                })->count()
             ];
             $sewing_nonstaff[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('department_name','SEWING')->where('tanggal_berjalan',$value)->where('status_staff','NON STAFF')->count()
+                'total'=>EmployeeAtribut::where('department_name','SEWING')->where('site_nirwana_id','!=','SA')->where('status_staff','NON STAFF')->where(function($query)use($value){
+                    $query->where(function($queryes)use($value){
+                        $queryes->where('status_aktif','AKTIF')
+                        ->orWhere('tanggal_resign','>',$value);
+                    })->where('join_date','<=',$value);
+                })->count()
             ];
             $sewing_total[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('department_name','SEWING')->where('tanggal_berjalan',$value)->count()
+                'total'=>EmployeeAtribut::where('department_name','SEWING')->where('site_nirwana_id','!=','SA')->where('status_staff','STAFF')->where(function($query)use($value){
+                    $query->where(function($queryes)use($value){
+                        $queryes->where('status_aktif','AKTIF')
+                        ->orWhere('tanggal_resign','>',$value);
+                    })->where('join_date','<=',$value);
+                })->count()+EmployeeAtribut::where('department_name','SEWING')->where('site_nirwana_id','!=','SA')->where('status_staff','NON STAFF')->where(function($query)use($value){
+                    $query->where(function($queryes)use($value){
+                        $queryes->where('status_aktif','AKTIF')
+                        ->orWhere('tanggal_resign','>',$value);
+                    })->where('join_date','<=',$value);
+                })->count()
             ];
             $grand_total[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenkehadiran::where('tanggal_berjalan',$value)->count()
+                'total'=>EmployeeAtribut::where('department_name','!=','SEWING')->where('site_nirwana_id','!=','SA')->where('status_staff','STAFF')->where(function($query)use($value){
+                    $query->where(function($queryes)use($value){
+                        $queryes->where('status_aktif','AKTIF')
+                        ->orWhere('tanggal_resign','>',$value);
+                    })->where('join_date','<=',$value);
+                })->count()+EmployeeAtribut::where('department_name','!=','SEWING')->where('site_nirwana_id','!=','SA')->where('status_staff','NON STAFF')->where(function($query)use($value){
+                    $query->where(function($queryes)use($value){
+                        $queryes->where('status_aktif','AKTIF')
+                        ->orWhere('tanggal_resign','>',$value);
+                    })->where('join_date','<=',$value);
+                })->count()+EmployeeAtribut::where('department_name','SEWING')->where('site_nirwana_id','!=','SA')->where('status_staff','STAFF')->where(function($query)use($value){
+                    $query->where(function($queryes)use($value){
+                        $queryes->where('status_aktif','AKTIF')
+                        ->orWhere('tanggal_resign','>',$value);
+                    })->where('join_date','<=',$value);
+                })->count()+EmployeeAtribut::where('department_name','SEWING')->where('site_nirwana_id','!=','SA')->where('status_staff','NON STAFF')->where(function($query)use($value){
+                    $query->where(function($queryes)use($value){
+                        $queryes->where('status_aktif','AKTIF')
+                        ->orWhere('tanggal_resign','>',$value);
+                    })->where('join_date','<=',$value);
+                })->count()
             ];
             $non_sewing_nonstaff_present[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('tanggal_berjalan',$value)->where('status_staff','NON STAFF')->where('absen_masuk_kerja','!=',null)->count()
+                'total'=>MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','NON STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeseses)use($date_now,$value){
+                        $queryeseses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()
             ];
             $non_sewing_staff_present[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('tanggal_berjalan',$value)->where('status_staff','STAFF')->where('absen_masuk_kerja','!=',null)->count()
+                'total'=>MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeseses)use($date_now,$value){
+                        $queryeseses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()
             ];
             $non_sewing_present[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('tanggal_berjalan',$value)->where('absen_masuk_kerja','!=',null)->count()
+                'total'=>MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeseses)use($date_now,$value){
+                        $queryeseses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()+MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','NON STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeseses)use($date_now,$value){
+                        $queryeseses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()
             ];
             $sewing_nonstaff_present[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('department_name','SEWING')->where('tanggal_berjalan',$value)->where('status_staff','NON STAFF')->where('absen_masuk_kerja','!=',null)->count()
+                'total'=>MasterDataAbsenKehadiran::where('department_name','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','NON STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeseses)use($date_now,$value){
+                        $queryeseses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()
             ];
             $sewing_staff_present[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('department_name','SEWING')->where('tanggal_berjalan',$value)->where('status_staff','STAFF')->where('absen_masuk_kerja','!=',null)->count()
+                'total'=>MasterDataAbsenKehadiran::where('department_name','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeseses)use($date_now,$value){
+                        $queryeseses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()
             ];
             $sewing_present[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('department_name','SEWING')->where('tanggal_berjalan',$value)->where('absen_masuk_kerja','!=',null)->count()
+                'total'=>MasterDataAbsenKehadiran::where('department_name','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeseses)use($date_now,$value){
+                        $queryeseses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()+MasterDataAbsenKehadiran::where('department_name','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','NON STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeseses)use($date_now,$value){
+                        $queryeseses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()
             ];
             $grand_total_present[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('tanggal_berjalan',$value)->where('absen_masuk_kerja','!=',null)->count()
+                'total'=>MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeseses)use($date_now,$value){
+                        $queryeseses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()+MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','NON STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeseses)use($date_now,$value){
+                        $queryeseses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()+MasterDataAbsenKehadiran::where('department_name','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeseses)use($date_now,$value){
+                        $queryeseses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()+MasterDataAbsenKehadiran::where('department_name','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','NON STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja','!=',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeseses)use($date_now,$value){
+                        $queryeseses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()
             ];
             $non_sewing_nonstaff_absent[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('tanggal_berjalan',$value)->where('status_staff','NON STAFF')->where('absen_masuk_kerja',null)->count()
+                'total'=>MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','NON STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()
             ];
             $non_sewing_staff_absent[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('tanggal_berjalan',$value)->where('status_staff','STAFF')->where('absen_masuk_kerja',null)->count()
+                'total'=>MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()
             ];
             $non_sewing_absent[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('tanggal_berjalan',$value)->where('absen_masuk_kerja',null)->count()
+                'total'=>MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','NON STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()+MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()
             ];
             $sewing_nonstaff_absent[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('department_name','SEWING')->where('tanggal_berjalan',$value)->where('status_staff','NON STAFF')->where('absen_masuk_kerja',null)->count()
+                'total'=>MasterDataAbsenKehadiran::where('department_name','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','NON STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()
             ];
             $sewing_staff_absent[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('department_name','SEWING')->where('tanggal_berjalan',$value)->where('status_staff','STAFF')->where('absen_masuk_kerja',null)->count()
+                'total'=>MasterDataAbsenKehadiran::where('department_name','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()
             ];
             $sewing_absent[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('department_name','SEWING')->where('tanggal_berjalan',$value)->where('absen_masuk_kerja',null)->count()
+                'total'=>MasterDataAbsenKehadiran::where('department_name','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()+MasterDataAbsenKehadiran::where('department_name','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','NON STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()
             ];
             $grand_total_absent[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('tanggal_berjalan',$value)->where('absen_masuk_kerja',null)->count()
+                'total'=>MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','NON STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()+MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()+MasterDataAbsenKehadiran::where('department_name','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()+MasterDataAbsenKehadiran::where('department_name','SEWING')->where('site_nirwana_id','!=','SA')->where('tanggal_berjalan',$value)->where('status_staff','NON STAFF')->where(function($query)use($date_now,$value){
+                    $query->where(function($queryes)use($date_now,$value){
+                        $queryes->where('absen_masuk_kerja',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan',$value);
+                    })->orWhere(function($queryeses)use($date_now,$value){
+                        $queryeses->where('absen_masuk_kerja','!=',null)
+                        ->where('absen_pulang_kerja',null)
+                        ->where('tanggal_berjalan','!=',$date_now)
+                        ->where('tanggal_berjalan',$value);
+                    });
+                })->count()
             ];
             $karyawan_sakit[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('tanggal_berjalan',$value)->where('status_absen','S')->count()
+                'total'=>MasterDataAbsenKehadiran::where('tanggal_berjalan',$value)->where('status_absen','S')->where('site_nirwana_id','!=','SA')->count()
             ];
             $karyawan_izin[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('tanggal_berjalan',$value)->where('status_absen','I')->count()
+                'total'=>MasterDataAbsenKehadiran::where('tanggal_berjalan',$value)->where('status_absen','I')->where('site_nirwana_id','!=','SA')->count()
             ];
             $karyawan_cuti[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('tanggal_berjalan',$value)->whereIn('status_absen',$IBY)->count()
+                'total'=>MasterDataAbsenKehadiran::where('tanggal_berjalan',$value)->whereIn('status_absen',$IBY)->where('status_absen','!=','DL')->where('site_nirwana_id','!=','SA')->count()
             ];
             $karyawan_mangkir[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('tanggal_berjalan',$value)->where('status_absen','M')->count()
+                'total'=>MasterDataAbsenKehadiran::where('tanggal_berjalan',$value)->where('status_absen','M')->where('site_nirwana_id','!=','SA')->count()
             ];
             $karyawan_dinas_luar[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('tanggal_berjalan',$value)->where('status_absen','DL')->count()
+                'total'=>MasterDataAbsenKehadiran::where('tanggal_berjalan',$value)->where('status_absen','DL')->where('site_nirwana_id','!=','SA')->count()
             ];
             $karyawan_libur[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('tanggal_berjalan',$value)->where('mulai_jam_kerja',null)->where('absen_masuk_kerja',null)->where('status_absen',null)->count()
+                'total'=>MasterDataAbsenKehadiran::where('tanggal_berjalan',$value)->where('status_absen','LP')->where('site_nirwana_id','!=','SA')->count()
             ];
             $karyawan_resign[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('tanggal_berjalan',$value)->where('tanggal_resign',$value)->count()
+                'total'=>MasterDataAbsenKehadiran::where('tanggal_berjalan',$value)->where('tanggal_resign',$value)->where('site_nirwana_id','!=','SA')->count()
             ];
             $recruitment_sewing[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('department_name','SEWING')->where('tanggal_berjalan',$value)->where('join_date',$value)->count()
+                'total'=>EmployeeAtribut::where('department_name','SEWING')->where('site_nirwana_id','!=','SA')->where('join_date',$value)->count()
             ];
             $recruitment_nonsewing[$key]=[
                 'tanggal'=>$value,
-                'total'=>MasterDataAbsenKehadiran::where('department_name','!=','SEWING')->where('tanggal_berjalan',$value)->where('join_date',$value)->count()
+                'total'=>EmployeeAtribut::where('department_name','!=','SEWING')->where('site_nirwana_id','!=','SA')->where('join_date',$value)->count()
             ];
         }
         array_push($karyawan_sakit,$total_karyawan_sakit);
@@ -770,12 +1166,12 @@ class RekapKehadiranKaryawanController extends AdminBaseController
         }
         $dept_names=DepartmentAll::select('department_name')->where('site_nirwana_id','NAG')->groupBy('department_name')->whereIn('department_name',['SEWING','ART WORK','STEAM','CUTTING'])->pluck('department_name');
         $dept_names_2=DepartmentAll::select('department_name')->where('site_nirwana_id','NAG')->groupBy('department_name')->whereNotIn('department_name',['SEWING','ART WORK','STEAM','CUTTING'])->pluck('department_name');
-        $all_active_employee_dept_name_count=MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->whereIn('department_name',['SEWING','ART WORK','STEAM','CUTTING'])->where('status_absen','!=','R')->count();
-        $all_active_employee_dept_name_count_2=MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->whereNotIn('department_name',['SEWING','ART WORK','STEAM','CUTTING'])->where('status_absen','!=','R')->count();
-        $all_active_employee_dept_names=MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->where('status_absen','!=','R')->count();
-        $all_present_employee_dept_name_count=MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->whereIn('department_name',['SEWING','ART WORK','STEAM','CUTTING'])->where('absen_masuk_kerja','!=',null)->count();
-        $all_present_employee_dept_name_count_2=MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->whereNotIn('department_name',['SEWING','ART WORK','STEAM','CUTTING'])->where('absen_masuk_kerja','!=',null)->count();
-        $all_present_employee_dept_names=MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->where('absen_masuk_kerja','!=',null)->count();
+        $all_active_employee_dept_name_count=MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->where('site_nirwana_id','!=','SA')->whereIn('department_name',['SEWING','ART WORK','STEAM','CUTTING'])->where('status_absen','!=','R')->count();
+        $all_active_employee_dept_name_count_2=MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->where('site_nirwana_id','!=','SA')->whereNotIn('department_name',['SEWING','ART WORK','STEAM','CUTTING'])->where('status_absen','!=','R')->count();
+        $all_active_employee_dept_names=MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->where('site_nirwana_id','!=','SA')->where('status_absen','!=','R')->count();
+        $all_present_employee_dept_name_count=MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->where('site_nirwana_id','!=','SA')->whereIn('department_name',['SEWING','ART WORK','STEAM','CUTTING'])->where('absen_masuk_kerja','!=',null)->count();
+        $all_present_employee_dept_name_count_2=MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->where('site_nirwana_id','!=','SA')->whereNotIn('department_name',['SEWING','ART WORK','STEAM','CUTTING'])->where('absen_masuk_kerja','!=',null)->count();
+        $all_present_employee_dept_names=MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->where('site_nirwana_id','!=','SA')->where('absen_masuk_kerja','!=',null)->count();
         $all_dept_direct=[];
         foreach($dept_names as $key=>$value){
             if(MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->where('absen_masuk_kerja','!=',null)->where('department_name',$value)->count()==0){
