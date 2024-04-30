@@ -228,6 +228,8 @@ class EmployeeAtrController extends AdminBaseController
                 $nestedData['department_name'] = $q->department_name;
                 $nestedData['sub_dept_id'] = $q->sub_dept_id;
                 $nestedData['sub_dept_name'] = $q->sub_dept_name;
+                $nestedData['sewing_nonsewing'] = $q->sewing_nonsewing;
+                $nestedData['direct_indirect'] = $q->direct_indirect;
                 $nestedData['enroll_id'] = $q->enroll_id;
                 $nestedData['join_date'] = $q->join_date;
 
@@ -395,6 +397,8 @@ class EmployeeAtrController extends AdminBaseController
                 $nestedData['site_nirwana_id'] = $q->site_nirwana_id;
                 $nestedData['department_id'] = $q->department_id;
                 $nestedData['sub_dept_id'] = $q->sub_dept_id;
+                $nestedData['sewing_nonsewing'] = $q->sewing_nonsewing;
+                $nestedData['direct_indirect'] = $q->direct_indirect;
                 $nestedData['kode_grade'] = $q->kode_grade;
                 $nestedData['jenis_kelamin'] = $q->jenis_kelamin;
                 $nestedData['tempat_lahir'] = $q->tempat_lahir;
@@ -500,6 +504,8 @@ class EmployeeAtrController extends AdminBaseController
         $site_nirwana_id = $request->site_nirwana_id;
         $department_id = $request->department_id;
         $sub_dept_id = $request->sub_dept_id;
+        $sewing_nonsewing = $request->sewing_nonsewing;
+        $direct_indirect = $request->direct_indirect;
         $enroll_id = $request->enroll_id;
         $join_date = $request->join_date;
         $nik = strtoupper($request->nik);
@@ -597,6 +603,8 @@ class EmployeeAtrController extends AdminBaseController
                 'department_name' => $department_name->department_name,
                 'sub_dept_id' => $sub_dept_id,
                 'sub_dept_name' => $sub_dept_name->sub_dept_name,
+                'sewing_nonsewing'=>$sewing_nonsewing,
+                'direct_indirect'=>$direct_indirect,
                 'enroll_id' => $enroll_id,
                 'join_date' => $join_date,
                 'nik' => $nik,
@@ -837,6 +845,8 @@ class EmployeeAtrController extends AdminBaseController
                 'department_name' => $department_name->department_name,
                 'sub_dept_id' => $sub_dept_id,
                 'sub_dept_name' => $sub_dept_name->sub_dept_name,
+                'sewing_nonsewing'=>$sewing_nonsewing,
+                'direct_indirect'=>$direct_indirect,
                 'enroll_id' => $enroll_id,
                 'join_date' => $join_date,
                 'nik' => $nik,

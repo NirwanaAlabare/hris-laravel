@@ -531,6 +531,26 @@
                                             </td>
                                         </tr>
                                         <tr>
+                                            <th class="w-35">Sewing / Nonsewing</th>
+                                            <th class="w-35">Direct / Indirect</th>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <select id="sewing_nonsewing" name="sewing_nonsewing" class="form-control">
+                                                    <option value="">-- SEWING / NON SEWING --</option>
+                                                    <option value="SEWING">SEWING</option>
+                                                    <option value="NON SEWING">NON SEWING</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select id="direct_indirect" name="direct_indirect" class="form-control">
+                                                    <option value="">-- DIRECT / INDIRECT --</option>
+                                                    <option value="DIRECT">DIRECT</option>
+                                                    <option value="INDIRECT">INDIRECT</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <th>Nomor Absen</th>
                                             <th>Tanggal Masuk</th>
                                             <th>NIP</th>
@@ -1527,7 +1547,8 @@
                 $("#sub_dept_id").append(new Option(data['sub_dept_name'], data['sub_dept_id']));
 
                 $("#sub_dept_id").val(data['sub_dept_id']).trigger("change");
-
+                $('#sewing_nonsewing').val(data['sewing_nonsewing']).trigger("change");
+                $('#direct_indirect').val(data['direct_indirect']).trigger("change");
                 $('#enroll_id').val(data['enroll_id']);
                 join_date = defaultDate(data['join_date']);
                 $('#join_date').val(join_date);
@@ -2058,6 +2079,8 @@ $(document).ready(function() {
                                 department_name:$('#department_id').text(),
                                 sub_dept_id:sub_dept_id,
                                 sub_dept_name:$('#sub_dept_id').text(),
+                                sewing_nonsewing:$('#sewing_nonsewing').val(),
+                                direct_indirect:$('#direct_indirect').val(),
                                 enroll_id:enroll_id,
                                 join_date:join_date,
                                 nik:nik,
@@ -2234,6 +2257,8 @@ $(document).ready(function() {
                     department_name:$('#department_id').text(),
                     sub_dept_id:sub_dept_id,
                     sub_dept_name:$('#sub_dept_id').text(),
+                    sewing_nonsewing:$('#sewing_nonsewing').val(),
+                    direct_indirect:$('#direct_indirect').val(),
                     enroll_id:enroll_id,
                     join_date:join_date,
                     nik:nik,

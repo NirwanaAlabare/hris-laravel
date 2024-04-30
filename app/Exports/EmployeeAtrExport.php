@@ -283,16 +283,18 @@ class EmployeeAtrExport implements FromQuery, WithMapping, ShouldAutoSize, WithE
             $nik,
             $employee_name,
             $jenis_kelamin,
+            $status_kontrak_tetap,
+            $status_staff,
             $status_jabatan,
             $department_id,
             $department_name,
             $sub_dept_id,
             $sub_dept_name,
+            '',
+            '',
             $status_aktif,
             Date::stringToExcel( $join_date),
             Date::stringToExcel($tanggal_resign),
-            $status_kontrak_tetap,
-            $status_staff,
             $tempat_lahir,
             Date::stringToExcel($tanggal_lahirf),
             $agama,
@@ -350,23 +352,23 @@ class EmployeeAtrExport implements FromQuery, WithMapping, ShouldAutoSize, WithE
     public function columnFormats(): array
     {
         return [
-            'L' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'M' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'P' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'Q' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'W' => NumberFormat::FORMAT_TEXT,
-            'X' => NumberFormat::FORMAT_TEXT,
+            'S' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'Y' => NumberFormat::FORMAT_TEXT,
+            'Z' => NumberFormat::FORMAT_TEXT,
 
-            'AE' => NumberFormat::FORMAT_TEXT,
-            'AQ' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AT' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AG' => NumberFormat::FORMAT_TEXT,
+            'AS' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AV' => NumberFormat::FORMAT_DATE_DDMMYYYY,
 
-            'BA' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'BC' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'BE' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'BG' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'BI' => NumberFormat::FORMAT_DATE_DDMMYYYY,
 
-            'BK' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'BL' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'BM' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'BN' => NumberFormat::FORMAT_DATE_DDMMYYYY,
 
 
 
@@ -400,68 +402,70 @@ class EmployeeAtrExport implements FromQuery, WithMapping, ShouldAutoSize, WithE
                 $sheet->setCellValue('C5', 'NIP');
                 $sheet->setCellValue('D5', 'NAMA KARYAWAN');
                 $sheet->setCellValue('E5', 'JENIS KELAMIN');
-                $sheet->setCellValue('F5', 'JABATAN');
-                $sheet->setCellValue('G5', 'ID DEPARTMENT');
-                $sheet->setCellValue('H5', 'DEPARTMENT');
-                $sheet->setCellValue('I5', 'ID BAGIAN');
-                $sheet->setCellValue('J5', 'BAGIAN');
-                $sheet->setCellValue('K5', 'AKTIF / TIDAK AKTIF');
-                $sheet->setCellValue('L5', 'TANGGAL MASUK');
-                $sheet->setCellValue('M5', 'TANGGAL RESIGN');
-                $sheet->setCellValue('N5', 'KONTRAK / TETAP');
-                $sheet->setCellValue('O5', 'STAFF / NON STAFF');
-                $sheet->setCellValue('P5', 'TEMPAT LAHIR');
-                $sheet->setCellValue('Q5', 'TANGGAL LAHIR');
-                $sheet->setCellValue('R5', 'AGAMA');
-                $sheet->setCellValue('S5', 'IBU KANDUNG');
-                $sheet->setCellValue('T5', 'STATUS KAWIN');
-                $sheet->setCellValue('U5', 'PTKP');
-                $sheet->setCellValue('V5', 'NPWP');
-                $sheet->setCellValue('W5', 'NOMOR KTP');
-                $sheet->setCellValue('X5', 'NOMOR KK');
-                $sheet->setCellValue('Y5', 'GOLONGAN DARAH');
-                $sheet->setCellValue('Z5', 'NOMOR TELEPON');
-                $sheet->setCellValue('AA5', 'EMAIL');
-                $sheet->setCellValue('AB5', 'PENDIDIKAN TERAKHIR');
-                $sheet->setCellValue('AC5', 'JURUSAN PENDIDIKAN TERAKHIR');
-                $sheet->setCellValue('AD5', 'NAMA BANK');
-                $sheet->setCellValue('AE5', 'NOMOR REKENING');
-                $sheet->setCellValue('AF5', 'ALAMAT RUMAH');
-                $sheet->setCellValue('AG5', 'PROPINSI');
-                $sheet->setCellValue('AH5', 'KOTA / KAB');
-                $sheet->setCellValue('AI5', 'KECAMATAN');
-                $sheet->setCellValue('AJ5', 'KELURAHAN / DESA');
-                $sheet->setCellValue('AK5', 'ALAMAT SEMENTARA');
-                $sheet->setCellValue('AL5', 'TUNJANGAN');
-                $sheet->setCellValue('AM5', 'KODE GRADE');
-                $sheet->setCellValue('AN5', 'REFERENSI');
-                $sheet->setCellValue('AO5', 'NAMA ATASAN');
-                $sheet->setCellValue('AP5', 'STATUS AKTIF BPJS TK');
-                $sheet->setCellValue('AQ5', 'TANGGAL BPJS TK');
-                $sheet->setCellValue('AR5', 'NOMOR BPJS TK');
-                $sheet->setCellValue('AS5', 'STATUS AKTIF BPJS KS');
-                $sheet->setCellValue('AT5', 'TANGGAL BPJS KS');
-                $sheet->setCellValue('AU5', 'NOMOR BPJS KS');
-                $sheet->setCellValue('AV5', 'PENGALAMAN KERJA');
-                $sheet->setCellValue('AW5', 'NAMA KERABAT');
-                $sheet->setCellValue('AX5', 'NOMOR TLPN KERABAT');
-                $sheet->setCellValue('AY5', 'HUBUNGAN KERABAT');
-                $sheet->setCellValue('AZ5', 'ALAMAT KERABAT');
-                $sheet->setCellValue('BA5', 'TANGGAL VAKSIN 1');
-                $sheet->setCellValue('BB5', 'NAMA VAKSIN 1');
-                $sheet->setCellValue('BC5', 'TANGGAL VAKSIN 2');
-                $sheet->setCellValue('BD5', 'NAMA VAKSIN 2');
-                $sheet->setCellValue('BE5', 'TANGGAL VAKSIN 3');
-                $sheet->setCellValue('BF5', 'NAMA VAKSIN 3');
-                $sheet->setCellValue('BG5', 'GOLONGAN SIM');
-                $sheet->setCellValue('BH5', 'NOMOR SIM');
-                $sheet->setCellValue('BI5', 'TANGGAL EXPIRE SIM');
-                $sheet->setCellValue('BJ5', 'CATATAN');
-                $sheet->setCellValue('BK5', 'TANGGAL MULAI KONTRAK');
-                $sheet->setCellValue('BL5', 'TANGGAL AKHIR KONTRAK');
-                $sheet->setCellValue('BM5', 'CATATAN KONTRAK');
-                $sheet->setCellValue('BN5', 'TERAKHIR DI BUAT');
-                $sheet->setCellValue('BO5', 'TERAKHIR DI UBAH');
+                $sheet->setCellValue('F5', 'KONTRAK / TETAP');
+                $sheet->setCellValue('G5', 'STAFF / NON STAFF');
+                $sheet->setCellValue('H5', 'JABATAN');
+                $sheet->setCellValue('I5', 'ID DEPARTMENT');
+                $sheet->setCellValue('J5', 'DEPARTMENT');
+                $sheet->setCellValue('K5', 'ID BAGIAN');
+                $sheet->setCellValue('L5', 'BAGIAN');
+                $sheet->setCellValue('M5', 'SEWING / NON SEWING');
+                $sheet->setCellValue('N5', 'DIRECT / INDIRECT');
+                $sheet->setCellValue('O5', 'AKTIF / TIDAK AKTIF');
+                $sheet->setCellValue('P5', 'TANGGAL MASUK');
+                $sheet->setCellValue('Q5', 'TANGGAL RESIGN');
+                $sheet->setCellValue('R5', 'TEMPAT LAHIR');
+                $sheet->setCellValue('S5', 'TANGGAL LAHIR');
+                $sheet->setCellValue('T5', 'AGAMA');
+                $sheet->setCellValue('U5', 'IBU KANDUNG');
+                $sheet->setCellValue('V5', 'STATUS KAWIN');
+                $sheet->setCellValue('W5', 'PTKP');
+                $sheet->setCellValue('X5', 'NPWP');
+                $sheet->setCellValue('Y5', 'NOMOR KTP');
+                $sheet->setCellValue('Z5', 'NOMOR KK');
+                $sheet->setCellValue('AA5', 'GOLONGAN DARAH');
+                $sheet->setCellValue('AB5', 'NOMOR TELEPON');
+                $sheet->setCellValue('AC5', 'EMAIL');
+                $sheet->setCellValue('AD5', 'PENDIDIKAN TERAKHIR');
+                $sheet->setCellValue('AE5', 'JURUSAN PENDIDIKAN TERAKHIR');
+                $sheet->setCellValue('AF5', 'NAMA BANK');
+                $sheet->setCellValue('AG5', 'NOMOR REKENING');
+                $sheet->setCellValue('AH5', 'ALAMAT RUMAH');
+                $sheet->setCellValue('AI5', 'PROPINSI');
+                $sheet->setCellValue('AJ5', 'KOTA / KAB');
+                $sheet->setCellValue('AK5', 'KECAMATAN');
+                $sheet->setCellValue('AL5', 'KELURAHAN / DESA');
+                $sheet->setCellValue('AM5', 'ALAMAT SEMENTARA');
+                $sheet->setCellValue('AN5', 'TUNJANGAN');
+                $sheet->setCellValue('AO5', 'KODE GRADE');
+                $sheet->setCellValue('AP5', 'REFERENSI');
+                $sheet->setCellValue('AQ5', 'NAMA ATASAN');
+                $sheet->setCellValue('AR5', 'STATUS AKTIF BPJS TK');
+                $sheet->setCellValue('AS5', 'TANGGAL BPJS TK');
+                $sheet->setCellValue('AT5', 'NOMOR BPJS TK');
+                $sheet->setCellValue('AU5', 'STATUS AKTIF BPJS KS');
+                $sheet->setCellValue('AV5', 'TANGGAL BPJS KS');
+                $sheet->setCellValue('AW5', 'NOMOR BPJS KS');
+                $sheet->setCellValue('AX5', 'PENGALAMAN KERJA');
+                $sheet->setCellValue('AY5', 'NAMA KERABAT');
+                $sheet->setCellValue('AZ5', 'NOMOR TLPN KERABAT');
+                $sheet->setCellValue('BA5', 'HUBUNGAN KERABAT');
+                $sheet->setCellValue('BB5', 'ALAMAT KERABAT');
+                $sheet->setCellValue('BC5', 'TANGGAL VAKSIN 1');
+                $sheet->setCellValue('BD5', 'NAMA VAKSIN 1');
+                $sheet->setCellValue('BE5', 'TANGGAL VAKSIN 2');
+                $sheet->setCellValue('BF5', 'NAMA VAKSIN 2');
+                $sheet->setCellValue('BG5', 'TANGGAL VAKSIN 3');
+                $sheet->setCellValue('BH5', 'NAMA VAKSIN 3');
+                $sheet->setCellValue('BI5', 'GOLONGAN SIM');
+                $sheet->setCellValue('BJ5', 'NOMOR SIM');
+                $sheet->setCellValue('BK5', 'TANGGAL EXPIRE SIM');
+                $sheet->setCellValue('BL5', 'CATATAN');
+                $sheet->setCellValue('BM5', 'TANGGAL MULAI KONTRAK');
+                $sheet->setCellValue('BN5', 'TANGGAL AKHIR KONTRAK');
+                $sheet->setCellValue('BO5', 'CATATAN KONTRAK');
+                $sheet->setCellValue('BP5', 'TERAKHIR DI BUAT');
+                $sheet->setCellValue('BQ5', 'TERAKHIR DI UBAH');
 
             },
         ];
