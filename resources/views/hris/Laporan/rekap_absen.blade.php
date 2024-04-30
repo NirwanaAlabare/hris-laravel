@@ -616,9 +616,9 @@
                             @endif
                         @else
                             @if(date('D', $tgl_string)=='Sat' || date('D', $tgl_string)=='Sun')
-                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black;color:red" align="center">{{$value['total']}}%</td>
+                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black;color:red" align="center">{{$value['total']}}</td>
                             @else
-                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black" align="center">{{$value['total']}}%</td>
+                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black" align="center">{{$value['total']}}</td>
                             @endif
                         @endif
                     @else
@@ -641,9 +641,9 @@
                             @endif
                         @else
                             @if(date('D', $tgl_string)=='Sat' || date('D', $tgl_string)=='Sun')
-                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black;color:red" align="center">{{$value['total']}}%</td>
+                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black;color:red" align="center">{{$value['total']}}</td>
                             @else
-                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black" align="center">{{$value['total']}}%</td>
+                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black" align="center">{{$value['total']}}</td>
                             @endif
                         @endif
                     @else
@@ -666,9 +666,9 @@
                             @endif
                         @else
                             @if(date('D', $tgl_string)=='Sat' || date('D', $tgl_string)=='Sun')
-                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black;color:red" align="center">{{$value['total']}}%</td>
+                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black;color:red" align="center">{{$value['total']}}</td>
                             @else
-                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black" align="center">{{$value['total']}}%</td>
+                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black" align="center">{{$value['total']}}</td>
                             @endif
                         @endif
                     @else
@@ -697,9 +697,9 @@
                             @endif
                         @else
                             @if(date('D', $tgl_string)=='Sat' || date('D', $tgl_string)=='Sun')
-                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black;color:red" align="center">{{$value['total']}}%</td>
+                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black;color:red" align="center">{{$value['total']}}</td>
                             @else
-                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black" align="center">{{$value['total']}}%</td>
+                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black" align="center">{{$value['total']}}</td>
                             @endif
                         @endif
                     @else
@@ -722,9 +722,9 @@
                             @endif
                         @else
                             @if(date('D', $tgl_string)=='Sat' || date('D', $tgl_string)=='Sun')
-                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black;color:red" align="center">{{$value['total']}}%</td>
+                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black;color:red" align="center">{{$value['total']}}</td>
                             @else
-                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black" align="center">{{$value['total']}}%</td>
+                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black" align="center">{{$value['total']}}</td>
                             @endif
                         @endif
                     @else
@@ -747,9 +747,9 @@
                             @endif
                         @else
                             @if(date('D', $tgl_string)=='Sat' || date('D', $tgl_string)=='Sun')
-                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black;color:red" align="center">{{$value['total']}}%</td>
+                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black;color:red" align="center">{{$value['total']}}</td>
                             @else
-                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black" align="center">{{$value['total']}}%</td>
+                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black" align="center">{{$value['total']}}</td>
                             @endif
                         @endif
                     @else
@@ -772,9 +772,9 @@
                             @endif
                         @else
                             @if(date('D', $tgl_string)=='Sat' || date('D', $tgl_string)=='Sun')
-                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black;color:red" align="center">{{$value['total']}}%</td>
+                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black;color:red" align="center">{{$value['total']}}</td>
                             @else
-                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black" align="center">{{$value['total']}}%</td>
+                            <td style="font-family: Arial Nova; font-size:8pt;border:1px solid black" align="center">{{$value['total']}}</td>
                             @endif
                         @endif
                     @else
