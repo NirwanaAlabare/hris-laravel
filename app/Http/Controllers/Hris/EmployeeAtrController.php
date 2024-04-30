@@ -984,7 +984,7 @@ class EmployeeAtrController extends AdminBaseController
         $data=Excel::toArray([],$request->file('excel_file'));
         $arrayEmployee=[];
         for($i=5;$i<count($data[0]);$i++){
-            $department=DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][7])->where('sub_dept_name',$data[0][$i][9])->count();
+            $department=DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][9])->where('sub_dept_name',$data[0][$i][11])->count();
             $employee=EmployeeAtribut::where('enroll_id',$data[0][$i][1])->count();
 
             if($department==0 && ($employee==1 || $employee==0)){
@@ -1004,11 +1004,11 @@ class EmployeeAtrController extends AdminBaseController
                 'nik'=>$data[0][$i][2],
                 'nama_karyawan'=>$data[0][$i][3],
                 'jenis_kelamin'=>$data[0][$i][4],
-                'jabatan'=>$data[0][$i][5],
-                'department'=>$data[0][$i][7],
-                'bagian'=>$data[0][$i][9],
-                'status_aktif'=>$data[0][$i][10],
-                'tanggal_masuk'=>$data[0][$i][11],
+                'jabatan'=>$data[0][$i][7],
+                'department'=>$data[0][$i][9],
+                'bagian'=>$data[0][$i][11],
+                'status_aktif'=>$data[0][$i][14],
+                'tanggal_masuk'=>$data[0][$i][15],
                 'status_department'=>$status_department
             ];
         }
@@ -1039,7 +1039,7 @@ class EmployeeAtrController extends AdminBaseController
         $arrayEnrollId=EmployeeAtribut::pluck('enroll_id')->toArray();
         $dataArray=[];
         for($i=5;$i<count($data[0]);$i++){
-            $department=DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][7])->where('sub_dept_name',$data[0][$i][9])->count();
+            $department=DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][9])->where('sub_dept_name',$data[0][$i][11])->count();
             $employee=EmployeeAtribut::where('enroll_id',$data[0][$i][1])->count();
             if($department==0 && ($employee==1 || $employee==0)){
                 $status_department='red';
@@ -1053,39 +1053,39 @@ class EmployeeAtrController extends AdminBaseController
             $site_nirwana_id=preg_replace('/[0-9]+/', '', $data[0][$i][2]);
             $department_id='';
             $sub_dept_id='';
-            if(count(DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][7])->where('sub_dept_name',$data[0][$i][9])->get())>0){
-                $department_id=DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][7])->where('sub_dept_name',$data[0][$i][9])->pluck('department_id')[0];
-                $sub_dept_id=DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][7])->where('sub_dept_name',$data[0][$i][9])->pluck('sub_dept_id')[0];
+            if(count(DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][9])->where('sub_dept_name',$data[0][$i][11])->get())>0){
+                $department_id=DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][9])->where('sub_dept_name',$data[0][$i][11])->pluck('department_id')[0];
+                $sub_dept_id=DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][9])->where('sub_dept_name',$data[0][$i][11])->pluck('sub_dept_id')[0];
             }
-            if($data[0][$i][11]==''|| $data[0][$i][11]=='-'){
+            if($data[0][$i][15]==''|| $data[0][$i][15]=='-'){   
                 $join_date=null;
             }else{
-                $join_date=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][11])->format('Y-m-d');
-            }
-            if($data[0][$i][12]==''|| $data[0][$i][12]=='-'){
-                $tanggal_resign=null;
-            }else{
-                $tanggal_resign=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][12])->format('Y-m-d');
+                $join_date=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][15])->format('Y-m-d');
             }
             if($data[0][$i][16]==''|| $data[0][$i][16]=='-'){
+                $tanggal_resign=null;
+            }else{
+                $tanggal_resign=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][16])->format('Y-m-d');
+            }
+            if($data[0][$i][18]==''|| $data[0][$i][18]=='-'){
                 $tanggal_lahir=null;
             }else{
-                $tanggal_lahir=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][16])->format('Y-m-d');
+                $tanggal_lahir=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][18])->format('Y-m-d');
             }
-            if($data[0][$i][42]=='' || $data[0][$i][42]=='-'){
+            if($data[0][$i][44]=='' || $data[0][$i][44]=='-'){
                 $tanggal_bpjs_tk=null;
             }else{
-                $tanggal_bpjs_tk=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][42])->format('Y-m-d');
+                $tanggal_bpjs_tk=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][44])->format('Y-m-d');
             }
-            if($data[0][$i][45]=='' || $data[0][$i][45]=='-'){
+            if($data[0][$i][47]=='' || $data[0][$i][47]=='-'){
                 $tanggal_bpjs_ks=null;
             }else{
-                $tanggal_bpjs_ks=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][45])->format('Y-m-d');
+                $tanggal_bpjs_ks=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][47])->format('Y-m-d');
             }
-            if($data[0][$i][52]=='' || $data[0][$i][52]=='-'){
+            if($data[0][$i][54]=='' || $data[0][$i][54]=='-'){
                 $tanggal_vaccine1=null;
             }else{
-                $tanggal_vaccine1=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][52])->format('Y-m-d');
+                $tanggal_vaccine1=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][54])->format('Y-m-d');
             }
             if($data[0][$i][56]=='' || $data[0][$i][56]=='-'){
                 $tanggal_vaccine2=null;
@@ -1097,20 +1097,20 @@ class EmployeeAtrController extends AdminBaseController
             // }else{
             //     $tanggal_vaccine3=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][58])->format('Y-m-d');
             // }
-            if($data[0][$i][60]=='' || $data[0][$i][60]=='-'){
+            if($data[0][$i][62]=='' || $data[0][$i][62]=='-'){
                 $tanggal_expire_sim=null;
             }else{
-                $tanggal_expire_sim=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][60])->format('Y-m-d');
+                $tanggal_expire_sim=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][62])->format('Y-m-d');
             }
-            if($data[0][$i][62]=='' || $data[0][$i][62]=='-'){
+            if($data[0][$i][64]=='' || $data[0][$i][64]=='-'){
                 $tanggal_mulai_kontrak=null;
             }else{
                 $tanggal_mulai_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][62])->format('Y-m-d');
             }
-            if($data[0][$i][63]=='' || $data[0][$i][63]=='-'){
+            if($data[0][$i][65]=='' || $data[0][$i][65]=='-'){
                 $tanggal_akhir_kontrak=null;
             }else{
-                $tanggal_akhir_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][63])->format('Y-m-d');
+                $tanggal_akhir_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][65])->format('Y-m-d');
             }
             $dataArray[$i]=[
                 'status_department'=>$status_department,
@@ -1118,66 +1118,68 @@ class EmployeeAtrController extends AdminBaseController
                 'nik'=>$data[0][$i][2],
                 'employee_name'=>$data[0][$i][3],
                 'jenis_kelamin'=>$data[0][$i][4],
-                'status_jabatan'=>$data[0][$i][5],
+                'status_kontrak_tetap'=>$data[0][$i][5],
+                'status_staff'=>$data[0][$i][6],
+                'status_jabatan'=>$data[0][$i][7],
                 'department_id'=>$department_id,
-                'department_name'=>$data[0][$i][7],
+                'department_name'=>$data[0][$i][9],
                 'sub_dept_id'=>$sub_dept_id,
-                'sub_dept_name'=>$data[0][$i][9],
-                'status_aktif'=>$data[0][$i][10],
+                'sub_dept_name'=>$data[0][$i][11],
+                'sewing_nonsewing'=>$data[0][$i][12],
+                'direct_indirect'=>$data[0][$i][13],
+                'status_aktif'=>$data[0][$i][14],
                 'join_date'=>$join_date,
                 'tanggal_resign'=>$tanggal_resign,
-                'status_kontrak_tetap'=>$data[0][$i][13],
-                'status_staff'=>$data[0][$i][14],
-                'tempat_lahir'=>$data[0][$i][15],
+                'tempat_lahir'=>$data[0][$i][17],
                 'tanggal_lahir'=>$tanggal_lahir,
-                'agama'=>$data[0][$i][17],
-                'ibu_kandung'=>$data[0][$i][18],
-                'status_kawin'=>$data[0][$i][19],
-                'ptkp'=>$data[0][$i][20],
-                'npwp'=>$data[0][$i][21],
-                'nomor_ktp'=>$data[0][$i][22],
-                'nomor_kk'=>$data[0][$i][23],
-                'golongan_darah'=>$data[0][$i][24],
-                'nomor_tlpn'=>$data[0][$i][25],
-                'email'=>$data[0][$i][26],
-                'pendidikan_terakhir'=>$data[0][$i][27],
-                'jurusan_pendidikan'=>$data[0][$i][28],
-                'nama_bank'=>$data[0][$i][29],
-                'nomor_rekening_bank'=>$data[0][$i][30],
-                'alamat_rumah'=>$data[0][$i][31],
-                'propinsi'=>$data[0][$i][32],
-                'kota_kab'=>$data[0][$i][33],
-                'kecamatan'=>$data[0][$i][34],
-                'kelurahan_desa'=>$data[0][$i][35],
-                'alamat_sementara'=>$data[0][$i][36],
-                'tunjangan'=>$data[0][$i][37],
-                'kode_grade'=>$data[0][$i][38],
-                'referensi'=>$data[0][$i][39],
-                'employee_name_atasan'=>$data[0][$i][40],
-                'status_aktif_bpjs_tk'=>$data[0][$i][41],
+                'agama'=>$data[0][$i][19],
+                'ibu_kandung'=>$data[0][$i][20],
+                'status_kawin'=>$data[0][$i][21],
+                'ptkp'=>$data[0][$i][22],
+                'npwp'=>$data[0][$i][23],
+                'nomor_ktp'=>$data[0][$i][24],
+                'nomor_kk'=>$data[0][$i][25],
+                'golongan_darah'=>$data[0][$i][26],
+                'nomor_tlpn'=>$data[0][$i][27],
+                'email'=>$data[0][$i][28],
+                'pendidikan_terakhir'=>$data[0][$i][29],
+                'jurusan_pendidikan'=>$data[0][$i][30],
+                'nama_bank'=>$data[0][$i][31],
+                'nomor_rekening_bank'=>$data[0][$i][32],
+                'alamat_rumah'=>$data[0][$i][33],
+                'propinsi'=>$data[0][$i][34],
+                'kota_kab'=>$data[0][$i][35],
+                'kecamatan'=>$data[0][$i][36],
+                'kelurahan_desa'=>$data[0][$i][37],
+                'alamat_sementara'=>$data[0][$i][38],
+                'tunjangan'=>$data[0][$i][39],
+                'kode_grade'=>$data[0][$i][40],
+                'referensi'=>$data[0][$i][41],
+                'employee_name_atasan'=>$data[0][$i][42],
+                'status_aktif_bpjs_tk'=>$data[0][$i][43],
                 'tanggal_bpjs_ketenagakerjaan'=>$tanggal_bpjs_tk,
-                'nomor_bpjs_ketenagakerjaan'=>$data[0][$i][43],
-                'status_aktif_bpjs_ks'=>$data[0][$i][44],
+                'nomor_bpjs_ketenagakerjaan'=>$data[0][$i][45],
+                'status_aktif_bpjs_ks'=>$data[0][$i][46],
                 'tanggal_bpjs_kesehatan'=>$tanggal_bpjs_ks,
-                'nomor_bpjs_kesehatan'=>$data[0][$i][46],
-                'pengalaman_bekerja'=>$data[0][$i][47],
-                'nama_kerabat'=>$data[0][$i][48],
-                'nomor_tlpn_kerabat'=>$data[0][$i][49],
-                'hubungan_kerabat'=>$data[0][$i][50],
-                'alamat_kerabat'=>$data[0][$i][51],
+                'nomor_bpjs_kesehatan'=>$data[0][$i][48],
+                'pengalaman_bekerja'=>$data[0][$i][49],
+                'nama_kerabat'=>$data[0][$i][50],
+                'nomor_tlpn_kerabat'=>$data[0][$i][51],
+                'hubungan_kerabat'=>$data[0][$i][52],
+                'alamat_kerabat'=>$data[0][$i][53],
                 'tanggal_vaccine1'=>$tanggal_vaccine1,
-                'nama_vaksin1'=>$data[0][$i][53],
+                'nama_vaksin1'=>$data[0][$i][55],
                 'tanggal_vaccine2'=>$tanggal_vaccine2,
-                'nama_vaksin2'=>$data[0][$i][55],
+                'nama_vaksin2'=>$data[0][$i][57],
                 // 'tanggal_vaccine3'=>$tanggal_vaccine3,
-                'nama_vaksin3'=>$data[0][$i][57],
-                'golongan_sim'=>$data[0][$i][58],
-                'nomor_sim'=>$data[0][$i][59],
+                'nama_vaksin3'=>$data[0][$i][59],
+                'golongan_sim'=>$data[0][$i][60],
+                'nomor_sim'=>$data[0][$i][61],
                 'tanggal_expire_sim'=>$tanggal_expire_sim,
-                'catatan'=>$data[0][$i][61],
+                'catatan'=>$data[0][$i][63],
                 'tanggal_mulai_kontrak'=>$tanggal_mulai_kontrak,
                 'tanggal_akhir_kontrak'=>$tanggal_akhir_kontrak,
-                'catatan_kontrak'=>$data[0][$i][64]
+                'catatan_kontrak'=>$data[0][$i][66]
             ];
         }
         foreach($dataArray as $key=>$value){
