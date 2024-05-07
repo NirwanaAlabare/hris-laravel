@@ -276,6 +276,8 @@ class EmployeeAtrExport implements FromQuery, WithMapping, ShouldAutoSize, WithE
         $catatan_kontrak = $Data->catatan_kontrak;
         $created_at = $Data->created_at;
         $updated_at = $Data->updated_at;
+        $direct_indirect=$Data->direct_indirect;
+        $sewing_nonsewing=$Data->sewing_nonsewing;
 
         return [
             $employee_id,
@@ -290,8 +292,8 @@ class EmployeeAtrExport implements FromQuery, WithMapping, ShouldAutoSize, WithE
             $department_name,
             $sub_dept_id,
             $sub_dept_name,
-            '',
-            '',
+            $sewing_nonsewing,
+            $direct_indirect,
             $status_aktif,
             Date::stringToExcel( $join_date),
             Date::stringToExcel($tanggal_resign),
