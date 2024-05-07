@@ -80,6 +80,8 @@ class EmployeeAtrExport implements FromQuery, WithMapping, ShouldAutoSize, WithE
                 employee_atribut.enroll_id,
                 employee_atribut.join_date,
                 employee_atribut.nik,
+                employee_atribut.sewing_nonsewing,
+                employee_atribut.direct_indirect,
                 employee_atribut.status_aktif,
                 employee_atribut.status_jabatan,
                 employee_atribut.status_kontrak_tetap,
