@@ -10,7 +10,11 @@
         <td>
             <div class="parent">
                 <img class="image1" src="{{ public_path('assets/images/brand/id card background.jpeg') }}" width="204">
+                @if($value->lokasi_foto=='')
+                <img class="image2" src="{{ public_path('storage/app/public/images/foto orang.png') }}" width="130"/>
+                @else
                 <img class="image2" src="{{ public_path('storage/app/public/images/'.$value->lokasi_foto) }}" width="130"/>
+                @endif
                 <img class="image3" src="{{ public_path('assets/images/brand/id card foreground.png') }}" width="204">
                 <h6 class="text1">{{$value->nik}}</h6>
                 <div class="row text2">
