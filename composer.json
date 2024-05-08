@@ -24,6 +24,7 @@
         "league/flysystem": "^1.0",
         "maatwebsite/excel": "^3.0",
         "macellan/laravel-zip": "^1.0",
+        "milon/barcode": "^8.0",
         "pcinaglia/laraupdater": "^1.0",
         "spipu/html2pdf": "^5.2",
         "symfony/translation": "^5.0",

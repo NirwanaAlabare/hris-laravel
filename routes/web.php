@@ -153,6 +153,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('employeeatr/ajax_exportexcel/',['as'=>'hris.employeeatr.ajax_exportexcel','uses'=> 'EmployeeAtrController@ajax_exportexcel']);
     Route::post('employeeatr/import_employees/',['as'=>'hris.employeeatr.import_employees','uses'=> 'EmployeeAtrController@import_employees']);
     Route::post('employeeatr/import_employee_to_database/',['as'=>'hris.employeeatr.import_employee_to_database','uses'=> 'EmployeeAtrController@import_employee_to_database']);
+    Route::get('employeeatr/export_pdf_id_card/',['as'=>'hris.employeeatr.export_pdf_id_card','uses'=> 'EmployeeAtrController@export_pdf_id_card']);
+    Route::post('employeeatr/store_photo/',['as'=>'hris.employeeatr.store_photo','uses'=> 'EmployeeAtrController@store_photo']);
 
     // REF ABSEN IJIN
     Route::get('refabsenijin/index',['as'=>'hris.refabsenijin.index','uses'=>'RefAbsenIjinController@index']);
@@ -319,7 +321,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'admin','names
 
 });
 Route::post('import_employee_excel', 'Hris\EmployeeAtrController@uploadEmployee');
-Route::get('tes2','Hris\ProsesPayrollController@rekap_payroll_2');
+Route::get('tes2','Hris\RekapKehadiranKaryawanController@excel_rekap_absen');
 Route::get('export_excel_transfer', 'Hris\ProsesPayrollController@export_excel_transfer');
 Route::get('get_rekap_payroll','Hris\ProsesPayrollController@get_rekap');
 Route::post('update_rekap_absen','Hris\RekapKehadiranKaryawanController@proses_rekap');

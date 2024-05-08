@@ -124,6 +124,37 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="modal fade" id="uploadFoto" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog" role="document" style="max-width: 430px">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-primary" style="font-weight:bold;font-size:13pt">
+                                                UPLOAD PHOTO
+                                            </div>
+                                            <div class="modal-body px-3 pb-0">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <input type="file" id="choose_photo" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="row pb-2 justify-content-center">
+                                                    <div class="col-10 text-center" id="image_preview">
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="row py-2 justify-content-center">
+                                                    <button class="btn btn-primary py-0" id="upload_image">UPLOAD</button>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer py-2 bg-primary">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="modal fade" id="import_employees" role="dialog" aria-hidden="true">
                             <div class="modal-dialog" role="document" style="max-width: 1330px">
                                 <div class="row">
@@ -327,13 +358,14 @@
                                     <table class="table table-striped table-sm mb-0">
                                         <tr>
                                             <td rowspan=4>
-                                                <div class="col-xl-12 col-lg-12 col-md-12 userprofile">
-                                                    <div class="userpic mb-2">
-                                                        <img src="{{URL::asset('assets/images/users/female/5.jpg')}}" alt="" class="user mt-3">
+                                                <div class="col-xl-12 col-lg-12 col-md-12 text-center">
+                                                    <div class="userpic" id="profile_photo">
+
                                                     </div>
                                                     <div class="form-group text-center">
-                                                        <a href="#" id="btnupload" class="btn btn-primary mt-3 p-1 text-sm" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Upload Foto"><i class="fa fa-upload mr-1"></i>Upload</a>
+                                                        <a href="#" id="btnupload" class="btn btn-primary mt-3 p-1 text-sm" data-placement="bottom" data-original-title="Upload Foto"><i class="fa fa-upload mr-1"></i>Upload</a>
                                                         <a href="#" id="btndownload" class="btn btn-secondary mt-3 p-1 text-sm" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Download Foto"><i class="fa fa-download mr-1"></i>Download</a>
+                                                        <a href="#" id="btndownloadid" class="btn btn-danger mt-3 p-1 text-sm" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a>
                                                     </div>
                                                 </div>
                                             </td>
@@ -1002,6 +1034,82 @@
         }
     </style>
     <script type="text/javascript">
+        $('#btndownloadid').click(function(e){
+            if($('#enroll_id').val()==''){
+                alert('Pilih karyawan terlebih dahulu!');
+            }else{
+                var enroll_id=$('#enroll_id').val();
+                var url = 'export_pdf_id_card?enroll_id='+enroll_id;
+                window.open(url, '_blank');
+            }
+        });
+        $('#btnupload').click(function(e){
+            let enroll_id=$('#enroll_id').val();
+            $('#upload_image').attr('disabled',true);
+            if(enroll_id==''){
+                alert('Pilih karyawan terlebih dahulu!');
+            }else{
+                $('#choose_photo').val('');
+                $('#uploadFoto').modal('show');
+            }
+        });
+        $('#choose_photo').change(function(e){
+            $('#image_preview').empty();
+            var fileInput = document.getElementById('choose_photo');
+            var filePath = fileInput.value;
+            var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+            if(!allowedExtensions.exec(filePath)){
+                alert('Please upload file having extensions .jpeg/.jpg/.png/.gif only.');
+                fileInput.value = '';
+                $('#image_preview').append('<img src="{{URL::asset('assets/images/brand/foto orang.png')}}" alt="" class="user mt-3">');
+                $('#upload_image').attr('disabled',true);
+                return false;
+            }else{
+                //Image preview
+                if (fileInput.files && fileInput.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('image_preview').innerHTML = '<img src="'+e.target.result+' " width=255px/>';
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                    $('#upload_image').attr('disabled',false);
+                }
+            }
+        });
+        
+        $(document).on("click","#upload_image",function(e){
+            e.preventDefault();
+            var formData = new FormData();
+            var enroll_id=$('#enroll_id').val();
+            let _token = $('meta[name="csrf-token"]').attr('content');
+            var photo = $('#choose_photo').prop('files')[0];
+            formData.append('enroll_id', enroll_id);
+            formData.append('photo', photo);
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.employeeatr.store_photo')}}",
+                contentType: 'multipart/form-data',
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: formData,
+                success: function(res){
+                    swal("", "Profile photo update success", "success");
+                    $('#uploadFoto').modal('hide');
+                    $('#choose_photo').val('');
+                    $('#image_preview').empty().append('<img src="{{URL::asset('assets/images/brand/foto orang.png')}}" alt="" class="user mt-3">');
+                }
+            });
+        });
+        $('#upload_image').click(function($query){
+            let enroll_id=$('#enroll_id').val();
+
+        });
         function fill_the_table(){
             $('#loading_karyawan').addClass("spinner-border");
             $('#tabel_karyawan').empty();
@@ -1444,6 +1552,7 @@
         });
 
         $(document).ready(function() {
+            $('#profile_photo').empty().append('<img src="{{URL::asset('assets/images/brand/foto orang.png')}}" alt="" class="user mt-3" height="110px">');
             var table1 = $('#datatable-ajax-crud').DataTable({
                 processing: true,
                 serverSide: true,
@@ -1601,7 +1710,14 @@
                 $('#operator').val(data['operator']);
                 $('#created_at').val(data['created_at']);
                 $('#updated_at').val(data['updated_at']);
-
+                let poto_profil='';
+                if(data['lokasi_foto']=='' || data['lokasi_foto']==null){
+                    poto_profil='foto orang.png';
+                }else{
+                    poto_profil=data['lokasi_foto'];
+                }
+                $('#profile_photo').empty().append('<img src="/storage/app/public/images/'+poto_profil+'" height="120px" />');
+                $('#image_preview').empty().append('<img src="/storage/app/public/images/'+poto_profil+'" alt="" class="user mt-3">');
              });
 
         });
@@ -1612,7 +1728,7 @@
                 type: "info"
             });
         });
-$(document).ready(function() {
+    $(document).ready(function() {
         $('body').on('change', '#site_nirwana_id', function () {
             var site_nirwana_id = $('#site_nirwana_id').val();
             if (site_nirwana_id) {
@@ -1650,8 +1766,8 @@ $(document).ready(function() {
             }
 
         });
- $('#site_nirwana_id').trigger('change');
-});
+        $('#site_nirwana_id').trigger('change');
+        });
         $('body').on('change', '#department_id', function () {
             var site_nirwana_id = $('#site_nirwana_id').val();
             var department_id = $('#department_id').val();

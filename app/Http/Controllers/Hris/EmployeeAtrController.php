@@ -27,6 +27,8 @@ use App\Services\employee\Kehadiran;
 use App\Exports\FormatImportBPJSExport;
 use App\Imports\EmployeeImport;
 use App\Exports\newEmployeeExport;
+use Spipu\Html2Pdf\Html2Pdf;
+use PDF;
 /**
  * Class MdAbsenHadirController
  * @package App\Http\Controllers\Hris
@@ -49,7 +51,33 @@ class EmployeeAtrController extends AdminBaseController
         $jabatan=EmployeeAtribut::orderBy('created_at')->groupBy('status_jabatan')->pluck('status_jabatan');
         return View::make('hris/employeeatr', $this->data,compact('jabatan'));
     }
-
+    public function export_pdf_id_card(){
+        $employee=EmployeeAtribut::where('enroll_id',request()->enroll_id)->where(function ($query){
+            $query->where('status_aktif','AKTIF')
+            ->orWhere(function($queryes){
+                $queryes->where('status_aktif','TIDAK AKTIF')
+                ->where('tanggal_resign','>',date('Y-m-d'));
+            });
+        })->get();
+        $pdf = PDF::loadView('hris.Laporan.id_card',["employee" => $employee])->stream('Id card karyawan'.'.pdf',array('Attachment'=>0));
+        return $pdf;
+    }
+    public function store_photo(){
+        $image = request()->file('photo');
+        $employee=EmployeeAtribut::where('enroll_id',request()->enroll_id)->get();
+        $enroll_id='';
+        $employee_name='';
+        foreach($employee as $value){
+            $nik=$value->nik;
+            $employee_name=$value->employee_name;
+        }
+        $new_name = $nik.'_'.$employee_name.'_profile_photo_'.date('y-m-d').'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $image->move(public_path('storage/app/public/images'), $new_name);
+        EmployeeAtribut::where('enroll_id',request()->enroll_id)->update([
+            'lokasi_foto'=>$new_name
+        ]);
+        return request()->enroll_id;
+    }
     private function ajax_getselectdivisi()
     {
         $query =  DepartmentAll::selectRaw('site_nirwana_id, site_nirwana_name')
