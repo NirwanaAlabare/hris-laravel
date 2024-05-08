@@ -305,7 +305,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row border border-muted border-top-0 border-left-0 border-right-0 pt-2 px-0">
+                    <div class="row pt-2 px-0">
                         <div class="col-4">
                         </div>
                         <div class="col-6">
