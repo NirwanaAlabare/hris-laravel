@@ -10,7 +10,7 @@
         <td>
             <div class="parent">
                 <img class="image1" src="{{ public_path('assets/images/brand/id card background.jpeg') }}" width="204">
-                <img class="image2" src="{{ public_path('assets/images/brand/pas photo.png') }}" width="130"/>
+                <img class="image2" src="{{ public_path('storage/app/public/images/'.$value->lokasi_foto) }}" width="130"/>
                 <img class="image3" src="{{ public_path('assets/images/brand/id card foreground.png') }}" width="204">
                 <h6 class="text1">{{$value->nik}}</h6>
                 <div class="row text2">
@@ -18,7 +18,7 @@
                         {{$value->employee_name}}
                     </div>
                     <div class="col">
-                        {{$value->sub_dept_name}}
+                        {{$value->status_jabatan}} {{$value->sub_dept_name}}
                     </div>
                     <div class="col">
                         <img src="data:image/png;base64,{{\DNS2D::getBarcodePNG(''.$value->enroll_id, 'QRCODE',)}}" alt="barcode" style="width: 32px; height: 32px; margin:2px; padding:2px;background-color:white" />
