@@ -48,11 +48,32 @@ class EmployeeAtrController extends AdminBaseController
         $loggedAdmin = Auth::guard('admin')->user();
         $this->loggedAdmin = $loggedAdmin;
         $this->divisi = $this->ajax_getselectdivisi();
+        $department=DepartmentAll::orderBy('department_id')->groupBy('department_id')->get();
         $jabatan=EmployeeAtribut::orderBy('created_at')->groupBy('status_jabatan')->pluck('status_jabatan');
-        return View::make('hris/employeeatr', $this->data,compact('jabatan'));
+
+        return View::make('hris/employeeatr', $this->data,compact('department','jabatan'));
     }
     public function export_pdf_id_card(){
         $employee=EmployeeAtribut::where('enroll_id',request()->enroll_id)->where(function ($query){
+            $query->where('status_aktif','AKTIF')
+            ->orWhere(function($queryes){
+                $queryes->where('status_aktif','TIDAK AKTIF')
+                ->where('tanggal_resign','>',date('Y-m-d'));
+            });
+        })->get();
+        $pdf = PDF::loadView('hris.Laporan.id_card',["employee" => $employee])->stream('Id card karyawan'.'.pdf',array('Attachment'=>0));
+        return $pdf;
+    }
+    public function export_pdf_id_card_department(){
+        $inDepartment='';
+        if(request()->department){
+            $inDepartment=' AND department_name = "'.request()->department.'"';
+        }
+        $inSubDepartment='';
+        if(request()->sub_department){
+            $inSubDepartment=' AND sub_dept_id = "'.request()->sub_department.'"';
+        }
+        $employee=EmployeeAtribut::whereRaw('status_aktif!=""'.$inDepartment.''.$inSubDepartment.'')->where(function ($query){
             $query->where('status_aktif','AKTIF')
             ->orWhere(function($queryes){
                 $queryes->where('status_aktif','TIDAK AKTIF')
@@ -175,47 +196,60 @@ class EmployeeAtrController extends AdminBaseController
         $dir = $request->input('order.0.dir');
         $totalData = 0;
         $totalFiltered = 0;
-
+        $department=$request->department_id;
+        $sub_dept_id=$request->sub_dept_id;
+        $inDepartment='';
+        $inSubDepartment='';
+        if($department){
+            $inDepartment = ' AND department_name = "'.$department.'"';
+        }
+        if($sub_dept_id){
+            $inSubDepartment = ' AND sub_dept_id = "'.$sub_dept_id.'"';
+        }
         if(empty($request->input('search.value')))
         {
-            $query =  EmployeeAtribut::
-                            offset($start)
-                            ->limit($limit)
-                            ->orderBy($order,$dir)
-                            ->get();
-
-            $totalData = EmployeeAtribut::count();
-            $totalFiltered = $totalData;
-
-        } else {
-            $search = $request->input('search.value');
-
-            $query =  EmployeeAtribut::where('employee_id','LIKE',"%{$search}%")
-                            ->orWhere('nik','LIKE',"%{$search}%")
-                            ->orWhere('enroll_id','LIKE',"%{$search}%")
-                            ->orWhere('employee_name','LIKE',"%{$search}%")
-                            ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
-                            ->orWhere('department_name','LIKE',"%{$search}%")
-                            ->orWhere('sub_dept_name','LIKE',"%{$search}%")
-                            ->orWhere('work_status','LIKE',"%{$search}%")
-                            ->orWhere('employee_status','LIKE',"%{$search}%")
-                            ->orWhere('posisi_name','LIKE',"%{$search}%")
+            $query =  EmployeeAtribut::whereRaw('status_aktif!=""'.$inDepartment.''.$inSubDepartment.'')
                             ->offset($start)
                             ->limit($limit)
                             ->orderBy($order,$dir)
                             ->get();
 
-            $totalData = EmployeeAtribut::where('employee_id','LIKE',"%{$search}%")
-                            ->orWhere('nik','LIKE',"%{$search}%")
-                            ->orWhere('enroll_id','LIKE',"%{$search}%")
-                            ->orWhere('employee_name','LIKE',"%{$search}%")
-                            ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
-                            ->orWhere('department_name','LIKE',"%{$search}%")
-                            ->orWhere('sub_dept_name','LIKE',"%{$search}%")
-                            ->orWhere('work_status','LIKE',"%{$search}%")
-                            ->orWhere('employee_status','LIKE',"%{$search}%")
-                            ->orWhere('posisi_name','LIKE',"%{$search}%")
-                            ->count();
+            $totalData = EmployeeAtribut::whereRaw('status_aktif!=""'.$inDepartment.''.$inSubDepartment.'')->count();
+            $totalFiltered = $totalData;
+
+        } else {
+            $search = $request->input('search.value');
+
+            $query =  EmployeeAtribut::whereRaw('status_aktif!=""'.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
+                $query->where('employee_id','LIKE',"%{$search}%")
+                ->orWhere('nik','LIKE',"%{$search}%")
+                ->orWhere('enroll_id','LIKE',"%{$search}%")
+                ->orWhere('employee_name','LIKE',"%{$search}%")
+                ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
+                ->orWhere('department_name','LIKE',"%{$search}%")
+                ->orWhere('sub_dept_name','LIKE',"%{$search}%")
+                ->orWhere('work_status','LIKE',"%{$search}%")
+                ->orWhere('employee_status','LIKE',"%{$search}%")
+                ->orWhere('posisi_name','LIKE',"%{$search}%");
+            })
+            ->offset($start)
+            ->limit($limit)
+            ->orderBy($order,$dir)
+            ->get();
+
+            $totalData = EmployeeAtribut::whereRaw('status_aktif="AKTIF"'.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
+                $query->where('employee_id','LIKE',"%{$search}%")
+                ->orWhere('nik','LIKE',"%{$search}%")
+                ->orWhere('enroll_id','LIKE',"%{$search}%")
+                ->orWhere('employee_name','LIKE',"%{$search}%")
+                ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
+                ->orWhere('department_name','LIKE',"%{$search}%")
+                ->orWhere('sub_dept_name','LIKE',"%{$search}%")
+                ->orWhere('work_status','LIKE',"%{$search}%")
+                ->orWhere('employee_status','LIKE',"%{$search}%")
+                ->orWhere('posisi_name','LIKE',"%{$search}%");
+            })->count();
+            
             $totalFiltered = $totalData;
 
         }

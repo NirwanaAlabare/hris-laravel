@@ -282,10 +282,37 @@
                         <a href="#" class="card-options-collapse mr-2" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
                     </div>
                 </div>
-                <div class="card-body m-0">
-                    <div class="table-responsive">
-                        <table id="datatable-ajax-crud"
-                            class="table table-sm table-striped table-hover table-bordered w-100">
+                <div class="card-body m-0 pt-3">
+                    <div class="row">
+                        <div class="col-4">
+                            <label class="form-label text-primary pt-1">Department</label>
+                        </div>
+                        <div class="col-6">
+                            <select id="selectDepartment" name="selectDepartment" class="form-control form-control-sm">
+                                <option value="">Filter Department</option>
+                                @foreach ($department as $r_department)
+                                    <option value="{{$r_department->department_name}}">{{$r_department->department_name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row pt-2">
+                        <div class="col-4">
+                            <label class="form-label text-primary pt-1">Sub Department</label>
+                        </div>
+                        <div class="col-6">
+                            <select class="form-control form-control-sm" id="pilih_department">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row border border-muted border-top-0 border-left-0 border-right-0 pt-2 px-0">
+                        <div class="col-4">
+                        </div>
+                        <div class="col-6">
+                            <a href="#" id="btndownloadiddept" class="py-1" style="background-color: #f23535;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a>
+                        </div>
+                    </div>
+                        <table id="datatable-ajax-crud" class="table table-sm table-striped table-hover table-bordered w-100">
                             <thead>
                                 <tr class="text-center">
                                     <th scope="col"></th>
@@ -296,7 +323,6 @@
                             <tbody>
                             </tbody>
                         </table>
-                    </div>
                 </div>
                 <div class="card-footer bg-primary br-br-7 br-bl-7">
                     <div class="text-white"></div>
@@ -1032,6 +1058,9 @@
             overflow-x: hidden;
             font-size: 9pt; /* Hide the horizontal scroll */
         }
+        .dataTables_filter {
+            float: left !important;
+        }
     </style>
     <script type="text/javascript">
         $('#btndownloadid').click(function(e){
@@ -1042,6 +1071,39 @@
                 var url = 'export_pdf_id_card?enroll_id='+enroll_id;
                 window.open(url, '_blank');
             }
+        });
+        $('#btndownloadiddept').click(function(e){
+                var department=$('#selectDepartment').val();
+                var sub_department=$('#pilih_department').val();
+                var url = 'export_pdf_id_card_department?department='+department+'&sub_department='+sub_department;
+                window.open(url, '_blank');
+        });
+        $('#selectDepartment').on('change',function(e){
+            testing();
+            $("#pilih_department").empty();
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.departmentall.getSelectSubDept')}}",
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                data: {
+                    department_id:$('#selectDepartment').val(),
+                    sub_dept_id:$('#pilih_department').val(),
+                },
+                dataType: 'json',
+                success: function(resA){
+                    if(resA){
+                        $("#pilih_department").append(new Option('Filter Sub Department', ''));
+                        for(i=0;i<resA.length;i++) {
+                            $("#pilih_department").append(new Option(resA[i].sub_dept_name, resA[i].sub_dept_id));
+                        }
+                    }
+                }
+            });
+        });
+        $('#pilih_department').on('change',function(e){
+            testing();
         });
         $('#btnupload').click(function(e){
             let enroll_id=$('#enroll_id').val();
@@ -1551,15 +1613,15 @@
             });
         });
 
-        $(document).ready(function() {
-            $('#profile_photo').empty().append('<img src="{{URL::asset('assets/images/brand/foto orang.png')}}" alt="" class="user mt-3" height="110px">');
+        function testing(){
+            var department_id = $('#selectDepartment').val();
+            var sub_dept_id = $('#pilih_department').val();
             var table1 = $('#datatable-ajax-crud').DataTable({
                 processing: true,
                 serverSide: true,
                 lengthChange: false,
                 pageLength: 10,
                 pagingType: "simple",
-                dom: '<"top"ipf>rt<"bottom"l><"clear">',
                 destroy: true,
                 "ajax": {
                     "url": "{{ route('hris.employeeatr.ajax_getemployeeatr') }}",
@@ -1569,6 +1631,70 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     "dataSrc": "data",
+                    "data":{
+                        department_id:department_id,
+                        sub_dept_id:sub_dept_id
+                    }
+                },
+                columns: [
+                    {
+                        title: 'NIK',
+                        data: 'nik',
+                        name: 'nik'
+                    },
+                    {
+                        title: 'Nomor Absen',
+                        data: 'enroll_id',
+                        name: 'enroll_id'
+                    },
+                    {
+                        title: 'Nama Karyawan',
+                        data: 'employee_name',
+                        name: 'employee_name'
+                    },
+                ],
+                columnDefs: [
+                    {
+                        'visible': false,
+                        'targets': []
+                    }
+                ],
+                order: [
+                    [2, 'asc']
+                ],
+                "createdRow": function (row, data, dataIndex) {
+                    if (data['new_employee']) {
+                        $(row).addClass('bg-green')
+                    }
+                    if (data['deactive']) {
+                        $(row).addClass('bg-red')
+                    }
+            }
+            });
+
+            table1.draw();
+        }
+        $(document).ready(function() {
+            var department_id = $('#selectDepartment').val();
+            $('#profile_photo').empty().append('<img src="{{URL::asset('assets/images/brand/foto orang.png')}}" alt="" class="user mt-3" height="110px">');
+            var table1 = $('#datatable-ajax-crud').DataTable({
+                processing: true,
+                serverSide: true,
+                lengthChange: false,
+                pageLength: 10,
+                pagingType: "simple",
+                destroy: true,
+                "ajax": {
+                    "url": "{{ route('hris.employeeatr.ajax_getemployeeatr') }}",
+                    "dataType": "json",
+                    "type": "POST",
+                    "headers": {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    "dataSrc": "data",
+                    "data":{
+                        department_id:department_id,
+                    }
                 },
                 columns: [
                     {

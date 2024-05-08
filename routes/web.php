@@ -154,6 +154,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('employeeatr/import_employees/',['as'=>'hris.employeeatr.import_employees','uses'=> 'EmployeeAtrController@import_employees']);
     Route::post('employeeatr/import_employee_to_database/',['as'=>'hris.employeeatr.import_employee_to_database','uses'=> 'EmployeeAtrController@import_employee_to_database']);
     Route::get('employeeatr/export_pdf_id_card/',['as'=>'hris.employeeatr.export_pdf_id_card','uses'=> 'EmployeeAtrController@export_pdf_id_card']);
+    Route::get('employeeatr/export_pdf_id_card_department/',['as'=>'hris.employeeatr.export_pdf_id_card_department','uses'=> 'EmployeeAtrController@export_pdf_id_card_department']);
     Route::post('employeeatr/store_photo/',['as'=>'hris.employeeatr.store_photo','uses'=> 'EmployeeAtrController@store_photo']);
 
     // REF ABSEN IJIN
