@@ -1071,6 +1071,8 @@ class EmployeeAtrController extends AdminBaseController
     }
     
     public function import_employee_to_database(Request $request){
+        ini_set("max_execution_time", 0);
+        ini_set("max_input_time", 0);
         $data=Excel::toArray([],$request->file('excel_file'));
         $arrayDeptName=DepartmentAll::where('site_nirwana_id','NAG')->pluck('department_name')->toArray();
         $arraySubDeptName=DepartmentAll::where('site_nirwana_id','NAG')->pluck('sub_dept_name')->toArray();
