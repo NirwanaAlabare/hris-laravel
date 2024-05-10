@@ -1,10 +1,10 @@
 
 <table>
     <tr>
-        <?php $counter=2;?>
+        <?php $counter=3;?>
         @foreach($employee as $value)
         <?php $counter++;?>
-        @if($counter%3==0)
+        @if($counter%4==0)
             </tr><tr>
         @endif
         <td>
@@ -46,7 +46,7 @@
     }
     .image2 {
         position: absolute;
-        bottom: 470px;
+        bottom: 180px;
         left: 8px;
     }
     .image3 {
