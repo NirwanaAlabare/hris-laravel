@@ -752,7 +752,7 @@
         $('.fc-datepicker').datepicker({
             showOtherMonths: true,
             selectOtherMonths: true,
-            dateFormat: 'yy-mm-dd'
+            dateFormat: 'dd-mm-yy'
         });
 
         $('body').on('click', '#btn-add', function (event) {
@@ -776,7 +776,7 @@
             var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
             var yyyy = today.getFullYear();
 
-            today = yyyy + '-' + mm + '-' + dd;
+            today = dd + '-' + mm + '-' + yyyy;
 
             $('#tanggal_perijinan').val(today);
             $('#tanggal_mulai_ijin').val(today);
@@ -852,7 +852,8 @@
             location.reload();
         });
         $('body').on('click', '#btn-icon-refresh-izin', function(event){
-            var tanggal_perizinan = $('#tanggal_perijinan').val();
+            var tanggal_periz = $('#tanggal_perijinan').val();
+            var tanggal_perizinan=tanggal_periz.substr(6, 4)+'-'+tanggal_periz.substr(3,2)+'-'+tanggal_periz.substr(0,2);
             var kode_absen_ijin = $('#kode_absen_ijin').val();
             if(kode_absen_ijin==''){
                 notif({
@@ -874,7 +875,8 @@
             }
         });
         $('body').on('click', '#btn-icon-refresh-iks', function(event){
-            var tanggal_perizinan = $('#tanggal_perijinan').val();
+            var tanggal_periz = $('#tanggal_perijinan').val();
+            var tanggal_perizinan=tanggal_periz.substr(6, 4)+'-'+tanggal_periz.substr(3,2)+'-'+tanggal_periz.substr(0,2);
             $.ajax({
                 type:"POST",
                 url: "/get_last_nomor_form_perizinan_iks",
@@ -889,7 +891,12 @@
         $('body').on('click', '#btn-save-izin', function (event) {
             var uuid = $('#uuid').val();
             var uuid_master = $('#uuid_master').val();
-            var tanggal_perizinan = $('#tanggal_perijinan').val();
+            var tanggal_periz = $('#tanggal_perijinan').val();
+            var tanggal_perizinan=tanggal_periz.substr(6, 4)+'-'+tanggal_periz.substr(3,2)+'-'+tanggal_periz.substr(0,2);
+            var tanggal_mulai = $('#tanggal_mulai_ijin').val();
+            var tanggal_mulai_ijin=tanggal_mulai.substr(6, 4)+'-'+tanggal_mulai.substr(3,2)+'-'+tanggal_mulai.substr(0,2);
+            var tanggal_akhir = $('#tanggal_akhir_ijin').val();
+            var tanggal_akhir_ijin=tanggal_akhir.substr(6, 4)+'-'+tanggal_akhir.substr(3,2)+'-'+tanggal_akhir.substr(0,2);
             var nomor_form_perizinan = $('#nomor_form_perizinan').val();
             var enroll_id = $('#enroll_id').val();
             var nik = $('#nik').val();
@@ -1114,7 +1121,8 @@
 
         $('body').on('click', '#btn-save-iks', function (event) {
             var uuid = $('#uuid').val();
-            var tanggal_perizinan = $('#tanggal_perijinan').val();
+            var tanggal_periz = $('#tanggal_perijinan').val();
+            var tanggal_perizinan=tanggal_periz.substr(6, 4)+'-'+tanggal_periz.substr(3,2)+'-'+tanggal_periz.substr(0,2);
             var nomor_form_perizinan = $('#nomor_form_perizinan').val();
             var enroll_id = $('#enroll_id').val();
             var nik = $('#nik').val();
@@ -1327,7 +1335,8 @@
         });
 
         $('body').on('click', '#btn-remove', function (event) {
-            var tanggal_perizinan = $('#tanggal_perijinan').val();
+            var tanggal_periz = $('#tanggal_perijinan').val();
+            var tanggal_perizinan=tanggal_periz.substr(6, 4)+'-'+tanggal_periz.substr(3,2)+'-'+tanggal_periz.substr(0,2);
             var tanggal = tanggal_perizinan;
 
             // LAGI COBA TEST CLOSING PAYROLL
@@ -1540,6 +1549,12 @@
                 var row = table1.row(tr);
 
                 var data = row.data();
+                var tanggal_periz=data['tanggal_perizinan'];
+                var tanggal_mulai = data['tanggal_mulai_ijin'];
+                var tanggal_akhir = data['tanggal_akhir_ijin'];
+                var tanggal_perizinan=tanggal_periz.substr(8,2)+'-'+tanggal_periz.substr(5,2)+'-'+tanggal_periz.substr(0,4);
+                var tanggal_mulai_ijin=tanggal_mulai.substr(8,2)+'-'+tanggal_mulai.substr(5,2)+'-'+tanggal_mulai.substr(0,4);
+                var tanggal_akhir_ijin=tanggal_akhir.substr(8,2)+'-'+tanggal_akhir.substr(5,2)+'-'+tanggal_akhir.substr(0,4);
 
                 $("#form1 :input").prop("disabled", true);
                 $("#btn-save-izin").prop("disabled", true);
@@ -1552,7 +1567,7 @@
 
                 $('#uuid').val(data['uuid']);
                 $('#uuid_master').val(data['uuid_master']);
-                $('#tanggal_perijinan').val(data['tanggal_perizinan']);
+                $('#tanggal_perijinan').val(tanggal_perizinan);
                 $('#nomor_form_perizinan').val(data['nomor_form_perizinan']);
                 $('#enroll_id').val(data['enroll_id']);
                 $('#nik').val(data['nik']);
@@ -1584,8 +1599,8 @@
                     $('#updated_at_iks').text(null);
 
                     $("#kode_absen_ijin").val(data['kode_absen_ijin']).trigger("change");
-                    $('#tanggal_mulai_ijin').val(data['tanggal_mulai_ijin']);
-                    $('#tanggal_akhir_ijin').val(data['tanggal_akhir_ijin']);
+                    $('#tanggal_mulai_ijin').val(tanggal_mulai_ijin);
+                    $('#tanggal_akhir_ijin').val(tanggal_akhir_ijin);
                     $('#absen_alasan_izin').val(data['absen_alasan']);
                     $('#created_at_izin').text(data['created_at']);
                     $('#updated_at_izin').text(data['updated_at']);
@@ -1598,7 +1613,8 @@
         });
 
         function hitungtotaljam() {
-            var tglform = $('#tanggal_perijinan').val();
+            var tanggal_periz = $('#tanggal_perijinan').val();
+            var tglform=tanggal_periz.substr(6, 4)+'-'+tanggal_periz.substr(3,2)+'-'+tanggal_periz.substr(0,2);
             var tm1 = new Date(tglform + " " + $('#time_mulai_ijin').val());
             var tm2 = new Date(tglform + " " + $('#time_akhir_ijin').val());
             var total_time_ijin = diff_minutes(tm1, tm2);
