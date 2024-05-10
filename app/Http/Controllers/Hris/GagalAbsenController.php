@@ -97,9 +97,11 @@ class GagalAbsenController extends AdminBaseController
                             master_data_absen_kehadiran.absen_alasan
                         ')
                         ->whereRaw('
-                            (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                            ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                             AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                            AND master_data_absen_kehadiran.status_absen IN ("M","TL","LN") 
+                            AND master_data_absen_kehadiran.status_absen IN ("M","TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                            AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                            AND master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
                         ')
                         ->leftJoin('employee_atribut', 'master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
                         ->orderBy('tanggal_berjalan','desc')
@@ -109,11 +111,13 @@ class GagalAbsenController extends AdminBaseController
                         ->get();
 
                 $totalData = MasterDataAbsenKehadiran::whereRaw('
-                                (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
-                                AND master_data_absen_kehadiran.enroll_id IS NOT NULL )
-                                AND master_data_absen_kehadiran.status_absen IN ("M","TL","LN") 
-                            ')
-                            ->count();
+                            ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                            AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                            AND master_data_absen_kehadiran.status_absen IN ("M","TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                            AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                            AND master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
+                        ')
+                        ->count();
 
                 $totalFiltered = $totalData;                            
 
@@ -138,9 +142,11 @@ class GagalAbsenController extends AdminBaseController
                             master_data_absen_kehadiran.absen_alasan
                         ')
                         ->whereRaw('
-                            (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
-                            AND master_data_absen_kehadiran.enroll_id IS NOT NULL )
-                            AND master_data_absen_kehadiran.status_absen IN ("M","TL","LN") 
+                            ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                            AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                            AND master_data_absen_kehadiran.status_absen IN ("M","TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                            AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                            AND master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null) 
                             AND (
                                 upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
                                 OR upper(master_data_absen_kehadiran.nama_hari) LIKE "%' . $searchData . '%"
@@ -155,9 +161,11 @@ class GagalAbsenController extends AdminBaseController
                         ->get();
     
                 $totalData = MasterDataAbsenKehadiran::whereRaw('
-                                (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
-                                AND master_data_absen_kehadiran.enroll_id IS NOT NULL )
-                                AND master_data_absen_kehadiran.status_absen IN ("M","TL","LN") 
+                                ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                                AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                                AND master_data_absen_kehadiran.status_absen IN ("M","TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                                AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                                AND master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
                                 AND (
                                     upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
                                     OR upper(master_data_absen_kehadiran.nama_hari) LIKE "%' . $searchData . '%"
