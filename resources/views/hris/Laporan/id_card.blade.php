@@ -69,6 +69,7 @@
         top: 534px;
         left: 76px;
         font-weight: bold;
+        font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
         font-size: 7pt;
         color: white;
     }
