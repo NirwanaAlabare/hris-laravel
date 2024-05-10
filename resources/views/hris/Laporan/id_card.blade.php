@@ -46,7 +46,7 @@
     }
     .image2 {
         position: absolute;
-        top: 384px;
+        top: 380px;
         left: 8px;
     }
     .image3 {
