@@ -1038,17 +1038,10 @@
                                             tanggal_akhir_ijin:tanggal_akhir_ijin,
                                         },
                                         success: function(res){
-                                            notif({
-                                                msg: "<b>Info:</b> Data berhasil di simpan.",
-                                                type: "success"
-                                            });
+                                            swal("", "update perizinan berhasil", "success");
                                         },
                                         error: function(res){
-                                            console.log(res);
-                                            notif({
-                                                msg: "<b>Error:</b> Oops data gagal di simpan.",
-                                                type: "error"
-                                            });
+                                            swal("", "update perizinan gagal", "error");
                                         }
                                     });
                                 } else {
@@ -1072,17 +1065,10 @@
                                         },
                                         dataType: 'json',
                                         success: function(res){
-                                            console.log(res);
-                                            notif({
-                                                msg: "<b>Info:</b> Data berhasil di simpan.",
-                                                type: "info"
-                                            });
+                                            swal("", "create perizinan berhasil", "success");
                                         },
                                         error: function(res){
-                                            notif({
-                                                msg: "<b>Error:</b> Oops data gagal di simpan.",
-                                                type: "error"
-                                            });
+                                            swal("", "create perizinan gagal", "error");
                                         }
                                     });
                                 }
