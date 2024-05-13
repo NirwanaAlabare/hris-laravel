@@ -99,7 +99,7 @@ class GagalAbsenController extends AdminBaseController
                         ->whereRaw('
                             ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                             AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                            AND master_data_absen_kehadiran.status_absen IN ("M","TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                            AND master_data_absen_kehadiran.status_absen IN ("TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                             AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
                             AND master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
                         ')
@@ -113,7 +113,7 @@ class GagalAbsenController extends AdminBaseController
                 $totalData = MasterDataAbsenKehadiran::whereRaw('
                             ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                             AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                            AND master_data_absen_kehadiran.status_absen IN ("M","TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                            AND master_data_absen_kehadiran.status_absen IN ("TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                             AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
                             AND master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
                         ')
@@ -144,7 +144,7 @@ class GagalAbsenController extends AdminBaseController
                         ->whereRaw('
                             ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                             AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                            AND master_data_absen_kehadiran.status_absen IN ("M","TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                            AND master_data_absen_kehadiran.status_absen IN ("TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                             AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
                             AND master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null) 
                             AND (
@@ -163,7 +163,7 @@ class GagalAbsenController extends AdminBaseController
                 $totalData = MasterDataAbsenKehadiran::whereRaw('
                                 ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                                 AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                                AND master_data_absen_kehadiran.status_absen IN ("M","TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                                AND master_data_absen_kehadiran.status_absen IN ("TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                                 AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
                                 AND master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
                                 AND (
@@ -435,6 +435,13 @@ class GagalAbsenController extends AdminBaseController
                     ]);
 
         return Response()->json($query);
+    }
+    
+    public function show_image(Request $request){
+        $response = array(
+          'data' => $request->image,
+        );
+        return response()->json($response); 
     }
 
     public function ajax_getallemployeeatribut()
