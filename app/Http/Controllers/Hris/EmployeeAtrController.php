@@ -92,7 +92,8 @@ class EmployeeAtrController extends AdminBaseController
             $nik=$value->nik;
             $employee_name=$value->employee_name;
         }
-        $new_name = $nik.'_'.$employee_name.'_profile_photo_'.date('y-m-d').'_'.rand(). '.' . $image->getClientOriginalExtension();
+        // $new_name = $nik.'_'.$employee_name.'_profile_photo_'.date('y-m-d').'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $new_name = $nik.'.' . $image->getClientOriginalExtension();
         $image->move(public_path('storage/app/public/images'), $new_name);
         EmployeeAtribut::where('enroll_id',request()->enroll_id)->update([
             'lokasi_foto'=>$new_name
