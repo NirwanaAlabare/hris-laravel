@@ -80,7 +80,7 @@ class EmployeeAtrController extends AdminBaseController
                 ->where('tanggal_resign','>',date('Y-m-d'));
             });
         })->get();
-        $pdf = PDF::loadView('hris.Laporan.id_card',["employee" => $employee])->setPaper('letter', 'landscape')->stream('Id card karyawan department'.'.pdf',array('Attachment'=>0));
+        $pdf = PDF::loadView('hris.Laporan.id_card_department',["employee" => $employee])->setPaper('letter', 'landscape')->stream('Id card karyawan department'.'.pdf',array('Attachment'=>0));
         return $pdf;
     }
     public function store_photo(){
