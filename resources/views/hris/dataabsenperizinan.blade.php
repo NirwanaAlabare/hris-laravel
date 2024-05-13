@@ -903,8 +903,6 @@
             var employee_name = $('#employee_name').val();
             var kode_absen_ijin = $('#kode_absen_ijin').val();
             var absen_alasan = $('#absen_alasan_izin').val();
-            var tanggal_mulai_ijin = $('#tanggal_mulai_ijin').val();
-            var tanggal_akhir_ijin = $('#tanggal_akhir_ijin').val();
 
             if (!enroll_id) {
                 notif({
@@ -973,21 +971,21 @@
                         });
                     } else {
 
-                        var TglMulaiIzin = new Date(tanggal_mulai_ijin);
-                        var TglAkhirIzin = new Date(tanggal_akhir_ijin);
-                        var TglPerizinan = new Date(tanggal_perizinan);
+                        var TglMulaiIzin = new Date(tanggal_mulai);
+                        var TglAkhirIzin = new Date(tanggal_akhir);
+                        var TglPerizinan = new Date(tanggal_periz);
 
-                        if (TglMulaiIzin.getDate() != TglPerizinan.getDate()) {
-                            notif({
-                                msg: "<b>Warning:</b> Tanggal Mulai Izin tidak sesuai.",
-                                type: "warning"
-                            });
+                        // if (TglMulaiIzin.getDate() != TglPerizinan.getDate()) {
+                        //     notif({
+                        //         msg: "<b>Warning:</b> Tanggal Mulai Izin tidak sesuai.",
+                        //         type: "warning"
+                        //     });
 
-                            $('#tanggal_mulai_ijin').val(tanggal_perizinan);
-                            $('#tanggal_akhir_ijin').val(tanggal_perizinan);
+                        //     $('#tanggal_mulai_ijin').val(tanggal_periz);
+                        //     $('#tanggal_akhir_ijin').val(tanggal_periz);
 
-                            return false;
-                        }
+                        //     return false;
+                        // }
 
                         if (TglAkhirIzin.getDate() < TglMulaiIzin.getDate()) {
                             notif({
