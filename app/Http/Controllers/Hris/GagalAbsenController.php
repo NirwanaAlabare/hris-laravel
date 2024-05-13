@@ -99,7 +99,7 @@ class GagalAbsenController extends AdminBaseController
                         ->whereRaw('
                             ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                             AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                            AND master_data_absen_kehadiran.status_absen IN ("TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                            AND master_data_absen_kehadiran.status_absen IN ("M","TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                             AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
                             AND master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
                         ')
@@ -113,7 +113,7 @@ class GagalAbsenController extends AdminBaseController
                 $totalData = MasterDataAbsenKehadiran::whereRaw('
                             ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                             AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                            AND master_data_absen_kehadiran.status_absen IN ("TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                            AND master_data_absen_kehadiran.status_absen IN ("M","TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                             AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
                             AND master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
                         ')
@@ -142,18 +142,31 @@ class GagalAbsenController extends AdminBaseController
                             master_data_absen_kehadiran.absen_alasan
                         ')
                         ->whereRaw('
-                            ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
-                            AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                            AND master_data_absen_kehadiran.status_absen IN ("TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
-                            AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                            AND master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null) 
-                            AND (
-                                upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
-                                OR upper(master_data_absen_kehadiran.nama_hari) LIKE "%' . $searchData . '%"
-                                OR upper(master_data_absen_kehadiran.status_absen) LIKE "%' . $searchData . '%"
-                                OR upper(employee_atribut.employee_name) LIKE "%' . $searchData . '%"
-                                OR upper(employee_atribut.nik) LIKE "%' . $searchData . '%"
-                            )                
+                            (
+                                (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '" AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                                AND master_data_absen_kehadiran.status_absen IN ("M","TL")
+                                AND 
+                                (
+                                    upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
+                                    OR upper(master_data_absen_kehadiran.nama_hari) LIKE "%' . $searchData . '%"
+                                    OR upper(master_data_absen_kehadiran.status_absen) LIKE "%' . $searchData . '%"
+                                    OR upper(employee_atribut.employee_name) LIKE "%' . $searchData . '%"
+                                    OR upper(employee_atribut.nik) LIKE "%' . $searchData . '%"
+                                )
+                            ) OR 
+                            (
+                                (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '" AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                                AND 
+                                (master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
+                                AND 
+                                (
+                                    upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
+                                    OR upper(master_data_absen_kehadiran.nama_hari) LIKE "%' . $searchData . '%"
+                                    OR upper(master_data_absen_kehadiran.status_absen) LIKE "%' . $searchData . '%"
+                                    OR upper(employee_atribut.employee_name) LIKE "%' . $searchData . '%"
+                                    OR upper(employee_atribut.nik) LIKE "%' . $searchData . '%"
+                                )
+                            )
                         ')
                         ->leftJoin('employee_atribut', 'master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
                         ->offset($start)
@@ -161,18 +174,30 @@ class GagalAbsenController extends AdminBaseController
                         ->get();
     
                 $totalData = MasterDataAbsenKehadiran::whereRaw('
-                                ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
-                                AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                                AND master_data_absen_kehadiran.status_absen IN ("TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
-                                AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                                AND master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
-                                AND (
-                                    upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
-                                    OR upper(master_data_absen_kehadiran.nama_hari) LIKE "%' . $searchData . '%"
-                                    OR upper(master_data_absen_kehadiran.status_absen) LIKE "%' . $searchData . '%"
-                                    OR upper(employee_atribut.employee_name) LIKE "%' . $searchData . '%"
-                                    OR upper(employee_atribut.nik) LIKE "%' . $searchData . '%"
-                                )                
+                                (
+                                    (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '" AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                                    AND master_data_absen_kehadiran.status_absen IN ("M","TL")
+                                    AND 
+                                    (
+                                        upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
+                                        OR upper(master_data_absen_kehadiran.nama_hari) LIKE "%' . $searchData . '%"
+                                        OR upper(master_data_absen_kehadiran.status_absen) LIKE "%' . $searchData . '%"
+                                        OR upper(employee_atribut.employee_name) LIKE "%' . $searchData . '%"
+                                        OR upper(employee_atribut.nik) LIKE "%' . $searchData . '%"
+                                    )
+                                ) OR (
+                                    (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '" AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                                    AND 
+                                    (master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
+                                    AND 
+                                    (
+                                        upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
+                                        OR upper(master_data_absen_kehadiran.nama_hari) LIKE "%' . $searchData . '%"
+                                        OR upper(master_data_absen_kehadiran.status_absen) LIKE "%' . $searchData . '%"
+                                        OR upper(employee_atribut.employee_name) LIKE "%' . $searchData . '%"
+                                        OR upper(employee_atribut.nik) LIKE "%' . $searchData . '%"
+                                    )
+                                )
                             ')
                             ->leftJoin('employee_atribut', 'master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
                             ->count();
