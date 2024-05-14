@@ -1639,6 +1639,7 @@
                     "dataSrc": "data",
                     "data": function (d) {
                         d.department_id = $('#selectDepartment').val();
+                        d.sub_dept_id = $('#pilih_department').val();
                     }
                 },
                 columns: [
@@ -1705,7 +1706,7 @@
                 $('#npwp').val(data['npwp']);
                 $('#nomor_ktp').val(data['nomor_ktp']);
                 $('#nomor_kk').val(data['nomor_kk']);
-                $('#ptkp').val(data['ptkp']);
+                $('#ptkp').val(data['ptkp']); 
                 $('#pendidikan_terakhir').val(data['pendidikan_terakhir']);
                 $('#jurusan_pendidikan').val(data['jurusan_pendidikan']);
                 $("#nama_bank").val(data['nama_bank']).trigger("change");
