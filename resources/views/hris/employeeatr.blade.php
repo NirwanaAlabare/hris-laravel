@@ -1616,63 +1616,8 @@
         function testing(){
             var department_id = $('#selectDepartment').val();
             var sub_dept_id = $('#pilih_department').val();
-            var table1 = $('#datatable-ajax-crud').DataTable({
-                processing: true,
-                serverSide: true,
-                lengthChange: false,
-                pageLength: 10,
-                pagingType: "simple",
-                destroy: true,
-                "ajax": {
-                    "url": "{{ route('hris.employeeatr.ajax_getemployeeatr') }}",
-                    "dataType": "json",
-                    "type": "POST",
-                    "headers": {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    "dataSrc": "data",
-                    "data":{
-                        department_id:department_id,
-                        sub_dept_id:sub_dept_id
-                    }
-                },
-                columns: [
-                    {
-                        title: 'NIK',
-                        data: 'nik',
-                        name: 'nik'
-                    },
-                    {
-                        title: 'Nomor Absen',
-                        data: 'enroll_id',
-                        name: 'enroll_id'
-                    },
-                    {
-                        title: 'Nama Karyawan',
-                        data: 'employee_name',
-                        name: 'employee_name'
-                    },
-                ],
-                columnDefs: [
-                    {
-                        'visible': false,
-                        'targets': []
-                    }
-                ],
-                order: [
-                    [2, 'asc']
-                ],
-                "createdRow": function (row, data, dataIndex) {
-                    if (data['new_employee']) {
-                        $(row).addClass('bg-green')
-                    }
-                    if (data['deactive']) {
-                        $(row).addClass('bg-red')
-                    }
-            }
-            });
-
-            table1.draw();
+            
+            $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
         }
         $(document).ready(function() {
             var department_id = $('#selectDepartment').val();
@@ -1692,8 +1637,8 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     "dataSrc": "data",
-                    "data":{
-                        department_id:department_id,
+                    "data": function (d) {
+                        d.department_id = $('#selectDepartment').val();
                     }
                 },
                 columns: [
