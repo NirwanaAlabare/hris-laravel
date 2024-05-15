@@ -1161,8 +1161,8 @@
                             </tr>\
                         ");
                     });
-                    document.getElementById('row_employee').style.height='400px';
-                    document.getElementById('selected_employees').style.height='330px';
+                    document.getElementById('row_employee').style.height='570px';
+                    document.getElementById('selected_employees').style.height='500px';
                 }
             });
         });
