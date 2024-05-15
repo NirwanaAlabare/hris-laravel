@@ -244,6 +244,52 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="modal fade" id="select_employee" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document" style="max-width: 1330px">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-success">
+                                                <h4 class="modal-title font-weight-bold" >Select Employee</h4>
+                                                <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
+                                                    <i class="fa fa-remove"></i>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row" id="row_employee">
+                                                    <div class="col">
+                                                        <table class="table table-bordered" style="overflow-x:auto">
+                                                            <thead id="head_employees">
+                                                                <tr>
+                                                                    <td width="10px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px"><input type="checkbox" style="width: 20px;height:20px" onClick="toggle(this)"></td>
+                                                                    <td width="68px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ID</td>
+                                                                    <td width="120px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NIK</td>
+                                                                    <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NAMA KARYAWAN</td>
+                                                                    <td width="150px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">JENIS KELAMIN</td>
+                                                                    <td width="150px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">JABATAN</td>
+                                                                    <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">DEPARTMENT</td>
+                                                                    <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">BAGIAN</td>
+                                                                    <td width="120px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">AKTIF/NON</td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="selected_employees">
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col text-center">
+                                                        <a href="#" id="btndownloadselectedid" class="py-1" style="background-color: #f23535;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer py-3 bg-success">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     <!-- end modal -->
 
                 <!-- BEGIN FORM-->
@@ -310,6 +356,7 @@
                         </div>
                         <div class="col-6">
                             <a href="#" id="btndownloadiddept" class="py-1" style="background-color: #f23535;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a>
+                            <a href="#" id="btnselectemployee" class="py-1" style="background-color: #f23535;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-target="#select_employee" data-toggle="modal" title="" data-placement="bottom" data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a>
                         </div>
                     </div>
                         <table id="datatable-ajax-crud" class="table table-sm table-striped table-hover table-bordered w-100">
@@ -1051,6 +1098,7 @@
     <script src="{{URL::asset('assets/plugins/tabs/tabs.js')}}"></script>
     <style>
         #head_karyawan, #tabel_karyawan { display: block; }
+        #head_employees, #selected_employees { display: block; }
 
         #tabel_karyawan {
             height: 1px;       /* Just for the demo          */
@@ -1060,6 +1108,12 @@
         }
         .dataTables_filter {
             float: left !important;
+        }
+        #selected_employees {
+            height: 1px;       /* Just for the demo          */
+            overflow-y: auto;    /* Trigger vertical scroll    */
+            overflow-x: hidden;
+            font-size: 9pt; /* Hide the horizontal scroll */
         }
     </style>
     <script type="text/javascript">
@@ -1078,9 +1132,58 @@
                 var url = 'export_pdf_id_card_department?department='+department+'&sub_department='+sub_department;
                 window.open(url, '_blank');
         });
+        $('#btnselectemployee').click(function(e){
+            $("#selected_employees").empty();
+            document.getElementById('selected_employees').style.height='1px';
+            document.getElementById('row_employee').style.height='67px';
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.employeeatr.select_employee')}}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                data: {
+                    department:$('#selectDepartment').val(),
+                    sub_department:$('#pilih_department').val(),
+                },
+                success: function(data){
+                    jQuery.each(data, function(key,value){
+                        $('#selected_employees').append("<tr>\
+                                <td width='10px' style='padding-top:4px;padding-bottom:8px'><div class='form-check'><input class='form-check-input' type='checkbox' style='width: 20px;height:20px' value='"+data[key].enroll_id+"'id='employee' name='employee'></td>\
+                                <td width='68px'>"+data[key].enroll_id+"</td>\
+                                <td width='120px'>"+data[key].nik+"</td>\
+                                <td width='200px'>"+data[key].employee_name+"</td>\
+                                <td width='150px'>"+data[key].jenis_kelamin+"</td>\
+                                <td width='150px'>"+data[key].status_jabatan+"</td>\
+                                <td width='200px'>"+data[key].department_name+"</td>\
+                                <td width='200px'>"+data[key].sub_dept_name+"</td>\
+                                <td width='120px'>"+data[key].status_aktif+"</td>\
+                                </label>\
+                            </tr>\
+                        ");
+                    });
+                    document.getElementById('row_employee').style.height='400px';
+                    document.getElementById('selected_employees').style.height='330px';
+                }
+            });
+        });
+        function toggle(source) {
+            checkboxes = document.getElementsByName('employee');
+            for(var i=0, n=checkboxes.length;i<n;i++) {
+                checkboxes[i].checked = source.checked;
+            }
+        }
+        $('#btndownloadselectedid').click(function(e){
+            const array_employee=[];
+            $("input:checkbox[name=employee]:checked").each(function(){
+                array_employee.push($(this).val());
+            });
+            var url = 'export_pdf_id_card_employee?employee='+array_employee;
+            window.open(url, '_blank');
+        });
         $('#selectDepartment').on('change',function(e){
             testing();
             $("#pilih_department").empty();
+            $("#pilih_department").val('');
             $.ajax({
                 type:"POST",
                 url: "{{route('hris.departmentall.getSelectSubDept')}}",

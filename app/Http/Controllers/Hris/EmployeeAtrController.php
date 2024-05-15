@@ -83,6 +83,30 @@ class EmployeeAtrController extends AdminBaseController
         $pdf = PDF::loadView('hris.Laporan.id_card_department',["employee" => $employee])->setPaper('letter', 'landscape')->stream('Id card karyawan department'.'.pdf',array('Attachment'=>0));
         return $pdf;
     }
+    public function export_pdf_id_card_employee(){
+        $employees=explode(",",request()->employee);
+        $employee=EmployeeAtribut::whereIn('enroll_id',$employees)->get();
+        $pdf = PDF::loadView('hris.Laporan.id_card_department',["employee" => $employee])->setPaper('letter', 'landscape')->stream('Id card karyawan department'.'.pdf',array('Attachment'=>0));
+        return $pdf;
+    }
+    public function select_employee(){
+        $inDepartment='';
+        if(request()->department){
+            $inDepartment=' AND department_name = "'.request()->department.'"';
+        }
+        $inSubDepartment='';
+        if(request()->sub_department){
+            $inSubDepartment=' AND sub_dept_id = "'.request()->sub_department.'"';
+        }
+        $employee=EmployeeAtribut::whereRaw('status_aktif!=""'.$inDepartment.''.$inSubDepartment.'')->where(function ($query){
+            $query->where('status_aktif','AKTIF')
+            ->orWhere(function($queryes){
+                $queryes->where('status_aktif','TIDAK AKTIF')
+                ->where('tanggal_resign','>',date('Y-m-d'));
+            });
+        })->get();
+        return $employee;
+    }
     public function store_photo(){
         $image = request()->file('photo');
         $employee=EmployeeAtribut::where('enroll_id',request()->enroll_id)->get();

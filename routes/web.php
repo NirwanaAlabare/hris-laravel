@@ -155,6 +155,10 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('employeeatr/import_employee_to_database/',['as'=>'hris.employeeatr.import_employee_to_database','uses'=> 'EmployeeAtrController@import_employee_to_database']);
     Route::get('employeeatr/export_pdf_id_card/',['as'=>'hris.employeeatr.export_pdf_id_card','uses'=> 'EmployeeAtrController@export_pdf_id_card']);
     Route::get('employeeatr/export_pdf_id_card_department/',['as'=>'hris.employeeatr.export_pdf_id_card_department','uses'=> 'EmployeeAtrController@export_pdf_id_card_department']);
+    Route::get('employeeatr/export_pdf_id_card_employee/',['as'=>'hris.employeeatr.export_pdf_id_card_employee','uses'=> 'EmployeeAtrController@export_pdf_id_card_employee']);
+    Route::post('employeeatr/store_photo/',['as'=>'hris.employeeatr.store_photo','uses'=> 'EmployeeAtrController@store_photo']);
+    Route::post('employeeatr/get_photo/',['as'=>'hris.employeeatr.get_photo','uses'=>'EmployeeAtrController@get_photo']);
+    Route::post('employeeatr/select_employee/',['as'=>'hris.employeeatr.select_employee','uses'=>'EmployeeAtrController@select_employee']);
     Route::post('employeeatr/store_photo/',['as'=>'hris.employeeatr.store_photo','uses'=> 'EmployeeAtrController@store_photo']);
 
     // REF ABSEN IJIN
