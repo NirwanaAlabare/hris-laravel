@@ -1783,7 +1783,7 @@
                         'render' : function (data, row) {
                             return `
                                 <div class="form-check">
-                                    <input class="form-check-input employee-check" type="checkbox" value="`+data+`">
+                                    <input class="form-check-input employee-check" type="checkbox" name="employee-check" value="`+data+`">
                                 </div>
                             `
                         }
@@ -1935,15 +1935,9 @@
         }
 
         function actionCheckAllEmployee(element) {
-            if (element.checked) {
-                let employeeCheck = document.getElementsByClassName('employee-check');
-
-                let checkedEmployee = [];
-                for (let i = 0; i < employeeCheck.length; i++) {
-                    if (employeeCheck[i]) {
-                        employeeCheck[i].checked = true;
-                    }
-                }
+            checkboxes = document.getElementsByName('employee-check');
+            for(var i=0, n=checkboxes.length;i<n;i++) {
+                checkboxes[i].checked = element.checked;
             }
         }
 
