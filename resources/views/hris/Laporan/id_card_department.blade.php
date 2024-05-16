@@ -39,9 +39,10 @@
             @if($counter%5==0)
                 </tr><tr>
             @endif
-            <td>
+            <td style="padding-left: 0;padding-right:0">
                 <div class="parent">
-                    <img class="image1" src="{{ public_path('assets/images/brand/id card background.jpeg') }}" width="204">
+                    <img class="garis_hitam" src="{{ public_path('assets/images/brand/garis hitam.png') }}" style="height: 650px">
+                    <img class="image1" src="{{ public_path('assets/images/brand/id card background 2.png') }}" width="204">
                     @if (file_exists (public_path ('/storage/app/public/images/'.$value->nik.' '.$value->employee_name.'.png')))
                     <img class="image2" src="{{ public_path('storage/app/public/images/'.$value->nik.' '.$value->employee_name.'.png') }}" width="130"/>
                     @else
@@ -79,6 +80,11 @@
         top: 0;
         left: 5;
     }
+    .image1 {
+        position: relative;
+        top: 0;
+        left: 5;
+    }
     .image2 {
         position: absolute;
         bottom: 140px;
@@ -87,7 +93,12 @@
     .image3 {
         position: absolute;
         top: 421px;
-        left: 7px;
+        left: 5;
+    }
+    .garis_hitam {
+        position: absolute;
+        top: 0;
+        left: 3;
     }
     .text1 {
         position: absolute;
