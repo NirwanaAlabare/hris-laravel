@@ -366,12 +366,12 @@
                         <table id="datatable-ajax-crud" class="table table-sm table-striped table-hover table-bordered w-100">
                             <thead>
                                 <tr class="text-center">
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
                                     <th scope="col">
                                         <input type="checkbox" value="yes" id="checkAllEmployee" onchange="actionCheckAllEmployee(this)">
                                     </th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1754,6 +1754,10 @@
                 },
                 columns: [
                     {
+                        data: 'enroll_id',
+                        orderable: false
+                    },
+                    {
                         title: 'NIK',
                         data: 'nik',
                         name: 'nik'
@@ -1767,10 +1771,6 @@
                         title: 'Nama Karyawan',
                         data: 'employee_name',
                         name: 'employee_name'
-                    },
-                    {
-                        data: 'enroll_id',
-                        orderable: false
                     }
                 ],
                 columnDefs: [
@@ -1779,7 +1779,7 @@
                         'targets': []
                     }, 
                     {
-                        'targets': [3],
+                        'targets': [0],
                         'render' : function (data, row) {
                             return `
                                 <div class="form-check">
