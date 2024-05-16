@@ -359,7 +359,8 @@
                             <p class="my-3">
                                 Selected : <span id="checked-employee-count" class="fw-bold">0</span>
                             </p>
-                            <a href="#" id="btnselectemployee" class="py-1" style="background-color: #15b22d;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-target="#select_employee" data-toggle="modal" title="" data-placement="bottom" data-original-title="Download Id Card" onclick="actionCheckedEmployee()"><i class="fa fa-check-circle mr-1"></i>Pilih Karyawan</a>
+                            <a href="#" id="btnselectemployee" class="py-1" style="background-color: #15b22d;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-target="#select_employee" data-toggle="modal" title="" data-placement="bottom" data-original-title="Download Id Card"><i class="fa fa-check-circle mr-1"></i>Pilih Karyawan</a>
+                            {{-- <a href="#" id="btnselectemployee" class="py-1" style="background-color: #15b22d;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-target="#select_employee" data-toggle="modal" title="" data-placement="bottom" data-original-title="Download Id Card" onclick="actionCheckedEmployee()"><i class="fa fa-check-circle mr-1"></i>Pilih Karyawan</a> --}}
                         </div>
                     </div>
                         <table id="datatable-ajax-crud" class="table table-sm table-striped table-hover table-bordered w-100">
