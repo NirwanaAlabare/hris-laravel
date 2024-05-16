@@ -113,7 +113,7 @@ class DataAbsenPerijinanExport implements WithColumnFormatting, FromQuery, WithM
 
         return [
             $nomor_form_perizinan,
-            $tanggal_perizinan,
+            Date::stringToExcel($tanggal_perizinan),
             $nama_hari,
             Date::stringToExcel($tanggal_mulai_ijin),
             Date::stringToExcel($tanggal_akhir_ijin),
@@ -132,6 +132,7 @@ class DataAbsenPerijinanExport implements WithColumnFormatting, FromQuery, WithM
     public function columnFormats(): array
     {
         return [
+            'B' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'D' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
         ];
