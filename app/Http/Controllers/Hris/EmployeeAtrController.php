@@ -233,19 +233,19 @@ class EmployeeAtrController extends AdminBaseController
         }
         if(empty($request->input('search.value')))
         {
-            $query =  EmployeeAtribut::whereRaw('status_aktif!=""'.$inDepartment.''.$inSubDepartment.'')
+            $query =  EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')
                             ->offset($start)
                             ->limit($limit)
                             ->orderBy($order,$dir)
                             ->get();
 
-            $totalData = EmployeeAtribut::whereRaw('status_aktif!=""'.$inDepartment.''.$inSubDepartment.'')->count();
+            $totalData = EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')->count();
             $totalFiltered = $totalData;
 
         } else {
             $search = $request->input('search.value');
 
-            $query =  EmployeeAtribut::whereRaw('status_aktif!=""'.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
+            $query =  EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
                 $query->where('employee_id','LIKE',"%{$search}%")
                 ->orWhere('nik','LIKE',"%{$search}%")
                 ->orWhere('enroll_id','LIKE',"%{$search}%")
@@ -262,7 +262,7 @@ class EmployeeAtrController extends AdminBaseController
             ->orderBy($order,$dir)
             ->get();
 
-            $totalData = EmployeeAtribut::whereRaw('status_aktif="AKTIF"'.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
+            $totalData = EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
                 $query->where('employee_id','LIKE',"%{$search}%")
                 ->orWhere('nik','LIKE',"%{$search}%")
                 ->orWhere('enroll_id','LIKE',"%{$search}%")
