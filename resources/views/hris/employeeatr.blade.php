@@ -356,7 +356,10 @@
                         </div>
                         <div class="col-6">
                             {{-- <a href="#" id="btndownloadiddept" class="py-1" style="background-color: #f23535;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a> --}}
-                            <a href="#" id="btnselectemployee" class="py-1" style="background-color: #15b22d;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-target="#select_employee" data-toggle="modal" title="" data-placement="bottom" data-original-title="Download Id Card"><i class="fa fa-check-circle mr-1"></i>Pilih Karyawan</a>
+                            <p class="my-3">
+                                Selected : <span id="checked-employee-count" class="fw-bold">0</span>
+                            </p>
+                            <a href="#" id="btnselectemployee" class="py-1" style="background-color: #15b22d;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-target="#select_employee" data-toggle="modal" title="" data-placement="bottom" data-original-title="Download Id Card" onclick="actionCheckedEmployee()"><i class="fa fa-check-circle mr-1"></i>Pilih Karyawan</a>
                         </div>
                     </div>
                         <table id="datatable-ajax-crud" class="table table-sm table-striped table-hover table-bordered w-100">
@@ -365,6 +368,9 @@
                                     <th scope="col"></th>
                                     <th scope="col"></th>
                                     <th scope="col"></th>
+                                    <th scope="col">
+                                        <input type="checkbox" value="yes" id="checkAllEmployee" onchange="actionCheckAllEmployee(this)">
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1761,11 +1767,25 @@
                         data: 'employee_name',
                         name: 'employee_name'
                     },
+                    {
+                        data: 'enroll_id',
+                        orderable: false
+                    }
                 ],
                 columnDefs: [
                     {
                         'visible': false,
                         'targets': []
+                    }, 
+                    {
+                        'targets': [3],
+                        'render' : function (data, row) {
+                            return `
+                                <div class="form-check">
+                                    <input class="form-check-input employee-check" type="checkbox" value="`+data+`">
+                                </div>
+                            `
+                        }
                     }
                 ],
                 order: [
@@ -1898,6 +1918,34 @@
                 type: "info"
             });
         });
+
+
+        function actionCheckedEmployee () {
+            let employeeCheck = document.getElementsByClassName('employee-check');
+
+            let checkedEmployee = [];
+            for (let i = 0; i < employeeCheck.length; i++) {
+                if (employeeCheck[i].checked) {
+                    checkedEmployee.push(employeeCheck[i].value);
+                }
+            }   
+
+            alert(checkedEmployee);
+        }
+
+        function actionCheckAllEmployee(element) {
+            if (element.checked) {
+                let employeeCheck = document.getElementsByClassName('employee-check');
+
+                let checkedEmployee = [];
+                for (let i = 0; i < employeeCheck.length; i++) {
+                    if (employeeCheck[i]) {
+                        employeeCheck[i].checked = true;
+                    }
+                }
+            }
+        }
+
     $(document).ready(function() {
         $('body').on('change', '#site_nirwana_id', function () {
             var site_nirwana_id = $('#site_nirwana_id').val();
