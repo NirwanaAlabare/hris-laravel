@@ -409,11 +409,11 @@ class EmployeeAtrController extends AdminBaseController
 
         if(empty($request->input('search.value')))
         {
-            $employeeIds =  EmployeeAtribut::select("enroll_id")->whereRaw('status_aktif != "TIDAK AKTIF" '.$inDepartment.''.$inSubDepartment.'')->pluck("enroll_id")->toArray();
+            $employeeIds =  EmployeeAtribut::select("enroll_id")->whereRaw('(status_aktif != "TIDAK AKTIF" or tanggal_resign> CURDATE())'.$inDepartment.''.$inSubDepartment.'')->pluck("enroll_id")->toArray();
         } else {
             $search = $request->input('search.value');
 
-            $employeeIds =  EmployeeAtribut::select("enroll_id")->whereRaw('status_aktif != "TIDAK AKTIF" '.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
+            $employeeIds =  EmployeeAtribut::select("enroll_id")->whereRaw('(status_aktif != "TIDAK AKTIF" or tanggal_resign> CURDATE())'.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
                 $query->where('employee_id','LIKE',"%{$search}%")
                 ->orWhere('nik','LIKE',"%{$search}%")
                 ->orWhere('enroll_id','LIKE',"%{$search}%")
