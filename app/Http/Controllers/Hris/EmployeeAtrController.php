@@ -203,7 +203,7 @@ class EmployeeAtrController extends AdminBaseController
 
     }
 
-    
+
     public function ajax_getemployeeatr(Request $request)
     {
 
@@ -274,7 +274,7 @@ class EmployeeAtrController extends AdminBaseController
                 ->orWhere('employee_status','LIKE',"%{$search}%")
                 ->orWhere('posisi_name','LIKE',"%{$search}%");
             })->count();
-            
+
             $totalFiltered = $totalData;
 
         }
@@ -392,6 +392,43 @@ class EmployeeAtrController extends AdminBaseController
 
         echo json_encode($json_data);
         }
+    }
+
+    public function ajax_getemployeeids(Request $request)
+    {
+        $department=$request->department_id;
+        $sub_dept_id=$request->sub_dept_id;
+        $inDepartment='';
+        $inSubDepartment='';
+        if($department){
+            $inDepartment = ' AND department_name = "'.$department.'"';
+        }
+        if($sub_dept_id){
+            $inSubDepartment = ' AND sub_dept_id = "'.$sub_dept_id.'"';
+        }
+
+        if(empty($request->input('search.value')))
+        {
+            $employeeIds =  EmployeeAtribut::select("enroll_id")->whereRaw('status_aktif != "TIDAK AKTIF" '.$inDepartment.''.$inSubDepartment.'')->pluck("enroll_id")->toArray();
+        } else {
+            $search = $request->input('search.value');
+
+            $employeeIds =  EmployeeAtribut::select("enroll_id")->whereRaw('status_aktif != "TIDAK AKTIF" '.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
+                $query->where('employee_id','LIKE',"%{$search}%")
+                ->orWhere('nik','LIKE',"%{$search}%")
+                ->orWhere('enroll_id','LIKE',"%{$search}%")
+                ->orWhere('employee_name','LIKE',"%{$search}%")
+                ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
+                ->orWhere('department_name','LIKE',"%{$search}%")
+                ->orWhere('sub_dept_name','LIKE',"%{$search}%")
+                ->orWhere('work_status','LIKE',"%{$search}%")
+                ->orWhere('employee_status','LIKE',"%{$search}%")
+                ->orWhere('posisi_name','LIKE',"%{$search}%");
+            })
+            ->pluck("enroll_id")->toArray();
+        }
+
+        return $employeeIds;
     }
 
     public function ajax_getempatr(Request $request)
@@ -733,12 +770,12 @@ class EmployeeAtrController extends AdminBaseController
                 'tanggal_akhir_kontrak' => $tanggal_akhir_kontrak,
                 'catatan_kontrak' => $catatan_kontrak
             ]);
-            
+
             info('Karyawan dengan nama ' . $employee_name . ' dari departemen '. $sub_dept_name->sub_dept_name .' telah di update oleh '.$operator.' dengan tanggal resign '.$tanggal_resign);
             // update absen
             if($query) {
                 // jika tanggal resign kosong
-                if($request->tanggal_resign == "") { 
+                if($request->tanggal_resign == "") {
 
                     $query1 =  MasterDataAbsenKehadiran::selectRaw('
                         tanggal_berjalan,
@@ -776,9 +813,9 @@ class EmployeeAtrController extends AdminBaseController
                             info('Karyawan dengan nama ' . $employee_name . ' dari departemen '. $sub_dept_name .' berubah status aktif nya menjadi '.$q1->status_aktif);
                         }
                     }
-                    // tanggal resign tidak kosong   
-                } else { 
-                    
+                    // tanggal resign tidak kosong
+                } else {
+
                     $query1 =  MasterDataAbsenKehadiran::selectRaw('
                         tanggal_berjalan,
                         enroll_id,
@@ -821,7 +858,7 @@ class EmployeeAtrController extends AdminBaseController
                     //     AND employee_atribut.tanggal_resign <= master_data_absen_kehadiran.tanggal_berjalan
                     //     AND master_data_absen_kehadiran.status_absen = "M"
                     //     AND master_data_absen_kehadiran.kode_hari not in (5,6)
-                    //     AND master_data_absen_kehadiran.holiday_name is null                       
+                    //     AND master_data_absen_kehadiran.holiday_name is null
                     // ')
                     $query2 =  MasterDataAbsenKehadiran::selectRaw('
                         master_data_absen_kehadiran.tanggal_berjalan,
@@ -835,7 +872,7 @@ class EmployeeAtrController extends AdminBaseController
                         employee_atribut.enroll_id = "' . $enroll_id . '"
                         AND employee_atribut.tanggal_resign <= master_data_absen_kehadiran.tanggal_berjalan
                         AND master_data_absen_kehadiran.kode_hari not in (5,6)
-                        AND master_data_absen_kehadiran.holiday_name is null                       
+                        AND master_data_absen_kehadiran.holiday_name is null
                     ')
                     ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
                     ->get();
@@ -975,7 +1012,7 @@ class EmployeeAtrController extends AdminBaseController
                 'tanggal_akhir_kontrak' => $tanggal_akhir_kontrak,
                 'catatan_kontrak' => $catatan_kontrak
             ]);
-            
+
             info('Karyawan dengan nama ' . $employee_name . ' dari departemen '. $sub_dept_name->sub_dept_name .' telah di tambah oleh '.$operator);
 
         $a=(new Kehadiran)->new_employee($enroll_id);
@@ -990,11 +1027,11 @@ class EmployeeAtrController extends AdminBaseController
     {
         $employee=EmployeeAtribut::where('enroll_id', '985')->get();
         // dd($employee);
-       
+
         foreach ($employee as $key => $value) {
             $tanggal_akhir='2023-11-04';
             $tgl_berjalan='2023-10-26';
-            while (strtotime( $tgl_berjalan) <= strtotime($tanggal_akhir)) {  
+            while (strtotime( $tgl_berjalan) <= strtotime($tanggal_akhir)) {
                 $hari=date('D',strtotime(  $tgl_berjalan));
                 if($hari=='Sun'){
                     $kode_hari='6';
@@ -1128,7 +1165,7 @@ class EmployeeAtrController extends AdminBaseController
         }
         return $arrEmp;
     }
-    
+
     public function import_employee_to_database(Request $request){
         ini_set("max_execution_time", 0);
         ini_set("max_input_time", 0);
@@ -1156,7 +1193,7 @@ class EmployeeAtrController extends AdminBaseController
                 $department_id=DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][9])->where('sub_dept_name',$data[0][$i][11])->pluck('department_id')[0];
                 $sub_dept_id=DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][9])->where('sub_dept_name',$data[0][$i][11])->pluck('sub_dept_id')[0];
             }
-            if($data[0][$i][15]==''|| $data[0][$i][15]=='-'){   
+            if($data[0][$i][15]==''|| $data[0][$i][15]=='-'){
                 $join_date=null;
             }else{
                 $join_date=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][15])->format('Y-m-d');
@@ -1424,7 +1461,7 @@ class EmployeeAtrController extends AdminBaseController
             ]);
         }
         return back()->with("success", 'Data berhasil di update');
-        
+
         // $loggedAdmin = Auth::guard('admin')->user();
         // $operator = $loggedAdmin->email;
         // $data=Excel::toArray([],$request->file('excel_file'));
@@ -1817,9 +1854,9 @@ class EmployeeAtrController extends AdminBaseController
         }catch(\Exception $e){
             $error=$error+1;
             return back()->with("error",'gagal tersimpan terdapat kesalah di row '.$error);
-        } 
+        }
     }
-    
+
 
     public function export_import(){
         $tanggal=date('Y-m-d');
@@ -1839,7 +1876,7 @@ class EmployeeAtrController extends AdminBaseController
         // elseif($tgl<26){
         //     $tanggal_awal_periode=date('Y-m-d', strtotime('26-'.$bulan_sebelum));
         // }
-        
+
         $tanggal_awal_periode=date('Y-m-d', strtotime('26-'.$bulan_sebelum));
         //$karyawan=EmployeeAtribut::where('status_aktif','AKTIF')->ORwhere('tanggal_resign','>',$tanggal_awal_periode)->get();
        	$karyawan = EmployeeAtribut::where('status_aktif', 'AKTIF')
@@ -1848,6 +1885,6 @@ class EmployeeAtrController extends AdminBaseController
         ->get();
         return Excel::download(new FormatImportBPJSExport($karyawan),'format_import_bpjs'.time().'.xlsx');
     }
-    
+
 
 }

@@ -33,18 +33,18 @@
 @section('mainarea')
     <!-- page-header -->
     <div class="page-header p-2 shadow">
-        
+
         <ol class="breadcrumb breadcrumb-arrow mt-0">
             <li><a href="#">Master Data</a></li>
             <li class="active"><span>Karyawan</span></li>
         </ol>
         <div class="ml-auto">
             <div class="input-group">
-                
+
                 @php
                     if (($loggedAdmin->role_user == "admin") || ($loggedAdmin->role_user == "superadmin") || ($loggedAdmin->role_user == "absensi")){
                 @endphp
-                
+
                 <div class="text-white">
                     @if($loggedAdmin->email=='mega@ptnag.com' || $loggedAdmin->email=='rudy@ptnag.com' || $loggedAdmin->email=='rifqi@ptnag.com')
                     <button type="button" class="btn btn-icon btn-success text-white p-0 mr-1"  data-target="#import_employees" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Karyawan</button>
@@ -53,7 +53,7 @@
                     <button type="button" id="btn-import" class="btn btn-icon btn-warning text-white p-0 mr-1"  data-target="#import_grade" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Data</button>
                 </div>
                     <!-- modal -->
-             
+
                     <form id="upload" name="custForm" action="{{route ('hris.employeeatr.import.grading')}}" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="modal fade" id="import_grade" role="dialog" data-backdrop="static" aria-hidden="true">
@@ -140,7 +140,7 @@
                                                 </div>
                                                 <div class="row pb-2 justify-content-center">
                                                     <div class="col-10 text-center" id="image_preview">
-                                                        
+
                                                     </div>
                                                 </div>
                                                 <div class="row py-2 justify-content-center">
@@ -278,9 +278,9 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col text-center">
-                                                        <a href="#" id="btndownloadselectedid" class="py-1" style="background-color: #f23535;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a>
-                                                    </div>
+                                                    // <div class="col text-center">
+                                                    //     <a href="#" id="btndownloadselectedid" class="py-1" style="background-color: #f23535;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a>
+                                                    // </div>
                                                 </div>
                                             </div>
                                             <div class="modal-footer py-3 bg-success">
@@ -304,7 +304,7 @@
                 @php
                     }
                 @endphp
-                
+
                 <a href="#" id="btn-refresh-page" class="btn btn-secondary p-0 mr-0 text-white btn-icon" data-toggle="tooltip"
                     title="" data-placement="bottom" data-original-title="Refresh Page">
                     <span>
@@ -356,7 +356,8 @@
                         </div>
                         <div class="col-6">
                             {{-- <a href="#" id="btndownloadiddept" class="py-1" style="background-color: #f23535;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a> --}}
-                            <a href="#" id="btnselectemployee" class="py-1" style="background-color: #15b22d;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-target="#select_employee" data-toggle="modal" title="" data-placement="bottom" data-original-title="Download Id Card"><i class="fa fa-check-circle mr-1"></i>Pilih Karyawan</a>
+                            {{-- <a href="#" id="btnselectemployee" class="py-1" style="background-color: #15b22d;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-target="#select_employee" data-toggle="modal" title="" data-placement="bottom" data-original-title="Download Id Card"><i class="fa fa-check-circle mr-1"></i>Pilih Karyawan</a> --}}
+                            <a href="#" id="btndownloadselectedids" class="py-1" style="background-color: #f23535;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a>
                             {{-- <a href="#" id="btnselectemployee" class="py-1" style="background-color: #15b22d;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-target="#select_employee" data-toggle="modal" title="" data-placement="bottom" data-original-title="Download Id Card" onclick="actionCheckedEmployee()"><i class="fa fa-check-circle mr-1"></i>Pilih Karyawan</a> --}}
                         </div>
                     </div>
@@ -364,7 +365,7 @@
                             <thead>
                                 <tr class="text-center">
                                     <th scope="col">
-                                        <input type="checkbox" value="yes" id="checkAllEmployee" onchange="actionCheckAllEmployee(this)">
+                                        <input type="checkbox" id="checkAllEmployee" onchange="actionCheckAllEmployee(this)">
                                     </th>
                                     <th scope="col"></th>
                                     <th scope="col"></th>
@@ -374,9 +375,9 @@
                             <tbody>
                             </tbody>
                         </table>
-                        <p class="my-3">
+                        {{-- <p class="my-3">
                             Selected : <span id="checked-employee-count" class="fw-bold">0</span>
-                        </p>
+                        </p> --}}
                 </div>
                 <div class="card-footer bg-primary br-br-7 br-bl-7">
                     <div class="text-white"></div>
@@ -386,7 +387,7 @@
         <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
             <!-- Begin Form Edit Absen Karyawan -->
             <div id="data-gagal-absen" class="card shadow" id="datatable-data-karyawan">
-                <div class="card-header p-0"> 
+                <div class="card-header p-0">
                     @if (Session::has('status'))
                         <div class="alert alert-success">
                             {{ Session::get('status') }}
@@ -411,9 +412,9 @@
                         </div>
                         DATA KARYAWAN
                     </div>
-                    
 
-                    
+
+
                     <div class="card-options ">
                         <a href="#" class="card-options-collapse mr-2" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
                     </div>
@@ -1179,12 +1180,13 @@
                 checkboxes[i].checked = source.checked;
             }
         }
-        $('#btndownloadselectedid').click(function(e){
-            const array_employee=[];
-            $("input:checkbox[name=employee]:checked").each(function(){
-                array_employee.push($(this).val());
-            });
-            var url = 'export_pdf_id_card_employee?employee='+array_employee;
+        $('#btndownloadselectedids').click(function(e){
+            // const array_employee=[];
+            // $("input:checkbox[name=employee]:checked").each(function(){
+            //     array_employee.push($(this).val());
+            // });
+            var url = 'export_pdf_id_card_employee?employee='+checkedEmployeeArr;
+            // var url = 'export_pdf_id_card_employee?employee='+array_employee;
             window.open(url, '_blank');
         });
         $('#selectDepartment').on('change',function(e){
@@ -1248,7 +1250,7 @@
                 }
             }
         });
-        
+
         $(document).on("click","#upload_image",function(e){
             e.preventDefault();
             var formData = new FormData();
@@ -1405,15 +1407,15 @@
             var d = new Date(bits[2] + '-' + bits[1] + '-' + bits[0]);
             return !!(d && (d.getMonth() + 1) == bits[1] && d.getDate() == Number(bits[0]));
         }
-          
+
         function defaultDate(s) {
             if(s) {
                 var bits = s.split('-');
                 var d = bits[2] + '-' + bits[1] + '-' + bits[0];
             }
             return d;
-        }        
-        
+        }
+
         $('#progress-show-1').hide();
         $("#form1 :input").prop("disabled", true);
         $("#btn-save").prop("disabled", true);
@@ -1428,7 +1430,7 @@
 
         $('#employee_name').keyup(function(){
             var terisi = $('#employee_name').val();
-            
+
             if (terisi) {
                 $("#employee_name").removeClass('border-danger');
             } else {
@@ -1439,7 +1441,7 @@
 
         $('body').on('change', '#jenis_kelamin', function () {
             var terisi = $('#jenis_kelamin').val();
-            
+
             if (terisi) {
                 $("#jenis_kelamin").removeClass('border-danger');
             } else {
@@ -1450,7 +1452,7 @@
 
         $('#tempat_lahir').keyup(function(){
             var terisi = $('#tempat_lahir').val();
-            
+
             if (terisi) {
                 $("#tempat_lahir").removeClass('border-danger');
             } else {
@@ -1461,7 +1463,7 @@
 
         $('body').on('change', '#tanggal_lahir', function () {
             var terisi = $('#tanggal_lahir').val();
-            
+
             if (terisi) {
                 $("#tanggal_lahir").removeClass('border-danger');
             } else {
@@ -1472,7 +1474,7 @@
 
         $('#nomor_ktp').keyup(function(){
             var terisi = $('#nomor_ktp').val();
-            
+
             if (terisi) {
                 $("#nomor_ktp").removeClass('border-danger');
             } else {
@@ -1483,7 +1485,7 @@
 
         $('body').on('change', '#site_nirwana_id', function () {
             var terisi = $('#site_nirwana_id').val();
-            
+
             if (terisi) {
                 $("#site_nirwana_id").removeClass('border-danger');
             } else {
@@ -1494,7 +1496,7 @@
 
         $('body').on('change', '#department_id', function () {
             var terisi = $('#department_id').val();
-            
+
             if (terisi) {
                 $("#department_id").removeClass('border-danger');
             } else {
@@ -1505,7 +1507,7 @@
 
         $('body').on('change', '#sub_dept_id', function () {
             var terisi = $('#sub_dept_id').val();
-            
+
             if (terisi) {
                 $("#sub_dept_id").removeClass('border-danger');
             } else {
@@ -1516,7 +1518,7 @@
 
         $('#enroll_id').keyup(function(){
             var terisi = $('#enroll_id').val();
-            
+
             if (terisi) {
                 $("#enroll_id").removeClass('border-danger');
             } else {
@@ -1527,7 +1529,7 @@
 
         $('#nik').keyup(function(){
             var terisi = $('#nik').val();
-            
+
             if (terisi) {
                 $("#nik").removeClass('border-danger');
             } else {
@@ -1538,7 +1540,7 @@
 
         $('body').on('change', '#join_date', function () {
             var terisi = $('#join_date').val();
-            
+
             if (terisi) {
                 $("#join_date").removeClass('border-danger');
             } else {
@@ -1549,7 +1551,7 @@
 
         $('body').on('change', '#status_aktif', function () {
             var terisi = $('#status_aktif').val();
-            
+
             if (terisi) {
                 $("#status_aktif").removeClass('border-danger');
             } else {
@@ -1587,7 +1589,7 @@
             $("#join_date").addClass('border-danger');
             $("#status_aktif").addClass('border-danger');
             $("#status_staff").addClass('border-danger');
-            
+
         });
 
         $('body').on('click', '#btn-reset', function (event) {
@@ -1617,7 +1619,7 @@
                 // $("#btn-periksa_nik").attr("disabled", true);
                 // $("#nik").attr("readonly", true);
                 $('#is_periksanik').val(1);
-                
+
             } else {
                 notif({
                     msg: "<b>Warning:</b> Data belum ada yang di pilih.",
@@ -1726,9 +1728,11 @@
         function testing(){
             var department_id = $('#selectDepartment').val();
             var sub_dept_id = $('#pilih_department').val();
-            
+
             $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
         }
+        var currentPageCheck = 0;
+        var checkedEmployeeArr = [];
         $(document).ready(function() {
             var department_id = $('#selectDepartment').val();
             $('#profile_photo').empty().append('<img src="{{URL::asset('assets/images/brand/foto orang.png')}}" alt="" class="user mt-3" height="110px">');
@@ -1739,6 +1743,8 @@
                 pageLength: 10,
                 pagingType: "simple",
                 destroy: true,
+                scrollY: '500px',
+                scrollCollapse: true,
                 "ajax": {
                     "url": "{{ route('hris.employeeatr.ajax_getemployeeatr') }}",
                     "dataType": "json",
@@ -1777,13 +1783,13 @@
                     {
                         'visible': false,
                         'targets': []
-                    }, 
+                    },
                     {
                         'targets': [0],
                         'render' : function (data, row) {
                             return `
                                 <div class="form-check">
-                                    <input class="form-check-input employee-check" type="checkbox" name="employee-check" value="`+data+`">
+                                    <input class="form-check-input employee-check" type="checkbox" name="employee-check" value="`+data+`" id='check-`+data+`' onchange="actionThisEmployeeCheck(this)">
                                 </div>
                             `
                         }
@@ -1799,7 +1805,24 @@
                     if (data['deactive']) {
                         $(row).addClass('bg-red')
                     }
-            }
+                },
+                rowCallback: function(row, data, dataIndex){
+                    let currentEnrollId = data['enroll_id'];
+
+                    if(checkedEmployeeArr.find((value) => value == currentEnrollId)){
+                        currentPageCheck++;
+                        $(row).find('input[type="checkbox"]').prop('checked', true);
+                    }
+                },
+                drawCallback: function (settings) {
+                    if (currentPageCheck == 0) {
+                        $('#checkAllEmployee').prop("checked", false);
+                    } else {
+                        $('#checkAllEmployee').prop("checked", true);
+                    }
+
+                    currentPageCheck = 0;
+                }
             });
 
             table1.draw();
@@ -1830,7 +1853,7 @@
                 $('#npwp').val(data['npwp']);
                 $('#nomor_ktp').val(data['nomor_ktp']);
                 $('#nomor_kk').val(data['nomor_kk']);
-                $('#ptkp').val(data['ptkp']); 
+                $('#ptkp').val(data['ptkp']);
                 $('#pendidikan_terakhir').val(data['pendidikan_terakhir']);
                 $('#jurusan_pendidikan').val(data['jurusan_pendidikan']);
                 $("#nama_bank").val(data['nama_bank']).trigger("change");
@@ -1920,6 +1943,22 @@
             });
         });
 
+        function actionThisEmployeeCheck(element) {
+            if (element.checked) {
+                if(!checkedEmployeeArr.find((value) => value == element.value)) {
+                    checkedEmployeeArr.push(element.value);
+                }
+            } else {
+                if(checkedEmployeeArr.find((value) => value == element.value)) {
+                    const index = checkedEmployeeArr.indexOf(element.value);
+                    if (index > -1) { // only splice array when item is found
+                        checkedEmployeeArr.splice(index, 1); // 2nd parameter means remove one item only
+                    }
+                }
+            }
+
+            document.getElementById("checked-employee-count").innerText = checkedEmployeeArr.length;
+        }
 
         function actionCheckedEmployee () {
             let employeeCheck = document.getElementsByClassName('employee-check');
@@ -1929,15 +1968,35 @@
                 if (employeeCheck[i].checked) {
                     checkedEmployee.push(employeeCheck[i].value);
                 }
-            }   
-
-            alert(checkedEmployee);
+            }
         }
 
         function actionCheckAllEmployee(element) {
-            checkboxes = document.getElementsByName('employee-check');
-            for(var i=0, n=checkboxes.length;i<n;i++) {
-                checkboxes[i].checked = element.checked;
+
+            if (element.checked) {
+                $.ajax({
+                    type:"POST",
+                    url: "{{route('hris.employeeatr.ajax_getemployeeids')}}",
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    data: {
+                        department_id:$('#selectDepartment').val(),
+                        sub_dept_id:$('#pilih_department').val()
+                    },
+                    dataType: 'json',
+                    success: function(res){
+                        if(res){
+                            checkedEmployeeArr = res;
+
+                            $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+                        }
+                    }
+                });
+            } else {
+                checkedEmployeeArr = [];
+
+                $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
             }
         }
 
@@ -2160,7 +2219,7 @@
             var nik = $('#nik').val();
             var status_aktif = $('#status_aktif').val();
             var status_staff = $('#status_staff').val();
-            
+
             if(!employee_name)
             {
                 notif({
@@ -2208,15 +2267,15 @@
 
                 return false;
             }
-             
+
             var isDate = isValidDate(tanggal_lahir);
 
-            if(!isDate) 
+            if(!isDate)
             {
                 notif({
                     msg: "<b>Error:</b> Oops Tanggal Lahir formatnya salah.",
                     type: "error"
-                });    
+                });
 
                 return false;
 
@@ -2335,7 +2394,7 @@
             if($('#tanggal_resign').val()) {
                 var tgl = defaultDate($('#tanggal_resign').val());
                 var tanggal = tgl.split(' s/d ');
-                
+
                 $.ajax({
                     type:"POST",
                     url: "{{route('hris.dataclosingpayroll.ajax_getclosing')}}",
@@ -2479,11 +2538,11 @@
                                             $("#form1 :input").prop("disabled", true);
                                             $("#btn-save").prop("disabled", true);
                                             $("#btn-cancel").prop("disabled", true);
-                                                
+
                                             setTimeout(function myFunction() {
                                                 location.reload();
                                             }, 3000);
-                                                
+
                                         },
                                         error: function(res){
                                             notif({
@@ -2515,7 +2574,7 @@
                                     $('#progress-hide-1').show();
                                     $('#btn-save').removeClass("btn-loading");
                                     $("#btn-save").html('<span><i class="fa fa-save"></i></span> Add');
-                                
+
                                 }
                             } else {
                                 notif({
@@ -2533,9 +2592,9 @@
 
                     },
                     error: function(res){
-                                    
+
                     }
-                });  
+                });
             } else {
 
                 $('#btn-save').addClass("btn-loading");
@@ -2657,11 +2716,11 @@
                                 $("#form1 :input").prop("disabled", true);
                                 $("#btn-save").prop("disabled", true);
                                 $("#btn-cancel").prop("disabled", true);
-                                    
+
                                 setTimeout(function myFunction() {
                                     location.reload();
                                 }, 3000);
-                                    
+
                             },
                             error: function(res){
                                 notif({
@@ -2693,7 +2752,7 @@
                         $('#progress-hide-1').show();
                         $('#btn-save').removeClass("btn-loading");
                         $("#btn-save").html('<span><i class="fa fa-save"></i></span> Add');
-                    
+
                     }
                 } else {
                     notif({
@@ -2706,8 +2765,8 @@
                     $('#progress-hide-1').show();
                     $('#btn-save').removeClass("btn-loading");
                     $("#btn-save").html('<span><i class="fa fa-save"></i></span> Add');
-                }                
-            }         
+                }
+            }
 
         });
 
@@ -2726,13 +2785,13 @@
                     cancelButtonText: 'Tutup'
                 },function(isConfirm){
                     if(isConfirm) {
-    
+
                         $("#form1 :input").prop("disabled", true);
                         $("#btn-save").prop("disabled", true);
-                        $("#btn-cancel").prop("disabled", true);    
+                        $("#btn-cancel").prop("disabled", true);
                         $('#progress-show-1').show();
                         $('#progress-hide-1').hide();
-            
+
                         $.ajax({
                             type:"POST",
                             url: "{{route('hris.employeeatr.destroy')}}",
@@ -2747,23 +2806,23 @@
                                 notif({
                                     msg: "<b>Info:</b> Data berhasil di hapus.",
                                     type: "info"
-                                });    
+                                });
                             },
                             error: function(res){
                                 notif({
                                     msg: "<b>Error:</b> Oops data gagal di hapus.",
                                     type: "error"
-                                });    
+                                });
                             }
                         });
-            
+
                         $('#progress-show-1').hide();
-                        $('#progress-hide-1').show();    
-    
+                        $('#progress-hide-1').show();
+
                         setTimeout(function myFunction() {
                             location.reload();
-                          }, 3000);                   
-    
+                          }, 3000);
+
                     } else {
                         // else everythings
                     }
@@ -2794,7 +2853,7 @@
             notif({
                 msg: "<b>Error:</b>"+ meseg,
                 type: "error"
-            }); 
+            });
         @endif
 
         @if(Session::has('success'))
@@ -2802,8 +2861,8 @@
             notif({
                 msg: "<b>Info:</b>"+ meseg,
                 type: "info"
-            }); 
-        @endif 
+            });
+        @endif
 
     </script>
 
