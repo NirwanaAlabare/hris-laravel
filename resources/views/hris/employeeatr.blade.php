@@ -1216,9 +1216,13 @@
                     }
                 }
             });
+            $("#pilih_department").empty();
+            $("#pilih_department").val('');
         });
         $('#pilih_department').on('change',function(e){
             testing();
+            $("#checkAllEmployee").prop("checked", false);
+            $("#checkAllEmployee").trigger("change");
         });
         $('#btnupload').click(function(e){
             let enroll_id=$('#enroll_id').val();
