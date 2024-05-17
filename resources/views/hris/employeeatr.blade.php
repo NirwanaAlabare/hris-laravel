@@ -1190,6 +1190,9 @@
             window.open(url, '_blank');
         });
         $('#selectDepartment').on('change',function(e){
+            $("#checkAllEmployee").prop("checked", false);
+            $("#checkAllEmployee").trigger("change");
+
             testing();
             $("#pilih_department").empty();
             $("#pilih_department").val('');
@@ -1994,6 +1997,7 @@
                     }
                 });
             } else {
+                console.log("test");
                 checkedEmployeeArr = [];
 
                 $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
