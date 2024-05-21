@@ -744,6 +744,7 @@ class DataAbsenPerijinanController extends AdminBaseController
             'absen_alasan' => request()->absen_alasan,
             'time_mulai_ijin' => request()->time_mulai_ijin,
             'time_akhir_ijin' => request()->time_akhir_ijin,
+            'total_time_ijin' => request()->total_time_ijin,
             'operator' => $email
         ]);
         MasterDataAbsenKehadiran::whereRaw('
@@ -755,7 +756,7 @@ class DataAbsenPerijinanController extends AdminBaseController
             'absen_alasan' => request()->absen_alasan,
             'permits_dari_pukul' => request()->time_mulai_ijin,
             'permits_sampai_pukul' => request()->time_akhir_ijin,
-            'total_menit_permits' => request()->time_akhir_ijin,
+            'total_menit_permits' => request()->total_time_ijin,
             'operator' => $email,
             'updated_absen_ijin' => now()
         ]);
