@@ -1534,12 +1534,17 @@
 
                 var data = row.data();
                 var tanggal_periz=data['tanggal_perizinan'];
+                var tanggal_mulai_ijin=null;
+                var tanggal_akhir_ijin=null;
                 var tanggal_mulai = data['tanggal_mulai_ijin'];
                 var tanggal_akhir = data['tanggal_akhir_ijin'];
                 var tanggal_perizinan=tanggal_periz.substr(8,2)+'-'+tanggal_periz.substr(5,2)+'-'+tanggal_periz.substr(0,4);
-                var tanggal_mulai_ijin=tanggal_mulai.substr(8,2)+'-'+tanggal_mulai.substr(5,2)+'-'+tanggal_mulai.substr(0,4);
-                var tanggal_akhir_ijin=tanggal_akhir.substr(8,2)+'-'+tanggal_akhir.substr(5,2)+'-'+tanggal_akhir.substr(0,4);
-
+                if(tanggal_mulai!=null){
+                    tanggal_mulai_ijin=tanggal_mulai.substr(8,2)+'-'+tanggal_mulai.substr(5,2)+'-'+tanggal_mulai.substr(0,4);
+                }
+                if(tanggal_akhir!=null){
+                    tanggal_akhir_ijin=tanggal_akhir.substr(8,2)+'-'+tanggal_akhir.substr(5,2)+'-'+tanggal_akhir.substr(0,4);
+                }
                 $("#form1 :input").prop("disabled", true);
                 $("#btn-save-izin").prop("disabled", true);
                 $("#btn-save-iks").prop("disabled", true);
