@@ -1041,7 +1041,7 @@ class DataLemburController extends AdminBaseController
             ];
             $sheet->writeRow($data);
         }
-        $finename=substr($request->periode_lembur,0,7).' - PT.NAG OVERTIME DATA '.rand(10,10000000);
+        $finename=substr($request->periode_lembur,14,8).' - PT.NAG OVERTIME DATA '.rand(10,10000000);
         ob_end_clean();
         $excel->download($finename);
     }
