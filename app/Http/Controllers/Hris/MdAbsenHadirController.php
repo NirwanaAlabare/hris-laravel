@@ -1271,6 +1271,9 @@ class MdAbsenHadirController extends AdminBaseController
             WHERE
                 substr(master_data_absen_kehadiran.tanggal_berjalan, 1, 10) between "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                 ' . $filterStaff . ' ' . $inDepartment . ' ' . $inBagian . ' ' . $inSearchData . '
+            GROUP BY 
+                master_data_absen_kehadiran.enroll_id,
+                master_data_absen_kehadiran.tanggal_berjalan
             ORDER BY
                 `employee_atribut`.`employee_name` ASC,
                 `master_data_absen_kehadiran`.`tanggal_berjalan` ASC
