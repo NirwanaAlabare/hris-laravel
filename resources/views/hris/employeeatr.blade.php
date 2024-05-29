@@ -785,7 +785,7 @@
                                                 <select id="status_aktif_bpjs_tk" class="form-control" data-placeholder="-- Pilih Aktif / Tidak Aktif --">
                                                     <option value="">-- PILIH AKTIF/TIDAK AKTIF --</option>
                                                     <option value="AKTIF">AKTIF</option>
-                                                    <option value="TIDAK AKTIF">TIDAK AKTIF</option>
+                                                    <option value="TIDAK AKTIF" selected>TIDAK AKTIF</option>
                                                 </select>
                                             </td>
                                             <td>
@@ -809,7 +809,7 @@
                                                 <select id="status_aktif_bpjs_ks" class="form-control" data-placeholder="-- Pilih Aktif / Tidak Aktif --">
                                                     <option value="">-- PILIH AKTIF/TIDAK AKTIF --</option>
                                                     <option value="AKTIF">AKTIF</option>
-                                                    <option value="TIDAK AKTIF">TIDAK AKTIF</option>
+                                                    <option value="TIDAK AKTIF" selected>TIDAK AKTIF</option>
                                                 </select>
                                             </td>
                                             <td>
@@ -822,12 +822,6 @@
                                                 </div>
                                             </td>
                                             <td><input type="text" class="form-control" id="nomor_bpjs_kesehatan"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>PREMI</th>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="text" class="form-control" id="premi"></td>
                                         </tr>
                                     </table>
                                 </div>
