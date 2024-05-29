@@ -815,7 +815,7 @@ class DataLemburController extends AdminBaseController
        /*  $fileName = 'DepartmentAll.xlsx';
         return (new DepartmentAllExport)->download($fileName); */
         $nomor_form_lembur_rekap=RekapPerhitunganLembur::where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->pluck('nomor_form_lembur');
-        $dataLembur = MasterDataAbsenKehadiran::whereNotNull('nomor_form_lembur')->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->with('data_lembur')->with(['rekap_lembur' => function ($query)use($tanggal_awal,$tanggal_akhir) {
+        $dataLembur = MasterDataAbsenKehadiran::whereNotNull('nomor_form_lembur')->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->with('data_lembur','employee_atribut')->with(['rekap_lembur' => function ($query)use($tanggal_awal,$tanggal_akhir) {
             $query->where('tanggal_berjalan', '>=', $tanggal_awal)
             ->where('tanggal_berjalan','<=',$tanggal_akhir);
         }])->orderBy('tanggal_berjalan')->orderBy('nomor_form_lembur')->orderBy('employee_name')->get();
@@ -1056,9 +1056,9 @@ class DataLemburController extends AdminBaseController
                     $lembur->enroll_id,
                     $lembur->employee_name,
                     $kerjalibur,
-                    $lembur->status_staff,
-                    $lembur->department_name,
-                    $lembur->sub_dept_name,
+                    $lembur->employee_atribut->status_staff,
+                    $lembur->employee_atribut->department_name,
+                    $lembur->employee_atribut->sub_dept_name,
                     substr($lembur->mulai_jam_kerja, 0, 5),
                     substr($lembur->akhir_jam_kerja, 0, 5),
                     substr($lembur->absen_masuk_kerja, 0, 5),
@@ -1091,9 +1091,9 @@ class DataLemburController extends AdminBaseController
                     $lembur->enroll_id,
                     $lembur->employee_name,
                     $kerjalibur,
-                    $lembur->status_staff,
-                    $lembur->department_name,
-                    $lembur->sub_dept_name,
+                    $lembur->employee_atribut->status_staff,
+                    $lembur->employee_atribut->department_name,
+                    $lembur->employee_atribut->sub_dept_name,
                     substr($lembur->mulai_jam_kerja, 0, 5),
                     substr($lembur->akhir_jam_kerja, 0, 5),
                     substr($lembur->absen_masuk_kerja, 0, 5),
