@@ -1918,6 +1918,16 @@ class MdAbsenHadirController extends AdminBaseController
                             }else {
                                 $total_DT=$total_DT1;
                             }
+                        }else if($jadwal_in=='13:00:00'){
+                            if($absen_in >'18:00:00'){
+                                $total_DT=$total_DT1-60;
+                            }else if($absen_in >'17:00:00' && $absen_in <='18:00:00'){
+                                $selisih_menit = strtotime($absen_in) - strtotime('18:00:00');
+                                $selisih_menit = round($selisih_menit / 60);
+                                $total_DT=$total_DT1-$selisih_menit;
+                            }else {
+                                $total_DT=$total_DT1;
+                            }
                         }else{
                             $total_DT=$total_DT1;
                         }
@@ -1945,6 +1955,18 @@ class MdAbsenHadirController extends AdminBaseController
                             }
                             else if($absen_out >'10:00:00' && $absen_out <='11:00:00'){
                                 $selisih_menit = strtotime('11:00:00') - strtotime($absen_out);
+                                $selisih_menit = round($selisih_menit / 60);
+                                $total_PC=$total_PC1-$selisih_menit;
+                            }
+                            else {
+                                $total_PC=$total_PC1;
+                            }
+                        }else if($jadwal_in=='13:00:00'){
+                            if($absen_out <='17:00:00'){
+                                $total_PC=$total_PC1-60;
+                            }
+                            else if($absen_out >'17:00:00' && $absen_out <='18:00:00'){
+                                $selisih_menit = strtotime('18:00:00') - strtotime($absen_out);
                                 $selisih_menit = round($selisih_menit / 60);
                                 $total_PC=$total_PC1-$selisih_menit;
                             }
