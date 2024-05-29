@@ -264,7 +264,7 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
                 $sheet->getDelegate()->getStyle('A1')->getFont()->setSize(18);
                 $sheet->setCellValue('A2', 'Laporan Perhitungan Lembur Karyawan');
                 $sheet->getDelegate()->getStyle('A1')->getFont()->setSize(16);
-                $sheet->setCellValue('A3', 'Tanggal  : ' . $this->daterange1[0] . ' s/d ' . $this->daterange1[1]);
+                $sheet->setCellValue('A3', 'Tanggal  : ' . date('d F Y',strtotime($this->daterange1[0])) . ' s/d ' .date('d F Y',strtotime($this->daterange1[1])));
                 $sheet->getDelegate()->getStyle('A1')->getFont()->setSize(14);
                 $sheet->mergeCells('A1:D1');
                 $sheet->mergeCells('A2:D2');
