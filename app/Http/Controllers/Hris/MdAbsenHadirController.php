@@ -1877,7 +1877,7 @@ class MdAbsenHadirController extends AdminBaseController
                     }
                 }
             }
-            $masterAbsen=MasterDataAbsenKehadiran::whereRaw('tanggal_berjalan = "'.$tanggal_mesin_absensi.'"'.$inEnrollsId.'')->get();
+            $masterAbsen=MasterDataAbsenKehadiran::whereRaw('tanggal_berjalan = "'.$tanggal_mesin_absensi.'"'.$inEnrollsId.'')->with('employee_atribut')->get();
             foreach ($masterAbsen as $k => $v) {
                 $countEditedData1=DataKehadiranInOutEdited::where('tanggal_absen','=', $tanggal_mesin_absensi)->where('enroll_id','=', $v->enroll_id)->count();
                 $count1=LogDataGagalAbsen::where('tanggal_absen',$tanggal_mesin_absensi)->where('enroll_id','=', $v->enroll_id)->count();
@@ -1888,7 +1888,7 @@ class MdAbsenHadirController extends AdminBaseController
 
                     $absen_in=$v->absen_masuk_kerja;
                     $absen_out=$v->absen_pulang_kerja;
-
+                    $status_staff=$v->employee_atribut->status_staff;
                     $durasi_kerja=date_diff(date_create($jadwal_in),date_create($jadwal_out));
                     $durasi_kerja_menit=$durasi_kerja->i +($durasi_kerja->h*60);
 
@@ -1896,42 +1896,118 @@ class MdAbsenHadirController extends AdminBaseController
                     $PC = date_diff(date_create($jadwal_out),date_create($absen_out));
                     if( $jadwal_in!=null && $absen_in!=null && $absen_in>$jadwal_in && $v->status_absen==null){
                         $total_DT1 = $DT->i +($DT->h*60);
-                        if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
-                            if($absen_in >'13:00:00'){
-                                $total_DT=$total_DT1-60;
-                            }
-                            else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
-                                $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
-                                $selisih_menit = round($selisih_menit / 60);
-                                $total_DT=$total_DT1-$selisih_menit;
-                            }
-                            else {
+                        if($status_staff=='STAFF'){
+                            if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
+                                if($jadwal_in=='07:00:00'){
+                                    if($absen_in >'13:00:00'){
+                                        $total_DT=$total_DT1-60;
+                                    }
+                                    else if($absen_in>'07:00:00' && $absen_in<'07:11:00'){
+                                        $total_DT=0;
+                                    }
+                                    else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
+                                        $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
+                                        $selisih_menit = round($selisih_menit / 60);
+                                        $total_DT=$total_DT1-$selisih_menit;
+                                    }
+                                    else {
+                                        $total_DT=$total_DT1;
+                                    }
+                                }else if($jadwal_in=='07:30:00'){
+                                    if($absen_in >'13:00:00'){
+                                        $total_DT=$total_DT1-60;
+                                    }
+                                    else if($absen_in>'07:30:00' && $absen_in<'07:41:00'){
+                                        $total_DT=0;
+                                    }
+                                    else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
+                                        $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
+                                        $selisih_menit = round($selisih_menit / 60);
+                                        $total_DT=$total_DT1-$selisih_menit;
+                                    }
+                                    else {
+                                        $total_DT=$total_DT1;
+                                    }
+                                }
+                            }else if($jadwal_in=='06:00:00'){
+                                if($absen_in >'11:00:00'){
+                                    $total_DT=$total_DT1-60;
+                                }else if($absen_in >'10:00:00' && $absen_in <='11:00:00'){
+                                    $selisih_menit = strtotime($absen_in) - strtotime('11:00:00');
+                                    $selisih_menit = round($selisih_menit / 60);
+                                    $total_DT=$total_DT1-$selisih_menit;
+                                }else if($absen_in>'06:00:00' && $absen_in<'06:11:00'){
+                                    $total_DT=0;
+                                }else {
+                                    $total_DT=$total_DT1;
+                                }
+                            }else if($jadwal_in=='13:00:00'){
+                                if($absen_in >'18:00:00'){
+                                    $total_DT=$total_DT1-60;
+                                }else if($absen_in >'17:00:00' && $absen_in <='18:00:00'){
+                                    $selisih_menit = strtotime($absen_in) - strtotime('18:00:00');
+                                    $selisih_menit = round($selisih_menit / 60);
+                                    $total_DT=$total_DT1-$selisih_menit;
+                                }else if($absen_in>'13:00:00' && $absen_in<'13:11:00'){
+                                    $total_DT=0;
+                                }else {
+                                    $total_DT=$total_DT1;
+                                }
+                            }else{
                                 $total_DT=$total_DT1;
                             }
-                        }else if($jadwal_in=='06:00:00'){
-                            if($absen_in >'11:00:00'){
-                                $total_DT=$total_DT1-60;
-                            }else if($absen_in >'10:00:00' && $absen_in <='11:00:00'){
-                                $selisih_menit = strtotime($absen_in) - strtotime('11:00:00');
-                                $selisih_menit = round($selisih_menit / 60);
-                                $total_DT=$total_DT1-$selisih_menit;
-                            }else {
-                                $total_DT=$total_DT1;
-                            }
-                        }else if($jadwal_in=='13:00:00'){
-                            if($absen_in >'18:00:00'){
-                                $total_DT=$total_DT1-60;
-                            }else if($absen_in >'17:00:00' && $absen_in <='18:00:00'){
-                                $selisih_menit = strtotime($absen_in) - strtotime('18:00:00');
-                                $selisih_menit = round($selisih_menit / 60);
-                                $total_DT=$total_DT1-$selisih_menit;
-                            }else {
-                                $total_DT=$total_DT1;
-                            }
+                            $total_DT = $total_DT < 480 ? $total_DT : 480;
                         }else{
-                            $total_DT=$total_DT1;
+                            if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
+                                if($jadwal_in=='07:00:00'){
+                                    if($absen_in >'13:00:00'){
+                                        $total_DT=$total_DT1-60;
+                                    }
+                                    else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
+                                        $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
+                                        $selisih_menit = round($selisih_menit / 60);
+                                        $total_DT=$total_DT1-$selisih_menit;
+                                    }
+                                    else {
+                                        $total_DT=$total_DT1;
+                                    }
+                                }else if($jadwal_in=='07:30:00'){
+                                    if($absen_in >'13:00:00'){
+                                        $total_DT=$total_DT1-60;
+                                    }else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
+                                        $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
+                                        $selisih_menit = round($selisih_menit / 60);
+                                        $total_DT=$total_DT1-$selisih_menit;
+                                    }
+                                    else {
+                                        $total_DT=$total_DT1;
+                                    }
+                                }
+                            }else if($jadwal_in=='06:00:00'){
+                                if($absen_in >'11:00:00'){
+                                    $total_DT=$total_DT1-60;
+                                }else if($absen_in >'10:00:00' && $absen_in <='11:00:00'){
+                                    $selisih_menit = strtotime($absen_in) - strtotime('11:00:00');
+                                    $selisih_menit = round($selisih_menit / 60);
+                                    $total_DT=$total_DT1-$selisih_menit;
+                                }else {
+                                    $total_DT=$total_DT1;
+                                }
+                            }else if($jadwal_in=='13:00:00'){
+                                if($absen_in >'18:00:00'){
+                                    $total_DT=$total_DT1-60;
+                                }else if($absen_in >'17:00:00' && $absen_in <='18:00:00'){
+                                    $selisih_menit = strtotime($absen_in) - strtotime('18:00:00');
+                                    $selisih_menit = round($selisih_menit / 60);
+                                    $total_DT=$total_DT1-$selisih_menit;
+                                }else {
+                                    $total_DT=$total_DT1;
+                                }
+                            }else{
+                                $total_DT=$total_DT1;
+                            }
+                            $total_DT = $total_DT < 480 ? $total_DT : 480;
                         }
-                        $total_DT = $total_DT < 480 ? $total_DT : 480;
                     }else{
                         $total_DT=0;
                     }

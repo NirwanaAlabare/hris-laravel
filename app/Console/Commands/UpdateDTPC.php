@@ -41,7 +41,7 @@ class UpdateDTPC extends Command
     {
         $ijin_bayar=RefAbsenIjin::where('kode_ijin_payroll','IBY')->get()->toArray();
         $IBY=array_column($ijin_bayar,'kode_absen_ijin');
-        $masterAbsen=MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->get();
+        $masterAbsen=MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->with('employee_atribut')->get();
         foreach ($masterAbsen as $k => $v) {
             $enroll_id=$v->enroll_id;
             $employee_name=$v->employee_name;
@@ -49,6 +49,7 @@ class UpdateDTPC extends Command
             $jadwal_out=$v->akhir_jam_kerja;
             $absen_in=$v->absen_masuk_kerja;
             $absen_out=$v->absen_pulang_kerja;
+            $status_staff=$v->employee_atribut->status_staff;
             $total_dt_real='';
             $total_pc_real='';
             $status_absen=$v->status_absen;
@@ -70,38 +71,94 @@ class UpdateDTPC extends Command
             }
             if($jadwal_in!=null && $absen_in!=null && $absen_in>$jadwal_in && in_array($status_absen,$IBY)==false){
                 $total_dt=$dt->i+$dt->h*60;
-                if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
-                    if($absen_in>'13:00:00'){
-                        $total_dt_real=$total_dt-60;
-                    }else if($absen_in>'12:00:00' && $absen_in<='13:00:00'){
-                        $selisih_menit=strtotime($absen_in)-strtotime('12:00:00');
-                        $selisih_menit=round($selisih_menit/60);
-                        $total_dt_real=$total_dt-$selisih_menit;
+                if($status_staff=='STAFF'){
+                    if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
+                        if($jadwal_in=='07:00:00'){
+                            if($absen_in>'13:00:00'){
+                                $total_dt_real=$total_dt-60;
+                            }else if($absen_in>'07:00:00' && $absen_in<'07:11:00'){
+                                $total_dt_real=0;
+                            }else if($absen_in>'12:00:00' && $absen_in<='13:00:00'){
+                                $selisih_menit=strtotime($absen_in)-strtotime('12:00:00');
+                                $selisih_menit=round($selisih_menit/60);
+                                $total_dt_real=$total_dt-$selisih_menit;
+                            }else{
+                                $total_dt_real=$total_dt;
+                            }
+                        }else if($jadwal_in=='07:30:00'){
+                            if($absen_in>'13:00:00'){
+                                $total_dt_real=$total_dt-60;
+                            }else if($absen_in>'07:30:00' && $absen_in<'07:41:00'){
+                                $total_dt_real=0;
+                            }else if($absen_in>'12:00:00' && $absen_in<='13:00:00'){
+                                $selisih_menit=strtotime($absen_in)-strtotime('12:00:00');
+                                $selisih_menit=round($selisih_menit/60);
+                                $total_dt_real=$total_dt-$selisih_menit;
+                            }else{
+                                $total_dt_real=$total_dt;
+                            }
+                        }
+                    }else if($jadwal_in=='06:00:00'){
+                        if($absen_in>'11:00:00'){
+                            $total_dt_real=$total_dt-60;
+                        }else if($absen_in>'10:00:00' && $absen_in<='11:00:00'){
+                            $selisih_menit=strtotime($absen_in)-strtotime('11:00:00');
+                            $selisih_menit=round($selisih_menit/60);
+                            $total_dt_real=$total_dt-$selisih_menit;
+                        }else if($absen_in>'06:00:00' && $absen_in<'06:11:00'){
+                            $total_dt_real=0;
+                        }else{
+                            $total_dt_real=$total_dt;
+                        }
+                    }else if($jadwal_in=='13:00:00'){
+                        if($absen_in >'18:00:00'){
+                            $total_dt_real=$total_dt-60;
+                        }else if($absen_in >'17:00:00' && $absen_in <='18:00:00'){
+                            $selisih_menit = strtotime($absen_in) - strtotime('18:00:00');
+                            $selisih_menit = round($selisih_menit / 60);
+                            $total_dt_real=$total_dt-$selisih_menit;
+                        }else if($absen_in>'13:00:00' && $absen_in<'13:11:00'){
+                            $total_dt_real=0;
+                        }else {
+                            $total_dt_real=$total_dt;
+                        }
                     }else{
                         $total_dt_real=$total_dt;
-                    }
-                }else if($jadwal_in=='06:00:00'){
-                    if($absen_in>'11:00:00'){
-                        $total_dt_real=$total_dt-60;
-                    }else if($absen_in>'10:00:00' && $absen_in<='11:00:00'){
-                        $selisih_menit=strtotime($absen_in)-strtotime('11:00:00');
-                        $selisih_menit=round($selisih_menit/60);
-                        $total_dt_real=$total_dt-$selisih_menit;
-                    }else{
-                        $total_dt_real=$total_dt;
-                    }
-                }else if($jadwal_in=='13:00:00'){
-                    if($absen_in >'18:00:00'){
-                        $total_DT=$total_DT1-60;
-                    }else if($absen_in >'17:00:00' && $absen_in <='18:00:00'){
-                        $selisih_menit = strtotime($absen_in) - strtotime('18:00:00');
-                        $selisih_menit = round($selisih_menit / 60);
-                        $total_DT=$total_DT1-$selisih_menit;
-                    }else {
-                        $total_DT=$total_DT1;
                     }
                 }else{
-                    $total_dt_real=$total_dt;
+                    if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
+                        if($absen_in>'13:00:00'){
+                            $total_dt_real=$total_dt-60;
+                        }else if($absen_in>'12:00:00' && $absen_in<='13:00:00'){
+                            $selisih_menit=strtotime($absen_in)-strtotime('12:00:00');
+                            $selisih_menit=round($selisih_menit/60);
+                            $total_dt_real=$total_dt-$selisih_menit;
+                        }else{
+                            $total_dt_real=$total_dt;
+                        }
+                    }else if($jadwal_in=='06:00:00'){
+                        if($absen_in>'11:00:00'){
+                            $total_dt_real=$total_dt-60;
+                        }else if($absen_in>'10:00:00' && $absen_in<='11:00:00'){
+                            $selisih_menit=strtotime($absen_in)-strtotime('11:00:00');
+                            $selisih_menit=round($selisih_menit/60);
+                            $total_dt_real=$total_dt-$selisih_menit;
+                        }else{
+                            $total_dt_real=$total_dt;
+                        }
+                    }else if($jadwal_in=='13:00:00'){
+                        if($absen_in >'18:00:00'){
+                            $total_dt_real=$total_dt-60;
+                        }else if($absen_in >'17:00:00' && $absen_in <='18:00:00'){
+                            $selisih_menit = strtotime($absen_in) - strtotime('18:00:00');
+                            $selisih_menit = round($selisih_menit / 60);
+                            $total_dt_real=$total_dt-$selisih_menit;
+                        }else {
+                            $total_dt_real=$total_dt;
+                        }
+                    }else{
+                        $total_dt_real=$total_dt;
+                    }
                 }
             }else{
                 $total_dt_real=0;
@@ -131,15 +188,15 @@ class UpdateDTPC extends Command
                     }
                 }else if($jadwal_in=='13:00:00'){
                     if($absen_out <='17:00:00'){
-                        $total_PC=$total_PC1-60;
+                        $total_pc_real=$total_PC1-60;
                     }
                     else if($absen_out >'17:00:00' && $absen_out <='18:00:00'){
                         $selisih_menit = strtotime('18:00:00') - strtotime($absen_out);
                         $selisih_menit = round($selisih_menit / 60);
-                        $total_PC=$total_PC1-$selisih_menit;
+                        $total_pc_real=$total_PC1-$selisih_menit;
                     }
                     else {
-                        $total_PC=$total_PC1;
+                        $total_pc_real=$total_PC1;
                     }
                 }else{
                     $total_pc_real=$total_pc;
