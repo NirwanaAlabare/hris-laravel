@@ -171,7 +171,7 @@ class DepartmentAllController extends AdminBaseController
                 $inSiteNirwana = ' AND site_nirwana_id = "'.$site_nirwana.'"';
             }
             if($department){
-                $inDepartment = ' AND department_name = "'.$department.'"';
+                $inDepartment = ' AND department_id = "'.$department.'"';
             }
             if($sub_dept_id){
                 $inSubDepartment = ' AND sub_dept_id = "'.$sub_dept_id.'"';
@@ -213,7 +213,10 @@ class DepartmentAllController extends AdminBaseController
             {
                 foreach ($query as $q)
                 {
-                    $jumlah=EmployeeAtribut::where('sub_dept_id',$q->sub_dept_id)->count();
+                    $jumlah=EmployeeAtribut::where('sub_dept_id',$q->sub_dept_id)->where(function($query){
+                        $query->where('status_aktif','AKTIF')
+                        ->orWhere('tanggal_resign','>',date('Y-m-d'));
+                    })->count();
                     $showData = $q->site_nirwana_id . "/" . $q->department_id . "/" . $q->sub_dept_id;
                     $addeditData = $q->site_nirwana_id . "/" . $q->department_id . "/" . $q->sub_dept_id;
                     $nestedData['site_nirwana_id'] = $q->site_nirwana_id;
