@@ -176,7 +176,7 @@ class DepartmentAllController extends AdminBaseController
             if($sub_dept_id){
                 $inSubDepartment = ' AND sub_dept_id = "'.$sub_dept_id.'"';
             }
-            if(empty($request->input('search.value')))
+            if(empty($inSiteNirwana) && empty($inDepartment) && empty($inSubDepartment) && empty($request->input('search.value')))
             {
                 $query = DepartmentAll::offset($start)
                              ->limit($limit)
