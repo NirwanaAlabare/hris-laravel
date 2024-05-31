@@ -270,7 +270,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row pb-3" style="border-bottom:1px solid rgb(180, 180, 180)">
+                    <div class="row">
                         <div class="col-2">
                             <label class="form-label text-primary pt-1">Sub Department Name</label>
                         </div>
@@ -279,9 +279,15 @@
                             </select>
                         </div>
                     </div>
+                    <div class="row py-2" style="border-bottom:1px solid rgb(180, 180, 180)">
+                        <div class="col-2"></div>
+                        <div class="col-5">
+                            <a id="btn-import-excel" data-target="#import_department_excel" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel" class="btn btn-app btn-info" title="Export data ke file rekap absen" style="padding-top: 3px;padding-bottom: 3px"><i class="fa fa-upload" aria-hidden="true"></i>  Import Excel</a>
+                            <a id="btn-export-excel" class="btn btn-app btn-secondary" title="Export data ke file rekap absen" style="padding-top: 3px;padding-bottom: 3px"><i class="fa fa-download" aria-hidden="true"></i>  Export Excel</a>
+                        </div>
+                    </div>
                     <div class="table-responsive pt-3">
-                        <table id="datatable-ajax-crud"
-                            class="table table-sm table-striped table-hover table-bordered w-100 text-nowrap display">
+                        <table id="datatable-ajax-crud" class="table table-sm table-striped table-hover table-bordered w-100 text-nowrap display">
                             <thead>
                                 <tr>
                                     <th scope="col">Site Nirwana ID</th>
@@ -302,6 +308,62 @@
     </div>
 
     <!-- boostrap show department model -->
+    
+    <div class="modal fade" id="import_department_excel" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="max-width: 1330px">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info p-2">
+                            <h4 class="modal-title pl-2 font-weight-bold" >Import Department</h4>
+                            <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
+                                <i class="fa fa-remove"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body p-5">
+                            <div class="row">
+                                <div class="col-12">
+                                    <input class="form-control" ref="excel_filess" name="excel_filess" id="excel_filess" type="file" accept=".xlsx, .xls, .csv" required>
+                                </div>
+                            </div>
+                            <div class="row pt-2" id="row_tabler">
+                                <div class="col-12">
+                                    <table class="table table-bordered" style="overflow-x:auto">
+                                        <thead id="head_department">
+                                            <tr>
+                                                <td width="60px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">No</td>
+                                                <td width="140px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Site Nirwana ID</td>
+                                                <td width="170px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Site Nirwana Name</td>
+                                                <td width="140px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Department ID</td>
+                                                <td width="170px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Department Name</td>
+                                                <td width="160px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Sub Department Id</td>
+                                                <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Sub Department Name</td>
+                                                <td width="60px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px"><i class="fa fa-male"></i></td>
+                                                <td width="140px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Status</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="selected_department">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-12 text-center">
+                                    <div id="loading_department">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <button type="button" id="departmentImportButton" class="btn btn-success py-1" style="visibility: hidden"><i class="fa fa-upload" aria-hidden="true"></i> IMPORT</button>
+                                </div>
+                            </div> 
+                        </div>
+                        <div class="modal-footer bg-info py-2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="ajax-department-model-show" role="dialog" data-backdrop="static" aria-hidden="true">
       <div class="modal-dialog modal-dialog-scrollable" role="document">
         <div class="modal-content">
@@ -384,8 +446,116 @@
         .error {
           background-color: red;
         }
+        #head_department, #selected_department { display: block; }
+        #head_department, #selected_department { display: block; }
+
+        #selected_department {
+            height: 1px;       /* Just for the demo          */
+            overflow-y: auto;    /* Trigger vertical scroll    */
+            overflow-x: hidden;
+            font-size: 9pt; /* Hide the horizontal scroll */
+        }
+        .dataTables_filter {
+            float: left !important;
+        }
+        #selected_department {
+            height: 1px;       /* Just for the demo          */
+            overflow-y: auto;    /* Trigger vertical scroll    */
+            overflow-x: hidden;
+            font-size: 9pt; /* Hide the horizontal scroll */
+        }
     </style>
     <script type="text/javascript">
+        $('#excel_filess').change(function() {
+            fill_the_table();
+        });
+        function fill_the_table(){
+            $('#loading_department').addClass("spinner-border");
+            $('#selected_department').empty();
+            var formData = new FormData();
+            var excelFile=document.getElementById("excel_filess");
+            var myFile=excelFile.files[0];
+            formData.append("excel_file",myFile);
+            document.getElementById('row_tabler').style.height='67px';
+            document.getElementById('selected_department').style.height='1px';
+            document.getElementById('departmentImportButton').style.visibility='hidden';
+            if(typeof myFile=='undefined'){
+                notif({
+                    msg: "<b>Error:</b> Pilih File terlebih dahulu!",
+                    type: "error"
+                });
+                document.getElementById('selected_department').style.height='1px';
+                document.getElementById('departmentImportButton').style.visibility='hidden';
+                $('#loading_department').removeClass("spinner-border");
+                document.getElementById('row_tabler').style.height='67px';
+            }else{
+                $.ajax({
+                    type: 'POST',
+                    url: '{{route('hris.departmentall.import_department')}}',
+                    contentType: false,
+                    processData: false,
+                    data: formData,
+                    success:function(data){
+                        count=0;
+                        jQuery.each(data, function(key,value){
+                            count++;
+                            $('#selected_department').append("<tr>\
+                                <td width='60px'>"+count+"</td>\
+                                <td width='140px'>"+data[key].site_nirwana_id+"</td>\
+                                <td width='170px'>"+data[key].site_nirwana_name+"</td>\
+                                <td width='140px'>"+data[key].department_id+"</td>\
+                                <td width='170px'>"+data[key].department_name+"</td>\
+                                <td width='160px'>"+data[key].sub_dept_id+"</td>\
+                                <td width='200px'>"+data[key].sub_dept_name+"</td>\
+                                <td width='60px'>"+data[key].jumlah_karyawan+"</td>\
+                                <td width='140px'>"+data[key].status+"</td>\
+                            </tr>");
+                        });
+                        document.getElementById('selected_department').style.height='330px';
+                        document.getElementById('departmentImportButton').style.visibility='visible';
+                        $('#loading_department').removeClass("spinner-border");
+                        document.getElementById('row_tabler').style.height='400px';
+                    },
+                    error: function(res){
+                        swal("", "IMPORT DEPARTMENT GAGAL!", "error")
+                    }
+                });
+            }
+        }
+        $('#departmentImportButton').click(function(){
+            var formData = new FormData();
+            var excelFile=document.getElementById("excel_filess");
+            var myFile=excelFile.files[0];
+            formData.append("excel_file",myFile);
+            $('#employeeImportButton').addClass("btn-loading");
+            $("#employeeImportButton").html('Please wait...');
+            $("#employeeImportButton").attr("disabled", true);
+            $.ajax({
+                type: 'POST',
+                url: '{{route('hris.departmentall.import_department_to_database')}}',
+                contentType: false,
+                processData: false,
+                data: formData,
+                success:function(data){
+                    console.log(data);
+                    $('#departmentImportButton').removeClass("btn-loading");
+                    $("#departmentImportButton").html('<i class="fa fa-upload" aria-hidden="true"></i> IMPORT');
+                    $("#departmentImportButton").attr("disabled", false);
+                    swal("", "IMPORT DEPARTMENT BERHASIL!", "success");
+                    $('#import_department_excel').modal('hide');
+                    $('#excel_filess').val('');
+                    document.getElementById('selected_department').style.height='1px';
+                    document.getElementById('departmentImportButton').style.visibility='hidden';
+                    document.getElementById('row_tabler').style.height='67px';
+                },
+                error: function(res){
+                    swal("", "IMPORT DEPARTMENT GAGAL!", "error")
+                    $('#departmentImportButton').removeClass("btn-loading");
+                    $("#departmentImportButton").html('<i class="fa fa-upload" aria-hidden="true"></i> IMPORT');
+                    $("#departmentImportButton").attr("disabled", false);
+                }
+            });
+        });
         $(document).ready(function(){
             $("#ajax-department-model-addedit").hide();
             get_last_dept_id();
@@ -656,7 +826,16 @@
                 }
             });
         });
+        $('#btn-export-excel').on('click',function(){
 
+        });
+        $('#btn-export-excel').on('click',function(){
+            var site_nirwana = $('#selectNirwanaSite').val();
+            var department = $('#pilih_department').val();
+            var sub_department = $('#pilih_sub_department').val();
+            var url = 'export_excel_department_all?site_nirwana='+site_nirwana+'&department='+department+'&section='+sub_department;
+            window.open(url);
+        });
         $('body').on('click', '#showData-link', function () {
             var showData = $(this).data('id');
         //alert (showData);

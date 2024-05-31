@@ -141,6 +141,9 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('departmentall/getSelectSubDeptIn/',['as'=>'hris.departmentall.getSelectSubDeptIn','uses'=> 'DepartmentAllController@getSelectSubDeptIn']);
     Route::post('departmentall/getSelectDeptId/',['as'=>'hris.departmentall.getSelectDeptId','uses'=> 'DepartmentAllController@getSelectDeptId']);
     Route::post('departmentall/getJumlahKaryawan/',['as'=>'hris.departmentall.getJumlahKaryawan','uses'=> 'DepartmentAllController@getJumlahKaryawan']);
+    Route::get('departmentall/export_excel_department_all',['as'=>'hris.departmentall.export_excel_department_all','uses'=>'DepartmentAllController@export_excel_department_all']);
+    Route::post('departmentall/import_department',['as'=>'hris.departmentall.import_department','uses'=>'DepartmentAllController@import_department']);
+    Route::post('departmentall/import_department_to_database',['as'=>'hris.departmentall.import_department_to_database','uses'=>'DepartmentAllController@import_department_to_database']);
 
     // EMPLOYEE ATTRIBUTE
     Route::get('employeeatr/index',['as'=>'hris.employeeatr.index','uses'=>'EmployeeAtrController@index']);

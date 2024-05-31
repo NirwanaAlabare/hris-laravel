@@ -8,8 +8,10 @@ use App\Http\Controllers\AdminBaseController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
+use App\Exports\DepartmentAllFilterExport;
 use Datatables;
 
 
@@ -137,7 +139,39 @@ class DepartmentAllController extends AdminBaseController
         return $query;
 
     }
-
+    public function export_excel_department_all(){
+        $site_nirwana=request()->site_nirwana;
+        $department=request()->department;
+        $sub_department=request()->sub_department;
+        $fileName = 'DataDepartmentAll.xlsx';
+        return Excel::download(new DepartmentAllFilterExport($site_nirwana,$department,$sub_department), $fileName, \Maatwebsite\Excel\Excel::XLSX);
+        ob_end_clean();
+    }
+    public function import_department(){
+        $data=Excel::toArray([],request()->file('excel_file'));
+        $arrayEmployee=[];
+        for($i=4;$i<count($data[0]);$i++){
+            $arrayEmployee[$i]=[
+                'site_nirwana_id'=>$data[0][$i][1],
+                'site_nirwana_name'=>$data[0][$i][2],
+                'department_id'=>$data[0][$i][3],
+                'department_name'=>$data[0][$i][4],
+                'sub_dept_id'=>$data[0][$i][5],
+                'sub_dept_name'=>$data[0][$i][6],
+                'jumlah_karyawan'=>$data[0][$i][7],
+                'status'=>$data[0][$i][8],
+            ];
+        }
+        return $arrayEmployee;
+    }
+    public function import_department_to_database(){
+        $data=Excel::toArray([],request()->file('excel_file'));
+        for($i=4;$i<count($data[0]);$i++){
+            DepartmentAll::where('site_nirwana_id',$data[0][$i][1])->where('department_id',$data[0][$i][3])->where('sub_dept_id',$data[0][$i][5])->update([
+                'status'=>$data[0][$i][8],
+            ]);
+        }
+    }
     public function ajax_departmentall(Request $request)
     {
         if(request()->ajax()) {
