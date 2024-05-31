@@ -466,6 +466,9 @@
             });
             $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
         });
+        $('#pilih_sub_department').on('change',function(e){
+            $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+        });
         
         $('#save_department_modal').click(function(){
             var data = new FormData();
