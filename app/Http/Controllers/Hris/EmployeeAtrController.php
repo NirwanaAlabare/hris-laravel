@@ -141,6 +141,7 @@ class EmployeeAtrController extends AdminBaseController
 
         $query =  DepartmentAll::selectRaw('department_id, department_name')
                                  ->whereRaw('site_nirwana_id = "' . $site_nirwana_id . '"')
+                                 ->where('status','AKTIF')
                                  ->groupby('department_name')
                                  ->orderby('department_name', 'asc')
                                  ->get();
@@ -1118,7 +1119,7 @@ class EmployeeAtrController extends AdminBaseController
         $data=Excel::toArray([],$request->file('excel_file'));
         $arrayEmployee=[];
         for($i=5;$i<count($data[0]);$i++){
-            $department=DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][9])->where('sub_dept_name',$data[0][$i][11])->count();
+            $department=DepartmentAll::where('status','AKTIF')->where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][9])->where('sub_dept_name',$data[0][$i][11])->count();
             $employee=EmployeeAtribut::where('enroll_id',$data[0][$i][1])->count();
 
             if($department==0 && ($employee==1 || $employee==0)){
@@ -1175,7 +1176,7 @@ class EmployeeAtrController extends AdminBaseController
         $arrayEnrollId=EmployeeAtribut::pluck('enroll_id')->toArray();
         $dataArray=[];
         for($i=5;$i<count($data[0]);$i++){
-            $department=DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][9])->where('sub_dept_name',$data[0][$i][11])->count();
+            $department=DepartmentAll::where('status','AKTIF')->where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][9])->where('sub_dept_name',$data[0][$i][11])->count();
             $employee=EmployeeAtribut::where('enroll_id',$data[0][$i][1])->count();
             if($department==0 && ($employee==1 || $employee==0)){
                 $status_department='red';
@@ -1189,9 +1190,9 @@ class EmployeeAtrController extends AdminBaseController
             $site_nirwana_id=preg_replace('/[0-9]+/', '', $data[0][$i][2]);
             $department_id='';
             $sub_dept_id='';
-            if(count(DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][9])->where('sub_dept_name',$data[0][$i][11])->get())>0){
-                $department_id=DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][9])->where('sub_dept_name',$data[0][$i][11])->pluck('department_id')[0];
-                $sub_dept_id=DepartmentAll::where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][9])->where('sub_dept_name',$data[0][$i][11])->pluck('sub_dept_id')[0];
+            if(count(DepartmentAll::where('status','AKTIF')->where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][9])->where('sub_dept_name',$data[0][$i][11])->get())>0){
+                $department_id=DepartmentAll::where('status','AKTIF')->where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][9])->where('sub_dept_name',$data[0][$i][11])->pluck('department_id')[0];
+                $sub_dept_id=DepartmentAll::where('status','AKTIF')->where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][9])->where('sub_dept_name',$data[0][$i][11])->pluck('sub_dept_id')[0];
             }
             if($data[0][$i][15]==''|| $data[0][$i][15]=='-'){
                 $join_date=null;
