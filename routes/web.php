@@ -138,6 +138,9 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('departmentall/show_data/',['as'=>'hris.departmentall.show_data','uses'=> 'DepartmentAllController@show_data']);
     Route::post('departmentall/edit_data/',['as'=>'hris.departmentall.edit_data','uses'=> 'DepartmentAllController@edit_data']);
     Route::post('departmentall/getSelectSubDept/',['as'=>'hris.departmentall.getSelectSubDept','uses'=> 'DepartmentAllController@getSelectSubDept']);
+    Route::post('departmentall/getSelectSubDeptIn/',['as'=>'hris.departmentall.getSelectSubDeptIn','uses'=> 'DepartmentAllController@getSelectSubDeptIn']);
+    Route::post('departmentall/getSelectDeptId/',['as'=>'hris.departmentall.getSelectDeptId','uses'=> 'DepartmentAllController@getSelectDeptId']);
+    Route::post('departmentall/getJumlahKaryawan/',['as'=>'hris.departmentall.getJumlahKaryawan','uses'=> 'DepartmentAllController@getJumlahKaryawan']);
 
     // EMPLOYEE ATTRIBUTE
     Route::get('employeeatr/index',['as'=>'hris.employeeatr.index','uses'=>'EmployeeAtrController@index']);

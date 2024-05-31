@@ -208,6 +208,22 @@
                                             <input id="sub_dept_name_addedit" name="sub_dept_name_addedit" type="text" class="form-control" placeholder="Sub Department Nama" maxlength="50" size="50">
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="name" class="col-sm-6 control-label">Jumlah Karyawan :</label>
+                                            <input id="jumlah_addedit" name="jumlah_addedit" type="text" class="form-control" placeholder="Jumlah Karyawan" maxlength="50" size="50" disabled>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label for="name" class="col-sm-6 control-label">Status :</label>
+                                            <select id="status_addedit" name="status_addedit" class="form-control">
+                                                <option value="">Choose Status</option>
+                                                <option value="AKTIF">AKTIF</option>
+                                                <option value="NONAKTIF">NONAKTIF</option>
+                                            </select>
+                                        </td>
+                                    </tr>
                                 </tbody>
                                 <tfoot>
                                     <tr class="border-top">
@@ -232,7 +248,38 @@
             <!-- Begin Form Edit Absen Karyawan -->
             <div class="card" id="datatable-data-karyawan">
                 <div class="card-body">
-                    <div class="table-responsive">
+                    <div class="row">
+                        <div class="col-2">
+                            <label class="form-label text-primary pt-1">Site Nirwana ID</label>
+                        </div>
+                        <div class="col-3">
+                            <select id="selectNirwanaSite" name="selectNirwanaSite" class="form-control form-control-sm">
+                                <option value="">Filter Nirwana Site</option>
+                                @foreach ($site_nirwana_id as $site)
+                                    <option value="{{$site->site_nirwana_id}}">{{$site->site_nirwana_name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row py-2">
+                        <div class="col-2">
+                            <label class="form-label text-primary pt-1">Department Name</label>
+                        </div>
+                        <div class="col-3">
+                            <select class="form-control form-control-sm" id="pilih_department">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row pb-3" style="border-bottom:1px solid rgb(180, 180, 180)">
+                        <div class="col-2">
+                            <label class="form-label text-primary pt-1">Sub Department Name</label>
+                        </div>
+                        <div class="col-3">
+                            <select class="form-control form-control-sm" id="pilih_sub_department">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-responsive pt-3">
                         <table id="datatable-ajax-crud"
                             class="table table-sm table-striped table-hover table-bordered w-100 text-nowrap display">
                             <thead>
@@ -243,6 +290,7 @@
                                     <th scope="col">Department Nama</th>
                                     <th scope="col">Sub Deptartment ID</th>
                                     <th scope="col">Sub Deptartment Nama</th>
+                                    <th scope="col"><i class="fa fa-male" aria-hidden="true"></i></th>
                                     <th scope="col">Option</th>
                                 </tr>
                             </thead>
@@ -287,6 +335,10 @@
             <div class="form-group">
                 <label for="name" class="col-sm-6 control-label">Sub Department Nama :</label>
                 <div class="col-sm-12" id="sub_dept_name"></div>
+            </div>
+            <div class="form-group">
+                <label for="name" class="col-sm-6 control-label">Status :</label>
+                <div class="col-sm-12" id="status"></div>
             </div>
           </div>
           <div class="modal-footer">
@@ -363,6 +415,58 @@
         $('#btnRefreshDeptId').click(function(){
             get_last_dept_id();
         });
+        $('#selectNirwanaSite').on('change',function(e){
+            $("#pilih_department").empty();
+            $("#pilih_department").val('');
+            $("#pilih_sub_department").empty();
+            $("#pilih_sub_department").val('');
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.departmentall.getSelectDeptId')}}",
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                data: {
+                    site_nirwana_id:$('#selectNirwanaSite').val(),
+                },
+                dataType: 'json',
+                success: function(resA){
+                    if(resA){
+                        $("#pilih_department").append(new Option('Filter Department Name', ''));
+                        for(i=0;i<resA.length;i++) {
+                            $("#pilih_department").append(new Option(resA[i].department_name, resA[i].department_id));
+                        }
+                    }
+                }
+            });
+            $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+        });
+        $('#pilih_department').on('change',function(e){
+            $("#pilih_sub_department").empty();
+            $("#pilih_sub_department").val('');
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.departmentall.getSelectSubDeptIn')}}",
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                data: {
+                    site_nirwana_id:$('#selectNirwanaSite').val(),
+                    department_id:$('#pilih_department').val()
+                },
+                dataType: 'json',
+                success: function(resA){
+                    if(resA){
+                        $("#pilih_sub_department").append(new Option('Filter Sub Department Name', ''));
+                        for(i=0;i<resA.length;i++) {
+                            $("#pilih_sub_department").append(new Option(resA[i].sub_dept_name, resA[i].sub_dept_id));
+                        }
+                    }
+                }
+            });
+            $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+        });
+        
         $('#save_department_modal').click(function(){
             var data = new FormData();
             data.append('department_id', $('#department_id_modal').val());
@@ -490,7 +594,12 @@
                     "headers": {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    "dataSrc": "data"
+                    "dataSrc": "data",
+                    "data": function (d) {
+                        d.site_nirwana_id = $('#selectNirwanaSite').val();
+                        d.department_id = $('#pilih_department').val();
+                        d.sub_dept_id = $('#pilih_sub_department').val();
+                    }
                 },
                 columns: [
                     {
@@ -518,6 +627,10 @@
                         name: 'sub_dept_name'
                     },
                     {
+                        data: 'jumlah',
+                        name: 'jumlah'
+                    },
+                    {
                         data: 'option'
                     },
                 ],
@@ -530,7 +643,14 @@
                         'visible': false,
                         'targets': []
                     }
-                ]
+                ],
+                "createdRow": function (row, data, dataIndex) {
+                    // if ((data['kode_hari'] == "5") || (data['kode_hari'] == "6") || (data['kerjalibur'] == "LIBUR")) {
+                    if ((data['status'] == "NONAKTIF")) {
+
+                        $(row).css('background', 'red');
+                    }
+                }
             });
         });
 
@@ -554,6 +674,7 @@
                   $('#department_name').text(res.department_name);
                   $('#sub_dept_id').text(res.sub_dept_id);
                   $('#sub_dept_name').text(res.sub_dept_name);
+                  $('#status').text(res.status);
                   //alert(res.site_nirwana_name);
                }
             });
@@ -582,6 +703,15 @@
                   $('#department_name_addedit').val(res.department_name);
                   $('#sub_dept_id_addedit').val(res.sub_dept_id);
                   $('#sub_dept_name_addedit').val(res.sub_dept_name);
+                  $.ajax({
+                    "type":"POST",
+                    "url": "{{route('hris.departmentall.getJumlahKaryawan')}}",
+                    "data": { sub_dept_id: res.sub_dept_id },
+                    "success": function(res2){
+                        $('#jumlah_addedit').val(res2);
+                    }
+                  });
+                  $('#status_addedit').val(res.status);
                   //alert(res.site_nirwana_name);
                }
             });
@@ -598,6 +728,7 @@
             var department_name = $("#department_name_addedit").val();
             var sub_dept_id = $("#sub_dept_id_addedit").val();
             var sub_dept_name = $("#sub_dept_name_addedit").val();
+            var status = $("#status_addedit").val();
             $("#btn-save-change").html('Please Wait...');
             $("#btn-save-change"). attr("disabled", true);
             
@@ -615,6 +746,7 @@
                     department_name:department_name,
                     sub_dept_id:sub_dept_id,
                     sub_dept_name:sub_dept_name,
+                    status:status
                 },
                 dataType: 'json',
                 success: function(res){

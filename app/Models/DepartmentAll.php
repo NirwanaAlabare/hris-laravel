@@ -21,6 +21,7 @@ class DepartmentAll extends \Eloquent
         'sub_dept_id_new',
         'sub_dept_name',
         'sub_dept_name_new',
+        'status',
         'created_at',
         'updated_at',
         'deleted_at'
@@ -47,6 +48,7 @@ class DepartmentAll extends \Eloquent
         'sub_dept_id_new',
         'sub_dept_name',
         'sub_dept_name_new',
+        'status',
         'created_at',
         'updated_at',
         'deleted_at'

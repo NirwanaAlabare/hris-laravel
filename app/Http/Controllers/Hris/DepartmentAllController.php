@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Hris;
 
 use App\Models\DepartmentAll;
+use App\Models\EmployeeAtribut;
 use App\Http\Controllers\AdminBaseController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -28,7 +29,8 @@ class DepartmentAllController extends AdminBaseController
 
     public function index()
     {
-        return View::make('hris/departmentall', $this->data);
+        $site_nirwana_id=DepartmentAll::orderBy('site_nirwana_name')->groupBy('site_nirwana_id')->get();
+        return View::make('hris/departmentall', $this->data,compact('site_nirwana_id'));
     }
     public function get_last_dept_id(){
         return DepartmentAll::where('site_nirwana_id','NAG')->orderBy('department_id','desc')->limit(1)->pluck('department_id');
@@ -105,6 +107,36 @@ class DepartmentAllController extends AdminBaseController
         return $query;
 
     }
+    public function getSelectSubDeptIn(){
+        $site_nirwana_id = request()->site_nirwana_id;
+        $department_id = request()->department_id;
+        
+        $query =  DepartmentAll::where('site_nirwana_id','=',$site_nirwana_id)->where('department_id',request()->department_id)->get();
+
+        return $query;
+    }
+    public function getSelectDeptId(Request $request)
+    {
+        $site_nirwana_id = $request->site_nirwana_id;
+        
+        $query =  DepartmentAll::where('site_nirwana_id','=',$site_nirwana_id)
+                    ->groupBy('department_name')
+                    ->orderBy('department_name','asc')
+                    ->get();
+
+        return $query;
+
+    }
+    public function getJumlahKaryawan(Request $request)
+    {
+        $sub_dept_id = $request->sub_dept_id;
+        
+        
+        $query =  EmployeeAtribut::where('sub_dept_id','=',$sub_dept_id)->count();
+
+        return $query;
+
+    }
 
     public function ajax_departmentall(Request $request)
     {
@@ -116,7 +148,9 @@ class DepartmentAllController extends AdminBaseController
                 2 => 'department_id',
                 3 => 'department_name',
                 4 => 'sub_dept_id',
-                5 => 'sub_dept_name'
+                5 => 'sub_dept_name',
+                6 => 'jumlah',
+                7 => 'status',
             );
 
             $totalData = DepartmentAll::count();
@@ -127,6 +161,21 @@ class DepartmentAllController extends AdminBaseController
             $order = $columns[$request->input('order.0.column')];
             $dir = $request->input('order.0.dir');
 
+            $site_nirwana=$request->site_nirwana_id;
+            $department=$request->department_id;
+            $sub_dept_id=$request->sub_dept_id;
+            $inSiteNirwana='';
+            $inDepartment='';
+            $inSubDepartment='';
+            if($site_nirwana){
+                $inSiteNirwana = ' AND site_nirwana_id = "'.$site_nirwana.'"';
+            }
+            if($department){
+                $inDepartment = ' AND department_name = "'.$department.'"';
+            }
+            if($sub_dept_id){
+                $inSubDepartment = ' AND sub_dept_id = "'.$sub_dept_id.'"';
+            }
             if(empty($request->input('search.value')))
             {
                 $query = DepartmentAll::offset($start)
@@ -136,24 +185,27 @@ class DepartmentAllController extends AdminBaseController
             } else {
                 $search = $request->input('search.value');
 
-                $query =  DepartmentAll::where('site_nirwana_id','LIKE',"%{$search}%")
-                                ->orWhere('site_nirwana_name', 'LIKE',"%{$search}%")
-                                ->orWhere('department_id', 'LIKE',"%{$search}%")
-                                ->orWhere('department_name', 'LIKE',"%{$search}%")
-                                ->orWhere('sub_dept_id', 'LIKE',"%{$search}%")
-                                ->orWhere('sub_dept_name', 'LIKE',"%{$search}%")
-                                ->offset($start)
-                                ->limit($limit)
-                                ->orderBy($order,$dir)
-                                ->get();
+                $query =  DepartmentAll::whereRaw('status is not null'.$inSiteNirwana.''.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
+                    $query->where('site_nirwana_id','LIKE',"%{$search}%")
+                    ->orWhere('site_nirwana_name', 'LIKE',"%{$search}%")
+                    ->orWhere('department_id', 'LIKE',"%{$search}%")
+                    ->orWhere('department_name', 'LIKE',"%{$search}%")
+                    ->orWhere('sub_dept_id', 'LIKE',"%{$search}%")
+                    ->orWhere('sub_dept_name', 'LIKE',"%{$search}%");
+                })
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order,$dir)
+                ->get();
 
-                $totalFiltered = DepartmentAll::where('site_nirwana_id','LIKE',"%{$search}%")
-                                ->orWhere('site_nirwana_name', 'LIKE',"%{$search}%")
-                                ->orWhere('department_id', 'LIKE',"%{$search}%")
-                                ->orWhere('department_name', 'LIKE',"%{$search}%")
-                                ->orWhere('sub_dept_id', 'LIKE',"%{$search}%")
-                                ->orWhere('sub_dept_name', 'LIKE',"%{$search}%")
-                                ->count();
+                $totalFiltered = DepartmentAll::whereRaw('status is not null'.$inSiteNirwana.''.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
+                    $query->where('site_nirwana_id','LIKE',"%{$search}%")
+                    ->orWhere('site_nirwana_name', 'LIKE',"%{$search}%")
+                    ->orWhere('department_id', 'LIKE',"%{$search}%")
+                    ->orWhere('department_name', 'LIKE',"%{$search}%")
+                    ->orWhere('sub_dept_id', 'LIKE',"%{$search}%")
+                    ->orWhere('sub_dept_name', 'LIKE',"%{$search}%");
+                })->count();
             }
 
             $data = array();
@@ -161,6 +213,7 @@ class DepartmentAllController extends AdminBaseController
             {
                 foreach ($query as $q)
                 {
+                    $jumlah=EmployeeAtribut::where('sub_dept_id',$q->sub_dept_id)->count();
                     $showData = $q->site_nirwana_id . "/" . $q->department_id . "/" . $q->sub_dept_id;
                     $addeditData = $q->site_nirwana_id . "/" . $q->department_id . "/" . $q->sub_dept_id;
                     $nestedData['site_nirwana_id'] = $q->site_nirwana_id;
@@ -169,6 +222,8 @@ class DepartmentAllController extends AdminBaseController
                     $nestedData['department_name'] = $q->department_name;
                     $nestedData['sub_dept_id'] = $q->sub_dept_id;
                     $nestedData['sub_dept_name'] = $q->sub_dept_name;
+                    $nestedData['jumlah'] = $jumlah;
+                    $nestedData['status'] = $q->status;
                     $nestedData['option'] = '
                     <a href="" type="button" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     <span class="glyphicon glyphicon-list"></span>
@@ -237,6 +292,7 @@ class DepartmentAllController extends AdminBaseController
         $department_name = $request->department_name;
         $sub_dept_id = $request->sub_dept_id;
         $sub_dept_name = $request->sub_dept_name;
+        $status=$request->status;
 
         $query =  DepartmentAll::where('site_nirwana_id','=',$site_nirwana_id)
                     ->where('department_id', '=',$department_id)
@@ -247,7 +303,8 @@ class DepartmentAllController extends AdminBaseController
                         'department_id' => $department_id,
                         'department_name' => $department_name,
                         'sub_dept_id' => $sub_dept_id,
-                        'sub_dept_name' => $sub_dept_name
+                        'sub_dept_name' => $sub_dept_name,
+                        'status'=>$status
                     ]);
 
         return Response()->json($query);
