@@ -205,20 +205,20 @@ class DataAbsenPerijinanController extends AdminBaseController
             $verifikasi_by=null;
         }
         $query=DB::select('select nomor_form_perizinan,CAST(substring(nomor_form_perizinan,13) AS int) as nomor_form from data_absen_perijinan where nomor_form_perizinan LIKE "'.$nomor_form_perizinan.'%" order by nomor_form desc limit 1');
-
-        if($query == "") {
+        if(count($query)==0) {
             $nomor = "0000";
+            $nomor_form_perizinan =  $nomor_form_perizinan . $nomor;
         } else {
             $nomor = $query[0]->nomor_form_perizinan;
+            if(strlen($query[0]->nomor_form)<5){
+                $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
+            }else{
+                $nomorform = str_pad(substr($nomor, -5) + 1,4,"0",STR_PAD_LEFT);
+            }
+            $nomor_form_perizinan =  $nomor_form_perizinan . $nomorform;
         }
-        if(strlen($query[0]->nomor_form)<5){
-            $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
-        }else{
-            $nomorform = str_pad(substr($nomor, -5) + 1,4,"0",STR_PAD_LEFT);
-        }
-        $nomor_form_perizinan =  $nomor_form_perizinan . $nomorform;
 
-        $query = DataAbsenPerijinan::create([
+        $query = ([
             'uuid' => Str::uuid(),
             'uuid_master' => $uuid_master,
             'tanggal_perizinan' => $tanggal_perizinan,
@@ -630,15 +630,16 @@ class DataAbsenPerijinanController extends AdminBaseController
 
         if($query == "") {
             $nomor = "0000";
+            $nomor_form_perizinan =  $nomor_form_perizinan . $nomor;
         } else {
             $nomor = $query[0]->nomor_form_perizinan;
+            if(strlen($query[0]->nomor_form)<5){
+                $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
+            }else{
+                $nomorform = str_pad(substr($nomor, -5) + 1,4,"0",STR_PAD_LEFT);
+            }
+            $nomor_form_perizinan =  $nomor_form_perizinan . $nomorform;
         }
-        if(strlen($query[0]->nomor_form)<5){
-            $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
-        }else{
-            $nomorform = str_pad(substr($nomor, -5) + 1,4,"0",STR_PAD_LEFT);
-        }
-        $nomor_form_perizinan =  $nomor_form_perizinan . $nomorform;
 
         $query = DataAbsenPerijinan::create([
             'uuid' => Str::uuid(),
