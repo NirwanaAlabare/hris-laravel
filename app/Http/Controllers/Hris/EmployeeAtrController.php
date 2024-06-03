@@ -211,9 +211,10 @@ class EmployeeAtrController extends AdminBaseController
         if(request()->ajax()) {
 
         $columns = array(
-            0 => 'nik',
-            1 => 'enroll_id',
-            2 => 'employee_name'
+            0 => '',
+            1 => 'nik',
+            2 => 'enroll_id',
+            3 => 'employee_name'
         );
 
         $limit = $request->input('length');

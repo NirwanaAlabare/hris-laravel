@@ -1797,7 +1797,7 @@
                     }
                 ],
                 order: [
-                    [1, 'asc']
+                    [2, 'asc']
                 ],
                 "createdRow": function (row, data, dataIndex) {
                     if (data['new_employee']) {
