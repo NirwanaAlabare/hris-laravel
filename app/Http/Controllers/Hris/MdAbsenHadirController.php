@@ -2808,7 +2808,7 @@ class MdAbsenHadirController extends AdminBaseController
 
                         $jadwal_out_min=date("H:i", strtotime('-2 hours', strtotime($jadwal_out)));
                         $jadwal_out_max=date("H:i", strtotime('+1 hours 59 minutes', strtotime($jadwal_out)));
-                        $jadwal_out_max2=date("H:i", strtotime('+4 hours 59 minutes', strtotime($jadwal_out)));
+                        $jadwal_out_max2=date("H:i", strtotime('+7 hours 59 minutes', strtotime($jadwal_out)));
 
                         $tanggal_besok= date('Y-m-d', strtotime('+1 days', strtotime($value4->tanggal_berjalan)));
                         if($jadwal_in>$jadwal_out){
