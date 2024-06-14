@@ -433,7 +433,8 @@ class MdAbsenHadirController extends AdminBaseController
                 'jadwal_pulang_kerja'=>$jadwal_pulang_kerja,
                 'absen_masuk_kerja'=>$absen_masuk_kerja,
                 'absen_pulang_kerja'=>$absen_pulang_kerja,
-                'jumlah_data'=>count($data[0])-3
+                'jumlah_data'=>count($data[0])-3,
+                'operator'=>'inject absen by excel file'
             ];
         }
         $fix_array_data=[];
@@ -449,7 +450,8 @@ class MdAbsenHadirController extends AdminBaseController
                 'mulai_jam_kerja'=>$value['jadwal_masuk_kerja'],
                 'akhir_jam_kerja'=>$value['jadwal_pulang_kerja'],
                 'absen_masuk_kerja'=>$value['absen_masuk_kerja'],
-                'absen_pulang_kerja'=>$value['absen_pulang_kerja']
+                'absen_pulang_kerja'=>$value['absen_pulang_kerja'],
+                'operator'=>$value['operator']
             ];
         }
         foreach($fix_array_data as $key=>$value){
@@ -1842,6 +1844,7 @@ class MdAbsenHadirController extends AdminBaseController
                                 }
                                 MasterDataAbsenKehadiran::where('tanggal_berjalan','=', $tanggal_mesin_absensi)
                                 ->where('enroll_id','=', $val["enroll_id"])
+                                ->where('operator','!=','inject absen by excel file')
                                 ->update([
                                     'absen_masuk_kerja' => $value->absen_in,
                                     'absen_pulang_kerja' => $value->absen_out,
@@ -1858,6 +1861,7 @@ class MdAbsenHadirController extends AdminBaseController
                                 }
                                 MasterDataAbsenKehadiran::where('tanggal_berjalan','=', $tanggal_mesin_absensi)
                                 ->where('enroll_id','=', $val["enroll_id"])
+                                ->where('operator','!=','inject absen by excel file')
                                 ->update([
                                     'absen_masuk_kerja' => $value->absen_in,
                                     'absen_pulang_kerja' => $value->absen_out,
@@ -1867,6 +1871,7 @@ class MdAbsenHadirController extends AdminBaseController
                                 if($count<1){
                                     MasterDataAbsenKehadiran::where('tanggal_berjalan','=', $tanggal_mesin_absensi)
                                     ->where('enroll_id','=', $val["enroll_id"])
+                                    ->where('operator','!=','inject absen by excel file')
                                     ->update([
                                         'absen_masuk_kerja' => $value->absen_in,
                                         'absen_pulang_kerja' => $value->absen_out
@@ -2073,6 +2078,7 @@ class MdAbsenHadirController extends AdminBaseController
                         'jumlah_menit_absen_pc'=>$total_PC,
                     ];
                     MasterDataAbsenKehadiran::where('tanggal_berjalan', $tanggal_mesin_absensi)
+                    ->where('operator','!=','inject absen by excel file')
                                 ->where('enroll_id', $v->enroll_id)->update($data_update);
                 }
             }
@@ -2093,6 +2099,7 @@ class MdAbsenHadirController extends AdminBaseController
                 
                 if($countEditedData2<1 && $count2<1){
                     MasterDataAbsenKehadiran::where('tanggal_berjalan','=', $tanggal_mesin_absensi)
+                    ->where('operator','!=','inject absen by excel file')
                     ->where('enroll_id','=', $value["enroll_id"])
                     ->update([
                         'status_absen' => $value["status_absen"]
@@ -2119,6 +2126,7 @@ class MdAbsenHadirController extends AdminBaseController
                 
                 if($countEditedData3<1 && $count3<1){
                     MasterDataAbsenKehadiran::where('tanggal_berjalan','=', $tanggal_mesin_absensi)
+                    ->where('operator','!=','inject absen by excel file')
                     ->where('enroll_id','=', $value["enroll_id"])
                     ->update([
                         'status_absen' => $value["status_absen"]
