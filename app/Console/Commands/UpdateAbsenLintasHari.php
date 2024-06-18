@@ -41,7 +41,14 @@ class UpdateAbsenLintasHari extends Command
      */
     public function handle()
     {
-        $absen_lintas_hari=MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->whereColumn('akhir_jam_kerja','<','mulai_jam_kerja')->where('operator','!=','inject absen by excel file')->get();
+        $absen_lintas_hari=MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->where(function($query){
+            $query->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')
+            ->orWhere(function($query){
+                $query->whereNotNull('nomor_form_lembur')
+                ->whereRaw('SUBSTRING(mulai_jam_lembur, 11,  8) > SUBSTRING(akhir_jam_lembur, 11,  8)')
+                ->whereNull('mulai_jam_kerja');
+            });
+        })->where('operator','!=','inject absen by excel file')->get();
         if(count($absen_lintas_hari) > 0 ) {
             $query = DB::connection('sqlsrv2')->table('CHECKINOUT as a')
             ->selectRaw("CONVERT(VARCHAR(10), a.CHECKTIME, 126) AS tanggal_absen,
@@ -70,7 +77,6 @@ class UpdateAbsenLintasHari extends Command
                 $count=LogDataGagalAbsen::where('tanggal_absen', date('Y-m-d', strtotime('-1 days', strtotime($value->tanggal_berjalan))))->where('enroll_id',$value->enroll_id)->count();
                 if($countEditedData<1 && $count<1){
                     if($value->status_absen == "TL" || $value->status_absen == "M" || $value->status_absen == "IKS" || $value->status_absen == "" || !$value->status_absen|| $value->status_absen == "LN" || $value->status_absen == "LP" || $value->status_absen == "CT" || $value->status_absen == "L") {
-
                         $tanggal_kemarin= date('Y-m-d', strtotime('-1 days', strtotime($value->tanggal_berjalan)));
 
                         $jadwal_masuk_kemarin=null;
