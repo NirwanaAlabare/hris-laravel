@@ -117,7 +117,7 @@ class UpdateAbsenLintasHari extends Command
                             $PC = date_diff(date_create($jadwal_pulang_kemarin),date_create($absen_pulang_kemarin));
                             if( $absen_pulang_kemarin !=null && $absen_pulang_kemarin<$jadwal_pulang_kemarin){
                                 $total_PC = $PC->i +($PC->h*60);
-                                if($status_absen_kemarin='LN'){
+                                if($status_absen_kemarin=='LN'){
                                     $total_PC=0;
                                 }
                             }else{
