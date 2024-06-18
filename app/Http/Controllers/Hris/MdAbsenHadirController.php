@@ -433,8 +433,7 @@ class MdAbsenHadirController extends AdminBaseController
                 'jadwal_pulang_kerja'=>$jadwal_pulang_kerja,
                 'absen_masuk_kerja'=>$absen_masuk_kerja,
                 'absen_pulang_kerja'=>$absen_pulang_kerja,
-                'jumlah_data'=>count($data[0])-3,
-                'operator'=>'inject absen by excel file'
+                'jumlah_data'=>count($data[0])-3
             ];
         }
         $fix_array_data=[];
@@ -442,17 +441,49 @@ class MdAbsenHadirController extends AdminBaseController
             if($value['enroll_id']==null || $value['tanggal_berjalan']==null){
                 continue;
             }
-            $fix_array_data[$key]=[
-                'nik'=>$value['nik'],
-                'enroll_id'=>$value['enroll_id'],
-                'tanggal_berjalan'=>$value['tanggal_berjalan'],
-                'employee_name'=>$value['employee_name'],
-                'mulai_jam_kerja'=>$value['jadwal_masuk_kerja'],
-                'akhir_jam_kerja'=>$value['jadwal_pulang_kerja'],
-                'absen_masuk_kerja'=>$value['absen_masuk_kerja'],
-                'absen_pulang_kerja'=>$value['absen_pulang_kerja'],
-                'operator'=>$value['operator']
-            ];
+            $absen_masuk_kerja='';
+            if(isset(MasterDataAbsenKehadiran::where('enroll_id',$value['enroll_id'])->where('tanggal_berjalan',$value['tanggal_berjalan'])->pluck('absen_masuk_kerja')[0])){
+                $absen_masuk_kerja=MasterDataAbsenKehadiran::where('enroll_id',$value['enroll_id'])->where('tanggal_berjalan',$value['tanggal_berjalan'])->pluck('absen_masuk_kerja')[0];
+            }
+            $absen_pulang_kerja='';
+            if(isset(MasterDataAbsenKehadiran::where('enroll_id',$value['enroll_id'])->where('tanggal_berjalan',$value['tanggal_berjalan'])->pluck('absen_pulang_kerja')[0])){
+                $absen_pulang_kerja=MasterDataAbsenKehadiran::where('enroll_id',$value['enroll_id'])->where('tanggal_berjalan',$value['tanggal_berjalan'])->pluck('absen_pulang_kerja')[0];
+            }
+            if($absen_masuk_kerja==$value['absen_masuk_kerja'] && $absen_pulang_kerja==$value['absen_pulang_kerja']){
+                $fix_array_data[$key]=[
+                    'nik'=>$value['nik'],
+                    'enroll_id'=>$value['enroll_id'],
+                    'tanggal_berjalan'=>$value['tanggal_berjalan'],
+                    'employee_name'=>$value['employee_name'],
+                    'mulai_jam_kerja'=>$value['jadwal_masuk_kerja'],
+                    'akhir_jam_kerja'=>$value['jadwal_pulang_kerja'],
+                    'absen_masuk_kerja'=>$value['absen_masuk_kerja'],
+                    'absen_pulang_kerja'=>$value['absen_pulang_kerja'],
+                ];
+            }else if($absen_masuk_kerja!=$value['absen_masuk_kerja'] || $absen_pulang_kerja!=$value['absen_pulang_kerja']){
+                $fix_array_data[$key]=[
+                    'nik'=>$value['nik'],
+                    'enroll_id'=>$value['enroll_id'],
+                    'tanggal_berjalan'=>$value['tanggal_berjalan'],
+                    'employee_name'=>$value['employee_name'],
+                    'mulai_jam_kerja'=>$value['jadwal_masuk_kerja'],
+                    'akhir_jam_kerja'=>$value['jadwal_pulang_kerja'],
+                    'absen_masuk_kerja'=>$value['absen_masuk_kerja'],
+                    'absen_pulang_kerja'=>$value['absen_pulang_kerja'],
+                    'operator'=>'inject absen by excel file'
+                ];
+            }else{
+                $fix_array_data[$key]=[
+                    'nik'=>$value['nik'],
+                    'enroll_id'=>$value['enroll_id'],
+                    'tanggal_berjalan'=>$value['tanggal_berjalan'],
+                    'employee_name'=>$value['employee_name'],
+                    'mulai_jam_kerja'=>$value['jadwal_masuk_kerja'],
+                    'akhir_jam_kerja'=>$value['jadwal_pulang_kerja'],
+                    'absen_masuk_kerja'=>$value['absen_masuk_kerja'],
+                    'absen_pulang_kerja'=>$value['absen_pulang_kerja'],
+                ];
+            }
         }
         foreach($fix_array_data as $key=>$value){
             $result=array_filter($value);
@@ -2776,8 +2807,7 @@ class MdAbsenHadirController extends AdminBaseController
             $allEnroll_id= '('.$implodeEnrollId.')';
             $inEnrollId = ' AND enroll_id IN '.$allEnroll_id.'';
         }
-        $kehadiran=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->whereRaw('tanggal_berjalan is not null'.$inEnrollId)->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')->where('operator','!=','inject absen by excel file')->get();
-
+        $kehadiran=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->whereRaw('tanggal_berjalan is not null'.$inEnrollId)->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')->get();
         if(count($kehadiran) > 0 ) {
             $query = DB::connection('sqlsrv2')->table('CHECKINOUT as a')
             ->selectRaw("CONVERT(VARCHAR(10), a.CHECKTIME, 126) AS tanggal_absen,
