@@ -1819,10 +1819,9 @@ class MdAbsenHadirController extends AdminBaseController
             $inEnrollsId = ' AND enroll_id IN '.$allEnroll_id.'';
         }
         $adaData = "ADA";
-        $countData = MasterDataAbsenKehadiran::whereRaw("
-                tanggal_berjalan = '" . $tanggal_mesin_absensi . "'
-            ")->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')
-            ->count();
+        $countData = MasterDataAbsenKehadiran::whereRaw("tanggal_berjalan = '" . $tanggal_mesin_absensi . "'")->where(function($query){
+            $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
+        })->whereNotIn('operator',['inject absen by excel file','system_lintashari'])->count();
         if($countData > 0 ) {
             $checkinout =  DB::connection('sqlsrv2')->select(
             DB::raw("
@@ -1859,7 +1858,9 @@ class MdAbsenHadirController extends AdminBaseController
                 ->whereRaw("
                     tanggal_berjalan = '" . $tanggal_mesin_absensi . "'
                     AND enroll_id = '" . $value->enroll_id . "'
-                ")
+                ")->where(function($query){
+                    $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
+                })->whereNotIn('operator',['inject absen by excel file','system_lintashari'])
                 ->get();
                 foreach($kehadiran as $val) {
                     $countEditedData=DataKehadiranInOutEdited::where('tanggal_absen','=', $tanggal_mesin_absensi)->where('enroll_id','=', $val["enroll_id"])->count();
@@ -1913,7 +1914,9 @@ class MdAbsenHadirController extends AdminBaseController
                     }
                 }
             }
-            $masterAbsen=MasterDataAbsenKehadiran::whereRaw('tanggal_berjalan = "'.$tanggal_mesin_absensi.'"'.$inEnrollsId.'')->with('employee_atribut')->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')->get();
+            $masterAbsen=MasterDataAbsenKehadiran::whereRaw('tanggal_berjalan = "'.$tanggal_mesin_absensi.'"'.$inEnrollsId.'')->with('employee_atribut')->where(function($query){
+                $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
+            })->whereNotIn('operator',['inject absen by excel file','system_lintashari'])->get();
             foreach ($masterAbsen as $k => $v) {
                 $countEditedData1=DataKehadiranInOutEdited::where('tanggal_absen','=', $tanggal_mesin_absensi)->where('enroll_id','=', $v->enroll_id)->count();
                 $count1=LogDataGagalAbsen::where('tanggal_absen',$tanggal_mesin_absensi)->where('enroll_id','=', $v->enroll_id)->count();
@@ -2122,7 +2125,9 @@ class MdAbsenHadirController extends AdminBaseController
             ")
             ->whereRaw('absen_masuk_kerja is not null AND absen_pulang_kerja is not null
                 AND status_absen in ("M", "TL") AND tanggal_berjalan = "' . $tanggal_mesin_absensi . '"'.$inEnrollsId.'
-            ')
+            ')->where(function($query){
+                $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
+            })->whereNotIn('operator',['inject absen by excel file','system_lintashari'])
             ->get();
             foreach($setClearMTL as $value) {
                 $countEditedData2=DataKehadiranInOutEdited::where('tanggal_absen','=', $tanggal_mesin_absensi)->where('enroll_id','=', $value['enroll_id'])->count();
@@ -2148,7 +2153,9 @@ class MdAbsenHadirController extends AdminBaseController
                 tanggal_berjalan = "' . $tanggal_mesin_absensi . '"'.$inEnrollsId.'
                 AND status_absen in ("M", "TL")
                 AND ((absen_masuk_kerja is null AND absen_pulang_kerja is not null) OR (absen_masuk_kerja is not null AND absen_pulang_kerja is null))
-            ')
+            ')->where(function($query){
+                $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
+            })->whereNotIn('operator',['inject absen by excel file','system_lintashari'])
             ->get();
 
             foreach($setSetTL as $value) {
@@ -2807,7 +2814,15 @@ class MdAbsenHadirController extends AdminBaseController
             $allEnroll_id= '('.$implodeEnrollId.')';
             $inEnrollId = ' AND enroll_id IN '.$allEnroll_id.'';
         }
-        $kehadiran=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->whereRaw('tanggal_berjalan is not null'.$inEnrollId)->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')->get();
+        $kehadiran=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->whereRaw('tanggal_berjalan is not null'.$inEnrollId)
+        ->where(function($query){
+            $query->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')
+            ->orWhere(function($query){
+                $query->whereNotNull('nomor_form_lembur')
+                ->whereRaw('SUBSTRING(mulai_jam_lembur, 11,  8) > SUBSTRING(akhir_jam_lembur, 11,  8)')
+                ->whereNull('mulai_jam_kerja');
+            });
+        })->where('operator','!=','inject absen by excel file')->get();
         if(count($kehadiran) > 0 ) {
             $query = DB::connection('sqlsrv2')->table('CHECKINOUT as a')
             ->selectRaw("CONVERT(VARCHAR(10), a.CHECKTIME, 126) AS tanggal_absen,
@@ -2921,7 +2936,14 @@ class MdAbsenHadirController extends AdminBaseController
                 }
             }
             // untuk hitung dt pc
-            $kehadiran2=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->whereRaw('tanggal_berjalan is not null'.$inEnrollId)->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')->where('operator','!=','inject absen by excel file')->get();
+            $kehadiran2=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->whereRaw('tanggal_berjalan is not null'.$inEnrollId)->where(function($query){
+            $query->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')
+                ->orWhere(function($query){
+                $query->whereNotNull('nomor_form_lembur')
+                    ->whereRaw('SUBSTRING(mulai_jam_lembur, 11,  8) > SUBSTRING(akhir_jam_lembur, 11,  8)')
+                    ->whereNull('mulai_jam_kerja');
+                });
+            })->where('operator','!=','inject absen by excel file')->get();
             $data_update=[];
             foreach ($kehadiran2 as $k => $v) {
                 $countEditedData2=DataKehadiranInOutEdited::where('tanggal_absen','=',  $v->tanggal_berjalan)->where('enroll_id','=', $v->enroll_id)->count();
