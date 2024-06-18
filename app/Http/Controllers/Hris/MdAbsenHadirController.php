@@ -2776,7 +2776,7 @@ class MdAbsenHadirController extends AdminBaseController
             $allEnroll_id= '('.$implodeEnrollId.')';
             $inEnrollId = ' AND enroll_id IN '.$allEnroll_id.'';
         }
-        $kehadiran=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->whereRaw('tanggal_berjalan is not null'.$inEnrollId)->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')->get();
+        $kehadiran=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->whereRaw('tanggal_berjalan is not null'.$inEnrollId)->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')->where('operator','!=','inject absen by excel file')->get();
 
         if(count($kehadiran) > 0 ) {
             $query = DB::connection('sqlsrv2')->table('CHECKINOUT as a')
@@ -2891,7 +2891,7 @@ class MdAbsenHadirController extends AdminBaseController
                 }
             }
             // untuk hitung dt pc
-            $kehadiran2=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->whereRaw('tanggal_berjalan is not null'.$inEnrollId)->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')->get();
+            $kehadiran2=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->whereRaw('tanggal_berjalan is not null'.$inEnrollId)->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')->where('operator','!=','inject absen by excel file')->get();
             $data_update=[];
             foreach ($kehadiran2 as $k => $v) {
                 $countEditedData2=DataKehadiranInOutEdited::where('tanggal_absen','=',  $v->tanggal_berjalan)->where('enroll_id','=', $v->enroll_id)->count();
