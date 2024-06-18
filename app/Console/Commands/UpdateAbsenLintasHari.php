@@ -41,7 +41,7 @@ class UpdateAbsenLintasHari extends Command
      */
     public function handle()
     {
-        $absen_lintas_hari=MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->whereColumn('akhir_jam_kerja','<','mulai_jam_kerja')->get();
+        $absen_lintas_hari=MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->whereColumn('akhir_jam_kerja','<','mulai_jam_kerja')->where('operator','!=','inject absen by excel file')->get();
         if(count($absen_lintas_hari) > 0 ) {
             $query = DB::connection('sqlsrv2')->table('CHECKINOUT as a')
             ->selectRaw("CONVERT(VARCHAR(10), a.CHECKTIME, 126) AS tanggal_absen,
