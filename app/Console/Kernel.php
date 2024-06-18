@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\UpdateDTPC::class,
         Commands\UpdateStatusAbsen::class,
+        Commands\UpdateAbsenLintasHari::class,
         Commands\UpdateTanggalResign::class
     ];
 
@@ -33,6 +34,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('dtpc')->everyFiveMinutes()->sendOutputTo(public_path().'/tasks/log.txt');
+        $schedule->command('lintas_hari')->everyFiveMinutes()->sendOutputTo(public_path().'/tasks/log.txt');
         $schedule->command('statusAbsen')->monthlyOn(26, '06:00');
         $schedule->command('resign')->monthlyOn(26, '06:00');
   // =================== Andri ==========================

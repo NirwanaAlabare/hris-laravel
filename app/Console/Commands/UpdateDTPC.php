@@ -41,7 +41,7 @@ class UpdateDTPC extends Command
     {
         $ijin_bayar=RefAbsenIjin::where('kode_ijin_payroll','IBY')->get()->toArray();
         $IBY=array_column($ijin_bayar,'kode_absen_ijin');
-        $masterAbsen=MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->with('employee_atribut')->get();
+        $masterAbsen=MasterDataAbsenKehadiran::where('tanggal_berjalan',date('Y-m-d'))->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->with('employee_atribut')->get();
         foreach ($masterAbsen as $k => $v) {
             $enroll_id=$v->enroll_id;
             $employee_name=$v->employee_name;

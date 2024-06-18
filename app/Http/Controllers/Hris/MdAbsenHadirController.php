@@ -1790,7 +1790,7 @@ class MdAbsenHadirController extends AdminBaseController
         $adaData = "ADA";
         $countData = MasterDataAbsenKehadiran::whereRaw("
                 tanggal_berjalan = '" . $tanggal_mesin_absensi . "'
-            ")
+            ")->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')
             ->count();
         if($countData > 0 ) {
             $checkinout =  DB::connection('sqlsrv2')->select(
@@ -1882,7 +1882,7 @@ class MdAbsenHadirController extends AdminBaseController
                     }
                 }
             }
-            $masterAbsen=MasterDataAbsenKehadiran::whereRaw('tanggal_berjalan = "'.$tanggal_mesin_absensi.'"'.$inEnrollsId.'')->with('employee_atribut')->get();
+            $masterAbsen=MasterDataAbsenKehadiran::whereRaw('tanggal_berjalan = "'.$tanggal_mesin_absensi.'"'.$inEnrollsId.'')->with('employee_atribut')->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')->get();
             foreach ($masterAbsen as $k => $v) {
                 $countEditedData1=DataKehadiranInOutEdited::where('tanggal_absen','=', $tanggal_mesin_absensi)->where('enroll_id','=', $v->enroll_id)->count();
                 $count1=LogDataGagalAbsen::where('tanggal_absen',$tanggal_mesin_absensi)->where('enroll_id','=', $v->enroll_id)->count();
