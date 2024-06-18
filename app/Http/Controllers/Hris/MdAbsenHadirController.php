@@ -2770,13 +2770,13 @@ class MdAbsenHadirController extends AdminBaseController
         $tanggal_awal = date('Y-m-d', strtotime($daterange[0]));
         $tanggal_akhir = date('Y-m-d', strtotime($daterange[1]));
         $enroll_id = $request->selectEmployeeID;
-        $enroll_id_str = implode(',', $enroll_id);
-        $adaData = "ADA";
-
-        $kehadiran = MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$tanggal_awal)
-                    ->where('tanggal_berjalan','<=',$tanggal_akhir)
-                    ->wherein('enroll_id',$enroll_id)
-                    ->get();
+        $inEnrollId='';
+        if($enroll_id){
+            $implodeEnrollId=implode(",", $enroll_id);
+            $allEnroll_id= '('.$implodeEnrollId.')';
+            $inEnrollId = ' AND enroll_id IN '.$allEnroll_id.'';
+        }
+        $kehadiran=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->whereRaw('tanggal_berjalan is not null'.$inEnrollId)->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')->get();
 
         if(count($kehadiran) > 0 ) {
             $query = DB::connection('sqlsrv2')->table('CHECKINOUT as a')
@@ -2785,8 +2785,7 @@ class MdAbsenHadirController extends AdminBaseController
                         CONVERT(VARCHAR(5), a.CHECKTIME, 114) AS absen_log")
             ->join('USERINFO as b', 'a.USERID', '=', 'b.USERID')
             ->whereDate('a.CHECKTIME', '>=', $tanggal_awal)
-            ->whereDate('a.CHECKTIME', '<=', $tanggal_akhir)
-            ->whereIn('b.Badgenumber', $enroll_id)
+            ->whereDate('a.CHECKTIME', '<=', date('Y-m-d', strtotime('+1 days', strtotime($tanggal_akhir))))
             ->get();
             $results=collect($query)->groupBy(['tanggal_absen','enroll_id','absen_log']);
             $records=[];
@@ -2892,10 +2891,8 @@ class MdAbsenHadirController extends AdminBaseController
                 }
             }
             // untuk hitung dt pc
-            $kehadiran2 = MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$tanggal_awal)
-                    ->where('tanggal_berjalan','<=',$tanggal_akhir)
-                    ->wherein('enroll_id',$enroll_id)
-                    ->get();
+            $kehadiran2=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->whereRaw('tanggal_berjalan is not null'.$inEnrollId)->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')->get();
+            $data_update=[];
             foreach ($kehadiran2 as $k => $v) {
                 $countEditedData2=DataKehadiranInOutEdited::where('tanggal_absen','=',  $v->tanggal_berjalan)->where('enroll_id','=', $v->enroll_id)->count();
                 $count2=LogDataGagalAbsen::where('tanggal_absen', $v->tanggal_berjalan)->where('enroll_id',$v->enroll_id)->count();
@@ -2913,9 +2910,6 @@ class MdAbsenHadirController extends AdminBaseController
                     $PC = date_diff(date_create($jadwal_out),date_create($absen_out));
                     if( $absen_in!=null && $absen_in>$jadwal_in ){
                         $total_DT = $DT->i +($DT->h*60);
-                        if($v->status_absen='LN'){
-                            $total_DT=0;
-                        }
                     }else{
                         $total_DT=0;
                     }
@@ -2931,7 +2925,7 @@ class MdAbsenHadirController extends AdminBaseController
                     $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
                     if( $absen_in!=null && $absen_out !=null){
                         $jumlah_absen_menit_kerja=$durasi_kerja_menit-$jumlah_menit_absen_dtpc;
-                        if($v->status_absen='LN'){
+                        if($v->status_absen=='LN'){
                             $total_DT=0;
                             $total_PC=0;
                         }
@@ -2941,7 +2935,7 @@ class MdAbsenHadirController extends AdminBaseController
                     }
 
                     $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
-                    $data_update=[
+                    $data_update[]=[
                         'jumlah_menit_absen_dtpc'=>$jumlah_menit_absen_dtpc,
                         'jumlah_absen_menit_kerja'=>$durasi_kerja_menit-$jumlah_menit_absen_dtpc,
                         'jumlah_menit_absen_dt'=>$total_DT,
@@ -2951,11 +2945,7 @@ class MdAbsenHadirController extends AdminBaseController
                 }
             }
 
-        } else {
-            $adaData = "TIDAK ADA";
         }
-
-        echo json_encode($adaData);
     }
 
     public function ajax_getdashkehadiran()

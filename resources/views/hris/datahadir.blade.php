@@ -1983,16 +1983,16 @@
             const EmployeeID = document.getElementsByClassName("EmployeeID");
 
             BtnUpdateLintasHari.addEventListener('click', function(event) {
-                let tmp = EmployeeID[0].value;
+                // let tmp = EmployeeID[0].value;
                 
-                if (tmp == ''||tmp==null) {
-                    swal({
-                        title: "Harap Pilih Karyawan",
-                        text: "Data karyawan tidak boleh kosong",
-                        icon: "warning",
-                        button : false,
-                    });
-                } else{
+                // if (tmp == ''||tmp==null) {
+                //     swal({
+                //         title: "Harap Pilih Karyawan",
+                //         text: "Data karyawan tidak boleh kosong",
+                //         icon: "warning",
+                //         button : false,
+                //     });
+                // } else{
                     event.preventDefault();
                     const submited =document.getElementsByTagName('form')[0];
                     swal({
@@ -2012,21 +2012,14 @@
                                 data: $('#form_update_lintashari').serialize(),
                                 url: '{{ route("hris.mdabsenhadir.download_mesin_kehadiran_lintas") }}',           
                                 type: "post",
-                                dataType: 'json',           
+                                // dataType: 'json',           
                                 success: function (data) {
                                     
-
-                                    if(data == "ADA") {
+                                    console.log(data);
                                         notif({
                                             msg: "<b>Info:</b> Data berhasil di UPDATE.",
                                             type: "info"
                                         });
-                                    } else {
-                                        notif({
-                                            msg: "<b>Info:</b> Data Tidak Ditemukan, UPDATE GAGAL.",
-                                            type: "warning"
-                                        });
-                                    }
 
                                     $('#BtnUpdateLintasHari').removeClass("btn-loading");
                                     $("#BtnUpdateLintasHari").html('<span><i class="fa fa-download"></i></span> UPDATE ABSENSI');
@@ -2047,7 +2040,7 @@
                             }); 
                         }
                     });    
-                }
+                // }
             });
         });
     </script>
