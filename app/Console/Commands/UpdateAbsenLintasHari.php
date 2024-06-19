@@ -88,8 +88,8 @@ class UpdateAbsenLintasHari extends Command
                         if(isset(MasterDataAbsenKehadiran::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan',$tanggal_kemarin)->whereColumn('akhir_jam_kerja','<','mulai_jam_kerja')->pluck('mulai_jam_kerja')[0])){
                             $jadwal_masuk_kemarin=MasterDataAbsenKehadiran::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan',$tanggal_kemarin)->whereColumn('akhir_jam_kerja','<','mulai_jam_kerja')->pluck('mulai_jam_kerja')[0];
                             $jadwal_in_min_kemarin=date("H:i", strtotime('-2 hours', strtotime($jadwal_masuk_kemarin)));
-                            $jadwal_in_max_kemarin=date("H:i", strtotime('+1 hours 59 minutes', strtotime($jadwal_masuk_kemarin)));
-                            $absen_masuk_kemarin=collect($records)->where('tanggal_absen',$tanggal_kemarin)->where('enroll_id',$value->enroll_id)->max('absen_log');
+                            $jadwal_in_max_kemarin=date("H:i", strtotime('+5 hours 59 minutes', strtotime($jadwal_masuk_kemarin)));
+                            $absen_masuk_kemarin=collect($records)->where('tanggal_absen',$tanggal_kemarin)->where('enroll_id',$value->enroll_id)->where('absen_log','>=', $jadwal_in_min_kemarin)->where('absen_log','<=', $jadwal_in_max_kemarin)->max('absen_log');
             
                             $DT = date_diff(date_create($jadwal_masuk_kemarin),date_create($absen_masuk_kemarin));
                             if( $absen_masuk_kemarin!=null && $absen_masuk_kemarin>$jadwal_masuk_kemarin ){
@@ -117,9 +117,9 @@ class UpdateAbsenLintasHari extends Command
                         $total_PC=0;
                         if(isset(MasterDataAbsenKehadiran::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan',$tanggal_kemarin)->whereColumn('akhir_jam_kerja','<','mulai_jam_kerja')->pluck('akhir_jam_kerja')[0])){
                             $jadwal_pulang_kemarin=MasterDataAbsenKehadiran::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan',$tanggal_kemarin)->whereColumn('akhir_jam_kerja','<','mulai_jam_kerja')->pluck('akhir_jam_kerja')[0];
-                            $jadwal_out_min_kemarin=date("H:i", strtotime('-2 hours', strtotime($jadwal_pulang_kemarin)));
-                            $jadwal_out_max_kemarin=date("H:i", strtotime('+1 hours 59 minutes', strtotime($jadwal_pulang_kemarin)));
-                            $absen_pulang_kemarin=collect($records)->where('tanggal_absen',$value->tanggal_berjalan)->where('enroll_id',$value->enroll_id)->min('absen_log');
+                            $jadwal_out_min_kemarin=date("H:i", strtotime('-5 hours', strtotime($jadwal_pulang_kemarin)));
+                            $jadwal_out_max_kemarin=date("H:i", strtotime('+5 hours 59 minutes', strtotime($jadwal_pulang_kemarin)));
+                            $absen_pulang_kemarin=collect($records)->where('tanggal_absen',$value->tanggal_berjalan)->where('enroll_id',$value->enroll_id)->where('absen_log','>=', $jadwal_out_min_kemarin)->where('absen_log','<=', $jadwal_out_max_kemarin)->min('absen_log');
                             $PC = date_diff(date_create($jadwal_pulang_kemarin),date_create($absen_pulang_kemarin));
                             if( $absen_pulang_kemarin !=null && $absen_pulang_kemarin<$jadwal_pulang_kemarin){
                                 $total_PC = $PC->i +($PC->h*60);
@@ -173,8 +173,8 @@ class UpdateAbsenLintasHari extends Command
                         if(isset(MasterDataAbsenKehadiran::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan',$tanggal_sekarang)->whereColumn('akhir_jam_kerja','<','mulai_jam_kerja')->pluck('mulai_jam_kerja')[0])){
                             $jadwal_masuk_sekarang=MasterDataAbsenKehadiran::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan',$tanggal_sekarang)->whereColumn('akhir_jam_kerja','<','mulai_jam_kerja')->pluck('mulai_jam_kerja')[0];
                             $jadwal_in_min_sekarang=date("H:i", strtotime('-2 hours', strtotime($jadwal_masuk_sekarang)));
-                            $jadwal_in_max_sekarang=date("H:i", strtotime('+1 hours 59 minutes', strtotime($jadwal_masuk_sekarang)));
-                            $absen_masuk_sekarang=collect($records)->where('tanggal_absen',$tanggal_sekarang)->where('enroll_id',$value->enroll_id)->max('absen_log');
+                            $jadwal_in_max_sekarang=date("H:i", strtotime('+5 hours 59 minutes', strtotime($jadwal_masuk_sekarang)));
+                            $absen_masuk_sekarang=collect($records)->where('tanggal_absen',$tanggal_sekarang)->where('enroll_id',$value->enroll_id)->where('absen_log','>=', $jadwal_in_min_sekarang)->where('absen_log','<=', $jadwal_in_max_sekarang)->max('absen_log');
                             $DT2 = date_diff(date_create($jadwal_masuk_sekarang),date_create($absen_masuk_sekarang));
                             if( $absen_masuk_sekarang!=null && $absen_masuk_sekarang>$jadwal_masuk_sekarang ){
                                 $total_DT2= $DT2->i +($DT2->h*60);
