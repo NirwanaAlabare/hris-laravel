@@ -155,7 +155,7 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
             $absen_out = $Data->absen_pulang_kerja;
             $timestamp5 = new \DateTime($absen_out);
             $excelTimestamp5 = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp5);
-            $excelDate5 = floor($excelTimestamp4);
+            $excelDate5 = floor($excelTimestamp5);
             $time5 = $excelTimestamp5 - $excelDate5;
         }
         $time6='';
