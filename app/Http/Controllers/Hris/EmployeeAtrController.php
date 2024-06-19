@@ -192,7 +192,11 @@ class EmployeeAtrController extends AdminBaseController
         }else if (in_array($site_nirwana_id, $site_nirwana_array) && $enroll_id!=$enroll_id_nik) {
             return false;
         }else if (!in_array($site_nirwana_id, $site_nirwana_array) && $enroll_id==$enroll_id_nik) {
-            return false;
+            if($site_nirwana_id='SGT'){
+                return true;
+            }else{
+                return false;
+            }
         }else{
             $query =  EmployeeAtribut::where('nik', '=', $nik)->count();
             if($query > 0) {
