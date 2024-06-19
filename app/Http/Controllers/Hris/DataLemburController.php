@@ -145,6 +145,7 @@ class DataLemburController extends AdminBaseController
                     'uuid'=>Str::uuid(),
                     'uuid_master'=>$value->absen[0]->uuid,
                     'nomor_form_lembur'=>$nomor_form_lembur,
+                    'tanggal_berjalan'=>$value->absen[0]->tanggal_berjalan,
                     'tanggal_absen'=>$value->absen[0]->tanggal_berjalan,
                     'nomor_form_lembur'=>$nomor_form_lembur,
                     'kode_hari'=>$value->absen[0]->kode_hari,
