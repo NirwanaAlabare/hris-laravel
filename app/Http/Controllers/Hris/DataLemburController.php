@@ -143,7 +143,7 @@ class DataLemburController extends AdminBaseController
             if($value->absen[0]->nomor_form_lembur==null){
                 DataLembur::create([
                     'uuid'=>Str::uuid(),
-                    'uuid'=>$value->absen[0]->uuid,
+                    'uuid_master'=>$value->absen[0]->uuid,
                     'nomor_form_lembur'=>$nomor_form_lembur,
                     'tanggal_absen'=>$value->absen[0]->tanggal_berjalan,
                     'nomor_form_lembur'=>$nomor_form_lembur,
