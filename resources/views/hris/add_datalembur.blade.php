@@ -142,7 +142,7 @@
                 <button type="submit" id="btn-import" class="btn btn-app btn-warning mr-0 mt-0 mb-0" data-toggle="tooltip" title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import</button>
                 @endif -->
                 <button type="button" class="btn btn-app btn-success mr-0 mt-0 mb-0" data-target="#import_data_lembur" data-toggle="modal"><i class="fa fa-file-excel-o"></i> Import</button>
-                @if($loggedAdmin->email=='mega@ptnag.com')
+                @if($loggedAdmin->email=='mega@ptnag.com' || $loggedAdmin->email=='rifqi@ptnag.com')
                 <button type="button" class="btn btn-app btn-success mr-0 mt-0 mb-0" data-target="#import_data_lembur_from_nds" data-toggle="modal"><i class="fa fa-database"></i> Import From NDS</button>
                 @endif
                 <a href="javascript:void(0)" id="btn-paste" class="btn btn-app btn-secondary mr-0 mt-0 mb-0" data-toggle="tooltip" title="Tempel Data"><i class="fa fa-paste"></i> Tempel</a>
