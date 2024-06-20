@@ -11,6 +11,7 @@ use App\Models\WorkTimeTable;
 use App\Models\GradingSalary;
 use App\Models\MutKaryawanInputFormLembur;
 use App\Models\MutKaryawanInputFormLemburDet;
+use App\Models\MutKaryawanInputNonSewingFormLemburDet;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -97,15 +98,40 @@ class DataLemburController extends AdminBaseController
     public function getnomorform()
     {
         $tanggal_lembur = request()->tanggal_lembur;
+        $array_karyawan_lembur=[];
         $query =  DB::select("
         SELECT count(mut_karyawan_input_form_lembur_det.no_form) as jumlah_karyawan,mut_karyawan_input_form_lembur.* FROM mut_karyawan_input_form_lembur_det inner join mut_karyawan_input_form_lembur on mut_karyawan_input_form_lembur_det.no_form=mut_karyawan_input_form_lembur.no_form where mut_karyawan_input_form_lembur.tgl_lembur='".$tanggal_lembur."' group by mut_karyawan_input_form_lembur_det.no_form");
-        return $query;
+        foreach($query as $q){
+            $array_karyawan_lembur[]=[
+                'no_form'=>$q->no_form,
+                'line'=>$q->line,
+                'jumlah_karyawan'=>$q->jumlah_karyawan
+            ];
+        }
+        $array_karyawan_lembur2=[];
+        $query2 =  DB::select("
+        SELECT count(mut_karyawan_input_non_sewing_form_lembur_det.no_form) as jumlah_karyawan,mut_karyawan_input_non_sewing_form_lembur.* FROM mut_karyawan_input_non_sewing_form_lembur_det inner join mut_karyawan_input_non_sewing_form_lembur on mut_karyawan_input_non_sewing_form_lembur_det.no_form=mut_karyawan_input_non_sewing_form_lembur.no_form where mut_karyawan_input_non_sewing_form_lembur.tgl_lembur='".$tanggal_lembur."' group by mut_karyawan_input_non_sewing_form_lembur_det.no_form");
+        foreach($query2 as $q){
+            $array_karyawan_lembur2[]=[
+                'no_form'=>$q->no_form,
+                'line'=>$q->dept,
+                'jumlah_karyawan'=>$q->jumlah_karyawan
+            ];
+        }
+        return array_merge($array_karyawan_lembur,$array_karyawan_lembur2);
     }
     public function getkaryawanlembur(){
         $tanggal_lembur=request()->tanggal_lembur;
-        $karyawanLembur=MutKaryawanInputFormLemburDet::where('no_form',request()->no_form)->with('employee','keterangan')->with(['absen' => function ($query) use($tanggal_lembur) {
-            $query->where('tanggal_berjalan', $tanggal_lembur);
-        }])->get();
+        $count=count(MutKaryawanInputFormLemburDet::where('no_form',request()->no_form)->get());
+        if($count>0){
+            $karyawanLembur=MutKaryawanInputFormLemburDet::where('no_form',request()->no_form)->with('employee','keterangan')->with(['absen' => function ($query) use($tanggal_lembur) {
+                $query->where('tanggal_berjalan', $tanggal_lembur);
+            }])->get();
+        }else{
+            $karyawanLembur=MutKaryawanInputNonSewingFormLemburDet::where('no_form',request()->no_form)->with('employee','keterangan')->with(['absen' => function ($query) use($tanggal_lembur) {
+                $query->where('tanggal_berjalan', $tanggal_lembur);
+            }])->get();
+        }
         return $karyawanLembur;
     }
     public function importkaryawanlembur(){
@@ -113,9 +139,16 @@ class DataLemburController extends AdminBaseController
         $email = $loggedAdmin->email;
         $no_form=request()->no_form;
         $tanggal_lembur=request()->tanggal_lembur;
-        $karyawan_lembur=MutKaryawanInputFormLemburDet::where('no_form',request()->no_form)->with('employee','keterangan')->with(['absen' => function ($query) use($tanggal_lembur) {
-            $query->where('tanggal_berjalan', $tanggal_lembur);
-        }])->get();
+        $count=count(MutKaryawanInputFormLemburDet::where('no_form',request()->no_form)->get());
+        if($count>0){
+            $karyawan_lembur=MutKaryawanInputFormLemburDet::where('no_form',request()->no_form)->with('employee','keterangan')->with(['absen' => function ($query) use($tanggal_lembur) {
+                $query->where('tanggal_berjalan', $tanggal_lembur);
+            }])->get();
+        }else{
+            $karyawan_lembur=MutKaryawanInputNonSewingFormLemburDet::where('no_form',request()->no_form)->with('employee','keterangan')->with(['absen' => function ($query) use($tanggal_lembur) {
+                $query->where('tanggal_berjalan', $tanggal_lembur);
+            }])->get();
+        }
         $nomor_form_lembur=[];
         $kodelembur = "SPL/HR";
         $thnbln = date("ym");
