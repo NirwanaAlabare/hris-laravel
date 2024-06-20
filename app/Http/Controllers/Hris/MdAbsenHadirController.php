@@ -1819,7 +1819,7 @@ class MdAbsenHadirController extends AdminBaseController
             $inEnrollsId = ' AND enroll_id IN '.$allEnroll_id.'';
         }
         $adaData = "ADA";
-        $countData = MasterDataAbsenKehadiran::whereRaw("tanggal_berjalan = '" . $tanggal_mesin_absensi . "'".$inEnrollId."'")->where(function($query){
+        $countData = MasterDataAbsenKehadiran::whereRaw("tanggal_berjalan = '" . $tanggal_mesin_absensi . "'".$inEnrollId."")->where(function($query){
             $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
         })->whereNotIn('operator',['inject absen by excel file','system_lintashari'])->count();
         if($countData > 0 ) {
