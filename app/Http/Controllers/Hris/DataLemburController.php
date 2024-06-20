@@ -2376,7 +2376,7 @@ class DataLemburController extends AdminBaseController
         $status_absen=[];
         $actual=[];
         $count=[];
-        $overtimeResult=[];
+        $arrayEmployee=[];
         for($i=4;$i<count($data[0]);$i++){
             $count=count(MasterDataAbsenKehadiran::where('enroll_id',(int)substr($data[0][$i][3],-4))->where('tanggal_berjalan',gmdate("Y-m-d", ($data[0][$i][1] - 25569) * 86400))->get());
             if($count>0){
@@ -2477,100 +2477,100 @@ class DataLemburController extends AdminBaseController
                         'keterangan_lembur'=>$keterangan_lembur[$key],
                         'status_absen'=>$status_absen[$key]
                     ];
-                    $kodelembur = "SPL/HR";
-                    $thnbln = date("ym");
-                    $getlastnomorform =  DataLembur::select('nomor_form_lembur')
-                                                            ->groupby('nomor_form_lembur')
-                                                            ->orderby('nomor_form_lembur', 'desc')
-                                                            ->first();
-                    if($getlastnomorform == "") {
-                        //info("Count : Kosong");
-                        $nomor = "0000";
-                    } else {
-                        $nomor = $getlastnomorform->nomor_form_lembur;
-                    }
-                    $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
-                    $nomor_form_lembur = $kodelembur . "/" . $thnbln . "/" . $nomorform;
-                    $arrayOvertime=[];
-                    foreach($arrayEmployee as $key=>$value){
-                        if(!in_array($value['enroll_id'],$employee)){
-                            continue;
-                        }
-                        if($value['enroll_id']==null||$value['nik']==null||$value['tanggal']==null||$value['employee_name']==null||$value['dari']==null||$value['sampai']==null||$value['jumlah_lembur']==null){
-                            continue;
-                        }
-                        $arrayOvertime[$key]=[
-                            'nomor_form_lembur'=>$nomor_form_lembur,
-                            'enroll_id'=>$value['enroll_id'],
-                            'nik'=>$value['nik'],
-                            'tanggal'=>$value['tanggal'],
-                            'employee_name'=>$value['employee_name'],
-                            'dari'=>$value['dari'],
-                            'sampai'=>$value['sampai'],
-                            'act_in'=>$value['act_in'],
-                            'act_out'=>$value['act_out'],
-                            'jumlah_lembur'=>$value['jumlah_lembur'],
-                            'jumlah_jam_istirahat'=>$value['jumlah_jam_istirahat'],
-                            'keterangan_lembur'=>$value['keterangan_lembur'],
-                            'status_absen'=>$value['status_absen'],
-                        ];
-                    }
-                    $arrayOvertimeEnrollId=[];
-                    $overtime=[];
-                    $no=-1;
-                    foreach($arrayOvertime as $key=>$value){
-                        $no++;
-                        $arrayOvertimeEnrollId[$key]=$value['enroll_id'];
-                        $overtime[$no]=[
-                            'nomor_form_lembur'=>$nomor_form_lembur,
-                            'enroll_id'=>$value['enroll_id'],
-                            'nik'=>$value['nik'],
-                            'tanggal'=>$value['tanggal'],
-                            'employee_name'=>$value['employee_name'],
-                            'dari'=>$value['dari'],
-                            'sampai'=>$value['sampai'],
-                            'act_in'=>$value['act_in'],
-                            'act_out'=>$value['act_out'],
-                            'jumlah_lembur'=>$value['jumlah_lembur'],
-                            'jumlah_jam_istirahat'=>$value['jumlah_jam_istirahat'],
-                            'keterangan_lembur'=>$value['keterangan_lembur'],
-                            'status_absen'=>$value['status_absen'],
-                        ];
-                    }
-                    $ArrayOvertimeEnrollId=array_unique($arrayOvertimeEnrollId);
-                    $jumlah_data=count($ArrayOvertimeEnrollId);
-                    $overtimeResult=[];
-                    $no2=0;
-                    $absen_lembur=[];
-                    foreach($ArrayOvertimeEnrollId as $key=>$value){
-                        $no2++;
-                        $lembur_absen=MasterDataAbsenKehadiran::where('enroll_id',$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['enroll_id'])->where('tanggal_berjalan',$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['tanggal'])->where('nomor_form_lembur','!=','')->count();
-                        if($lembur_absen==1){
-                            $absen_lembur='red';
-                        }else{
-                            $absen_lembur='black';
-                        }
-                        $overtimeResult[$no2]=[
-                            'nomor_form_lembur'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['nomor_form_lembur'],
-                            'nik'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['nik'],
-                            'enroll_id'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['enroll_id'],
-                            'nik'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['nik'],
-                            'employee_name'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['employee_name'],
-                            'tanggal'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['tanggal'],
-                            'employee_name'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['employee_name'],
-                            'dari'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['dari'],
-                            'sampai'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['sampai'],
-                            'act_in'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['act_in'],
-                            'act_out'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['act_out'],
-                            'jumlah_lembur'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['jumlah_lembur'],
-                            'jumlah_jam_istirahat'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['jumlah_jam_istirahat'],
-                            'jumlah_data'=>$jumlah_data,
-                            'keterangan_lembur'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['keterangan_lembur'],
-                            'status_absen'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['status_absen'],
-                            'absen_lembur'=>$absen_lembur,
-                        ];
-                    }
                 }
+            }
+            $kodelembur = "SPL/HR";
+            $thnbln = date("ym");
+            $getlastnomorform =  DataLembur::select('nomor_form_lembur')
+                                                    ->groupby('nomor_form_lembur')
+                                                    ->orderby('nomor_form_lembur', 'desc')
+                                                    ->first();
+            if($getlastnomorform == "") {
+                //info("Count : Kosong");
+                $nomor = "0000";
+            } else {
+                $nomor = $getlastnomorform->nomor_form_lembur;
+            }
+            $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
+            $nomor_form_lembur = $kodelembur . "/" . $thnbln . "/" . $nomorform;
+            $arrayOvertime=[];
+            foreach($arrayEmployee as $key=>$value){
+                if(!in_array($value['enroll_id'],$employee)){
+                    continue;
+                }
+                if($value['enroll_id']==null||$value['nik']==null||$value['tanggal']==null||$value['employee_name']==null||$value['dari']==null||$value['sampai']==null||$value['jumlah_lembur']==null){
+                    continue;
+                }
+                $arrayOvertime[$key]=[
+                    'nomor_form_lembur'=>$nomor_form_lembur,
+                    'enroll_id'=>$value['enroll_id'],
+                    'nik'=>$value['nik'],
+                    'tanggal'=>$value['tanggal'],
+                    'employee_name'=>$value['employee_name'],
+                    'dari'=>$value['dari'],
+                    'sampai'=>$value['sampai'],
+                    'act_in'=>$value['act_in'],
+                    'act_out'=>$value['act_out'],
+                    'jumlah_lembur'=>$value['jumlah_lembur'],
+                    'jumlah_jam_istirahat'=>$value['jumlah_jam_istirahat'],
+                    'keterangan_lembur'=>$value['keterangan_lembur'],
+                    'status_absen'=>$value['status_absen'],
+                ];
+            }
+            $arrayOvertimeEnrollId=[];
+            $overtime=[];
+            $no=-1;
+            foreach($arrayOvertime as $key=>$value){
+                $no++;
+                $arrayOvertimeEnrollId[$key]=$value['enroll_id'];
+                $overtime[$no]=[
+                    'nomor_form_lembur'=>$nomor_form_lembur,
+                    'enroll_id'=>$value['enroll_id'],
+                    'nik'=>$value['nik'],
+                    'tanggal'=>$value['tanggal'],
+                    'employee_name'=>$value['employee_name'],
+                    'dari'=>$value['dari'],
+                    'sampai'=>$value['sampai'],
+                    'act_in'=>$value['act_in'],
+                    'act_out'=>$value['act_out'],
+                    'jumlah_lembur'=>$value['jumlah_lembur'],
+                    'jumlah_jam_istirahat'=>$value['jumlah_jam_istirahat'],
+                    'keterangan_lembur'=>$value['keterangan_lembur'],
+                    'status_absen'=>$value['status_absen'],
+                ];
+            }
+            $ArrayOvertimeEnrollId=array_unique($arrayOvertimeEnrollId);
+            $jumlah_data=count($ArrayOvertimeEnrollId);
+            $overtimeResult=[];
+            $no2=0;
+            $absen_lembur=[];
+            foreach($ArrayOvertimeEnrollId as $key=>$value){
+                $no2++;
+                $lembur_absen=MasterDataAbsenKehadiran::where('enroll_id',$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['enroll_id'])->where('tanggal_berjalan',$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['tanggal'])->where('nomor_form_lembur','!=','')->count();
+                if($lembur_absen==1){
+                    $absen_lembur='red';
+                }else{
+                    $absen_lembur='black';
+                }
+                $overtimeResult[$no2]=[
+                    'nomor_form_lembur'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['nomor_form_lembur'],
+                    'nik'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['nik'],
+                    'enroll_id'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['enroll_id'],
+                    'nik'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['nik'],
+                    'employee_name'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['employee_name'],
+                    'tanggal'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['tanggal'],
+                    'employee_name'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['employee_name'],
+                    'dari'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['dari'],
+                    'sampai'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['sampai'],
+                    'act_in'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['act_in'],
+                    'act_out'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['act_out'],
+                    'jumlah_lembur'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['jumlah_lembur'],
+                    'jumlah_jam_istirahat'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['jumlah_jam_istirahat'],
+                    'jumlah_data'=>$jumlah_data,
+                    'keterangan_lembur'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['keterangan_lembur'],
+                    'status_absen'=>$overtime[array_search($value, array_column($overtime, 'enroll_id'))]['status_absen'],
+                    'absen_lembur'=>$absen_lembur,
+                ];
             }
         }
         return $overtimeResult;
