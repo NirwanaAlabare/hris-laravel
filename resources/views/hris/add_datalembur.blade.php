@@ -207,6 +207,10 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <div class="col-12 text-center">
+                                    <div id="loading_karyawan_lembur">
+                                    </div>
+                                </div>
                             </div>
                             <div class="row pt-0 pb-3 pr-3">
                                 <div class="col-2"></div>
@@ -1548,6 +1552,7 @@
 
         }
         function fill_the_table(){
+            $('#loading_karyawan_lembur').addClass("spinner-border");
             $('#tabel_data_lembur').empty();
             var formData = new FormData();
             var excelFile=document.getElementById("excel_filess");
@@ -1565,6 +1570,7 @@
                 $('#nomor_form_lembur').text('');
                 $('#length').text('');
                 document.getElementById('warning_error').style.visibility='hidden';
+                $('#loading_karyawan_lembur').removeClass("spinner-border");
             }else{
                 $.ajax({
                     type: 'POST',
@@ -1573,6 +1579,7 @@
                     processData: false,
                     data: formData,
                     success:function(data){
+                        console.log(data);
                         var myarray = [];
                         $('#nomor_form_lembur').text('NOMOR FORM LEMBUR : '+data[1].nomor_form_lembur);
                         $('#length').text('LENGTH : '+data[1].jumlah_data);
@@ -1610,6 +1617,18 @@
                             document.getElementById('tabel_data_lembur').style.height='300px';
                             document.getElementById('btn-icon-refresh2').style.visibility='visible';
                         }
+                        $('#loading_karyawan_lembur').removeClass("spinner-border");
+                    },
+                    error: function(res){
+                        swal("", "IMPORT KARYAWAN LEMBUR GAGAL!", "error")
+                        document.getElementById('tabel_data_lembur').style.height='1px';
+                        document.getElementById('overtimeImportButton').style.visibility='hidden';
+                        document.getElementById('keterangan').style.visibility='hidden';
+                        document.getElementById('btn-icon-refresh2').style.visibility='hidden';
+                        $('#nomor_form_lembur').text('');
+                        $('#length').text('');
+                        document.getElementById('warning_error').style.visibility='hidden';
+                        $('#loading_karyawan_lembur').removeClass("spinner-border");
                     }
                 });
             }
