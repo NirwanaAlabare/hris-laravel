@@ -567,7 +567,7 @@ class DataLemburController extends AdminBaseController
                 ->whereRaw('
                     DATE_FORMAT(tanggal_berjalan, "%Y-%m-%d") = DATE_FORMAT("' . $tanggalMulai . '", "%Y-%m-%d")
                     and enroll_id in (' . implode(',', $inEmp) . ')
-                ')
+                ')->orderBy('employee_name')
                 ->get();
 
         // $query =  MasterDataAbsenKehadiran::where('tanggal_berjalan',$tanggalMulai)->wherein('enroll_id', $inEmp)->get();
