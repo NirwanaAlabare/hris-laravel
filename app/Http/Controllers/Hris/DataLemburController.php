@@ -137,19 +137,6 @@ class DataLemburController extends AdminBaseController
     public function importkaryawanlembur(){
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
-        $no_form=request()->no_form;
-        $tanggal_lembur=request()->tanggal_lembur;
-        $count=count(MutKaryawanInputFormLemburDet::where('no_form',request()->no_form)->get());
-        if($count>0){
-            $karyawan_lembur=MutKaryawanInputFormLemburDet::where('no_form',request()->no_form)->with('employee','keterangan')->with(['absen' => function ($query) use($tanggal_lembur) {
-                $query->where('tanggal_berjalan', $tanggal_lembur);
-            }])->get();
-        }else{
-            $karyawan_lembur=MutKaryawanInputNonSewingFormLemburDet::where('no_form',request()->no_form)->with('employee','keterangan')->with(['absen' => function ($query) use($tanggal_lembur) {
-                $query->where('tanggal_berjalan', $tanggal_lembur);
-            }])->get();
-        }
-        $nomor_form_lembur=[];
         $kodelembur = "SPL/HR";
         $thnbln = date("ym");
 
@@ -157,9 +144,7 @@ class DataLemburController extends AdminBaseController
                                             ->groupby('nomor_form_lembur')
                                             ->orderby('nomor_form_lembur', 'desc')
                                             ->first();
-
         if($getlastnomorform == "") {
-            //info("Count : Kosong");
             $nomor = "0000";
         } else {
             $nomor = $getlastnomorform->nomor_form_lembur;
@@ -167,59 +152,199 @@ class DataLemburController extends AdminBaseController
 
         $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
         $nomor_form_lembur = $kodelembur . "/" . $thnbln . "/" . $nomorform;
-        foreach($karyawan_lembur as $key=> $value){
-            $jumlah_jam_istirahat=$value->jam_lembur_istirahat/60;
-            $starttimestamp = strtotime($value->jam_lembur_awal_rencana);
-            $endtimestamp = strtotime($value->jam_lembur_akhir_rencana);
-            $difference = abs($endtimestamp - $starttimestamp)/3600;
-            $jumlah_jam_lembur=$difference-$jumlah_jam_istirahat;
-            if($value->absen[0]->nomor_form_lembur==null){
+
+        $enroll_id=request()->enroll_id;
+        $tanggal_lembur=request()->tanggal_lembur;
+        $x=[];
+        foreach($enroll_id as $key=>$value){
+            if(!isset(MasterDataAbsenKehadiran::where('enroll_id',request()->enroll_id[$key])->where('tanggal_berjalan',$tanggal_lembur)->pluck('nomor_form_lembur')[0])){
+                $mulai_jam_kerja=null;
+                if(isset(MasterDataAbsenKehadiran::where('enroll_id',request()->enroll_id[$key])->where('tanggal_berjalan',$tanggal_lembur)->pluck('mulai_jam_kerja')[0])){
+                    $mulai_jam_kerja=MasterDataAbsenKehadiran::where('enroll_id',request()->enroll_id[$key])->where('tanggal_berjalan',$tanggal_lembur)->pluck('mulai_jam_kerja')[0];
+                }
+                $akhir_jam_kerja=null;
+                if(isset(MasterDataAbsenKehadiran::where('enroll_id',request()->enroll_id[$key])->where('tanggal_berjalan',$tanggal_lembur)->pluck('akhir_jam_kerja')[0])){
+                    $akhir_jam_kerja=MasterDataAbsenKehadiran::where('enroll_id',request()->enroll_id[$key])->where('tanggal_berjalan',$tanggal_lembur)->pluck('akhir_jam_kerja')[0];
+                }
+                $absen_masuk_kerja=null;
+                if(isset(MasterDataAbsenKehadiran::where('enroll_id',request()->enroll_id[$key])->where('tanggal_berjalan',$tanggal_lembur)->pluck('absen_masuk_kerja')[0])){
+                    $absen_masuk_kerja=MasterDataAbsenKehadiran::where('enroll_id',request()->enroll_id[$key])->where('tanggal_berjalan',$tanggal_lembur)->pluck('absen_masuk_kerja')[0];
+                }
+                $absen_pulang_kerja=null;
+                if(isset(MasterDataAbsenKehadiran::where('enroll_id',request()->enroll_id[$key])->where('tanggal_berjalan',$tanggal_lembur)->pluck('absen_pulang_kerja')[0])){
+                    $absen_pulang_kerja=MasterDataAbsenKehadiran::where('enroll_id',request()->enroll_id[$key])->where('tanggal_berjalan',$tanggal_lembur)->pluck('absen_pulang_kerja')[0];
+                }
+                $nik=null;
+                if(isset(EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('nik')[0])){
+                    $nik=EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('nik')[0];
+                }
+                $employee_id=null;
+                if(isset(EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('employee_id')[0])){
+                    $employee_id=EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('employee_id')[0];
+                }
+                $employee_name=null;
+                if(isset(EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('employee_name')[0])){
+                    $employee_name=EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('employee_name')[0];
+                }
+                $site_nirwana_id=null;
+                if(isset(EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('site_nirwana_id')[0])){
+                    $site_nirwana_id=EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('site_nirwana_id')[0];
+                }
+                $site_nirwana_name=null;
+                if(isset(EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('site_nirwana_name')[0])){
+                    $site_nirwana_name=EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('site_nirwana_name')[0];
+                }
+                $department_id=null;
+                if(isset(EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('department_id')[0])){
+                    $department_id=EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('department_id')[0];
+                }
+                $department_name=null;
+                if(isset(EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('department_name')[0])){
+                    $department_name=EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('department_name')[0];
+                }
+                $sub_dept_id=null;
+                if(isset(EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('sub_dept_id')[0])){
+                    $sub_dept_id=EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('sub_dept_id')[0];
+                }
+                $sub_dept_name=null;
+                if(isset(EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('sub_dept_name')[0])){
+                    $sub_dept_name=EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('sub_dept_name')[0];
+                }
+                $sub_dept_name=null;
+                if(isset(EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('sub_dept_name')[0])){
+                    $sub_dept_name=EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('sub_dept_name')[0];
+                }
                 DataLembur::create([
                     'uuid'=>Str::uuid(),
-                    'uuid_master'=>$value->absen[0]->uuid,
+                    'uuid_master'=>MasterDataAbsenKehadiran::where('enroll_id',request()->enroll_id[$key])->where('tanggal_berjalan',$tanggal_lembur)->pluck('uuid')[0],
                     'nomor_form_lembur'=>$nomor_form_lembur,
-                    'tanggal_berjalan'=>$value->absen[0]->tanggal_berjalan,
-                    'tanggal_absen'=>$value->absen[0]->tanggal_berjalan,
-                    'nomor_form_lembur'=>$nomor_form_lembur,
-                    'kode_hari'=>$value->absen[0]->kode_hari,
-                    'nama_hari'=>$value->absen[0]->nama_hari,
-                    'mulai_jam_kerja'=>$value->absen[0]->mulai_jam_kerja,
-                    'akhir_jam_kerja'=>$value->absen[0]->akhir_jam_kerja,
-                    'absen_masuk_kerja'=>$value->absen[0]->absen_masuk_kerja,
-                    'absen_pulang_kerja'=>$value->absen[0]->absen_pulang_kerja,
-                    'enroll_id'=>$value->absen[0]->enroll_id,
-                    'nik'=>$value->absen[0]->nik,
-                    'employee_id' => $value->absen[0]->employee_id,
-                    'employee_name' => $value->absen[0]->employee_name,
-                    'site_nirwana_id' => $value->absen[0]->site_nirwana_id,
-                    'site_nirwana_name' => $value->absen[0]->site_nirwana_name,
-                    'department_id' => $value->absen[0]->department_id,
-                    'department_name' => $value->absen[0]->department_name,
-                    'sub_dept_id' => $value->absen[0]->sub_dept_id,
-                    'sub_dept_name' => $value->absen[0]->sub_dept_name,
-                    'mulai_jam_lembur' => $tanggal_lembur.' '.$value->jam_lembur_awal_rencana,
-                    'akhir_jam_lembur' => $tanggal_lembur.' '.$value->jam_lembur_akhir_rencana,
-                    'jumlah_jam_lembur' => $jumlah_jam_lembur,
-                    'jumlah_jam_istirahat' => $jumlah_jam_istirahat,
-                    'catatan' => strtoupper($value->keterangan->ket),
+                    'tanggal_berjalan'=>MasterDataAbsenKehadiran::where('enroll_id',request()->enroll_id[$key])->where('tanggal_berjalan',$tanggal_lembur)->pluck('tanggal_berjalan')[0],
+                    'tanggal_absen'=>MasterDataAbsenKehadiran::where('enroll_id',request()->enroll_id[$key])->where('tanggal_berjalan',$tanggal_lembur)->pluck('tanggal_berjalan')[0],
+                    'kode_hari'=>MasterDataAbsenKehadiran::where('enroll_id',request()->enroll_id[$key])->where('tanggal_berjalan',$tanggal_lembur)->pluck('kode_hari')[0],
+                    'nama_hari'=>MasterDataAbsenKehadiran::where('enroll_id',request()->enroll_id[$key])->where('tanggal_berjalan',$tanggal_lembur)->pluck('nama_hari')[0],
+                    'mulai_jam_kerja'=>$mulai_jam_kerja,
+                    'akhir_jam_kerja'=>$akhir_jam_kerja,
+                    'absen_masuk_kerja'=>$absen_masuk_kerja,
+                    'absen_pulang_kerja'=>$absen_pulang_kerja,
+                    'enroll_id'=>request()->enroll_id[$key],
+                    'nik'=>$nik,
+                    'employee_id' => $employee_id,
+                    'employee_name' => $employee_name,
+                    'site_nirwana_id' => $site_nirwana_id,
+                    'site_nirwana_name' => $site_nirwana_name,
+                    'department_id' => $department_id,
+                    'department_name' => $department_name,
+                    'sub_dept_id' => $sub_dept_id,
+                    'sub_dept_name' => $sub_dept_name,
+                    'mulai_jam_lembur' => $tanggal_lembur.' '.request()->jam_lembur_awal_rencana[$key],
+                    'akhir_jam_lembur' => $tanggal_lembur.' '.request()->jam_lembur_akhir_rencana[$key],
+                    'jumlah_jam_lembur' => (int)request()->jam_lembur[$key],
+                    'jumlah_jam_istirahat' => request()->jam_lembur_istirahat[$key]/60,
+                    'catatan' => request()->keterangan[$key],
                     'operator' => $email
                 ]);
-                MasterDataAbsenKehadiran::where('enroll_id',$value->absen[0]->enroll_id)->where('tanggal_berjalan',$tanggal_lembur)->update([
+                MasterDataAbsenKehadiran::where('enroll_id',request()->enroll_id[$key])->where('tanggal_berjalan',$tanggal_lembur)->update([
                     'nomor_form_lembur'=>$nomor_form_lembur,
                     'kelebihan_jam_kerja_l1' => '0',
                     'kelebihan_jam_kerja_l2' => '0',
                     'kelebihan_jam_kerja_l3' => '0',
                     'kelebihan_jam_kerja_l4' => '0',
-                    'mulai_jam_lembur' => $tanggal_lembur.' '.$value->jam_lembur_awal_rencana,
-                    'akhir_jam_lembur' => $tanggal_lembur.' '.$value->jam_lembur_akhir_rencana,
-                    'jumlah_jam_lembur' => $jumlah_jam_lembur,
-                    'jumlah_jam_lembur_approved' => $jumlah_jam_lembur,
-                    'jumlah_jam_istirahat_lembur' => $jumlah_jam_istirahat,
-                    'catatan_hrd' => strtoupper($value->keterangan->ket),
+                    'mulai_jam_lembur' => $tanggal_lembur.' '.request()->jam_lembur_awal_rencana[$key],
+                    'akhir_jam_lembur' => $tanggal_lembur.' '.request()->jam_lembur_akhir_rencana[$key],
+                    'jumlah_jam_lembur' => (int)request()->jam_lembur[$key],
+                    'jumlah_jam_lembur_approved' => (int)request()->jam_lembur[$key],
+                    'jumlah_jam_istirahat_lembur' => request()->jam_lembur_istirahat[$key]/60,
+                    'catatan_hrd' => request()->keterangan[$key],
                     'operator' => $email
                 ]);
             }
         }
+        // return $x;
+        // $loggedAdmin = Auth::guard('admin')->user();
+        // $email = $loggedAdmin->email;
+        // $no_form=request()->no_form;
+        // $tanggal_lembur=request()->tanggal_lembur;
+        // $count=count(MutKaryawanInputFormLemburDet::where('no_form',request()->no_form)->get());
+        // if($count>0){
+        //     $karyawan_lembur=MutKaryawanInputFormLemburDet::where('no_form',request()->no_form)->with('employee','keterangan')->with(['absen' => function ($query) use($tanggal_lembur) {
+        //         $query->where('tanggal_berjalan', $tanggal_lembur);
+        //     }])->get();
+        // }else{
+        //     $karyawan_lembur=MutKaryawanInputNonSewingFormLemburDet::where('no_form',request()->no_form)->with('employee','keterangan')->with(['absen' => function ($query) use($tanggal_lembur) {
+        //         $query->where('tanggal_berjalan', $tanggal_lembur);
+        //     }])->get();
+        // }
+        // $nomor_form_lembur=[];
+        // $kodelembur = "SPL/HR";
+        // $thnbln = date("ym");
+
+        // $getlastnomorform =  DataLembur::select('nomor_form_lembur')
+        //                                     ->groupby('nomor_form_lembur')
+        //                                     ->orderby('nomor_form_lembur', 'desc')
+        //                                     ->first();
+
+        // if($getlastnomorform == "") {
+        //     //info("Count : Kosong");
+        //     $nomor = "0000";
+        // } else {
+        //     $nomor = $getlastnomorform->nomor_form_lembur;
+        // }
+
+        // $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
+        // $nomor_form_lembur = $kodelembur . "/" . $thnbln . "/" . $nomorform;
+        // foreach($karyawan_lembur as $key=> $value){
+        //     $jumlah_jam_istirahat=$value->jam_lembur_istirahat/60;
+        //     $starttimestamp = strtotime($value->jam_lembur_awal_rencana);
+        //     $endtimestamp = strtotime($value->jam_lembur_akhir_rencana);
+        //     $difference = abs($endtimestamp - $starttimestamp)/3600;
+        //     $jumlah_jam_lembur=$difference-$jumlah_jam_istirahat;
+        //     if($value->absen[0]->nomor_form_lembur==null){
+        //         DataLembur::create([
+        //             'uuid'=>Str::uuid(),
+        //             'uuid_master'=>$value->absen[0]->uuid,
+        //             'nomor_form_lembur'=>$nomor_form_lembur,
+        //             'tanggal_berjalan'=>$value->absen[0]->tanggal_berjalan,
+        //             'tanggal_absen'=>$value->absen[0]->tanggal_berjalan,
+        //             'nomor_form_lembur'=>$nomor_form_lembur,
+        //             'kode_hari'=>$value->absen[0]->kode_hari,
+        //             'nama_hari'=>$value->absen[0]->nama_hari,
+        //             'mulai_jam_kerja'=>$value->absen[0]->mulai_jam_kerja,
+        //             'akhir_jam_kerja'=>$value->absen[0]->akhir_jam_kerja,
+        //             'absen_masuk_kerja'=>$value->absen[0]->absen_masuk_kerja,
+        //             'absen_pulang_kerja'=>$value->absen[0]->absen_pulang_kerja,
+        //             'enroll_id'=>$value->absen[0]->enroll_id,
+        //             'nik'=>$value->absen[0]->nik,
+        //             'employee_id' => $value->absen[0]->employee_id,
+        //             'employee_name' => $value->absen[0]->employee_name,
+        //             'site_nirwana_id' => $value->absen[0]->site_nirwana_id,
+        //             'site_nirwana_name' => $value->absen[0]->site_nirwana_name,
+        //             'department_id' => $value->absen[0]->department_id,
+        //             'department_name' => $value->absen[0]->department_name,
+        //             'sub_dept_id' => $value->absen[0]->sub_dept_id,
+        //             'sub_dept_name' => $value->absen[0]->sub_dept_name,
+        //             'mulai_jam_lembur' => $tanggal_lembur.' '.$value->jam_lembur_awal_rencana,
+        //             'akhir_jam_lembur' => $tanggal_lembur.' '.$value->jam_lembur_akhir_rencana,
+        //             'jumlah_jam_lembur' => $jumlah_jam_lembur,
+        //             'jumlah_jam_istirahat' => $jumlah_jam_istirahat,
+        //             'catatan' => strtoupper($value->keterangan->ket),
+        //             'operator' => $email
+        //         ]);
+        //         MasterDataAbsenKehadiran::where('enroll_id',$value->absen[0]->enroll_id)->where('tanggal_berjalan',$tanggal_lembur)->update([
+        //             'nomor_form_lembur'=>$nomor_form_lembur,
+        //             'kelebihan_jam_kerja_l1' => '0',
+        //             'kelebihan_jam_kerja_l2' => '0',
+        //             'kelebihan_jam_kerja_l3' => '0',
+        //             'kelebihan_jam_kerja_l4' => '0',
+        //             'mulai_jam_lembur' => $tanggal_lembur.' '.$value->jam_lembur_awal_rencana,
+        //             'akhir_jam_lembur' => $tanggal_lembur.' '.$value->jam_lembur_akhir_rencana,
+        //             'jumlah_jam_lembur' => $jumlah_jam_lembur,
+        //             'jumlah_jam_lembur_approved' => $jumlah_jam_lembur,
+        //             'jumlah_jam_istirahat_lembur' => $jumlah_jam_istirahat,
+        //             'catatan_hrd' => strtoupper($value->keterangan->ket),
+        //             'operator' => $email
+        //         ]);
+        //     }
+        // }
     }
     public function ajax_getnomorspl(Request $request)
     {

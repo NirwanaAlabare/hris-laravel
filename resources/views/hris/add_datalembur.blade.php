@@ -279,14 +279,14 @@
                                                 <td width="60px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ID</td>
                                                 <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NIK</td>
                                                 <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NAMA KARYAWAN</td>
-                                                <td width="90px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">DARI</td>
-                                                <td width="90px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">SAMPAI</td>
                                                 <td width="90px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ACT IN</td>
                                                 <td width="90px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ACT OUT</td>
-                                                <td width="50px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">L</td>
-                                                <td width="50px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">I</td>
-                                                <td width="230px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">KETERANGAN</td>
-                                                <td width="130px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">STATUS ABSEN</td>
+                                                <td width="90px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">STATUS</td>
+                                                <td width="120px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">DARI</td>
+                                                <td width="120px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">SAMPAI</td>
+                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ISTIRAHAT</td>
+                                                <td width="80px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">TOTAL</td>
+                                                <td width="170px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">KETERANGAN</td>
                                             </tr>
                                         </thead>
                                         <tbody id="tabel_overtime_from_nds">
@@ -582,7 +582,7 @@
             height: 1px;
             overflow-y: auto;    /* Trigger vertical scroll    */
             overflow-x: hidden;
-            font-size: 9pt; /* Hide the horizontal scroll */
+            font-size: 10pt; /* Hide the horizontal scroll */
         }
     </style>
     <script type="text/javascript">
@@ -682,17 +682,17 @@
                         }
                         $('#tabel_overtime_from_nds').append("<tr style='color:"+textcolor+"'>\
                             <td width='45px'>"+(key+1)+"</td>\
-                            <td width='60px'>"+data[key].enroll_id+"</td>\
+                            <td width='60px'><input type='hidden' name='enroll_id_from_nds[]' class='form-control form-control-sm' value='"+data[key].enroll_id+"''>"+data[key].enroll_id+"</td>\
                             <td width='100px'>"+data[key].employee.nik+"</td>\
                             <td width='200px'>"+data[key].employee.employee_name+"</td>\
-                            <td width='90px'>"+data[key].jam_lembur_awal_rencana+"</td>\
-                            <td width='90px'>"+data[key].jam_lembur_akhir_rencana+"</td>\
                             <td width='90px'>"+absen_masuk_kerja+"</td>\
                             <td width='90px'>"+absen_pulang_kerja+"</td>\
-                            <td width='50px'>"+jam_lembur+"</td>\
-                            <td width='50px'>"+jam_lembur_istirahat+"</td>\
-                            <td width='230px'>"+data[key].keterangan.ket+"</td>\
-                            <td width='130px'>"+status_absen+"</td>\
+                            <td width='90px'>"+status_absen+"</td>\
+                            <td width='120px'><input name='jam_lembur_awal_rencana[]' type='time' id='jam_lembur_awal_rencana_"+key+"' class='form-control form-control-sm' value='"+(data[key].jam_lembur_awal_rencana).substring(0,5)+"'' onChange='calculateTotalLembur("+key+")'></td>\
+                            <td width='120px'><input name='jam_lembur_akhir_rencana[]' type='time' id='jam_lembur_akhir_rencana_"+key+"' class='form-control form-control-sm' value='"+(data[key].jam_lembur_akhir_rencana).substring(0,5)+"' onChange='calculateTotalLembur("+key+")'></td>\
+                            <td width='100px'><input name='jam_lembur_istirahat[]' type='number' id='jam_lembur_istirahat_"+key+"' class='form-control form-control-sm' value='"+(data[key].jam_lembur_istirahat)+"' onChange='calculateTotalLembur("+key+")'></td>\
+                            <td width='80px' id='total_lembur_"+key+"'>"+jam_lembur+"</td>\
+                            <td width='170px'><input type='hidden' name='jam_lembur[]' id='total_jam_lembur_"+key+"' value='"+jam_lembur+"'><input type='hidden' name='keterangan_lembur[]' id='keterangan_lembur_"+key+"' value='"+data[key].keterangan.ket+"'>"+data[key].keterangan.ket+"</td>\
                         </tr>");
                         document.getElementById('tabel_overtime_from_nds').style.height='300px';
                         document.getElementById('import_data_lembur_button').style.visibility='visible';
@@ -708,20 +708,58 @@
                 }
             });
         });
+        function minsToStr(t) {
+            return Math.trunc(t / 60).toLocaleString('id-ID', {
+                minimumIntegerDigits: 2,
+                useGrouping: false
+            }) + ':' + ('00' + t % 60).slice(-2);
+        }
+        function strToMins(t) {
+            var s = t.split(":");
+            return Number(s[0]) * 60 + Number(s[1]);
+        }
+        function calculateTotalLembur(e){
+            let time1 = $("#jam_lembur_awal_rencana_" + e).val();
+            let time2 = $("#jam_lembur_akhir_rencana_" + e).val();
+            let istirahat = $("#jam_lembur_istirahat_" + e).val();
+
+            var result = minsToStr(strToMins(time2) - strToMins(time1) - istirahat);
+            let time3 = time1+':00';
+            let time4 = time2+':00';
+            let date1 = new Date(`2000-01-01T${time3}Z`);
+            let date2 = new Date(`2000-01-01T${time4}Z`);
+            if (date2 < date1) {
+                date2.setDate(date2.getDate() + 1);
+            }
+            let jam_lembur = ((date2 - date1)/3600000)-(istirahat/60);
+            $('#total_jam_lembur_'+e).val(jam_lembur);
+            document.getElementById('total_lembur_' + e).innerText = jam_lembur;
+        }
         $('#import_data_lembur_button').on('click',function(){
             $("#import_data_lembur_button").addClass("btn-loading");
             $("#import_data_lembur_button").html('Loading...');
             $("#import_data_lembur_button").attr("disabled", true);
             var tanggal_lembur = $('#tanggal_lembur_nds').val();
-            let no_form=$('#selectNoForm').val();
+            var enroll_id = $("input[name='enroll_id_from_nds[]']").map(function(){return $(this).val();}).get();
+            var jam_lembur_awal_rencana = $("input[name='jam_lembur_awal_rencana[]']").map(function(){return $(this).val();}).get();
+            var jam_lembur_akhir_rencana = $("input[name='jam_lembur_akhir_rencana[]']").map(function(){return $(this).val();}).get();
+            var jam_lembur_istirahat = $("input[name='jam_lembur_istirahat[]']").map(function(){return $(this).val();}).get();
+            var jam_lembur = $("input[name='jam_lembur[]']").map(function(){return $(this).val();}).get();
+            var keterangan = $("input[name='keterangan_lembur[]']").map(function(){return $(this).val();}).get();
+            // let no_form=$('#selectNoForm').val();
             $.ajax({
                 type:"POST",
                 url: "{{route('hris.datalembur.importkaryawanlembur')}}",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 data: {
-                    no_form:no_form,
-                    tanggal_lembur:tanggal_lembur
+                    tanggal_lembur:tanggal_lembur,
+                    enroll_id:enroll_id,
+                    jam_lembur_awal_rencana:jam_lembur_awal_rencana,
+                    jam_lembur_akhir_rencana:jam_lembur_akhir_rencana,
+                    jam_lembur_istirahat:jam_lembur_istirahat,
+                    jam_lembur:jam_lembur,
+                    keterangan:keterangan,
                 },
                 success: function(data){
                     swal("", "Data lembur berhasil di import", "success");
@@ -737,6 +775,7 @@
                     document.getElementById('selectNoForm').value='';
                     document.getElementById('btn-icon-refresh_new_form_lembur').style.visibility='hidden';
                     $('#new_nomor_form_lembur').val('');
+                    document.getElementById('data_ada_dan_tidak').style.visibility='hidden';
                 },
                 error: function (xhr, status, error) {
                     swal("", "Data lembur gagal di import", "error");
