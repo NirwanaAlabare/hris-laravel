@@ -231,7 +231,7 @@
         </div>
     </div>
     <div class="modal fade" id="import_data_lembur_from_nds" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document" style="max-width: 1330px">
+        <div class="modal-dialog" role="document" style="max-width: 1400px">
             <div class="row">
                 <div class="col-md-12">
                     <div class="modal-content">
@@ -287,6 +287,7 @@
                                                 <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ISTIRAHAT</td>
                                                 <td width="80px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">TOTAL</td>
                                                 <td width="170px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">KETERANGAN</td>
+                                                <td width="43px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ACT</td>
                                             </tr>
                                         </thead>
                                         <tbody id="tabel_overtime_from_nds">
@@ -299,11 +300,11 @@
                                     <table style="font-weight: bold">
                                         <tr>
                                             <td>Total</td>
-                                            <td id="total_new_data_lembur"></td>
+                                            <td><input type="text" class="form-control col-3" id="total_new_data_lembur" readonly style="background-color: white"></td>
                                         </tr>
                                         <tr>
                                             <td width="150">Data will be import </td>
-                                            <td id="total_new_data_lembur_import"></td>
+                                            <td><input type="text" class="form-control col-3" id="total_new_data_lembur_import" readonly style="background-color: white"></td>
                                         </tr>
                                     </table>
                                 </div>
@@ -680,7 +681,7 @@
                             total_data_imported+=1;
                             textcolor='black';
                         }
-                        $('#tabel_overtime_from_nds').append("<tr style='color:"+textcolor+"'>\
+                        $('#tabel_overtime_from_nds').append("<tr style='color:"+textcolor+"' id='row_overtime_employee_"+key+"'>\
                             <td width='45px'>"+(key+1)+"</td>\
                             <td width='60px'><input type='hidden' name='enroll_id_from_nds[]' class='form-control form-control-sm' value='"+data[key].enroll_id+"''>"+data[key].enroll_id+"</td>\
                             <td width='100px'>"+data[key].employee.nik+"</td>\
@@ -693,13 +694,14 @@
                             <td width='100px'><input name='jam_lembur_istirahat[]' type='number' id='jam_lembur_istirahat_"+key+"' class='form-control form-control-sm' value='"+(data[key].jam_lembur_istirahat)+"' onChange='calculateTotalLembur("+key+")'></td>\
                             <td width='80px' id='total_lembur_"+key+"'>"+jam_lembur+"</td>\
                             <td width='170px'><input type='hidden' name='jam_lembur[]' id='total_jam_lembur_"+key+"' value='"+jam_lembur+"'><input type='hidden' name='keterangan_lembur[]' id='keterangan_lembur_"+key+"' value='"+data[key].keterangan.ket+"'>"+data[key].keterangan.ket+"</td>\
+                            <td width='52px'><a href='#' onClick='deletePengajuan("+key+")' style='color:red;font-size:14pt'><span class='fa fa-trash'></span></a></td>\
                         </tr>");
                         document.getElementById('tabel_overtime_from_nds').style.height='300px';
                         document.getElementById('import_data_lembur_button').style.visibility='visible';
                         document.getElementById('data_sudah_ada').style.visibility='visible';
                         document.getElementById('data_ada_dan_tidak').style.visibility='visible';
-                        $('#total_new_data_lembur').text(': '+total_data);
-                        $('#total_new_data_lembur_import').text(': '+total_data_imported);
+                        $('#total_new_data_lembur').val(total_data);
+                        $('#total_new_data_lembur_import').val(total_data_imported);
                         get_new_nomor_form_lembur();
                     });
                 },
@@ -708,6 +710,24 @@
                 }
             });
         });
+        function deletePengajuan(key){
+            var enroll_id = $("input[name='enroll_id_from_nds[]']").map(function(){return $(this).val();}).get();
+            enroll_id.splice(key, 1);
+            var jawa_rencana = $("input[name='jam_lembur_awal_rencana[]']").map(function(){return $(this).val();}).get();
+            jawa_rencana.splice(key, 1);
+            var jakir_rencana = $("input[name='jam_lembur_akhir_rencana[]']").map(function(){return $(this).val();}).get();
+            jakir_rencana.splice(key, 1);
+            var istirahat = $("input[name='jam_lembur_istirahat[]']").map(function(){return $(this).val();}).get();
+            istirahat.splice(key, 1);
+            var jakir_rencana = $("input[name='keterangan_lembur[]']").map(function(){return $(this).val();}).get();
+            jakir_rencana.splice(key, 1);
+            var row = document.getElementById('row_overtime_employee_'+key);
+            row.parentNode.removeChild(row);
+            var total_data=$('#total_new_data_lembur').val()-1;
+            $('#total_new_data_lembur').val(total_data);
+            var total_data_imported=$('#total_new_data_lembur_import').val()-1;
+            $('#total_new_data_lembur_import').val(total_data_imported);
+        }
         function minsToStr(t) {
             return Math.trunc(t / 60).toLocaleString('id-ID', {
                 minimumIntegerDigits: 2,
@@ -762,6 +782,7 @@
                     keterangan:keterangan,
                 },
                 success: function(data){
+                    console.log(data);
                     swal("", "Data lembur berhasil di import", "success");
                     $('#tabel_overtime_from_nds').empty();
                     document.getElementById('tabel_overtime_from_nds').style.height='1px';
