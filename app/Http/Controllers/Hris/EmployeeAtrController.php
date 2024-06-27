@@ -1255,6 +1255,7 @@ class EmployeeAtrController extends AdminBaseController
                 $tanggal_akhir_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][65])->format('Y-m-d');
             }
             $dataArray[$i]=[
+                'employee_id'=>time().$data[0][$i][1],
                 'status_department'=>$status_department,
                 'enroll_id'=>$data[0][$i][1],
                 'nik'=>$data[0][$i][2],
