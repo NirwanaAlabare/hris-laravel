@@ -285,9 +285,9 @@
                                                 <td width="120px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">DARI</td>
                                                 <td width="120px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">SAMPAI</td>
                                                 <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ISTIRAHAT</td>
-                                                <td width="80px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">TOTAL</td>
+                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">TOTAL</td>
                                                 <td width="170px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">KETERANGAN</td>
-                                                <td width="43px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ACT</td>
+                                                <td width="52px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ACT</td>
                                             </tr>
                                         </thead>
                                         <tbody id="tabel_overtime_from_nds">
@@ -692,8 +692,8 @@
                             <td width='120px'><input name='jam_lembur_awal_rencana[]' type='time' id='jam_lembur_awal_rencana_"+key+"' class='form-control form-control-sm' value='"+(data[key].jam_lembur_awal_rencana).substring(0,5)+"'' onChange='calculateTotalLembur("+key+")'></td>\
                             <td width='120px'><input name='jam_lembur_akhir_rencana[]' type='time' id='jam_lembur_akhir_rencana_"+key+"' class='form-control form-control-sm' value='"+(data[key].jam_lembur_akhir_rencana).substring(0,5)+"' onChange='calculateTotalLembur("+key+")'></td>\
                             <td width='100px'><input name='jam_lembur_istirahat[]' type='number' id='jam_lembur_istirahat_"+key+"' class='form-control form-control-sm' value='"+(data[key].jam_lembur_istirahat)+"' onChange='calculateTotalLembur("+key+")'></td>\
-                            <td width='80px' id='total_lembur_"+key+"'>"+jam_lembur+"</td>\
-                            <td width='170px'><input type='hidden' name='jam_lembur[]' id='total_jam_lembur_"+key+"' value='"+jam_lembur+"'><input type='hidden' name='keterangan_lembur[]' id='keterangan_lembur_"+key+"' value='"+data[key].keterangan.ket+"'>"+data[key].keterangan.ket+"</td>\
+                            <td width='100px'><input name='total_lembur[]' type='number' id='total_lembur_"+key+"' class='form-control form-control-sm' value='"+(jam_lembur)+"' onChange='calculateAkhirLembur("+key+")'></td>\
+                            <td width='170px'><input type='hidden' name='keterangan_lembur[]' id='keterangan_lembur_"+key+"' value='"+data[key].keterangan.ket+"'>"+data[key].keterangan.ket+"</td>\
                             <td width='52px'><a href='#' onClick='deletePengajuan("+key+")' style='color:red;font-size:14pt'><span class='fa fa-trash'></span></a></td>\
                         </tr>");
                         document.getElementById('tabel_overtime_from_nds').style.height='300px';
@@ -752,8 +752,42 @@
                 date2.setDate(date2.getDate() + 1);
             }
             let jam_lembur = ((date2 - date1)/3600000)-(istirahat/60);
-            $('#total_jam_lembur_'+e).val(jam_lembur);
-            document.getElementById('total_lembur_' + e).innerText = jam_lembur;
+            $('#total_lembur_'+e).val(jam_lembur);
+        }
+        function calculateAkhirLembur(e){
+            let time1 = $("#jam_lembur_awal_rencana_" + e).val();
+            let time2 = $("#jam_lembur_akhir_rencana_" + e).val();
+            let istirahat = $("#jam_lembur_istirahat_" + e).val();
+
+            let time3 = time1+':00';
+            let time4 = time2+':00';
+            let date1 = new Date(`2000-01-01T${time3}Z`);
+            let date2 = new Date(`2000-01-01T${time4}Z`);
+            if (date2 < date1) {
+                date2.setDate(date2.getDate() + 1);
+            }
+            let jam_lembur = $('#total_lembur_'+e).val();
+            var decimalTime = jam_lembur * 60 * 60;
+            var hours = Math.floor((decimalTime / (60 * 60)));
+            decimalTime = decimalTime - (hours * 60 * 60);
+            var minutes = Math.floor((decimalTime / 60));
+            decimalTime = decimalTime - (minutes * 60);
+            var seconds = Math.round(decimalTime);
+            if(hours < 10)
+            {
+                hours = "0" + hours;
+            }
+            if(minutes < 10)
+            {
+                minutes = "0" + minutes;
+            }
+            if(seconds < 10)
+            {
+                seconds = "0" + seconds;
+            }
+            var waktu_tambahan=("" + hours + ":" + minutes);
+            var result = minsToStr(strToMins(waktu_tambahan) + strToMins(time1) + strToMins(minsToStr(istirahat)));
+            document.getElementById('jam_lembur_akhir_rencana_' + e).value = result;
         }
         $('#import_data_lembur_button').on('click',function(){
             $("#import_data_lembur_button").addClass("btn-loading");
@@ -764,7 +798,7 @@
             var jam_lembur_awal_rencana = $("input[name='jam_lembur_awal_rencana[]']").map(function(){return $(this).val();}).get();
             var jam_lembur_akhir_rencana = $("input[name='jam_lembur_akhir_rencana[]']").map(function(){return $(this).val();}).get();
             var jam_lembur_istirahat = $("input[name='jam_lembur_istirahat[]']").map(function(){return $(this).val();}).get();
-            var jam_lembur = $("input[name='jam_lembur[]']").map(function(){return $(this).val();}).get();
+            var jam_lembur = $("input[name='total_lembur[]']").map(function(){return $(this).val();}).get();
             var keterangan = $("input[name='keterangan_lembur[]']").map(function(){return $(this).val();}).get();
             // let no_form=$('#selectNoForm').val();
             $.ajax({

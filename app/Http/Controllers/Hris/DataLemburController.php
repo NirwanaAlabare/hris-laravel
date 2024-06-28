@@ -238,7 +238,7 @@ class DataLemburController extends AdminBaseController
                     'sub_dept_name' => $sub_dept_name,
                     'mulai_jam_lembur' => $tanggal_lembur.' '.request()->jam_lembur_awal_rencana[$key],
                     'akhir_jam_lembur' => $tanggal_lembur.' '.request()->jam_lembur_akhir_rencana[$key],
-                    'jumlah_jam_lembur' => (int)request()->jam_lembur[$key],
+                    'jumlah_jam_lembur' => request()->jam_lembur[$key],
                     'jumlah_jam_istirahat' => request()->jam_lembur_istirahat[$key]/60,
                     'catatan' => request()->keterangan[$key],
                     'operator' => $email
@@ -251,8 +251,8 @@ class DataLemburController extends AdminBaseController
                     'kelebihan_jam_kerja_l4' => '0',
                     'mulai_jam_lembur' => $tanggal_lembur.' '.request()->jam_lembur_awal_rencana[$key],
                     'akhir_jam_lembur' => $tanggal_lembur.' '.request()->jam_lembur_akhir_rencana[$key],
-                    'jumlah_jam_lembur' => (int)request()->jam_lembur[$key],
-                    'jumlah_jam_lembur_approved' => (int)request()->jam_lembur[$key],
+                    'jumlah_jam_lembur' => request()->jam_lembur[$key],
+                    'jumlah_jam_lembur_approved' => request()->jam_lembur[$key],
                     'jumlah_jam_istirahat_lembur' => request()->jam_lembur_istirahat[$key]/60,
                     'catatan_hrd' => request()->keterangan[$key],
                     'operator' => $email
