@@ -227,7 +227,6 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         if($Data->total_kehadiran_net == 0){ $total_kehadiran_net = '0';} else { $total_kehadiran_net = $Data->total_kehadiran_net; }
         $ptkp = $Data->ptkp;
         $st = $Data->status_kawin;
-
         if($Data->upah_per_bulan == 0){ $upah_per_bulan = '0';} else { $upah_per_bulan = $Data->upah_per_bulan; }
         if($Data->upah_per_hari == 0){ $upah_per_hari = '0';} else { $upah_per_hari = $Data->upah_per_hari; }
         if($Data->tunjangan_karyawan_rupiah == 0){ $tunjangan_karyawan_rupiah = '0'; $readOnlyTunjanganKaryawanRupiah = '0'; } else { $tunjangan_karyawan_rupiah = $Data->tunjangan_karyawan_rupiah; $readOnlyTunjanganKaryawanRupiah = $Data->tunjangan_karyawan_rupiah; }
@@ -343,7 +342,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         $gapok=$upah_per_bulan+$tunjangan_karyawan_rupiah;
 
         if( $total_kehadiran_net<=0 && $koreksi_upah_rupiah==0){
-            $tunjangan_karyawan_rupiah=0;
+            $tunjangan_karyawan_rupiah='0';
             $gapok=$upah_per_bulan;
             $upah_neto_rupiah='0';
             $upah_bruto_rupiah='0';
