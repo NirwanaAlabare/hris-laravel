@@ -323,9 +323,6 @@ class MdAbsenHadirController extends AdminBaseController
         $j=0;
         foreach($fix_array_data as $key=>$value){
             $j++;
-            if($value['enroll_id']==null){
-                continue;
-            }
             $sort_fix_array_data[$key]=[
                 'no'=>$j,
                 'nik'=>$value['nik'],

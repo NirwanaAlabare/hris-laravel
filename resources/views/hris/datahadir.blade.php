@@ -310,7 +310,7 @@
         </div>
     </div>
     <div class="modal fade" id="import_data_kehadiran" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document" style="max-width: 1216px">
+        <div class="modal-dialog" role="document" style="max-width: 1330px">
             <div class="row">
                 <div class="col-md-12">
                     <div class="modal-content">
@@ -339,11 +339,11 @@
                                     <table class="table table-bordered" style="overflow-x:auto" width="2500">
                                         <thead id="head_kehadiran">
                                             <tr>
-                                                <td width="45px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">NO</td>
+                                                <td width="70px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">NO</td>
                                                 <td width="110px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NIK</td>
                                                 <td width="58px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">ID</td>
                                                 <td style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt" width="100px">TANGGAL</td>
-                                                <td style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt" width="216px">NAMA KARYAWAN</td>
+                                                <td style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt" width="250px">NAMA KARYAWAN</td>
                                                 <td style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt" width="113px">KERJA/LIBUR</td>
                                                 <td style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt" width="122px">SCHEDULE IN</td>
                                                 <td style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt" width="122px">SCHEDULE OUT</td>
@@ -355,12 +355,18 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <div class="col-12 text-center">
+                                    <div id="loading_data_hadir">
+                                    </div>
+                                </div>
                             </div>
                             <div class="row pt-0 pb-3 pr-3">
                                 <div class="col text-center pt-2">
                                     <button type="button" id="presenceImportButton" class="btn btn-success py-1" style="visibility: hidden"><i class="fa fa-upload" aria-hidden="true"></i> IMPORT</button>
                                 </div>
                             </div>
+                        </div>
+                        <div class="modal-footer bg-success p-2">
                         </div>
                     </div>
                 </div>
@@ -850,6 +856,7 @@
             });
         });
         function fill_the_table(){
+            $('#loading_data_hadir').addClass("spinner-border");
             $('#tabel_data_kehadiran').empty();
             var formData = new FormData();
             var excelFile=document.getElementById("excel_filess");
@@ -863,6 +870,7 @@
                 document.getElementById('tabel_data_kehadiran').style.height='1px';
                 document.getElementById('presenceImportButton').style.visibility='hidden';
                 document.getElementById('length').style.visibility='hidden';
+                $('#loading_data_hadir').removeClass("spinner-border");
                 $('#length').text('');
             }else{
                 $.ajax({
@@ -876,20 +884,21 @@
                         $('#length').text('LENGTH : '+data[1].jumlah_data);
                         jQuery.each(data, function(key,value){
                             $('#tabel_data_kehadiran').append("<tr>\
-                                <td width='45px'>"+data[key].no+"</td>\
+                                <td width='70px'>"+data[key].no+"</td>\
                                 <td width='110px'>"+data[key].nik+"</td>\
                                 <td width='58px'>"+data[key].enroll_id+"</td>\
                                 <td width='100px'>"+data[key].tanggal_berjalan+"</td>\
-                                <td width='216px'>"+data[key].employee_name+"</td>\
+                                <td width='250px'>"+data[key].employee_name+"</td>\
                                 <td width='113px'>"+data[key].kerja_libur+"</td>\
-                                <td width='122px'>"+data[key].jadwal_masuk_kerja+"</td>\
-                                <td width='122px'>"+data[key].jadwal_pulang_kerja+"</td>\
-                                <td width='122px'>"+data[key].absen_masuk_kerja+"</td>\
-                                <td width='122px'>"+data[key].absen_pulang_kerja+"</td>\
+                                <td align='center' width='122px'>"+data[key].jadwal_masuk_kerja+"</td>\
+                                <td align='center' width='122px'>"+data[key].jadwal_pulang_kerja+"</td>\
+                                <td align='center' width='122px'>"+data[key].absen_masuk_kerja+"</td>\
+                                <td align='center' width='122px'>"+data[key].absen_pulang_kerja+"</td>\
                             </tr>");
                         });
                         document.getElementById('presenceImportButton').style.visibility='visible';
-                        document.getElementById('tabel_data_kehadiran').style.height='300px';
+                        document.getElementById('tabel_data_kehadiran').style.height='400px';
+                        $('#loading_data_hadir').removeClass("spinner-border");
                     }
                 });
             }
