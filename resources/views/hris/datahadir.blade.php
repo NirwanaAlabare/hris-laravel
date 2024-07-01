@@ -899,6 +899,14 @@
                         document.getElementById('presenceImportButton').style.visibility='visible';
                         document.getElementById('tabel_data_kehadiran').style.height='400px';
                         $('#loading_data_hadir').removeClass("spinner-border");
+                    },
+                    error: function(res){
+                        swal("", "IMPORT DATA KEHADIRAN GAGAL!", "error");
+                        document.getElementById('tabel_data_kehadiran').style.height='1px';
+                        document.getElementById('presenceImportButton').style.visibility='hidden';
+                        document.getElementById('length').style.visibility='hidden';
+                        $('#loading_data_hadir').removeClass("spinner-border");
+                        $('#length').text('');
                     }
                 });
             }
