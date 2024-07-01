@@ -852,6 +852,18 @@
                     $('#presenceImportButton').removeClass("btn-loading");
                     $("#presenceImportButton").html('<i class="fa fa-upload" aria-hidden="true"></i> IMPORT');
                     $("#presenceImportButton").attr("disabled", false);
+                },
+                error: function(res){
+                    swal("", "IMPORT DATA KEHADIRAN GAGAL!", "error");
+                    $('#tabel_data_lembur').empty();
+                    document.getElementById('presenceImportButton').style.visibility='hidden';
+                    document.getElementById('tabel_data_kehadiran').style.height='1px';
+                    $('#excel_filess').val('');
+                    $('#length').text('');
+                    $("#import_data_kehadiran").modal('hide');
+                    $('#presenceImportButton').removeClass("btn-loading");
+                    $("#presenceImportButton").html('<i class="fa fa-upload" aria-hidden="true"></i> IMPORT');
+                    $("#presenceImportButton").attr("disabled", false);
                 }
             });
         });
