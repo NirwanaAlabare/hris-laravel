@@ -231,7 +231,7 @@
         </div>
     </div>
     <div class="modal fade" id="import_data_lembur_from_nds" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document" style="max-width: 1400px">
+        <div class="modal-dialog" role="document" style="max-width: 1200px">
             <div class="row">
                 <div class="col-md-12">
                     <div class="modal-content">
@@ -275,19 +275,22 @@
                                     <table class="table table-bordered" style="overflow-x:auto">
                                         <thead id="head_overtime_from_nds">
                                             <tr>
-                                                <td width="45px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NO</td>
-                                                <td width="60px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ID</td>
-                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NIK</td>
-                                                <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NAMA KARYAWAN</td>
-                                                <td width="90px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ACT IN</td>
-                                                <td width="90px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ACT OUT</td>
-                                                <td width="90px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">STATUS</td>
-                                                <td width="120px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">DARI</td>
-                                                <td width="120px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">SAMPAI</td>
-                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ISTIRAHAT</td>
-                                                <td width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">TOTAL</td>
-                                                <td width="170px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">KETERANGAN</td>
-                                                <td width="52px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ACT</td>
+                                                <td rowspan="2" width="45px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NO</td>
+                                                <td rowspan="2" width="60px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ID</td>
+                                                <td rowspan="2" width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NIK</td>
+                                                <td rowspan="2" width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NAMA KARYAWAN</td>
+                                                <td colspan="3" width="180px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Actual Absent</td>
+                                                <td rowspan="2" width="115px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">DARI</td>
+                                                <td rowspan="2" width="115px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">SAMPAI</td>
+                                                <td rowspan="2" width="80px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">I</td>
+                                                <td rowspan="2" width="80px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">T</td>
+                                                <td rowspan="2" width="125px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">KET</td>
+                                                <td rowspan="2" width="40px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px"><span class="fa fa-cog"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td width="60px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">IN</td>
+                                                <td width="60px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">OUT</td>
+                                                <td width="60px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Stats</td>
                                             </tr>
                                         </thead>
                                         <tbody id="tabel_overtime_from_nds">
@@ -686,15 +689,15 @@
                             <td width='60px'><input type='hidden' name='enroll_id_from_nds[]' class='form-control form-control-sm' value='"+data[key].enroll_id+"''>"+data[key].enroll_id+"</td>\
                             <td width='100px'>"+data[key].employee.nik+"</td>\
                             <td width='200px'>"+data[key].employee.employee_name+"</td>\
-                            <td width='90px'>"+absen_masuk_kerja+"</td>\
-                            <td width='90px'>"+absen_pulang_kerja+"</td>\
-                            <td width='90px'>"+status_absen+"</td>\
-                            <td width='120px'><input name='jam_lembur_awal_rencana[]' type='time' id='jam_lembur_awal_rencana_"+key+"' class='form-control form-control-sm' value='"+(data[key].jam_lembur_awal_rencana).substring(0,5)+"'' onChange='calculateTotalLembur("+key+")'></td>\
-                            <td width='120px'><input name='jam_lembur_akhir_rencana[]' type='time' id='jam_lembur_akhir_rencana_"+key+"' class='form-control form-control-sm' value='"+(data[key].jam_lembur_akhir_rencana).substring(0,5)+"' onChange='calculateTotalLembur("+key+")'></td>\
-                            <td width='100px'><input name='jam_lembur_istirahat[]' type='number' id='jam_lembur_istirahat_"+key+"' class='form-control form-control-sm' value='"+(data[key].jam_lembur_istirahat)+"' onChange='calculateTotalLembur("+key+")'></td>\
-                            <td width='100px'><input name='total_lembur[]' type='number' id='total_lembur_"+key+"' class='form-control form-control-sm' value='"+(jam_lembur)+"' onChange='calculateAkhirLembur("+key+")'></td>\
-                            <td width='170px'><input type='hidden' name='keterangan_lembur[]' id='keterangan_lembur_"+key+"' value='"+data[key].keterangan.ket+"'>"+data[key].keterangan.ket+"</td>\
-                            <td width='52px'><a href='#' onClick='deletePengajuan("+key+")' style='color:red;font-size:14pt'><span class='fa fa-trash'></span></a></td>\
+                            <td width='60px'>"+absen_masuk_kerja.substring(0,5)+"</td>\
+                            <td width='60px'>"+absen_pulang_kerja.substring(0,5)+"</td>\
+                            <td width='60px'>"+status_absen+"</td>\
+                            <td width='115px'><input name='jam_lembur_awal_rencana[]' type='time' id='jam_lembur_awal_rencana_"+key+"' class='form-control form-control-sm px-2' value='"+(data[key].jam_lembur_awal_rencana).substring(0,5)+"'' onChange='calculateTotalLembur("+key+")'></td>\
+                            <td width='115px'><input name='jam_lembur_akhir_rencana[]' type='time' id='jam_lembur_akhir_rencana_"+key+"' class='form-control form-control-sm px-2' value='"+(data[key].jam_lembur_akhir_rencana).substring(0,5)+"' onChange='calculateTotalLembur("+key+")'></td>\
+                            <td width='80px'><input name='jam_lembur_istirahat[]' type='number' id='jam_lembur_istirahat_"+key+"' class='form-control form-control-sm px-1' value='"+(data[key].jam_lembur_istirahat)+"' onChange='calculateTotalLembur("+key+")'></td>\
+                            <td width='80px'><input name='total_lembur[]' type='number' id='total_lembur_"+key+"' class='form-control form-control-sm px-1' value='"+(jam_lembur)+"' onChange='calculateAkhirLembur("+key+")'></td>\
+                            <td width='125px' style='font-size:8pt;padding-left:5px;padding-right:5px;'><input type='hidden' name='keterangan_lembur[]' id='keterangan_lembur_"+key+"' value='"+data[key].keterangan.ket+"'>"+data[key].keterangan.ket+"</td>\
+                            <td width='40px'><a href='#' onClick='deletePengajuan("+key+")' style='color:red;font-size:12pt'><span class='fa fa-trash'></span></a></td>\
                         </tr>");
                         document.getElementById('tabel_overtime_from_nds').style.height='300px';
                         document.getElementById('import_data_lembur_button').style.visibility='visible';
