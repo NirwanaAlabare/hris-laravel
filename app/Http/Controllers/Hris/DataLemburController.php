@@ -100,7 +100,7 @@ class DataLemburController extends AdminBaseController
         $tanggal_lembur = request()->tanggal_lembur;
         $array_karyawan_lembur=[];
         $query =  DB::select("
-        SELECT count(mut_karyawan_input_form_lembur_det.no_form) as jumlah_karyawan,mut_karyawan_input_form_lembur.* FROM mut_karyawan_input_form_lembur_det inner join mut_karyawan_input_form_lembur on mut_karyawan_input_form_lembur_det.no_form=mut_karyawan_input_form_lembur.no_form where mut_karyawan_input_form_lembur.tgl_lembur='".$tanggal_lembur."' group by mut_karyawan_input_form_lembur_det.no_form");
+        SELECT count(mut_karyawan_input_form_lembur_det.no_form) as jumlah_karyawan,mut_karyawan_input_form_lembur.* FROM mut_karyawan_input_form_lembur_det inner join mut_karyawan_input_form_lembur on mut_karyawan_input_form_lembur_det.no_form=mut_karyawan_input_form_lembur.no_form where mut_karyawan_input_form_lembur.tgl_lembur='".$tanggal_lembur."' and mut_karyawan_input_form_lembur_det.jam_lembur_awal_rencana!=mut_karyawan_input_form_lembur_det.jam_lembur_akhir_rencana group by mut_karyawan_input_form_lembur_det.no_form");
         foreach($query as $q){
             $array_karyawan_lembur[]=[
                 'no_form'=>$q->no_form,
@@ -110,7 +110,7 @@ class DataLemburController extends AdminBaseController
         }
         $array_karyawan_lembur2=[];
         $query2 =  DB::select("
-        SELECT count(mut_karyawan_input_non_sewing_form_lembur_det.no_form) as jumlah_karyawan,mut_karyawan_input_non_sewing_form_lembur.* FROM mut_karyawan_input_non_sewing_form_lembur_det inner join mut_karyawan_input_non_sewing_form_lembur on mut_karyawan_input_non_sewing_form_lembur_det.no_form=mut_karyawan_input_non_sewing_form_lembur.no_form where mut_karyawan_input_non_sewing_form_lembur.tgl_lembur='".$tanggal_lembur."' group by mut_karyawan_input_non_sewing_form_lembur_det.no_form");
+        SELECT count(mut_karyawan_input_non_sewing_form_lembur_det.no_form) as jumlah_karyawan,mut_karyawan_input_non_sewing_form_lembur.* FROM mut_karyawan_input_non_sewing_form_lembur_det inner join mut_karyawan_input_non_sewing_form_lembur on mut_karyawan_input_non_sewing_form_lembur_det.no_form=mut_karyawan_input_non_sewing_form_lembur.no_form where mut_karyawan_input_non_sewing_form_lembur.tgl_lembur='".$tanggal_lembur."' and mut_karyawan_input_non_sewing_form_lembur_det.jam_lembur_awal_rencana!=mut_karyawan_input_non_sewing_form_lembur_det.jam_lembur_akhir_rencana group by mut_karyawan_input_non_sewing_form_lembur_det.no_form");
         foreach($query2 as $q){
             $array_karyawan_lembur2[]=[
                 'no_form'=>$q->no_form,
@@ -124,11 +124,11 @@ class DataLemburController extends AdminBaseController
         $tanggal_lembur=request()->tanggal_lembur;
         $count=count(MutKaryawanInputFormLemburDet::where('no_form',request()->no_form)->get());
         if($count>0){
-            $karyawanLembur=MutKaryawanInputFormLemburDet::where('no_form',request()->no_form)->with('employee','keterangan')->with(['absen' => function ($query) use($tanggal_lembur) {
+            $karyawanLembur=MutKaryawanInputFormLemburDet::where('no_form',request()->no_form)->whereColumn('jam_lembur_awal_rencana','!=','jam_lembur_akhir_rencana')->with('employee','keterangan')->with(['absen' => function ($query) use($tanggal_lembur) {
                 $query->where('tanggal_berjalan', $tanggal_lembur);
             }])->get();
         }else{
-            $karyawanLembur=MutKaryawanInputNonSewingFormLemburDet::where('no_form',request()->no_form)->with('employee','keterangan')->with(['absen' => function ($query) use($tanggal_lembur) {
+            $karyawanLembur=MutKaryawanInputNonSewingFormLemburDet::where('no_form',request()->no_form)->whereColumn('jam_lembur_awal_rencana','!=','jam_lembur_akhir_rencana')->with('employee','keterangan')->with(['absen' => function ($query) use($tanggal_lembur) {
                 $query->where('tanggal_berjalan', $tanggal_lembur);
             }])->get();
         }
@@ -214,6 +214,12 @@ class DataLemburController extends AdminBaseController
                 if(isset(EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('sub_dept_name')[0])){
                     $sub_dept_name=EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('sub_dept_name')[0];
                 }
+                $akhir_jam_lembur='';
+                if(request()->jam_lembur_awal_rencana[$key]>request()->jam_lembur_akhir_rencana[$key]){
+                    $akhir_jam_lembur=date('Y-m-d', strtotime($tanggal_lembur . ' +1 day')).' '.request()->jam_lembur_akhir_rencana[$key];
+                }else{
+                    $akhir_jam_lembur=$tanggal_lembur.' '.request()->jam_lembur_akhir_rencana[$key];
+                }
                 DataLembur::create([
                     'uuid'=>Str::uuid(),
                     'uuid_master'=>MasterDataAbsenKehadiran::where('enroll_id',request()->enroll_id[$key])->where('tanggal_berjalan',$tanggal_lembur)->pluck('uuid')[0],
@@ -237,7 +243,7 @@ class DataLemburController extends AdminBaseController
                     'sub_dept_id' => $sub_dept_id,
                     'sub_dept_name' => $sub_dept_name,
                     'mulai_jam_lembur' => $tanggal_lembur.' '.request()->jam_lembur_awal_rencana[$key],
-                    'akhir_jam_lembur' => $tanggal_lembur.' '.request()->jam_lembur_akhir_rencana[$key],
+                    'akhir_jam_lembur' => $akhir_jam_lembur,
                     'jumlah_jam_lembur' => request()->jam_lembur[$key],
                     'jumlah_jam_istirahat' => request()->jam_lembur_istirahat[$key]/60,
                     'catatan' => request()->keterangan[$key],
@@ -250,7 +256,7 @@ class DataLemburController extends AdminBaseController
                     'kelebihan_jam_kerja_l3' => '0',
                     'kelebihan_jam_kerja_l4' => '0',
                     'mulai_jam_lembur' => $tanggal_lembur.' '.request()->jam_lembur_awal_rencana[$key],
-                    'akhir_jam_lembur' => $tanggal_lembur.' '.request()->jam_lembur_akhir_rencana[$key],
+                    'akhir_jam_lembur' => $akhir_jam_lembur,
                     'jumlah_jam_lembur' => request()->jam_lembur[$key],
                     'jumlah_jam_lembur_approved' => request()->jam_lembur[$key],
                     'jumlah_jam_istirahat_lembur' => request()->jam_lembur_istirahat[$key]/60,
