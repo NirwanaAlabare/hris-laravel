@@ -1031,49 +1031,104 @@ class EmployeeAtrController extends AdminBaseController
     }
     public function creat_master_absen_26()
     {
-        $employee=EmployeeAtribut::where('enroll_id', '985')->get();
-        // dd($employee);
-
+        $enroll_id=[];
+        $employee=EmployeeAtribut::where('enroll_id','>=',7403)->where('enroll_id','<=',7412)->get();
         foreach ($employee as $key => $value) {
-            $tanggal_akhir='2023-11-04';
-            $tgl_berjalan='2023-10-26';
+            $staffnonstaff=$value->status_staff;
+            $tanggal_akhir='2024-07-25';
+            $tgl_berjalan='2024-07-02';
             while (strtotime( $tgl_berjalan) <= strtotime($tanggal_akhir)) {
                 $hari=date('D',strtotime(  $tgl_berjalan));
                 if($hari=='Sun'){
                     $kode_hari='6';
                     $nama_hari='Minggu';
                     $status_absen=null;
+                    $mulai_jam_kerja=null;
+                    $akhir_jam_kerja=null;
                 }else if($hari=='Mon'){
                     $kode_hari='0';
                     $nama_hari='Senin';
-                    $status_absen='CM';
+                    $status_absen='M';
+                    if($staffnonstaff=='STAFF'){
+                        $mulai_jam_kerja='07:30:00';
+                        $akhir_jam_kerja='17:30:00';
+                    }else if($staffnonstaff=='NON STAFF'){
+                        $mulai_jam_kerja='07:00:00';
+                        $akhir_jam_kerja='16:00:00';
+                    }else{
+                        $mulai_jam_kerja=null;
+                        $akhir_jam_kerja=null;
+                    }
                 }else if($hari=='Tue'){
                     $kode_hari='1';
                     $nama_hari='Selasa';
-                    $status_absen='CM';
+                    $status_absen='M';
+                    if($staffnonstaff=='STAFF'){
+                        $mulai_jam_kerja='07:30:00';
+                        $akhir_jam_kerja='17:30:00';
+                    }else if($staffnonstaff=='NON STAFF'){
+                        $mulai_jam_kerja='07:00:00';
+                        $akhir_jam_kerja='16:00:00';
+                    }else{
+                        $mulai_jam_kerja=null;
+                        $akhir_jam_kerja=null;
+                    }
                 }else if($hari=='Wed'){
                     $kode_hari='2';
                     $nama_hari='Rabu';
-                    $status_absen='CM';
+                    $status_absen='M';
+                    if($staffnonstaff=='STAFF'){
+                        $mulai_jam_kerja='07:30:00';
+                        $akhir_jam_kerja='17:30:00';
+                    }else if($staffnonstaff=='NON STAFF'){
+                        $mulai_jam_kerja='07:00:00';
+                        $akhir_jam_kerja='16:00:00';
+                    }else{
+                        $mulai_jam_kerja=null;
+                        $akhir_jam_kerja=null;
+                    }
                 }else if($hari=='Thu'){
                     $kode_hari='3';
                     $nama_hari='Kamis';
-                    $status_absen='CM';
+                    $status_absen='M';
+                    if($staffnonstaff=='STAFF'){
+                        $mulai_jam_kerja='07:30:00';
+                        $akhir_jam_kerja='17:30:00';
+                    }else if($staffnonstaff=='NON STAFF'){
+                        $mulai_jam_kerja='07:00:00';
+                        $akhir_jam_kerja='16:00:00';
+                    }else{
+                        $mulai_jam_kerja=null;
+                        $akhir_jam_kerja=null;
+                    }
                 }else if($hari=='Fri'){
                     $kode_hari='4';
                     $nama_hari='Jumat';
-                    $status_absen='CM';
+                    $status_absen='M';
+                    if($staffnonstaff=='STAFF'){
+                        $mulai_jam_kerja='07:30:00';
+                        $akhir_jam_kerja='17:30:00';
+                    }else if($staffnonstaff=='NON STAFF'){
+                        $mulai_jam_kerja='07:00:00';
+                        $akhir_jam_kerja='16:00:00';
+                    }else{
+                        $mulai_jam_kerja=null;
+                        $akhir_jam_kerja=null;
+                    }
                 }else if($hari=='Sat'){
                     $kode_hari='5';
                     $nama_hari='Sabtu';
                     $status_absen=null;
-
+                    $mulai_jam_kerja=null;
+                    $akhir_jam_kerja=null;
                 }
                 $x=[
                     'uuid' => Str::uuid('uuid'.$key),
                     'tanggal_berjalan' => $tgl_berjalan,
                     'kode_hari' =>$kode_hari,
                     'nama_hari' => $nama_hari,
+                    'mulai_jam_kerja' => $mulai_jam_kerja,
+                    'akhir_jam_kerja' => $akhir_jam_kerja,
                     'employee_id' => $value->employee_id,
                     'employee_name' => $value->employee_name,
                     'enroll_id' => $value->enroll_id,
@@ -1093,11 +1148,7 @@ class EmployeeAtrController extends AdminBaseController
                     'department_name' => $value->department_name,
                     'sub_dept_id' => $value->sub_dept_id,
                     'sub_dept_name' => $value->sub_dept_name,
-                    'nomor_absen_izin'=>'FPC/HR/2309/0149',
-                    'tanggal_mulai_izin'=>'2023-09-25',
-                    'tanggal_akhir_izin'=>'2023-11-04',
                     'status_absen' => $status_absen,
-                    'absen_alasan' => 'MELAHIRKAN',
                     'operator' =>'system',
                 ];
                 MasterDataAbsenKehadiran::create($x);
@@ -1105,6 +1156,7 @@ class EmployeeAtrController extends AdminBaseController
 
             }
         }
+        dd('successaga');
     }
     public function add_cepet(){
         $employee_id = time();

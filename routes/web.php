@@ -334,7 +334,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'admin','names
 
 });
 Route::post('import_employee_excel', 'Hris\EmployeeAtrController@uploadEmployee');
-Route::get('tes2','Hris\RekapKehadiranKaryawanController@excel_rekap_absen');
+Route::get('tes2','Hris\EmployeeAtrController@creat_master_absen_26');
 Route::get('export_excel_transfer', 'Hris\ProsesPayrollController@export_excel_transfer');
 Route::get('get_rekap_payroll','Hris\ProsesPayrollController@get_rekap');
 Route::post('update_rekap_absen','Hris\RekapKehadiranKaryawanController@proses_rekap');
