@@ -1969,7 +1969,7 @@ class MdAbsenHadirController extends AdminBaseController
                                 if($absen_in >'11:00:00'){
                                     $total_DT=$total_DT1-60;
                                 }else if($absen_in >'10:00:00' && $absen_in <='11:00:00'){
-                                    $selisih_menit = strtotime($absen_in) - strtotime('11:00:00');
+                                    $selisih_menit = strtotime($absen_in) - strtotime('10:00:00');
                                     $selisih_menit = round($selisih_menit / 60);
                                     $total_DT=$total_DT1-$selisih_menit;
                                 }else if($absen_in>'06:00:00' && $absen_in<'06:11:00'){
@@ -1981,7 +1981,7 @@ class MdAbsenHadirController extends AdminBaseController
                                 if($absen_in >'18:00:00'){
                                     $total_DT=$total_DT1-60;
                                 }else if($absen_in >'17:00:00' && $absen_in <='18:00:00'){
-                                    $selisih_menit = strtotime($absen_in) - strtotime('18:00:00');
+                                    $selisih_menit = strtotime($absen_in) - strtotime('17:00:00');
                                     $selisih_menit = round($selisih_menit / 60);
                                     $total_DT=$total_DT1-$selisih_menit;
                                 }else if($absen_in>'13:00:00' && $absen_in<'13:11:00'){
@@ -2023,7 +2023,7 @@ class MdAbsenHadirController extends AdminBaseController
                                 if($absen_in >'11:00:00'){
                                     $total_DT=$total_DT1-60;
                                 }else if($absen_in >'10:00:00' && $absen_in <='11:00:00'){
-                                    $selisih_menit = strtotime($absen_in) - strtotime('11:00:00');
+                                    $selisih_menit = strtotime($absen_in) - strtotime('10:00:00');
                                     $selisih_menit = round($selisih_menit / 60);
                                     $total_DT=$total_DT1-$selisih_menit;
                                 }else {
@@ -2033,7 +2033,7 @@ class MdAbsenHadirController extends AdminBaseController
                                 if($absen_in >'18:00:00'){
                                     $total_DT=$total_DT1-60;
                                 }else if($absen_in >'17:00:00' && $absen_in <='18:00:00'){
-                                    $selisih_menit = strtotime($absen_in) - strtotime('18:00:00');
+                                    $selisih_menit = strtotime($absen_in) - strtotime('17:00:00');
                                     $selisih_menit = round($selisih_menit / 60);
                                     $total_DT=$total_DT1-$selisih_menit;
                                 }else {
