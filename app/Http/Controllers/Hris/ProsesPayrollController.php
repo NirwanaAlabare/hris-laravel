@@ -2062,6 +2062,7 @@ class ProsesPayrollController extends AdminBaseController
                     'kehadiran_pc'=>$value->kehadiran_pc,
                     'kehadiran_dtpc'=>$value->kehadiran_dtpc,
                     'kehadiran_m'=>$value->kehadiran_m,
+                    'kehadiran_m_estimasi'=> $value->kehadiran_m_estimasi,
                     'kehadiran_r'=>$value->kehadiran_r,
                     'kehadiran_tk'=>$value->kehadiran_tk,
                     'kehadiran_ok'=>$value->kehadiran_ok,
