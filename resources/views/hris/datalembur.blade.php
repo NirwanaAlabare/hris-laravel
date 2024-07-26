@@ -2442,7 +2442,7 @@
                                     var mulai_jam_lembur = res[i].mulai_jam_lembur;
                                     var akhir_jam_lembur = res[i].akhir_jam_lembur;
                                     var sub_dept_name = res[i].employee_atribut.dept ? res[i].employee_atribut.dept.sub_dept_name : "-";
-                                    var jumlah_jam_lembur = res[i].data_lembur.jumlah_jam_lembur-res[i].data_lembur.jumlah_jam_istirahat;
+                                    var jumlah_jam_lembur = res[i].data_lembur.jumlah_jam_lembur;
                                     var jumlah_jam_istirahat_lembur = res[i].data_lembur.jumlah_jam_istirahat;
                                     var catatan = res[i].data_lembur.catatan;
                                     var mulai_jam_lembur_edit1 = res[i].mulai_jam_lembur;
