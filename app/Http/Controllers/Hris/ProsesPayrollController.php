@@ -2868,7 +2868,7 @@ class ProsesPayrollController extends AdminBaseController
                 $premi_karyawan=0;
                 if($value->grading_salary[0]->insentif){
                     $premis=$value->grading_salary[0]->insentif;
-                    $premi_karyawan=($premis/$value->rekap_kehadiran[0]->jumlah_hari_kerja)*$value->rekap_kehadiran[0]->total_kehadiran_net;
+                    $premi_karyawan=($premis/21)*$value->rekap_kehadiran[0]->total_kehadiran_net;
                 }
                 
                 if($value->rekap_kehadiran[0]){
