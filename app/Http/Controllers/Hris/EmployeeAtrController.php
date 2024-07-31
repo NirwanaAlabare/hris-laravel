@@ -1308,7 +1308,7 @@ class EmployeeAtrController extends AdminBaseController
             }
             $dataArray[$i]=[
                 'employee_id'=>time().$data[0][$i][1],
-                'status_department'=>$status_department,
+                'hamlet'=>$status_department,
                 'enroll_id'=>$data[0][$i][1],
                 'nik'=>$data[0][$i][2],
                 'employee_name'=>$data[0][$i][3],
@@ -1378,13 +1378,13 @@ class EmployeeAtrController extends AdminBaseController
             ];
         }
         foreach($dataArray as $key=>$value){
-            if($value['enroll_id']=='' || $value['status_department']=='red'){
+            if($value['enroll_id']=='' || $value['hamlet']=='red'){
                 continue;
             }
-            else if($value['status_department']=='lightblue'){
+            else if($value['hamlet']=='lightblue'){
                 array_shift($value);
                 EmployeeAtribut::create($value);
-            }else if($value['status_department']=='white'){
+            }else if($value['hamlet']=='white'){
                 array_shift($value);
                 EmployeeAtribut::where('enroll_id',$value['enroll_id'])->update($value);
             }
