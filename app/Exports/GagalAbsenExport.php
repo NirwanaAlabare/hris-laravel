@@ -87,8 +87,14 @@ class GagalAbsenExport implements FromQuery, WithMapping, ShouldAutoSize, WithEv
                     master_data_absen_kehadiran.status_absen
                 ')
                 ->whereRaw('
-                    (substr(master_data_absen_kehadiran.tanggal_berjalan, 1, 10) between "' . $tanggalMulai . '" and "' . $tanggalSampai . '"  and employee_atribut.enroll_id is not null) 
-                    AND master_data_absen_kehadiran.status_absen IN ("M","TL") 
+                    (
+                        (substr(master_data_absen_kehadiran.tanggal_berjalan, 1, 10) between "' . $tanggalMulai . '" and "' . $tanggalSampai . '"  and employee_atribut.enroll_id is not null 
+                            AND master_data_absen_kehadiran.status_absen IN ("M","TL"))
+                        or
+                        (substr(master_data_absen_kehadiran.tanggal_berjalan, 1, 10) between "' . $tanggalMulai . '" and "' . $tanggalSampai . '"  and employee_atribut.enroll_id is not null
+                            AND master_data_absen_kehadiran.mulai_jam_kerja is null AND master_data_absen_kehadiran.akhir_jam_kerja is null AND 
+                                ((master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null) or (master_data_absen_kehadiran.absen_masuk_kerja is null AND master_data_absen_kehadiran.absen_pulang_kerja is not null))
+                            ))
                     ' . $this->inSearchData . '
                 ')
                 ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
