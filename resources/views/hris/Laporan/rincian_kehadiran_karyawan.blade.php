@@ -105,6 +105,16 @@
 			<td align="center">{{$total_lembur_1234}}</td>
 		</tr>
 		@endforeach
+		<tr>
+			<td colspan="5" style="background-color:#fffc04;font-weight:bold">GRAND TOTAL</td>
+			<td style="background-color:#fffc04;font-weight:bold;text-align:center">@if($jumlah_menit[$key]['total_menit_absen_dt']==0) - @else {{$jumlah_menit[$key]['total_menit_absen_dt']}} @endif</td>
+			<td style="background-color:#fffc04;font-weight:bold;text-align:center">@if($jumlah_menit[$key]['total_menit_absen_pc']==0) - @else {{$jumlah_menit[$key]['total_menit_absen_pc']}} @endif</td>
+			<td style="background-color:#fffc04;font-weight:bold;text-align:center">@if($jumlah_menit[$key]['total_menit_lembur_1']==0) - @else {{$jumlah_menit[$key]['total_menit_lembur_1']}} @endif</td>
+			<td style="background-color:#fffc04;font-weight:bold;text-align:center">@if($jumlah_menit[$key]['total_menit_lembur_2']==0) - @else {{$jumlah_menit[$key]['total_menit_lembur_2']}} @endif</td>
+			<td style="background-color:#fffc04;font-weight:bold;text-align:center">@if($jumlah_menit[$key]['total_menit_lembur_3']==0) - @else {{$jumlah_menit[$key]['total_menit_lembur_3']}} @endif</td>
+			<td style="background-color:#fffc04;font-weight:bold;text-align:center">@if($jumlah_menit[$key]['total_menit_lembur_4']==0) - @else {{$jumlah_menit[$key]['total_menit_lembur_4']}} @endif</td>
+			<td style="background-color:#fffc04;font-weight:bold;text-align:center">@if($jumlah_menit[$key]['total_menit_lembur_1234']==0) - @else {{$jumlah_menit[$key]['total_menit_lembur_1234']}} @endif</td>
+		</tr>
 	</table>
 	<table>
 		<tr>

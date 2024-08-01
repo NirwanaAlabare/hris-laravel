@@ -114,6 +114,17 @@ class MdAbsenHadirController extends AdminBaseController
         $m_absen='M';
         array_push($ITB,$tl_absen,$m_absen);
         foreach($employee as $emp){
+            $jumlah_menit[]=[
+                'enroll_id'=>$emp->enroll_id,
+                'employee_name'=>$emp->employee_name,
+                'total_menit_absen_dt'=>$emp->absensi->sum('jumlah_menit_absen_dt'),
+                'total_menit_absen_pc'=>$emp->absensi->sum('jumlah_menit_absen_pc'),
+                'total_menit_lembur_1'=>$emp->rekap_lembur->sum('lembur_1'),
+                'total_menit_lembur_2'=>$emp->rekap_lembur->sum('lembur_2'),
+                'total_menit_lembur_3'=>$emp->rekap_lembur->sum('lembur_3'),
+                'total_menit_lembur_4'=>$emp->rekap_lembur->sum('lembur_4'),
+                'total_menit_lembur_1234'=>$emp->rekap_lembur->sum('total_lembur_1234'),
+            ];
             $jumlah_absen[]=[
                 'enroll_id'=>$emp->enroll_id,
                 'employee_name'=>$emp->employee_name,
@@ -127,7 +138,7 @@ class MdAbsenHadirController extends AdminBaseController
             $employee_name=EmployeeAtribut::where('enroll_id',$selectedEnrollId)->pluck('employee_name')[0];
             $fileName=substr($tanggal_akhir,2,2).substr($tanggal_akhir,5,2).' '.$selectedEnrollId.' '.$employee_name;
         }
-        $pdf = PDF::loadView('hris.Laporan.rincian_kehadiran_karyawan',["tanggal_awal_absen" => $tanggal_awal_absen, "tanggal_akhir_absen" => $tanggal_akhir_absen, "employee" => $employee, "jumlah_absen" => $jumlah_absen])->stream($fileName.'.pdf',array('Attachment'=>0));
+        $pdf = PDF::loadView('hris.Laporan.rincian_kehadiran_karyawan',["tanggal_awal_absen" => $tanggal_awal_absen, "tanggal_akhir_absen" => $tanggal_akhir_absen, "employee" => $employee, "jumlah_menit" => $jumlah_menit, "jumlah_absen" => $jumlah_absen])->stream($fileName.'.pdf',array('Attachment'=>0));
         return $pdf;
     }
     public function view_excel(){
@@ -193,6 +204,17 @@ class MdAbsenHadirController extends AdminBaseController
         $m_absen='M';
         array_push($ITB,$tl_absen,$m_absen);
         foreach($employee as $emp){
+            $jumlah_menit[]=[
+                'enroll_id'=>$emp->enroll_id,
+                'employee_name'=>$emp->employee_name,
+                'total_menit_absen_dt'=>$emp->absensi->sum('jumlah_menit_absen_dt'),
+                'total_menit_absen_pc'=>$emp->absensi->sum('jumlah_menit_absen_pc'),
+                'total_menit_lembur_1'=>$emp->rekap_lembur->sum('lembur_1'),
+                'total_menit_lembur_2'=>$emp->rekap_lembur->sum('lembur_2'),
+                'total_menit_lembur_3'=>$emp->rekap_lembur->sum('lembur_3'),
+                'total_menit_lembur_4'=>$emp->rekap_lembur->sum('lembur_4'),
+                'total_menit_lembur_1234'=>$emp->rekap_lembur->sum('total_lembur_1234'),
+            ];
             $jumlah_absen[]=[
                 'enroll_id'=>$emp->enroll_id,
                 'employee_name'=>$emp->employee_name,
@@ -202,7 +224,7 @@ class MdAbsenHadirController extends AdminBaseController
         }
         $fileName = 'DataRincianKehadiran.xlsx';
         // return view('hris.Laporan.rincian_kehadiran_karyawan',compact("tanggal_awal_absen", "tanggal_akhir_absen", "employee", "jumlah_absen"));
-        $response= Excel::download(new rincianKehadiranKaryawan($tanggal_awal_absen,$tanggal_akhir_absen,$employee,$jumlah_absen), $fileName, \Maatwebsite\Excel\Excel::XLSX);
+        $response= Excel::download(new rincianKehadiranKaryawan($tanggal_awal_absen,$tanggal_akhir_absen,$employee,$jumlah_menit,$jumlah_absen), $fileName, \Maatwebsite\Excel\Excel::XLSX);
         ob_end_clean();
         return $response;
     }
