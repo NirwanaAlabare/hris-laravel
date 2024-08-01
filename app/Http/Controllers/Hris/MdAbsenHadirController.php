@@ -2924,6 +2924,9 @@ class MdAbsenHadirController extends AdminBaseController
                         if($value4->status_absen == "LN"){
                             $status_absen='LN';
                         }
+                        else if((( $absenIn!=null && $absenOut!=null)||($value4->kode_hari==5)||($value4->kode_hari==6)) && $jadwal_in!=null && $jadwal_out!=null){
+                            $status_absen=null;
+                        }
                         else if((( $absenIn!=null && $absenOut!=null)||($value4->kode_hari==5)||($value4->kode_hari==6)) && $jadwal_in==null && $jadwal_out==null){
                             $status_absen=null;
                         }
