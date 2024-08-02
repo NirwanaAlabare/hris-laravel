@@ -48,7 +48,7 @@ class UpdateAbsenLintasHari extends Command
                 ->whereRaw('SUBSTRING(mulai_jam_lembur, 11,  8) > SUBSTRING(akhir_jam_lembur, 11,  8)')
                 ->whereNull('mulai_jam_kerja');
             });
-        })->where('operator','!=','inject absen by excel file')->get();
+        })->get();
         if(count($absen_lintas_hari) > 0 ) {
             $query = DB::connection('sqlsrv2')->table('CHECKINOUT as a')
             ->selectRaw("CONVERT(VARCHAR(10), a.CHECKTIME, 126) AS tanggal_absen,
