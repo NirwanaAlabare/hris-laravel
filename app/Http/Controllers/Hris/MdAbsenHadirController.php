@@ -2966,12 +2966,13 @@ class MdAbsenHadirController extends AdminBaseController
                     ->whereRaw('SUBSTRING(mulai_jam_lembur, 11,  8) > SUBSTRING(akhir_jam_lembur, 11,  8)')
                     ->whereNull('mulai_jam_kerja');
                 });
-            })->where('operator','!=','inject absen by excel file')->get();
+            })->with('employee_atribut')->get();
             $data_update=[];
             foreach ($kehadiran2 as $k => $v) {
                 $countEditedData2=DataKehadiranInOutEdited::where('tanggal_absen','=',  $v->tanggal_berjalan)->where('enroll_id','=', $v->enroll_id)->count();
                 $count2=LogDataGagalAbsen::where('tanggal_absen', $v->tanggal_berjalan)->where('enroll_id',$v->enroll_id)->count();
                 if($countEditedData2<1 && $count2<1){
+                    $status_staff=$v->employee_atribut->status_staff;
                     $jadwal_in=$v->mulai_jam_kerja;
                     $jadwal_out=$v->akhir_jam_kerja;
 
