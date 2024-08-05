@@ -1840,7 +1840,7 @@ class MdAbsenHadirController extends AdminBaseController
         $adaData = "ADA";
         $countData = MasterDataAbsenKehadiran::whereRaw("tanggal_berjalan = '" . $tanggal_mesin_absensi . "'".$inEnrollsId."")->where(function($query){
             $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
-        })->whereNotIn('operator',['inject absen by excel file','system_lintashari'])->count();
+        })->whereNotIn('operator',['system_lintashari'])->count();
         if($countData > 0 ) {
             $checkinout =  DB::connection('sqlsrv2')->select(
             DB::raw("
@@ -1879,7 +1879,7 @@ class MdAbsenHadirController extends AdminBaseController
                     AND enroll_id = '" . $value->enroll_id . "'
                 ")->where(function($query){
                     $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
-                })->whereNotIn('operator',['inject absen by excel file','system_lintashari'])
+                })->whereNotIn('operator',['system_lintashari'])
                 ->get();
                 foreach($kehadiran as $val) {
                     $countEditedData=DataKehadiranInOutEdited::where('tanggal_absen','=', $tanggal_mesin_absensi)->where('enroll_id','=', $val["enroll_id"])->count();
@@ -1893,10 +1893,9 @@ class MdAbsenHadirController extends AdminBaseController
                                 else{
                                     $status_absen=$value->status_absen;
                                 }
-                                MasterDataAbsenKehadiran::where('tanggal_berjalan','=', $tanggal_mesin_absensi)
-                                ->where('enroll_id','=', $val["enroll_id"])
-                                ->where('operator','!=','inject absen by excel file')
-                                ->update([
+                                MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
+                                ->where('enroll_id', $val->enroll_id)
+                                ->whereNotIn('operator',['system_lintashari'])->update([
                                     'absen_masuk_kerja' => $value->absen_in,
                                     'absen_pulang_kerja' => $value->absen_out,
                                     'status_absen' => $status_absen
@@ -1910,9 +1909,9 @@ class MdAbsenHadirController extends AdminBaseController
                                 else{
                                     $status_absen=$value->status_absen;
                                 }
-                                MasterDataAbsenKehadiran::where('tanggal_berjalan','=', $tanggal_mesin_absensi)
-                                ->where('enroll_id','=', $val["enroll_id"])
-                                ->where('operator','!=','inject absen by excel file')
+                                MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
+                                ->where('enroll_id', $val->enroll_id)
+                                ->where('operator',['system_lintashari'])
                                 ->update([
                                     'absen_masuk_kerja' => $value->absen_in,
                                     'absen_pulang_kerja' => $value->absen_out,
@@ -1920,9 +1919,9 @@ class MdAbsenHadirController extends AdminBaseController
                                 ]);
                             }else{
                                 if($count<1){
-                                    MasterDataAbsenKehadiran::where('tanggal_berjalan','=', $tanggal_mesin_absensi)
-                                    ->where('enroll_id','=', $val["enroll_id"])
-                                    ->where('operator','!=','inject absen by excel file')
+                                    MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
+                                    ->where('enroll_id', $val->enroll_id)
+                                    ->where('operator',['system_lintashari'])
                                     ->update([
                                         'absen_masuk_kerja' => $value->absen_in,
                                         'absen_pulang_kerja' => $value->absen_out
@@ -1935,7 +1934,7 @@ class MdAbsenHadirController extends AdminBaseController
             }
             $masterAbsen=MasterDataAbsenKehadiran::whereRaw('tanggal_berjalan = "'.$tanggal_mesin_absensi.'"'.$inEnrollsId.'')->with('employee_atribut')->where(function($query){
                 $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
-            })->whereNotIn('operator',['inject absen by excel file','system_lintashari'])->get();
+            })->whereNotIn('operator',['system_lintashari'])->get();
             foreach ($masterAbsen as $k => $v) {
                 $countEditedData1=DataKehadiranInOutEdited::where('tanggal_absen','=', $tanggal_mesin_absensi)->where('enroll_id','=', $v->enroll_id)->count();
                 $count1=LogDataGagalAbsen::where('tanggal_absen',$tanggal_mesin_absensi)->where('enroll_id','=', $v->enroll_id)->count();
@@ -2012,7 +2011,11 @@ class MdAbsenHadirController extends AdminBaseController
                                     $total_DT=$total_DT1;
                                 }
                             }else{
-                                $total_DT=$total_DT1;
+                                if($total_DT<=10){
+                                    $total_DT=0;
+                                }else{
+                                    $total_DT=$total_DT1;
+                                }
                             }
                             $total_DT = $total_DT < 480 ? $total_DT : 480;
                         }else{
@@ -2130,9 +2133,7 @@ class MdAbsenHadirController extends AdminBaseController
                         'jumlah_menit_absen_dt'=>$total_DT,
                         'jumlah_menit_absen_pc'=>$total_PC,
                     ];
-                    MasterDataAbsenKehadiran::where('tanggal_berjalan', $tanggal_mesin_absensi)
-                    ->where('operator','!=','inject absen by excel file')
-                                ->where('enroll_id', $v->enroll_id)->update($data_update);
+                    MasterDataAbsenKehadiran::where('tanggal_berjalan', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->whereNotIn('operator',['system_lintashari'])->update($data_update);
                 }
             }
             $setClearMTL = MasterDataAbsenKehadiran::selectRaw("
@@ -2146,16 +2147,16 @@ class MdAbsenHadirController extends AdminBaseController
                 AND status_absen in ("M", "TL") AND tanggal_berjalan = "' . $tanggal_mesin_absensi . '"'.$inEnrollsId.'
             ')->where(function($query){
                 $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
-            })->whereNotIn('operator',['inject absen by excel file','system_lintashari'])
+            })->whereNotIn('operator',['system_lintashari'])
             ->get();
             foreach($setClearMTL as $value) {
                 $countEditedData2=DataKehadiranInOutEdited::where('tanggal_absen','=', $tanggal_mesin_absensi)->where('enroll_id','=', $value['enroll_id'])->count();
                 $count2=LogDataGagalAbsen::where('tanggal_absen',$tanggal_mesin_absensi)->where('enroll_id','=', $value['enroll_id'])->count();
                 
                 if($countEditedData2<1 && $count2<1){
-                    MasterDataAbsenKehadiran::where('tanggal_berjalan','=', $tanggal_mesin_absensi)
-                    ->where('operator','!=','inject absen by excel file')
-                    ->where('enroll_id','=', $value["enroll_id"])
+                    MasterDataAbsenKehadiran::where('tanggal_berjalan', $value->tanggal_absen)
+                    ->whereNotIn('operator',['system_lintashari'])
+                    ->where('enroll_id', $value->enroll_id)
                     ->update([
                         'status_absen' => $value["status_absen"]
                     ]);
@@ -2174,7 +2175,7 @@ class MdAbsenHadirController extends AdminBaseController
                 AND ((absen_masuk_kerja is null AND absen_pulang_kerja is not null) OR (absen_masuk_kerja is not null AND absen_pulang_kerja is null))
             ')->where(function($query){
                 $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
-            })->whereNotIn('operator',['inject absen by excel file','system_lintashari'])
+            })->whereNotIn('operator',['system_lintashari'])
             ->get();
 
             foreach($setSetTL as $value) {
@@ -2182,9 +2183,9 @@ class MdAbsenHadirController extends AdminBaseController
                 $count3=LogDataGagalAbsen::where('tanggal_absen',$tanggal_mesin_absensi)->where('enroll_id','=', $value['enroll_id'])->count();
                 
                 if($countEditedData3<1 && $count3<1){
-                    MasterDataAbsenKehadiran::where('tanggal_berjalan','=', $tanggal_mesin_absensi)
-                    ->where('operator','!=','inject absen by excel file')
-                    ->where('enroll_id','=', $value["enroll_id"])
+                    MasterDataAbsenKehadiran::where('tanggal_berjalan', $value->tanggal_absen)
+                    ->whereNotIn('operator',['system_lintashari'])
+                    ->where('enroll_id', $value->enroll_id)
                     ->update([
                         'status_absen' => $value["status_absen"]
                     ]);
@@ -2841,7 +2842,7 @@ class MdAbsenHadirController extends AdminBaseController
                 ->whereRaw('SUBSTRING(mulai_jam_lembur, 11,  8) > SUBSTRING(akhir_jam_lembur, 11,  8)')
                 ->whereNull('mulai_jam_kerja');
             });
-        })->where('operator','!=','inject absen by excel file')->get();
+        })->get();
         if(count($kehadiran) > 0 ) {
             $query = DB::connection('sqlsrv2')->table('CHECKINOUT as a')
             ->selectRaw("CONVERT(VARCHAR(10), a.CHECKTIME, 126) AS tanggal_absen,
@@ -3007,7 +3008,9 @@ class MdAbsenHadirController extends AdminBaseController
                     else{
                         $jumlah_absen_menit_kerja=0;
                     }
-
+                    if($total_DT<=10 && $status_staff=='STAFF'){
+                        $total_DT=0;
+                    }
                     $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
                     $data_update=[
                         'jumlah_menit_absen_dtpc'=>$jumlah_menit_absen_dtpc,
