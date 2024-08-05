@@ -2959,14 +2959,7 @@ class MdAbsenHadirController extends AdminBaseController
                 }
             }
             // untuk hitung dt pc
-            $kehadiran2=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->whereRaw('tanggal_berjalan is not null'.$inEnrollId)->where(function($query){
-            $query->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')
-                ->orWhere(function($query){
-                $query->whereNotNull('nomor_form_lembur')
-                    ->whereRaw('SUBSTRING(mulai_jam_lembur, 11,  8) > SUBSTRING(akhir_jam_lembur, 11,  8)')
-                    ->whereNull('mulai_jam_kerja');
-                });
-            })->with('employee_atribut')->get();
+            $kehadiran2=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->whereRaw('tanggal_berjalan is not null'.$inEnrollId)->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')->with('employee_atribut')->get();
             $data_update=[];
             foreach ($kehadiran2 as $k => $v) {
                 $countEditedData2=DataKehadiranInOutEdited::where('tanggal_absen','=',  $v->tanggal_berjalan)->where('enroll_id','=', $v->enroll_id)->count();
