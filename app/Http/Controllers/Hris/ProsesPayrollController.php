@@ -1797,8 +1797,8 @@ class ProsesPayrollController extends AdminBaseController
 
                     $total_kehadiran_security=$IBY_employe+$ITB_employe+$lsm_security+$dtpc_employe+$absen_M_security+$absen_R+$absen_ok_security+$LBY_employe+$dt_employe+$pc_employe+$absen_TL;
                     $total_kehadiran=$IBY_employe+$ITB_employe+$lsm_employe+$dtpc_employe+$absen_M+$absen_R+$absen_ok+$LBY_employe+$dt_employe+$pc_employe+$absen_TL;
-                    $M_estimasi=$value['absensi']->where('status_absen','M')->count();
-                    $TL_estimasi=$value['absensi']->where('status_absen','TL')->where('mulai_jam_kerja','!=',null)->count();
+                    $M_estimasi=$value['absensi']->where('status_absen','M')->where('tanggal_berjalan','>=',date('Y-m-d'))->count();
+                    $TL_estimasi=$value['absensi']->where('status_absen','TL')->where('tanggal_berjalan','>=',date('Y-m-d'))->where('mulai_jam_kerja','!=',null)->count();
 
                     if($security->where('enroll_id',$value->enroll_id)->count()){
                         $lsm=$lsm_security;
