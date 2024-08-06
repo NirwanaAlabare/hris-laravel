@@ -846,6 +846,7 @@ class MdAbsenHadirController extends AdminBaseController
                     master_data_absen_kehadiran.mulai_jam_lembur,
                     master_data_absen_kehadiran.akhir_jam_lembur,
                     master_data_absen_kehadiran.jumlah_jam_lembur,
+                    ref_absen_ijin.kode_ijin_payroll,
                     master_data_absen_kehadiran.created_at,
                     master_data_absen_kehadiran.updated_at
                 ')
@@ -854,6 +855,7 @@ class MdAbsenHadirController extends AdminBaseController
                     ' . $filterStaff . ' ' . $inDepartment . ' ' . $inBagian . ' ' . $inSearchData . ' ' . $inSiteNirwana . ' ')
                 ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
                 ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
+                ->leftJoin('ref_absen_ijin','master_data_absen_kehadiran.status_absen','ref_absen_ijin.kode_absen_ijin')
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy('master_data_absen_kehadiran.tanggal_berjalan','asc')
@@ -866,6 +868,7 @@ class MdAbsenHadirController extends AdminBaseController
                     ' . $filterStaff . ' ' . $inDepartment . ' ' . $inBagian . ' ' . $inSearchData . ' ' . $inSiteNirwana . ' ')
                 ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
                 ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
+                ->leftJoin('ref_absen_ijin','master_data_absen_kehadiran.status_absen','ref_absen_ijin.kode_absen_ijin')
                 ->count();
                 $totalFiltered = $totalData;
 
@@ -920,6 +923,7 @@ class MdAbsenHadirController extends AdminBaseController
                     master_data_absen_kehadiran.mulai_jam_lembur,
                     master_data_absen_kehadiran.akhir_jam_lembur,
                     master_data_absen_kehadiran.jumlah_jam_lembur,
+                    ref_absen_ijin.kode_ijin_payroll,
                     master_data_absen_kehadiran.created_at,
                     master_data_absen_kehadiran.updated_at
                 ')
@@ -928,6 +932,7 @@ class MdAbsenHadirController extends AdminBaseController
                     ' . $filterStaff . ' ' . $inDepartment . ' ' . $inBagian . ' ' . $inSearchData . ' ' . $inSiteNirwana . ' ')
                 ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
                 ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
+                ->leftJoin('ref_absen_ijin','master_data_absen_kehadiran.status_absen','ref_absen_ijin.kode_absen_ijin')
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy('master_data_absen_kehadiran.tanggal_berjalan','asc')
@@ -947,6 +952,38 @@ class MdAbsenHadirController extends AdminBaseController
                     $status_absen=$q->status_absen;
                     $absen_pulang_kerja=$q->absen_pulang_kerja;
                     $absen_masuk_kerja=$q->absen_masuk_kerja;
+                    $kode_ijin_payroll=$q->kode_ijin_payroll;
+                    if($kode_ijin_payroll==null){
+                        if($q->mulai_jam_kerja!=null && $q->akhir_jam_kerja!=null){
+                            if($q->absen_masuk_kerja!=null && $q->absen_pulang_kerja!=null && $q->status_absen!='R'){
+                                if($q->jumlah_menit_absen_dt!=0 && $q->jumlah_menit_absen_pc==0){
+                                    $kode_ijin_payroll='DT';
+                                }else if($q->jumlah_menit_absen_dt==0 && $q->jumlah_menit_absen_pc!=0){
+                                    $kode_ijin_payroll='PC';
+                                }else if($q->jumlah_menit_absen_dt!=0 && $q->jumlah_menit_absen_pc!=0){
+                                    $kode_ijin_payroll='DTPC';
+                                }else{
+                                    $kode_ijin_payroll='OK';
+                                }
+                            }else if($q->absen_masuk_kerja!=null && $q->absen_pulang_kerja!=null && $q->status_absen=='R'){
+                                $kode_ijin_payroll='R';
+                            }else if($q->absen_masuk_kerja!=null && $q->absen_pulang_kerja==null && $q->status_absen!='R'){
+                                $kode_ijin_payroll='M';
+                            }else if($q->absen_masuk_kerja!=null && $q->absen_pulang_kerja==null && $q->status_absen=='R'){
+                                $kode_ijin_payroll='R';
+                            }else if($q->absen_masuk_kerja==null && $q->absen_pulang_kerja==null && $q->status_absen!='R'){
+                                $kode_ijin_payroll='M';
+                            }else if($q->absen_masuk_kerja==null && $q->absen_pulang_kerja==null && $q->status_absen=='R'){
+                                $kode_ijin_payroll='R';
+                            }
+                        }else{
+                            $kode_ijin_payroll='LSM';
+                        }
+                    }else if($kode_ijin_payroll=='ITB'){
+                        if($q->status_absen=='M'){
+                            $kode_ijin_payroll='M';
+                        }
+                    }
 
                     $kerjalibur = "KERJA";
                     if($tanggal_absen <> "") {
@@ -1046,6 +1083,7 @@ class MdAbsenHadirController extends AdminBaseController
                     $nestedData['mulai_jam_lembur'] = $q->mulai_jam_lembur;
                     $nestedData['akhir_jam_lembur'] = $q->akhir_jam_lembur;
                     $nestedData['jumlah_jam_lembur'] = $q->jumlah_jam_lembur;
+                    $nestedData['kode_ijin_payroll'] = $kode_ijin_payroll;
                     $nestedData['created_at'] = $q->created_at;
                     $nestedData['updated_at'] = $q->updated_at;
 
@@ -1281,6 +1319,7 @@ class MdAbsenHadirController extends AdminBaseController
                 master_data_absen_kehadiran.jumlah_menit_absen_pc,
                 master_data_absen_kehadiran.jumlah_menit_absen_dtpc,
                 master_data_absen_kehadiran.status_absen,
+                b.kode_ijin_payroll,
                 master_data_absen_kehadiran.absen_alasan,
                 master_data_absen_kehadiran.catatan_hrd,
                 master_data_absen_kehadiran.mulai_jam_lembur,
@@ -1320,6 +1359,7 @@ class MdAbsenHadirController extends AdminBaseController
                 LEFT JOIN `department_all` ON `employee_atribut`.`sub_dept_id` = `department_all`.`sub_dept_id`
                 LEFT JOIN `rekap_perhitungan_lembur` ON `master_data_absen_kehadiran`.`tanggal_berjalan` = `rekap_perhitungan_lembur`.`tanggal_berjalan`
                 AND `master_data_absen_kehadiran`.`enroll_id` = `rekap_perhitungan_lembur`.`enroll_id`
+                LEFT JOIN ref_absen_ijin b on master_data_absen_kehadiran.status_absen=b.kode_absen_ijin
             WHERE
                 substr(master_data_absen_kehadiran.tanggal_berjalan, 1, 10) between "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                 ' . $filterStaff . ' ' . $inDepartment . ' ' . $inBagian . ' ' . $inSearchData . '
@@ -1409,44 +1449,47 @@ class MdAbsenHadirController extends AdminBaseController
         $sheet->writeTo('X6', 'STATUS ABSEN');
 
         $sheet->mergeCells('Y6:Y7');
-        $sheet->writeTo('Y6', 'ALASAN ABSEN');
+        $sheet->writeTo('Y6', 'STATUS PAYROLL');
 
         $sheet->mergeCells('Z6:Z7');
-        $sheet->writeTo('Z6', 'KETERANGAN');
+        $sheet->writeTo('Z6', 'ALASAN ABSEN');
 
-        $sheet->mergeCells('AA6:AA7');
+        $sheet->mergeCells('A6:A7');
+        $sheet->writeTo('A6', 'KETERANGAN');
 
-        $sheet->mergeCells('AB6:AK6');
-        $sheet->writeTo('AB6', 'DATA LEMBUR');
-        $sheet->writeTo('AB7', 'NO. SPL');
-        $sheet->writeTo('AC7', 'MULAI');
-        $sheet->writeTo('AD7', 'SELESAI');
-        $sheet->writeTo('AE7', 'ISTIRAHAT');
-        $sheet->writeTo('AF7', 'TOTAL LEMBUR');
-        $sheet->writeTo('AG7', 'L1');
-        $sheet->writeTo('AH7', 'L2');
-        $sheet->writeTo('AI7', 'L3');
-        $sheet->writeTo('AJ7', 'L4');
-        $sheet->writeTo('AK7', 'TOTAL LEMBUR');
+        $sheet->mergeCells('AB6:AB7');
 
-        $sheet->mergeCells('AL6:AL7');
+        $sheet->mergeCells('AC6:AL6');
+        $sheet->writeTo('AC6', 'DATA LEMBUR');
+        $sheet->writeTo('AC7', 'NO. SPL');
+        $sheet->writeTo('AD7', 'MULAI');
+        $sheet->writeTo('AE7', 'SELESAI');
+        $sheet->writeTo('AF7', 'ISTIRAHAT');
+        $sheet->writeTo('AG7', 'TOTAL LEMBUR');
+        $sheet->writeTo('AH7', 'L1');
+        $sheet->writeTo('AI7', 'L2');
+        $sheet->writeTo('AJ7', 'L3');
+        $sheet->writeTo('AK7', 'L4');
+        $sheet->writeTo('AL7', 'TOTAL LEMBUR');
 
-        $sheet->mergeCells('AM6:AQ6');
-        $sheet->writeTo('AM6', 'BIAYA LEMBUR');
-        $sheet->writeTo('AM7', 'RP LEMBUR 1');
-        $sheet->writeTo('AN7', 'RP LEMBUR 2');
-        $sheet->writeTo('AO7', 'RP LEMBUR 3');
-        $sheet->writeTo('AP7', 'RP LEMBUR 4');
-        $sheet->writeTo('AQ7', 'TOTAL LEMBUR');
+        $sheet->mergeCells('AM6:AM7');
 
-        $sheet->mergeCells('AR6:AR7');
+        $sheet->mergeCells('AN6:AR6');
+        $sheet->writeTo('AN6', 'BIAYA LEMBUR');
+        $sheet->writeTo('AN7', 'RP LEMBUR 1');
+        $sheet->writeTo('AO7', 'RP LEMBUR 2');
+        $sheet->writeTo('AP7', 'RP LEMBUR 3');
+        $sheet->writeTo('AQ7', 'RP LEMBUR 4');
+        $sheet->writeTo('AR7', 'TOTAL LEMBUR');
 
-        $sheet->mergeCells('AS6:AV6');
-        $sheet->writeTo('AS6', 'DATA LEMBUR VERIFIKASI');
-        $sheet->writeTo('AS7', 'MULAI JAM LEMBUR');
-        $sheet->writeTo('AT7', 'AKHIR JAM LEMBUR');
-        $sheet->writeTo('AU7', 'JUMLAH JAM ISTIRAHAT');
-        $sheet->writeTo('AV7', 'JUMLAH JAM LEMBUR');
+        $sheet->mergeCells('AS6:AS7');
+
+        $sheet->mergeCells('AT6:AW6');
+        $sheet->writeTo('AT6', 'DATA LEMBUR VERIFIKASI');
+        $sheet->writeTo('AT7', 'MULAI JAM LEMBUR');
+        $sheet->writeTo('AU7', 'AKHIR JAM LEMBUR');
+        $sheet->writeTo('AV7', 'JUMLAH JAM ISTIRAHAT');
+        $sheet->writeTo('AW7', 'JUMLAH JAM LEMBUR');
 
         $sheet->writeAreas();
 
@@ -1462,18 +1505,51 @@ class MdAbsenHadirController extends AdminBaseController
             'S' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             'AC' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             'AD' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
-            'AM' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED4],
+            'AE' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             'AN' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED4],
             'AO' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED4],
             'AP' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED4],
-            'AS' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
+            'AQ' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED4],
             'AT' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
+            'AU' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             // 'K' => ['format' => '0.00'],
             // 'L' => ['format' => '0.00'],
         ]);
 
 
         foreach($dataAbsen as $Kehadiran) {
+            $kode_ijin_payroll=$Kehadiran->kode_ijin_payroll;
+            if($kode_ijin_payroll==null){
+                if($Kehadiran->mulai_jam_kerja!=null && $Kehadiran->akhir_jam_kerja!=null){
+                    if($Kehadiran->absen_masuk_kerja!=null && $Kehadiran->absen_pulang_kerja!=null && $Kehadiran->status_absen!='R'){
+                        if($Kehadiran->jumlah_menit_absen_dt!=0 && $Kehadiran->jumlah_menit_absen_pc==0){
+                            $kode_ijin_payroll='DT';
+                        }else if($Kehadiran->jumlah_menit_absen_dt==0 && $Kehadiran->jumlah_menit_absen_pc!=0){
+                            $kode_ijin_payroll='PC';
+                        }else if($Kehadiran->jumlah_menit_absen_dt!=0 && $Kehadiran->jumlah_menit_absen_pc!=0){
+                            $kode_ijin_payroll='DTPC';
+                        }else{
+                            $kode_ijin_payroll='OK';
+                        }
+                    }else if($Kehadiran->absen_masuk_kerja!=null && $Kehadiran->absen_pulang_kerja!=null && $Kehadiran->status_absen=='R'){
+                        $kode_ijin_payroll='R';
+                    }else if($Kehadiran->absen_masuk_kerja!=null && $Kehadiran->absen_pulang_kerja==null && $Kehadiran->status_absen!='R'){
+                        $kode_ijin_payroll='M';
+                    }else if($Kehadiran->absen_masuk_kerja!=null && $Kehadiran->absen_pulang_kerja==null && $Kehadiran->status_absen=='R'){
+                        $kode_ijin_payroll='R';
+                    }else if($Kehadiran->absen_masuk_kerja==null && $Kehadiran->absen_pulang_kerja==null && $Kehadiran->status_absen!='R'){
+                        $kode_ijin_payroll='M';
+                    }else if($Kehadiran->absen_masuk_kerja==null && $Kehadiran->absen_pulang_kerja==null && $Kehadiran->status_absen=='R'){
+                        $kode_ijin_payroll='R';
+                    }
+                }else{
+                    $kode_ijin_payroll='LSM';
+                }
+            }else if($kode_ijin_payroll=='ITB'){
+                if($Kehadiran->status_absen=='M'){
+                    $kode_ijin_payroll='M';
+                }
+            }
             $interval = date_diff(date_create(substr($Kehadiran->mulai_jam_kerja, 0, 5)), date_create(substr($Kehadiran->akhir_jam_kerja, 0, 5)));
             $minutes = $interval->days * 24 * 60;
             $minutes += $interval->h * 60;
@@ -1552,7 +1628,7 @@ class MdAbsenHadirController extends AdminBaseController
                     // return the time formatted HH:MM:SS
                     $final_jam_istirahat = ((strlen($hours) < 2) ? "0{$hours}" : $hours).":".((strlen($minutes) < 2) ? "0{$minutes}" : $minutes);
                 }
-                $total_lembur_12345=$Kehadiran->total_lembur_1234;
+            $total_lembur_12345=$Kehadiran->total_lembur_1234;
 
             $data = [
                 Date::stringToExcel($Kehadiran->tanggal_berjalan),
@@ -1579,6 +1655,7 @@ class MdAbsenHadirController extends AdminBaseController
                 $Kehadiran->jumlah_menit_absen_pc,
                 $Kehadiran->jumlah_menit_absen_dtpc,
                 $Kehadiran->status_absen,
+                $kode_ijin_payroll,
                 $Kehadiran->absen_alasan,
                 $Kehadiran->catatan_hrd,
                 "",
