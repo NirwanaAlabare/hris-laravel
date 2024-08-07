@@ -2994,15 +2994,24 @@ class MdAbsenHadirController extends AdminBaseController
                                     continue;
                                 }
                             }else if($value4->nomor_form_lembur==null){
-                                $mulai_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('enroll_id',$value4->enroll_id)->where('tanggal_berjalan','<',$value4->tanggal_berjalan)->orderBy('tanggal_berjalan','DESC')->limit(1)->pluck('mulai_jam_kerja')[0];
-                                $akhir_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('enroll_id',$value4->enroll_id)->where('tanggal_berjalan','<',$value4->tanggal_berjalan)->orderBy('tanggal_berjalan','DESC')->limit(1)->pluck('akhir_jam_kerja')[0];
+                                $mulai_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('enroll_id',$value4->enroll_id)->where('tanggal_berjalan','<',$value4->tanggal_berjalan)->where('mulai_jam_kerja','!=',null)->orderBy('tanggal_berjalan','DESC')->limit(1)->pluck('mulai_jam_kerja')[0];
+                                $akhir_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('enroll_id',$value4->enroll_id)->where('tanggal_berjalan','<',$value4->tanggal_berjalan)->where('mulai_jam_kerja','!=',null)->orderBy('tanggal_berjalan','DESC')->limit(1)->pluck('akhir_jam_kerja')[0];
+                                $mulai_jam_kerja_besok=MasterDataAbsenKehadiran::where('enroll_id',$value4->enroll_id)->where('tanggal_berjalan','>',$value4->tanggal_berjalan)->orderBy('tanggal_berjalan')->limit(1)->pluck('mulai_jam_kerja')[0];
                                 if($mulai_jam_kerja_kemarin>$akhir_jam_kerja_kemarin){
                                     $in_lembur_min=date("H:i", strtotime('-2 hours', strtotime($mulai_jam_kerja_kemarin)));
                                     $in_lembur_max=date("H:i", strtotime('+1 hours 59 minutes', strtotime($mulai_jam_kerja_kemarin)));
                                     $out_lembur_min=date("H:i", strtotime('-2 hours', strtotime($akhir_jam_kerja_kemarin)));
-                                    $out_lembur_max=date("H:i", strtotime('+2 hours 59 minutes', strtotime($akhir_jam_kerja_kemarin)));
+                                    $out_lembur_max=date("H:i", strtotime('+3 hours 59 minutes', strtotime($akhir_jam_kerja_kemarin)));
+                                    $in_normal_min=date("H:i", strtotime('-2 hours', strtotime($mulai_jam_kerja_besok)));
+                                    $in_normal_max=date("H:i", strtotime('+3 hours 59 minutes', strtotime($mulai_jam_kerja_besok)));
                                     $absenIn=collect($records)->where('tanggal_absen',$value4->tanggal_berjalan)->where('enroll_id',$value4->enroll_id)->where('absen_log','>=', $in_lembur_min)->where('absen_log','<=', $in_lembur_max)->min('absen_log');
                                     $absenOut=collect($records)->where('tanggal_absen',$tanggal_besok)->where('enroll_id',$value4->enroll_id)->where('absen_log','>=', $out_lembur_min)->where('absen_log','<=', $out_lembur_max)->max('absen_log');
+                                    $absenOutBesok=collect($records)->where('tanggal_absen',$tanggal_besok)->where('enroll_id',$value4->enroll_id)->where('absen_log','>=', $in_normal_min)->where('absen_log','<=', $in_normal_max)->max('absen_log');
+                                    if($absenOut==$absenOutBesok){
+                                        if($mulai_jam_kerja_besok!=null){
+                                            $absenOut=null;
+                                        }
+                                    }
                                 }else{
                                     continue;
                                 }
