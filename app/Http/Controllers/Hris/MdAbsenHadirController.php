@@ -1503,7 +1503,7 @@ class MdAbsenHadirController extends AdminBaseController
             'P' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             'R' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             'S' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
-            'AC' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
+            
             'AD' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             'AE' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             'AN' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED4],
@@ -2899,26 +2899,24 @@ class MdAbsenHadirController extends AdminBaseController
 
     public function download_mesin_kehadiran_lintas(Request $request)
     {
-        // dd($request->all());
+
 
         $daterange = explode(" - ", $request->periode_absen);
         $tanggal_awal = date('Y-m-d', strtotime($daterange[0]));
         $tanggal_akhir = date('Y-m-d', strtotime($daterange[1]));
         $enroll_id = $request->selectEmployeeID;
         $inEnrollId='';
+        $inEnrollsId='';
         if($enroll_id){
             $implodeEnrollId=implode(",", $enroll_id);
             $allEnroll_id= '('.$implodeEnrollId.')';
             $inEnrollId = ' AND enroll_id IN '.$allEnroll_id.'';
+            $inEnrollsId = ' AND b.Badgenumber IN '.$allEnroll_id.'';
         }
         $kehadiran=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->whereRaw('tanggal_berjalan is not null'.$inEnrollId)
         ->where(function($query){
             $query->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')
-            ->orWhere(function($query){
-                $query->whereNotNull('nomor_form_lembur')
-                ->whereRaw('SUBSTRING(mulai_jam_lembur, 11,  8) > SUBSTRING(akhir_jam_lembur, 11,  8)')
-                ->whereNull('mulai_jam_kerja');
-            });
+            ->orWhereNull('mulai_jam_kerja');
         })->get();
         if(count($kehadiran) > 0 ) {
             $query = DB::connection('sqlsrv2')->table('CHECKINOUT as a')
@@ -2928,6 +2926,7 @@ class MdAbsenHadirController extends AdminBaseController
             ->join('USERINFO as b', 'a.USERID', '=', 'b.USERID')
             ->whereDate('a.CHECKTIME', '>=', $tanggal_awal)
             ->whereDate('a.CHECKTIME', '<=', date('Y-m-d', strtotime('+1 days', strtotime($tanggal_akhir))))
+            ->whereRaw('a.CHECKTIME is not null '.$inEnrollsId)
             ->get();
             $results=collect($query)->groupBy(['tanggal_absen','enroll_id','absen_log']);
             $records=[];
@@ -2960,9 +2959,9 @@ class MdAbsenHadirController extends AdminBaseController
                         $jadwal_out_max2=date("H:i", strtotime('+7 hours 59 minutes', strtotime($jadwal_out)));
 
                         $tanggal_besok= date('Y-m-d', strtotime('+1 days', strtotime($value4->tanggal_berjalan)));
+                        $tanggal_kemarin= date('Y-m-d', strtotime('-1 days', strtotime($value4->tanggal_berjalan)));
                         if($jadwal_in>$jadwal_out){
-                            $absenIn=collect($records)->where('tanggal_absen',$value4->tanggal_berjalan)->where('enroll_id',$value4->enroll_id)
-                            ->where('absen_log','>=', $jadwal_in_min)->where('absen_log','<=', $jadwal_in_max)->min('absen_log');
+                            $absenIn=collect($records)->where('tanggal_absen',$value4->tanggal_berjalan)->where('enroll_id',$value4->enroll_id)->min('absen_log');
                             // dd($absenIn);
                             $absenOut=collect($records)->where('tanggal_absen',$tanggal_besok)->where('enroll_id',$value4->enroll_id)
                                 ->where('absen_log','>=', $jadwal_out_min)->where('absen_log','<=', $jadwal_out_max2)->max('absen_log');
@@ -2979,15 +2978,33 @@ class MdAbsenHadirController extends AdminBaseController
                                 $jadwal_in_lembur=MasterDataAbsenKehadiran::where('tanggal_berjalan',$value4->tanggal_berjalan)->where('enroll_id',$value4->enroll_id)->pluck('mulai_jam_lembur')[0];
                                 $in_lembur=substr($jadwal_in_lembur,11,5);
                                 $jadwal_out_lembur=MasterDataAbsenKehadiran::where('tanggal_berjalan',$value4->tanggal_berjalan)->where('enroll_id',$value4->enroll_id)->pluck('akhir_jam_lembur')[0];
-                                $out_lembur=substr($jadwal_out_lembur,11,5);
-                                $in_lembur_min=date("H:i", strtotime('-2 hours', strtotime($in_lembur)));
-                                $in_lembur_max=date("H:i", strtotime('+1 hours 59 minutes', strtotime($in_lembur)));
-                                $out_lembur_min=date("H:i", strtotime('-2 hours', strtotime($out_lembur)));
-                                $out_lembur_max=date("H:i", strtotime('+1 hours 59 minutes', strtotime($out_lembur)));
-                                $absenIn=collect($records)->where('tanggal_absen',substr($jadwal_in_lembur,0,10))->where('enroll_id',$value4->enroll_id)
-                                ->where('absen_log','>=', $in_lembur_min)->where('absen_log','<=', $in_lembur_max)->min('absen_log');
-                                $absenOut=collect($records)->where('tanggal_absen',substr($jadwal_out_lembur,0,10))->where('enroll_id',$value4->enroll_id)
-                                ->where('absen_log','>=', $out_lembur_min)->where('absen_log','<=', $out_lembur_max)->max('absen_log');
+                                if($jadwal_out_lembur<$jadwal_in_lembur){
+                                    $out_lembur=substr($jadwal_out_lembur,11,5);
+                                    $in_lembur_min=date("H:i", strtotime('-2 hours', strtotime($in_lembur)));
+                                    $in_lembur_max=date("H:i", strtotime('+1 hours 59 minutes', strtotime($in_lembur)));
+                                    $out_lembur_min=date("H:i", strtotime('-2 hours', strtotime($out_lembur)));
+                                    $out_lembur_max=date("H:i", strtotime('+1 hours 59 minutes', strtotime($out_lembur)));
+                                    $absenIn=collect($records)->where('tanggal_absen',substr($jadwal_in_lembur,0,10))->where('enroll_id',$value4->enroll_id)
+                                    ->where('absen_log','>=', $in_lembur_min)->where('absen_log','<=', $in_lembur_max)->min('absen_log');
+                                    $absenOut=collect($records)->where('tanggal_absen',substr($jadwal_out_lembur,0,10))->where('enroll_id',$value4->enroll_id)
+                                    ->where('absen_log','>=', $out_lembur_min)->where('absen_log','<=', $out_lembur_max)->max('absen_log');
+                                }
+                                else{
+                                    continue;
+                                }
+                            }else if($value4->nomor_form_lembur==null){
+                                $mulai_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('enroll_id',$value4->enroll_id)->where('tanggal_berjalan','<',$value4->tanggal_berjalan)->orderBy('tanggal_berjalan','DESC')->limit(1)->pluck('mulai_jam_kerja')[0];
+                                $akhir_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('enroll_id',$value4->enroll_id)->where('tanggal_berjalan','<',$value4->tanggal_berjalan)->orderBy('tanggal_berjalan','DESC')->limit(1)->pluck('akhir_jam_kerja')[0];
+                                if($mulai_jam_kerja_kemarin>$akhir_jam_kerja_kemarin){
+                                    $in_lembur_min=date("H:i", strtotime('-2 hours', strtotime($mulai_jam_kerja_kemarin)));
+                                    $in_lembur_max=date("H:i", strtotime('+1 hours 59 minutes', strtotime($mulai_jam_kerja_kemarin)));
+                                    $out_lembur_min=date("H:i", strtotime('-2 hours', strtotime($akhir_jam_kerja_kemarin)));
+                                    $out_lembur_max=date("H:i", strtotime('+2 hours 59 minutes', strtotime($akhir_jam_kerja_kemarin)));
+                                    $absenIn=collect($records)->where('tanggal_absen',$value4->tanggal_berjalan)->where('enroll_id',$value4->enroll_id)->where('absen_log','>=', $in_lembur_min)->where('absen_log','<=', $in_lembur_max)->min('absen_log');
+                                    $absenOut=collect($records)->where('tanggal_absen',$tanggal_besok)->where('enroll_id',$value4->enroll_id)->where('absen_log','>=', $out_lembur_min)->where('absen_log','<=', $out_lembur_max)->max('absen_log');
+                                }else{
+                                    continue;
+                                }
                             }
                             else{
                                 $absenIn=null;
@@ -3092,7 +3109,7 @@ class MdAbsenHadirController extends AdminBaseController
                     MasterDataAbsenKehadiran::where('uuid', $v->uuid)->update( $data_update);
                 }
             }
-
+            
         }
     }
 
