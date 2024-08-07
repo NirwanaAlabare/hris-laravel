@@ -2961,7 +2961,8 @@ class MdAbsenHadirController extends AdminBaseController
                         $tanggal_besok= date('Y-m-d', strtotime('+1 days', strtotime($value4->tanggal_berjalan)));
                         $tanggal_kemarin= date('Y-m-d', strtotime('-1 days', strtotime($value4->tanggal_berjalan)));
                         if($jadwal_in>$jadwal_out){
-                            $absenIn=collect($records)->where('tanggal_absen',$value4->tanggal_berjalan)->where('enroll_id',$value4->enroll_id)->min('absen_log');
+                            $absenIn=collect($records)->where('tanggal_absen',$value4->tanggal_berjalan)->where('enroll_id',$value4->enroll_id)
+                            ->where('absen_log','>=', $jadwal_in_min)->where('absen_log','<=', $jadwal_in_max)->min('absen_log');
                             // dd($absenIn);
                             $absenOut=collect($records)->where('tanggal_absen',$tanggal_besok)->where('enroll_id',$value4->enroll_id)
                                 ->where('absen_log','>=', $jadwal_out_min)->where('absen_log','<=', $jadwal_out_max2)->max('absen_log');
