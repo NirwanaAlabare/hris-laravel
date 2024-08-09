@@ -102,7 +102,7 @@
                     </div>
                     <div class="row">
                         <div class="col-3">
-                            <label class="form-label text-primary">ENROLL ID</label>
+                            <label class="form-label text-primary pt-1">KARYAWAN</label>
                         </div>
                         <div class="col-9">
                             <select id="selectEmployee" name="selectEmployee[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 Employee" style="width: 699.238px;" required>
