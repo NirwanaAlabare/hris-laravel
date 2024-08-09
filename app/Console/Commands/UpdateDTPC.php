@@ -123,7 +123,11 @@ class UpdateDTPC extends Command
                             $total_dt_real=$total_dt;
                         }
                     }else{
-                        $total_dt_real=$total_dt;
+                        if($total_dt_real<=10){
+                            $total_dt_real=0;
+                        }else{
+                            $total_dt_real=$total_dt;
+                        }
                     }
                 }else{
                     if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){

@@ -78,32 +78,30 @@
 
         <div class="col-md-6">
             <div class="card shadow card-collapsed">
-                <div class="card-header text-white bg-gradient-primary p-2">
+                <div class="card-header text-white bg-gradient-primary py-2">
                     <div class="card-title">MESIN ABSENSI</div>
                     <div class="card-options ">
-                        <a href="#" class="card-options-collapse mr-2" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                        <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
                     </div>
                 </div>
-                <div class="card-body p-3">
-                    <div class="row">
-                        <div class="col-3 pt-2">
-                            <label class="form-label text-primary">TANGGAL ABSENSI</label>
+                <div class="card-body p-5">
+                    <div class="row pb-3">
+                        <div class="col-3">
+                            <label class="form-label text-primary pt-1">TANGGAL ABSENSI</label>
                         </div>
                         <div class="col-9">
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text">
-                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
-                                        </div>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
                                     </div>
-                                    <input readonly id="tanggal_mesin_absensi" class="form-control fc-datepicker" placeholder="DD-MM-YYYY" type="text">
                                 </div>
+                                <input id="tanggal_mesin_absensi" type="text" class="form-control data_range" required></input>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3 pt-2">
+                        <div class="col-3">
                             <label class="form-label text-primary">ENROLL ID</label>
                         </div>
                         <div class="col-9">
@@ -115,59 +113,55 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer bg-light m-0 p-1">
-                    <div class="text-white">
-                        <a id="btn-updateKehadiran" class="btn btn-app btn-primary mr-0 mt-0 mb-0 text-white"><span><i class="fa fa-download"></i></span> UPDATE ABSENSI</a>
-                    </div>
+                <div class="card-footer py-2">
+                    <a id="btn-updateKehadiran" class="btn btn-app btn-primary text-white"><span><i class="fa fa-download"></i></span> UPDATE ABSENSI</a>
                 </div>
             </div>
         </div><!-- col end -->
  
         <div class="col-md-6">
             <div class="card shadow card-collapsed">
-                <div class="card-header text-white bg-gradient-primary p-2">
+                <div class="card-header text-white bg-gradient-primary py-2">
                     <div class="card-title">MESIN ABSENSI LINTAS HARI</div>
                     <div class="card-options ">
-                        <a href="#" class="card-options-collapse mr-2" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                        <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
                     </div>
                 </div>
                 <form id="form_update_lintashari" method="post">
-                        @csrf
-                    <div class="card-body p-3">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="form-label">TANGGAL ABSENSI  : </label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text">
-                                                <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
-                                            </div>
-                                        </div>
-                                        <input id="" name="periode_absen" type="text" class="form-control data_range" required></input>
-                                    </div>
-                                </div>
+                    @csrf
+                    <div class="card-body p-5">
+                        <div class="row pb-3">
+                            <div class="col-3">
+                                <label class="form-label text-primary pt-1">TANGGAL</label>
                             </div>
-                            <div class="col-md-12">
-                                <label class="form-label">PILIH KARYAWAN  : </label>
-                                <div class="form-group">
-                                    <span class="input-group">
-                                        <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID" style="width: 699.238px;" required>
-                                            @foreach ($selectemployee as $r_empl)
-                                                <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
-                                            @endforeach
-                                        </select>
-                                    </span>
+                            <div class="col-9">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                        </div>
+                                    </div>
+                                    <input name="periode_absen" type="text" class="form-control data_range" required></input>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-footer bg-light m-0 p-1">
-                        <div class="text-white">
-                            <a id="BtnUpdateLintasHari" class="btn btn-app btn-primary mr-0 mt-0 mb-0 text-white BtnUpdateLintasHari"><span><i class="fa fa-download"></i></span> UPDATE ABSENSI</a>
+                        <div class="row">
+                            <div class="col-3">
+                                <label class="form-label text-primary pt-1">KARYAWAN</label>
+                            </div>
+                            <div class="col-9">
+                                <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID" style="width: 699.238px;" required>
+                                    @foreach ($selectemployee as $r_empl)
+                                        <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </form>
+                <div class="card-footer py-2">
+                    <a id="BtnUpdateLintasHari" class="btn btn-app btn-primary text-white BtnUpdateLintasHari"><span><i class="fa fa-download"></i></span> UPDATE ABSENSI</a>
+                </div>
             </div>
         </div><!-- col end -->
 
@@ -177,17 +171,17 @@
 
             @csrf
             <div class="card shadow">
-                <div class="card-header text-white bg-gradient-primary p-2">
+                <div class="card-header text-white bg-gradient-primary py-2">
                     <div class="card-title">KEHADIRAN : </div>
                     <input type="hidden" id="daterange1" name="daterange1">
-                    <a class="ml-2 p-0 nav-link card-title" id="daterange-btn1" data-toggle="tooltip"
+                    <a class="nav-link card-title" id="daterange-btn1" data-toggle="tooltip"
                     title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran">
                     </a>
                     <div class="card-options ">
-                        <a href="#" class="card-options-collapse mr-2" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                        <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
                     </div>
                 </div>
-                <div class="card-body p-3">
+                <div class="card-body px-5 pb-2 pt-4">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -242,7 +236,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer bg-light m-0 p-1">
+                <div class="card-footer bg-light py-3">
                     <div class="text-white">
                         <button type="submit" id="btn-exportexcel" class="btn btn-app btn-primary mr-0 mt-0 mb-0" data-toggle="tooltip" title="Export Data ke File Excel"><i class="ion-ios7-download"></i> EXPORT</button>
                         <button type="button" id="btn-importexcel" class="btn btn-app btn-success mr-0 mt-0 mb-0" title="Import ke database" data-target="#import_data_kehadiran" data-toggle="modal"><i class="fa fa-file-excel-o"></i> IMPORT</button>
@@ -262,13 +256,13 @@
 
         <div id="data-absensi-karyawan" class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
             <div class="card shadow">
-                <div class="card-header text-white bg-gradient-primary p-2">
+                <div class="card-header text-white bg-gradient-primary py-2">
                     <div class="card-title">DATA ABSENSI KARYAWAN</div>
                     <div class="card-options ">
                         <a href="#" class="card-options-collapse mr-2" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
                     </div>
                 </div>
-                <div class="card-body p-3">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="table-responsive">
@@ -304,7 +298,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer bg-light p-1">
+                <div class="card-footer bg-light">
                 </div>
             </div>
         </div>
@@ -1242,8 +1236,8 @@
 
             $('#daterange-btn1').html(htmlDateRange);
             $('#daterange1').val(daterange1);
-            $('#tanggal_mesin_absensi').val(dateUpdateKehadiran);
 
+            
             $("#data-absensi-karyawan").hide();
             $("#selectBagian").append(new Option("-- PILIH BAGIAN --", ""));
         });
@@ -1720,18 +1714,17 @@
 
         $('body').on('click', '#btn-updateKehadiran', function (event) {
 
-            var tgl = defaultDate($('#tanggal_mesin_absensi').val());
-            var tanggal = tgl.split(' s/d ');
+            var tgl = $('#tanggal_mesin_absensi').val();
             
             // LAGI COBA TEST CLOSING PAYROLL
             $.ajax({
                 type:"POST",
-                url: "{{route('hris.dataclosingpayroll.ajax_getclosing')}}",
+                url: "{{route('hris.dataclosingpayroll.ajax_getclosing_datahadir')}}",
                 dataType: 'json',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 data: {
-                    tanggal:tanggal[0],
+                    tanggal:tgl,
                 },
                 dataType: 'json',
                 success: function(res){
@@ -1747,14 +1740,16 @@
                         });
                     } else {
                         var enroll_id=$('select[name="selectEmployee[]"]').val();
-                        var tanggal_mesin_absensi = defaultDate($('#tanggal_mesin_absensi').val());
-                        var tgl_absensi_pilih = new Date(tanggal_mesin_absensi);
+                        var tanggal_mesin_absensi = $('#tanggal_mesin_absensi').val();
+                        var range_tanggal = tanggal_mesin_absensi.split(' - ');
+                        var tgl_absensi_satu = new Date(range_tanggal[0]);
+                        var tgl_absensi_dua = new Date(range_tanggal[1]);
                         var days = ['MINGGU', 'SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU'];
-                        var months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
+                        var months = ['JAN','FEB','MARET','APRIL','MAY','JUNI','JULI','AGU','SEP','OKT','NOV','DES'];
 
-                        tgl_absensi_pilih = days[tgl_absensi_pilih.getDay()] + " TANGGAL " + tgl_absensi_pilih.getDate() + " " + months[tgl_absensi_pilih.getMonth()] + " " + tgl_absensi_pilih.getFullYear();
-
-                        text  = "DATA KEHADIRAN PADA HARI " + tgl_absensi_pilih + " AKAN DI REPLACE OLEH DATA TERBARU DARI MESIN ABSENSI !!!";
+                        tgl_absensi_satu = days[tgl_absensi_satu.getDay()] + ", " + tgl_absensi_satu.getDate() + " " + months[tgl_absensi_satu.getMonth()] + " " + tgl_absensi_satu.getFullYear();
+                        tgl_absensi_dua = days[tgl_absensi_dua.getDay()] + ", " + tgl_absensi_dua.getDate() + " " + months[tgl_absensi_dua.getMonth()] + " " + tgl_absensi_dua.getFullYear();
+                        text  = "DATA KEHADIRAN HARI " + tgl_absensi_satu + " S/D "+tgl_absensi_dua+" AKAN DI REPLACE OLEH DATA TERBARU DARI MESIN ABSENSI !!!";
                         message = "APAKAH ANDA YAKIN ?";
                         type = "warning";
                         swal({

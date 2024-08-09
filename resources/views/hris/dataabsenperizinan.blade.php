@@ -768,7 +768,7 @@
             $("#form1 :input").prop("disabled", false);
             $('#data-perizinan-iks').hide("slow");
             $('#data-karyawan').show("slow");
-            $('#btn-save-izin').html('<i class="fa fa-save"></i> Add');
+            $('#btn-save-izin').html('<i class="fa fa-save"></i> Save');
             $('#btn-save-iks').html('<i class="fa fa-save"></i> Add');
 
             var today = new Date();

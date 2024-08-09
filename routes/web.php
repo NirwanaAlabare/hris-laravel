@@ -296,6 +296,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('dataclosingpayroll/index',['as'=>'hris.dataclosingpayroll.index','uses'=>'DataClosingPayrollController@index']);
     Route::post('dataclosingpayroll/ajax_data',['as'=>'hris.dataclosingpayroll.ajax_data','uses'=>'DataClosingPayrollController@ajax_data']);
     Route::post('dataclosingpayroll/ajax_getclosing/',['as'=>'hris.dataclosingpayroll.ajax_getclosing','uses'=> 'DataClosingPayrollController@ajax_getclosing']);
+    Route::post('dataclosingpayroll/ajax_getclosing_datahadir/',['as'=>'hris.dataclosingpayroll.ajax_getclosing_datahadir','uses'=> 'DataClosingPayrollController@ajax_getclosing_datahadir']);
     Route::post('dataclosingpayroll/create/',['as'=>'hris.dataclosingpayroll.create','uses'=> 'DataClosingPayrollController@create']);
     Route::post('dataclosingpayroll/update/',['as'=>'hris.dataclosingpayroll.update','uses'=> 'DataClosingPayrollController@update']);
     Route::post('dataclosingpayroll/destroy/',['as'=>'hris.dataclosingpayroll.destroy','uses'=> 'DataClosingPayrollController@destroy']);

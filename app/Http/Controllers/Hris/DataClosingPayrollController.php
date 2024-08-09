@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Hris;
 use App\Http\Controllers\AdminBaseController;
 use App\Models\DataClosingPayroll;
 use GuzzleHttp\Client;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
@@ -131,13 +132,58 @@ class DataClosingPayrollController extends AdminBaseController
         }
     }
 
+    public function ajax_getclosing_datahadir(Request $request)
+    {
+        $loggedAdmin = Auth::guard('admin')->user();
+        $operator = $loggedAdmin->email;
+
+        $tanggal = $request->tanggal;
+        $tanggal_all=explode(' - ',$tanggal);
+
+        $tanggal_awal=$tanggal_all[0];
+        $awal = Carbon::parse($tanggal_awal)->format('Y-m-d');
+        $tanggal_akhir=$tanggal_all[1];
+        $akhir = Carbon::parse($tanggal_akhir)->format('Y-m-d');
+        $query = DataClosingPayroll::where('istemp', '=', 1)->get();
+
+        $json_data = array(
+            "status" => "info",
+            "message" => "<b>INFO:</b> CEK CLOSING SELESAI."
+        );
+
+        foreach($query as $value) {
+            $query1 = DataClosingPayroll::whereRaw('"' . $awal . '" BETWEEN "' . $value->start_periode . '" AND "' . $value->end_periode . '" OR "'.$akhir.'" BETWEEN "'.$value->start_periode.'" AND "'.$value->end_periode.'"')
+                        ->count();
+
+            setlocale(LC_ALL, 'id-ID', 'id_ID');
+            $datePeriode = explode(" s/d ", $value->periode_payroll);
+            $infoPeriodePayroll = strtoupper(strftime("%A, %d %b %Y", strtotime($datePeriode[0])) . ' s/d ' . strftime("%A, %d %b %Y", strtotime($datePeriode[1])));
+
+            if($query1) {
+                $json_data = array(
+                    "status" => "error",
+                    "message" => "<b>ERROR :</b> DATA PERIODE " . $infoPeriodePayroll . " <b>SUDAH CLOSING SEMENTARA</b>.",
+                    "ada" => true
+                );
+                break;
+            } else {
+                $json_data = array(
+                    "status" => "info",
+                    "message" => "<b>INFO:</b> CEK CLOSING SELESAI.",
+                    "ada" => false
+                );    
+            }                
+        }
+
+        return json_encode($json_data);
+    }
     public function ajax_getclosing(Request $request)
     {
         $loggedAdmin = Auth::guard('admin')->user();
         $operator = $loggedAdmin->email;
 
         $tanggal = $request->tanggal;
-     
+        
         $query = DataClosingPayroll::where('istemp', '=', 1)->get();
 
         $json_data = array(

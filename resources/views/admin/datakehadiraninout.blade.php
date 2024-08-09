@@ -298,8 +298,8 @@
                                 <th colspan=2>STATUS ABSEN</th>
                             </tr>
                             <tr>
-                                <td><input class="form-control" id="absen_masuk_kerja" name="absen_masuk_kerja" placeholder="--:--" type="text" maxlength="5"></td>
-                                <td><input class="form-control" id="absen_pulang_kerja" name="absen_pulang_kerja" placeholder="--:--" type="text" maxlength="5"></td>
+                                <td><input class="form-control" id="absen_masuk_kerja" name="absen_masuk_kerja" placeholder="--:--" type="text" maxlength="5" onchange="ubah_status()"></td>
+                                <td><input class="form-control" id="absen_pulang_kerja" name="absen_pulang_kerja" placeholder="--:--" type="text" maxlength="5" onchange="ubah_status()"></td>
                                 <td colspan=2>
                                     <select id="status_absen" class="form-control" data-placeholder="-- Pilih Jenis Perijinan --">
                                         <option value="">-- Pilih Satus Absen --</option>
@@ -896,7 +896,17 @@
             $("#datatable-ajax-crud tbody tr").removeClass('bg-cyan');
             $(this).addClass('bg-cyan');
          });
-
+         function ubah_status(){
+            var absen_masuk_kerja=$('#absen_masuk_kerja').val();
+            var absen_pulang_kerja=$('#absen_pulang_kerja').val();
+            if(absen_masuk_kerja!='' && absen_pulang_kerja!=''){
+                $('#status_absen').val('');
+            }else if((absen_masuk_kerja=='' && absen_pulang_kerja!='') || (absen_masuk_kerja!='' && absen_pulang_kerja=='')){
+                $('#status_absen').val('TL');
+            }else{
+                $('#status_absen').val('M');
+            }
+         }
         $('body').on('click', '#btn-save-changes', function (event) {
             var tanggal_berjalan = $("#tanggal_berjalan").val();
             var kode_hari = $("#kode_hari").val();
