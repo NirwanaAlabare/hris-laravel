@@ -32,5 +32,8 @@ class DashboardController extends AdminBaseController
     {
         return View::make('hris/dashboard', $this->data);
     }
+    public function tes(){
+        return View::make('hris/dashboard_page', $this->data);
+    }
 
 }

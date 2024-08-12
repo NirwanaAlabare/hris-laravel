@@ -59,6 +59,7 @@ Route::group([ 'prefix' => 'admin','namespace' => 'Admin'], function()
 Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namespace' => 'Hris'], function()
 {
     Route::get('dashboard/index',['as'=>'hris.dashboard.index','uses'=>'DashboardController@index']);
+    Route::get('dashboard',['as'=>'hris.dashboard.tes','uses'=>'DashboardController@tes']);
 
     //Route::resource('mdabsenhadir', 'MdAbsenHadirController',['as' => 'hris']);
     Route::get('mdabsenhadir/datahadir',['as'=>'hris.mdabsenhadir.datahadir','uses'=>'MdAbsenHadirController@datahadir']);

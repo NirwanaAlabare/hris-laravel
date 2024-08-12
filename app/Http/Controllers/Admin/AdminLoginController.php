@@ -59,7 +59,7 @@ class AdminLoginController extends AdminBaseController
             $user->save();
             Session::put('lock', '0'); // Reset the lock screen session;
 
-            return Reply::redirect(route('admin.admin.editprofile'), 'messages.loginSuccess');
+            return Reply::redirect(route('hris.dashboard.tes'), 'messages.loginSuccess');
         }
 
 
