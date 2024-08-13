@@ -1453,6 +1453,7 @@ class MdAbsenHadirController extends AdminBaseController
 
         $sheet->mergeCells('Z6:Z7');
         $sheet->writeTo('Z6', 'ALASAN ABSEN');
+
         $sheet->mergeCells('AB6:AB7');
         $sheet->writeTo('AB6', 'KETERANGAN');
 
@@ -1654,8 +1655,8 @@ class MdAbsenHadirController extends AdminBaseController
                 $Kehadiran->status_absen,
                 $kode_ijin_payroll,
                 $Kehadiran->absen_alasan,
-                $Kehadiran->catatan_hrd,
                 "",
+                $Kehadiran->catatan_hrd,
                 $Kehadiran->nomor_form_lembur_form,
                 substr($Kehadiran->mulai_jam_lembur_form, 11, 5),
                 substr($Kehadiran->akhir_jam_lembur_form, 11, 5),
