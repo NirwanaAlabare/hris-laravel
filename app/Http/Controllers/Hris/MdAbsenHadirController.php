@@ -1502,6 +1502,7 @@ class MdAbsenHadirController extends AdminBaseController
             'R' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             'S' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             
+            'AB' => ['width' => 20],
             'AD' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             'AE' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
             'AN' => ['format' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED4],
