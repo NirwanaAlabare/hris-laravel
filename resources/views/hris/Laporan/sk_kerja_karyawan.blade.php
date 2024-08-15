@@ -127,7 +127,7 @@
         </tr>
         <tr>
             <td></td>
-            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;text-align:justify" colspan="4">Demikian Surat Keterangan ini dibuat untuk {{$reason}}</td>
+            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;text-align:justify" colspan="4">Demikian Surat Keterangan ini dibuat untuk pencairan BPJS Ketenagakerjaan</td>
             <td></td>
         </tr>
         <tr>

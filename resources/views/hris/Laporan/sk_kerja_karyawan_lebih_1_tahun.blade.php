@@ -161,7 +161,7 @@
                 <td></td>
                 <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><u>Sebab Berhenti Bekerja</u></td>
                 <td>:</td>
-                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{$reason}}</td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">HABIS KONTRAK</td>
                 <td></td>
             </tr>
             <tr>

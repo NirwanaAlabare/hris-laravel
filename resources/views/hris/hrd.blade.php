@@ -81,13 +81,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="row py-2">
-                    <div class="col-4 pl-4" id="reason_text" style="font-weight: bold">
-                    </div>
-                    <div class="col-7">
-                        <input type="text" class="form-control py-0 px-2" id="reason_input" style="background-color:white">
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col-4">
                     </div>
@@ -477,8 +470,7 @@
     function export_sk(){
         var enroll_id=$('#enroll_id_input').val();
         var no_form='NO. '+$('#no_form_input').val()+'/'+$('#no_form_input_next').val();
-        var reason=$('#reason_input').val();
-        var url = 'export_pdf_sk_kerja?enroll_id='+enroll_id+'&no_form='+no_form+'&reason='+reason;
+        var url = 'export_pdf_sk_kerja?enroll_id='+enroll_id+'&no_form='+no_form;
         window.open(url, '_blank');
     }
     function export_sk_bni(){
