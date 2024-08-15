@@ -60,6 +60,9 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
 {
     Route::get('dashboard/index',['as'=>'hris.dashboard.index','uses'=>'DashboardController@index']);
     Route::get('dashboard',['as'=>'hris.dashboard.tes','uses'=>'DashboardController@tes']);
+    Route::get('hrd/index',['as'=>'hris.hrd.index','uses'=>'HRDController@index']);
+    Route::get('hrd/export_pdf_sk_kerja',['as'=>'hris.hrd.export_pdf_sk_kerja','uses'=>'HRDController@export_pdf_sk_kerja']);
+    Route::get('hrd/export_pdf_sk_bni',['as'=>'hris.hrd.export_pdf_sk_bni','uses'=>'HRDController@export_pdf_sk_bni']);
 
     //Route::resource('mdabsenhadir', 'MdAbsenHadirController',['as' => 'hris']);
     Route::get('mdabsenhadir/datahadir',['as'=>'hris.mdabsenhadir.datahadir','uses'=>'MdAbsenHadirController@datahadir']);
@@ -169,6 +172,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('employeeatr/get_photo/',['as'=>'hris.employeeatr.get_photo','uses'=>'EmployeeAtrController@get_photo']);
     Route::post('employeeatr/select_employee/',['as'=>'hris.employeeatr.select_employee','uses'=>'EmployeeAtrController@select_employee']);
     Route::post('employeeatr/store_photo/',['as'=>'hris.employeeatr.store_photo','uses'=> 'EmployeeAtrController@store_photo']);
+    Route::post('employeeatr/get_employee/',['as'=>'hris.employeeatr.get_employee','uses'=>'EmployeeAtrController@get_employee']);
 
     // REF ABSEN IJIN
     Route::get('refabsenijin/index',['as'=>'hris.refabsenijin.index','uses'=>'RefAbsenIjinController@index']);

@@ -15,20 +15,34 @@
 
 <div class="row pt-7 px-3">
     <div class="col-lg-12 col-md-12">
-                <div class="row p-5">
-                    <div class="col-auto">
-                        <div class="card">
-                            <div class="card-body p-0">
+        <div class="row p-5">
+            <div class="col-auto">
+                <div class="card" style="background-color: rgb(41, 115, 138)">
+                    <div class="card-body p-0">
+                        <div class="row">
+                            <div class="col" style="background-color: rgb(41, 115, 138)">
                                 <a href="{{route('hris.dashboard.index')}}">
                                     <div class="d-flex h-100 flex-column justify-content-between">
-                                        <img src="{{URL::asset('assets/image/time-and-attendance.jpg')}}" class="img-fluid p-3" alt="qr code image" width="200">
-                                        <p class="text-center" style="color:black"><b>ATTENDANCE AND PAYROLL</b></p>
+                                        <img src="{{URL::asset('assets/image/time-and-attendance.png')}}" class="img-fluid p-3" alt="qr code image" width="200">
+                                        <p class="text-center" style="color:white"><b>ATTENDANCE AND PAYROLL</b></p>
                                     </div>
                                 </a>
                             </div>
+                            @if($role=='superadmin')
+                            <div class="col">
+                                <a href="{{route('hris.hrd.index')}}">
+                                    <div class="d-flex h-100 flex-column justify-content-between">
+                                        <img src="{{URL::asset('assets/image/time-and-attendance copy.png')}}" class="img-fluid p-3" alt="qr code image" width="200">
+                                        <p class="text-center" style="color:white"><b>KEPERSONALIAAN</b></p>
+                                    </div>
+                                </a>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
     </div>
 </div>
 <!-- row end -->

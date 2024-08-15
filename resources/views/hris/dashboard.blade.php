@@ -13,7 +13,7 @@
 <!-- page-header -->
 <div class="page-header shadow pr-2 m-0 pt-0 pb-0 pl-2">
     <ol class="breadcrumb breadcrumb-arrow m-0 p-0">
-        <li><a href="#">DASHBOARD</a></li>
+        <li><a href="{{route('hris.dashboard.tes')}}">DASHBOARD</a></li>
         <li class="active"><span>KEHADIRAN</span></li>
     </ol>
     <div class="ml-auto">

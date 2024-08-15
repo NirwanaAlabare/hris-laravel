@@ -107,6 +107,10 @@ class EmployeeAtrController extends AdminBaseController
         })->get();
         return $employee;
     }
+    public function get_employee(){
+        $employee=EmployeeAtribut::where('enroll_id',request()->id)->get();
+        return $employee;
+    }
     public function store_photo(){
         $image = request()->file('photo');
         $employee=EmployeeAtribut::where('enroll_id',request()->enroll_id)->get();
