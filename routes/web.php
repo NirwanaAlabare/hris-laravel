@@ -153,6 +153,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     // EMPLOYEE ATTRIBUTE
     Route::get('employeeatr/index',['as'=>'hris.employeeatr.index','uses'=>'EmployeeAtrController@index']);
     Route::post('employeeatr/ajax_getemployeeatr/',['as'=>'hris.employeeatr.ajax_getemployeeatr','uses'=> 'EmployeeAtrController@ajax_getemployeeatr']);
+    Route::post('employeeatr/ajax_getemployeeatr2/',['as'=>'hris.employeeatr.ajax_getemployeeatr2','uses'=> 'EmployeeAtrController@ajax_getemployeeatr2']);
     Route::post('employeeatr/ajax_getemployeeids/',['as'=>'hris.employeeatr.ajax_getemployeeids','uses'=> 'EmployeeAtrController@ajax_getemployeeids']);
     Route::post('employeeatr/ajax_getempatr/',['as'=>'hris.employeeatr.ajax_getempatr','uses'=> 'EmployeeAtrController@ajax_getempatr']);
     Route::post('employeeatr/ajax_getselectdept/',['as'=>'hris.employeeatr.ajax_getselectdept','uses'=> 'EmployeeAtrController@ajax_getselectdept']);

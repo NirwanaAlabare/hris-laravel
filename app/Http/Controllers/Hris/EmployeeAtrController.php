@@ -403,6 +403,195 @@ class EmployeeAtrController extends AdminBaseController
         echo json_encode($json_data);
         }
     }
+    public function ajax_getemployeeatr2(Request $request)
+    {
+
+        if(request()->ajax()) {
+
+        $columns = array(
+            0 => 'nik',
+            1 => 'enroll_id',
+            2 => 'employee_name'
+        );
+
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+        $totalData = 0;
+        $totalFiltered = 0;
+        $department=$request->department_id;
+        $sub_dept_id=$request->sub_dept_id;
+        $inDepartment='';
+        $inSubDepartment='';
+        if($department){
+            $inDepartment = ' AND department_name = "'.$department.'"';
+        }
+        if($sub_dept_id){
+            $inSubDepartment = ' AND sub_dept_id = "'.$sub_dept_id.'"';
+        }
+        if(empty($request->input('search.value')))
+        {
+            $query =  EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')
+                            ->offset($start)
+                            ->limit($limit)
+                            ->orderBy($order,$dir)
+                            ->get();
+
+            $totalData = EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')->count();
+            $totalFiltered = $totalData;
+
+        } else {
+            $search = $request->input('search.value');
+
+            $query =  EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
+                $query->where('employee_id','LIKE',"%{$search}%")
+                ->orWhere('nik','LIKE',"%{$search}%")
+                ->orWhere('enroll_id','LIKE',"%{$search}%")
+                ->orWhere('employee_name','LIKE',"%{$search}%")
+                ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
+                ->orWhere('department_name','LIKE',"%{$search}%")
+                ->orWhere('sub_dept_name','LIKE',"%{$search}%")
+                ->orWhere('work_status','LIKE',"%{$search}%")
+                ->orWhere('employee_status','LIKE',"%{$search}%")
+                ->orWhere('posisi_name','LIKE',"%{$search}%");
+            })
+            ->offset($start)
+            ->limit($limit)
+            ->orderBy($order,$dir)
+            ->get();
+
+            $totalData = EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
+                $query->where('employee_id','LIKE',"%{$search}%")
+                ->orWhere('nik','LIKE',"%{$search}%")
+                ->orWhere('enroll_id','LIKE',"%{$search}%")
+                ->orWhere('employee_name','LIKE',"%{$search}%")
+                ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
+                ->orWhere('department_name','LIKE',"%{$search}%")
+                ->orWhere('sub_dept_name','LIKE',"%{$search}%")
+                ->orWhere('work_status','LIKE',"%{$search}%")
+                ->orWhere('employee_status','LIKE',"%{$search}%")
+                ->orWhere('posisi_name','LIKE',"%{$search}%");
+            })->count();
+
+            $totalFiltered = $totalData;
+
+        }
+
+        $data = array();
+        if(!empty($query))
+        {
+            foreach ($query as $q)
+            {
+                $nestedData['employee_id'] = $q->employee_id;
+                $nestedData['employee_name'] = $q->employee_name;
+                $nestedData['jenis_kelamin'] = $q->jenis_kelamin;
+                $nestedData['tempat_lahir'] = $q->tempat_lahir;
+                $nestedData['tanggal_lahir'] = $q->tanggal_lahir;
+                $nestedData['golongan_darah'] = $q->golongan_darah;
+                $nestedData['email'] = $q->email;
+                $nestedData['nomor_tlpn'] = $q->nomor_tlpn;
+                $nestedData['agama'] = $q->agama;
+                $nestedData['status_kawin'] = $q->status_kawin;
+                $nestedData['npwp'] = $q->npwp;
+                $nestedData['nomor_ktp'] = $q->nomor_ktp;
+                $nestedData['nomor_kk'] = $q->nomor_kk;
+                $nestedData['ptkp'] = $q->ptkp;
+                $nestedData['pendidikan_terakhir'] = $q->pendidikan_terakhir;
+                $nestedData['jurusan_pendidikan'] = $q->jurusan_pendidikan;
+                $nestedData['nama_bank'] = $q->nama_bank;
+                $nestedData['nomor_rekening_bank'] = $q->nomor_rekening_bank;
+                $nestedData['ibu_kandung'] = $q->ibu_kandung;
+                $nestedData['propinsi'] = $q->propinsi;
+                $nestedData['kota_kab'] = $q->kota_kab;
+                $nestedData['kecamatan'] = $q->kecamatan;
+                $nestedData['kelurahan_desa'] = $q->kelurahan_desa;
+                $nestedData['alamat_rumah'] = $q->alamat_rumah;
+                $nestedData['alamat_sementara'] = $q->alamat_sementara;
+                $nestedData['site_nirwana_id'] = $q->site_nirwana_id;
+                $nestedData['site_nirwana_name'] = $q->site_nirwana_name;
+                $nestedData['department_id'] = $q->department_id;
+                $nestedData['department_name'] = $q->department_name;
+                $nestedData['sub_dept_id'] = $q->sub_dept_id;
+                $nestedData['sub_dept_name'] = $q->sub_dept_name;
+                $nestedData['sewing_nonsewing'] = $q->sewing_nonsewing;
+                $nestedData['direct_indirect'] = $q->direct_indirect;
+                $nestedData['enroll_id'] = $q->enroll_id;
+                $nestedData['join_date'] = $q->join_date;
+
+                $new_employee = 0;
+                $bulanKemarin = date('Y-m-d', strtotime('first day of last month'));
+                $bulanSkrng = date('Y-m-d', strtotime('last day of this month'));
+                if (($q->join_date >= $bulanKemarin) && ($q->join_date <= $bulanSkrng)) {
+                    $new_employee = 1;
+                }
+
+                $nestedData['new_employee'] = $new_employee;
+
+                $nestedData['nik'] = $q->nik;
+                $nestedData['status_aktif'] = $q->status_aktif;
+                $nestedData['status_jabatan'] = $q->status_jabatan;
+                $nestedData['status_kontrak_tetap'] = $q->status_kontrak_tetap;
+                $nestedData['status_staff'] = $q->status_staff;
+
+                $nestedData['tanggal_resign'] = $q->tanggal_resign;
+                $deactive = 0;
+                if (($q->tanggal_resign <= now()) && ($q->tanggal_resign !== null ) ) {
+                    $deactive = 1;
+                }
+
+                $nestedData['deactive'] = $deactive;
+
+                $nestedData['tunjangan'] = $q->tunjangan;
+                $nestedData['kode_grade'] = $q->kode_grade;
+                $nestedData['referensi'] = $q->referensi;
+                $nestedData['employee_name_atasan'] = $q->employee_name_atasan;
+                $nestedData['status_aktif_bpjs_tk'] = $q->status_aktif_bpjs_tk;
+                $nestedData['tanggal_bpjs_ketenagakerjaan'] = $q->tanggal_bpjs_ketenagakerjaan;
+                $nestedData['nomor_bpjs_ketenagakerjaan'] = $q->nomor_bpjs_ketenagakerjaan;
+                $nestedData['status_aktif_bpjs_ks'] = $q->status_aktif_bpjs_ks;
+                $nestedData['tanggal_bpjs_kesehatan'] = $q->tanggal_bpjs_kesehatan;
+                $nestedData['nomor_bpjs_kesehatan'] = $q->nomor_bpjs_kesehatan;
+                $nestedData['premi'] = $q->premi;
+                $nestedData['pengalaman_bekerja'] = $q->pengalaman_bekerja;
+                $nestedData['lokasi_file_cv'] = $q->lokasi_file_cv;
+                $nestedData['nama_kerabat'] = $q->nama_kerabat;
+                $nestedData['nomor_tlpn_kerabat'] = $q->nomor_tlpn_kerabat;
+                $nestedData['hubungan_kerabat'] = $q->hubungan_kerabat;
+                $nestedData['alamat_kerabat'] = $q->alamat_kerabat;
+                $nestedData['tanggal_vaccine1'] = $q->tanggal_vaccine1;
+                $nestedData['nama_vaksin1'] = $q->nama_vaksin1;
+                $nestedData['tanggal_vaccine2'] = $q->tanggal_vaccine2;
+                $nestedData['nama_vaksin2'] = $q->nama_vaksin2;
+                $nestedData['tanggal_vaccine3'] = $q->tanggal_vaccine3;
+                $nestedData['nama_vaksin3'] = $q->nama_vaksin3;
+                $nestedData['golongan_sim'] = $q->golongan_sim;
+                $nestedData['nomor_sim'] = $q->nomor_sim;
+                $nestedData['tanggal_expire_sim'] = $q->tanggal_expire_sim;
+                $nestedData['catatan'] = $q->catatan;
+                $nestedData['lokasi_foto'] = $q->lokasi_foto;
+                $nestedData['operator'] = $q->operator;
+                $nestedData['tanggal_mulai_kontrak'] = $q->tanggal_mulai_kontrak;
+                $nestedData['tanggal_akhir_kontrak'] = $q->tanggal_akhir_kontrak;
+                $nestedData['catatan_kontrak'] = $q->catatan_kontrak;
+                $nestedData['created_at'] = substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5);
+                $nestedData['updated_at'] = substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5);
+
+                $data[] = $nestedData;
+
+            }
+        }
+
+        $json_data = array(
+            "draw"            => intval($request->input('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data
+            );
+
+        echo json_encode($json_data);
+        }
+    }
 
     public function ajax_getemployeeids(Request $request)
     {

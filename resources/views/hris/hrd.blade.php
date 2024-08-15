@@ -217,7 +217,7 @@
             scrollY: '500px',
             scrollCollapse: true,
             "ajax": {
-                "url": "{{ route('hris.employeeatr.ajax_getemployeeatr') }}",
+                "url": "{{ route('hris.employeeatr.ajax_getemployeeatr2') }}",
                 "dataType": "json",
                 "type": "POST",
                 "headers": {
@@ -246,7 +246,7 @@
                 }
             ],
             order: [
-                [2, 'asc']
+                [1, 'asc']
             ],
             columnDefs: [
                 {
