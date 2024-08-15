@@ -24,7 +24,7 @@
     </div>
 </div>
 <!-- End page-header -->
-<div class="modal fade" id="user-form-modal" role="dialog" data-backdrop="static" aria-hidden="true">
+<div class="modal fade" id="user-form-modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header bg-danger p-2">
@@ -99,7 +99,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="user-form-modal_2" role="dialog" data-backdrop="static" aria-hidden="true">
+<div class="modal fade" id="user-form-modal_2" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary p-2">
