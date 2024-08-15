@@ -445,9 +445,9 @@ class EmployeeAtrController extends AdminBaseController
             $search = $request->input('search.value');
 
             $query =  EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
-                $query->where('employee_id','LIKE',"%{$search}%")
-                ->orWhere('nik','LIKE',"%{$search}%")
-                ->orWhere('enroll_id','LIKE',"%{$search}%")
+                $query->where('employee_id',$search)
+                ->orWhere('nik',$search)
+                ->orWhere('enroll_id',$search)
                 ->orWhere('employee_name','LIKE',"%{$search}%")
                 ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
                 ->orWhere('department_name','LIKE',"%{$search}%")
@@ -463,8 +463,8 @@ class EmployeeAtrController extends AdminBaseController
 
             $totalData = EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
                 $query->where('employee_id','LIKE',"%{$search}%")
-                ->orWhere('nik','LIKE',"%{$search}%")
-                ->orWhere('enroll_id','LIKE',"%{$search}%")
+                ->orWhere('nik',$search)
+                ->orWhere('enroll_id',$search)
                 ->orWhere('employee_name','LIKE',"%{$search}%")
                 ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
                 ->orWhere('department_name','LIKE',"%{$search}%")
