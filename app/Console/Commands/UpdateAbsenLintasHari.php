@@ -128,23 +128,25 @@ class UpdateAbsenLintasHari extends Command
                     }
                     $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
                     $kode_hari_kemarin=MasterDataAbsenKehadiran::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan',$tanggal_kemarin)->whereColumn('akhir_jam_kerja','<','mulai_jam_kerja')->pluck('kode_hari')[0];
-                    if($status_absen_kemarin == "LN"){
-                        $status_absen_kemarin='LN';
-                    }
-                    else if(( $absen_masuk_kemarin!=null && $absen_pulang_kemarin!=null)||($kode_hari_kemarin==5)||($kode_hari_kemarin==6)){
-                        $status_absen_kemarin=null;
-                    }
-                    else if( $absen_masuk_kemarin==null && $absen_pulang_kemarin==null && $jadwal_masuk_kemarin!=null){
-                        $status_absen_kemarin='M';
-                    }
-                    else if( $absen_masuk_kemarin==null && $absen_pulang_kemarin==null && $jadwal_masuk_kemarin==null){
-                        $status_absen_kemarin=null;
-                    }
-                    else if( $absen_masuk_kemarin==null || $absen_pulang_kemarin==null){
-                        $status_absen_kemarin='TL';
+                    if($status_absen_kemarin == "LN" || $status_absen_kemarin == "LP"){
+                        $status_absen_kemarin=$status_absen_kemarin;
                     }
                     else{
-                        $status_absen_kemarin=$value->status_absen;
+                        if( $absen_masuk_kemarin!=null && $absen_pulang_kemarin!=null && ($jadwal_masuk_kemarin==null || $jadwal_masuk_kemarin!=null)){
+                            $status_absen_kemarin=null;
+                        }
+                        else if(($absen_masuk_kemarin==null || $absen_pulang_kemarin!=null) && ($jadwal_masuk_kemarin==null || $jadwal_masuk_kemarin!=null)){
+                            $status_absen_kemarin='TL';
+                        }
+                        else if( $absen_masuk_kemarin==null && $absen_pulang_kemarin==null && $jadwal_masuk_kemarin!=null){
+                            $status_absen_kemarin='M';
+                        }
+                        else if( $absen_masuk_kemarin==null && $absen_pulang_kemarin==null && $jadwal_masuk_kemarin==null){
+                            $status_absen_kemarin=null;
+                        }
+                        else{
+                            $status_absen_kemarin=$status_absen_kemarin;
+                        }
                     }
                     MasterDataAbsenKehadiran::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan',$tanggal_kemarin)->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')->where('mulai_jam_kerja','!=',null)->update([
                         'absen_masuk_kerja' => $absen_masuk_kemarin,
@@ -193,23 +195,22 @@ class UpdateAbsenLintasHari extends Command
                         }
                     }
                     $kode_hari_sekarang=MasterDataAbsenKehadiran::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan',$tanggal_sekarang)->whereColumn('akhir_jam_kerja','<','mulai_jam_kerja')->pluck('kode_hari')[0];
-                    if($value->status_absen == "LN"){
-                        $status_absen_sekarang='LN';
-                    }
-                    else if( $absen_masuk_sekarang!=null&&($kode_hari_sekarang==5||$kode_hari_sekarang==6)){
-                        $status_absen_sekarang=null;
-                    }
-                    else if( $absen_masuk_sekarang==null && $jadwal_masuk_sekarang!=null){
-                        $status_absen_sekarang='M';
-                    }
-                    else if( $absen_masuk_sekarang==null && $jadwal_masuk_sekarang==null){
-                        $status_absen_sekarang=null;
-                    }
-                    else if( $absen_masuk_sekarang!=null){
-                        $status_absen_sekarang='TL';
+                    if($value->status_absen == "LN" || $value->status_absen == "LP"){
+                        $status_absen_sekarang=$value->status_absen;
                     }
                     else{
-                        $status_absen_sekarang=$value->status_absen;
+                        if( $absen_masuk_sekarang!=null && ($jadwal_masuk_sekarang==null || $jadwal_masuk_sekarang!=null)){
+                            $status_absen_sekarang='TL';
+                        }
+                        else if($absen_masuk_sekarang==null && $jadwal_masuk_sekarang==null){
+                            $status_absen_sekarang=null;
+                        }
+                        else if($absen_masuk_sekarang==null && $jadwal_masuk_sekarang!=null){
+                            $status_absen_sekarang='M';
+                        }
+                        else{
+                            $status_absen_sekarang=$value->status_absen;
+                        }
                     }
 
                     MasterDataAbsenKehadiran::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan',$tanggal_sekarang)->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')->where('mulai_jam_kerja','!=',null)->update([
