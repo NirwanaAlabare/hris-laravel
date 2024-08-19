@@ -615,7 +615,7 @@
                 success: function(response){
                     $("#selectNoForm").append("<option value=''>Daftar karyawan</option>");
                     for(i=0;i<response.length;i++) {
-                        $("#selectNoForm").append("<option value="+response[i].no_form+">"+response[i].line+" => "+response[i].jumlah_karyawan+" karyawan</option>");
+                        $("#selectNoForm").append("<option value="+response[i].no_form+">"+response[i].dept+" => "+response[i].jumlah+" karyawan</option>");
                     }
                 },
                 error: function (xhr, status, error) {
@@ -656,8 +656,8 @@
                     let total_data=data.length;
                     let total_data_imported=0;
                     jQuery.each(data, function(key,value){
-                        let status_absen=data[key].absen[0].status_absen;
-                        if(data[key].absen[0].status_absen==null){
+                        let status_absen=data[key].status_absen;
+                        if(data[key].status_absen==null){
                             status_absen='';
                         }
                         let time1 = data[key].jam_lembur_awal_rencana;
@@ -669,16 +669,16 @@
                         }
                         let jam_lembur = ((date2 - date1)/3600000)-(data[key].jam_lembur_istirahat/60);
                         let jam_lembur_istirahat=data[key].jam_lembur_istirahat/60;
-                        let absen_masuk_kerja=data[key].absen[0].absen_masuk_kerja;
-                        if(data[key].absen[0].absen_masuk_kerja==null){
+                        let absen_masuk_kerja=data[key].absen_masuk_kerja;
+                        if(data[key].absen_masuk_kerja==null){
                             absen_masuk_kerja='';
                         }
-                        let absen_pulang_kerja=data[key].absen[0].absen_pulang_kerja;
-                        if(data[key].absen[0].absen_pulang_kerja==null){
+                        let absen_pulang_kerja=data[key].absen_pulang_kerja;
+                        if(data[key].absen_pulang_kerja==null){
                             absen_pulang_kerja='';
                         }
                         let textcolor='';
-                        if(data[key].absen[0].nomor_form_lembur!=null){
+                        if(data[key].nomor_form_lembur!=null){
                             textcolor='red';
                         }else{
                             total_data_imported+=1;
@@ -687,16 +687,16 @@
                         $('#tabel_overtime_from_nds').append("<tr style='color:"+textcolor+"' id='row_overtime_employee_"+key+"'>\
                             <td width='45px'>"+(key+1)+"</td>\
                             <td width='60px'><input type='hidden' name='enroll_id_from_nds[]' class='form-control form-control-sm' value='"+data[key].enroll_id+"''>"+data[key].enroll_id+"</td>\
-                            <td width='100px'>"+data[key].employee.nik+"</td>\
-                            <td width='200px'>"+data[key].employee.employee_name+"</td>\
-                            <td width='60px'>"+absen_masuk_kerja.substring(0,5)+"</td>\
-                            <td width='60px'>"+absen_pulang_kerja.substring(0,5)+"</td>\
+                            <td width='100px'>"+data[key].nik+"</td>\
+                            <td width='200px'>"+data[key].employee_name+"</td>\
+                            <td width='60px'>"+absen_masuk_kerja+"</td>\
+                            <td width='60px'>"+absen_pulang_kerja+"</td>\
                             <td width='60px'>"+status_absen+"</td>\
-                            <td width='115px'><input name='jam_lembur_awal_rencana[]' type='time' id='jam_lembur_awal_rencana_"+key+"' class='form-control form-control-sm px-2' value='"+(data[key].jam_lembur_awal_rencana).substring(0,5)+"'' onChange='calculateTotalLembur("+key+")'></td>\
-                            <td width='115px'><input name='jam_lembur_akhir_rencana[]' type='time' id='jam_lembur_akhir_rencana_"+key+"' class='form-control form-control-sm px-2' value='"+(data[key].jam_lembur_akhir_rencana).substring(0,5)+"' onChange='calculateTotalLembur("+key+")'></td>\
+                            <td width='115px'><input name='jam_lembur_awal_rencana[]' type='time' id='jam_lembur_awal_rencana_"+key+"' class='form-control form-control-sm px-2' value='"+(data[key].jam_lembur_awal_rencana)+"'' onChange='calculateTotalLembur("+key+")'></td>\
+                            <td width='115px'><input name='jam_lembur_akhir_rencana[]' type='time' id='jam_lembur_akhir_rencana_"+key+"' class='form-control form-control-sm px-2' value='"+(data[key].jam_lembur_akhir_rencana)+"' onChange='calculateTotalLembur("+key+")'></td>\
                             <td width='80px'><input name='jam_lembur_istirahat[]' type='number' id='jam_lembur_istirahat_"+key+"' class='form-control form-control-sm px-1' value='"+(data[key].jam_lembur_istirahat)+"' onChange='calculateTotalLembur("+key+")'></td>\
                             <td width='80px'><input name='total_lembur[]' type='number' id='total_lembur_"+key+"' class='form-control form-control-sm px-1' value='"+(jam_lembur)+"' onChange='calculateAkhirLembur("+key+")'></td>\
-                            <td width='125px' style='font-size:8pt;padding-left:5px;padding-right:5px;'><input type='hidden' name='keterangan_lembur[]' id='keterangan_lembur_"+key+"' value='"+data[key].keterangan.ket+"'>"+data[key].keterangan.ket+"</td>\
+                            <td width='125px' style='font-size:8pt;padding-left:5px;padding-right:5px; word-break:break-all;'><input type='hidden' name='keterangan_lembur[]' id='keterangan_lembur_"+key+"' value='"+data[key].ket+"'>"+data[key].ket+"</td>\
                             <td width='40px'><a href='#' onClick='deletePengajuan("+key+")' style='color:red;font-size:12pt'><span class='fa fa-trash'></span></a></td>\
                         </tr>");
                         document.getElementById('tabel_overtime_from_nds').style.height='300px';
