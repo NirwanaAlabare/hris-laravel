@@ -3251,7 +3251,7 @@ class MdAbsenHadirController extends AdminBaseController
                             }
                         }
 
-                        $z[]=[
+                        $z=[
                             'enroll_id'=>$value4->enroll_id,
                             'tanggal_berjalan'=> $value4->tanggal_berjalan,
                             'absen_masuk_kerja' => $absenIn,
