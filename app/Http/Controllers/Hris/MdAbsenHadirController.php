@@ -3234,10 +3234,10 @@ class MdAbsenHadirController extends AdminBaseController
                             $status_absen=$value4->status_absen;
                         }
                         else{
-                            if( $absenIn!=null && $absenOut!=null && ($jadwal_in==null && $jadwal_in!=null)){
+                            if( $absenIn!=null && $absenOut!=null && ($jadwal_in==null || $jadwal_in!=null)){
                                 $status_absen=null;
                             }
-                            else if(($absenIn==null || $absenOut!=null) && ($jadwal_in==null && $jadwal_in!=null)){
+                            else if(($absenIn==null || $absenOut!=null) && ($jadwal_in==null || $jadwal_in!=null)){
                                 $status_absen='TL';
                             }
                             else if( $absenIn==null && $absenOut==null && $jadwal_in!=null){
