@@ -3230,29 +3230,28 @@ class MdAbsenHadirController extends AdminBaseController
                                 ->where('absen_log','>=', $jadwal_in_min)->where('absen_log','<=', $jadwal_in_max)->min('absen_log');
                             $absenOut=collect($records)->where('tanggal_absen',$value4->tanggal_berjalan)->where('enroll_id',$value4->enroll_id)->max('absen_log');
                         }
-                        if($value4->status_absen == "LN"){
-                            $status_absen='LN';
-                        }
-                        else if((( $absenIn!=null && $absenOut!=null)||($value4->kode_hari==5)||($value4->kode_hari==6)) && $jadwal_in!=null && $jadwal_out!=null){
-                            $status_absen=null;
-                        }
-                        else if((( $absenIn!=null && $absenOut!=null)||($value4->kode_hari==5)||($value4->kode_hari==6)) && $jadwal_in==null && $jadwal_out==null){
-                            $status_absen=null;
-                        }
-                        else if( $absenIn==null && $absenOut==null && $jadwal_in!=null){
-                            $status_absen='M';
-                        }
-                        else if( $absenIn==null && $absenOut==null && $jadwal_in==null){
-                            $status_absen=null;
-                        }
-                        else if( $absenIn==null || $absenOut==null){
-                            $status_absen='TL';
-                        }
-                        else{
+                        if($value4->status_absen == "LN" || $value4->status_absen == "LP"){
                             $status_absen=$value4->status_absen;
                         }
+                        else{
+                            if( $absenIn!=null && $absenOut!=null && ($jadwal_in==null && $jadwal_in!=null)){
+                                $status_absen=null;
+                            }
+                            else if(($absenIn==null || $absenOut!=null) && ($jadwal_in==null && $jadwal_in!=null)){
+                                $status_absen='TL';
+                            }
+                            else if( $absenIn==null && $absenOut==null && $jadwal_in!=null){
+                                $status_absen='M';
+                            }
+                            else if( $absenIn==null && $absenOut==null && $jadwal_in==null){
+                                $status_absen=null;
+                            }
+                            else{
+                                $status_absen=$value4->status_absen;
+                            }
+                        }
 
-                        $z=[
+                        $z[]=[
                             'enroll_id'=>$value4->enroll_id,
                             'tanggal_berjalan'=> $value4->tanggal_berjalan,
                             'absen_masuk_kerja' => $absenIn,
