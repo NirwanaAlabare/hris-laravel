@@ -3183,7 +3183,8 @@ class MdAbsenHadirController extends AdminBaseController
                                 $jadwal_in_lembur=MasterDataAbsenKehadiran::where('tanggal_berjalan',$value4->tanggal_berjalan)->where('enroll_id',$value4->enroll_id)->pluck('mulai_jam_lembur')[0];
                                 $in_lembur=substr($jadwal_in_lembur,11,5);
                                 $jadwal_out_lembur=MasterDataAbsenKehadiran::where('tanggal_berjalan',$value4->tanggal_berjalan)->where('enroll_id',$value4->enroll_id)->pluck('akhir_jam_lembur')[0];
-                                if($jadwal_out_lembur<$jadwal_in_lembur){
+                                $out_lembur=substr($jadwal_out_lembur,11,5);
+                                if($out_lembur<$in_lembur){
                                     $out_lembur=substr($jadwal_out_lembur,11,5);
                                     $in_lembur_min=date("H:i", strtotime('-2 hours', strtotime($in_lembur)));
                                     $in_lembur_max=date("H:i", strtotime('+1 hours 59 minutes', strtotime($in_lembur)));
