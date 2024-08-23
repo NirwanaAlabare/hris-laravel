@@ -3213,7 +3213,7 @@ class MdAbsenHadirController extends AdminBaseController
                 $count=LogDataGagalAbsen::where('tanggal_absen', $value4->tanggal_berjalan)->where('enroll_id',$value4->enroll_id)->count();
                 if($countEditedData<1 && $count<1){
                     // if((($value4->operator=='system') || ($value4->operator=='system_lintashari') || ($value4->operator=='system_injek_lebaran') )) {
-                    if($value4->status_absen == "TL" || $value4->status_absen == "M" || $value4->status_absen == "IKS" || $value4->status_absen == "" || !$value4->status_absen|| $value4->status_absen == "LN" || $value4->status_absen == "LP" || $value4->status_absen == "CT" || $value4->status_absen == "L") {
+                    if($value4->status_absen == "TL" || $value4->status_absen == "M" || $value4->status_absen == "IKS" || $value4->status_absen == "" || !$value4->status_absen|| $value4->status_absen == "LN" || $value4->status_absen == "LP" || $value4->status_absen == "CT" || $value4->status_absen == "L" || $value4->status_absen=='S') {
                         $tanggal_berjalan=$value4->tanggal_berjalan;
                         $jadwal_in=$value4->mulai_jam_kerja;
                         $jadwal_out=$value4->akhir_jam_kerja;
@@ -3294,8 +3294,29 @@ class MdAbsenHadirController extends AdminBaseController
                                 ->where('absen_log','>=', $jadwal_in_min)->where('absen_log','<=', $jadwal_in_max)->min('absen_log');
                             $absenOut=collect($records)->where('tanggal_absen',$value4->tanggal_berjalan)->where('enroll_id',$value4->enroll_id)->max('absen_log');
                         }
-                        if($value4->status_absen == "LN" || $value4->status_absen == "LP"){
-                            $status_absen=$value4->status_absen;
+                        if($value4->status_absen == "LN" || $value4->status_absen == "LP" || $value4->status_absen=='S'){
+                            if($value4->status_absen=='S'){
+                                if( $absenIn!=null && $absenOut!=null && ($jadwal_in==null || $jadwal_in!=null)){
+                                    $status_absen=null;
+                                }
+                                else if($absenIn!=null && $absenOut==null && ($jadwal_in==null || $jadwal_in!=null)){
+                                    $status_absen='S';
+                                }
+                                else if($absenIn==null && $absenOut!=null && ($jadwal_in==null || $jadwal_in!=null)){
+                                    $status_absen='S';
+                                }
+                                else if( $absenIn==null && $absenOut==null && $jadwal_in!=null){
+                                    $status_absen='S';
+                                }
+                                else if( $absenIn==null && $absenOut==null && $jadwal_in==null){
+                                    $status_absen=null;
+                                }
+                                else{
+                                    $status_absen=$value4->status_absen;
+                                }
+                            }else{
+                                $status_absen=$value4->status_absen;
+                            }
                         }
                         else{
                             if( $absenIn!=null && $absenOut!=null && ($jadwal_in==null || $jadwal_in!=null)){
