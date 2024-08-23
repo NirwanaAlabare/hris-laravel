@@ -56,7 +56,7 @@ class EmployeeAtrExport implements FromQuery, WithMapping, ShouldAutoSize, WithE
                 employee_atribut.agama,
                 employee_atribut.status_kawin,
                 employee_atribut.npwp,
-                concat(employee_atribut.nomor_ktp," ") nomor_ktp,
+                concat("\'",employee_atribut.nomor_ktp) nomor_ktp,
                 concat(employee_atribut.nomor_kk," ") nomor_kk,
                 employee_atribut.ptkp,
                 employee_atribut.nama_sekolah_terakhir,
@@ -359,7 +359,7 @@ class EmployeeAtrExport implements FromQuery, WithMapping, ShouldAutoSize, WithE
             'P' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'Q' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'S' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'Y' => NumberFormat::FORMAT_TEXT,
+            'Y' => NumberFormat::FORMAT_NUMBER,
             'Z' => NumberFormat::FORMAT_TEXT,
 
             'AG' => NumberFormat::FORMAT_TEXT,
