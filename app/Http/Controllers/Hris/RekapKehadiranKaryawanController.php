@@ -151,8 +151,8 @@ class RekapKehadiranKaryawanController extends AdminBaseController
             $kehadiran_iks=$value->where('status_absen','IKS')->count();
             $kehadiran_s=$value->where('status_absen','S')->count();
 
-            $M_estimasi=$value->where('status_absen','M')->where('tanggal_berjalan','>=',$tanggal_sekarang)->where('tanggal_berjalan','<=',$tanggal_akhir)->count();
-            $TL_estimasi=$value->where('status_absen','TL')->where('mulai_jam_kerja','!=',null)->where('tanggal_berjalan','>=',$tanggal_sekarang)->where('tanggal_berjalan','<=',$tanggal_akhir)->count();
+            $M_estimasi=$value->where('status_absen','M')->where('tanggal_berjalan','>=',$tanggal_sekarang)->where('tanggal_berjalan','<=',$tanggal_akhir)->where('tanggal_berjalan','>=',date('Y-m-d'))->count();
+            $TL_estimasi=$value->where('status_absen','TL')->where('mulai_jam_kerja','!=',null)->where('tanggal_berjalan','>=',$tanggal_sekarang)->where('tanggal_berjalan','<=',$tanggal_akhir)->where('tanggal_berjalan','>=',date('Y-m-d'))->count();
 
 
             $y=[
