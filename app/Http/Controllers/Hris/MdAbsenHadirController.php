@@ -3254,12 +3254,28 @@ class MdAbsenHadirController extends AdminBaseController
                             // dd($absenIn);
                             $absenOut=collect($records)->where('tanggal_absen',$tanggal_besok)->where('enroll_id',$value4->enroll_id)
                                 ->where('absen_log','>=', $jadwal_out_min)->where('absen_log','<=', $jadwal_out_max2)->max('absen_log');
+                            if($absenIn==null){
+                                $absenIn=collect($records)->where('tanggal_absen',$tanggal_besok)->where('enroll_id',$value4->enroll_id)
+                                ->where('absen_log','>=', $jadwal_out_min)->where('absen_log','<=', $jadwal_out_max2)->min('absen_log');
+                                $hourdiff = round((strtotime($absenIn) - strtotime($absenOut))/3600, 1);
+                                $absenIn=$hourdiff;
+                            }
                             if($value4->nomor_form_lembur!=null){
                                 $absenIn=collect($records)->where('tanggal_absen',$value4->tanggal_berjalan)->where('enroll_id',$value4->enroll_id)
                                 ->where('absen_log','>=', $jadwal_in_min)->where('absen_log','<=', $jadwal_in_max)->min('absen_log');
                                 // dd($absenIn);
                                 $absenOut=collect($records)->where('tanggal_absen',$tanggal_besok)->where('enroll_id',$value4->enroll_id)
                                     ->where('absen_log','>=', $jadwal_out_min)->where('absen_log','<=', $jadwal_out_max2)->max('absen_log');
+                                if($absenIn==null){
+                                    $absenInBaru=collect($records)->where('tanggal_absen',$tanggal_besok)->where('enroll_id',$value4->enroll_id)
+                                    ->where('absen_log','>=', '00:00')->where('absen_log','<=', $absenOut)->min('absen_log');
+                                    $hourdiff = round((strtotime($absenOut) - strtotime($absenInBaru))/3600, 1);
+                                    if($hourdiff>=1){
+                                        $absenIn=$absenInBaru;
+                                    }else{
+                                        $absenIn=null;
+                                    }
+                                }
                             }
                         }
                         else if($jadwal_in==null && $jadwal_out==null){
@@ -3400,19 +3416,32 @@ class MdAbsenHadirController extends AdminBaseController
                     $durasi_kerja_menit=$durasi_kerja->i +($durasi_kerja->h*60);
 
                     $DT = date_diff(date_create($jadwal_in),date_create($absen_in));
+                    $DT2= date_diff(date_create($jadwal_in),date_create('24:00'));
+                    $DT3= date_diff(date_create('01:00'),date_create($absen_in));
                     $PC = date_diff(date_create($jadwal_out),date_create($absen_out));
-                    if( $absen_in!=null && $absen_in>$jadwal_in ){
-                        $total_DT = $DT->i +($DT->h*60);
+                    $PC2 = date_diff(date_create('01:00'),date_create($jadwal_out));
+                    $PC3 = date_diff(date_create('24:00'),date_create($absen_out));
+                    if($absen_in>'00:00' && $absen_in<='01:00' && $absen_in<$jadwal_out){
+                        $total_DT = $DT2->i +($DT2->h*60);
+                    }else if($absen_in>'01:00' && $absen_in<$jadwal_out){
+                        $total_DT = $DT3->i + ($DT3->h*60)+$DT2->i +($DT2->h*60);
                     }else{
-                        $total_DT=0;
-                    }
-                    if( $absen_out !=null && $absen_out<$jadwal_out){
-                        $total_PC = $PC->i +($PC->h*60);
-                        if($v->status_absen='LN'){
-                            $total_PC=0;
+                        if( $absen_in!=null && $absen_in>$jadwal_in ){
+                            $total_DT = $DT->i +($DT->h*60);
+                        }else{
+                            $total_DT=0;
                         }
+                    }
+                    if( $absen_out>'00:00' && $absen_out<='01:00' && $absen_out<$jadwal_out){
+                        $total_PC = $PC2->i +($PC2->h*60);
+                    }else if( $absen_out<='24:00' && $absen_out>$jadwal_in){
+                        $total_PC = $PC2->i +($PC2->h*60)+$PC3->i +($PC3->h*60);
                     }else{
-                        $total_PC=0;
+                        if( $absen_in!=null && $absen_out<$jadwal_out ){
+                            $total_PC = $PC->i +($PC->h*60);
+                        }else{
+                            $total_DT=0;
+                        }
                     }
 
                     $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
