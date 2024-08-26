@@ -362,11 +362,11 @@
                 },
                 cache: false,
                 success: function(data){
-                    notif({
-                        msg: "<b>Info:</b> Rekap kehadiran berhasil di UPDATE.",
-                        type: "info"
+                    swal({
+                        title: "Rekap Kehadiran",
+                        text: "Rekap kehadiran berhasil di UPDATE",
+                        icon: "info",
                     });
-
                     $('#btn-update').removeClass("btn-loading");
                     $("#btn-update").html('<span><i class="ion-ios7-reload"></i></span> UPDATE');
                     $("#btn-update").attr("disabled", false);
