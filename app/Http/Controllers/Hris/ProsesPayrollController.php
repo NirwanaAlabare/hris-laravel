@@ -2122,7 +2122,7 @@ class ProsesPayrollController extends AdminBaseController
                     if ($jam2 < $jam1) {
                         $jam2 += 86400;
                     }
-                    if($value->jumlah_menit_absen_pc!=0){
+                    if($value->jumlah_menit_absen_pc!=0 || $value->absen_masuk_kerja==null || $value->absen_pulang_kerja==null){
                         $selisih_detik=0;
                     }else{
                         $selisih_detik = max($jam2 - $jam1, 0);
@@ -2335,8 +2335,11 @@ class ProsesPayrollController extends AdminBaseController
                     if ($jam2 < $jam1) {
                         $jam2 += 86400;
                     }
-        
-                    $selisih_detik = max($jam2 - $jam1, 0);
+                    if($value->jumlah_menit_absen_pc!=0 || $value->absen_masuk_kerja==null || $value->absen_pulang_kerja==null){
+                        $selisih_detik=0;
+                    }else{
+                        $selisih_detik = max($jam2 - $jam1, 0);
+                    }
         
                     $selisih_jam = floor($selisih_detik / 3600);
                     $selisih_detik %= 3600;
@@ -5094,8 +5097,12 @@ class ProsesPayrollController extends AdminBaseController
                 if ($jam2 < $jam1) {
                     $jam2 += 86400;
                 }
-    
-                $selisih_detik = max($jam2 - $jam1, 0);
+
+                if($value->jumlah_menit_absen_pc!=0 || $value->absen_masuk_kerja==null || $value->absen_pulang_kerja==null){
+                    $selisih_detik=0;
+                }else{
+                    $selisih_detik = max($jam2 - $jam1, 0);
+                }
     
                 $selisih_jam = floor($selisih_detik / 3600);
                 $selisih_detik %= 3600;
@@ -5382,8 +5389,11 @@ class ProsesPayrollController extends AdminBaseController
                 if ($jam2 < $jam1) {
                     $jam2 += 86400;
                 }
-    
-                $selisih_detik = max($jam2 - $jam1, 0);
+                if($value->jumlah_menit_absen_pc!=0 || $value->absen_masuk_kerja==null || $value->absen_pulang_kerja==null){
+                    $selisih_detik=0;
+                }else{
+                    $selisih_detik = max($jam2 - $jam1, 0);
+                }
     
                 $selisih_jam = floor($selisih_detik / 3600);
                 $selisih_detik %= 3600;
