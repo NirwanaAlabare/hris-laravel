@@ -677,6 +677,11 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $first=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->first();
         list($tgl_awal, $tgl_akhir) = explode(' s/d ', $first->periode_kehadiran);
         $department_id=request()->department_id;
+        $searchData='';
+        if(request()->selectEmployee){
+            $enroll_id=request()->selectEmployee;
+            $searchData=implode(',', $enroll_id);
+        }
         if($department_id){
             $department_id=request()->department_id;
         }else{
@@ -716,7 +721,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             }
         }else{
             $fileName = 'RekapPerhitunganPayroll_' . time() . '.xlsx';
-            $response=(new RekapPerhitunganPayrollExport)->exportParams($periode_payroll,$tgl_awal,$department_id,$sub_dept_id,$status_staff,$periode_umk)->download($fileName, \Maatwebsite\Excel\Excel::XLSX);
+            $response=(new RekapPerhitunganPayrollExport)->exportParams($periode_payroll,$tgl_awal,$department_id,$sub_dept_id,$status_staff,$periode_umk,$searchData)->download($fileName, \Maatwebsite\Excel\Excel::XLSX);
             ob_end_clean();
             return $response;
         }

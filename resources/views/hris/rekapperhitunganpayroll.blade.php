@@ -152,7 +152,23 @@
             </div>
         </div>
         <div class="card-body py-3 px-4">
-        <div class="row">
+            <div class="row">
+                <div class="col-md-2 pt-2 pl-4">
+                    <div class="form-group">
+                        <label class="form-label">KARYAWAN </label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group m-0">
+                        <select id="selectEmployee" name="selectEmployee[]" multiple data-placeholder="Pilih karyawan" class="form-control form-control-sm select2 Employee">
+                            @foreach ($selectemployee as $r_empl)
+                                <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-2 pt-0 pl-4">
                     <div class="form-group">
                         <label class="form-label">PERIODE PAYROLL </label>
