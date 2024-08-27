@@ -2023,7 +2023,7 @@ class MdAbsenHadirController extends AdminBaseController
                         } else {
                             if ($val["status_absen"] == "TL" || $val["status_absen"] == "M") {
                                 if($val["mulai_jam_kerja"]!=null){
-                                    if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"){
+                                    if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"){
                                         $status_absen=$val["status_absen"];
                                     }
                                     else{
@@ -2056,7 +2056,7 @@ class MdAbsenHadirController extends AdminBaseController
                                 if($count<1){
                                     
                                     if($val["mulai_jam_kerja"]!=null){
-                                        if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"){
+                                        if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"){
                                             $status_absen=$val["status_absen"];
                                         }
                                         else{
