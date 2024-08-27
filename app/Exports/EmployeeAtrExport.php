@@ -393,7 +393,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithCustomValueBin
 
     public function bindValue(Cell $cell, $value)
     {
-        if ($cell->getColumn() == 'W') {
+        if ($cell->getColumn() == 'X') {
             $cell->setValueExplicit($value, DataType::TYPE_STRING);
 
             return true;
