@@ -3239,7 +3239,7 @@ class MdAbsenHadirController extends AdminBaseController
                         $jadwal_in=$value4->mulai_jam_kerja;
                         $jadwal_out=$value4->akhir_jam_kerja;
                         $nomor_form_lembur=$value4->nomor_form_lembur;
-                        $jadwal_in_min=date("H:i", strtotime('-2 hours', strtotime($jadwal_in)));
+                        $jadwal_in_min=date("H:i", strtotime('-4 hours', strtotime($jadwal_in)));
                         $jadwal_in_max='23:59';
 
                         $jadwal_out_min=date("H:i", strtotime('-2 hours', strtotime($jadwal_out)));
