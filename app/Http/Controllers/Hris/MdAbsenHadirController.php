@@ -3440,7 +3440,7 @@ class MdAbsenHadirController extends AdminBaseController
                         if( $absen_in!=null && $absen_out<$jadwal_out ){
                             $total_PC = $PC->i +($PC->h*60);
                         }else{
-                            $total_DT=0;
+                            $total_PC=0;
                         }
                     }
 
