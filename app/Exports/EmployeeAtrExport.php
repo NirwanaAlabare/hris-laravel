@@ -29,10 +29,15 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use \Maatwebsite\Excel\Sheet;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use Maatwebsite\Excel\Concerns\ToModel;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use Maatwebsite\Excel\Concerns\WithCustomValueBinder;
+use PhpOffice\PhpSpreadsheet\Cell\DefaultValueBinder;
 
 use Auth;
 
-class EmployeeAtrExport implements FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle, WithColumnFormatting
+class EmployeeAtrExport extends DefaultValueBinder implements WithCustomValueBinder, FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle, WithColumnFormatting
 {
     use Exportable;
 
@@ -40,7 +45,17 @@ class EmployeeAtrExport implements FromQuery, WithMapping, ShouldAutoSize, WithE
     {
         return $this;
     }
+    public function bindValue(Cell $cell, $value)
+    {
+        if ($cell->getColumn() == 'Y') {
+            $cell->setValueExplicit($value, DataType::TYPE_STRING);
 
+            return true;
+        }
+
+        // else return default behavior
+        return parent::bindValue($cell, $value);
+    }
     public function query()
     {
         $q =  EmployeeAtribut::query()
@@ -56,7 +71,7 @@ class EmployeeAtrExport implements FromQuery, WithMapping, ShouldAutoSize, WithE
                 employee_atribut.agama,
                 employee_atribut.status_kawin,
                 employee_atribut.npwp,
-                concat(employee_atribut.nomor_ktp," ") nomor_ktp,
+                nomor_ktp,
                 concat(employee_atribut.nomor_kk," ") nomor_kk,
                 employee_atribut.ptkp,
                 employee_atribut.nama_sekolah_terakhir,
@@ -306,7 +321,7 @@ class EmployeeAtrExport implements FromQuery, WithMapping, ShouldAutoSize, WithE
             $status_kawin,
             $ptkp,
             $npwp,
-            $nomor_ktp,
+            (string)$nomor_ktp,
             $nomor_kk,
             $golongan_darah,
             $nomor_tlpn,
