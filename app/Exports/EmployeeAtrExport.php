@@ -364,7 +364,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithCustomValueBin
             'P' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'Q' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'S' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'W' => NumberFormat::FORMAT_TEXT,
+            'X' => NumberFormat::FORMAT_TEXT,
             'Y' => NumberFormat::FORMAT_TEXT,
             'Z' => NumberFormat::FORMAT_TEXT,
 
