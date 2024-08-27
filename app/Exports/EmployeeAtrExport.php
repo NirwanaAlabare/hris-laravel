@@ -45,17 +45,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithCustomValueBin
     {
         return $this;
     }
-    public function bindValue(Cell $cell, $value)
-    {
-        if ($cell->getColumn() == 'Y') {
-            $cell->setValueExplicit($value, DataType::TYPE_STRING);
 
-            return true;
-        }
-
-        // else return default behavior
-        return parent::bindValue($cell, $value);
-    }
     public function query()
     {
         $q =  EmployeeAtribut::query()
@@ -71,14 +61,14 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithCustomValueBin
                 employee_atribut.agama,
                 employee_atribut.status_kawin,
                 employee_atribut.npwp,
-                nomor_ktp,
-                concat(employee_atribut.nomor_kk," ") nomor_kk,
+                employee_atribut.nomor_ktp,
+                employee_atribut.nomor_kk,
                 employee_atribut.ptkp,
                 employee_atribut.nama_sekolah_terakhir,
                 employee_atribut.pendidikan_terakhir,
                 employee_atribut.jurusan_pendidikan,
                 employee_atribut.nama_bank,
-                CONCAT(employee_atribut.nomor_rekening_bank," ") nomor_rekening_bank,
+                employee_atribut.nomor_rekening_bank,
                 employee_atribut.ibu_kandung,
                 employee_atribut.propinsi,
                 employee_atribut.kota_kab,
@@ -125,7 +115,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithCustomValueBin
                 employee_atribut.tanggal_vaccine3,
                 employee_atribut.nama_vaksin3,
                 employee_atribut.golongan_sim,
-                concat(" ", employee_atribut.nomor_sim) nomor_sim,
+                employee_atribut.nomor_sim,
                 employee_atribut.tanggal_expire_sim,
                 employee_atribut.catatan,
                 employee_atribut.lokasi_foto,
@@ -322,14 +312,14 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithCustomValueBin
             $ptkp,
             $npwp,
             (string)$nomor_ktp,
-            $nomor_kk,
+            (string)$nomor_kk,
             $golongan_darah,
-            $nomor_tlpn,
+            (string)$nomor_tlpn,
             $email,
             $pendidikan_terakhir,
             $jurusan_pendidikan,
             $nama_bank,
-            $nomor_rekening_bank,
+            (string)$nomor_rekening_bank,
             $alamat_rumah,
             $propinsi,
             $kota_kab,
@@ -342,13 +332,13 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithCustomValueBin
             $employee_name_atasan,
             $status_aktif_bpjs_tk,
             Date::stringToExcel($tanggal_bpjs_ketenagakerjaan),
-            $nomor_bpjs_ketenagakerjaan,
+            (string)$nomor_bpjs_ketenagakerjaan,
             $status_aktif_bpjs_ks,
             Date::stringToExcel($tanggal_bpjs_kesehatan),
-            $nomor_bpjs_kesehatan,
+            (string)$nomor_bpjs_kesehatan,
             $pengalaman_bekerja,
             $nama_kerabat,
-            $nomor_tlpn_kerabat,
+            (string)$nomor_tlpn_kerabat,
             $hubungan_kerabat,
             $alamat_kerabat,
             Date::stringToExcel($tanggal_vaccine1),
@@ -358,7 +348,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithCustomValueBin
             Date::stringToExcel($tanggal_vaccine3),
             $nama_vaksin3,
             $golongan_sim,
-            $nomor_sim,
+            (string)$nomor_sim,
             Date::stringToExcel($tanggal_expire_sim),
             $catatan,
             Date::stringToExcel($tanggal_mulai_kontrak),
@@ -377,14 +367,19 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithCustomValueBin
             'Y' => NumberFormat::FORMAT_TEXT,
             'Z' => NumberFormat::FORMAT_TEXT,
 
+            'AB' => NumberFormat::FORMAT_TEXT,
             'AG' => NumberFormat::FORMAT_TEXT,
             'AS' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AT' => NumberFormat::FORMAT_TEXT,
             'AV' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AW' => NumberFormat::FORMAT_TEXT,
+            'AZ' => NumberFormat::FORMAT_TEXT,
 
             'BC' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'BE' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'BG' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'BI' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'BJ' => NumberFormat::FORMAT_TEXT,
 
             'BM' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'BN' => NumberFormat::FORMAT_DATE_DDMMYYYY,
@@ -395,6 +390,51 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithCustomValueBin
         ];
     }
 
+    public function bindValue(Cell $cell, $value)
+    {
+        if ($cell->getColumn() == 'Y') {
+            $cell->setValueExplicit($value, DataType::TYPE_STRING);
+
+            return true;
+        }
+        if ($cell->getColumn() == 'Z') {
+            $cell->setValueExplicit($value, DataType::TYPE_STRING);
+
+            return true;
+        }
+        if ($cell->getColumn() == 'AB') {
+            $cell->setValueExplicit($value, DataType::TYPE_STRING);
+
+            return true;
+        }
+        if ($cell->getColumn() == 'AG') {
+            $cell->setValueExplicit($value, DataType::TYPE_STRING);
+
+            return true;
+        }
+        if ($cell->getColumn() == 'AT') {
+            $cell->setValueExplicit($value, DataType::TYPE_STRING);
+
+            return true;
+        }
+        if ($cell->getColumn() == 'AW') {
+            $cell->setValueExplicit($value, DataType::TYPE_STRING);
+
+            return true;
+        }
+        if ($cell->getColumn() == 'AZ') {
+            $cell->setValueExplicit($value, DataType::TYPE_STRING);
+
+            return true;
+        }
+        if ($cell->getColumn() == 'BJ') {
+            $cell->setValueExplicit($value, DataType::TYPE_STRING);
+
+            return true;
+        }
+        // else return default behavior
+        return parent::bindValue($cell, $value);
+    }
     public function title(): string
     {
         return 'DATAKARYAWAN';
