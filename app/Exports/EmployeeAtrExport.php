@@ -310,7 +310,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithCustomValueBin
             $ibu_kandung,
             $status_kawin,
             $ptkp,
-            $npwp,
+            (string)$npwp,
             (string)$nomor_ktp,
             (string)$nomor_kk,
             $golongan_darah,
@@ -392,6 +392,11 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithCustomValueBin
 
     public function bindValue(Cell $cell, $value)
     {
+        if ($cell->getColumn() == 'W') {
+            $cell->setValueExplicit($value, DataType::TYPE_STRING);
+
+            return true;
+        }
         if ($cell->getColumn() == 'Y') {
             $cell->setValueExplicit($value, DataType::TYPE_STRING);
 
