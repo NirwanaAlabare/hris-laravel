@@ -359,7 +359,7 @@ class EmployeeAtrExport implements FromQuery, WithMapping, ShouldAutoSize, WithE
             'P' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'Q' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'S' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'Y' => NumberFormat::FORMAT_NUMBER,
+            'Y' => NumberFormat::FORMAT_TEXT,
             'Z' => NumberFormat::FORMAT_TEXT,
 
             'AG' => NumberFormat::FORMAT_TEXT,
