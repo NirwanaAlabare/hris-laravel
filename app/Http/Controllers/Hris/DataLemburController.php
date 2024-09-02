@@ -1192,7 +1192,7 @@ class DataLemburController extends AdminBaseController
             }
             $kode_grade=EmployeeAtribut::where('enroll_id',$lembur->enroll_id)->pluck('kode_grade')[0];
             $salary=GradingSalary::where('kode_grade',$kode_grade)->where('periode_umk','2024-01')->pluck('salary_bulanan')[0];
-            if(Auth::guard('admin')->user()->role_user!='payroll' && Auth::guard('admin')->user()->email!='alex.herdian@ptnag.com'){
+            if(Auth::guard('admin')->user()->role_user!='payroll'){
                 $data = [
                     Date::stringToExcel($lembur->tanggal_berjalan),
                     $lembur->nama_hari,
