@@ -110,6 +110,7 @@ class MdAbsenHadirController extends AdminBaseController
         array_push($IBY,$null_absen,$ln_absen);
         $tidak_bayar=RefAbsenIjin::where('kode_ijin_payroll','ITB')->where('kode_absen_ijin','!=','M')->where('kode_absen_ijin','!=','IKS')->get()->toArray();
         $ITB=array_column($tidak_bayar,'kode_absen_ijin');
+        array_push($ITB,'R');
         $tl_absen='TL';
         $m_absen='M';
         array_push($ITB,$tl_absen,$m_absen);
