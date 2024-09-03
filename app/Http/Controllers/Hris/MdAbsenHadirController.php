@@ -3375,17 +3375,19 @@ class MdAbsenHadirController extends AdminBaseController
                                         }else{
                                             $absenOut=null;
                                         }
-                                    }
-                                    if(isset(MasterDataAbsenKehadiran::where('enroll_id',$value4->enroll_id)->where('tanggal_berjalan','>',$value4->tanggal_berjalan)->where('mulai_jam_kerja','!=',null)->orderBy('tanggal_berjalan')->limit(1)->pluck('mulai_jam_kerja')[0]))
-                                    {
-                                        $mulai_jam_kerja_besok=MasterDataAbsenKehadiran::where('enroll_id',$value4->enroll_id)->where('tanggal_berjalan','>',$value4->tanggal_berjalan)->where('mulai_jam_kerja','!=',null)->orderBy('tanggal_berjalan')->limit(1)->pluck('mulai_jam_kerja')[0];
-                                        $absenOutBesok=MasterDataAbsenKehadiran::where('enroll_id',$value4->enroll_id)->where('tanggal_berjalan','>',$value4->tanggal_berjalan)->where('mulai_jam_kerja','!=',null)->orderBy('tanggal_berjalan')->limit(1)->pluck('absen_masuk_kerja')[0];
                                     }else{
-                                        $absenOutBesok='ijoijof';
-                                    }
-                                    if($absenOut==$absenOutBesok){
-                                        if($mulai_jam_kerja_besok!=null){
-                                            $absenOut=null;
+                                        if(isset(MasterDataAbsenKehadiran::where('enroll_id',$value4->enroll_id)->where('tanggal_berjalan','>',$value4->tanggal_berjalan)->where('mulai_jam_kerja','!=',null)->orderBy('tanggal_berjalan')->limit(1)->pluck('mulai_jam_kerja')[0]))
+                                        {
+                                            $mulai_jam_kerja_besok=MasterDataAbsenKehadiran::where('enroll_id',$value4->enroll_id)->where('tanggal_berjalan','>',$value4->tanggal_berjalan)->where('mulai_jam_kerja','!=',null)->orderBy('tanggal_berjalan')->limit(1)->pluck('mulai_jam_kerja')[0];
+                                            $absenOutBesok=MasterDataAbsenKehadiran::where('enroll_id',$value4->enroll_id)->where('tanggal_berjalan','>',$value4->tanggal_berjalan)->where('mulai_jam_kerja','!=',null)->orderBy('tanggal_berjalan')->limit(1)->pluck('absen_masuk_kerja')[0];
+                                            $absenOutBesokBaru=substr($absenOutBesok,0,5);
+                                        }else{
+                                            $absenOutBesokBaru='ijoijof';
+                                        }
+                                        if($absenOut==$absenOutBesokBaru){
+                                            if($mulai_jam_kerja_besok!=null){
+                                                $absenOut=null;
+                                            }
                                         }
                                     }
                                 }else{
