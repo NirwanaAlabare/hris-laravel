@@ -3389,6 +3389,11 @@ class MdAbsenHadirController extends AdminBaseController
                                             if($mulai_jam_kerja_besok!=null){
                                                 $absenOut=null;
                                             }
+                                        }else{
+                                            $hourdiff = round((strtotime($absenOut) - strtotime($absenOutBesokBaru))/3600, 1);
+                                            if($mulai_jam_kerja_besok!=null){
+                                                $absenOut=null;
+                                            }
                                         }
                                     }
                                 }else{
