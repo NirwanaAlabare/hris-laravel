@@ -499,9 +499,10 @@
         var enroll_id=$('#enroll_id_input_2').val();
         var no_form='NO. '+$('#no_form_input_2').val()+'/'+$('#no_form_input_next_2').val();
         var item=$('#reason_input').val();
+        var newitem=item.replace("&","%26");
         var reason=$('#reason_input_2').val();
         var created_date=$('#date_input').val();
-        var url = 'export_pdf_sk_bni?enroll_id='+enroll_id+'&no_form='+no_form+'&item='+item+'&reason='+reason+'&created_date='+created_date;
+        var url = 'export_pdf_sk_bni?enroll_id='+enroll_id+'&no_form='+no_form+'&item='+newitem+'&reason='+reason+'&created_date='+created_date;
         window.open(url, '_blank');
     }
 </script>
