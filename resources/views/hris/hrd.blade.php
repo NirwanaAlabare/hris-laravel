@@ -501,8 +501,9 @@
         var item=$('#reason_input').val();
         var newitem=item.replace("&","%26");
         var reason=$('#reason_input_2').val();
+        var newreason=reason.replace("&","%26");
         var created_date=$('#date_input').val();
-        var url = 'export_pdf_sk_bni?enroll_id='+enroll_id+'&no_form='+no_form+'&item='+newitem+'&reason='+reason+'&created_date='+created_date;
+        var url = 'export_pdf_sk_bni?enroll_id='+enroll_id+'&no_form='+no_form+'&item='+newitem+'&reason='+newreason+'&created_date='+created_date;
         window.open(url, '_blank');
     }
 </script>
