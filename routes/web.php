@@ -62,6 +62,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('dashboard',['as'=>'hris.dashboard.tes','uses'=>'DashboardController@tes']);
     Route::get('hrd/index',['as'=>'hris.hrd.index','uses'=>'HRDController@index']);
     Route::get('hrd/export_pdf_sk_kerja',['as'=>'hris.hrd.export_pdf_sk_kerja','uses'=>'HRDController@export_pdf_sk_kerja']);
+    Route::get('hrd/export_pdf_paklaring',['as'=>'hris.hrd.export_pdf_paklaring','uses'=>'HRDController@export_pdf_paklaring']);
     Route::get('hrd/export_pdf_sk_bni',['as'=>'hris.hrd.export_pdf_sk_bni','uses'=>'HRDController@export_pdf_sk_bni']);
 
     //Route::resource('mdabsenhadir', 'MdAbsenHadirController',['as' => 'hris']);

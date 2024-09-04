@@ -48,6 +48,14 @@
     <table width="506">
         <thead>
             @foreach ($data as $key=>$value)    
+            <?php 
+            $tanggal_akhir='';
+            if($value->status_aktif=='AKTIF'){
+                $tanggal_akhir='SEKARANG';
+            }else{
+                $tanggal_akhir=Carbon\Carbon::parse($value->tanggal_resign)->translatedFormat('d F Y');
+            }
+            ?>
             <tr>
                 <td colspan="5" style="height: 9"></td>
             </tr>
@@ -147,7 +155,7 @@
                 <td></td>
                 <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><u>Lamanya Bekerja</u></td>
                 <td>:</td>
-                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{Carbon\Carbon::parse($value->join_date)->translatedFormat('d F Y')}} s/d {{Carbon\Carbon::parse($value->tanggal_resign)->translatedFormat('d F Y')}}</td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{Carbon\Carbon::parse($value->join_date)->translatedFormat('d F Y')}} s/d {{$tanggal_akhir}}</td>
                 <td></td>
             </tr>
             <tr>
@@ -161,7 +169,7 @@
                 <td></td>
                 <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><u>Sebab Berhenti Bekerja</u></td>
                 <td>:</td>
-                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">HABIS KONTRAK</td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{$reason}}</td>
                 <td></td>
             </tr>
             <tr>

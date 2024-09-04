@@ -81,11 +81,17 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-4">
+                <div class="row py-2 text-dark">
+                    <div class="col-4 pl-4" style="font-weight: bold" id="reason_text">
                     </div>
-                    <div class="col-7">
+                    <div class="col-8">
+                        <input type="text" id="reason_3_input" class="form-control py-0 px-2" style="background-color:white">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 text-center pt-2">
                         <button class="btn btn-danger py-0" onclick="export_sk()"><span class="fa fa-file-pdf-o" style="font-size:9pt"></span> PRINT SK KERJA</button>
+                        <button class="btn btn-danger py-0" onclick="export_paklaring()"><span class="fa fa-file-pdf-o" style="font-size:9pt"></span> PRINT PAKLARING</button>
                     </div>
                 </div>
             </div>
@@ -150,13 +156,21 @@
                     </div>
                 </div>
                 <div class="row py-2">
+                    <div class="col-4 pl-4" style="font-weight: bold">
+                        Barang
+                    </div>
+                    <div class="col-7">
+                        <input type="text" class="form-control py-0 px-2" id="reason_input" style="background-color:white">
+                    </div>
+                </div>
+                <div class="row py-2 bg-light text-dark">
                     <div class="col-4 pl-4" id="reason_text_2" style="font-weight: bold">
                     </div>
                     <div class="col-7">
                         <input type="text" class="form-control py-0 px-2" id="reason_input_2" style="background-color:white">
                     </div>
                 </div>
-                <div class="row py-2 bg-light text-dark">
+                <div class="row py-2 text-dark">
                     <div class="col-4 pl-4" style="font-weight: bold">
                         Tanggal Pembuatan
                     </div>
@@ -164,7 +178,7 @@
                         <input type="date" class="form-control py-0 px-2" id="date_input" style="background-color:white">
                     </div>
                 </div>
-                <div class="row">
+                <div class="row bg-light">
                     <div class="col-4">
                     </div>
                     <div class="col-7">
@@ -470,15 +484,24 @@
     function export_sk(){
         var enroll_id=$('#enroll_id_input').val();
         var no_form='NO. '+$('#no_form_input').val()+'/'+$('#no_form_input_next').val();
-        var url = 'export_pdf_sk_kerja?enroll_id='+enroll_id+'&no_form='+no_form;
+        var reason=$('#reason_3_input').val();
+        var url = 'export_pdf_sk_kerja?enroll_id='+enroll_id+'&no_form='+no_form+'&reason='+reason;
+        window.open(url, '_blank');
+    }
+    function export_paklaring(){
+        var enroll_id=$('#enroll_id_input').val();
+        var no_form='NO. '+$('#no_form_input').val()+'/'+$('#no_form_input_next').val();
+        var reason=$('#reason_3_input').val();
+        var url = 'export_pdf_paklaring?enroll_id='+enroll_id+'&no_form='+no_form+'&reason='+reason;
         window.open(url, '_blank');
     }
     function export_sk_bni(){
         var enroll_id=$('#enroll_id_input_2').val();
         var no_form='NO. '+$('#no_form_input_2').val()+'/'+$('#no_form_input_next_2').val();
+        var item=$('#reason_input').val();
         var reason=$('#reason_input_2').val();
         var created_date=$('#date_input').val();
-        var url = 'export_pdf_sk_bni?enroll_id='+enroll_id+'&no_form='+no_form+'&reason='+reason+'&created_date='+created_date;
+        var url = 'export_pdf_sk_bni?enroll_id='+enroll_id+'&no_form='+no_form+'&item='+item+'&reason='+reason+'&created_date='+created_date;
         window.open(url, '_blank');
     }
 </script>
