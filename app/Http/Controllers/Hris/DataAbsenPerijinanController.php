@@ -696,7 +696,7 @@ class DataAbsenPerijinanController extends AdminBaseController
             } else {
                 info('Update on table master_data_absen_kehadiran after update Permohonan Perizinan [' . $nomor_form_perizinan . '] on table data_absen_perijinan is FAILED' );
             }
-
+            #tes satu dua tiga
         }else{
             if($kode_absen_ijin=='LN'){
                 $query1 = MasterDataAbsenKehadiran::whereBetween('tanggal_berjalan', [$tanggal_mulai_ijin, $tanggal_akhir_ijin])
