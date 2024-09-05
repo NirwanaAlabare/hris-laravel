@@ -1550,6 +1550,8 @@ class MdAbsenHadirController extends AdminBaseController
             }else if($kode_ijin_payroll=='ITB'){
                 if($Kehadiran->status_absen=='M'){
                     $kode_ijin_payroll='M';
+                }else if($q->status_absen=='IKS'){
+                    $kode_ijin_payroll='OK';
                 }
             }
             $interval = date_diff(date_create(substr($Kehadiran->mulai_jam_kerja, 0, 5)), date_create(substr($Kehadiran->akhir_jam_kerja, 0, 5)));
