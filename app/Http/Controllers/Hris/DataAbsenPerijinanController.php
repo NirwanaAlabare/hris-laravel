@@ -263,8 +263,6 @@ class DataAbsenPerijinanController extends AdminBaseController
                     'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
                     'tanggal_akhir_ijin' => $tanggal_akhir_ijin,
                     'operator' => $email,
-                    'absen_masuk_kerja'=>null,
-                    'absen_pulang_kerja'=>null,
                     'jumlah_menit_absen_dt'=>0,
                     'jumlah_menit_absen_pc'=>0,
                     'jumlah_menit_absen_dtpc'=>0,
@@ -683,8 +681,6 @@ class DataAbsenPerijinanController extends AdminBaseController
                 'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
                 'tanggal_akhir_ijin' => $tanggal_akhir_ijin,
                 'operator' => $email,
-                'absen_masuk_kerja'=>null,
-                'absen_pulang_kerja'=>null,
                 'jumlah_menit_absen_dt'=>0,
                 'jumlah_menit_absen_pc'=>0,
                 'jumlah_menit_absen_dtpc'=>0,
@@ -696,7 +692,7 @@ class DataAbsenPerijinanController extends AdminBaseController
             } else {
                 info('Update on table master_data_absen_kehadiran after update Permohonan Perizinan [' . $nomor_form_perizinan . '] on table data_absen_perijinan is FAILED' );
             }
-            
+            #oioaig
         }else{
             if($kode_absen_ijin=='LN'){
                 $query1 = MasterDataAbsenKehadiran::whereBetween('tanggal_berjalan', [$tanggal_mulai_ijin, $tanggal_akhir_ijin])
