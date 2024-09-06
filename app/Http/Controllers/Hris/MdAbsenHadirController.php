@@ -1550,7 +1550,7 @@ class MdAbsenHadirController extends AdminBaseController
             }else if($kode_ijin_payroll=='ITB'){
                 if($Kehadiran->status_absen=='M'){
                     $kode_ijin_payroll='M';
-                }else if($q->status_absen=='IKS'){
+                }else if($Kehadiran->status_absen=='IKS'){
                     $kode_ijin_payroll='OK';
                 }
             }
