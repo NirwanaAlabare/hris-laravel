@@ -2065,7 +2065,7 @@ class MdAbsenHadirController extends AdminBaseController
                                             $status_absen=$val["status_absen"];
                                         }
                                         else{
-                                            $status_absen=null;
+                                            $status_absen=$value->status_absen;
                                         }
                                         MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
                                         ->where('enroll_id', $val->enroll_id)
