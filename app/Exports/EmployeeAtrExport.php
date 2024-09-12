@@ -288,7 +288,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
         $sewing_nonsewing=$Data->sewing_nonsewing;
 
         return [
-            $employee_id,
+            (string)$employee_id,
             $enroll_id,
             $nik,
             $employee_name,
@@ -362,6 +362,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
     public function columnFormats(): array
     {
         return [
+            'A' => NumberFormat::FORMAT_TEXT,
             'P' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'Q' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'S' => NumberFormat::FORMAT_DATE_DDMMYYYY,
@@ -468,6 +469,11 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
     }
     public function bindValue(Cell $cell, $value)
     {
+        if ($cell->getColumn() == 'A') {
+            $cell->setValueExplicit($value, DataType::TYPE_STRING);
+
+            return true;
+        }
         if ($cell->getColumn() == 'X') {
             $cell->setValueExplicit($value, DataType::TYPE_STRING);
 
