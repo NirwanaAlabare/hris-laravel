@@ -25,6 +25,7 @@ use Maatwebsite\Excel\Concerns\FromView;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use \Maatwebsite\Excel\Sheet;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
@@ -37,7 +38,7 @@ use PhpOffice\PhpSpreadsheet\Cell\DefaultValueBinder;
 
 use Auth;
 
-class EmployeeAtrExport extends DefaultValueBinder implements WithCustomValueBinder, FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle, WithColumnFormatting
+class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, WithCustomValueBinder, FromQuery, WithMapping, WithEvents, WithCustomStartCell, WithTitle, WithColumnFormatting
 {
     use Exportable;
 
@@ -391,6 +392,80 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithCustomValueBin
         ];
     }
 
+    public function columnWidths(): array
+    {
+        return [
+            'A' => 12,
+            'B' => 8,
+            'C' => 11,
+            'D' => 26,
+            'E' => 14,
+            'F' => 17,
+            'G' => 18,
+            'H' => 19,
+            'I' => 15,
+            'J' => 28,
+            'K' => 13,
+            'L' => 28,
+            'M' => 22,
+            'N' => 17,
+            'O' => 18,
+            'P' => 16,
+            'Q' => 16,
+            'R' => 23,
+            'S' => 15,
+            'T' => 8,
+            'U' => 25,
+            'V' => 14,
+            'W' => 5,
+            'X' => 16,
+            'Y' => 18,
+            'Z' => 18,
+            'AA' => 13,
+            'AB' => 17,
+            'AC' => 29,
+            'AD' => 21,
+            'AE' => 40,
+            'AF' => 12,
+            'AG' => 18,
+            'AH' => 109,
+            'AI' => 17,
+            'AJ' => 21,
+            'AK' => 19,
+            'AL' => 21,
+            'AM' => 40,
+            'AN' => 16,
+            'AO' => 12,
+            'AP' => 25,
+            'AQ' => 33,
+            'AR' => 13,
+            'AS' => 16,
+            'AT' => 15,
+            'AU' => 20,
+            'AV' => 16,
+            'AW' => 15,
+            'AX' => 30,
+            'AY' => 20,
+            'AZ' => 22,
+            'BA' => 27,
+            'BB' => 30,
+            'BC' =>18,
+            'BD' => 24,
+            'BE' => 18,
+            'BF' => 24,
+            'BG' => 18,
+            'BH' => 24,
+            'BI' => 15,
+            'BJ' => 19,
+            'BK' => 19,
+            'BL' => 84,
+            'BM' => 25,
+            'BN' => 25,
+            'BO' => 34,
+            'BP' => 18,
+            'BQ' => 18
+        ];
+    }
     public function bindValue(Cell $cell, $value)
     {
         if ($cell->getColumn() == 'X') {
@@ -464,6 +539,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithCustomValueBin
 
                 $sheet->setCellValue('A5', 'EMPLOYEE ID');
                 $sheet->setCellValue('B5', 'NO. ABSEN');
+                $sheet->getDelegate()->getStyle('B5')->getFont()->setSize(8);
                 $sheet->setCellValue('C5', 'NIP');
                 $sheet->setCellValue('D5', 'NAMA KARYAWAN');
                 $sheet->setCellValue('E5', 'JENIS KELAMIN');
