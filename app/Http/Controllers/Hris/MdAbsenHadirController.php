@@ -3879,23 +3879,22 @@ class MdAbsenHadirController extends AdminBaseController
                             $absenOut=collect($records)->where('tanggal_absen',$value4->tanggal_berjalan)->where('enroll_id',$value4->enroll_id)->max('absen_log');
                         }
                         if($value4->status_absen == "LN" || $value4->status_absen == "LP" || $value4->status_absen=='S'){
-                            if($value4->status_absen=='S'){
+                            if($value4->status_absen=='S' || $value4->status_absen=='LP'){
                                 if( $absenIn!=null && $absenOut!=null && ($jadwal_in==null || $jadwal_in!=null)){
                                     $status_absen=null;
                                 }
                                 else if($absenIn!=null && $absenOut==null && ($jadwal_in==null || $jadwal_in!=null)){
-                                    $status_absen='S';
+                                    $status_absen=$value4->status_absen;
                                 }
                                 else if($absenIn==null && $absenOut!=null && ($jadwal_in==null || $jadwal_in!=null)){
-                                    $status_absen='S';
+                                    $status_absen=$value4->status_absen;
                                 }
                                 else if( $absenIn==null && $absenOut==null && $jadwal_in!=null){
-                                    $status_absen='S';
+                                    $status_absen=$value4->status_absen;
                                 }
                                 else if( $absenIn==null && $absenOut==null && $jadwal_in==null){
                                     $status_absen=null;
-                                }
-                                else{
+                                }else{
                                     $status_absen=$value4->status_absen;
                                 }
                             }else{
