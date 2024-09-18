@@ -549,7 +549,7 @@ class DataKehadiranInOutEditedController extends AdminBaseController
                 'akhir_jam_kerja'=>$akhir_jam_kerja
             ]);
             $query=MasterDataAbsenKehadiran::where('tanggal_berjalan',$tanggal_berjalan)
-                ->where('enroll_id','=', $enroll_id)->first();
+                ->where('enroll_id','=', $enroll_id)->with('employee_atribut')->first();
 
                 $status_absen_awal=$query->status_absen;
                 $jadwal_in=$query->mulai_jam_kerja;
@@ -584,6 +584,13 @@ class DataKehadiranInOutEditedController extends AdminBaseController
                 }else{
                     $total_DT=0;
                 }
+                if($query->employee_atribut()->first()->status_staff=='STAFF'){
+                    if($total_DT<=10){
+                        $total_DT=0;
+                    }else{
+                        $total_DT=$total_DT;
+                    }
+                }
 
                 if( $jadwal_out !=null && $absen_out !=null && $absen_out<$jadwal_out){
                     $total_PC1 = $PC->i +($PC->h*60);
@@ -606,7 +613,9 @@ class DataKehadiranInOutEditedController extends AdminBaseController
                 }else{
                     $total_PC=0;
                 }
-
+                if($absen_out<$jadwal_in){
+                    $total_PC=0;
+                }
                 $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
                 if( $jadwal_in!=null && $jadwal_out !=null){
                     $jumlah_absen_menit_kerja=$durasi_kerja_menit-$jumlah_menit_absen_dtpc;
