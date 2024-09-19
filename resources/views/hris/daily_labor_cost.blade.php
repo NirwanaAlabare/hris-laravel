@@ -38,20 +38,30 @@
 <div class="row">
     <div class="col-md-12">
         <div class="card shadow">
-            <div class="card-header text-white bg-gradient-primary py-2">
-                <div class="card-title">KEHADIRAN : </div>
-                <input type="hidden" id="daterange1" name="daterange1">
-                <a class="nav-link card-title" id="daterange-btn1" data-toggle="tooltip"
-                title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran">
-                </a>
-                <div class="card-options ">
-                    <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+            <div class="card-header bg-primary py-3">
+                <div class="card-title">DAILY LABOR COST RECAP PROCESS</div>
+            </div>
+            <div class="card-body px-6">
+                <div class="row">
+                    <div class="col-2 pt-3">
+                        <div class="card-title">DATE RANGE : </div>
+                    </div>
+                    <div class="col-4">
+                        <input type="hidden" id="daterange1" name="daterange1">
+                        <a class="nav-link card-title border border-secondary" id="daterange-btn1" data-toggle="tooltip"
+                        title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran">
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="card-footer bg-light py-3">
-                <div class="text-white">
-                    <button type="button" id="btn-proses-report" class="btn btn-app btn-primary mr-0 mt-0 mb-0" data-toggle="tooltip" title="Export Data ke File Excel"><i class="ion-ios7-download"></i> PROSES</button>
-                    <button type="button" id="btn-report-excel" class="btn btn-app btn-success mr-0 mt-0 mb-0" data-toggle="tooltip" title="Export Data ke File Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> EXPORT EXCEL</button>
+                <div class="row">
+                    <div class="col-2 pt-3">
+                    </div>
+                    <div class="col-4">
+                        <button type="button" id="btn-proses-report" class="btn btn-app btn-primary mr-0 mt-0 mb-0" data-toggle="tooltip" title="Export Data ke File Excel"><i class="ion-ios7-download"></i> PROSES</button>
+                        <button type="button" id="btn-report-excel" class="btn btn-app btn-success mr-0 mt-0 mb-0" data-toggle="tooltip" title="Export Data ke File Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> EXPORT EXCEL</button>
+                    </div>
                 </div>
             </div>
         </div>
