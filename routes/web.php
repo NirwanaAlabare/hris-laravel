@@ -218,9 +218,15 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
 
     Route::get('koreksiupah/index',['as'=>'hris.koreksiupah.index','uses'=>'KoreksiUpahController@index']);
     Route::post('koreksiupah/ajax_datakoreksiupah',['as'=>'hris.koreksiupah.ajax_datakoreksiupah','uses'=>'KoreksiUpahController@ajax_datakoreksiupah']);
+    Route::post('koreksiupah/ajax_datainsjabatan',['as'=>'hris.koreksiupah.ajax_datainsjabatan','uses'=>'KoreksiUpahController@ajax_datainsjabatan']);
     Route::post('koreksiupah/create',['as'=>'hris.koreksiupah.create','uses'=>'KoreksiUpahController@create']);
     Route::post('koreksiupah/update',['as'=>'hris.koreksiupah.update','uses'=>'KoreksiUpahController@update']);
     Route::post('koreksiupah/destroy',['as'=>'hris.koreksiupah.destroy','uses'=>'KoreksiUpahController@destroy']);
+    Route::post('koreksiupah/cek_koreksi_upah',['as'=>'hris.koreksiupah.cek_koreksi_upah','uses'=>'KoreksiUpahController@cek_koreksi_upah']);
+    Route::post('koreksiupah/add_position_insentif',['as'=>'hris.koreksiupah.add_position_insentif','uses'=>'KoreksiUpahController@add_position_insentif']);
+    Route::post('koreksiupah/delete_position_insentif',['as'=>'hris.koreksiupah.delete_position_insentif','uses'=>'KoreksiUpahController@delete_position_insentif']);
+    Route::post('koreksiupah/get_active_employee',['as'=>'hris.koreksiupah.get_active_employee','uses'=>'KoreksiUpahController@get_active_employee']);
+    Route::get('koreksiupah/datatable_ins_jabatan',['as'=>'hris.koreksiupah.datatable_ins_jabatan','uses'=>'KoreksiUpahController@datatable_ins_jabatan']);
 
     Route::get('koreksipotongan/index',['as'=>'hris.koreksipotongan.index','uses'=>'KoreksiPotonganController@index']);
     Route::post('koreksipotongan/ajax_datakoreksipotongan',['as'=>'hris.koreksipotongan.ajax_datakoreksipotongan','uses'=>'KoreksiPotonganController@ajax_datakoreksipotongan']);

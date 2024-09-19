@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Hris;
 use App\Models\EmployeeAtribut;
 use App\Http\Controllers\AdminBaseController;
 use App\Models\DataKoreksiUpah;
+use App\Models\RekapKehadiranKaryawan;
+use App\Models\DepartmentAll;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -39,6 +41,8 @@ class KoreksiUpahController extends AdminBaseController
 
     public function index()
     {
+        $this->periode_payroll = $this->ajax_getperiode();
+        $departments=DepartmentAll::where('site_nirwana_id','NAG')->where('status','AKTIF')->groupBy('department_name')->get();
         $data_priode=DataKoreksiUpah::groupBy('periode_tanggal_koreksi')->orderBy('tanggal_koreksi', 'desc')->get();
         $x=[];
         foreach ($data_priode as $key => $value) {
@@ -46,9 +50,52 @@ class KoreksiUpahController extends AdminBaseController
         }
 
         $this->priode_koreksi=$x;
-        return View::make('hris/koreksiupah', $this->data);
+        return View::make('hris/koreksiupah', $this->data,compact('departments'));
     }
+    public function ajax_getperiode()
+    {
+        $query =  RekapKehadiranKaryawan::selectRaw('periode_payroll')
+                                    ->groupby('periode_payroll')
+                                    ->orderby('periode_payroll', 'desc')
+                                    ->get();
+        return $query;
 
+    }
+    public function ajax_datainsjabatan(Request $request){
+        if(request()->ajax()) {
+
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $totalData = 0;
+            $totalFiltered = 0;
+            
+            $periode_tanggal_koreksi = substr($request->periode_tanggal_koreksi,5,2).'/'.substr($request->periode_tanggal_koreksi,8,2).'/'.substr($request->periode_tanggal_koreksi,0,4).' - '.substr($request->periode_tanggal_koreksi,20,2).'/'.substr($request->periode_tanggal_koreksi,23,2).'/'.substr($request->periode_tanggal_koreksi,15,4);
+            $query =  DB::select("select a.enroll_id id,a.employee_name as nama_karyawan,a.sub_dept_name as nama_department,a.jumlah_rp_potongan as insentif,b.jumlah_rp_potongan as koreksi_upah from (select x.enroll_id,x.employee_name,x.sub_dept_name,x.jumlah_rp_potongan from data_koreksi_upah x inner join (select max(y.periode) periode,y.enroll_id enroll_id from (SELECT enroll_id,uuid,CONCAT(substr(periode_tanggal_koreksi,20,4),'-',substr(periode_tanggal_koreksi,14,2),'-',substr(periode_tanggal_koreksi,17,2)) as periode,jumlah_rp_potongan FROM data_koreksi_upah where jenis_koreksi=2 order by CONCAT(substr(periode_tanggal_koreksi,20,4),'-',substr(periode_tanggal_koreksi,14,2),'-',substr(periode_tanggal_koreksi,17,2)) desc)y group by enroll_id)z on x.enroll_id=z.enroll_id and CONCAT(substr(x.periode_tanggal_koreksi,20,4),'-',substr(x.periode_tanggal_koreksi,14,2),'-',substr(x.periode_tanggal_koreksi,17,2))=z.periode) a left join (select*from data_koreksi_upah where periode_tanggal_koreksi='$periode_tanggal_koreksi' and jenis_koreksi=2 group by enroll_id) b on a.enroll_id=b.enroll_id");
+            $totalData = DataKoreksiUpah::where('jenis_koreksi',2)->groupBy('enroll_id')->count();
+            $totalFiltered = count($query);
+            $data = array();
+            if(!empty($query))
+            {
+                foreach ($query as $q)
+                {
+                    $nestedData['enroll_id'] = $q->id;
+                    $nestedData['employee_name'] = $q->nama_karyawan;
+                    $nestedData['department_name'] = $q->nama_department;
+                    $nestedData['insentif'] = $q->insentif;
+                    $nestedData['koreksi_upah'] = $q->koreksi_upah;
+                    $data[] = $nestedData;
+                }
+            }
+            $json_data = array(
+                "draw"            => intval($request->input('draw')),
+                "recordsTotal"    => intval($totalData),
+                "recordsFiltered" => intval($totalFiltered),
+                "data"            => $data
+                );
+
+            echo json_encode($json_data);
+        }
+    }
     public function ajax_datakoreksiupah(Request $request)
     {
 
@@ -58,7 +105,9 @@ class KoreksiUpahController extends AdminBaseController
         $start = $request->input('start');
         $totalData = 0;
         $totalFiltered = 0;
-
+        
+        $periode_payroll = $request->periode_payroll;
+        
         if(empty($request->input('search.value')))
         {
             $query =  DataKoreksiUpah::selectRaw('
@@ -76,8 +125,7 @@ class KoreksiUpahController extends AdminBaseController
                         data_koreksi_upah.keterangan,
                         data_koreksi_upah.created_at,
                         data_koreksi_upah.updated_at,
-                        data_koreksi_upah.jenis_koreksi                            
-
+                        data_koreksi_upah.jenis_koreksi
                     ')
                     ->leftJoin('employee_atribut','data_koreksi_upah.enroll_id','=','employee_atribut.enroll_id')
                     ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
@@ -218,8 +266,7 @@ class KoreksiUpahController extends AdminBaseController
 
          $findDT = DataKoreksiUpah::where('enroll_id',$request->enroll_id)->where('periode_tanggal_koreksi',$request->periode_tanggal_koreksi)
             ->where('jenis_koreksi',$request->jenis_koreksi)->count();
-
-        if($findDT > 0) {
+            if($findDT > 0) {
             $query = false;
         } else {
             $query = DataKoreksiUpah::create([
@@ -246,7 +293,85 @@ class KoreksiUpahController extends AdminBaseController
 
         return $query;
     }
+    public function cek_koreksi_upah(){
+        $periode_tanggal_koreksi = request()->periode_tanggal_kehadiran;
+        
+        $arr_periode_tgl_koreksi=explode(" s/d ",$periode_tanggal_koreksi);
+        $periode_tanggal_kehadiran = date("m/d/Y", strtotime($arr_periode_tgl_koreksi[0])).' - '.date("m/d/Y", strtotime($arr_periode_tgl_koreksi[1]));
+        $countData=DataKoreksiUpah::where('periode_tanggal_koreksi',$periode_tanggal_kehadiran)->where('enroll_id',request()->id)->count();
+        return $countData;
+    }
+    public function add_position_insentif(){
+        $loggedAdmin=Auth::guard('admin')->user()->email;
+        $tanggal_koreksi=request()->tanggal_koreksi;
+        $arr_tgl_koreksi=explode("-",$tanggal_koreksi);
+        $enroll_id = request()->id;
+        $employee=EmployeeAtribut::where('enroll_id',$enroll_id)->get();
+        foreach($employee as $value){
+            $nik=$value->nik;
+            $employee_name=$value->employee_name;
+            $site_nirwana_id = $value->site_nirwana_id;
+            $site_nirwana_name = $value->site_nirwana_name;
+            $department_id = $value->department_id;
+            $department_name = $value->department_name;
+            $sub_dept_id = $value->sub_dept_id;
+            $sub_dept_name = $value->sub_dept_name;
+        }
+        $kode_koreksi_upah=$arr_tgl_koreksi[0].$arr_tgl_koreksi[1].ltrim(date('is'),'0').$nik;
+        $jumlah_rp_potongan = request()->jumlah_rp_potongan;
+        $periode_tanggal_koreksi = request()->periode_tanggal_koreksi;
+        
+        $arr_periode_tgl_koreksi=explode(" s/d ",$periode_tanggal_koreksi);
+        $periode_tanggal_kehadiran = date("m/d/Y", strtotime($arr_periode_tgl_koreksi[0])).' - '.date("m/d/Y", strtotime($arr_periode_tgl_koreksi[1]));
+        $keterangan='Insentif Jabatan';
+        $jenis_koreksi=2;
+        $data_koreksi=[
+            'uuid' => Str::uuid(),
+            'kode_koreksi_upah' => $kode_koreksi_upah,
+            'tanggal_koreksi' => $tanggal_koreksi,
+            'enroll_id' => $enroll_id,
+            'nik' => $nik,
+            'employee_name' => $employee_name,
+            'site_nirwana_id' => $site_nirwana_id,
+            'site_nirwana_name' => $site_nirwana_name,
+            'department_id' => $department_id,
+            'department_name' => $department_name,
+            'sub_dept_id' => $sub_dept_id,
+            'sub_dept_name' => $sub_dept_name,
+            'jumlah_rp_potongan' => $jumlah_rp_potongan,
+            'periode_tanggal_koreksi' => $periode_tanggal_kehadiran,
+            'keterangan' => $keterangan,
+            'operator' => $loggedAdmin,
+            'jenis_koreksi' => $jenis_koreksi
+        ];
+        $data_koreksi_db=DataKoreksiUpah::where('enroll_id',$enroll_id)->where('periode_tanggal_koreksi',$periode_tanggal_kehadiran)->count();
+        if($data_koreksi_db==0){
+            DataKoreksiUpah::create($data_koreksi);
+        }else{
+            DataKoreksiUpah::where('periode_tanggal_koreksi',$periode_tanggal_kehadiran)->where('enroll_id',$enroll_id)->update($data_koreksi);
+        }
+    }
+    public function delete_position_insentif(){
+        $periode_tanggal_koreksi = request()->periode_tanggal_koreksi;
+        
+        $arr_periode_tgl_koreksi=explode(" s/d ",$periode_tanggal_koreksi);
+        $periode_tanggal_kehadiran = date("m/d/Y", strtotime($arr_periode_tgl_koreksi[0])).' - '.date("m/d/Y", strtotime($arr_periode_tgl_koreksi[1]));
+        DataKoreksiUpah::where('periode_tanggal_koreksi',$periode_tanggal_kehadiran)->where('enroll_id',request()->id)->delete();
+    }
+    public function get_active_employee(){
+        $tanggal_sekarang = request()->tanggal_koreksi;
+        $bulan_sekarang=date('Y-m-'.'26');
+        $bulan_sebelum=date('Y-m-d',strtotime( "-1 month", strtotime( $bulan_sekarang ) ));
+        $bulan_setelah=date('Y-m-d',strtotime( "+1 month", strtotime( $bulan_sekarang ) ));
 
+        if($tanggal_sekarang>$bulan_sebelum && $tanggal_sekarang<=$bulan_sekarang){
+            $tanggal_awal=$bulan_sebelum;
+        }else if($tanggal_sekarang>$bulan_sekarang && $tanggal_sekarang<=$bulan_setelah){
+            $tanggal_awal=$bulan_sekarang;
+        }
+        $employee=EmployeeAtribut::where('status_aktif','AKTIF')->orWhere('tanggal_resign','>',$tanggal_awal)->orderBy('employee_name')->get();
+        return $employee;
+    }
     public function update(Request $request)
     {
         $loggedAdmin = Auth::guard('admin')->user();

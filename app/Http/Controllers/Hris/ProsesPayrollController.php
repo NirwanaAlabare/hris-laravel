@@ -2982,7 +2982,8 @@ class ProsesPayrollController extends AdminBaseController
     
                         'pendapatan_lainnya_rupiah'=>0,
     
-                        'koreksi_upah_rupiah'=>$value->koreksi_upah->sum('jumlah_rp_potongan'),
+                        'koreksi_upah_rupiah'=>$value->koreksi_upah->whereIn('jenis_koreksi',[1,null])->sum('jumlah_rp_potongan'),
+                        'insentif_jabatan'=>$value->koreksi_upah->where('jenis_koreksi',2)->sum('jumlah_rp_potongan'),
                         'koreksi_potongan_rupiah'=>$value->koreksi_potongan->sum('jumlah_rp_potongan'),
     
                         'potongan_iks_menit'=>$value->rekap_iks->sum('lama_ijin_menit'),
@@ -3026,10 +3027,10 @@ class ProsesPayrollController extends AdminBaseController
             foreach ($data_payroll as $k => $v) {
                // $count=$security->where('enroll_id',$v['enroll_id'])->count();
                // if($count==0){
-                $upah_bruto_rupiah=($v['upah_per_bulan']+$v['tunjangan_karyawan_rupiah']+$v['premi_karyawan']+$v['total_lembur_rupiah']+$v['pendapatan_lainnya_rupiah']+$v['koreksi_upah_rupiah'])-
+                $upah_bruto_rupiah=($v['upah_per_bulan']+$v['tunjangan_karyawan_rupiah']+$v['premi_karyawan']+$v['total_lembur_rupiah']+$v['pendapatan_lainnya_rupiah']+$v['koreksi_upah_rupiah']+$v['insentif_jabatan'])-
                     ($v['koreksi_potongan_rupiah']+$v['potongan_iks_rupiah']+$v['potongan_dtpc_rupiah']+$v['potongan_kehadiran_rupiah']);
 
-                $upah_neto_rupiah=($v['upah_per_bulan']+$v['tunjangan_karyawan_rupiah']+$v['premi_karyawan']+$v['total_lembur_rupiah']+$v['pendapatan_lainnya_rupiah']+$v['koreksi_upah_rupiah'])-
+                $upah_neto_rupiah=($v['upah_per_bulan']+$v['tunjangan_karyawan_rupiah']+$v['premi_karyawan']+$v['total_lembur_rupiah']+$v['pendapatan_lainnya_rupiah']+$v['koreksi_upah_rupiah']+$v['insentif_jabatan'])-
                     ($v['koreksi_potongan_rupiah']+$v['potongan_iks_rupiah']+$v['potongan_dtpc_rupiah']+$v['potongan_kehadiran_rupiah'])-$v['pph21'];
 
                 $upah_bersih_rupiah=$upah_neto_rupiah-($v['total_bpjs_tk']+$v['total_bpjs_ks']+$v['iuran_koperasi']+$v['iuran_serikat_rupiah']);
@@ -3096,6 +3097,7 @@ class ProsesPayrollController extends AdminBaseController
                     'pendapatan_lainnya_rupiah'=>$v['pendapatan_lainnya_rupiah'],
 
                     'koreksi_upah_rupiah'=>$v['koreksi_upah_rupiah'],
+                    'insentif_jabatan'=>$v['insentif_jabatan'],
                     'koreksi_potongan_rupiah'=>$v['koreksi_potongan_rupiah'],
 
                     'potongan_iks_menit'=>$v['potongan_iks_menit'],

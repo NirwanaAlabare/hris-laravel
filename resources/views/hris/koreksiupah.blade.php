@@ -143,7 +143,130 @@
         </div>
     </div>
     <!-- End page-header -->
-
+    <div class="modal fade" id="insentif_jabatan_modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" style="max-width: 66%;" role="document">
+            <div class="row">
+                <div class="col-12">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary pb-1 pt-2">
+                            <label class="form-label" style="font-size:13pt">Insentif Jabatan</label>
+                            <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
+                                <i class="fa fa-remove"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body py-0">
+                            <div class="row">
+                                <div class="col-5 py-5 px-5">
+                                    <table id="datatable_ins_jabatan" class="table table-sm table-hover table-striped w-100">
+                                        <thead>
+                                            <tr class="text-center">
+                                                <th scope="col"></th>
+                                                <th scope="col"></th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-7 pt-5 px-6" style="background-color:rgb(188, 244, 244)">
+                                    <div class="row py-1">
+                                        <div class="col-12">
+                                            <div class="form-group mb-0">
+                                                <div class="row">
+                                                    <div class="col-4 pt-2">
+                                                        <label class="form-label" style="font-weight: bold">Periode Kehadiran</label>
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <select id="periode_tanggal_kehadiran" name="periode_tanggal_kehadiran" class="form-control" style="background-color: white">
+                                                            @foreach ($periode_payroll as $r_periode_payroll)
+                                                                <option value="{{$r_periode_payroll->periode_payroll}}">
+                                                                @php
+                                                                    setlocale(LC_ALL, 'id-ID', 'id_ID');
+                                                                    $datePeriode = explode(" s/d ", $r_periode_payroll->periode_payroll);
+                                                                    echo strtoupper(strftime("%d %b %Y", strtotime($datePeriode[0])) . ' s/d ' . strftime("%d %b %Y", strtotime($datePeriode[1])));
+                                                                @endphp
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row py-1">
+                                        <div class="col-12">
+                                            <div class="form-group mb-0 pb-1">
+                                                <div class="row">
+                                                    <div class="col-4 pt-2">
+                                                        <label class="form-label" style="font-weight: bold">Tanggal Koreksi</label>
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <div class="input-group-text">
+                                                                    <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                                                </div>
+                                                            </div>
+                                                            <input id="tanggal_koreksi2" name="tanggal_koreksi2" style="background-color: white" type="text" class="form-control fc-datepicker" placeholder="Tanggal Koreksi" maxlength="50" size="50">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row py-1">
+                                        <div class="col-12">
+                                            <div class="form-group mb-0 pb-1">
+                                                <div class="row">
+                                                    <div class="col-4 pt-2">
+                                                        <label class="form-label" style="font-weight: bold">Nama Karyawan</label>
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <select id="nama_karyawan2" name="nama_karyawan2" class="form-control" style="background-color: white">
+                                                        </select>
+                                                        {{-- <input id="nama_karyawan2" name="nama_karyawan2" style="background-color: white" type="text" class="form-control" maxlength="50" size="50"> --}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row py-1">
+                                        <div class="col-12">
+                                            <div class="form-group mb-0 pb-1">
+                                                <div class="row">
+                                                    <div class="col-4 pt-2">
+                                                        <label class="form-label" style="font-weight: bold">Jumlah Rp.</label>
+                                                    </div>
+                                                    <div class="col-8">
+                                                        <input id="jumlah_rp_potongan2" name="jumlah_rp_potongan2" type="number" class="form-control" style="background-color: white" placeholder="0" maxlength="50" size="50">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row pt-2 pb-5">
+                                        <div class="col-12">
+                                            <div class="row">
+                                                <div class="col-4">
+                                                </div>
+                                                <div class="col-8">
+                                                    <button class="btn btn-primary py-0" id="store_insentif_jabatan">&nbsp;&nbsp;<i class="fa fa-floppy-o"></i> SAVE&nbsp;&nbsp;&nbsp;</button>
+                                                    <button class="btn btn-danger py-0" id="delete_insentif_jabatan" disabled><i class="fa fa-trash-o"></i> DELETE</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-header bg-primary py-1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- row -->
     <div class="row">
         <div class="col-sm-12 col-md-12 col-lg-7 col-xl-7">
@@ -156,7 +279,32 @@
                         <a href="#" class="card-options-collapse mr-2" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
                     </div>
                 </div>
-                <div class="card-body m-0">
+                <div class="card-body m-0 pt-2">
+                    <div class="row">
+                        <div class="col-4">
+                            <button class="btn btn-primary pb-0 pt-1" data-target="#insentif_jabatan_modal" data-toggle="modal" id="insentif_jabatan_modal_button"><span class="fa fa-plus"></span> Insentif Jabatan</button>
+                        </div>
+                        <div class="col-4">
+                        </div>
+                    </div>
+                    <div class="row pb-3">
+                        <div class="col-4 pt-2">
+                            <label class="form-label text-primary">PERIODE TANGGAL KOREKSI</label>
+                        </div>
+                        <div class="col-4">
+                            <select id="periode_payroll" name="periode_payroll" class="form-control">
+                                @foreach ($periode_payroll as $r_periode_payroll)
+                                    <option value="{{$r_periode_payroll->periode_payroll}}">
+                                    @php
+                                        setlocale(LC_ALL, 'id-ID', 'id_ID');
+                                        $datePeriode = explode(" s/d ", $r_periode_payroll->periode_payroll);
+                                        echo strtoupper(strftime("%d %b %Y", strtotime($datePeriode[0])) . ' s/d ' . strftime("%d %b %Y", strtotime($datePeriode[1])));
+                                    @endphp
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <div class="table-responsive">
                         <table id="datatable-ajax-crud"
                             class="table table-sm table-striped table-hover w-100">
@@ -366,7 +514,65 @@
     <script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
 
     <script type="text/javascript">
-
+        $('#insentif_jabatan_modal_button').on('click',function(){
+            $('#store_insentif_jabatan').attr("disabled");
+            $('#delete_insentif_jabatan').attr("disabled");
+            $("#datatable_ins_jabatan").DataTable().ajax.reload();
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+            
+            today = yyyy + '-' + mm + '-' + dd;
+            
+            $('#tanggal_koreksi2').val(today);
+            $('#nama_karyawan2').val('');
+            $('#jumlah_rp_potongan2').val('');
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.koreksiupah.get_active_employee')}}",
+                data:{
+                    tanggal_koreksi:today 
+                },
+                success: function(res){
+                    $("#nama_karyawan2").append("<option value=''>Daftar karyawan</option>");
+                    for(i=0;i<res.length;i++) {
+                        $("#nama_karyawan2").append("<option value="+res[i].enroll_id+">"+res[i].employee_name+"</option>");
+                    }
+                },
+                error: function(res){
+                    notif({
+                        msg: "<b>Error:</b> Oops data gagal di update.",
+                        type: "error"
+                    });
+                }
+            });
+            
+        });
+        $('#tanggal_koreksi2').on('change',function(){
+            testing3();
+            var today=$('#tanggal_koreksi2').val();
+            $('#nama_karyawan2').empty();
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.koreksiupah.get_active_employee')}}",
+                data:{
+                    tanggal_koreksi:today 
+                },
+                success: function(res){
+                    $("#nama_karyawan2").append("<option value=''>Daftar karyawan</option>");
+                    for(i=0;i<res.length;i++) {
+                        $("#nama_karyawan2").append("<option value="+res[i].enroll_id+">"+res[i].employee_name+"</option>");
+                    }
+                },
+                error: function(res){
+                    notif({
+                        msg: "<b>Error:</b> Oops data gagal di update.",
+                        type: "error"
+                    });
+                }
+            });
+        });
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -386,7 +592,66 @@
             }
             return d;
         }
-
+        $('#store_insentif_jabatan').on('click',function(){
+            var tanggal_koreksi=$('#tanggal_koreksi2').val();
+            var id=$('#nama_karyawan2').val();
+            var jumlah_rp_potongan=$('#jumlah_rp_potongan2').val();
+            var periode_tanggal_koreksi=$('#periode_tanggal_kehadiran').val();
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.koreksiupah.add_position_insentif')}}",
+                data:{
+                    tanggal_koreksi:tanggal_koreksi,
+                    id:id,
+                    jumlah_rp_potongan:jumlah_rp_potongan,
+                    periode_tanggal_koreksi:periode_tanggal_koreksi,
+                },
+                success: function(res){
+                    $('#nama_karyawan2').val('');
+                    $('#jumlah_rp_potongan2').val('');
+                    $('#periode_tanggal_kehadiran').val();
+                    $('#store_insentif_jabatan').html('&nbsp;&nbsp;<i class="fa fa-floppy-o"></i> SAVE &nbsp;&nbsp;&nbsp;');
+                    $('#store_insentif_jabatan').prop("disabled", true);
+                    $('#delete_insentif_jabatan').prop("disabled", true);
+                    $("#datatable_ins_jabatan").DataTable().ajax.reload();
+                    $("#datatable-ajax-crud").DataTable().ajax.reload();
+                },
+                error: function(res){
+                    notif({
+                        msg: "<b>Error:</b> Oops data gagal di update.",
+                        type: "error"
+                    });    
+                }
+            });
+        });
+        $('#delete_insentif_jabatan').on('click',function(){
+            var id=$('#nama_karyawan2').val();
+            var periode_tanggal_koreksi=$('#periode_tanggal_kehadiran').val();
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.koreksiupah.delete_position_insentif')}}",
+                data:{
+                    id:id,
+                    periode_tanggal_koreksi:periode_tanggal_koreksi,
+                },
+                success: function(res){
+                    $('#nama_karyawan2').val('');
+                    $('#jumlah_rp_potongan2').val('');
+                    $('#periode_tanggal_kehadiran').val();
+                    $('#store_insentif_jabatan').html('&nbsp;&nbsp;<i class="fa fa-floppy-o"></i> SAVE &nbsp;&nbsp;&nbsp;');
+                    $('#store_insentif_jabatan').prop("disabled", true);
+                    $('#delete_insentif_jabatan').prop("disabled", true);
+                    $("#datatable_ins_jabatan").DataTable().ajax.reload();
+                    $("#datatable-ajax-crud").DataTable().ajax.reload();
+                },
+                error: function(res){
+                    notif({
+                        msg: "<b>Error:</b> Oops data gagal di delete.",
+                        type: "error"
+                    });    
+                }
+            });
+        });
         //Date range as a button
         $('#periode_tanggal_koreksi').daterangepicker({
             ranges: {
@@ -783,8 +1048,49 @@
             });           
                         
         });
+        var periode_payroll = $('#periode_payroll').val();
         
+        function testing(){
+            var periode_tanggal_koreksi = $('#periode_tanggal_kehadiran').val();
+            $('#datatable_ins_jabatan').DataTable().ajax.reload(null, false);
+        }
+        function testing2(){
+            var periode_tanggal_koreksi = $('#periode_payroll').val();
+            $('#periode_tanggal_kehadiran').val($('#periode_payroll').val());
+            $('#datatable_ins_jabatan').DataTable().ajax.reload(null, false);
+        }
+        function testing3(){
+            var tanggal_koreksi = $('#tanggal_koreksi2').val();
+            var nama_karyawan = $('#nama_karyawan2').val();
+            var jumlah_rp_potongan = $('#jumlah_rp_potongan2').val();
+            var periode_tanggal_kehadiran=$('#periode_tanggal_kehadiran').val();
+            if(tanggal_koreksi!='' && nama_karyawan!='' && jumlah_rp_potongan!=''){
+                $('#store_insentif_jabatan').removeAttr('disabled');
+                $.ajax({
+                    type:"POST",
+                    url: "{{route('hris.koreksiupah.cek_koreksi_upah')}}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    data: {
+                        id:nama_karyawan,
+                        periode_tanggal_kehadiran:periode_tanggal_kehadiran
+                    },
+                    success: function(res){
+                        console.log(res);
+                        if(res==1){
+                            $('#store_insentif_jabatan').html('&nbsp;&nbsp;<span class="fa fa-edit"> UPDATE&nbsp&nbsp')
+                        }else{
+                            $('#store_insentif_jabatan').html('&nbsp;&nbsp;<span class="fa fa-floppy-o"> SAVE&nbsp&nbsp')
+                        }
+                    }
+                });
+            }else{
+                $('#store_insentif_jabatan').prop('disabled',true);
+            }
+        }
         $(document).ready(function() {
+            $('#periode_tanggal_kehadiran').val($('#periode_payroll').val());
+            $('#delete_insentif_jabatan').attr("disabled");
             var table1 = $('#datatable-ajax-crud').DataTable({
                 processing: true,
                 serverSide: true,
@@ -800,6 +1106,9 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     "dataSrc": "data",
+                    "data": {
+                        periode_payroll:periode_payroll,
+                    },
                 },
                 columns: [
                     {
@@ -881,7 +1190,6 @@
             });
 
             table1.draw();
-
             $('#datatable-ajax-crud tbody').on('click', 'tr', function () {
                 var tr = $(this).closest('tr');
                 var row = table1.row(tr);
@@ -917,13 +1225,101 @@
                 $("#jenis_koreksi").val(data["jenis_koreksi"]).trigger("change");
 
     
-             });
-
+            });
+            var table2 = $('#datatable_ins_jabatan').DataTable({
+                processing: true,
+                serverSide: false,
+                searching: false,
+                paging: false,
+                destroy: true,
+                "language": {
+                    processing: '<center><div class="dimmer active"><div class="lds-hourglass p-0 m-0"></div></div> Mohon untuk menunggu...</center> '},
+                "ajax": {
+                    "url": "{{ route('hris.koreksiupah.ajax_datainsjabatan') }}",
+                    "dataType": "json",
+                    "type": "POST",
+                    "headers": {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    "dataSrc": "data",
+                    "data": function (d) {
+                        d.periode_tanggal_koreksi = $('#periode_tanggal_kehadiran').val();
+                    }
+                },
+                columns: [
+                    {
+                        title: 'ID',
+                        data: 'enroll_id',
+                        name: 'enroll_id'
+                    },
+                    {
+                        title: 'NAMA KARYAWAN',
+                        data: 'employee_name',
+                        name: 'employee_name'
+                    },
+                    {
+                        title: 'INSENTIF',
+                        data: 'insentif',
+                        name: 'insentif'
+                    },
+                ],
+                "createdRow": function (row, data, dataIndex) {
+                    // if ((data['kode_hari'] == "5") || (data['kode_hari'] == "6") || (data['kerjalibur'] == "LIBUR")) {
+                    if ((data['koreksi_upah'] == null)) {
+                        $(row).css('background', 'red');
+                    }else{
+                        $(row).css('background', 'lime');
+                    }
+                },
+                order: [
+                    [1, 'asc']
+                ]
+            });
+            table2.draw();
+            $('#datatable_ins_jabatan tbody').on('click', 'tr', function () {
+                $('#delete_insentif_jabatan').attr("disabled");
+                var tr = $(this).closest('tr');
+                var row = table2.row(tr);
+                var data = row.data();
+                
+                $("#datatable_ins_jabatan tbody tr").removeClass('bg-cyan');
+                $(this).addClass('bg-cyan');
+                $("#nama_karyawan2").val(data["enroll_id"]);
+                if(data["koreksi_upah"]!=null){
+                    $('#store_insentif_jabatan').html('<i class="fa fa-edit"></i> UPDATE');
+                    $('#delete_insentif_jabatan').removeAttr("disabled");
+                    $('#store_insentif_jabatan').removeAttr("disabled");
+                }else{
+                    $('#store_insentif_jabatan').html('&nbsp;&nbsp;<i class="fa fa-floppy-o"></i> SAVE&nbsp;&nbsp;&nbsp;');
+                    $('#delete_insentif_jabatan').attr("disabled");
+                    $('#store_insentif_jabatan').removeAttr("disabled");
+                }
+                $("#jumlah_rp_potongan2").val(data["insentif"]);
+            });
         });
-        
     </script>
 
     <script>
+        $('#periode_payroll').on('change',function(){
+            testing2();
+            $('#delete_insentif_jabatan').attr("disabled");
+        });
+        $('#periode_tanggal_kehadiran').on('change',function(){
+            $('#nama_karyawan2').val('');
+            $('#jumlah_rp_potongan2').val('');
+            $('#delete_insentif_jabatan').prop("disabled", true);
+            $('#store_insentif_jabatan').prop("disabled", true);
+            testing();
+        });
+        $('#nama_karyawan2').on('change',function(){
+            testing3();
+        });
+        $('#jumlah_rp_potongan2').on('keyup',function(){
+            testing3();
+        });
+        $('#jumlah_rp_potongan2').on('change',function(){
+            testing3();
+        });
         $('body').on('click', '#btn-edit', function (event) {
             var enroll_id = $('#enroll_id').val();
 
