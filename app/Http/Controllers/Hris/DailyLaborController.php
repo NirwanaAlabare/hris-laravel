@@ -105,7 +105,7 @@ class DailyLaborController extends AdminBaseController
             $periode_payroll=$tanggal_awal2.' s/d '.$tanggal_akhir2;
 
             if($value->mulai_jam_kerja!=null && $value->absen_masuk_kerja!=null && $value->absen_pulang_kerja!=null && ($value->status_absen==null || $value->status_absen=='IKS' || in_array($value->status_absen,$LBY) || in_array($value->status_absen,$IBY))){
-                if($value->rekap_perhitungan_kehadiran()){
+                if(count($value->rekap_perhitungan_kehadiran)!=0){
                     $gaji_bulanan=$value->rekap_perhitungan_kehadiran()->where('periode_payroll',$periode_payroll)->first()->gaji_pokok;
                     $gaji_harian=$value->rekap_perhitungan_kehadiran()->where('periode_payroll',$periode_payroll)->first()->gaji_harian;
                     $gaji_menit=$value->rekap_perhitungan_kehadiran()->where('periode_payroll',$periode_payroll)->first()->gaji_menit;
@@ -132,7 +132,7 @@ class DailyLaborController extends AdminBaseController
                 $insentif=0;
             }
             if($value->nomor_form_lembur!=null){
-                if($value->rekap_lembur()){
+                if(count($value->rekap_lembur)!=0){
                     $total_lembur_rupiah=$value->rekap_lembur()->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->total_lembur_rupiah;
                 }else{
                     $total_lembur_rupiah=0;
