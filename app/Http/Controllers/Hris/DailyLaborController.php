@@ -103,19 +103,18 @@ class DailyLaborController extends AdminBaseController
             }
             $tanggal_akhir2=date('Y-m-25',strtotime("+1 month",strtotime($tanggal_awal2)));
             $periode_payroll=$tanggal_awal2.' s/d '.$tanggal_akhir2;
-
+            if(count($value->rekap_perhitungan_kehadiran)!=0){
+                $gaji_bulanan=$value->rekap_perhitungan_kehadiran()->where('periode_payroll',$periode_payroll)->first()->gaji_pokok;
+                $gaji_harian=$value->rekap_perhitungan_kehadiran()->where('periode_payroll',$periode_payroll)->first()->gaji_harian;
+                $gaji_menit=$value->rekap_perhitungan_kehadiran()->where('periode_payroll',$periode_payroll)->first()->gaji_menit;
+                $hari_kerja=$value->rekap_perhitungan_kehadiran()->where('periode_payroll',$periode_payroll)->first()->jumlah_hari_kerja;
+            }else{
+                $gaji_bulanan=0;
+                $gaji_harian=0;
+                $gaji_menit=0;
+                $hari_kerja=0;
+            }
             if($value->mulai_jam_kerja!=null && $value->absen_masuk_kerja!=null && $value->absen_pulang_kerja!=null && ($value->status_absen==null || $value->status_absen=='IKS' || in_array($value->status_absen,$LBY) || in_array($value->status_absen,$IBY))){
-                if(count($value->rekap_perhitungan_kehadiran)!=0){
-                    $gaji_bulanan=$value->rekap_perhitungan_kehadiran()->where('periode_payroll',$periode_payroll)->first()->gaji_pokok;
-                    $gaji_harian=$value->rekap_perhitungan_kehadiran()->where('periode_payroll',$periode_payroll)->first()->gaji_harian;
-                    $gaji_menit=$value->rekap_perhitungan_kehadiran()->where('periode_payroll',$periode_payroll)->first()->gaji_menit;
-                    $hari_kerja=$value->rekap_perhitungan_kehadiran()->where('periode_payroll',$periode_payroll)->first()->jumlah_hari_kerja;
-                }else{
-                    $gaji_bulanan=0;
-                    $gaji_harian=0;
-                    $gaji_menit=0;
-                    $hari_kerja=0;
-                }
                 $potongan_menit=$value->jumlah_menit_absen_dtpc+$value->total_menit_permits;
                 $net_wages=$gaji_harian-($gaji_menit*$potongan_menit);
                 if($value->mulai_jam_kerja!=null && $value->absen_masuk_kerja!=null && $value->absen_pulang_kerja!=null && $value->jumlah_menit_absen_dt==0 && $value->jumlah_menit_absen_pc==0 && $value->jumlah_menit_absen_dtpc==0 && $value->status_absen==null){
@@ -143,7 +142,7 @@ class DailyLaborController extends AdminBaseController
             
             if($value->kode_hari!=5 && $value->kode_hari!=6){
                 if($value->employee_atribut->status_aktif_bpjs_ks=='AKTIF'){
-                    if($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll)){
+                    if(count($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll))!=0){
                         $bpjs_ks=$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll)->first()->bpjs_ks_jkn_bruto_rupiah/$hari_kerja;
                     }else{
                         $bpjs_ks=0;
@@ -152,7 +151,7 @@ class DailyLaborController extends AdminBaseController
                     $bpjs_ks=0;
                 }
                 if($value->employee_atribut->status_aktif_bpjs_tk=='AKTIF'){
-                    if($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll)){
+                    if(count($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll))!=0){
                         $bpjs_tk=($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll)->first()->bpjs_tk_jkm_bruto_rupiah+
                         $value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll)->first()->bpjs_tk_jht_bruto_rupiah+
                         $value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll)->first()->bpjs_tk_jkk_bruto_rupiah+
@@ -164,7 +163,7 @@ class DailyLaborController extends AdminBaseController
                 }else{
                     $bpjs_tk=0;
                 }
-                if($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll)){
+                if(count($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll))!=0){
                     $tunjangan=$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll)->first()->tmk;
                 }else{
                     $tunjangan=0;
