@@ -203,6 +203,9 @@ class EmployeeAtribut extends \Eloquent
     public function absensi(){
         return $this->hasMany(MasterDataAbsenKehadiran::class, 'enroll_id','enroll_id');
     }
+    public function employee_bpjs(){
+        return $this->hasMany(EmployeeBpjs::class, 'enroll_id','enroll_id');
+    }
     public function grading_salary(){
         return $this->hasMany(GradingSalary::class, 'kode_grade','kode_grade');
     }
@@ -230,5 +233,7 @@ class EmployeeAtribut extends \Eloquent
     public function tunjangan(){
         return $this->hasMany(TunjanganKaryawan::class, 'enroll_id','enroll_id');
     }
-
+    public function group_department(){
+        return $this->belongsTo(BMasterCC::class, 'sub_dept_id','no_cc');
+    }
 }

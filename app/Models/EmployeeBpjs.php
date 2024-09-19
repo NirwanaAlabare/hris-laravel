@@ -117,5 +117,8 @@ class EmployeeBpjs extends \Eloquent
     // public $primaryKey = null;
     public $primaryKey = ['kode_bpjs'];
 
+    public function employee_atribut(){
+        return $this->belongsTo(EmployeeAtribut::class, 'enroll_id', 'enroll_id');
+    }
 
 }

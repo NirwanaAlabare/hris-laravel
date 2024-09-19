@@ -203,6 +203,9 @@ class MasterDataAbsenKehadiran extends \Eloquent
     public function employee_atribut(){
         return $this->belongsTo(EmployeeAtribut::class, 'enroll_id', 'enroll_id');
     }
+    public function ref_absen(){
+        return $this->belongsTo(RefAbsenIjin::class,'status_absen','kode_absen_ijin');
+    }
     public function data_lembur(){
         return $this->hasOne(DataLembur::class, 'uuid_master','uuid');
     }
@@ -210,5 +213,7 @@ class MasterDataAbsenKehadiran extends \Eloquent
     public function rekap_lembur(){
         return $this->hasMany(RekapPerhitunganLembur::class, 'enroll_id','enroll_id');
     }
-
+    public function rekap_perhitungan_kehadiran(){
+        return $this->hasMany(RekapPerhitunganKehadiranKaryawan::class, 'enroll_id','enroll_id');
+    }
 }

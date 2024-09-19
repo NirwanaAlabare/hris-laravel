@@ -69,4 +69,8 @@ class DepartmentAll extends \Eloquent
 
     }
     
+    public function b_master_cc(){
+        return $this->belongsTo('App\Models\bMasterCC', 'sub_dept_id','no_cc');
+    }
+    
 }

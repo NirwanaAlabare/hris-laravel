@@ -48,6 +48,9 @@
                 <li><a class="slide-item"  href="{{route('hris.rekapperhitungandtpc.index')}}"><span> DTPC Karyawan</span></a></li>
                 <li><a class="slide-item"  href="{{route('hris.rekapperhitunganiks.index')}}"><span> IKS Karyawan</span></a></li>
                 <li><a class="slide-item" href="{{route('hris.estimasinilaipayroll.index')}}"><span> Estimasi Nilai Payroll</span></a></li>
+                @if($loggedAdmin->email === 'willy@ptnag.com' || $loggedAdmin->role_user === 'superadmin' )
+                <li><a class="slide-item" href="{{route('hris.nilaipayrollperhari.index')}}"><span> Nilai Payroll Per Hari</span></a></li>
+                @endif
                
                 <li><a class="slide-item" href="{{route('hris.jurnal.index')}}"><span> Jurnal</span></a></li>
 

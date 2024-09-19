@@ -307,6 +307,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('dataclosingpayroll/create/',['as'=>'hris.dataclosingpayroll.create','uses'=> 'DataClosingPayrollController@create']);
     Route::post('dataclosingpayroll/update/',['as'=>'hris.dataclosingpayroll.update','uses'=> 'DataClosingPayrollController@update']);
     Route::post('dataclosingpayroll/destroy/',['as'=>'hris.dataclosingpayroll.destroy','uses'=> 'DataClosingPayrollController@destroy']);
+    Route::post('daily_labor/proses/',['as'=>'hris.daily_labor.proses','uses'=> 'DailyLaborController@proses']);
+    Route::post('daily_labor/export_excel/',['as'=>'hris.daily_labor.export_excel','uses'=> 'DailyLaborController@export_excel']);
 
     include "routechunks/new.php";
 });
