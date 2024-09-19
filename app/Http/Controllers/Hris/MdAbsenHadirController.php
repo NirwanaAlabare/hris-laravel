@@ -1953,12 +1953,12 @@ class MdAbsenHadirController extends AdminBaseController
                 $kehadiran = MasterDataAbsenKehadiran::selectRaw("
                     substr(tanggal_berjalan,1, 10) tanggal_absen,
                     enroll_id,
-                    substr(absen_masuk_kerja, 1, 5) absen_in,
-                    substr(absen_pulang_kerja, 1, 5) absen_out,
+                    substr(absen_masuk_kerja, 1, 6) absen_in,
+                    substr(absen_pulang_kerja, 1, 6) absen_out,
                     mulai_jam_kerja,
                     nomor_form_lembur,
-                    substr(mulai_jam_lembur,11,5) mulai_lembur,
-                    substr(akhir_jam_lembur,11,5) akhir_lembur,
+                    substr(mulai_jam_lembur,11,6) mulai_lembur,
+                    substr(akhir_jam_lembur,11,6) akhir_lembur,
                     status_absen,
                     operator
                 ")->whereRaw("
@@ -2087,7 +2087,24 @@ class MdAbsenHadirController extends AdminBaseController
                                             'status_absen' => $status_absen
                                         ]);
                                     }else{
-                                        if($val["mulai_jam_lembur"]<$val["akhir_jam_lembur"]){
+                                        if($val['nomor_form_lembur']!=null){
+                                            if($val["mulai_lembur"]<$val["akhir_lembur"]){
+                                                if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"] == "R"){
+                                                    $status_absen=$val["status_absen"];
+                                                }
+                                                else{
+                                                    $status_absen=null;
+                                                }
+                                                MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->update([
+                                                    'absen_masuk_kerja' => $value->absen_in,
+                                                    'absen_pulang_kerja' => $value->absen_out,
+                                                    'status_absen' => $status_absen
+                                                ]);
+                                            }
+                                        }else{
+                                            $mulai_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('enroll_id',$val['enroll_id'])->where('tanggal_berjalan','<',$val['tanggal_berjalan'])->where('mulai_jam_kerja','!=',null)->orderBy('tanggal_berjalan','DESC')->limit(1)->pluck('mulai_jam_kerja')[0];
+                                            $akhir_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('enroll_id',$val['enroll_id'])->where('tanggal_berjalan','<',$val['tanggal_berjalan'])->where('mulai_jam_kerja','!=',null)->orderBy('tanggal_berjalan','DESC')->limit(1)->pluck('akhir_jam_kerja')[0];
+                                            if($mulai_jam_kerja_kemarin<$akhir_jam_kerja_kemarin){
                                             if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"] == "R"){
                                                 $status_absen=$val["status_absen"];
                                             }
@@ -2100,6 +2117,7 @@ class MdAbsenHadirController extends AdminBaseController
                                                 'absen_pulang_kerja' => $value->absen_out,
                                                 'status_absen' => $status_absen
                                             ]);
+                                            }
                                         }
                                     }
                                 }
