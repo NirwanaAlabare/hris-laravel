@@ -256,7 +256,7 @@
                                     <th scope="col" width="17%"></th>
                                     <th scope="col" width="17%"></th>
                                     <th scope="col" width="20%" class="text-center"></th>
-                                    <th scope="col" width="5%" class="text-center"></th>
+                                    <th scope="col" width="5%" class="text-right"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -406,9 +406,11 @@
                 },
                 {
                     title: '<span class="fa fa-cog"></span>',
+                    orderable: false
                 },
                 {
                     title: '<span class="fa fa-print"></span><span class="fa fa-check text-success"></span>',
+                    orderable: false
                 }
             ],
             order: [
@@ -430,21 +432,21 @@
                     'render' : function (data, type, row) {
                         if(row.sudah_diprint!=null){
                             return `
-                                <button class='btn btn-danger' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal" data-toggle="modal" onclick="send_to_modal(` + row.enroll_id + `)" disabled>
+                                <div class="row"><div class="col text-center"><button class='btn btn-danger' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal" data-toggle="modal" onclick="send_to_modal(` + row.enroll_id + `)" disabled>
                                     PRINT SK KERJA
                                 </button>
                                 <button class='btn btn-primary' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal_2" data-toggle="modal" onclick="send_to_modal_2(` + row.enroll_id + `)">
                                     SK BNI
-                                </button>
+                                </button></div></div>
                             `
                         }else{
                             return `
-                                <button class='btn btn-danger' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal" data-toggle="modal" onclick="send_to_modal(` + row.enroll_id + `)">
+                                <div class="row"><div class="col text-center"><button class='btn btn-danger' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal" data-toggle="modal" onclick="send_to_modal(` + row.enroll_id + `)">
                                     PRINT SK KERJA
                                 </button>
                                 <button class='btn btn-primary' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal_2" data-toggle="modal" onclick="send_to_modal_2(` + row.enroll_id + `)">
                                     SK BNI
-                                </button>
+                                </button></div></div>
                             `
                         }
                     }
@@ -454,15 +456,15 @@
                     'render' : function (data, type, row) {
                         if(row.sudah_diprint!=null){
                             return `
-                                <div class="form-check">
+                                <div class="row"><div class="col text-center"><div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="`+row.enroll_id+`" style='width: 20px; height: 20px;' id="checked_enroll_id_print_` + row.enroll_id + `" onchange="alreadyPrintEmployeeCheck(this)" checked >
-                                </div>
+                                </div></div></div>
                             `
                         }else{
                             return `
-                                <div class="form-check">
+                                <div class="row"><div class="col text-center"><div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="`+row.enroll_id+`" style='width: 20px; height: 20px;' id="checked_enroll_id_print_` + row.enroll_id + `" onchange="alreadyPrintEmployeeCheck(this)">
-                                </div>
+                                </div></div></div>
                             `
                         }
                     }
