@@ -733,7 +733,7 @@
                                         <tr>
                                             <th>Staff / Non Staff</th>
                                             <th>Tanggal Resign</th>
-                                            <th>Tunjangan</th>
+                                            <th>Nomor Surat</th>
                                         </tr>
                                         <tr>
                                             <td>
@@ -752,7 +752,8 @@
                                                     </div><input id="tanggal_resign" class="form-control fc-datepicker"  placeholder="DD-MM-YYYY" type="text">
                                                 </div>
                                             </td>
-                                            <td><input type="text" class="form-control" id="tunjangan" maxlength="80" size="80"></td>
+                                            {{-- <td><input type="text" class="form-control" id="tunjangan" maxlength="80" size="80"></td> --}}
+                                            <td><input type="text" class="form-control" id="no_surat" maxlength="80" size="80"></td>
                                         </tr>
                                         <tr>
                                             <th>Grade</th>
@@ -1889,6 +1890,7 @@
                 tanggal_resign = defaultDate(data['tanggal_resign']);
                 $('#tanggal_resign').val(tanggal_resign);
                 $('#tunjangan').val(data['tunjangan']);
+                $('#no_surat').val(data['no_surat']);
                 $("#kode_grade").val(data['kode_grade']).trigger("change");
                 $('#referensi').val(data['referensi']);
                 $('#employee_name_atasan').val(data['employee_name_atasan']);
@@ -2506,6 +2508,7 @@
                                 nomor_sim:$('#nomor_sim').val(),
                                 tanggal_expire_sim:tanggal_expire_sim,
                                 catatan:$('#catatan').val(),
+                                no_surat:$('#no_surat').val(),
                                 lokasi_foto:$('#lokasi_foto').val(),
                                 tanggal_mulai_kontrak:tanggal_mulai_kontrak,
                                 tanggal_akhir_kontrak:tanggal_akhir_kontrak,
@@ -2684,6 +2687,7 @@
                     nomor_sim:$('#nomor_sim').val(),
                     tanggal_expire_sim:tanggal_expire_sim,
                     catatan:$('#catatan').val(),
+                    no_surat:$('#no_surat').val(),
                     lokasi_foto:$('#lokasi_foto').val(),
                     tanggal_mulai_kontrak:tanggal_mulai_kontrak,
                     tanggal_akhir_kontrak:tanggal_akhir_kontrak,
