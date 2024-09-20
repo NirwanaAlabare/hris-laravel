@@ -119,6 +119,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
                 employee_atribut.nomor_sim,
                 employee_atribut.tanggal_expire_sim,
                 employee_atribut.catatan,
+                employee_atribut.no_surat,
                 employee_atribut.lokasi_foto,
                 employee_atribut.operator,
                 employee_atribut.tanggal_mulai_kontrak,
@@ -282,6 +283,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
         $tanggal_mulai_kontrak =$tanggal_mulai_kontrakf;
         $tanggal_akhir_kontrak = $tanggal_akhir_kontrakf;
         $catatan_kontrak = $Data->catatan_kontrak;
+        $no_surat=$Data->no_surat;
         $created_at = $Data->created_at;
         $updated_at = $Data->updated_at;
         $direct_indirect=$Data->direct_indirect;
@@ -355,6 +357,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
             Date::stringToExcel($tanggal_mulai_kontrak),
             Date::stringToExcel($tanggal_akhir_kontrak),
             $catatan_kontrak,
+            (string)$no_surat,
             $created_at,
             $updated_at,
         ];
@@ -464,7 +467,8 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
             'BN' => 25,
             'BO' => 34,
             'BP' => 18,
-            'BQ' => 18
+            'BQ' => 18,
+            'BR' => 18
         ];
     }
     public function bindValue(Cell $cell, $value)
@@ -515,6 +519,11 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
             return true;
         }
         if ($cell->getColumn() == 'BJ') {
+            $cell->setValueExplicit($value, DataType::TYPE_STRING);
+
+            return true;
+        }
+        if ($cell->getColumn() == 'BP') {
             $cell->setValueExplicit($value, DataType::TYPE_STRING);
 
             return true;
@@ -611,8 +620,9 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
                 $sheet->setCellValue('BM5', 'TANGGAL MULAI KONTRAK');
                 $sheet->setCellValue('BN5', 'TANGGAL AKHIR KONTRAK');
                 $sheet->setCellValue('BO5', 'CATATAN KONTRAK');
-                $sheet->setCellValue('BP5', 'TERAKHIR DI BUAT');
-                $sheet->setCellValue('BQ5', 'TERAKHIR DI UBAH');
+                $sheet->setCellValue('BP5', 'NO. SURAT');
+                $sheet->setCellValue('BQ5', 'TERAKHIR DI BUAT');
+                $sheet->setCellValue('BR5', 'TERAKHIR DI UBAH');
 
             },
         ];

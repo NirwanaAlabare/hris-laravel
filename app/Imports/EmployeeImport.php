@@ -163,7 +163,8 @@ class EmployeeImport implements ToModel, WithStartRow, WithCalculatedFormulas
             'catatan'=>$row[63],
             'tanggal_mulai_kontrak'=>$tanggal_mulai_kontrak,
             'tanggal_akhir_kontrak'=>$tanggal_akhir_kontrak,
-            'catatan_kontrak'=>$row[66]
+            'catatan_kontrak'=>$row[66],
+            'no_surat'=>$row[67]
         ];
         if($dataArray['enroll_id']=='' || $dataArray['hamlet']=='red'){
 

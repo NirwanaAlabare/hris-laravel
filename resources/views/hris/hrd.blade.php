@@ -2,6 +2,7 @@
 
 @section('head')
 <link href="{{ URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
+<link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
 
 @stop
 @section('mainarea')
@@ -192,16 +193,70 @@
 <div class="row">
     <div class="col-lg-12 col-md-12">
         <div class="card shadow">
-            <div class="card-body">
+            <div class="accordion" id="accordionExample">
+                <div class="card mb-0">
+                    <div class="card-header p-0 bg-light" id="headingTwo" style="border: 1px solid rgb(210, 210, 210);">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="font-weight:bold;font-size:12pt">
+                                <i class="fa fa-filter pl-4" aria-hidden="true"></i> Filter
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                        <div class="card-body px-6" style="border: 1px solid rgb(210, 210, 210);">
+                            <div class="row pb-2">
+                                <div class="col-2 pt-1">
+                                    <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> No. KTP</label>
+                                </div>
+                                <div class="col-4">
+                                    <input type="number" id="searchNoKTP" name="searchNoKTP" class="form-control" style="background-color:white" placeholder="Masukkan No. KTP">
+                                </div>
+                            </div>
+                            <div class="row pb-2">
+                                <div class="col-2 pt-1">
+                                    <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nama Karyawan</label>
+                                </div>
+                                <div class="col-4">
+                                    <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID">
+                                        @foreach ($selectEmployee as $r_empl)
+                                            <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-2 pt-1">
+                                    <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nama Ibu Kandung</label>
+                                </div>
+                                <div class="col-4">
+                                    <input type="text" id="searchIbuKandung" name="searchIbuKandung" class="form-control" style="background-color:white" placeholder="Masukkan Nama Ibu Kandung">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body px-6 pt-2 pb-5">
+                <div class="row">
+                    <div class="col-12">
+                        <button class="btn btn-danger pb-0 py-1" onclick="tes()"><span class="fa fa-file-pdf-o"></span> Print SK</button>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col">
                         <table id="datatable-ajax-crud" class="table table-sm table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
-                                    <th scope="col" class="text-center"></th>
+                                    <th scope="col" width="3%">
+                                        <input type="checkbox" id="checkAllEmployee" onchange="actionCheckAllEmployee(this)">
+                                    </th>
+                                    <th scope="col" width="5%"></th>
+                                    <th scope="col" width="10%"></th>
+                                    <th scope="col" width="23%"></th>
+                                    <th scope="col" width="17%"></th>
+                                    <th scope="col" width="17%"></th>
+                                    <th scope="col" width="20%" class="text-center"></th>
+                                    <th scope="col" width="5%" class="text-center"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -219,7 +274,82 @@
 <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}"></script>
 <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
 <script src="{{ URL::asset('assets/plugins/datatable/dataTables.responsive.min.js') }}"></script>
+<script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
 <script type="text/javascript">
+    $(function(){
+        'use strict';
+
+        $('.select2').select2({
+            minimumResultsForSearch: Infinity
+        });
+
+        // Select2 by showing the search
+        $('.select2-show-search').select2({
+            minimumResultsForSearch: ''
+        });
+
+        // Colored Hover
+        $('#select2').select2({
+            dropdownCssClass: 'hover-success',
+            minimumResultsForSearch: Infinity // disabling search
+        });
+
+        $('#select3').select2({
+            dropdownCssClass: 'hover-danger',
+            minimumResultsForSearch: Infinity // disabling search
+        });
+
+        // Outline Select
+        $('#select4').select2({
+            containerCssClass: 'select2-outline-success',
+            dropdownCssClass: 'bd-success hover-success',
+            minimumResultsForSearch: Infinity // disabling search
+        });
+
+        $('#select5').select2({
+            containerCssClass: 'select2-outline-info',
+            dropdownCssClass: 'bd-info hover-info',
+            minimumResultsForSearch: Infinity // disabling search
+        });
+
+        // Full Colored Select Box
+        $('#select6').select2({
+            containerCssClass: 'select2-full-color select2-primary',
+            minimumResultsForSearch: Infinity // disabling search
+        });
+
+        $('#select7').select2({
+            containerCssClass: 'select2-full-color select2-danger',
+            dropdownCssClass: 'hover-danger',
+            minimumResultsForSearch: Infinity // disabling search
+        });
+
+        // Full Colored Dropdown
+        $('#select8').select2({
+            dropdownCssClass: 'select2-drop-color select2-drop-primary',
+            minimumResultsForSearch: Infinity // disabling search
+        });
+
+        $('#select9').select2({
+            dropdownCssClass: 'select2-drop-color select2-drop-indigo',
+            minimumResultsForSearch: Infinity // disabling search
+        });
+
+        // Full colored for both box and dropdown
+        $('#select10').select2({
+            containerCssClass: 'select2-full-color select2-primary',
+            dropdownCssClass: 'select2-drop-color select2-drop-primary',
+            minimumResultsForSearch: Infinity // disabling search
+        });
+
+        $('#select11').select2({
+            containerCssClass: 'select2-full-color select2-indigo',
+            dropdownCssClass: 'select2-drop-color select2-drop-indigo',
+            minimumResultsForSearch: Infinity // disabling search
+        });
+    });
+    var currentPageCheck = 0;
+    var checkedEmployeeArr = [];
     $(document).ready(function() {
         var table1 = $('#datatable-ajax-crud').DataTable({
             processing: true,
@@ -238,17 +368,26 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 "dataSrc": "data",
+                "data": function (d) {
+                    d.searchData = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+                    d.selectNoKTP = $("#searchNoKTP").val();
+                    d.searchIbuKandung = $("#searchIbuKandung").val();
+                }
             },
             columns: [
+                {
+                    data: 'enroll_id',
+                    orderable: false
+                },
+                {
+                    title: 'ID',
+                    data: 'enroll_id',
+                    name: 'enroll_id'
+                },
                 {
                     title: 'NIK',
                     data: 'nik',
                     name: 'nik'
-                },
-                {
-                    title: 'Nomor Absen',
-                    data: 'enroll_id',
-                    name: 'enroll_id'
                 },
                 {
                     title: 'Nama Karyawan',
@@ -256,7 +395,20 @@
                     name: 'employee_name'
                 },
                 {
+                    title: 'Department',
+                    data: 'department_name',
+                    name: 'department_name'
+                },
+                {
+                    title: 'Bagian',
+                    data: 'sub_dept_name',
+                    name: 'sub_dept_name'
+                },
+                {
                     title: '<span class="fa fa-cog"></span>',
+                },
+                {
+                    title: '<span class="fa fa-print"></span><span class="fa fa-check text-success"></span>',
                 }
             ],
             order: [
@@ -264,23 +416,179 @@
             ],
             columnDefs: [
                 {
-                    'targets': [3],
-                    'render' : function (data, type, row) {
+                    'targets': [0],
+                    'render' : function (data,type, row) {
                         return `
-                            <button class='btn btn-danger' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal" data-toggle="modal" onclick="send_to_modal(` + row.enroll_id + `)">
-                                PRINT SK KERJA
-                            </button>
-                            <button class='btn btn-primary' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal_2" data-toggle="modal" onclick="send_to_modal_2(` + row.enroll_id + `)">
-                                SK BNI
-                            </button>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="`+data+`" style='width: 20px; height: 20px;' id="checked_enroll_id_` + row.enroll_id + `" onchange="actionThisEmployeeCheck(this)" >
+                            </div>
                         `
+                    }
+                },
+                {
+                    'targets': [6],
+                    'render' : function (data, type, row) {
+                        if(row.sudah_diprint!=null){
+                            return `
+                                <button class='btn btn-danger' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal" data-toggle="modal" onclick="send_to_modal(` + row.enroll_id + `)" disabled>
+                                    PRINT SK KERJA
+                                </button>
+                                <button class='btn btn-primary' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal_2" data-toggle="modal" onclick="send_to_modal_2(` + row.enroll_id + `)">
+                                    SK BNI
+                                </button>
+                            `
+                        }else{
+                            return `
+                                <button class='btn btn-danger' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal" data-toggle="modal" onclick="send_to_modal(` + row.enroll_id + `)">
+                                    PRINT SK KERJA
+                                </button>
+                                <button class='btn btn-primary' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal_2" data-toggle="modal" onclick="send_to_modal_2(` + row.enroll_id + `)">
+                                    SK BNI
+                                </button>
+                            `
+                        }
+                    }
+                },
+                {
+                    'targets': [7],
+                    'render' : function (data, type, row) {
+                        if(row.sudah_diprint!=null){
+                            return `
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="`+row.enroll_id+`" style='width: 20px; height: 20px;' id="checked_enroll_id_print_` + row.enroll_id + `" onchange="alreadyPrintEmployeeCheck(this)" checked >
+                                </div>
+                            `
+                        }else{
+                            return `
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="`+row.enroll_id+`" style='width: 20px; height: 20px;' id="checked_enroll_id_print_` + row.enroll_id + `" onchange="alreadyPrintEmployeeCheck(this)">
+                                </div>
+                            `
+                        }
                     }
                 }
             ],
+            rowCallback: function(row, data, dataIndex){
+                let currentEnrollId = data['enroll_id'];
+
+                checkedEmployeeArr.forEach((item, index, array) => {
+                    if(item==currentEnrollId){
+                        currentPageCheck++;
+                        $(row).find('input[id="checked_enroll_id_'+item+'"]').prop('checked', true);
+                    }
+                });
+            },
+            drawCallback: function (settings) {
+                if (currentPageCheck == 0) {
+                    $('#checkAllEmployee').prop("checked", false);
+                } else {
+                    $('#checkAllEmployee').prop("checked", true);
+                }
+
+                currentPageCheck = 0;
+            }
         });
         
         table1.draw();
     });
+    $('#selectEmployeeID').on('change',function(){
+        var searchData = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+        var selectNoKTP = $("#searchNoKTP").val();
+        var searchIbuKandung = $("#searchIbuKandung").val();
+
+        $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+    });
+    $('#searchNoKTP').on('keyup',function(){
+        var searchData = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+        var selectNoKTP = $("#searchNoKTP").val();
+        var searchIbuKandung = $("#searchIbuKandung").val();
+
+        $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+    });
+    $('#searchIbuKandung').on('keyup',function(){
+        var searchData = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+        var selectNoKTP = $("#searchNoKTP").val();
+        var searchIbuKandung = $("#searchIbuKandung").val();
+
+        $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+    });
+    function actionCheckAllEmployee(element) {
+
+        if (element.checked) {
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.employeeatr.ajax_getemployeeid')}}",
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                dataType: 'json',
+                success: function(res){
+                    if(res){
+                        checkedEmployeeArr = res;
+
+                        $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+                    }
+                }
+            });
+        } else {
+            console.log("test");
+            checkedEmployeeArr = [];
+
+            $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+        }
+    }
+    function alreadyPrintEmployeeCheck(element){
+        var enroll_id=element.value;
+        if (element.checked) {
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.employeeatr.already_print')}}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                data: {
+                    id:enroll_id,
+                },
+                success: function(data){
+                    $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+                }
+            });
+        }else{
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.employeeatr.not_yet_printed')}}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                data: {
+                    id:enroll_id,
+                },
+                success: function(data){
+                    $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+                }
+            });
+        }
+    }
+    function actionThisEmployeeCheck(element) {
+        if (element.checked) {
+            if(!checkedEmployeeArr.find((value) => value == element.value)) {
+                checkedEmployeeArr.push(element.value);
+            }
+        } else {
+            if(checkedEmployeeArr.find((value) => value == element.value)) {
+                const index = checkedEmployeeArr.indexOf(element.value);
+                if (index > -1) { // only splice array when item is found
+                    checkedEmployeeArr.splice(index, 1); // 2nd parameter means remove one item only
+                }
+            }
+        }
+    }
+    function tes(){
+        var today=new Date();
+        var month_now=today.getMonth();
+        var year_now=today.getFullYear();
+        var no_form=integerToRoman(month_now+1)+'/'+year_now;
+        var url = 'export_pdf_print_sk?employee='+checkedEmployeeArr+'&no_form='+no_form;
+        window.open(url, '_blank');
+    }
     function send_to_modal(enroll_id){
         var id=enroll_id;
         $.ajax({

@@ -89,10 +89,12 @@ class EmployeeAtribut extends \Eloquent
         'posisi_name',
         'hamlet',
         'kode_pos',
+        'no_surat',
         'saudara_yang_bisa_dihubungi',
         'allowance',
         'pola_kerja',
-        'premi'
+        'premi',
+        'sudah_diprint'
     ];
     protected $guarded = ['employee_id'];
 
@@ -186,10 +188,12 @@ class EmployeeAtribut extends \Eloquent
         'posisi_name',
         'hamlet',
         'kode_pos',
+        'no_surat',
         'saudara_yang_bisa_dihubungi',
         'allowance',
         'pola_kerja',
-        'premi'
+        'premi',
+        'sudah_diprint'
     ];
 
     protected $appends = [];

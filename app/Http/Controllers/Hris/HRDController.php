@@ -8,6 +8,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Dompdf\FontMetrics;
+use App\Models\EmployeeAtribut;
 use Illuminate\Http\Request;
 
 class HRDController extends AdminBaseController
@@ -19,7 +20,21 @@ class HRDController extends AdminBaseController
         $this->pageTitle = 'Dashboard';
     }
     public function index(){
-        return View::make('hris/hrd', $this->data);
+        $selectEmployee =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')->groupby('enroll_id')->orderby('employee_name', 'asc')->get();
+        $selectNoKTP = EmployeeAtribut::selectRaw('nomor_ktp')->groupby('nomor_ktp')->orderby('nomor_ktp', 'asc')->get();
+        return View::make('hris/hrd',compact('selectEmployee','selectNoKTP'), $this->data);
+    }
+    public function export_pdf_print_sk(){
+        $enroll_id=request()->employee;
+        $arrayEnrollId=explode(',',$enroll_id);
+        $data=EmployeeAtribut::whereIn('enroll_id',$arrayEnrollId)->where(function($query){
+            $query->where('sudah_diprint',null)
+            ->orWhere('sudah_diprint','!=',1);
+        })->get();
+        $no_forms=request()->no_form;
+        $fileName='all sk kerja.'.date('His').'_'.rand();
+        $pdf = PDF::loadView('hris.laporan.all_sk_kerja_karyawan',["data" => $data,"no_form"=>$no_forms])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+        return $pdf;
     }
     public function export_pdf_sk_kerja(){
         $enroll_id=request()->enroll_id;

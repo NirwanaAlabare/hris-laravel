@@ -256,9 +256,9 @@ class EmployeeAtrController extends AdminBaseController
             $search = $request->input('search.value');
 
             $query =  EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
-                $query->where('employee_id','LIKE',"%{$search}%")
-                ->orWhere('nik','LIKE',"%{$search}%")
-                ->orWhere('enroll_id','LIKE',"%{$search}%")
+                $query->where('employee_id','LIKE',$search)
+                ->orWhere('nik',$search)
+                ->orWhere('enroll_id',$search)
                 ->orWhere('employee_name','LIKE',"%{$search}%")
                 ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
                 ->orWhere('department_name','LIKE',"%{$search}%")
@@ -273,9 +273,9 @@ class EmployeeAtrController extends AdminBaseController
             ->get();
 
             $totalData = EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
-                $query->where('employee_id','LIKE',"%{$search}%")
-                ->orWhere('nik','LIKE',"%{$search}%")
-                ->orWhere('enroll_id','LIKE',"%{$search}%")
+                $query->where('employee_id',$search)
+                ->orWhere('nik',$search)
+                ->orWhere('enroll_id',$search)
                 ->orWhere('employee_name','LIKE',"%{$search}%")
                 ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
                 ->orWhere('department_name','LIKE',"%{$search}%")
@@ -380,6 +380,7 @@ class EmployeeAtrController extends AdminBaseController
                 $nestedData['nomor_sim'] = $q->nomor_sim;
                 $nestedData['tanggal_expire_sim'] = $q->tanggal_expire_sim;
                 $nestedData['catatan'] = $q->catatan;
+                $nestedData['no_surat'] = $q->no_surat;
                 $nestedData['lokasi_foto'] = $q->lokasi_foto;
                 $nestedData['operator'] = $q->operator;
                 $nestedData['tanggal_mulai_kontrak'] = $q->tanggal_mulai_kontrak;
@@ -403,15 +404,30 @@ class EmployeeAtrController extends AdminBaseController
         echo json_encode($json_data);
         }
     }
+    public function already_print(){
+        $enroll_id=request()->id;
+        EmployeeAtribut::where('enroll_id',$enroll_id)->update([
+            'sudah_diprint'=>1
+        ]);
+    }
+    public function not_yet_printed(){
+        $enroll_id=request()->id;
+        EmployeeAtribut::where('enroll_id',$enroll_id)->update([
+            'sudah_diprint'=>null
+        ]);
+    }
     public function ajax_getemployeeatr2(Request $request)
     {
 
         if(request()->ajax()) {
 
         $columns = array(
-            0 => 'nik',
+            0 => 'enroll_id',
             1 => 'enroll_id',
-            2 => 'employee_name'
+            2 => 'nik',
+            3 => 'employee_name',
+            4 => 'department_name',
+            5 => 'sub_dept_name'
         );
 
         $limit = $request->input('length');
@@ -420,31 +436,38 @@ class EmployeeAtrController extends AdminBaseController
         $dir = $request->input('order.0.dir');
         $totalData = 0;
         $totalFiltered = 0;
-        $department=$request->department_id;
-        $sub_dept_id=$request->sub_dept_id;
-        $inDepartment='';
-        $inSubDepartment='';
-        if($department){
-            $inDepartment = ' AND department_name = "'.$department.'"';
+        $searchData = $request->searchData;
+        $searchNoKTP = $request->selectNoKTP;
+        $searchIbuKandung = $request->searchIbuKandung;
+        $inSearchData='';
+        if($searchData){
+            $enroll_id = implode(", ", $searchData);
+            $allEnroll_id= '('.$enroll_id.')';
+            $inSearchData = ' AND employee_atribut.enroll_id IN '.$allEnroll_id.'';
         }
-        if($sub_dept_id){
-            $inSubDepartment = ' AND sub_dept_id = "'.$sub_dept_id.'"';
+        $inSearchNoKTP='';
+        if($searchNoKTP){
+            $inSearchNoKTP = ' AND employee_atribut.nomor_ktp LIKE "'.$searchNoKTP.'%"';
+        }
+        $inSearchIbuKandung='';
+        if($searchIbuKandung){
+            $inSearchIbuKandung = ' AND employee_atribut.ibu_kandung LIKE "'.$searchIbuKandung.'%"';
         }
         if(empty($request->input('search.value')))
         {
-            $query =  EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')
+            $query =  EmployeeAtribut::whereRaw('status_aktif is not null'.$inSearchData.''.$inSearchNoKTP.''.$inSearchIbuKandung.'')
                             ->offset($start)
                             ->limit($limit)
                             ->orderBy($order,$dir)
                             ->get();
 
-            $totalData = EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')->count();
+            $totalData = EmployeeAtribut::whereRaw('status_aktif is not null'.$inSearchData.''.$inSearchNoKTP.''.$inSearchIbuKandung.'')->count();
             $totalFiltered = $totalData;
 
         } else {
             $search = $request->input('search.value');
 
-            $query =  EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
+            $query =  EmployeeAtribut::whereRaw('status_aktif is not null'.$inSearchData.''.$inSearchNoKTP.''.$inSearchIbuKandung.'')->where(function($query)use($search){
                 $query->where('employee_id',$search)
                 ->orWhere('nik',$search)
                 ->orWhere('enroll_id',$search)
@@ -461,7 +484,7 @@ class EmployeeAtrController extends AdminBaseController
             ->orderBy($order,$dir)
             ->get();
 
-            $totalData = EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
+            $totalData = EmployeeAtribut::whereRaw('status_aktif is not null'.$inSearchData.''.$inSearchNoKTP.''.$inSearchIbuKandung.'')->where(function($query)use($search){
                 $query->where('employee_id','LIKE',"%{$search}%")
                 ->orWhere('nik',$search)
                 ->orWhere('enroll_id',$search)
@@ -574,6 +597,7 @@ class EmployeeAtrController extends AdminBaseController
                 $nestedData['tanggal_mulai_kontrak'] = $q->tanggal_mulai_kontrak;
                 $nestedData['tanggal_akhir_kontrak'] = $q->tanggal_akhir_kontrak;
                 $nestedData['catatan_kontrak'] = $q->catatan_kontrak;
+                $nestedData['sudah_diprint'] = $q->sudah_diprint;
                 $nestedData['created_at'] = substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5);
                 $nestedData['updated_at'] = substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5);
 
@@ -593,6 +617,30 @@ class EmployeeAtrController extends AdminBaseController
         }
     }
 
+    public function ajax_getemployeeid(Request $request)
+    {
+        // $department=$request->department_id;
+        // $sub_dept_id=$request->sub_dept_id;
+        // $inDepartment='';
+        // $inSubDepartment='';
+        // if($department){
+        //     $inDepartment = ' AND department_name = "'.$department.'"';
+        // }
+        // if($sub_dept_id){
+        //     $inSubDepartment = ' AND sub_dept_id = "'.$sub_dept_id.'"';
+        // }
+
+        if(empty($request->input('search.value')))
+        {
+            $employeeIds =  EmployeeAtribut::select("enroll_id")->pluck("enroll_id")->toArray();
+        } else {
+            $search = $request->input('search.value');
+
+            $employeeIds =  EmployeeAtribut::select("enroll_id")->pluck("enroll_id")->toArray();
+        }
+
+        return $employeeIds;
+    }
     public function ajax_getemployeeids(Request $request)
     {
         $department=$request->department_id;
@@ -864,6 +912,7 @@ class EmployeeAtrController extends AdminBaseController
         $nomor_sim = $request->nomor_sim;
         $tanggal_expire_sim = $request->tanggal_expire_sim;
         $catatan = strtoupper($request->catatan);
+        $no_surat = $request->no_surat;
         $lokasi_foto = $request->lokasi_foto;
         $tanggal_mulai_kontrak = $request->tanggal_mulai_kontrak;
         $tanggal_akhir_kontrak = $request->tanggal_akhir_kontrak;
@@ -963,6 +1012,7 @@ class EmployeeAtrController extends AdminBaseController
                 'nomor_sim' => $nomor_sim,
                 'tanggal_expire_sim' => $tanggal_expire_sim,
                 'catatan' => $catatan,
+                'no_surat'=>$no_surat,
                 'lokasi_foto' => $lokasi_foto,
                 'operator' => $operator,
                 'tanggal_mulai_kontrak' => $tanggal_mulai_kontrak,
