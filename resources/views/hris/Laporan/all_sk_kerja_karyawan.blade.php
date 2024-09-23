@@ -377,7 +377,7 @@
             </tr>
             <tr>
                 <td></td>
-                <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><b>Compliance - HRGA</b></td>
+                <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><b>HR & GA Manager</b></td>
             </tr>
         </thead>
     </table>
