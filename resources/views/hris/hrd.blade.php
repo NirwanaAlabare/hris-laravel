@@ -494,7 +494,7 @@
                     'render' : function (data, type, row) {
                         if(row.sudah_diprint!=null){
                             return `
-                                <div class="row"><div class="col text-center"><button class='btn btn-danger' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal" data-toggle="modal" onclick="send_to_modal(` + row.enroll_id + `)">
+                                <div class="row"><div class="col text-center"><button class='btn btn-danger' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal" data-toggle="modal" onclick="send_to_modal(` + row.enroll_id + `)" disabled>
                                     SK KERJA
                                 </button>
                                 <button class='btn btn-primary mt-1' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal_2" data-toggle="modal" onclick="send_to_modal_2(` + row.enroll_id + `)">
@@ -647,7 +647,7 @@
                         if(row.sudah_diprint!=null){
                             return `
                                 <div class="row"><div class="col text-center"><div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="`+row.enroll_id+`" style='width: 20px; height: 20px;' id="checked_enroll_id_print_modal_` + row.enroll_id + `" onchange="alreadyPrintEmployeeCheck(this)" checked  disabled>
+                                    <input class="form-check-input" type="checkbox" value="`+row.enroll_id+`" style='width: 20px; height: 20px;' id="checked_enroll_id_print_modal_` + row.enroll_id + `" onchange="alreadyPrintEmployeeCheck(this)" checked  >
                                 </div></div></div>
                             `
                         }else{
