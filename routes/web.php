@@ -182,6 +182,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('employeeatr/already_print/',['as'=>'hris.employeeatr.already_print','uses'=> 'EmployeeAtrController@already_print']);
     Route::post('employeeatr/not_yet_printed/',['as'=>'hris.employeeatr.not_yet_printed','uses'=> 'EmployeeAtrController@not_yet_printed']);
     Route::post('employeeatr/set_already_print_sk/',['as'=>'hris.employeeatr.set_already_print_sk','uses'=> 'EmployeeAtrController@set_already_print_sk']);
+    Route::post('employeeatr/set_back_print_sk/',['as'=>'hris.employeeatr.set_back_print_sk','uses'=> 'EmployeeAtrController@set_back_print_sk']);
 
     // REF ABSEN IJIN
     Route::get('refabsenijin/index',['as'=>'hris.refabsenijin.index','uses'=>'RefAbsenIjinController@index']);
