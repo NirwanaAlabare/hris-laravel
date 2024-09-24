@@ -494,7 +494,7 @@
                     'render' : function (data, type, row) {
                         if(row.sudah_diprint!=null){
                             return `
-                                <div class="row"><div class="col text-center"><button class='btn btn-danger' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal" data-toggle="modal" onclick="send_to_modal(` + row.enroll_id + `)" disabled>
+                                <div class="row"><div class="col text-center"><button class='btn btn-danger' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal" data-toggle="modal" onclick="send_to_modal(` + row.enroll_id + `)">
                                     SK KERJA
                                 </button>
                                 <button class='btn btn-primary mt-1' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal_2" data-toggle="modal" onclick="send_to_modal_2(` + row.enroll_id + `)">
