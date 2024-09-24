@@ -893,6 +893,14 @@ class EmployeeAtrController extends AdminBaseController
             ]);
         }
     }
+    public function set_back_print_sk(){
+        $employees=request()->employees;
+        foreach($employees as $value){
+            EmployeeAtribut::where('enroll_id',$value)->where('sudah_diprint',1)->update([
+                'sudah_diprint'=>null
+            ]);
+        }
+    }
     public function ajax_getcheckedemployee(Request $request){
         return EmployeeAtribut::whereIn('enroll_id',$request->employees)->get();
     }
