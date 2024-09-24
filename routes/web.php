@@ -64,7 +64,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('hrd/export_pdf_sk_kerja',['as'=>'hris.hrd.export_pdf_sk_kerja','uses'=>'HRDController@export_pdf_sk_kerja']);
     Route::get('hrd/export_pdf_paklaring',['as'=>'hris.hrd.export_pdf_paklaring','uses'=>'HRDController@export_pdf_paklaring']);
     Route::get('hrd/export_pdf_sk_bni',['as'=>'hris.hrd.export_pdf_sk_bni','uses'=>'HRDController@export_pdf_sk_bni']);
-    Route::get('hrd/export_pdf_print_sk',['as'=>'hris.hrd.export_pdf_print_sk','uses'=>'HRDController@export_pdf_print_sk']);
+    Route::post('hrd/export_pdf_print_sk',['as'=>'hris.hrd.export_pdf_print_sk','uses'=>'HRDController@export_pdf_print_sk']);
 
     //Route::resource('mdabsenhadir', 'MdAbsenHadirController',['as' => 'hris']);
     Route::get('mdabsenhadir/datahadir',['as'=>'hris.mdabsenhadir.datahadir','uses'=>'MdAbsenHadirController@datahadir']);
@@ -156,8 +156,10 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('employeeatr/index',['as'=>'hris.employeeatr.index','uses'=>'EmployeeAtrController@index']);
     Route::post('employeeatr/ajax_getemployeeatr/',['as'=>'hris.employeeatr.ajax_getemployeeatr','uses'=> 'EmployeeAtrController@ajax_getemployeeatr']);
     Route::post('employeeatr/ajax_getemployeeatr2/',['as'=>'hris.employeeatr.ajax_getemployeeatr2','uses'=> 'EmployeeAtrController@ajax_getemployeeatr2']);
+    Route::post('employeeatr/ajax_getemployeeatr3/',['as'=>'hris.employeeatr.ajax_getemployeeatr3','uses'=> 'EmployeeAtrController@ajax_getemployeeatr3']);
     Route::post('employeeatr/ajax_getemployeeids/',['as'=>'hris.employeeatr.ajax_getemployeeids','uses'=> 'EmployeeAtrController@ajax_getemployeeids']);
     Route::post('employeeatr/ajax_getemployeeid/',['as'=>'hris.employeeatr.ajax_getemployeeid','uses'=> 'EmployeeAtrController@ajax_getemployeeid']);
+    Route::post('employeeatr/ajax_getcheckedemployee/',['as'=>'hris.employeeatr.ajax_getcheckedemployee','uses'=> 'EmployeeAtrController@ajax_getcheckedemployee']);
     Route::post('employeeatr/ajax_getempatr/',['as'=>'hris.employeeatr.ajax_getempatr','uses'=> 'EmployeeAtrController@ajax_getempatr']);
     Route::post('employeeatr/ajax_getselectdept/',['as'=>'hris.employeeatr.ajax_getselectdept','uses'=> 'EmployeeAtrController@ajax_getselectdept']);
     Route::post('employeeatr/ajax_getselectsubdept/',['as'=>'hris.employeeatr.ajax_getselectsubdept','uses'=> 'EmployeeAtrController@ajax_getselectsubdept']);
@@ -179,6 +181,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('employeeatr/get_employee/',['as'=>'hris.employeeatr.get_employee','uses'=>'EmployeeAtrController@get_employee']);
     Route::post('employeeatr/already_print/',['as'=>'hris.employeeatr.already_print','uses'=> 'EmployeeAtrController@already_print']);
     Route::post('employeeatr/not_yet_printed/',['as'=>'hris.employeeatr.not_yet_printed','uses'=> 'EmployeeAtrController@not_yet_printed']);
+    Route::post('employeeatr/set_already_print_sk/',['as'=>'hris.employeeatr.set_already_print_sk','uses'=> 'EmployeeAtrController@set_already_print_sk']);
 
     // REF ABSEN IJIN
     Route::get('refabsenijin/index',['as'=>'hris.refabsenijin.index','uses'=>'RefAbsenIjinController@index']);

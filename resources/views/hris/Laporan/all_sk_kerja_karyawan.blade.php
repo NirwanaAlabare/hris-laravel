@@ -20,11 +20,11 @@
 @foreach($data as $value)
 <?php 
 
-    $tanggal_masuk = $value->join_date;
-    $tanggal_resign = $value->tanggal_resign;
+    $tanggal_masuk = $value['join_date'];
+    $tanggal_resign = $value['tanggal_resign'];
     $selisih_tahun = date_diff(date_create($tanggal_masuk), date_create($tanggal_resign))->y;
 ?>
-@if($selisih_tahun<1)
+@if($value['tipe_surat']=='SK Kerja')
 <body>
     <table width="506" style="border-bottom: 2px solid black">
         <tr>
@@ -58,10 +58,10 @@
     <thead>
         <?php 
         $tanggal_akhir='';
-        if($value->status_aktif=='AKTIF'){
+        if($value['status_aktif']=='AKTIF'){
             $tanggal_akhir='SEKARANG';
         }else{
-            $tanggal_akhir=Carbon\Carbon::parse($value->tanggal_resign)->translatedFormat('d F Y');
+            $tanggal_akhir=Carbon\Carbon::parse($value['tanggal_resign'])->translatedFormat('d F Y');
         }
         ?>
         <tr>
@@ -71,7 +71,7 @@
             <td colspan="6" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top" align="center"><b><u>SURAT KETERANGAN KERJA</u></b></td>
         </tr>
         <tr>
-            <td colspan="6" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top" align="center"><b>NO. {{$value->no_surat}}/HRD/NAG-REF/{{$no_form}}</b></td>
+            <td colspan="6" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top" align="center"><b>NO. {{$value['no_surat']}}/HRD/NAG-REF/{{$no_form}}</b></td>
         </tr>
         <tr>
             <td colspan="6" style="height: 10"></td>
@@ -110,7 +110,7 @@
             <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"></td>
             <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Nama</td>
             <td>:</td>
-            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{$value->employee_name}}</td>
+            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{$value['employee_name']}}</td>
             <td></td>
         </tr>
         <tr>
@@ -118,7 +118,7 @@
             <td></td>
             <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">NIK</td>
             <td>:</td>
-            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{$value->nik}}</td>
+            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{$value['nik']}}</td>
             <td></td>
         </tr>
         <tr>
@@ -126,7 +126,7 @@
             <td></td>
             <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top">Alamat</td>
             <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top">:</td>
-            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top">{{$value->alamat_rumah}}</td>
+            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top">{{$value['alamat_rumah']}}</td>
             <td></td>
         </tr>
         <tr>
@@ -134,7 +134,7 @@
         </tr>
         <tr>
             <td></td>
-            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;text-align:justify" colspan="4">Adalah benar karyawan <b>{{$value->site_nirwana_name}}</b> dengan jabatan sebagai <b>{{$value->status_jabatan}} {{$value->department_name}}</b> yang bekerja sejak <b>{{Carbon\Carbon::parse($value->join_date)->translatedFormat('d F Y')}}</b> sampai dengan <b>{{$tanggal_akhir}}</b>.</td>
+            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;text-align:justify" colspan="4">Adalah benar karyawan <b>{{$value['site_nirwana_name']}}</b> dengan jabatan sebagai <b>{{$value['status_jabatan']}} {{$value['department_name']}}</b> yang bekerja sejak <b>{{Carbon\Carbon::parse($value['join_date'])->translatedFormat('d F Y')}}</b> sampai dengan <b>{{$tanggal_akhir}}</b>.</td>
             <td></td>
         </tr>
         <tr>
@@ -206,10 +206,10 @@
         <thead>  
             <?php 
             $tanggal_akhir='';
-            if($value->status_aktif=='AKTIF'){
+            if($value['status_aktif']=='AKTIF'){
                 $tanggal_akhir='SEKARANG';
             }else{
-                $tanggal_akhir=Carbon\Carbon::parse($value->tanggal_resign)->translatedFormat('d F Y');
+                $tanggal_akhir=Carbon\Carbon::parse($value['tanggal_resign'])->translatedFormat('d F Y');
             }
             ?>
             <tr>
@@ -219,7 +219,7 @@
                 <td colspan="5" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top;font-size:14pt" align="center"><b><u>CERTIFICATE OF EMPLOYMENT</u></b></td>
             </tr>
             <tr>
-                <td colspan="5" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top;font-size:14pt" align="center"><b>NO. {{$value->no_surat}}/HRD/NAG-PK/{{$no_form}}</b></td>
+                <td colspan="5" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top;font-size:14pt" align="center"><b>NO. {{$value['no_surat']}}/HRD/NAG-PK/{{$no_form}}</b></td>
             </tr>
             <tr>
                 <td colspan="5" style="height: 13"></td>
@@ -241,7 +241,7 @@
                 <td width="4%"></td>
                 <td width="31%" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><u>Nama</u></td>
                 <td width="3%">:</td>
-                <td width="73%" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{$value->employee_name}}</td>
+                <td width="73%" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{$value['employee_name']}}</td>
                 <td width="4%"></td>
             </tr>
             <tr>
@@ -255,7 +255,7 @@
                 <td></td>
                 <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><u>No. Pegawai</u></td>
                 <td>:</td>
-                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{$value->nik}}</td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{$value['nik']}}</td>
                 <td></td>
             </tr>
             <tr>
@@ -269,7 +269,7 @@
                 <td></td>
                 <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><u>Bagian</u></td>
                 <td>:</td>
-                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{$value->sub_dept_name}}</td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{$value['sub_dept_name']}}</td>
                 <td></td>
             </tr>
             <tr>
@@ -283,7 +283,7 @@
                 <td></td>
                 <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><u>Departemen</u></td>
                 <td>:</td>
-                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{$value->department_name}}</td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{$value['department_name']}}</td>
                 <td></td>
             </tr>
             <tr>
@@ -297,7 +297,7 @@
                 <td></td>
                 <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><u>Jabatan Terakhir</u></td>
                 <td>:</td>
-                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{$value->status_jabatan}}</td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{$value['status_jabatan']}}</td>
                 <td></td>
             </tr>
             <tr>
@@ -311,7 +311,7 @@
                 <td></td>
                 <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><u>Lamanya Bekerja</u></td>
                 <td>:</td>
-                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{Carbon\Carbon::parse($value->join_date)->translatedFormat('d F Y')}} s/d {{$tanggal_akhir}}</td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{Carbon\Carbon::parse($value['join_date'])->translatedFormat('d F Y')}} s/d {{$tanggal_akhir}}</td>
                 <td></td>
             </tr>
             <tr>

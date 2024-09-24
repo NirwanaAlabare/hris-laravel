@@ -756,9 +756,17 @@
                                             <td><input type="text" class="form-control" id="no_surat" maxlength="80" size="80"></td>
                                         </tr>
                                         <tr>
-                                            <th>Grade</th>
+                                            <th>Sebab Resign</th>
                                             <th>Referensi</th>
                                             <th>Atasan Langsung</th>
+                                        </tr>
+                                        <tr>
+                                            <td><input type="text" class="form-control" id="sebab_resign" maxlength="80" size="80"></td>
+                                            <td><input type="text" class="form-control" id="referensi" maxlength="80" size="80"></td>
+                                            <td><input type="text" class="form-control" id="employee_name_atasan" maxlength="80" size="80"></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Grade</th>
                                         </tr>
                                         <tr>
                                             <td>
@@ -773,8 +781,6 @@
                                                     <option value="G" selected>G</option>
                                                 </select>
                                             </td>
-                                            <td><input type="text" class="form-control" id="referensi" maxlength="80" size="80"></td>
-                                            <td><input type="text" class="form-control" id="employee_name_atasan" maxlength="80" size="80"></td>
                                         </tr>
                                         <tr>
                                             <th>Status BPJS TK</th>
@@ -1889,6 +1895,7 @@
                 $("#status_staff").val(data['status_staff']).trigger("change");
                 tanggal_resign = defaultDate(data['tanggal_resign']);
                 $('#tanggal_resign').val(tanggal_resign);
+                $('#sebab_resign').val(data['sebab_resign']);
                 $('#tunjangan').val(data['tunjangan']);
                 $('#no_surat').val(data['no_surat']);
                 $("#kode_grade").val(data['kode_grade']).trigger("change");
@@ -2508,6 +2515,7 @@
                                 nomor_sim:$('#nomor_sim').val(),
                                 tanggal_expire_sim:tanggal_expire_sim,
                                 catatan:$('#catatan').val(),
+                                sebab_resign:$('#sebab_resign').val(),
                                 no_surat:$('#no_surat').val(),
                                 lokasi_foto:$('#lokasi_foto').val(),
                                 tanggal_mulai_kontrak:tanggal_mulai_kontrak,
@@ -2687,6 +2695,7 @@
                     nomor_sim:$('#nomor_sim').val(),
                     tanggal_expire_sim:tanggal_expire_sim,
                     catatan:$('#catatan').val(),
+                    sebab_resign:$('#sebab_resign').val(),
                     no_surat:$('#no_surat').val(),
                     lokasi_foto:$('#lokasi_foto').val(),
                     tanggal_mulai_kontrak:tanggal_mulai_kontrak,

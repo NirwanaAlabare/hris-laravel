@@ -93,6 +93,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
                 employee_atribut.status_kontrak_tetap,
                 employee_atribut.status_staff,
                 employee_atribut.tanggal_resign,
+                employee_atribut.sebab_resign,
                 employee_atribut.tunjangan,
                 employee_atribut.kode_grade,
                 employee_atribut.referensi,
@@ -131,7 +132,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
                 ->groupBy('employee_atribut.enroll_id')
                 ->orderByRaw('CAST(employee_atribut.enroll_id AS SIGNED) ASC')
                 ->orderBy('employee_atribut.tanggal_resign','asc')
-                ->limit(1);
+                ->where('enroll_id',1);
 
         return $q;
     }
@@ -252,6 +253,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
         $status_kontrak_tetap = $Data->status_kontrak_tetap;
         $status_staff = $Data->status_staff;
         $tanggal_resign = $tanggal_resignf;
+        $sebab_resign = $Data->sebab_resign;
         $tunjangan = $Data->tunjangan;
         $kode_grade = $Data->kode_grade;
         $referensi = $Data->referensi;
@@ -358,6 +360,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
             Date::stringToExcel($tanggal_akhir_kontrak),
             $catatan_kontrak,
             (string)$no_surat,
+            $sebab_resign,
             $created_at,
             $updated_at,
         ];
@@ -468,7 +471,8 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
             'BO' => 34,
             'BP' => 18,
             'BQ' => 18,
-            'BR' => 18
+            'BR' => 18,
+            'BS' => 18
         ];
     }
     public function bindValue(Cell $cell, $value)
@@ -553,8 +557,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
                 $sheet->mergeCells('A3:D3');
 
                 $sheet->setCellValue('A5', 'EMPLOYEE ID');
-                $sheet->setCellValue('B5', 'NO. ABSEN');
-                $sheet->getDelegate()->getStyle('B5')->getFont()->setSize(8);
+                $sheet->setCellValue('B5', 'ID');
                 $sheet->setCellValue('C5', 'NIP');
                 $sheet->setCellValue('D5', 'NAMA KARYAWAN');
                 $sheet->setCellValue('E5', 'JENIS KELAMIN');
@@ -621,8 +624,9 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
                 $sheet->setCellValue('BN5', 'TANGGAL AKHIR KONTRAK');
                 $sheet->setCellValue('BO5', 'CATATAN KONTRAK');
                 $sheet->setCellValue('BP5', 'NO. SURAT');
-                $sheet->setCellValue('BQ5', 'TERAKHIR DI BUAT');
-                $sheet->setCellValue('BR5', 'TERAKHIR DI UBAH');
+                $sheet->setCellValue('BQ5', 'SEBAB RESIGN');
+                $sheet->setCellValue('BR5', 'TERAKHIR DI BUAT');
+                $sheet->setCellValue('BS5', 'TERAKHIR DI UBAH');
 
             },
         ];

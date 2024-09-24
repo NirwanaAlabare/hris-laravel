@@ -25,16 +25,39 @@ class HRDController extends AdminBaseController
         return View::make('hris/hrd',compact('selectEmployee','selectNoKTP'), $this->data);
     }
     public function export_pdf_print_sk(){
-        $enroll_id=request()->employee;
-        $arrayEnrollId=explode(',',$enroll_id);
-        $data=EmployeeAtribut::whereIn('enroll_id',$arrayEnrollId)->where(function($query){
-            $query->where('sudah_diprint',null)
-            ->orWhere('sudah_diprint','!=',1);
-        })->get();
-        $no_forms=request()->no_form;
-        $fileName='all sk kerja.'.date('His').'_'.rand();
-        $pdf = PDF::loadView('hris.laporan.all_sk_kerja_karyawan',["data" => $data,"no_form"=>$no_forms])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
-        return $pdf;
+        $tipe_surat=request()->tipe_surat;
+        foreach($tipe_surat as $key=>$value){
+            $sudah_diprint=EmployeeAtribut::where('enroll_id',$key)->first()->sudah_diprint;
+            if($sudah_diprint==1){
+                continue;
+            }else{
+                $data[]=[
+                    'enroll_id'=>$key,
+                    'nik'=>EmployeeAtribut::where('enroll_id',$key)->first()->nik,
+                    'employee_name'=>EmployeeAtribut::where('enroll_id',$key)->first()->employee_name,
+                    'join_date'=>EmployeeAtribut::where('enroll_id',$key)->first()->join_date,
+                    'status_aktif'=>EmployeeAtribut::where('enroll_id',$key)->first()->status_aktif,
+                    'status_jabatan'=>EmployeeAtribut::where('enroll_id',$key)->first()->status_jabatan,
+                    'tanggal_resign'=>EmployeeAtribut::where('enroll_id',$key)->first()->tanggal_resign,
+                    'department_name'=>EmployeeAtribut::where('enroll_id',$key)->first()->department_name,
+                    'sub_dept_name'=>EmployeeAtribut::where('enroll_id',$key)->first()->sub_dept_name,
+                    'site_nirwana_name'=>EmployeeAtribut::where('enroll_id',$key)->first()->site_nirwana_name,
+                    'alamat_rumah'=>EmployeeAtribut::where('enroll_id',$key)->first()->alamat_rumah,
+                    'no_surat'=>EmployeeAtribut::where('enroll_id',$key)->first()->nomor_surat,
+                    'sebab_resign'=>EmployeeAtribut::where('enroll_id',$key)->first()->sebab_resign,
+                    'tipe_surat'=>$value
+                ];
+            }
+        }
+        if(isset($data)){
+            $no_forms=request()->no_form;
+            $fileName='all sk kerja.'.date('His').'_'.rand();
+            $pdf = PDF::loadView('hris.laporan.all_sk_kerja_karyawan',["data" => $data,"no_form"=>$no_forms])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+            return $pdf;
+        }else{
+            $pdf = PDF::loadView('hris.laporan.blank_page')->setPaper('A4', 'fotrait')->stream('no data receipt'.'.pdf');
+            return $pdf;
+        }
     }
     public function export_pdf_sk_kerja(){
         $enroll_id=request()->enroll_id;

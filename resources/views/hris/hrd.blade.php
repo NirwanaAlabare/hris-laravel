@@ -190,6 +190,53 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="print_sk_checked" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 70%;" role="document">
+        <div class="modal-content">
+            <form target="_blank" action="{{route('hris.hrd.export_pdf_print_sk')}}" method="post">
+                {{csrf_field()}}
+                <input type="hidden" id="bulan_nomor_form" name="no_form">
+                <div class="modal-header bg-primary p-2">
+                    <label class="form-label">CHECKED ID</label>
+                    <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
+                        <i class="fa fa-remove"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-danger pb-0 py-1"><span class="fa fa-file-pdf-o"></span> Print SK</button>
+                        </div>
+                    </div>
+                    <div class="row pt-2">
+                        <div class="col-12 text-left">
+                            <table id="datatable-ajax-crud-modal" class="table table-bordered table-sm w-100 table-hover text-nowrap">
+                                <thead class="table-primary">
+                                    <tr style='text-align:center; vertical-align:middle'>
+                                        <th>ID</th>
+                                        <th>NIK</th>
+                                        <th>Nama Karyawan</th>
+                                        <th>Tanggal Resign</th>
+                                        <th>Masa kerja</th>
+                                        <th>Sebab Resign</th>
+                                        <th>Tipe Surat</th>
+                                        <th scope="col" class="text-center">
+                                            <span class="fa fa-print"></span><span class="fa fa-check text-success"></span> <input type="checkbox" style='width: 15px; height: 15px;' id="checkAllEmployeeModal" onchange="actionCheckAllEmployeeModal(this)">
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <div class="row">
     <div class="col-lg-12 col-md-12">
         <div class="card shadow">
@@ -239,7 +286,7 @@
             <div class="card-body px-6 pt-2 pb-5">
                 <div class="row">
                     <div class="col-12">
-                        <button class="btn btn-danger pb-0 py-1" onclick="tes()"><span class="fa fa-file-pdf-o"></span> Print SK</button>
+                        <button class="btn btn-primary pb-0 py-1" data-target="#print_sk_checked" data-toggle="modal" id="print_sk_button" style="visibility: hidden"><span class="fa fa-check"></span> Show Checked Employee</button>
                     </div>
                 </div>
                 <div class="row">
@@ -250,12 +297,15 @@
                                     <th scope="col" width="3%">
                                         <input type="checkbox" id="checkAllEmployee" onchange="actionCheckAllEmployee(this)">
                                     </th>
+                                    <th scope="col" width="3%"></th>
                                     <th scope="col" width="5%"></th>
-                                    <th scope="col" width="10%"></th>
-                                    <th scope="col" width="23%"></th>
-                                    <th scope="col" width="17%"></th>
-                                    <th scope="col" width="17%"></th>
-                                    <th scope="col" width="20%" class="text-center"></th>
+                                    <th scope="col" width="14%"></th>
+                                    <th scope="col" width="14%"></th>
+                                    <th scope="col" width="14%"></th>
+                                    <th scope="col" width="8%"></th>
+                                    <th scope="col" width="8%"></th>
+                                    <th scope="col" width="18%"></th>
+                                    <th scope="col" width="9%" class="text-center"></th>
                                     <th scope="col" width="5%" class="text-right"></th>
                                 </tr>
                             </thead>
@@ -405,7 +455,19 @@
                     name: 'sub_dept_name'
                 },
                 {
-                    title: '<span class="fa fa-cog"></span>',
+                    title: 'Aktif',
+                    data: 'status_aktif',
+                },
+                {
+                    title: 'Resign',
+                    data: 'tanggal_resign',
+                },
+                {
+                    title : 'Notes',
+                    data: 'catatan',
+                },
+                {
+                    title: '<span class="fa fa-file-pdf-o"></span>',
                     orderable: false
                 },
                 {
@@ -422,37 +484,37 @@
                     'render' : function (data,type, row) {
                         return `
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="`+data+`" style='width: 20px; height: 20px;' id="checked_enroll_id_` + row.enroll_id + `" onchange="actionThisEmployeeCheck(this)" >
+                                <input class="form-check-input" type="checkbox" style='width: 20px; height: 20px;' value="`+data+`" style='width: 20px; height: 20px;' id="checked_enroll_id_` + row.enroll_id + `" onchange="actionThisEmployeeCheck(this)" >
                             </div>
                         `
                     }
                 },
                 {
-                    'targets': [6],
+                    'targets': [9],
                     'render' : function (data, type, row) {
                         if(row.sudah_diprint!=null){
                             return `
                                 <div class="row"><div class="col text-center"><button class='btn btn-danger' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal" data-toggle="modal" onclick="send_to_modal(` + row.enroll_id + `)" disabled>
-                                    PRINT SK KERJA
+                                    SK KERJA
                                 </button>
-                                <button class='btn btn-primary' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal_2" data-toggle="modal" onclick="send_to_modal_2(` + row.enroll_id + `)">
-                                    SK BNI
+                                <button class='btn btn-primary mt-1' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal_2" data-toggle="modal" onclick="send_to_modal_2(` + row.enroll_id + `)">
+                                    SK BNI &nbsp;
                                 </button></div></div>
                             `
                         }else{
                             return `
                                 <div class="row"><div class="col text-center"><button class='btn btn-danger' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal" data-toggle="modal" onclick="send_to_modal(` + row.enroll_id + `)">
-                                    PRINT SK KERJA
+                                     SK KERJA
                                 </button>
-                                <button class='btn btn-primary' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal_2" data-toggle="modal" onclick="send_to_modal_2(` + row.enroll_id + `)">
-                                    SK BNI
+                                <button class='btn btn-primary mt-1' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal_2" data-toggle="modal" onclick="send_to_modal_2(` + row.enroll_id + `)">
+                                    SK BNI &nbsp;
                                 </button></div></div>
                             `
                         }
                     }
                 },
                 {
-                    'targets': [7],
+                    'targets': [10],
                     'render' : function (data, type, row) {
                         if(row.sudah_diprint!=null){
                             return `
@@ -493,6 +555,113 @@
         
         table1.draw();
     });
+    $('#print_sk_button').on('click',function(){
+        var today=new Date();
+        var month_now=today.getMonth();
+        var year_now=today.getFullYear();
+        var no_form=integerToRoman(month_now+1)+'/'+year_now;
+        $('#bulan_nomor_form').val(no_form);
+        $('#datatable-ajax-crud-modal thead tr').clone(true).appendTo('#datatable-ajax-crud-modal thead');
+        $('#datatable-ajax-crud-modal thead tr:eq(1) th').each(function(i) {
+            if (i != 7) {
+                var title = $(this).text();
+                $(this).html('<input type="text" class="form-control form-control-sm" />');
+
+                $('input', this).on('keyup change', function() {
+                    if (table2.column(i).search() !== this.value) {
+                        table2
+                            .column(i)
+                            .search(this.value)
+                            .draw();
+                    }
+                });
+            } else {
+                $(this).empty();
+            }
+        });
+        let table2 = $('#datatable-ajax-crud-modal').DataTable({
+            ordering: false,
+            processing: true,
+            destroy: true,
+            scrollX: true,
+            "ajax": {
+                "url": "{{ route('hris.employeeatr.ajax_getemployeeatr3') }}",
+                "dataType": "json",
+                "type": "POST",
+                "headers": {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                "dataSrc": "data",
+                "data": function (d) {
+                    d.checked_employees = checkedEmployeeArr;
+                }
+            },
+            columns: [
+                {
+                    data: 'enroll_id',
+                },
+                {
+                    data: 'nik',
+                },
+                {
+                    data: 'employee_name',
+                },
+                {
+                    data: 'tanggal_resign',
+                },
+                {
+                    data: 'masa_kerja',
+                },
+                {
+                    data: 'sebab_resign',
+                },
+                {
+                    data: 'tipe_surat',
+                },
+                {
+                    data: 'enroll_id',
+                    orderable: false
+                },
+            ],
+            columnDefs: [
+                {
+                    'targets': [0],
+                    width : 10,
+                },
+                {
+                    'targets': [6],
+                    'render' : function (data, type, row) {
+                        return `<select class="form-control" name="tipe_surat[` + row.enroll_id + `]">
+                                    <option value='Paklaring' `+(data == 'Paklaring' ? 'selected' : '')+`>Paklaring</option>
+                                    <option value='SK Kerja' `+(data == 'SK Kerja' ? 'selected' : '')+`>SK Kerja</option>
+                                </select>`
+                    }
+                },
+                {
+                    'targets': [7],
+                    'render' : function (data, type, row) {
+                        if(row.sudah_diprint!=null){
+                            return `
+                                <div class="row"><div class="col text-center"><div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="`+row.enroll_id+`" style='width: 20px; height: 20px;' id="checked_enroll_id_print_modal_` + row.enroll_id + `" onchange="alreadyPrintEmployeeCheck(this)" checked  disabled>
+                                </div></div></div>
+                            `
+                        }else{
+                            return `
+                                <div class="row"><div class="col text-center"><div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="`+row.enroll_id+`" style='width: 20px; height: 20px;' id="checked_enroll_id_print_modal_` + row.enroll_id + `" onchange="alreadyPrintEmployeeCheck(this)">
+                                </div></div></div>
+                            `
+                        }
+                    }
+                }
+            ],
+            order: [
+                [0, 'asc']
+            ],
+        });
+        $('#datatable-ajax-crud-modal').DataTable().ajax.reload(null, false);
+    });
     $('#selectEmployeeID').on('change',function(){
         var searchData = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
         var selectNoKTP = $("#searchNoKTP").val();
@@ -515,7 +684,6 @@
         $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
     });
     function actionCheckAllEmployee(element) {
-
         if (element.checked) {
             $.ajax({
                 type:"POST",
@@ -529,6 +697,8 @@
                         checkedEmployeeArr = res;
 
                         $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+                        
+                        document.getElementById("print_sk_button").style.visibility = "visible";
                     }
                 }
             });
@@ -536,7 +706,25 @@
             console.log("test");
             checkedEmployeeArr = [];
 
+            document.getElementById("print_sk_button").style.visibility = "hidden";
             $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+        }
+    }
+    function actionCheckAllEmployeeModal(element) {
+        if (element.checked) {
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.employeeatr.set_already_print_sk')}}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                data : {
+                    employees:checkedEmployeeArr,
+                },
+                success: function(res){
+                    $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+                    checkedEmployeeArr=[];
+                }
+            });
         }
     }
     function alreadyPrintEmployeeCheck(element){
@@ -582,14 +770,25 @@
                 }
             }
         }
+        if(checkedEmployeeArr.length>0){
+            document.getElementById("print_sk_button").style.visibility = "visible";
+        }else{
+            document.getElementById("print_sk_button").style.visibility = "hidden";
+        }
     }
     function tes(){
         var today=new Date();
         var month_now=today.getMonth();
         var year_now=today.getFullYear();
         var no_form=integerToRoman(month_now+1)+'/'+year_now;
-        var url = 'export_pdf_print_sk?employee='+checkedEmployeeArr+'&no_form='+no_form;
-        window.open(url, '_blank');
+        var tipe_surat_enroll_id = $("select[name='tipe_surat[]']").map(function(){return $(this).val();}).get();
+        var heavy_fruits = [];
+        myfruit = {};
+        checkedEmployeeArr.forEach(function(item,index) {
+            myfruit ["enroll_id"] = item;
+            heavy_fruits.push(myfruit);
+        });
+        console.log(heavy_fruits);
     }
     function send_to_modal(enroll_id){
         var id=enroll_id;
