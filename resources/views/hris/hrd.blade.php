@@ -202,7 +202,7 @@
                         <i class="fa fa-remove"></i>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body p-4">
                     <div class="row">
                         <div class="col-12">
                             <button type="submit" class="btn btn-danger pb-0 py-1"><span class="fa fa-file-pdf-o"></span> Print SK</button>
@@ -625,6 +625,10 @@
             ],
             columnDefs: [
                 {
+                    "className": "text-center",
+                    "targets": [4]
+                },
+                {
                     'targets': [0],
                     width : 10,
                 },
@@ -656,6 +660,13 @@
                     }
                 }
             ],
+                "createdRow": function (row, data, dataIndex) {
+                    // if ((data['kode_hari'] == "5") || (data['kode_hari'] == "6") || (data['kerjalibur'] == "LIBUR")) {
+                    if ((data['sudah_diprint'] == 1)) {
+
+                        $(row).css('background', '#bfbdbd');
+                    } 
+                },
             order: [
                 [0, 'asc']
             ],
@@ -722,6 +733,7 @@
                 },
                 success: function(res){
                     $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+                    $('#datatable-ajax-crud-modal').DataTable().ajax.reload(null, false);
                     checkedEmployeeArr=[];
                 }
             });
