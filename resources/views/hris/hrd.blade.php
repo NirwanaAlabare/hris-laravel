@@ -734,7 +734,20 @@
                 success: function(res){
                     $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
                     $('#datatable-ajax-crud-modal').DataTable().ajax.reload(null, false);
-                    checkedEmployeeArr=[];
+                }
+            });
+        }else{
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.employeeatr.set_back_print_sk')}}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                data : {
+                    employees:checkedEmployeeArr,
+                },
+                success: function(res){
+                    $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+                    $('#datatable-ajax-crud-modal').DataTable().ajax.reload(null, false);
                 }
             });
         }
