@@ -240,7 +240,7 @@
 <div class="row">
     <div class="col-lg-12 col-md-12">
         <div class="card shadow">
-            <div class="accordion" id="accordionExample">
+            <div class="accordion mb-0" id="accordionExample">
                 <div class="card mb-0">
                     <div class="card-header p-0 bg-light" id="headingTwo" style="border: 1px solid rgb(210, 210, 210);">
                         <h5 class="mb-0">
