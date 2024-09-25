@@ -45,7 +45,8 @@ class HRDController extends AdminBaseController
                     'alamat_rumah'=>EmployeeAtribut::where('enroll_id',$key)->first()->alamat_rumah,
                     'no_surat'=>EmployeeAtribut::where('enroll_id',$key)->first()->nomor_surat,
                     'sebab_resign'=>EmployeeAtribut::where('enroll_id',$key)->first()->sebab_resign,
-                    'tipe_surat'=>$value
+                    'tipe_surat'=>$value,
+                    'no_surat'=>EmployeeAtribut::where('enroll_id',$key)->first()->no_surat,
                 ];
             }
         }
