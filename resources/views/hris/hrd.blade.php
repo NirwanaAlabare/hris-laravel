@@ -583,7 +583,9 @@
             ordering: false,
             processing: true,
             destroy: true,
+            bPaginate: false,
             scrollX: true,
+            scrollY: '450px',
             "ajax": {
                 "url": "{{ route('hris.employeeatr.ajax_getemployeeatr3') }}",
                 "dataType": "json",
