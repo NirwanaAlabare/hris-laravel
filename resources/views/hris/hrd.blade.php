@@ -673,6 +673,7 @@
                 [0, 'asc']
             ],
         });
+        table2.draw();
         $('#datatable-ajax-crud-modal').DataTable().ajax.reload(null, false);
     });
     $('#selectEmployeeID').on('change',function(){
