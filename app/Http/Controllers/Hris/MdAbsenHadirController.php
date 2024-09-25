@@ -2066,11 +2066,11 @@ class MdAbsenHadirController extends AdminBaseController
                                         }
                                         else{
                                             if($val["status_absen"]=="S"){
-                                                if($val["absen_masuk_kerja"]!='' && $val["absen_pulang_kerja"]==''){
+                                                if($value->absen_in!='' && $value->absen_out==''){
                                                     $status_absen=$val["status_absen"];
-                                                }else if($val["absen_masuk_kerja"]=='' && $val["absen_pulang_kerja"]==''){
+                                                }else if($value->absen_in=='' && $value->absen_out==''){
                                                     $status_absen=$val["status_absen"];
-                                                }else if($val["absen_masuk_kerja"]=='' && $val["absen_pulang_kerja"]!=''){
+                                                }else if($value->absen_in=='' && $value->absen_out!=''){
                                                     $status_absen=$val["status_absen"];
                                                 }else{
                                             $status_absen=$value->status_absen;
