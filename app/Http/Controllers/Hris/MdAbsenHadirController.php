@@ -970,6 +970,8 @@ class MdAbsenHadirController extends AdminBaseController
                                 $kode_ijin_payroll='R';
                             }else if($q->absen_masuk_kerja!=null && $q->absen_pulang_kerja==null && $q->status_absen!='R'){
                                 $kode_ijin_payroll='M';
+                            }else if($q->absen_masuk_kerja==null && $q->absen_pulang_kerja!=null && $q->status_absen!='R'){
+                                $kode_ijin_payroll='M';
                             }else if($q->absen_masuk_kerja!=null && $q->absen_pulang_kerja==null && $q->status_absen=='R'){
                                 $kode_ijin_payroll='R';
                             }else if($q->absen_masuk_kerja==null && $q->absen_pulang_kerja==null && $q->status_absen!='R'){
