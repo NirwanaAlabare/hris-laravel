@@ -46,11 +46,17 @@
                     <div class="col-2 pt-3">
                         <div class="card-title">DATE RANGE : </div>
                     </div>
-                    <div class="col-4">
-                        <input type="hidden" id="daterange1" name="daterange1">
-                        <a class="nav-link card-title col-8 pl-3 pr-6 border border-secondary" id="daterange-btn1" data-toggle="tooltip"
-                        title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran">
-                        </a>
+                    <div class="col-5">
+                        <table>
+                            <tr>
+                                <td>
+                                    <input type="hidden" id="daterange1" name="daterange1">
+                                    <a class="nav-link card-title pl-3 pr-6 border border-secondary" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
+                                </td>
+                                <td id="last_update"></td>
+                                <td><span class="fa fa-refresh" onclick="get_last_update()" style="cursor: pointer;color:rgb(0, 0, 206)"></span></td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -177,6 +183,7 @@
 
             $('#daterange-btn1').html(htmlDateRange);
             $('#daterange1').val(daterange1);
+            get_last_update();
         });
         $('#daterange-btn1').daterangepicker({
             ranges: {
@@ -194,6 +201,19 @@
             var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
             $('#daterange1').val(daterange1);
         })
+        function get_last_update(){
+            $('#last_update').empty();
+            $.ajax({
+                type: 'POST',
+                url: '{{route('hris.daily_labor.get_last_update_labor_cost')}}',
+                success:function(data){
+                    $('#last_update').html('<i><b>&nbsp;&nbsp;Last Update :</b> '+data+'&nbsp;&nbsp;</i>');
+                },
+                error: function(res){
+                    
+                }
+            });
+        }
     </script>
 
 @endsection

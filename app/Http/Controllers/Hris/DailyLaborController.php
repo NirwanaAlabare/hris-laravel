@@ -13,6 +13,7 @@ use App\Models\RekapPerhitunganKehadiranKaryawan;
 use App\Models\RekapPerhitunganLembur;
 use App\Exports\dailyLaborCost;
 use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
 use DB;
 
 use Illuminate\Http\Request;
@@ -42,6 +43,12 @@ class DailyLaborController extends AdminBaseController
         })->get();
         
         return View::make('hris/daily_labor_cost', $this->data);
+    }
+    public function get_last_update_labor_cost(){
+        $data=DailyLabor::orderBy('tanggal_berjalan','desc')->limit(1)->first()->tanggal_berjalan;
+        $update_terakhir=Carbon::parse($data)->translatedFormat('d F Y');   
+        
+        return $update_terakhir;
     }
     public function proses(){
         ini_set('max_execution_time', 0);
