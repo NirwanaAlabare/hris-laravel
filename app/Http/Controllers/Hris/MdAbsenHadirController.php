@@ -1563,13 +1563,13 @@ class MdAbsenHadirController extends AdminBaseController
                         $kode_ijin_payroll='R';
                     }
                 }else{
-                    if($q->status_absen=='LN'){
+                    if($Kehadiran->status_absen=='LN'){
                         $kode_ijin_payroll='LBY';
-                    }else if($q->status_absen=='R'){
+                    }else if($Kehadiran->status_absen=='R'){
                         $kode_ijin_payroll='R';
-                    }else if($q->status_absen==null){
+                    }else if($Kehadiran->status_absen==null){
                     $kode_ijin_payroll='LSM';
-                    }else if($q->status_absen=='IKS'){
+                    }else if($Kehadiran->status_absen=='IKS'){
                         $kode_ijin_payroll='OK';
                     }
                 }
