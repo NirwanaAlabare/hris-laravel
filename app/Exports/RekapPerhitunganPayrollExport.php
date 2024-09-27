@@ -173,6 +173,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                     bpjs_ks_jkn_perusahaan_rupiah,
                     bpjs_ks_jkn_karyawan_rupiah,
                     jabatan_karyawan,
+                    insentif_jabatan,
                     nama_bagian,
                     nama_department,
                     kategori_karyawan,
