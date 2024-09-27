@@ -980,13 +980,27 @@ class MdAbsenHadirController extends AdminBaseController
                                 $kode_ijin_payroll='R';
                             }
                         }else{
+                            if($q->status_absen=='LN'){
+                                $kode_ijin_payroll='LBY';
+                            }else if($q->status_absen=='R'){
+                                $kode_ijin_payroll='R';
+                            }else if($q->status_absen==null){
                             $kode_ijin_payroll='LSM';
+                            }else if($q->status_absen=='IKS'){
+                                $kode_ijin_payroll='OK';
+                            }
                         }
                     }else if($kode_ijin_payroll=='ITB'){
                         if($q->status_absen=='M'){
                             $kode_ijin_payroll='M';
                         }else if($q->status_absen=='IKS'){
                             $kode_ijin_payroll='OK';
+                        }else if($q->status_absen=='LP'){
+                            $kode_ijin_payroll='LP';
+                        }
+                    }else if($kode_ijin_payroll=='IBY'){
+                        if($q->status_absen=='DL'){
+                            $kode_ijin_payroll='DL';
                         }
                     }
 
@@ -1549,15 +1563,30 @@ class MdAbsenHadirController extends AdminBaseController
                         $kode_ijin_payroll='R';
                     }
                 }else{
+                    if($q->status_absen=='LN'){
+                        $kode_ijin_payroll='LBY';
+                    }else if($q->status_absen=='R'){
+                        $kode_ijin_payroll='R';
+                    }else if($q->status_absen==null){
                     $kode_ijin_payroll='LSM';
+                    }else if($q->status_absen=='IKS'){
+                        $kode_ijin_payroll='OK';
+                    }
                 }
             }else if($kode_ijin_payroll=='ITB'){
-                if($Kehadiran->status_absen=='M'){
+                if($q->status_absen=='M'){
                     $kode_ijin_payroll='M';
-                }else if($Kehadiran->status_absen=='IKS'){
+                }else if($q->status_absen=='IKS'){
                     $kode_ijin_payroll='OK';
+                }else if($q->status_absen=='LP'){
+                    $kode_ijin_payroll='LP';
                 }
+            }else if($kode_ijin_payroll=='IBY'){
+                if($q->status_absen=='DL'){
+                    $kode_ijin_payroll='DL';
             }
+            }
+            
             $interval = date_diff(date_create(substr($Kehadiran->mulai_jam_kerja, 0, 5)), date_create(substr($Kehadiran->akhir_jam_kerja, 0, 5)));
             $minutes = $interval->days * 24 * 60;
             $minutes += $interval->h * 60;
