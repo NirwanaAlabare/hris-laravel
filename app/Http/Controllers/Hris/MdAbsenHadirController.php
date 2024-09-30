@@ -985,7 +985,7 @@ class MdAbsenHadirController extends AdminBaseController
                             }else if($q->status_absen=='R'){
                                 $kode_ijin_payroll='R';
                             }else if($q->status_absen==null){
-                            $kode_ijin_payroll='LSM';
+                                $kode_ijin_payroll='LSM';
                             }else if($q->status_absen=='IKS'){
                                 $kode_ijin_payroll='OK';
                             }else if($q->status_absen=='TL'){
@@ -1572,7 +1572,7 @@ class MdAbsenHadirController extends AdminBaseController
                     }else if($Kehadiran->status_absen=='R'){
                         $kode_ijin_payroll='R';
                     }else if($Kehadiran->status_absen==null){
-                    $kode_ijin_payroll='LSM';
+                        $kode_ijin_payroll='LSM';
                     }else if($Kehadiran->status_absen=='IKS'){
                         $kode_ijin_payroll='OK';
                     }else if($Kehadiran->status_absen=='TL'){
@@ -1592,7 +1592,7 @@ class MdAbsenHadirController extends AdminBaseController
             }else if($kode_ijin_payroll=='IBY'){
                 if($Kehadiran->status_absen=='DL'){
                     $kode_ijin_payroll='DL';
-            }
+                }
             }
             
             $interval = date_diff(date_create(substr($Kehadiran->mulai_jam_kerja, 0, 5)), date_create(substr($Kehadiran->akhir_jam_kerja, 0, 5)));
@@ -2098,7 +2098,6 @@ class MdAbsenHadirController extends AdminBaseController
                                 }
                             }else{
                                 if($count<1){
-                                    
                                     if($val["mulai_jam_kerja"]!=null){
                                         if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"] == "R"){
                                             $status_absen=$val["status_absen"];
@@ -2112,7 +2111,7 @@ class MdAbsenHadirController extends AdminBaseController
                                                 }else if($value->absen_in=='' && $value->absen_out!=''){
                                                     $status_absen=$val["status_absen"];
                                                 }else{
-                                            $status_absen=$value->status_absen;
+                                                    $status_absen=$value->status_absen;
                                                 }
                                             }else{
                                                 $status_absen=$value->status_absen;   
@@ -2144,18 +2143,18 @@ class MdAbsenHadirController extends AdminBaseController
                                             $mulai_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('mulai_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->mulai_jam_kerja;
                                             $akhir_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('akhir_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->akhir_jam_kerja;
                                             if($mulai_jam_kerja_kemarin<$akhir_jam_kerja_kemarin){
-                                            if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"] == "R"){
-                                                $status_absen=$val["status_absen"];
-                                            }
-                                            else{
-                                                $status_absen=null;
-                                            }
-                                            MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
-                                            ->where('enroll_id', $val->enroll_id)->update([
-                                                'absen_masuk_kerja' => $value->absen_in,
-                                                'absen_pulang_kerja' => $value->absen_out,
-                                                'status_absen' => $status_absen
-                                            ]);
+                                                if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"] == "R"){
+                                                    $status_absen=$val["status_absen"];
+                                                }
+                                                else{
+                                                    $status_absen=null;
+                                                }
+                                                MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
+                                                ->where('enroll_id', $val->enroll_id)->update([
+                                                    'absen_masuk_kerja' => $value->absen_in,
+                                                    'absen_pulang_kerja' => $value->absen_out,
+                                                    'status_absen' => $status_absen
+                                                ]);
                                             }
                                         }
                                     }
@@ -3877,8 +3876,6 @@ class MdAbsenHadirController extends AdminBaseController
                                     $in_lembur_max=date("H:i", strtotime('+1 hours 59 minutes', strtotime($mulai_jam_kerja_kemarin)));
                                     $out_lembur_min=date("H:i", strtotime('-2 hours', strtotime($akhir_jam_kerja_kemarin)));
                                     $out_lembur_max=date("H:i", strtotime('+3 hours 59 minutes', strtotime($akhir_jam_kerja_kemarin)));
-                                    $in_normal_min=date("H:i", strtotime('-2 hours', strtotime($mulai_jam_kerja_besok)));
-                                    $in_normal_max=date("H:i", strtotime('+3 hours 59 minutes', strtotime($mulai_jam_kerja_besok)));
                                     $absenIn=collect($records)->where('tanggal_absen',$value4->tanggal_berjalan)->where('enroll_id',$value4->enroll_id)->where('absen_log','>=', $in_lembur_min)->where('absen_log','<=', $in_lembur_max)->min('absen_log');
                                     $absenOut=collect($records)->where('tanggal_absen',$tanggal_besok)->where('enroll_id',$value4->enroll_id)->where('absen_log','>=', $out_lembur_min)->where('absen_log','<=', $out_lembur_max)->max('absen_log');
                                     if($absenIn==null && $absenOut!=null){
@@ -3928,11 +3925,6 @@ class MdAbsenHadirController extends AdminBaseController
                                 $absenIn=null;
                                 $absenOut=null;
                             }
-                        }
-                        else if($jadwal_in<$jadwal_out){
-                            $absenIn=collect($records)->where('tanggal_absen',$value4->tanggal_berjalan)->where('enroll_id',$value4->enroll_id)
-                                ->where('absen_log','>=', $jadwal_in_min)->where('absen_log','<=', $jadwal_in_max)->min('absen_log');
-                            $absenOut=collect($records)->where('tanggal_absen',$value4->tanggal_berjalan)->where('enroll_id',$value4->enroll_id)->max('absen_log');
                         }
                         if($value4->status_absen == "LN" || $value4->status_absen == "LP" || $value4->status_absen=='S'){
                             if($value4->status_absen=='S' || $value4->status_absen=='LP'){
@@ -4062,7 +4054,6 @@ class MdAbsenHadirController extends AdminBaseController
                     MasterDataAbsenKehadiran::where('uuid', $v->uuid)->update( $data_update);
                 }
             }
-            
         }
     }
 
