@@ -2342,7 +2342,7 @@ class MdAbsenHadirController extends AdminBaseController
                         }else{
                             $total_DT=0;
                         }
-                        if($absen_out<$jadwal_in){
+                        if($absen_out<$jadwal_in && $absen_out<$absen_in){
                             $total_PC=0;
                         }else if( $jadwal_out !=null && $absen_out !=null && $absen_out<$jadwal_out && ($v->status_absen==null || $v->status_absen=='TL')){
                             $total_PC1 = $PC->i +($PC->h*60);
@@ -2541,7 +2541,7 @@ class MdAbsenHadirController extends AdminBaseController
                         }else{
                             $total_DT=0;
                         }
-                        if($absen_out<$jadwal_in){
+                        if($absen_out<$jadwal_in && $absen_out<$absen_in){
                             $total_PC=0;
                         }else if( $jadwal_out !=null && $absen_out !=null && $absen_out<$jadwal_out && $v->status_absen==null){
                             $total_PC1 = $PC->i +($PC->h*60);
