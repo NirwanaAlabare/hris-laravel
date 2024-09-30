@@ -2041,10 +2041,8 @@ class MdAbsenHadirController extends AdminBaseController
                                             ]);
                                         }
                                     }else{
-                                        $mulai_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)
-                                        ->where('enroll_id', $val->enroll_id)->orderBy('tanggal_berjalan','DESC')->limit(1)->pluck('mulai_jam_kerja')[0];
-                                        $akhir_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)
-                                        ->where('enroll_id', $val->enroll_id)->orderBy('tanggal_berjalan','DESC')->limit(1)->pluck('akhir_jam_kerja')[0];
+                                        $mulai_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('mulai_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->mulai_jam_kerja;
+                                        $akhir_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('akhir_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->akhir_jam_kerja;
                                         if($mulai_jam_kerja_kemarin<$akhir_jam_kerja_kemarin){
                                             if($val["status_absen"] == "LN" ||$val["status_absen"]=='IKS'){
                                                 $status_absen=$val["status_absen"];
@@ -2139,8 +2137,8 @@ class MdAbsenHadirController extends AdminBaseController
                                                 ]);
                                             }
                                         }else{
-                                            $mulai_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('enroll_id',$val['enroll_id'])->where('tanggal_berjalan','<',$val['tanggal_berjalan'])->where('mulai_jam_kerja','!=',null)->orderBy('tanggal_berjalan','DESC')->limit(1)->pluck('mulai_jam_kerja')[0];
-                                            $akhir_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('enroll_id',$val['enroll_id'])->where('tanggal_berjalan','<',$val['tanggal_berjalan'])->where('mulai_jam_kerja','!=',null)->orderBy('tanggal_berjalan','DESC')->limit(1)->pluck('akhir_jam_kerja')[0];
+                                            $mulai_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('mulai_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->mulai_jam_kerja;
+                                            $akhir_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('akhir_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->akhir_jam_kerja;
                                             if($mulai_jam_kerja_kemarin<$akhir_jam_kerja_kemarin){
                                             if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"] == "R"){
                                                 $status_absen=$val["status_absen"];
@@ -3868,9 +3866,8 @@ class MdAbsenHadirController extends AdminBaseController
                                     continue;
                                 }
                             }else if($value4->nomor_form_lembur==null){
-                                $mulai_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('enroll_id',$value4->enroll_id)->where('tanggal_berjalan','<',$value4->tanggal_berjalan)->where('mulai_jam_kerja','!=',null)->orderBy('tanggal_berjalan','DESC')->limit(1)->pluck('mulai_jam_kerja')[0];
-                                $akhir_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('enroll_id',$value4->enroll_id)->where('tanggal_berjalan','<',$value4->tanggal_berjalan)->where('mulai_jam_kerja','!=',null)->orderBy('tanggal_berjalan','DESC')->limit(1)->pluck('akhir_jam_kerja')[0];
-                                $mulai_jam_kerja_besok=MasterDataAbsenKehadiran::where('enroll_id',$value4->enroll_id)->where('tanggal_berjalan','>',$value4->tanggal_berjalan)->orderBy('tanggal_berjalan')->limit(1)->pluck('mulai_jam_kerja')[0];
+                                $mulai_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('mulai_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->mulai_jam_kerja;
+                                $akhir_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('akhir_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->akhir_jam_kerja;
                                 if($mulai_jam_kerja_kemarin>$akhir_jam_kerja_kemarin){
                                     $in_lembur_min=date("H:i", strtotime('-2 hours', strtotime($mulai_jam_kerja_kemarin)));
                                     $in_lembur_max=date("H:i", strtotime('+1 hours 59 minutes', strtotime($mulai_jam_kerja_kemarin)));
