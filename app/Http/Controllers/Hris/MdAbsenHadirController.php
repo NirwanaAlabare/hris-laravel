@@ -999,6 +999,8 @@ class MdAbsenHadirController extends AdminBaseController
                             $kode_ijin_payroll='OK';
                         }else if($q->status_absen=='LP'){
                             $kode_ijin_payroll='LP';
+                        }else if($q->status_absen=='S'){
+                            $kode_ijin_payroll='S';
                         }
                     }else if($kode_ijin_payroll=='IBY'){
                         if($q->status_absen=='DL'){
@@ -1584,6 +1586,8 @@ class MdAbsenHadirController extends AdminBaseController
                     $kode_ijin_payroll='OK';
                 }else if($Kehadiran->status_absen=='LP'){
                     $kode_ijin_payroll='LP';
+                }else if($Kehadiran->status_absen=='S'){
+                    $kode_ijin_payroll='S';
                 }
             }else if($kode_ijin_payroll=='IBY'){
                 if($Kehadiran->status_absen=='DL'){
