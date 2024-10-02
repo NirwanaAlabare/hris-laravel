@@ -111,7 +111,7 @@
         </tr>
         <tr>
             <td></td>
-            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;text-align:justify" colspan="4">Adalah benar karyawan <b>{{$value->site_nirwana_name}}</b> dengan jabatan sebagai <b>{{$value->status_jabatan}} {{$value->department_name}}</b> yang bekerja sejak <b>{{Carbon\Carbon::parse($value->join_date)->translatedFormat('d F Y')}}</b> sampai dengan <b>{{$tanggal_akhir}}</b>.Dengan ini bermaksud untuk dibuatkan {{$item}} {{$value->nama_bank}} dengan no rekening {{$value->nomor_rekening_bank}} dikarenakan {{$item}} yang bersangkutan <u><b>{{$reason}}</b></u> dan perlu dilakukan pembaharuan/penggantian dengan Buku Tabungan baru.</td>
+            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;text-align:justify" colspan="4">Adalah benar karyawan <b>{{$value->site_nirwana_name}}</b> dengan jabatan sebagai <b>{{$value->status_jabatan}} {{$value->department_name}}</b> yang bekerja sejak <b>{{Carbon\Carbon::parse($value->join_date)->translatedFormat('d F Y')}}</b> sampai dengan <b>{{$tanggal_akhir}}</b>.Dengan ini bermaksud untuk dibuatkan {{$item}} {{$value->nama_bank}} dengan no rekening {{$value->nomor_rekening_bank}} dikarenakan {{$item}} yang bersangkutan <u><b>{{$reason}}</b></u> dan perlu dilakukan pembaharuan/penggantian dengan {{$item}} baru.</td>
             <td></td>
         </tr>
         <tr>
