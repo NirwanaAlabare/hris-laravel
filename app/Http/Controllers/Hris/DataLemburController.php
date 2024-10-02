@@ -1034,7 +1034,7 @@ class DataLemburController extends AdminBaseController
         $sheet->writeTo('AF7', 'VERIFY STATUS')->applyTextCenter();
         $sheet->writeAreas();
 
-        if(Auth::guard('admin')->user()->role_user!='payroll'){
+        if(Auth::guard('admin')->user()->role_user!='payroll' || Auth::guard('admin')->user()->email=='alex.herdian@ptnag.com'){
             $sheet->setColOptions([
                 'A' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 11],
                 'B' => ['width' => 7],
