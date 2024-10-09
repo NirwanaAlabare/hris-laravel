@@ -136,6 +136,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('datalembur/importkaryawanlembur',['as'=>'hris.datalembur.importkaryawanlembur','uses'=>'DataLemburController@importkaryawanlembur']);
     Route::post('datalembur/import_data_lembur',['as'=>'hris.datalembur.import_data_lembur','uses'=>'DataLemburController@import_data_lembur']);
     Route::post('datalembur/importing_data_lembur',['as'=>'hris.datalembur.importing_data_lembur','uses'=>'DataLemburController@importing_data_lembur']);
+    Route::get('datalembur/get_last_nomor_form_lembur',['as'=>'hris.datalembur.get_last_nomor_form_lembur','uses'=>'DataLemburController@get_last_nomor_form_lembur']);
 
     // DATA PAYROLL
     Route::get('payroll/lembur/',['as'=>'hris.payroll.lembur','uses'=> 'PayrollController@lembur']);
