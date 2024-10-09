@@ -626,7 +626,7 @@
         function get_new_nomor_form_lembur(){
             $.ajax({
                 type:"GET",
-                url: "/get_last_nomor_form_lembur",
+                url: "{{route('hris.datalembur.get_last_nomor_form_lembur')}}",
                 success: function(res){
                     $('#new_nomor_form_lembur').val(res);
                     document.getElementById('btn-icon-refresh_new_form_lembur').style.visibility='visible';
@@ -1781,7 +1781,7 @@
             let catatan_hrd=$("#catatan").val()
             $.ajax({
                 type:"GET",
-                url: "/get_last_nomor_form_lembur",
+                url: "{{route('hris.datalembur.get_last_nomor_form_lembur')}}",
                 success: function(res){
                     $('#last_nomor_form_lembur').text(': '+res);
                 }
@@ -1945,7 +1945,7 @@
             $("#btn-icon-refresh2").attr("disabled", true);
             $.ajax({
                 type:"GET",
-                url: "/get_last_nomor_form_lembur",
+                url: "{{route('hris.datalembur.get_last_nomor_form_lembur')}}",
                 success: function(res){
                     $('#nomor_form_lembur').text('NOMOR FORM LEMBUR : '+res);
                     $('#last_nomor_form_lembur').text(': '+res);
