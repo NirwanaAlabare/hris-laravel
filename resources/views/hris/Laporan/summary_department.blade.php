@@ -124,7 +124,7 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td colspan="10" rowspan="11" style="width: 15px;height:15px"><img src="storage/approval.png" alt="tag"></td>
+                <td colspan="10" rowspan="11" style="width: 15px;height:15px"></td>
             </tr>
             <tr>
                 <td></td>
