@@ -94,7 +94,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="modal-content">
-                                            <form method="POST" action="/import_employee_excel" enctype='multipart/form-data'>
+                                            <form method="POST" action="{{route('hris.employeeatr.import_employee_excel')}}" enctype='multipart/form-data'>
                                                 {{csrf_field()}}
                                                 <div class="modal-header bg-success p-2">
                                                     <h4 class="modal-title pl-2 font-weight-bold" >Import Employee</h4>

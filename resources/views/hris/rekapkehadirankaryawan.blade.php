@@ -353,7 +353,7 @@
             var status_staff=$("#status_staff").val();
             var searchData = $("#searchData").val();
             $.ajax({
-                url: "/update_rekap_absen",
+                url: "{{route('hris.rekapkehadirankaryawan.update_rekap_absen')}}",
                 type: "POST",
                 data: {
                     periode_payroll: periode_payroll,

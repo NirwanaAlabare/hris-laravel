@@ -183,6 +183,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('employeeatr/not_yet_printed/',['as'=>'hris.employeeatr.not_yet_printed','uses'=> 'EmployeeAtrController@not_yet_printed']);
     Route::post('employeeatr/set_already_print_sk/',['as'=>'hris.employeeatr.set_already_print_sk','uses'=> 'EmployeeAtrController@set_already_print_sk']);
     Route::post('employeeatr/set_back_print_sk/',['as'=>'hris.employeeatr.set_back_print_sk','uses'=> 'EmployeeAtrController@set_back_print_sk']);
+    Route::post('employeeatr/import_employee_excel/',['as'=>'hris.employeeatr.import_employee_excel','uses'=> 'EmployeeAtrController@uploadEmployee']);
 
     // REF ABSEN IJIN
     Route::get('refabsenijin/index',['as'=>'hris.refabsenijin.index','uses'=>'RefAbsenIjinController@index']);
@@ -259,6 +260,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('rekapkehadirankaryawan/ajax_getallemployeeatribut/',['as'=>'hris.rekapkehadirankaryawan.ajax_getallemployeeatribut','uses'=> 'RekapKehadiranKaryawanController@ajax_getallemployeeatribut']);
     Route::post('rekapkehadirankaryawan/daily_report/',['as'=>'hris.rekapkehadirankaryawan.daily_report','uses'=> 'RekapKehadiranKaryawanController@excel_rekap_absen']);
     Route::post('rekapkehadirankaryawan/summary_report/',['as'=>'hris.rekapkehadirankaryawan.summary_report','uses'=> 'RekapKehadiranKaryawanController@summary_report']);
+    Route::post('rekapkehadirankaryawan/update_rekap_absen/',['as'=>'hris.rekapkehadirankaryawan.update_rekap_absen','uses'=> 'RekapKehadiranKaryawanController@proses_rekap']);
 
     Route::get('employeebpjs/index',['as'=>'hris.employeebpjs.index','uses'=>'EmployeeBpjsController@index']);
     Route::post('employeebpjs/ajax_empbpjs',['as'=>'hris.employeebpjs.ajax_empbpjs','uses'=>'EmployeeBpjsController@ajax_empbpjs']);
