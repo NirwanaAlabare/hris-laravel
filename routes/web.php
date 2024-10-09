@@ -315,6 +315,9 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('rekapperhitunganpayrollcutoff/index',['as'=>'hris.rekapperhitunganpayrollcutoff.index','uses'=>'RekapPerhitunganPayrollCutOffController@index']);
     Route::post('rekapperhitunganpayrollcutoff/ajax_exportexcel/',['as'=>'hris.rekapperhitunganpayrollcutoff.ajax_exportexcel','uses'=> 'RekapPerhitunganPayrollCutOffController@ajax_exportexcel']);
     Route::post('rekapperhitunganpayrollcutoff/ajax_prosescutoff/',['as'=>'hris.rekapperhitunganpayrollcutoff.ajax_prosescutoff','uses'=> 'RekapPerhitunganPayrollCutOffController@ajax_prosescutoff']);
+    Route::get('rekapperhitunganpayroll/index',['as'=>'hris.rekapperhitunganpayroll.index','uses'=>'RekapPerhitunganPayrollController@index']);
+    Route::get('rekapperhitunganpayroll/export_excel_transfer',['as'=>'hris.rekapperhitunganpayroll.export_excel_transfer','uses'=>'ProsesPayrollController@export_excel_transfer']);
+    Route::post('rekapperhitunganpayroll/ajax_data/',['as'=>'hris.rekapperhitunganpayroll.ajax_data','uses'=> 'RekapPerhitunganPayrollController@ajax_data']);
 
     Route::get('dataclosingpayroll/index',['as'=>'hris.dataclosingpayroll.index','uses'=>'DataClosingPayrollController@index']);
     Route::post('dataclosingpayroll/ajax_data',['as'=>'hris.dataclosingpayroll.ajax_data','uses'=>'DataClosingPayrollController@ajax_data']);
