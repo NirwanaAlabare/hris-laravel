@@ -863,7 +863,7 @@
             }else{
                 $.ajax({
                     type:"POST",
-                    url: "/get_last_nomor_form_perizinan",
+                    url: "{{route('hris.dataabsenperijinan.get_last_nomor_form_perizinan')}}",
                     data: {
                         tanggal_perizinan:tanggal_perizinan,
                         kode_ijin:kode_absen_ijin,
@@ -879,7 +879,7 @@
             var tanggal_perizinan=tanggal_periz.substr(6, 4)+'-'+tanggal_periz.substr(3,2)+'-'+tanggal_periz.substr(0,2);
             $.ajax({
                 type:"POST",
-                url: "/get_last_nomor_form_perizinan_iks",
+                url: "{{route('hris.dataabsenperijinan.get_last_nomor_form_perizinan_iks')}}",
                 data: {
                     tanggal_perizinan:tanggal_perizinan,
                 },

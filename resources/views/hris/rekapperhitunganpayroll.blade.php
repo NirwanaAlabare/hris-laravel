@@ -808,7 +808,7 @@
             let status_staff=document.getElementById("status_staff").value;
             jQuery.ajax({
                 type : "post",
-                url : '/get_payroll_department',
+                url : '{{route('hris.rekapperhitunganpayroll.get_payroll_department')}}',
                 data : {
                     periode_payroll: periode_payroll,
                     status_staff: status_staff

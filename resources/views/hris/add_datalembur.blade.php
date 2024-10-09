@@ -1671,7 +1671,7 @@
             }else{
                 $.ajax({
                     type: 'POST',
-                    url: '/import_data_lembur',
+                    url: '{{route('hris.datalembur.importdatalembur')}}',
                     contentType: false,
                     processData: false,
                     data: formData,
@@ -1737,7 +1737,7 @@
             formData.append("excel_file",myFile);
             $.ajax({
                 type: 'POST',
-                url: '/importing_data_lembur',
+                url: '{{route('hris.datalembur.importing_data_lembur')}}',
                 contentType: false,
                 processData: false,
                 data: formData,

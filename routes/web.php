@@ -134,6 +134,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('datalembur/getnomorformnonsewing',['as'=>'hris.datalembur.getnomorformnonsewing','uses'=>'DataLemburController@getnomorformnonsewing']);
     Route::post('datalembur/getkaryawanlembur',['as'=>'hris.datalembur.getkaryawanlembur','uses'=>'DataLemburController@getkaryawanlembur']);
     Route::post('datalembur/importkaryawanlembur',['as'=>'hris.datalembur.importkaryawanlembur','uses'=>'DataLemburController@importkaryawanlembur']);
+    Route::post('datalembur/import_data_lembur',['as'=>'hris.datalembur.import_data_lembur','uses'=>'DataLemburController@import_data_lembur']);
+    Route::post('datalembur/importing_data_lembur',['as'=>'hris.datalembur.importing_data_lembur','uses'=>'DataLemburController@importing_data_lembur']);
 
     // DATA PAYROLL
     Route::get('payroll/lembur/',['as'=>'hris.payroll.lembur','uses'=> 'PayrollController@lembur']);
@@ -151,6 +153,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('departmentall/export_excel_department_all',['as'=>'hris.departmentall.export_excel_department_all','uses'=>'DepartmentAllController@export_excel_department_all']);
     Route::post('departmentall/import_department',['as'=>'hris.departmentall.import_department','uses'=>'DepartmentAllController@import_department']);
     Route::post('departmentall/import_department_to_database',['as'=>'hris.departmentall.import_department_to_database','uses'=>'DepartmentAllController@import_department_to_database']);
+    Route::post('departmentall/save_department_id',['as'=>'hris.departmentall.save_department_id','uses'=>'DepartmentAllController@save_department_id']);
+    Route::post('departmentall/save_sub_department',['as'=>'hris.departmentall.save_sub_department','uses'=>'DepartmentAllController@save_sub_department']);
 
     // EMPLOYEE ATTRIBUTE
     Route::get('employeeatr/index',['as'=>'hris.employeeatr.index','uses'=>'EmployeeAtrController@index']);
@@ -224,6 +228,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('dataabsenperijinan/ajax_exportexcel2/',['as'=>'hris.dataabsenperijinan.ajax_exportexcel2','uses'=> 'DataAbsenPerijinanController@ajax_exportexcel2']);
     Route::post('dataabsenperijinan/import_data_perizinan/',['as'=>'hris.dataabsenperijinan.import_data_perizinan','uses'=> 'DataAbsenPerijinanController@import_data_perizinan']);
     Route::post('dataabsenperijinan/import_perizinan_to_database/',['as'=>'hris.dataabsenperijinan.import_perizinan_to_database','uses'=> 'DataAbsenPerijinanController@import_perizinan_to_database']);
+    Route::post('dataabsenperijinan/get_last_nomor_form_perizinan/',['as'=>'hris.dataabsenperijinan.get_last_nomor_form_perizinan','uses'=> 'DataAbsenPerijinanController@get_last_nomor_form_perizinan']);
+    Route::post('dataabsenperijinan/get_last_nomor_form_perizinan_iks/',['as'=>'hris.dataabsenperijinan.get_last_nomor_form_perizinan_iks','uses'=> 'DataAbsenPerijinanController@get_last_nomor_form_perizinan_iks']);
 
     Route::get('koreksiupah/index',['as'=>'hris.koreksiupah.index','uses'=>'KoreksiUpahController@index']);
     Route::post('koreksiupah/ajax_datakoreksiupah',['as'=>'hris.koreksiupah.ajax_datakoreksiupah','uses'=>'KoreksiUpahController@ajax_datakoreksiupah']);
@@ -318,6 +324,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('rekapperhitunganpayroll/index',['as'=>'hris.rekapperhitunganpayroll.index','uses'=>'RekapPerhitunganPayrollController@index']);
     Route::get('rekapperhitunganpayroll/export_excel_transfer',['as'=>'hris.rekapperhitunganpayroll.export_excel_transfer','uses'=>'ProsesPayrollController@export_excel_transfer']);
     Route::post('rekapperhitunganpayroll/ajax_data/',['as'=>'hris.rekapperhitunganpayroll.ajax_data','uses'=> 'RekapPerhitunganPayrollController@ajax_data']);
+    Route::post('rekapperhitunganpayroll/get_payroll_department/',['as'=>'hris.rekapperhitunganpayroll.get_payroll_department','uses'=> 'RekapPerhitunganPayrollController@get_payroll_department']);
+
 
     Route::get('dataclosingpayroll/index',['as'=>'hris.dataclosingpayroll.index','uses'=>'DataClosingPayrollController@index']);
     Route::post('dataclosingpayroll/ajax_data',['as'=>'hris.dataclosingpayroll.ajax_data','uses'=>'DataClosingPayrollController@ajax_data']);

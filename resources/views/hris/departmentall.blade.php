@@ -646,7 +646,7 @@
             data.append('department_name', $('#department_name_modal').val());
             data.append('sub_department_name', $('#sub_department_name_modal').val());
             jQuery.ajax({
-                url: '/save_department_id',
+                url: '{{route('hris.departmentall.save_department_id')}}',
                 data: data,
                 cache: false,
                 contentType: false,
@@ -704,7 +704,7 @@
             data.append('department_name', $('#department_name_modal_sub').val());
             data.append('sub_department_name', $('#sub_department_name_modal_sub').val());
             jQuery.ajax({
-                url: '/save_sub_department',
+                url: '{{route('hris.departmentall.save_sub_department')}}',
                 data: data,
                 cache: false,
                 contentType: false,
