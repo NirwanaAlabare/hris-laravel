@@ -564,7 +564,7 @@
         function get_last_dept_id(){
             $.ajax({
                 type: "GET",
-                url: '/get_last_dept_id',
+                url: '{{route('hris.departmentall.get_last_dept_id')}}',
                 dataType: 'json',
             }).done(function (response) {
                 document.getElementById('department_id_modal').value='DEP'+(parseInt(response[0].substring(3, 5))+1);
@@ -573,7 +573,7 @@
         function get_dept_name(){
             $.ajax({
                 type: "GET",
-                url: '/get_dept_name',
+                url: '{{route('hris.departmentall.get_dept_name')}}',
                 dataType: 'json',
             }).done(function (data) {
                 console.log(data[0].department_name);

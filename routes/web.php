@@ -156,6 +156,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('departmentall/import_department_to_database',['as'=>'hris.departmentall.import_department_to_database','uses'=>'DepartmentAllController@import_department_to_database']);
     Route::post('departmentall/save_department_id',['as'=>'hris.departmentall.save_department_id','uses'=>'DepartmentAllController@save_department_id']);
     Route::post('departmentall/save_sub_department',['as'=>'hris.departmentall.save_sub_department','uses'=>'DepartmentAllController@save_sub_department']);
+    Route::get('departmentall/get_last_dept_id',['as'=>'hris.departmentall.get_last_dept_id','uses'=>'DepartmentAllController@get_last_dept_id']);
+    Route::get('departmentall/get_dept_name',['as'=>'hris.departmentall.get_dept_name','uses'=>'DepartmentAllController@get_dept_name']);
 
     // EMPLOYEE ATTRIBUTE
     Route::get('employeeatr/index',['as'=>'hris.employeeatr.index','uses'=>'EmployeeAtrController@index']);
@@ -326,6 +328,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('rekapperhitunganpayroll/export_excel_transfer',['as'=>'hris.rekapperhitunganpayroll.export_excel_transfer','uses'=>'ProsesPayrollController@export_excel_transfer']);
     Route::post('rekapperhitunganpayroll/ajax_data/',['as'=>'hris.rekapperhitunganpayroll.ajax_data','uses'=> 'RekapPerhitunganPayrollController@ajax_data']);
     Route::post('rekapperhitunganpayroll/get_payroll_department/',['as'=>'hris.rekapperhitunganpayroll.get_payroll_department','uses'=> 'RekapPerhitunganPayrollController@get_payroll_department']);
+    Route::get('rekapperhitunganpayroll/get_sub_dept_name/{id}',['as'=>'hris.rekapperhitunganpayroll.get_sub_dept_name','uses'=> 'RekapPerhitunganPayrollController@get_sub_dept_name']);
+    Route::get('rekapperhitunganpayroll/export_excel_summary_department',['as'=>'hris.rekapperhitunganpayroll.export_excel_summary_department','uses'=> 'RekapPerhitunganPayrollController@export_excel_summary_department']);
 
 
     Route::get('dataclosingpayroll/index',['as'=>'hris.dataclosingpayroll.index','uses'=>'DataClosingPayrollController@index']);

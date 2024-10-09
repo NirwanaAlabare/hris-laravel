@@ -772,7 +772,7 @@
             var department_id  =document.getElementsByName("department_id")[0].value;
             if(department_id){
                 jQuery.ajax({
-                    url : '/get_sub_dept_name/'+department_id,
+                    url : 'get_sub_dept_name/'+department_id,
                     type : "GET",
                     dataType : "json",
                     success:function(data)
@@ -869,13 +869,13 @@
         var status_staff=document.getElementById("status_staff").value;
         var department_id=document.getElementById("department_id").value;
         var sub_dept_id=document.getElementById("sub_dept_id").value;
-        window.location.href = "/export_excel_transfer?param1="+periode_payroll+"&param2="+status_staff+"&param3="+department_id+"&param4="+sub_dept_id;
+        window.location.href = "export_excel_transfer?param1="+periode_payroll+"&param2="+status_staff+"&param3="+department_id+"&param4="+sub_dept_id;
     }
 
     function export_excel_summary_department(){
         var periode_payroll  =document.getElementsByName("periode_payroll")[0].value;
         var status_staff=document.getElementById("status_staff").value;
-        window.location.href = "/export_excel_summary_department?param1="+periode_payroll+"&param2="+status_staff;
+        window.location.href = "export_excel_summary_department?param1="+periode_payroll+"&param2="+status_staff;
     }
 
 
