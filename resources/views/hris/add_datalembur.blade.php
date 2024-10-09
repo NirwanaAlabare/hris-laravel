@@ -1671,7 +1671,7 @@
             }else{
                 $.ajax({
                     type: 'POST',
-                    url: '{{route('hris.datalembur.importdatalembur')}}',
+                    url: '{{route('hris.datalembur.import_data_lembur')}}',
                     contentType: false,
                     processData: false,
                     data: formData,
