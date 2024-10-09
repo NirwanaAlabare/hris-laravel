@@ -1940,8 +1940,8 @@
                 $('#created_at').val(data['created_at']);
                 $('#updated_at').val(data['updated_at']);
                 let poto_profil=data['nik']+' '+data['employee_name']+'.png';
-                $('#profile_photo').empty().append('<img src="/storage/app/public/images/'+poto_profil+'" height="120px" />');
-                $('#image_preview').empty().append('<img src="/storage/app/public/images/'+poto_profil+'" alt="" class="user mt-3">');
+                $('#profile_photo').empty().append('<img src="{{asset("/storage/app/public/images")}}'+'/'+poto_profil+'" height="120px">');
+                $('#image_preview').empty().append('<img src="{{asset("/storage/app/public/images")}}'+'/'+poto_profil+'" alt="" class="user mt-3">');
              });
 
         });
