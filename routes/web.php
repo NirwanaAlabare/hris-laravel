@@ -46,7 +46,7 @@ Route::group(['middleware' => ['auth.employees'],'namespace' => 'Front'], functi
 });
 
 # Admin Login
-Route::group([ 'prefix' => 'admin','namespace' => 'Admin'], function()
+Route::group(['namespace' => 'Admin'], function()
 {
 
     Route::get('/',['as'=>'admin.getlogin','uses'=>'AdminLoginController@index']);
