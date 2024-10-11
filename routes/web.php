@@ -61,10 +61,18 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('dashboard/index',['as'=>'hris.dashboard.index','uses'=>'DashboardController@index']);
     Route::get('dashboard',['as'=>'hris.dashboard.tes','uses'=>'DashboardController@tes']);
     Route::get('hrd/index',['as'=>'hris.hrd.index','uses'=>'HRDController@index']);
+    Route::get('hrd/kontrak_kerja',['as'=>'hris.hrd.kontrak_kerja','uses'=>'HRDController@kontrak_kerja']);
     Route::get('hrd/export_pdf_sk_kerja',['as'=>'hris.hrd.export_pdf_sk_kerja','uses'=>'HRDController@export_pdf_sk_kerja']);
     Route::get('hrd/export_pdf_paklaring',['as'=>'hris.hrd.export_pdf_paklaring','uses'=>'HRDController@export_pdf_paklaring']);
     Route::get('hrd/export_pdf_sk_bni',['as'=>'hris.hrd.export_pdf_sk_bni','uses'=>'HRDController@export_pdf_sk_bni']);
     Route::post('hrd/export_pdf_print_sk',['as'=>'hris.hrd.export_pdf_print_sk','uses'=>'HRDController@export_pdf_print_sk']);
+    Route::get('hrd/get_employee_contract',['as'=>'hris.hrd.get_employee_contract','uses'=>'HRDController@get_employee_contract']);
+    Route::post('hrd/get_employee_contract2',['as'=>'hris.hrd.get_employee_contract2','uses'=>'HRDController@get_employee_contract2']);
+    Route::post('hrd/update_employee_contract',['as'=>'hris.hrd.update_employee_contract','uses'=>'HRDController@update_employee_contract']);
+    Route::post('hrd/new_employee_contract',['as'=>'hris.hrd.new_employee_contract','uses'=>'HRDController@new_employee_contract']);
+    Route::post('hrd/delete_employee_contract',['as'=>'hris.hrd.delete_employee_contract','uses'=>'HRDController@delete_employee_contract']);
+    Route::post('hrd/import_kontrak_kerja',['as'=>'hris.hrd.import_kontrak_kerja','uses'=>'HRDController@import_kontrak_kerja']);
+    Route::post('hrd/import_kontrak_kerja_to_database',['as'=>'hris.hrd.import_kontrak_kerja_to_database','uses'=>'HRDController@import_kontrak_kerja_to_database']);
 
     //Route::resource('mdabsenhadir', 'MdAbsenHadirController',['as' => 'hris']);
     Route::get('mdabsenhadir/datahadir',['as'=>'hris.mdabsenhadir.datahadir','uses'=>'MdAbsenHadirController@datahadir']);
@@ -164,6 +172,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('employeeatr/ajax_getemployeeatr/',['as'=>'hris.employeeatr.ajax_getemployeeatr','uses'=> 'EmployeeAtrController@ajax_getemployeeatr']);
     Route::post('employeeatr/ajax_getemployeeatr2/',['as'=>'hris.employeeatr.ajax_getemployeeatr2','uses'=> 'EmployeeAtrController@ajax_getemployeeatr2']);
     Route::post('employeeatr/ajax_getemployeeatr3/',['as'=>'hris.employeeatr.ajax_getemployeeatr3','uses'=> 'EmployeeAtrController@ajax_getemployeeatr3']);
+    Route::post('employeeatr/ajax_getemployeeatr4/',['as'=>'hris.employeeatr.ajax_getemployeeatr4','uses'=> 'EmployeeAtrController@ajax_getemployeeatr4']);
     Route::post('employeeatr/ajax_getemployeeids/',['as'=>'hris.employeeatr.ajax_getemployeeids','uses'=> 'EmployeeAtrController@ajax_getemployeeids']);
     Route::post('employeeatr/ajax_getemployeeid/',['as'=>'hris.employeeatr.ajax_getemployeeid','uses'=> 'EmployeeAtrController@ajax_getemployeeid']);
     Route::post('employeeatr/ajax_getcheckedemployee/',['as'=>'hris.employeeatr.ajax_getcheckedemployee','uses'=> 'EmployeeAtrController@ajax_getcheckedemployee']);

@@ -247,10 +247,12 @@ class EmployeeAtrController extends AdminBaseController
         if(empty($request->input('search.value')))
         {
             $query =  EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')
-                            ->offset($start)
-                            ->limit($limit)
-                            ->orderBy($order,$dir)
-                            ->get();
+            ->leftJoin(\DB::raw('
+            (select y.enroll_id id_kontrak,y.id id_employee_kontrak,y.contract,y.contract_end from (
+                select a.enroll_id,a.id,e.contract,e.contract_end from (select enroll_id,max(contract) contract,max(contract_end) contract_end from employee_contract group by enroll_id)e 
+                inner join (select id,enroll_id,contract,contract_end from employee_contract)a on e.enroll_id=a.enroll_id and e.contract_end=a.contract_end)y
+                ) AS employee_cont'),
+            'employee_atribut.enroll_id', '=', 'employee_cont.id_kontrak')->offset($start)->limit($limit)->orderBy($order,$dir)->get();
 
             $totalData = EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')->count();
             $totalFiltered = $totalData;
@@ -269,7 +271,12 @@ class EmployeeAtrController extends AdminBaseController
                 ->orWhere('work_status','LIKE',"%{$search}%")
                 ->orWhere('employee_status','LIKE',"%{$search}%")
                 ->orWhere('posisi_name','LIKE',"%{$search}%");
-            })
+            })->leftJoin(\DB::raw('
+            (select y.enroll_id id_kontrak,y.id id_employee_kontrak,y.contract,y.contract_end from (
+                select a.enroll_id,a.id,e.contract,e.contract_end from (select enroll_id,max(contract) contract,max(contract_end) contract_end from employee_contract group by enroll_id)e 
+                inner join (select id,enroll_id,contract,contract_end from employee_contract)a on e.enroll_id=a.enroll_id and e.contract_end=a.contract_end)y
+                ) AS employee_cont'),
+            'employee_atribut.enroll_id', '=', 'employee_cont.id_kontrak')
             ->offset($start)
             ->limit($limit)
             ->orderBy($order,$dir)
@@ -390,6 +397,8 @@ class EmployeeAtrController extends AdminBaseController
                 $nestedData['tanggal_mulai_kontrak'] = $q->tanggal_mulai_kontrak;
                 $nestedData['tanggal_akhir_kontrak'] = $q->tanggal_akhir_kontrak;
                 $nestedData['catatan_kontrak'] = $q->catatan_kontrak;
+                $nestedData['kontrak_awal']=$q->contract;
+                $nestedData['kontrak_akhir']=$q->contract_end;
                 $nestedData['created_at'] = substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5);
                 $nestedData['updated_at'] = substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5);
 
@@ -825,6 +834,133 @@ class EmployeeAtrController extends AdminBaseController
         }
     }
 
+    public function ajax_getemployeeatr4(Request $request)
+    {
+
+        if(request()->ajax()) {
+
+        $columns = array(
+            0 => 'enroll_id',
+            1 => 'nik',
+            2 => 'employee_name',
+            3 => 'department_name',
+            4 => 'sub_dept_name',
+            5 => '',
+        );
+
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+        $totalData = 0;
+        $totalFiltered = 0;
+        $searchData = $request->searchData;
+        $searchNoKTP = $request->selectNoKTP;
+        $searchIbuKandung = $request->searchIbuKandung;
+        $inSearchData='';
+        if($searchData){
+            $enroll_id = implode(", ", $searchData);
+            $allEnroll_id= '('.$enroll_id.')';
+            $inSearchData = ' AND employee_atribut.enroll_id IN '.$allEnroll_id.'';
+        }
+        $inSearchNoKTP='';
+        if($searchNoKTP){
+            $inSearchNoKTP = ' AND employee_atribut.nomor_ktp LIKE "'.$searchNoKTP.'%"';
+        }
+        $inSearchIbuKandung='';
+        if($searchIbuKandung){
+            $inSearchIbuKandung = ' AND employee_atribut.ibu_kandung LIKE "'.$searchIbuKandung.'%"';
+        }
+        if(empty($request->input('search.value')))
+        {
+            $query =  EmployeeAtribut::selectRaw('
+                            employee_atribut.enroll_id,
+                            employee_atribut.nik,
+                            employee_atribut.employee_name,
+                            employee_atribut.department_name,
+                            employee_atribut.sub_dept_name,
+                            max(employee_contract.contract) contract,
+                            max(employee_contract.contract_end) contract_end,
+                            employee_contract.created_at,
+                            employee_contract.updated_at
+                        ')
+                        ->leftJoin('employee_contract','employee_atribut.enroll_id','=','employee_contract.enroll_id')
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy($order,$dir)
+                        ->groupBy('employee_atribut.enroll_id')
+                        ->get();
+            $totalData = EmployeeAtribut::count();
+            $totalFiltered = $totalData;
+
+        } else {
+            $search = $request->input('search.value');
+
+            $query =  EmployeeAtribut::whereRaw('status_aktif is not null'.$inSearchData.''.$inSearchNoKTP.''.$inSearchIbuKandung.'')->where(function($query)use($search){
+                $query->where('employee_id',$search)
+                ->orWhere('nik',$search)
+                ->orWhere('enroll_id',$search)
+                ->orWhere('employee_name','LIKE',"%{$search}%")
+                ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
+                ->orWhere('department_name','LIKE',"%{$search}%")
+                ->orWhere('sub_dept_name','LIKE',"%{$search}%")
+                ->orWhere('work_status','LIKE',"%{$search}%")
+                ->orWhere('employee_status','LIKE',"%{$search}%")
+                ->orWhere('posisi_name','LIKE',"%{$search}%");
+            })
+            ->offset($start)
+            ->limit($limit)
+            ->orderBy($order,$dir)
+            ->get();
+
+            $totalData = EmployeeAtribut::whereRaw('status_aktif is not null'.$inSearchData.''.$inSearchNoKTP.''.$inSearchIbuKandung.'')->where(function($query)use($search){
+                $query->where('employee_id','LIKE',"%{$search}%")
+                ->orWhere('nik',$search)
+                ->orWhere('enroll_id',$search)
+                ->orWhere('employee_name','LIKE',"%{$search}%")
+                ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
+                ->orWhere('department_name','LIKE',"%{$search}%")
+                ->orWhere('sub_dept_name','LIKE',"%{$search}%")
+                ->orWhere('work_status','LIKE',"%{$search}%")
+                ->orWhere('employee_status','LIKE',"%{$search}%")
+                ->orWhere('posisi_name','LIKE',"%{$search}%");
+            })->count();
+
+            $totalFiltered = $totalData;
+
+        }
+
+        $data = array();
+        if(!empty($query))
+        {
+            foreach ($query as $q)
+            {
+                $nestedData['enroll_id'] = $q->enroll_id;
+                $nestedData['nik'] = $q->nik;
+                $nestedData['employee_name'] = $q->employee_name;
+                $nestedData['department_name'] = $q->department_name;
+                $nestedData['sub_dept_name'] = $q->sub_dept_name;
+                $nestedData['kontrak_kerja'] = $q->contract;
+                $nestedData['kontrak_kerja_akhir'] = $q->contract_end;
+
+                $nestedData['created_at'] = substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5);
+                $nestedData['updated_at'] = substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5);
+
+                $data[] = $nestedData;
+
+            }
+        }
+
+        $json_data = array(
+            "draw"            => intval($request->input('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data
+            );
+
+        echo json_encode($json_data);
+        }
+    }
     public function ajax_getemployeeid(Request $request)
     {
         // $department=$request->department_id;
@@ -1145,6 +1281,7 @@ class EmployeeAtrController extends AdminBaseController
         $tanggal_akhir_kontrak = $request->tanggal_akhir_kontrak;
         $catatan_kontrak = strtoupper($request->catatan_kontrak);
 
+        $timestamp = Carbon::now();
         $site_nirwana_name =  DepartmentAll::select('site_nirwana_name')
                                     ->where('site_nirwana_id', '=', $site_nirwana_id)
                                     ->groupby('site_nirwana_id')
@@ -1169,6 +1306,16 @@ class EmployeeAtrController extends AdminBaseController
             'nik'=>$request->nik
         ]);
         //update master
+        $kontrak_awal=DB::select("select max(contract) contract from employee_contract where enroll_id='$enroll_id'")[0]->contract;
+        $kontrak_akhir=DB::select("select max(contract_end) contract_end from employee_contract where enroll_id='$enroll_id'")[0]->contract_end;
+        if($kontrak_awal){
+            $tanggal_mulai_kontrak=$kontrak_awal;
+            $tanggal_akhir_kontrak=$kontrak_akhir;
+        }else{
+            if($tanggal_mulai_kontrak!='' && $tanggal_akhir_kontrak!=''){
+                DB::insert("insert into employee_contract (id, enroll_id, contract, contract_end, created_at, updated_at) VALUES ('','$enroll_id','$tanggal_mulai_kontrak','$tanggal_akhir_kontrak','$timestamp','$timestamp')");
+            }
+        }
         if($query > 0) {
             $query = EmployeeAtribut::whereRaw('enroll_id = "' . $enroll_id . '"')
             ->update([

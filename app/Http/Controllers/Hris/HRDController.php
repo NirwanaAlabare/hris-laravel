@@ -6,10 +6,14 @@ use Illuminate\Support\Facades\View;
 use DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Dompdf\Dompdf;
+use Carbon\Carbon;
 use Dompdf\Options;
 use Dompdf\FontMetrics;
 use App\Models\EmployeeAtribut;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
+use App\Models\MasterDataAbsenKehadiran;
+use Maatwebsite\Excel\Facades\Excel;
 
 class HRDController extends AdminBaseController
 {
@@ -133,5 +137,128 @@ class HRDController extends AdminBaseController
             //     return $pdf;
             // }
         // }
+    }
+    public function kontrak_kerja(){
+        $selectEmployee =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')->groupby('enroll_id')->orderby('employee_name', 'asc')->get();
+        $selectNoKTP = EmployeeAtribut::selectRaw('nomor_ktp')->groupby('nomor_ktp')->orderby('nomor_ktp', 'asc')->get();
+        return View::make('hris/hrd/kontrak_kerja',compact('selectEmployee','selectNoKTP'), $this->data);
+    }
+    public function get_employee_contract(){
+        $inEnrollId='';
+        $inIbuKandung='';
+        $inNoKTP='';
+        $status_kontrak=request()->status_kontrak;
+        $compare='';
+        if(request()->enroll_id){
+            $enroll_id = request()->enroll_id;
+            $enroll_id_string = implode(',', $enroll_id);
+            $inEnrollId='AND z.enroll_id in ('.$enroll_id_string.')';
+        }
+        if(request()->ibu_kandung){
+            $ibu_kandung_string=request()->ibu_kandung;
+            $inIbuKandung='AND z.ibu_kandung LIKE "%'.$ibu_kandung_string.'%"';
+        }
+        if(request()->no_ktp){
+            $no_ktp_string=request()->no_ktp;
+            $inNoKTP='AND z.nomor_ktp LIKE "'.$no_ktp_string.'%"';
+        }
+        $inStatusKontrak='';
+        if($status_kontrak=='Active'){
+            $inStatusKontrak='AND y.contract_end >= curdate()';
+        }else if($status_kontrak=='Nonactive'){
+            $inStatusKontrak='AND y.contract_end < curdate()';
+        }else if($status_kontrak=='One Day'){
+            $inStatusKontrak='AND y.contract_end = curdate()';
+        }else if($status_kontrak=='Unfilled'){
+            $inStatusKontrak='AND y.contract_end is null';
+        }
+        $inStatusAktif='';
+        if(request()->status_aktif){
+            $status_aktif=request()->status_aktif;
+            $inStatusAktif='AND z.status_aktif = "'.$status_aktif.'"';
+        }
+        $data_input = DB::select("select z.enroll_id,z.nik,z.employee_name,z.department_name,z.sub_dept_name,z.status_aktif,z.ibu_kandung,z.nomor_ktp,y.id,y.contract,y.contract_end from (select a.enroll_id,a.id,e.contract,e.contract_end from (select enroll_id,max(contract) contract,max(contract_end) contract_end from employee_contract group by enroll_id)e inner join (select id,enroll_id,contract,contract_end from employee_contract)a on e.enroll_id=a.enroll_id and e.contract_end=a.contract_end)y right join (select enroll_id,nik,employee_name,department_name,sub_dept_name,status_aktif,ibu_kandung,nomor_ktp from employee_atribut)z on y.enroll_id=z.enroll_id where z.enroll_id is not null ".$inEnrollId." ".$inIbuKandung." ".$inNoKTP." ".$inStatusKontrak." ".$inStatusAktif." order by enroll_id");
+        return DataTables::of($data_input)->toJson();
+    }
+    public function get_employee_contract2(){
+        $enroll_id=request()->id;
+        $contracts=DB::select("select*from employee_contract where enroll_id='$enroll_id' order by contract_end");
+        return $contracts;
+    }
+    public function update_employee_contract(){
+        $enroll_id=request()->id;
+        $id=request()->last_id;
+        $last_date=request()->last_date;
+        DB::update("update employee_contract set contract_end='$last_date' where id = '$id'");
+        return $enroll_id;
+    }
+    public function new_employee_contract(){
+        $timestamp = Carbon::now();
+        $enroll_id=request()->id;
+        $contract=request()->contract;
+        $end_contract=request()->end_contract;
+        DB::insert("insert into employee_contract (id, enroll_id, contract, contract_end, created_at, updated_at) VALUES ('','$enroll_id','$contract','$end_contract','$timestamp','$timestamp')");
+        return $enroll_id;
+    }
+    public function delete_employee_contract(){
+        $id=request()->id;
+        DB::delete("delete from employee_contract where id = '$id'");
+        return request()->enroll_id;
+    }
+    public function import_kontrak_kerja(){
+        $data=Excel::toArray([],request()->file('excel_file'));
+        $z=[];
+        $timestamp = Carbon::now();
+        for($i=3;$i<count($data[0]);$i++){
+            $status=EmployeeAtribut::where('enroll_id',$data[0][$i][2])->get();
+            if(count($status)==0){
+                continue;
+            }
+            $nik=EmployeeAtribut::where('enroll_id',$data[0][$i][2])->first()->nik;
+            $employee_name=EmployeeAtribut::where('enroll_id',$data[0][$i][2])->first()->employee_name;
+            $department=EmployeeAtribut::where('enroll_id',$data[0][$i][2])->first()->department_name;
+            $bagian=EmployeeAtribut::where('enroll_id',$data[0][$i][2])->first()->sub_dept_name;
+            for($j=15;$j<=106;$j+=2){
+                if($data[0][$i][$j]==null||$data[0][$i][$j]=='-'||preg_match("/[a-z]/i", $data[0][$i][$j])){
+                    continue;
+                }
+                $contract=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][$j])->format('Y-m-d');
+                $contract_end=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][$j+1])->format('Y-m-d');
+                $z[]=[
+                    'nik'=>$nik,
+                    'employee_name'=>$employee_name,
+                    'department'=>$department,
+                    'bagian'=>$bagian,
+                    'contract'=>$contract,
+                    'contract_end'=>$contract_end
+                ];
+            }
+        }
+        return $z;
+    }
+    public function import_kontrak_kerja_to_database(){
+        // khawatir terjadi penumpukan
+        $data=Excel::toArray([],request()->file('excel_file'));
+        $z=[];
+        $timestamp = Carbon::now();
+        for($i=3;$i<count($data[0]);$i++){
+            $status=EmployeeAtribut::where('enroll_id',$data[0][$i][2])->get();
+            if(count($status)==0){
+                continue;
+            }
+            $enroll_id=$data[0][$i][2];
+            $employee_contract=DB::select("select*from employee_contract where enroll_id = '$enroll_id'");
+            if($employee_contract){
+                DB::delete("delete from employee_contract where enroll_id = '$enroll_id'");
+            }
+            for($j=15;$j<=106;$j+=2){
+                if($data[0][$i][$j]==null||$data[0][$i][$j]=='-'||preg_match("/[a-z]/i", $data[0][$i][$j])){
+                    continue;
+                }
+                $contract=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][$j])->format('Y-m-d');
+                $contract_end=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][$j+1])->format('Y-m-d');
+                DB::insert("insert into employee_contract (id, enroll_id, contract, contract_end, created_at, updated_at) VALUES ('','$enroll_id','$contract','$contract_end','$timestamp','$timestamp')");
+            }
+        }
     }
 }

@@ -12,6 +12,9 @@
                 <li><a href="{{route('hris.hrd.index')}}" class="slide-item"><span> Karyawan</span></a></li>
             </ul>
         </li>
+        <li>
+            <a class="side-menu__item" href="{{route('hris.hrd.kontrak_kerja')}}"><i class="side-menu__icon typcn typcn-clipboard"></i><span class="side-menu__label">Kontrak Kerja</span></a>
+        </li>
         @php
             }
         @endphp

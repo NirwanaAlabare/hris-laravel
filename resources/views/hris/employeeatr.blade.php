@@ -995,7 +995,7 @@
                                                         <div class="input-group-text">
                                                             <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
                                                         </div>
-                                                    </div><input id="tanggal_mulai_kontrak" class="form-control fc-datepicker"  placeholder="DD-MM-YYYY" type="text">
+                                                    </div><input id="tanggal_mulai_kontrak" class="form-control fc-datepicker"  placeholder="DD-MM-YYYY" type="text"><div id="tanggal_mulai_kontrak_string" style="dispay:none"></div>
                                                 </div>
                                             </td>
                                             <td>
@@ -1004,7 +1004,7 @@
                                                         <div class="input-group-text">
                                                             <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
                                                         </div>
-                                                    </div><input id="tanggal_akhir_kontrak" class="form-control fc-datepicker"  placeholder="DD-MM-YYYY" type="text">
+                                                    </div><input id="tanggal_akhir_kontrak" class="form-control fc-datepicker"  placeholder="DD-MM-YYYY" type="text"><div id="tanggal_akhir_kontrak_string" style="dispay:none"></div>
                                                 </div>
                                             </td>
                                             <td>
@@ -1931,10 +1931,24 @@
                 $('#tanggal_expire_sim').val(tanggal_expire_sim);
                 $('#catatan').text(data['catatan']);
                 $('#lokasi_foto').val(data['lokasi_foto']);
-                tanggal_mulai_kontrak = defaultDate(data['tanggal_mulai_kontrak']);
-                $('#tanggal_mulai_kontrak').val(tanggal_mulai_kontrak);
-                tanggal_akhir_kontrak = defaultDate(data['tanggal_akhir_kontrak']);
-                $('#tanggal_akhir_kontrak').val(tanggal_akhir_kontrak);
+                if(data['kontrak_awal']!=null){
+                    tanggal_mulai_kontrak = defaultDate(data['kontrak_awal']);
+                    $('#tanggal_mulai_kontrak_string').text(tanggal_mulai_kontrak);
+                    document.getElementById('tanggal_mulai_kontrak_string').style.display='block';
+                    document.getElementById('tanggal_mulai_kontrak').style.display='none';
+                }else{
+                    document.getElementById('tanggal_mulai_kontrak').style.display='block';
+                    document.getElementById('tanggal_mulai_kontrak_string').style.display='none';
+                }
+                if(data['kontrak_awal']!=null){
+                    tanggal_akhir_kontrak = defaultDate(data['kontrak_akhir']);
+                    $('#tanggal_akhir_kontrak_string').text(tanggal_akhir_kontrak);
+                    document.getElementById('tanggal_akhir_kontrak_string').style.display='block';
+                    document.getElementById('tanggal_akhir_kontrak').style.display='none';
+                }else{
+                    document.getElementById('tanggal_akhir_kontrak').style.display='block';
+                    document.getElementById('tanggal_akhir_kontrak_string').style.display='none';
+                }
                 $('#catatan_kontrak').text(data['catatan_kontrak']);
                 $('#operator').val(data['operator']);
                 $('#created_at').val(data['created_at']);

@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use App\Models\DepartmentAll;
+use Carbon\Carbon;
 
 class EmployeeImport implements ToModel, WithStartRow, WithCalculatedFormulas
 {
@@ -88,12 +89,24 @@ class EmployeeImport implements ToModel, WithStartRow, WithCalculatedFormulas
         if($row[64]=='' || $row[64]=='-'){
             $tanggal_mulai_kontrak=null;
         }else{
-            $tanggal_mulai_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[62])->format('Y-m-d');
+            $tanggal_mulai_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[64])->format('Y-m-d');
         }
         if($row[65]=='' || $row[65]=='-'){
             $tanggal_akhir_kontrak=null;
         }else{
             $tanggal_akhir_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[65])->format('Y-m-d');
+        }
+        $enroll_id=$row[1];
+        $kontrak_awal=DB::select("select max(contract) contract from employee_contract where enroll_id='$enroll_id'")[0]->contract;
+        $kontrak_akhir=DB::select("select max(contract_end) contract_end from employee_contract where enroll_id='$enroll_id'")[0]->contract_end;
+        $timestamp = Carbon::now();
+        if($kontrak_awal){
+            $tanggal_mulai_kontrak=$kontrak_awal;
+            $tanggal_akhir_kontrak=$kontrak_akhir;
+        }else{
+            if($row[64]!='' && $row[65]!=''){
+                DB::insert("insert into employee_contract (id, enroll_id, contract, contract_end, created_at, updated_at) VALUES ('','$enroll_id','$tanggal_mulai_kontrak','$tanggal_akhir_kontrak','$timestamp','$timestamp')");
+            }
         }
         $dataArray=[
             'employee_id'=>time().$row[1],

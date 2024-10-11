@@ -132,7 +132,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
                 ->groupBy('employee_atribut.enroll_id')
                 ->orderByRaw('CAST(employee_atribut.enroll_id AS SIGNED) ASC')
                 ->orderBy('employee_atribut.tanggal_resign','asc')
-                ->limit(1);
+                ->where('enroll_id',5321);
 
         return $q;
     }
@@ -200,18 +200,25 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
         }else{
             $tanggal_expire_simf=$Data->tanggal_expire_sim;
         }
-        
-        if($Data->tanggal_mulai_kontrak!=null){
-            $tanggal_mulai_kontrakf=date('d-m-Y', strtotime($Data->tanggal_mulai_kontrak));
+        $enroll_id=$Data->enroll_id;
+        $kontrak_awal=DB::select("select max(contract) contract from employee_contract where enroll_id='$enroll_id'")[0]->contract;
+        $kontrak_akhir=DB::select("select max(contract_end) contract_end from employee_contract where enroll_id='$enroll_id'")[0]->contract_end;
+        if($kontrak_awal){
+            $tanggal_mulai_kontrakf=$kontrak_awal;
+            $tanggal_akhir_kontrakf=$kontrak_akhir;
         }else{
-            $tanggal_mulai_kontrakf=$Data->tanggal_mulai_kontrak;
+            if($Data->tanggal_mulai_kontrak!=null){
+                $tanggal_mulai_kontrakf=date('d-m-Y', strtotime($Data->tanggal_mulai_kontrak));
+            }else{
+                $tanggal_mulai_kontrakf=$Data->tanggal_mulai_kontrak;
+            }
+            if($Data->tanggal_akhir_kontrak!=null){
+                $tanggal_akhir_kontrakf=date('d-m-Y', strtotime($Data->tanggal_akhir_kontrak));
+            }else{
+                $tanggal_akhir_kontrakf=$Data->tanggal_akhir_kontrak;
+            }
         }
         
-        if($Data->tanggal_akhir_kontrak!=null){
-            $tanggal_akhir_kontrakf=date('d-m-Y', strtotime($Data->tanggal_akhir_kontrak));
-        }else{
-            $tanggal_akhir_kontrakf=$Data->tanggal_akhir_kontrak;
-        }
 
         $employee_id = $Data->employee_id;
         $employee_name = $Data->employee_name;
