@@ -228,6 +228,10 @@
     }
 </style>
 <script type="text/javascript">
+    $(document).ready(function() {
+        let datatableFilter = document.getElementById("datatable_filter");
+        datatableFilter.innerHTML = `<span> Search : </span><input type="text" class="form-control form-control-sm" id="search_variable" onkeyup="dataTableReload()">`;
+    });
     $('.data_range').daterangepicker({
         ranges: {
             'Hari ini': [moment(), moment()],
@@ -453,6 +457,7 @@
                 d.no_ktp = $('#searchNoKTP').val();
                 d.status_kontrak = $('#status_kontrak').val();
                 d.status_aktif = $('#status_aktif').val();
+                d.search_variable = $('#search_variable').val();
             },
         },
         columns: [
@@ -474,7 +479,7 @@
                 data: 'enroll_id'
             },
             {
-                data: 'contract_end'
+                data: 'enroll_id'
             },
             {
                 data: 'enroll_id'
@@ -534,6 +539,9 @@
     $('#status_aktif').on('change',function(){
         datatable.ajax.reload();
     });
+    function dataTableReload() {
+        datatable.ajax.reload();
+    }
     function getDetail(enroll_id){
         $('#working_contract_active').empty();
         $('#working_contract_extend').empty();
@@ -674,12 +682,13 @@
                         last_id:$('#last_id').val(),
                     },
                     success: function(res) {
-                        getDetail(res);
                         iziToast.success({
                             message: 'update kontrak berhasil',
                             position: 'center',
                             timeout:1300,
                         });
+                        getDetail(res);
+                        datatable.ajax.reload();
                     }
                 });
             }

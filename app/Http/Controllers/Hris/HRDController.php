@@ -144,11 +144,16 @@ class HRDController extends AdminBaseController
         return View::make('hris/hrd/kontrak_kerja',compact('selectEmployee','selectNoKTP'), $this->data);
     }
     public function get_employee_contract(){
+        $inSearchVariable='';
         $inEnrollId='';
         $inIbuKandung='';
         $inNoKTP='';
         $status_kontrak=request()->status_kontrak;
         $compare='';
+        if (request("search_variable")) {
+            $search_variable=request()->search_variable;
+            $inSearchVariable = 'AND (z.enroll_id = "'.$search_variable.'" or z.employee_name LIKE "%'.$search_variable.'%" or z.tempat_lahir LIKE "%'.$search_variable.'%" or z.nomor_tlpn LIKE "'.$search_variable.'%" or z.agama LIKE "'.$search_variable.'%" or z.status_kawin LIKE "'.$search_variable.'%" or z.nomor_kk LIKE "'.$search_variable.'%" or z.pendidikan_terakhir LIKE "'.$search_variable.'%" or z.jurusan_pendidikan LIKE "'.$search_variable.'%" or z.alamat_rumah LIKE "%'.$search_variable.'%" or z.department_name LIKE "%'.$search_variable.'%" or z.sub_dept_name LIKE "%'.$search_variable.'%" or z.status_aktif LIKE "'.$search_variable.'%" or z.ibu_kandung LIKE "%'.$search_variable.'%" or z.nomor_ktp LIKE "'.$search_variable.'%")';
+        }
         if(request()->enroll_id){
             $enroll_id = request()->enroll_id;
             $enroll_id_string = implode(',', $enroll_id);
@@ -182,7 +187,7 @@ class HRDController extends AdminBaseController
             $status_aktif=request()->status_aktif;
             $inStatusAktif='AND z.status_aktif = "'.$status_aktif.'"';
         }
-        $data_input = DB::select("select z.enroll_id,z.nik,z.employee_name,z.department_name,z.sub_dept_name,z.status_aktif,z.ibu_kandung,z.nomor_ktp,y.id,y.contract,y.contract_end from (select a.enroll_id,a.id,e.contract,e.contract_end from (select enroll_id,max(contract) contract,max(contract_end) contract_end from employee_contract group by enroll_id)e inner join (select id,enroll_id,contract,contract_end from employee_contract)a on e.enroll_id=a.enroll_id and e.contract_end=a.contract_end)y right join (select enroll_id,nik,employee_name,department_name,sub_dept_name,status_aktif,ibu_kandung,nomor_ktp from employee_atribut)z on y.enroll_id=z.enroll_id where z.enroll_id is not null ".$inEnrollId." ".$inIbuKandung." ".$inNoKTP." ".$inStatusKontrak." ".$inStatusAktif." order by enroll_id");
+        $data_input = DB::select("select z.enroll_id,z.nik,z.employee_name,z.department_name,z.sub_dept_name,z.status_aktif,z.ibu_kandung,z.nomor_ktp,y.id,y.contract,y.contract_end from (select a.enroll_id,a.id,e.contract,e.contract_end from (select enroll_id,max(contract) contract,max(contract_end) contract_end from employee_contract group by enroll_id)e inner join (select id,enroll_id,contract,contract_end from employee_contract)a on e.enroll_id=a.enroll_id and e.contract_end=a.contract_end)y right join (select enroll_id,nik,employee_name,tempat_lahir,nomor_tlpn,agama,status_kawin,nomor_kk,pendidikan_terakhir,jurusan_pendidikan,alamat_rumah,department_name,sub_dept_name,status_aktif,ibu_kandung,nomor_ktp from employee_atribut)z on y.enroll_id=z.enroll_id where z.enroll_id is not null ".$inSearchVariable." ".$inIbuKandung." ".$inNoKTP." ".$inStatusKontrak." ".$inStatusAktif." ".$inEnrollId." order by enroll_id");
         return DataTables::of($data_input)->toJson();
     }
     public function get_employee_contract2(){
