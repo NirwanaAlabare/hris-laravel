@@ -81,6 +81,8 @@
                                         <option value="Active">Aktif</option>
                                         <option value="Nonactive">Tidak Aktif</option>
                                         <option value="One Day">1 Hari Lagi</option>
+                                        <option value="Thirty Day">30 Hari Lagi</option>
+                                        <option value="Not yet extended">Belum Diperpanjang</option>
                                         <option value="Unfilled">Belum Diisi</option>
                                     </select>
                                 </div>
@@ -277,8 +279,8 @@
                     $('#loading_kontrak_kerja').removeClass("spinner-border");
                     no=2;
                     jQuery.each(data, function(key,value){
-                        contract = new Date(value.contract).toLocaleDateString('id-ID', { year:"numeric", month:"long", day:"numeric"});
-                        contract_end = new Date(value.contract_end).toLocaleDateString('id-ID', { year:"numeric", month:"long", day:"numeric"});
+                        contract = new Date(value.contract).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"});
+                        contract_end = new Date(value.contract_end).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"});
                         if(key!=0){
                             if(value.nik==data[key-1].nik){
                                 $('#tabel_kontrak_kerja').append("<tr>\
@@ -482,7 +484,7 @@
             {
                 targets: [5],
                 render: (data, type, row, meta) => {
-                    var options = {  year: 'numeric', month: 'long', day: 'numeric' };
+                    var options = { weekday: 'long',  year: 'numeric', month: 'long', day: 'numeric' };
                     var tes=new Date(row.contract);
                     if(row.contract==null){
                         return '';
@@ -494,7 +496,7 @@
             {
                 targets: [6],
                 render: (data, type, row, meta) => {
-                    var options = {  year: 'numeric', month: 'long', day: 'numeric' };
+                    var options = { weekday: 'long',  year: 'numeric', month: 'long', day: 'numeric' };
                     var tes=new Date(row.contract_end);
                     if(row.contract_end==null){
                         return '';
@@ -548,7 +550,7 @@
                 var this_day=new Date();
                 this_day.setHours(0, 0, 0, 0);
                 for(var i=res.length-1;i>=0;i--){
-                    var options = {  year: 'numeric', month: 'long', day: 'numeric' };
+                    var options = { weekday: 'long',  year: 'numeric', month: 'long', day: 'numeric' };
                     var start=new Date(res[i]['contract']);
                     var end=new Date(res[i]['contract_end']);
                     end.setHours(0, 0, 0, 0);

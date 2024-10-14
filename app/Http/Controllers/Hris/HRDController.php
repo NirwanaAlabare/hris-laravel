@@ -169,6 +169,11 @@ class HRDController extends AdminBaseController
             $inStatusKontrak='AND y.contract_end < curdate()';
         }else if($status_kontrak=='One Day'){
             $inStatusKontrak='AND y.contract_end = curdate()';
+        }else if($status_kontrak=='Thirty Day'){
+            $thirty_day_more = date('Y-m-d',strtotime('+30 days',strtotime(date("Y-m-d")))) . PHP_EOL;
+            $inStatusKontrak='AND y.contract_end = "'.$thirty_day_more.'"';
+        }else if($status_kontrak=='Not yet extended'){
+            $inStatusKontrak='AND y.contract_end < curdate() AND z.status_aktif ="AKTIF"';
         }else if($status_kontrak=='Unfilled'){
             $inStatusKontrak='AND y.contract_end is null';
         }
