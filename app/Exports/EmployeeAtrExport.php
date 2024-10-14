@@ -132,7 +132,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
                 ->groupBy('employee_atribut.enroll_id')
                 ->orderByRaw('CAST(employee_atribut.enroll_id AS SIGNED) ASC')
                 ->orderBy('employee_atribut.tanggal_resign','asc')
-                ->where('enroll_id',5321);
+                ->limit(1);
 
         return $q;
     }
