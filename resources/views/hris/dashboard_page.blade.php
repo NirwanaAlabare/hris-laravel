@@ -28,7 +28,7 @@
                                     </div>
                                 </a>
                             </div>
-                            @if($role=='superadmin' || $role=='absensi')
+                            @if($role=='superadmin' || $role=='absensi' || $role=='admin')
                             <div class="col">
                                 <a href="{{route('hris.hrd.index')}}">
                                     <div class="d-flex h-100 flex-column justify-content-between">
