@@ -13,6 +13,7 @@ use App\Models\EmployeeAtribut;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\MasterDataAbsenKehadiran;
+use App\Exports\exportExcelKontrak;
 use Maatwebsite\Excel\Facades\Excel;
 
 class HRDController extends AdminBaseController
@@ -152,7 +153,7 @@ class HRDController extends AdminBaseController
         $compare='';
         if (request("search_variable")) {
             $search_variable=request()->search_variable;
-            $inSearchVariable = 'AND (z.enroll_id = "'.$search_variable.'" or z.employee_name LIKE "%'.$search_variable.'%" or z.tempat_lahir LIKE "%'.$search_variable.'%" or z.nomor_tlpn LIKE "'.$search_variable.'%" or z.agama LIKE "'.$search_variable.'%" or z.status_kawin LIKE "'.$search_variable.'%" or z.nomor_kk LIKE "'.$search_variable.'%" or z.pendidikan_terakhir LIKE "'.$search_variable.'%" or z.jurusan_pendidikan LIKE "'.$search_variable.'%" or z.alamat_rumah LIKE "%'.$search_variable.'%" or z.department_name LIKE "%'.$search_variable.'%" or z.sub_dept_name LIKE "%'.$search_variable.'%" or z.status_aktif LIKE "'.$search_variable.'%" or z.ibu_kandung LIKE "%'.$search_variable.'%" or z.nomor_ktp LIKE "'.$search_variable.'%")';
+            $inSearchVariable = 'AND (z.enroll_id = "'.$search_variable.'" or z.nik LIKE "'.$search_variable.'%" or z.employee_name LIKE "%'.$search_variable.'%" or z.tempat_lahir LIKE "%'.$search_variable.'%" or z.nomor_tlpn LIKE "'.$search_variable.'%" or z.agama LIKE "'.$search_variable.'%" or z.status_kawin LIKE "'.$search_variable.'%" or z.nomor_kk LIKE "'.$search_variable.'%" or z.pendidikan_terakhir LIKE "'.$search_variable.'%" or z.jurusan_pendidikan LIKE "'.$search_variable.'%" or z.alamat_rumah LIKE "%'.$search_variable.'%" or z.department_name LIKE "%'.$search_variable.'%" or z.sub_dept_name LIKE "%'.$search_variable.'%" or z.status_aktif LIKE "'.$search_variable.'%" or z.ibu_kandung LIKE "%'.$search_variable.'%" or z.nomor_ktp LIKE "'.$search_variable.'%")';
         }
         if(request()->enroll_id){
             $enroll_id = request()->enroll_id;
@@ -270,5 +271,53 @@ class HRDController extends AdminBaseController
                 DB::insert("insert into employee_contract (id, enroll_id, contract, contract_end, created_at, updated_at) VALUES ('','$enroll_id','$contract','$contract_end','$timestamp','$timestamp')");
             }
         }
+    }
+    public function export_excel_kontrak(){
+        $inSearchVariable='';
+        $inNoKTP='';
+        $inEnrollId='';
+        $inIbuKandung='';
+        $inStatusAktif='';
+        $inStatusKontrak='';
+        if (request("search_variable")) {
+            $search_variable=request()->search_variable;
+            $inSearchVariable = 'AND (a.enroll_id = "'.$search_variable.'" or a.nik LIKE "'.$search_variable.'%" or a.employee_name LIKE "%'.$search_variable.'%" or a.tempat_lahir LIKE "%'.$search_variable.'%" or a.nomor_tlpn LIKE "'.$search_variable.'%" or a.agama LIKE "'.$search_variable.'%" or a.status_kawin LIKE "'.$search_variable.'%" or a.nomor_kk LIKE "'.$search_variable.'%" or a.pendidikan_terakhir LIKE "'.$search_variable.'%" or a.jurusan_pendidikan LIKE "'.$search_variable.'%" or a.alamat_rumah LIKE "%'.$search_variable.'%" or a.department_name LIKE "%'.$search_variable.'%" or a.sub_dept_name LIKE "%'.$search_variable.'%" or a.status_aktif LIKE "'.$search_variable.'%" or a.ibu_kandung LIKE "%'.$search_variable.'%" or a.nomor_ktp LIKE "'.$search_variable.'%")';
+        }
+        if(request()->no_ktp){
+            $no_ktp_string=request()->no_ktp;
+            $inNoKTP='AND a.nomor_ktp LIKE "'.$no_ktp_string.'%"';
+        }
+        if(request()->enroll_id){
+            $enroll_id=request()->enroll_id;
+            $enroll_id_string=implode(',', $enroll_id);
+            $inEnrollId='AND a.enroll_id in ('.$enroll_id_string.')';
+        }
+        if(request()->ibu_kandung){
+            $ibu_kandung_string=request()->ibu_kandung;
+            $inIbuKandung='AND a.ibu_kandung LIKE "%'.$ibu_kandung_string.'%"';
+        }
+        if(request()->status_aktif){
+            $status_aktif=request()->status_aktif;
+            $inStatusAktif='AND a.status_aktif = "'.$status_aktif.'"';
+        }
+        if(request()->status_kontrak){
+            $status_kontrak=request()->status_kontrak;
+            if($status_kontrak=='Active'){
+                $inStatusKontrak='AND b.contract_end >= curdate()';
+            }else if($status_kontrak=='Nonactive'){
+                $inStatusKontrak='AND b.contract_end < curdate()';
+            }else if($status_kontrak=='One Day'){
+                $inStatusKontrak='AND b.contract_end = curdate()';
+            }else if($status_kontrak=='Thirty Day'){
+                $thirty_day_more = date('Y-m-d',strtotime('+30 days',strtotime(date("Y-m-d")))) . PHP_EOL;
+                $inStatusKontrak='AND b.contract_end = "'.$thirty_day_more.'"';
+            }else if($status_kontrak=='Not yet extended'){
+                $inStatusKontrak='AND b.contract_end < curdate() AND a.status_aktif ="AKTIF"';
+            }else if($status_kontrak=='Unfilled'){
+                $inStatusKontrak='AND b.contract_end is null';
+            }
+        }
+        $query= DB::select("select a.status_staff,a.enroll_id,a.nik,a.employee_name,a.status_jabatan,a.sub_dept_name,a.department_name,a.status_kontrak_tetap,a.status_aktif,a.join_date,a.tanggal_resign,a.nomor_ktp,b.contract,b.contract_end,c.max_contract_end from employee_atribut a left join employee_contract b on a.enroll_id=b.enroll_id left join (select enroll_id,max(contract_end) max_contract_end from employee_contract group by enroll_id)c on a.enroll_id=c.enroll_id where a.enroll_id is not null ".$inSearchVariable." ".$inEnrollId." ".$inNoKTP." ".$inIbuKandung." ".$inStatusAktif." ".$inStatusKontrak." order by enroll_id,contract_end");
+        return Excel::download(new exportExcelKontrak($query), 'Laporan_Penerimaan FG_Stok.xlsx');
     }
 }

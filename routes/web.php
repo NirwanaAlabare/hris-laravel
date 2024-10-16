@@ -48,12 +48,9 @@ Route::group(['middleware' => ['auth.employees'],'namespace' => 'Front'], functi
 # Admin Login
 Route::group(['namespace' => 'Admin'], function()
 {
-
     Route::get('/',['as'=>'admin.getlogin','uses'=>'AdminLoginController@index']);
     Route::get('logout',['as'=>'admin.logout','uses'=> 'AdminLoginController@logout']);
-
     Route::post('login',['as'=>'admin.login','uses'=> 'AdminLoginController@ajaxAdminLogin']);
-
 });
 
 Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namespace' => 'Hris'], function()
@@ -73,6 +70,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('hrd/delete_employee_contract',['as'=>'hris.hrd.delete_employee_contract','uses'=>'HRDController@delete_employee_contract']);
     Route::post('hrd/import_kontrak_kerja',['as'=>'hris.hrd.import_kontrak_kerja','uses'=>'HRDController@import_kontrak_kerja']);
     Route::post('hrd/import_kontrak_kerja_to_database',['as'=>'hris.hrd.import_kontrak_kerja_to_database','uses'=>'HRDController@import_kontrak_kerja_to_database']);
+    Route::get('hrd/export_excel_kontrak',['as'=>'hris.hrd.export_excel_kontrak','uses'=>'HRDController@export_excel_kontrak']);
 
     //Route::resource('mdabsenhadir', 'MdAbsenHadirController',['as' => 'hris']);
     Route::get('mdabsenhadir/datahadir',['as'=>'hris.mdabsenhadir.datahadir','uses'=>'MdAbsenHadirController@datahadir']);
@@ -385,21 +383,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'admin','names
 
 
 });
-Route::post('import_employee_excel', 'Hris\EmployeeAtrController@uploadEmployee');
-Route::get('tes2','Hris\EmployeeAtrController@creat_master_absen_26');
-Route::get('export_excel_transfer', 'Hris\ProsesPayrollController@export_excel_transfer');
-Route::get('get_rekap_payroll','Hris\ProsesPayrollController@get_rekap');
-Route::post('update_rekap_absen','Hris\RekapKehadiranKaryawanController@proses_rekap');
-Route::post('rekapperhitunganpayroll/ajax_data/',['as'=>'hris.rekapperhitunganpayroll.ajax_data','uses'=> 'Hris\RekapPerhitunganPayrollController@ajax_data']);
-Route::get('get_sub_dept_name/{id}','Hris\RekapPerhitunganPayrollController@get_sub_dept_name');
-Route::post('get_payroll_department','Hris\RekapPerhitunganPayrollController@get_payroll_department');
-Route::get('get_last_dept_id', 'Hris\DepartmentAllController@get_last_dept_id');
-Route::post('save_department_id', 'Hris\DepartmentAllController@save_department_id');
-Route::get('get_dept_name', 'Hris\DepartmentAllController@get_dept_name');
-Route::post('save_sub_department', 'Hris\DepartmentAllController@save_sub_department');
-Route::get('export_excel_summary_department', 'Hris\RekapPerhitunganPayrollController@export_excel_summary_department');
-Route::post('import_data_lembur', 'Hris\DataLemburController@import_data_lembur');
-Route::post('importing_data_lembur', 'Hris\DataLemburController@importing_data_lembur');
+Route::get('/tes2','Hris\EmployeeAtrController@creat_master_absen_26');
 Event::listen('auth.login', function($user)
 {
     $user->last_login = new DateTime;
@@ -407,6 +391,3 @@ Event::listen('auth.login', function($user)
 });
 // Lock Screen Routing
 Route::get('screenlock', 'Admin\AdminController@screenlock');
-Route::post('get_last_nomor_form_perizinan','Hris\DataAbsenPerijinanController@get_last_nomor_form_perizinan');
-Route::post('get_last_nomor_form_perizinan_iks','Hris\DataAbsenPerijinanController@get_last_nomor_form_perizinan_iks');
-Route::get('get_last_nomor_form_lembur','Hris\DataLemburController@get_last_nomor_form_lembur');
