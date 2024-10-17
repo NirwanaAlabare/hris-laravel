@@ -330,4 +330,62 @@ class HRDController extends AdminBaseController
         $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan',["no_form"=>$no_form,"data" => $data,"umk"=>$umk])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
         return $pdf;
     }
+    public function print_all_pdf_kontrak(){
+        $enroll_id=request()->enroll_id;
+        $no_form=request()->no_form;
+        $data=DB::select("select a.status_staff,a.enroll_id,a.nik,a.employee_name,a.status_jabatan,a.sub_dept_name,a.department_name,a.status_kontrak_tetap,a.status_aktif,a.join_date,a.tanggal_resign,a.nomor_ktp,a.tempat_lahir,a.alamat_rumah,a.tanggal_lahir,a.no_surat,b.contract,b.contract_end,c.max_contract,c.max_contract_end from employee_atribut a left join employee_contract b on a.enroll_id=b.enroll_id left join (select enroll_id,max(contract) max_contract,max(contract_end) max_contract_end from employee_contract group by enroll_id)c on a.enroll_id=c.enroll_id where a.enroll_id in (".$enroll_id.") group by a.enroll_id");
+        $umk=DasarPotBPJS::orderBy('created_at','desc')->limit(1)->first()->dasar_pot_bpjs_rupiah;
+        $fileName='Kontrak Kerja '.$data[0]->employee_name.'('.request()->enroll_id.') '.$data[0]->max_contract_end.' '.date('His');
+        $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan',["no_form"=>$no_form,"data" => $data,"umk"=>$umk])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+        return $pdf;
+    }
+    public function ajax_getemployeeidbyfilter(){
+        $inSearchVariable='';
+        $inNoKTP='';
+        $inEnrollId='';
+        $inIbuKandung='';
+        $inStatusAktif='';
+        $inStatusKontrak='';
+        if (request("search_variable")) {
+            $search_variable=request()->search_variable;
+            $inSearchVariable = 'AND (a.enroll_id = "'.$search_variable.'" or a.nik LIKE "'.$search_variable.'%" or a.employee_name LIKE "%'.$search_variable.'%" or a.tempat_lahir LIKE "%'.$search_variable.'%" or a.nomor_tlpn LIKE "'.$search_variable.'%" or a.agama LIKE "'.$search_variable.'%" or a.status_kawin LIKE "'.$search_variable.'%" or a.nomor_kk LIKE "'.$search_variable.'%" or a.pendidikan_terakhir LIKE "'.$search_variable.'%" or a.jurusan_pendidikan LIKE "'.$search_variable.'%" or a.alamat_rumah LIKE "%'.$search_variable.'%" or a.department_name LIKE "%'.$search_variable.'%" or a.sub_dept_name LIKE "%'.$search_variable.'%" or a.status_aktif LIKE "'.$search_variable.'%" or a.ibu_kandung LIKE "%'.$search_variable.'%" or a.nomor_ktp LIKE "'.$search_variable.'%")';
+        }
+        if(request()->no_ktp){
+            $no_ktp_string=request()->no_ktp;
+            $inNoKTP='AND a.nomor_ktp LIKE "'.$no_ktp_string.'%"';
+        }
+        if(request()->enroll_id){
+            $enroll_id=request()->enroll_id;
+            $enroll_id_string=implode(',', $enroll_id);
+            $inEnrollId='AND a.enroll_id in ('.$enroll_id_string.')';
+        }
+        if(request()->ibu_kandung){
+            $ibu_kandung_string=request()->ibu_kandung;
+            $inIbuKandung='AND a.ibu_kandung LIKE "%'.$ibu_kandung_string.'%"';
+        }
+        if(request()->status_aktif){
+            $status_aktif=request()->status_aktif;
+            $inStatusAktif='AND a.status_aktif = "'.$status_aktif.'"';
+        }
+        if(request()->status_kontrak){
+            $status_kontrak=request()->status_kontrak;
+            if($status_kontrak=='Active'){
+                $inStatusKontrak='AND c.max_contract_end >= curdate()';
+            }else if($status_kontrak=='Nonactive'){
+                $inStatusKontrak='AND c.max_contract_end < curdate()';
+            }else if($status_kontrak=='One Day'){
+                $inStatusKontrak='AND c.max_contract_end = curdate()';
+            }else if($status_kontrak=='Thirty Day'){
+                $thirty_day_more = date('Y-m-d',strtotime('+30 days',strtotime(date("Y-m-d")))) . PHP_EOL;
+                $inStatusKontrak='AND c.max_contract_end = "'.$thirty_day_more.'"';
+            }else if($status_kontrak=='Not yet extended'){
+                $inStatusKontrak='AND c.max_contract_end < curdate() AND a.status_aktif ="AKTIF"';
+            }else if($status_kontrak=='Unfilled'){
+                $inStatusKontrak='AND b.contract_end is null';
+            }
+        }
+        $query= DB::select("select a.enroll_id from employee_atribut a left join employee_contract b on a.enroll_id=b.enroll_id left join (select enroll_id,max(contract_end) max_contract_end from employee_contract group by enroll_id)c on a.enroll_id=c.enroll_id where a.enroll_id is not null ".$inSearchVariable." ".$inEnrollId." ".$inNoKTP." ".$inIbuKandung." ".$inStatusAktif." ".$inStatusKontrak." group by a.enroll_id");
+        $enroll_id_array=array_column($query,'enroll_id');
+        return $enroll_id_array;
+    }
 }

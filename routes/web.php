@@ -72,6 +72,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('hrd/import_kontrak_kerja_to_database',['as'=>'hris.hrd.import_kontrak_kerja_to_database','uses'=>'HRDController@import_kontrak_kerja_to_database']);
     Route::get('hrd/export_excel_kontrak',['as'=>'hris.hrd.export_excel_kontrak','uses'=>'HRDController@export_excel_kontrak']);
     Route::get('hrd/print_pdf_kontrak',['as'=>'hris.hrd.print_pdf_kontrak','uses'=>'HRDController@print_pdf_kontrak']);
+    Route::get('hrd/print_all_pdf_kontrak',['as'=>'hris.hrd.print_all_pdf_kontrak','uses'=>'HRDController@print_all_pdf_kontrak']);
+    Route::post('hrd/ajax_getemployeeidbyfilter',['as'=>'hris.hrd.ajax_getemployeeidbyfilter','uses'=>'HRDController@ajax_getemployeeidbyfilter']);
 
     //Route::resource('mdabsenhadir', 'MdAbsenHadirController',['as' => 'hris']);
     Route::get('mdabsenhadir/datahadir',['as'=>'hris.mdabsenhadir.datahadir','uses'=>'MdAbsenHadirController@datahadir']);

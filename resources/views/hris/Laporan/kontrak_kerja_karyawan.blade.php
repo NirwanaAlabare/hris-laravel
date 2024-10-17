@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Document</title>
     <style>
-        @page { margin: 25px 60px 60px 60px; }
+        @page { margin: 25px 60px 0px 60px; }
     </style>
 </head>
 

@@ -110,6 +110,9 @@
                                 <td>
                                     <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" style="font-size:11pt" onclick="export_excel_kontrak()" id="btn_export_excel_kontrak"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Kontrak Kerja</button>
                                 </td>
+                                <td>
+                                    <button class="btn btn-danger" id="print_kontrak_kerja" style="visibility: hidden"><span class="fa fa-file-pdf-o"></span> Print Checked Employee</button>
+                                </td>
                             </tr>
                         </table>
                     </div>
@@ -120,6 +123,9 @@
                             <table id="datatable" class="table table-bordered table-sm w-100 table-hover text-nowrap">
                                 <thead class="table-info">
                                     <tr style='text-align:center;'>
+                                        <th rowspan="2" style="vertical-align: middle">
+                                            <input type="checkbox" id="checkAllEmployee" onchange="actionCheckAllEmployee(this)">
+                                        </th>
                                         <th rowspan="2" style="vertical-align: middle;font-weight:bold">ID</th>
                                         <th rowspan="2" style="vertical-align: middle;font-weight:bold">NIK</th>
                                         <th rowspan="2" style="vertical-align: middle;font-weight:bold">Employee Name</th>
@@ -504,6 +510,8 @@
             minimumResultsForSearch: Infinity // disabling search
         });
     });
+    var currentPageCheck = 0;
+    var checkedEmployeeArr = [];
     let datatable = $("#datatable").DataTable({
         ordering: false,
         processing: true,
@@ -524,6 +532,9 @@
             },
         },
         columns: [
+            {
+                data: 'enroll_id'
+            },
             {
                 data: 'enroll_id'
             }, {
@@ -550,7 +561,17 @@
         ],
         columnDefs: [
             {
-                targets: [5],
+                targets: [0],
+                render: (data, type, row, meta) => {
+                    return `
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" style='width: 20px; height: 20px;' value="`+data+`" style='width: 20px; height: 20px;' id="checked_enroll_id_` + row.enroll_id + `" onchange="actionThisEmployeeCheck(this)" >
+                        </div>
+                    `
+                }
+            },
+            {
+                targets: [6],
                 render: (data, type, row, meta) => {
                     var options = { weekday: 'long',  year: 'numeric', month: 'long', day: 'numeric' };
                     var tes=new Date(row.contract);
@@ -562,7 +583,7 @@
                 }
             },
             {
-                targets: [6],
+                targets: [7],
                 render: (data, type, row, meta) => {
                     var options = { weekday: 'long',  year: 'numeric', month: 'long', day: 'numeric' };
                     var tes=new Date(row.contract_end);
@@ -574,7 +595,7 @@
                 }
             },
             {
-                targets: [7],
+                targets: [8],
                 render: (data, type, row, meta) => {
                     return `
                         <div class='d-flex gap-1'>
@@ -588,8 +609,94 @@
                     `
                 }
             }
-        ]
+        ],
+        rowCallback: function(row, data, dataIndex){
+            let currentEnrollId = data['enroll_id'];
+
+            checkedEmployeeArr.forEach((item, index, array) => {
+                if(item==currentEnrollId){
+                    currentPageCheck++;
+                    $(row).find('input[id="checked_enroll_id_'+item+'"]').prop('checked', true);
+                }
+            });
+        },
+        drawCallback: function (settings) {
+            if (currentPageCheck == 0) {
+                $('#checkAllEmployee').prop("checked", false);
+            } else {
+                $('#checkAllEmployee').prop("checked", true);
+            }
+
+            currentPageCheck = 0;
+        }
     });
+    function actionThisEmployeeCheck(element) {
+        if (element.checked) {
+            if(!checkedEmployeeArr.find((value) => value == element.value)) {
+                checkedEmployeeArr.push(element.value);
+            }
+        } else {
+            if(checkedEmployeeArr.find((value) => value == element.value)) {
+                const index = checkedEmployeeArr.indexOf(element.value);
+                if (index > -1) { // only splice array when item is found
+                    checkedEmployeeArr.splice(index, 1); // 2nd parameter means remove one item only
+                }
+            }
+        }
+        if(checkedEmployeeArr.length>0){
+            document.getElementById("print_kontrak_kerja").style.visibility = "visible";
+        }else{
+            document.getElementById("print_kontrak_kerja").style.visibility = "hidden";
+        }
+    }
+    $('#print_kontrak_kerja').on('click',function(){
+        var enroll_id=checkedEmployeeArr;
+        var today=new Date();
+        var month_now=today.getMonth();
+        var year_now=today.getFullYear();
+        var no_form='HRD-NAG/PKWT'+'/'+integerToRoman(month_now+1)+'/'+year_now;
+        var url = 'print_all_pdf_kontrak?enroll_id='+enroll_id+'&no_form='+no_form;
+        window.open(url, '_blank');
+    });
+    function actionCheckAllEmployee(element) {
+        var enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+        var ibu_kandung = $('#searchIbuKandung').val();
+        var no_ktp = $('#searchNoKTP').val();
+        var status_kontrak = $('#status_kontrak').val();
+        var status_aktif = $('#status_aktif').val();
+        var search_variable = $('#search_variable').val();
+        if (element.checked) {
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.hrd.ajax_getemployeeidbyfilter')}}",
+                dataType: 'json',
+                data: {
+                    enroll_id: enroll_id,
+                    ibu_kandung: ibu_kandung,
+                    no_ktp: no_ktp,
+                    status_kontrak: status_kontrak,
+                    status_aktif: status_aktif,
+                    search_variable: search_variable,
+                },
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                success: function(res){
+                    if(res){
+                        checkedEmployeeArr = res;
+
+                        $('#datatable').DataTable().ajax.reload(null, false);
+                        document.getElementById("print_kontrak_kerja").style.visibility = "visible";
+                    }
+                }
+            });
+        } else {
+            checkedEmployeeArr = [];
+            document.getElementById("print_kontrak_kerja").style.visibility = "hidden";
+            $('#datatable').DataTable().ajax.reload(null, false);
+        }
+    }
+
     $('#selectEmployeeID').on('change',function(){
         datatable.ajax.reload();
     });
