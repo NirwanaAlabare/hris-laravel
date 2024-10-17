@@ -513,7 +513,7 @@
     var currentPageCheck = 0;
     var checkedEmployeeArr = [];
     let datatable = $("#datatable").DataTable({
-        ordering: false,
+        ordering: true,
         processing: true,
         serverSide: true,
         paging: true,
@@ -533,7 +533,8 @@
         },
         columns: [
             {
-                data: 'enroll_id'
+                data: 'enroll_id',
+                orderable: false
             },
             {
                 data: 'enroll_id'
@@ -556,8 +557,12 @@
                 data: 'enroll_id'
             },
             {
-                data: 'enroll_id'
+                data: 'enroll_id',
+                orderable: false
             },
+        ],
+        order: [
+            [1, 'asc']
         ],
         columnDefs: [
             {
