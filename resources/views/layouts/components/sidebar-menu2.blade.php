@@ -10,10 +10,8 @@
             <a class="side-menu__item" data-toggle="slide" href="#"><i class="side-menu__icon typcn typcn-clipboard"></i><span class="side-menu__label">Master Data</span><i class="angle fa fa-angle-right"></i></a>
             <ul class="slide-menu">
                 <li><a href="{{route('hris.hrd.index')}}" class="slide-item"><span> Surat Keterangan Kerja</span></a></li>
+                <li><a href="{{route('hris.hrd.kontrak_kerja')}}" class="slide-item"><span> Kontrak Kerja</span></a></li>
             </ul>
-        </li>
-        <li>
-            <a class="side-menu__item" href="{{route('hris.hrd.kontrak_kerja')}}"><i class="side-menu__icon typcn typcn-clipboard"></i><span class="side-menu__label">Kontrak Kerja</span></a>
         </li>
         @php
             }

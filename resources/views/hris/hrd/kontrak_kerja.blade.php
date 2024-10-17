@@ -581,6 +581,9 @@
                             <a data-toggle="modal" data-target="#extendContractModal" onclick="getDetail('` + row.enroll_id + `');">
                                 <i class='fa fa-pencil-square-o' style='color:black;background-color:orange;font-size:14pt;border:1px solid #838584;padding:2pt;cursor:pointer'></i>
                             </a>
+                            <a onclick="print_pdf('` + row.enroll_id + `');">
+                                <i class='fa fa-file-pdf-o' style='color:white;background-color:red;font-size:14pt;border:1px solid #838584;padding:2pt;cursor:pointer'></i>
+                            </a>
                         </div>
                     `
                 }
@@ -817,6 +820,39 @@
                 getDetail(res);
             }
         });
+    }
+    function print_pdf(enroll_id){
+        var today=new Date();
+        var month_now=today.getMonth();
+        var year_now=today.getFullYear();
+        var no_form='HRD-NAG/PKWT'+'/'+integerToRoman(month_now+1)+'/'+year_now;
+        var url = 'print_pdf_kontrak?enroll_id='+enroll_id+'&no_form='+no_form;
+        window.open(url, '_blank');
+    }
+    function integerToRoman(num) {
+        const romanValues = {
+            M: 1000,
+            CM: 900,
+            D: 500,
+            CD: 400,
+            C: 100,
+            XC: 90,
+            L: 50,
+            XL: 40,
+            X: 10,
+            IX: 9,
+            V: 5,
+            IV: 4,
+            I: 1
+        };
+        let roman = '';
+        for (let key in romanValues) {
+            while (num >= romanValues[key]) {
+                roman += key;
+                num -= romanValues[key];
+            }
+        }
+        return roman;
     }
 </script>
 @endsection
