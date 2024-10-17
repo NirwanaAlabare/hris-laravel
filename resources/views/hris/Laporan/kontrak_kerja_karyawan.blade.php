@@ -5,14 +5,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Document</title>
     <style>
-        @page { margin: 25px 60px 0px 60px; }
+        @page { margin: 20px 45px 0px 45px; }
     </style>
 </head>
 
 @foreach ($data as $key=>$value)
 @if ($value->status_staff=='NON STAFF')
 <body>
-    <table width="506" style="border-bottom: 2px solid black;line-height: 8px;">
+    <table width="527" style="border-bottom: 2px solid black;line-height: 8px;">
         <tr>
             <td width="10%"></td>
             <td align="center" width="25%" align="right"><img src="{{ public_path('assets/images/brand/logo.jpg') }}" width="30"></td>
@@ -40,7 +40,7 @@
             <td></td>
         </tr>
     </table>
-    <table width="506" style="line-height: 8px;">
+    <table width="527" style="line-height: 8px;">
         <thead>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt" align="center"><b><u>SURAT PERJANJIAN KERJA WAKTU TERTENTU</u></b></td>
@@ -50,7 +50,7 @@
             </tr>
         </thead>
     </table>
-    <table width="506">
+    <table width="527">
         <thead>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7pt;text-align:justify;padding-top:8px">
@@ -60,7 +60,7 @@
             </tr>
         </thead>
     </table>
-    <table width="506" style="padding-top:8px">
+    <table width="527" style="padding-top:8px">
         <thead>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="20%">Nama</td>
@@ -84,7 +84,7 @@
             </tr>
         </thead>
     </table>
-    <table width="506">
+    <table width="527">
         <tr>
             <td style="font-family:Arial, Helvetica, sans-serif;font-size:7pt;text-align:justify;padding-top:8px">
                 Dalam hal ini bertindak atas nama diri sendiri, dan selanjutnya disebut <b>PIHAK KEDUA</b>.<br>
@@ -121,7 +121,7 @@
             </td>
         </tr>
     </table>
-    <table width="506" style="line-height: 8px;padding-top:8px">
+    <table width="527" style="line-height: 8px;padding-top:8px">
         <thead>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7pt">Solokan Jeruk,</td>
@@ -138,12 +138,27 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7pt;font-weight:bold;padding-top:75px"><b><u>MEGA FITRIANA HARYONO</u></b></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7pt;font-weight:bold;padding-top:75px"><b><u>{{$value->employee_name}}</u></b></td>
             </tr>
+            <tr>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top">Rangkap Perjanjian (PKWT) ini<br> Sudah di terima oleh karyawan. <br>Pada Tanggal : {{Carbon\Carbon::parse($value->max_contract)->translatedFormat('d F Y')}}</td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top">Terdaftar di<br>Suku Dinas Tenaga Kerja dan Transmigrasi<br>Administrasi Kabupaten Bandung<br>Tanggal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{Carbon\Carbon::parse($value->max_contract)->translatedFormat('d F Y')}}<br>Nomor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</td>
+            </tr>
+        </thead>
+    </table>
+    <table width="562" style="padding-top: 100px">
+        <thead>
+            <tr>
+                <td style="border-bottom:1px solid black;height:24px" width="93%"></td>
+                <td rowspan="2"><img src="data:image/png;base64,{{\DNS2D::getBarcodePNG(''.$value->enroll_id, 'QRCODE',)}}" alt="barcode" style="width: 42px; height: 42px;background-color:white" /></td>
+            </tr>
+            <tr>
+                <td style="height:24px"></td>
+            </tr>
         </thead>
     </table>
 </body>
 @else
 <body>
-    <table width="506" style="border-bottom: 2px solid black;line-height: 8px;">
+    <table width="527" style="border-bottom: 2px solid black;line-height: 8px;">
         <tr>
             <td width="10%"></td>
             <td align="center" width="25%" align="right"><img src="{{ public_path('assets/images/brand/logo.jpg') }}" width="30"></td>
@@ -167,21 +182,21 @@
         </tr>
         <tr>
             <td></td>
-            <td colspan="2" style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt;text-decoration:underline;font-style:italic;padding-bottom:17px" align="center">https://nirwanagroup.co.id</td>
+            <td colspan="2" style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt;text-decoration:underline;font-style:italic;padding-bottom:5px" align="center">https://nirwanagroup.co.id</td>
             <td></td>
         </tr>
     </table>
-    <table width="506" style="line-height: 9px;">
+    <table width="527" style="line-height: 9px;">
         <thead>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7.5pt;padding-top:10px" align="center"><b><u>SURAT PERJANJIAN KERJA WAKTU TERTENTU</u></b></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7.5pt;padding-top:5px" align="center"><b><u>SURAT PERJANJIAN KERJA WAKTU TERTENTU</u></b></td>
             </tr>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7.5pt" align="center">No.{{$value->no_surat}}/{{$no_form}}</td>
             </tr>
         </thead>
     </table>
-    <table width="506">
+    <table width="527">
         <thead>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify">
@@ -190,7 +205,7 @@
             </tr>
         </thead>
     </table>
-    <table width="506">
+    <table width="527">
         <thead>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="20%">Nama</td>
@@ -209,7 +224,7 @@
             </tr>
         </thead>
     </table>
-    <table width="506">
+    <table width="527">
         <thead>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify">
@@ -218,7 +233,7 @@
             </tr>
         </thead>
     </table>
-    <table width="506">
+    <table width="527">
         <thead>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="20%">Nama</td>
@@ -242,15 +257,15 @@
             </tr>
         </thead>
     </table>
-    <table width="506">
+    <table width="527">
         <tr>
-            <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;padding-top:2px">
+            <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;">
                 Dalam perjanjian ini bertindak untuk dan atas nama dirinya sendiri selanjutnya disebut sebagai <b>PEKERJA</b> atau <b>PIHAK KEDUA</b>.<br>Pada hari <b>{{Carbon\Carbon::parse($value->max_contract)->translatedFormat('l')}}</b> Tanggal <b>{{Carbon\Carbon::parse($value->max_contract)->translatedFormat('d F Y')}}</b> bertempat di <b>Jalan Rancaekek Majalaya No.289 Desa Solokan Jeruk Kecamatan Solokan Jeruk Kabupaten Bandung</b>, Kedua belah pihak sepakat untuk mengadakan <b>Perjanjian Kerja Waktu Tertentu</b> dengan ketentuan – ketentuan sebagai berikut :
             </td>
         </tr>
         <tr>
             <td>
-                <ol style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;padding-left:20px">
+                <ol style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;padding-left:20px;margin-top:0px;margin-bottom:0px">
                     <li><b>PIHAK  PERTAMA</b> menerima <b>PIHAK  KEDUA</b> sebagai  Karyawan dimulai sejak Tanggal <b>{{Carbon\Carbon::parse($value->max_contract)->translatedFormat('d F Y')}}</b> sampai dengan tanggal <b>{{Carbon\Carbon::parse($value->max_contract_end)->translatedFormat('d F Y')}}</b>.</li>
                     <li><b>PIHAK  PERTAMA</b> mempekerjakan <b>PIHAK  KEDUA</b> sebagai <b>{{$value->status_staff}}</b> di bagian <b>{{$value->department_name}}</b>, dan memiliki kedudukan sebagai karyawan dengan golongan jabatan tertentu, bertanggung jawab sebagai pemikir, perencana, pelaksana dan atau pengendali atau dalam hal ini disebut staff.</li>
                     <li><b>PIHAK KEDUA</b> menyatakan bersedia mengikuti jadwal kerja yang telah ditentukan yaitu Senin s/d Jumat pukul <b>07:00 s/d 16:00</b>, atau ditentukan lain oleh <b>PIHAK PERTAMA</b>.</li>
@@ -276,12 +291,12 @@
             </td>
         </tr>
     </table>
-    <table width="506">
+    <table width="527">
         <thead>
             <tr>
                 <td width='20px'></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold"></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold"><b>Solokan Jeruk, <u>{{Carbon\Carbon::parse(date('Y-m-d'))->translatedFormat('d F Y')}}</u></b></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold;"><b>Solokan Jeruk, <u>{{Carbon\Carbon::parse(date('Y-m-d'))->translatedFormat('d F Y')}}</u></b></td>
             </tr>
             <tr>
                 <td></td>
@@ -297,6 +312,22 @@
                 <td></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold;padding-top:60px"><b><u>RUDY ARISTIAN FAJAR</u></b></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold;padding-top:60px"><b><u>{{$value->employee_name}}</u></b></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top">Rangkap Perjanjian (PKWT) ini<br> Sudah di terima oleh karyawan. <br>Pada Tanggal : {{Carbon\Carbon::parse($value->max_contract)->translatedFormat('d F Y')}}</td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top">Terdaftar di<br>Suku Dinas Tenaga Kerja dan Transmigrasi<br>Administrasi Kabupaten Bandung<br>Tanggal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{Carbon\Carbon::parse($value->max_contract)->translatedFormat('d F Y')}}<br>Nomor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</td>
+            </tr>
+        </thead>
+    </table>
+    <table width="562">
+        <thead>
+            <tr>
+                <td style="border-bottom:1px solid black;height:24px" width="93%"></td>
+                <td rowspan="2"><img src="data:image/png;base64,{{\DNS2D::getBarcodePNG(''.$value->enroll_id, 'QRCODE',)}}" alt="barcode" style="width: 42px; height: 42px;background-color:white" /></td>
+            </tr>
+            <tr>
+                <td style="height:24px"></td>
             </tr>
         </thead>
     </table>
