@@ -1575,8 +1575,9 @@
                     $('#uuid').val(res['uuid']);
 
                     var nomor_form_perizinan = res['nomor_absen_ijin'];
+                    var status_absen = res['status_absen'];
 
-                    if (nomor_form_perizinan) {
+                    if (nomor_form_perizinan && status_absen!='TL' && status_absen!=null) {
                         notif({
                             msg: "<b>Warning:</b> Data sudah memiliki Nomor Form Perizinan.",
                             type: "warning"
