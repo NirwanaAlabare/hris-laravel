@@ -95,116 +95,130 @@ class DailyLaborController extends AdminBaseController
         }])->with(['employee_atribut.grading_salary'=>function($query){
             $query->where('periode_umk','2024-01');
         }])->with('employee_atribut.dept.b_master_cc')->where('status_staff','NON STAFF')->get();
+        $belum_di_proses_payroll=[];
         foreach($data_master as $value){
-            $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->where('enroll_id',$value->enroll_id)->count();
-            $tanggal_sekarang2=$value->tanggal_berjalan;
-            $bulan_sekarang2=substr($tanggal_sekarang,0,8).'26';
-            $bulan_sebelum2=date('Y-m-d',strtotime( "-1 month", strtotime( $bulan_sekarang ) ));
-            $bulan_setelah2=date('Y-m-d',strtotime( "+1 month", strtotime( $bulan_sekarang ) ));
-            if($tanggal_sekarang2>=$bulan_sebelum2 && $tanggal_sekarang2<$bulan_sekarang2){
-                $tanggal_awal2=$bulan_sebelum2;
-            }else if($tanggal_sekarang2>=$bulan_sekarang2 && $tanggal_sekarang2<$bulan_setelah2){
-                $tanggal_awal2=$bulan_sekarang2;
-            }else{
-                $tanggal_awal2='';
+            if(count($value->rekap_perhitungan_kehadiran)==0){
+                $belum_di_proses_payroll[]=[
+                    'enroll_id'=>$value->enroll_id,
+                    'employee_name'=>$value->employee_name,
+                ];
             }
-            $tanggal_akhir2=date('Y-m-25',strtotime("+1 month",strtotime($tanggal_awal2)));
-            $periode_payroll=$tanggal_awal2.' s/d '.$tanggal_akhir2;
-            if(count($value->rekap_perhitungan_kehadiran)!=0){
-                $gaji_bulanan=$value->rekap_perhitungan_kehadiran()->where('periode_payroll',$periode_payroll)->first()->gaji_pokok;
-                $gaji_harian=$value->rekap_perhitungan_kehadiran()->where('periode_payroll',$periode_payroll)->first()->gaji_harian;
-                $gaji_menit=$value->rekap_perhitungan_kehadiran()->where('periode_payroll',$periode_payroll)->first()->gaji_menit;
-                $hari_kerja=$value->rekap_perhitungan_kehadiran()->where('periode_payroll',$periode_payroll)->first()->jumlah_hari_kerja;
-            }else{
-                $gaji_bulanan=0;
-                $gaji_harian=0;
-                $gaji_menit=0;
-                $hari_kerja=0;
-            }
-            if($value->mulai_jam_kerja!=null && $value->absen_masuk_kerja!=null && $value->absen_pulang_kerja!=null && ($value->status_absen==null || $value->status_absen=='IKS' || in_array($value->status_absen,$LBY) || in_array($value->status_absen,$IBY))){
-                $potongan_menit=$value->jumlah_menit_absen_dtpc+$value->total_menit_permits;
-                $net_wages=$gaji_harian-($gaji_menit*$potongan_menit);
-                if($value->mulai_jam_kerja!=null && $value->absen_masuk_kerja!=null && $value->absen_pulang_kerja!=null && $value->jumlah_menit_absen_dt==0 && $value->jumlah_menit_absen_pc==0 && $value->jumlah_menit_absen_dtpc==0 && $value->status_absen==null){
-                    if($value->employee_atribut->grading_salary->first()->insentif!=null || $value->employee_atribut->grading_salary->first()->insentif>0){
-                        $insentif=$value->employee_atribut->grading_salary->first()->insentif/21;
+        }
+        if(count($belum_di_proses_payroll)!=0){
+            return $belum_di_proses_payroll;
+        }else{
+            foreach($data_master as $value){
+                $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->where('enroll_id',$value->enroll_id)->count();
+                $tanggal_sekarang2=$value->tanggal_berjalan;
+                $bulan_sekarang2=substr($tanggal_sekarang,0,8).'26';
+                $bulan_sebelum2=date('Y-m-d',strtotime( "-1 month", strtotime( $bulan_sekarang ) ));
+                $bulan_setelah2=date('Y-m-d',strtotime( "+1 month", strtotime( $bulan_sekarang ) ));
+                if($tanggal_sekarang2>=$bulan_sebelum2 && $tanggal_sekarang2<$bulan_sekarang2){
+                    $tanggal_awal2=$bulan_sebelum2;
+                }else if($tanggal_sekarang2>=$bulan_sekarang2 && $tanggal_sekarang2<$bulan_setelah2){
+                    $tanggal_awal2=$bulan_sekarang2;
+                }else{
+                    $tanggal_awal2='';
+                }
+                $tanggal_akhir2=date('Y-m-25',strtotime("+1 month",strtotime($tanggal_awal2)));
+                $periode_payroll=$tanggal_awal2.' s/d '.$tanggal_akhir2;
+                if(count($value->rekap_perhitungan_kehadiran)!=0){
+                    $gaji_bulanan=$value->rekap_perhitungan_kehadiran()->where('periode_payroll',$periode_payroll)->first()->gaji_pokok;
+                    $gaji_harian=$value->rekap_perhitungan_kehadiran()->where('periode_payroll',$periode_payroll)->first()->gaji_harian;
+                    $gaji_menit=$value->rekap_perhitungan_kehadiran()->where('periode_payroll',$periode_payroll)->first()->gaji_menit;
+                    $hari_kerja=$value->rekap_perhitungan_kehadiran()->where('periode_payroll',$periode_payroll)->first()->jumlah_hari_kerja;
+                }else{
+                    $gaji_bulanan=0;
+                    $gaji_harian=0;
+                    $gaji_menit=0;
+                    $hari_kerja=0;
+                }
+                if($value->mulai_jam_kerja!=null && $value->absen_masuk_kerja!=null && $value->absen_pulang_kerja!=null && ($value->status_absen==null || $value->status_absen=='IKS' || in_array($value->status_absen,$LBY) || in_array($value->status_absen,$IBY))){
+                    $potongan_menit=$value->jumlah_menit_absen_dtpc+$value->total_menit_permits;
+                    $net_wages=$gaji_harian-($gaji_menit*$potongan_menit);
+                    if($value->mulai_jam_kerja!=null && $value->absen_masuk_kerja!=null && $value->absen_pulang_kerja!=null && $value->jumlah_menit_absen_dt==0 && $value->jumlah_menit_absen_pc==0 && $value->jumlah_menit_absen_dtpc==0 && $value->status_absen==null){
+                        if($value->employee_atribut->grading_salary->first()->insentif!=null || $value->employee_atribut->grading_salary->first()->insentif>0){
+                            $insentif=$value->employee_atribut->grading_salary->first()->insentif/21;
+                        }else{
+                            $insentif=0;
+                        }
                     }else{
                         $insentif=0;
                     }
                 }else{
+                    $net_wages=0;
                     $insentif=0;
                 }
-            }else{
-                $net_wages=0;
-                $insentif=0;
-            }
-            if($value->nomor_form_lembur!=null){
-                if(count($value->rekap_lembur)!=0){
-                    $total_lembur_rupiah=$value->rekap_lembur()->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->total_lembur_rupiah;
+                if($value->nomor_form_lembur!=null){
+                    if(count($value->rekap_lembur)!=0){
+                        $total_lembur_rupiah=$value->rekap_lembur()->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->total_lembur_rupiah;
+                    }else{
+                        $total_lembur_rupiah=0;
+                    }
                 }else{
                     $total_lembur_rupiah=0;
                 }
-            }else{
-                $total_lembur_rupiah=0;
-            }
-            
-            if($value->kode_hari!=5 && $value->kode_hari!=6){
-                if($value->employee_atribut->status_aktif_bpjs_ks=='AKTIF'){
-                    if(count($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll))!=0){
-                        $bpjs_ks=$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll)->first()->bpjs_ks_jkn_bruto_rupiah/$hari_kerja;
+                
+                if($value->kode_hari!=5 && $value->kode_hari!=6){
+                    if($value->employee_atribut->status_aktif_bpjs_ks=='AKTIF'){
+                        if(count($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll))!=0){
+                            $bpjs_ks=$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll)->first()->bpjs_ks_jkn_bruto_rupiah/$hari_kerja;
+                        }else{
+                            $bpjs_ks=0;
+                        }
                     }else{
                         $bpjs_ks=0;
                     }
-                }else{
-                    $bpjs_ks=0;
-                }
-                if($value->employee_atribut->status_aktif_bpjs_tk=='AKTIF'){
-                    if(count($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll))!=0){
-                        $bpjs_tk=($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll)->first()->bpjs_tk_jkm_bruto_rupiah+
-                        $value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll)->first()->bpjs_tk_jht_bruto_rupiah+
-                        $value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll)->first()->bpjs_tk_jkk_bruto_rupiah+
-                        $value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll)->first()->bpjs_tk_jpn_bruto_rupiah)
-                        /$hari_kerja;
+                    if($value->employee_atribut->status_aktif_bpjs_tk=='AKTIF'){
+                        if(count($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll))!=0){
+                            $bpjs_tk=($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll)->first()->bpjs_tk_jkm_bruto_rupiah+
+                            $value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll)->first()->bpjs_tk_jht_bruto_rupiah+
+                            $value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll)->first()->bpjs_tk_jkk_bruto_rupiah+
+                            $value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll)->first()->bpjs_tk_jpn_bruto_rupiah)
+                            /$hari_kerja;
+                        }else{
+                            $bpjs_tk=0;
+                        }
                     }else{
                         $bpjs_tk=0;
                     }
+                    if(count($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll))!=0){
+                        $tunjangan=$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll)->first()->tmk;
+                    }else{
+                        $tunjangan=0;
+                    }
+                    $thr=(($gaji_bulanan+$tunjangan)/12)/$hari_kerja;
                 }else{
+                    $bpjs_ks=0;
                     $bpjs_tk=0;
+                    $thr=0;
                 }
-                if(count($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll))!=0){
-                    $tunjangan=$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll)->first()->tmk;
+                $count=DailyLabor::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan',$value->tanggal_berjalan)->count();
+                if($count==1){
+                    DailyLabor::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan',$value->tanggal_berjalan)->update([
+                        'net_wages'=>$net_wages,
+                        'overtime'=>$total_lembur_rupiah,
+                        'incentive'=>$insentif,
+                        'bpjs_ks'=>$bpjs_ks,
+                        'bpjs_tk'=>$bpjs_tk,
+                        'thr'=>$thr
+                    ]);
                 }else{
-                    $tunjangan=0;
+                    DailyLabor::create([
+                        'enroll_id'=>$value->enroll_id,
+                        'department'=>$value["employee_atribut"]["dept"]["sub_dept_id"],
+                        'group_department'=>$value["employee_atribut"]["dept"]["b_master_cc"]["group2"],
+                        'tanggal_berjalan'=>$value->tanggal_berjalan,
+                        'net_wages'=>$net_wages,
+                        'overtime'=>$total_lembur_rupiah,
+                        'incentive'=>$insentif,
+                        'bpjs_ks'=>$bpjs_ks,
+                        'bpjs_tk'=>$bpjs_tk,
+                        'thr'=>$thr
+                    ]);
                 }
-                $thr=(($gaji_bulanan+$tunjangan)/12)/$hari_kerja;
-            }else{
-                $bpjs_ks=0;
-                $bpjs_tk=0;
-                $thr=0;
             }
-            $count=DailyLabor::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan',$value->tanggal_berjalan)->count();
-            if($count==1){
-                DailyLabor::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan',$value->tanggal_berjalan)->update([
-                    'net_wages'=>$net_wages,
-                    'overtime'=>$total_lembur_rupiah,
-                    'incentive'=>$insentif,
-                    'bpjs_ks'=>$bpjs_ks,
-                    'bpjs_tk'=>$bpjs_tk,
-                    'thr'=>$thr
-                ]);
-            }else{
-                DailyLabor::create([
-                    'enroll_id'=>$value->enroll_id,
-                    'department'=>$value["employee_atribut"]["dept"]["sub_dept_id"],
-                    'group_department'=>$value["employee_atribut"]["dept"]["b_master_cc"]["group2"],
-                    'tanggal_berjalan'=>$value->tanggal_berjalan,
-                    'net_wages'=>$net_wages,
-                    'overtime'=>$total_lembur_rupiah,
-                    'incentive'=>$insentif,
-                    'bpjs_ks'=>$bpjs_ks,
-                    'bpjs_tk'=>$bpjs_tk,
-                    'thr'=>$thr
-                ]);
-            }
+            return 'ok';
         }
     }
     public function getDatesBetween($startDate, $endDate) {

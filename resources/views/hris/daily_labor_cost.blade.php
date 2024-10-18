@@ -41,12 +41,12 @@
             <div class="card-header bg-primary py-3">
                 <div class="card-title">DAILY LABOR COST RECAP PROCESS</div>
             </div>
-            <div class="card-body px-6">
+            <div class="card-body px-6 py-3">
                 <div class="row">
                     <div class="col-2 pt-3">
                         <div class="card-title">DATE RANGE : </div>
                     </div>
-                    <div class="col-5">
+                    <div class="col-10">
                         <table>
                             <tr>
                                 <td>
@@ -134,10 +134,19 @@
                     periode_kehadiran:periode_kehadiran
                 },
                 success: function(res){
-                    console.log(res);
-                    $('#btn-proses-report').removeClass("btn-loading");
-                    $("#btn-proses-report").attr("disabled", false);
-                    swal("", "Report daily labor cost", "success");
+                    if(res!='ok'){
+                        var warning_text='';
+                        $.each(res, function (key, value) {
+                            warning_text+=value.employee_name+'('+value.enroll_id+'), ';
+                        });
+                        swal("Belum di proses payroll :", ` ${warning_text}`, "error");
+                        $('#btn-proses-report').removeClass("btn-loading");
+                        $("#btn-proses-report").attr("disabled", false);
+                    }else{
+                        $('#btn-proses-report').removeClass("btn-loading");
+                        $("#btn-proses-report").attr("disabled", false);
+                        swal("", "Report daily labor cost", "success");
+                    }
                 },
                 error: function(res){
                     $('#btn-proses-report').removeClass("btn-loading");
