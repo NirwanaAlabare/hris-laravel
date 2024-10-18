@@ -837,7 +837,10 @@ class DataAbsenPerijinanController extends AdminBaseController
             $query = MasterDataAbsenKehadiran::whereRaw('
                 tanggal_berjalan = "' . $tanggal_perizinan . '"
                 and enroll_id = "' . $enroll_id . '"
-            ')->where('status_absen','!=','LN')
+            ')->where(function ($query){
+                $query->where('status_absen','!=','LN')
+                ->orWhere('status_absen',null);
+            })
             ->update([
                 'nomor_absen_ijin' => $nomor_form_perizinan,
                 'status_absen' => $kode_absen_ijin,
