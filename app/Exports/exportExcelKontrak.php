@@ -126,7 +126,7 @@ class exportExcelKontrak implements FromView, WithColumnWidths, WithColumnFormat
             'CZ' => NumberFormat::FORMAT_DATE_XLSX15,
             'DA' => NumberFormat::FORMAT_DATE_XLSX15,
             'DB' => NumberFormat::FORMAT_DATE_XLSX15,
-            'DC' => NumberFormat::FORMAT_DATE_XLSX15,
+            'DC' => NumberFormat::FORMAT_DATE_XLSX15
         ];
     }
     public function columnWidths(): array
