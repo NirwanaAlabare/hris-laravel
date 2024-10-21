@@ -88,13 +88,13 @@
         <tr>
             <td style="font-family:Arial, Helvetica, sans-serif;font-size:7pt;text-align:justify;padding-top:8px">
                 Dalam hal ini bertindak atas nama diri sendiri, dan selanjutnya disebut <b>PIHAK KEDUA</b>.<br>
-                Pada hari <b>{{Carbon\Carbon::parse($value->max_contract)->translatedFormat('l')}}</b> Tanggal <b>{{Carbon\Carbon::parse($value->max_contract)->translatedFormat('d F Y')}}</b> bertempat di PT. Nirwana Alabare Garment Kedua belah pihak sepakat untuk mengadakan Perjanjian Kerja Waktu Tertentu dengan ketentuan-ketentuan sebagai berikut:</b>. 
+                Pada hari <b>{{Carbon\Carbon::parse($value->contract)->translatedFormat('l')}}</b> Tanggal <b>{{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}</b> bertempat di PT. Nirwana Alabare Garment Kedua belah pihak sepakat untuk mengadakan Perjanjian Kerja Waktu Tertentu dengan ketentuan-ketentuan sebagai berikut:</b>. 
             </td>
         </tr>
         <tr>
             <td>
                 <ol style="font-family:Arial, Helvetica, sans-serif;font-size:7pt;text-align:justify;padding-left:20px">
-                    <li>Pihak Pertama menerima Pihak Kedua sebagai Karyawan dengan masa kontrak dimulai sejak tanggal <b>{{Carbon\Carbon::parse($value->max_contract)->translatedFormat('d F Y')}}</b> sampai dengan <b>{{Carbon\Carbon::parse($value->max_contract_end)->translatedFormat('d F Y')}}</b>.</li>
+                    <li>Pihak Pertama menerima Pihak Kedua sebagai Karyawan dengan masa kontrak dimulai sejak tanggal <b>{{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}</b> sampai dengan <b>{{Carbon\Carbon::parse($value->contract_end)->translatedFormat('d F Y')}}</b>.</li>
                     <li>Pihak Pertama mempekerjakan Pihak Kedua sebagai  di bagian . Dan Pihak Kedua besedia melaksanakan tugas dan tanggung jawabnya yang diberikan Pimpinan/atasannya dengan sebaik-baiknya serta bersedia mengikuti dan patuh terhadap ketentuan-ketentuan dan prosedur yang berlaku didalamnya.</li>
                     <li>Perusahaan dapat dan berhak mengubah serta memindahkan bagian, Jabatan, tempat, dan lokasi kerja karyawan baik diluar kota maupun antar perusahaan di Nirwana Group sesuai dengan kebutuhan.</li>
                     <li>Perjanjian Kerja untuk waktu/pekerjaan tertentu ini diadakan karena tersedianya pekerjaan yang menpurut sifat atau jenis, atau yang kegiatannya akan selesai dalam waktu tertentu atau bersifat tidak tetap.</li>
@@ -139,8 +139,8 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7pt;font-weight:bold;padding-top:75px"><b><u>{{$value->employee_name}}</u></b></td>
             </tr>
             <tr>
-                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top">Rangkap Perjanjian (PKWT) ini<br> Sudah di terima oleh karyawan. <br>Pada Tanggal : {{Carbon\Carbon::parse($value->max_contract)->translatedFormat('d F Y')}}</td>
-                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top">Terdaftar di<br>Suku Dinas Tenaga Kerja dan Transmigrasi<br>Administrasi Kabupaten Bandung<br>Tanggal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{Carbon\Carbon::parse($value->max_contract)->translatedFormat('d F Y')}}<br>Nomor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top">Rangkap Perjanjian (PKWT) ini<br> Sudah di terima oleh karyawan. <br>Pada Tanggal : {{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}</td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top">Terdaftar di<br>Suku Dinas Tenaga Kerja dan Transmigrasi<br>Administrasi Kabupaten Bandung<br>Tanggal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}<br>Nomor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</td>
             </tr>
         </thead>
     </table>
@@ -260,13 +260,13 @@
     <table width="527">
         <tr>
             <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;">
-                Dalam perjanjian ini bertindak untuk dan atas nama dirinya sendiri selanjutnya disebut sebagai <b>PEKERJA</b> atau <b>PIHAK KEDUA</b>.<br>Pada hari <b>{{Carbon\Carbon::parse($value->max_contract)->translatedFormat('l')}}</b> Tanggal <b>{{Carbon\Carbon::parse($value->max_contract)->translatedFormat('d F Y')}}</b> bertempat di <b>Jalan Rancaekek Majalaya No.289 Desa Solokan Jeruk Kecamatan Solokan Jeruk Kabupaten Bandung</b>, Kedua belah pihak sepakat untuk mengadakan <b>Perjanjian Kerja Waktu Tertentu</b> dengan ketentuan – ketentuan sebagai berikut :
+                Dalam perjanjian ini bertindak untuk dan atas nama dirinya sendiri selanjutnya disebut sebagai <b>PEKERJA</b> atau <b>PIHAK KEDUA</b>.<br>Pada hari <b>{{Carbon\Carbon::parse($value->contract)->translatedFormat('l')}}</b> Tanggal <b>{{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}</b> bertempat di <b>Jalan Rancaekek Majalaya No.289 Desa Solokan Jeruk Kecamatan Solokan Jeruk Kabupaten Bandung</b>, Kedua belah pihak sepakat untuk mengadakan <b>Perjanjian Kerja Waktu Tertentu</b> dengan ketentuan – ketentuan sebagai berikut :
             </td>
         </tr>
         <tr>
             <td>
                 <ol style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;padding-left:20px;margin-top:0px;margin-bottom:0px">
-                    <li><b>PIHAK  PERTAMA</b> menerima <b>PIHAK  KEDUA</b> sebagai  Karyawan dimulai sejak Tanggal <b>{{Carbon\Carbon::parse($value->max_contract)->translatedFormat('d F Y')}}</b> sampai dengan tanggal <b>{{Carbon\Carbon::parse($value->max_contract_end)->translatedFormat('d F Y')}}</b>.</li>
+                    <li><b>PIHAK  PERTAMA</b> menerima <b>PIHAK  KEDUA</b> sebagai  Karyawan dimulai sejak Tanggal <b>{{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}</b> sampai dengan tanggal <b>{{Carbon\Carbon::parse($value->contract_end)->translatedFormat('d F Y')}}</b>.</li>
                     <li><b>PIHAK  PERTAMA</b> mempekerjakan <b>PIHAK  KEDUA</b> sebagai <b>{{$value->status_staff}}</b> di bagian <b>{{$value->department_name}}</b>, dan memiliki kedudukan sebagai karyawan dengan golongan jabatan tertentu, bertanggung jawab sebagai pemikir, perencana, pelaksana dan atau pengendali atau dalam hal ini disebut staff.</li>
                     <li><b>PIHAK KEDUA</b> menyatakan bersedia mengikuti jadwal kerja yang telah ditentukan yaitu Senin s/d Jumat pukul <b>07:00 s/d 16:00</b>, atau ditentukan lain oleh <b>PIHAK PERTAMA</b>.</li>
                     <li><b>PIHAK KEDUA</b> besedia melaksanakan tugas dan tanggung jawabnya yang diberikan Pimpinan/atasannya dengan sebaik-baiknya serta bersedia mengikuti dan patuh terhadap ketentuan-ketentuan dan prosedur yang berlaku didalamnya.</li>
@@ -315,8 +315,8 @@
             </tr>
             <tr>
                 <td></td>
-                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top">Rangkap Perjanjian (PKWT) ini<br> Sudah di terima oleh karyawan. <br>Pada Tanggal : {{Carbon\Carbon::parse($value->max_contract)->translatedFormat('d F Y')}}</td>
-                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top">Terdaftar di<br>Suku Dinas Tenaga Kerja dan Transmigrasi<br>Administrasi Kabupaten Bandung<br>Tanggal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{Carbon\Carbon::parse($value->max_contract)->translatedFormat('d F Y')}}<br>Nomor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top">Rangkap Perjanjian (PKWT) ini<br> Sudah di terima oleh karyawan. <br>Pada Tanggal : {{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}</td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top">Terdaftar di<br>Suku Dinas Tenaga Kerja dan Transmigrasi<br>Administrasi Kabupaten Bandung<br>Tanggal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}<br>Nomor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</td>
             </tr>
         </thead>
     </table>
