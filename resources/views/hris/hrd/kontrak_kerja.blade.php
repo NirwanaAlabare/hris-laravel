@@ -615,6 +615,17 @@
                 }
             }
         ],
+        "createdRow": function (row, data, dataIndex) {
+            if ((data['tanggal_resign'] != null)) {
+                if(new Date(data['tanggal_resign']).getTime()<=new Date()){
+                    $(row).css('background', 'red');
+                }else{
+                    $(row).css('background', 'white');
+                }
+            }else{
+                $(row).css('background', 'white');
+            }
+        },
         rowCallback: function(row, data, dataIndex){
             let currentEnrollId = data['enroll_id'];
 
@@ -939,6 +950,16 @@
         var year_now=today.getFullYear();
         var no_form='HRD-NAG/PKWT'+'/'+integerToRoman(month_now+1)+'/'+year_now;
         var url = 'print_pdf_kontrak?enroll_id='+enroll_id+'&no_form='+no_form;
+        window.open(url, '_blank');
+    }
+    function printContract(enroll_id,contract,contract_end){
+        var today=new Date();
+        var month_now=today.getMonth();
+        var year_now=today.getFullYear();
+        var contract2=contract;
+        var contract_end2=contract_end;
+        var no_form='HRD-NAG/PKWT'+'/'+integerToRoman(month_now+1)+'/'+year_now;
+        var url = 'print_pdf_kontrak_2?enroll_id='+enroll_id+'&no_form='+no_form+'&contract='+contract2+'&contract_end='+contract_end2;
         window.open(url, '_blank');
     }
     function integerToRoman(num) {
