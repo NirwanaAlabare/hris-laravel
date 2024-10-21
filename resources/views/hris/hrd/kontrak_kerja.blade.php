@@ -791,7 +791,7 @@
                             <div class='col-2 py-1 border border-left-0 border-body'>Kontrak ke -"+(i+1)+"</div>\
                             <div class='col-3 py-1 border border-body'>"+start.toLocaleDateString("id-ID", options)+"</div>\
                             <div class='col-3 py-1 border border-body'>"+end.toLocaleDateString("id-ID", options)+"</div>\
-                            <div class='col-4 py-1 border border-body'></div>\
+                            <div class='col-4 py-1 border border-body'><a href='#' class='btn btn-sm btn-danger py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='printContract("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Print&nbsp;&nbsp;</a></div>\
                         </div>");
                     }
                 }
