@@ -634,6 +634,10 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $department_id=DepartmentAll::orderBy('department_id')->groupBy('department_id')->get();
         return View::make('hris/rekapperhitunganpayroll', compact('rekap_payroll','department_id'), $this->data);
     }
+    public function get_last_update_proses_payroll(){
+        $last_update=DB::select('select updated_at from rekap_perhitungan_payroll order by updated_at desc limit 1')[0]->updated_at;
+        return $last_update;
+    }
     public function ajax_getallemployeeatribut()
     {
         $query =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name,

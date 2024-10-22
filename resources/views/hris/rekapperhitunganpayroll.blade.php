@@ -133,6 +133,8 @@
                     <a id="BtnProsesPayroll2" class="btn btn-app btn-primary text-white BtnProsesPayroll2"><span><i class="fa fa-download"></i></span>PROSES REKAP LEMBUR</a>
                     <a id="BtnProsesPayroll3" class="btn btn-app btn-primary text-white BtnProsesPayroll3"><span><i class="fa fa-download"></i></span>PROSES REKAP LEMBUR BARU</a>
                     <a id="BtnProsesPayroll" class="btn btn-app btn-primary text-white BtnProsesPayroll"><span><i class="fa fa-download"></i></span> PROSES PAYROLL</a>
+                    <label id="last_update" style="color: black"></label>
+                    <span class="fa fa-refresh" onclick="get_last_update()" style="cursor: pointer;color:rgb(0, 0, 206)"></span>
                 </div>
             </div>
             @endif
@@ -758,7 +760,21 @@
             let month=parseInt(periode_payroll.substring(5,7));
             let months=['DECEMBER','JANUARI','FEBRUARI','MARET','APRIL','MEI','JUNI','JULI','AGUSTUS','SEPTEMBER','OKTOBER','NOVEMBER','DECEMBER'];
             $('#card_title').text('FILTER DATA PAYROLL PERIODE 26 '+months[month-1]+' S/D 25 '+months[month]+' '+years);
+            get_last_update();
         });
+        function get_last_update(){
+            $('#last_update').empty();
+            $.ajax({
+                type: 'GET',
+                url: '{{route('hris.rekapperhitunganpayroll.get_last_update_proses_payroll')}}',
+                success:function(data){
+                    $('#last_update').html('<i><b>&nbsp;&nbsp;Last Update :</b> '+new Date(data.substr(0,10)).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"})+', '+data.substr(11,5)+'&nbsp;&nbsp;</i>');
+                },
+                error: function(res){
+                    
+                }
+            });
+        }
         $('body').on('change', '#periode_payroll', function (event) {
             rekapperhitunganpayrolldepartment();
             rekapperhitunganpayroll();
