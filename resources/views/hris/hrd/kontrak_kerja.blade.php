@@ -208,7 +208,7 @@
                 </button>
             </div>
             <div class="modal-body px-3">
-                <div class='row px-3'>
+                <div class='row px-3' style="overflow-y: scroll">
                     <div class='col-2 pt-2 pb-1' style='font-weight:bold'></div>
                     <div class='col-3 pt-2 pb-1 text-center border border-body' style='font-weight:bold'>Kontrak Awal</div>
                     <div class='col-3 pt-2 pb-1 text-center border border-body' style='font-weight:bold'>Akhir</div>
@@ -216,7 +216,7 @@
                 </div>
                 <div id="working_contract_extend">
                 </div>
-                <div id="working_contract_active">
+                <div id="working_contract_active" style="overflow-y: scroll;height:500px">
                 </div>
             </div>
             <div class="modal-footer bg-primary">
@@ -355,7 +355,7 @@
                         contract = new Date(value.contract).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"});
                         contract_end = new Date(value.contract_end).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"});
                         if(key!=0){
-                            if(value.nik==data[key-1].nik){
+                            if(value.nik==data[key-1].nik[0]){
                                 $('#tabel_kontrak_kerja').append("<tr>\
                                     <td width='100px'></td>\
                                     <td width='200px'></td>\

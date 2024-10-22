@@ -10,6 +10,8 @@ use Carbon\Carbon;
 use Dompdf\Options;
 use Dompdf\FontMetrics;
 use App\Models\EmployeeAtribut;
+use App\Imports\KontrakKerjaImport;
+use App\Imports\KontrakKerjaImportToDatabase;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\MasterDataAbsenKehadiran;
@@ -218,60 +220,15 @@ class HRDController extends AdminBaseController
         return request()->enroll_id;
     }
     public function import_kontrak_kerja(){
-        $data=Excel::toArray([],request()->file('excel_file'));
-        $z=[];
-        $timestamp = Carbon::now();
-        for($i=3;$i<count($data[0]);$i++){
-            $status=EmployeeAtribut::where('enroll_id',$data[0][$i][2])->get();
-            if(count($status)==0){
-                continue;
-            }
-            $nik=EmployeeAtribut::where('enroll_id',$data[0][$i][2])->first()->nik;
-            $employee_name=EmployeeAtribut::where('enroll_id',$data[0][$i][2])->first()->employee_name;
-            $department=EmployeeAtribut::where('enroll_id',$data[0][$i][2])->first()->department_name;
-            $bagian=EmployeeAtribut::where('enroll_id',$data[0][$i][2])->first()->sub_dept_name;
-            for($j=15;$j<=106;$j+=2){
-                if($data[0][$i][$j]==null||$data[0][$i][$j]=='-'||preg_match("/[a-z]/i", $data[0][$i][$j])){
-                    continue;
-                }
-                $contract=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][$j])->format('Y-m-d');
-                $contract_end=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][$j+1])->format('Y-m-d');
-                $z[]=[
-                    'nik'=>$nik,
-                    'employee_name'=>$employee_name,
-                    'department'=>$department,
-                    'bagian'=>$bagian,
-                    'contract'=>$contract,
-                    'contract_end'=>$contract_end
-                ];
-            }
-        }
-        return $z;
+        $import = new KontrakKerjaImport;
+        Excel::import($import, request()->file('excel_file'));
+        return $import->getRowCount();
     }
     public function import_kontrak_kerja_to_database(){
         // khawatir terjadi penumpukan
-        $data=Excel::toArray([],request()->file('excel_file'));
-        $z=[];
-        $timestamp = Carbon::now();
-        for($i=3;$i<count($data[0]);$i++){
-            $status=EmployeeAtribut::where('enroll_id',$data[0][$i][2])->get();
-            if(count($status)==0){
-                continue;
-            }
-            $enroll_id=$data[0][$i][2];
-            $employee_contract=DB::select("select*from employee_contract where enroll_id = '$enroll_id'");
-            if($employee_contract){
-                DB::delete("delete from employee_contract where enroll_id = '$enroll_id'");
-            }
-            for($j=15;$j<=106;$j+=2){
-                if($data[0][$i][$j]==null||$data[0][$i][$j]=='-'||preg_match("/[a-z]/i", $data[0][$i][$j])){
-                    continue;
-                }
-                $contract=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][$j])->format('Y-m-d');
-                $contract_end=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][$j+1])->format('Y-m-d');
-                DB::insert("insert into employee_contract (id, enroll_id, contract, contract_end, created_at, updated_at) VALUES ('','$enroll_id','$contract','$contract_end','$timestamp','$timestamp')");
-            }
-        }
+        ini_set("max_execution_time", 0);
+        ini_set("max_input_time", 0);
+        Excel::import(new KontrakKerjaImportToDatabase, request()->file('excel_file'));
     }
     public function export_excel_kontrak(){
         $inSearchVariable='';
