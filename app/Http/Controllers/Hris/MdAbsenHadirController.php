@@ -2016,8 +2016,20 @@ class MdAbsenHadirController extends AdminBaseController
                         if($val["operator"]=='system' || $val["operator"]=='system_injek_lebaran') {
                             if($val["status_absen"] == "TL" || $val["status_absen"] == "M" || $val["status_absen"] == "IKS" || $val["status_absen"] == "" || $val["status_absen"] == null || !$val["status_absen"] || $val["status_absen"] == "LN" || $val["status_absen"] == "LP" || $val["status_absen"] == "CT" || $val["status_absen"] == "L") {
                                 if($val["mulai_jam_kerja"]!=null){
-                                    if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"){
-                                        $status_absen=$val["status_absen"];
+                                    if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"]=='LP'){
+                                        if($val["status_absen"]=='LP'){
+                                            if($value->absen_in!='' && $value->absen_out==''){
+                                                $status_absen=$val["status_absen"];
+                                            }else if($value->absen_in=='' && $value->absen_out==''){
+                                                $status_absen=$val["status_absen"];
+                                            }else if($value->absen_in=='' && $value->absen_out!=''){
+                                                $status_absen=$val["status_absen"];
+                                            }else{
+                                                $status_absen=$value->status_absen;
+                                            }
+                                        }else{
+                                            $status_absen=$val["status_absen"];
+                                        }
                                     }
                                     else{
                                         $status_absen=$value->status_absen;
@@ -2067,8 +2079,20 @@ class MdAbsenHadirController extends AdminBaseController
                         } else {
                             if ($val["status_absen"] == "TL" || $val["status_absen"] == "M") {
                                 if($val["mulai_jam_kerja"]!=null){
-                                    if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"){
-                                        $status_absen=$val["status_absen"];
+                                    if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"]=='LP'){
+                                        if($val["status_absen"]=='LP'){
+                                            if($value->absen_in!='' && $value->absen_out==''){
+                                                $status_absen=$val["status_absen"];
+                                            }else if($value->absen_in=='' && $value->absen_out==''){
+                                                $status_absen=$val["status_absen"];
+                                            }else if($value->absen_in=='' && $value->absen_out!=''){
+                                                $status_absen=$val["status_absen"];
+                                            }else{
+                                                $status_absen=$value->status_absen;
+                                            }
+                                        }else{
+                                            $status_absen=$val["status_absen"];
+                                        }
                                     }
                                     else{
                                         $status_absen=$value->status_absen;
@@ -2103,7 +2127,7 @@ class MdAbsenHadirController extends AdminBaseController
                                             $status_absen=$val["status_absen"];
                                         }
                                         else{
-                                            if($val["status_absen"]=="S"){
+                                            if($val["status_absen"]=="S"||$val["status_absen"]=='LP'){
                                                 if($value->absen_in!='' && $value->absen_out==''){
                                                     $status_absen=$val["status_absen"];
                                                 }else if($value->absen_in=='' && $value->absen_out==''){
