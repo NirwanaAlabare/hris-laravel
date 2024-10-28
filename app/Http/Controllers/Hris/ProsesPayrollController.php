@@ -1676,7 +1676,7 @@ class ProsesPayrollController extends AdminBaseController
     public function index(Request $request)
     {
         ini_set('max_execution_time', 0);
-        ini_set('memory_limit', '5120M');
+        ini_set('memory_limit', '3000000M');
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
         $selectedEnrollId=$request->selectEmployeeID;
