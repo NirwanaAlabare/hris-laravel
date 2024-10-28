@@ -2107,7 +2107,7 @@ class ProsesPayrollController extends AdminBaseController
                         $finish_in=max([$spl_in,$jam_in]);
                         $finish_out=min([$spl_out,$jam_out]);
                     }
-                    elseif ( $spl_in<$jadwal_in) {
+                    elseif ( $spl_in<=$jadwal_in) {
                         $finish_in=max([$spl_in,$jam_in]);
                         $finish_out=min([$spl_out,$jam_out]);
                     }
@@ -2320,7 +2320,7 @@ class ProsesPayrollController extends AdminBaseController
                         $finish_in=max([$spl_in,$jam_in]);
                         $finish_out=min([$spl_out,$jam_out]);
                     }
-                    elseif ( $spl_in<$jadwal_in) {
+                    elseif ( $spl_in<=$jadwal_in) {
                         $finish_in=max([$spl_in,$jam_in]);
                         $finish_out=min([$spl_out,$jam_out]);
                     }
@@ -5084,7 +5084,7 @@ class ProsesPayrollController extends AdminBaseController
                     $finish_in=max([$spl_in,$jam_in]);
                     $finish_out=min([$spl_out,$jam_out]);
                 }
-                elseif ( $spl_in<$jadwal_in) {
+                elseif ( $spl_in<=$jadwal_in) {
                     $finish_in=max([$spl_in,$jam_in]);
                     $finish_out=min([$spl_out,$jam_out]);
                 }
@@ -5376,7 +5376,7 @@ class ProsesPayrollController extends AdminBaseController
                     $finish_in=max([$spl_in,$jam_in]);
                     $finish_out=min([$spl_out,$jam_out]);
                 }
-                elseif ( $spl_in<$jadwal_in) {
+                elseif ( $spl_in<=$jadwal_in) {
                     $finish_in=max([$spl_in,$jam_in]);
                     $finish_out=min([$spl_out,$jam_out]);
                 }
