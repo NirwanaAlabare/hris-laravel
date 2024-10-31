@@ -1,4 +1,18 @@
 <div>
+	<table>
+        <tr>
+            <td style="font-size:18pt;font-family:Calibri;font-weight:bold">PT NIRWANA ALABARE GARMENT</td>
+        </tr>
+        <tr>
+            <td style="font-size:16pt;font-family:Calibri;font-weight:bold">RECAP LABOR COST</td>
+        </tr>
+        <tr>
+            <td style="font-size:14pt;font-family:Calibri;font-weight:bold">TANGGAL ABSENSI : {{Carbon\Carbon::parse($tanggal_awal)->translatedFormat('d F Y')}} S/D {{Carbon\Carbon::parse($tanggal_akhir)->translatedFormat('d F Y')}}</td>
+        </tr>
+        <tr>
+            <td style="font-size:14pt;font-family:Calibri;font-weight:bold">STAFF / NON STAFF : {{$staff_non}}</td>
+        </tr>
+    </table>
     <table>
         <tr><td></td></tr>
     </table>

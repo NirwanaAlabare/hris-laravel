@@ -18,14 +18,20 @@ class DailyLaborCost2 extends DefaultValueBinder implements  WithCustomValueBind
     /**
     * @return \Illuminate\Support\Collection
     */
-    public function __construct($daily_labor)
+    public function __construct($daily_labor,$tanggal_awal,$tanggal_akhir,$status_staff)
     {
         $this->daily_labor=$daily_labor;
+        $this->tanggal_awal=$tanggal_awal;
+        $this->tanggal_akhir=$tanggal_akhir;
+        $this->staff_non=$status_staff;
     }
     public function view(): View
     {
         return view('hris.Laporan.daily_labor_excel',[
             'daily_labor'=>$this->daily_labor,
+            'tanggal_awal'=>$this->tanggal_awal,
+            'tanggal_akhir'=>$this->tanggal_akhir,
+            'staff_non'=>$this->staff_non
         ]);
     }
     public function columnFormats(): array
