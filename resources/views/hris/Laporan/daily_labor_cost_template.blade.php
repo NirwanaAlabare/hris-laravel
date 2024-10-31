@@ -68,6 +68,7 @@
             <td style="border-left: 1px solid black;border-right: 1px solid black;border-top: 1px solid black;font-weight:bold"></td>
             <td style="border-left: 1px solid black;border-right: 1px solid black;border-top: 1px solid black;font-weight:bold"></td>
             <td style="border-left: 1px solid black;border-right: 1px solid black;border-top: 1px solid black;font-weight:bold"></td>
+            <td style="border-left: 1px solid black;border-right: 1px solid black;border-top: 1px solid black;font-weight:bold"></td>
             <td></td>
             <td style="border-left: 1px solid black;border-right: 1px solid black;border-top: 1px solid black;font-weight:bold"></td>
             <td style="border-left: 1px solid black;border-right: 1px solid black;border-top: 1px solid black;font-weight:bold"></td>
@@ -164,6 +165,7 @@
             <td width="11" align="center" style="border-left: 1px solid black;border-right: 1px solid black;border-bottom: 1px solid black;border-top: 1px solid white;font-weight:bold;vertical-align:top;word-wrap: break-word;">Datang Terlambat</td>
             <td width="11" align="center" style="border-left: 1px solid black;border-right: 1px solid black;border-bottom: 1px solid black;border-top: 1px solid white;font-weight:bold;vertical-align:top;word-wrap: break-word;">Pulang Cepat</td>
             <td width="11" align="center" style="border-left: 1px solid black;border-right: 1px solid black;border-bottom: 1px solid black;border-top: 1px solid white;font-weight:bold;vertical-align:top;word-wrap: break-word;">Izin Keluar Sementara</td>
+            <td width="11" align="center" style="border-left: 1px solid black;border-right: 1px solid black;border-bottom: 1px solid black;border-top: 1px solid white;font-weight:bold;vertical-align:top;word-wrap: break-word;">Sisa Cuti Tahunan</td>
             <td width="5"></td>
             <td width="9" align="center" style="border-left: 1px solid black;border-right: 1px solid black;border-bottom: 1px solid black;border-top: 1px solid white;font-weight:bold;vertical-align:top;word-wrap: break-word;">Kode Grade</td>
             <td width="9" align="center" style="border-left: 1px solid black;border-right: 1px solid black;border-bottom: 1px solid black;border-top: 1px solid white;font-weight:bold;vertical-align:top;word-wrap: break-word;">Upah Grade</td>
@@ -243,7 +245,6 @@
                         01:00
                     @else 
                         @if(($value->absen_masuk_kerja <> null) || ($value->absen_masuk_kerja <> "") || ($value->absen_pulang_kerja <> null) || ($value->absen_pulang_kerja <> "")) 
-                            01:00
                             @switch ($value->kode_hari) 
                                 @case(5)
                                     00:30
@@ -252,6 +253,7 @@
                                     00:30
                                 @break
                             @endswitch
+                        @else
                         @endif
                     @endif
                 </td>
@@ -412,8 +414,9 @@
                 <td>{{$value->jumlah_menit_absen_dt==0?'':$value->jumlah_menit_absen_dt}}</td>
                 <td>{{$value->jumlah_menit_absen_pc==0?'':$value->jumlah_menit_absen_pc}}</td>
                 <td>{{$value->total_menit_permits}}</td>
+                <td align="center">0</td>
                 <td></td>
-                <td>{{$value->employee_atribut->kode_grade}}</td>
+                <td align="center">{{$value->employee_atribut->kode_grade}}</td>
                 <td>{{$value->employee_atribut->grading_salary->first()->salary_bulanan}}</td>
                 @if ($value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first())
                 <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->seniority_allowance==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->seniority_allowance}}</td>
