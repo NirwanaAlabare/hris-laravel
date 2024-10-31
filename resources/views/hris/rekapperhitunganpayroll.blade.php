@@ -75,71 +75,141 @@
             </div>
         </div>
     </div>
-    <!-- End page-header -->
-    <div class="card shadow">
-        <div class="card-header bg-primary pt-3 pb-2">
-            <div class="card-title" style="font-weight: bold; font-size:12pt">PROSES PAYROLL</div>
-            <div class="card-options ">
-                <a href="#" class="card-options-collapse mr-2" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
-            </div>
-        </div>
-        <form id="form_proses_payroll" method="post">
-            @csrf
-            <div class="card-body pt-4 px-6">
-                <div class="row">
-                    <div class="col-2 pt-1">
-                        <label class="form-label text-primary">PERIODE UMK</label>
-                    </div>
-                    <div class="col-3">
-                        <select id="periode_umk" name="periode_umk" class="form-control PriodeUmk">
-                            <option value="" selected>PILIH PERIODE UMK</option>
-                            <option value="2023-10">UMK 2023 | 26 DES 2023 S/D 31 DES 2023</option>
-                            <option value="2024-01">UMK 2024 | 01 JAN 2024 S/D 25 JAN 2024</option>
-                            <option value="2023-2024">26 DES 2023 S/D 25 JAN 2024</option>
-                        </select>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header text-white bg-gradient-primary py-2">
+                    <div class="card-title">PROSES PAYROLL PER BULAN</div>
+                    <div class="card-options ">
+                        <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
                     </div>
                 </div>
-                <div class="row pt-2">
-                    <div class="col-2 pt-1">
-                        <label class="form-label text-primary">PERIODE PAYROLL</label>
-                    </div>
-                    <div class="col-2">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                <div class="card-body p-5">
+                    <form id="form_proses_payroll" method="post">
+                        @csrf
+                        <div class="row">
+                            <div class="col-3 pt-1">
+                                <label class="form-label text-primary">PERIODE UMK</label>
+                            </div>
+                            <div class="col-3">
+                                <select id="periode_umk" name="periode_umk" class="form-control PriodeUmk">
+                                    <option value="" selected>PILIH PERIODE UMK</option>
+                                    <option value="2023-10">UMK 2023 | 26 DES 2023 S/D 31 DES 2023</option>
+                                    <option value="2024-01">UMK 2024 | 01 JAN 2024 S/D 25 JAN 2024</option>
+                                    <option value="2023-2024">26 DES 2023 S/D 25 JAN 2024</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row pt-2">
+                            <div class="col-3 pt-1">
+                                <label class="form-label text-primary">PERIODE PAYROLL</label>
+                            </div>
+                            <div class="col-3">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                        </div>
+                                    </div>
+                                    <input id="" name="periode_payrols" id="periode" type="month" class="form-control PriodeProses" required>
                                 </div>
                             </div>
-                            <input id="" name="periode_payrols" id="periode" type="month" class="form-control PriodeProses" required>
+                        </div>
+                        <div class="row pt-2">
+                            <div class="col-3 pt-1">
+                                <label class="form-label text-primary">ENROLL ID</label>
+                            </div>
+                            <div class="col-8">
+                                <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID" style="width: 699.238px;" required>
+                                    @foreach ($selectemployee as $r_empl)
+                                        <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        @if($loggedAdmin->role_user=='superadmin' || $loggedAdmin->email=='firmansyah@nirwanaindonesia.com' || $loggedAdmin->email=='willy@ptnag.com'  || $loggedAdmin->email=='alex.herdian@ptnag.com')
+                        <div class="row text-white pt-3">
+                            <div class="col-12">
+                                <a id="BtnProsesPayroll2" class="btn btn-app btn-sm btn-primary text-white BtnProsesPayroll2"><span><i class="fa fa-download"></i></span>PROSES REKAP LEMBUR</a>
+                                <a id="BtnProsesPayroll3" class="btn btn-app btn-sm btn-primary text-white BtnProsesPayroll3"><span><i class="fa fa-download"></i></span>PROSES REKAP LEMBUR BARU</a>
+                                <a id="BtnProsesPayroll" class="btn btn-app btn-sm btn-primary text-white BtnProsesPayroll"><span><i class="fa fa-download"></i></span> PROSES PAYROLL</a>
+                            </div>
+                        </div>
+                        <div class="row pt-1">
+                            <div class="col-12">
+                                <label id="last_update" style="color: black"></label>
+                                <span class="fa fa-refresh" onclick="get_last_update()" style="cursor: pointer;color:rgb(0, 0, 206)"></span>
+                            </div>
+                        </div>
+                        @endif
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header text-white bg-gradient-primary py-2">
+                    <div class="card-title">PROSES PAYROLL PER HARI</div>
+                    <div class="card-options ">
+                        <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
+                    </div>
+                </div>
+                <div class="card-body p-5">
+                    <div class="row">
+                        <div class="col-3 pt-1">
+                            <label class="form-label text-primary">STATUS STAFF</label>
+                        </div>
+                        <div class="col-8">
+                            <select id="status_staff2" class="form-control">
+                                <option value=''>-- PILIH STATUS STAFF --</option>
+                                <option value='STAFF'>STAFF</option>
+                                <option value='NON STAFF'>NON STAFF</option>
+                            </select>
                         </div>
                     </div>
-                </div>
-                <div class="row pt-2">
-                    <div class="col-2 pt-1">
-                        <label class="form-label text-primary">ENROLL ID</label>
+                    <div class="row pt-2">
+                        <div class="col-3 pt-1">
+                            <label class="form-label text-primary">ENROLL ID</label>
+                        </div>
+                        <div class="col-8">
+                            <select id="selectEmployeeID2" name="selectEmployeeID2[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID" style="width: 699.238px;" required>
+                                @foreach ($selectemployee as $r_empl)
+                                    <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                    <div class="col-8">
-                        <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID" style="width: 699.238px;" required>
-                            @foreach ($selectemployee as $r_empl)
-                                <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
-                            @endforeach
-                        </select>
+                    <div class="row pt-2">
+                        <div class="col-3 pt-1">
+                            <label class="form-label text-primary">KEHADIRAN</label>
+                        </div>
+                        <div class="col-auto">
+                            <input type="hidden" id="daterange1" name="daterange1">
+                            <a class="nav-link card-title py-2 pl-3" style="border: 1px solid #d8d4dc" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
+                        </div>
                     </div>
+                    @if($loggedAdmin->role_user=='superadmin' || $loggedAdmin->email=='firmansyah@nirwanaindonesia.com' || $loggedAdmin->email=='willy@ptnag.com'  || $loggedAdmin->email=='alex.herdian@ptnag.com')
+                    <div class="row pt-2 text-white">
+                        <div class="col-auto">
+                            @if($loggedAdmin->role_user=='superadmin')
+                            <button id="BtnProsesPayroll4" type="button" class="btn btn-app btn-primary text-white"><span><i class="fa fa-download"></i></span> PROSES PAYROLL HARIAN</button>
+                            @endif
+                            <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="export_excel_daily_labor"><i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST</a>
+                        </div>
+                        <div class="col-auto pl-0">
+                            <div class="input-group-append">
+                                <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost"><i class="fa fa-file-excel-o" aria-hidden="true"></i> RECAP LABOR COST</a>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
-            @if($loggedAdmin->role_user=='superadmin' || $loggedAdmin->email=='firmansyah@nirwanaindonesia.com' || $loggedAdmin->email=='willy@ptnag.com'  || $loggedAdmin->email=='alex.herdian@ptnag.com')
-            <div class="card-footer bg-light">
-                <div class="text-white">
-                    <a id="BtnProsesPayroll2" class="btn btn-app btn-primary text-white BtnProsesPayroll2"><span><i class="fa fa-download"></i></span>PROSES REKAP LEMBUR</a>
-                    <a id="BtnProsesPayroll3" class="btn btn-app btn-primary text-white BtnProsesPayroll3"><span><i class="fa fa-download"></i></span>PROSES REKAP LEMBUR BARU</a>
-                    <a id="BtnProsesPayroll" class="btn btn-app btn-primary text-white BtnProsesPayroll"><span><i class="fa fa-download"></i></span> PROSES PAYROLL</a>
-                    <label id="last_update" style="color: black"></label>
-                    <span class="fa fa-refresh" onclick="get_last_update()" style="cursor: pointer;color:rgb(0, 0, 206)"></span>
-                </div>
-            </div>
-            @endif
-        </form>
+        </div><!-- col end -->
+        
     </div>
+    <!-- End page-header -->
 
     <!-- BEGIN FORM-->
     {!! Form::open(['route' => 'hris.rekapperhitunganpayroll.ajax_exportexcel', 'id' => 'formExport', 'name' => 'formExport','method'=>'post']) !!}
@@ -270,6 +340,11 @@
                 <div class="col-auto pl-0">
                     <div class="input-group-append">
                         <a onclick="export_excel_summary_department();" class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> SUMMARY DEPARTMENT</a>
+                    </div>
+                </div>
+                <div class="col-auto pl-0">
+                    <div class="input-group-append">
+                        <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="export_excel_daily_labor"><i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST</a>
                     </div>
                 </div>
                 @endif
@@ -533,9 +608,53 @@
             //     type: "info"
             // });
         });
-
         $('body').on('click', '#btn-refresh-page', function (event) {
             location.reload();
+        });
+        $('#daterange-btn1').daterangepicker({
+            ranges: {
+                'Hari ini': [moment(), moment()],
+                'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                '7 Hari Kemarin': [moment().subtract(6, 'days'), moment()],
+                '30 Hari Kemarin': [moment().subtract(29, 'days'), moment()],
+                'Bulan Sekarang': [moment().startOf('month'), moment().endOf('month')],
+                'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            startDate: moment().subtract(29, 'days'),
+            endDate: moment()
+        }, function(start, end) {
+            $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>');
+            var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
+            $('#daterange1').val(daterange1);
+        });
+        $('body').on('click', '#BtnProsesPayroll4', function (event) {
+            $('#BtnProsesPayroll4').addClass("btn-loading");
+            $("#BtnProsesPayroll4").html('Please wait...');
+            $("#BtnProsesPayroll4").attr("disabled", true);
+            var enroll_id=$('#selectEmployeeID2').val();
+            var daterange1 = $('#daterange1').val();
+            jQuery.ajax({
+                type : "post",
+                url : '{{route('hris.rekapperhitunganpayroll.proses_payroll_harian')}}',
+                data : {
+                    enroll_id: enroll_id,
+                    daterange1:daterange1,
+                },
+                success:function(response)
+                {
+                    console.log(response);
+                    swal("", "Proses Payroll Harian Berhasil", "success");
+                    $('#BtnProsesPayroll4').removeClass("btn-loading");
+                    $("#BtnProsesPayroll4").attr("disabled", false);
+                    $("#BtnProsesPayroll4").html('<i class="fa fa-download"></i></span> PROSES PAYROLL HARIAN');
+                },
+                error: function(res){
+                    swal("", "Proses Payroll Harian Gagal", "error");
+                    $('#BtnProsesPayroll4').removeClass("btn-loading");
+                    $("#BtnProsesPayroll4").attr("disabled", false);
+                    $("#BtnProsesPayroll4").html('<i class="fa fa-download"></i></span> PROSES PAYROLL HARIAN');
+                }
+            });
         });
         $(function(){
             'use strict';
@@ -760,6 +879,12 @@
             let month=parseInt(periode_payroll.substring(5,7));
             let months=['DECEMBER','JANUARI','FEBRUARI','MARET','APRIL','MEI','JUNI','JULI','AGUSTUS','SEPTEMBER','OKTOBER','NOVEMBER','DECEMBER'];
             $('#card_title').text('FILTER DATA PAYROLL PERIODE 26 '+months[month-1]+' S/D 25 '+months[month]+' '+years);
+            var start = moment();
+            var end = moment();
+            var htmlDateRange = '<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>'
+            $('#daterange-btn1').html(htmlDateRange);
+            var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
+            $('#daterange1').val(daterange1);
             get_last_update();
         });
         function get_last_update(){
@@ -893,7 +1018,77 @@
         var status_staff=document.getElementById("status_staff").value;
         window.location.href = "export_excel_summary_department?param1="+periode_payroll+"&param2="+status_staff;
     }
+    $('#export_excel_daily_labor').click(function(e){
+        var enroll_id=$('#selectEmployeeID2').val();
+        var daterange = $('#daterange1').val();
+        var status_staff2 = $('#status_staff2').val();
+        $('#export_excel_daily_labor').addClass("btn-loading");
+        $("#export_excel_daily_labor").html('Please wait...');
+        $("#export_excel_daily_labor").attr("disabled", true);
+        $.ajax({
+            type: 'POST',
+            url: '{{route('hris.rekapperhitunganpayroll.export_excel_daily_labor')}}',
+            data: {
+                enroll_id:enroll_id,
+                daterange:daterange,
+                status_staff2:status_staff2,
+            },
+            xhrFields: { responseType : 'blob' },
+            success:function(data){
+                var blob = new Blob([data]);
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                let file_name = daterange+' Daily Labor Cost '+Math.ceil(Math.random()*1000000);
+                link.download = file_name+".xlsx";
+                link.click();
+                swal("", "Daily Labor Export Success", "success");
+                $('#export_excel_daily_labor').removeClass("btn-loading");
+                $("#export_excel_daily_labor").attr("disabled", false);
+                $("#export_excel_daily_labor").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST');
+            },
+            error: function(res){
+                swal("", "Daily Labor Export Failed", "error");
+                $('#export_excel_daily_labor').removeClass("btn-loading");
+                $("#export_excel_daily_labor").attr("disabled", false);
+                $("#export_excel_daily_labor").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST');
+            }
+        });
+    })
 
+    $('#recap_labor_cost').click(function(e){
+        var daterange = $('#daterange1').val();
+        var status_staff2 = $('#status_staff2').val();
+        $('#recap_labor_cost').addClass("btn-loading");
+        $("#recap_labor_cost").html('Please wait...');
+        $("#recap_labor_cost").attr("disabled", true);
+        $.ajax({
+            type: 'POST',
+            url: '{{route('hris.rekapperhitunganpayroll.recap_labor_cost')}}',
+            data: {
+                daterange:daterange,
+                status_staff2:status_staff2,
+            },
+            xhrFields: { responseType : 'blob' },
+            success:function(data){
+                var blob = new Blob([data]);
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                let file_name = daterange+' Daily Labor Cost '+Math.ceil(Math.random()*1000000);
+                link.download = file_name+".xlsx";
+                link.click();
+                swal("", "Recap Labor Export Success", "success");
+                $('#recap_labor_cost').removeClass("btn-loading");
+                $("#recap_labor_cost").attr("disabled", false);
+                $("#recap_labor_cost").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> RECAP LABOR COST');
+            },
+            error: function(res){
+                swal("", "Recap Labor Export Failed", "error");
+                $('#recap_labor_cost').removeClass("btn-loading");
+                $("#recap_labor_cost").attr("disabled", false);
+                $("#recap_labor_cost").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> RECAP LABOR COST');
+            }
+        });
+    })
 
     jQuery(document).ready(function($) {
             const BtnProsesPayroll = document.getElementsByClassName('BtnProsesPayroll')[0];
@@ -961,6 +1156,7 @@
 
                                 },
                                 error: function (xhr, status, error) {
+                                    console.log(error);
                                     swal("", "Proses payroll gagal!", "error");
 
                                     $('#BtnProsesPayroll').removeClass("btn-loading");

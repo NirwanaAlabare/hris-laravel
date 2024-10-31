@@ -435,6 +435,7 @@
                             <div class="form-group">
                                 <label class="form-label">Nama Koreksi : </label>
                                 <select id="jenis_koreksi" class="form-control">
+                                    <option value=3>LEMBUR</option>
                                     <option value=1>UPAH</option>
                                     <option value=2>INSENTIF</option>
                                 </select>

@@ -291,6 +291,9 @@
                                     <option value=2>POTONGAN BPJS KS</option>
                                     <option value=3>POTONGAN BAZAR</option>
                                     <option value=4>POTONGAN KAS BON</option>
+                                    <option value=7>POTONGAN UPAH</option>
+                                    <option value=8>POTONGAN LEMBUR</option>
+                                    <option value=6>PIUTANG KARYAWAN</option>
                                     <option value=5>POTONGAN LAINNYA</option>
                                 </select>
                             </div>

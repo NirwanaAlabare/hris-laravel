@@ -1595,12 +1595,24 @@ class MdAbsenHadirController extends AdminBaseController
                 }
             }
             
-            $interval = date_diff(date_create(substr($Kehadiran->mulai_jam_kerja, 0, 5)), date_create(substr($Kehadiran->akhir_jam_kerja, 0, 5)));
+            $interval = date_diff(date_create(substr($Kehadiran->akhir_jam_kerja, 0, 5)), date_create(substr($Kehadiran->mulai_jam_kerja, 0, 5)));
             $minutes = $interval->days * 24 * 60;
             $minutes += $interval->h * 60;
             $minutes += $interval->i;
-            $jumlah_menit_kerja = $minutes;
-            $jumlah_menit_istirahat = 60;
+            $total_seconds = ($interval->h)*3600;
+            $seconds = intval($total_seconds%60);
+            $total_minutes = intval($total_seconds/60);
+            $minutes = $total_minutes%60;
+            $hours = intval($total_minutes/60);
+            $jumlah_menit_kerja= sprintf("%02d", $hours).':'.sprintf("%02d", $minutes);
+            $jumlah_menit_istirahat = '01:00';
+            $interval_kerja = date_diff(date_create($jumlah_menit_kerja), date_create($jumlah_menit_istirahat));
+            $total_seconds2 = ($interval_kerja->h)*3600;
+            $seconds2 = intval($total_seconds2%60);
+            $total_minutes2 = intval($total_seconds2/60);
+            $minutes2 = $total_minutes2%60;
+            $hours2 = intval($total_minutes2/60);
+            $jumlah_menit_kerja_string= sprintf("%02d", $hours2).':'.sprintf("%02d", $minutes2);
             $kerjalibur = "KERJA";
             if(($Kehadiran->mulai_jam_kerja == null) || ($Kehadiran->status_absen == "LN" || $Kehadiran->status_absen == "CG" || $Kehadiran->status_absen == "CM" || $Kehadiran->status_absen == "CT" ||$Kehadiran->status_absen == "L") || (($Kehadiran->status_absen == "LP" ) && ($Kehadiran->absen_masuk_kerja==null) && ($Kehadiran->absen_pulang_kerja==null))) {
                 $kerjalibur = "LIBUR";
@@ -1612,11 +1624,11 @@ class MdAbsenHadirController extends AdminBaseController
                     switch ($Kehadiran->kode_hari) {
                         case '5':
                             $kerjalibur = "LIBUR";
-                            $jumlah_menit_istirahat = 30;
+                            $jumlah_menit_istirahat = '00:30';
                             break;
                         case '6':
                             $kerjalibur = "LIBUR";
-                            $jumlah_menit_istirahat = 30;
+                            $jumlah_menit_istirahat = '00:30';
                             break;
                     }
                 }
@@ -1689,7 +1701,7 @@ class MdAbsenHadirController extends AdminBaseController
                 substr($Kehadiran->mulai_jam_kerja, 0, 5),
                 substr($Kehadiran->akhir_jam_kerja, 0, 5),
                 $jumlah_menit_istirahat,
-                $jumlah_menit_kerja,
+                $jumlah_menit_kerja_string,
                 substr($Kehadiran->absen_masuk_kerja, 0, 5),
                 substr($Kehadiran->absen_pulang_kerja, 0, 5),
                 $Kehadiran->jumlah_absen_menit_kerja,

@@ -342,6 +342,9 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('rekapperhitunganpayroll/get_sub_dept_name/{id}',['as'=>'hris.rekapperhitunganpayroll.get_sub_dept_name','uses'=> 'RekapPerhitunganPayrollController@get_sub_dept_name']);
     Route::get('rekapperhitunganpayroll/export_excel_summary_department',['as'=>'hris.rekapperhitunganpayroll.export_excel_summary_department','uses'=> 'RekapPerhitunganPayrollController@export_excel_summary_department']);
     Route::get('rekapperhitunganpayroll/get_last_update_proses_payroll',['as'=>'hris.rekapperhitunganpayroll.get_last_update_proses_payroll','uses'=> 'RekapPerhitunganPayrollController@get_last_update_proses_payroll']);
+    Route::post('rekapperhitunganpayroll/export_excel_daily_labor',['as'=>'hris.rekapperhitunganpayroll.export_excel_daily_labor','uses'=> 'RekapPerhitunganPayrollController@export_excel_daily_labor']);
+    Route::post('rekapperhitunganpayroll/proses_payroll_harian',['as'=>'hris.rekapperhitunganpayroll.proses_payroll_harian','uses'=> 'RekapPerhitunganPayrollController@proses_payroll_harian']);
+    Route::post('rekapperhitunganpayroll/recap_labor_cost',['as'=>'hris.rekapperhitunganpayroll.recap_labor_cost','uses'=> 'RekapPerhitunganPayrollController@recap_labor_cost']);
 
 
     Route::get('dataclosingpayroll/index',['as'=>'hris.dataclosingpayroll.index','uses'=>'DataClosingPayrollController@index']);
