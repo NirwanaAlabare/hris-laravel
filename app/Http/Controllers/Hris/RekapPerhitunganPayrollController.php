@@ -685,7 +685,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         }])->with(['rekap_lembur'=>function($query)use($first_date,$last_date){
             $query->where('tanggal_berjalan','>=',$first_date)
             ->where('tanggal_berjalan','<=',$last_date);
-        }])->get();
+        }])->orderBy('enroll_id','tanggal_berjalan')->get();
         $fileName = 'payrollSummaryDepartment_'.time() .'.xlsx';
         $response = Excel::download(new DailyLaborCosts($query,$first_date,$last_date), $fileName, \Maatwebsite\Excel\Excel::XLSX);
         ob_end_clean();
