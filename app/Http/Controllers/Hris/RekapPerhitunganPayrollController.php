@@ -1049,7 +1049,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                                     (
                                         round(($value->jumlah_menit_absen_dt+$value->jumlah_menit_absen_pc+$value->total_menit_permits)*$gaji_permenit,2)+
                                         (in_array($value->status_absen, $ITB)||$value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null)||$value->status_absen=='R')?$gaji_perhari:0
-                                    )-$bpjs_tk-$bpjs_ks
+                                    )
                                 )/100)*100)
                         -((
                             ((($value->status_absen==null || $value->status_absen=='IKS') && $value->mulai_jam_kerja!=null)||(in_array($value->status_absen, $IBY))?$gaji_perhari:0)+
@@ -1101,12 +1101,13 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                         ((($value->jumlah_menit_absen_dt+$value->jumlah_menit_absen_pc+$value->total_menit_permits)*$gaji_permenit+(in_array($value->status_absen, $ITB)||$value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null)||$value->status_absen=='R')?$gaji_perhari:0)))+$uang_makan
                 )
             ];
-            if(DailyLaborCost::where('tanggal_berjalan',$value->tanggal_berjalan)->where('enroll_id',$value->enroll_id)->first()){
-                DailyLaborCost::where('tanggal_berjalan',$value->tanggal_berjalan)->where('enroll_id',$value->enroll_id)->update($z);
-            }else{
-                DailyLaborCost::create($z);
-            }
+            // if(DailyLaborCost::where('tanggal_berjalan',$value->tanggal_berjalan)->where('enroll_id',$value->enroll_id)->first()){
+            //     DailyLaborCost::where('tanggal_berjalan',$value->tanggal_berjalan)->where('enroll_id',$value->enroll_id)->update($z);
+            // }else{
+            //     DailyLaborCost::create($z);
+            // }
         }
+        return $z;
     }
     public function rekap_bpjs(){
         
