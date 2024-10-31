@@ -217,7 +217,22 @@ class MasterDataAbsenKehadiran extends \Eloquent
     public function rekap_lembur(){
         return $this->hasMany(RekapPerhitunganLembur::class, 'enroll_id','enroll_id');
     }
+    public function daily_labor_cost(){
+        return $this->hasMany(DailyLaborCost::class,'enroll_id','enroll_id');
+    }
     public function rekap_perhitungan_kehadiran(){
         return $this->hasMany(RekapPerhitunganKehadiranKaryawan::class, 'enroll_id','enroll_id');
+    }
+    public function koreksi_upah(){
+        return $this->hasMany(DataKoreksiUpah::class, 'enroll_id','enroll_id');
+    }
+    public function koreksi_potongan(){
+        return $this->hasMany(DataKoreksiPotongan::class, 'enroll_id','enroll_id');
+    }
+    public function mut_karyawan_input_form_lembur(){
+        return $this->hasMany(MutKaryawanInputFormLembur::class, 'tgl_lembur','tanggal_berjalan');
+    }
+    public function mut_karyawan_input_non_sewing_form_lembur(){
+        return $this->hasMany(MutKaryawanInputNonSewingFormLembur::class, 'tgl_lembur','tanggal_berjalan');
     }
 }
