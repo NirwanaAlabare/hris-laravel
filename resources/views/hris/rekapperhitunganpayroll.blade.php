@@ -196,11 +196,7 @@
                             <button id="BtnProsesPayroll4" type="button" class="btn btn-app btn-primary text-white"><span><i class="fa fa-download"></i></span> PROSES PAYROLL HARIAN</button>
                             @endif
                             <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="export_excel_daily_labor"><i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST</a>
-                        </div>
-                        <div class="col-auto pl-0">
-                            <div class="input-group-append">
-                                <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost"><i class="fa fa-file-excel-o" aria-hidden="true"></i> RECAP LABOR COST</a>
-                            </div>
+                            <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost"><i class="fa fa-file-excel-o" aria-hidden="true"></i> RECAP LABOR COST</a>
                         </div>
                     </div>
                     @endif
@@ -1057,7 +1053,7 @@
 
     $('#recap_labor_cost').click(function(e){
         var daterange = $('#daterange1').val();
-        var status_staff2 = $('#status_staff2').val();
+        var status_staff = $('#status_staff2').val();
         $('#recap_labor_cost').addClass("btn-loading");
         $("#recap_labor_cost").html('Please wait...');
         $("#recap_labor_cost").attr("disabled", true);
@@ -1066,14 +1062,14 @@
             url: '{{route('hris.rekapperhitunganpayroll.recap_labor_cost')}}',
             data: {
                 daterange:daterange,
-                status_staff2:status_staff2,
+                status_staff:status_staff,
             },
             xhrFields: { responseType : 'blob' },
             success:function(data){
                 var blob = new Blob([data]);
                 var link = document.createElement('a');
                 link.href = window.URL.createObjectURL(blob);
-                let file_name = daterange+' Daily Labor Cost '+Math.ceil(Math.random()*1000000);
+                let file_name = daterange+' Recap Labor Cost '+Math.ceil(Math.random()*1000000);
                 link.download = file_name+".xlsx";
                 link.click();
                 swal("", "Recap Labor Export Success", "success");
