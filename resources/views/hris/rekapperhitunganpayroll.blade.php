@@ -1032,7 +1032,7 @@
             data: {
                 enroll_id:enroll_id,
                 daterange:daterange,
-                status_staff2:status_staff2,
+                status_staff:status_staff2,
             },
             xhrFields: { responseType : 'blob' },
             success:function(data){
