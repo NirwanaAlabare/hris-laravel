@@ -211,15 +211,27 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             if($status_staff){
                 $payroll=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)
                 ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)
-                ->where('total_kehadiran_net','>',0)->get();
+                ->where('total_upah_thp_rupiah_employee','>',0)->whereHas('employee_atribut',function($query)use($tanggal_awal){
+                    $query->where('tanggal_resign',null)
+                    ->orWhere('tanggal_resign','>',$tanggal_awal);
+                })->get();
                 $payroll_before=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year_before)->where('periode_bulan_payroll', $month_before)
                 ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)
-                ->where('total_kehadiran_net','>',0)->get();
+                ->where('total_upah_thp_rupiah_employee','>',0)->whereHas('employee_atribut',function($query)use($tanggal_awal){
+                    $query->where('tanggal_resign',null)
+                    ->orWhere('tanggal_resign','>',$tanggal_awal);
+                })->get();
             }else{
                 $payroll=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->where('nama_department',$value->department_name)
-                ->where('total_kehadiran_net','>',0)->get();
+                ->where('total_upah_thp_rupiah_employee','>',0)->whereHas('employee_atribut',function($query)use($tanggal_awal){
+                    $query->where('tanggal_resign',null)
+                    ->orWhere('tanggal_resign','>',$tanggal_awal);
+                })->get();
                 $payroll_before=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year_before)->where('periode_bulan_payroll', $month_before)->where('nama_department',$value->department_name)
-                ->where('total_kehadiran_net','>',0)->get();
+                ->where('total_upah_thp_rupiah_employee','>',0)->whereHas('employee_atribut',function($query)use($tanggal_awal){
+                    $query->where('tanggal_resign',null)
+                    ->orWhere('tanggal_resign','>',$tanggal_awal);
+                })->get();
             }
             if($payroll->sum('upah_bruto_rupiah')==0){$bruto=0;}else{$bruto=number_format( $payroll->sum('upah_bruto_rupiah') , 2 , ',' , '.');}
             $bruto_int=$payroll->sum('upah_bruto_rupiah');

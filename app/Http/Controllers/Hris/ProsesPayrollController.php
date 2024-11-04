@@ -3198,7 +3198,10 @@ class ProsesPayrollController extends AdminBaseController
                 $koreksi_insentif=$data_koreksi->where('sub_dept_id',$value->sub_dept_id)->where('status_jabatan','NON STAFF')->where('jenis_koreksi','2')->sum('jumlah_rp_potongan');
                 $payroll=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->where('periode_umk',null)
                     ->where('kategori_karyawan','NON STAFF')->where('sub_dept_id',$value->sub_dept_id)
-                    ->where('total_kehadiran_net','>',0)->get();
+                    ->whereHas('employee_atribut',function($query)use($tanggal_awal){
+                        $query->where('tanggal_resign',null)
+                        ->orWhere('tanggal_resign','>',$tanggal_awal);
+                    })->get();
                 $rp_cuti_tahuna=0;
                 $potongan_kehadiran_rupiah= $payroll->sum('potongan_kehadiran_rupiah');
                 $rp_pot_jam=$payroll->sum('potongan_iks_rupiah')+$payroll->sum('potongan_dtpc_rupiah');
