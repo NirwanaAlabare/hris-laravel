@@ -192,11 +192,15 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $bulan_sekarang1 = strtotime(date( $bulan_priode));
 
         $bulan_sebelum = strtotime("-1 month", $bulan_sekarang1);
+        $bulan_sebelum2 = strtotime("-2 month", $bulan_sekarang1);
         $bulan_sebelum=date('Y-m-', $bulan_sebelum);
         $bulan_sekarang=date('Y-m-', $bulan_sekarang1);
+        $bulan_sebelum2=date('Y-m-', $bulan_sebelum2);
 
         $tanggal_awal=$bulan_sebelum.'26';
         $tanggal_akhir=$bulan_sekarang.'25';
+        $tanggal_awal2=$bulan_sebelum2.'26';
+        $tanggal_akhir2=$tanggal_akhir;
         $tanggal_awal_baru = date('m/d/Y', strtotime($tanggal_awal));
         $tanggal_akhir_baru = date('m/d/Y', strtotime($tanggal_akhir));
         $periode_payroll = $tanggal_awal_baru . ' - ' . $tanggal_akhir_baru;
@@ -217,9 +221,9 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 })->get();
                 $payroll_before=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year_before)->where('periode_bulan_payroll', $month_before)
                 ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)
-                ->where('total_upah_thp_rupiah_employee','>',0)->whereHas('employee_atribut',function($query)use($tanggal_awal){
+                ->where('total_upah_thp_rupiah_employee','>',0)->whereHas('employee_atribut',function($query)use($tanggal_awal2){
                     $query->where('tanggal_resign',null)
-                    ->orWhere('tanggal_resign','>',$tanggal_awal);
+                    ->orWhere('tanggal_resign','>',$tanggal_awal2);
                 })->get();
             }else{
                 $payroll=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->where('nama_department',$value->department_name)
@@ -228,9 +232,9 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     ->orWhere('tanggal_resign','>',$tanggal_awal);
                 })->get();
                 $payroll_before=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year_before)->where('periode_bulan_payroll', $month_before)->where('nama_department',$value->department_name)
-                ->where('total_upah_thp_rupiah_employee','>',0)->whereHas('employee_atribut',function($query)use($tanggal_awal){
+                ->where('total_upah_thp_rupiah_employee','>',0)->whereHas('employee_atribut',function($query)use($tanggal_awal2){
                     $query->where('tanggal_resign',null)
-                    ->orWhere('tanggal_resign','>',$tanggal_awal);
+                    ->orWhere('tanggal_resign','>',$tanggal_awal2);
                 })->get();
             }
             if($payroll->sum('upah_bruto_rupiah')==0){$bruto=0;}else{$bruto=number_format( $payroll->sum('upah_bruto_rupiah') , 2 , ',' , '.');}
@@ -254,8 +258,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             if($payroll->sum('total_upah_thp_rupiah_employee')==0){$jumlah=0;}else{$jumlah=number_format( $payroll->sum('total_upah_thp_rupiah_employee') , 0 , ',' , '.');}
             $total_upah_thp_rupiah_int=ceil($payroll->sum('total_upah_thp_rupiah') / 100) * 100;
             $jumlah_int=$payroll->sum('total_upah_thp_rupiah_employee');
-            if(ceil($payroll_before->sum('total_upah_thp_rupiah') / 100) * 100==0){$jumlah_sebelum=0;}else{$jumlah_sebelum=number_format( ceil($payroll_before->sum('total_upah_thp_rupiah') / 100) * 100 , 0 , ',' , '.');}
-            $jumlah_sebelum_int=ceil($payroll_before->sum('total_upah_thp_rupiah') / 100) * 100;
+            if($payroll_before->sum('total_upah_thp_rupiah_employee')==0){$jumlah_sebelum=0;}else{$jumlah_sebelum=number_format( $payroll_before->sum('total_upah_thp_rupiah_employee'), 0 , ',' , '.');}
+            $jumlah_sebelum_int=$payroll_before->sum('total_upah_thp_rupiah_employee');
             if($payroll->sum('bpjs_tk_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkm_rupiah')+$payroll->sum('bpjs_tk_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkk_rupiah')+$payroll->sum('bpjs_tk_jht_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jht_rupiah')+$payroll->sum('bpjs_tk_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jpn_rupiah')+$payroll->sum('bpjs_tk_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkn_rupiah')==0){$bpjs_tk_perusahaan=0;}else{$bpjs_tk_perusahaan=$payroll->sum('bpjs_tk_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkm_rupiah')+$payroll->sum('bpjs_tk_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkk_rupiah')+$payroll->sum('bpjs_tk_jht_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jht_rupiah')+$payroll->sum('bpjs_tk_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jpn_rupiah')+$payroll->sum('bpjs_tk_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkn_rupiah');}
             $bpjs_tk_perusahaan_int=$payroll->sum('bpjs_tk_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkm_rupiah')+$payroll->sum('bpjs_tk_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkk_rupiah')+$payroll->sum('bpjs_tk_jht_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jht_rupiah')+$payroll->sum('bpjs_tk_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jpn_rupiah')+$payroll->sum('bpjs_tk_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkn_rupiah');
             if($payroll->sum('bpjs_ks_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkm_rupiah')+$payroll->sum('bpjs_ks_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkk_rupiah')+$payroll->sum('bpjs_ks_jht_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jht_rupiah')+$payroll->sum('bpjs_ks_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jpn_rupiah')+$payroll->sum('bpjs_ks_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkn_rupiah')==0){$bpjs_ks_perusahaan=0;}else{$bpjs_ks_perusahaan=$payroll->sum('bpjs_ks_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkm_rupiah')+$payroll->sum('bpjs_ks_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkk_rupiah')+$payroll->sum('bpjs_ks_jht_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jht_rupiah')+$payroll->sum('bpjs_ks_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jpn_rupiah')+$payroll->sum('bpjs_ks_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkn_rupiah');}

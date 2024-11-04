@@ -478,7 +478,6 @@
                 </div>
                 <div class="tab-pane fade" id="verifikasi_tab" role="tabpanel" aria-labelledby="verifikasi-tab">
                     <div class="col-12 text-dark">
-                        <div class="wrapper">
                             <div class="table-responsive" id="table-responsive1">
                                 <table style="width:2100px" border="1">
                                     <thead>
@@ -503,6 +502,9 @@
                                     </tbody>
                                 </table>
                             </div>
+                    </div>
+                    <div class="col-12 text-center">
+                        <div id="loading_payroll_department">
                         </div>
                     </div>
                 </div>
@@ -941,6 +943,8 @@
             rekapperhitunganpayroll();
         });
         function rekapperhitunganpayrolldepartment(){
+            $('#payroll_department').empty();
+            $('#loading_payroll_department').addClass("spinner-border");
             let periode_payroll=document.getElementsByName("periode_payroll")[0].value;
             let status_staff=document.getElementById("status_staff").value;
             jQuery.ajax({
@@ -952,7 +956,6 @@
                 },
                 success:function(response)
                 {
-                    $('#payroll_department').empty();
                     let selisih_karyawan='';
                     let selisih_gaji='';
                     $.each(response, function (key, value) {
@@ -989,6 +992,8 @@
                             </tr>"
                         );
                     });
+                    
+                    $('#loading_payroll_department').removeClass("spinner-border");
                 }
             });
         }
