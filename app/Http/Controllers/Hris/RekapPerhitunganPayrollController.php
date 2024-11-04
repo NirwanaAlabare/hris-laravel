@@ -693,7 +693,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         }
         if(request()->status_staff){
             $status_staff = request()->status_staff;
-            $inStatusStaff='AND status_staff = "'.$status_staff.')';
+            $inStatusStaff='AND status_staff = "'.$status_staff.'"';
         }
         $arrperiode=explode(" s/d ",request()->daterange);
         $first_date=$arrperiode[0];
