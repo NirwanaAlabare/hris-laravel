@@ -206,6 +206,13 @@
             <td width="12" align="center" style="border-left: 1px solid black;border-right: 1px solid black;border-bottom: 1px solid black;border-top: 1px solid white;font-weight:bold;vertical-align:top;word-wrap: break-word;">Total Pembayaran Aktual</td>
         </tr>
         @foreach ($query as $key=>$value)
+        <?php
+        $absen_masuk_kerja=$value->absen_masuk_kerja;
+        $absen_pulang_kerja=$value->absen_pulang_kerja;
+        $anchorTime = Carbon\Carbon::createFromFormat("Y-m-d H:i:s", "1970-01-01 ".$absen_masuk_kerja."");
+        $currentTime = Carbon\Carbon::createFromFormat("Y-m-d H:i:s", "1970-01-01 ".$absen_pulang_kerja."");
+        $minuteDiff = $anchorTime->diffInMinutes($currentTime);
+        ?>
             <tr>
                 <td>{{\PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($value->tanggal_berjalan)}}</td>
                 <td>{{$value->nama_hari}}</td>
@@ -244,6 +251,7 @@
                     @elseif(($value->kode_hari=='6' || $value->kode_hari=='5' ) && ($value->mulai_jam_kerja!=null))
                         01:00
                     @else 
+                        01:00
                         @if(($value->absen_masuk_kerja <> null) || ($value->absen_masuk_kerja <> "") || ($value->absen_pulang_kerja <> null) || ($value->absen_pulang_kerja <> "")) 
                             @switch ($value->kode_hari) 
                                 @case(5)
@@ -260,7 +268,7 @@
                 <td></td>
                 <td>{{substr($value->absen_masuk_kerja,0,5)}}</td>
                 <td>{{substr($value->absen_pulang_kerja,0,5)}}</td>
-                <td>{{$value->jumlah_menit_kerja}}</td>
+                <td>{{$minuteDiff}}</td>
                 <td>{{$value->permits_dari_pukul}}</td>
                 <td>{{$value->permits_sampai_pukul}}</td>
                 <td>{{$value->total_menit_permits}}</td>
