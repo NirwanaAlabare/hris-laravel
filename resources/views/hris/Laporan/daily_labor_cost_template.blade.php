@@ -209,13 +209,13 @@
         <?php
         $absen_masuk_kerja=$value->absen_masuk_kerja;
         $absen_pulang_kerja=$value->absen_pulang_kerja;
-        if($absen_masuk_kerja!=''){
+        if($absen_masuk_kerja!='' && $absen_pulang_kerja!=''){
             $anchorTime = Carbon\Carbon::createFromFormat("Y-m-d H:i:s", "1970-01-01 ".$absen_masuk_kerja."");
-        }
-        if($absen_pulang_kerja!=''){
             $currentTime = Carbon\Carbon::createFromFormat("Y-m-d H:i:s", "1970-01-01 ".$absen_pulang_kerja."");
+            $minuteDiff = $anchorTime->diffInMinutes($currentTime);
+        }else{
+            $minuteDiff=0;
         }
-        $minuteDiff = $anchorTime->diffInMinutes($currentTime);
         ?>
             <tr>
                 <td>{{\PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($value->tanggal_berjalan)}}</td>
