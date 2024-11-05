@@ -687,6 +687,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         return $response;
     }
     public function export_excel_daily_labor(){
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '10240000000000000000M');
         $inEnrollId='';
         $status_staff=request()->status_staff;
         $inStatusStaff='';
