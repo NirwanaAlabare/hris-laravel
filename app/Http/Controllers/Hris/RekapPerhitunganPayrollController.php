@@ -662,6 +662,10 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $last_update=DB::select('select updated_at from rekap_perhitungan_payroll order by updated_at desc limit 1')[0]->updated_at;
         return $last_update;
     }
+    public function get_last_update_labor(){
+        $last_update=DB::select('select tanggal_berjalan from daily_labor_costs order by tanggal_berjalan desc limit 1')[0]->tanggal_berjalan;
+        return $last_update;
+    }
     public function recap_labor_cost(){
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '1024M');

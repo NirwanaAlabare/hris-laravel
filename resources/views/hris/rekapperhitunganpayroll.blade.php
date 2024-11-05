@@ -199,6 +199,12 @@
                             <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost"><i class="fa fa-file-excel-o" aria-hidden="true"></i> RECAP LABOR COST</a>
                         </div>
                     </div>
+                    <div class="row pt-1">
+                        <div class="col-12">
+                            <label id="last_update_labor" style="color: black"></label>
+                            <span class="fa fa-refresh" onclick="get_last_update_labor()" style="cursor: pointer;color:rgb(0, 0, 206)"></span>
+                        </div>
+                    </div>
                     @endif
                 </div>
             </div>
@@ -884,6 +890,7 @@
             var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
             $('#daterange1').val(daterange1);
             get_last_update();
+            get_last_update_labor();
         });
         function get_last_update(){
             $('#last_update').empty();
@@ -892,6 +899,19 @@
                 url: '{{route('hris.rekapperhitunganpayroll.get_last_update_proses_payroll')}}',
                 success:function(data){
                     $('#last_update').html('<i><b>&nbsp;&nbsp;Last Update :</b> '+new Date(data.substr(0,10)).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"})+', '+data.substr(11,5)+'&nbsp;&nbsp;</i>');
+                },
+                error: function(res){
+                    
+                }
+            });
+        }
+        function get_last_update_labor(){
+            $('#last_update_labor').empty();
+            $.ajax({
+                type: 'GET',
+                url: '{{route('hris.rekapperhitunganpayroll.get_last_update_labor')}}',
+                success:function(data){
+                    $('#last_update_labor').html('<i><b>&nbsp;&nbsp;Last Update :</b> '+new Date(data).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"})+'&nbsp;&nbsp;</i>');
                 },
                 error: function(res){
                     
