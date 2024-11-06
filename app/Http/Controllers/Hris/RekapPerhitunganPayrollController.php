@@ -1101,9 +1101,11 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                             $insentif_jabatan)-
                             ($koreksi_potongan+
                             round(($value->jumlah_menit_absen_dt+$value->jumlah_menit_absen_pc+$value->total_menit_permits)*$gaji_permenit,2)+
-                            ((in_array($value->status_absen, $ITB)||$value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null)||$value->status_absen=='R')?$gaji_perhari:0)))-$bpjs_tk-$bpjs_ks:
+                            ((in_array($value->status_absen, $ITB)||$value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null)||$value->status_absen=='R')?$gaji_perhari:0)))-$bpjs_tk-$bpjs_ks)/100)*100:
+                ceil(
+                    (
                         ((((($value->status_absen==null || $value->status_absen=='IKS') && $value->mulai_jam_kerja!=null)||(in_array($value->status_absen, $IBY))?$gaji_perhari:0)+$total_lembur_rupiah)-
-                        (round(($value->jumlah_menit_absen_dt+$value->jumlah_menit_absen_pc+$value->total_menit_permits)*$gaji_permenit,2)+(in_array($value->status_absen, $ITB)||$value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null)||$value->status_absen=='R')?$gaji_perhari:0)),
+                        (round(($value->jumlah_menit_absen_dt+$value->jumlah_menit_absen_pc+$value->total_menit_permits)*$gaji_permenit,2)+(in_array($value->status_absen, $ITB)||$value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null)||$value->status_absen=='R')?$gaji_perhari:0)))/100)*100,
                 'bpjs_tk_company'=>($value->kode_hari!=5 && $value->kode_hari!=6)?$bpjs_tk_company:0,
                 'bpjs_ks_company'=>($value->kode_hari!=5 && $value->kode_hari!=6)?$bpjs_ks_company:0,
                 'kompensasi'=>($value->kode_hari!=5 && $value->kode_hari!=6)?$thr:0,
