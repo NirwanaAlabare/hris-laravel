@@ -975,7 +975,11 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $bpjs_tk_company=0;
             $bpjs_ks_company=0;
             if(count($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran))>0){
-                $bpjs_tk=($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jkm_bruto_rupiah+$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jkk_neto_rupiah+$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jht_neto_rupiah+$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jpn_neto_rupiah)/$jumlah_hari_kerja;
+                $bpjs_tk=($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jkm_neto_rupiah
+                +$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jkk_neto_rupiah
+                +$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jht_neto_rupiah+
+                $value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jpn_neto_rupiah
+                )/$jumlah_hari_kerja;
                 $bpjs_ks=($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_ks_jkn_neto_rupiah)/$jumlah_hari_kerja;
                 $bpjs_tk_company=($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jkm_bruto_rupiah+$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jht_bruto_rupiah+$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jkk_bruto_rupiah+$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jpn_bruto_rupiah)/$jumlah_hari_kerja;
                 $bpjs_ks_company=($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_ks_jkn_bruto_rupiah)/$jumlah_hari_kerja;
