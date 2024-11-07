@@ -282,7 +282,7 @@
                 <td>{{$value->status_absen}}</td>
                 <td>
                     @if ($value->ref_absen!=null)
-                        @if($value->ref_absen=='ITB')
+                        @if($value->ref_absen->kode_ijin_payroll=='ITB')
                             @if($value->status_absen=='M')
                                 M
                             @elseif($value->status_absen=='IKS')
