@@ -384,19 +384,19 @@
 
                 <td></td>
                 @if ($value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first())
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->iby==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->iby}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->itb==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->itb}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->m==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->m}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->dt==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->dt}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->pc==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->pc}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->dtpc==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->dtpc}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lby==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lby}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lsm==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lsm}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->r==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->r}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->ok==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->ok}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->hari_kerja==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->hari_kerja}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->pot_hari_kerja==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->pot_hari_kerja}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->total_absen==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->total_absen}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->iby}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->itb}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->m}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->dt}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->pc}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->dtpc}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lby}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lsm}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->r}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->ok}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->hari_kerja}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->pot_hari_kerja}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->total_absen}}</td>
                 @else
                 <td></td>
                 <td></td>
@@ -413,26 +413,26 @@
                 <td></td>
                 @endif
                 @if ($value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first())
-                    <td>{{$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur_1==0?'':$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur_1}}</td>
-                    <td>{{$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur_2==0?'':$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur_2}}</td>
-                    <td>{{$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur_3==0?'':$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur_3}}</td>
-                    <td>{{$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur_4==0?'':$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur_4}}</td>
+                    <td>{{$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur_1}}</td>
+                    <td>{{$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur_2}}</td>
+                    <td>{{$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur_3}}</td>
+                    <td>{{$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur_4}}</td>
                 @else
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                 @endif
-                <td>{{$value->jumlah_menit_absen_dt==0?'':$value->jumlah_menit_absen_dt}}</td>
-                <td>{{$value->jumlah_menit_absen_pc==0?'':$value->jumlah_menit_absen_pc}}</td>
+                <td>{{$value->jumlah_menit_absen_dt}}</td>
+                <td>{{$value->jumlah_menit_absen_pc}}</td>
                 <td>{{$value->total_menit_permits}}</td>
                 <td align="center">0</td>
                 <td></td>
                 <td align="center">{{$value->employee_atribut->kode_grade}}</td>
                 <td>{{$value->employee_atribut->grading_salary->first()->salary_bulanan}}</td>
                 @if ($value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first())
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->seniority_allowance==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->seniority_allowance}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->insentif_kehadiran==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->insentif_kehadiran}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->seniority_allowance}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->insentif_kehadiran}}</td>
                 @else
                 <td></td>
                 <td></td>
@@ -443,10 +443,10 @@
                 <td></td>
                 @endif
                 @if ($value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first())
-                    <td>{{$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur1_rupiah==0?'':$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur1_rupiah}}</td>
-                    <td>{{$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur2_rupiah==0?'':$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur2_rupiah}}</td>
-                    <td>{{$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur3_rupiah==0?'':$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur3_rupiah}}</td>
-                    <td>{{$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur4_rupiah==0?'':$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur4_rupiah}}</td>
+                    <td>{{$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur1_rupiah}}</td>
+                    <td>{{$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur2_rupiah}}</td>
+                    <td>{{$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur3_rupiah}}</td>
+                    <td>{{$value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->lembur4_rupiah}}</td>
                 @else
                     <td></td>
                     <td></td>
@@ -486,26 +486,26 @@
                 @endif
                 <td></td>
                 @if ($value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first())
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->rp_pot_hari_kerja==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->rp_pot_hari_kerja}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->rp_pot_jam==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->rp_pot_jam}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->bruto==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->bruto}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->rp_pot_hari_kerja}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->rp_pot_jam}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->bruto}}</td>
                 <td></td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->bruto==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->bruto}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->bpjs_tk==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->bpjs_tk}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->bpjs_ks==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->bpjs_ks}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->bruto}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->bpjs_tk}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->bpjs_ks}}</td>
                 <td></td>
                 <td></td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->total_potongan==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->total_potongan}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->pembulatan==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->pembulatan}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->total_potongan}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->pembulatan}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah}}</td>
                 <td></td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->bpjs_tk_company==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->bpjs_tk_company}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->bpjs_ks_company==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->bpjs_ks_company}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->kompensasi==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->kompensasi}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->thr==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->thr}}</td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->thr==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->konsumsi}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->bpjs_tk_company}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->bpjs_ks_company}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->kompensasi}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->thr}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->konsumsi}}</td>
                 <td></td>
-                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->total_pembayaran==0?'':$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->total_pembayaran}}</td>
+                <td>{{$value->daily_labor_cost->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->total_pembayaran}}</td>
                 @else
                 <td></td>
                 <td></td>
