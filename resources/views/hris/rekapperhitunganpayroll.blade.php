@@ -653,6 +653,7 @@
                     $("#BtnProsesPayroll4").html('<i class="fa fa-download"></i></span> PROSES PAYROLL HARIAN');
                 },
                 error: function(res){
+                    console.log(res);
                     swal("", "Proses Payroll Harian Gagal", "error");
                     $('#BtnProsesPayroll4').removeClass("btn-loading");
                     $("#BtnProsesPayroll4").attr("disabled", false);
