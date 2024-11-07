@@ -23,7 +23,7 @@
                             {{$value->employee_name}}
                         </div>
                         <div class="col">
-                            {{$value->status_jabatan}} {{$value->deparment_name}}
+                            {{$value->status_jabatan}} {{$value->department_name}}
                         </div>
                         <div class="col">
                             <img src="data:image/png;base64,{{\DNS2D::getBarcodePNG(''.$value->enroll_id, 'QRCODE',)}}" alt="barcode" style="width: 32px; height: 32px; margin:2px; padding:2px;background-color:white" />
