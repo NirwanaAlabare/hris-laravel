@@ -716,6 +716,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         return $response;
     }
     public function proses_payroll_harian(){
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '10240000000000000000M');
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
         $ijin_bayar=RefAbsenIjin::where('kode_ijin_payroll','IBY')->get()->toArray();
