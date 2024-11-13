@@ -400,3 +400,9 @@ Event::listen('auth.login', function($user)
 });
 // Lock Screen Routing
 Route::get('screenlock', 'Admin\AdminController@screenlock');
+
+Route::get('/show-absensi', function(){
+    return view('hris.show-absensi.show_absensi');
+});
+
+Route::get('/controller-show-absensi','HandleAbsensiController@index');
