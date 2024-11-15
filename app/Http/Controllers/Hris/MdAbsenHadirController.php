@@ -1253,8 +1253,6 @@ class MdAbsenHadirController extends AdminBaseController
     {
         ini_set("max_execution_time", 5210);
         ini_set('memory_limit', '5120000M');
-        
-        setlocale(LC_ALL, 'id-ID', 'id_ID');
 
         if($request->selectDepartment) {
             $selectDepartment = $request->selectDepartment;
