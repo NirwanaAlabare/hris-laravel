@@ -35,6 +35,11 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Reader\Exception;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use \avadim\FastExcelLaravel\Excel as FastExcel;
+use \avadim\FastExcelWriter\Style;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use Carbon\Carbon;
 
 /**
  * Class RekapPerhitunganPayrollController
@@ -692,28 +697,725 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $inEnrollId='';
         $status_staff=request()->status_staff;
         $inStatusStaff='';
+        $staffnonstaff='SEMUA KARYAWAN';
         if(request()->enroll_id){
             $enroll_id = request()->enroll_id;
             $enroll_id_string = implode(',', $enroll_id);
+            $inEnrollId='AND a.enroll_id in ('.$enroll_id_string.')';
             $inEnrollId='AND enroll_id in ('.$enroll_id_string.')';
         }
         if(request()->status_staff){
             $status_staff = request()->status_staff;
-            $inStatusStaff='AND status_staff = "'.$status_staff.'"';
+            $inStatusStaff='AND b.status_staff = "'.$status_staff.'"';
+            $staffnonstaff=$status_staff;
         }
         $arrperiode=explode(" s/d ",request()->daterange);
         $first_date=$arrperiode[0];
         $last_date=$arrperiode[1];
-        $query=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$first_date)->where('tanggal_berjalan','<=',$last_date)->whereRaw('enroll_id is not null '.$inEnrollId.$inStatusStaff)->with('employee_atribut','employee_atribut.group_department','ref_absen','data_lembur','daily_labor_cost','koreksi_upah')->with(['employee_atribut.grading_salary'=>function($query){
-            $query->where('periode_umk','2024-01');
-        }])->with(['rekap_lembur'=>function($query)use($first_date,$last_date){
-            $query->where('tanggal_berjalan','>=',$first_date)
-            ->where('tanggal_berjalan','<=',$last_date);
-        }])->orderBy('enroll_id','asc')->orderBy('tanggal_berjalan','asc')->get();
-        $fileName = 'payrollSummaryDepartment_'.time() .'.xlsx';
-        $response = Excel::download(new DailyLaborCosts($query,$first_date,$last_date), $fileName, \Maatwebsite\Excel\Excel::XLSX);
+        // $query=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$first_date)->where('tanggal_berjalan','<=',$last_date)->whereRaw('enroll_id is not null '.$inEnrollId.$inStatusStaff)->with('employee_atribut','employee_atribut.group_department','ref_absen','data_lembur','daily_labor_cost','koreksi_upah')->with(['employee_atribut.grading_salary'=>function($query){
+        //     $query->where('periode_umk','2024-01');
+        // }])->with(['rekap_lembur'=>function($query)use($first_date,$last_date){
+        //     $query->where('tanggal_berjalan','>=',$first_date)
+        //     ->where('tanggal_berjalan','<=',$last_date);
+        // }])->orderBy('enroll_id','asc')->orderBy('tanggal_berjalan','asc')->get();
+        $query=DB::select("select a.tanggal_berjalan,a.kode_hari,a.nama_hari,b.nik,a.enroll_id,b.employee_name,b.status_staff,b.status_jabatan,b.sub_dept_name,b.department_name,c.group_department,a.mulai_jam_kerja,a.akhir_jam_kerja,a.absen_masuk_kerja,a.absen_pulang_kerja,a.permits_dari_pukul,a.permits_sampai_pukul,a.total_menit_permits,a.jumlah_menit_absen_dt,a.jumlah_menit_absen_pc,a.jumlah_menit_absen_dtpc,a.status_absen,a.absen_alasan,h.kode_ijin_payroll,d.catatan,d.nomor_form_lembur,d.mulai_jam_lembur,d.akhir_jam_lembur,d.jumlah_jam_istirahat,d.jumlah_jam_lembur,e.final_mulai_jam_lembur,e.final_selesai_jam_lembur,e.final_jam_istirahat_lembur,e.final_total_jam_lembur,c.gaji_perhari,c.gaji_permenit,c.iby,c.itb,c.m,c.dt,c.pc,c.dtpc,c.lby,c.lsm,c.r,c.ok,c.hari_kerja,c.pot_hari_kerja,c.total_absen,e.lembur_1,e.lembur_2,e.lembur_3,e.lembur_4,b.kode_grade,c.seniority_allowance,c.insentif_kehadiran,c.insentif_jabatan,e.lembur1_rupiah,e.lembur2_rupiah,e.lembur3_rupiah,e.lembur4_rupiah,if(f.jenis_koreksi=1,f.jumlah_rp_potongan,0) koreksi_upah,if(f.jenis_koreksi=3,f.jumlah_rp_potongan,0) koreksi_lembur,if(f.jenis_koreksi=2,f.jumlah_rp_potongan,0) koreksi_insentif,if(g.jenis_potongan=7,g.jumlah_rp_potongan,0) potongan_upah,if(g.jenis_potongan=8,g.jumlah_rp_potongan,0) potongan_lembur,if(g.jenis_potongan=5,g.jumlah_rp_potongan,0) potongan_insentif,if(g.jenis_potongan=6,g.jumlah_rp_potongan,0) potongan_piutang,c.rp_pot_hari_kerja,c.rp_pot_jam,c.bruto,c.bpjs_tk,c.bpjs_ks,c.total_potongan,c.pembulatan,c.jumlah,c.bpjs_tk_company,c.bpjs_ks_company,c.kompensasi,c.thr,c.konsumsi,c.total_pembayaran from master_data_absen_kehadiran a inner join employee_atribut b on a.enroll_id=b.enroll_id left join daily_labor_costs c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan left join rekap_perhitungan_lembur e on a.enroll_id=e.enroll_id and a.tanggal_berjalan=e.tanggal_berjalan left join data_koreksi_upah f on a.enroll_id=f.enroll_id and a.tanggal_berjalan=f.tanggal_koreksi left join data_koreksi_potongan g on a.enroll_id=g.enroll_id and a.tanggal_berjalan=g.tanggal_koreksi left join ref_absen_ijin h on a.status_absen=h.kode_absen_ijin where a.tanggal_berjalan>='".$first_date."' and a.tanggal_berjalan<='".$last_date."'".$inEnrollId.$inStatusStaff);
+        $excel = FastExcel::create('query');
+        $sheet = $excel->getSheet();
+
+        $area = $sheet->beginArea();
+        $style1 = [
+            Style::FONT_STYLE_BOLD=>'bold',
+            Style::VERTICAL_ALIGN=>'top',
+            Style::TEXT_ALIGN=>'center',
+            Style::TEXT_WRAP=>'text wrap',
+            Style::BORDER => [
+                Style::BORDER_TOP => [
+                    Style::BORDER_STYLE => Style::BORDER_THIN,
+                    Style::BORDER_COLOR => '#000000',
+                ],
+                Style::BORDER_LEFT => [
+                    Style::BORDER_STYLE => Style::BORDER_THIN,
+                    Style::BORDER_COLOR => '#000000',
+                ],
+                Style::BORDER_RIGHT => [
+                    Style::BORDER_STYLE => Style::BORDER_THIN,
+                    Style::BORDER_COLOR => '#000000',
+                ],
+                Style::BORDER_BOTTOM => [
+                    Style::BORDER_STYLE => Style::BORDER_THIN,
+                    Style::BORDER_COLOR => '#ffffff',
+                ],
+            ]
+        ];
+        $style2 = [
+            Style::FONT_STYLE_BOLD=>'bold',
+            Style::VERTICAL_ALIGN=>'top',
+            Style::TEXT_ALIGN=>'center',
+            Style::TEXT_WRAP=>'text wrap',
+            Style::BORDER => [
+                Style::BORDER_TOP => [
+                    Style::BORDER_STYLE => Style::BORDER_THIN,
+                    Style::BORDER_COLOR => '#000000',
+                ],
+                Style::BORDER_LEFT => [
+                    Style::BORDER_STYLE => Style::BORDER_THIN,
+                    Style::BORDER_COLOR => '#000000',
+                ],
+                Style::BORDER_RIGHT => [
+                    Style::BORDER_STYLE => Style::BORDER_THIN,
+                    Style::BORDER_COLOR => '#000000',
+                ],
+                Style::BORDER_BOTTOM => [
+                    Style::BORDER_STYLE => Style::BORDER_THIN,
+                    Style::BORDER_COLOR => '#000000',
+                ],
+            ]
+        ];
+        $style3 = [
+            Style::FONT_STYLE_BOLD=>'bold',
+            Style::VERTICAL_ALIGN=>'top',
+            Style::TEXT_ALIGN=>'center',
+            Style::TEXT_WRAP=>'text wrap',
+            Style::BORDER => [
+                Style::BORDER_TOP => [
+                    Style::BORDER_STYLE => Style::BORDER_THIN,
+                    Style::BORDER_COLOR => '#ffffff',
+                ],
+                Style::BORDER_LEFT => [
+                    Style::BORDER_STYLE => Style::BORDER_THIN,
+                    Style::BORDER_COLOR => '#000000',
+                ],
+                Style::BORDER_RIGHT => [
+                    Style::BORDER_STYLE => Style::BORDER_THIN,
+                    Style::BORDER_COLOR => '#000000',
+                ],
+                Style::BORDER_BOTTOM => [
+                    Style::BORDER_STYLE => Style::BORDER_THIN,
+                    Style::BORDER_COLOR => '#000000',
+                ],
+            ]
+        ];
+        $sheet->writeTo('A1', 'PT NIRWANA ALABARE GARMENT', ['font-size' => 18])->applyFontStyleBold();
+        $sheet->writeTo('A2', 'LAPORAN ABSENSI KARYAWAN', ['font-size' => 16])->applyFontStyleBold();
+        $sheet->writeTo('A3', 'TANGGAL ABSENSI : '.Carbon::parse($first_date)->translatedFormat('d F Y').' S/D '.Carbon::parse($last_date)->translatedFormat('d F Y'), ['font-size' => 14])->applyFontStyleBold();
+        $sheet->writeTo('A4', 'STAFF / NON STAFF : '.$staffnonstaff, ['font-size' => 14])->applyFontStyleBold();
+        $sheet->writeTo('A7', '');
+        $sheet->setStyle('A7', $style1);
+        $sheet->writeTo('B7', '');
+        $sheet->setStyle('B7', $style1);
+        $sheet->writeTo('C7', '');
+        $sheet->setStyle('C7', $style1);
+        $sheet->writeTo('D7', '');
+        $sheet->setStyle('D7', $style1);
+        $sheet->writeTo('E7', '');
+        $sheet->setStyle('E7', $style1);
+        $sheet->writeTo('F7', '');
+        $sheet->setStyle('F7', $style1);
+        $sheet->writeTo('G7', '');
+        $sheet->setStyle('G7', $style1);
+        $sheet->writeTo('H7', '');
+        $sheet->setStyle('H7', $style1);
+        $sheet->writeTo('I7', '');
+        $sheet->setStyle('I7', $style1);
+        $sheet->writeTo('J7', '');
+        $sheet->setStyle('J7', $style1);
+        $sheet->writeTo('K7', '');
+        $sheet->setStyle('K7', $style1);
+        $sheet->mergeCells('L7:O7');
+        $sheet->writeTo('L7', 'JADWAL KERJA');
+        $sheet->setStyle('L7:O7', $style1);
+        $sheet->mergeCells('P7:R7');
+        $sheet->writeTo('P7', 'PRESENSI');
+        $sheet->setStyle('P7:R7', $style1);
+        $sheet->mergeCells('S7:U7');
+        $sheet->writeTo('S7', 'IJIN KELUAR SEMENTARA (IKS)');
+        $sheet->setStyle('S7:U7', $style1);
+        $sheet->mergeCells('V7:X7');
+        $sheet->writeTo('V7', 'POTONGAN MENIT');
+        $sheet->setStyle('V7:X7', $style1);
+        $sheet->writeTo('Y7', '');
+        $sheet->setStyle('Y7', $style1);
+        $sheet->writeTo('Z7', '');
+        $sheet->setStyle('Z7', $style1);
+        $sheet->writeTo('AA7', '');
+        $sheet->setStyle('AA7', $style1);
+        $sheet->writeTo('AC7', '');
+        $sheet->setStyle('AC7', $style1);
+        $sheet->mergeCells('AD7:AH7');
+        $sheet->writeTo('AD7', 'DATA LEMBUR (OVERTIME)');
+        $sheet->setStyle('AD7:AH7', $style1);
+        $sheet->mergeCells('AJ7:AM7');
+        $sheet->writeTo('AJ7', 'DATA LEMBUR VERIFIKASI');
+        $sheet->setStyle('AJ7:AM7', $style1);
+        $sheet->writeTo('AO7', '');
+        $sheet->setStyle('AO7', $style1);
+        $sheet->writeTo('AP7', '');
+        $sheet->setStyle('AP7', $style1);
+        $sheet->writeTo('AQ7', '');
+        $sheet->setStyle('AQ7', $style1);
+        $sheet->writeTo('AS7', '');
+        $sheet->setStyle('AS7', $style1);
+        $sheet->writeTo('AT7', '');
+        $sheet->setStyle('AT7', $style1);
+        $sheet->writeTo('AU7', '');
+        $sheet->setStyle('AU7', $style1);
+        $sheet->writeTo('AV7', '');
+        $sheet->setStyle('AV7', $style1);
+        $sheet->writeTo('AW7', '');
+        $sheet->setStyle('AW7', $style1);
+        $sheet->writeTo('AX7', '');
+        $sheet->setStyle('AX7', $style1);
+        $sheet->writeTo('AY7', '');
+        $sheet->setStyle('AY7', $style1);
+        $sheet->writeTo('AZ7', '');
+        $sheet->setStyle('AZ7', $style1);
+        $sheet->writeTo('BA7', '');
+        $sheet->setStyle('BA7', $style1);
+        $sheet->writeTo('BB7', '');
+        $sheet->setStyle('BB7', $style1);
+        $sheet->writeTo('BC7', '');
+        $sheet->setStyle('BC7', $style1);
+        $sheet->writeTo('BD7', '');
+        $sheet->setStyle('BD7', $style1);
+        $sheet->writeTo('BE7', '');
+        $sheet->setStyle('BE7', $style1);
+        $sheet->writeTo('BF7', '');
+        $sheet->setStyle('BF7', $style1);
+        $sheet->writeTo('BG7', '');
+        $sheet->setStyle('BG7', $style1);
+        $sheet->writeTo('BH7', '');
+        $sheet->setStyle('BH7', $style1);
+        $sheet->writeTo('BI7', '');
+        $sheet->setStyle('BI7', $style1);
+        $sheet->writeTo('BJ7', '');
+        $sheet->setStyle('BJ7', $style1);
+        $sheet->writeTo('BK7', '');
+        $sheet->setStyle('BK7', $style1);
+        $sheet->writeTo('BL7', '');
+        $sheet->setStyle('BL7', $style1);
+        $sheet->writeTo('BM7', '');
+        $sheet->setStyle('BM7', $style1);
+        $sheet->writeTo('BO7', '');
+        $sheet->setStyle('BO7', $style1);
+        $sheet->writeTo('BP7', '');
+        $sheet->setStyle('BP7', $style1);
+        $sheet->writeTo('BQ7', '');
+        $sheet->setStyle('BQ7', $style1);
+        $sheet->writeTo('BR7', '');
+        $sheet->setStyle('BR7', $style1);
+        $sheet->writeTo('BS7', '');
+        $sheet->setStyle('BS7', $style1);
+        $sheet->writeTo('BT7', '');
+        $sheet->setStyle('BT7', $style1);
+        $sheet->writeTo('BU7', '');
+        $sheet->setStyle('BU7', $style1);
+        $sheet->writeTo('BV7', '');
+        $sheet->setStyle('BV7', $style1);
+        $sheet->writeTo('BW7', '');
+        $sheet->setStyle('BW7', $style1);
+        $sheet->mergeCells('BX7:CD7');
+        $sheet->writeTo('BX7', 'Lain - Lain (Koreksi +-)');
+        $sheet->setStyle('BX7:CD7', $style1);
+        $sheet->writeTo('CE7', '');
+        $sheet->setStyle('CE7', $style1);
+        $sheet->writeTo('CF7', '');
+        $sheet->setStyle('CF7', $style1);
+        $sheet->writeTo('CG7', '');
+        $sheet->setStyle('CG7', $style1);
+        $sheet->writeTo('CH7', '');
+        $sheet->setStyle('CH7', $style1);
+        $sheet->writeTo('CI7', '');
+        $sheet->setStyle('CI7', $style1);
+        $sheet->writeTo('CJ7', '');
+        $sheet->setStyle('CJ7', $style1);
+        $sheet->mergeCells('CK7:CL7');
+        $sheet->writeTo('CK7', 'Potongan Karyawan');
+        $sheet->setStyle('CK7:CL7', $style1);
+        $sheet->writeTo('CM7', '');
+        $sheet->setStyle('CM7', $style1);
+        $sheet->writeTo('CN7', '');
+        $sheet->setStyle('CN7', $style1);
+        $sheet->writeTo('CO7', '');
+        $sheet->setStyle('CO7', $style1);
+        $sheet->writeTo('CP7', '');
+        $sheet->setStyle('CP7', $style1);
+        $sheet->writeTo('CQ7', '');
+        $sheet->setStyle('CQ7', $style1);
+        $sheet->mergeCells('CS7:CT7');
+        $sheet->writeTo('CS7', 'Potongan Perusahaan');
+        $sheet->setStyle('CS7:CT7', $style1);
+        $sheet->writeTo('CU7', '');
+        $sheet->setStyle('CU7', $style1);
+        $sheet->writeTo('CV7', '');
+        $sheet->setStyle('CV7', $style1);
+        $sheet->writeTo('CW7', '');
+        $sheet->setStyle('CW7', $style1);
+        $sheet->writeTo('CY7', '');
+        $sheet->setStyle('CY7', $style1);
+        $sheet->writeTo('A8', 'Tanggal', ['font-size' => 11])->applyFontStyleBold()->applyTextCenter();
+        $sheet->setStyle('A8', $style3); 
+        $sheet->writeTo('B8', 'Hari', ['font-size' => 11]);
+        $sheet->setStyle('B8', $style3); 
+        $sheet->writeTo('C8', 'NIP', ['font-size' => 11]);
+        $sheet->setStyle('C8', $style3); 
+        $sheet->writeTo('D8', 'No. Absen');
+        $sheet->setStyle('D8', $style3); 
+        $sheet->writeTo('E8', 'Nama Karyawan');
+        $sheet->setStyle('E8', $style3); 
+        $sheet->writeTo('F8', 'Staff / Non Staff');
+        $sheet->setStyle('F8', $style3);
+        $sheet->writeTo('G8', 'Jabatan');
+        $sheet->setStyle('G8', $style3);
+        $sheet->writeTo('H8', 'Bagian');
+        $sheet->setStyle('H8', $style3);
+        $sheet->writeTo('I8', 'Department');
+        $sheet->setStyle('I8', $style3);
+        $sheet->writeTo('J8', 'Keterangan Biaya');
+        $sheet->setStyle('J8', $style3);
+        $sheet->writeTo('K8', 'Kerja/Libur');
+        $sheet->setStyle('K8', $style3);
+        $sheet->writeTo('L8', 'In');
+        $sheet->setStyle('L8', $style2);
+        $sheet->writeTo('M8', 'Out');
+        $sheet->setStyle('M8', $style2);
+        $sheet->writeTo('N8', 'Durasi Istirahat');
+        $sheet->setStyle('N8', $style2);
+        $sheet->writeTo('O8', 'Durasi Kerja');
+        $sheet->setStyle('O8', $style2);
+        $sheet->writeTo('P8', 'Sc In');
+        $sheet->setStyle('P8', $style2);
+        $sheet->writeTo('Q8', 'Sc Out');
+        $sheet->setStyle('Q8', $style2);
+        $sheet->writeTo('R8', 'Efektif Kerja');
+        $sheet->setStyle('R8', $style2);
+        $sheet->writeTo('S8', 'IKS (Dari)');
+        $sheet->setStyle('S8', $style2);
+        $sheet->writeTo('T8', 'IKS (Sampai)');
+        $sheet->setStyle('T8', $style2);
+        $sheet->writeTo('U8', 'IKS (Total)');
+        $sheet->setStyle('U8', $style2);
+        $sheet->writeTo('V8', 'DT');
+        $sheet->setStyle('V8', $style2);
+        $sheet->writeTo('W8', 'PC');
+        $sheet->setStyle('W8', $style2);
+        $sheet->writeTo('X8', 'Potongan Menit Total');
+        $sheet->setStyle('X8', $style2);
+        $sheet->writeTo('Y8', 'Kode Absen');
+        $sheet->setStyle('Y8', $style3);
+        $sheet->writeTo('Z8', 'Status Payroll');
+        $sheet->setStyle('Z8', $style3);
+        $sheet->writeTo('AA8', 'Keterangan Absen');
+        $sheet->setStyle('AA8', $style3);
+        $sheet->writeTo('AC8', 'Keterangan Lembur');
+        $sheet->setStyle('AC8', $style3);
+        $sheet->writeTo('AD8', 'No. SPL');
+        $sheet->setStyle('AD8', $style2);
+        $sheet->writeTo('AE8', 'OT Mulai');
+        $sheet->setStyle('AE8', $style2);
+        $sheet->writeTo('AF8', 'OT Selesai');
+        $sheet->setStyle('AF8', $style2);
+        $sheet->writeTo('AG8', 'OT Istirahat');
+        $sheet->setStyle('AG8', $style2);
+        $sheet->writeTo('AH8', 'OT Total');
+        $sheet->setStyle('AH8', $style2);
+        $sheet->writeTo('AJ8', 'Mulai Jam Lembur');
+        $sheet->setStyle('AJ8', $style2);
+        $sheet->writeTo('AK8', 'Akhir Jam Lembur');
+        $sheet->setStyle('AK8', $style2);
+        $sheet->writeTo('AL8', 'Jumlah Jam Istirahat');
+        $sheet->setStyle('AL8', $style2);
+        $sheet->writeTo('AM8', 'Jumlah Jam Lembur');
+        $sheet->setStyle('AM8', $style2);
+        $sheet->writeTo('AM8', 'Jumlah Jam Lembur');
+        $sheet->setStyle('AM8', $style2);
+        $sheet->writeTo('AO8', 'UPAH UMK');
+        $sheet->setStyle('AO8', $style3);
+        $sheet->writeTo('AP8', 'Upah / Hari');
+        $sheet->setStyle('AP8', $style3);
+        $sheet->writeTo('AQ8', 'Upah / Jam');
+        $sheet->setStyle('AQ8', $style3);
+        $sheet->writeTo('AS8', 'IBY');
+        $sheet->setStyle('AS8', $style3);
+        $sheet->writeTo('AT8', 'ITB');
+        $sheet->setStyle('AT8', $style3);
+        $sheet->writeTo('AU8', 'M');
+        $sheet->setStyle('AU8', $style3);
+        $sheet->writeTo('AV8', 'DT');
+        $sheet->setStyle('AV8', $style3);
+        $sheet->writeTo('AW8', 'PC');
+        $sheet->setStyle('AW8', $style3);
+        $sheet->writeTo('AX8', 'DTPC');
+        $sheet->setStyle('AX8', $style3);
+        $sheet->writeTo('AY8', 'LBY');
+        $sheet->setStyle('AY8', $style3);
+        $sheet->writeTo('AZ8', 'LSM');
+        $sheet->setStyle('AZ8', $style3);
+        $sheet->writeTo('BA8', 'R');
+        $sheet->setStyle('BA8', $style3);
+        $sheet->writeTo('BB8', 'OK');
+        $sheet->setStyle('BB8', $style3);
+        $sheet->writeTo('BC8', 'Hari Kerja');
+        $sheet->setStyle('BC8', $style3);
+        $sheet->writeTo('BD8', 'Pot. Hari Kerja');
+        $sheet->setStyle('BD8', $style3);
+        $sheet->writeTo('BE8', 'Total Absensi');
+        $sheet->setStyle('BE8', $style3);
+        $sheet->writeTo('BF8', 'L1');
+        $sheet->setStyle('BF8', $style3);
+        $sheet->writeTo('BG8', 'L2');
+        $sheet->setStyle('BG8', $style3);
+        $sheet->writeTo('BH8', 'L3');
+        $sheet->setStyle('BH8', $style3);
+        $sheet->writeTo('BI8', 'L4');
+        $sheet->setStyle('BI8', $style3);
+        $sheet->writeTo('BJ8', 'Datang Terlambat');
+        $sheet->setStyle('BJ8', $style3);
+        $sheet->writeTo('BK8', 'Pulang Cepat');
+        $sheet->setStyle('BK8', $style3);
+        $sheet->writeTo('BL8', 'Izin Keluar Sementara');
+        $sheet->setStyle('BL8', $style3);
+        $sheet->writeTo('BM8', 'Sisa Cuti Tahunan');
+        $sheet->setStyle('BM8', $style3);
+        $sheet->writeTo('BO8', 'Kode Grade');
+        $sheet->setStyle('BO8', $style3);
+        $sheet->writeTo('BP8', 'Upah Grade');
+        $sheet->setStyle('BP8', $style3);
+        $sheet->writeTo('BQ8', 'Seniority Allowance');
+        $sheet->setStyle('BQ8', $style3);
+        $sheet->writeTo('BR8', 'Insentif (Kehadiran)');
+        $sheet->setStyle('BR8', $style3);
+        $sheet->writeTo('BS8', 'Insentif (Jabatan)');
+        $sheet->setStyle('BS8', $style3);
+        $sheet->writeTo('BT8', 'RP Lembur 1');
+        $sheet->setStyle('BT8', $style3);
+        $sheet->writeTo('BU8', 'RP Lembur 2');
+        $sheet->setStyle('BU8', $style3);
+        $sheet->writeTo('BV8', 'RP Lembur 3');
+        $sheet->setStyle('BV8', $style3);
+        $sheet->writeTo('BW8', 'RP Lembur 4');
+        $sheet->setStyle('BW8', $style3);
+        $sheet->writeTo('BX8', '+ Upah');
+        $sheet->setStyle('BX8', $style2);
+        $sheet->writeTo('BY8', '+ Lembur');
+        $sheet->setStyle('BY8', $style2);
+        $sheet->writeTo('BZ8', '+ Insentif');
+        $sheet->setStyle('BZ8', $style2);
+        $sheet->writeTo('CA8', '- Upah');
+        $sheet->setStyle('CA8', $style2);
+        $sheet->writeTo('CB8', '- Lembur');
+        $sheet->setStyle('CB8', $style2);
+        $sheet->writeTo('CC8', '- Insentif');
+        $sheet->setStyle('CC8', $style2);
+        $sheet->writeTo('CD8', '- Piutang');
+        $sheet->setStyle('CD8', $style2);
+        $sheet->writeTo('CE8', 'RP Cuti Tahunan');
+        $sheet->setStyle('CE8', $style3);
+        $sheet->writeTo('CF8', 'RP Potongan Hari Kerja');
+        $sheet->setStyle('CF8', $style3);
+        $sheet->writeTo('CG8', 'RP Pot. Jam');
+        $sheet->setStyle('CG8', $style3);
+        $sheet->writeTo('CH8', 'Bruto');
+        $sheet->setStyle('CH8', $style3);
+        $sheet->writeTo('CI8', 'PPH');
+        $sheet->setStyle('CI8', $style3);
+        $sheet->writeTo('CJ8', 'Netto');
+        $sheet->setStyle('CJ8', $style3);
+        $sheet->writeTo('CK8', 'Bpjamsostek');
+        $sheet->setStyle('CK8', $style2);
+        $sheet->writeTo('CL8', 'BPJS Kesehatan');
+        $sheet->setStyle('CL8', $style2);
+        $sheet->writeTo('CM8', 'Serikat');
+        $sheet->setStyle('CM8', $style3);
+        $sheet->writeTo('CN8', 'Koperasi');
+        $sheet->setStyle('CN8', $style3);
+        $sheet->writeTo('CO8', 'Total Potongan');
+        $sheet->setStyle('CO8', $style3);
+        $sheet->writeTo('CP8', 'Pembulatan');
+        $sheet->setStyle('CP8', $style3);
+        $sheet->writeTo('CQ8', 'Jumlah');
+        $sheet->setStyle('CQ8', $style3);
+        $sheet->writeTo('CS8', 'PP Bpjamsostek');
+        $sheet->setStyle('CS8', $style2);
+        $sheet->writeTo('CT8', 'PP BPJS Kesehatan');
+        $sheet->setStyle('CT8', $style2);
+        $sheet->writeTo('CU8', 'Kompensasi');
+        $sheet->setStyle('CU8', $style3);
+        $sheet->writeTo('CV8', 'THR');
+        $sheet->setStyle('CV8', $style3);
+        $sheet->writeTo('CW8', 'Makan Lembur');
+        $sheet->setStyle('CW8', $style3);
+        $sheet->writeTo('CY8', 'Total Pembayaran Aktual');
+        $sheet->setStyle('CY8', $style3);
+        $sheet->setColOptions([
+            'A' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 12],
+            'B' => ['width' => 8],
+            'C' => ['width' => 11],
+            'D' => ['width' => 11],
+            'E' => ['width' => 35],
+            'F' => ['width' => 11],
+            'G' => ['width' => 11],
+            'H' => ['width' => 27],
+            'I' => ['width' => 27],
+            'J' => ['width' => 26],
+            'K' => ['width' => 14],
+            'L' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 7],
+            'M' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 7],
+            'N' => ['width' => 13],
+            'O' => ['width' => 13],
+            'P' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 10],
+            'Q' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 10],
+            'R' => ['width' => 10],
+            'S' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 12],
+            'T' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 12],
+            'U' => ['width' => 12],
+            'V' => ['width' => 11],
+            'W' => ['width' => 11],
+            'Y' => ['width' => 16],
+            'Z' => ['width' => 17],
+            'AA' => ['width' => 21],
+            'AA' => ['width' => 21],
+            'AB' => ['width' => 9],
+            'AC' => ['width' => 39],
+            'AD' => ['width' => 18],
+            'AE' => ['width' => 12],
+            'AF' => ['width' => 12],
+            'AG' => ['width' => 12],
+            'AH' => ['width' => 12],
+            'AI' => ['width' => 1],
+            'AJ' => ['width' => 13],
+            'AK' => ['width' => 13],
+            'AL' => ['width' => 13],
+            'AM' => ['width' => 13],
+            'AN' => ['width' => 1],
+            'AO' => ['width' => 13],
+            'AP' => ['width' => 9],
+            'AQ' => ['width' => 9],
+            'AR' => ['width' => 5],
+            'AS' => ['width' => 6],
+            'AT' => ['width' => 6],
+            'AU' => ['width' => 6],
+            'AV' => ['width' => 6],
+            'AW' => ['width' => 6],
+            'AX' => ['width' => 6],
+            'AY' => ['width' => 6],
+            'AZ' => ['width' => 6],
+            'BA' => ['width' => 6],
+            'BB' => ['width' => 6],
+            'BC' => ['width' => 6],
+            'BD' => ['width' => 6],
+            'BE' => ['width' => 8],
+            'BF' => ['width' => 6],
+            'BG' => ['width' => 6],
+            'BH' => ['width' => 6],
+            'BI' => ['width' => 6],
+            'BJ' => ['width' => 11],
+            'BK' => ['width' => 11],
+            'BL' => ['width' => 11],
+            'BM' => ['width' => 11],
+            'BN' => ['width' => 5],
+            'BO' => ['width' => 9],
+            'BP' => ['width' => 9],
+            'BQ' => ['width' => 11],
+            'BR' => ['width' => 12],
+            'BS' => ['width' => 11],
+            'BT' => ['width' => 11],
+            'BU' => ['width' => 11],
+            'BV' => ['width' => 11],
+            'BW' => ['width' => 11],
+            'BX' => ['width' => 10],
+            'BY' => ['width' => 10],
+            'BZ' => ['width' => 10],
+            'CA' => ['width' => 10],
+            'CB' => ['width' => 10],
+            'CC' => ['width' => 10],
+            'CD' => ['width' => 10],
+            'CE' => ['width' => 12],
+            'CF' => ['width' => 12],
+            'CG' => ['width' => 12],
+            'CH' => ['width' => 12],
+            'CI' => ['width' => 5],
+            'CJ' => ['width' => 12],
+            'CK' => ['width' => 13],
+            'CL' => ['width' => 13],
+            'CM' => ['width' => 10],
+            'CN' => ['width' => 10],
+            'CO' => ['width' => 13],
+            'CP' => ['width' => 12],
+            'CQ' => ['width' => 13],
+            'CR' => ['width' => 5],
+            'CS' => ['width' => 13],
+            'CT' => ['width' => 13],
+            'CU' => ['width' => 12],
+            'CV' => ['width' => 11],
+            'CW' => ['width' => 11],
+            'CX' => ['width' => 9],
+            'CY' => ['width' => 12],
+        ]);
+        foreach($query as $key=>$value){
+            $kode_ijin_payroll=$value->kode_ijin_payroll;
+            if($kode_ijin_payroll==null){
+                if($value->mulai_jam_kerja!=null && $value->akhir_jam_kerja!=null){
+                    if($value->absen_masuk_kerja!=null && $value->absen_pulang_kerja!=null && $value->status_absen!='R'){
+                        if($value->jumlah_menit_absen_dt!=0 && $value->jumlah_menit_absen_pc==0){
+                            $kode_ijin_payroll='DT';
+                        }else if($value->jumlah_menit_absen_dt==0 && $value->jumlah_menit_absen_pc!=0){
+                            $kode_ijin_payroll='PC';
+                        }else if($value->jumlah_menit_absen_dt!=0 && $value->jumlah_menit_absen_pc!=0){
+                            $kode_ijin_payroll='DTPC';
+                        }else{
+                            $kode_ijin_payroll='OK';
+                        }
+                    }else if($value->absen_masuk_kerja!=null && $value->absen_pulang_kerja!=null && $value->status_absen=='R'){
+                        $kode_ijin_payroll='R';
+                    }else if($value->absen_masuk_kerja!=null && $value->absen_pulang_kerja==null && $value->status_absen!='R'){
+                        $kode_ijin_payroll='M';
+                    }else if($value->absen_masuk_kerja==null && $value->absen_pulang_kerja!=null && $value->status_absen!='R'){
+                        $kode_ijin_payroll='M';
+                    }else if($value->absen_masuk_kerja!=null && $value->absen_pulang_kerja==null && $value->status_absen=='R'){
+                        $kode_ijin_payroll='R';
+                    }else if($value->absen_masuk_kerja==null && $value->absen_pulang_kerja==null && $value->status_absen!='R'){
+                        $kode_ijin_payroll='M';
+                    }else if($value->absen_masuk_kerja==null && $value->absen_pulang_kerja==null && $value->status_absen=='R'){
+                        $kode_ijin_payroll='R';
+                    }
+                }else{
+                    if($value->status_absen=='LN'){
+                        $kode_ijin_payroll='LBY';
+                    }else if($value->status_absen=='R'){
+                        $kode_ijin_payroll='R';
+                    }else if($value->status_absen==null){
+                        $kode_ijin_payroll='LSM';
+                    }else if($value->status_absen=='IKS'){
+                        $kode_ijin_payroll='OK';
+                    }else if($value->status_absen=='TL'){
+                        $kode_ijin_payroll='LSM';
+                    }
+                }
+            }else if($kode_ijin_payroll=='ITB'){
+                if($value->status_absen=='M'){
+                    $kode_ijin_payroll='M';
+                }else if($value->status_absen=='IKS'){
+                    $kode_ijin_payroll='OK';
+                }else if($value->status_absen=='LP'){
+                    $kode_ijin_payroll='LP';
+                }else if($value->status_absen=='S'){
+                    $kode_ijin_payroll='S';
+                }
+            }else if($kode_ijin_payroll=='IBY'){
+                if($value->status_absen=='DL'){
+                    $kode_ijin_payroll='DL';
+                }
+            }
+            $data = [
+                Date::stringToExcel($value->tanggal_berjalan),
+                $value->nama_hari,
+                $value->nik,
+                $value->enroll_id,
+                $value->employee_name,
+                $value->status_staff,
+                $value->status_jabatan,
+                $value->sub_dept_name,
+                $value->department_name,
+                $value->group_department,
+                '',
+                $value->mulai_jam_kerja,
+                $value->akhir_jam_kerja,
+                '',
+                '',
+                $value->absen_masuk_kerja,
+                $value->absen_pulang_kerja,
+                '',
+                $value->permits_dari_pukul,
+                $value->permits_sampai_pukul,
+                $value->total_menit_permits,
+                $value->jumlah_menit_absen_dt,
+                $value->jumlah_menit_absen_pc,
+                $value->jumlah_menit_absen_dtpc,
+                $value->status_absen,
+                $kode_ijin_payroll,
+                $value->absen_alasan,
+                '',
+                $value->catatan,
+                $value->nomor_form_lembur,
+                $value->mulai_jam_lembur,
+                $value->akhir_jam_lembur,
+                $value->akhir_jam_lembur,
+                $value->jumlah_jam_istirahat,
+                '',
+                $value->final_mulai_jam_lembur,
+                $value->final_selesai_jam_lembur,
+                $value->final_jam_istirahat_lembur,
+                $value->final_total_jam_lembur,
+                '',
+                '',
+                $value->gaji_perhari,
+                $value->gaji_permenit,
+                '',
+                $value->iby,
+                $value->itb,
+                $value->m,
+                $value->dt,
+                $value->pc,
+                $value->dtpc,
+                $value->lby,
+                $value->lsm,
+                $value->r,
+                $value->ok,
+                $value->hari_kerja,
+                $value->pot_hari_kerja,
+                $value->total_absen,
+                $value->lembur_1,
+                $value->lembur_2,
+                $value->lembur_3,
+                $value->lembur_4,
+                $value->jumlah_menit_absen_dt,
+                $value->jumlah_menit_absen_pc,
+                $value->total_menit_permits,
+                '',
+                '',
+                $value->kode_grade,
+                '',
+                $value->seniority_allowance,
+                $value->insentif_kehadiran,
+                $value->insentif_jabatan,
+                $value->lembur1_rupiah,
+                $value->lembur2_rupiah,
+                $value->lembur3_rupiah,
+                $value->lembur4_rupiah,
+                $value->koreksi_upah,
+                $value->koreksi_lembur,
+                $value->koreksi_insentif,
+                $value->potongan_upah,
+                $value->potongan_lembur,
+                $value->potongan_insentif,
+                $value->potongan_piutang,
+                '',
+                $value->rp_pot_hari_kerja,
+                $value->rp_pot_jam,
+                $value->bruto,
+                '',
+                $value->bruto,
+                $value->bpjs_tk,
+                $value->bpjs_ks,
+                0,
+                0,
+                $value->total_potongan,
+                $value->pembulatan,
+                $value->jumlah,
+                '',
+                $value->bpjs_tk_company,
+                $value->bpjs_ks_company,
+                $value->kompensasi,
+                $value->thr,
+                $value->konsumsi,
+                '',
+                $value->total_pembayaran
+            ];
+            $sheet->writeRow($data);
+        }
+        $finename=date('Y-m-d').'_Time and Attendance PT.NAG_'.rand(10,10000000).'xlsx';
         ob_end_clean();
-        return $response;
+        return $excel->download($finename);
     }
     public function proses_payroll_harian(){
         ini_set('max_execution_time', 0);
@@ -1035,7 +1737,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 'bruto'=>($value->kode_hari!=5 && $value->kode_hari!=6)?((($value->mulai_jam_kerja!=null?$gaji_perhari:0)+$tunjangan/$jumlah_hari_kerja+(((($value->status_absen==null || $value->status_absen=='IKS') && $value->mulai_jam_kerja!=null))?$insentif_kehadiran:0)+$total_lembur_rupiah+$koreksi_upah+$insentif_jabatan)-($koreksi_potongan+(($value->status_absen!='TL'||$value->status_absen==null)?(($value->jumlah_menit_absen_dt+$value->jumlah_menit_absen_pc+$value->total_menit_permits)*$gaji_permenit):0)+((in_array($value->status_absen, $ITB)||$value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null)||$value->status_absen=='R')?$gaji_perhari:0))):(((($value->status_absen==null || $value->status_absen=='IKS') && $value->mulai_jam_kerja!=null)||(in_array($value->status_absen, $IBY))?$gaji_perhari:0)+$total_lembur_rupiah)-((($value->status_absen!='TL'||$value->status_absen==null)?(($value->jumlah_menit_absen_dt+$value->jumlah_menit_absen_pc+$value->total_menit_permits)*$gaji_permenit):0)+(in_array($value->status_absen, $ITB)||$value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null)||$value->status_absen=='R')?$gaji_perhari:0),
                 'bpjs_tk'=>($value->kode_hari!=5 && $value->kode_hari!=6)?$bpjs_tk:0,
                 'bpjs_ks'=>($value->kode_hari!=5 && $value->kode_hari!=6)?$bpjs_ks:0,
-                'total_potongan'=>(($value->kode_hari!=5 && $value->kode_hari!=6)?$bpjs_tk:0)+(($value->kode_hari!=5 && $value->kode_hari!=6)?$bpjs_ks:0),
+                'total_potongan'=>(($value->kode_hari!=5 && $value->kode_hari!=6)?$bpjs_tk+$bpjs_ks:0),
                 'pembulatan'=>($value->kode_hari!=5 && $value->kode_hari!=6)?
                 round(
                     (
