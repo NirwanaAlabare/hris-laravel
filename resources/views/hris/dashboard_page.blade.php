@@ -13,7 +13,7 @@
 <!-- page-header -->
 <!-- End page-header -->
 
-<div class="row pt-7 px-3">
+<div class="row pt-7 m-0 px-3">
     <div class="col-lg-12 col-md-12">
         <div class="row p-5">
             <div class="col-auto">
