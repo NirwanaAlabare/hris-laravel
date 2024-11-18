@@ -87,7 +87,7 @@
                 <div class="card-body p-5">
                     <div class="row pb-3">
                         <div class="col-3">
-                            <label class="form-label text-primary pt-1">TANGGAL</label>
+                            <label class="form-label text-primary pt-1">TANGGAL ABSENSI</label>
                         </div>
                         <div class="col-9">
                             <div class="input-group">
@@ -1781,7 +1781,6 @@
                                         enroll_id:enroll_id
                                     },
                                     success: function(res){
-                                    console.log(res);
                                         swal({
                                             title: "Update Absensi",
                                             text: "Data berhasil di update",
