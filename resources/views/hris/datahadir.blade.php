@@ -87,7 +87,7 @@
                 <div class="card-body p-5">
                     <div class="row pb-3">
                         <div class="col-3">
-                            <label class="form-label text-primary pt-1">TANGGAL ABSENSI</label>
+                            <label class="form-label text-primary pt-1">TANGGAL</label>
                         </div>
                         <div class="col-9">
                             <div class="input-group">
