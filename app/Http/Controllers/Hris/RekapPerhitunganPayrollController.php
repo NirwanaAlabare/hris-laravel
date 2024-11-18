@@ -1160,7 +1160,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             'L' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 7],
             'M' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 7],
             'N' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 13],
-            'O' => ['width' => 13],
+            'O' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 13],
             'P' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 10],
             'Q' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 10],
             'R' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 10],
@@ -1271,6 +1271,13 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     }
                 }
             }
+            $mulai_jam_kerja=strtotime($value->mulai_jam_kerja);
+            $akhir_jam_kerja=strtotime($value->akhir_jam_kerja);
+            $jumlah_detik_istirahat=strtotime($jumlah_menit_istirahat);
+            $total_menit_kerja=$akhir_jam_kerja-$mulai_jam_kerja;
+            $total_menit_kerja_real=sprintf("%02d", floor($total_menit_kerja/3600)).':'.sprintf("%02d", ($total_menit_kerja%3600)/60);
+            $total_menit_kerja_string=strtotime($total_menit_kerja_real)-$jumlah_detik_istirahat;
+            $total_menit_kerja_final=sprintf("%02d", floor($total_menit_kerja_string/3600)).':'.sprintf("%02d", ($total_menit_kerja_string%3600)/60);
             $kode_ijin_payroll=$value->kode_ijin_payroll;
             if($kode_ijin_payroll==null){
                 if($value->mulai_jam_kerja!=null && $value->akhir_jam_kerja!=null){
@@ -1345,7 +1352,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $value->mulai_jam_kerja,
                 $value->akhir_jam_kerja,
                 $jumlah_menit_istirahat,
-                '',
+                $total_menit_kerja_final,
                 $value->absen_masuk_kerja,
                 $value->absen_pulang_kerja,
                 $total_absen_kerja,
@@ -1363,8 +1370,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $value->nomor_form_lembur,
                 substr($value->mulai_jam_lembur,11,8),
                 substr($value->akhir_jam_lembur,11,8),
-                $value->akhir_jam_lembur,
                 $value->jumlah_jam_istirahat,
+                $value->jumlah_jam_lembur,
                 '',
                 $value->final_mulai_jam_lembur,
                 $value->final_selesai_jam_lembur,
