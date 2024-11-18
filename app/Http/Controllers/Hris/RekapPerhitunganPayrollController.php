@@ -711,12 +711,6 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $arrperiode=explode(" s/d ",request()->daterange);
         $first_date=$arrperiode[0];
         $last_date=$arrperiode[1];
-        // $query=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$first_date)->where('tanggal_berjalan','<=',$last_date)->whereRaw('enroll_id is not null '.$inEnrollId.$inStatusStaff)->with('employee_atribut','employee_atribut.group_department','ref_absen','data_lembur','daily_labor_cost','koreksi_upah')->with(['employee_atribut.grading_salary'=>function($query){
-        //     $query->where('periode_umk','2024-01');
-        // }])->with(['rekap_lembur'=>function($query)use($first_date,$last_date){
-        //     $query->where('tanggal_berjalan','>=',$first_date)
-        //     ->where('tanggal_berjalan','<=',$last_date);
-        // }])->orderBy('enroll_id','asc')->orderBy('tanggal_berjalan','asc')->get();
         $query=DB::select("select a.tanggal_berjalan,a.kode_hari,a.nama_hari,b.nik,a.enroll_id,b.employee_name,b.status_staff,b.status_jabatan,b.sub_dept_name,b.department_name,c.group_department,a.mulai_jam_kerja,a.akhir_jam_kerja,a.absen_masuk_kerja,a.absen_pulang_kerja,a.permits_dari_pukul,a.permits_sampai_pukul,a.total_menit_permits,a.jumlah_menit_absen_dt,a.jumlah_menit_absen_pc,a.jumlah_menit_absen_dtpc,a.status_absen,a.absen_alasan,h.kode_ijin_payroll,d.catatan,d.nomor_form_lembur,d.mulai_jam_lembur,d.akhir_jam_lembur,d.jumlah_jam_istirahat,d.jumlah_jam_lembur,e.final_mulai_jam_lembur,e.final_selesai_jam_lembur,e.final_jam_istirahat_lembur,e.final_total_jam_lembur,c.gaji_perhari,c.gaji_permenit,c.iby,c.itb,c.m,c.dt,c.pc,c.dtpc,c.lby,c.lsm,c.r,c.ok,c.hari_kerja,c.pot_hari_kerja,c.total_absen,e.lembur_1,e.lembur_2,e.lembur_3,e.lembur_4,b.kode_grade,i.salary_bulanan,c.seniority_allowance,c.insentif_kehadiran,c.insentif_jabatan,e.lembur1_rupiah,e.lembur2_rupiah,e.lembur3_rupiah,e.lembur4_rupiah,if(f.jenis_koreksi=1,f.jumlah_rp_potongan,0) koreksi_upah,if(f.jenis_koreksi=3,f.jumlah_rp_potongan,0) koreksi_lembur,if(f.jenis_koreksi=2,f.jumlah_rp_potongan,0) koreksi_insentif,if(g.jenis_potongan=7,g.jumlah_rp_potongan,0) potongan_upah,if(g.jenis_potongan=8,g.jumlah_rp_potongan,0) potongan_lembur,if(g.jenis_potongan=5,g.jumlah_rp_potongan,0) potongan_insentif,if(g.jenis_potongan=6,g.jumlah_rp_potongan,0) potongan_piutang,c.rp_pot_hari_kerja,c.rp_pot_jam,c.bruto,c.bpjs_tk,c.bpjs_ks,c.total_potongan,c.pembulatan,c.jumlah,c.bpjs_tk_company,c.bpjs_ks_company,c.kompensasi,c.thr,c.konsumsi,c.total_pembayaran from master_data_absen_kehadiran a inner join employee_atribut b on a.enroll_id=b.enroll_id left join daily_labor_costs c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan left join rekap_perhitungan_lembur e on a.enroll_id=e.enroll_id and a.tanggal_berjalan=e.tanggal_berjalan left join data_koreksi_upah f on a.enroll_id=f.enroll_id and a.tanggal_berjalan=f.tanggal_koreksi left join data_koreksi_potongan g on a.enroll_id=g.enroll_id and a.tanggal_berjalan=g.tanggal_koreksi left join ref_absen_ijin h on a.status_absen=h.kode_absen_ijin left join (select*from grading_salary where periode_umk='2024-01')i on b.kode_grade=i.kode_grade where a.tanggal_berjalan>='".$first_date."' and a.tanggal_berjalan<='".$last_date."'".$inEnrollId.$inStatusStaff);
         $excel = FastExcel::create('query');
         $sheet = $excel->getSheet();
@@ -1160,10 +1154,10 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             'L' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 7],
             'M' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 7],
             'N' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 13],
-            'O' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 13],
+            'O' => ['width' => 13],
             'P' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 10],
             'Q' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 10],
-            'R' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 10],
+            'R' => ['width' => 10],
             'S' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 12],
             'T' => ['format' => NumberFormat::FORMAT_DATE_TIME3,'width' => 12],
             'U' => ['width' => 12],
@@ -1274,10 +1268,9 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $mulai_jam_kerja=strtotime($value->mulai_jam_kerja);
             $akhir_jam_kerja=strtotime($value->akhir_jam_kerja);
             $jumlah_detik_istirahat=strtotime($jumlah_menit_istirahat);
-            $total_menit_kerja=$akhir_jam_kerja-$mulai_jam_kerja;
-            $total_menit_kerja_real=sprintf("%02d", floor($total_menit_kerja/3600)).':'.sprintf("%02d", ($total_menit_kerja%3600)/60);
-            $total_menit_kerja_string=strtotime($total_menit_kerja_real)-$jumlah_detik_istirahat;
-            $total_menit_kerja_final=sprintf("%02d", floor($total_menit_kerja_string/3600)).':'.sprintf("%02d", ($total_menit_kerja_string%3600)/60);
+            $time = explode(":",$jumlah_menit_istirahat);
+            $minutes = intval($time[0])*60 + intval($time[1]);
+            $total_jam_kerja=(($akhir_jam_kerja-$mulai_jam_kerja)/60)-$minutes;
             $kode_ijin_payroll=$value->kode_ijin_payroll;
             if($kode_ijin_payroll==null){
                 if($value->mulai_jam_kerja!=null && $value->akhir_jam_kerja!=null){
@@ -1334,9 +1327,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             }
             $absen_masuk_kerja=strtotime($value->absen_masuk_kerja);
             $absen_pulang_kerja=strtotime($value->absen_pulang_kerja);
-            $total_absen_kerja=$absen_pulang_kerja-$absen_masuk_kerja;
-            $total_absen_kerja=sprintf("%02d", floor($total_absen_kerja/3600)).':'.sprintf("%02d", ($total_absen_kerja%3600)/60);
-            // $total_absen_kerja=($total_absen_kerja%3600)/60;
+            $total_absen_kerja=($absen_pulang_kerja-$absen_masuk_kerja)/60;
             $data = [
                 Date::stringToExcel($value->tanggal_berjalan),
                 $value->nama_hari,
@@ -1352,10 +1343,10 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $value->mulai_jam_kerja,
                 $value->akhir_jam_kerja,
                 $jumlah_menit_istirahat,
-                $total_menit_kerja_final,
+                $total_jam_kerja>0?$total_jam_kerja:'',
                 $value->absen_masuk_kerja,
                 $value->absen_pulang_kerja,
-                $total_absen_kerja,
+                $total_absen_kerja>0?$total_absen_kerja:'',
                 $value->permits_dari_pukul,
                 $value->permits_sampai_pukul,
                 $value->total_menit_permits,
