@@ -15,6 +15,7 @@
 						<div class="col-lg-4 d-block mx-auto">
 							<div class="row">
 								<div class="col-xl-12 col-md-12 col-md-12">
+								<form id="adminLogin">
 									<div class="card">
 										<div class="card-body">
 											<div class="text-center mb-6">
@@ -37,6 +38,7 @@
 											</div>
 										</div>
 									</div>
+								</form>
 								</div>
 							</div>
 						</div>
@@ -89,12 +91,11 @@
         return false;
     }
 
-	$(document).on('keypress',function(e) {
-        if(e.which == 13) {
-            login();
-        }
-    });
-
-
+	$(document).on('keypress', '#adminLogin input', function (e) {
+    if (e.which === 13) {
+        login();
+        e.preventDefault(); 
+    }});
+	
 </script>
 @endsection
