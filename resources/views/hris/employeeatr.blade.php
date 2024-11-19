@@ -1348,6 +1348,10 @@
                         document.getElementById('row_error_handle').style.visibility='visible';
                         $('#loading_karyawan').removeClass("spinner-border");
                         document.getElementById('row_tabler').style.height='400px';
+                    },
+                    error: function(res){
+                        swal("", "IMPORT KARYAWAN GAGAL!", "error")
+                        $('#loading_karyawan').removeClass("spinner-border");
                     }
                 })
             }
