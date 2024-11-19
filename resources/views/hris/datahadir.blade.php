@@ -620,58 +620,58 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">NIK : </label>
-                                    <input type="text" id="enroll_id_edit" class="form-control" name="enroll_id" placeholder="NIK" readonly>
+                                    <input type="text" id="nik_edit" class="form-control" name="enroll_id" placeholder="NIK" readonly>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">No Absen : </label>
-                                    <input type="text" id="nik_edit" class="form-control" name="nik" placeholder="NIK" readonly>
+                                    <input type="text" id="enroll_id_edit" class="form-control" name="nik" placeholder="No absen" readonly>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Nama : </label>
-                                    <input type="text" id="employee_name_edit" class="form-control" name="employee_name" placeholder="NIK" readonly>
+                                    <input type="text" id="employee_name_edit" class="form-control" name="employee_name" placeholder="Name" readonly>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Bagian : </label>
-                                    <input type="text" id="sub_dept_name_edit" class="form-control" name="sub_dept_name" placeholder="NIK" readonly>
+                                    <input type="text" id="sub_dept_name_edit" class="form-control" name="sub_dept_name" placeholder="Bagian" readonly>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Jabatan : </label>
-                                    <input type="text" id="posisi_name_edit" class="form-control" name="posisi_name" placeholder="NIK" readonly>
+                                    <input type="text" id="posisi_name_edit" class="form-control" name="posisi_name" placeholder="Jabatan" readonly>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Aktif/Non Aktif : </label>
-                                    <input type="text" id="work_status_edit" class="form-control" name="work_status" placeholder="NIK" readonly>
+                                    <input type="text" id="work_status_edit" class="form-control" name="work_status" placeholder="Status" readonly>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Tanggal: </label>
-                                    <input type="date" id="tanggal_berjalan_edit" class="form-control" name="tanggal_berjalan" placeholder="NIK" readonly>
+                                    <input type="date" id="tanggal_berjalan_edit" class="form-control" name="tanggal_berjalan" placeholder="Tanggal" readonly>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Jadwal In : </label>
-                                    <input type="time" id="jadwal_in_edit" class="form-control" name="mulai_jam_kerja" placeholder="NIK">
+                                    <input type="time" id="jadwal_in_edit" class="form-control" name="mulai_jam_kerja" placeholder="Jadwan In">
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">Jadwal Out : </label>
-                                    <input type="time" id="jadwal_out_edit" class="form-control" name="akhir_jam_kerja" placeholder="NIK">
+                                    <input type="time" id="jadwal_out_edit" class="form-control" name="akhir_jam_kerja" placeholder="Jadwan Out">
                                 </div>
                             </div>
                         </div>
@@ -1009,7 +1009,7 @@
             var adaPerizinan = "";
             var adaGagalAbsen = "";
             var adaSPL = "";
-
+            console.log("D",d);
             if ((d.nomor_absen_ijin !== "") && (d.nomor_absen_ijin !== null) && (d.status_absen !== "IKS") && (d.status_absen !== "M")) {
                 adaPerizinan = '<div class="col-md-4">' +
                     '<div class="expanel expanel-light p-1 mt-1 mb-1">' +
@@ -1122,7 +1122,6 @@
                 '</div>';
             }
             return (
-
                 '<div class="expanel expanel-success">' +
                     '<div class="expanel-heading p-1">' +
                         '<h4 class="expanel-title">' +
@@ -1179,13 +1178,13 @@
                                             '<div class="col-md-4">' +
                                                 '<div class="form-group">' +
                                                     '<label class="form-label">Aktif/Non Aktif</label>' +
-                                                    '<div>' + d.work_status + '</div>' +
+                                                    '<div>' + (d.work_status ? d.work_status : '-' ) + '</div>' +
                                                 '</div>' +
                                             '</div>' +
                                             '<div class="col-md-4">' +
                                                 '<div class="form-group">' +
                                                     '<label class="form-label">Kontrak/Tetap</label>' +
-                                                    '<div>' + d.employee_status + '</div>' +
+                                                    '<div>' + (d.employee_status  ? d.employee_status : '-') + '</div>' +
                                                 '</div>' +
                                             '</div>' +
                                             '<div class="col-md-4">' +
@@ -1211,7 +1210,7 @@
                                             '<div class="col-md-6">' +
                                                 '<div class="form-group">' +
                                                     '<label class="form-label">Catatan HRD</label>' +
-                                                    '<div class="border">' + d.catatan_hrd + '</div>' +
+                                                    '<div class="border">' + (d.catatan_hrd ? d.catatan_hrd : '-') + '</div>' +
                                                 '</div>' +
                                             '</div>' +
                                             adaGagalAbsen + adaPerizinan + adaSPL +
@@ -1513,13 +1512,13 @@
             $('#datatable-ajax-crud tbody').on('click', 'tr', function () {
                 var tr = $(this).closest('tr');
                 var row = table.row(tr);
-
                 if (row.child.isShown()) {
                     // This row is already open - close it
                     row.child.hide();
                     tr.removeClass('shown');
                 } else {
                     // Open this row
+                    console.log("row",row.data());
                     row.child(format(row.data())).show();
                     tr.addClass('shown');
                 }
@@ -1618,8 +1617,8 @@
                                     $('#nik').val(res['nik']);
                                     $('#employee_name').val(res['employee_name']);
                                     $('#sub_dept_name').val(res['sub_dept_name']);
-                                    $('#posisi_name').val(res['posisi_name']);
-                                    $('#work_status').val(res['work_status']);
+                                    $('#posisi_name').val(res['status_jabatan']);
+                                    $('#work_status').val(res['status_aktif']);
                                     $('#ajax-absenijin-model-add').modal('show');
                                     $('#ajaxAbsenIjinModel').html('<b>[ADD] ABSEN PERIZINAN & IKS</b>');
                                     var tglform = res['tanggal_berjalan'];
@@ -2081,7 +2080,6 @@
         function edit_jadwal(element) {
             event.preventDefault();
             var uuid = element.getAttribute('uuid');
-
             $.ajax({
                 type:"POST",
                 url: "{{route('hris.dataabsenperijinan.ajax_getkehadiran')}}",
@@ -2095,12 +2093,12 @@
                 success: function(res){
                     $('#uuid_edit').val(res['uuid']);
                     $('#tanggal_berjalan_edit').val(res['tanggal_berjalan']);
-                    $('#enroll_id_edit').val(res['enroll_id']);
-                    $('#nik_edit').val(res['nik']);
+                    $('#enroll_id_edit').val(res['nik']);
+                    $('#nik_edit').val(res['enroll_id']);
                     $('#employee_name_edit').val(res['employee_name']);
                     $('#sub_dept_name_edit').val(res['sub_dept_name']);
-                    $('#posisi_name_edit').val(res['posisi_name']);
-                    $('#work_status_edit').val(res['work_status']);
+                    $('#posisi_name_edit').val(res['status_jabatan']);
+                    $('#work_status_edit').val(res['status_aktif']);
                     $('#jadwal_in_edit').val(res['mulai_jam_kerja']);
                     $('#jadwal_out_edit').val(res['akhir_jam_kerja']);
                     $('#absen_in_edit').val(res['absen_masuk_kerja']);
@@ -2123,6 +2121,7 @@
                 data: $(this).serialize(),
                 success: function(response)
                 {
+                    console.log('response',response);
                     notif({
                         msg: "<b>Info:</b> Data berhasil di simpan.",
                         type: "info"

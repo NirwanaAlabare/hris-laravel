@@ -51,8 +51,8 @@ class GagalAbsenExport implements FromQuery, WithMapping, ShouldAutoSize, WithEv
             $inSearchData = ' 
                 AND (
                     UPPER(master_data_absen_kehadiran.enroll_id) LIKE ("%' . $searchData . '%") 
-                    OR UPPER(master_data_absen_kehadiran.nik) LIKE ("%' . $searchData . '%") 
-                    OR UPPER(master_data_absen_kehadiran.employee_name) LIKE ("%' . $searchData . '%") 
+                    OR UPPER(employee_atribut.nik) LIKE ("%' . $searchData . '%") 
+                    OR UPPER(employee_atribut.employee_name) LIKE ("%' . $searchData . '%") 
                 )
             ';
 
@@ -68,14 +68,14 @@ class GagalAbsenExport implements FromQuery, WithMapping, ShouldAutoSize, WithEv
         $tanggalMulai = $this->tanggalMulai;
         $tanggalSampai = $this->tanggalSampai;
 
-        return MasterDataAbsenKehadiran::query()
+        $result =  MasterDataAbsenKehadiran::query()
                 ->selectRaw('
                     master_data_absen_kehadiran.tanggal_berjalan,
                     master_data_absen_kehadiran.nama_hari,
                     employee_atribut.nik,
                     employee_atribut.enroll_id,
                     employee_atribut.employee_name,
-                    master_data_absen_kehadiran.status_staff,
+                    employee_atribut.status_staff,
                     employee_atribut.status_staff status_staff_bck,
                     department_all.department_name,
                     department_all.sub_dept_name,
@@ -101,7 +101,12 @@ class GagalAbsenExport implements FromQuery, WithMapping, ShouldAutoSize, WithEv
                 ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
                 ->orderBy('employee_atribut.employee_name','asc')
                 ->orderBy('master_data_absen_kehadiran.tanggal_berjalan','asc')
-                ->limit(1);
+                ->get();
+        if($result->isEmpty()) {
+            abort(404, 'Data tidak ditemukan');
+        }   
+
+        return $result;
     }
 
     public function startCell(): string

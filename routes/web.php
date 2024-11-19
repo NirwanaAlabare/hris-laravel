@@ -393,6 +393,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'admin','names
 
 });
 Route::get('/tes2','Hris\EmployeeAtrController@creat_master_absen_26');
+
 Event::listen('auth.login', function($user)
 {
     $user->last_login = new DateTime;

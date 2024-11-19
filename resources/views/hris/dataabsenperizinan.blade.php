@@ -1471,7 +1471,10 @@
                     "headers": {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    "dataSrc": "data",
+                    "dataSrc": function(json) {
+                                console.log('Respons dari Controller:', json); // Konsol semua respons
+                                return json.data; // Data yang digunakan oleh DataTables
+                            }
                 },
                 columns: [
                     {
@@ -1527,7 +1530,6 @@
             });
 
             table1.draw();
-
             $('#datatable-ajax-crud tbody').on('click', 'tr', function () {
                 var tr = $(this).closest('tr');
                 var row = table1.row(tr);

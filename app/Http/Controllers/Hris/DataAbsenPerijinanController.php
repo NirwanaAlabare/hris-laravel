@@ -80,39 +80,71 @@ class DataAbsenPerijinanController extends AdminBaseController
 
             if(empty($request->input('search.value')))
             {
-                $query =  DataAbsenPerijinan::offset($start)
-                                ->limit($limit)
-                                ->orderBy($order,$dir)
-                                ->get();
+                $query =  DataAbsenPerijinan::
+                                    selectRaw('employee_atribut.employee_name, data_absen_perijinan.*')
+                                    ->offset($start)
+                                    ->limit($limit)
+                                    ->orderBy($order,$dir)
+                                    ->leftJoin('employee_atribut','data_absen_perijinan.enroll_id','=','employee_atribut.enroll_id')
+                                    ->get();
 
                 $totalData = DataAbsenPerijinan::count();
                 $totalFiltered = $totalData;
 
+
             } else {
                 $search = $request->input('search.value');
 
-                $query =  DataAbsenPerijinan::where('uuid_master','LIKE',"%{$search}%")
-                                ->orWhere('tanggal_perizinan','LIKE',"%{$search}%")
-                                ->orWhere('nomor_form_perizinan','LIKE',"%{$search}%")
-                                ->orWhere('enroll_id','LIKE',"%{$search}%")
-                                ->orWhere('nik','LIKE',"%{$search}%")
-                                ->orWhere('employee_name','LIKE',"%{$search}%")
-                                ->orWhere('kode_absen_ijin','LIKE',"%{$search}%")
-                                ->orWhere('absen_alasan','LIKE',"%{$search}%")
-                                ->offset($start)
-                                ->limit($limit)
-                                ->orderBy($order,$dir)
-                                ->get();
+                // $query =  DataAbsenPerijinan::where('uuid_master','LIKE',"%{$search}%")
+                //                 ->orWhere('tanggal_perizinan','LIKE',"%{$search}%")
+                //                 ->orWhere('nomor_form_perizinan','LIKE',"%{$search}%")
+                //                 ->orWhere('enroll_id','LIKE',"%{$search}%")
+                //                 ->orWhere('nik','LIKE',"%{$search}%")
+                //                 ->orWhere('employee_name','LIKE',"%{$search}%")
+                //                 ->orWhere('kode_absen_ijin','LIKE',"%{$search}%")
+                //                 ->orWhere('absen_alasan','LIKE',"%{$search}%")
+                //                 ->offset($start)
+                //                 ->limit($limit)
+                //                 ->orderBy($order,$dir)
+                //                 ->get();
 
-                $totalData = DataAbsenPerijinan::where('uuid_master','LIKE',"%{$search}%")
-                                ->orWhere('tanggal_perizinan','LIKE',"%{$search}%")
-                                ->orWhere('nomor_form_perizinan','LIKE',"%{$search}%")
-                                ->orWhere('enroll_id','LIKE',"%{$search}%")
-                                ->orWhere('nik','LIKE',"%{$search}%")
-                                ->orWhere('employee_name','LIKE',"%{$search}%")
-                                ->orWhere('kode_absen_ijin','LIKE',"%{$search}%")
-                                ->orWhere('absen_alasan','LIKE',"%{$search}%")
-                                ->count();
+                // $totalData = DataAbsenPerijinan::where('uuid_master','LIKE',"%{$search}%")
+                //                 ->orWhere('tanggal_perizinan','LIKE',"%{$search}%")
+                //                 ->orWhere('nomor_form_perizinan','LIKE',"%{$search}%")
+                //                 ->orWhere('enroll_id','LIKE',"%{$search}%")
+                //                 ->orWhere('nik','LIKE',"%{$search}%")
+                //                 ->orWhere('employee_name','LIKE',"%{$search}%")
+                //                 ->orWhere('kode_absen_ijin','LIKE',"%{$search}%")
+                //                 ->orWhere('absen_alasan','LIKE',"%{$search}%")
+                //                 ->count();
+
+                $query = DataAbsenPerijinan::
+                selectRaw('employee_atribut.employee_name, data_absen_perijinan.*')
+                ->leftJoin('employee_atribut', 'data_absen_perijinan.enroll_id', '=', 'employee_atribut.enroll_id')
+                ->where('data_absen_perijinan.uuid_master', 'LIKE', "%{$search}%")
+                ->orWhere('data_absen_perijinan.tanggal_perizinan', 'LIKE', "%{$search}%")
+                ->orWhere('data_absen_perijinan.nomor_form_perizinan', 'LIKE', "%{$search}%")
+                ->orWhere('data_absen_perijinan.enroll_id', 'LIKE', "%{$search}%")
+                ->orWhere('employee_atribut.nik', 'LIKE', "%{$search}%")
+                ->orWhere('employee_atribut.employee_name', 'LIKE', "%{$search}%")
+                ->orWhere('data_absen_perijinan.kode_absen_ijin', 'LIKE', "%{$search}%")
+                ->orWhere('data_absen_perijinan.absen_alasan', 'LIKE', "%{$search}%")
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
+        
+            $totalData = DataAbsenPerijinan::
+                leftJoin('employee_atribut', 'data_absen_perijinan.enroll_id', '=', 'employee_atribut.enroll_id')
+                ->where('data_absen_perijinan.uuid_master', 'LIKE', "%{$search}%")
+                ->orWhere('data_absen_perijinan.tanggal_perizinan', 'LIKE', "%{$search}%")
+                ->orWhere('data_absen_perijinan.nomor_form_perizinan', 'LIKE', "%{$search}%")
+                ->orWhere('data_absen_perijinan.enroll_id', 'LIKE', "%{$search}%")
+                ->orWhere('employee_atribut.nik', 'LIKE', "%{$search}%")
+                ->orWhere('employee_atribut.employee_name', 'LIKE', "%{$search}%")
+                ->orWhere('data_absen_perijinan.kode_absen_ijin', 'LIKE', "%{$search}%")
+                ->orWhere('data_absen_perijinan.absen_alasan', 'LIKE', "%{$search}%")
+                ->count();
                 $totalFiltered = $totalData;
 
             }
@@ -152,7 +184,7 @@ class DataAbsenPerijinanController extends AdminBaseController
                 "recordsFiltered" => intval($totalFiltered),
                 "data"            => $data
                 );
-
+            
             echo json_encode($json_data);
         }
     }
@@ -224,8 +256,6 @@ class DataAbsenPerijinanController extends AdminBaseController
             'tanggal_perizinan' => $tanggal_perizinan,
             'nomor_form_perizinan' => $nomor_form_perizinan,
             'enroll_id' => $enroll_id,
-            'nik' => $nik,
-            'employee_name' => $employee_name,
             'kode_absen_ijin' => $kode_absen_ijin,
             'absen_alasan' => $absen_alasan,
             'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
@@ -259,14 +289,10 @@ class DataAbsenPerijinanController extends AdminBaseController
                 })->update([
                     'nomor_absen_ijin' => $nomor_form_perizinan,
                     'status_absen' => $kode_absen_ijin,
-                    'absen_alasan' => $absen_alasan,
-                    'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
-                    'tanggal_akhir_ijin' => $tanggal_akhir_ijin,
                     'operator' => $email,
                     'jumlah_menit_absen_dt'=>0,
                     'jumlah_menit_absen_pc'=>0,
-                    'jumlah_menit_absen_dtpc'=>0,
-                    'updated_absen_ijin' => now()
+                    'jumlah_menit_absen_dtpc'=>0
                 ]);
     
                 if($query1) {
@@ -282,14 +308,10 @@ class DataAbsenPerijinanController extends AdminBaseController
                     ->update([
                         'nomor_absen_ijin' => $nomor_form_perizinan,
                         'status_absen' => $kode_absen_ijin,
-                        'absen_alasan' => $absen_alasan,
-                        'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
-                        'tanggal_akhir_ijin' => $tanggal_akhir_ijin,
                         'jumlah_menit_absen_dt'=>0,
                         'jumlah_menit_absen_pc'=>0,
                         'jumlah_menit_absen_dtpc'=>0,
-                        'operator' => $email,
-                        'updated_absen_ijin' => now()
+                        'operator' => $email
                     ]);
                 }else{
                     $query1 = MasterDataAbsenKehadiran::whereBetween('tanggal_berjalan', [$tanggal_mulai_ijin, $tanggal_akhir_ijin])
@@ -300,16 +322,12 @@ class DataAbsenPerijinanController extends AdminBaseController
                     })->where('status_absen','!=','LN')->update([
                         'nomor_absen_ijin' => $nomor_form_perizinan,
                         'status_absen' => $kode_absen_ijin,
-                        'absen_alasan' => $absen_alasan,
-                        'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
-                        'tanggal_akhir_ijin' => $tanggal_akhir_ijin,
                         'operator' => $email,
                         'absen_masuk_kerja'=>null,
                         'absen_pulang_kerja'=>null,
                         'jumlah_menit_absen_dt'=>0,
                         'jumlah_menit_absen_pc'=>0,
                         'jumlah_menit_absen_dtpc'=>0,
-                        'updated_absen_ijin' => now()
                     ]);
                 }
             }
@@ -868,8 +886,7 @@ class DataAbsenPerijinanController extends AdminBaseController
     {
         $uuid = $request->uuid;
 
-        $query =  MasterDataAbsenKehadiran::whereRaw('uuid = "' . $uuid  .'"')
-                                 ->first();
+        $query =  MasterDataAbsenKehadiran::whereRaw('uuid = "' . $uuid  .'"')->Join('employee_atribut', 'master_data_absen_kehadiran.enroll_id', '=', 'employee_atribut.enroll_id')->first();
 
         return $query;
 

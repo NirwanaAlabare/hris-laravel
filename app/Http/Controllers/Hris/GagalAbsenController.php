@@ -94,7 +94,7 @@ class GagalAbsenController extends AdminBaseController
                             master_data_absen_kehadiran.absen_pulang_kerja,
                             master_data_absen_kehadiran.status_absen,
                             master_data_absen_kehadiran.holiday_name,
-                            master_data_absen_kehadiran.absen_alasan
+                            data_absen_perijinan.absen_alasan
                         ')
                         ->whereRaw('
                             ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
@@ -107,6 +107,7 @@ class GagalAbsenController extends AdminBaseController
                             AND master_data_absen_kehadiran.mulai_jam_kerja is null AND master_data_absen_kehadiran.akhir_jam_kerja is null AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
                         ')
                         ->leftJoin('employee_atribut', 'master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
+                        ->leftJoin('data_absen_perijinan','master_data_absen_kehadiran.nomor_absen_ijin','data_absen_perijinan.nomor_form_perizinan')
                         ->orderBy('tanggal_berjalan','desc')
                         ->orderBy('employee_name','asc')
                         ->offset($start)
@@ -145,7 +146,7 @@ class GagalAbsenController extends AdminBaseController
                             master_data_absen_kehadiran.absen_pulang_kerja,
                             master_data_absen_kehadiran.status_absen,
                             master_data_absen_kehadiran.holiday_name,
-                            master_data_absen_kehadiran.absen_alasan
+                            data_absen_perijinan.absen_alasan
                         ')
                         ->whereRaw('
                             (
@@ -188,6 +189,7 @@ class GagalAbsenController extends AdminBaseController
                             )
                         ')
                         ->leftJoin('employee_atribut', 'master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
+                        ->leftJoin('data_absen_perijinan','master_data_absen_kehadiran.nomor_absen_ijin','data_absen_perijinan.nomor_form_perizinan')
                         ->offset($start)
                         ->limit($limit)
                         ->get();

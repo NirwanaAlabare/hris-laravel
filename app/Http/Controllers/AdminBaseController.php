@@ -31,7 +31,7 @@ class AdminBaseController extends Controller
     {
         $this->showInstall();
         $this->setting = Setting::first();
-        $this->pending_applications = Attendance::where('application_status', '=', 'pending')->get();
+        // $this->pending_applications = Attendance::where('application_status', '=', 'pending')->get();
 
 
         $this->middleware(function ($request, $next) {

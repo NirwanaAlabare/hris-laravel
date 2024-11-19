@@ -1651,12 +1651,14 @@ class EmployeeAtrController extends AdminBaseController
     }
     public function creat_master_absen_26()
     {
-        $enroll_id=[];
-        $employee=EmployeeAtribut::where('enroll_id','>=',7403)->where('enroll_id','<=',7412)->get();
-        foreach ($employee as $key => $value) {
+        $today=date('Y-m-d');
+        $employee=DB::select("SELECT mda.enroll_id,mda.mulai_jam_kerja,mda.akhir_jam_kerja,mda.tanggal_berjalan,b.status_staff FROM master_data_absen_kehadiran mda JOIN 
+            (SELECT enroll_id, MAX(tanggal_berjalan) AS tanggal_terakhir FROM  master_data_absen_kehadiran WHERE  tanggal_berjalan >= DATE_SUB('".$today."', INTERVAL 30 DAY) AND tanggal_berjalan <= '".$today."' AND mulai_jam_kerja IS NOT NULL GROUP BY enroll_id) subquery ON mda.enroll_id = subquery.enroll_id AND mda.tanggal_berjalan = subquery.tanggal_terakhir 
+            INNER JOIN (SELECT * FROM employee_atribut WHERE deleted_at is null and enroll_id is not null and (status_aktif = 'AKTIF' OR tanggal_resign > '".$today."')) b on subquery.enroll_id = b.enroll_id where mda.enroll_id=5321");
+            foreach ($employee as $key => $value) {
             $staffnonstaff=$value->status_staff;
-            $tanggal_akhir='2024-07-25';
-            $tgl_berjalan='2024-07-02';
+            $tanggal_akhir='2024-10-30';
+            $tgl_berjalan=$today;
             while (strtotime( $tgl_berjalan) <= strtotime($tanggal_akhir)) {
                 $hari=date('D',strtotime(  $tgl_berjalan));
                 if($hari=='Sun'){
@@ -1666,75 +1668,35 @@ class EmployeeAtrController extends AdminBaseController
                     $mulai_jam_kerja=null;
                     $akhir_jam_kerja=null;
                 }else if($hari=='Mon'){
+                    $mulai_jam_kerja=$value->mulai_jam_kerja;
+                    $akhir_jam_kerja=$value->akhir_jam_kerja;
                     $kode_hari='0';
                     $nama_hari='Senin';
                     $status_absen='M';
-                    if($staffnonstaff=='STAFF'){
-                        $mulai_jam_kerja='07:30:00';
-                        $akhir_jam_kerja='17:30:00';
-                    }else if($staffnonstaff=='NON STAFF'){
-                        $mulai_jam_kerja='07:00:00';
-                        $akhir_jam_kerja='16:00:00';
-                    }else{
-                        $mulai_jam_kerja=null;
-                        $akhir_jam_kerja=null;
-                    }
                 }else if($hari=='Tue'){
+                    $mulai_jam_kerja=$value->mulai_jam_kerja;
+                    $akhir_jam_kerja=$value->akhir_jam_kerja;
                     $kode_hari='1';
                     $nama_hari='Selasa';
                     $status_absen='M';
-                    if($staffnonstaff=='STAFF'){
-                        $mulai_jam_kerja='07:30:00';
-                        $akhir_jam_kerja='17:30:00';
-                    }else if($staffnonstaff=='NON STAFF'){
-                        $mulai_jam_kerja='07:00:00';
-                        $akhir_jam_kerja='16:00:00';
-                    }else{
-                        $mulai_jam_kerja=null;
-                        $akhir_jam_kerja=null;
-                    }
                 }else if($hari=='Wed'){
+                    $mulai_jam_kerja=$value->mulai_jam_kerja;
+                    $akhir_jam_kerja=$value->akhir_jam_kerja;
                     $kode_hari='2';
                     $nama_hari='Rabu';
                     $status_absen='M';
-                    if($staffnonstaff=='STAFF'){
-                        $mulai_jam_kerja='07:30:00';
-                        $akhir_jam_kerja='17:30:00';
-                    }else if($staffnonstaff=='NON STAFF'){
-                        $mulai_jam_kerja='07:00:00';
-                        $akhir_jam_kerja='16:00:00';
-                    }else{
-                        $mulai_jam_kerja=null;
-                        $akhir_jam_kerja=null;
-                    }
                 }else if($hari=='Thu'){
+                    $mulai_jam_kerja=$value->mulai_jam_kerja;
+                    $akhir_jam_kerja=$value->akhir_jam_kerja;
                     $kode_hari='3';
                     $nama_hari='Kamis';
                     $status_absen='M';
-                    if($staffnonstaff=='STAFF'){
-                        $mulai_jam_kerja='07:30:00';
-                        $akhir_jam_kerja='17:30:00';
-                    }else if($staffnonstaff=='NON STAFF'){
-                        $mulai_jam_kerja='07:00:00';
-                        $akhir_jam_kerja='16:00:00';
-                    }else{
-                        $mulai_jam_kerja=null;
-                        $akhir_jam_kerja=null;
-                    }
                 }else if($hari=='Fri'){
+                    $mulai_jam_kerja=$value->mulai_jam_kerja;
+                    $akhir_jam_kerja=$value->akhir_jam_kerja;
                     $kode_hari='4';
                     $nama_hari='Jumat';
                     $status_absen='M';
-                    if($staffnonstaff=='STAFF'){
-                        $mulai_jam_kerja='07:30:00';
-                        $akhir_jam_kerja='17:30:00';
-                    }else if($staffnonstaff=='NON STAFF'){
-                        $mulai_jam_kerja='07:00:00';
-                        $akhir_jam_kerja='16:00:00';
-                    }else{
-                        $mulai_jam_kerja=null;
-                        $akhir_jam_kerja=null;
-                    }
                 }else if($hari=='Sat'){
                     $kode_hari='5';
                     $nama_hari='Sabtu';
@@ -1744,30 +1706,12 @@ class EmployeeAtrController extends AdminBaseController
                 }
                 $x=[
                     'uuid' => Str::uuid('uuid'.$key),
+                    'enroll_id' => $value->enroll_id,
                     'tanggal_berjalan' => $tgl_berjalan,
                     'kode_hari' =>$kode_hari,
                     'nama_hari' => $nama_hari,
                     'mulai_jam_kerja' => $mulai_jam_kerja,
                     'akhir_jam_kerja' => $akhir_jam_kerja,
-                    'employee_id' => $value->employee_id,
-                    'employee_name' => $value->employee_name,
-                    'enroll_id' => $value->enroll_id,
-                    'join_date' => $value->join_date,
-                    'tanggal_resign' => $value->tanggal_resign,
-                    'work_status' => $value->work_status,
-                    'status_aktif' => $value->status_aktif,
-                    'status_kontrak_tetap' => $value->status_kontrak_tetap,
-                    'employee_status' => $value->employee_status,
-                    'status_jabatan' => $value->status_jabatan,
-                    'posisi_name' => $value->posisi_name,
-                    'status_staff' => $value->status_staff,
-                    'nik' => $value->nik,
-                    'site_nirwana_id' => $value->site_nirwana_id,
-                    'site_nirwana_name' => $value->site_nirwana_name,
-                    'department_id' => $value->department_id,
-                    'department_name' => $value->department_name,
-                    'sub_dept_id' => $value->sub_dept_id,
-                    'sub_dept_name' => $value->sub_dept_name,
                     'status_absen' => $status_absen,
                     'operator' =>'system',
                 ];
@@ -1777,7 +1721,9 @@ class EmployeeAtrController extends AdminBaseController
             }
         }
         dd('successaga');
+
     }
+
     public function add_cepet(){
         $employee_id = time();
         EmployeeAtribut::create([
@@ -1791,6 +1737,7 @@ class EmployeeAtrController extends AdminBaseController
         ]);
         dd('success : ',$employee_id);
     }
+
     public function import_employees(Request $request)
     {
         $data=Excel::toArray([],$request->file('excel_file'));
@@ -1850,6 +1797,7 @@ class EmployeeAtrController extends AdminBaseController
         $data=Excel::toArray([],$request->file('excel_file'));
         Excel::import(new EmployeeImport, request()->file('excel_file'));
     }
+
     public function uploadEmployee(Request $request)
     {
         ini_set('max_execution_time', 0);
@@ -2248,6 +2196,7 @@ class EmployeeAtrController extends AdminBaseController
         // }
         // info($operator.' telah mengimport data excel untuk menambah atau mengupdate data karyawan');
     }
+
     public function export_excel(){
         $random=rand();
         return Excel::download(new newEmployeeExport, 'all_employee_'.$random.'.xlsx');
@@ -2277,8 +2226,6 @@ class EmployeeAtrController extends AdminBaseController
         return (new EmployeeAtrExport)->exportParams()->download($fileName);
 
     }
-
-
 
     //=============Andri====================
     public function format_import_grading()
