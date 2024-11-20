@@ -54,38 +54,50 @@ class DataAbsenPerijinanExport implements WithColumnFormatting, FromQuery, WithM
         $tanggalMulai = $this->tanggalMulai;
         $tanggalSampai = $this->tanggalSampai;
 
-        $q =  MasterDataAbsenKehadiran::query()
-                ->selectRaw('
-                    master_data_absen_kehadiran.tanggal_berjalan,
-                    master_data_absen_kehadiran.nomor_absen_ijin,
-                    department_all.department_name,
-                    department_all.sub_dept_name,
-                    employee_atribut.enroll_id,
-                    employee_atribut.nik,
-                    employee_atribut.employee_name,
-                    employee_atribut.status_staff,
-                    master_data_absen_kehadiran.nama_hari,
-                    master_data_absen_kehadiran.absen_alasan,
-                    ref_absen_ijin.nama_ijin_payroll,
-                    ref_absen_ijin.nama_absen_ijin,
-                    master_data_absen_kehadiran.status_absen,
-                    master_data_absen_kehadiran.tanggal_mulai_ijin,
-                    master_data_absen_kehadiran.tanggal_akhir_ijin    
-                ')
-                ->whereRaw('
-                    substr(master_data_absen_kehadiran.tanggal_berjalan, 1, 10) between "' . $tanggalMulai . '" and "' . $tanggalSampai . '" 
-                    and (master_data_absen_kehadiran.status_absen is not null and master_data_absen_kehadiran.nomor_absen_ijin is not null and master_data_absen_kehadiran.status_absen not in ("IKS", "M", "TL") )
-                ')
-                ->leftJoin('ref_absen_ijin', 'master_data_absen_kehadiran.status_absen', '=', 'ref_absen_ijin.kode_absen_ijin')
-                ->leftJoin('employee_atribut', 'master_data_absen_kehadiran.enroll_id', '=', 'employee_atribut.enroll_id')
-                ->leftJoin('department_all', 'employee_atribut.sub_dept_id', '=', 'department_all.sub_dept_id')
-                ->groupBy('master_data_absen_kehadiran.tanggal_berjalan')
-                ->groupBy('employee_atribut.enroll_id')
-                ->orderBy('master_data_absen_kehadiran.nomor_absen_ijin','asc')
-                ->orderBy('employee_atribut.employee_name','asc')
-                ->orderBy('master_data_absen_kehadiran.tanggal_berjalan','asc')
-                ->limit(1);
-
+        $q = MasterDataAbsenKehadiran::selectRaw('
+                                        master_data_absen_kehadiran.tanggal_berjalan,
+                                        master_data_absen_kehadiran.nomor_absen_ijin,
+                                        department_all.department_name,
+                                        department_all.sub_dept_name,
+                                        employee_atribut.enroll_id,
+                                        employee_atribut.nik,
+                                        employee_atribut.employee_name,
+                                        employee_atribut.status_staff,
+                                        master_data_absen_kehadiran.nama_hari,
+                                        data_absen_perijinan.absen_alasan,
+                                        ref_absen_ijin.nama_ijin_payroll,
+                                        ref_absen_ijin.nama_absen_ijin,
+                                        master_data_absen_kehadiran.status_absen,
+                                        data_absen_perijinan.tanggal_mulai_ijin,
+                                        data_absen_perijinan.tanggal_akhir_ijin
+                                    ')
+                                    ->leftJoin('ref_absen_ijin', 'master_data_absen_kehadiran.status_absen', '=', 'ref_absen_ijin.kode_absen_ijin')
+                                    ->leftJoin('employee_atribut', 'master_data_absen_kehadiran.enroll_id', '=', 'employee_atribut.enroll_id')
+                                    ->leftJoin('department_all', 'employee_atribut.sub_dept_id', '=', 'department_all.sub_dept_id')
+                                    ->leftJoin('data_absen_perijinan', 'master_data_absen_kehadiran.nomor_absen_ijin', '=', 'data_absen_perijinan.nomor_form_perizinan')
+                                    ->whereBetween('master_data_absen_kehadiran.tanggal_berjalan', [$tanggalMulai, $tanggalSampai])
+                                    ->whereNotNull('master_data_absen_kehadiran.status_absen')
+                                    ->whereNotNull('master_data_absen_kehadiran.nomor_absen_ijin')
+                                    ->whereNotIn('master_data_absen_kehadiran.status_absen', ['IKS'])
+                                    ->where(function($query) {
+                                        $query->where(function($q) {
+                                            $q->whereNotNull('master_data_absen_kehadiran.absen_masuk_kerja')
+                                            ->whereNull('master_data_absen_kehadiran.absen_pulang_kerja');
+                                        })
+                                        ->orWhere(function($q) {
+                                            $q->whereNull('master_data_absen_kehadiran.absen_masuk_kerja')
+                                            ->whereNotNull('master_data_absen_kehadiran.absen_pulang_kerja');
+                                        })
+                                        ->orWhere(function($q) {
+                                            $q->whereNull('master_data_absen_kehadiran.absen_masuk_kerja')
+                                            ->whereNull('master_data_absen_kehadiran.absen_pulang_kerja');
+                                        });
+                                    })
+                                    ->groupBy('master_data_absen_kehadiran.tanggal_berjalan', 'employee_atribut.enroll_id')
+                                    ->orderBy('master_data_absen_kehadiran.nomor_absen_ijin', 'asc')
+                                    ->orderBy('employee_atribut.employee_name', 'asc')
+                                    ->orderBy('master_data_absen_kehadiran.tanggal_berjalan', 'asc')
+                                    ->limit(1);
         return $q;
     }
 

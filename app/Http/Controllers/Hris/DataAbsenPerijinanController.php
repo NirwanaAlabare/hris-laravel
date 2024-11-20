@@ -441,7 +441,7 @@ class DataAbsenPerijinanController extends AdminBaseController
         info('START UPDATE IZIN');
         info('Update Permohonan Perizinan by ' . $email);
         info('Nomor Form Perizinan : ' . request()->nomor_form_perizinan);
-        $query = DataAbsenPerijinan::where('uuid',request()->uuid)->update([
+        $query = DataAbsenPerijinan::where('enroll_id',request()->enroll_id)->where('tanggal_perizinan',)->update([
             'kode_absen_ijin' => request()->kode_absen_ijin,
             'absen_alasan' => request()->absen_alasan,
             'tanggal_mulai_ijin' => request()->tanggal_mulai_ijin,
@@ -460,9 +460,6 @@ class DataAbsenPerijinanController extends AdminBaseController
             })->update([
                 'nomor_absen_ijin' => request()->nomor_form_perizinan,
                 'status_absen' => request()->kode_absen_ijin,
-                'absen_alasan' => request()->absen_alasan,
-                'tanggal_mulai_ijin' => request()->tanggal_mulai_ijin,
-                'tanggal_akhir_ijin' => request()->tanggal_akhir_ijin,
                 'operator' => $email,
                 'jumlah_menit_absen_dt'=>0,
                 'jumlah_menit_absen_pc'=>0,
@@ -477,9 +474,6 @@ class DataAbsenPerijinanController extends AdminBaseController
             ->where('nomor_absen_ijin',request()->nomor_form_perizinan)->where('absen_masuk_kerja','!=',null)->where('absen_pulang_kerja','!=',null)->update([
                 'nomor_absen_ijin'=>null,
                 'status_absen'=>null,
-                'absen_alasan'=>null,
-                'tanggal_mulai_ijin'=>null,
-                'tanggal_akhir_ijin'=>null,
                 'operator'=>$email,
             ]);
             MasterDataAbsenKehadiran::whereNotBetween('tanggal_berjalan', [request()->tanggal_mulai_ijin, request()->tanggal_akhir_ijin])
@@ -490,9 +484,6 @@ class DataAbsenPerijinanController extends AdminBaseController
             ->where('nomor_absen_ijin',request()->nomor_form_perizinan)->where('absen_masuk_kerja','!=',null)->where('absen_pulang_kerja',null)->update([
                 'nomor_absen_ijin'=>null,
                 'status_absen'=>'TL',
-                'absen_alasan'=>null,
-                'tanggal_mulai_ijin'=>null,
-                'tanggal_akhir_ijin'=>null,
                 'operator'=>$email,
             ]);
             MasterDataAbsenKehadiran::whereNotBetween('tanggal_berjalan', [request()->tanggal_mulai_ijin, request()->tanggal_akhir_ijin])
@@ -503,9 +494,6 @@ class DataAbsenPerijinanController extends AdminBaseController
             ->where('nomor_absen_ijin',request()->nomor_form_perizinan)->where('absen_masuk_kerja',null)->where('absen_pulang_kerja','!=',null)->update([
                 'nomor_absen_ijin'=>null,
                 'status_absen'=>'TL',
-                'absen_alasan'=>null,
-                'tanggal_mulai_ijin'=>null,
-                'tanggal_akhir_ijin'=>null,
                 'operator'=>$email,
             ]);
             MasterDataAbsenKehadiran::whereNotBetween('tanggal_berjalan', [request()->tanggal_mulai_ijin, request()->tanggal_akhir_ijin])
@@ -516,9 +504,6 @@ class DataAbsenPerijinanController extends AdminBaseController
             ->where('nomor_absen_ijin',request()->nomor_form_perizinan)->where('absen_masuk_kerja',null)->where('absen_pulang_kerja',null)->update([
                 'nomor_absen_ijin'=>null,
                 'status_absen'=>'M',
-                'absen_alasan'=>null,
-                'tanggal_mulai_ijin'=>null,
-                'tanggal_akhir_ijin'=>null,
                 'operator'=>$email,
             ]);
         }else{
@@ -530,9 +515,6 @@ class DataAbsenPerijinanController extends AdminBaseController
             })->where('status_absen','!=','LN')->update([
                 'nomor_absen_ijin' => request()->nomor_form_perizinan,
                 'status_absen' => request()->kode_absen_ijin,
-                'absen_alasan' => request()->absen_alasan,
-                'tanggal_mulai_ijin' => request()->tanggal_mulai_ijin,
-                'tanggal_akhir_ijin' => request()->tanggal_akhir_ijin,
                 'operator' => $email,
                 'absen_masuk_kerja'=>null,
                 'absen_pulang_kerja'=>null,
@@ -550,9 +532,6 @@ class DataAbsenPerijinanController extends AdminBaseController
             ->where('nomor_absen_ijin',request()->nomor_form_perizinan)->where('absen_masuk_kerja','!=',null)->where('absen_pulang_kerja','!=',null)->update([
                 'nomor_absen_ijin'=>null,
                 'status_absen'=>null,
-                'absen_alasan'=>null,
-                'tanggal_mulai_ijin'=>null,
-                'tanggal_akhir_ijin'=>null,
                 'operator'=>$email,
             ]);
             MasterDataAbsenKehadiran::whereNotBetween('tanggal_berjalan', [request()->tanggal_mulai_ijin, request()->tanggal_akhir_ijin])
@@ -564,9 +543,6 @@ class DataAbsenPerijinanController extends AdminBaseController
             ->where('nomor_absen_ijin',request()->nomor_form_perizinan)->where('absen_masuk_kerja','!=',null)->where('absen_pulang_kerja',null)->update([
                 'nomor_absen_ijin'=>null,
                 'status_absen'=>'TL',
-                'absen_alasan'=>null,
-                'tanggal_mulai_ijin'=>null,
-                'tanggal_akhir_ijin'=>null,
                 'operator'=>$email,
             ]);
             MasterDataAbsenKehadiran::whereNotBetween('tanggal_berjalan', [request()->tanggal_mulai_ijin, request()->tanggal_akhir_ijin])
@@ -578,9 +554,6 @@ class DataAbsenPerijinanController extends AdminBaseController
             ->where('nomor_absen_ijin',request()->nomor_form_perizinan)->where('absen_masuk_kerja',null)->where('absen_pulang_kerja','!=',null)->update([
                 'nomor_absen_ijin'=>null,
                 'status_absen'=>'TL',
-                'absen_alasan'=>null,
-                'tanggal_mulai_ijin'=>null,
-                'tanggal_akhir_ijin'=>null,
                 'operator'=>$email,
             ]);
             MasterDataAbsenKehadiran::whereNotBetween('tanggal_berjalan', [request()->tanggal_mulai_ijin, request()->tanggal_akhir_ijin])
@@ -592,9 +565,6 @@ class DataAbsenPerijinanController extends AdminBaseController
             ->where('nomor_absen_ijin',request()->nomor_form_perizinan)->where('absen_masuk_kerja',null)->where('absen_pulang_kerja',null)->update([
                 'nomor_absen_ijin'=>null,
                 'status_absen'=>'M',
-                'absen_alasan'=>null,
-                'tanggal_mulai_ijin'=>null,
-                'tanggal_akhir_ijin'=>null,
                 'operator'=>$email,
             ]);
         }
@@ -660,15 +630,12 @@ class DataAbsenPerijinanController extends AdminBaseController
             }
             $nomor_form_perizinan =  $nomor_form_perizinan . $nomorform;
         }
-
         $query = DataAbsenPerijinan::create([
             'uuid' => Str::uuid(),
             'uuid_master' => $uuid_master,
             'tanggal_perizinan' => $tanggal_perizinan,
             'nomor_form_perizinan' => $nomor_form_perizinan,
             'enroll_id' => $enroll_id,
-            'nik' => $nik,
-            'employee_name' => $employee_name,
             'kode_absen_ijin' => $kode_absen_ijin,
             'absen_alasan' => $absen_alasan,
             'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
@@ -695,9 +662,6 @@ class DataAbsenPerijinanController extends AdminBaseController
             })->update([
                 'nomor_absen_ijin' => $nomor_form_perizinan,
                 'status_absen' => $kode_absen_ijin,
-                'absen_alasan' => $absen_alasan,
-                'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
-                'tanggal_akhir_ijin' => $tanggal_akhir_ijin,
                 'operator' => $email,
                 'jumlah_menit_absen_dt'=>0,
                 'jumlah_menit_absen_pc'=>0,
@@ -717,9 +681,6 @@ class DataAbsenPerijinanController extends AdminBaseController
                 ->update([
                     'nomor_absen_ijin' => $nomor_form_perizinan,
                     'status_absen' => $kode_absen_ijin,
-                    'absen_alasan' => $absen_alasan,
-                    'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
-                    'tanggal_akhir_ijin' => $tanggal_akhir_ijin,
                     'jumlah_menit_absen_dt'=>0,
                     'jumlah_menit_absen_pc'=>0,
                     'jumlah_menit_absen_dtpc'=>0,
@@ -735,9 +696,6 @@ class DataAbsenPerijinanController extends AdminBaseController
                 })->where('status_absen','!=','LN')->update([
                     'nomor_absen_ijin' => $nomor_form_perizinan,
                     'status_absen' => $kode_absen_ijin,
-                    'absen_alasan' => $absen_alasan,
-                    'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
-                    'tanggal_akhir_ijin' => $tanggal_akhir_ijin,
                     'operator' => $email,
                     'absen_masuk_kerja'=>null,
                     'absen_pulang_kerja'=>null,
@@ -774,7 +732,6 @@ class DataAbsenPerijinanController extends AdminBaseController
         ')->where('status_absen','!=','LN')->update([
             'nomor_absen_ijin' => request()->nomor_form_perizinan,
             'status_absen' => request()->kode_absen_ijin,
-            'absen_alasan' => request()->absen_alasan,
             'permits_dari_pukul' => request()->time_mulai_ijin,
             'permits_sampai_pukul' => request()->time_akhir_ijin,
             'total_menit_permits' => request()->total_time_ijin,
@@ -782,6 +739,7 @@ class DataAbsenPerijinanController extends AdminBaseController
             'updated_absen_ijin' => now()
         ]);
     }
+
     public function create_iks_menu(Request $request)
     {
 
@@ -834,8 +792,6 @@ class DataAbsenPerijinanController extends AdminBaseController
             'tanggal_perizinan' => $tanggal_perizinan,
             'nomor_form_perizinan' => $nomor_form_perizinan,
             'enroll_id' => $enroll_id,
-            'nik' => $nik,
-            'employee_name' => $employee_name,
             'kode_absen_ijin' => $kode_absen_ijin,
             'absen_alasan' => $absen_alasan,
             'time_mulai_ijin' => $time_mulai_ijin,
@@ -862,7 +818,6 @@ class DataAbsenPerijinanController extends AdminBaseController
             ->update([
                 'nomor_absen_ijin' => $nomor_form_perizinan,
                 'status_absen' => $kode_absen_ijin,
-                'absen_alasan' => $absen_alasan,
                 'permits_dari_pukul' => $time_mulai_ijin,
                 'permits_sampai_pukul' => $time_akhir_ijin,
                 'total_menit_permits' => $total_time_ijin,
@@ -952,7 +907,7 @@ class DataAbsenPerijinanController extends AdminBaseController
                                     (tanggal_mulai_ijin = "'.$tanggal_mulai_ijin.'" and tanggal_akhir_ijin = "'.$tanggal_akhir_ijin.'"))
                                     and enroll_id = "'. $enroll_id . '"
                                  ')
-                                 ->count();
+                                 ->get();
 
         return $query;
 
@@ -1087,8 +1042,6 @@ class DataAbsenPerijinanController extends AdminBaseController
 
     public function perijinan_export(Request $request)
     {
-
-
         $data=Excel::toArray([],$request->file('file_import'));
                 foreach ($data[0] as $key => $row) {
                     if($key>0){
@@ -1141,6 +1094,7 @@ class DataAbsenPerijinanController extends AdminBaseController
                 }
             return true;
     }
+
     public function get_last_nomor_form_perizinan(){
         switch (request()->kode_ijin) {
             case 'DL':
@@ -1182,6 +1136,7 @@ class DataAbsenPerijinanController extends AdminBaseController
         }   
         return $nomor_form_perizinan;
     }
+
     public function get_last_nomor_form_perizinan_iks(){
         $nomor_form_perizinan = 'IKS/HR/' . substr(request()->tanggal_perizinan, 2, 2) . substr(request()->tanggal_perizinan, 5, 2) . '/';
 
@@ -1200,10 +1155,12 @@ class DataAbsenPerijinanController extends AdminBaseController
         $nomor_form_perizinan =  $nomor_form_perizinan . $nomorform;
         return $nomor_form_perizinan;
     }
+
     public function import_data_perizinan(){
         $data=Excel::toArray([],request()->file('excel_file'));
         return $data;
     }
+
     public function import_perizinan_to_database(){
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
@@ -1320,5 +1277,4 @@ class DataAbsenPerijinanController extends AdminBaseController
             }
         }
     }
-
 }
