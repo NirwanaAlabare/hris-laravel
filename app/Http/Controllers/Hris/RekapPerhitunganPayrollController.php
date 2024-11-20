@@ -1716,6 +1716,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $bpjs_tk_company=($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jkm_bruto_rupiah+$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jht_bruto_rupiah+$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jkk_bruto_rupiah+$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jpn_bruto_rupiah)/$jumlah_hari_kerja_employee;
                 $bpjs_ks_company=($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_ks_jkn_bruto_rupiah)/$jumlah_hari_kerja_employee;
             }
+            $thr=0;
             if($selisih_bulan>1){
                 $thr=$value->employee_atribut->grading_salary->first()->salary_bulanan/12/$jumlah_hari_kerja;
             }
@@ -1724,7 +1725,6 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $bpjs_tk_company_total=($value->kode_hari!=5 && $value->kode_hari!=6)?$bpjs_tk_company:0;
             $bpjs_ks_company_total=($value->kode_hari!=5 && $value->kode_hari!=6)?$bpjs_ks_company:0;
             $thr_total=($value->kode_hari!=5 && $value->kode_hari!=6)?$thr:0;
-            $thr=0;
             $id=$value->enroll_id;
             $tanggal_berjalan=$value->tanggal_berjalan;
             $count=count(DB::select('select*from mut_karyawan_input_form_lembur_det where enroll_id='.$id.' and konsumsi!=0 and no_form in (select no_form from mut_karyawan_input_form_lembur where tgl_lembur="'.$tanggal_berjalan.'")'));
