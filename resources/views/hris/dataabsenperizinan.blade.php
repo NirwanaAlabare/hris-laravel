@@ -768,7 +768,7 @@
             $("#form1 :input").prop("disabled", false);
             $('#data-perizinan-iks').hide("slow");
             $('#data-karyawan').show("slow");
-            $('#btn-save-izin').html('<i class="fa fa-save"></i> Save');
+            $('#btn-save-izin').html('<i class="fa fa-save"></i> Add');
             $('#btn-save-iks').html('<i class="fa fa-save"></i> Add');
 
             var today = new Date();
@@ -904,6 +904,11 @@
             var kode_absen_ijin = $('#kode_absen_ijin').val();
             var absen_alasan = $('#absen_alasan_izin').val();
 
+            $('#btn-save-izin').addClass("btn-loading");
+            $("#btn-save-izin").html('Please wait...');
+            $("#btn-save-izin").attr("disabled", true);
+            $('#progress-show-1').show();
+            $('#progress-hide-1').hide();
             if (!enroll_id) {
                 notif({
                     msg: "<b>Warning:</b> Anda belum memilih data karyawan.",
@@ -999,11 +1004,6 @@
                             return false;
                         }
 
-                        $('#btn-save-izin').addClass("btn-loading");
-                        $("#btn-save-izin").html('Please wait...');
-                        $("#btn-save-izin").attr("disabled", true);
-                        $('#progress-show-1').show();
-                        $('#progress-hide-1').hide();
 
                         $.ajax({
                             type:"POST",
@@ -1018,17 +1018,19 @@
                             },
                             dataType: 'json',
                             success: function(res){
-                                if (res > 0) {
+                                if (res.length > 0) {
+                                    var uuid_res=res[0].uuid;
+                                    var nomor_form_res=res[0].nomor_form_perizinan;
                                     $.ajax({
                                         type:"POST",
                                         url: "{{route('hris.dataabsenperijinan.update_perizinan_menu')}}",
                                         headers: {
                                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                                         data: {
-                                            uuid:uuid,
+                                            uuid:uuid_res,
                                             uuid_master:uuid_master,
                                             tanggal_perizinan:tanggal_perizinan,
-                                            nomor_form_perizinan:nomor_form_perizinan,
+                                            nomor_form_perizinan:nomor_form_res,
                                             enroll_id:enroll_id,
                                             nik:nik,
                                             employee_name:employee_name,
@@ -1038,9 +1040,38 @@
                                             tanggal_akhir_ijin:tanggal_akhir_ijin,
                                         },
                                         success: function(res){
+                                            $('#progress-show-1').hide();
+                                            $('#progress-hide-1').show();
+                                            $('#btn-save-izin').removeClass("btn-loading");
+                                            $("#btn-save-izin").html('<span><i class="fa fa-save"></i></span> Save');
+                                            $("#form1 :input").prop("disabled", true);
+                                            $("#btn-save-izin").prop("disabled", true);
+                                            $("#btn-save-iks").prop("disabled", true);
+                                            $("#btn-cancel-izin").prop("disabled", true);
+                                            $("#btn-cancel-iks").prop("disabled", true);
+                                            $("#datatable-ajax-crud").DataTable().ajax.reload();
+                                            $('#data-perizinan-iks').show();
+                                            $('#data-karyawan').hide("slow");
                                             swal("", "update perizinan berhasil", "success");
+                                            $('#nomor_form_perizinan').val('');
+                                            $('#enroll_id').val('');
+                                            $('#nik').val('');
+                                            $('#employee_name').val('');
+                                            $('#tanggal_mulai_ijin').val('');
+                                            $('#tanggal_akhir_ijin').val('');
+                                            $('#kode_absen_ijin').val('');
+                                            $('#absen_alasan_izin').val('');
                                         },
                                         error: function(res){
+                                            $('#progress-show-1').hide();
+                                            $('#progress-hide-1').show();
+                                            $('#btn-save-izin').removeClass("btn-loading");
+                                            $("#btn-save-izin").html('<span><i class="fa fa-save"></i></span> Save');
+                                            $("#form1 :input").prop("disabled", false);
+                                            $("#btn-save-izin").prop("disabled", false);
+                                            $("#btn-save-iks").prop("disabled", false);
+                                            $("#btn-cancel-izin").prop("disabled", false);
+                                            $("#btn-cancel-iks").prop("disabled", false);
                                             swal("", "update perizinan gagal", "error");
                                         }
                                     });
@@ -1064,8 +1095,27 @@
                                             tanggal_akhir_ijin:tanggal_akhir_ijin,
                                         },
                                         dataType: 'json',
-                                        success: function(res){
+                                        success: function(res){$('#progress-show-1').hide();
+                                            $('#progress-hide-1').show();
+                                            $('#btn-save-izin').removeClass("btn-loading");
+                                            $("#btn-save-izin").html('<span><i class="fa fa-save"></i></span> Save');
+                                            $("#form1 :input").prop("disabled", true);
+                                            $("#btn-save-izin").prop("disabled", true);
+                                            $("#btn-save-iks").prop("disabled", true);
+                                            $("#btn-cancel-izin").prop("disabled", true);
+                                            $("#btn-cancel-iks").prop("disabled", true);
+                                            $("#datatable-ajax-crud").DataTable().ajax.reload();
+                                            $('#data-perizinan-iks').show();
+                                            $('#data-karyawan').hide("slow");
                                             swal("", "create perizinan berhasil", "success");
+                                            $('#nomor_form_perizinan').val('');
+                                            $('#enroll_id').val('');
+                                            $('#nik').val('');
+                                            $('#employee_name').val('');
+                                            $('#tanggal_mulai_ijin').val('');
+                                            $('#tanggal_akhir_ijin').val('');
+                                            $('#kode_absen_ijin').val('');
+                                            $('#absen_alasan_izin').val('');
                                         },
                                         error: function(res){
                                             swal("", "create perizinan gagal", "error");
@@ -1080,19 +1130,6 @@
                                 });
                             }
                         });
-
-                        $('#progress-show-1').hide();
-                        $('#progress-hide-1').show();
-                        $('#btn-save-izin').removeClass("btn-loading");
-                        $("#btn-save-izin").html('<span><i class="fa fa-save"></i></span> Save');
-                        $("#form1 :input").prop("disabled", true);
-                        $("#btn-save-izin").prop("disabled", true);
-                        $("#btn-save-iks").prop("disabled", true);
-                        $("#btn-cancel-izin").prop("disabled", true);
-                        $("#btn-cancel-iks").prop("disabled", true);
-                        setTimeout(function myFunction() {
-                            location.reload();
-                        }, 3000);
                     }
 
                 },
@@ -1406,10 +1443,6 @@
 
                                 $('#progress-show-1').hide();
                                 $('#progress-hide-1').show();
-
-                                setTimeout(function myFunction() {
-                                    location.reload();
-                                }, 3000);
 
                             } else {
                                 // else everythings

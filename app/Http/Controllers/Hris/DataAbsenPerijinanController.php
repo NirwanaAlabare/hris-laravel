@@ -81,7 +81,7 @@ class DataAbsenPerijinanController extends AdminBaseController
             if(empty($request->input('search.value')))
             {
                 $query =  DataAbsenPerijinan::
-                                    selectRaw('employee_atribut.employee_name, data_absen_perijinan.*')
+                                    selectRaw('employee_atribut.employee_name,employee_atribut.nik, data_absen_perijinan.*')
                                     ->offset($start)
                                     ->limit($limit)
                                     ->orderBy($order,$dir)
@@ -441,7 +441,7 @@ class DataAbsenPerijinanController extends AdminBaseController
         info('START UPDATE IZIN');
         info('Update Permohonan Perizinan by ' . $email);
         info('Nomor Form Perizinan : ' . request()->nomor_form_perizinan);
-        $query = DataAbsenPerijinan::where('enroll_id',request()->enroll_id)->where('tanggal_perizinan',)->update([
+        $query = DataAbsenPerijinan::where('uuid',request()->uuid)->update([
             'kode_absen_ijin' => request()->kode_absen_ijin,
             'absen_alasan' => request()->absen_alasan,
             'tanggal_mulai_ijin' => request()->tanggal_mulai_ijin,
@@ -876,9 +876,6 @@ class DataAbsenPerijinanController extends AdminBaseController
             ->update([
                 'nomor_absen_ijin' => null,
                 'status_absen' =>'M',
-                'absen_alasan' => null,
-                'tanggal_mulai_ijin' => null,
-                'tanggal_akhir_ijin' => null,
                 'permits_dari_pukul' => null,
                 'permits_sampai_pukul' => null,
                 'total_menit_permits' => null,
