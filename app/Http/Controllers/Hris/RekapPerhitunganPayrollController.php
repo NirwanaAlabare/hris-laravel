@@ -1246,6 +1246,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         ]);
         foreach($query as $key=>$value){
             $jumlah_menit_istirahat = '01:00';
+            $jumlah_menit_istirahat_int=60;
             if(($value->mulai_jam_kerja == null) || ($value->status_absen == "LN" || $value->status_absen == "CG" || $value->status_absen == "CM" || $value->status_absen == "CT" ||$value->status_absen == "L") || (($value->status_absen == "LP" ) && ($value->absen_masuk_kerja==null) && ($value->absen_pulang_kerja==null))) {
                 $kerjalibur = "LIBUR";
             } else if(($value->kode_hari=='6' || $value->kode_hari=='5' ) && ($value->mulai_jam_kerja!=null)){
@@ -1257,10 +1258,12 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                         case '5':
                             $kerjalibur = "LIBUR";
                             $jumlah_menit_istirahat = '00:30';
+                            $jumlah_menit_istirahat_int=30;
                             break;
                         case '6':
                             $kerjalibur = "LIBUR";
                             $jumlah_menit_istirahat = '00:30';
+                            $jumlah_menit_istirahat_int=30;
                             break;
                     }
                 }
@@ -1327,7 +1330,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             }
             $absen_masuk_kerja=strtotime($value->absen_masuk_kerja);
             $absen_pulang_kerja=strtotime($value->absen_pulang_kerja);
-            $total_absen_kerja=($absen_pulang_kerja-$absen_masuk_kerja)/60;
+            $total_absen_kerja=(($absen_pulang_kerja-$absen_masuk_kerja)/60)-$jumlah_menit_istirahat_int;
             $data = [
                 Date::stringToExcel($value->tanggal_berjalan),
                 $value->nama_hari,
