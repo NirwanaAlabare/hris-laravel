@@ -1819,27 +1819,6 @@
             }
 
             $("#data-lembur").show();
-
-            // if (stepNumber == 0) {
-                // var daterange1 = $("#daterange1").val();
-                // var tanggal_lembur = daterange1;
-                // var selectEmployee = $("#selectEmployee").val();
-                // var waktu_jam_lembur = $("#waktu_jam_lembur").val();
-                // var mulai_jam_lembur = $("#mulai_jam_lembur").val();
-                // var akhir_jam_lembur = $("#akhir_jam_lembur").val();
-                // var jumlah_jam_lembur = $("#jumlah_jam_lembur").val();
-                // var kode_perhitungan_lembur = $("#kode_perhitungan_lembur").text();
-                // var perhitungan_lembur = $("#perhitungan_lembur").val();
-                // var jumlah_jam_lembur_approved = $("#jumlah_jam_lembur_approved").val();
-                // var jumlah_jam_istirahat = $("#jumlah_jam_istirahat").val();
-                // var catatan_hrd = $("#catatan_hrd").val();
-                // var countSelectedEmp = $("#countSelectedEmp").val();
-                // $('#table-ajax-edit-lembur tbody>tr').empty();
-                // console.log(selectEmployee);
-
-                // var nomor_urut = 1;
-                // //console.log($("#selectEmployeeID").find('option:selected').text());
-
                 $.ajax({
                     type:"POST",
                     url: "{{route('hris.datalembur.getEmployeeLembur')}}",
@@ -1892,8 +1871,8 @@
                                 '    <td><div id="nama_hari_edit' + i + '" name="nama_hari_edit">' + res[i].nama_hari + '</div></td>' +
                                 '    <td><div id="nik_label_edit' + i + '" name="nik_label_edit">' + res[i].nik + '</div></td>' +
                                 '    <td><div id="employee_name_label_edit' + i + '" name="employee_name_label_edit">' + res[i].employee_name + '</div></td>' +
-                                '    <td><div id="absen_masuk_kerja' + i + '" name="absen_masuk_kerja">' + res[i].absen_masuk_kerja + '</div></td>' +
-                                '    <td><div id="absen_pulang_kerja' + i + '" name="absen_pulang_kerja">' + res[i].absen_pulang_kerja + '</div></td>' +
+                                '    <td><div id="absen_masuk_kerja' + i + '" name="absen_masuk_kerja">' + (res[i].absen_masuk_kerja ? res[i].absen_masuk_kerja : '-') + '</div></td>' +
+                                '    <td><div id="absen_pulang_kerja' + i + '" name="absen_pulang_kerja">' + (res[i].absen_pulang_kerja ? res[i].absen_pulang_kerja : '-') + '</div></td>' +
                                 '    <td class="w-70">' +
                                 '    <div class="input-group">' +
                                 '        <div class="input-group-prepend">' +
@@ -1925,16 +1904,11 @@
                                 $("#table-ajax-edit-lembur tbody").append($htmlTable);
                             }
                         }
+                    },
+                    error: function(res){
+                        // console.log('err',res);
                     }
                 });
-
-
-            //     $('#btn-save-wizard').removeAttr('disabled');
-
-            // } else {
-            //     $('#btn-save-wizard').attr('disabled','disabled');
-            // }
-
         });
         function getLastNomorFormLembur(){
             $("#btn-icon-refresh").addClass("btn-loading");
@@ -2023,7 +1997,7 @@
                 }
             });
 
-            console.log(arrayHtml);
+            console.log("arrayHtml",arrayHtml);
 
             $.ajax({
                 type:"POST",

@@ -975,14 +975,18 @@ class DataAbsenPerijinanController extends AdminBaseController
         $akhir_bulan =date('Y-m-d', strtotime(substr($array_periode_perijinan[1], 0, 10)));
 
         $get_waiting =  DataAbsenPerijinan::
-            whereRaw('tanggal_perizinan BETWEEN "' . $awal_bulan . '" AND "' . $akhir_bulan . '"
-                        AND is_verifikasi=0
-                    ')->get();
+                    whereRaw('tanggal_perizinan BETWEEN "' . $awal_bulan . '" AND "' . $akhir_bulan . '"
+                                AND is_verifikasi=0
+                            ')
+                    ->leftJoin('employee_atribut','data_absen_perijinan.enroll_id','=','employee_atribut.enroll_id')
+                    ->get();
 
         $get_verifikasi =  DataAbsenPerijinan::
         whereRaw('tanggal_perizinan BETWEEN "' . $awal_bulan . '" AND "' . $akhir_bulan . '"
                     AND is_verifikasi=1
-                ')->get();
+                ')
+                ->leftJoin('employee_atribut','data_absen_perijinan.enroll_id','=','employee_atribut.enroll_id')
+                ->get();
 
         $waiting=[];
         foreach ($get_waiting as $key => $value) {

@@ -68,7 +68,7 @@ class GagalAbsenExport implements FromQuery, WithMapping, ShouldAutoSize, WithEv
         $tanggalMulai = $this->tanggalMulai;
         $tanggalSampai = $this->tanggalSampai;
 
-        $result =  MasterDataAbsenKehadiran::query()
+        return MasterDataAbsenKehadiran::query()
                 ->selectRaw('
                     master_data_absen_kehadiran.tanggal_berjalan,
                     master_data_absen_kehadiran.nama_hari,
@@ -99,14 +99,9 @@ class GagalAbsenExport implements FromQuery, WithMapping, ShouldAutoSize, WithEv
                 ')
                 ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
                 ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
-                ->orderBy('employee_atribut.employee_name','asc')
                 ->orderBy('master_data_absen_kehadiran.tanggal_berjalan','asc')
-                ->get();
-        if($result->isEmpty()) {
-            abort(404, 'Data tidak ditemukan');
-        }   
-
-        return $result;
+                ->orderBy('employee_atribut.employee_name','asc')
+                ->limit(1);
     }
 
     public function startCell(): string

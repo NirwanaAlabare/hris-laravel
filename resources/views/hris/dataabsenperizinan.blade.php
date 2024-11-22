@@ -258,8 +258,8 @@
                 <div class="card-body">
                     <!-- BEGIN FORM-->
                     {!! Form::open(['route' => 'hris.employeeatr.create', 'id' => 'form1', 'name' => 'form1', 'method'=>'post']) !!}
-                    <input id="uuid" type="hidden">
-                    <input id="uuid_master" type="hidden">
+                    <input id="uuid" type="text">
+                    <input id="uuid_master" type="text">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -1018,14 +1018,16 @@
                             },
                             dataType: 'json',
                             success: function(res){
-                                if (res > 0) {
+                                console.log('res',res);
+                                if (res.length > 0) {
+                                    var uid_tes = res[0].uuid;
                                     $.ajax({
                                         type:"POST",
                                         url: "{{route('hris.dataabsenperijinan.update_perizinan_menu')}}",
                                         headers: {
                                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                                         data: {
-                                            uuid:uuid,
+                                            uuid:uid_tes,
                                             uuid_master:uuid_master,
                                             tanggal_perizinan:tanggal_perizinan,
                                             nomor_form_perizinan:nomor_form_perizinan,
@@ -1038,6 +1040,7 @@
                                             tanggal_akhir_ijin:tanggal_akhir_ijin,
                                         },
                                         success: function(res){
+                                            console.log('res',res)
                                             swal("", "update perizinan berhasil", "success");
                                         },
                                         error: function(res){
@@ -1090,9 +1093,9 @@
                         $("#btn-save-iks").prop("disabled", true);
                         $("#btn-cancel-izin").prop("disabled", true);
                         $("#btn-cancel-iks").prop("disabled", true);
-                        setTimeout(function myFunction() {
-                            location.reload();
-                        }, 3000);
+                        // setTimeout(function myFunction() {
+                        //     location.reload();
+                        // }, 3000);
                     }
 
                 },
@@ -1298,9 +1301,9 @@
                         $("#btn-cancel-izin").prop("disabled", true);
                         $("#btn-cancel-iks").prop("disabled", true);
 
-                        setTimeout(function myFunction() {
-                            location.reload();
-                        }, 3000);
+                        // setTimeout(function myFunction() {
+                        //     location.reload();
+                        // }, 3000);
 
                     }
 

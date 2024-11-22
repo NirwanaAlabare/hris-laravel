@@ -832,9 +832,9 @@ class MdAbsenHadirController extends AdminBaseController
                     employee_atribut.work_status,
                     employee_atribut.status_kontrak_tetap,
                     employee_atribut.employee_status,
-                    master_data_absen_kehadiran.mulai_jam_lembur,
-                    master_data_absen_kehadiran.akhir_jam_lembur,
-                    master_data_absen_kehadiran.jumlah_jam_lembur,
+                    data_lembur.mulai_jam_lembur,
+                    data_lembur.akhir_jam_lembur,
+                    data_lembur.jumlah_jam_lembur,
                     ref_absen_ijin.kode_ijin_payroll,
                     master_data_absen_kehadiran.created_at,
                     master_data_absen_kehadiran.updated_at,
@@ -851,6 +851,7 @@ class MdAbsenHadirController extends AdminBaseController
                 ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
                 ->leftJoin('ref_absen_ijin','master_data_absen_kehadiran.status_absen','ref_absen_ijin.kode_absen_ijin')
                 ->leftJoin('data_absen_perijinan','master_data_absen_kehadiran.nomor_absen_ijin','data_absen_perijinan.nomor_form_perizinan')
+                ->leftJoin('data_lembur','master_data_absen_kehadiran.uuid','data_lembur.uuid_master')
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy('master_data_absen_kehadiran.tanggal_berjalan','asc')
@@ -908,9 +909,9 @@ class MdAbsenHadirController extends AdminBaseController
                     employee_atribut.site_nirwana_id,
                     employee_atribut.work_status,
                     employee_atribut.employee_status,
-                    master_data_absen_kehadiran.mulai_jam_lembur,
-                    master_data_absen_kehadiran.akhir_jam_lembur,
-                    master_data_absen_kehadiran.jumlah_jam_lembur,
+                    data_lembur.mulai_jam_lembur,
+                    data_lembur.akhir_jam_lembur,
+                    data_lembur.jumlah_jam_lembur,
                     ref_absen_ijin.kode_ijin_payroll,
                     master_data_absen_kehadiran.created_at,
                     master_data_absen_kehadiran.updated_at,
@@ -927,6 +928,7 @@ class MdAbsenHadirController extends AdminBaseController
                 ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
                 ->leftJoin('ref_absen_ijin','master_data_absen_kehadiran.status_absen','ref_absen_ijin.kode_absen_ijin')
                 ->leftJoin('data_absen_perijinan','master_data_absen_kehadiran.nomor_absen_ijin','data_absen_perijinan.nomor_form_perizinan')
+                ->leftJoin('data_lembur','master_data_absen_kehadiran.uuid','data_lembur.uuid_master')
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy('master_data_absen_kehadiran.tanggal_berjalan','asc')
@@ -1246,26 +1248,23 @@ class MdAbsenHadirController extends AdminBaseController
                 b.kode_ijin_payroll,
                 c.absen_alasan,
                 master_data_absen_kehadiran.catatan_hrd,
-                master_data_absen_kehadiran.mulai_jam_lembur,
-                master_data_absen_kehadiran.akhir_jam_lembur,
-                substr( master_data_absen_kehadiran.jumlah_jam_lembur_approved, 1, 5 ) jumlah_jam_lembur_approved,
-                substr( master_data_absen_kehadiran.jumlah_jam_istirahat_lembur, 1, 5 ) jumlah_jam_istirahat_lembur,
+                data_lembur.mulai_jam_lembur,
+                data_lembur.akhir_jam_lembur,
+                 data_lembur.mulai_jam_lembur  as mulai_jam_lembur_rekap,
+                data_lembur.akhir_jam_lembur  as akhir_jam_lembur_rekap,
                 rekap_perhitungan_lembur.nomor_form_lembur,
                 data_lembur.nomor_form_lembur as nomor_form_lembur_form,
                 data_lembur.mulai_jam_lembur as mulai_jam_lembur_form,
                 data_lembur.akhir_jam_lembur as akhir_jam_lembur_form,
-                data_lembur.jumlah_jam_istirahat as jumlah_jam_istirahat_lembur_form,
+                data_lembur.jumlah_jam_istirahat_lembur as jumlah_jam_istirahat_lembur_form,
                 data_lembur.jumlah_jam_lembur as jumlah_jam_lembur_form,
                 data_lembur.is_verifikasi,
-                rekap_perhitungan_lembur.final_mulai_jam_lembur,
                 rekap_perhitungan_lembur.final_selesai_jam_lembur,
                 rekap_perhitungan_lembur.final_total_jam_lembur,
                 rekap_perhitungan_lembur.final_jam_istirahat_lembur,
                 rekap_perhitungan_lembur.final_total_menit_lembur,
                 rekap_perhitungan_lembur.final_jam_lembur_roundown,
                 rekap_perhitungan_lembur.final_menit_lembur_roundown,
-                rekap_perhitungan_lembur.mulai_jam_lembur as mulai_jam_lembur_rekap,
-                rekap_perhitungan_lembur.akhir_jam_lembur as akhir_jam_lembur_rekap,
                 rekap_perhitungan_lembur.lembur_1,
                 rekap_perhitungan_lembur.lembur_2,
                 rekap_perhitungan_lembur.lembur_3,
@@ -1933,8 +1932,6 @@ class MdAbsenHadirController extends AdminBaseController
                 substr(absen_pulang_kerja, 1, 6) AS absen_out,
                 mulai_jam_kerja,
                 nomor_form_lembur,
-                substr(mulai_jam_lembur,11,6) AS mulai_lembur,
-                substr(akhir_jam_lembur,11,6) AS akhir_lembur,
                 status_absen,
                 operator
             ")
@@ -2083,7 +2080,7 @@ class MdAbsenHadirController extends AdminBaseController
                     $jadwal_out=$v->akhir_jam_kerja;
                     $absen_in=$v->absen_masuk_kerja;
                     $absen_out=$v->absen_pulang_kerja;
-                    $status_staff=$v->employee_atribut->status_staff;
+                    $status_staff=$v->status_staff;
                     $durasi_kerja=date_diff(date_create($jadwal_in),date_create($jadwal_out));
                     $durasi_kerja_menit=$durasi_kerja->i +($durasi_kerja->h*60);
 

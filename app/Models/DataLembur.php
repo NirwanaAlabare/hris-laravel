@@ -21,7 +21,7 @@ class DataLembur extends \Eloquent
         'absen_masuk_kerja',
         'absen_pulang_kerja',
         'jumlah_jam_lembur',
-        'jumlah_jam_istirahat',
+        'jumlah_jam_istirahat_lembur',
         'mulai_jam_lembur',
         'akhir_jam_lembur',
         'enroll_id',
@@ -66,7 +66,7 @@ class DataLembur extends \Eloquent
         'absen_masuk_kerja',
         'absen_pulang_kerja',
         'jumlah_jam_lembur',
-        'jumlah_jam_istirahat',
+        'jumlah_jam_istirahat_lembur',
         'mulai_jam_lembur',
         'akhir_jam_lembur',
         'enroll_id',
@@ -97,5 +97,10 @@ class DataLembur extends \Eloquent
     public $primaryKey = [
         'uuid','tanggal_lembur','nomor_form_lembur'
     ];
+
+
+    public function data_kehadiran(){
+        return $this->hasOne(MasterDataAbsenKehadiran::class, 'uuid','uuid_master');
+    }
 
 }

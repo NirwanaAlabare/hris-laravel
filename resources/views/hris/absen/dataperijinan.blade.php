@@ -52,7 +52,7 @@
                         <i class="fa fa-refresh"></i>
                     </span>
                 </a>
-                <a href="{{ url('lockscreen') }}" class="btn btn-primary text-white mr-0 btn-icon" data-toggle="tooltip"
+                <a href="{{ url('screenlock') }}" class="btn btn-primary text-white mr-0 btn-icon" data-toggle="tooltip"
                     title="" data-placement="bottom" data-original-title="lock">
                     <span>
                         <i class="fa fa-lock"></i>
@@ -139,7 +139,7 @@
                                             <th class="bg-primary w-5 align-middle" scope="col" width="50px">TANGGAL MULAI</th>
                                             <th class="bg-primary w-5 align-middle" scope="col" width="50px">TANGGAL SELESAI</th>
                                             <th class="bg-primary w-5 align-middle" scope="col" width="50px">WAKTU MULAI</th>
-                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">WAKTU SELSEAI</th>
+                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">WAKTU SELESAI</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -176,7 +176,7 @@
                                         <th class="bg-primary w-5 align-middle" scope="col" width="50px">TANGGAL MULAI</th>
                                         <th class="bg-primary w-5 align-middle" scope="col" width="50px">TANGGAL SELESAI</th>
                                         <th class="bg-primary w-5 align-middle" scope="col" width="50px">WAKTU MULAI</th>
-                                        <th class="bg-primary w-5 align-middle" scope="col" width="50px">WAKTU SELSEAI</th>
+                                        <th class="bg-primary w-5 align-middle" scope="col" width="50px">WAKTU SELESAI</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -303,9 +303,9 @@
                                 '   <td> <input type="checkbox" class="checked count_ceheck" name="uuid[]"  value="'+uuid+'">'+'</td>'+
                                 '   <td class="text-nowrap text-center align-middle">' + tanggal_perizinan  + '</td>' +
                                 '   <td class="text-nowrap text-center align-middle">' + nomor_form_perizinan  + '</td>' +
-                                '   <td class="text-nowrap text-left align-middle">' + enroll_id  + '</td>' +
                                 '   <td class="text-nowrap text-left align-middle">' + nik  + '</td>' +
                                 '   <td class="text-nowrap text-left align-middle">' + employee_name  + '</td>' +
+                                '   <td class="text-nowrap text-left align-middle">' + enroll_id  + '</td>' +
                                 '   <td class="text-nowrap text-left align-middle">' + kode_absen_ijin  + '</td>' +
                                 '   <td class="text-left align-middle">' + absen_alasan  + '</td>' +
                                 '   <td class="text-nowrap text-center align-middle">' + tanggal_mulai_ijin  + '</td>' +
@@ -370,7 +370,7 @@
                                         data: 'time_mulai_ijin', 
                                     },
                                     {   
-                                        title: 'WAKTU SELSEAI',
+                                        title: 'WAKTU SELESAI',
                                         data: 'time_akhir_ijin', 
                                     },
                                 ],
@@ -491,7 +491,6 @@
                                     type: "post",
                                     dataType: 'json',           
                                     success: function (data) {
-                                        console.log(data)
                                     },
                                     error: function (xhr, status, error) {
                                         alert(xhr.responseText);
