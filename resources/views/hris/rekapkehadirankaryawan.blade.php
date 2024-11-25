@@ -67,15 +67,23 @@
                     <div class="form-group">
                         <label class="form-label">Periode Payroll : </label>
                         <select id="periode_payroll" name="periode_payroll" class="form-control">
-                            @foreach ($periode_payroll as $r_periode_payroll)
-                                <option  value="{{$r_periode_payroll->periode_payroll}}">
+                        @foreach ($periode_payroll as $r_periode_payroll)
+                            <option value="{{$r_periode_payroll->periode_payroll}}">
                                 @php
                                     setlocale(LC_ALL, 'id-ID', 'id_ID');
                                     $datePeriode = explode(" s/d ", $r_periode_payroll->periode_payroll);
-                                    echo strtoupper(strftime("%A, %d %b %Y", strtotime($datePeriode[0])) . ' s/d ' . strftime("%A, %d %b %Y", strtotime($datePeriode[1])));
+                                    
+                                    if (count($datePeriode) === 2) {
+                                        echo strtoupper(
+                                            strftime("%A, %d %b %Y", strtotime($datePeriode[0])) . ' s/d ' . 
+                                            strftime("%A, %d %b %Y", strtotime($datePeriode[1]))
+                                        );
+                                    } else {
+                                        echo "Format periode tidak valid";
+                                    }
                                 @endphp
-                                </option>
-                            @endforeach
+                            </option>
+                        @endforeach
                         </select>
                     </div>
                 </div>
@@ -362,6 +370,7 @@
                 },
                 cache: false,
                 success: function(data){
+                    console.log('data',data);
                     swal({
                         title: "Rekap Kehadiran",
                         text: "Rekap kehadiran berhasil di UPDATE",

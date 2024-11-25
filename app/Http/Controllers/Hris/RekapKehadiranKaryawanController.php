@@ -89,7 +89,9 @@ class RekapKehadiranKaryawanController extends AdminBaseController
         if($searchData){
             $inSearchData='AND enroll_id = "'.$searchData.'"';
         }
-        $x=MasterDataAbsenKehadiran::selectRaw('uuid,tanggal_berjalan,tanggal_absen,shift_work_id,kode_hari,nama_hari,time_table_name,mulai_jam_kerja,akhir_jam_kerja,jam_kerja,jumlah_jam_kerja,jumlah_menit_kerja,mulai_jam_istirahat,akhir_jam_istirahat,jumlah_jam_istirahat,jumlah_menit_istirahat,absen_masuk_kerja,absen_pulang_kerja,enroll_id,nik,employee_id,employee_name,join_date,tanggal_resign,status_aktif,status_kontrak_tetap,status_jabatan,status_staff,work_status,employee_status,posisi_name,kode_grade,site_nirwana_id,site_nirwana_id_new,site_nirwana_name,site_nirwana_name_new,department_id,department_id_new,department_name,department_name_new,sub_dept_id,sub_dept_id_new,sub_dept_name,sub_dept_name_new,status_absen,nama_absen_ijin,kode_ijin_payroll,absen_ijin_id,nomor_absen_ijin,tanggal_mulai_ijin,tanggal_akhir_ijin,permits_dari_pukul,permits_sampai_pukul,total_menit_permits,jumlah_menit_absen_dt,jumlah_menit_absen_pc,jumlah_menit_absen_dtpc,jumlah_absen_menit_kerja,absen_s_sakit,absen_iby_ijin_dibayar,absen_itb_ijin_tidak_dibayar,absen_m_mangkir,absen_pc_pulang_cepat,absen_dt_datang_terlambat,absen_dtpc_datang_terlambat_pulang_cepat,absen_lby_libur_dibayar,absen_lsm_libur_sabtu_minggu,absen_ltb_libur_tidak_dibayar,absen_r_resign,absen_dl_dinas_luar,absen_ok_hadir,absen_tk_tidak_kerja,absen_cuti_umum,absen_cuti_khusus,absen_hari_resmi,absen_alasan,holiday_id,holiday_name,kelebihan_jam_kerja_l1,kelebihan_jam_kerja_l2,kelebihan_jam_kerja_l3,kelebihan_jam_kerja_l4,jumlah_selisih_menit_kerja,operator,catatan_hrd,nomor_form_perubahan_absen,nomor_form_lembur,status_lembur,jumlah_jam_istirahat_lembur,jumlah_jam_lembur,mulai_jam_lembur,akhir_jam_lembur,jumlah_jam_lembur_approved,updated_absen_cekinout,updated_absen_ijin,updated_absen_permits,updated_absen_dtpc,created_at,updated_at,deleted_at')->whereRaw('tanggal_berjalan >= "' . $tanggal_awal . '" and tanggal_berjalan <= "' . $tanggal_akhir.'"'.$inStatusStaff.''.$inSearchData.'')->get()->groupby('enroll_id');
+
+        $x=MasterDataAbsenKehadiran::selectRaw('*')->whereRaw('tanggal_berjalan >= "' . $tanggal_awal . '" and tanggal_berjalan <= "' . $tanggal_akhir.'"'.$inStatusStaff.''.$inSearchData.'')->get()->groupby('enroll_id');
+        
         foreach ($x as $key => $value) {
             $IBY_employe=$value->wherein('status_absen', $IBY)->count();
             $LBY_employe=$value->where('status_absen','LN')->whereNotin('kode_hari', ['5','6'])->count();
@@ -156,24 +158,11 @@ class RekapKehadiranKaryawanController extends AdminBaseController
 
 
             $y=[
-                'uuid'=>Str::uuid('uuid'),
                 'kode_rekap_kehadiran'=> $kode_rekap_kehadiran,
                 'periode_payroll'=>$tanggal_awal.' s/d '.$tanggal_akhir,
                 'periode_tahun'=>$tahun,
                 'periode_bulan'=>$bulan,
                 'enroll_id'=>$value->first()->enroll_id,
-                'nik'=>$karyawan->nik,
-                'employee_name'=>$karyawan->employee_name,
-                'site_nirwana_id'=>$karyawan->site_nirwana_id,
-                'site_nirwana_name'=>$karyawan->site_nirwana_name,
-                'department_id'=>$karyawan->department_id,
-                'department_name'=>$karyawan->department_name,
-                'sub_dept_id'=>$karyawan->sub_dept_id,
-                'sub_dept_name'=>$karyawan->sub_dept_name,
-                'join_date'=>$karyawan->join_date,
-                'tanggal_resign'=>$karyawan->tanggal_resign,
-                'status_aktif'=> $karyawan->status_aktif,
-                'status_staff'=>  $karyawan->status_staff,
                 'kehadiran_iby'=>$IBY_employe,
                 'kehadiran_itb'=>$ITB_employe,
                 'kehadiran_lby'=>$LBY_employe,
@@ -186,7 +175,6 @@ class RekapKehadiranKaryawanController extends AdminBaseController
                 'kehadiran_tk'=>$kehadiran_tk,
                 'kehadiran_ok'=>$absen_ok,
                 'total_kehadiran'=> $total_kehadiran,
-                // 'total_kehadiran'=> $total_kehadiran+$kehadiran_tk,
                 'total_kehadiran_net'=>$absen_ok+$dt_employe+$pc_employe+$dtpc_employe+$LBY_employe+$IBY_employe,
                 'jumlah_hari'=>$jumlah_hari,
                 'jumlah_hari_kerja'=> $jumlah_hari_kerja,
@@ -215,16 +203,18 @@ class RekapKehadiranKaryawanController extends AdminBaseController
                 'kehadiran_s'=>$kehadiran_s,
                 'kehadiran_m_estimasi'=> $TL_estimasi+$M_estimasi,
             ];
-        //     // dd($y);
-            $count=RekapKehadiranKaryawan::where( 'kode_rekap_kehadiran',$kode_rekap_kehadiran)->count();
-            if($count){
-                RekapKehadiranKaryawan::where( 'kode_rekap_kehadiran',$kode_rekap_kehadiran)->update($y);
-            }
-            else{
-                RekapKehadiranKaryawan::create($y);
-            }
+                $count=RekapKehadiranKaryawan::where( 'kode_rekap_kehadiran',$kode_rekap_kehadiran)->where('enroll_id',$value->first()->enroll_id)->count();
+                if($count){
+                    RekapKehadiranKaryawan::where( 'kode_rekap_kehadiran',$kode_rekap_kehadiran)->where('enroll_id',$value->first()->enroll_id)->update($y);
+                }
+                else{
+                    $y['uuid'] = Str::uuid('uuid');
+                    RekapKehadiranKaryawan::create($y);
+                }
         }
     }
+
+
     public function ajax_getperiodepayroll()
     {
         $query =  RekapKehadiranKaryawan::selectRaw('periode_payroll')
@@ -283,28 +273,20 @@ class RekapKehadiranKaryawanController extends AdminBaseController
             $whereSearchData = '';
         }
 
-        $query =  RekapKehadiranKaryawan::selectRaw('
-                    uuid, kode_rekap_kehadiran, periode_payroll, periode_tahun, periode_bulan,
-                    concat(periode_tahun, "-", periode_bulan) periode_tahun_bulan,
-                    enroll_id, nik, employee_name, site_nirwana_id, site_nirwana_name, department_id
-                    department_name, sub_dept_id, sub_dept_name, substr(join_date, 1, 10) join_date,
-                    substr(tanggal_resign, 1, 10) tanggal_resign, status_aktif, status_staff, kehadiran_iby,
-                    kehadiran_itb, kehadiran_lby, kehadiran_lsm, kehadiran_dt, kehadiran_pc, kehadiran_dtpc,
-                    kehadiran_m, kehadiran_r, kehadiran_tk, kehadiran_ok, total_kehadiran, total_kehadiran_net,
-                    jumlah_hari, jumlah_hari_kerja, (total_kehadiran - jumlah_hari) selisih,
-                    operator, substr(created_at, 1, 19) created_at,
-                    substr(updated_at, 1, 19) updated_at, substr(deleted_at, 1, 19) deleted_at
-            ')
+        $query =  RekapKehadiranKaryawan::from('rekap_kehadiran_karyawan as rkk')
+        ->selectRaw('
+                   *')
             ->whereRaw('
                 periode_payroll = "' . $periode_payroll . '"
                 ' . $whereStatusStaff . '
                 ' . $whereSearchData . '
             ')
+            ->leftJoin('employee_atribut as employee', 'rkk.enroll_id', '=', 'employee.enroll_id')
              ->where(function ($query) use ($tgl_awal) {
                     $query->orWhereNull('tanggal_resign')
                         ->orWhere('tanggal_resign', '>', $tgl_awal);
                 })
-            ->orderBy('employee_name','asc')
+            ->orderBy('employee.employee_name','asc')
             ->get();
 
         return Response()->json($query);

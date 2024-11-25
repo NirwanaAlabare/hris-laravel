@@ -65,28 +65,62 @@ class RekapKehadiranKaryawanExport implements FromQuery, WithMapping, ShouldAuto
             $whereSearchData = '';
         }
 
-          // $q =  RekapKehadiranKaryawan::query()
-        //         ->whereRaw('
-        //             periode_payroll = "' . $periode_payroll . '"
-        //             ' . $whereStatusStaff . '
-        //             ' . $whereSearchData . ' and
-        //             total_kehadiran_net > 0
-        //         ')
-        //         ->orderBy('employee_name','asc')
-        //         ->limit(1);
-
-
-        $q = RekapKehadiranKaryawan::query()
+        $q = RekapKehadiranKaryawan::from('rekap_kehadiran_karyawan as rkk')
+        ->select([
+            'rkk.enroll_id', 
+            'rkk.periode_payroll', 
+            'rkk.kehadiran_iby', 
+            'rkk.kehadiran_itb', 
+            'rkk.kehadiran_lby', 
+            'rkk.kehadiran_lsm', 
+            'rkk.kehadiran_dt', 
+            'rkk.kehadiran_pc', 
+            'rkk.kehadiran_dtpc', 
+            'rkk.kehadiran_m', 
+            'rkk.kehadiran_r', 
+            'rkk.kehadiran_tk', 
+            'rkk.kehadiran_ok', 
+            'rkk.total_kehadiran', 
+            'rkk.total_kehadiran_net', 
+            'rkk.updated_at', 
+            'rkk.kehadiran_dl', 
+            'rkk.kehadiran_cb', 
+            'rkk.kehadiran_cg', 
+            'rkk.kehadiran_ch', 
+            'rkk.kehadiran_cm', 
+            'rkk.kehadiran_cn', 
+            'rkk.kehadiran_ct', 
+            'rkk.kehadiran_ig', 
+            'rkk.kehadiran_im', 
+            'rkk.kehadiran_ka', 
+            'rkk.kehadiran_km', 
+            'rkk.kehadiran_kr', 
+            'rkk.kehadiran_na', 
+            'rkk.kehadiran_pp', 
+            'rkk.kehadiran_i', 
+            'rkk.kehadiran_lp', 
+            'rkk.kehadiran_l', 
+            'rkk.kehadiran_tl', 
+            'rkk.kehadiran_iks', 
+            'rkk.kehadiran_s', 
+            'employee.nik', 
+            'employee.sub_dept_name', 
+            'employee.status_aktif', 
+            'employee.status_staff', 
+            'employee.employee_name', 
+            'employee.tanggal_resign'
+        ])
             ->whereRaw('
                 periode_payroll = "' . $periode_payroll . '"
                 ' . $whereStatusStaff . '
                 ' . $whereSearchData . ' 
             ')
+            ->leftJoin('employee_atribut as employee', 'rkk.enroll_id', '=', 'employee.enroll_id')
             ->where(function ($query) use ($tgl_awal) {
-                $query->orWhereNull('tanggal_resign')
-                    ->orWhere('tanggal_resign', '>', $tgl_awal);
+                $query->orWhereNull('employee.tanggal_resign')
+                    ->orWhere('employee.tanggal_resign', '>', $tgl_awal);
             })
-            ->orderBy('employee_name', 'asc')
+            ->orderBy('employee.employee_name', 'asc')
             ->limit(1);
         return $q;
     }
