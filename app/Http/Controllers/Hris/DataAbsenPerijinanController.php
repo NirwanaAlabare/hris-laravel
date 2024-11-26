@@ -91,33 +91,8 @@ class DataAbsenPerijinanController extends AdminBaseController
                 $totalData = DataAbsenPerijinan::count();
                 $totalFiltered = $totalData;
 
-
             } else {
                 $search = $request->input('search.value');
-
-                // $query =  DataAbsenPerijinan::where('uuid_master','LIKE',"%{$search}%")
-                //                 ->orWhere('tanggal_perizinan','LIKE',"%{$search}%")
-                //                 ->orWhere('nomor_form_perizinan','LIKE',"%{$search}%")
-                //                 ->orWhere('enroll_id','LIKE',"%{$search}%")
-                //                 ->orWhere('nik','LIKE',"%{$search}%")
-                //                 ->orWhere('employee_name','LIKE',"%{$search}%")
-                //                 ->orWhere('kode_absen_ijin','LIKE',"%{$search}%")
-                //                 ->orWhere('absen_alasan','LIKE',"%{$search}%")
-                //                 ->offset($start)
-                //                 ->limit($limit)
-                //                 ->orderBy($order,$dir)
-                //                 ->get();
-
-                // $totalData = DataAbsenPerijinan::where('uuid_master','LIKE',"%{$search}%")
-                //                 ->orWhere('tanggal_perizinan','LIKE',"%{$search}%")
-                //                 ->orWhere('nomor_form_perizinan','LIKE',"%{$search}%")
-                //                 ->orWhere('enroll_id','LIKE',"%{$search}%")
-                //                 ->orWhere('nik','LIKE',"%{$search}%")
-                //                 ->orWhere('employee_name','LIKE',"%{$search}%")
-                //                 ->orWhere('kode_absen_ijin','LIKE',"%{$search}%")
-                //                 ->orWhere('absen_alasan','LIKE',"%{$search}%")
-                //                 ->count();
-
                 $query = DataAbsenPerijinan::
                 selectRaw('employee_atribut.employee_name, data_absen_perijinan.*')
                 ->leftJoin('employee_atribut', 'data_absen_perijinan.enroll_id', '=', 'employee_atribut.enroll_id')
@@ -415,9 +390,6 @@ class DataAbsenPerijinanController extends AdminBaseController
                 'nomor_absen_ijin' => $nomor_form_perizinan,
                 'status_absen' => $kode_absen_ijin,
                 'absen_alasan' => $absen_alasan,
-                'permits_dari_pukul' => $time_mulai_ijin,
-                'permits_sampai_pukul' => $time_akhir_ijin,
-                'total_menit_permits' => $total_time_ijin,
                 'operator' => $email,
                 'updated_absen_ijin' => now()
             ]);
@@ -732,9 +704,6 @@ class DataAbsenPerijinanController extends AdminBaseController
         ')->where('status_absen','!=','LN')->update([
             'nomor_absen_ijin' => request()->nomor_form_perizinan,
             'status_absen' => request()->kode_absen_ijin,
-            'permits_dari_pukul' => request()->time_mulai_ijin,
-            'permits_sampai_pukul' => request()->time_akhir_ijin,
-            'total_menit_permits' => request()->total_time_ijin,
             'operator' => $email,
             'updated_absen_ijin' => now()
         ]);
@@ -785,7 +754,6 @@ class DataAbsenPerijinanController extends AdminBaseController
         $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
         $nomor_form_perizinan =  $nomor_form_perizinan . $nomorform;
         info('Nomor Form Perizinan : ' . $nomor_form_perizinan);
-
         $query = DataAbsenPerijinan::create([
             'uuid' => Str::uuid(),
             'uuid_master' => $uuid_master,
@@ -799,7 +767,6 @@ class DataAbsenPerijinanController extends AdminBaseController
             'total_time_ijin' => $total_time_ijin,
             'operator' => $email
         ]);
-
         if ($query) {
             info('Insert data nomor [' . $nomor_form_perizinan . '] on table data_absen_perijinan is SUCCESS.');
         } else {
@@ -807,24 +774,19 @@ class DataAbsenPerijinanController extends AdminBaseController
         }
 
         if($query) {
-
             $query = MasterDataAbsenKehadiran::whereRaw('
                 tanggal_berjalan = "' . $tanggal_perizinan . '"
                 and enroll_id = "' . $enroll_id . '"
-            ')->where(function ($query){
-                $query->where('status_absen','!=','LN')
+            ')->where(function ($q){
+                $q->where('status_absen','!=','LN')
                 ->orWhere('status_absen',null);
             })
             ->update([
                 'nomor_absen_ijin' => $nomor_form_perizinan,
                 'status_absen' => $kode_absen_ijin,
-                'permits_dari_pukul' => $time_mulai_ijin,
-                'permits_sampai_pukul' => $time_akhir_ijin,
-                'total_menit_permits' => $total_time_ijin,
                 'operator' => $email,
                 'updated_absen_ijin' => now()
             ]);
-
             if($query) {
                 info('Update on table master_data_absen_kehadiran after update Permohonan IKS [' . $nomor_form_perizinan . '] on table data_absen_perijinan is SUCCESS' );
             } else {
@@ -876,9 +838,6 @@ class DataAbsenPerijinanController extends AdminBaseController
             ->update([
                 'nomor_absen_ijin' => null,
                 'status_absen' =>'M',
-                'permits_dari_pukul' => null,
-                'permits_sampai_pukul' => null,
-                'total_menit_permits' => null,
                 'operator' => 'system',
                 'updated_absen_ijin' => null,
                 'deleted_at' => now()

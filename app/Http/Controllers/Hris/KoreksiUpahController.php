@@ -70,7 +70,70 @@ class KoreksiUpahController extends AdminBaseController
             $totalFiltered = 0;
             
             $periode_tanggal_koreksi = substr($request->periode_tanggal_koreksi,5,2).'/'.substr($request->periode_tanggal_koreksi,8,2).'/'.substr($request->periode_tanggal_koreksi,0,4).' - '.substr($request->periode_tanggal_koreksi,20,2).'/'.substr($request->periode_tanggal_koreksi,23,2).'/'.substr($request->periode_tanggal_koreksi,15,4);
-            $query =  DB::select("select a.enroll_id id,a.employee_name as nama_karyawan,a.sub_dept_name as nama_department,a.jumlah_rp_potongan as insentif,b.jumlah_rp_potongan as koreksi_upah from (select x.enroll_id,x.employee_name,x.sub_dept_name,x.jumlah_rp_potongan from data_koreksi_upah x inner join (select max(y.periode) periode,y.enroll_id enroll_id from (SELECT enroll_id,uuid,CONCAT(substr(periode_tanggal_koreksi,20,4),'-',substr(periode_tanggal_koreksi,14,2),'-',substr(periode_tanggal_koreksi,17,2)) as periode,jumlah_rp_potongan FROM data_koreksi_upah where jenis_koreksi=2 order by CONCAT(substr(periode_tanggal_koreksi,20,4),'-',substr(periode_tanggal_koreksi,14,2),'-',substr(periode_tanggal_koreksi,17,2)) desc)y group by enroll_id)z on x.enroll_id=z.enroll_id and CONCAT(substr(x.periode_tanggal_koreksi,20,4),'-',substr(x.periode_tanggal_koreksi,14,2),'-',substr(x.periode_tanggal_koreksi,17,2))=z.periode) a left join (select*from data_koreksi_upah where periode_tanggal_koreksi='$periode_tanggal_koreksi' and jenis_koreksi=2 group by enroll_id) b on a.enroll_id=b.enroll_id");
+           
+            // $query =  DB::select("select 
+            // a.enroll_id id,
+            // a.employee_name as nama_karyawan,
+            // a.sub_dept_name as nama_department,
+            // a.jumlah_rp_potongan as insentif,
+            // b.jumlah_rp_potongan as koreksi_upah 
+            // from (select x.enroll_id, x.jumlah_rp_potongan from data_koreksi_upah x inner join (select max(y.periode) periode, y.enroll_id enroll_id 
+            // from (SELECT enroll_id, uuid, 
+            // CONCAT(substr(periode_tanggal_koreksi,20,4),'-',substr(periode_tanggal_koreksi,14,2),'-',substr(periode_tanggal_koreksi,17,2)) as periode, jumlah_rp_potongan 
+            // FROM data_koreksi_upah where jenis_koreksi=2 order by CONCAT(substr(periode_tanggal_koreksi,20,4),'-',substr(periode_tanggal_koreksi,14,2),'-',substr(periode_tanggal_koreksi,17,2)) desc)y 
+            // group by enroll_id)z on x.enroll_id=z.enroll_id and CONCAT(substr(x.periode_tanggal_koreksi,20,4),'-',substr(x.periode_tanggal_koreksi,14,2),'-',substr(x.periode_tanggal_koreksi,17,2))=z.periode)a 
+            // left join (select*from data_koreksi_upah where periode_tanggal_koreksi='$periode_tanggal_koreksi' and jenis_koreksi=2 group by enroll_id) b on a.enroll_id=b.enroll_id");
+           
+            $query = DB::select("SELECT 
+                        a.enroll_id AS id,
+                        e.employee_name AS nama_karyawan,
+                        e.sub_dept_name AS nama_department,
+                        a.jumlah_rp_potongan AS insentif,
+                        b.jumlah_rp_potongan AS koreksi_upah
+                    FROM 
+                        (
+                            SELECT 
+                                x.enroll_id, 
+                                x.jumlah_rp_potongan
+                            FROM 
+                                data_koreksi_upah x
+                            INNER JOIN 
+                                (
+                                    SELECT 
+                                        enroll_id, 
+                                        MAX(CONCAT(SUBSTR(periode_tanggal_koreksi, 20, 4), '-', SUBSTR(periode_tanggal_koreksi, 14, 2), '-', SUBSTR(periode_tanggal_koreksi, 17, 2))) AS periode
+                                    FROM 
+                                        data_koreksi_upah
+                                    WHERE 
+                                        jenis_koreksi = 2
+                                    GROUP BY 
+                                        enroll_id
+                                ) z 
+                            ON 
+                                x.enroll_id = z.enroll_id
+                                AND CONCAT(SUBSTR(x.periode_tanggal_koreksi, 20, 4), '-', SUBSTR(x.periode_tanggal_koreksi, 14, 2), '-', SUBSTR(x.periode_tanggal_koreksi, 17, 2)) = z.periode
+                        ) a
+                    LEFT JOIN 
+                        (
+                            SELECT 
+                                enroll_id,
+                                jumlah_rp_potongan
+                            FROM 
+                                data_koreksi_upah
+                            WHERE 
+                                periode_tanggal_koreksi = '$periode_tanggal_koreksi' 
+                                AND jenis_koreksi = 2
+                            GROUP BY 
+                                enroll_id
+                        ) b 
+                    ON 
+                        a.enroll_id = b.enroll_id
+                    LEFT JOIN 
+                        employee_atribut e
+                    ON 
+                        a.enroll_id = e.enroll_id;
+                    ");
+           
             $totalData = DataKoreksiUpah::where('jenis_koreksi',2)->groupBy('enroll_id')->count();
             $totalFiltered = count($query);
             $data = array();
@@ -258,12 +321,6 @@ class KoreksiUpahController extends AdminBaseController
         $keterangan = $request->keterangan;
         $jenis_koreksi = $request->jenis_koreksi;
 
-        //sebelumnya
-        // $findDT = DataKoreksiUpah::where('kode_koreksi_upah','=', $kode_koreksi_upah)->count();
-
-        // if($findDT > 0) {
-        //     $query = false;
-
          $findDT = DataKoreksiUpah::where('enroll_id',$request->enroll_id)->where('periode_tanggal_koreksi',$request->periode_tanggal_koreksi)
             ->where('jenis_koreksi',$request->jenis_koreksi)->count();
             if($findDT > 0) {
@@ -274,14 +331,6 @@ class KoreksiUpahController extends AdminBaseController
                 'kode_koreksi_upah' => $kode_koreksi_upah,
                 'tanggal_koreksi' => $tanggal_koreksi,
                 'enroll_id' => $enroll_id,
-                'nik' => $nik,
-                'employee_name' => $employee_name,
-                'site_nirwana_id' => $site_nirwana_id,
-                'site_nirwana_name' => $site_nirwana_name,
-                'department_id' => $department_id,
-                'department_name' => $department_name,
-                'sub_dept_id' => $sub_dept_id,
-                'sub_dept_name' => $sub_dept_name,
                 'jumlah_rp_potongan' => $jumlah_rp_potongan,
                 'periode_tanggal_koreksi' => $periode_tanggal_koreksi,
                 'keterangan' => $keterangan,
@@ -330,14 +379,6 @@ class KoreksiUpahController extends AdminBaseController
             'kode_koreksi_upah' => $kode_koreksi_upah,
             'tanggal_koreksi' => $tanggal_koreksi,
             'enroll_id' => $enroll_id,
-            'nik' => $nik,
-            'employee_name' => $employee_name,
-            'site_nirwana_id' => $site_nirwana_id,
-            'site_nirwana_name' => $site_nirwana_name,
-            'department_id' => $department_id,
-            'department_name' => $department_name,
-            'sub_dept_id' => $sub_dept_id,
-            'sub_dept_name' => $sub_dept_name,
             'jumlah_rp_potongan' => $jumlah_rp_potongan,
             'periode_tanggal_koreksi' => $periode_tanggal_kehadiran,
             'keterangan' => $keterangan,
@@ -400,14 +441,6 @@ class KoreksiUpahController extends AdminBaseController
                         'kode_koreksi_upah' => $kode_koreksi_upah,
                         'tanggal_koreksi' => $tanggal_koreksi,
                         'enroll_id' => $enroll_id,
-                        'nik' => $nik,
-                        'employee_name' => $employee_name,
-                        // 'site_nirwana_id' => $site_nirwana_id,
-                        // 'site_nirwana_name' => $site_nirwana_name,
-                        // 'department_id' => $department_id,
-                        // 'department_name' => $department_name,
-                        // 'sub_dept_id' => $sub_dept_id,
-                        // 'sub_dept_name' => $sub_dept_name,
                         'jumlah_rp_potongan' => $jumlah_rp_potongan,
                         'periode_tanggal_koreksi' => $periode_tanggal_koreksi,
                         'keterangan' => $keterangan,
@@ -502,14 +535,6 @@ class KoreksiUpahController extends AdminBaseController
                             'kode_koreksi_upah'=>$value['kode_koreksi_upah'],
                             'tanggal_koreksi'=>$value['tanggal_koreksi'],    
                             'enroll_id'=>$value['enroll_id'],
-                            'nik'=>$value['nik'],            
-                            'employee_name'=>$value['employee_name'],
-                            'site_nirwana_id'=>$value['site_nirwana_id'],
-                            'site_nirwana_name'=>$value['site_nirwana_name'],
-                            'department_id'=>$value['department_id'],
-                            'department_name'=>$value['department_name'],
-                            'sub_dept_id'=>$value['sub_dept_id'],
-                            'sub_dept_name'=>$value['sub_dept_name'],
                             'jumlah_rp_potongan'=>$value['jumlah_rp_potongan'],
                             'periode_tanggal_koreksi'=>$value['periode_tanggal_koreksi'],
                             'keterangan'=>$value['keterangan'],
@@ -525,14 +550,6 @@ class KoreksiUpahController extends AdminBaseController
                             'kode_koreksi_upah'=>$value['kode_koreksi_upah'],
                             'tanggal_koreksi'=>$value['tanggal_koreksi'],    
                             'enroll_id'=>$value['enroll_id'],
-                            'nik'=>$value['nik'],            
-                            'employee_name'=>$value['employee_name'],
-                            'site_nirwana_id'=>$value['site_nirwana_id'],
-                            'site_nirwana_name'=>$value['site_nirwana_name'],
-                            'department_id'=>$value['department_id'],
-                            'department_name'=>$value['department_name'],
-                            'sub_dept_id'=>$value['sub_dept_id'],
-                            'sub_dept_name'=>$value['sub_dept_name'],
                             'jumlah_rp_potongan'=>$value['jumlah_rp_potongan'],
                             'periode_tanggal_koreksi'=>$value['periode_tanggal_koreksi'],
                             'keterangan'=>$value['keterangan'],

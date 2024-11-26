@@ -69,14 +69,14 @@ class DataAbsenPerijinanIKSExport implements FromQuery, WithMapping, ShouldAutoS
                                         master_data_absen_kehadiran.status_absen,
                                         data_absen_perijinan.tanggal_mulai_ijin,
                                         data_absen_perijinan.tanggal_akhir_ijin,
-                                        master_data_absen_kehadiran.permits_dari_pukul,
-                                        master_data_absen_kehadiran.permits_sampai_pukul,
-                                        master_data_absen_kehadiran.total_menit_permits
+                                        data_absen_perijinan.time_mulai_ijin,
+                                        data_absen_perijinan.time_akhir_ijin,
+                                        data_absen_perijinan.total_time_ijin
                                     ')
+                                    ->leftJoin('data_absen_perijinan', 'master_data_absen_kehadiran.nomor_absen_ijin', '=', 'data_absen_perijinan.nomor_form_perizinan')
                                     ->leftJoin('ref_absen_ijin', 'master_data_absen_kehadiran.status_absen', '=', 'ref_absen_ijin.kode_absen_ijin')
                                     ->leftJoin('employee_atribut', 'master_data_absen_kehadiran.enroll_id', '=', 'employee_atribut.enroll_id')
                                     ->leftJoin('department_all', 'employee_atribut.sub_dept_id', '=', 'department_all.sub_dept_id')
-                                    ->leftJoin('data_absen_perijinan', 'master_data_absen_kehadiran.nomor_absen_ijin', '=', 'data_absen_perijinan.nomor_form_perizinan')
                                     ->whereBetween('master_data_absen_kehadiran.tanggal_berjalan', [$tanggalMulai, $tanggalSampai])
                                     ->whereNotNull('master_data_absen_kehadiran.status_absen')
                                     ->whereNotNull('master_data_absen_kehadiran.nomor_absen_ijin')
@@ -100,6 +100,7 @@ class DataAbsenPerijinanIKSExport implements FromQuery, WithMapping, ShouldAutoS
                                     ->orderBy('employee_atribut.employee_name', 'asc')
                                     ->orderBy('master_data_absen_kehadiran.tanggal_berjalan', 'asc')
                                     ->limit(1);
+
         return $q;
     }
 
@@ -120,9 +121,9 @@ class DataAbsenPerijinanIKSExport implements FromQuery, WithMapping, ShouldAutoS
         $status_staff = $Data->status_staff;
         $nama_hari = $Data->nama_hari;
         $absen_alasan = $Data->absen_alasan;
-        $permits_dari_pukul = $Data->permits_dari_pukul;
-        $permits_sampai_pukul = $Data->permits_sampai_pukul;
-        $total_menit_permits = $Data->total_menit_permits;
+        $permits_dari_pukul = $Data->time_mulai_ijin;
+        $permits_sampai_pukul = $Data->time_akhir_ijin;
+        $total_menit_permits = $Data->total_time_ijin;
 
         return [
             $nomor_form_perizinan,

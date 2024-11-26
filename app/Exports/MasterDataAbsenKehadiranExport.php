@@ -112,9 +112,9 @@ class MasterDataAbsenKehadiranExport implements FromView, ShouldAutoSize, WithEv
             master_data_absen_kehadiran.absen_masuk_kerja,
             master_data_absen_kehadiran.absen_pulang_kerja,
             master_data_absen_kehadiran.jumlah_absen_menit_kerja,
-            master_data_absen_kehadiran.permits_dari_pukul,
-            master_data_absen_kehadiran.permits_sampai_pukul,
-            master_data_absen_kehadiran.total_menit_permits,
+            data_absen_perijinan.time_mulai_ijin,
+            data_absen_perijinan.time_akhir_ijin,
+            data_absen_perijinan.total_time_ijin,
             master_data_absen_kehadiran.jumlah_menit_absen_dt,
             master_data_absen_kehadiran.jumlah_menit_absen_pc,
             master_data_absen_kehadiran.jumlah_menit_absen_dtpc,
@@ -145,6 +145,7 @@ class MasterDataAbsenKehadiranExport implements FromView, ShouldAutoSize, WithEv
         ')
         ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
         ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
+        ->leftJoin('data_absen_perijinan', 'master_data_absen_kehadiran.nomor_absen_ijin', '=', 'data_absen_perijinan.nomor_form_perizinan')
         ->leftJoin('rekap_perhitungan_lembur',function($leftjoin){
             $leftjoin->on("master_data_absen_kehadiran.tanggal_berjalan","=","rekap_perhitungan_lembur.tanggal_berjalan")->on("master_data_absen_kehadiran.enroll_id","=","rekap_perhitungan_lembur.enroll_id");
         })
