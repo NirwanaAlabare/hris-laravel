@@ -413,7 +413,7 @@ class GagalAbsenController extends AdminBaseController
 
 
             $query_absen=MasterDataAbsenKehadiran::where('uuid','=',$uuid)->first();
-
+            $status_staff=EmployeeAtribut::where('enroll_id',$query_absen->enroll_id)->first()->status_staff;
                 $jadwal_in=$query_absen->mulai_jam_kerja;
                 $jadwal_out=$query_absen->akhir_jam_kerja;
 
@@ -425,7 +425,7 @@ class GagalAbsenController extends AdminBaseController
             
                 $DT = date_diff(date_create($jadwal_in),date_create($absen_in));
                 $PC = date_diff(date_create($jadwal_out),date_create($absen_out));
-                 if( $jadwal_in!=null && $absen_in!=null && $absen_in>$jadwal_in){
+                if( $jadwal_in!=null && $absen_in!=null && $absen_in>$jadwal_in){
                     $total_DT1 = $DT->i +($DT->h*60);
                     if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
                         if($absen_in >'13:00:00'){
@@ -445,6 +445,11 @@ class GagalAbsenController extends AdminBaseController
                     $total_DT = $total_DT < 480 ? $total_DT : 480;
                 }else{
                     $total_DT=0;
+                }
+                if($status_staff=='STAFF'){
+                    if($total_DT<=10){
+                        $total_DT=0;
+                    }
                 }
 
                 if( $jadwal_out !=null && $absen_out !=null && $absen_out<$jadwal_out){
@@ -476,7 +481,7 @@ class GagalAbsenController extends AdminBaseController
                 else{
                     $jumlah_absen_menit_kerja=0;
                 }
-        $query =  MasterDataAbsenKehadiran::where('uuid','=',$uuid)
+                $query =  MasterDataAbsenKehadiran::where('uuid','=',$uuid)
                     ->update([
                         'tanggal_absen' => $tanggal_absen,
                         'status_absen' => $status_absen,
