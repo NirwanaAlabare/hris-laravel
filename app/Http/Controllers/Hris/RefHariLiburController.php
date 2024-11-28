@@ -125,7 +125,7 @@ class RefHariLiburController extends AdminBaseController
     {
         $id = $request->id;
         $nama_hari_libur = $request->nama_hari_libur;
-        $tanggal_libur =date('Y-m-d', strtotime($request->tanggal_libur)); ;
+        $tanggal_libur =date('Y-m-d', strtotime($request->tanggal_libur));
         $status_absen = $request->status_absen;
 
         $findDT = RefHariLibur::where('id','=', $id)->count();
