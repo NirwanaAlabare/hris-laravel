@@ -1698,6 +1698,18 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $jumlah_hari_kerja=$jumlah_hari_total-$jumlah_hari_sabtu_minggu_total;
             }
             $jumlah_hari_kerja_employee=$jumlah_hari_total-$jumlah_hari_sabtu_minggu_total;
+            if($tanggal_masuk>$tanggal_awal){
+                $timestamp3 = strtotime($tanggal_masuk);
+                $timestamp4 = strtotime($tanggal_akhir);
+                $jumlah_hari_total_baru=(abs($timestamp4 - $timestamp3) / (60 * 60 * 24)+1);
+                $jumlah_hari_sabtu_minggu_total_baru = 0;
+                for ($i = strtotime($tanggal_masuk); $i <= strtotime($tanggal_akhir); $i += 86400) {
+                    if ((date('N', $i) == 6)||(date('N', $i) == 7)) {
+                        $jumlah_hari_sabtu_minggu_total_baru++;
+                    }
+                }
+                $jumlah_hari_kerja_employee=$jumlah_hari_total_baru-$jumlah_hari_sabtu_minggu_total_baru;
+            }
             $insentif_kehadiran_total=(((($value->status_absen==null || $value->status_absen=='IKS') && $value->mulai_jam_kerja!=null))?$insentif_kehadiran:0);
             $total_lembur_rupiah=0;
             $countlembur=(int)count($value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan));
@@ -1747,7 +1759,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $potongan_perhari=((in_array($value->status_absen, $ITB)||$value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null)||$value->status_absen=='R')?$gaji_perhari:0);
                 $seniority_allowance=$tunjangan/$jumlah_hari_kerja;
                 $seniority_allowance_total=($value->mulai_jam_kerja!=null)?$tunjangan/$jumlah_hari_kerja:0;
-                $bruto=($value->mulai_jam_kerja!=null)?(($gaji_perhari_total+$seniority_allowance_total+$insentif_kehadiran_total+$total_lembur_rupiah+$koreksi_upah+$insentif_jabatan)-($koreksi_potongan+$potongan_permenit+$potongan_perhari)):(($total_lembur_rupiah)-($potongan_permenit+$potongan_perhari));
+                $bruto=($value->mulai_jam_kerja!=null)?(($gaji_perhari_total+$seniority_allowance_total+$insentif_kehadiran_total+$total_lembur_rupiah+$koreksi_upah+$insentif_jabatan)-($koreksi_potongan+$potongan_permenit+$potongan_perhari)):(($total_lembur_rupiah+$insentif_jabatan+$koreksi_upah)-($potongan_permenit+$potongan_perhari));
                 $jumlah=$bruto-($bpjs_tk_total+$bpjs_ks_total);
                 $pembulatan=(ceil($jumlah/100)*100)-$jumlah;
                 $total_pembayaran=$jumlah+$bpjs_tk_company_total+$bpjs_ks_company_total+$thr_total+$thr_total+$uang_makan;
@@ -1759,7 +1771,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $potongan_perhari=((in_array($value->status_absen, $ITB)||$value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null)||$value->status_absen=='R')?$gaji_perhari:0);
                 $seniority_allowance=$tunjangan/$jumlah_hari_kerja;
                 $seniority_allowance_total=($value->kode_hari!=5 && $value->kode_hari!=6)?$tunjangan/$jumlah_hari_kerja:0;
-                $bruto=($value->kode_hari!=5 && $value->kode_hari!=6)?(($gaji_perhari_total+$seniority_allowance_total+$insentif_kehadiran_total+$total_lembur_rupiah+$koreksi_upah+$insentif_jabatan)-($koreksi_potongan+$potongan_permenit+$potongan_perhari)):(($total_lembur_rupiah)-($potongan_permenit+$potongan_perhari));
+                $bruto=($value->kode_hari!=5 && $value->kode_hari!=6)?(($gaji_perhari_total+$seniority_allowance_total+$insentif_kehadiran_total+$total_lembur_rupiah+$koreksi_upah+$insentif_jabatan)-($koreksi_potongan+$potongan_permenit+$potongan_perhari)):(($total_lembur_rupiah+$koreksi_upah+$insentif_jabatan)-($potongan_permenit+$potongan_perhari));
                 $jumlah=$bruto-($bpjs_tk_total+$bpjs_ks_total);
                 $pembulatan=(ceil($jumlah/100)*100)-$jumlah;
                 $total_pembayaran=$jumlah+$bpjs_tk_company_total+$bpjs_ks_company_total+$thr_total+$thr_total+$uang_makan;
