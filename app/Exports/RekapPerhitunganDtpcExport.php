@@ -58,7 +58,7 @@ class RekapPerhitunganDtpcExport implements FromQuery, WithMapping, ShouldAutoSi
                     employee_atribut.employee_name,
                     employee_atribut.status_staff,
                     employee_atribut.status_aktif,
-                    rekap_perhitungan_dtpc.status_absen,
+                    mda.status_absen,
                     department_all.sub_dept_name,
                     NVL(rekap_perhitungan_dtpc.gaji_pokok, 0) gaji_pokok,
                     NVL(rekap_perhitungan_dtpc.gaji_menit, 0) gaji_menit,
@@ -74,6 +74,10 @@ class RekapPerhitunganDtpcExport implements FromQuery, WithMapping, ShouldAutoSi
                 ')
                 ->leftJoin('employee_atribut','employee_atribut.enroll_id','=','rekap_perhitungan_dtpc.enroll_id')
                 ->leftJoin('department_all','department_all.sub_dept_id','=','employee_atribut.sub_dept_id')
+                ->leftJoin('master_data_absen_kehadiran as mda', function($leftjoin) {
+                    $leftjoin->on("mda.tanggal_berjalan", "=", "rekap_perhitungan_dtpc.tanggal_berjalan")
+                             ->on("mda.enroll_id", "=", "rekap_perhitungan_dtpc.enroll_id");
+                })
                 ->groupBy('rekap_perhitungan_dtpc.tanggal_berjalan')
                 ->groupBy('rekap_perhitungan_dtpc.enroll_id')
                 ->orderBy('employee_atribut.employee_name','asc')

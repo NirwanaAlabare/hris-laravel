@@ -44,13 +44,43 @@ class RekapPerhitunganLemburController extends AdminBaseController
         return View::make('hris/rekaphitunglembur', $this->data);
     }
 
+
+    public function cekHari($tanggal, $bahasa = 'id') {
+        // Konversi tanggal ke timestamp
+        $timestamp = strtotime($tanggal);
+    
+        if (!$timestamp) {
+            return "Format tanggal tidak valid.";
+        }
+    
+        // Nama hari dalam bahasa Inggris
+        $hariInggris = date('l', $timestamp);
+    
+        // Array nama hari dalam bahasa Indonesia
+        $hariIndonesia = [
+            'Sunday'    => 'Minggu',
+            'Monday'    => 'Senin',
+            'Tuesday'   => 'Selasa',
+            'Wednesday' => 'Rabu',
+            'Thursday'  => 'Kamis',
+            'Friday'    => 'Jumat',
+            'Saturday'  => 'Sabtu'
+        ];
+    
+        // Kembalikan nama hari sesuai bahasa
+        if ($bahasa === 'id') {
+            return $hariIndonesia[$hariInggris] ?? "Hari tidak ditemukan.";
+        }
+    
+        return $hariInggris; // Default ke bahasa Inggris
+    }
+
     public function ajax_rekap(Request $request)
     {
 
         $daterange1 = explode(" - ", $request->daterange1);
         $tanggalMulai = date('Y-m-d', strtotime($daterange1[0]));
         $tanggalSampai = date('Y-m-d', strtotime($daterange1[1]));
-
 
         if(request()->ajax()) {
         $columns = array(
@@ -104,17 +134,31 @@ class RekapPerhitunganLemburController extends AdminBaseController
         if(empty($request->input('search.value')))
         {
             if(empty($daterange1)) {
-                $query =  RekapPerhitunganLembur::offset($start)
+                $query =  RekapPerhitunganLembur::selectRaw('rekap_perhitungan_lembur.*,employee_atribut.*, mda.*')->offset($start)
+                                ->leftJoin('employee_atribut', 'rekap_perhitungan_lembur.enroll_id', '=', 'employee_atribut.enroll_id')
+                                ->leftJoin('master_data_absen_kehadiran as mda', function($leftjoin) {
+                                    $leftjoin->on("mda.tanggal_berjalan", "=", "rekap_perhitungan_lembur.tanggal_berjalan")
+                                             ->on("mda.enroll_id", "=", "rekap_perhitungan_lembur.enroll_id");
+                                })
                                 ->limit($limit)
                                 ->orderBy($order,$dir)
                                 ->get();
-
                 $totalData = RekapPerhitunganLembur::count();
                 $totalFiltered = $totalData;
             } else {
-                $query =  RekapPerhitunganLembur::whereRaw('
-                    tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                $query =  RekapPerhitunganLembur::selectRaw('employee_atribut.*, mda.nomor_form_lembur, mda.mulai_jam_kerja, mda.akhir_jam_kerja, mda.tanggal_berjalan, mda.absen_masuk_kerja, mda.absen_pulang_kerja, dl.mulai_jam_lembur, dl.akhir_jam_lembur, rekap_perhitungan_lembur.final_mulai_jam_lembur, rekap_perhitungan_lembur.final_selesai_jam_lembur, rekap_perhitungan_lembur.final_total_jam_lembur, rekap_perhitungan_lembur.final_total_menit_lembur, rekap_perhitungan_lembur.final_jam_lembur_roundown, rekap_perhitungan_lembur.final_menit_lembur_roundown, rekap_perhitungan_lembur.final_jam_istirahat_lembur, rekap_perhitungan_lembur.lembur_1, rekap_perhitungan_lembur.lembur_2, rekap_perhitungan_lembur.lembur_3, rekap_perhitungan_lembur.lembur_4, rekap_perhitungan_lembur.total_lembur_1234, rekap_perhitungan_lembur.lembur1_rupiah , rekap_perhitungan_lembur.lembur2_rupiah, rekap_perhitungan_lembur.lembur3_rupiah, rekap_perhitungan_lembur.lembur4_rupiah, rekap_perhitungan_lembur.total_lembur_rupiah, grading_salary.salary_bulanan')->whereRaw('
+                    mda.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                 ')
+                ->leftJoin('employee_atribut', 'rekap_perhitungan_lembur.enroll_id', '=', 'employee_atribut.enroll_id')
+                ->leftJoin('grading_salary', 'employee_atribut.kode_grade', '=', 'grading_salary.kode_grade')
+                ->leftJoin('master_data_absen_kehadiran as mda', function($leftjoin) {
+                    $leftjoin->on("mda.tanggal_berjalan", "=", "rekap_perhitungan_lembur.tanggal_berjalan")
+                             ->on("mda.enroll_id", "=", "rekap_perhitungan_lembur.enroll_id");
+                })
+                ->leftJoin('data_lembur as dl', function($leftjoin) {
+                    $leftjoin->on("dl.tanggal_berjalan", "=", "rekap_perhitungan_lembur.tanggal_berjalan")
+                             ->on("dl.enroll_id", "=", "rekap_perhitungan_lembur.enroll_id");
+                })
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order,$dir)
@@ -129,20 +173,28 @@ class RekapPerhitunganLemburController extends AdminBaseController
 
         } else {
             $search = $request->input('search.value');
-
-            $query =  RekapPerhitunganLembur::whereRaw('
-                    tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
-                    and (UPPER(enroll_id) LIKE UPPER("%' . $search . '%")
-                    or UPPER(nik) LIKE UPPER("%' . $search . '%")
-                    or UPPER(nomor_form_lembur) LIKE UPPER("%' . $search . '%")
-                    or UPPER(employee_name) LIKE UPPER("%' . $search . '%")
-                    or UPPER(posisi_name) LIKE UPPER("%' . $search . '%")
-                    or UPPER(department_name) LIKE UPPER("%' . $search . '%")
-                    or UPPER(sub_dept_name) LIKE UPPER("%' . $search . '%")
-                    or UPPER(nama_hari) LIKE UPPER("%' . $search . '%")
-                    or UPPER(nomor_form_lembur) LIKE UPPER("%' . $search . '%")
-                    or UPPER(holiday_name) LIKE UPPER("%' . $search . '%"))
+            $query =  RekapPerhitunganLembur::selectRaw('employee_atribut.*, mda.nomor_form_lembur, mda.mulai_jam_kerja, mda.akhir_jam_kerja, mda.tanggal_berjalan, mda.absen_masuk_kerja, mda.absen_pulang_kerja, dl.mulai_jam_lembur, dl.akhir_jam_lembur, rekap_perhitungan_lembur.final_mulai_jam_lembur, rekap_perhitungan_lembur.final_selesai_jam_lembur, rekap_perhitungan_lembur.final_total_jam_lembur, rekap_perhitungan_lembur.final_total_menit_lembur, rekap_perhitungan_lembur.final_jam_lembur_roundown, rekap_perhitungan_lembur.final_menit_lembur_roundown, rekap_perhitungan_lembur.final_jam_istirahat_lembur, rekap_perhitungan_lembur.lembur_1, rekap_perhitungan_lembur.lembur_2, rekap_perhitungan_lembur.lembur_3, rekap_perhitungan_lembur.lembur_4, rekap_perhitungan_lembur.total_lembur_1234, rekap_perhitungan_lembur.lembur1_rupiah , rekap_perhitungan_lembur.lembur2_rupiah, rekap_perhitungan_lembur.lembur3_rupiah, rekap_perhitungan_lembur.lembur4_rupiah, rekap_perhitungan_lembur.total_lembur_rupiah, grading_salary.salary_bulanan')->whereRaw('
+                    mda.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                    and (UPPER(employee_atribut.enroll_id) LIKE UPPER("%' . $search . '%")
+                    or UPPER(employee_atribut.nik) LIKE UPPER("%' . $search . '%")
+                    or UPPER(mda.nomor_form_lembur) LIKE UPPER("%' . $search . '%")
+                    or UPPER(employee_atribut.employee_name) LIKE UPPER("%' . $search . '%")
+                    or UPPER(employee_atribut.status_jabatan) LIKE UPPER("%' . $search . '%")
+                    or UPPER(employee_atribut.department_name) LIKE UPPER("%' . $search . '%")
+                    or UPPER(employee_atribut.sub_dept_name) LIKE UPPER("%' . $search . '%")
+                    or UPPER(mda.nomor_form_lembur) LIKE UPPER("%' . $search . '%")
+                    )
                 ')
+                ->leftJoin('employee_atribut', 'rekap_perhitungan_lembur.enroll_id', '=', 'employee_atribut.enroll_id')
+                ->leftJoin('grading_salary', 'employee_atribut.kode_grade', '=', 'grading_salary.kode_grade')
+                ->leftJoin('master_data_absen_kehadiran as mda', function($leftjoin) {
+                    $leftjoin->on("mda.tanggal_berjalan", "=", "rekap_perhitungan_lembur.tanggal_berjalan")
+                             ->on("mda.enroll_id", "=", "rekap_perhitungan_lembur.enroll_id");
+                })
+                ->leftJoin('data_lembur as dl', function($leftjoin) {
+                    $leftjoin->on("dl.tanggal_berjalan", "=", "rekap_perhitungan_lembur.tanggal_berjalan")
+                             ->on("dl.enroll_id", "=", "rekap_perhitungan_lembur.enroll_id");
+                })
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order,$dir)
@@ -150,17 +202,12 @@ class RekapPerhitunganLemburController extends AdminBaseController
 
             $totalData = RekapPerhitunganLembur::whereRaw('
                     tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
-                    and (UPPER(enroll_id) LIKE UPPER("%' . $search . '%")
-                    or UPPER(nik) LIKE UPPER("%' . $search . '%")
+                    and (UPPER(employee_atribut.enroll_id) LIKE UPPER("%' . $search . '%")
                     or UPPER(nomor_form_lembur) LIKE UPPER("%' . $search . '%")
-                    or UPPER(employee_name) LIKE UPPER("%' . $search . '%")
-                    or UPPER(posisi_name) LIKE UPPER("%' . $search . '%")
-                    or UPPER(department_name) LIKE UPPER("%' . $search . '%")
-                    or UPPER(sub_dept_name) LIKE UPPER("%' . $search . '%")
-                    or UPPER(nama_hari) LIKE UPPER("%' . $search . '%")
                     or UPPER(nomor_form_lembur) LIKE UPPER("%' . $search . '%")
-                    or UPPER(holiday_name) LIKE UPPER("%' . $search . '%"))
+                    )
                 ')
+                ->leftJoin('employee_atribut', 'rekap_perhitungan_lembur.enroll_id', '=', 'employee_atribut.enroll_id')
                 ->count();
             $totalFiltered = $totalData;
 
@@ -176,22 +223,25 @@ class RekapPerhitunganLemburController extends AdminBaseController
                 $nestedData['nik'] = $q->nik;
                 $nestedData['nomor_form_lembur'] = $q->nomor_form_lembur;
                 $nestedData['employee_name'] = $q->employee_name;
-                $nestedData['posisi_name'] = $q->posisi_name;
+                $nestedData['posisi_name'] = $q->status_jabatan;
                 $nestedData['department_id'] = $q->department_id;
                 $nestedData['department_name'] = $q->department_name;
                 $nestedData['sub_dept_id'] = $q->sub_dept_id;
                 $nestedData['sub_dept_name'] = $q->sub_dept_name;
                 $nestedData['tanggal_berjalan'] = $q->tanggal_berjalan;
                 $nestedData['kode_hari'] = $q->kode_hari;
-                $nestedData['nama_hari'] = $q->nama_hari;
+                $nestedData['nama_hari'] = $this->cekHari($q->tanggal_berjalan);
 
                 $kerjalibur = "KERJA";
+                $jumlah_menit_istirahat = '01:00';
                 switch ($q->kode_hari) {
                     case '5':
                         $kerjalibur = "LIBUR";
+                        $jumlah_menit_istirahat = '00:30';
                         break;
                     case '6':
                         $kerjalibur = "LIBUR";
+                        $jumlah_menit_istirahat = '00:30';
                         break;
                 }
 
@@ -199,24 +249,40 @@ class RekapPerhitunganLemburController extends AdminBaseController
                     switch ($q->kode_hari) {
                         case '5':
                             $kerjalibur = "LIBUR";
+                            $jumlah_menit_istirahat = '00:30';
                             break;
                         case '6':
                             $kerjalibur = "LIBUR";
+                            $jumlah_menit_istirahat = '00:30';
                             break;
                         default :
                             $kerjalibur = "LIBUR NASIONAL";
+                            $jumlah_menit_istirahat = '00:30';
                             break;
                     }
                 }
 
 
+                $mulai_jam_kerja=strtotime($q->mulai_jam_kerja);
+                $akhir_jam_kerja=strtotime($q->akhir_jam_kerja);
+                $jumlah_detik_istirahat=strtotime($jumlah_menit_istirahat);
+                $time = explode(":",$jumlah_menit_istirahat);
+                $minutes = intval($time[0])*60 + intval($time[1]);
+                $total_jam_kerja=(($akhir_jam_kerja-$mulai_jam_kerja)/60)-$minutes;
+
+                $absen_masuk_kerja=strtotime($q->absen_masuk_kerja);
+                $absen_pulang_kerja=strtotime($q->absen_pulang_kerja);
+                $jumlah_detik_istirahat=strtotime($jumlah_menit_istirahat);
+                $total_efektif_jam_kerja=(($absen_pulang_kerja-$absen_masuk_kerja)/60)-$minutes;
+
+
                 $nestedData['kerjalibur'] = $kerjalibur;
                 $nestedData['mulai_jam_kerja'] = substr($q->mulai_jam_kerja, 0, 5);
                 $nestedData['akhir_jam_kerja'] = substr($q->akhir_jam_kerja, 0, 5);
-                $nestedData['jumlah_jam_kerja'] = substr($q->jumlah_jam_kerja, 0, 5);
+                $nestedData['jumlah_jam_kerja'] = $total_jam_kerja;
                 $nestedData['absen_masuk_kerja'] = substr($q->absen_masuk_kerja, 0, 5);
                 $nestedData['absen_pulang_kerja'] = substr($q->absen_pulang_kerja, 0, 5);
-                $nestedData['jam_efektif_kerja'] = substr($q->jam_efektif_kerja, 0, 5);
+                $nestedData['jam_efektif_kerja'] = $total_efektif_jam_kerja;
                 $nestedData['mulai_jam_lembur'] = substr($q->mulai_jam_lembur, 11, 5);
                 $nestedData['akhir_jam_lembur'] = substr($q->akhir_jam_lembur, 11, 5);
                 $nestedData['absen_masuk_kerja'] = substr($q->absen_masuk_kerja, 0, 5);
@@ -233,7 +299,7 @@ class RekapPerhitunganLemburController extends AdminBaseController
                 $nestedData['lembur_3'] = $q->lembur_3;
                 $nestedData['lembur_4'] = $q->lembur_4;
                 $nestedData['total_lembur_1234'] = $q->total_lembur_1234;
-                $nestedData['salary'] = $q->salary;
+                $nestedData['salary'] = $q->salary_bulanan;
                 $nestedData['lembur1_rupiah'] = $q->lembur1_rupiah;
                 $nestedData['lembur2_rupiah'] = $q->lembur2_rupiah;
                 $nestedData['lembur3_rupiah'] = $q->lembur3_rupiah;
@@ -246,7 +312,6 @@ class RekapPerhitunganLemburController extends AdminBaseController
 
             }
         }
-
         $json_data = array(
             "draw"            => intval($request->input('draw')),
             "recordsTotal"    => intval($totalData),

@@ -11,7 +11,7 @@ use App\Models\GradingSalary;
 use App\Models\EmployeeBPJS;
 use App\Models\RekapPerhitunganKehadiranKaryawan;
 use App\Models\RekapPerhitunganLembur;
-use App\Exports\dailyLaborCost;
+use App\Models\DailyLaborCost;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use DB;
@@ -34,18 +34,10 @@ class DailyLaborController extends AdminBaseController
     public function index()
     {
         
-        $data=DB::select("select a.enroll_id,a.employee_name,b.group2,a.status_absen,d.kode_ijin_payroll,a.jumlah_menit_absen_dtpc menit_dtpc,if(a.total_menit_permits is null,0,a.total_menit_permits) menit_iks,c.gaji_menit,c.gaji_harian,(a.jumlah_menit_absen_dtpc+if(a.total_menit_permits is null,0,a.total_menit_permits))*c.gaji_menit potongan_menit_rupiah,sum(c.gaji_harian-((a.jumlah_menit_absen_dtpc+if(a.total_menit_permits is null,0,a.total_menit_permits))*c.gaji_menit)) net_wage from master_data_absen_kehadiran a inner join employee_atribut e on a.enroll_id=e.enroll_id inner join b_master_cc b on e.sub_dept_id=b.no_cc left join ref_absen_ijin d on a.status_absen=d.kode_absen_ijin inner join (select enroll_id,gaji_harian,gaji_menit,periode_tahun_bulan from rekap_perhitungan_kehadiran_karyawan where periode_tahun_bulan='2024-08')c on a.enroll_id=c.enroll_id where a.tanggal_berjalan='2024-08-01' and (a.status_absen is null or d.kode_ijin_payroll in ('IBY','LBY')) and e.status_staff='NON STAFF' group by b.group2");
-        $data=MasterDataAbsenKehadiran::where('tanggal_berjalan','2024-09-09')->with('employee_atribut.grading_salary','employee_atribut.group_department','ref_absen')->where(function($query){
-            $query->where('status_absen',null)
-            ->orWhereHas('ref_absen',function($querys){
-                return $querys->where('kode_ijin_payroll','IBY');
-            });
-        })->get();
-        
         return View::make('hris/daily_labor_cost', $this->data);
     }
     public function get_last_update_labor_cost(){
-        $data=DailyLabor::orderBy('tanggal_berjalan','desc')->limit(1)->first()->tanggal_berjalan;
+        $data=DailyLaborCost::orderBy('tanggal_berjalan','desc')->limit(1)->first()->tanggal_berjalan;
         $update_terakhir=Carbon::parse($data)->translatedFormat('d F Y');   
         
         return $update_terakhir;
@@ -94,7 +86,11 @@ class DailyLaborController extends AdminBaseController
             $query->whereIn('periode_kehadiran',[$result_periode]);
         }])->with(['employee_atribut.grading_salary'=>function($query){
             $query->where('periode_umk','2024-01');
-        }])->with('employee_atribut.dept.b_master_cc')->where('status_staff','NON STAFF')->get();
+        }])
+        ->with('employee_atribut.dept.b_master_cc')
+        ->with(['employee_atribut'=>function($query){
+            $query->where('status_staff','=','NON STAFF');
+        }])->get();
         $belum_di_proses_payroll=[];
         foreach($data_master as $value){
             if(count($value->rekap_perhitungan_kehadiran)==0){
@@ -241,7 +237,7 @@ class DailyLaborController extends AdminBaseController
         $tanggal_akhir = $arrperiode[1];
         $daily_labor=DB::select("select tanggal_berjalan,sum(if(group_department='PRODUCTION',(gaji_perhari-rp_pot_jam),0)) production,sum(if(group_department='SUPPORTING PRODUCTION',(gaji_perhari-rp_pot_jam),0)) supporting_production,sum(if(group_department='SUPPORTING GENERAL',(gaji_perhari-rp_pot_jam),0)) supporting_general,sum(if(group_department='PRODUCTION',(gaji_perhari-rp_pot_jam),0))+sum(if(group_department='SUPPORTING PRODUCTION',(gaji_perhari-rp_pot_jam),0))+sum(if(group_department='SUPPORTING GENERAL',(gaji_perhari-rp_pot_jam),0)) total_wages,sum(if(group_department='PRODUCTION',total_lembur_rupiah,0)) overtime_production,sum(if(group_department='SUPPORTING PRODUCTION',total_lembur_rupiah,0)) supporting_production_overtime,sum(if(group_department='SUPPORTING GENERAL',total_lembur_rupiah,0)) supporting_general_overtime,sum(if(group_department='PRODUCTION',total_lembur_rupiah,0))+sum(if(group_department='SUPPORTING PRODUCTION',total_lembur_rupiah,0))+sum(if(group_department='SUPPORTING GENERAL',total_lembur_rupiah,0)) total_overtime,sum(if(group_department='PRODUCTION',(insentif_kehadiran+insentif_jabatan),0)) incentive_production,sum(if(group_department='SUPPORTING PRODUCTION',(insentif_kehadiran+insentif_jabatan),0)) incentive_supporting_production,sum(if(group_department='SUPPORTING GENERAL',(insentif_kehadiran+insentif_jabatan),0)) incentive_supporting_general,sum(if(group_department='PRODUCTION',(insentif_kehadiran+insentif_jabatan),0))+sum(if(group_department='SUPPORTING PRODUCTION',(insentif_kehadiran+insentif_jabatan),0))+sum(if(group_department='SUPPORTING GENERAL',(insentif_kehadiran+insentif_jabatan),0)) total_insentif,sum(if(group_department='PRODUCTION',bpjs_ks,0)) bpjs_ks_production,sum(if(group_department='SUPPORTING PRODUCTION',bpjs_ks,0)) bpjs_ks_supporting_production,sum(if(group_department='SUPPORTING GENERAL',bpjs_ks,0)) bpjs_ks_supporting_general,sum(if(group_department='PRODUCTION',bpjs_ks,0))+sum(if(group_department='SUPPORTING PRODUCTION',bpjs_ks,0))+sum(if(group_department='SUPPORTING GENERAL',bpjs_ks,0)) total_bpjs_ks,sum(if(group_department='PRODUCTION',bpjs_tk,0)) bpjs_tk_production,sum(if(group_department='SUPPORTING PRODUCTION',bpjs_tk,0)) bpjs_tk_supporting_production,sum(if(group_department='SUPPORTING GENERAL',bpjs_tk,0)) bpjs_tk_supporting_general,sum(if(group_department='PRODUCTION',bpjs_tk,0))+sum(if(group_department='SUPPORTING PRODUCTION',bpjs_tk,0))+sum(if(group_department='SUPPORTING GENERAL',bpjs_tk,0)) total_bpjs_tk,sum(if(group_department='PRODUCTION',thr,0)) thr_production,sum(if(group_department='SUPPORTING PRODUCTION',thr,0)) thr_supporting_production,sum(if(group_department='SUPPORTING GENERAL',thr,0)) thr_supporting_general,sum(if(group_department='PRODUCTION',thr,0))+sum(if(group_department='SUPPORTING PRODUCTION',thr,0))+sum(if(group_department='SUPPORTING GENERAL',thr,0)) total_thr,sum(if(group_department='PRODUCTION',(gaji_perhari-rp_pot_jam),0))+sum(if(group_department='PRODUCTION',total_lembur_rupiah,0))+sum(if(group_department='PRODUCTION',(insentif_kehadiran+insentif_jabatan),0))+sum(if(group_department='PRODUCTION',bpjs_ks,0))+sum(if(group_department='PRODUCTION',bpjs_tk,0))+sum(if(group_department='PRODUCTION',thr,0)) total_employee_production_cost,sum(if(group_department='SUPPORTING PRODUCTION',(gaji_perhari-rp_pot_jam),0))+sum(if(group_department='SUPPORTING PRODUCTION',total_lembur_rupiah,0))+sum(if(group_department='SUPPORTING PRODUCTION',(insentif_kehadiran+insentif_jabatan),0))+sum(if(group_department='SUPPORTING PRODUCTION',bpjs_ks,0))+sum(if(group_department='SUPPORTING PRODUCTION',bpjs_tk,0))+sum(if(group_department='SUPPORTING PRODUCTION',thr,0)) total_employee_supporting_production_cost,sum(if(group_department='SUPPORTING GENERAL',(gaji_perhari-rp_pot_jam),0))+sum(if(group_department='SUPPORTING GENERAL',total_lembur_rupiah,0))+sum(if(group_department='SUPPORTING GENERAL',(insentif_kehadiran+insentif_jabatan),0))+sum(if(group_department='SUPPORTING GENERAL',bpjs_ks,0))+sum(if(group_department='SUPPORTING GENERAL',bpjs_tk,0))+sum(if(group_department='SUPPORTING GENERAL',thr,0)) total_employee_supporting_general_cost,sum(if(group_department='PRODUCTION',(gaji_perhari-rp_pot_jam),0))+sum(if(group_department='PRODUCTION',total_lembur_rupiah,0))+sum(if(group_department='PRODUCTION',(insentif_kehadiran+insentif_jabatan),0))+sum(if(group_department='PRODUCTION',bpjs_ks,0))+sum(if(group_department='PRODUCTION',bpjs_tk,0))+sum(if(group_department='PRODUCTION',thr,0))+sum(if(group_department='SUPPORTING PRODUCTION',(gaji_perhari-rp_pot_jam),0))+sum(if(group_department='SUPPORTING PRODUCTION',total_lembur_rupiah,0))+sum(if(group_department='SUPPORTING PRODUCTION',(insentif_kehadiran+insentif_jabatan),0))+sum(if(group_department='SUPPORTING PRODUCTION',bpjs_ks,0))+sum(if(group_department='SUPPORTING PRODUCTION',bpjs_tk,0))+sum(if(group_department='SUPPORTING PRODUCTION',thr,0))+sum(if(group_department='SUPPORTING GENERAL',(gaji_perhari-rp_pot_jam),0))+sum(if(group_department='SUPPORTING GENERAL',total_lembur_rupiah,0))+sum(if(group_department='SUPPORTING GENERAL',(insentif_kehadiran+insentif_jabatan),0))+sum(if(group_department='SUPPORTING GENERAL',bpjs_ks,0))+sum(if(group_department='SUPPORTING GENERAL',bpjs_tk,0))+sum(if(group_department='SUPPORTING GENERAL',thr,0)) total_employee_cost from daily_labor_costs where tanggal_berjalan>='$tanggal_awal' and tanggal_berjalan<='$tanggal_akhir' group by tanggal_berjalan");
         $fileName = 'Daily Labor Cost';
-        $response = Excel::download(new dailyLaborCost($daily_labor), $fileName, \Maatwebsite\Excel\Excel::XLSX);
+        $response = Excel::download(new dailyLaborCost($daily_labor,$tanggal_awal, $tanggal_akhir), $fileName, \Maatwebsite\Excel\Excel::XLSX);
         ob_end_clean();
         return $response;
     }

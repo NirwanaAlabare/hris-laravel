@@ -89,7 +89,7 @@ class RekapPerhitunganDtpcController extends AdminBaseController
                     a.employee_name,
                     b.status_staff,
                     b.status_aktif,
-                    a.status_absen,
+                    mda.status_absen,
                     c.sub_dept_name,
                     FORMAT(a.gaji_pokok, 2) gaji_pokok,
                     FORMAT(a.gaji_menit, 2) gaji_menit,
@@ -102,6 +102,7 @@ class RekapPerhitunganDtpcController extends AdminBaseController
                 FROM
                     rekap_perhitungan_dtpc a
                     LEFT JOIN employee_atribut b ON (a.enroll_id = b.enroll_id)
+                    LEFT JOIN master_data_absen_kehadiran mda ON a.enroll_id = mda.enroll_id AND a.tanggal_berjalan = mda.tanggal_berjalan
                     LEFT JOIN department_all c	ON (b.sub_dept_id = c.sub_dept_id)
                 GROUP BY
                     a.tanggal_berjalan,
@@ -123,7 +124,7 @@ class RekapPerhitunganDtpcController extends AdminBaseController
                     b.employee_name,
                     b.status_staff,
                     b.status_aktif,
-                    a.status_absen,
+                    mda.status_absen,
                     c.sub_dept_name,
                     FORMAT(a.gaji_pokok, 2) gaji_pokok,
                     FORMAT(a.gaji_menit, 2) gaji_menit,
@@ -136,6 +137,7 @@ class RekapPerhitunganDtpcController extends AdminBaseController
                 FROM
                     rekap_perhitungan_dtpc a
                     LEFT JOIN employee_atribut b ON (a.enroll_id = b.enroll_id)
+                    LEFT JOIN master_data_absen_kehadiran mda ON a.enroll_id = mda.enroll_id AND a.tanggal_berjalan = mda.tanggal_berjalan
                     LEFT JOIN department_all c	ON (b.sub_dept_id = c.sub_dept_id)
                 WHERE
                     a.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
@@ -166,7 +168,7 @@ class RekapPerhitunganDtpcController extends AdminBaseController
                 b.employee_name,
                 b.status_staff,
                 b.status_aktif,
-                a.status_absen,
+                mda.status_absen,
                 c.sub_dept_name,
                 FORMAT(a.gaji_pokok, 2) gaji_pokok,
                 FORMAT(a.gaji_menit, 2) gaji_menit,
@@ -179,6 +181,7 @@ class RekapPerhitunganDtpcController extends AdminBaseController
             FROM
                 rekap_perhitungan_dtpc a
                 LEFT JOIN employee_atribut b ON (a.enroll_id = b.enroll_id)
+                LEFT JOIN master_data_absen_kehadiran mda ON a.enroll_id = mda.enroll_id AND a.tanggal_berjalan = mda.tanggal_berjalan
                 LEFT JOIN department_all c	ON (b.sub_dept_id = c.sub_dept_id)
             WHERE
                 a.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
@@ -188,7 +191,7 @@ class RekapPerhitunganDtpcController extends AdminBaseController
                 or UPPER(c.sub_dept_name) LIKE UPPER("%' . $search . '%")
                 or UPPER(b.status_staff) LIKE UPPER("%' . $search . '%")
                 or UPPER(b.status_aktif) LIKE UPPER("%' . $search . '%")
-                or UPPER(a.status_absen) LIKE UPPER("%' . $search . '%"))
+                or UPPER(mda.status_absen) LIKE UPPER("%' . $search . '%"))
             GROUP BY
                 a.tanggal_berjalan,
                 a.enroll_id
@@ -203,6 +206,7 @@ class RekapPerhitunganDtpcController extends AdminBaseController
             FROM
                 rekap_perhitungan_dtpc a
                 LEFT JOIN employee_atribut b ON (a.enroll_id = b.enroll_id)
+                LEFT JOIN master_data_absen_kehadiran mda ON a.enroll_id = mda.enroll_id AND a.tanggal_berjalan = mda.tanggal_berjalan
                 LEFT JOIN department_all c	ON (b.sub_dept_id = c.sub_dept_id)
             WHERE
                 a.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
@@ -212,7 +216,7 @@ class RekapPerhitunganDtpcController extends AdminBaseController
                 or UPPER(c.sub_dept_name) LIKE UPPER("%' . $search . '%")
                 or UPPER(b.status_staff) LIKE UPPER("%' . $search . '%")
                 or UPPER(b.status_aktif) LIKE UPPER("%' . $search . '%")
-                or UPPER(a.status_absen) LIKE UPPER("%' . $search . '%"))
+                or UPPER(mda.status_absen) LIKE UPPER("%' . $search . '%"))
             GROUP BY
                 a.tanggal_berjalan,
                 a.enroll_id

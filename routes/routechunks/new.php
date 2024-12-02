@@ -48,8 +48,7 @@ Route::prefix('payroll')->group(function() {
     Route::post('proses-rekap', 'ProsesPayrollController@index')->name("hris.proses.payroll.rekap");
     Route::post('proses-rekap2', 'ProsesPayrollController@index2')->name("hris.proses.payroll.rekap2");
     Route::post('proses-rekap3', 'ProsesPayrollController@index3')->name("hris.proses.payroll.rekap3");
-    Route::post('proses-lembur', 'ProsesPayrollController@proses_rekap_lembur')->name("hris.proses.lembur.rekap");
-
+    Route::post('proses-lembur', 'ProsesPayrollController@index4')->name("hris.proses.lembur.rekap");
     Route::get('test2', 'ProsesPayrollController@index2')->name("hris.coba2");
 
 
@@ -59,9 +58,9 @@ Route::prefix('estimasi')->group(function() {
     Route::post('ajax_exportexcel', 'EstimasiPayrollController@ajax_exportexcel')->name("hris.estimasinilaipayroll.export");
 
 });
-Route::prefix('daily_labor')->group(function() {
-    Route::get('index', 'DailyLaborController@index')->name("hris.nilaipayrollperhari.index");
-});
+// Route::prefix('daily_labor')->group(function() {
+//     Route::get('index', 'DailyLaborController@index')->name("hris.nilaipayrollperhari.index");
+// });
 
 Route::prefix('junal')->group(function() {
     Route::get('index', 'JurnalController@index')->name("hris.jurnal.index");

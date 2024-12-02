@@ -44,6 +44,36 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
         return $this;
     }
 
+    public function cekHari($tanggal, $bahasa = 'id') {
+        // Konversi tanggal ke timestamp
+        $timestamp = strtotime($tanggal);
+    
+        if (!$timestamp) {
+            return "Format tanggal tidak valid.";
+        }
+    
+        // Nama hari dalam bahasa Inggris
+        $hariInggris = date('l', $timestamp);
+    
+        // Array nama hari dalam bahasa Indonesia
+        $hariIndonesia = [
+            'Sunday'    => 'Minggu',
+            'Monday'    => 'Senin',
+            'Tuesday'   => 'Selasa',
+            'Wednesday' => 'Rabu',
+            'Thursday'  => 'Kamis',
+            'Friday'    => 'Jumat',
+            'Saturday'  => 'Sabtu'
+        ];
+    
+        // Kembalikan nama hari sesuai bahasa
+        if ($bahasa === 'id') {
+            return $hariIndonesia[$hariInggris] ?? "Hari tidak ditemukan.";
+        }
+    
+        return $hariInggris; // Default ke bahasa Inggris
+    }
+
     public function query()
     {
         $dateRange = 'rekap_perhitungan_lembur.tanggal_berjalan between concat(substr("' . $this->daterange1[0] . '", 7, 4),"-",substr("' . $this->daterange1[0] . '", 1, 2),"-",substr("' . $this->daterange1[0] . '", 4, 2)) and concat(substr("' . $this->daterange1[1] . '", 7, 4),"-",substr("' . $this->daterange1[1] . '", 1, 2),"-",substr("' . $this->daterange1[1] . '", 4, 2))';
@@ -54,19 +84,16 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
                     rekap_perhitungan_lembur.nomor_form_lembur, 
                     employee_atribut.employee_name, 
                     employee_atribut.status_staff, 
-                    rekap_perhitungan_lembur.department_name, 
-                    rekap_perhitungan_lembur.sub_dept_name, 
+                    employee_atribut.department_name, 
+                    employee_atribut.sub_dept_name, 
                     rekap_perhitungan_lembur.tanggal_berjalan, 
-                    rekap_perhitungan_lembur.mulai_jam_kerja, 
-                    rekap_perhitungan_lembur.akhir_jam_kerja, 
-                    rekap_perhitungan_lembur.jumlah_jam_kerja, 
-                    rekap_perhitungan_lembur.absen_masuk_kerja, 
-                    rekap_perhitungan_lembur.absen_pulang_kerja, 
-                    rekap_perhitungan_lembur.jam_efektif_kerja, 
-                    rekap_perhitungan_lembur.mulai_jam_lembur, 
-                    rekap_perhitungan_lembur.akhir_jam_lembur, 
-                    rekap_perhitungan_lembur.nama_hari, 
-                    rekap_perhitungan_lembur.kerjalibur, 
+                    mda.mulai_jam_kerja, 
+                    mda.akhir_jam_kerja, 
+                    mda.jumlah_jam_kerja, 
+                    mda.absen_masuk_kerja, 
+                    mda.absen_pulang_kerja, 
+                    dl.mulai_jam_lembur, 
+                    dl.akhir_jam_lembur, 
                     rekap_perhitungan_lembur.final_mulai_jam_lembur, 
                     rekap_perhitungan_lembur.final_selesai_jam_lembur, 
                     rekap_perhitungan_lembur.final_total_jam_lembur, 
@@ -79,7 +106,7 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
                     rekap_perhitungan_lembur.lembur_3, 
                     rekap_perhitungan_lembur.lembur_4, 
                     rekap_perhitungan_lembur.total_lembur_1234, 
-                    rekap_perhitungan_lembur.salary, 
+                    grading_salary.salary_bulanan, 
                     rekap_perhitungan_lembur.lembur1_rupiah, 
                     rekap_perhitungan_lembur.lembur2_rupiah, 
                     rekap_perhitungan_lembur.lembur3_rupiah, 
@@ -90,6 +117,15 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
                     ' . $dateRange . '
                 ')
                 ->leftjoin('employee_atribut','employee_atribut.enroll_id','=','rekap_perhitungan_lembur.enroll_id')
+                ->leftJoin('master_data_absen_kehadiran as mda', function($leftjoin) {
+                    $leftjoin->on("mda.tanggal_berjalan", "=", "rekap_perhitungan_lembur.tanggal_berjalan")
+                             ->on("mda.enroll_id", "=", "rekap_perhitungan_lembur.enroll_id");
+                })
+                ->leftJoin('data_lembur as dl', function($leftjoin) {
+                    $leftjoin->on("dl.tanggal_berjalan", "=", "rekap_perhitungan_lembur.tanggal_berjalan")
+                             ->on("dl.enroll_id", "=", "rekap_perhitungan_lembur.enroll_id");
+                })
+                ->leftJoin('grading_salary', 'employee_atribut.kode_grade', '=', 'grading_salary.kode_grade')
                 ->orderBy('employee_atribut.employee_name','asc')
                 ->orderBy('rekap_perhitungan_lembur.tanggal_berjalan','asc')
                 ->limit(1);
@@ -114,7 +150,7 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
         $department_name = $Data->department_name;
         $sub_dept_name = $Data->sub_dept_name;
         $tanggal_eber = $Data->tanggal_berjalan;
-        $tanggal_berjalan = Date::PHPToExcel($tanggal_eber);
+        $tanggal_berjalan = $tanggal_eber;
         if($role_user=='payroll' || $email='willy@ptnag.com'){
             $tanggal_berjalan = $Data->tanggal_berjalan;
         }
@@ -168,21 +204,26 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
         }
         $mulai_jam_lembur = $Data->mulai_jam_lembur;
         $akhir_jam_lembur = $Data->akhir_jam_lembur;
-        $nama_hari = $Data->nama_hari;
+        $nama_hari = $this->cekHari($Data->tanggal_berjalan);
 
+        $jumlah_menit_istirahat = '01:00';
         $kerjalibur = "KERJA";
         switch ($Data->kode_hari) {
             case '5':
                 $kerjalibur = "LIBUR";
+                $jumlah_menit_istirahat = '00:30';
                 break;
             case '6':
                 $kerjalibur = "LIBUR";
+                $jumlah_menit_istirahat = '00:30';
                 break;
         }
 
         if( $Data->holiday_name <> "") {
             $kerjalibur = "LIBUR";
+            $jumlah_menit_istirahat = '00:30';
         }
+
 
         $final_mulai_jam_lembur = $Data->final_mulai_jam_lembur;
         $final_selesai_jam_lembur = $Data->final_selesai_jam_lembur;
@@ -196,7 +237,7 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
         $lembur_3 = $Data->lembur_3;
         $lembur_4 = $Data->lembur_4;
         $total_lembur_1234 = $Data->total_lembur_1234;
-        $salary = $Data->salary;
+        $salary = $Data->salary_bulanan;
         $lembur1_rupiah = $Data->lembur1_rupiah;
         $lembur2_rupiah = $Data->lembur2_rupiah;
         $lembur3_rupiah = $Data->lembur3_rupiah;

@@ -57,9 +57,7 @@
                                         <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
                                     </div>
                                 </div>
-                                <!-- <input type="text" class="form-control datetimepicker-input borderInput w-130 input-date-fa"
-                            data-target="#report_date" placeholder="Select Date" style="border-radius:0 10px 10px 0"/> -->
-                                <input name="periode_payrol" min="{{$month}}" type="month" class="form-control PriodeProses fc-datepicker" required></input>
+                                <input name="periode_payrols" min="{{$month}}" type="month" class="form-control PriodeProses fc-datepicker" required></input>
                             </div>
                         </div>
                     </div>
@@ -286,7 +284,14 @@
                     "data": {
                         daterange1:daterange1,
                         searchName:searchName,
-                    }
+                    },
+                    // success: function (data) {
+                    //                 console.log('data',data);
+                    //                 notif({
+                    //                     msg: "<b>Info:</b> Data Berhasil di Proses.",
+                    //                     type: "info"
+                    //                 });
+                    //             },
                 },
                 columns: [
                     {
@@ -580,21 +585,12 @@
                                 data: $('#form_proses_Lembur').serialize(),
                                 url: '{{ route("hris.proses.lembur.rekap") }}',           
                                 type: "post",
-                                dataType: 'json',           
                                 success: function (data) {
-                                    console.log(data)
-
-                                    if(data == 1) {
-                                        notif({
-                                            msg: "<b>Info:</b> Data Berhasil di Proses.",
-                                            type: "info"
-                                        });
-                                    } else {
-                                        notif({
-                                            msg: "<b>Info:</b> Data Gagal di Proses.",
-                                            type: "warning"
-                                        });
-                                    }
+                                    console.log('data',data);
+                                    notif({
+                                        msg: "<b>Info:</b> Data Berhasil di Proses.",
+                                        type: "info"
+                                    });
 
                                     $('#BtnProsesLembur').removeClass("btn-loading");
                                     $("#BtnProsesLembur").html('<span><i class="fa fa-download"></i></span> PROSES Lembur');
@@ -602,6 +598,7 @@
                                    
                                 },
                                 error: function (xhr, status, error) {
+                                    console.log('error',error);
                                     notif({
                                         msg: "<b>Error:</b> Oops data gagal di Proses.",
                                         type: "error"
