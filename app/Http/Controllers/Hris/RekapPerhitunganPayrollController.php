@@ -1667,6 +1667,9 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $selisih_bulan = date_diff(date_create($tanggal_masuk), date_create($tanggal_awal))->m;
             $timestamp1 = strtotime($tanggal_awal);
             $timestamp2 = strtotime($tanggal_akhir);
+            $timestamp3 = strtotime($tanggal_masuk);
+            $datediff = $timestamp1 - $timestamp3;
+            $selisih_hari=round($datediff / (60 * 60 * 24));
             $jumlah_hari_total=(abs($timestamp2 - $timestamp1) / (60 * 60 * 24)+1);
             $jumlah_hari_sabtu_minggu_total = 0;
             for ($i = strtotime($tanggal_awal); $i <= strtotime($tanggal_akhir); $i += 86400) {
@@ -1732,7 +1735,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $bpjs_ks_company=($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_ks_jkn_bruto_rupiah)/$jumlah_hari_kerja_employee;
             }
             $thr=0;
-            if($selisih_bulan>1){
+            if($selisih_hari>30){
                 $thr=$value->employee_atribut->grading_salary->first()->salary_bulanan/12/$jumlah_hari_kerja;
             }
             $bpjs_tk_total=($value->kode_hari!=5 && $value->kode_hari!=6)?$bpjs_tk:0;
