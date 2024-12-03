@@ -1330,7 +1330,13 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             }
             $absen_masuk_kerja=strtotime($value->absen_masuk_kerja);
             $absen_pulang_kerja=strtotime($value->absen_pulang_kerja);
+            if($absen_masuk_kerja<$absen_pulang_kerja && $absen_masuk_kerja!=null && $absen_pulang_kerja!=null){
             $total_absen_kerja=(($absen_pulang_kerja-$absen_masuk_kerja)/60)-$jumlah_menit_istirahat_int;
+            }else if($absen_pulang_kerja<$absen_masuk_kerja && $absen_masuk_kerja!=null && $absen_pulang_kerja!=null){
+                $total_absen_kerja=(($absen_masuk_kerja-$absen_pulang_kerja)/60)-$jumlah_menit_istirahat_int;
+            }else{
+                $total_absen_kerja='';
+            }
             $data = [
                 Date::stringToExcel($value->tanggal_berjalan),
                 $value->nama_hari,
