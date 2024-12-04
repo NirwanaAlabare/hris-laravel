@@ -25,7 +25,7 @@
                         {{$value->status_jabatan}} {{$value->department_name}}
                     </div>
                     <div class="col">
-                        <img src="data:image/png;base64,{{\DNS2D::getBarcodePNG(''.$value->enroll_id, 'QRCODE',)}}" alt="barcode" style="width: 32px; height: 32px; margin:2px; padding:2px;background-color:white" />
+                        <img src="data:image/png;base64,{{\DNS2D::getBarcodePNG(''.$value->enroll_id, 'QRCODE',)}}" alt="barcode" style="width: 50px; height: 50px; margin:1px; padding:1px;background-color:white" />
                     </div>
                 </div>
             </div>
@@ -66,11 +66,11 @@
         position: absolute;
         width: 98;
         text-align: right;
-        top: 534px;
+        top: 532px;
         left: 76px;
         font-weight: bold;
         font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-        font-size: 7pt;
+        font-size: 6.6pt;
         color: white;
     }
 </style>
