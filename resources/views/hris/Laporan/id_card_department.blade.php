@@ -112,11 +112,11 @@
         position: absolute;
         width: 98;
         text-align: right;
-        top: 420;
+        top: 416;
         left: 76px;
         font-weight: bold;
         font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-        font-size: 6.6pt;
+        font-size: 0.5em;
         color: white;
     }
     .image4 {
