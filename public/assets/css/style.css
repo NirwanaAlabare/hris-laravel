@@ -540,6 +540,18 @@ pre code {
     }
 }
 
+.btn-newcolor {
+    background-color: #182D49;
+    border-color: #182D49;
+    color: #ffffff;
+}
+
+.btn-newcolor:hover {
+    background-color: #1f3a5e; /* Warna hover */
+    border-color: #1f3a5e;
+    color: #ffffff;
+}
+
 a {
     -webkit-text-decoration-skip: ink;
     text-decoration-skip: ink

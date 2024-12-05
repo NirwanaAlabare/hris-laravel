@@ -360,8 +360,6 @@ class TunjanganKaryawanController extends AdminBaseController
                         periode_tahun = "' . $tahun . '",
                         periode_bulan = "' . $bulan . '",
                         enroll_id = "' . $enroll_id . '",
-                        nik = "' . $nik . '",
-                        employee_name = "' . $employee_name . '",
                         nama_tunjangan = "' . $nama_tunjangan . '",
                         nilai_rupiah = ' . $nilai_rupiah . ',
                         operator = "' . $operator . '",
@@ -372,12 +370,12 @@ class TunjanganKaryawanController extends AdminBaseController
             $query = DB::insert('
                         insert into tunjangan_karyawan 
                             (kode_tunjangan, periode_payroll, periode_tahun,
-                            periode_bulan, enroll_id, nik, employee_name, 
+                            periode_bulan, enroll_id,
                             nama_tunjangan, nilai_rupiah, operator, created_at, updated_at) 
                         values 
                             ("' . $kode_tunjangan . '", CONCAT(DATE_ADD( LAST_DAY( DATE_SUB( CONCAT( "' . $tahun . '-' . $bulan . '", "-26" ), INTERVAL 2 MONTH )), INTERVAL 26 DAY )," s/d ", DATE_ADD( LAST_DAY( DATE_SUB( CONCAT( "' . $tahun . '-' . $bulan . '", "-25" ), INTERVAL 1 MONTH )), INTERVAL 25 DAY )),
                             "' . $tahun . '", "' . $bulan . '", "' . $enroll_id . '",
-                            "' . $nik . '", "' . $employee_name . '", "' . $nama_tunjangan . '", ' . $nilai_rupiah . ',
+                             "' . $nama_tunjangan . '", ' . $nilai_rupiah . ',
                             "' . $operator . '", now(), now())');
         }
         info($query);

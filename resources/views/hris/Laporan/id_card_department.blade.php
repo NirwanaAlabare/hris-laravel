@@ -10,15 +10,22 @@
             @endif
             <td>
                 <div class="parent">
-                    <img class="image4" src="{{ public_path('assets/images/brand/id card background.jpeg') }}" width="204">
+                    <!-- <img class="image4" src="{{ public_path('assets/images/brand/id card background.jpeg') }}" width="204">
                     @if (file_exists (public_path ('/storage/app/public/images/'.$value->nik.' '.$value->employee_name.'.png')))
                     <img class="image5" src="{{ public_path('storage/app/public/images/'.$value->nik.' '.$value->employee_name.'.png') }}" width="130"/>
                     @else
                     <img class="image5" src="{{ public_path('storage/app/public/images/'.$value->nik.' '.$value->employee_name.'.jpg') }}" width="130"/>
                     @endif
-                    <img class="image6" src="{{ public_path('assets/images/brand/id card foreground.png') }}" width="204">
+                    <img class="image6" src="{{ public_path('assets/images/brand/id card foreground.png') }}" width="204"> -->
+                    <img class="image4" src="{{ public_path('assets/images/brand/group.png') }}" width="204">
+                    @if (file_exists (public_path ('/storage/app/public/images/'.$value->nik.' '.$value->employee_name.'.png')))
+                    <img class="image5" src="{{ public_path('storage/app/public/images/'.$value->nik.' '.$value->employee_name.'.png') }}" width="130"/>
+                    @else
+                    <img class="image5" src="{{ public_path('storage/app/public/images/'.$value->nik.' '.$value->employee_name.'.jpg') }}" width="130"/>
+                    @endif
+                    <img class="image6" src="{{ public_path('assets/images/brand/foreground-test.png') }}" width="203">
                     <h6 class="text3">{{$value->nik}}</h6>
-                    <div class="row text4">
+                    <!-- <div class="row text4">
                         <div class="col">
                             {{$value->employee_name}}
                         </div>
@@ -27,6 +34,29 @@
                         </div>
                         <div class="col">
                             <img src="data:image/png;base64,{{\DNS2D::getBarcodePNG(''.$value->enroll_id, 'QRCODE',)}}" alt="barcode" style="width: 32px; height: 32px; margin:2px; padding:2px;background-color:white" />
+                        </div>
+                    </div> -->
+                    <div class="row text4">
+                        <div class="col" >
+                            @php
+                                $nameParts = explode(' ', $value->employee_name); // Pecah nama berdasarkan spasi
+                                $formattedName = $value->employee_name;
+
+                                if (count($nameParts) > 2) {
+                                    $formattedName = $nameParts[0] . ' ' . $nameParts[1];
+        
+                                    for ($i = 2; $i < count($nameParts); $i++) {
+                                        $formattedName .= ' ' . substr($nameParts[$i], 0, 1) . '.';
+                                    }
+                                }
+                            @endphp
+                            {{$formattedName}}
+                        </div>
+                        <div class="col">
+                            {{$value->status_jabatan}} {{$value->department_name}}
+                        </div>
+                        <div class="col">
+                            <img src="data:image/png;base64,{{\DNS2D::getBarcodePNG(''.$value->enroll_id, 'QRCODE',)}}" alt="barcode" style="width: 66px; height: 66px; margin:2px; margin-top:5px; margin-right:15px; padding:2px;background-color:white" />
                         </div>
                     </div>
                 </div>
@@ -40,28 +70,39 @@
                 </tr><tr>
             @endif
             <td style="padding-left: 0;padding-right:0">
-                <div class="parent">
-                    <img class="garis_hitam" src="{{ public_path('assets/images/brand/garis hitam.png') }}" style="height: 650px">
-                    <img class="image1" src="{{ public_path('assets/images/brand/id card background 2.png') }}" width="204">
-                    @if (file_exists (public_path ('/storage/app/public/images/'.$value->nik.' '.$value->employee_name.'.png')))
-                    <img class="image2" src="{{ public_path('storage/app/public/images/'.$value->nik.' '.$value->employee_name.'.png') }}" width="130"/>
-                    @else
-                    <img class="image2" src="{{ public_path('storage/app/public/images/'.$value->nik.' '.$value->employee_name.'.jpg') }}" width="130"/>
-                    @endif
-                    <img class="image3" src="{{ public_path('assets/images/brand/id card foreground.png') }}" width="204">
+            <div class="parent">
+                <img class="image1" src="{{ public_path('assets/images/brand/group.png') }}" width="204">
+                @if (file_exists (public_path ('/storage/app/public/images/'.$value->nik.' '.$value->employee_name.'.png')))
+                <img class="image2" src="{{ public_path('storage/app/public/images/'.$value->nik.' '.$value->employee_name.'.png') }}" width="130"/>
+                @else
+                <img class="image2" src="{{ public_path('storage/app/public/images/'.$value->nik.' '.$value->employee_name.'.jpg') }}" width="130"/>
+                @endif
+                <img class="image3" src="{{ public_path('assets/images/brand/foreground-test.png') }}" width="203">
                     <h6 class="text1">{{$value->nik}}</h6>
                     <div class="row text2">
-                        <div class="col">
-                            {{$value->employee_name}}
+                        <div class="col" >
+                            @php
+                                $nameParts = explode(' ', $value->employee_name); // Pecah nama berdasarkan spasi
+                                $formattedName = $value->employee_name;
+
+                                if (count($nameParts) > 2) {
+                                    $formattedName = $nameParts[0] . ' ' . $nameParts[1];
+        
+                                    for ($i = 2; $i < count($nameParts); $i++) {
+                                        $formattedName .= ' ' . substr($nameParts[$i], 0, 1) . '.';
+                                    }
+                                }
+                            @endphp
+                            {{$formattedName}}
                         </div>
                         <div class="col">
-                            {{$value->status_jabatan}} {{$value->sub_dept_name}}
+                            {{$value->status_jabatan}} {{$value->department_name}}
                         </div>
                         <div class="col">
-                            <img src="data:image/png;base64,{{\DNS2D::getBarcodePNG(''.$value->enroll_id, 'QRCODE',)}}" alt="barcode" style="width: 32px; height: 32px; margin:2px; padding:2px;background-color:white" />
+                            <img src="data:image/png;base64,{{\DNS2D::getBarcodePNG(''.$value->enroll_id, 'QRCODE',)}}" alt="barcode" style="width: 66px; height: 66px; margin:2px; margin-top:5px; margin-right:15px; padding:2px;background-color:white" />
                         </div>
                     </div>
-                </div>
+            </div>
             </td>
             @endforeach
         @endif
@@ -102,7 +143,7 @@
     }
     .text1 {
         position: absolute;
-        top: 518px;
+        top: 480px;
         left: 152px;
         font-weight: bold;
         font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
@@ -110,15 +151,19 @@
     }
     .text2 {
         position: absolute;
-        width: 98;
+        width: 100px;
         text-align: right;
-        top: 420;
-        left: 76px;
+        top: 519px;
+        left: 108px;
         font-weight: bold;
-        font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
         font-size: 7pt;
         color: white;
+        white-space: normal;
+        overflow-wrap: break-word; 
+        word-wrap: break-word; 
     }
+
     .image4 {
         position: relative;
         top: 80;
@@ -136,7 +181,7 @@
     }
     .text3 {
         position: absolute;
-        top: 495px;
+        top: 457px;
         left: 152px;
         font-weight: bold;
         font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
@@ -144,13 +189,16 @@
     }
     .text4 {
         position: absolute;
-        width: 98;
+        width: 100px;
         text-align: right;
-        top: 534px;
-        left: 76px;
+        top: 497px;
+        left: 108px;
         font-weight: bold;
-        font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
         font-size: 7pt;
         color: white;
+        white-space: normal;
+        overflow-wrap: break-word; 
+        word-wrap: break-word; 
     }
 </style>

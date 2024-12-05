@@ -19,7 +19,7 @@
 									<div class="card">
 										<div class="card-body">
 											<div class="text-center mb-6">
-												<img src="{{URL::asset('assets/images/brand/logo2.png')}}" class="" alt="">
+												<img src="{{URL::asset('assets/images/brand/hris.png')}}" class="" alt="">
 											</div>
 											<div class="text-center mb-4 ">
 												<img src="{{URL::asset('assets/images/users/avatars/avatar4.png')}}" alt="user-img" class="avatar avatar-xl brround mCS_img_loaded">

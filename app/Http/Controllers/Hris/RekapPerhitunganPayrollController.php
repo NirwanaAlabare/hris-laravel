@@ -1716,6 +1716,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $bpjs_tk_company=($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jkm_bruto_rupiah+$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jht_bruto_rupiah+$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jkk_bruto_rupiah+$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jpn_bruto_rupiah)/$jumlah_hari_kerja_employee;
                 $bpjs_ks_company=($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_ks_jkn_bruto_rupiah)/$jumlah_hari_kerja_employee;
             }
+            $thr = 0;
             if($selisih_bulan>1){
                 $thr=$value->employee_atribut->grading_salary->first()->salary_bulanan/12/$jumlah_hari_kerja;
             }

@@ -1,7 +1,7 @@
 
         <div class="d-flex">
             <a class="header-brand" href="{{url('hris/dashboard/index')}}">
-                <img src="{{URL::asset('assets/images/brand/logo2.png')}}" class="header-brand-img main-logo" alt="Sparic logo">
+                <img src="{{URL::asset('assets/images/brand/hris.png')}}" class="header-brand-img main-logo" alt="Sparic logo">
                 <img src="{{URL::asset('assets/images/brand/icon.png')}}" class="header-brand-img icon-logo" alt="Sparic logo">
             </a><!-- logo-->
             <div class="d-flex order-lg-2 ml-auto header-rightmenu">
