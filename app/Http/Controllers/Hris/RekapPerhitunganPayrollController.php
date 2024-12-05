@@ -1641,7 +1641,10 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     }
                 }
             }
+            $group_department='SUPPORTING PRODUCTION';
+            if($value->employee_atribut->group_department!=null){
             $group_department=$value->employee_atribut->group_department->group2;
+            }
             $status_staff=$value->employee_atribut->status_staff;
             $tanggal_sekarang=$value->tanggal_berjalan;
             $bulan_sekarang=substr($tanggal_sekarang,0,8).'26';
