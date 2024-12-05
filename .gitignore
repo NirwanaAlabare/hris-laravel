@@ -1,6 +1,7 @@
 /node_modules
 /public/hot
 /public/storage
+/public/tasks
 /storage/*.key
 /vendor
 /.idea
@@ -15,6 +16,7 @@ storage/installed
 /public/user-uploads
 .DS_Store
 /storage
+storage.zip
 /packages
 /package-lock.json
 /stubs

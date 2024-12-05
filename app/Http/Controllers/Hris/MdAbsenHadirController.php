@@ -1958,9 +1958,6 @@ class MdAbsenHadirController extends AdminBaseController
         return $kehadiran;
     }
 
-
-    // KODE BARU INI MEMERLUKAN DATA 1.4 MENIT UNTUK MENGAMBIL DATA SELAMA 1 HARI.
-    // 2.8 MENIT UNTUK 1 MINGGU KEBELAKANG
     public function download_mesin_kehadiran(Request $request)
     {
         $tanggal_mesin_absensi = $request->tanggal_mesin_absensi;
@@ -1978,7 +1975,6 @@ class MdAbsenHadirController extends AdminBaseController
             $allEnrolls_id= '('.$enroll_id.')';
             $inEnrollsId = ' AND enroll_id IN '.$allEnroll_id.'';
         }
-
         $adaData = "ADA";
         $countData = MasterDataAbsenKehadiran::whereRaw("tanggal_berjalan >= '" . $tanggal_awal."' and tanggal_berjalan <= '".$tanggal_akhir."'".$inEnrollsId.'')->where(function($query){
             $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
@@ -2009,173 +2005,236 @@ class MdAbsenHadirController extends AdminBaseController
             ") );
 
             $arr_list = [];
-
-            // KODE BARU INI MEMERLUKA WAKTU 22.39 DETIK
-            
-            $statusesToUpdate = ["TL", "M", "IKS", "LN", "LP", "CT", "L", ""];
-            $statusesKeep = ["LN", "IKS", "DL", "LP", "R"];
-            $statusesResetToNull = ["S", "LP"];
-            $updates = [];
-            $tanggalAbsens = [];
-            $enrollIds = [];
-
             foreach($checkinout as $value) {
-                $tanggalAbsens[] = $value->tanggal_absen;
-                $enrollIds[] = $value->enroll_id;
-            }
-
-            $kehadiranRecords = MasterDataAbsenKehadiran::selectRaw("
-                substr(tanggal_berjalan,1, 10) AS tanggal_absen,
-                enroll_id,
-                substr(absen_masuk_kerja, 1, 6) AS absen_in,
-                substr(absen_pulang_kerja, 1, 6) AS absen_out,
-                mulai_jam_kerja,
-                nomor_form_lembur,
-                substr(mulai_jam_lembur,11,6) AS mulai_lembur,
-                substr(akhir_jam_lembur,11,6) AS akhir_lembur,
-                status_absen,
-                operator
-            ")
-            ->whereIn('tanggal_berjalan', $tanggalAbsens)
-            ->whereIn('enroll_id', $enrollIds)
-            ->where(function($query) {
-                $query->whereColumn('mulai_jam_kerja', '<', 'akhir_jam_kerja')
-                    ->orWhereNull('mulai_jam_kerja');
-            })
-            ->get()
-            ->groupBy('enroll_id');
-
-            // // Use one query to count edited and failed records.
-            $editedDataCounts = DataKehadiranInOutEdited::whereIn('tanggal_absen', $tanggalAbsens)
-                ->whereIn('enroll_id', $enrollIds)
-                ->selectRaw('tanggal_absen, enroll_id, COUNT(*) as count')
-                ->groupBy('tanggal_absen', 'enroll_id')
-                ->get()
-                ->keyBy(fn($item) => $item->tanggal_absen . '-' . $item->enroll_id);
-
-            $failedCounts = LogDataGagalAbsen::whereIn('tanggal_absen', $tanggalAbsens)
-                ->whereIn('enroll_id', $enrollIds)
-                ->selectRaw('tanggal_absen, enroll_id, COUNT(*) as count')
-                ->groupBy('tanggal_absen', 'enroll_id')
-                ->get()
-                ->keyBy(fn($item) => $item->tanggal_absen . '-' . $item->enroll_id);
-
-            // Process data using the retrieved counts
-            foreach ($checkinout as $value) {
-                $enroll_id = $value->enroll_id;
-                $tanggal_absen = $value->tanggal_absen;
-
-                if (isset($kehadiranRecords[$enroll_id])) {
-                    foreach ($kehadiranRecords[$enroll_id] as $val) {
-                        if ($val->tanggal_absen == $tanggal_absen) {
-                            // Access counts from pre-fetched data
-                            $countEditedData = $editedDataCounts[$tanggal_absen . '-' . $enroll_id]->count ?? 0;
-                            $count = $failedCounts[$tanggal_absen . '-' . $enroll_id]->count ?? 0;
-                            if ($countEditedData < 1 && $count < 1) {
-                                if (in_array($val["operator"], ['system', 'system_injek_lebaran']) && in_array($val["status_absen"], $statusesToUpdate)) {
-                                    // Determine $status_absen based on conditions
-                                    if ($val["mulai_jam_kerja"]) {
-                                        $status_absen = $val["status_absen"];
-                                        if ($val["status_absen"] === "LP" && ($value->absen_in !== '' || $value->absen_out !== '')) {
-                                            $status_absen = $value->status_absen;
+                $kehadiran = MasterDataAbsenKehadiran::selectRaw("
+                    substr(tanggal_berjalan,1, 10) tanggal_absen,
+                    enroll_id,
+                    substr(absen_masuk_kerja, 1, 6) absen_in,
+                    substr(absen_pulang_kerja, 1, 6) absen_out,
+                    mulai_jam_kerja,
+                    nomor_form_lembur,
+                    substr(mulai_jam_lembur,11,6) mulai_lembur,
+                    substr(akhir_jam_lembur,11,6) akhir_lembur,
+                    status_absen,
+                    operator
+                ")->whereRaw("
+                    tanggal_berjalan = '" . $value->tanggal_absen . "'
+                    AND enroll_id = '" . $value->enroll_id . "'
+                ")->where(function($query){
+                    $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
+                })
+                ->get();
+                foreach($kehadiran as $val) {
+                    $countEditedData=DataKehadiranInOutEdited::where('tanggal_absen', $val->tanggal_absen)->where('enroll_id','=', $val["enroll_id"])->count();
+                    $count=LogDataGagalAbsen::where('tanggal_absen',$val->tanggal_absen)->where('enroll_id',$val["enroll_id"])->count();
+                    if($countEditedData<1 && $count<1){
+                        if($val["operator"]=='system' || $val["operator"]=='system_injek_lebaran') {
+                            if($val["status_absen"] == "TL" || $val["status_absen"] == "M" || $val["status_absen"] == "IKS" || $val["status_absen"] == "" || $val["status_absen"] == null || !$val["status_absen"] || $val["status_absen"] == "LN" || $val["status_absen"] == "LP" || $val["status_absen"] == "CT" || $val["status_absen"] == "L") {
+                                if($val["mulai_jam_kerja"]!=null){
+                                    if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"]=='LP'){
+                                        if($val["status_absen"]=='LP'){
+                                            if($value->absen_in!='' && $value->absen_out==''){
+                                                $status_absen=$val["status_absen"];
+                                            }else if($value->absen_in=='' && $value->absen_out==''){
+                                                $status_absen=$val["status_absen"];
+                                            }else if($value->absen_in=='' && $value->absen_out!=''){
+                                                $status_absen=$val["status_absen"];
+                                            }else{
+                                                $status_absen=$value->status_absen;
+                                            }
+                                        }else{
+                                            $status_absen=$val["status_absen"];
                                         }
-                                        $updates[] = [
-                                            'tanggal_berjalan' => $val->tanggal_absen,
-                                            'enroll_id' => $val->enroll_id,
-                                            'absen_masuk_kerja' => $value->absen_in,
-                                            'absen_pulang_kerja' => $value->absen_out,
-                                            'status_absen' => $status_absen
-                                        ];
-                                    } elseif ($val["mulai_lembur"] && $val["mulai_lembur"] < $val["akhir_lembur"]) {
-                                        $status_absen = $val["status_absen"] === "LN" ? "LN" : $value->status_absen;
-                                        $updates[] = [
-                                            'tanggal_berjalan' => $val->tanggal_absen,
-                                            'enroll_id' => $val->enroll_id,
-                                            'absen_masuk_kerja' => $value->absen_in,
-                                            'absen_pulang_kerja' => $value->absen_out,
-                                            'status_absen' => $status_absen
-                                        ];
                                     }
-                                } else {
-                                    if ($val["mulai_jam_kerja"]) {
-                                        if (in_array($val["status_absen"], $statusesKeep)) {
-                                            $status_absen = $val["status_absen"];
-                                        } else {
-                                            $status_absen = $value->status_absen;
+                                    else{
+                                        $status_absen=$value->status_absen;
+                                    }
+                                    MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
+                                    ->where('enroll_id', $val->enroll_id)->update([
+                                        'absen_masuk_kerja' => $value->absen_in,
+                                        'absen_pulang_kerja' => $value->absen_out,
+                                        'status_absen' => $status_absen
+                                    ]);
+                                }else{
+                                    if($val["mulai_lembur"]!=null && $val["akhir_lembur"]!=null){
+                                        if($val["mulai_lembur"]<$val["akhir_lembur"]){
+                                            if($val["status_absen"] == "LN"){
+                                                $status_absen='LN';
+                                            }
+                                            else{
+                                                $status_absen=$value->status_absen;
+                                            }
+                                            MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
+                                            ->where('enroll_id', $val->enroll_id)->update([
+                                                'absen_masuk_kerja' => $value->absen_in,
+                                                'absen_pulang_kerja' => $value->absen_out,
+                                                'status_absen' => $status_absen
+                                            ]);
                                         }
-                                        $updates[] = [
-                                            'tanggal_berjalan' => $val->tanggal_absen,
-                                            'enroll_id' => $val->enroll_id,
-                                            'absen_masuk_kerja' => $value->absen_in,
-                                            'absen_pulang_kerja' => $value->absen_out,
-                                            'status_absen' => $status_absen
-                                        ];
+                                    }else{
+                                        $mulai_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('mulai_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->mulai_jam_kerja;
+                                        $akhir_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('akhir_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->akhir_jam_kerja;
+                                        if($mulai_jam_kerja_kemarin<$akhir_jam_kerja_kemarin){
+                                            if($val["status_absen"] == "LN" ||$val["status_absen"]=='IKS'){
+                                                $status_absen=$val["status_absen"];
+                                            }
+                                            else{
+                                                $status_absen=$value->status_absen;
+                                            }
+                                            MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
+                                            ->where('enroll_id', $val->enroll_id)->update([
+                                                'absen_masuk_kerja' => $value->absen_in,
+                                                'absen_pulang_kerja' => $value->absen_out,
+                                                'status_absen' => $status_absen
+                                            ]);
+                                        }
                                     }
                                 }
-                            } elseif ($countEditedData > 0 && $count < 1) {
-                                // Check for morning absent case
-                                $datakehadiraneditin = DataKehadiranInOutEdited::where('tanggal_absen', $val->tanggal_absen)
-                                    ->where('enroll_id', $val["enroll_id"])
-                                    ->whereNotNull('absen_masuk_kerja')
-                                    ->whereNull('absen_pulang_kerja')
-                                    ->count();
-            
-                                if ($datakehadiraneditin === 1 && $value->absen_in && !$value->absen_out && $value->absen_in > $datakehadiraneditin) {
-                                    $updates[] = [
-                                        'tanggal_berjalan' => $val->tanggal_absen,
-                                        'enroll_id' => $val->enroll_id,
+                            }
+                        } else {
+                            if ($val["status_absen"] == "TL" || $val["status_absen"] == "M") {
+                                if($val["mulai_jam_kerja"]!=null){
+                                    if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"]=='LP'){
+                                        if($val["status_absen"]=='LP'){
+                                            if($value->absen_in!='' && $value->absen_out==''){
+                                                $status_absen=$val["status_absen"];
+                                            }else if($value->absen_in=='' && $value->absen_out==''){
+                                                $status_absen=$val["status_absen"];
+                                            }else if($value->absen_in=='' && $value->absen_out!=''){
+                                                $status_absen=$val["status_absen"];
+                                            }else{
+                                                $status_absen=$value->status_absen;
+                                            }
+                                        }else{
+                                            $status_absen=$val["status_absen"];
+                                        }
+                                    }
+                                    else{
+                                        $status_absen=$value->status_absen;
+                                    }
+                                    MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
+                                    ->where('enroll_id', $val->enroll_id)
+                                    ->update([
+                                        'absen_masuk_kerja' => $value->absen_in,
+                                        'absen_pulang_kerja' => $value->absen_out,
+                                        'status_absen' => $status_absen
+                                    ]);
+                                }else{
+                                    if($val["mulai_lembur"]<$val["akhir_lembur"]){
+                                        if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"){
+                                            $status_absen=$val["status_absen"];
+                                        }
+                                        else{
+                                            $status_absen=$value->status_absen;
+                                        }
+                                        MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
+                                        ->where('enroll_id', $val->enroll_id)->update([
+                                            'absen_masuk_kerja' => $value->absen_in,
+                                            'absen_pulang_kerja' => $value->absen_out,
+                                            'status_absen' => $status_absen
+                                        ]);
+                                    }
+                                }
+                            }else{
+                                if($count<1){
+                                    if($val["mulai_jam_kerja"]!=null){
+                                        if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"] == "R"){
+                                            $status_absen=$val["status_absen"];
+                                        }
+                                        else{
+                                            if($val["status_absen"]=="S"||$val["status_absen"]=='LP'){
+                                                if($value->absen_in!='' && $value->absen_out==''){
+                                                    $status_absen=$val["status_absen"];
+                                                }else if($value->absen_in=='' && $value->absen_out==''){
+                                                    $status_absen=$val["status_absen"];
+                                                }else if($value->absen_in=='' && $value->absen_out!=''){
+                                                    $status_absen=$val["status_absen"];
+                                                }else{
+                                                    $status_absen=$value->status_absen;
+                                                }
+                                            }else{
+                                                $status_absen=$value->status_absen;   
+                                            }
+                                        }
+                                        MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
+                                        ->where('enroll_id', $val->enroll_id)
+                                        ->update([
+                                            'absen_masuk_kerja' => $value->absen_in,
+                                            'absen_pulang_kerja' => $value->absen_out,
+                                            'status_absen' => $status_absen
+                                        ]);
+                                    }else{
+                                        if($val['nomor_form_lembur']!=null){
+                                            if($val["mulai_lembur"]<$val["akhir_lembur"]){
+                                                if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"] == "R"){
+                                                    $status_absen=$val["status_absen"];
+                                                }
+                                                else{
+                                                    $status_absen=null;
+                                                }
+                                                MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->update([
+                                                    'absen_masuk_kerja' => $value->absen_in,
+                                                    'absen_pulang_kerja' => $value->absen_out,
+                                                    'status_absen' => $status_absen
+                                                ]);
+                                            }
+                                        }else{
+                                            $mulai_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('mulai_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->mulai_jam_kerja;
+                                            $akhir_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('akhir_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->akhir_jam_kerja;
+                                            if($mulai_jam_kerja_kemarin<$akhir_jam_kerja_kemarin){
+                                                if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"] == "R"){
+                                                    $status_absen=$val["status_absen"];
+                                                }
+                                                else{
+                                                    $status_absen=null;
+                                                }
+                                                MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
+                                                ->where('enroll_id', $val->enroll_id)->update([
+                                                    'absen_masuk_kerja' => $value->absen_in,
+                                                    'absen_pulang_kerja' => $value->absen_out,
+                                                    'status_absen' => $status_absen
+                                                ]);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }else if($countEditedData>0 && $count<1){
+                        $datakehadiraneditin = count(DataKehadiranInOutEdited::where('tanggal_absen', $val->tanggal_absen)->where('enroll_id','=', $val["enroll_id"])->where('absen_masuk_kerja','!=',null)->where('absen_pulang_kerja',null)->get());
+                        //gagal absen pagi
+                        if($datakehadiraneditin==1){
+                            if($value->absen_in!=null && $value->absen_out==null){
+                                if($value->absen_in>$datakehadiraneditin){
+                                    MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
+                                    ->where('enroll_id', $val->enroll_id)
+                                    ->update([
                                         'absen_pulang_kerja' => $value->absen_in,
-                                        'status_absen' => null
-                                    ];
+                                        'status_absen'=>null
+                                    ]);
                                 }
+                            }else if($value->absen_in!=null && $value->absen_out!=null){
+                                MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
+                                ->where('enroll_id', $val->enroll_id)
+                                ->update([
+                                    'absen_pulang_kerja' => $value->absen_out,
+                                    'status_absen'=>null
+                                ]);
                             }
                         }
                     }
                 }
             }
 
-            foreach ($updates as $update) {
-                MasterDataAbsenKehadiran::where('tanggal_berjalan', $update['tanggal_berjalan'])
-                    ->where('enroll_id', $update['enroll_id'])
-                    ->update([
-                        'absen_masuk_kerja' => $update['absen_masuk_kerja'],
-                        'absen_pulang_kerja' => $update['absen_pulang_kerja'],
-                        'status_absen' => $update['status_absen']
-                    ]);
-            }
 
-
-            // KODE BARU AKSI KEDUA MEMBUTUHKAN WAKTU 18.92 DETIK
-
+            
             $masterAbsen=MasterDataAbsenKehadiran::whereRaw("tanggal_berjalan >= '" . $tanggal_awal."' and tanggal_berjalan <= '".$tanggal_akhir."'".$inEnrollsId.'')->with('employee_atribut')->where(function($query){
                 $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
             })->get();
-            
-            $editedCounts = DataKehadiranInOutEdited::whereBetween('tanggal_absen', [$tanggal_awal, $tanggal_akhir])
-                ->groupBy('tanggal_absen', 'enroll_id')
-                ->selectRaw('tanggal_absen, enroll_id, COUNT(*) as count')
-                ->pluck('count', 'enroll_id', 'tanggal_absen'); // Memetakan dengan enroll_id dan tanggal_absen sebagai kunci
-
-            $failedCounts = LogDataGagalAbsen::whereBetween('tanggal_absen', [$tanggal_awal, $tanggal_akhir])
-                ->groupBy('tanggal_absen', 'enroll_id')
-                ->selectRaw('tanggal_absen, enroll_id, COUNT(*) as count')
-                ->pluck('count', 'enroll_id', 'tanggal_absen');
-
-            $datakehadiranEditIns = DataKehadiranInOutEdited::whereNotNull('absen_masuk_kerja')
-                ->whereNull('absen_pulang_kerja')
-                ->whereIn('enroll_id', $masterAbsen->pluck('enroll_id')->toArray())
-                ->get()
-                ->groupBy(function ($item) {
-                    return $item->enroll_id . '_' . $item->tanggal_absen; 
-                });
-            
             $today=date('Y-m-d');
-
-            $data_update_new = [];
-
             foreach ($masterAbsen as $k => $v) {
-                $countEditedData1 = $editedCounts[$v->enroll_id][$v->tanggal_berjalan] ?? 0;
-                $count1 = $failedCounts[$v->enroll_id][$v->tanggal_berjalan] ?? 0;
+                $countEditedData1=DataKehadiranInOutEdited::where('tanggal_absen', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->count();
+                $count1=LogDataGagalAbsen::where('tanggal_absen', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->count();
                 if($countEditedData1<1 && $count1<1){
                     $jadwal_in=$v->mulai_jam_kerja;
                     $jadwal_out=$v->akhir_jam_kerja;
@@ -2596,21 +2655,17 @@ class MdAbsenHadirController extends AdminBaseController
                     }
 
                     $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
-
-                    // push data array untuk di udate terpisah
-                    $data_update_new[] = [
+                    $data_update=[
                         'jumlah_menit_absen_dtpc'=>$jumlah_menit_absen_dtpc,
                         'jumlah_absen_menit_kerja'=>$durasi_kerja_menit-$jumlah_menit_absen_dtpc,
                         'jumlah_menit_absen_dt'=>$total_DT,
                         'jumlah_menit_absen_pc'=>$total_PC,
-                        'tanggal_berjalan' => $v->tanggal_berjalan,
-                        'enroll_id'=> $v->enroll_id
                     ];
+                    MasterDataAbsenKehadiran::where('tanggal_berjalan', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->update($data_update);
                 }
                 else if($countEditedData>0 && $count<1){
-
-                    $datakehadiraneditin = $datakehadiranEditIns[$v->enroll_id . '_' . $v->tanggal_berjalan] ?? collect();
-
+                    $datakehadiraneditin = count(DataKehadiranInOutEdited::where('tanggal_absen', $v->tanggal_berjalan)->where('enroll_id','=', $val["enroll_id"])->where('absen_masuk_kerja','!=',null)->where('absen_pulang_kerja',null)->get());
+                    //gagal absen pagi
                     if($datakehadiraneditin==1){
                         if($v->absen_masuk_kerja!=null && $v->absen_pulang_kerja!=null){
                             $jadwal_in=$v->mulai_jam_kerja;
@@ -2620,7 +2675,7 @@ class MdAbsenHadirController extends AdminBaseController
                             $status_staff=$v->employee_atribut->status_staff;
                             $durasi_kerja=date_diff(date_create($jadwal_in),date_create($jadwal_out));
                             $durasi_kerja_menit=$durasi_kerja->i +($durasi_kerja->h*60);
-
+    
                             $DT = date_diff(date_create($jadwal_in),date_create($absen_in));
                             $PC = date_diff(date_create($jadwal_out),date_create($absen_out));
                             if($today==$v->tanggal_berjalan){
@@ -2800,21 +2855,14 @@ class MdAbsenHadirController extends AdminBaseController
                                 }
         
                                 $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
-                                // $data_update_new=[
-                                //     'jumlah_menit_absen_dtpc'=>$jumlah_menit_absen_dtpc,
-                                //     'jumlah_absen_menit_kerja'=>$durasi_kerja_menit-$jumlah_menit_absen_dtpc,
-                                //     'jumlah_menit_absen_dt'=>$total_DT,
-                                //     'jumlah_menit_absen_pc'=>$total_PC,
-                                // ];
-                                $data_update_new[] = [
+                                $data_update=[
                                     'jumlah_menit_absen_dtpc'=>$jumlah_menit_absen_dtpc,
                                     'jumlah_absen_menit_kerja'=>$durasi_kerja_menit-$jumlah_menit_absen_dtpc,
                                     'jumlah_menit_absen_dt'=>$total_DT,
                                     'jumlah_menit_absen_pc'=>$total_PC,
-                                    'tanggal_berjalan' => $v->tanggal_berjalan,
-                                    'enroll_id'=> $v->enroll_id
                                 ];
-                            } else {
+                                MasterDataAbsenKehadiran::where('tanggal_berjalan', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->update($data_update);
+                            }else{
                                 if( $jadwal_in!=null && $absen_in!=null && $absen_in>$jadwal_in && $v->status_absen==null){
                                     $total_DT1 = $DT->i +($DT->h*60);
                                     if($status_staff=='STAFF'){
@@ -2960,7 +3008,7 @@ class MdAbsenHadirController extends AdminBaseController
                                 }
                                 if($absen_out<$jadwal_in){
                                     $total_PC=0;
-                                } else if ( $jadwal_out !=null && $absen_out !=null && $absen_out<$jadwal_out && $v->status_absen==null){
+                                }else if( $jadwal_out !=null && $absen_out !=null && $absen_out<$jadwal_out && $v->status_absen==null){
                                     $total_PC1 = $PC->i +($PC->h*60);
                                     if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
                                         if($absen_out <='12:00:00'){
@@ -3023,136 +3071,68 @@ class MdAbsenHadirController extends AdminBaseController
                                 }
         
                                 $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
-                                // $data_update=[
-                                //     'jumlah_menit_absen_dtpc'=>$jumlah_menit_absen_dtpc,
-                                //     'jumlah_absen_menit_kerja'=>$durasi_kerja_menit-$jumlah_menit_absen_dtpc,
-                                //     'jumlah_menit_absen_dt'=>$total_DT,
-                                //     'jumlah_menit_absen_pc'=>$total_PC,
-                                // ];
-                                $data_update_new[] = [
+                                $data_update=[
                                     'jumlah_menit_absen_dtpc'=>$jumlah_menit_absen_dtpc,
                                     'jumlah_absen_menit_kerja'=>$durasi_kerja_menit-$jumlah_menit_absen_dtpc,
                                     'jumlah_menit_absen_dt'=>$total_DT,
                                     'jumlah_menit_absen_pc'=>$total_PC,
-                                    'tanggal_berjalan' => $v->tanggal_berjalan,
-                                    'enroll_id'=> $v->enroll_id
                                 ];
+                                MasterDataAbsenKehadiran::where('tanggal_berjalan', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->update($data_update);
                             }
                         }
                     }
                 }
             }
-            // UPDATE TO DB
-            if (!empty($data_update_new)) {
-                foreach ($data_update_new as $update) {
-                    MasterDataAbsenKehadiran::where('tanggal_berjalan', $update['tanggal_berjalan'])
-                        ->where('enroll_id', $update['enroll_id'])
-                        ->update([
-                            'jumlah_menit_absen_dtpc' => $update['jumlah_menit_absen_dtpc'],
-                            'jumlah_absen_menit_kerja' => $update['jumlah_absen_menit_kerja'],
-                            'jumlah_menit_absen_dt' => $update['jumlah_menit_absen_dt'],
-                            'jumlah_menit_absen_pc' => $update['jumlah_menit_absen_pc'],
-                        ]);
-                }
-            }
-
-            // Ambil data yang diperlukan sekaligus
             $setClearMTL = MasterDataAbsenKehadiran::selectRaw("
-                            substr(tanggal_berjalan, 1, 10) as tanggal_absen,
-                            enroll_id,
-                            substr(absen_masuk_kerja, 1, 5) as absen_in,
-                            substr(absen_pulang_kerja, 1, 5) as absen_out,
-                            null as status_absen
-                            ")
-                            ->whereRaw('absen_masuk_kerja is not null AND absen_pulang_kerja is not null')
-                            ->whereRaw('status_absen in ("M", "TL")')
-                            ->whereBetween('tanggal_berjalan', [$tanggal_awal, $tanggal_akhir])
-                            ->where(function($query) {
-                            $query->whereColumn('mulai_jam_kerja', '<', 'akhir_jam_kerja')
-                                ->orWhereNull('mulai_jam_kerja');
-                            })
-                            ->get();
-
-            $enrollIds = $setClearMTL->pluck('enroll_id')->toArray();
-            $tanggalAbsens = $setClearMTL->pluck('tanggal_absen')->toArray();
-
-            // Mengecek apakah ada data yang sudah diedit atau gagal absen
-            $editedDataQuery = DataKehadiranInOutEdited::whereIn('tanggal_absen', $tanggalAbsens)
-            ->whereIn('enroll_id', $enrollIds);
-
-            $failedLogQuery = LogDataGagalAbsen::whereIn('tanggal_absen', $tanggalAbsens)
-            ->whereIn('enroll_id', $enrollIds);
-
-            // Ambil daftar data yang sudah diedit atau gagal absen
-            $editedData = $editedDataQuery->get()->pluck('tanggal_absen', 'enroll_id')->toArray();
-            $failedData = $failedLogQuery->get()->pluck('tanggal_absen', 'enroll_id')->toArray();
-
-            // Update data secara batch
-            $updateData = [];
-            foreach ($setClearMTL as $value) {
-                if (!isset($editedData[$value->enroll_id]) && !isset($failedData[$value->enroll_id])) {
-                    $updateData[] = [
-                    'tanggal_berjalan' => $value->tanggal_absen,
-                    'enroll_id' => $value->enroll_id,
-                    'status_absen' => $value->status_absen,
-                    ];
-                }
-            }
-
-            // Jika ada data yang perlu diupdate, lakukan batch update
-            if (count($updateData) > 0) {
-            foreach (array_chunk($updateData, 500) as $chunk) {
-                MasterDataAbsenKehadiran::upsert($chunk, ['tanggal_berjalan', 'enroll_id'], ['status_absen']);
-                }
-            }
-
-
-            $setSetTL = MasterDataAbsenKehadiran::selectRaw("
-                    substr(tanggal_berjalan, 1, 10) as tanggal_absen,
-                    enroll_id,
-                    substr(absen_masuk_kerja, 1, 5) as absen_in,
-                    substr(absen_pulang_kerja, 1, 5) as absen_out,
-                    'TL' as status_absen
-                ")
-                ->whereBetween('tanggal_berjalan', [$tanggal_awal, $tanggal_akhir])
-                ->whereIn('status_absen', ['M', 'TL'])
-                ->where(function($query){
-                    $query->whereColumn('mulai_jam_kerja', '<', 'akhir_jam_kerja')
-                        ->orWhereNull('mulai_jam_kerja');
-                })
-                ->where(function($query) use ($inEnrollsId) {
-                    if (!empty($inEnrollsId)) {
-                        // Pastikan bahwa $inEnrollsId berisi format yang benar, seperti 'IN (1,2,3)'
-                        $query->whereRaw("enroll_id $inEnrollsId");
-                    }
-                })
-                ->where(function($query) {
-                    $query->whereNull('absen_masuk_kerja')
-                        ->whereNotNull('absen_pulang_kerja')
-                        ->orWhereNotNull('absen_masuk_kerja')
-                        ->whereNull('absen_pulang_kerja');
-                })
-                ->get();
-
-            $setSetTL->each(function($value) {
-                $countEditedData3 = DataKehadiranInOutEdited::where('tanggal_absen', $value->tanggal_absen)
-                    ->where('enroll_id', $value->enroll_id)
-                    ->count();
-            
-                $count3 = LogDataGagalAbsen::where('tanggal_absen', $value->tanggal_absen)
-                    ->where('enroll_id', $value->enroll_id)
-                    ->count();
-            
-                // Update status_absen hanya jika tidak ada data yang diedit atau gagal absen
-                if ($countEditedData3 < 1 && $count3 < 1) {
-                    // Batch update tanpa perlu menjalankan update untuk setiap elemen
+                substr(tanggal_berjalan,1, 10) tanggal_absen,
+                enroll_id,
+                substr(absen_masuk_kerja, 1, 5) absen_in,
+                substr(absen_pulang_kerja, 1, 5) absen_out,
+                null status_absen
+            ")->whereRaw('absen_masuk_kerja is not null AND absen_pulang_kerja is not null
+                AND status_absen in ("M", "TL") AND tanggal_berjalan >= "' . $tanggal_awal . '" and tanggal_berjalan <= "'.$tanggal_akhir.'"'.$inEnrollsId.'
+            ')->where(function($query){
+                $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
+            })->get();
+            foreach($setClearMTL as $value) {
+                $countEditedData2=DataKehadiranInOutEdited::where('tanggal_absen','=', $value->tanggal_absen)->where('enroll_id','=', $value->enroll_id)->count();
+                $count2=LogDataGagalAbsen::where('tanggal_absen',$value->tanggal_absen)->where('enroll_id','=', $value->enroll_id)->count();
+                
+                if($countEditedData2<1 && $count2<1){
                     MasterDataAbsenKehadiran::where('tanggal_berjalan', $value->tanggal_absen)
-                        ->where('enroll_id', $value->enroll_id)
-                        ->update(['status_absen' => $value->status_absen]);
+                    ->where('enroll_id', $value->enroll_id)
+                    ->update([
+                        'status_absen' => $value->status_absen
+                    ]);
                 }
-            });
+            }
+            $setSetTL = MasterDataAbsenKehadiran::selectRaw("
+                substr(tanggal_berjalan,1, 10) tanggal_absen,
+                enroll_id,
+                substr(absen_masuk_kerja, 1, 5) absen_in,
+                substr(absen_pulang_kerja, 1, 5) absen_out,
+                'TL' status_absen
+            ")
+            ->whereRaw('
+                tanggal_berjalan >= "' . $tanggal_awal . '" and tanggal_berjalan <= "'.$tanggal_akhir.'"'.$inEnrollsId.'
+                AND status_absen in ("M", "TL")
+                AND ((absen_masuk_kerja is null AND absen_pulang_kerja is not null) OR (absen_masuk_kerja is not null AND absen_pulang_kerja is null))
+            ')->where(function($query){
+                $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
+            })->get();
 
-           
+            foreach($setSetTL as $value) {
+                $countEditedData3=DataKehadiranInOutEdited::where('tanggal_absen', $value->tanggal_absen)->where('enroll_id', $value->enroll_id)->count();
+                $count3=LogDataGagalAbsen::where('tanggal_absen', $value->tanggal_absen)->where('enroll_id', $value->enroll_id)->count();
+                
+                if($countEditedData3<1 && $count3<1){
+                    MasterDataAbsenKehadiran::where('tanggal_berjalan', $value->tanggal_absen)
+                    ->where('enroll_id', $value->enroll_id)
+                    ->update([
+                        'status_absen' => $value->status_absen
+                    ]);
+                }
+            }
             $checkinoutAtt =  DB::connection('sqlsrv2')->select(
                 DB::raw("
                     SELECT
@@ -3204,1235 +3184,9 @@ class MdAbsenHadirController extends AdminBaseController
                     }
                 }
             }
-
+            return $arr_list;
         }
     }
-   
-    // KODE LAMA INI MEMERLUKAN DATA 1.7 MENIT UNTUK MENGAMBIL DATA SELAMA 1 HARI.
-    // 4.6 MENIT UNTUK 1 MINGGU 
-
-    // public function download_mesin_kehadiran(Request $request)
-    // {
-    //     $tanggal_mesin_absensi = $request->tanggal_mesin_absensi;
-    //     $tanggal_array=explode(' - ',$tanggal_mesin_absensi);
-    //     $tanggal_awal=Carbon::parse($tanggal_array[0])->format('Y-m-d');
-    //     $tanggal_akhir=Carbon::parse($tanggal_array[1])->format('Y-m-d');
-    //     $selectedEnrollId=$request->enroll_id;
-    //     $inEnrollId='';
-    //     $inEnrollsId='';
-    //     if($selectedEnrollId){
-    //         $enroll_id = implode(", ", $selectedEnrollId);
-    //         $allEnroll_id= '('.$enroll_id.')';
-    //         $inEnrollId = ' AND b.BadgeNumber IN '.$allEnroll_id.'';
-    //         $enrolls_id = implode(", ", $selectedEnrollId);
-    //         $allEnrolls_id= '('.$enroll_id.')';
-    //         $inEnrollsId = ' AND enroll_id IN '.$allEnroll_id.'';
-    //     }
-    //     $adaData = "ADA";
-    //     $countData = MasterDataAbsenKehadiran::whereRaw("tanggal_berjalan >= '" . $tanggal_awal."' and tanggal_berjalan <= '".$tanggal_akhir."'".$inEnrollsId.'')->where(function($query){
-    //         $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
-    //     })->count();
-    //     if($countData > 0 ) {
-    //         $checkinout =  DB::connection('sqlsrv2')->select(
-    //         DB::raw("
-    //             SELECT CONVERT
-    //                 ( VARCHAR ( 10 ), a.CHECKTIME, 126 ) AS tanggal_absen,
-    //                 b.Badgenumber AS enroll_id,
-    //                 MIN ( CONVERT ( VARCHAR ( 5 ), a.CHECKTIME, 114 ) ) AS absen_in,
-    //                 CASE WHEN MIN ( CONVERT ( VARCHAR ( 5 ), a.CHECKTIME, 114 ) ) = MAX ( CONVERT ( VARCHAR ( 5 ), a.CHECKTIME, 114 ) )
-    //                     THEN NULL
-    //                     ELSE MAX ( CONVERT ( VARCHAR ( 5 ), a.CHECKTIME, 114 ) )
-    //                 END AS absen_out,
-    //                 CASE WHEN MIN ( CONVERT ( VARCHAR ( 5 ), a.CHECKTIME, 114 ) ) = MAX ( CONVERT ( VARCHAR ( 5 ), a.CHECKTIME, 114 ) )
-    //                     THEN 'TL'
-    //                     ELSE NULL
-    //                 END status_absen
-    //             FROM
-    //                 CHECKINOUT a
-    //                 JOIN USERINFO b ON ( a.USERID = b.USERID )
-    //             WHERE
-    //                 CONVERT ( VARCHAR ( 10 ), a.CHECKTIME, 126 ) >= '" . $tanggal_awal . "' and CONVERT ( VARCHAR ( 10 ), a.CHECKTIME, 126 ) <= '".$tanggal_akhir."'".$inEnrollId."
-    //             GROUP BY
-    //                 CONVERT ( VARCHAR ( 10 ), a.CHECKTIME, 126 ),
-    //                 b.Badgenumber
-    //         ") );
-
-    //         $arr_list = [];
-    //         foreach($checkinout as $value) {
-    //             $kehadiran = MasterDataAbsenKehadiran::selectRaw("
-    //                 substr(tanggal_berjalan,1, 10) tanggal_absen,
-    //                 enroll_id,
-    //                 substr(absen_masuk_kerja, 1, 6) absen_in,
-    //                 substr(absen_pulang_kerja, 1, 6) absen_out,
-    //                 mulai_jam_kerja,
-    //                 nomor_form_lembur,
-    //                 substr(mulai_jam_lembur,11,6) mulai_lembur,
-    //                 substr(akhir_jam_lembur,11,6) akhir_lembur,
-    //                 status_absen,
-    //                 operator
-    //             ")->whereRaw("
-    //                 tanggal_berjalan = '" . $value->tanggal_absen . "'
-    //                 AND enroll_id = '" . $value->enroll_id . "'
-    //             ")->where(function($query){
-    //                 $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
-    //             })
-    //             ->get();
-    //             foreach($kehadiran as $val) {
-    //                 $countEditedData=DataKehadiranInOutEdited::where('tanggal_absen', $val->tanggal_absen)->where('enroll_id','=', $val["enroll_id"])->count();
-    //                 $count=LogDataGagalAbsen::where('tanggal_absen',$val->tanggal_absen)->where('enroll_id',$val["enroll_id"])->count();
-    //                 if($countEditedData<1 && $count<1){
-    //                     if($val["operator"]=='system' || $val["operator"]=='system_injek_lebaran') {
-    //                         if($val["status_absen"] == "TL" || $val["status_absen"] == "M" || $val["status_absen"] == "IKS" || $val["status_absen"] == "" || $val["status_absen"] == null || !$val["status_absen"] || $val["status_absen"] == "LN" || $val["status_absen"] == "LP" || $val["status_absen"] == "CT" || $val["status_absen"] == "L") {
-    //                             if($val["mulai_jam_kerja"]!=null){
-    //                                 if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"]=='LP'){
-    //                                     if($val["status_absen"]=='LP'){
-    //                                         if($value->absen_in!='' && $value->absen_out==''){
-    //                                             $status_absen=$val["status_absen"];
-    //                                         }else if($value->absen_in=='' && $value->absen_out==''){
-    //                                             $status_absen=$val["status_absen"];
-    //                                         }else if($value->absen_in=='' && $value->absen_out!=''){
-    //                                             $status_absen=$val["status_absen"];
-    //                                         }else{
-    //                                             $status_absen=$value->status_absen;
-    //                                         }
-    //                                     }else{
-    //                                         $status_absen=$val["status_absen"];
-    //                                     }
-    //                                 }
-    //                                 else{
-    //                                     $status_absen=$value->status_absen;
-    //                                 }
-    //                                 MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
-    //                                 ->where('enroll_id', $val->enroll_id)->update([
-    //                                     'absen_masuk_kerja' => $value->absen_in,
-    //                                     'absen_pulang_kerja' => $value->absen_out,
-    //                                     'status_absen' => $status_absen
-    //                                 ]);
-    //                             }else{
-    //                                 if($val["mulai_lembur"]!=null && $val["akhir_lembur"]!=null){
-    //                                     if($val["mulai_lembur"]<$val["akhir_lembur"]){
-    //                                         if($val["status_absen"] == "LN"){
-    //                                             $status_absen='LN';
-    //                                         }
-    //                                         else{
-    //                                             $status_absen=$value->status_absen;
-    //                                         }
-    //                                         MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
-    //                                         ->where('enroll_id', $val->enroll_id)->update([
-    //                                             'absen_masuk_kerja' => $value->absen_in,
-    //                                             'absen_pulang_kerja' => $value->absen_out,
-    //                                             'status_absen' => $status_absen
-    //                                         ]);
-    //                                     }
-    //                                 }else{
-    //                                     $mulai_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('mulai_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->mulai_jam_kerja;
-    //                                     $akhir_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('akhir_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->akhir_jam_kerja;
-    //                                     if($mulai_jam_kerja_kemarin<$akhir_jam_kerja_kemarin){
-    //                                         if($val["status_absen"] == "LN" ||$val["status_absen"]=='IKS'){
-    //                                             $status_absen=$val["status_absen"];
-    //                                         }
-    //                                         else{
-    //                                             $status_absen=$value->status_absen;
-    //                                         }
-    //                                         MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
-    //                                         ->where('enroll_id', $val->enroll_id)->update([
-    //                                             'absen_masuk_kerja' => $value->absen_in,
-    //                                             'absen_pulang_kerja' => $value->absen_out,
-    //                                             'status_absen' => $status_absen
-    //                                         ]);
-    //                                     }
-    //                                 }
-    //                             }
-    //                         }
-    //                     } else {
-    //                         if ($val["status_absen"] == "TL" || $val["status_absen"] == "M") {
-    //                             if($val["mulai_jam_kerja"]!=null){
-    //                                 if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"]=='LP'){
-    //                                     if($val["status_absen"]=='LP'){
-    //                                         if($value->absen_in!='' && $value->absen_out==''){
-    //                                             $status_absen=$val["status_absen"];
-    //                                         }else if($value->absen_in=='' && $value->absen_out==''){
-    //                                             $status_absen=$val["status_absen"];
-    //                                         }else if($value->absen_in=='' && $value->absen_out!=''){
-    //                                             $status_absen=$val["status_absen"];
-    //                                         }else{
-    //                                             $status_absen=$value->status_absen;
-    //                                         }
-    //                                     }else{
-    //                                         $status_absen=$val["status_absen"];
-    //                                     }
-    //                                 }
-    //                                 else{
-    //                                     $status_absen=$value->status_absen;
-    //                                 }
-    //                                 MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
-    //                                 ->where('enroll_id', $val->enroll_id)
-    //                                 ->update([
-    //                                     'absen_masuk_kerja' => $value->absen_in,
-    //                                     'absen_pulang_kerja' => $value->absen_out,
-    //                                     'status_absen' => $status_absen
-    //                                 ]);
-    //                             }else{
-    //                                 if($val["mulai_lembur"]<$val["akhir_lembur"]){
-    //                                     if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"){
-    //                                         $status_absen=$val["status_absen"];
-    //                                     }
-    //                                     else{
-    //                                         $status_absen=$value->status_absen;
-    //                                     }
-    //                                     MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
-    //                                     ->where('enroll_id', $val->enroll_id)->update([
-    //                                         'absen_masuk_kerja' => $value->absen_in,
-    //                                         'absen_pulang_kerja' => $value->absen_out,
-    //                                         'status_absen' => $status_absen
-    //                                     ]);
-    //                                 }
-    //                             }
-    //                         }else{
-    //                             if($count<1){
-    //                                 if($val["mulai_jam_kerja"]!=null){
-    //                                     if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"] == "R"){
-    //                                         $status_absen=$val["status_absen"];
-    //                                     }
-    //                                     else{
-    //                                         if($val["status_absen"]=="S"||$val["status_absen"]=='LP'){
-    //                                             if($value->absen_in!='' && $value->absen_out==''){
-    //                                                 $status_absen=$val["status_absen"];
-    //                                             }else if($value->absen_in=='' && $value->absen_out==''){
-    //                                                 $status_absen=$val["status_absen"];
-    //                                             }else if($value->absen_in=='' && $value->absen_out!=''){
-    //                                                 $status_absen=$val["status_absen"];
-    //                                             }else{
-    //                                                 $status_absen=$value->status_absen;
-    //                                             }
-    //                                         }else{
-    //                                             $status_absen=$value->status_absen;   
-    //                                         }
-    //                                     }
-    //                                     MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
-    //                                     ->where('enroll_id', $val->enroll_id)
-    //                                     ->update([
-    //                                         'absen_masuk_kerja' => $value->absen_in,
-    //                                         'absen_pulang_kerja' => $value->absen_out,
-    //                                         'status_absen' => $status_absen
-    //                                     ]);
-    //                                 }else{
-    //                                     if($val['nomor_form_lembur']!=null){
-    //                                         if($val["mulai_lembur"]<$val["akhir_lembur"]){
-    //                                             if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"] == "R"){
-    //                                                 $status_absen=$val["status_absen"];
-    //                                             }
-    //                                             else{
-    //                                                 $status_absen=null;
-    //                                             }
-    //                                             MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->update([
-    //                                                 'absen_masuk_kerja' => $value->absen_in,
-    //                                                 'absen_pulang_kerja' => $value->absen_out,
-    //                                                 'status_absen' => $status_absen
-    //                                             ]);
-    //                                         }
-    //                                     }else{
-    //                                         $mulai_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('mulai_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->mulai_jam_kerja;
-    //                                         $akhir_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('akhir_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->akhir_jam_kerja;
-    //                                         if($mulai_jam_kerja_kemarin<$akhir_jam_kerja_kemarin){
-    //                                             if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"] == "R"){
-    //                                                 $status_absen=$val["status_absen"];
-    //                                             }
-    //                                             else{
-    //                                                 $status_absen=null;
-    //                                             }
-    //                                             MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
-    //                                             ->where('enroll_id', $val->enroll_id)->update([
-    //                                                 'absen_masuk_kerja' => $value->absen_in,
-    //                                                 'absen_pulang_kerja' => $value->absen_out,
-    //                                                 'status_absen' => $status_absen
-    //                                             ]);
-    //                                         }
-    //                                     }
-    //                                 }
-    //                             }
-    //                         }
-    //                     }
-    //                 }else if($countEditedData>0 && $count<1){
-    //                     $datakehadiraneditin = count(DataKehadiranInOutEdited::where('tanggal_absen', $val->tanggal_absen)->where('enroll_id','=', $val["enroll_id"])->where('absen_masuk_kerja','!=',null)->where('absen_pulang_kerja',null)->get());
-    //                     //gagal absen pagi
-    //                     if($datakehadiraneditin==1){
-    //                         if($value->absen_in!=null && $value->absen_out==null){
-    //                             if($value->absen_in>$datakehadiraneditin){
-    //                                 MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
-    //                                 ->where('enroll_id', $val->enroll_id)
-    //                                 ->update([
-    //                                     'absen_pulang_kerja' => $value->absen_in,
-    //                                     'status_absen'=>null
-    //                                 ]);
-    //                             }
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-
-
-            
-    //         $masterAbsen=MasterDataAbsenKehadiran::whereRaw("tanggal_berjalan >= '" . $tanggal_awal."' and tanggal_berjalan <= '".$tanggal_akhir."'".$inEnrollsId.'')->with('employee_atribut')->where(function($query){
-    //             $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
-    //         })->get();
-    //         $today=date('Y-m-d');
-    //         foreach ($masterAbsen as $k => $v) {
-    //             $countEditedData1=DataKehadiranInOutEdited::where('tanggal_absen', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->count();
-    //             $count1=LogDataGagalAbsen::where('tanggal_absen', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->count();
-    //             if($countEditedData1<1 && $count1<1){
-    //                 $jadwal_in=$v->mulai_jam_kerja;
-    //                 $jadwal_out=$v->akhir_jam_kerja;
-    //                 $absen_in=$v->absen_masuk_kerja;
-    //                 $absen_out=$v->absen_pulang_kerja;
-    //                 $status_staff=$v->employee_atribut->status_staff;
-    //                 $durasi_kerja=date_diff(date_create($jadwal_in),date_create($jadwal_out));
-    //                 $durasi_kerja_menit=$durasi_kerja->i +($durasi_kerja->h*60);
-
-    //                 $DT = date_diff(date_create($jadwal_in),date_create($absen_in));
-    //                 $PC = date_diff(date_create($jadwal_out),date_create($absen_out));
-    //                 if($v->tanggal_berjalan==$today){
-    //                     if( $jadwal_in!=null && $absen_in!=null && $absen_in>$jadwal_in && ($v->status_absen==null || $v->status_absen=='TL')){
-    //                         $total_DT1 = $DT->i +($DT->h*60);
-    //                         if($status_staff=='STAFF'){
-    //                             if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
-    //                                 if($jadwal_in=='07:00:00'){
-    //                                     if($absen_in >'13:00:00'){
-    //                                         $total_DT=$total_DT1-60;
-    //                                     }
-    //                                     else if($absen_in>'07:00:00' && $absen_in<'07:11:00'){
-    //                                         $total_DT=0;
-    //                                     }
-    //                                     else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
-    //                                         $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
-    //                                         $selisih_menit = round($selisih_menit / 60);
-    //                                         $total_DT=$total_DT1-$selisih_menit;
-    //                                     }
-    //                                     else {
-    //                                         $total_DT=$total_DT1;
-    //                                     }
-    //                                 }else if($jadwal_in=='07:30:00'){
-    //                                     if($absen_in >'13:00:00'){
-    //                                         $total_DT=$total_DT1-60;
-    //                                     }
-    //                                     else if($absen_in>'07:30:00' && $absen_in<'07:41:00'){
-    //                                         $total_DT=0;
-    //                                     }
-    //                                     else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
-    //                                         $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
-    //                                         $selisih_menit = round($selisih_menit / 60);
-    //                                         $total_DT=$total_DT1-$selisih_menit;
-    //                                     }
-    //                                     else {
-    //                                         $total_DT=$total_DT1;
-    //                                     }
-    //                                 }
-    //                             }else if($jadwal_in=='05:30:00'){
-    //                                 if($absen_in >'10:30:00'){
-    //                                     $total_DT=$total_DT1-60;
-    //                                 }else if($absen_in >'09:30:00' && $absen_in <='10:30:00'){
-    //                                     $selisih_menit = strtotime($absen_in) - strtotime('09:30:00');
-    //                                     $selisih_menit = round($selisih_menit / 60);
-    //                                     $total_DT=$total_DT1-$selisih_menit;
-    //                                 }else if($absen_in>'05:30:00' && $absen_in<'05:40:00'){
-    //                                     $total_DT=0;
-    //                                 }else{
-    //                                     $total_DT=$total_DT1;
-    //                                 }
-    //                             }else if($jadwal_in=='06:00:00'){
-    //                                 if($absen_in >'11:00:00'){
-    //                                     $total_DT=$total_DT1-60;
-    //                                 }else if($absen_in >'10:00:00' && $absen_in <='11:00:00'){
-    //                                     $selisih_menit = strtotime($absen_in) - strtotime('10:00:00');
-    //                                     $selisih_menit = round($selisih_menit / 60);
-    //                                     $total_DT=$total_DT1-$selisih_menit;
-    //                                 }else if($absen_in>'06:00:00' && $absen_in<'06:11:00'){
-    //                                     $total_DT=0;
-    //                                 }else {
-    //                                     $total_DT=$total_DT1;
-    //                                 }
-    //                             }else if($jadwal_in=='13:00:00'){
-    //                                 if($absen_in >'18:00:00'){
-    //                                     $total_DT=$total_DT1-60;
-    //                                 }else if($absen_in >'17:00:00' && $absen_in <='18:00:00'){
-    //                                     $selisih_menit = strtotime($absen_in) - strtotime('17:00:00');
-    //                                     $selisih_menit = round($selisih_menit / 60);
-    //                                     $total_DT=$total_DT1-$selisih_menit;
-    //                                 }else if($absen_in>'13:00:00' && $absen_in<'13:11:00'){
-    //                                     $total_DT=0;
-    //                                 }else {
-    //                                     $total_DT=$total_DT1;
-    //                                 }
-    //                             }else{
-    //                                 if($total_DT<=10){
-    //                                     $total_DT=0;
-    //                                 }else{
-    //                                     $total_DT=$total_DT1;
-    //                                 }
-    //                             }
-    //                             $total_DT = $total_DT < 480 ? $total_DT : 480;
-    //                         }else{
-    //                             if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
-    //                                 if($jadwal_in=='07:00:00'){
-    //                                     if($absen_in >'13:00:00'){
-    //                                         $total_DT=$total_DT1-60;
-    //                                     }
-    //                                     else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
-    //                                         $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
-    //                                         $selisih_menit = round($selisih_menit / 60);
-    //                                         $total_DT=$total_DT1-$selisih_menit;
-    //                                     }
-    //                                     else {
-    //                                         $total_DT=$total_DT1;
-    //                                     }
-    //                                 }else if($jadwal_in=='07:30:00'){
-    //                                     if($absen_in >'13:00:00'){
-    //                                         $total_DT=$total_DT1-60;
-    //                                     }else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
-    //                                         $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
-    //                                         $selisih_menit = round($selisih_menit / 60);
-    //                                         $total_DT=$total_DT1-$selisih_menit;
-    //                                     }
-    //                                     else {
-    //                                         $total_DT=$total_DT1;
-    //                                     }
-    //                                 }
-    //                             }else if($jadwal_in=='05:30:00'){
-    //                                 if($absen_in >'10:30:00'){
-    //                                     $total_DT=$total_DT1-60;
-    //                                 }else if($absen_in >'09:30:00' && $absen_in <='10:30:00'){
-    //                                     $selisih_menit = strtotime($absen_in) - strtotime('09:30:00');
-    //                                     $selisih_menit = round($selisih_menit / 60);
-    //                                     $total_DT=$total_DT1-$selisih_menit;
-    //                                 }else {
-    //                                     $total_DT=$total_DT1;
-    //                                 }
-    //                             }else if($jadwal_in=='06:00:00'){
-    //                                 if($absen_in >'11:00:00'){
-    //                                     $total_DT=$total_DT1-60;
-    //                                 }else if($absen_in >'10:00:00' && $absen_in <='11:00:00'){
-    //                                     $selisih_menit = strtotime($absen_in) - strtotime('10:00:00');
-    //                                     $selisih_menit = round($selisih_menit / 60);
-    //                                     $total_DT=$total_DT1-$selisih_menit;
-    //                                 }else {
-    //                                     $total_DT=$total_DT1;
-    //                                 }
-    //                             }else if($jadwal_in=='13:00:00'){
-    //                                 if($absen_in >'18:00:00'){
-    //                                     $total_DT=$total_DT1-60;
-    //                                 }else if($absen_in >'17:00:00' && $absen_in <='18:00:00'){
-    //                                     $selisih_menit = strtotime($absen_in) - strtotime('17:00:00');
-    //                                     $selisih_menit = round($selisih_menit / 60);
-    //                                     $total_DT=$total_DT1-$selisih_menit;
-    //                                 }else {
-    //                                     $total_DT=$total_DT1;
-    //                                 }
-    //                             }else{
-    //                                 $total_DT=$total_DT1;
-    //                             }
-    //                             $total_DT = $total_DT < 480 ? $total_DT : 480;
-    //                         }
-    //                     }else{
-    //                         $total_DT=0;
-    //                     }
-    //                     if($absen_out<$jadwal_in && $absen_out<$absen_in){
-    //                         $total_PC=0;
-    //                     }else if( $jadwal_out !=null && $absen_out !=null && $absen_out<$jadwal_out && ($v->status_absen==null || $v->status_absen=='TL')){
-    //                         $total_PC1 = $PC->i +($PC->h*60);
-    //                         if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
-    //                             if($absen_out <='12:00:00'){
-    //                                 $total_PC=$total_PC1-60;
-    //                             }else if($absen_out >'12:00:00' && $absen_out <='13:00:00'){
-    //                                 $selisih_menit = strtotime('13:00:00') - strtotime($absen_out);
-    //                                 $selisih_menit = round($selisih_menit / 60);
-    //                                 $total_PC=$total_PC1-$selisih_menit;
-    //                             }else {
-    //                                 $total_PC=$total_PC1;
-    //                             }
-    //                         }else if($jadwal_in=='05:30:00'){
-    //                             if($absen_out <='09:30:00'){
-    //                                 $total_PC=$total_PC1-60;
-    //                             }else if($absen_out >'09:30:00' && $absen_out <='10:30:00'){
-    //                                 $selisih_menit = strtotime('10:30:00') - strtotime($absen_out);
-    //                                 $selisih_menit = round($selisih_menit / 60);
-    //                                 $total_PC=$total_PC1-$selisih_menit;
-    //                             }else {
-    //                                 $total_PC=$total_PC1;
-    //                             }
-    //                         }else if($jadwal_in=='06:00:00'){
-    //                             if($absen_out <='10:00:00'){
-    //                                 $total_PC=$total_PC1-60;
-    //                             }
-    //                             else if($absen_out >'10:00:00' && $absen_out <='11:00:00'){
-    //                                 $selisih_menit = strtotime('11:00:00') - strtotime($absen_out);
-    //                                 $selisih_menit = round($selisih_menit / 60);
-    //                                 $total_PC=$total_PC1-$selisih_menit;
-    //                             }
-    //                             else {
-    //                                 $total_PC=$total_PC1;
-    //                             }
-    //                         }else if($jadwal_in=='13:00:00'){
-    //                             if($absen_out <='17:00:00'){
-    //                                 $total_PC=$total_PC1-60;
-    //                             }
-    //                             else if($absen_out >'17:00:00' && $absen_out <='18:00:00'){
-    //                                 $selisih_menit = strtotime('18:00:00') - strtotime($absen_out);
-    //                                 $selisih_menit = round($selisih_menit / 60);
-    //                                 $total_PC=$total_PC1-$selisih_menit;
-    //                             }
-    //                             else {
-    //                                 $total_PC=$total_PC1;
-    //                             }
-    //                         }else{
-    //                             $total_PC=$total_PC1;
-    //                         }
-    //                         $total_PC = $total_PC < 480 ? $total_PC : 480;
-    //                     }else{
-    //                         $total_PC=0;
-    //                     }
-    //                 }else{
-    //                     if( $jadwal_in!=null && $absen_in!=null && $absen_in>$jadwal_in && $v->status_absen==null){
-    //                         $total_DT1 = $DT->i +($DT->h*60);
-    //                         if($status_staff=='STAFF'){
-    //                             if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
-    //                                 if($jadwal_in=='07:00:00'){
-    //                                     if($absen_in >'13:00:00'){
-    //                                         $total_DT=$total_DT1-60;
-    //                                     }
-    //                                     else if($absen_in>'07:00:00' && $absen_in<'07:11:00'){
-    //                                         $total_DT=0;
-    //                                     }
-    //                                     else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
-    //                                         $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
-    //                                         $selisih_menit = round($selisih_menit / 60);
-    //                                         $total_DT=$total_DT1-$selisih_menit;
-    //                                     }
-    //                                     else {
-    //                                         $total_DT=$total_DT1;
-    //                                     }
-    //                                 }else if($jadwal_in=='07:30:00'){
-    //                                     if($absen_in >'13:00:00'){
-    //                                         $total_DT=$total_DT1-60;
-    //                                     }
-    //                                     else if($absen_in>'07:30:00' && $absen_in<'07:41:00'){
-    //                                         $total_DT=0;
-    //                                     }
-    //                                     else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
-    //                                         $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
-    //                                         $selisih_menit = round($selisih_menit / 60);
-    //                                         $total_DT=$total_DT1-$selisih_menit;
-    //                                     }
-    //                                     else {
-    //                                         $total_DT=$total_DT1;
-    //                                     }
-    //                                 }
-    //                             }else if($jadwal_in=='05:30:00'){
-    //                                 if($absen_in >'10:30:00'){
-    //                                     $total_DT=$total_DT1-60;
-    //                                 }else if($absen_in >'09:30:00' && $absen_in <='10:30:00'){
-    //                                     $selisih_menit = strtotime($absen_in) - strtotime('09:30:00');
-    //                                     $selisih_menit = round($selisih_menit / 60);
-    //                                     $total_DT=$total_DT1-$selisih_menit;
-    //                                 }else if($absen_in>'05:30:00' && $absen_in<'05:40:00'){
-    //                                     $total_DT=0;
-    //                                 }else{
-    //                                     $total_DT=$total_DT1;
-    //                                 }
-    //                             }else if($jadwal_in=='06:00:00'){
-    //                                 if($absen_in >'11:00:00'){
-    //                                     $total_DT=$total_DT1-60;
-    //                                 }else if($absen_in >'10:00:00' && $absen_in <='11:00:00'){
-    //                                     $selisih_menit = strtotime($absen_in) - strtotime('10:00:00');
-    //                                     $selisih_menit = round($selisih_menit / 60);
-    //                                     $total_DT=$total_DT1-$selisih_menit;
-    //                                 }else if($absen_in>'06:00:00' && $absen_in<'06:11:00'){
-    //                                     $total_DT=0;
-    //                                 }else {
-    //                                     $total_DT=$total_DT1;
-    //                                 }
-    //                             }else if($jadwal_in=='13:00:00'){
-    //                                 if($absen_in >'18:00:00'){
-    //                                     $total_DT=$total_DT1-60;
-    //                                 }else if($absen_in >'17:00:00' && $absen_in <='18:00:00'){
-    //                                     $selisih_menit = strtotime($absen_in) - strtotime('17:00:00');
-    //                                     $selisih_menit = round($selisih_menit / 60);
-    //                                     $total_DT=$total_DT1-$selisih_menit;
-    //                                 }else if($absen_in>'13:00:00' && $absen_in<'13:11:00'){
-    //                                     $total_DT=0;
-    //                                 }else {
-    //                                     $total_DT=$total_DT1;
-    //                                 }
-    //                             }else{
-    //                                 if($total_DT<=10){
-    //                                     $total_DT=0;
-    //                                 }else{
-    //                                     $total_DT=$total_DT1;
-    //                                 }
-    //                             }
-    //                             $total_DT = $total_DT < 480 ? $total_DT : 480;
-    //                         }else{
-    //                             if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
-    //                                 if($jadwal_in=='07:00:00'){
-    //                                     if($absen_in >'13:00:00'){
-    //                                         $total_DT=$total_DT1-60;
-    //                                     }
-    //                                     else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
-    //                                         $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
-    //                                         $selisih_menit = round($selisih_menit / 60);
-    //                                         $total_DT=$total_DT1-$selisih_menit;
-    //                                     }
-    //                                     else {
-    //                                         $total_DT=$total_DT1;
-    //                                     }
-    //                                 }else if($jadwal_in=='07:30:00'){
-    //                                     if($absen_in >'13:00:00'){
-    //                                         $total_DT=$total_DT1-60;
-    //                                     }else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
-    //                                         $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
-    //                                         $selisih_menit = round($selisih_menit / 60);
-    //                                         $total_DT=$total_DT1-$selisih_menit;
-    //                                     }
-    //                                     else {
-    //                                         $total_DT=$total_DT1;
-    //                                     }
-    //                                 }
-    //                             }else if($jadwal_in=='05:30:00'){
-    //                                 if($absen_in >'10:30:00'){
-    //                                     $total_DT=$total_DT1-60;
-    //                                 }else if($absen_in >'09:30:00' && $absen_in <='10:30:00'){
-    //                                     $selisih_menit = strtotime($absen_in) - strtotime('09:30:00');
-    //                                     $selisih_menit = round($selisih_menit / 60);
-    //                                     $total_DT=$total_DT1-$selisih_menit;
-    //                                 }else {
-    //                                     $total_DT=$total_DT1;
-    //                                 }
-    //                             }else if($jadwal_in=='06:00:00'){
-    //                                 if($absen_in >'11:00:00'){
-    //                                     $total_DT=$total_DT1-60;
-    //                                 }else if($absen_in >'10:00:00' && $absen_in <='11:00:00'){
-    //                                     $selisih_menit = strtotime($absen_in) - strtotime('10:00:00');
-    //                                     $selisih_menit = round($selisih_menit / 60);
-    //                                     $total_DT=$total_DT1-$selisih_menit;
-    //                                 }else {
-    //                                     $total_DT=$total_DT1;
-    //                                 }
-    //                             }else if($jadwal_in=='13:00:00'){
-    //                                 if($absen_in >'18:00:00'){
-    //                                     $total_DT=$total_DT1-60;
-    //                                 }else if($absen_in >'17:00:00' && $absen_in <='18:00:00'){
-    //                                     $selisih_menit = strtotime($absen_in) - strtotime('17:00:00');
-    //                                     $selisih_menit = round($selisih_menit / 60);
-    //                                     $total_DT=$total_DT1-$selisih_menit;
-    //                                 }else {
-    //                                     $total_DT=$total_DT1;
-    //                                 }
-    //                             }else{
-    //                                 $total_DT=$total_DT1;
-    //                             }
-    //                             $total_DT = $total_DT < 480 ? $total_DT : 480;
-    //                         }
-    //                     }else{
-    //                         $total_DT=0;
-    //                     }
-    //                     if($absen_out<$jadwal_in && $absen_out<$absen_in){
-    //                         $total_PC=0;
-    //                     }else if( $jadwal_out !=null && $absen_out !=null && $absen_out<$jadwal_out && $v->status_absen==null){
-    //                         $total_PC1 = $PC->i +($PC->h*60);
-    //                         if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
-    //                             if($absen_out <='12:00:00'){
-    //                                 $total_PC=$total_PC1-60;
-    //                             }else if($absen_out >'12:00:00' && $absen_out <='13:00:00'){
-    //                                 $selisih_menit = strtotime('13:00:00') - strtotime($absen_out);
-    //                                 $selisih_menit = round($selisih_menit / 60);
-    //                                 $total_PC=$total_PC1-$selisih_menit;
-    //                             }else {
-    //                                 $total_PC=$total_PC1;
-    //                             }
-    //                         }else if($jadwal_in=='05:30:00'){
-    //                             if($absen_out <='09:30:00'){
-    //                                 $total_PC=$total_PC1-60;
-    //                             }else if($absen_out >'09:30:00' && $absen_out <='10:30:00'){
-    //                                 $selisih_menit = strtotime('10:30:00') - strtotime($absen_out);
-    //                                 $selisih_menit = round($selisih_menit / 60);
-    //                                 $total_PC=$total_PC1-$selisih_menit;
-    //                             }else {
-    //                                 $total_PC=$total_PC1;
-    //                             }
-    //                         }else if($jadwal_in=='06:00:00'){
-    //                             if($absen_out <='10:00:00'){
-    //                                 $total_PC=$total_PC1-60;
-    //                             }
-    //                             else if($absen_out >'10:00:00' && $absen_out <='11:00:00'){
-    //                                 $selisih_menit = strtotime('11:00:00') - strtotime($absen_out);
-    //                                 $selisih_menit = round($selisih_menit / 60);
-    //                                 $total_PC=$total_PC1-$selisih_menit;
-    //                             }
-    //                             else {
-    //                                 $total_PC=$total_PC1;
-    //                             }
-    //                         }else if($jadwal_in=='13:00:00'){
-    //                             if($absen_out <='17:00:00'){
-    //                                 $total_PC=$total_PC1-60;
-    //                             }
-    //                             else if($absen_out >'17:00:00' && $absen_out <='18:00:00'){
-    //                                 $selisih_menit = strtotime('18:00:00') - strtotime($absen_out);
-    //                                 $selisih_menit = round($selisih_menit / 60);
-    //                                 $total_PC=$total_PC1-$selisih_menit;
-    //                             }
-    //                             else {
-    //                                 $total_PC=$total_PC1;
-    //                             }
-    //                         }else{
-    //                             $total_PC=$total_PC1;
-    //                         }
-    //                         $total_PC = $total_PC < 480 ? $total_PC : 480;
-    //                     }else{
-    //                         $total_PC=0;
-    //                     }
-    //                 }
-
-    //                 $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
-    //                 if( $absen_in!=null && $absen_out !=null){
-    //                     $jumlah_absen_menit_kerja=$durasi_kerja_menit-$jumlah_menit_absen_dtpc;
-    //                 }
-    //                 else{
-    //                     $jumlah_absen_menit_kerja=0;
-    //                 }
-
-    //                 $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
-    //                 $data_update=[
-    //                     'jumlah_menit_absen_dtpc'=>$jumlah_menit_absen_dtpc,
-    //                     'jumlah_absen_menit_kerja'=>$durasi_kerja_menit-$jumlah_menit_absen_dtpc,
-    //                     'jumlah_menit_absen_dt'=>$total_DT,
-    //                     'jumlah_menit_absen_pc'=>$total_PC,
-    //                 ];
-    //                 MasterDataAbsenKehadiran::where('tanggal_berjalan', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->update($data_update);
-    //             }
-    //             else if($countEditedData>0 && $count<1){
-    //                 $datakehadiraneditin = count(DataKehadiranInOutEdited::where('tanggal_absen', $v->tanggal_berjalan)->where('enroll_id','=', $val["enroll_id"])->where('absen_masuk_kerja','!=',null)->where('absen_pulang_kerja',null)->get());
-    //                 //gagal absen pagi
-    //                 if($datakehadiraneditin==1){
-    //                     if($v->absen_masuk_kerja!=null && $v->absen_pulang_kerja!=null){
-    //                         $jadwal_in=$v->mulai_jam_kerja;
-    //                         $jadwal_out=$v->akhir_jam_kerja;
-    //                         $absen_in=$v->absen_masuk_kerja;
-    //                         $absen_out=$v->absen_pulang_kerja;
-    //                         $status_staff=$v->employee_atribut->status_staff;
-    //                         $durasi_kerja=date_diff(date_create($jadwal_in),date_create($jadwal_out));
-    //                         $durasi_kerja_menit=$durasi_kerja->i +($durasi_kerja->h*60);
-    
-    //                         $DT = date_diff(date_create($jadwal_in),date_create($absen_in));
-    //                         $PC = date_diff(date_create($jadwal_out),date_create($absen_out));
-    //                         if($today==$v->tanggal_berjalan){
-    //                             if( $jadwal_in!=null && $absen_in!=null && $absen_in>$jadwal_in && ($v->status_absen==null || $v->status_absen=='TL')){
-    //                                 $total_DT1 = $DT->i +($DT->h*60);
-    //                                 if($status_staff=='STAFF'){
-    //                                     if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
-    //                                         if($jadwal_in=='07:00:00'){
-    //                                             if($absen_in >'13:00:00'){
-    //                                                 $total_DT=$total_DT1-60;
-    //                                             }
-    //                                             else if($absen_in>'07:00:00' && $absen_in<'07:11:00'){
-    //                                                 $total_DT=0;
-    //                                             }
-    //                                             else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
-    //                                                 $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
-    //                                                 $selisih_menit = round($selisih_menit / 60);
-    //                                                 $total_DT=$total_DT1-$selisih_menit;
-    //                                             }
-    //                                             else {
-    //                                                 $total_DT=$total_DT1;
-    //                                             }
-    //                                         }else if($jadwal_in=='07:30:00'){
-    //                                             if($absen_in >'13:00:00'){
-    //                                                 $total_DT=$total_DT1-60;
-    //                                             }
-    //                                             else if($absen_in>'07:30:00' && $absen_in<'07:41:00'){
-    //                                                 $total_DT=0;
-    //                                             }
-    //                                             else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
-    //                                                 $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
-    //                                                 $selisih_menit = round($selisih_menit / 60);
-    //                                                 $total_DT=$total_DT1-$selisih_menit;
-    //                                             }
-    //                                             else {
-    //                                                 $total_DT=$total_DT1;
-    //                                             }
-    //                                         }
-    //                                     }else if($jadwal_in=='06:00:00'){
-    //                                         if($absen_in >'11:00:00'){
-    //                                             $total_DT=$total_DT1-60;
-    //                                         }else if($absen_in >'10:00:00' && $absen_in <='11:00:00'){
-    //                                             $selisih_menit = strtotime($absen_in) - strtotime('10:00:00');
-    //                                             $selisih_menit = round($selisih_menit / 60);
-    //                                             $total_DT=$total_DT1-$selisih_menit;
-    //                                         }else if($absen_in>'06:00:00' && $absen_in<'06:11:00'){
-    //                                             $total_DT=0;
-    //                                         }else {
-    //                                             $total_DT=$total_DT1;
-    //                                         }
-    //                                     }else if($jadwal_in=='13:00:00'){
-    //                                         if($absen_in >'18:00:00'){
-    //                                             $total_DT=$total_DT1-60;
-    //                                         }else if($absen_in >'17:00:00' && $absen_in <='18:00:00'){
-    //                                             $selisih_menit = strtotime($absen_in) - strtotime('17:00:00');
-    //                                             $selisih_menit = round($selisih_menit / 60);
-    //                                             $total_DT=$total_DT1-$selisih_menit;
-    //                                         }else if($absen_in>'13:00:00' && $absen_in<'13:11:00'){
-    //                                             $total_DT=0;
-    //                                         }else {
-    //                                             $total_DT=$total_DT1;
-    //                                         }
-    //                                     }else{
-    //                                         if($total_DT<=10){
-    //                                             $total_DT=0;
-    //                                         }else{
-    //                                             $total_DT=$total_DT1;
-    //                                         }
-    //                                     }
-    //                                     $total_DT = $total_DT < 480 ? $total_DT : 480;
-    //                                 }else{
-    //                                     if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
-    //                                         if($jadwal_in=='07:00:00'){
-    //                                             if($absen_in >'13:00:00'){
-    //                                                 $total_DT=$total_DT1-60;
-    //                                             }
-    //                                             else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
-    //                                                 $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
-    //                                                 $selisih_menit = round($selisih_menit / 60);
-    //                                                 $total_DT=$total_DT1-$selisih_menit;
-    //                                             }
-    //                                             else {
-    //                                                 $total_DT=$total_DT1;
-    //                                             }
-    //                                         }else if($jadwal_in=='07:30:00'){
-    //                                             if($absen_in >'13:00:00'){
-    //                                                 $total_DT=$total_DT1-60;
-    //                                             }else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
-    //                                                 $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
-    //                                                 $selisih_menit = round($selisih_menit / 60);
-    //                                                 $total_DT=$total_DT1-$selisih_menit;
-    //                                             }
-    //                                             else {
-    //                                                 $total_DT=$total_DT1;
-    //                                             }
-    //                                         }
-    //                                     }else if($jadwal_in=='06:00:00'){
-    //                                         if($absen_in >'11:00:00'){
-    //                                             $total_DT=$total_DT1-60;
-    //                                         }else if($absen_in >'10:00:00' && $absen_in <='11:00:00'){
-    //                                             $selisih_menit = strtotime($absen_in) - strtotime('10:00:00');
-    //                                             $selisih_menit = round($selisih_menit / 60);
-    //                                             $total_DT=$total_DT1-$selisih_menit;
-    //                                         }else {
-    //                                             $total_DT=$total_DT1;
-    //                                         }
-    //                                     }else if($jadwal_in=='13:00:00'){
-    //                                         if($absen_in >'18:00:00'){
-    //                                             $total_DT=$total_DT1-60;
-    //                                         }else if($absen_in >'17:00:00' && $absen_in <='18:00:00'){
-    //                                             $selisih_menit = strtotime($absen_in) - strtotime('17:00:00');
-    //                                             $selisih_menit = round($selisih_menit / 60);
-    //                                             $total_DT=$total_DT1-$selisih_menit;
-    //                                         }else {
-    //                                             $total_DT=$total_DT1;
-    //                                         }
-    //                                     }else{
-    //                                         $total_DT=$total_DT1;
-    //                                     }
-    //                                     $total_DT = $total_DT < 480 ? $total_DT : 480;
-    //                                 }
-    //                             }else{
-    //                                 $total_DT=0;
-    //                             }
-    //                             if($absen_out<$jadwal_in){
-    //                                 $total_PC=0;
-    //                             }else if( $jadwal_out !=null && $absen_out !=null && $absen_out<$jadwal_out && ($v->status_absen==null || $v->status_absen=='TL')){
-    //                                 $total_PC1 = $PC->i +($PC->h*60);
-    //                                 if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
-    //                                     if($absen_out <='12:00:00'){
-    //                                         $total_PC=$total_PC1-60;
-    //                                     }else if($absen_out >'12:00:00' && $absen_out <='13:00:00'){
-    //                                         $selisih_menit = strtotime('13:00:00') - strtotime($absen_out);
-    //                                         $selisih_menit = round($selisih_menit / 60);
-    //                                         $total_PC=$total_PC1-$selisih_menit;
-    //                                     }else {
-    //                                         $total_PC=$total_PC1;
-    //                                     }
-    //                                 }else if($jadwal_in=='06:00:00'){
-    //                                     if($absen_out <='10:00:00'){
-    //                                         $total_PC=$total_PC1-60;
-    //                                     }
-    //                                     else if($absen_out >'10:00:00' && $absen_out <='11:00:00'){
-    //                                         $selisih_menit = strtotime('11:00:00') - strtotime($absen_out);
-    //                                         $selisih_menit = round($selisih_menit / 60);
-    //                                         $total_PC=$total_PC1-$selisih_menit;
-    //                                     }
-    //                                     else {
-    //                                         $total_PC=$total_PC1;
-    //                                     }
-    //                                 }else if($jadwal_in=='13:00:00'){
-    //                                     if($absen_out <='17:00:00'){
-    //                                         $total_PC=$total_PC1-60;
-    //                                     }
-    //                                     else if($absen_out >'17:00:00' && $absen_out <='18:00:00'){
-    //                                         $selisih_menit = strtotime('18:00:00') - strtotime($absen_out);
-    //                                         $selisih_menit = round($selisih_menit / 60);
-    //                                         $total_PC=$total_PC1-$selisih_menit;
-    //                                     }
-    //                                     else {
-    //                                         $total_PC=$total_PC1;
-    //                                     }
-    //                                 }else{
-    //                                     $total_PC=$total_PC1;
-    //                                 }
-    //                                 $total_PC = $total_PC < 480 ? $total_PC : 480;
-    //                             }else{
-    //                                 $total_PC=0;
-    //                             }
-        
-    //                             $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
-    //                             if( $absen_in!=null && $absen_out !=null){
-    //                                 $jumlah_absen_menit_kerja=$durasi_kerja_menit-$jumlah_menit_absen_dtpc;
-    //                             }
-    //                             else{
-    //                                 $jumlah_absen_menit_kerja=0;
-    //                             }
-        
-    //                             $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
-    //                             $data_update=[
-    //                                 'jumlah_menit_absen_dtpc'=>$jumlah_menit_absen_dtpc,
-    //                                 'jumlah_absen_menit_kerja'=>$durasi_kerja_menit-$jumlah_menit_absen_dtpc,
-    //                                 'jumlah_menit_absen_dt'=>$total_DT,
-    //                                 'jumlah_menit_absen_pc'=>$total_PC,
-    //                             ];
-    //                             MasterDataAbsenKehadiran::where('tanggal_berjalan', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->update($data_update);
-    //                         }else{
-    //                             if( $jadwal_in!=null && $absen_in!=null && $absen_in>$jadwal_in && $v->status_absen==null){
-    //                                 $total_DT1 = $DT->i +($DT->h*60);
-    //                                 if($status_staff=='STAFF'){
-    //                                     if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
-    //                                         if($jadwal_in=='07:00:00'){
-    //                                             if($absen_in >'13:00:00'){
-    //                                                 $total_DT=$total_DT1-60;
-    //                                             }
-    //                                             else if($absen_in>'07:00:00' && $absen_in<'07:11:00'){
-    //                                                 $total_DT=0;
-    //                                             }
-    //                                             else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
-    //                                                 $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
-    //                                                 $selisih_menit = round($selisih_menit / 60);
-    //                                                 $total_DT=$total_DT1-$selisih_menit;
-    //                                             }
-    //                                             else {
-    //                                                 $total_DT=$total_DT1;
-    //                                             }
-    //                                         }else if($jadwal_in=='07:30:00'){
-    //                                             if($absen_in >'13:00:00'){
-    //                                                 $total_DT=$total_DT1-60;
-    //                                             }
-    //                                             else if($absen_in>'07:30:00' && $absen_in<'07:41:00'){
-    //                                                 $total_DT=0;
-    //                                             }
-    //                                             else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
-    //                                                 $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
-    //                                                 $selisih_menit = round($selisih_menit / 60);
-    //                                                 $total_DT=$total_DT1-$selisih_menit;
-    //                                             }
-    //                                             else {
-    //                                                 $total_DT=$total_DT1;
-    //                                             }
-    //                                         }
-    //                                     }else if($jadwal_in=='05:30:00'){
-    //                                         if($absen_in >'10:30:00'){
-    //                                             $total_DT=$total_DT1-60;
-    //                                         }else if($absen_in >'09:30:00' && $absen_in <='10:30:00'){
-    //                                             $selisih_menit = strtotime($absen_in) - strtotime('09:30:00');
-    //                                             $selisih_menit = round($selisih_menit / 60);
-    //                                             $total_DT=$total_DT1-$selisih_menit;
-    //                                         }else if($absen_in>'05:30:00' && $absen_in<'05:40:00'){
-    //                                             $total_DT=0;
-    //                                         }else{
-    //                                             $total_DT=$total_DT1;
-    //                                         }
-    //                                     }else if($jadwal_in=='06:00:00'){
-    //                                         if($absen_in >'11:00:00'){
-    //                                             $total_DT=$total_DT1-60;
-    //                                         }else if($absen_in >'10:00:00' && $absen_in <='11:00:00'){
-    //                                             $selisih_menit = strtotime($absen_in) - strtotime('10:00:00');
-    //                                             $selisih_menit = round($selisih_menit / 60);
-    //                                             $total_DT=$total_DT1-$selisih_menit;
-    //                                         }else if($absen_in>'06:00:00' && $absen_in<'06:11:00'){
-    //                                             $total_DT=0;
-    //                                         }else {
-    //                                             $total_DT=$total_DT1;
-    //                                         }
-    //                                     }else if($jadwal_in=='13:00:00'){
-    //                                         if($absen_in >'18:00:00'){
-    //                                             $total_DT=$total_DT1-60;
-    //                                         }else if($absen_in >'17:00:00' && $absen_in <='18:00:00'){
-    //                                             $selisih_menit = strtotime($absen_in) - strtotime('17:00:00');
-    //                                             $selisih_menit = round($selisih_menit / 60);
-    //                                             $total_DT=$total_DT1-$selisih_menit;
-    //                                         }else if($absen_in>'13:00:00' && $absen_in<'13:11:00'){
-    //                                             $total_DT=0;
-    //                                         }else {
-    //                                             $total_DT=$total_DT1;
-    //                                         }
-    //                                     }else{
-    //                                         if($total_DT<=10){
-    //                                             $total_DT=0;
-    //                                         }else{
-    //                                             $total_DT=$total_DT1;
-    //                                         }
-    //                                     }
-    //                                     $total_DT = $total_DT < 480 ? $total_DT : 480;
-    //                                 }else{
-    //                                     if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
-    //                                         if($jadwal_in=='07:00:00'){
-    //                                             if($absen_in >'13:00:00'){
-    //                                                 $total_DT=$total_DT1-60;
-    //                                             }
-    //                                             else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
-    //                                                 $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
-    //                                                 $selisih_menit = round($selisih_menit / 60);
-    //                                                 $total_DT=$total_DT1-$selisih_menit;
-    //                                             }
-    //                                             else {
-    //                                                 $total_DT=$total_DT1;
-    //                                             }
-    //                                         }else if($jadwal_in=='07:30:00'){
-    //                                             if($absen_in >'13:00:00'){
-    //                                                 $total_DT=$total_DT1-60;
-    //                                             }else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
-    //                                                 $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
-    //                                                 $selisih_menit = round($selisih_menit / 60);
-    //                                                 $total_DT=$total_DT1-$selisih_menit;
-    //                                             }
-    //                                             else {
-    //                                                 $total_DT=$total_DT1;
-    //                                             }
-    //                                         }
-    //                                     }else if($jadwal_in=='05:30:00'){
-    //                                         if($absen_in >'10:30:00'){
-    //                                             $total_DT=$total_DT1-60;
-    //                                         }else if($absen_in >'09:30:00' && $absen_in <='10:30:00'){
-    //                                             $selisih_menit = strtotime($absen_in) - strtotime('09:30:00');
-    //                                             $selisih_menit = round($selisih_menit / 60);
-    //                                             $total_DT=$total_DT1-$selisih_menit;
-    //                                         }else {
-    //                                             $total_DT=$total_DT1;
-    //                                         }
-    //                                     }else if($jadwal_in=='06:00:00'){
-    //                                         if($absen_in >'11:00:00'){
-    //                                             $total_DT=$total_DT1-60;
-    //                                         }else if($absen_in >'10:00:00' && $absen_in <='11:00:00'){
-    //                                             $selisih_menit = strtotime($absen_in) - strtotime('10:00:00');
-    //                                             $selisih_menit = round($selisih_menit / 60);
-    //                                             $total_DT=$total_DT1-$selisih_menit;
-    //                                         }else {
-    //                                             $total_DT=$total_DT1;
-    //                                         }
-    //                                     }else if($jadwal_in=='13:00:00'){
-    //                                         if($absen_in >'18:00:00'){
-    //                                             $total_DT=$total_DT1-60;
-    //                                         }else if($absen_in >'17:00:00' && $absen_in <='18:00:00'){
-    //                                             $selisih_menit = strtotime($absen_in) - strtotime('17:00:00');
-    //                                             $selisih_menit = round($selisih_menit / 60);
-    //                                             $total_DT=$total_DT1-$selisih_menit;
-    //                                         }else {
-    //                                             $total_DT=$total_DT1;
-    //                                         }
-    //                                     }else{
-    //                                         $total_DT=$total_DT1;
-    //                                     }
-    //                                     $total_DT = $total_DT < 480 ? $total_DT : 480;
-    //                                 }
-    //                             }else{
-    //                                 $total_DT=0;
-    //                             }
-    //                             if($absen_out<$jadwal_in){
-    //                                 $total_PC=0;
-    //                             }else if( $jadwal_out !=null && $absen_out !=null && $absen_out<$jadwal_out && $v->status_absen==null){
-    //                                 $total_PC1 = $PC->i +($PC->h*60);
-    //                                 if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
-    //                                     if($absen_out <='12:00:00'){
-    //                                         $total_PC=$total_PC1-60;
-    //                                     }else if($absen_out >'12:00:00' && $absen_out <='13:00:00'){
-    //                                         $selisih_menit = strtotime('13:00:00') - strtotime($absen_out);
-    //                                         $selisih_menit = round($selisih_menit / 60);
-    //                                         $total_PC=$total_PC1-$selisih_menit;
-    //                                     }else {
-    //                                         $total_PC=$total_PC1;
-    //                                     }
-    //                                 }else if($jadwal_in=='05:30:00'){
-    //                                     if($absen_out <='09:30:00'){
-    //                                         $total_PC=$total_PC1-60;
-    //                                     }else if($absen_out >'09:30:00' && $absen_out <='10:30:00'){
-    //                                         $selisih_menit = strtotime('10:30:00') - strtotime($absen_out);
-    //                                         $selisih_menit = round($selisih_menit / 60);
-    //                                         $total_PC=$total_PC1-$selisih_menit;
-    //                                     }else {
-    //                                         $total_PC=$total_PC1;
-    //                                     }
-    //                                 }else if($jadwal_in=='06:00:00'){
-    //                                     if($absen_out <='10:00:00'){
-    //                                         $total_PC=$total_PC1-60;
-    //                                     }
-    //                                     else if($absen_out >'10:00:00' && $absen_out <='11:00:00'){
-    //                                         $selisih_menit = strtotime('11:00:00') - strtotime($absen_out);
-    //                                         $selisih_menit = round($selisih_menit / 60);
-    //                                         $total_PC=$total_PC1-$selisih_menit;
-    //                                     }
-    //                                     else {
-    //                                         $total_PC=$total_PC1;
-    //                                     }
-    //                                 }else if($jadwal_in=='13:00:00'){
-    //                                     if($absen_out <='17:00:00'){
-    //                                         $total_PC=$total_PC1-60;
-    //                                     }
-    //                                     else if($absen_out >'17:00:00' && $absen_out <='18:00:00'){
-    //                                         $selisih_menit = strtotime('18:00:00') - strtotime($absen_out);
-    //                                         $selisih_menit = round($selisih_menit / 60);
-    //                                         $total_PC=$total_PC1-$selisih_menit;
-    //                                     }
-    //                                     else {
-    //                                         $total_PC=$total_PC1;
-    //                                     }
-    //                                 }else{
-    //                                     $total_PC=$total_PC1;
-    //                                 }
-    //                                 $total_PC = $total_PC < 480 ? $total_PC : 480;
-    //                             }else{
-    //                                 $total_PC=0;
-    //                             }
-        
-    //                             $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
-    //                             if( $absen_in!=null && $absen_out !=null){
-    //                                 $jumlah_absen_menit_kerja=$durasi_kerja_menit-$jumlah_menit_absen_dtpc;
-    //                             }
-    //                             else{
-    //                                 $jumlah_absen_menit_kerja=0;
-    //                             }
-        
-    //                             $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
-    //                             $data_update=[
-    //                                 'jumlah_menit_absen_dtpc'=>$jumlah_menit_absen_dtpc,
-    //                                 'jumlah_absen_menit_kerja'=>$durasi_kerja_menit-$jumlah_menit_absen_dtpc,
-    //                                 'jumlah_menit_absen_dt'=>$total_DT,
-    //                                 'jumlah_menit_absen_pc'=>$total_PC,
-    //                             ];
-    //                             MasterDataAbsenKehadiran::where('tanggal_berjalan', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->update($data_update);
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //         $setClearMTL = MasterDataAbsenKehadiran::selectRaw("
-    //             substr(tanggal_berjalan,1, 10) tanggal_absen,
-    //             enroll_id,
-    //             substr(absen_masuk_kerja, 1, 5) absen_in,
-    //             substr(absen_pulang_kerja, 1, 5) absen_out,
-    //             null status_absen
-    //         ")->whereRaw('absen_masuk_kerja is not null AND absen_pulang_kerja is not null
-    //             AND status_absen in ("M", "TL") AND tanggal_berjalan >= "' . $tanggal_awal . '" and tanggal_berjalan <= "'.$tanggal_akhir.'"'.$inEnrollsId.'
-    //         ')->where(function($query){
-    //             $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
-    //         })->get();
-    //         foreach($setClearMTL as $value) {
-    //             $countEditedData2=DataKehadiranInOutEdited::where('tanggal_absen','=', $value->tanggal_absen)->where('enroll_id','=', $value->enroll_id)->count();
-    //             $count2=LogDataGagalAbsen::where('tanggal_absen',$value->tanggal_absen)->where('enroll_id','=', $value->enroll_id)->count();
-                
-    //             if($countEditedData2<1 && $count2<1){
-    //                 MasterDataAbsenKehadiran::where('tanggal_berjalan', $value->tanggal_absen)
-    //                 ->where('enroll_id', $value->enroll_id)
-    //                 ->update([
-    //                     'status_absen' => $value->status_absen
-    //                 ]);
-    //             }
-    //         }
-    //         $setSetTL = MasterDataAbsenKehadiran::selectRaw("
-    //             substr(tanggal_berjalan,1, 10) tanggal_absen,
-    //             enroll_id,
-    //             substr(absen_masuk_kerja, 1, 5) absen_in,
-    //             substr(absen_pulang_kerja, 1, 5) absen_out,
-    //             'TL' status_absen
-    //         ")
-    //         ->whereRaw('
-    //             tanggal_berjalan >= "' . $tanggal_awal . '" and tanggal_berjalan <= "'.$tanggal_akhir.'"'.$inEnrollsId.'
-    //             AND status_absen in ("M", "TL")
-    //             AND ((absen_masuk_kerja is null AND absen_pulang_kerja is not null) OR (absen_masuk_kerja is not null AND absen_pulang_kerja is null))
-    //         ')->where(function($query){
-    //             $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
-    //         })->get();
-
-    //         foreach($setSetTL as $value) {
-    //             $countEditedData3=DataKehadiranInOutEdited::where('tanggal_absen', $value->tanggal_absen)->where('enroll_id', $value->enroll_id)->count();
-    //             $count3=LogDataGagalAbsen::where('tanggal_absen', $value->tanggal_absen)->where('enroll_id', $value->enroll_id)->count();
-                
-    //             if($countEditedData3<1 && $count3<1){
-    //                 MasterDataAbsenKehadiran::where('tanggal_berjalan', $value->tanggal_absen)
-    //                 ->where('enroll_id', $value->enroll_id)
-    //                 ->update([
-    //                     'status_absen' => $value->status_absen
-    //                 ]);
-    //             }
-    //         }
-    //         $checkinoutAtt =  DB::connection('sqlsrv2')->select(
-    //             DB::raw("
-    //                 SELECT
-    //                     NEWID() uuid,
-    //                     CONVERT( VARCHAR ( 10 ), a.CHECKTIME, 126 ) AS tanggal_absen,
-    //                     b.Badgenumber AS enroll_id,
-    //                     MIN ( CONVERT ( VARCHAR ( 5 ), a.CHECKTIME, 114 ) ) AS absen_in,
-    //                     MAX ( CONVERT ( VARCHAR ( 5 ), a.CHECKTIME, 114 ) ) AS absen_out,
-    //                     null type
-    //                 FROM
-    //                     CHECKINOUT a join	USERINFO b on (a.USERID = b.USERID)
-    //                 WHERE
-    //                     CONVERT ( VARCHAR ( 10 ), a.CHECKTIME, 126 ) >= '" . $tanggal_awal . "' and CONVERT ( VARCHAR ( 10 ), a.CHECKTIME, 126 ) <= '".$tanggal_akhir."'".$inEnrollId."
-    //                 GROUP BY
-    //                     CONVERT( VARCHAR ( 10 ), a.CHECKTIME, 126 ),
-    //                     b.Badgenumber,
-    //                     a.CHECKTYPE
-    //                 ORDER BY
-    //                     CONVERT( VARCHAR ( 10 ), a.CHECKTIME, 126 ) asc
-    //             ") );
-
-    //         foreach($checkinoutAtt as $value) {
-    //             $countEditedData4=DataKehadiranInOutEdited::where('tanggal_absen', $value->tanggal_absen)->where('enroll_id', $value->enroll_id)->count();
-    //             $count4=LogDataGagalAbsen::where('tanggal_absen', $value->tanggal_absen)->where('enroll_id', $value->enroll_id)->count();
-    //             if($countEditedData4<1 && $count4<1){
-    //                 $checkinoutAttCount = CheckInOut::whereRaw("
-    //                     tanggal_absen = '" . $value->tanggal_absen . "'
-    //                     AND enroll_id = '" . $value->enroll_id . "'
-    //                 ")
-    //                 ->count();
-
-    //                 if($checkinoutAttCount > 0) {
-    //                     CheckInOut::where('tanggal_absen', $value->tanggal_absen)
-    //                     ->where('enroll_id', $value->enroll_id)
-    //                     ->update([
-    //                         'absen_in' => $value->absen_in,
-    //                         'absen_out' => $value->absen_out,
-    //                         'type' => $value->type
-    //                     ]);
-    //                 } else {
-    //                     CheckInOut::create([
-    //                         'uuid' => $value->uuid,
-    //                         'tanggal_absen' => $value->tanggal_absen,
-    //                         'enroll_id' => $value->enroll_id,
-    //                         'absen_in' => $value->absen_in,
-    //                         'absen_out' => $value->absen_out,
-    //                         'type' => $value->type
-    //                     ]);
-    //                 }
-    //             }
-    //         }
-    //         return $arr_list;
-    //     }
-    // }
 
 
     public function download_mesin_kehadiran_lintas(Request $request)
