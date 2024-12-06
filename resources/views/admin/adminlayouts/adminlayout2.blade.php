@@ -20,9 +20,9 @@
     </div>
 
     <div class="page">
-        <div class="page-main" style="background-color: rgb(41, 115, 138)">
+        <div class="page-main" style="background-color: #FFF">
             <!--app-header-->
-            <div class="app-header header d-flex">
+            <div class="app-header header d-flex    ">
                 <div class="container-fluid">
 
                     @include('layouts.components.app-header2')

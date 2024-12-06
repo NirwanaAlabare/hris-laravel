@@ -15,13 +15,12 @@
 						<div class="col-lg-4 d-block mx-auto">
 							<div class="row">
 								<div class="col-xl-12 col-md-12 col-md-12">
-									<div class="card">
+									<div class="card" style="border-color:#182D49">
 										<div class="card-body">
-											<div class="text-center mb-6">
+                                            <div class="text-center mb-2">
                                                 <img src="{{URL::asset('assets/images/brand/hris.png')}}" width="200px"/>
 											</div>
-											<h3>Login</h3>
-											<p class="text-muted">Sign In to your account</p>
+                                            <h3 class="font-weight-bold mb-5">Login</h3>
                                             <div id="alert">
 
                                             </div>
@@ -36,9 +35,6 @@
 											<div class="row">
 												<div class="col-12">
 													<button type="button" class="btn btn-newcolor btn-block" id="submitbutton" onclick="login();return false;">Login</button>
-												</div>
-												<div class="col-12">
-													<a href="{{url('forgot-password')}}" class="btn btn-link box-shadow-0 px-0">Forgot password?</a>
 												</div>
 											</div>
 										</div>
