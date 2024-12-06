@@ -1890,7 +1890,7 @@ class ProsesPayrollController extends AdminBaseController
                     $query->where('tanggal_berjalan', '>=', $tanggal_awal)
                     ->where('tanggal_berjalan','<=',$tanggal_akhir);
                 }])->orderBy('enroll_id', 'asc')->get();
-                // $data_absensi=[];
+                $data_absensi=[];
                 foreach ($employees as $key => $value) {
                     $enroll_id=$value->enroll_id;
                     $unik=sprintf("%04d", $enroll_id);
@@ -1951,7 +1951,6 @@ class ProsesPayrollController extends AdminBaseController
                         $jumlah_hari_kerja=$jumlah_hari_total-$jumlah_hari_sabtu_minggu_total;
                     }
                     $row=[
-                        'uuid'=>Str::uuid('uuid'),
                         'kode_rekap_kehadiran'=> $kode_rekap_kehadiran,
                         'periode_umk'=>null,
                         'periode_payroll'=>$priode,
@@ -1962,25 +1961,14 @@ class ProsesPayrollController extends AdminBaseController
                         'employee_name'=>$value['employee_name'],
                         'site_nirwana_id'=>$value['site_nirwana_id'],
                         'site_nirwana_name'=>$value['site_nirwana_name'],
-                        'department_id'=>$value['department_id'],
-                        'department_name'=>$value['department_name'],
-                        'sub_dept_id'=>$value['sub_dept_id'],
-                        'sub_dept_name'=>$value['sub_dept_name'],
                         'join_date'=>$value['join_date'],
-                        'tanggal_resign'=>$value['tanggal_resign'],
-                        'status_aktif'=>$value['status_aktif'],
                         'status_staff'=>$value['status_staff'],
                         'kehadiran_iby'=>$value['absensi']->whereIn('status_absen',$IBY)->count(),
-                        'kehadiran_itb'=>$value['absensi']->whereIn('status_absen',$ITB)->count(),
                         'kehadiran_lby'=>$value['absensi']->where('status_absen','LN')->whereNotin('kode_hari', ['5','6'])->count(),
                         'kehadiran_lsm'=>$lsm,
                         'kehadiran_dt'=> $value['absensi']->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','0')->where('status_absen',null)->count(),
                         'kehadiran_pc'=> $value['absensi']->where('jumlah_menit_absen_pc','>','0')->where('jumlah_menit_absen_dt','0')->where('status_absen',null)->count(),
                         'kehadiran_dtpc'=>$value['absensi']->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','>','0')->where('status_absen',null)->count(),
-                        'kehadiran_m'=>$m+$absen_TL,
-                        'kehadiran_r'=>$absen_R,
-                        'kehadiran_ok'=>$ok,
-                        'total_kehadiran_net'=>$ok+$dt_employe+$pc_employe+$dtpc_employe+$LBY_employe+$IBY_employe,
                         'kehadiran_tk'=>$tk,
                         'total_kehadiran'=> $total_kh,
                         'jumlah_hari'=>$jumlah_hari_total,
@@ -2000,32 +1988,45 @@ class ProsesPayrollController extends AdminBaseController
                         'kehadiran_kr'=>$value['absensi']->where('status_absen','KR')->count(),
                         'kehadiran_na'=>$value['absensi']->where('status_absen','NA')->count(),
                         'kehadiran_pp'=>$value['absensi']->where('status_absen','PP')->count(),
-                        'kehadiran_i'=>$value['absensi']->where('status_absen','I')->count(),
                         'kehadiran_lp'=>$value['absensi']->where('status_absen','LP')->count(),
                         'kehadiran_l'=>$value['absensi']->where('status_absen','L')->count(),
-                        'kehadiran_tl'=>$value['absensi']->where('status_absen','TL')->count(),
                         'kehadiran_iks'=>$value['absensi']->where('status_absen','IKS')->count(),
+                        'kehadiran_itb'=>$value['absensi']->whereIn('status_absen',$ITB)->count(),
+                        'tanggal_resign'=>$value['tanggal_resign'],
+                        'status_aktif'=>$value['status_aktif'],
+                        'kehadiran_m'=>$m+$absen_TL,
+                        'kehadiran_r'=>$absen_R,
+                        'kehadiran_ok'=>$ok,
+                        'total_kehadiran_net'=>$ok+$dt_employe+$pc_employe+$dtpc_employe+$LBY_employe+$IBY_employe,
+                        'kehadiran_i'=>$value['absensi']->where('status_absen','I')->count(),
+                        'kehadiran_tl'=>$value['absensi']->where('status_absen','TL')->count(),
+                        'department_id'=>$value['department_id'],
+                        'department_name'=>$value['department_name'],
+                        'sub_dept_id'=>$value['sub_dept_id'],
+                        'sub_dept_name'=>$value['sub_dept_name'],
                         'kehadiran_s'=>$value['absensi']->where('status_absen','S')->count(),
                         'kehadiran_m_estimasi'=> $TL_estimasi+$M_estimasi,
                     ];
-                    // array_push($data_absensi, $row);
-                    $count=RekapKehadiranKaryawan::where( 'kode_rekap_kehadiran',$kode_rekap_kehadiran)->count();
-                    if($count){
-                        RekapKehadiranKaryawan::where( 'kode_rekap_kehadiran',$kode_rekap_kehadiran)->update($row);
-                    }
-                    else{
+                    // $count=RekapKehadiranKaryawan::where( 'kode_rekap_kehadiran',$kode_rekap_kehadiran)->count();
+                    // if($count){
+                    //     RekapKehadiranKaryawan::where( 'kode_rekap_kehadiran',$kode_rekap_kehadiran)->update($row);
+                    // }
+                    // else{
+                    //     RekapKehadiranKaryawan::create($row);
+                    // }
+                }
+
+                foreach ($data_absensi as $row) {
+                    $existing = RekapKehadiranKaryawan::where('kode_rekap_kehadiran', $row['kode_rekap_kehadiran'])->first();
+                    if ($existing) {
+                        $existing->update($row);
+                    } else {
+                        $row['uuid']= Str::uuid('uuid');
                         RekapKehadiranKaryawan::create($row);
                     }
                 }
             }
-            // $rekapAbsenArrChunk = array_chunk($data_absensi, 1000);
-            // foreach ($rekapAbsenArrChunk as $data) {
-            //     RekapKehadiranKaryawan::upsert(
-            //         $data,
-            //         "uuid"
-            //     );
-            // }
-            
+       
             // rekap perhitungan kehadiran karyawan
             $kehadiran=RekapKehadiranKaryawan::selectRaw('uuid,kode_rekap_kehadiran,periode_payroll,periode_tahun,periode_bulan,enroll_id,nik,employee_name,site_nirwana_id,site_nirwana_name,department_id,department_name,sub_dept_id,sub_dept_name,join_date,tanggal_resign,status_aktif,status_staff,kehadiran_iby,kehadiran_itb,kehadiran_lby,kehadiran_lsm,kehadiran_dt,kehadiran_pc,kehadiran_dtpc,kehadiran_m,kehadiran_r,kehadiran_tk,kehadiran_ok,total_kehadiran,total_kehadiran_net,jumlah_hari,jumlah_hari_kerja,kehadiran_dl,kehadiran_cb,kehadiran_cbd,kehadiran_cg,kehadiran_ch,kehadiran_cm,kehadiran_cn,kehadiran_ct,kehadiran_ig,kehadiran_im,kehadiran_ka,kehadiran_km,kehadiran_kr,kehadiran_na,kehadiran_pp,kehadiran_i,kehadiran_lp,kehadiran_l,kehadiran_tl,kehadiran_iks,kehadiran_s,kehadiran_m_estimasi,operator,created_at,updated_at,deleted_at')->whereRaw('periode_bulan = "'.$bulan.'" and periode_tahun = "'.$tahun.'"'.$inEnrollId.'')->groupby('enroll_id')->get();
             foreach ($kehadiran as $key => $value) {
@@ -2623,7 +2624,7 @@ class ProsesPayrollController extends AdminBaseController
             }
 
             //update bpjs
-            $queryEmpAtr =  EmployeeAtribut::selectRaw('uuid() uuid,
+            $queryEmpAtr = EmployeeAtribut::selectRaw('uuid() uuid,
                 concat(SUBSTR(DATE_ADD( LAST_DAY( DATE_SUB( MAX("' . $explodePeriodePayroll[1] . '"), INTERVAL 1 MONTH )), INTERVAL 25 DAY ), 1, 4),
                 SUBSTR(DATE_ADD( LAST_DAY( DATE_SUB( MAX("' . $explodePeriodePayroll[1] . '"), INTERVAL 1 MONTH )), INTERVAL 25 DAY ), 6, 2), lpad(enroll_id, 5, 0)) kode_bpjs,
                 substr("' . $explodePeriodePayroll[1] . '", 1, 4) periode_bpjs,
@@ -2633,16 +2634,22 @@ class ProsesPayrollController extends AdminBaseController
                 status_aktif_bpjs_tk, tanggal_bpjs_ketenagakerjaan, nomor_bpjs_ketenagakerjaan,
                 status_aktif_bpjs_ks, tanggal_bpjs_kesehatan, nomor_bpjs_kesehatan, join_date
             ')
-            ->whereRaw('
-                enroll_id is not null
-                AND (tanggal_resign is null OR tanggal_resign = "0000-00-00" OR
-                    NOT tanggal_resign < DATE_ADD( LAST_DAY( DATE_SUB( "' . $explodePeriodePayroll[1] . '", INTERVAL 2 MONTH )), INTERVAL 26 DAY ))
-                AND join_date <= "' . $explodePeriodePayroll[1] . '"
-            ')
-            ->groupBy('enroll_id')
-            ->groupBy('employee_name')
+            ->where(function ($query) use ($selectedEnrollId, $explodePeriodePayroll) {
+                $query->whereNotNull('enroll_id');
+                // Tambahkan filter hanya jika $selectedEnrollId tidak kosong
+                if (!empty($selectedEnrollId) && is_array($selectedEnrollId)) {
+                    $query->whereIn('enroll_id', $selectedEnrollId);
+                }
+            })
+            ->where(function ($query) use ($explodePeriodePayroll) {
+                $query->whereNull('tanggal_resign')
+                    ->orWhere('tanggal_resign', '=', '0000-00-00')
+                    ->orWhere('tanggal_resign', '>=', \DB::raw('DATE_ADD(LAST_DAY(DATE_SUB("' . $explodePeriodePayroll[1] . '", INTERVAL 2 MONTH)), INTERVAL 26 DAY)'));
+            })
+            ->where('join_date', '<=', $explodePeriodePayroll[1])
+            ->groupBy('enroll_id', 'employee_name')
             ->get();
-
+            // return $queryEmpAtr;
             foreach ($queryEmpAtr as $key => $value) {
 
                 $tanggal_masuk = $value['join_date'];
@@ -4497,33 +4504,14 @@ class ProsesPayrollController extends AdminBaseController
             }
         }
 
-       	// $rekap_lembur = $this->rekap_lembur($bulan);
-
-      	// $rekap_iks = $this->rekap_iks($bulan);
-
-      	// $update_bpjs = $this->update_bpjs($bulan); // 3 menit
-
-      	// $dt_pc = $this->dt_pc($bulan); //lama 8 menit
-
-       	// $rekap_payroll = $this->rekap_payroll($bulan);
-
-       	// $update_tgl_resign = $this->update_tgl_resign($bulan);
-
-		// 		$pembulatan = $this->pembulatan($bulan);
-
-		// 		$jurnal = $this->jurnal($bulan);
-
-        // return true;
-
     }
 
 
- 		public function proses_rekap_lembur(Request $request){
+    public function proses_rekap_lembur(Request $request){
         $bulan=$request->periode_payrol;
 
         $rekap_lembur = $this->rekap_lembur($bulan);
         return true;
-
     }
 
 		 // rekap_absen_security
