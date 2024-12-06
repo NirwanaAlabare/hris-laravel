@@ -142,7 +142,7 @@ class RekapKehadiranKaryawan extends \Eloquent
     protected $appends = [];
     public $incrementing = false;
     // public $primaryKey = null;
-    public $primaryKey = ['kode_rekap_kehadiran'];
+    public $primaryKey = 'kode_rekap_kehadiran';
     
     public function employee(){
         return $this->belongsTo(EmployeeAtribut::class, 'enroll_id', 'enroll_id');
