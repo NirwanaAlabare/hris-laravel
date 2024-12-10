@@ -64,13 +64,13 @@ class RekapPerhitunganIksExport implements FromQuery, WithMapping, ShouldAutoSiz
                     SUBSTR(rekap_perhitungan_iks.time_akhir_ijin , 1, 5 ) time_akhir_ijin,
                     SUBSTR(rekap_perhitungan_iks.jam_mulai_istirahat , 1, 5 ) jam_mulai_istirahat,
                     SUBSTR(rekap_perhitungan_iks.jam_selesai_istirahat , 1, 5 ) jam_selesai_istirahat,
-                    NVL(rekap_perhitungan_iks.lama_istirahat_menit , 0 ) lama_istirahat_menit,
-                    NVL(rekap_perhitungan_iks.lama_ijin_menit , 0 ) lama_ijin_menit,
+                    IFNULL(rekap_perhitungan_iks.lama_istirahat_menit , 0 ) lama_istirahat_menit,
+                    IFNULL(rekap_perhitungan_iks.lama_ijin_menit , 0 ) lama_ijin_menit,
                     SUBSTR(rekap_perhitungan_iks.lama_ijin_jam , 1, 5 ) lama_ijin_jam,
-                    NVL(rekap_perhitungan_iks.gaji_pokok, 0) gaji_pokok,
-                    NVL(rekap_perhitungan_iks.gaji_harian, 0) gaji_harian,
-                    NVL(rekap_perhitungan_iks.gaji_menit, 0) gaji_menit,
-                    NVL(rekap_perhitungan_iks.potongan_iks_rupiah, 0) potongan_dt_rupiah
+                    IFNULL(rekap_perhitungan_iks.gaji_pokok, 0) gaji_pokok,
+                    IFNULL(rekap_perhitungan_iks.gaji_harian, 0) gaji_harian,
+                    IFNULL(rekap_perhitungan_iks.gaji_menit, 0) gaji_menit,
+                    IFNULL(rekap_perhitungan_iks.potongan_iks_rupiah, 0) potongan_dt_rupiah
                 ')
                 ->whereRaw('
                     rekap_perhitungan_iks.tanggal_berjalan BETWEEN "' .$this->tanggalMulai . '" and "' . $this->tanggalSampai . '"                

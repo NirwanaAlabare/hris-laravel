@@ -58,9 +58,6 @@ Route::prefix('estimasi')->group(function() {
     Route::post('ajax_exportexcel', 'EstimasiPayrollController@ajax_exportexcel')->name("hris.estimasinilaipayroll.export");
 
 });
-// Route::prefix('daily_labor')->group(function() {
-//     Route::get('index', 'DailyLaborController@index')->name("hris.nilaipayrollperhari.index");
-// });
 
 Route::prefix('junal')->group(function() {
     Route::get('index', 'JurnalController@index')->name("hris.jurnal.index");

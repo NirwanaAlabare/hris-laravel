@@ -60,14 +60,14 @@ class RekapPerhitunganDtpcExport implements FromQuery, WithMapping, ShouldAutoSi
                     employee_atribut.status_aktif,
                     mda.status_absen,
                     department_all.sub_dept_name,
-                    NVL(rekap_perhitungan_dtpc.gaji_pokok, 0) gaji_pokok,
-                    NVL(rekap_perhitungan_dtpc.gaji_menit, 0) gaji_menit,
-                    NVL(SUM(rekap_perhitungan_dtpc.jumlah_menit_absen_dt), 0) jumlah_menit_absen_dt,
-                    NVL(SUM(rekap_perhitungan_dtpc.jumlah_menit_absen_pc), 0) jumlah_menit_absen_pc,
-                    NVL(SUM(rekap_perhitungan_dtpc.jumlah_menit_absen_dtpc), 0) jumlah_menit_absen_dtpc,
-                    NVL(SUM(rekap_perhitungan_dtpc.potongan_dt_rupiah), 0) potongan_dt_rupiah,
-                    NVL(SUM(rekap_perhitungan_dtpc.potongan_pc_rupiah), 0) potongan_pc_rupiah,
-                    NVL(SUM(rekap_perhitungan_dtpc.potongan_dtpc_rupiah), 0) potongan_dtpc_rupiah
+                    IFNULL(rekap_perhitungan_dtpc.gaji_pokok, 0) gaji_pokok,
+                    IFNULL(rekap_perhitungan_dtpc.gaji_menit, 0) gaji_menit,
+                    IFNULL(SUM(rekap_perhitungan_dtpc.jumlah_menit_absen_dt), 0) jumlah_menit_absen_dt,
+                    IFNULL(SUM(rekap_perhitungan_dtpc.jumlah_menit_absen_pc), 0) jumlah_menit_absen_pc,
+                    IFNULL(SUM(rekap_perhitungan_dtpc.jumlah_menit_absen_dtpc), 0) jumlah_menit_absen_dtpc,
+                    IFNULL(SUM(rekap_perhitungan_dtpc.potongan_dt_rupiah), 0) potongan_dt_rupiah,
+                    IFNULL(SUM(rekap_perhitungan_dtpc.potongan_pc_rupiah), 0) potongan_pc_rupiah,
+                    IFNULL(SUM(rekap_perhitungan_dtpc.potongan_dtpc_rupiah), 0) potongan_dtpc_rupiah
                 ')
                 ->whereRaw('
                     rekap_perhitungan_dtpc.tanggal_berjalan BETWEEN "' .$this->tanggalMulai . '" and "' . $this->tanggalSampai . '"                

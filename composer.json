@@ -5,7 +5,7 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": "^7.2.5",
+        "php": "^7.2.5 || ^8.0",
         "alfa6661/laravel-autonumber": "*",
         "avadim/fast-excel-laravel": "^2.6",
         "avadim/fast-excel-reader": "^2.14",

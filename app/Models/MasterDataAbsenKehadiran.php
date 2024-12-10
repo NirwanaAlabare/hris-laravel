@@ -193,9 +193,7 @@ class MasterDataAbsenKehadiran extends \Eloquent
 
     public $incrementing = false;
     // public $primaryKey = null;
-    public $primaryKey = [
-        'uuid','tanggal_berjalan','employee_id'
-    ];
+    public $primaryKey = 'uuid';
     public function employee_atribut(){
         return $this->belongsTo(EmployeeAtribut::class, 'enroll_id', 'enroll_id');
     }
