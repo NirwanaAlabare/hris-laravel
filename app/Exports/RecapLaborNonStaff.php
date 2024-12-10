@@ -27,6 +27,7 @@ class RecapLaborNonStaff implements WithTitle, FromView, WithColumnWidths
     {
         $query=DB::select("select a.tanggal_berjalan,b.status_staff,b.department_id,b.department_name,b.sub_dept_id,b.sub_dept_name,a.group_department,count(if(hari_kerja=1,1,null)) man_power,sum(if(c.mulai_jam_kerja is not null,ABS((TIME_TO_SEC(c.absen_pulang_kerja)-TIME_TO_SEC(c.absen_masuk_kerja))/60)-60,if(c.nomor_form_lembur is not null,((ABS(TIME_TO_SEC(substr(d.akhir_jam_lembur,11,8))-TIME_TO_SEC(substr(d.mulai_jam_lembur,11,8)))/60)-(d.jumlah_jam_istirahat*60)),0))) absen_menit,c.mulai_jam_kerja,c.status_absen,c.absen_masuk_kerja,c.absen_pulang_kerja,c.kode_hari,sum(a.bruto) bruto,sum(a.bpjs_tk_company) bpjs_tk,sum(a.bpjs_ks_company) bpjs_ks,sum(a.thr) thr from daily_labor_costs a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join master_data_absen_kehadiran c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan where a.tanggal_berjalan>='".$this->tanggal_awal."' and a.tanggal_berjalan<='".$this->tanggal_akhir."' and b.status_staff='NON STAFF' group by a.tanggal_berjalan,sub_dept_id");
         $query_2=DB::select("select tanggal_berjalan from daily_labor_costs where tanggal_berjalan>='".$this->tanggal_awal."' and tanggal_berjalan<='".$this->tanggal_akhir."' group by tanggal_berjalan order by tanggal_berjalan");
+        $query_3=DB::select("select b.department_id,b.department_name,b.sub_dept_id,b.sub_dept_name,a.group_department from daily_labor_costs a inner join employee_atribut b on a.enroll_id=b.enroll_id where tanggal_berjalan>='".$this->tanggal_awal."' and tanggal_berjalan<='".$this->tanggal_akhir."' and b.status_staff='NON STAFF' group by b.sub_dept_id order by b.sub_dept_id");
         $dateRange=array_column($query_2,'tanggal_berjalan');
         $z=[];
         foreach($query as $valquery){
@@ -49,7 +50,7 @@ class RecapLaborNonStaff implements WithTitle, FromView, WithColumnWidths
         //daterange harus nya diambil dari query lalu di group by tanggal_berjalan
         
         $x=[];
-        foreach($query as $value){
+        foreach($query_3 as $value){
             $x[]=[
                 'department_id'=>$value->department_id,
                 'department_name'=>$value->department_name,

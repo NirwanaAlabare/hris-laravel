@@ -36,10 +36,16 @@
         <td style="border:1px solid black">{{$v['group_department']}}</td>
         @foreach ($dateRange as $date_r)
         @for ($i=0;$i<=6;$i++)
-        <?php
-          $value=$man[$i];
-        ?>
-          <td style="border:1px solid black">{{$v['gaji']->where('tanggal_berjalan',$date_r)->first()[$value]}}</td>
+          <?php
+            $value=$man[$i];
+          ?>
+          <td style="border:1px solid black">
+            @if(isset($v['gaji']->where('tanggal_berjalan',$date_r)->first()[$value]))
+              {{$v['gaji']->where('tanggal_berjalan',$date_r)->first()[$value]}}
+            @else
+              -
+            @endif
+          </td>
         @endfor
         @endforeach
       </tr>
