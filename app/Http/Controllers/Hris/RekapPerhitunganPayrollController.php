@@ -1644,6 +1644,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $group_department='SUPPORTING PRODUCTION';
             if($value->employee_atribut->group_department!=null){
             $group_department=$value->employee_atribut->group_department->group2;
+            $group_department=$value->employee_atribut->group_department->group2;
             }
             $status_staff=$value->employee_atribut->status_staff;
             $tanggal_sekarang=$value->tanggal_berjalan;
@@ -1673,6 +1674,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             }else{
                 $tunjangan = 12500;
             }
+            $selisih_bulan = date_diff(date_create($tanggal_masuk), date_create($tanggal_awal))->m;
             $selisih_bulan = date_diff(date_create($tanggal_masuk), date_create($tanggal_awal))->m;
             $timestamp1 = strtotime($tanggal_awal);
             $timestamp2 = strtotime($tanggal_akhir);
