@@ -16,6 +16,7 @@ use App\Models\BpjsSetting;
 use App\Models\EmployeeBpjs;
 use App\Exports\DailyLaborCosts;
 use App\Exports\DailyLaborCost2;
+use App\Exports\RecapDailyLaborCostExport;
 use App\Models\RekapPerhitunganLembur;
 use App\Models\DataKoreksiPotongan;
 use App\Models\DepartmentAll;
@@ -40,6 +41,7 @@ use \avadim\FastExcelWriter\Style;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 
 /**
  * Class RekapPerhitunganPayrollController
@@ -671,6 +673,30 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $last_update=DB::select('select tanggal_berjalan from daily_labor_costs order by tanggal_berjalan desc limit 1')[0]->tanggal_berjalan;
         return $last_update;
     }
+    public function recap_labor_cost_2(){
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '1024M');
+        $periode_kehadiran = request()->daterange;
+        $arrperiode=explode(" s/d ",$periode_kehadiran);
+        $tanggal_awal = $arrperiode[0];
+        $tanggal_akhir = $arrperiode[1];
+        $inEnrollId='';
+        $status_staff=request()->status_staff;
+        $inStatusStaff='';
+        $staffnonstaff='SEMUA KARYAWAN';
+        if(request()->enroll_id){
+            $enroll_id = request()->enroll_id;
+            $enroll_id_string = implode(',', $enroll_id);
+            $inEnrollId='AND a.enroll_id in ('.$enroll_id_string.')';
+        }
+        if(request()->status_staff){
+            $status_staff = request()->status_staff;
+            $inStatusStaff='AND b.status_staff = "'.$status_staff.'"';
+            $staffnonstaff=$status_staff;
+        }
+        return Excel::download(new RecapDailyLaborCostExport($tanggal_awal,$tanggal_akhir,$staffnonstaff,$inEnrollId,$inStatusStaff), 'Laporan_Penerimaan FG_Stok.xlsx');
+    }
+    
     public function recap_labor_cost(){
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '1024M');
@@ -711,7 +737,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $arrperiode=explode(" s/d ",request()->daterange);
         $first_date=$arrperiode[0];
         $last_date=$arrperiode[1];
-        $query=DB::select("select a.tanggal_berjalan,case WHEN a.tanggal_berjalan between DATE_ADD(CONCAT(SUBSTRING(a.tanggal_berjalan,1,7),'-26'),INTERVAL -1 month) and CONCAT(SUBSTRING(a.tanggal_berjalan,1,7),'-25') THEN CONCAT(DATE_ADD(CONCAT(SUBSTRING(a.tanggal_berjalan,1,7),'-26'),INTERVAL -1 month),' s/d ',CONCAT(SUBSTRING(a.tanggal_berjalan,1,7),'-25')) ELSE CONCAT(CONCAT(SUBSTRING(a.tanggal_berjalan,1,7),'-26'),' s/d ',DATE_ADD(CONCAT(SUBSTRING(a.tanggal_berjalan,1,7),'-25'),INTERVAL 1 month)) END AS periode_payroll, a.kode_hari,a.nama_hari,b.nik,a.enroll_id,b.employee_name,if(emp_histories.status_staff is null,b.status_staff,emp_histories.status_staff) status_staff,if(emp_histories.status_jabatan is null,b.status_jabatan,emp_histories.status_jabatan) status_jabatan,if(emp_histories.sub_dept_id is null,b.sub_dept_id,emp_histories.sub_dept_id) sub_dept_id,if(emp_histories.sub_dept_name is null,b.sub_dept_name,emp_histories.sub_dept_name) sub_dept_name,if(emp_histories.department_id is null,b.department_id,emp_histories.department_id) department_id,if(emp_histories.department_name is null,b.department_name,emp_histories.department_name) department_name,c.group_department,a.mulai_jam_kerja,a.akhir_jam_kerja,a.absen_masuk_kerja,a.absen_pulang_kerja,a.permits_dari_pukul,a.permits_sampai_pukul,a.total_menit_permits,a.jumlah_menit_absen_dt,a.jumlah_menit_absen_pc,a.jumlah_menit_absen_dtpc,a.status_absen,a.absen_alasan,h.kode_ijin_payroll,d.catatan,d.nomor_form_lembur,d.mulai_jam_lembur,d.akhir_jam_lembur,d.jumlah_jam_istirahat,d.jumlah_jam_lembur,e.final_mulai_jam_lembur,e.final_selesai_jam_lembur,e.final_jam_istirahat_lembur,e.final_total_jam_lembur,bpjs.dasar_pot_bpjs_rupiah upah_umk,c.gaji_perhari,c.gaji_permenit,c.iby,c.itb,c.m,c.dt,c.pc,c.dtpc,c.lby,c.lsm,c.r,c.ok,c.hari_kerja,c.pot_hari_kerja,c.total_absen,e.lembur_1,e.lembur_2,e.lembur_3,e.lembur_4,b.kode_grade,i.salary_bulanan,c.seniority_allowance,c.insentif_kehadiran,c.insentif_jabatan,e.lembur1_rupiah,e.lembur2_rupiah,e.lembur3_rupiah,e.lembur4_rupiah,if(f.jenis_koreksi=1,f.jumlah_rp_potongan,0) koreksi_upah,if(f.jenis_koreksi=3,f.jumlah_rp_potongan,0) koreksi_lembur,if(f.jenis_koreksi=2,f.jumlah_rp_potongan,0) koreksi_insentif,if(g.jenis_potongan=7,g.jumlah_rp_potongan,0) potongan_upah,if(g.jenis_potongan=8,g.jumlah_rp_potongan,0) potongan_lembur,if(g.jenis_potongan=5,g.jumlah_rp_potongan,0) potongan_insentif,if(g.jenis_potongan=6,g.jumlah_rp_potongan,0) potongan_piutang,c.rp_pot_hari_kerja,c.rp_pot_jam,c.bruto,c.bpjs_tk,c.bpjs_ks,c.total_potongan,c.pembulatan,c.jumlah,c.bpjs_tk_company,c.bpjs_ks_company,c.kompensasi,c.thr,c.konsumsi,c.total_pembayaran from master_data_absen_kehadiran a inner join employee_atribut b on a.enroll_id=b.enroll_id left join daily_labor_costs c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan left join rekap_perhitungan_lembur e on a.enroll_id=e.enroll_id and a.tanggal_berjalan=e.tanggal_berjalan left join data_koreksi_upah f on a.enroll_id=f.enroll_id and a.tanggal_berjalan=f.tanggal_koreksi left join data_koreksi_potongan g on a.enroll_id=g.enroll_id and a.tanggal_berjalan=g.tanggal_koreksi left join ref_absen_ijin h on a.status_absen=h.kode_absen_ijin left join (select*from grading_salary where periode_umk='2024-01')i on b.kode_grade=i.kode_grade left join (select emp_hist.enroll_id,emp_hist.status_staff,emp_hist.status_jabatan,emp_hist.sub_dept_id,emp_hist.sub_dept_name,emp_hist.department_id,emp_hist.department_name,max_emp_hist.tanggal_dirubah,max_emp_hist.periode_payroll from employee_atribut_histories emp_hist inner join (select enroll_id,max(tanggal_dirubah) tanggal_dirubah,periode_payroll from employee_atribut_histories group by periode_payroll,enroll_id) max_emp_hist on emp_hist.enroll_id=max_emp_hist.enroll_id and emp_hist.tanggal_dirubah=max_emp_hist.tanggal_dirubah and emp_hist.periode_payroll=max_emp_hist.periode_payroll)emp_histories on a.enroll_id=emp_histories.enroll_id and a.tanggal_berjalan between SUBSTRING(emp_histories.periode_payroll,1,10) and SUBSTRING(emp_histories.periode_payroll,16,10) inner join dasar_pot_bpjs bpjs on REGEXP_SUBSTR(bpjs.kode_dasar_pot_bpjs, '[0-9]+')=substring(a.tanggal_berjalan,1,4) where a.tanggal_berjalan>='".$first_date."' and a.tanggal_berjalan<='".$last_date."'".$inEnrollId.$inStatusStaff);
+        $query=DB::select("select a.tanggal_berjalan,a.kode_hari,a.nama_hari,b.nik,a.enroll_id,b.employee_name,b.status_staff,b.status_jabatan,b.sub_dept_name,b.department_name,c.group_department,a.mulai_jam_kerja,a.akhir_jam_kerja,a.absen_masuk_kerja,a.absen_pulang_kerja,a.permits_dari_pukul,a.permits_sampai_pukul,a.total_menit_permits,a.jumlah_menit_absen_dt,a.jumlah_menit_absen_pc,a.jumlah_menit_absen_dtpc,a.status_absen,a.absen_alasan,h.kode_ijin_payroll,d.catatan,d.nomor_form_lembur,d.mulai_jam_lembur,d.akhir_jam_lembur,d.jumlah_jam_istirahat,d.jumlah_jam_lembur,e.final_mulai_jam_lembur,e.final_selesai_jam_lembur,e.final_jam_istirahat_lembur,e.final_total_jam_lembur,bpjs.dasar_pot_bpjs_rupiah upah_umk,c.gaji_perhari,c.gaji_permenit,c.iby,c.itb,c.m,c.dt,c.pc,c.dtpc,c.lby,c.lsm,c.r,c.ok,c.hari_kerja,c.pot_hari_kerja,c.total_absen,e.lembur_1,e.lembur_2,e.lembur_3,e.lembur_4,b.kode_grade,i.salary_bulanan,c.seniority_allowance,c.insentif_kehadiran,c.insentif_jabatan,e.lembur1_rupiah,e.lembur2_rupiah,e.lembur3_rupiah,e.lembur4_rupiah,if(f.jenis_koreksi=1,f.jumlah_rp_potongan,0) koreksi_upah,if(f.jenis_koreksi=3,f.jumlah_rp_potongan,0) koreksi_lembur,if(f.jenis_koreksi=2,f.jumlah_rp_potongan,0) koreksi_insentif,if(g.jenis_potongan=7,g.jumlah_rp_potongan,0) potongan_upah,if(g.jenis_potongan=8,g.jumlah_rp_potongan,0) potongan_lembur,if(g.jenis_potongan=5,g.jumlah_rp_potongan,0) potongan_insentif,if(g.jenis_potongan=6,g.jumlah_rp_potongan,0) potongan_piutang,c.rp_pot_hari_kerja,c.rp_pot_jam,c.bruto,c.bpjs_tk,c.bpjs_ks,c.total_potongan,c.pembulatan,c.jumlah,c.bpjs_tk_company,c.bpjs_ks_company,c.kompensasi,c.thr,c.konsumsi,c.total_pembayaran from master_data_absen_kehadiran a inner join employee_atribut b on a.enroll_id=b.enroll_id left join daily_labor_costs c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan left join rekap_perhitungan_lembur e on a.enroll_id=e.enroll_id and a.tanggal_berjalan=e.tanggal_berjalan left join data_koreksi_upah f on a.enroll_id=f.enroll_id and a.tanggal_berjalan=f.tanggal_koreksi left join data_koreksi_potongan g on a.enroll_id=g.enroll_id and a.tanggal_berjalan=g.tanggal_koreksi left join ref_absen_ijin h on a.status_absen=h.kode_absen_ijin left join (select*from grading_salary where periode_umk='2024-01')i on b.kode_grade=i.kode_grade inner join dasar_pot_bpjs bpjs on REGEXP_SUBSTR(bpjs.kode_dasar_pot_bpjs, '[0-9]+')=substring(a.tanggal_berjalan,1,4) where a.tanggal_berjalan>='".$first_date."' and a.tanggal_berjalan<='".$last_date."'".$inEnrollId.$inStatusStaff);
         $excel = FastExcel::create('query');
         $sheet = $excel->getSheet();
 
@@ -1643,7 +1669,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             }
             $group_department='SUPPORTING PRODUCTION';
             if($value->employee_atribut->group_department!=null){
-            $group_department=$value->employee_atribut->group_department->group2;
+                $group_department=$value->employee_atribut->group_department->group2;
             }
             $status_staff=$value->employee_atribut->status_staff;
             $tanggal_sekarang=$value->tanggal_berjalan;
@@ -1673,7 +1699,6 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             }else{
                 $tunjangan = 12500;
             }
-            $selisih_bulan = date_diff(date_create($tanggal_masuk), date_create($tanggal_awal))->m;
             $timestamp1 = strtotime($tanggal_awal);
             $timestamp2 = strtotime($tanggal_akhir);
             $timestamp3 = strtotime($tanggal_masuk);

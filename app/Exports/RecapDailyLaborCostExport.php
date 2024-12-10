@@ -21,9 +21,9 @@ class RecapDailyLaborCostExport implements WithMultipleSheets, ShouldQueue
     public function sheets(): array
     {
         $sheets = [];
-        $sheets[0] = new RecapLaborAll($this->tanggal_awal,$this->tanggal_akhir,$this->staffnonstaff);
-        $sheets[1] = new RecapLaborStaff($this->tanggal_awal,$this->tanggal_akhir,$this->staffnonstaff);
-        $sheets[2] = new RecapLaborNonStaff($this->tanggal_awal,$this->tanggal_akhir);
+        // $sheets[0] = new RecapLaborAll($this->tanggal_awal,$this->tanggal_akhir,$this->staffnonstaff);
+        $sheets[0] = new RecapLaborStaff($this->tanggal_awal,$this->tanggal_akhir,$this->staffnonstaff);
+        $sheets[1] = new RecapLaborNonStaff($this->tanggal_awal,$this->tanggal_akhir);
         return $sheets;
     }
 }
