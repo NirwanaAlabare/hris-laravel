@@ -3543,15 +3543,15 @@ class MdAbsenHadirController extends AdminBaseController
             a.tanggal_berjalan tanggal_hari_ini,
             a.kode_hari,
             a.nama_hari,
-            FORMAT(NVL(count(a.absen_masuk_kerja), 0), 0) jumlah_karyawan_masuk,
-            FORMAT(NVL(count(b.enroll_id), 0), 0) total_karyawan_aktif,
-            FORMAT(NVL(ROUND((count(a.absen_masuk_kerja) / count(b.enroll_id)) * 100, 2), 0), 2) persentase_kehadiran,
-            FORMAT(NVL(100 - ROUND((count(a.absen_masuk_kerja) / count(b.enroll_id)) * 100, 2), 0), 2) persentase_ketidakhadiran,
-            FORMAT(NVL(SUM(c.jumlah_staff), 0), 0) jumlah_staff,
-            FORMAT(NVL(SUM(d.jumlah_nonstaff), 0), 0) jumlah_nonstaff,
-            FORMAT(NVL(SUM(e.absen_tl), 0), 0) absen_tl_hari_kemarin,
-            FORMAT(NVL(SUM(f.absen_m_weekly), 0), 0) absen_m_weekly,
-            FORMAT(NVL(SUM(g.absen_m_hari_ini), 0), 0) absen_m_hari_ini
+            FORMAT(IFNULL(count(a.absen_masuk_kerja), 0), 0) jumlah_karyawan_masuk,
+            FORMAT(IFNULL(count(b.enroll_id), 0), 0) total_karyawan_aktif,
+            FORMAT(IFNULL(ROUND((count(a.absen_masuk_kerja) / count(b.enroll_id)) * 100, 2), 0), 2) persentase_kehadiran,
+            FORMAT(IFNULL(100 - ROUND((count(a.absen_masuk_kerja) / count(b.enroll_id)) * 100, 2), 0), 2) persentase_ketidakhadiran,
+            FORMAT(IFNULL(SUM(c.jumlah_staff), 0), 0) jumlah_staff,
+            FORMAT(IFNULL(SUM(d.jumlah_nonstaff), 0), 0) jumlah_nonstaff,
+            FORMAT(IFNULL(SUM(e.absen_tl), 0), 0) absen_tl_hari_kemarin,
+            FORMAT(IFNULL(SUM(f.absen_m_weekly), 0), 0) absen_m_weekly,
+            FORMAT(IFNULL(SUM(g.absen_m_hari_ini), 0), 0) absen_m_hari_ini
         FROM
             master_data_absen_kehadiran a,
             employee_atribut b
