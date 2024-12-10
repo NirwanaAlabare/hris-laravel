@@ -1404,7 +1404,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $value->final_jam_istirahat_lembur,
                 $value->final_total_jam_lembur,
                 '',
-                '',
+                $value->upah_umk,
                 $value->gaji_perhari,
                 $value->gaji_permenit,
                 '',
