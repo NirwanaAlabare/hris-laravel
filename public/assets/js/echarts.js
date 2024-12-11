@@ -75,7 +75,7 @@ $(function(e){
       }
     },
     series: chartdata,
-    color:[ '#467fcf ','#fa626b', '#5eba00',]
+    color:[ '#FF72C6 ','#fa626b', '#5eba00',]
   };
 
   barChart.setOption(option);
@@ -89,7 +89,7 @@ $(function(e){
       type: 'line',
 	  smooth: true,
       data: [12, 25, 12, 35, 12, 38],
-	  color:[ '#467fcf ']
+	  color:[ '#FF72C6 ']
     },
     {
       name: 'Profit',
@@ -183,7 +183,7 @@ $(function(e){
       }
     },
     series: chartdata,
-	color:[ '#467fcf ','#fa626b', '#5eba00',]
+	color:[ '#FF72C6 ','#fa626b', '#5eba00',]
 	};
 
   var chart3 = document.getElementById('echart3');
@@ -230,7 +230,7 @@ $(function(e){
       }
     },
     series: chartdata2,
-    color:[ '#467fcf ', '#5eba00','#ecb403']
+    color:[ '#FF72C6 ', '#5eba00','#ecb403']
   };
 
   var chart4 = document.getElementById('echart4');
@@ -291,7 +291,7 @@ $(function(e){
       }
     },
     series: chartdata3,
-	color:[ '#467fcf ', '#5eba00']
+	color:[ '#FF72C6 ', '#5eba00']
   };
 
   var chart5 = document.getElementById('echart5');
@@ -352,7 +352,7 @@ $(function(e){
       }
     },
     series: chartdata3,
-	color:[ '#467fcf ', '#5eba00']
+	color:[ '#FF72C6 ', '#5eba00']
   };
 
   var chart6 = document.getElementById('echart6');
@@ -405,7 +405,7 @@ $(function(e){
       }
     },
     series: chartdata4,
-	color:[ '#467fcf ']
+	color:[ '#FF72C6 ']
   };
 
   var chart7 = document.getElementById('echart7');
@@ -557,7 +557,7 @@ $(function(e){
 				name: 'Aug'
 			}]
 		}, ],
-		color: ['#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0', '#467fcf ','#fa626b', '#5eba00']
+		color: ['#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0', '#FF72C6 ','#fa626b', '#5eba00']
 	};
 	myChart2.setOption(option2);
 	/*--echart-1---*/
@@ -661,7 +661,7 @@ $(function(e){
 			},
 			data: data
 		}],
-		color: ['#467fcf']
+		color: ['#FF72C6']
 	};
 	myChart6.setOption(option6);
 	/*--echart-2---*/
@@ -692,7 +692,7 @@ $(function(e){
 			axisLine: {
 				lineStyle: {
 					color: [
-						[0.2, '#467fcf'],
+						[0.2, '#FF72C6'],
 						[0.8, '#5eba00'],
 						[1, '#fa626b']
 					],
@@ -792,7 +792,7 @@ $(function(e){
 				name: 'Aug'
 			}]
 		}],
-		color: ['#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0', '#467fcf ','#fa626b', '#5eba00' ]
+		color: ['#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0', '#FF72C6 ','#fa626b', '#5eba00' ]
 	};
 	myChart7.setOption(option7);
 	/*--echart-3---*/

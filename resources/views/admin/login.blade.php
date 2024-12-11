@@ -15,12 +15,11 @@
 						<div class="col-lg-4 d-block mx-auto">
 							<div class="row">
 								<div class="col-xl-12 col-md-12 col-md-12">
-									<div class="card" style="border-color:#182D49">
+									<div class="card" style="border:none; box-shadow: 1px 0 20px rgba(0, 0, 0, 0.08); border-radius: 10px">
 										<div class="card-body">
-                                            <div class="text-center mb-2">
+                                            <div class="text-center" style="margin-bottom: 50px; margin-top: 30px">
                                                 <img src="{{URL::asset('assets/images/brand/hris.png')}}" width="200px"/>
 											</div>
-                                            <h3 class="font-weight-bold mb-5">Login</h3>
                                             <div id="alert">
 
                                             </div>

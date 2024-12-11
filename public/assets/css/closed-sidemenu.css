@@ -152,7 +152,7 @@
 
 .app-sidebar__toggle {
     padding: 6px 15px;
-    color: #467fcf;
+    color: #FF72C6;
     line-height: 2.5;
     transition: background-color .3s ease;
     z-index: 1
@@ -319,14 +319,15 @@
     top: 0;
     bottom: 0;
     left: inherit;
-    padding-top: 65px;
+    padding-top: 90px;
     z-index: 999;
     height: 100%;
     transition: all .3s;
     border-right: 1px solid rgba(107, 122, 144, .3);
     box-shadow: 5px 0 5px -5px rgba(235, 240, 255, .9);
     background: #fff;
-    width: 190px
+    width: 210px;
+    padding-inline: 10px;
 }
 
 .app-sidebar::-webkit-scrollbar {
@@ -414,7 +415,9 @@
     position: relative;
     display: flex;
     align-items: center;
-    padding: 10px 19px 10px 30px;
+    justify-content: center;
+    text-align: left; 
+    padding: 15px 19px 13px 30px;
     font-size: 12px;
     font-weight: 400;
     transition: border-left-color .3s ease, background-color .3s ease;
@@ -425,7 +428,7 @@
 .side-menu__item:focus,
 .side-menu__item:hover {
     text-decoration: none;
-    color: #467fcf;
+    color: #FF72C6;
     font-size: 12px;
     background: #ececec
 }
@@ -433,7 +436,7 @@
 .side-menu__item.active .side-menu__icon,
 .side-menu__item:focus .side-menu__icon,
 .side-menu__item:hover .side-menu__icon {
-    color: #467fcf
+    color: #FF72C6
 }
 
 .slide-item.active,
@@ -444,7 +447,7 @@
 }
 
 .slide-menu a.active {
-    color: #467fcf !important;
+    color: #FF72C6 !important;
     background: #fff !important
 }
 
@@ -452,16 +455,17 @@
 .slide-item:focus,
 .slide-item:hover {
     text-decoration: none;
-    color: #467fcf
+    color: #FF72C6
 }
-
+/* 467fcf warna asal */
+FF72C6
 .slide.is-expanded a {
     text-decoration: none
 }
 
 .side-menu .side-menu__icon {
     color: #191919;
-    font-size: 12px;
+    font-size: 15px;
     height: 10px;
     line-height: 10px;
     text-align: center;
@@ -482,7 +486,8 @@
     white-space: nowrap;
     flex: 1 1 auto;
     display: block;
-    font-weight: 400
+    font-weight: 400;
+    margin-left: 5px;
 }
 
 .slide.is-expanded .slide-menu {
@@ -683,7 +688,7 @@
 }
 
 .slide.submenu .side-menu__label:hover {
-    color: #467fcf
+    color: #FF72C6
 }
 
 .side-menu .slide-menu.submenu-list {
@@ -696,7 +701,7 @@
 }
 
 .side-menu .slide-menu.submenu-list a:hover {
-    color: #467fcf
+    color: #FF72C6
 }
 
 .toggle-menu.side-menu li ul li:first-child {
@@ -712,7 +717,7 @@
 }
 
 .toggle-menu.side-menu li a {
-    border-top: 1px solid rgba(107, 122, 144, .1)
+    /* border-top: 1px solid rgba(107, 122, 144, .1) */
 }
 
 .slide-item {
@@ -730,9 +735,10 @@
 
 .app-sidebar .side-menu__item.active,
 .app-sidebar .side-menu__item:hover {
-    background: linear-gradient(125deg, #467fcf, #467fcf);
+    background: linear-gradient(125deg, #FF72C6, #FF72C6);
     color: #fff !important;
-    border-top: 1px solid rgba(210, 215, 221, .5)
+    border-top: 1px solid rgba(210, 215, 221, .5);
+    border-radius: 10px;
 }
 
 .side-menu__item.active .side-menu__icon,
@@ -765,13 +771,13 @@
 .left-menu-dark .side-menu__item:focus,
 .left-menu-dark .side-menu__item:hover {
     text-decoration: none;
-    color: #467fcf
+    color: #FF72C6
 }
 
 .left-menu-dark .side-menu__item.active .side-menu__icon,
 .left-menu-dark .side-menu__item:focus .side-menu__icon,
 .left-menu-dark .side-menu__item:hover .side-menu__icon {
-    color: #467fcf
+    color: #FF72C6
 }
 
 .left-menu-dark .slide-item.active,
@@ -783,14 +789,14 @@
 }
 
 .left-menu-dark .slide-menu a.active {
-    color: #467fcf !important;
+    color: #FF72C6 !important;
     background: #001027 !important
 }
 
 .left-menu-dark .slide-item.active,
 .left-menu-dark .slide-item:focus,
 .left-menu-dark .slide-item:hover {
-    color: #467fcf
+    color: #FF72C6
 }
 
 .left-menu-dark .side-menu .side-menu__icon {
@@ -806,7 +812,7 @@
 }
 
 .left-menu-dark .slide.submenu .side-menu__label:hover {
-    color: #467fcf
+    color: #FF72C6
 }
 
 .left-menu-dark .side-menu .slide-menu.submenu-list li:hover {
@@ -814,7 +820,7 @@
 }
 
 .left-menu-dark .side-menu .slide-menu.submenu-list a:hover {
-    color: #467fcf
+    color: #FF72C6
 }
 
 .left-menu-dark .toggle-menu.side-menu li ul li:first-child {
@@ -822,12 +828,12 @@
 }
 
 .left-menu-dark .toggle-menu.side-menu li a {
-    border-top: 1px solid rgba(107, 122, 144, .2)
+    /* border-top: 1px solid rgba(107, 122, 144, .2) */
 }
 
 .left-menu-dark .app-sidebar .side-menu__item.active,
 .left-menu-dark .app-sidebar .side-menu__item:hover {
-    background: linear-gradient(125deg, #467fcf, #467fcf);
+    background: linear-gradient(125deg, #FF72C6, #FF72C6);
     color: #fff !important
 }
 
@@ -840,7 +846,7 @@
 .left-menu-dark .side-menu__item:focus,
 .left-menu-dark .side-menu__item:hover {
     color: #fff !important;
-    background: #467fcf !important
+    background: #FF72C6 !important
 }
 
 .left-menu-dark .toggle-menu.side-menu li ul li a {

@@ -320,7 +320,7 @@ $(function(e){
 
       ],
 	labels: ['Sales'],
-	colors: ['#467fcf'],
+	colors: ['#FF72C6'],
       markers: {
         size: 0,
         style: 'hollow',
@@ -391,7 +391,7 @@ $(function(e){
 			name: 'Germany',
 			data: [25, 12, 19, 32, 25, 24]
 		}],
-		colors: ['#467fcf', '#5eba00', '#ffca4a', '#ff6666' ,'#867efc'],
+		colors: ['#FF72C6', '#5eba00', '#ffca4a', '#ff6666' ,'#867efc'],
 		title: {
 			text: ''
 		},
@@ -432,7 +432,7 @@ $(function(e){
 			width: '100%',
 			type: 'pie',
 		},
-		colors: ['#467fcf', '#5eba00', '#ffca4a', '#ff6666' ,'#867efc'],
+		colors: ['#FF72C6', '#5eba00', '#ffca4a', '#ff6666' ,'#867efc'],
 		labels:['Usa', 'India', 'Rusia', 'Canada', 'Germany'],
 		series: [53,39,25,23,42 ],
 		fill: {
@@ -604,7 +604,7 @@ $(function(e){
 		},
 		series: [44, 55, 67, 83],
 		labels: ['Existing Customers', 'New Customers', 'Visiting Customers', 'Employes'],
-		colors: ['#467fcf', '#5eba00', '#ffca4a', '#ff6666'],
+		colors: ['#FF72C6', '#5eba00', '#ffca4a', '#ff6666'],
 	}
 	var chart = new ApexCharts(document.querySelector("#pieChart"), options);
 	chart.render();

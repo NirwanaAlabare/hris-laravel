@@ -61,7 +61,7 @@
 									<h6 class="font-weight-semibold mt-5 mb-4">Active Users</h6>
 									<div class="row">
 										<div class="col text-center">
-											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#467fcf">
+											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#FF72C6">
 												<div class="chart-circle-value"><div class="">65% </div></div>
 											</div>
 											<small>Active</small>
@@ -136,7 +136,7 @@
 									<h6 class="font-weight-semibold mt-5 mb-4">Active Users</h6>
 									<div class="row">
 										<div class="col text-center">
-											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#467fcf">
+											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#FF72C6">
 												<div class="chart-circle-value"><div class="">65% </div></div>
 											</div>
 											<small>Active</small>
@@ -194,7 +194,7 @@
 									<h6 class="font-weight-semibold mt-5 mb-4">Active Users</h6>
 									<div class="row">
 										<div class="col text-center">
-											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#467fcf">
+											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#FF72C6">
 												<div class="chart-circle-value"><div class="">65% </div></div>
 											</div>
 											<small>Active</small>
@@ -241,7 +241,7 @@
 									<h6 class="font-weight-semibold mt-5 mb-4">Active Users</h6>
 									<div class="row">
 										<div class="col text-center">
-											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#467fcf">
+											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#FF72C6">
 												<div class="chart-circle-value"><div class="">65% </div></div>
 											</div>
 											<small>Active</small>
@@ -301,7 +301,7 @@
 									<h6 class="font-weight-semibold mt-5 mb-4">Active Users</h6>
 									<div class="row">
 										<div class="col text-center">
-											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#467fcf">
+											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#FF72C6">
 												<div class="chart-circle-value"><div class="">65% </div></div>
 											</div>
 											<small>Active</small>
@@ -368,7 +368,7 @@
 									<h6 class="font-weight-semibold mt-5 mb-4">Active Users</h6>
 									<div class="row">
 										<div class="col text-center">
-											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#467fcf">
+											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#FF72C6">
 												<div class="chart-circle-value"><div class="">65% </div></div>
 											</div>
 											<small>Active</small>
@@ -400,7 +400,7 @@
 									<h6 class="font-weight-semibold mt-5 mb-4">Active Users</h6>
 									<div class="row">
 										<div class="col text-center">
-											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#467fcf">
+											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#FF72C6">
 												<div class="chart-circle-value"><div class="">65% </div></div>
 											</div>
 											<small>Active</small>
@@ -448,7 +448,7 @@
 									<h6 class="font-weight-semibold mt-5 mb-4">Active Users</h6>
 									<div class="row">
 										<div class="col text-center">
-											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#467fcf">
+											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#FF72C6">
 												<div class="chart-circle-value"><div class="">65% </div></div>
 											</div>
 											<small>Active</small>
@@ -511,7 +511,7 @@
 									<h6 class="font-weight-semibold mt-5 mb-4">Active Users</h6>
 									<div class="row">
 										<div class="col text-center">
-											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#467fcf">
+											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#FF72C6">
 												<div class="chart-circle-value"><div class="">65% </div></div>
 											</div>
 											<small>Active</small>
@@ -558,7 +558,7 @@
 									<h6 class="font-weight-semibold mt-5 mb-4">Active Users</h6>
 									<div class="row">
 										<div class="col text-center">
-											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#467fcf">
+											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#FF72C6">
 												<div class="chart-circle-value"><div class="">65% </div></div>
 											</div>
 											<small>Active</small>
@@ -607,7 +607,7 @@
 									<h6 class="font-weight-semibold mt-5 mb-4">Active Users</h6>
 									<div class="row">
 										<div class="col text-center">
-											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#467fcf">
+											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#FF72C6">
 												<div class="chart-circle-value"><div class="">65% </div></div>
 											</div>
 											<small>Active</small>
@@ -668,7 +668,7 @@
 									<h6 class="font-weight-semibold mt-5 mb-4">Active Users</h6>
 									<div class="row">
 										<div class="col text-center">
-											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#467fcf">
+											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#FF72C6">
 												<div class="chart-circle-value"><div class="">65% </div></div>
 											</div>
 											<small>Active</small>
@@ -691,7 +691,7 @@
 									<h6 class="font-weight-semibold mt-5 mb-4">Active Users</h6>
 									<div class="row">
 										<div class="col text-center">
-											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#467fcf">
+											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#FF72C6">
 												<div class="chart-circle-value"><div class="">65% </div></div>
 											</div>
 											<small>Active</small>
@@ -742,7 +742,7 @@
 									<h6 class="font-weight-semibold mt-5 mb-4">Active Users</h6>
 									<div class="row">
 										<div class="col text-center">
-											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#467fcf">
+											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#FF72C6">
 												<div class="chart-circle-value"><div class="">65% </div></div>
 											</div>
 											<small>Active</small>
@@ -795,7 +795,7 @@
 									<h6 class="font-weight-semibold mt-5 mb-4">Active Users</h6>
 									<div class="row">
 										<div class="col text-center">
-											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#467fcf">
+											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#FF72C6">
 												<div class="chart-circle-value"><div class="">65% </div></div>
 											</div>
 											<small>Active</small>
@@ -859,7 +859,7 @@
 									<h6 class="font-weight-semibold mt-5 mb-4">Active Users</h6>
 									<div class="row">
 										<div class="col text-center">
-											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#467fcf">
+											<div class="chart-circle mt-2 mb-2 chart-circle-sm" data-value="0.65" data-thickness="5" data-color="#FF72C6">
 												<div class="chart-circle-value"><div class="">65% </div></div>
 											</div>
 											<small>Active</small>

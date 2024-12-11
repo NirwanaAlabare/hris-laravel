@@ -20,7 +20,7 @@
     --gray-dark: #343a40;
     --azure: #28afd0;
     --lime: #7bd235;
-    --primary: #467fcf;
+    --primary: #FF72C6;
     --secondary: #5eba00;
     --success: #22c03c;
     --info: #3ec7e8;
@@ -541,14 +541,14 @@ pre code {
 }
 
 .btn-newcolor {
-    background-color: #182D49;
-    border-color: #182D49;
+    background-color: #FF72C6;
+    border-color: #FF72C6;
     color: #ffffff;
 }
 
 .btn-newcolor:hover {
-    background-color: #1f3a5e; /* Warna hover */
-    border-color: #1f3a5e;
+    background-color: #FF72C6; /* Warna hover */
+    border-color: #FF72C6;
     color: #ffffff;
 }
 
@@ -1178,7 +1178,7 @@ pre {
 
 .avatar-cyan {
     background-color: #b9e3ea;
-    color: #17a2b8
+    color: #FF72C6
 }
 
 .avatar-white {
@@ -3321,8 +3321,8 @@ button.close {
 
 .btn-cyan {
     color: #fff;
-    background-color: #17a2b8;
-    border-color: #17a2b8
+    background-color: #FF72C6;
+    border-color: #FF72C6
 }
 
 .btn-cyan:hover {
@@ -3339,8 +3339,8 @@ button.close {
 .btn-cyan.disabled,
 .btn-cyan:disabled {
     color: #fff;
-    background-color: #17a2b8;
-    border-color: #17a2b8
+    background-color: #FF72C6;
+    border-color: #FF72C6
 }
 
 .btn-cyan:not(:disabled):not(.disabled).active,
@@ -8342,7 +8342,7 @@ a.tag-addon:hover {
 }
 
 .tag-cyan {
-    background-color: #17a2b8 !important;
+    background-color: #FF72C6 !important;
     color: #fff
 }
 
@@ -13249,7 +13249,7 @@ div[data-acc-step]:not(.open) .badge-primary {
         position: absolute !important;
         z-index: 1000;
         right: 30px !important;
-        background: #467fcf
+        background: #FF72C6
     }
 
     body.search-show .header-form .form-inline .search-element {
@@ -13619,7 +13619,7 @@ svg {
 
 .horizontalMenu>.horizontalMenu-list>li>.horizontal-megamenu .link-list li a:hover,
 .horizontalMenu>.horizontalMenu-list>li>ul.sub-menu>li>a:hover {
-    color: #467fcf
+    color: #FF72C6
 }
 
 .facility .fa-lg .fa-stack-1x,
@@ -20520,14 +20520,14 @@ dd {
 }
 
 .br-theme-bars-square .br-widget a {
-    border: 2px solid #467fcf;
+    border: 2px solid #FF72C6;
     background-color: #fff;
     color: #e5e9f2
 }
 
 .br-theme-bars-square .br-widget a.br-active,
 .br-theme-bars-square .br-widget a.br-selected {
-    color: #467fcf !important
+    color: #FF72C6 !important
 }
 
 .tabs-menu ul li a {
@@ -21086,11 +21086,11 @@ body.fixed-header .header {
     width: 2rem;
     height: 2rem;
     position: relative;
-    color: #467fcf
+    color: #FF72C6
 }
 
 .header-toggler:hover {
-    color: #467fcf
+    color: #FF72C6
 }
 
 .header-toggler-icon {
@@ -22047,7 +22047,7 @@ video {
 
 .horizontalMenu>.horizontalMenu-list>li>a.active {
     color: #fff;
-    background: #467fcf;
+    background: #FF72C6;
     text-decoration: none
 }
 
@@ -22901,7 +22901,7 @@ video {
     }
 
     .horizontalMenu>.horizontalMenu-list>li>ul.sub-menu>li:hover>a {
-        color: #467fcf;
+        color: #FF72C6;
         text-decoration: none
     }
 
@@ -23027,7 +23027,7 @@ video {
 .horizontalMenu>.horizontalMenu-list>li>.horizontal-megamenu .link-list li a.active,
 .horizontalMenu>.horizontalMenu-list>li>ul.sub-menu>li>a.active,
 .horizontalMenu>.horizontalMenu-list>li>ul.sub-menu>li>ul.sub-menu>li>a.active {
-    color: #467fcf
+    color: #FF72C6
 }
 
 @media only screen and (max-width:991px) {
@@ -23038,7 +23038,7 @@ video {
 
 @media only screen and (max-width:991px) {
     .horizontalMenu>.horizontalMenu-list>li>ul.sub-menu>li>a.active {
-        color: #467fcf
+        color: #FF72C6
     }
 }
 
@@ -23055,7 +23055,7 @@ video {
 }
 
 .horizontalMenu>.horizontalMenu-list>li>ul.sub-menu>li>ul.sub-menu>li>ul.sub-menu>li>a:hover {
-    color: #467fcf
+    color: #FF72C6
 }
 
 .item-card .cardbody {
@@ -23338,7 +23338,7 @@ video {
 }
 
 .sidebar .tabs-menu ul li .active {
-    background: #467fcf;
+    background: #FF72C6;
     color: #fff
 }
 
@@ -25035,7 +25035,7 @@ user_info span {
     box-shadow: 0 1px 15px 1px rgba(58, 58, 62, .5);
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
-    background: #467fcf
+    background: #FF72C6
 }
 
 .chat .dropdown-menu.dropdown-menu-right.show {
@@ -28304,7 +28304,7 @@ button.bg-teal:hover {
 }
 
 .bg-cyan {
-    background-color: #17a2b8 !important;
+    background-color: #FF72C6 !important;
     color: #fff !important
 }
 
@@ -31700,7 +31700,7 @@ textarea {
 }
 
 .text-cyan {
-    color: #17a2b8 !important
+    color: #FF72C6 !important
 }
 
 .text-gray {

@@ -8,9 +8,9 @@
         return 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
       }
 	  colors:
-            ["#467fcf", "#f95058", "#32cafe", "#fc0", "#22c03c", "#467fcf", "#467fcf",
-             "#467fcf", "#467fcf", "#467fcf", "#467fcf", "#467fcf", "#467fcf", "#467fcf",
-             "#467fcf", "#467fcf", "#467fcf"];
+            ["#FF72C6", "#f95058", "#32cafe", "#fc0", "#22c03c", "#FF72C6", "#FF72C6",
+             "#FF72C6", "#FF72C6", "#FF72C6", "#FF72C6", "#FF72C6", "#FF72C6", "#FF72C6",
+             "#FF72C6", "#FF72C6", "#FF72C6"];
 
       function barChartPlotter(e) {
         var ctx = e.drawingContext;

@@ -10,7 +10,7 @@ $(function() {
 				data: [20, 420, 210, 354, 580, 320, 480],
 				borderWidth: 2,
 				backgroundColor: 'transparent',
-				borderColor: '#467fcf',
+				borderColor: '#FF72C6',
 				borderWidth: 4,
 				pointBackgroundColor: '#ffffff',
 				pointRadius: 8
@@ -61,8 +61,8 @@ $(function() {
 				label: 'Sales',
 				data: [200, 450, 290, 367, 256, 543, 345],
 				borderWidth: 2,
-				backgroundColor: '#467fcf',
-				borderColor: '#467fcf',
+				backgroundColor: '#FF72C6',
+				borderColor: '#FF72C6',
 				borderWidth: 2.0,
 				pointBackgroundColor: '#ffffff',
 
@@ -196,12 +196,12 @@ $(function() {
 				label: "Foods",
 				data: [0, 30, 10, 120, 50, 63, 10],
 				backgroundColor: 'transparent',
-				borderColor: '#467fcf',
+				borderColor: '#FF72C6',
 				borderWidth: 3,
 				pointStyle: 'circle',
 				pointRadius: 5,
 				pointBorderColor: 'transparent',
-				pointBackgroundColor: '#467fcf',
+				pointBackgroundColor: '#FF72C6',
 			}, {
 				label: "Electronics",
 				data: [0, 50, 40, 80, 40, 79, 120],
@@ -340,9 +340,9 @@ $(function() {
 			datasets: [{
 				label: "data1",
 				data: [65, 59, 80, 81, 56, 55, 40],
-				borderColor: "#467fcf",
+				borderColor: "#FF72C6",
 				borderWidth: "0",
-				backgroundColor: "#467fcf"
+				backgroundColor: "#FF72C6"
 			}, {
 				label: "data2",
 				data: [28, 48, 40, 19, 86, 27, 90],
@@ -436,8 +436,8 @@ $(function() {
 		data: {
 			datasets: [{
 				data: [45, 25, 20, 10],
-				backgroundColor: ['#467fcf', ' #00b3ff', '#5eba00', '#fc0'],
-				hoverBackgroundColor: ['#467fcf', ' #00b3ff', '#5eba00', '#fc0'],
+				backgroundColor: ['#FF72C6', ' #00b3ff', '#5eba00', '#fc0'],
+				hoverBackgroundColor: ['#FF72C6', ' #00b3ff', '#5eba00', '#fc0'],
 				borderColor:'transparent',
 			}],
 			labels: ["blue", "blue", "blue"]
@@ -459,8 +459,8 @@ $(function() {
 		data: {
 			datasets: [{
 				data: [45, 25, 20, 10],
-				backgroundColor: ['#467fcf', ' #00b3ff', '#5eba00', '#fc0'],
-				hoverBackgroundColor: ['#467fcf', ' #00b3ff', '#5eba00', '#fc0'],
+				backgroundColor: ['#FF72C6', ' #00b3ff', '#5eba00', '#fc0'],
+				hoverBackgroundColor: ['#FF72C6', ' #00b3ff', '#5eba00', '#fc0'],
 				borderColor:'transparent',
 			}],
 			labels: ["blue", "blue", "blue", "blue"]
@@ -482,8 +482,8 @@ $(function() {
 		data: {
 			datasets: [{
 				data: [18, 15, 9, 6, 19],
-				backgroundColor: ['#467fcf', ' #00b3ff', '#5eba00', '#fc0'],
-				hoverBackgroundColor: ['#467fcf', ' #00b3ff', '#5eba00', '#fc0'],
+				backgroundColor: ['#FF72C6', ' #00b3ff', '#5eba00', '#fc0'],
+				hoverBackgroundColor: ['#FF72C6', ' #00b3ff', '#5eba00', '#fc0'],
 				borderColor:'transparent',
 			}],
 			labels: ["blue", "blue", "blue", "blue"]

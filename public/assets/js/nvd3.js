@@ -7,7 +7,7 @@ historicalBarChart = [
                 {
                     "label" : "A" ,
                     "value" : 24,
-					"color":"#467fcf "
+					"color":"#FF72C6 "
                 } ,
                 {
                     "label" : "B" ,
@@ -32,7 +32,7 @@ historicalBarChart = [
                 {
                     "label" : "F" ,
                     "value" : 95,
-					"color":"#467fcf "
+					"color":"#FF72C6 "
                 } ,
                 {
                     "label" : "G" ,
@@ -108,7 +108,7 @@ historicalBarChart = [
         return [{
             values: sin,
             key: "Sine Wave",
-            color: "#467fcf "
+            color: "#FF72C6 "
         }];
     }
 
@@ -209,7 +209,7 @@ historicalBarChart = [
             {
                 values: sin,
                 key: "Sine Wave",
-                color: "#467fcf "
+                color: "#FF72C6 "
             },
             {
                 values: cos,

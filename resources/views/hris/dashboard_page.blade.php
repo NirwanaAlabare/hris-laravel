@@ -82,7 +82,7 @@
                     <div class="card-body p-0">
                         <div class="row">
                             <div class="col" style="background-color: #FFF">
-                                <a href="{{route('hris.dashboard.index')}}" style="color: #1f3a5e">
+                                <a href="{{route('hris.dashboard.index')}}" style="color: #FF72C6">
                                 <div class="card card-1">
                                             <h3>Attendance & Payroll</h3>
                                         </div>
@@ -90,7 +90,7 @@
                             </div>
                             @if($role=='superadmin' || $role=='absensi' || $role=='admin')
                             <div class="col">
-                                <a href="{{route('hris.hrd.index')}}" style="color: #1f3a5e">
+                                <a href="{{route('hris.hrd.index')}}" style="color: #FF72C6">
                                 <div class="card card-2">
                                         <h3>Kepersonaliaan</h3>
                                     </div>
@@ -160,7 +160,7 @@
                     backgroundColor: '#fff',
                     labelColor: '#060',
                     colors: [
-                    '#467fcf ', '#dc3545'
+                    '#FF72C6 ', '#dc3545'
 
                     ],
                     formatter: function (x) { return x + "%"}

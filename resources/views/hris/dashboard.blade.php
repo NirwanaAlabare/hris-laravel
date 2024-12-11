@@ -187,7 +187,7 @@
                     backgroundColor: '#fff',
                     labelColor: '#060',
                     colors: [
-                    '#467fcf ', '#dc3545'
+                    '#FF72C6 ', '#dc3545'
 
                     ],
                     formatter: function (x) { return x + "%"}

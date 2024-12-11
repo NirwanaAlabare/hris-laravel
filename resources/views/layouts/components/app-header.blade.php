@@ -12,54 +12,8 @@
                         <i class="fe fe-maximize-2"></i>
                     </a>
                 </div><!-- full-screen -->
-                <div class="dropdown header-notify">
-                    <a href="#" class="nav-link icon" data-toggle="dropdown" aria-expanded="false">
-                        <i class="fe fe-bell"></i>
-                        <span class="pulse bg-success"></span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow ">
-                        <a href="#" class="dropdown-item text-center">4 New Notifications</a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item d-flex pb-3">
-                            <div class="notifyimg bg-green">
-                                <i class="fe fe-mail"></i>
-                            </div>
-                            <div>
-                                <strong>Message Sent.</strong>
-                                <div class="small text-muted">12 mins ago</div>
-                            </div>
-                        </a>
-                        <a href="#" class="dropdown-item d-flex pb-3">
-                            <div class="notifyimg bg-pink">
-                                <i class="fe fe-shopping-cart"></i>
-                            </div>
-                            <div>
-                                <strong>Order Placed</strong>
-                                <div class="small text-muted">2  hour ago</div>
-                            </div>
-                        </a>
-                        <a href="#" class="dropdown-item d-flex pb-3">
-                            <div class="notifyimg bg-blue">
-                                <i class="fe fe-calendar"></i>
-                            </div>
-                            <div>
-                                <strong> Event Started</strong>
-                                <div class="small text-muted">1  hour ago</div>
-                            </div>
-                        </a>
-                        <a href="#" class="dropdown-item d-flex pb-3">
-                            <div class="notifyimg bg-orange">
-                                <i class="fe fe-monitor"></i>
-                            </div>
-                            <div>
-                                <strong>Your Admin Lanuch</strong>
-                                <div class="small text-muted">2  days ago</div>
-                            </div>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item text-center">View all Notifications</a>
-                    </div>
-                </div><!-- notifications -->
+                
+                <!-- notifications -->
                 <div class="dropdown header-user">
                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
                         <div class="header-user text-center mt-4 pb-4">
@@ -86,7 +40,8 @@
                             </div>
                         </div>
                     </div>
-                </div><!-- profile -->
+                </div>
+                <!-- profile -->
                 <div class="dropdown">
                     <a class="nav-link leading-none siderbar-link" data-toggle="sidebar-right" data-target=".sidebar-right">
                         <span class="mr-3 d-none d-lg-block ">

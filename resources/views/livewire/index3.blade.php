@@ -173,7 +173,7 @@
 									<div class="card-body">
 										<div class="row">
 											<div class="col-md-4">
-												<div class="chart-circle mt-2 mb-2" data-value="0.80" data-thickness="10" data-color="#467fcf">
+												<div class="chart-circle mt-2 mb-2" data-value="0.80" data-thickness="10" data-color="#FF72C6">
 													<div class="chart-circle-value"><div class="fs-2">80% </div></div>
 												</div>
 											</div>

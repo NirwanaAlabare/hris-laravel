@@ -50,7 +50,7 @@
 											</div>
 											<div class="col-lg-2 col-md-4">
 												<div class="card-body ">
-													<span class="pie" data-peity='{ "fill": ["#467fcf  ", "#ebe9f7"]}'>226/360</span>
+													<span class="pie" data-peity='{ "fill": ["#FF72C6  ", "#ebe9f7"]}'>226/360</span>
 												</div>
 											</div>
 											<div class="col-lg-2 col-md-4">
@@ -91,7 +91,7 @@
 											</div>
 											<div class="col-lg-2 col-md-4">
 												<div class="card-body ">
-													<span class="donut" data-peity='{ "fill": ["#467fcf  ", "#ebe9f7"]}'>226/360</span>
+													<span class="donut" data-peity='{ "fill": ["#FF72C6  ", "#ebe9f7"]}'>226/360</span>
 												</div>
 											</div>
 											<div class="col-lg-2 col-md-4">
@@ -132,7 +132,7 @@
 										<div class="row">
 											<div class="col-lg-4">
 												<div class="card-body ">
-													<span class="peity-line" data-peity='{ "fill": ["#467fcf"],"stroke":["#467fcf"]}' data-width="100%">6,2,8,4,3,8,1,3,6,5,9,2,8,1,4,8,9,8,2,1</span>
+													<span class="peity-line" data-peity='{ "fill": ["#FF72C6"],"stroke":["#FF72C6"]}' data-width="100%">6,2,8,4,3,8,1,3,6,5,9,2,8,1,4,8,9,8,2,1</span>
 												</div>
 											</div>
 											<div class="col-lg-4">
@@ -158,7 +158,7 @@
 										<div class="row">
 											<div class="col-lg-4">
 												<div class="card-body ">
-													<span class="bar" data-peity='{ "fill": ["#13DAFE", "#467fcf  "]}'>6,2,8,4,3,8,1,3,6,5,9,2,8,1,4,8,9,8,2,1</span>
+													<span class="bar" data-peity='{ "fill": ["#13DAFE", "#FF72C6  "]}'>6,2,8,4,3,8,1,3,6,5,9,2,8,1,4,8,9,8,2,1</span>
 												</div>
 											</div>
 											<div class="col-lg-4">
@@ -197,7 +197,7 @@
 											<div class="col-lg-2 col-md-4">
 												<div class="card-body ">
 													<p class="data-attributes">
-														<span data-peity='{ "fill": ["#467fcf  ", "#ebe9f7"], "innerRadius": 14, "radius": 36 }'>2/7</span>
+														<span data-peity='{ "fill": ["#FF72C6  ", "#ebe9f7"], "innerRadius": 14, "radius": 36 }'>2/7</span>
 													</p>
 												</div>
 											</div>
@@ -270,7 +270,7 @@
 										<h3 class="card-title">Updating Charts</h3>
 									</div>
 									<div class="card-body text-center">
-										<span class="updating-chart" data-peity='{ "fill": ["#467fcf"],"stroke":["#467fcf"]}'>5,3,9,6,5,9,7,3,5,2,5,3,9,6,5,9,7,3,5,2</span>
+										<span class="updating-chart" data-peity='{ "fill": ["#FF72C6"],"stroke":["#FF72C6"]}'>5,3,9,6,5,9,7,3,5,2,5,3,9,6,5,9,7,3,5,2</span>
 									</div>
 								</div>
 							</div>

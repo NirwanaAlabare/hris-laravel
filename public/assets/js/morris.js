@@ -14,7 +14,7 @@ $(function(e){
 	  ],
 	  xkey: 'x',
 	  ykeys: ['y', 'z'],
-	  lineColors: ['#5eba00','#467fcf '],
+	  lineColors: ['#5eba00','#FF72C6 '],
 	  labels: ['Y', 'Z']
 	}).on('click', function(i, row){
 	  console.log(i, row);
@@ -32,7 +32,7 @@ $(function(e){
 	  ],
 	  xkey: 'x',
 	  ykeys: ['y', 'z'],
-	  lineColors: ['#5eba00','#467fcf '],
+	  lineColors: ['#5eba00','#FF72C6 '],
 	  labels: ['Y', 'Z']
 	});
 
@@ -56,7 +56,7 @@ $(function(e){
 	  barColors: function (row, series, type) {
 		if (type === 'bar') {
 		  var red = Math.ceil(0 * row.y / this.ymax);
-		  return '#467fcf';
+		  return '#FF72C6';
 		}
 		else {
 		  return '#000';
@@ -85,7 +85,7 @@ $(function(e){
 	  ykeys: ['licensed', 'sorned'],
 	  labels: ['Licensed', 'SORN'],
 	  barColors: [
-		'#467fcf ', '#5eba00'
+		'#FF72C6 ', '#5eba00'
 	  ],
 	  xLabelAngle: 0
 	});
@@ -111,7 +111,7 @@ $(function(e){
 		xkey: 'x',
 		ykeys: ['y', 'z'],
 		labels: ['data1', 'data2'],
-		lineColors: ['#5eba00','#467fcf '],
+		lineColors: ['#5eba00','#FF72C6 '],
 
 		parseTime: false,
 		ymin: -1.0,
@@ -145,7 +145,7 @@ $(function(e){
 	  xkey: 'period',
 	  ykeys: ['licensed', 'sorned'],
 	  labels: ['Licensed', 'SORN'],
-	  lineColors: ['#5eba00','#467fcf '],
+	  lineColors: ['#5eba00','#FF72C6 '],
 	});
 
 
@@ -158,7 +158,7 @@ $(function(e){
 			{value: 15, label: 'data3'}
 		  ],
 		  colors: [
-		'#467fcf ', '#5eba00', '#fdb901'
+		'#FF72C6 ', '#5eba00', '#fdb901'
 
 	  ],
 		  formatter: function (x) { return x + "%"}
@@ -179,7 +179,7 @@ $(function(e){
 	  backgroundColor: '#fff',
 	  labelColor: '#060',
 	  colors: [
-		'#467fcf ', '#5eba00', '#fdb901', '#fc9197', '#17a2b8', '#ecb403'
+		'#FF72C6 ', '#5eba00', '#fdb901', '#fc9197', '#17a2b8', '#ecb403'
 
 	  ],
 	  formatter: function (x) { return x + "%"}

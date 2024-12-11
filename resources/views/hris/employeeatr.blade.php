@@ -46,11 +46,11 @@
                 @endphp
 
                 <div class="text-white">
-                    @if($loggedAdmin->email=='mega@ptnag.com' || $loggedAdmin->email=='rudy@ptnag.com' || $loggedAdmin->email=='rifqi')
-                    <button type="button" class="btn btn-icon btn-success text-white p-0 mr-1"  data-target="#import_employees" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Karyawan</button>
+                    @if($loggedAdmin->email=='mega@ptnag.com' || $loggedAdmin->email=='rudy@ptnag.com' || $loggedAdmin->email=='rifqi' || $loggedAdmin->email=='fadli')
+                    <button type="button" class="btn btn-icon btn-success text-white p-2 mr-1"  data-target="#import_employees" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Karyawan</button>
                     @endif
-                    <a href="{{route('hris.employeeatr.format')}}" id="btn-examimport" class="btn btn-icon btn-orange text-white p-0 mr-1" data-toggle="tooltip" title="" data-original-title="Format File Excel"><i class="fa fa-file-excel-o"></i>Format File </a>
-                    <button type="button" id="btn-import" class="btn btn-icon btn-warning text-white p-0 mr-1"  data-target="#import_grade" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Data</button>
+                    <a href="{{route('hris.employeeatr.format')}}" id="btn-examimport" class="btn btn-icon btn-orange text-white p-2 mr-1" data-toggle="tooltip" title="" data-original-title="Format File Excel"><i class="fa fa-file-excel-o mr-1"></i>Format File </a>
+                    <button type="button" id="btn-import" class="btn btn-icon btn-warning text-white p-2 mr-1"  data-target="#import_grade" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Data</button>
                 </div>
                     <!-- modal -->
 
@@ -296,7 +296,7 @@
                 {!! Form::open(['route' => 'hris.employeeatr.ajax_exportexcel', 'id' => 'formExport', 'name' => 'formExport','method'=>'post']) !!}
 
                 @csrf
-                <button type="submit" id="btn-exportexcel" class="btn btn-icon btn-primary text-white p-0 mr-1" data-toggle="tooltip"
+                <button type="submit" id="btn-exportexcel" class="btn btn-icon btn-primary text-white p-2 mr-1" data-toggle="tooltip"
                 title="" data-placement="bottom" data-original-title="Export Data to Excel"><i class="fa fa-file-excel-o"></i></button>
                 {{-- </form> --}}
                 {!! Form::close() !!}
@@ -305,7 +305,7 @@
                     }
                 @endphp
 
-                <a href="#" id="btn-refresh-page" class="btn btn-secondary p-0 mr-0 text-white btn-icon" data-toggle="tooltip"
+                <a href="#" id="btn-refresh-page" class="btn btn-secondary p-0 mr-0 text-white btn-icon" style="display:flex; justify-content:center; align-items:center;" data-toggle="tooltip"
                     title="" data-placement="bottom" data-original-title="Refresh Page">
                     <span>
                         <i class="fa fa-refresh"></i>
