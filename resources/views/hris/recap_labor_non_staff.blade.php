@@ -50,4 +50,17 @@
         @endforeach
       </tr>
       @endforeach
+      <tr>
+        <td colspan="5" style="font-weight:bold;border:1px solid black;background-color:#ffecdc">Total</td>
+        @foreach ($dateRange as $date_r)
+        @for ($i=0;$i<=6;$i++)
+          <?php
+            $value=$man[$i];
+          ?>
+          <td style="font-weight:bold;border:1px solid black;background-color:#ffecdc">
+            {{$ab->where('tanggal_berjalan',$date_r)->first()[$value]}}
+          </td>
+        @endfor
+        @endforeach
+      </tr>
 </table>

@@ -1129,7 +1129,7 @@
                 var blob = new Blob([data]);
                 var link = document.createElement('a');
                 link.href = window.URL.createObjectURL(blob);
-                let file_name = daterange+' Recap Labor Cost 2 '+Math.ceil(Math.random()*1000000);
+                let file_name = daterange+' Recap Labor Cost '+Math.ceil(Math.random()*1000000);
                 link.download = file_name+".xlsx";
                 link.click();
                 swal("", "Recap Labor Export Success", "success");
