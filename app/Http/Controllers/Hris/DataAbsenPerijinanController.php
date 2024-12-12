@@ -549,6 +549,7 @@ class DataAbsenPerijinanController extends AdminBaseController
         info('START REPLACE IZIN');
         info('Tambah Permohonan Perizinan by ' . $email);
 
+
         $uuid_master = $request->uuid;
         $tanggal_perizinan = $request->tanggal_perizinan;
         $enroll_id = $request->enroll_id;
@@ -602,20 +603,31 @@ class DataAbsenPerijinanController extends AdminBaseController
             }
             $nomor_form_perizinan =  $nomor_form_perizinan . $nomorform;
         }
-        $query = DataAbsenPerijinan::create([
-            'uuid' => Str::uuid(),
-            'uuid_master' => $uuid_master,
-            'tanggal_perizinan' => $tanggal_perizinan,
-            'nomor_form_perizinan' => $nomor_form_perizinan,
-            'enroll_id' => $enroll_id,
-            'kode_absen_ijin' => $kode_absen_ijin,
-            'absen_alasan' => $absen_alasan,
-            'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
-            'tanggal_akhir_ijin' => $tanggal_akhir_ijin,
-            'is_verifikasi'=>$is_verifikasi,
-            'verifikasi_by'=>$verifikasi_by,
-            'operator' => $email
-        ]);
+        $cek_data = MasterDataAbsenKehadiran::whereBetween('tanggal_berjalan', [$tanggal_mulai_ijin, $tanggal_akhir_ijin])
+                ->where('enroll_id', $enroll_id)
+                ->where(function ($query3) {
+                    $query3->whereNotIn('kode_hari', [6, 5])
+                        ->orWhereNotNull('mulai_jam_kerja');
+                    })->whereNotIn('status_absen',['LN','LP'])->get();
+        if($cek_data->count() > 0) {
+            $query = DataAbsenPerijinan::create([
+                'uuid' => Str::uuid(),
+                'uuid_master' => $uuid_master,
+                'tanggal_perizinan' => $tanggal_perizinan,
+                'nomor_form_perizinan' => $nomor_form_perizinan,
+                'enroll_id' => $enroll_id,
+                'kode_absen_ijin' => $kode_absen_ijin,
+                'absen_alasan' => $absen_alasan,
+                'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
+                'tanggal_akhir_ijin' => $tanggal_akhir_ijin,
+                'is_verifikasi'=>$is_verifikasi,
+                'verifikasi_by'=>$verifikasi_by,
+                'operator' => $email
+            ]);
+        } else {
+            return 0;
+        }
+
 
         if ($query) {
             info('Insert data nomor [' . $nomor_form_perizinan . '] on table data_absen_perijinan is SUCCESS.');
@@ -665,7 +677,7 @@ class DataAbsenPerijinanController extends AdminBaseController
                 ->where(function ($query3) {
                     $query3->whereNotIn('kode_hari', [6, 5])
                         ->orWhereNotNull('mulai_jam_kerja');
-                })->where('status_absen','!=','LN')->update([
+                    })->whereNotIn('status_absen',['LN','LP'])->update([
                     'nomor_absen_ijin' => $nomor_form_perizinan,
                     'status_absen' => $kode_absen_ijin,
                     'operator' => $email,
@@ -678,6 +690,7 @@ class DataAbsenPerijinanController extends AdminBaseController
                 ]);
             }
         }
+
         info('END REPLACE IZIN');
 
         return $query1;

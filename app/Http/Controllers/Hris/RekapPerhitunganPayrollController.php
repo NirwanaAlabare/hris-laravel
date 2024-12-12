@@ -711,7 +711,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $arrperiode=explode(" s/d ",request()->daterange);
         $first_date=$arrperiode[0];
         $last_date=$arrperiode[1];
-        $query=DB::select("select a.tanggal_berjalan,a.kode_hari,a.nama_hari,b.nik,a.enroll_id,b.employee_name,b.status_staff,b.status_jabatan,b.sub_dept_name,b.department_name,c.group_department,a.mulai_jam_kerja,a.akhir_jam_kerja,a.absen_masuk_kerja,a.absen_pulang_kerja,dap.time_mulai_ijin permits_dari_pukul,dap.time_akhir_ijin permits_sampai_pukul,dap.total_time_ijin total_menit_permits,a.jumlah_menit_absen_dt,a.jumlah_menit_absen_pc,a.jumlah_menit_absen_dtpc,a.status_absen,dap.absen_alasan,h.kode_ijin_payroll,d.catatan,d.nomor_form_lembur,d.mulai_jam_lembur,d.akhir_jam_lembur,d.jumlah_jam_istirahat_lembur jumlah_jam_istirahat,d.jumlah_jam_lembur,e.final_mulai_jam_lembur,e.final_selesai_jam_lembur,e.final_jam_istirahat_lembur,e.final_total_jam_lembur,c.gaji_perhari,c.gaji_permenit,c.iby,c.itb,c.m,c.dt,c.pc,c.dtpc,c.lby,c.lsm,c.r,c.ok,c.hari_kerja,c.pot_hari_kerja,c.total_absen,e.lembur_1,e.lembur_2,e.lembur_3,e.lembur_4,b.kode_grade,i.salary_bulanan,c.seniority_allowance,c.insentif_kehadiran,c.insentif_jabatan,e.lembur1_rupiah,e.lembur2_rupiah,e.lembur3_rupiah,e.lembur4_rupiah,if(f.jenis_koreksi=1,f.jumlah_rp_potongan,0) koreksi_upah,if(f.jenis_koreksi=3,f.jumlah_rp_potongan,0) koreksi_lembur,if(f.jenis_koreksi=2,f.jumlah_rp_potongan,0) koreksi_insentif,if(g.jenis_potongan=7,g.jumlah_rp_potongan,0) potongan_upah,if(g.jenis_potongan=8,g.jumlah_rp_potongan,0) potongan_lembur,if(g.jenis_potongan=5,g.jumlah_rp_potongan,0) potongan_insentif,if(g.jenis_potongan=6,g.jumlah_rp_potongan,0) potongan_piutang,c.rp_pot_hari_kerja,c.rp_pot_jam,c.bruto,c.bpjs_tk,c.bpjs_ks,c.total_potongan,c.pembulatan,c.jumlah,c.bpjs_tk_company,c.bpjs_ks_company,c.kompensasi,c.thr,c.konsumsi,c.total_pembayaran from master_data_absen_kehadiran a inner join employee_atribut b on a.enroll_id=b.enroll_id left join daily_labor_costs c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan left join rekap_perhitungan_lembur e on a.enroll_id=e.enroll_id and a.tanggal_berjalan=e.tanggal_berjalan left join data_koreksi_upah f on a.enroll_id=f.enroll_id and a.tanggal_berjalan=f.tanggal_koreksi left join data_koreksi_potongan g on a.enroll_id=g.enroll_id and a.tanggal_berjalan=g.tanggal_koreksi left join ref_absen_ijin h on a.status_absen=h.kode_absen_ijin  left join data_absen_perijinan dap on a.nomor_absen_ijin=dap.nomor_form_perizinan left join (select*from grading_salary where periode_umk='2024-01')i on b.kode_grade=i.kode_grade where a.tanggal_berjalan>='".$first_date."' and a.tanggal_berjalan<='".$last_date."'".$inEnrollId.$inStatusStaff);
+        $query=DB::select("select a.tanggal_berjalan,a.kode_hari,a.nama_hari,b.nik,a.enroll_id,b.employee_name,b.status_staff,b.status_jabatan,b.sub_dept_name,b.department_name,c.group_department,a.mulai_jam_kerja,a.akhir_jam_kerja,a.absen_masuk_kerja,a.absen_pulang_kerja,dap.time_mulai_ijin permits_dari_pukul,dap.time_akhir_ijin permits_sampai_pukul,dap.total_time_ijin total_menit_permits,a.jumlah_menit_absen_dt,a.jumlah_menit_absen_pc,a.jumlah_menit_absen_dtpc,a.status_absen,dap.absen_alasan,h.kode_ijin_payroll,d.catatan,d.nomor_form_lembur,d.mulai_jam_lembur,d.akhir_jam_lembur,d.jumlah_jam_istirahat_lembur jumlah_jam_istirahat,d.jumlah_jam_lembur,e.final_mulai_jam_lembur,e.final_selesai_jam_lembur,e.final_jam_istirahat_lembur,e.final_total_jam_lembur,bpjs.dasar_pot_bpjs_rupiah upah_umk, c.gaji_perhari,c.gaji_permenit,c.iby,c.itb,c.m,c.dt,c.pc,c.dtpc,c.lby,c.lsm,c.r,c.ok,c.hari_kerja,c.pot_hari_kerja,c.total_absen,e.lembur_1,e.lembur_2,e.lembur_3,e.lembur_4,b.kode_grade,i.salary_bulanan,c.seniority_allowance,c.insentif_kehadiran,c.insentif_jabatan,e.lembur1_rupiah,e.lembur2_rupiah,e.lembur3_rupiah,e.lembur4_rupiah,if(f.jenis_koreksi=1,f.jumlah_rp_potongan,0) koreksi_upah,if(f.jenis_koreksi=3,f.jumlah_rp_potongan,0) koreksi_lembur,if(f.jenis_koreksi=2,f.jumlah_rp_potongan,0) koreksi_insentif,if(g.jenis_potongan=7,g.jumlah_rp_potongan,0) potongan_upah,if(g.jenis_potongan=8,g.jumlah_rp_potongan,0) potongan_lembur,if(g.jenis_potongan=5,g.jumlah_rp_potongan,0) potongan_insentif,if(g.jenis_potongan=6,g.jumlah_rp_potongan,0) potongan_piutang,c.rp_pot_hari_kerja,c.rp_pot_jam,c.bruto,c.bpjs_tk,c.bpjs_ks,c.total_potongan,c.pembulatan,c.jumlah,c.bpjs_tk_company,c.bpjs_ks_company,c.kompensasi,c.thr,c.konsumsi,c.total_pembayaran from master_data_absen_kehadiran a inner join employee_atribut b on a.enroll_id=b.enroll_id left join daily_labor_costs c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan left join rekap_perhitungan_lembur e on a.enroll_id=e.enroll_id and a.tanggal_berjalan=e.tanggal_berjalan left join data_koreksi_upah f on a.enroll_id=f.enroll_id and a.tanggal_berjalan=f.tanggal_koreksi left join data_koreksi_potongan g on a.enroll_id=g.enroll_id and a.tanggal_berjalan=g.tanggal_koreksi left join ref_absen_ijin h on a.status_absen=h.kode_absen_ijin  left join data_absen_perijinan dap on a.nomor_absen_ijin=dap.nomor_form_perizinan left join (select*from grading_salary where periode_umk='2024-01')i on b.kode_grade=i.kode_grade inner join dasar_pot_bpjs bpjs on REGEXP_SUBSTR(bpjs.kode_dasar_pot_bpjs, '[0-9]+')=substring(a.tanggal_berjalan,1,4) where a.tanggal_berjalan>='".$first_date."' and a.tanggal_berjalan<='".$last_date."'".$inEnrollId.$inStatusStaff);
+
         $excel = FastExcel::create('query');
         $sheet = $excel->getSheet();
 
@@ -1246,6 +1247,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         ]);
         foreach($query as $key=>$value){
             $jumlah_menit_istirahat = '01:00';
+            $jumlah_menit_istirahat_int=60;
             if(($value->mulai_jam_kerja == null) || ($value->status_absen == "LN" || $value->status_absen == "CG" || $value->status_absen == "CM" || $value->status_absen == "CT" ||$value->status_absen == "L") || (($value->status_absen == "LP" ) && ($value->absen_masuk_kerja==null) && ($value->absen_pulang_kerja==null))) {
                 $kerjalibur = "LIBUR";
             } else if(($value->kode_hari=='6' || $value->kode_hari=='5' ) && ($value->mulai_jam_kerja!=null)){
@@ -1257,10 +1259,12 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                         case '5':
                             $kerjalibur = "LIBUR";
                             $jumlah_menit_istirahat = '00:30';
+                            $jumlah_menit_istirahat_int=30;
                             break;
                         case '6':
                             $kerjalibur = "LIBUR";
                             $jumlah_menit_istirahat = '00:30';
+                            $jumlah_menit_istirahat_int=30;
                             break;
                     }
                 }
@@ -1327,7 +1331,13 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             }
             $absen_masuk_kerja=strtotime($value->absen_masuk_kerja);
             $absen_pulang_kerja=strtotime($value->absen_pulang_kerja);
-            $total_absen_kerja=($absen_pulang_kerja-$absen_masuk_kerja)/60;
+            if($absen_masuk_kerja<$absen_pulang_kerja && $absen_masuk_kerja!=null && $absen_pulang_kerja!=null){
+            $total_absen_kerja=(($absen_pulang_kerja-$absen_masuk_kerja)/60)-$jumlah_menit_istirahat_int;
+            }else if($absen_pulang_kerja<$absen_masuk_kerja && $absen_masuk_kerja!=null && $absen_pulang_kerja!=null){
+                $total_absen_kerja=(($absen_masuk_kerja-$absen_pulang_kerja)/60)-$jumlah_menit_istirahat_int;
+            }else{
+                $total_absen_kerja='';
+            }
             $data = [
                 Date::stringToExcel($value->tanggal_berjalan),
                 $value->nama_hari,
@@ -1369,7 +1379,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $value->final_jam_istirahat_lembur,
                 $value->final_total_jam_lembur,
                 '',
-                '',
+                $value->upah_umk,
                 $value->gaji_perhari,
                 $value->gaji_permenit,
                 '',
@@ -1632,7 +1642,10 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     }
                 }
             }
-            $group_department=$value->employee_atribut->group_department->group2;
+            $group_department='SUPPORTING PRODUCTION';
+            if($value->employee_atribut->group_department!=null){
+                $group_department=$value->employee_atribut->group_department->group2;
+            }
             $status_staff=$value->employee_atribut->status_staff;
             $tanggal_sekarang=$value->tanggal_berjalan;
             $bulan_sekarang=substr($tanggal_sekarang,0,8).'26';

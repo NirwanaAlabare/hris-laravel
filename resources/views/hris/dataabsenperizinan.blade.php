@@ -657,7 +657,6 @@
                 processData: false,
                 data: formData,
                 success:function(data){
-                    console.log(data);
                     $('#permitImportButton').removeClass("btn-loading");
                     $("#permitImportButton").html('<i class="fa fa-upload" aria-hidden="true"></i> IMPORT');
                     $("#permitImportButton").attr("disabled", false);
@@ -1095,7 +1094,23 @@
                                             tanggal_akhir_ijin:tanggal_akhir_ijin,
                                         },
                                         dataType: 'json',
-                                        success: function(res){$('#progress-show-1').hide();
+                                        success: function(res){
+                                            if(res == 0){
+                                                notif({
+                                                    msg: "<b>Warning:</b> Karyawan telah masuk pada tanggal tersebut.",
+                                                    type: "warning"
+                                                });
+                                                $("#btn-save-izin").prop("disabled", false);
+                                                $("#btn-save-iks").prop("disabled", false);
+                                                $("#btn-cancel-izin").prop("disabled", false);
+                                                $("#btn-cancel-iks").prop("disabled", false);
+                                                $('#progress-show-1').hide();
+                                                $('#progress-hide-1').show();
+                                                $('#btn-save-izin').removeClass("btn-loading");
+                                                $("#btn-save-izin").html('<span><i class="fa fa-save"></i></span> Save');
+                                                $("#datatable-ajax-crud").DataTable().ajax.reload();
+                                            } else {
+                                            $('#progress-show-1').hide();
                                             $('#progress-hide-1').show();
                                             $('#btn-save-izin').removeClass("btn-loading");
                                             $("#btn-save-izin").html('<span><i class="fa fa-save"></i></span> Save');
@@ -1116,6 +1131,7 @@
                                             $('#tanggal_akhir_ijin').val('');
                                             $('#kode_absen_ijin').val('');
                                             $('#absen_alasan_izin').val('');
+                                        }
                                         },
                                         error: function(res){
                                             swal("", "create perizinan gagal", "error");
@@ -1274,7 +1290,6 @@
                                             });
                                         },
                                         error: function(res){
-                                            console.log(res);
                                             notif({
                                                 msg: "<b>Error:</b> Oops data gagal di simpan.",
                                                 type: "error"
@@ -1443,6 +1458,7 @@
 
                                 $('#progress-show-1').hide();
                                 $('#progress-hide-1').show();
+                                $("#datatable-ajax-crud").DataTable().ajax.reload();
 
                             } else {
                                 // else everythings
@@ -1505,7 +1521,6 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     "dataSrc": function(json) {
-                                console.log('Respons dari Controller:', json); // Konsol semua respons
                                 return json.data; // Data yang digunakan oleh DataTables
                             }
                 },

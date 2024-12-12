@@ -3462,8 +3462,6 @@ class MdAbsenHadirController extends AdminBaseController
 
             $today=date('Y-m-d');
 
-            $data_update = [];
-            
             foreach ($masterAbsen as $k => $v) {
                 $countEditedData1=DataKehadiranInOutEdited::where('tanggal_absen', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->count();
                 $count1=LogDataGagalAbsen::where('tanggal_absen', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->count();
@@ -3887,7 +3885,7 @@ class MdAbsenHadirController extends AdminBaseController
                     }
 
                     $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
-                    $data_update[]=[
+                    $data_update=[
                         'jumlah_menit_absen_dtpc'=>$jumlah_menit_absen_dtpc,
                         'jumlah_absen_menit_kerja'=>$durasi_kerja_menit-$jumlah_menit_absen_dtpc,
                         'jumlah_menit_absen_dt'=>$total_DT,
@@ -3895,7 +3893,7 @@ class MdAbsenHadirController extends AdminBaseController
                         'tanggal_berjalan'=>$v->tanggal_berjalan,
                         'enroll_id'=>$v->enroll_id,
                     ];
-                    // MasterDataAbsenKehadiran::where('tanggal_berjalan', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->update($data_update);
+                    MasterDataAbsenKehadiran::where('tanggal_berjalan', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->update($data_update);
                 }
                 else if($countEditedData>0 && $count<1){
                     $datakehadiraneditin = count(DataKehadiranInOutEdited::where('tanggal_absen', $v->tanggal_berjalan)->where('enroll_id','=', $val["enroll_id"])->where('absen_masuk_kerja','!=',null)->where('absen_pulang_kerja',null)->get());
@@ -4089,7 +4087,7 @@ class MdAbsenHadirController extends AdminBaseController
                                 }
         
                                 $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
-                                $data_update[]=[
+                                $data_update=[
                                     'jumlah_menit_absen_dtpc'=>$jumlah_menit_absen_dtpc,
                                     'jumlah_absen_menit_kerja'=>$durasi_kerja_menit-$jumlah_menit_absen_dtpc,
                                     'jumlah_menit_absen_dt'=>$total_DT,
@@ -4097,7 +4095,7 @@ class MdAbsenHadirController extends AdminBaseController
                                     'tanggal_berjalan'=>$v->tanggal_berjalan,
                                     'enroll_id'=>$v->enroll_id,
                                 ];
-                                // MasterDataAbsenKehadiran::where('tanggal_berjalan', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->update($data_update);
+                                MasterDataAbsenKehadiran::where('tanggal_berjalan', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->update($data_update);
                             }else{
                                 if( $jadwal_in!=null && $absen_in!=null && $absen_in>$jadwal_in && $v->status_absen==null){
                                     $total_DT1 = $DT->i +($DT->h*60);
@@ -4307,7 +4305,7 @@ class MdAbsenHadirController extends AdminBaseController
                                 }
         
                                 $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
-                                $data_update[]=[
+                                $data_update=[
                                     'jumlah_menit_absen_dtpc'=>$jumlah_menit_absen_dtpc,
                                     'jumlah_absen_menit_kerja'=>$durasi_kerja_menit-$jumlah_menit_absen_dtpc,
                                     'jumlah_menit_absen_dt'=>$total_DT,
@@ -4315,7 +4313,7 @@ class MdAbsenHadirController extends AdminBaseController
                                     'tanggal_berjalan'=>$v->tanggal_berjalan,
                                     'enroll_id'=>$v->enroll_id,
                                 ];
-                                // MasterDataAbsenKehadiran::where('tanggal_berjalan', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->update($data_update);
+                                MasterDataAbsenKehadiran::where('tanggal_berjalan', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->update($data_update);
                             }
                         }
                     }
@@ -4323,16 +4321,15 @@ class MdAbsenHadirController extends AdminBaseController
             }
 
 
-            foreach($data_update as $value){
-                // MasterDataAbsenKehadiran::where('tanggal_berjalan', $value['tanggal_berjalan'])->where('enroll_id', $value['enroll_id'])->update($value);
-                MasterDataAbsenKehadiran::where('tanggal_berjalan', $value['tanggal_berjalan'])->where('enroll_id', $value['enroll_id'])
-                ->update([
-                    'jumlah_menit_absen_dtpc'=>$value['jumlah_menit_absen_dtpc'],
-                    'jumlah_absen_menit_kerja'=>$value['jumlah_absen_menit_kerja'],
-                    'jumlah_menit_absen_dt'=>$value['jumlah_menit_absen_dt'],
-                    'jumlah_menit_absen_pc'=>$value['jumlah_menit_absen_pc'],
-                ]);
-            }
+            // foreach($data_update as $value){
+            //     MasterDataAbsenKehadiran::where('tanggal_berjalan', $value['tanggal_berjalan'])->where('enroll_id', $value['enroll_id'])
+            //     ->update([
+            //         'jumlah_menit_absen_dtpc'=>$value['jumlah_menit_absen_dtpc'],
+            //         'jumlah_absen_menit_kerja'=>$value['jumlah_absen_menit_kerja'],
+            //         'jumlah_menit_absen_dt'=>$value['jumlah_menit_absen_dt'],
+            //         'jumlah_menit_absen_pc'=>$value['jumlah_menit_absen_pc'],
+            //     ]);
+            // }
 
             
             $setClearMTL = MasterDataAbsenKehadiran::selectRaw("
@@ -5121,9 +5118,9 @@ class MdAbsenHadirController extends AdminBaseController
                 master_data_absen_kehadiran.absen_masuk_kerja,
                 master_data_absen_kehadiran.absen_pulang_kerja,
                 master_data_absen_kehadiran.jumlah_absen_menit_kerja,
-              data_absen_perijinan.time_mulai_ijin as permits_dari_pukul,
-                    data_absen_perijinan.time_akhir_ijin as permits_sampai_pukul,
-                    data_absen_perijinan.total_time_ijin as total_menit_permits,
+                data_absen_perijinan.time_mulai_ijin as permits_dari_pukul,
+                data_absen_perijinan.time_akhir_ijin as permits_sampai_pukul,
+                data_absen_perijinan.total_time_ijin as total_menit_permits,
                 master_data_absen_kehadiran.jumlah_menit_absen_dt,
                 master_data_absen_kehadiran.jumlah_menit_absen_pc,
                 master_data_absen_kehadiran.jumlah_menit_absen_dtpc,
