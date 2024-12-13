@@ -2,19 +2,19 @@
 
 a,
 a:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .btn-primary {
     color: #fff;
-    background-color: #FF72C6 !important;
-    border-color: #FF72C6
+    background-color: var(--primary) !important;
+    border-color: var(--primary)
 }
 
 .btn-primary:hover {
     color: #fff;
-    background-color: #4277c1 !important;
-    border-color: #4277c1
+    background-color: var(--secondary) !important;
+    border-color: var(--primary)
 }
 
 .btn-primary.focus,
@@ -28,8 +28,8 @@ a:hover {
 .btn-primary:not(:disabled):not(.disabled):active,
 .show>.btn-primary.dropdown-toggle {
     color: #fff;
-    background-color: #FF72C6 !important;
-    border-color: #FF72C6
+    background-color: var(--primary) !important;
+    border-color: var(--primary)
 }
 
 .btn-primary:not(:disabled):not(.disabled).active:focus,
@@ -73,7 +73,7 @@ a:hover {
 
 .btn-gradient-primary {
     color: #fff;
-    background: linear-gradient(to bottom right, #FF72C6, #4f4da5) !important;
+    background: linear-gradient(to bottom right, var(--primary), #4f4da5) !important;
     border-color: #554d97
 }
 
@@ -91,15 +91,15 @@ a:hover {
 .btn-gradient-primary.disabled,
 .btn-gradient-primary:disabled {
     color: #fff;
-    background-color: #FF72C6 !important;
-    border-color: #FF72C6
+    background-color: var(--primary) !important;
+    border-color: var(--primary)
 }
 
 .btn-gradient-primary:not(:disabled):not(.disabled).active,
 .btn-gradient-primary:not(:disabled):not(.disabled):active,
 .show>.btn-gradient-primary.dropdown-toggle {
     color: #fff;
-    background-color: #FF72C6 !important;
+    background-color: var(--primary) !important;
     border-color: #4f4da5
 }
 
@@ -110,16 +110,16 @@ a:hover {
 }
 
 .btn-outline-primary {
-    color: #FF72C6;
+    color: var(--primary);
     background-color: #fff !important;
     background-image: none !important;
-    border-color: #FF72C6
+    border-color: var(--primary)
 }
 
 .btn-outline-primary:hover {
     color: #fff;
-    background-color: #FF72C6 !important;
-    border-color: #FF72C6
+    background-color: var(--primary) !important;
+    border-color: var(--primary)
 }
 
 .btn-outline-primary.focus,
@@ -129,7 +129,7 @@ a:hover {
 
 .btn-outline-primary.disabled,
 .btn-outline-primary:disabled {
-    color: #FF72C6;
+    color: var(--primary);
     background-color: transparent
 }
 
@@ -137,8 +137,8 @@ a:hover {
 .btn-outline-primary:not(:disabled):not(.disabled):active,
 .show>.btn-outline-primary.dropdown-toggle {
     color: #fff;
-    background-color: #FF72C6 !important;
-    border-color: #FF72C6
+    background-color: var(--primary) !important;
+    border-color: var(--primary)
 }
 
 .btn-outline-primary:not(:disabled):not(.disabled).active:focus,
@@ -189,25 +189,25 @@ a:hover {
 .dropdown-item:focus,
 .dropdown-item:hover,
 .input-group-addon {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .mediaicon {
-    border: 1px solid #FF72C6;
-    background: #FF72C6 !important
+    border: 1px solid var(--primary);
+    background: var(--primary) !important
 }
 
 .chat-message,
 a.chip:hover {
-    background-color: #FF72C6 !important
+    background-color: var(--primary) !important
 }
 
 .chat-message:after {
-    border-left: 6px solid #FF72C6 !important
+    border-left: 6px solid var(--primary) !important
 }
 
 .tag-primary {
-    background-color: #FF72C6 !important;
+    background-color: var(--primary) !important;
     color: #fff
 }
 
@@ -219,68 +219,68 @@ a.chip:hover {
 .custom-range:focus::-moz-range-thumb,
 .custom-range:focus::-ms-thumb,
 .custom-range:focus::-webkit-slider-thumb {
-    border-color: #FF72C6;
-    background-color: #FF72C6 !important
+    border-color: var(--primary);
+    background-color: var(--primary) !important
 }
 
 .custom-range::-moz-range-progress,
 .custom-range::-ms-fill-lower,
 .custom-range::-webkit-slider-runnable-track {
-    background: #FF72C6 !important
+    background: var(--primary) !important
 }
 
 .selectgroup-input:checked+.selectgroup-button,
 .selectgroup-input:focus+.selectgroup-button {
-    border-color: #FF72C6;
-    color: #FF72C6
+    border-color: var(--primary);
+    color: var(--primary)
 }
 
 .custom-switch-input:checked~.custom-switch-indicator {
-    background: #FF72C6 !important
+    background: var(--primary) !important
 }
 
 .custom-switch-input:focus~.custom-switch-indicator {
     box-shadow: 0 0 0 2px rgba(70, 127, 207, .25);
-    border-color: #FF72C6
+    border-color: var(--primary)
 }
 
 .label-primary {
-    background: #FF72C6 !important
+    background: var(--primary) !important
 }
 
 .imagecheck-input:focus~.imagecheck-figure {
-    border-color: #FF72C6;
+    border-color: var(--primary);
     box-shadow: 0 0 0 2px rgba(70, 127, 207, .25)
 }
 
 .imagecheck-figure:before {
-    background: #FF72C6 url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E") no-repeat 50%/50% 50%;
+    background: var(--primary) url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E") no-repeat 50%/50% 50%;
     color: #fff
 }
 
 .colorinput-input:focus~.colorinput-color,
 .selectize-input.focus {
-    border-color: #FF72C6;
+    border-color: var(--primary);
     box-shadow: 0 0 0 2px rgba(70, 127, 207, .25)
 }
 
 .selectize-dropdown .active {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .mailsearch .btn {
-    background-color: #FF72C6 !important;
-    border: 1px solid #FF72C6
+    background-color: var(--primary) !important;
+    border: 1px solid var(--primary)
 }
 
 timeline__item:after {
-    border: 6px solid #FF72C6
+    border: 6px solid var(--primary)
 }
 
 .custom-control-input:checked~.custom-control-label:before {
     color: #fff;
-    background-color: #FF72C6 !important;
-    border-color: #FF72C6
+    background-color: var(--primary) !important;
+    border-color: var(--primary)
 }
 
 .custom-control-input:focus~.custom-control-label:before {
@@ -289,7 +289,7 @@ timeline__item:after {
 
 .custom-checkbox .custom-control-input:checked~.custom-control-label:before,
 .custom-checkbox .custom-control-input:indeterminate~.custom-control-label:before {
-    background-color: #FF72C6 !important
+    background-color: var(--primary) !important
 }
 
 .custom-checkbox .custom-control-input:disabled:checked~.custom-control-label:before,
@@ -298,7 +298,7 @@ timeline__item:after {
 }
 
 .custom-radio .custom-control-input:checked~.custom-control-label:before {
-    background-color: #FF72C6 !important
+    background-color: var(--primary) !important
 }
 
 .custom-radio .custom-control-input:disabled:checked~.custom-control-label:before {
@@ -306,34 +306,34 @@ timeline__item:after {
 }
 
 .custom-select:focus::-ms-value {
-    color: #FF72C6;
+    color: var(--primary);
     background-color: #fff !important
 }
 
 .custom-select:disabled {
-    color: #FF72C6 !important
+    color: var(--primary) !important
 }
 
 .custom-file-input:focus~.custom-file-label {
-    border-color: #FF72C6 !important;
+    border-color: var(--primary) !important;
     box-shadow: 0 0 0 2px rgba(70, 127, 207, .25)
 }
 
 .custom-file-input:focus~.custom-file-label:after {
-    border-color: #FF72C6
+    border-color: var(--primary)
 }
 
 .custom-file-label:after {
-    background-color: #FF72C6 !important;
-    border-left: 1px solid #FF72C6
+    background-color: var(--primary) !important;
+    border-left: 1px solid var(--primary)
 }
 
 .custom-range::-webkit-slider-thumb {
-    background-color: #FF72C6 !important
+    background-color: var(--primary) !important
 }
 
 .custom-range::-moz-range-thumb {
-    background-color: #FF72C6 !important
+    background-color: var(--primary) !important
 }
 
 .custom-range::-moz-range-thumb:focus {
@@ -342,39 +342,39 @@ timeline__item:after {
 }
 
 .custom-range::-ms-thumb {
-    background-color: #FF72C6 !important
+    background-color: var(--primary) !important
 }
 
 .nav-pills .nav-link.active,
 .nav-pills .show>.nav-link {
     color: #fff;
-    background-color: #FF72C6 !important
+    background-color: var(--primary) !important
 }
 
 .page-link:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .page-item.active .page-link {
-    background-color: #FF72C6 !important;
-    border: 1px solid #FF72C6
+    background-color: var(--primary) !important;
+    border: 1px solid var(--primary)
 }
 
 .table-inbox tr td .fa-star.inbox-started,
 .table-inbox tr td .fa-star:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .progress-bar {
-    background-color: #FF72C6
+    background-color: var(--primary)
 }
 
 .list-group-item.active {
-    border: 1px solid #FF72C6
+    border: 1px solid var(--primary)
 }
 
 .bg-primary {
-    background-color: #FF72C6 !important;
+    background-color: var(--primary) !important;
     color: #fff !important
 }
 
@@ -398,7 +398,7 @@ button.bg-secondary:hover {
 }
 
 .bg-gradient-primary {
-    background: linear-gradient(to bottom right, #FF72C6, #FF72C6)
+    background: linear-gradient(to bottom right, var(--primary), var(--secondary))
 }
 
 .bg-gradient-secondary {
@@ -406,7 +406,7 @@ button.bg-secondary:hover {
 }
 
 .border-primary {
-    border-color: #FF72C6 !important
+    border-color: var(--primary) !important
 }
 
 .border-secondary {
@@ -414,7 +414,7 @@ button.bg-secondary:hover {
 }
 
 .text-primary {
-    color: #FF72C6 !important
+    color: var(--primary) !important
 }
 
 a.text-primary:focus,
@@ -432,51 +432,51 @@ a.text-secondary:hover {
 }
 
 pre {
-    border-left: 3px solid #FF72C6
+    border-left: 3px solid var(--primary)
 }
 
 .header-bg {
-    background: linear-gradient(linear, left top, right top, from(#FF72C6), to(#FF72C6))
+    background: linear-gradient(linear, left top, right top, from(var(--primary)), to(var(--primary)))
 }
 
 a.icon:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .nav-tabs .nav-link.active,
 .nav-tabs .nav-link:hover:not(.disabled) {
     color: #fff;
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .admin-navbar .mega-dropdown .sub-item .section-label,
 .admin-navbar .nav-link.active,
 .admin-navbar .nav-link:focus,
 .admin-navbar .nav-link:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .admin-navbar .sub-item ul a:active {
-    background-color: #FF72C6
+    background-color: var(--primary)
 }
 
 .admin-navbar .sub-item ul a:focus,
 .admin-navbar .sub-item ul a:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 @media (max-width:992px) {
     .nav-item.with-sub .sub-item {
-        border-top: 2px solid #FF72C6
+        border-top: 2px solid var(--primary)
     }
 }
 
 .nav-tabs .nav-submenu .nav-item.active {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .expanel-primary {
-    border: #FF72C6 !important
+    border: var(--primary) !important
 }
 
 .expanel-secondary {
@@ -485,8 +485,8 @@ a.icon:hover {
 
 .expanel-primary>.expanel-heading {
     color: #fff !important;
-    background-color: #FF72C6 !important;
-    border-color: #FF72C6 !important
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important
 }
 
 .expanel-secondary>.expanel-heading {
@@ -496,78 +496,78 @@ a.icon:hover {
 }
 
 .offer-primary {
-    border-color: #FF72C6
+    border-color: var(--primary)
 }
 
 .offer-primary .shape {
-    border-color: transparent #FF72C6 transparent transparent
+    border-color: transparent var(--primary) transparent transparent
 }
 
 .jsr_slider:before,
 .jsr_slider:focus:before,
 .table-calendar-link:before,
 .table-calendar-link:hover {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .range.range-primary input[type=range]::-moz-slider-thumb,
 .range.range-primary input[type=range]::-webkit-slider-thumb {
-    background-color: #FF72C6
+    background-color: var(--primary)
 }
 
 .range.range-primary output {
-    background-color: #FF72C6
+    background-color: var(--primary)
 }
 
 .range.range-primary input[type=range] {
-    outline-color: #FF72C6
+    outline-color: var(--primary)
 }
 
 .panel.price>.panel-heading {
-    background: #FF72C6;
+    background: var(--primary);
     color: #fff
 }
 
 .user-button i {
-    border: 1px solid #FF72C6
+    border: 1px solid var(--primary)
 }
 
 .nav-tabs .nav-item1 .nav-link.active,
 .nav-tabs .nav-item1 .nav-link:hover:not(.disabled),
 .user-button i:hover {
-    background: #FF72C6;
+    background: var(--primary);
     color: #fff
 }
 
 .nav-tabs .nav-submenu .nav-item1.active {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .heading-primary {
-    background-color: #FF72C6
+    background-color: var(--primary)
 }
 
 .breadcrumb-item1 a {
-    color: #FF72C6
+    color: var(--primary);
 }
 
 .breadcrumb-arrow li a {
-    background-color: #FF72C6;
-    border: 1px solid #FF72C6
+    background-color: var(--primary);
+    border: 1px solid var(--primary);
 }
 
 .breadcrumb-arrow li a:before {
-    border-left-color: #FF72C6
+    border-left-color: var(--primary);
 }
 
 .panel-default>.panel-heading {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .panel-primary .list-group-item.active {
     color: #fff;
-    background-color: #FF72C6;
-    border-color: #FF72C6
+    background-color: var(--primary);
+    border-color: var(--primary)
 }
 
 .panel-primary .list-group-item.active:hover {
@@ -577,17 +577,17 @@ a.icon:hover {
 }
 
 .panel-title1 a {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .dropdown-menu>li>a:focus,
 .dropdown-menu>li>a:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .badge-primary {
     color: #fff;
-    background-color: #FF72C6
+    background-color: var(--primary)
 }
 
 .badge-primary[href]:focus,
@@ -602,373 +602,373 @@ a.icon:hover {
 .sk-circle .sk-child:before,
 .sk-cube-grid .sk-cube,
 .spinner4>div {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .sk-folding-cube .sk-cube:before {
-    background-color: #FF72C6
+    background-color: var(--primary)
 }
 
 .spinner,
 .spinner5>div {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .spinner-lg {
-    background-color: #FF72C6
+    background-color: var(--primary)
 }
 
 .double-bounce1,
 .double-bounce2 {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .cube1,
 .cube2 {
-    background-color: #FF72C6
+    background-color: var(--primary)
 }
 
 .lds-heart div,
 .lds-heart div:after,
 .lds-heart div:before {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .lds-ring div {
     border: 6px solid transparent;
-    border-top-color: #FF72C6
+    border-top-color: var(--primary)
 }
 
 .lds-hourglass:after {
-    border-color: #FF72C6 transparent;
+    border-color: var(--primary) transparent;
     border-style: solid;
     border-width: 26px
 }
 
 #back-to-top {
-    background: #FF72C6 !important
+    background: var(--primary) !important
 }
 
 #back-to-top:hover {
-    color: #FF72C6;
-    border: 2px solid #FF72C6
+    color: var(--primary);
+    border: 2px solid var(--primary)
 }
 
 .sidebar .tabs-menu ul li .active,
 .tabs-menu ul li .active {
-    background: #FF72C6;
+    background: var(--primary);
     color: #fff
 }
 
 .tabs-menu1 ul li .active {
-    border-bottom: 3px solid #FF72C6
+    border-bottom: 3px solid var(--primary)
 }
 
 .rating-stars .rating-stars-container .rating-star.is--active,
 .rating-stars .rating-stars-container .rating-star.is--active .fa-heart,
 .rating-stars .rating-stars-container .rating-star.is--hover,
 .rating-stars .rating-stars-container .rating-star.is--hover .fa-heart {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .br-theme-bars-horizontal .br-widget a.br-active,
 .br-theme-bars-horizontal .br-widget a.br-selected {
-    background-color: #FF72C6
+    background-color: var(--primary)
 }
 
 .br-theme-bars-horizontal .br-widget .br-current-rating,
 .br-theme-bars-pill .br-widget a {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .br-theme-bars-pill .br-widget a.br-active,
 .br-theme-bars-pill .br-widget a.br-selected {
-    background-color: #FF72C6;
+    background-color: var(--primary);
     color: #fff
 }
 
 .br-theme-bars-square .br-widget a.br-active,
 .br-theme-bars-square .br-widget a.br-selected {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .br-theme-bars-movie .br-widget a.br-active,
 .br-theme-bars-movie .br-widget a.br-selected {
-    background-color: #FF72C6
+    background-color: var(--primary)
 }
 
 .br-theme-bars-movie .br-widget .br-current-rating {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .br-theme-bars-1to10 .br-widget a.br-active,
 .br-theme-bars-1to10 .br-widget a.br-selected {
-    background-color: #FF72C6
+    background-color: var(--primary)
 }
 
 .br-theme-bars-1to10 .br-widget .br-current-rating,
 .br-theme-fontawesome-stars .br-widget a.br-active:after,
 .br-theme-fontawesome-stars .br-widget a.br-selected:after {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .br-theme-fontawesome-stars-o .br-widget a.br-active:after,
 .br-theme-fontawesome-stars-o .br-widget a.br-selected:after {
     content: "";
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .br-theme-fontawesome-stars-o .br-widget a.br-fractional:after {
     content: "";
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .action-header,
 .message-feed:not(.right) .mf-content,
 .msb-reply button {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .wizard-card .moving-tab {
-    background-color: #FF72C6 !important
+    background-color: var(--primary) !important
 }
 
 .form-group label.control-label {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .wizard-card .choice.active .icon,
 .wizard-card .choice:hover .icon {
-    border-color: #FF72C6 !important;
-    color: #FF72C6 !important
+    border-color: var(--primary) !important;
+    color: var(--primary) !important
 }
 
 .addui-slider .addui-slider-track .addui-slider-range {
     display: block;
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .addui-slider .addui-slider-track .addui-slider-handle:after {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 div.conv-form-wrapper div.options div.option,
 form.convFormDynamic button.submit {
-    border: 1px solid #FF72C6;
+    border: 1px solid var(--primary);
     background: #fff;
-    color: #FF72C6
+    color: var(--primary)
 }
 
 div.conv-form-wrapper div.options div.option.selected {
-    background: #FF72C6;
+    background: var(--primary);
     color: #fff
 }
 
 div.conv-form-wrapper div.options div.option.selected:hover {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 form.convFormDynamic button.submit:hover {
-    background: #FF72C6;
+    background: var(--primary);
     color: #fff
 }
 
 div.conv-form-wrapper div#messages div.message.from {
-    background: #FF72C6;
+    background: var(--primary);
     color: #fff;
     border-top-right-radius: 0
 }
 
 #sidebar ul li.active>a {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .accordionjs .acc_section.acc_active>.acc_head,
 .tab_wrapper>ul li.active {
-    background: #FF72C6 !important
+    background: var(--primary) !important
 }
 
 .tab_wrapper>ul li.active {
-    border-color: #FF72C6 !important;
+    border-color: var(--primary) !important;
     color: #fff
 }
 
 .tab_wrapper.right_side>ul li.active:after {
-    background: #FF72C6 !important
+    background: var(--primary) !important
 }
 
 .sweet-alert button {
-    background-color: #FF72C6 !important
+    background-color: var(--primary) !important
 }
 
 .timeline__item:after {
-    border: 6px solid #FF72C6
+    border: 6px solid var(--primary)
 }
 
 .job-box-filter a.filtsec i {
-    color: #FF72C6;
+    color: var(--primary);
     margin-right: 5px
 }
 
 .timelineleft>.timeleft-label>span {
-    background-color: #FF72C6
+    background-color: var(--primary)
 }
 
 .timelineleft>li>.fa,
 .timelineleft>li>.glyphicon,
 .timelineleft>li>.ion {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .chat .search_btn {
-    background-color: #FF72C6 !important;
+    background-color: var(--primary) !important;
     border-radius: 0 2px 2px 0 !important
 }
 
 .chat .action-header,
 .msg_head {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .accordion .accordion-header[aria-expanded=true] {
-    background-color: #FF72C6
+    background-color: var(--primary)
 }
 
 .acc-1 .accordion-header:hover {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .acc-1 .accordion__item .accordion-header[aria-expanded=true],
 .acc-1 .accordion__item.active .accordion-header {
-    background: #FF72C6;
+    background: var(--primary);
     color: #fff
 }
 
 .statistics-info .counter-icon {
-    border: 1px solid #FF72C6
+    border: 1px solid var(--primary)
 }
 
 .statistics-info .counter-icon i {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .card-pricing {
-    border: 2px solid #FF72C6
+    border: 2px solid var(--primary)
 }
 
 .dataTable.dtr-inline.collapsed>tbody>tr[role=row]>td:first-child:before,
 table.dataTable.dtr-inline.collapsed>tbody>tr[role=row]>th:first-child:before {
-    background-color: #FF72C6 !important
+    background-color: var(--primary) !important
 }
 
 .sw-theme-dots .nav-tabs .nav-link:hover:not(.disabled) {
-    color: #FF72C6;
+    color: var(--primary);
     background: transparent
 }
 
 #myTab .nav-tabs .nav-item.show .nav-link,
 .nav-tabs .nav-link.active {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .latest-timeline ul.timeline>li:before {
-    border: 3px solid #FF72C6
+    border: 3px solid var(--primary)
 }
 
 .card-bgimg:before {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .header-form .form-inline .btn {
-    border: 2px solid #FF72C6
+    border: 2px solid var(--primary)
 }
 
 @media (max-width:992px) {
     .search-show .search-element {
-        background: #FF72C6
+        background: var(--primary)
     }
 }
 
 .slide-item.active {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .btn-absolute .btn-primary:hover {
-    background: #FF72C6 !important
+    background: var(--primary) !important
 }
 
 .search-show .search-element.search-element1 {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .jsr_bar {
-    background-color: #FF72C6
+    background-color: var(--primary)
 }
 
 .cal1 .clndr .clndr-table tr .day.my-today,
 .cal1 .clndr .clndr-table tr .day.today {
-    color: #FF72C6 !important;
+    color: var(--primary) !important;
     background: none
 }
 
 .cal1 .clndr .clndr-controls .clndr-control-button .clndr-next-button,
 .cal1 .clndr .clndr-controls .clndr-control-button .clndr-previous-button {
     color: #fff;
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .resp-tab-active {
-    border: 1px solid #FF72C6 !important;
-    border-top: 4px solid #FF72C6 !important
+    border: 1px solid var(--primary) !important;
+    border-top: 4px solid var(--primary) !important
 }
 
 .resp-tab-content {
-    border-top-color: #FF72C6
+    border-top-color: var(--primary)
 }
 
 .daterangepicker td.active,
 .daterangepicker td.active:hover {
-    background-color: #FF72C6
+    background-color: var(--primary)
 }
 
 .daterangepicker .input-mini.active,
 .ranges li:hover {
-    border: 1px solid #FF72C6
+    border: 1px solid var(--primary)
 }
 
 .ranges li:hover {
-    background-color: #FF72C6;
+    background-color: var(--primary);
     color: #fff
 }
 
 .ranges li.active {
-    background-color: #FF72C6 !important;
-    border: 1px solid #FF72C6 !important;
+    background-color: var(--primary) !important;
+    border: 1px solid var(--primary) !important;
     color: #fff
 }
 
 .sw-theme-dots>ul.step-anchor>li.active>a {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .sw-theme-dots>ul.step-anchor>li.active>a:after {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .sw-theme-default>ul.step-anchor>li.clickable>a:hover {
-    color: #FF72C6 !important
+    color: var(--primary) !important
 }
 
 .sw-theme-default>ul.step-anchor>li>a:after {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .sw-theme-default>ul.step-anchor>li.active>a {
-    background: #FF72C6 !important
+    background: var(--primary) !important
 }
 
 .sw-theme-default>ul.step-anchor>li.done>a:after {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .form-group .checkbox label,
@@ -979,85 +979,85 @@ table.dataTable.dtr-inline.collapsed>tbody>tr[role=row]>th:first-child:before {
 .form-group .radio label,
 .form-group label,
 label.control-label {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .form-group.form-group-sm .form-control:-ms-input-placeholder,
 .form-group.form-group-sm .form-control::-moz-placeholder,
 .form-group.form-group-sm .form-control::-webkit-input-placeholder {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .form-group.form-group-sm .checkbox label,
 .form-group.form-group-sm .radio label,
 .form-group.form-group-sm label,
 .form-group.form-group-sm label.control-label {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .form-group.form-group-lg .form-control:-ms-input-placeholder,
 .form-group.form-group-lg .form-control::-moz-placeholder,
 .form-group.form-group-lg .form-control::-webkit-input-placeholder {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .form-group.form-group-lg .checkbox label,
 .form-group.form-group-lg .radio label,
 .form-group.form-group-lg label,
 .form-group.form-group-lg label.control-label {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .fc button {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .horizontalMenu>.horizontalMenu-list>li>.horizontal-megamenu .link-list li a:hover,
 .horizontalMenu>.horizontalMenu-list>li>ul.sub-menu>li>a:hover,
 .horizontalMenu>.horizontalMenu-list>li>ul.sub-menu>li>ul.sub-menu>li>a:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 @media only screen and (max-width:991px) {
     .horizontalMenu>.horizontalMenu-list>li>ul.sub-menu li:hover>a {
-        color: #FF72C6 !important
+        color: var(--primary) !important
     }
 }
 
 .hor-menu .horizontalMenu>.horizontalMenu-list>li>a.active {
     color: #fff;
-    background: #FF72C6 !important
+    background: var(--primary) !important
 }
 
 .hor-menu .horizontalMenu>.horizontalMenu-list>li>a:hover:before {
-    border-bottom: 2px solid #FF72C6
+    border-bottom: 2px solid var(--primary)
 }
 
 .jvectormap-goback,
 .jvectormap-zoomin,
 .jvectormap-zoomout {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .ms-choice {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .wrapper>h1 span {
-    border-bottom: 2px solid #FF72C6;
-    color: #FF72C6
+    border-bottom: 2px solid var(--primary);
+    color: var(--primary)
 }
 
 .tab_wrapper .controller span {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .tab_wrapper .content_wrapper .accordian_header.active {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .tab_wrapper .content_wrapper .accordian_header.active:after {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .tab_wrapper .content_wrapper .accordian_header.active .arrow {
@@ -1066,33 +1066,33 @@ label.control-label {
 }
 
 .tab_wrapper.left_side>ul li.active:after {
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .mce-grid td.mce-grid-cell div:focus {
-    border-color: #FF72C6
+    border-color: var(--primary)
 }
 
 .mce-grid a:focus,
 .mce-grid a:hover {
-    border-color: #FF72C6 !important
+    border-color: var(--primary) !important
 }
 
 .mce-grid-border a.mce-active,
 .mce-grid-border a:hover {
-    border-color: #FF72C6;
-    background: #FF72C6
+    border-color: var(--primary);
+    background: var(--primary)
 }
 
 .mce-primary,
 .mce-primary.mce-active,
 .mce-primary.mce-active:hover,
 .mce-primary:not(.mce-disabled):active {
-    background-color: #FF72C6
+    background-color: var(--primary)
 }
 
 .mce-menu-item.mce-disabled:hover {
-    background: #FF72C6;
+    background: var(--primary);
     color: #fff !important
 }
 
@@ -1100,24 +1100,24 @@ label.control-label {
 .mce-menu-item.mce-selected,
 .mce-menu-item:focus,
 .mce-menu-item:hover {
-    background-color: #FF72C6
+    background-color: var(--primary)
 }
 
 .mce-textbox.mce-focus,
 .mce-textbox:focus {
-    border-color: #FF72C6
+    border-color: var(--primary)
 }
 
 .richText .richText-editor:focus {
-    border-left: 5px solid #FF72C6
+    border-left: 5px solid var(--primary)
 }
 
 .slide-menu li a:hover {
-    color: #FF72C6 !important
+    color: var(--primary) !important
 }
 
 .app-sidebar .side-menu__item:hover {
-    background: linear-gradient(125deg, #FF72C6, #FF72C6) !important;
+    background: linear-gradient(125deg, var(--primary), var(--primary)) !important;
     color: #fff !important
 }
 
@@ -1125,7 +1125,7 @@ label.control-label {
 .side-menu__item:focus,
 .side-menu__item:hover {
     text-decoration: none;
-    color: #FF72C6;
+    color: var(--primary);
     background: hsla(0, 0%, 100%, .1)
 }
 
@@ -1133,11 +1133,11 @@ label.control-label {
 .side-menu__item:focus .side-menu__icon,
 .side-menu__item:hover .side-menu__icon,
 .slide-menu li.active>a {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .slide-menu a.active {
-    color: #FF72C6;
+    color: var(--primary);
     background: hsla(0, 0%, 88.2%, .1)
 }
 
@@ -1145,11 +1145,11 @@ label.control-label {
 .slide-item:focus,
 .slide-item:hover {
     text-decoration: none;
-    color: #FF72C6 !important
+    color: var(--primary) !important
 }
 
 .side-menu .side-menu__icon {
-    color: #FF72C6 !important
+    color: var(--primary) !important
 }
 
 .form-control:focus {
@@ -1190,11 +1190,11 @@ label.control-label {
 }
 
 .app-sidebar .side-menu__item.active {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .clock-presenter {
-    background: #FF72C6 !important
+    background: var(--primary) !important
 }
 
 .resp-vtabs .first-sidemenu li.resp-tab-active:before {
@@ -1205,12 +1205,12 @@ label.control-label {
     left: 0;
     top: 0;
     bottom: 0;
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .resp-vtabs .first-sidemenu li.active {
-    border-left: 4px solid #FF72C6 !important;
-    background: #FF72C6 !important;
+    border-left: 4px solid var(--primary) !important;
+    background: var(--primary) !important;
     color: #fff;
     border-bottom: 0 !important
 }

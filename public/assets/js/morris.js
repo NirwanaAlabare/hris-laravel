@@ -14,7 +14,7 @@ $(function(e){
 	  ],
 	  xkey: 'x',
 	  ykeys: ['y', 'z'],
-	  lineColors: ['#5eba00','#FF72C6 '],
+	  lineColors: ['#5eba00','#182D49' ],
 	  labels: ['Y', 'Z']
 	}).on('click', function(i, row){
 	  console.log(i, row);
@@ -32,7 +32,7 @@ $(function(e){
 	  ],
 	  xkey: 'x',
 	  ykeys: ['y', 'z'],
-	  lineColors: ['#5eba00','#FF72C6 '],
+	  lineColors: ['#5eba00','#182D49' ],
 	  labels: ['Y', 'Z']
 	});
 
@@ -56,7 +56,7 @@ $(function(e){
 	  barColors: function (row, series, type) {
 		if (type === 'bar') {
 		  var red = Math.ceil(0 * row.y / this.ymax);
-		  return '#FF72C6';
+		  return 'var(--primary)';
 		}
 		else {
 		  return '#000';
@@ -85,7 +85,7 @@ $(function(e){
 	  ykeys: ['licensed', 'sorned'],
 	  labels: ['Licensed', 'SORN'],
 	  barColors: [
-		'#FF72C6 ', '#5eba00'
+		'#182D49' , '#5eba00'
 	  ],
 	  xLabelAngle: 0
 	});
@@ -104,6 +104,7 @@ $(function(e){
 	  return ret;
 	}
 
+
 	/*---- morrisBar6----*/
 	var graph = Morris.Line({
 		element: 'morrisBar6',
@@ -111,7 +112,7 @@ $(function(e){
 		xkey: 'x',
 		ykeys: ['y', 'z'],
 		labels: ['data1', 'data2'],
-		lineColors: ['#5eba00','#FF72C6 '],
+		lineColors: ['#5eba00','#182D49' ],
 
 		parseTime: false,
 		ymin: -1.0,
@@ -145,7 +146,7 @@ $(function(e){
 	  xkey: 'period',
 	  ykeys: ['licensed', 'sorned'],
 	  labels: ['Licensed', 'SORN'],
-	  lineColors: ['#5eba00','#FF72C6 '],
+	  lineColors: ['#5eba00','#182D49' ],
 	});
 
 
@@ -158,7 +159,7 @@ $(function(e){
 			{value: 15, label: 'data3'}
 		  ],
 		  colors: [
-		'#FF72C6 ', '#5eba00', '#fdb901'
+			'#182D49' , '#5eba00', '#fdb901'
 
 	  ],
 		  formatter: function (x) { return x + "%"}
@@ -179,7 +180,7 @@ $(function(e){
 	  backgroundColor: '#fff',
 	  labelColor: '#060',
 	  colors: [
-		'#FF72C6 ', '#5eba00', '#fdb901', '#fc9197', '#17a2b8', '#ecb403'
+		'#182D49' , '#5eba00', '#fdb901', '#fc9197', '#17a2b8', '#ecb403'
 
 	  ],
 	  formatter: function (x) { return x + "%"}

@@ -63,8 +63,8 @@
 }
 .cal1 .clndr .clndr-controls .clndr-control-button .clndr-next-button:hover {
   color: #fff;
-  background-color:#FF72C6;
-  border-color: #FF72C6;
+  background-color:var(--primary);
+  border-color: var(--primary);
 }
 .cal1 .clndr .clndr-controls .clndr-control-button .clndr-next-button.inactive {
   opacity: 0.5;
@@ -90,8 +90,8 @@
 }
 .cal1 .clndr .clndr-controls .clndr-control-button .clndr-previous-button:hover {
   color: #fff;
-  background-color:#FF72C6;
-  border-color: #FF72C6;
+  background-color:var(--primary);
+  border-color: var(--primary);
 }
 .cal1 .clndr .clndr-controls .clndr-control-button .clndr-previous-button.inactive {
   opacity: 0.5;

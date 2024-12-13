@@ -868,7 +868,7 @@
 }
 
 .sub-slide2 .sub-slide-menu2 .sub-slide-item2:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .second-sidemenu .sub-slide-menu .angle2 {

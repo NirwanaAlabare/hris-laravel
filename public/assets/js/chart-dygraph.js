@@ -8,9 +8,9 @@
         return 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
       }
 	  colors:
-            ["#FF72C6", "#f95058", "#32cafe", "#fc0", "#22c03c", "#FF72C6", "#FF72C6",
-             "#FF72C6", "#FF72C6", "#FF72C6", "#FF72C6", "#FF72C6", "#FF72C6", "#FF72C6",
-             "#FF72C6", "#FF72C6", "#FF72C6"];
+            ["var(--primary)", "#f95058", "#32cafe", "#fc0", "#22c03c", "var(--primary)", "var(--primary)",
+             "var(--primary)", "var(--primary)", "var(--primary)", "var(--primary)", "var(--primary)", "var(--primary)", "var(--primary)",
+             "var(--primary)", "var(--primary)", "var(--primary)"];
 
       function barChartPlotter(e) {
         var ctx = e.drawingContext;

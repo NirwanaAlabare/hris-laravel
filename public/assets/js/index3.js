@@ -88,8 +88,8 @@ $(function(e){
 	var myCanvas = document.getElementById("total-customers");
 	var myCanvasContext = myCanvas.getContext("2d");
 	var gradientStroke1 = myCanvasContext.createLinearGradient(0, 0, 0, 380);
-	gradientStroke1.addColorStop(0, '#FF72C6');
-	gradientStroke1.addColorStop(1, '#FF72C6');
+	gradientStroke1.addColorStop(0, 'var(--primary)');
+	gradientStroke1.addColorStop(1, 'var(--primary)');
 
 	var myChart = new Chart(myCanvas, {
 		type: 'bar',
@@ -239,8 +239,8 @@ $(function(e){
 	gradientStroke1.addColorStop(1, '#5eba00');
 
 	var gradientStroke2 = myCanvasContext.createLinearGradient(0, 0, 0, 360);
-	gradientStroke2.addColorStop(0, '#FF72C6');
-	gradientStroke2.addColorStop(1, '#FF72C6');
+	gradientStroke2.addColorStop(0, 'var(--primary)');
+	gradientStroke2.addColorStop(1, 'var(--primary)');
 
     var myChart = new Chart( myCanvas, {
 		type: 'bar',
@@ -409,14 +409,14 @@ $(function(e){
                 data: [ 45, 25, 20, 10 ],
                 backgroundColor: [
                                     "#5eba00",
-                                    "#FF72C6",
+                                    "var(--primary)",
                                     "#5b5be9",
                                     "#f5334f"
                                 ],
                 hoverBackgroundColor: [
 
                                     "#5eba00",
-                                    "#FF72C6",
+                                    "var(--primary)",
                                     "#5b5be9",
                                     "#f5334f"
                                 ]
@@ -451,7 +451,7 @@ $(function(e){
 				label: "Campaign",
 				borderColor: "transparent",
 				borderWidth: "0.1",
-				backgroundColor: "#FF72C6",
+				backgroundColor: "var(--primary)",
 				data: [53, 66, 65, 56, 67, 56, 63],
 
 			}]

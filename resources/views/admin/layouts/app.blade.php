@@ -10,3 +10,4 @@
 {{-- @extends('layouts.Versions.horizontal-boxed') --}}
 {{-- @extends('layouts.Versions.horizontal-centerlogo') --}}
 {{-- @extends('layouts.Versions.horizontal-centerlogo-boxed') --}}
+

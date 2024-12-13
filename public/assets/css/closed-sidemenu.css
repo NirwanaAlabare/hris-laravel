@@ -152,7 +152,7 @@
 
 .app-sidebar__toggle {
     padding: 6px 15px;
-    color: #FF72C6;
+    color: var(--primary);
     line-height: 2.5;
     transition: background-color .3s ease;
     z-index: 1
@@ -428,7 +428,7 @@
 .side-menu__item:focus,
 .side-menu__item:hover {
     text-decoration: none;
-    color: #FF72C6;
+    color: var(--primary);
     font-size: 12px;
     background: #ececec
 }
@@ -436,7 +436,7 @@
 .side-menu__item.active .side-menu__icon,
 .side-menu__item:focus .side-menu__icon,
 .side-menu__item:hover .side-menu__icon {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .slide-item.active,
@@ -447,7 +447,7 @@
 }
 
 .slide-menu a.active {
-    color: #FF72C6 !important;
+    color: var(--primary) !important;
     background: #fff !important
 }
 
@@ -455,7 +455,7 @@
 .slide-item:focus,
 .slide-item:hover {
     text-decoration: none;
-    color: #FF72C6
+    color: var(--primary)
 }
 /* 467fcf warna asal */
 FF72C6
@@ -688,7 +688,7 @@ FF72C6
 }
 
 .slide.submenu .side-menu__label:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .side-menu .slide-menu.submenu-list {
@@ -701,7 +701,7 @@ FF72C6
 }
 
 .side-menu .slide-menu.submenu-list a:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .toggle-menu.side-menu li ul li:first-child {
@@ -735,7 +735,7 @@ FF72C6
 
 .app-sidebar .side-menu__item.active,
 .app-sidebar .side-menu__item:hover {
-    background: linear-gradient(125deg, #FF72C6, #FF72C6);
+    background: linear-gradient(125deg, var(--primary), var(--primary));
     color: #fff !important;
     border-top: 1px solid rgba(210, 215, 221, .5);
     border-radius: 10px;
@@ -771,13 +771,13 @@ FF72C6
 .left-menu-dark .side-menu__item:focus,
 .left-menu-dark .side-menu__item:hover {
     text-decoration: none;
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .left-menu-dark .side-menu__item.active .side-menu__icon,
 .left-menu-dark .side-menu__item:focus .side-menu__icon,
 .left-menu-dark .side-menu__item:hover .side-menu__icon {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .left-menu-dark .slide-item.active,
@@ -789,14 +789,14 @@ FF72C6
 }
 
 .left-menu-dark .slide-menu a.active {
-    color: #FF72C6 !important;
+    color: var(--primary) !important;
     background: #001027 !important
 }
 
 .left-menu-dark .slide-item.active,
 .left-menu-dark .slide-item:focus,
 .left-menu-dark .slide-item:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .left-menu-dark .side-menu .side-menu__icon {
@@ -812,7 +812,7 @@ FF72C6
 }
 
 .left-menu-dark .slide.submenu .side-menu__label:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .left-menu-dark .side-menu .slide-menu.submenu-list li:hover {
@@ -820,7 +820,7 @@ FF72C6
 }
 
 .left-menu-dark .side-menu .slide-menu.submenu-list a:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .left-menu-dark .toggle-menu.side-menu li ul li:first-child {
@@ -833,7 +833,7 @@ FF72C6
 
 .left-menu-dark .app-sidebar .side-menu__item.active,
 .left-menu-dark .app-sidebar .side-menu__item:hover {
-    background: linear-gradient(125deg, #FF72C6, #FF72C6);
+    background: linear-gradient(125deg, var(--primary), var(--primary));
     color: #fff !important
 }
 
@@ -846,7 +846,7 @@ FF72C6
 .left-menu-dark .side-menu__item:focus,
 .left-menu-dark .side-menu__item:hover {
     color: #fff !important;
-    background: #FF72C6 !important
+    background: var(--primary) !important
 }
 
 .left-menu-dark .toggle-menu.side-menu li ul li a {

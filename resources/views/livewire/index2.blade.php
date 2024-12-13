@@ -315,7 +315,7 @@
 													<div class="card-body iconfont text-center">
 														<div class="row">
 															<div class="col">
-																<div class="chart-circle mt-2 mb-2 chart-circle-md float-left" data-value="0.65" data-thickness="8" data-color="#FF72C6">
+																<div class="chart-circle mt-2 mb-2 chart-circle-md float-left" data-value="0.65" data-thickness="8" data-color="var(--primary)">
 																	<div class="chart-circle-value"><div class="">65% </div></div>
 																</div>
 															</div>

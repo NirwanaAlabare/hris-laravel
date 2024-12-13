@@ -63,7 +63,7 @@
     </div>
     <!-- End page-header -->
     <div class="card shadow">
-        <div class="card-header bg-primary p-3">
+        <div class="card-header  bg-gradient-primary text-white p-3">
             <div class="card-title">FILTER DATA PERIZINAN KARYAWAN</div>
             <div class="card-options ">
                 <a href="#" class="card-options-collapse mr-2" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
@@ -86,7 +86,7 @@
                 </div>
             </div>
         </div>
-        <div class="card-footer bg-primary m-0 p-1">
+        <div class="card-footer  bg-gradient-primary text-white m-0 p-1">
             <div class="text-white">
                 <a id="btn-cari" class="btn btn-app btn-secondary mr-0 mt-0 mb-0" data-toggle="tooltip" title="Cari Data"><i class="ion-search"></i> Cari</a>
             </div>
@@ -105,7 +105,7 @@
                 </ul>
             </div>
             <div id="data_perijinan" class="card shadow tab-content">
-                <div class="card-header bg-primary p-3">
+                <div class="card-header  bg-gradient-primary text-white p-3">
                     <div id="title-table1" class="card-title">DATA PERIZINAN KARYAWAN</div>
                     <div class="card-options">
                         <a href="#" class="card-options-collapse mr-2" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
@@ -127,19 +127,19 @@
                                 <table id="datatable1" class="table table-sm table-striped table-bordered table-vcenter text-nowrap table-nowrap w-100 m-0 p-0">
                                     <thead class="border text-center">
                                         <tr>
-                                            <th class="bg-primary w-5 align-middle" scope="col">NO</th>
-                                            <th class="bg-primary w-5 align-middle" scope="col"></th>
-                                            <th class="bg-primary w-5 align-middle" scope="col">TANGGAL PERIZINAN</th>
-                                            <th class="bg-primary w-5 align-middle" scope="col">NOMOR FORM PERIZINAN</th>
-                                            <th class="bg-primary w-5 align-middle" scope="col">NIK</th>
-                                            <th class="bg-primary w-5 align-middle" scope="col">NAMA KARYAWAN</th>
-                                            <th class="bg-primary w-5 align-middle" scope="col">NOMOR<br>ABSEN</th>
-                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">KODE IZIN</th>
-                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">ALSAN IZIN</th>
-                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">TANGGAL MULAI</th>
-                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">TANGGAL SELESAI</th>
-                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">WAKTU MULAI</th>
-                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">WAKTU SELESAI</th>
+                                            <th class=" bg-primary text-white w-5 align-middle" scope="col">NO</th>
+                                            <th class=" bg-primary text-white w-5 align-middle" scope="col"></th>
+                                            <th class=" bg-primary text-white w-5 align-middle" scope="col">TANGGAL PERIZINAN</th>
+                                            <th class=" bg-primary text-white w-5 align-middle" scope="col">NOMOR FORM PERIZINAN</th>
+                                            <th class=" bg-primary text-white w-5 align-middle" scope="col">NIK</th>
+                                            <th class=" bg-primary text-white w-5 align-middle" scope="col">NAMA KARYAWAN</th>
+                                            <th class=" bg-primary text-white w-5 align-middle" scope="col">NOMOR<br>ABSEN</th>
+                                            <th class=" bg-primary text-white w-5 align-middle" scope="col" width="50px">KODE IZIN</th>
+                                            <th class=" bg-primary text-white w-5 align-middle" scope="col" width="50px">ALSAN IZIN</th>
+                                            <th class=" bg-primary text-white w-5 align-middle" scope="col" width="50px">TANGGAL MULAI</th>
+                                            <th class=" bg-primary text-white w-5 align-middle" scope="col" width="50px">TANGGAL SELESAI</th>
+                                            <th class=" bg-primary text-white w-5 align-middle" scope="col" width="50px">WAKTU MULAI</th>
+                                            <th class=" bg-primary text-white w-5 align-middle" scope="col" width="50px">WAKTU SELESAI</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -154,7 +154,7 @@
                             </div>
                             <i><div class="text-left mt-1 mb-1 text-sm ml-1" id="subtitle-table1"></div></i>
                         </div>
-                        <div class="card-footer bg-primary br-br-7 br-bl-7">
+                        <div class="card-footer  bg-gradient-primary text-white br-br-7 br-bl-7">
                             <div class="text-white"></div>
                         </div>
                     </form>
@@ -165,18 +165,18 @@
                             <table id="datatable_verifikasi" class="table table-sm table-striped table-bordered table-vcenter text-nowrap table-nowrap w-100 m-0 p-0">
                                 <thead class="border text-center">
                                     <tr>
-                                        <th class="bg-primary w-5 align-middle" scope="col">NO</th>
-                                        <th class="bg-primary w-5 align-middle" scope="col">TANGGAL PERIZINAN</th>
-                                        <th class="bg-primary w-5 align-middle" scope="col">NOMOR FORM PERIZINAN</th>
-                                        <th class="bg-primary w-5 align-middle" scope="col">NIK</th>
-                                        <th class="bg-primary w-5 align-middle" scope="col">NAMA KARYAWAN</th>
-                                        <th class="bg-primary w-5 align-middle" scope="col">NOMOR<br>ABSEN</th>
-                                        <th class="bg-primary w-5 align-middle" scope="col" width="50px">KODE IZIN</th>
-                                        <th class="bg-primary w-5 align-middle" scope="col" width="50px">ALSAN IZIN</th>
-                                        <th class="bg-primary w-5 align-middle" scope="col" width="50px">TANGGAL MULAI</th>
-                                        <th class="bg-primary w-5 align-middle" scope="col" width="50px">TANGGAL SELESAI</th>
-                                        <th class="bg-primary w-5 align-middle" scope="col" width="50px">WAKTU MULAI</th>
-                                        <th class="bg-primary w-5 align-middle" scope="col" width="50px">WAKTU SELESAI</th>
+                                        <th class=" bg-primary text-white w-5 align-middle" scope="col">NO</th>
+                                        <th class=" bg-primary text-white w-5 align-middle" scope="col">TANGGAL PERIZINAN</th>
+                                        <th class=" bg-primary text-white w-5 align-middle" scope="col">NOMOR FORM PERIZINAN</th>
+                                        <th class=" bg-primary text-white w-5 align-middle" scope="col">NIK</th>
+                                        <th class=" bg-primary text-white w-5 align-middle" scope="col">NAMA KARYAWAN</th>
+                                        <th class=" bg-primary text-white w-5 align-middle" scope="col">NOMOR<br>ABSEN</th>
+                                        <th class=" bg-primary text-white w-5 align-middle" scope="col" width="50px">KODE IZIN</th>
+                                        <th class=" bg-primary text-white w-5 align-middle" scope="col" width="50px">ALSAN IZIN</th>
+                                        <th class=" bg-primary text-white w-5 align-middle" scope="col" width="50px">TANGGAL MULAI</th>
+                                        <th class=" bg-primary text-white w-5 align-middle" scope="col" width="50px">TANGGAL SELESAI</th>
+                                        <th class=" bg-primary text-white w-5 align-middle" scope="col" width="50px">WAKTU MULAI</th>
+                                        <th class=" bg-primary text-white w-5 align-middle" scope="col" width="50px">WAKTU SELESAI</th>
                                     </tr>
                                 </thead>
                                 <tbody>

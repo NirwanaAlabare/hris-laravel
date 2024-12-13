@@ -1,11 +1,14 @@
 @extends('admin.adminlayouts.adminlayout')
 
 @section('head')
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Owl Theme css-->
 <link href="{{URL::asset('assets/plugins/owl-carousel/owl.carousel.css')}}" rel="stylesheet">
 
 <!-- Morris  Charts css-->
 <link href="{{URL::asset('assets/plugins/morris/morris.css')}}" rel="stylesheet" />
+
 
 @stop
 @section('mainarea')
@@ -177,6 +180,8 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             dataType: 'json',
             success: function(res){
+                var primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+
                 //console.info(res['persentase_kehadiran']);
                 new Morris.Donut({
                     element: 'morrisBar9',
@@ -187,7 +192,7 @@
                     backgroundColor: '#fff',
                     labelColor: '#060',
                     colors: [
-                    '#FF72C6 ', '#dc3545'
+                        primaryColor, '#dc3545'
 
                     ],
                     formatter: function (x) { return x + "%"}
@@ -204,7 +209,6 @@
 
             }
         });
-
     }
 
 
@@ -216,8 +220,16 @@
     setInterval(function() {
         getKehadiranValue();
         getTanggalKehadiranSekarang();
+
     }, 60000);
+
+  
 
 </script>
 
 @endsection
+
+
+
+
+

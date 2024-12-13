@@ -20,8 +20,8 @@
     --gray-dark: #343a40;
     --azure: #28afd0;
     --lime: #7bd235;
-    --primary: #FF72C6;
-    --secondary: #5eba00;
+    --primary: #15435A;
+    --secondary: #177CAE;
     --success: #22c03c;
     --info: #3ec7e8;
     --warning: #ffca4a;
@@ -35,6 +35,21 @@
     --breakpoint-xl: 1280px;
     --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     --font-family-monospace: Monaco, Consolas, "Liberation Mono", "Courier New", monospace
+}
+
+.second-theme {
+    --primary: #920559;
+    --secondary: #5A154B;
+}
+
+.pink-theme {
+    --primary: #FF72C6;
+    --secondary: #ff7088;
+}
+
+.light-theme {
+    --primary: #15435A;
+    --secondary: #177CAE;
 }
 
 html {
@@ -541,14 +556,14 @@ pre code {
 }
 
 .btn-newcolor {
-    background-color: #FF72C6;
-    border-color: #FF72C6;
+    background-color: var(--primary);
+    border-color: var(--primary);
     color: #ffffff;
 }
 
 .btn-newcolor:hover {
-    background-color: #FF72C6; /* Warna hover */
-    border-color: #FF72C6;
+    background-color: var(--primary); /* Warna hover */
+    border-color: var(--primary);
     color: #ffffff;
 }
 
@@ -1178,7 +1193,7 @@ pre {
 
 .avatar-cyan {
     background-color: #b9e3ea;
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .avatar-white {
@@ -3321,8 +3336,8 @@ button.close {
 
 .btn-cyan {
     color: #fff;
-    background-color: #FF72C6;
-    border-color: #FF72C6
+    background-color: var(--primary);
+    border-color: var(--primary)
 }
 
 .btn-cyan:hover {
@@ -3339,8 +3354,8 @@ button.close {
 .btn-cyan.disabled,
 .btn-cyan:disabled {
     color: #fff;
-    background-color: #FF72C6;
-    border-color: #FF72C6
+    background-color: var(--primary);
+    border-color: var(--primary)
 }
 
 .btn-cyan:not(:disabled):not(.disabled).active,
@@ -8342,7 +8357,7 @@ a.tag-addon:hover {
 }
 
 .tag-cyan {
-    background-color: #FF72C6 !important;
+    background-color: var(--primary) !important;
     color: #fff
 }
 
@@ -13249,7 +13264,7 @@ div[data-acc-step]:not(.open) .badge-primary {
         position: absolute !important;
         z-index: 1000;
         right: 30px !important;
-        background: #FF72C6
+        background: var(--primary)
     }
 
     body.search-show .header-form .form-inline .search-element {
@@ -13619,7 +13634,7 @@ svg {
 
 .horizontalMenu>.horizontalMenu-list>li>.horizontal-megamenu .link-list li a:hover,
 .horizontalMenu>.horizontalMenu-list>li>ul.sub-menu>li>a:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .facility .fa-lg .fa-stack-1x,
@@ -19358,6 +19373,25 @@ a.icon {
     -webkit-animation: rotation 2s linear infinite
 }
 
+#global-loader,
+#global-loader svg {
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    text-align: center
+}
+
+#global-loader svg {
+    position: absolute;
+    top: 45%;
+    -webkit-animation: rotation 2s linear infinite
+}
+
+
+.loader-path {
+    fill: var(--primary); /* Menggunakan var(--primary) untuk warna fill */
+}
+
 @-webkit-keyframes rotation {
     0% {
         -webkit-transform: rotate(0deg)
@@ -20520,14 +20554,14 @@ dd {
 }
 
 .br-theme-bars-square .br-widget a {
-    border: 2px solid #FF72C6;
+    border: 2px solid var(--primary);
     background-color: #fff;
     color: #e5e9f2
 }
 
 .br-theme-bars-square .br-widget a.br-active,
 .br-theme-bars-square .br-widget a.br-selected {
-    color: #FF72C6 !important
+    color: var(--primary) !important
 }
 
 .tabs-menu ul li a {
@@ -21092,11 +21126,11 @@ body.fixed-header .header {
     width: 2rem;
     height: 2rem;
     position: relative;
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .header-toggler:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .header-toggler-icon {
@@ -22053,7 +22087,7 @@ video {
 
 .horizontalMenu>.horizontalMenu-list>li>a.active {
     color: #fff;
-    background: #FF72C6;
+    background: var(--primary);
     text-decoration: none
 }
 
@@ -22907,7 +22941,7 @@ video {
     }
 
     .horizontalMenu>.horizontalMenu-list>li>ul.sub-menu>li:hover>a {
-        color: #FF72C6;
+        color: var(--primary);
         text-decoration: none
     }
 
@@ -23033,7 +23067,7 @@ video {
 .horizontalMenu>.horizontalMenu-list>li>.horizontal-megamenu .link-list li a.active,
 .horizontalMenu>.horizontalMenu-list>li>ul.sub-menu>li>a.active,
 .horizontalMenu>.horizontalMenu-list>li>ul.sub-menu>li>ul.sub-menu>li>a.active {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 @media only screen and (max-width:991px) {
@@ -23044,7 +23078,7 @@ video {
 
 @media only screen and (max-width:991px) {
     .horizontalMenu>.horizontalMenu-list>li>ul.sub-menu>li>a.active {
-        color: #FF72C6
+        color: var(--primary)
     }
 }
 
@@ -23061,7 +23095,7 @@ video {
 }
 
 .horizontalMenu>.horizontalMenu-list>li>ul.sub-menu>li>ul.sub-menu>li>ul.sub-menu>li>a:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .item-card .cardbody {
@@ -23344,7 +23378,7 @@ video {
 }
 
 .sidebar .tabs-menu ul li .active {
-    background: #FF72C6;
+    background: var(--primary);
     color: #fff
 }
 
@@ -25041,7 +25075,7 @@ user_info span {
     box-shadow: 0 1px 15px 1px rgba(58, 58, 62, .5);
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
-    background: #FF72C6
+    background: var(--primary)
 }
 
 .chat .dropdown-menu.dropdown-menu-right.show {
@@ -28310,7 +28344,7 @@ button.bg-teal:hover {
 }
 
 .bg-cyan {
-    background-color: #FF72C6 !important;
+    background-color: var(--primary) !important;
     color: #fff !important
 }
 
@@ -31706,7 +31740,7 @@ textarea {
 }
 
 .text-cyan {
-    color: #FF72C6 !important
+    color: var(--primary) !important
 }
 
 .text-gray {

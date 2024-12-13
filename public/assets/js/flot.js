@@ -31,7 +31,7 @@ $(function() {
 				verticalLines:false,
 				horizontalLines:false
 			},
-			colors: ['#FF72C6 ', '#5eba00'],
+			colors: ['var(--primary) ', '#5eba00'],
 			yaxis: {
 				min: -1.2,
 				max: 1.2,
@@ -73,7 +73,7 @@ $(function() {
 				verticalLines:false,
 				horizontalLines:false
 			},
-			colors: ['#FF72C6 ', '#5eba00'],
+			colors: ['var(--primary) ', '#5eba00'],
 			yaxis: {
 				min: -1.2,
 				max: 1.2,
@@ -188,7 +188,7 @@ $(function() {
 			grid: {
 				borderColor: "rgba(0,0,0,0.03)",
 			},
-			colors: ["#FF72C6 "],
+			colors: ["var(--primary) "],
 			yaxis: {
 				min: 0,
 				max: 100,
@@ -304,7 +304,7 @@ $(function() {
 				grid: {
 					borderColor: "rgba(0,0,0,0.03)",
 				},
-				colors: ['#FF72C6 ', '#5eba00'],
+				colors: ['var(--primary) ', '#5eba00'],
 				yaxis: {
 					tickLength: 0
 				},
@@ -360,7 +360,7 @@ $(function() {
 					}
 
 				},
-				colors: [ '#FF72C6 ','#fa626b', '#5eba00','#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0'],
+				colors: [ 'var(--primary) ','#fa626b', '#5eba00','#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0'],
 
 			});
 
@@ -379,7 +379,7 @@ $(function() {
 						show: true
 					}
 				},
-				colors: [ '#FF72C6 ','#fa626b', '#5eba00','#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0'],
+				colors: [ 'var(--primary) ','#fa626b', '#5eba00','#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0'],
 				legend: {
 					show: false
 				}
@@ -409,7 +409,7 @@ $(function() {
 						}
 					}
 				},
-				colors: [ '#FF72C6 ','#fa626b', '#5eba00','#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0'],
+				colors: [ 'var(--primary) ','#fa626b', '#5eba00','#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0'],
 				legend: {
 					show: false
 				}
@@ -438,7 +438,7 @@ $(function() {
 						}
 					}
 				},
-				colors: [ '#FF72C6 ','#fa626b', '#5eba00','#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0'],
+				colors: [ 'var(--primary) ','#fa626b', '#5eba00','#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0'],
 				legend: {
 					show: false
 				}
@@ -468,7 +468,7 @@ $(function() {
 						}
 					}
 				},
-				colors: [ '#FF72C6 ','#fa626b', '#5eba00','#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0'],
+				colors: [ 'var(--primary) ','#fa626b', '#5eba00','#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0'],
 				legend: {
 					show: false
 				}
@@ -498,7 +498,7 @@ $(function() {
 						}
 					}
 				},
-				colors: [ '#FF72C6 ','#fa626b', '#5eba00','#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0'],
+				colors: [ 'var(--primary) ','#fa626b', '#5eba00','#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0'],
 				legend: {
 					show: false
 				}
@@ -526,7 +526,7 @@ $(function() {
 						}
 					}
 				},
-				colors: [ '#FF72C6 ','#fa626b', '#5eba00','#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0'],
+				colors: [ 'var(--primary) ','#fa626b', '#5eba00','#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0'],
 				legend: {
 					show: false
 				}
@@ -551,7 +551,7 @@ $(function() {
 						}
 					}
 				},
-				colors: [ '#FF72C6 ','#fa626b', '#5eba00','#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0'],
+				colors: [ 'var(--primary) ','#fa626b', '#5eba00','#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0'],
 				legend: {
 					show: false
 				}
@@ -578,7 +578,7 @@ $(function() {
 						}
 					}
 				},
-				colors: [ '#FF72C6 ','#fa626b', '#5eba00','#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0'],
+				colors: [ 'var(--primary) ','#fa626b', '#5eba00','#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0'],
 				legend: {
 					show: false
 				}
@@ -613,7 +613,7 @@ $(function() {
 						}
 					}
 				},
-				colors: [ '#FF72C6 ','#fa626b', '#5eba00','#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0'],
+				colors: [ 'var(--primary) ','#fa626b', '#5eba00','#ed00c3', '#ad59ff', ' #00b3ff', '#00d9bf', '#fc0'],
 				legend: {
 					show: false
 				}

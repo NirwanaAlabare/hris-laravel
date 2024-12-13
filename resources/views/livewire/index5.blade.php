@@ -60,7 +60,7 @@
 												</div>
 											</div>
 											<div class="card-body">
-												<div class="chart-circle mt-2 mb-2 chart-circle-lg" data-value="0.65" data-thickness="15" data-color="#FF72C6">
+												<div class="chart-circle mt-2 mb-2 chart-circle-lg" data-value="0.65" data-thickness="15" data-color="var(--primary)">
 													<div class="chart-circle-value"><div class="h1 mb-0">65% </div></div>
 												</div>
 											</div>

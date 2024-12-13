@@ -202,7 +202,7 @@
 												<h1 class="mb-0 text-dark mainvalue">$7,483</h1>
 											</div>
 											<div class="float-right text-right mt-2">
-												<span class="pie" data-peity='{ "fill": ["#FF72C6", "#ebe9f7"]}'>0.52/1.561</span>
+												<span class="pie" data-peity='{ "fill": ["var(--primary)", "#ebe9f7"]}'>0.52/1.561</span>
 											</div>
 										</div>
 									</div>
@@ -1017,7 +1017,7 @@
 														<h4>Shares of Projects</h4>
 													</div>
 												</div>
-												<div class="mt-7 chart-circle chart-circle-md donutShadow" data-value="0.67" data-thickness="20" data-color="#FF72C6 ">
+												<div class="mt-7 chart-circle chart-circle-md donutShadow" data-value="0.67" data-thickness="20" data-color="var(--primary) ">
 										              <div class="chart-circle-value fs"><i class="fa fa-share-square-o"></i></div>
 									            </div>
 												<div class="card-body mt-4">

@@ -171,6 +171,7 @@
 										<a href="#" class="dropdown-item text-center">View all Notifications</a>
 									</div>
 								</div><!-- notifications -->
+								
 								<div class="dropdown header-user">
 									<a class="nav-link leading-none siderbar-link"  data-toggle="sidebar-right" data-target=".sidebar-right">
 										<span class="mr-3 d-none d-lg-block ">

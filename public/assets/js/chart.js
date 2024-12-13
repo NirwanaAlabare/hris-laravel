@@ -350,14 +350,14 @@
                 data: [ 45, 25, 20, 10 ],
                 backgroundColor: [
                                     "#5eba00",
-                                    "#FF72C6",
+                                    "var(--primary)",
                                     "#5b5be9",
                                     "#f5334f"
                                 ],
                 hoverBackgroundColor: [
 
                                     "#5eba00",
-                                    "#FF72C6",
+                                    "var(--primary)",
                                     "#5b5be9",
                                     "#f5334f"
                                 ]
@@ -391,13 +391,13 @@
                 data: [ 45, 25, 20, 10 ],
                 backgroundColor: [
                                     "#5eba00",
-                                    "#FF72C6",
+                                    "var(--primary)",
                                     "#5b5be9",
                                     "#f5334f"
                                 ],
                 hoverBackgroundColor: [
                                     "#5eba00",
-                                    "#FF72C6",
+                                    "var(--primary)",
                                     "#5b5be9",
                                     "#f5334f"
                                 ]
@@ -431,7 +431,7 @@
                 data: [ 15, 18, 9, 6, 19 ],
                 backgroundColor: [
                                     "#5eba00",
-                                    "#FF72C6",
+                                    "var(--primary)",
                                     "#5b5be9",
                                     "#f5334f",
 									"#ffb229"
@@ -518,8 +518,8 @@
 	gradientStroke1.addColorStop(1, '#5eba00');
 
 	var gradientStroke2 = myCanvasContext.createLinearGradient(0, 0, 0, 360);
-	gradientStroke2.addColorStop(0, '#FF72C6');
-	gradientStroke2.addColorStop(1, '#FF72C6');
+	gradientStroke2.addColorStop(0, 'var(--primary)');
+	gradientStroke2.addColorStop(1, 'var(--primary)');
 
     var myChart = new Chart( myCanvas, {
 		type: 'bar',
@@ -696,8 +696,8 @@
 
 	var myCanvasContext = myCanvas.getContext("2d");
 	var gradientStroke1 = myCanvasContext.createLinearGradient(0, 0, 0, 380);
-	gradientStroke1.addColorStop(0, '#FF72C6');
-	gradientStroke1.addColorStop(1, '#FF72C6');
+	gradientStroke1.addColorStop(0, 'var(--primary)');
+	gradientStroke1.addColorStop(1, 'var(--primary)');
 
 	var myChart = new Chart(myCanvas, {
 		type: 'bar',
@@ -871,10 +871,10 @@
 				label: "Page-views",
 				data: [5, 3, 9, 6, 5, 9, 7, 3, 5, 2, 5, 3, 9, 6, 5, 9, 7, 3, 5, 2, 7, 10],
 				backgroundColor: gradientStroke2,
-				borderColor: '#FF72C6',
+				borderColor: 'var(--primary)',
 				pointBackgroundColor: '#fff',
 				pointHoverBackgroundColor: gradientStroke2,
-				pointBorderColor: '#FF72C6',
+				pointBorderColor: 'var(--primary)',
 				pointHoverBorderColor: gradientStroke2,
 				pointBorderWidth: 2,
 				pointRadius: 4,
@@ -951,8 +951,8 @@
 	gradientStroke1.addColorStop(0, '#5eba00');
 	gradientStroke1.addColorStop(1, '#5eba00');
 	var gradientStroke2 = myCanvasContext.createLinearGradient(0, 0, 0, 280);
-	gradientStroke2.addColorStop(0, '#FF72C6');
-	gradientStroke2.addColorStop(1, '#FF72C6');
+	gradientStroke2.addColorStop(0, 'var(--primary)');
+	gradientStroke2.addColorStop(1, 'var(--primary)');
 	var myChart = new Chart(myCanvas, {
 		type: 'line',
 		data: {

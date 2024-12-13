@@ -37,7 +37,7 @@ $(function(e){
         name: 'Patients',
         data: [210, 330, 450, 310, 870, 410, 670, 220, 430, 650, 440, 550, 350]
       }],
-	  colors:['#FF72C6'],
+	  colors:['var(--primary)'],
       grid: {
         row: {
           colors: ['#fff', '#fff']
@@ -108,7 +108,7 @@ $(function(e){
                 name: 'Total',
                 data: [120, 140, 158, 154, 148, 163, 154, 174, 160]
             }],
-			colors: ['#FF72C6', '#5eba00', '#ffca4a', '#ff6666' ,'#867efc'],
+			colors: ['var(--primary)', '#5eba00', '#ffca4a', '#ff6666' ,'#867efc'],
             xaxis: {
                 categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
             },
@@ -214,7 +214,7 @@ $(function(e){
 				data: [88, 96, 36, 32, 48, 54, 87, 88, 96, 53, 21, 24, 14, 45, 0, 32, 67, 49, 72, 52, 55, 46, 54, 32, 74, 58, 78, 55, 41, 21, 45, 54, 51, 52, 48],
 				label: 'Admissions',
 				backgroundColor: 'transparent',
-				borderColor: '#FF72C6',
+				borderColor: 'var(--primary)',
 				borderWidth: '3',
 				pointBorderColor: 'transparent',
 				pointBackgroundColor: 'transparent',
@@ -417,7 +417,7 @@ $(function(e){
       }
     },
     series: chartdata,
-    color:[ '#FF72C6 ', '#5eba00',]
+    color:[ 'var(--primary) ', '#5eba00',]
   };
 
   barChart.setOption(option);

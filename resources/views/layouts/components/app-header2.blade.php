@@ -1,17 +1,84 @@
 
+         
+<style>
+.dropdown-theme {
+    display: none;
+    position: absolute;
+    height: 50px;
+    justify-content: center;
+    align-items: center;    
+    top: 40px;
+    left: 0;
+    background-color:rgb(255, 255, 255);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    width: auto;
+}
+
+.color-option {
+    display: inline-block;
+    width: 35px;
+    height: 35px;
+    margin: 5px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: 20px
+
+}
+
+.primarySub {
+    background-color: #15435A;
+}
+
+.pinkSub {
+    background-color: #FF72C6;
+}
+
+.secondSub {
+    background-color: #920559;
+}
+
+.theme-switcher {
+    padding: 10px 20px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button.theme-switcher:hover {
+            opacity: 0.8;
+        }
+        button.theme-switcher{
+            transition: all 0.7s ease;
+            box-sizing: border-box;
+        } 
+
+</style>
+        
         <div class="d-flex">
             <a class="header-brand" href="{{url('hris/dashboard/index')}}">
                 <img src="{{URL::asset('assets/images/brand/hris.png')}}" class="header-brand-img main-logo" alt="Sparic logo">
                 <img src="{{URL::asset('assets/images/brand/icon.png')}}" class="header-brand-img icon-logo" alt="Sparic logo">
             </a><!-- logo-->
             <div class="d-flex order-lg-2 ml-auto header-rightmenu">
-
+            <div class="dropdown text-center mt-4 pb-4">
+            <a  class="">
+                <button class="theme-switcher" id="themeSwitcher">Switch Theme</button>
+            </a>
+            <div class="dropdown-theme text-center mt-4 pb-4" id="colorPicker">
+                <div class="color-option primarySub" data-color="primary"></div>
+                <div class="color-option secondSub" data-color="second"></div>
+                <div class="color-option pinkSub" data-color="pink"></div>
+            </div>
+        </div>
                 <div class="dropdown">
                     <a  class="nav-link icon full-screen-link" id="fullscreen-button">
                         <i class="fe fe-maximize-2"></i>
                     </a>
                 </div><!-- full-screen -->
-                <div class="dropdown">
+                <div class="dropdown mr-5">
                     <a class="nav-link leading-none siderbar-link" data-toggle="sidebar-right" data-target=".sidebar-right">
                         <span class="mr-3 d-none d-lg-block ">
                             <span class="text-gray-white"><span class="ml-2">{{ $loggedAdmin->name }}</span></span>
@@ -98,3 +165,45 @@
             </div>
         </div>
 
+
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const themeSwitcher = document.getElementById('themeSwitcher');
+                const body = document.body;
+                const colorPicker = document.getElementById('colorPicker');
+                const colorOptions = document.querySelectorAll('.color-option');
+
+                // Load theme from localStorage
+                const savedTheme = localStorage.getItem('theme') || 'light'; // Default to light if not set
+                body.classList.add(savedTheme + '-theme');
+
+                themeSwitcher.addEventListener('click', function () {
+                    colorPicker.style.display = colorPicker.style.display === 'flex' ? 'none' : 'flex';
+                });
+
+                // Theme switching logic
+                colorOptions.forEach(option => {
+                    option.addEventListener('click', function () {
+                        const colorType = this.getAttribute('data-color');
+
+                        if (colorType === 'primary') {
+                            body.classList.remove('second-theme', 'pink-theme');
+                            body.classList.add('light-theme'); // Default light theme
+                            localStorage.setItem('theme', 'light');
+                        } else if (colorType === 'pink') {
+                            body.classList.remove('second-theme', 'light-theme');
+                            body.classList.add('pink-theme');
+                            localStorage.setItem('theme', 'pink');
+                        } else if (colorType === 'second') {
+                            body.classList.remove('pink-theme', 'light-theme');
+                            body.classList.add('second-theme');
+                            localStorage.setItem('theme', 'second');
+                        }
+
+                        colorPicker.style.display = 'none';
+                    });
+                });
+            });
+
+        </script>

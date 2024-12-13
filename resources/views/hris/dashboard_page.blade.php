@@ -22,6 +22,7 @@
     position: relative; /* Untuk positioning gambar */
     height: 200px;
     width: 300px;
+    color: var(--primary);
 }
 
 .card:hover{
@@ -61,6 +62,10 @@
     background-size: 80px;
 }
 
+.text-theme-color{
+  color: var(--primary) !important;
+}
+
 @media(max-width: 990px){
   .card{
     margin: 20px;
@@ -82,17 +87,17 @@
                     <div class="card-body p-0">
                         <div class="row">
                             <div class="col" style="background-color: #FFF">
-                                <a href="{{route('hris.dashboard.index')}}" style="color: #FF72C6">
+                                <a href="{{route('hris.dashboard.index')}}" >
                                 <div class="card card-1">
-                                            <h3>Attendance & Payroll</h3>
+                                            <h3 class="text-theme-color">Attendance & Payroll</h3>
                                         </div>
                                 </a>
                             </div>
                             @if($role=='superadmin' || $role=='absensi' || $role=='admin')
                             <div class="col">
-                                <a href="{{route('hris.hrd.index')}}" style="color: #FF72C6">
+                                <a href="{{route('hris.hrd.index')}}">
                                 <div class="card card-2">
-                                        <h3>Kepersonaliaan</h3>
+                                        <h3 class="text-theme">Kepersonaliaan</h3>
                                     </div>
                                 </a>
                             </div>
@@ -125,6 +130,8 @@
 <script src="{{URL::asset('assets/plugins/morris/morris.js')}}"></script>
 
 <script>
+        var primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+
     function getTanggalKehadiranSekarang () {
         $.ajax({
             type:"POST",
@@ -160,8 +167,7 @@
                     backgroundColor: '#fff',
                     labelColor: '#060',
                     colors: [
-                    '#FF72C6 ', '#dc3545'
-
+                        primaryColor, '#dc3545'
                     ],
                     formatter: function (x) { return x + "%"}
                 });

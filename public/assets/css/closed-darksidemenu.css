@@ -146,7 +146,7 @@
 
 .app-sidebar__toggle {
     padding: 6px 15px;
-    color: #FF72C6;
+    color: var(--primary);
     line-height: 2.5;
     transition: background-color .3s ease;
     z-index: 1
@@ -418,13 +418,13 @@
 .side-menu__item:focus,
 .side-menu__item:hover {
     text-decoration: none;
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .side-menu__item.active .side-menu__icon,
 .side-menu__item:focus .side-menu__icon,
 .side-menu__item:hover .side-menu__icon {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .slide-item.active,
@@ -435,7 +435,7 @@
 }
 
 .slide-menu a.active {
-    color: #FF72C6 !important;
+    color: var(--primary) !important;
     background: #001027 !important
 }
 
@@ -443,7 +443,7 @@
 .slide-item:focus,
 .slide-item:hover {
     text-decoration: none;
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .slide.is-expanded a {
@@ -665,7 +665,7 @@
 }
 
 .slide.submenu .side-menu__label:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .side-menu .slide-menu.submenu-list {
@@ -678,7 +678,7 @@
 }
 
 .side-menu .slide-menu.submenu-list a:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .toggle-menu.side-menu li ul li:first-child {
@@ -712,7 +712,7 @@
 
 .app-sidebar .side-menu__item.active,
 .app-sidebar .side-menu__item:hover {
-    background: linear-gradient(125deg, #FF72C6, #FF72C6);
+    background: linear-gradient(125deg, var(--primary), var(--primary));
     color: #fff !important
 }
 
@@ -729,7 +729,7 @@
 .side-menu__item:focus,
 .side-menu__item:hover {
     color: #fff !important;
-    background: #FF72C6 !important
+    background: var(--primary) !important
 }
 
 @media (min-width:768px) {

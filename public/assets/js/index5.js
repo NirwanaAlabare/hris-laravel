@@ -19,7 +19,7 @@ $(function(e) {
 			name: 'Sales',
 			data: [11, 32, 45, 32, 34, 52, 41]
 		}],
-		colors: ['#5eba00', '#FF72C6'],
+		colors: ['#5eba00', 'var(--primary)'],
 		xaxis: {
 			type: 'datetime',
 			categories: ["2018-09-19T00:00:00", "2018-09-19T01:30:00", "2018-09-19T02:30:00", "2018-09-19T03:30:00", "2018-09-19T04:30:00", "2018-09-19T05:30:00", "2018-09-19T06:30:00"],
@@ -148,7 +148,7 @@ $(function(e) {
 				}
 			],
 		}],
-		colors: ['#FF72C6'],
+		colors: ['var(--primary)'],
 		fill: {
 			opacity: 0.8,
 			type: 'pattern',
@@ -272,7 +272,7 @@ $(function(e) {
 			}
 		},
 		series: chartdata,
-		color: ['#FF72C6 ', '#fa626b', '#5eba00', ]
+		color: ['var(--primary) ', '#fa626b', '#5eba00', ]
 	};
 	barChart.setOption(option);
 	/*--Echart1--*/

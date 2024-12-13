@@ -152,7 +152,7 @@
 
 .app-sidebar__toggle {
     padding: 0 15px;
-    color: #FF72C6;
+    color: var(--primary);
     line-height: 3;
     transition: background-color .3s ease;
     z-index: 1
@@ -425,7 +425,7 @@
 .side-menu__item:hover {
     text-decoration: none;
     color: #fff !important;
-    background: #FF72C6 !important
+    background: var(--primary) !important
 }
 
 .side-menu__item.active .side-menu__icon,
@@ -442,7 +442,7 @@
 }
 
 .slide-menu a.active {
-    color: #FF72C6 !important;
+    color: var(--primary) !important;
     background: #fff
 }
 
@@ -450,7 +450,7 @@
 .slide-item:focus,
 .slide-item:hover {
     text-decoration: none;
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .slide.is-expanded a {
@@ -729,7 +729,7 @@
 }
 
 .slide.submenu .side-menu__label:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .side-menu .slide-menu.submenu-list {
@@ -742,7 +742,7 @@
 }
 
 .side-menu .slide-menu.submenu-list a:hover {
-    color: #FF72C6
+    color: var(--primary)
 }
 
 .first-sidemenu .resp-vtabs li.active {

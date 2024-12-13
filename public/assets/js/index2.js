@@ -78,7 +78,7 @@ $(function(e) {
 				data: [88, 96, 36, 32, 48, 54, 87, 88, 96, 53, 21, 24, 14, 45, 0, 32, 67, 49, 72, 52, 55, 46, 54, 32, 74, 58, 78, 55, 41, 21, 45, 54, 51, 52, 48],
 				label: 'Admissions',
 				backgroundColor: 'transparent',
-				borderColor: '#FF72C6',
+				borderColor: 'var(--primary)',
 				borderWidth: '3',
 				pointBorderColor: 'transparent',
 				pointBackgroundColor: 'transparent',
@@ -551,7 +551,7 @@ $(function(e) {
 			lineCap: "round"
 		},
 		labels: ['Existing Customers', 'New Customers', 'Visiting Customers', 'Employes'],
-		colors: ['#FF72C6', '#5eba00', '#ffca4a', '#ff6666'],
+		colors: ['var(--primary)', '#5eba00', '#ffca4a', '#ff6666'],
 	};
 	var chart9 = new ApexCharts(document.querySelector("#pieChart"), options9);
 	chart9.render();
@@ -578,7 +578,7 @@ $(function(e) {
 			categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
 		},
 		yaxis: {},
-		colors: ['#FF72C6'],
+		colors: ['var(--primary)'],
 		tooltip: {}
 	}
 	var chart = new ApexCharts(document.querySelector("#chart"), options);
@@ -598,7 +598,7 @@ $(function(e) {
 		//various examples
 		$('#world-map-markers').vectorMap({
 			map : 'world_mill_en',
-			scaleColors : ['#FF72C6  ', '#871faf'],
+			scaleColors : ['var(--primary)  ', '#871faf'],
 			normalizeFunction : 'polynomial',
 			hoverOpacity : 0.7,
 			hoverColor : false,
@@ -610,7 +610,7 @@ $(function(e) {
 			 markerStyle: {
                 initial: {
                     r: 9,
-                    'fill': '#FF72C6  ',
+                    'fill': 'var(--primary)  ',
                     'fill-opacity': 0.9,
                     'stroke': '#fff',
                     'stroke-width' : 9,

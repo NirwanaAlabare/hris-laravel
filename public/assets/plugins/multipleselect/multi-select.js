@@ -42,7 +42,7 @@
 	$('.custom-multiselect').multipleSelect({
 		styler: function(value) {
 			if (value == '1') {
-				return 'background-color: #FF72C6; color: #ffffff;';
+				return 'background-color: var(--primary); color: #ffffff;';
 			}
 			if (value == '6') {
 				return 'background-color: #32cafe; color: #ffffff;';

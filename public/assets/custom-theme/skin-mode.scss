@@ -713,7 +713,7 @@ body.dark-mode {
 		color: #191919;
 }
 .light-mode .side-menu .side-menu__icon{
-		color: #FF72C6 !important;
+		color: var(--primary) !important;
 }
 .light-mode .toggle-menu.side-menu li a{
 		border-top: 1px solid rgba(107,122,144,0.1);
