@@ -51,9 +51,9 @@ class EmployeeAtrController extends AdminBaseController
         $loggedAdmin = Auth::guard('admin')->user();
         $this->loggedAdmin = $loggedAdmin;
         $this->divisi = $this->ajax_getselectdivisi();
-        $department=DepartmentAll::orderBy('department_id')->groupBy('department_id')->get();
+        $department=DepartmentAll::select('department_name')->distinct()->orderBy('department_id')->groupBy('department_id')->get();
         $jabatan=EmployeeAtribut::orderBy('created_at')->groupBy('status_jabatan')->pluck('status_jabatan');
-
+        
         return View::make('hris/employeeatr', $this->data,compact('department','jabatan'));
     }
     public function export_pdf_id_card(){
@@ -1403,20 +1403,21 @@ class EmployeeAtrController extends AdminBaseController
 
                     $query1 =  MasterDataAbsenKehadiran::selectRaw('
                         tanggal_berjalan,
-                        enroll_id,
-                        null tanggal_resign,
-                        null status_aktif,
-                        nik,
+                        employee_atribut.enroll_id,
+                        null AS tanggal_resign,
+                        null AS status_aktif,
+                        employee_atribut.nik,
                         IF(absen_masuk_kerja is not null AND absen_pulang_kerja is null, "TL", "M") status_absen
                     ')
                     ->whereRaw('
-                        enroll_id = "' . $enroll_id . '"
-                        AND status_aktif = "TIDAK AKTIF"
+                        employee_atribut.enroll_id = "' . $enroll_id . '"
+                        AND employee_atribut.status_aktif = "TIDAK AKTIF"
                         AND (absen_masuk_kerja is null OR absen_pulang_kerja is null)
                         AND kode_hari not in (5,6)
                         AND holiday_name is null
                         AND status_absen = "R"
                     ')
+                    ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
                     ->get();
 
                     if(!empty($query1))
@@ -1428,10 +1429,7 @@ class EmployeeAtrController extends AdminBaseController
                                 AND enroll_id = "' . $enroll_id . '"
                             ')
                             ->update([
-                                'tanggal_resign' => $q1->tanggal_resign,
-                                'status_aktif' => $q1->status_aktif,
                                 'status_absen' => $q1->status_absen,
-                                'nik' => $nik,
                                 'operator' => $q1->operator
                             ]);
                             info('Karyawan dengan nama ' . $employee_name . ' dari departemen '. $sub_dept_name .' berubah status aktif nya menjadi '.$q1->status_aktif);
@@ -1442,20 +1440,21 @@ class EmployeeAtrController extends AdminBaseController
 
                     $query1 =  MasterDataAbsenKehadiran::selectRaw('
                         tanggal_berjalan,
-                        enroll_id,
-                        null tanggal_resign,
-                        nik,
-                        null status_aktif,
+                        employee_atribut.enroll_id,
+                         null AS tanggal_resign,
+                        employee_atribut.nik,
+                        null employee_atribut.status_aktif,
                         IF(absen_masuk_kerja is not null AND absen_pulang_kerja is null, "TL", "M") status_absen
                     ')
                     ->whereRaw('
-                        enroll_id = "' . $enroll_id . '"
-                        AND status_aktif = "TIDAK AKTIF"
+                        employee_atribut.enroll_id = "' . $enroll_id . '"
+                        AND employee_atribut.status_aktif = "TIDAK AKTIF"
                         AND (absen_masuk_kerja is null OR absen_pulang_kerja is null)
                         AND kode_hari not in (5,6)
                         AND holiday_name is null
                         AND status_absen = "R"
                     ')
+                    ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
                     ->get();
 
                     if(!empty($query1))
@@ -1467,23 +1466,13 @@ class EmployeeAtrController extends AdminBaseController
                                 AND enroll_id = "' . $enroll_id . '"
                             ')
                             ->update([
-                                'tanggal_resign' => $q1->tanggal_resign,
-                                'status_aktif' => $q1->status_aktif,
                                 'status_absen' => $q1->status_absen,
-                                'nik' => $nik,
                                 'operator' => $q1->operator
                             ]);
                             info('Karyawan dengan nama ' . $employee_name . ' dari departemen '. $sub_dept_name .' berubah tanggal resign nya menjadi '.$q1->tanggal_resign);
                         }
                     }
-
-                    // ->whereRaw('
-                    //     employee_atribut.enroll_id = "' . $enroll_id . '"
-                    //     AND employee_atribut.tanggal_resign <= master_data_absen_kehadiran.tanggal_berjalan
-                    //     AND master_data_absen_kehadiran.status_absen = "M"
-                    //     AND master_data_absen_kehadiran.kode_hari not in (5,6)
-                    //     AND master_data_absen_kehadiran.holiday_name is null
-                    // ')
+                    
                     $query2 =  MasterDataAbsenKehadiran::selectRaw('
                         master_data_absen_kehadiran.tanggal_berjalan,
                         employee_atribut.enroll_id,
@@ -1510,10 +1499,7 @@ class EmployeeAtrController extends AdminBaseController
                                 AND enroll_id = "' . $enroll_id . '"
                             ')
                             ->update([
-                                'tanggal_resign' => $q2->tanggal_resign,
-                                'status_aktif' => $q2->status_aktif,
                                 'status_absen' => $q2->status_absen,
-                                'nik' => $q2->nik,
                                 'operator' => $q2->operator
                             ]);
                         }
@@ -1530,31 +1516,16 @@ class EmployeeAtrController extends AdminBaseController
                         $tanggal_awal=$bulan_sekarang;
                     }
                     MasterDataAbsenKehadiran::where('enroll_id',$enroll_id)->where('tanggal_berjalan','<',$tanggal_resign)->where('tanggal_berjalan','>=',$tanggal_awal)->where('status_absen','R')->where('absen_masuk_kerja','!=',null)->where('absen_pulang_kerja','!=',null)->update([
-                        'status_absen'=>'',
-                        'tanggal_resign'=>null,
-                        'nik' => $nik,
-                        'status_aktif'=>'AKTIF'
+                        'status_absen'=>''
                     ]);
                     MasterDataAbsenKehadiran::where('enroll_id',$enroll_id)->where('tanggal_berjalan','<',$tanggal_resign)->where('tanggal_berjalan','>=',$tanggal_awal)->where('status_absen','R')->where('absen_masuk_kerja','!=',null)->where('absen_pulang_kerja',null)->update([
-                        'status_absen'=>'TL',
-                        'tanggal_resign'=>null,
-                        'nik' => $nik,
-                        'status_aktif'=>'AKTIF'
+                        'status_absen'=>'TL'
                     ]);
                     MasterDataAbsenKehadiran::where('enroll_id',$enroll_id)->where('tanggal_berjalan','<',$tanggal_resign)->where('tanggal_berjalan','>=',$tanggal_awal)->where('status_absen','R')->where('absen_masuk_kerja',null)->where('absen_pulang_kerja','!=',null)->update([
-                        'status_absen'=>'TL',
-                        'tanggal_resign'=>null,
-                        'nik' => $nik,
-                        'status_aktif'=>'AKTIF'
+                        'status_absen'=>'TL'
                     ]);
                     MasterDataAbsenKehadiran::where('enroll_id',$enroll_id)->where('tanggal_berjalan','<',$tanggal_resign)->where('tanggal_berjalan','>=',$tanggal_awal)->where('status_absen','R')->where('absen_masuk_kerja',null)->where('absen_pulang_kerja',null)->update([
-                        'status_absen'=>'M',
-                        'tanggal_resign'=>null,
-                        'nik' => $nik,
-                        'status_aktif'=>'AKTIF'
-                    ]);
-                    MasterDataAbsenKehadiran::where('enroll_id',$enroll_id)->where('tanggal_berjalan','>=',$tanggal_awal)->update([
-                        'nik' => $nik,
+                        'status_absen'=>'M'
                     ]);
                 }
             }

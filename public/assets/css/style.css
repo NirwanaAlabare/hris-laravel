@@ -20563,6 +20563,12 @@ dd {
     margin-bottom: 0
 }
 
+.tab_wrapper .tab_list li {
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+
 .tab_wrapper>ul {
     border-bottom: 1px solid rgba(107, 122, 144, .3)
 }

@@ -196,7 +196,7 @@
                             <button id="BtnProsesPayroll4" type="button" class="btn btn-app btn-primary text-white"><span><i class="fa fa-download"></i></span> PROSES PAYROLL HARIAN</button>
                             @endif
                             <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="export_excel_daily_labor"><i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST</a>
-                            <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost"><i class="fa fa-file-excel-o" aria-hidden="true"></i> RECAP LABOR COST</a>
+                            <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2"><i class="fa fa-file-excel-o" aria-hidden="true"></i> RECAP LABOR COST</a>
                         </div>
                     </div>
                     <div class="row pt-1">
@@ -1108,6 +1108,40 @@
                 $('#recap_labor_cost').removeClass("btn-loading");
                 $("#recap_labor_cost").attr("disabled", false);
                 $("#recap_labor_cost").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> RECAP LABOR COST');
+            }
+        });
+    })
+
+    $('#recap_labor_cost_2').click(function(e){
+        var daterange = $('#daterange1').val();
+        // var status_staff = $('#status_staff2').val();
+        $('#recap_labor_cost_2').addClass("btn-loading");
+        $("#recap_labor_cost_2").html('Please wait...');
+        $("#recap_labor_cost_2").attr("disabled", true);
+        $.ajax({
+            type: 'POST',
+            url: '{{route('hris.rekapperhitunganpayroll.recap_labor_cost_2')}}',
+            data: {
+                daterange:daterange
+            },
+            xhrFields: { responseType : 'blob' },
+            success:function(data){
+                var blob = new Blob([data]);
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                let file_name = daterange+' Recap Labor Cost 2 '+Math.ceil(Math.random()*1000000);
+                link.download = file_name+".xlsx";
+                link.click();
+                swal("", "Recap Labor Export Success", "success");
+                $('#recap_labor_cost_2').removeClass("btn-loading");
+                $("#recap_labor_cost_2").attr("disabled", false);
+                $("#recap_labor_cost_2").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> RECAP LABOR COST 2');
+            },
+            error: function(res){
+                swal("", "Recap Labor Export Failed", "error");
+                $('#recap_labor_cost_2').removeClass("btn-loading");
+                $("#recap_labor_cost_2").attr("disabled", false);
+                $("#recap_labor_cost_2").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> RECAP LABOR COST 2');
             }
         });
     })

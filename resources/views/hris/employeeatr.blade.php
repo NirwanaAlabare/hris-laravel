@@ -2018,7 +2018,6 @@
                     }
                 });
             } else {
-                console.log("test");
                 checkedEmployeeArr = [];
 
                 $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
@@ -2055,7 +2054,10 @@
                     success: function(res){
                         if(res){
                             for(i=0;i<res.length;i++) {
-                                $("#department_id").append(new Option(res[i].department_name, res[i].department_id));
+                                // $("#department_id").append(new Option(res[i].department_name, res[i].department_id));
+                                if ($("#department_id option[value='" + res[i].department_id + "']").length === 0) {
+                                    $("#department_id").append(new Option(res[i].department_name, res[i].department_id));
+                                }
                             }
                         }
                     }
@@ -2094,7 +2096,9 @@
                     success: function(res){
                         if(res){
                             for(i=0;i<res.length;i++) {
-                                $("#sub_dept_id").append(new Option(res[i].sub_dept_name, res[i].sub_dept_id));
+                                if ($("#sub_dept_id option[value='" + res[i].sub_dept_id + "']").length === 0) {
+                                    $("#sub_dept_id").append(new Option(res[i].sub_dept_name, res[i].sub_dept_id));
+                                }
                             }
                         }
                     }

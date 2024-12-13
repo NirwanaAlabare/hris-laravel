@@ -346,6 +346,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('rekapperhitunganpayroll/export_excel_daily_labor',['as'=>'hris.rekapperhitunganpayroll.export_excel_daily_labor','uses'=> 'RekapPerhitunganPayrollController@export_excel_daily_labor']);
     Route::post('rekapperhitunganpayroll/proses_payroll_harian',['as'=>'hris.rekapperhitunganpayroll.proses_payroll_harian','uses'=> 'RekapPerhitunganPayrollController@proses_payroll_harian']);
     Route::post('rekapperhitunganpayroll/recap_labor_cost',['as'=>'hris.rekapperhitunganpayroll.recap_labor_cost','uses'=> 'RekapPerhitunganPayrollController@recap_labor_cost']);
+    Route::post('rekapperhitunganpayroll/recap_labor_cost_2',['as'=>'hris.rekapperhitunganpayroll.recap_labor_cost_2','uses'=> 'RekapPerhitunganPayrollController@recap_labor_cost_2']);
 
 
     Route::get('dataclosingpayroll/index',['as'=>'hris.dataclosingpayroll.index','uses'=>'DataClosingPayrollController@index']);
@@ -393,7 +394,6 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'admin','names
 
 });
 Route::get('/tes2','Hris\EmployeeAtrController@creat_master_absen_26');
-
 Event::listen('auth.login', function($user)
 {
     $user->last_login = new DateTime;

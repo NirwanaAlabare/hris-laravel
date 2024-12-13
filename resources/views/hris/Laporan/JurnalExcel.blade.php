@@ -6,7 +6,7 @@
 </head>
     <body> 
         <tr>
-          <td colspan="5" style="font-weight:bold; font-size: 24px;" >PT NIRWANA ALABARE GARMENT1</td>
+          <td colspan="5" style="font-weight:bold; font-size: 24px;" >PT NIRWANA ALABARE GARMENT</td>
         </tr>
         <tr>
           <td colspan="5">Laporan Rekap Koreksi Upah Karyawan</td>

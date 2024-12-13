@@ -147,6 +147,18 @@ class RefHariLiburController extends AdminBaseController
             ->update($update_libur);
 
             MasterDataAbsenKehadiran::where('tanggal_berjalan',$tanggal_libur)
+            ->whereNotIn('status_absen',['DL','KM','R'])
+            ->where('absen_masuk_kerja','!=',null)
+            ->where('absen_pulang_kerja',null)
+            ->update($update_libur);
+
+            MasterDataAbsenKehadiran::where('tanggal_berjalan',$tanggal_libur)
+            ->whereNotIn('status_absen',['DL','KM','R'])
+            ->where('absen_masuk_kerja',null)
+            ->where('absen_pulang_kerja','!=',null)
+            ->update($update_libur);
+
+            MasterDataAbsenKehadiran::where('tanggal_berjalan',$tanggal_libur)
             ->where('absen_masuk_kerja','!=',null)
             ->where('absen_pulang_kerja','!=',null)
             ->update($update_LP);
