@@ -1136,13 +1136,13 @@
                 swal("", "Recap Labor Export Success", "success");
                 $('#recap_labor_cost_2').removeClass("btn-loading");
                 $("#recap_labor_cost_2").attr("disabled", false);
-                $("#recap_labor_cost_2").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> RECAP LABOR COST');
+                $("#recap_labor_cost_2").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST');
             },
             error: function(res){
                 swal("", "Recap Labor Export Failed", "error");
                 $('#recap_labor_cost_2').removeClass("btn-loading");
                 $("#recap_labor_cost_2").attr("disabled", false);
-                $("#recap_labor_cost_2").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> RECAP LABOR COST');
+                $("#recap_labor_cost_2").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST');
             }
         });
     })
