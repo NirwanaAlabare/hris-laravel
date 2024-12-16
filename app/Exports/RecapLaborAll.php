@@ -634,7 +634,7 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
             $hour_final_istirahat_lembur,
             $hour_final__total_jam_lembur,
             '',
-            '',
+            $Data->upah_umk,
             $Data->gaji_perhari,
             $Data->gaji_permenit,
             '',
