@@ -392,16 +392,18 @@ class GagalAbsenController extends AdminBaseController
         $uuid = $request->editData;
 
         $query =  MasterDataAbsenKehadiran::
-                    selectRaw('uuid, employee_id, nik, employee_name, employee_id, kode_hari, nama_hari,
-                                tanggal_berjalan, enroll_id, department_id, department_name,
-                                sub_dept_id, sub_dept_name,
-                                case when absen_ok_hadir IS NOT NULL then "KERJA" ELSE "LIBUR" END kerjalibur,
+                    selectRaw('master_data_absen_kehadiran.uuid, employee_atribut.nik, employee_atribut.employee_name, employee_atribut.employee_id, kode_hari, nama_hari,
+                                tanggal_berjalan, employee_atribut.enroll_id, employee_atribut.department_id, employee_atribut.department_name,
+                                employee_atribut.sub_dept_id, employee_atribut.sub_dept_name,
+                                case when mulai_jam_kerja IS NOT NULL then "KERJA" ELSE "LIBUR" END kerjalibur,
                                 concat(" [", substr(mulai_jam_kerja, 1, 5), " s/d ", substr(akhir_jam_kerja, 1, 5), "]") jadwal_jam_kerja,
-                                mulai_jam_kerja, akhir_jam_kerja, department_id, department_name, sub_dept_id, sub_dept_name,
-                                substr(absen_masuk_kerja, 1, 5) absen_masuk_kerja, substr(absen_pulang_kerja, 1, 5) absen_pulang_kerja, absen_dt_datang_terlambat,
-                                absen_dtpc_datang_terlambat_pulang_cepat, jumlah_jam_kerja, absen_m_mangkir,
-                                absen_alasan, status_absen, nomor_form_perubahan_absen')
-                    ->where('uuid','=',$uuid)->first();
+                                mulai_jam_kerja, akhir_jam_kerja, employee_atribut.department_id, employee_atribut.department_name, employee_atribut.sub_dept_id, employee_atribut.sub_dept_name,
+                                substr(absen_masuk_kerja, 1, 5) absen_masuk_kerja, substr(absen_pulang_kerja, 1, 5) absen_pulang_kerja,
+                                jumlah_jam_kerja,
+                                data_absen_perijinan.absen_alasan, status_absen, nomor_form_perubahan_absen')
+                    ->join('employee_atribut', 'employee_atribut.enroll_id', '=', 'master_data_absen_kehadiran.enroll_id')
+                    ->leftJoin('data_absen_perijinan', 'master_data_absen_kehadiran.nomor_absen_ijin', '=', 'data_absen_perijinan.nomor_form_perizinan')
+                    ->where('master_data_absen_kehadiran.uuid','=',$uuid)->first();
 
         return Response()->json($query);
     }

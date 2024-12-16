@@ -3895,8 +3895,8 @@ class MdAbsenHadirController extends AdminBaseController
                     ];
                     MasterDataAbsenKehadiran::where('tanggal_berjalan', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->update($data_update);
                 }
-                else if($countEditedData>0 && $count<1){
-                    $datakehadiraneditin = count(DataKehadiranInOutEdited::where('tanggal_absen', $v->tanggal_berjalan)->where('enroll_id','=', $val["enroll_id"])->where('absen_masuk_kerja','!=',null)->where('absen_pulang_kerja',null)->get());
+                else if($countEditedData1>0 && $count1<1){
+                    $datakehadiraneditin = count(DataKehadiranInOutEdited::where('tanggal_absen', $v->tanggal_berjalan)->where('enroll_id','=', $v->enroll_id)->where('absen_masuk_kerja','!=',null)->where('absen_pulang_kerja',null)->get());
                     //gagal absen pagi
                     if($datakehadiraneditin==1){
                         if($v->absen_masuk_kerja!=null && $v->absen_pulang_kerja!=null){
