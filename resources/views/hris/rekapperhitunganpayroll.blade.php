@@ -1114,6 +1114,7 @@
     })
     $('#recap_labor_cost_2').click(function(e){
         var daterange = $('#daterange1').val();
+        var enroll_id=$('#selectEmployeeID2').val();
         var status_staff = $('#status_staff2').val();
         $('#recap_labor_cost_2').addClass("btn-loading");
         $("#recap_labor_cost_2").html('Please wait...');
@@ -1123,6 +1124,7 @@
             url: '{{route('hris.rekapperhitunganpayroll.recap_labor_cost_2')}}',
             data: {
                 daterange:daterange,
+                enroll_id:enroll_id,
                 status_staff:status_staff
             },
             xhrFields: { responseType : 'blob' },
