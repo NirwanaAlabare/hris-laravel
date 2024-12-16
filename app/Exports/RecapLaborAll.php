@@ -31,7 +31,7 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
     }
     public function title(): string
     {
-        return 'Worksheet';
+        return 'Daily';
     }
 
     public function registerEvents() : array
