@@ -195,8 +195,9 @@
                             @if($loggedAdmin->role_user=='superadmin')
                             <button id="BtnProsesPayroll4" type="button" class="btn btn-app btn-primary text-white"><span><i class="fa fa-download"></i></span> PROSES PAYROLL HARIAN</button>
                             @endif
-                            <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="export_excel_daily_labor"><i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST</a>
-                            <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2"><i class="fa fa-file-excel-o" aria-hidden="true"></i> RECAP LABOR COST</a>
+                            <!-- <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="export_excel_daily_labor"><i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST</a> -->
+                            <!-- <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2"><i class="fa fa-file-excel-o" aria-hidden="true"></i> RECAP LABOR COST</a> -->
+                            <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2"><i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST</a>
                         </div>
                     </div>
                     <div class="row pt-1">
@@ -1114,7 +1115,8 @@
 
     $('#recap_labor_cost_2').click(function(e){
         var daterange = $('#daterange1').val();
-        // var status_staff = $('#status_staff2').val();
+        var status_staff = $('#status_staff2').val();
+        var enroll_id=$('#selectEmployeeID2').val();
         $('#recap_labor_cost_2').addClass("btn-loading");
         $("#recap_labor_cost_2").html('Please wait...');
         $("#recap_labor_cost_2").attr("disabled", true);
@@ -1122,7 +1124,9 @@
             type: 'POST',
             url: '{{route('hris.rekapperhitunganpayroll.recap_labor_cost_2')}}',
             data: {
-                daterange:daterange
+                daterange:daterange,
+                enroll_id:enroll_id,
+                status_staff:status_staff
             },
             xhrFields: { responseType : 'blob' },
             success:function(data){
@@ -1135,13 +1139,13 @@
                 swal("", "Recap Labor Export Success", "success");
                 $('#recap_labor_cost_2').removeClass("btn-loading");
                 $("#recap_labor_cost_2").attr("disabled", false);
-                $("#recap_labor_cost_2").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> RECAP LABOR COST 2');
+                $("#recap_labor_cost_2").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST');
             },
             error: function(res){
                 swal("", "Recap Labor Export Failed", "error");
                 $('#recap_labor_cost_2').removeClass("btn-loading");
                 $("#recap_labor_cost_2").attr("disabled", false);
-                $("#recap_labor_cost_2").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> RECAP LABOR COST 2');
+                $("#recap_labor_cost_2").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST');
             }
         });
     })
