@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminBaseController;
 use App\Models\MasterDataAbsenKehadiran;
 use App\Models\EmployeeAtribut;
 use App\Models\DepartmentAll;
+use App\Models\EmployeeAtributHistory;
 use App\Models\WorkTimeTable;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
@@ -1646,6 +1647,184 @@ class EmployeeAtrController extends AdminBaseController
 
         }
 
+        //menambah atau merubah tabel employee atribut history
+        $tanggal_hari_ini=date('Y-m-d');
+        $bulan_hari_ini=substr($tanggal_hari_ini,0,8).'26';
+        $bulan_sebelum_hari_ini=date('Y-m-d',strtotime( "-1 month", strtotime( $bulan_hari_ini ) ));
+        $bulan_setelah_hari_ini=date('Y-m-d',strtotime( "+1 month", strtotime( $bulan_hari_ini ) ));
+        if($tanggal_hari_ini>=$bulan_sebelum_hari_ini && $tanggal_hari_ini<$bulan_hari_ini){
+            $tanggal_awal_hari_ini=$bulan_sebelum_hari_ini;
+        }else if($tanggal_hari_ini>=$bulan_hari_ini && $tanggal_hari_ini<$bulan_setelah_hari_ini){
+            $tanggal_awal_hari_ini=$bulan_hari_ini;
+        }else{
+            $tanggal_awal_hari_ini='';
+        }
+        $tanggal_akhir_hari_ini=date('Y-m-25',strtotime("+1 month",strtotime($tanggal_awal_hari_ini)));
+        $periode_payroll_hari_ini=$tanggal_awal_hari_ini.' s/d '.$tanggal_akhir_hari_ini;
+        $history_dirubah=EmployeeAtributHistory::where('enroll_id',$enroll_id)->where('periode_payroll',$periode_payroll_hari_ini)->count();
+        if($history_dirubah<1){
+            EmployeeAtributHistory::create([
+                'enroll_id'=>$enroll_id,
+                'tanggal_dirubah'=>$tanggal_hari_ini,
+                'periode_payroll'=>$periode_payroll_hari_ini,
+                'employee_id' => $employee_id,
+                'employee_name' => $employee_name,
+                'jenis_kelamin' => $jenis_kelamin,
+                'tempat_lahir' => $tempat_lahir,
+                'tanggal_lahir' => $tanggal_lahir,
+                'golongan_darah' => $golongan_darah,
+                'email' => $email,
+                'nomor_tlpn' => $nomor_tlpn,
+                'agama' => $agama,
+                'status_kawin' => $status_kawin,
+                'npwp' => $npwp,
+                'nomor_ktp' => $nomor_ktp,
+                'nomor_kk' => $nomor_kk,
+                'ptkp' => $ptkp,
+                'pendidikan_terakhir' => $pendidikan_terakhir,
+                'jurusan_pendidikan' => $jurusan_pendidikan,
+                'nama_bank' => $nama_bank,
+                'nomor_rekening_bank' => $nomor_rekening_bank,
+                'ibu_kandung' => $ibu_kandung,
+                'propinsi' => $propinsi,
+                'kota_kab' => $kota_kab,
+                'kecamatan' => $kecamatan,
+                'kelurahan_desa' => $kelurahan_desa,
+                'alamat_rumah' => $alamat_rumah,
+                'alamat_sementara' => $alamat_sementara,
+                'site_nirwana_id' => $site_nirwana_id,
+                'site_nirwana_name' => $site_nirwana_name->site_nirwana_name,
+                'department_id' => $department_id,
+                'department_name' => $department_name->department_name,
+                'sub_dept_id' => $sub_dept_id,
+                'sub_dept_name' => $sub_dept_name->sub_dept_name,
+                'sewing_nonsewing'=>$sewing_nonsewing,
+                'direct_indirect'=>$direct_indirect,
+                'enroll_id' => $enroll_id,
+                'join_date' => $join_date,
+                'nik' => $nik,
+                'status_aktif' => $status_aktif,
+                'status_jabatan' => $status_jabatan,
+                'status_kontrak_tetap' => $status_kontrak_tetap,
+                'status_staff' => $status_staff,
+                'tanggal_resign' => $tanggal_resign,
+                'sebab_resign' => $sebab_resign,
+                'tunjangan' => $tunjangan,
+                'kode_grade' => $kode_grade,
+                'referensi' => $referensi,
+                'employee_name_atasan' => $employee_name_atasan,
+                'status_aktif_bpjs_tk' => $status_aktif_bpjs_tk,
+                'tanggal_bpjs_ketenagakerjaan' => $tanggal_bpjs_ketenagakerjaan,
+                'nomor_bpjs_ketenagakerjaan' => $nomor_bpjs_ketenagakerjaan,
+                'status_aktif_bpjs_ks' => $status_aktif_bpjs_ks,
+                'tanggal_bpjs_kesehatan' => $tanggal_bpjs_kesehatan,
+                'nomor_bpjs_kesehatan' => $nomor_bpjs_kesehatan,
+                'premi' => $premi,
+                'pengalaman_bekerja' => $pengalaman_bekerja,
+                'lokasi_file_cv' => $lokasi_file_cv,
+                'nama_kerabat' => $nama_kerabat,
+                'nomor_tlpn_kerabat' => $nomor_tlpn_kerabat,
+                'hubungan_kerabat' => $hubungan_kerabat,
+                'alamat_kerabat' => $alamat_kerabat,
+                'tanggal_vaccine1' => $tanggal_vaccine1,
+                'nama_vaksin1' => $nama_vaksin1,
+                'tanggal_vaccine2' => $tanggal_vaccine2,
+                'nama_vaksin2' => $nama_vaksin2,
+                'tanggal_vaccine3' => $tanggal_vaccine3,
+                'nama_vaksin3' => $nama_vaksin3,
+                'golongan_sim' => $golongan_sim,
+                'nomor_sim' => $nomor_sim,
+                'tanggal_expire_sim' => $tanggal_expire_sim,
+                'catatan' => $catatan,
+                'no_surat'=>$no_surat,
+                'lokasi_foto' => $lokasi_foto,
+                'operator' => $operator,
+                'tanggal_mulai_kontrak' => $tanggal_mulai_kontrak,
+                'tanggal_akhir_kontrak' => $tanggal_akhir_kontrak,
+                'catatan_kontrak' => $catatan_kontrak
+            ]);
+        }else{
+            EmployeeAtributHistory::where('enroll_id',$enroll_id)->where('periode_payroll',$periode_payroll_hari_ini)->update([
+                'enroll_id'=>$enroll_id,
+                'tanggal_dirubah'=>$tanggal_hari_ini,
+                'periode_payroll'=>$periode_payroll_hari_ini,
+                'employee_id' => $employee_id,
+                'employee_name' => $employee_name,
+                'jenis_kelamin' => $jenis_kelamin,
+                'tempat_lahir' => $tempat_lahir,
+                'tanggal_lahir' => $tanggal_lahir,
+                'golongan_darah' => $golongan_darah,
+                'email' => $email,
+                'nomor_tlpn' => $nomor_tlpn,
+                'agama' => $agama,
+                'status_kawin' => $status_kawin,
+                'npwp' => $npwp,
+                'nomor_ktp' => $nomor_ktp,
+                'nomor_kk' => $nomor_kk,
+                'ptkp' => $ptkp,
+                'pendidikan_terakhir' => $pendidikan_terakhir,
+                'jurusan_pendidikan' => $jurusan_pendidikan,
+                'nama_bank' => $nama_bank,
+                'nomor_rekening_bank' => $nomor_rekening_bank,
+                'ibu_kandung' => $ibu_kandung,
+                'propinsi' => $propinsi,
+                'kota_kab' => $kota_kab,
+                'kecamatan' => $kecamatan,
+                'kelurahan_desa' => $kelurahan_desa,
+                'alamat_rumah' => $alamat_rumah,
+                'alamat_sementara' => $alamat_sementara,
+                'site_nirwana_id' => $site_nirwana_id,
+                'site_nirwana_name' => $site_nirwana_name->site_nirwana_name,
+                'department_id' => $department_id,
+                'department_name' => $department_name->department_name,
+                'sub_dept_id' => $sub_dept_id,
+                'sub_dept_name' => $sub_dept_name->sub_dept_name,
+                'sewing_nonsewing'=>$sewing_nonsewing,
+                'direct_indirect'=>$direct_indirect,
+                'enroll_id' => $enroll_id,
+                'join_date' => $join_date,
+                'nik' => $nik,
+                'status_aktif' => $status_aktif,
+                'status_jabatan' => $status_jabatan,
+                'status_kontrak_tetap' => $status_kontrak_tetap,
+                'status_staff' => $status_staff,
+                'tanggal_resign' => $tanggal_resign,
+                'sebab_resign' => $sebab_resign,
+                'tunjangan' => $tunjangan,
+                'kode_grade' => $kode_grade,
+                'referensi' => $referensi,
+                'employee_name_atasan' => $employee_name_atasan,
+                'status_aktif_bpjs_tk' => $status_aktif_bpjs_tk,
+                'tanggal_bpjs_ketenagakerjaan' => $tanggal_bpjs_ketenagakerjaan,
+                'nomor_bpjs_ketenagakerjaan' => $nomor_bpjs_ketenagakerjaan,
+                'status_aktif_bpjs_ks' => $status_aktif_bpjs_ks,
+                'tanggal_bpjs_kesehatan' => $tanggal_bpjs_kesehatan,
+                'nomor_bpjs_kesehatan' => $nomor_bpjs_kesehatan,
+                'premi' => $premi,
+                'pengalaman_bekerja' => $pengalaman_bekerja,
+                'lokasi_file_cv' => $lokasi_file_cv,
+                'nama_kerabat' => $nama_kerabat,
+                'nomor_tlpn_kerabat' => $nomor_tlpn_kerabat,
+                'hubungan_kerabat' => $hubungan_kerabat,
+                'alamat_kerabat' => $alamat_kerabat,
+                'tanggal_vaccine1' => $tanggal_vaccine1,
+                'nama_vaksin1' => $nama_vaksin1,
+                'tanggal_vaccine2' => $tanggal_vaccine2,
+                'nama_vaksin2' => $nama_vaksin2,
+                'tanggal_vaccine3' => $tanggal_vaccine3,
+                'nama_vaksin3' => $nama_vaksin3,
+                'golongan_sim' => $golongan_sim,
+                'nomor_sim' => $nomor_sim,
+                'tanggal_expire_sim' => $tanggal_expire_sim,
+                'catatan' => $catatan,
+                'no_surat'=>$no_surat,
+                'lokasi_foto' => $lokasi_foto,
+                'operator' => $operator,
+                'tanggal_mulai_kontrak' => $tanggal_mulai_kontrak,
+                'tanggal_akhir_kontrak' => $tanggal_akhir_kontrak,
+                'catatan_kontrak' => $catatan_kontrak
+            ]);
+        }
         return $query;
 
     }

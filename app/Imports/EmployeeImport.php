@@ -10,6 +10,8 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use App\Models\DepartmentAll;
 use Carbon\Carbon;
+use App\Services\employee\Kehadiran;
+use App\Models\EmployeeAtributHistory;
 
 class EmployeeImport implements ToModel, WithStartRow, WithCalculatedFormulas
 {
@@ -118,8 +120,12 @@ class EmployeeImport implements ToModel, WithStartRow, WithCalculatedFormulas
             'status_kontrak_tetap'=>$row[5],
             'status_staff'=>$row[6],
             'status_jabatan'=>$row[7],
+            'site_nirwana_id'=>'NAG',
+            'site_nirwana_name'=>'PT. NIRWANA ALABARE GARMENT',
             'department_id'=>$department_id,
             'department_name'=>$row[9],
+            'sub_dept_id'=>$sub_dept_id,
+            'sub_dept_name'=>$row[11],
             'sub_dept_id'=>$sub_dept_id,
             'sub_dept_name'=>$row[11],
             'sewing_nonsewing'=>$row[12],
@@ -183,11 +189,260 @@ class EmployeeImport implements ToModel, WithStartRow, WithCalculatedFormulas
         if($dataArray['enroll_id']=='' || $dataArray['hamlet']=='red'){
 
         }else if($dataArray['hamlet']=='lightblue'){
-            array_shift($dataArray);
             EmployeeAtribut::create($dataArray);
+            $tanggal_hari_ini=date('Y-m-d');
+            $bulan_hari_ini=substr($tanggal_hari_ini,0,8).'26';
+            $bulan_sebelum_hari_ini=date('Y-m-d',strtotime( "-1 month", strtotime( $bulan_hari_ini ) ));
+            $bulan_setelah_hari_ini=date('Y-m-d',strtotime( "+1 month", strtotime( $bulan_hari_ini ) ));
+            if($tanggal_hari_ini>=$bulan_sebelum_hari_ini && $tanggal_hari_ini<$bulan_hari_ini){
+                $tanggal_awal_hari_ini=$bulan_sebelum_hari_ini;
+            }else if($tanggal_hari_ini>=$bulan_hari_ini && $tanggal_hari_ini<$bulan_setelah_hari_ini){
+                $tanggal_awal_hari_ini=$bulan_hari_ini;
+            }else{
+                $tanggal_awal_hari_ini='';
+            }
+            $tanggal_akhir_hari_ini=date('Y-m-25',strtotime("+1 month",strtotime($tanggal_awal_hari_ini)));
+            $periode_payroll_hari_ini=$tanggal_awal_hari_ini.' s/d '.$tanggal_akhir_hari_ini;
+            $a=(new Kehadiran)->new_employee($dataArray['enroll_id']);
+            EmployeeAtributHistory::create([
+                'enroll_id'=>$dataArray['enroll_id'],
+                'tanggal_dirubah'=>$tanggal_hari_ini,
+                'periode_payroll'=>$periode_payroll_hari_ini,
+                'employee_id' => $dataArray['employee_id'],
+                'employee_name' => $dataArray['employee_name'],
+                'jenis_kelamin' => $dataArray['jenis_kelamin'],
+                'tempat_lahir' => $dataArray['tempat_lahir'],
+                'tanggal_lahir' => $dataArray['tanggal_lahir'],
+                'golongan_darah' => $dataArray['golongan_darah'],
+                'email' => $dataArray['email'],
+                'nomor_tlpn' => $dataArray['nomor_tlpn'],
+                'agama' => $dataArray['agama'],
+                'status_kawin' => $dataArray['status_kawin'],
+                'npwp' => $dataArray['npwp'],
+                'nomor_ktp' => $dataArray['nomor_ktp'],
+                'nomor_kk' => $dataArray['nomor_kk'],
+                'pendidikan_terakhir' => $dataArray['pendidikan_terakhir'],
+                'jurusan_pendidikan' => $dataArray['jurusan_pendidikan'],
+                'nama_bank' => $dataArray['nama_bank'],
+                'nomor_rekening_bank' => $dataArray['nomor_rekening_bank'],
+                'ibu_kandung' => $dataArray['ibu_kandung'],
+                'propinsi' => $dataArray['propinsi'],
+                'kota_kab' => $dataArray['kota_kab'],
+                'kecamatan' => $dataArray['kecamatan'],
+                'kelurahan_desa' => $dataArray['kelurahan_desa'],
+                'alamat_rumah' => $dataArray['alamat_rumah'],
+                'alamat_sementara' => $dataArray['alamat_sementara'],
+                'site_nirwana_id' => $dataArray['site_nirwana_id'],
+                'site_nirwana_name' => $dataArray['site_nirwana_name'],
+                'department_id' => $dataArray['department_id'],
+                'department_name' => $dataArray['department_name'],
+                'sub_dept_id' => $dataArray['sub_dept_id'],
+                'sub_dept_name' => $dataArray['sub_dept_name'],
+                'sewing_nonsewing'=>$dataArray['sewing_nonsewing'],
+                'direct_indirect'=>$dataArray['direct_indirect'],
+                'enroll_id' => $dataArray['enroll_id'],
+                'join_date' => $dataArray['join_date'],
+                'nik' => $dataArray['nik'],
+                'status_aktif' => $dataArray['status_aktif'],
+                'status_jabatan' => $dataArray['status_jabatan'],
+                'status_kontrak_tetap' => $dataArray['status_kontrak_tetap'],
+                'status_staff' => $dataArray['status_staff'],
+                'tanggal_resign' => $dataArray['tanggal_resign'],
+                'sebab_resign' => $dataArray['sebab_resign'],
+                'tunjangan' => $dataArray['tunjangan'],
+                'kode_grade' => $dataArray['kode_grade'],
+                'referensi' => $dataArray['referensi'],
+                'employee_name_atasan' => $dataArray['employee_name_atasan'],
+                'status_aktif_bpjs_tk' => $dataArray['status_aktif_bpjs_tk'],
+                'tanggal_bpjs_ketenagakerjaan' => $dataArray['tanggal_bpjs_ketenagakerjaan'],
+                'nomor_bpjs_ketenagakerjaan' => $dataArray['nomor_bpjs_ketenagakerjaan'],
+                'status_aktif_bpjs_ks' => $dataArray['status_aktif_bpjs_ks'],
+                'tanggal_bpjs_kesehatan' => $dataArray['tanggal_bpjs_kesehatan'],
+                'nomor_bpjs_kesehatan' => $dataArray['nomor_bpjs_kesehatan'],
+                'pengalaman_bekerja' => $dataArray['pengalaman_bekerja'],
+                'nama_kerabat' => $dataArray['nama_kerabat'],
+                'nomor_tlpn_kerabat' => $dataArray['nomor_tlpn_kerabat'],
+                'hubungan_kerabat' => $dataArray['hubungan_kerabat'],
+                'alamat_kerabat' => $dataArray['alamat_kerabat'],
+                'tanggal_vaccine1' => $dataArray['tanggal_vaccine1'],
+                'nama_vaksin1' => $dataArray['nama_vaksin1'],
+                'tanggal_vaccine2' => $dataArray['tanggal_vaccine2'],
+                'nama_vaksin2' => $dataArray['nama_vaksin2'],
+                'golongan_sim' => $dataArray['golongan_sim'],
+                'nomor_sim' => $dataArray['nomor_sim'],
+                'tanggal_expire_sim' => $dataArray['tanggal_expire_sim'],
+                'catatan' => $dataArray['catatan'],
+                'no_surat'=> $dataArray['no_surat'],
+                'tanggal_mulai_kontrak' => $dataArray['tanggal_mulai_kontrak'],
+                'tanggal_akhir_kontrak' => $dataArray['tanggal_akhir_kontrak'],
+                'catatan_kontrak' => $dataArray['catatan_kontrak']
+            ]);
         }else if($dataArray['hamlet']=='white'){
-            array_shift($dataArray);
             EmployeeAtribut::where('enroll_id',$dataArray['enroll_id'])->update($dataArray);
+            $tanggal_hari_ini=date('Y-m-d');
+            $bulan_hari_ini=substr($tanggal_hari_ini,0,8).'26';
+            $bulan_sebelum_hari_ini=date('Y-m-d',strtotime( "-1 month", strtotime( $bulan_hari_ini ) ));
+            $bulan_setelah_hari_ini=date('Y-m-d',strtotime( "+1 month", strtotime( $bulan_hari_ini ) ));
+            if($tanggal_hari_ini>=$bulan_sebelum_hari_ini && $tanggal_hari_ini<$bulan_hari_ini){
+                $tanggal_awal_hari_ini=$bulan_sebelum_hari_ini;
+            }else if($tanggal_hari_ini>=$bulan_hari_ini && $tanggal_hari_ini<$bulan_setelah_hari_ini){
+                $tanggal_awal_hari_ini=$bulan_hari_ini;
+            }else{
+                $tanggal_awal_hari_ini='';
+            }
+            $tanggal_akhir_hari_ini=date('Y-m-25',strtotime("+1 month",strtotime($tanggal_awal_hari_ini)));
+            $periode_payroll_hari_ini=$tanggal_awal_hari_ini.' s/d '.$tanggal_akhir_hari_ini;
+            $history_dirubah=EmployeeAtributHistory::where('enroll_id',$enroll_id)->where('periode_payroll',$periode_payroll_hari_ini)->count();
+            if($history_dirubah>0){
+                EmployeeAtributHistory::where('enroll_id',$dataArray['enroll_id'])->where('periode_payroll',$periode_payroll_hari_ini)->update([
+                    'enroll_id'=>$dataArray['enroll_id'],
+                    'tanggal_dirubah'=>$tanggal_hari_ini,
+                    'periode_payroll'=>$periode_payroll_hari_ini,
+                    'employee_id' => $dataArray['employee_id'],
+                    'employee_name' => $dataArray['employee_name'],
+                    'jenis_kelamin' => $dataArray['jenis_kelamin'],
+                    'tempat_lahir' => $dataArray['tempat_lahir'],
+                    'tanggal_lahir' => $dataArray['tanggal_lahir'],
+                    'golongan_darah' => $dataArray['golongan_darah'],
+                    'email' => $dataArray['email'],
+                    'nomor_tlpn' => $dataArray['nomor_tlpn'],
+                    'agama' => $dataArray['agama'],
+                    'status_kawin' => $dataArray['status_kawin'],
+                    'npwp' => $dataArray['npwp'],
+                    'nomor_ktp' => $dataArray['nomor_ktp'],
+                    'nomor_kk' => $dataArray['nomor_kk'],
+                    'pendidikan_terakhir' => $dataArray['pendidikan_terakhir'],
+                    'jurusan_pendidikan' => $dataArray['jurusan_pendidikan'],
+                    'nama_bank' => $dataArray['nama_bank'],
+                    'nomor_rekening_bank' => $dataArray['nomor_rekening_bank'],
+                    'ibu_kandung' => $dataArray['ibu_kandung'],
+                    'propinsi' => $dataArray['propinsi'],
+                    'kota_kab' => $dataArray['kota_kab'],
+                    'kecamatan' => $dataArray['kecamatan'],
+                    'kelurahan_desa' => $dataArray['kelurahan_desa'],
+                    'alamat_rumah' => $dataArray['alamat_rumah'],
+                    'alamat_sementara' => $dataArray['alamat_sementara'],
+                    'site_nirwana_id' => $dataArray['site_nirwana_id'],
+                    'site_nirwana_name' => $dataArray['site_nirwana_name'],
+                    'department_id' => $dataArray['department_id'],
+                    'department_name' => $dataArray['department_name'],
+                    'sub_dept_id' => $dataArray['sub_dept_id'],
+                    'sub_dept_name' => $dataArray['sub_dept_name'],
+                    'sewing_nonsewing'=>$dataArray['sewing_nonsewing'],
+                    'direct_indirect'=>$dataArray['direct_indirect'],
+                    'enroll_id' => $dataArray['enroll_id'],
+                    'join_date' => $dataArray['join_date'],
+                    'nik' => $dataArray['nik'],
+                    'status_aktif' => $dataArray['status_aktif'],
+                    'status_jabatan' => $dataArray['status_jabatan'],
+                    'status_kontrak_tetap' => $dataArray['status_kontrak_tetap'],
+                    'status_staff' => $dataArray['status_staff'],
+                    'tanggal_resign' => $dataArray['tanggal_resign'],
+                    'sebab_resign' => $dataArray['sebab_resign'],
+                    'tunjangan' => $dataArray['tunjangan'],
+                    'kode_grade' => $dataArray['kode_grade'],
+                    'referensi' => $dataArray['referensi'],
+                    'employee_name_atasan' => $dataArray['employee_name_atasan'],
+                    'status_aktif_bpjs_tk' => $dataArray['status_aktif_bpjs_tk'],
+                    'tanggal_bpjs_ketenagakerjaan' => $dataArray['tanggal_bpjs_ketenagakerjaan'],
+                    'nomor_bpjs_ketenagakerjaan' => $dataArray['nomor_bpjs_ketenagakerjaan'],
+                    'status_aktif_bpjs_ks' => $dataArray['status_aktif_bpjs_ks'],
+                    'tanggal_bpjs_kesehatan' => $dataArray['tanggal_bpjs_kesehatan'],
+                    'nomor_bpjs_kesehatan' => $dataArray['nomor_bpjs_kesehatan'],
+                    'pengalaman_bekerja' => $dataArray['pengalaman_bekerja'],
+                    'nama_kerabat' => $dataArray['nama_kerabat'],
+                    'nomor_tlpn_kerabat' => $dataArray['nomor_tlpn_kerabat'],
+                    'hubungan_kerabat' => $dataArray['hubungan_kerabat'],
+                    'alamat_kerabat' => $dataArray['alamat_kerabat'],
+                    'tanggal_vaccine1' => $dataArray['tanggal_vaccine1'],
+                    'nama_vaksin1' => $dataArray['nama_vaksin1'],
+                    'tanggal_vaccine2' => $dataArray['tanggal_vaccine2'],
+                    'nama_vaksin2' => $dataArray['nama_vaksin2'],
+                    'golongan_sim' => $dataArray['golongan_sim'],
+                    'nomor_sim' => $dataArray['nomor_sim'],
+                    'tanggal_expire_sim' => $dataArray['tanggal_expire_sim'],
+                    'catatan' => $dataArray['catatan'],
+                    'no_surat'=> $dataArray['no_surat'],
+                    'tanggal_mulai_kontrak' => $dataArray['tanggal_mulai_kontrak'],
+                    'tanggal_akhir_kontrak' => $dataArray['tanggal_akhir_kontrak'],
+                    'catatan_kontrak' => $dataArray['catatan_kontrak']
+                ]);
+            }else{
+                EmployeeAtributHistory::create([
+                    'enroll_id'=>$dataArray['enroll_id'],
+                    'tanggal_dirubah'=>$tanggal_hari_ini,
+                    'periode_payroll'=>$periode_payroll_hari_ini,
+                    'employee_id' => $dataArray['employee_id'],
+                    'employee_name' => $dataArray['employee_name'],
+                    'jenis_kelamin' => $dataArray['jenis_kelamin'],
+                    'tempat_lahir' => $dataArray['tempat_lahir'],
+                    'tanggal_lahir' => $dataArray['tanggal_lahir'],
+                    'golongan_darah' => $dataArray['golongan_darah'],
+                    'email' => $dataArray['email'],
+                    'nomor_tlpn' => $dataArray['nomor_tlpn'],
+                    'agama' => $dataArray['agama'],
+                    'status_kawin' => $dataArray['status_kawin'],
+                    'npwp' => $dataArray['npwp'],
+                    'nomor_ktp' => $dataArray['nomor_ktp'],
+                    'nomor_kk' => $dataArray['nomor_kk'],
+                    'pendidikan_terakhir' => $dataArray['pendidikan_terakhir'],
+                    'jurusan_pendidikan' => $dataArray['jurusan_pendidikan'],
+                    'nama_bank' => $dataArray['nama_bank'],
+                    'nomor_rekening_bank' => $dataArray['nomor_rekening_bank'],
+                    'ibu_kandung' => $dataArray['ibu_kandung'],
+                    'propinsi' => $dataArray['propinsi'],
+                    'kota_kab' => $dataArray['kota_kab'],
+                    'kecamatan' => $dataArray['kecamatan'],
+                    'kelurahan_desa' => $dataArray['kelurahan_desa'],
+                    'alamat_rumah' => $dataArray['alamat_rumah'],
+                    'alamat_sementara' => $dataArray['alamat_sementara'],
+                    'site_nirwana_id' => $dataArray['site_nirwana_id'],
+                    'site_nirwana_name' => $dataArray['site_nirwana_name'],
+                    'department_id' => $dataArray['department_id'],
+                    'department_name' => $dataArray['department_name'],
+                    'sub_dept_id' => $dataArray['sub_dept_id'],
+                    'sub_dept_name' => $dataArray['sub_dept_name'],
+                    'sewing_nonsewing'=>$dataArray['sewing_nonsewing'],
+                    'direct_indirect'=>$dataArray['direct_indirect'],
+                    'enroll_id' => $dataArray['enroll_id'],
+                    'join_date' => $dataArray['join_date'],
+                    'nik' => $dataArray['nik'],
+                    'status_aktif' => $dataArray['status_aktif'],
+                    'status_jabatan' => $dataArray['status_jabatan'],
+                    'status_kontrak_tetap' => $dataArray['status_kontrak_tetap'],
+                    'status_staff' => $dataArray['status_staff'],
+                    'tanggal_resign' => $dataArray['tanggal_resign'],
+                    'sebab_resign' => $dataArray['sebab_resign'],
+                    'tunjangan' => $dataArray['tunjangan'],
+                    'kode_grade' => $dataArray['kode_grade'],
+                    'referensi' => $dataArray['referensi'],
+                    'employee_name_atasan' => $dataArray['employee_name_atasan'],
+                    'status_aktif_bpjs_tk' => $dataArray['status_aktif_bpjs_tk'],
+                    'tanggal_bpjs_ketenagakerjaan' => $dataArray['tanggal_bpjs_ketenagakerjaan'],
+                    'nomor_bpjs_ketenagakerjaan' => $dataArray['nomor_bpjs_ketenagakerjaan'],
+                    'status_aktif_bpjs_ks' => $dataArray['status_aktif_bpjs_ks'],
+                    'tanggal_bpjs_kesehatan' => $dataArray['tanggal_bpjs_kesehatan'],
+                    'nomor_bpjs_kesehatan' => $dataArray['nomor_bpjs_kesehatan'],
+                    'pengalaman_bekerja' => $dataArray['pengalaman_bekerja'],
+                    'nama_kerabat' => $dataArray['nama_kerabat'],
+                    'nomor_tlpn_kerabat' => $dataArray['nomor_tlpn_kerabat'],
+                    'hubungan_kerabat' => $dataArray['hubungan_kerabat'],
+                    'alamat_kerabat' => $dataArray['alamat_kerabat'],
+                    'tanggal_vaccine1' => $dataArray['tanggal_vaccine1'],
+                    'nama_vaksin1' => $dataArray['nama_vaksin1'],
+                    'tanggal_vaccine2' => $dataArray['tanggal_vaccine2'],
+                    'nama_vaksin2' => $dataArray['nama_vaksin2'],
+                    'golongan_sim' => $dataArray['golongan_sim'],
+                    'nomor_sim' => $dataArray['nomor_sim'],
+                    'tanggal_expire_sim' => $dataArray['tanggal_expire_sim'],
+                    'catatan' => $dataArray['catatan'],
+                    'no_surat'=> $dataArray['no_surat'],
+                    'tanggal_mulai_kontrak' => $dataArray['tanggal_mulai_kontrak'],
+                    'tanggal_akhir_kontrak' => $dataArray['tanggal_akhir_kontrak'],
+                    'catatan_kontrak' => $dataArray['catatan_kontrak']
+                ]);
+            }
         }
+
     }
 }
