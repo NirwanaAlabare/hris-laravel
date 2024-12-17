@@ -78,7 +78,7 @@ class DataAbsenPerijinanExport implements WithColumnFormatting, FromQuery, WithM
                                     ->whereBetween('master_data_absen_kehadiran.tanggal_berjalan', [$tanggalMulai, $tanggalSampai])
                                     ->whereNotNull('master_data_absen_kehadiran.status_absen')
                                     ->whereNotNull('master_data_absen_kehadiran.nomor_absen_ijin')
-                                    ->whereNotIn('master_data_absen_kehadiran.status_absen', ['IKS'])
+                                    ->whereNotIn('master_data_absen_kehadiran.status_absen', ['IKS','M','TL'])
                                     ->where(function($query) {
                                         $query->where(function($q) {
                                             $q->whereNotNull('master_data_absen_kehadiran.absen_masuk_kerja')

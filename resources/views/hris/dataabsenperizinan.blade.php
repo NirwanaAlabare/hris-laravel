@@ -258,8 +258,8 @@
                 <div class="card-body">
                     <!-- BEGIN FORM-->
                     {!! Form::open(['route' => 'hris.employeeatr.create', 'id' => 'form1', 'name' => 'form1', 'method'=>'post']) !!}
-                    <input id="uuid" type="text">
-                    <input id="uuid_master" type="text">
+                    <input id="uuid" type="hidden">
+                    <input id="uuid_master" type="hidden">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
