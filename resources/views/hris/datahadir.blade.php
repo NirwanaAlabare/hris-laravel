@@ -1010,224 +1010,226 @@
             var adaGagalAbsen = "";
             var adaSPL = "";
             console.log("D",d);
-            if ((d.nomor_absen_ijin !== "") && (d.nomor_absen_ijin !== null) && (d.status_absen !== "IKS") && (d.status_absen !== "M")) {
-                adaPerizinan = '<div class="col-md-4">' +
-                    '<div class="expanel expanel-light p-1 mt-1 mb-1">' +
-                        '<div class="expanel-heading p-1">' +
-                            ' <b>PERIZINAN (CUTI DAN IZIN)</b>' +
+            if(d != undefined){
+                if ((d.nomor_absen_ijin !== null) && (d.nomor_absen_ijin !== "") && (d.status_absen !== "IKS") && (d.status_absen !== "M")) {
+                    adaPerizinan = '<div class="col-md-4">' +
+                        '<div class="expanel expanel-light p-1 mt-1 mb-1">' +
+                            '<div class="expanel-heading p-1">' +
+                                ' <b>PERIZINAN (CUTI DAN IZIN)</b>' +
+                            '</div>' +
+                            '<div class="expanel-body collapse" id="collapse03' + d.uuid +'">' +
+                                '<div class="row">' +
+                                    '<div class="col-md-12">' +
+                                        '<table class="table table-sm w-100">' +
+                                            '<tbody>' +
+                                                '<tr><th>Nomor Form Perizinan</th></tr>' +
+                                                '<tr><td>' + d.nomor_absen_ijin + '</td></tr>' +
+                                                '<tr><th>Nama Perizinan</th></tr>' +
+                                                '<tr><td>' + d.nama_absen_ijin + '</td></tr>' +
+                                                '<tr><th>Kode Payroll</th></tr>' +
+                                                '<tr><td>' + d.kode_ijin_payroll + '</td></tr>' +
+                                                '<tr><th>Tanggal Izin Dari</th></tr>' +
+                                                '<tr><td>' + d.tanggal_mulai_ijin + '</td></tr>' +
+                                                '<tr><th>Tanggal Izin Sampai</th></tr>' +
+                                                '<tr><td>' + d.tanggal_akhir_ijin + '</td></tr>' +
+                                            '</tbody>' +
+                                        '</table>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>' +
                         '</div>' +
-                        '<div class="expanel-body collapse" id="collapse03' + d.uuid +'">' +
-                            '<div class="row">' +
-                                '<div class="col-md-12">' +
-                                    '<table class="table table-sm w-100">' +
-                                        '<tbody>' +
-                                            '<tr><th>Nomor Form Perizinan</th></tr>' +
-                                            '<tr><td>' + d.nomor_absen_ijin + '</td></tr>' +
-                                            '<tr><th>Nama Perizinan</th></tr>' +
-                                            '<tr><td>' + d.nama_absen_ijin + '</td></tr>' +
-                                            '<tr><th>Kode Payroll</th></tr>' +
-                                            '<tr><td>' + d.kode_ijin_payroll + '</td></tr>' +
+                    '</div>';
+                } else if ((d.nomor_absen_ijin !== "") && (d.nomor_absen_ijin !== null) && (d.status_absen == "IKS")) {
+                    adaPerizinan = '<div class="col-md-4">' +
+                        '<div class="expanel expanel-light p-1 mt-1 mb-1">' +
+                            '<div class="expanel-heading p-1">' +
+                                ' <b>PERIZINAN (IKS)</b>' +
+                            '</div>' +
+                            '<div class="expanel-body collapse" id="collapse03' + d.uuid +'">' +
+                                '<div class="row">' +
+                                    '<div class="col-md-12">' +
+                                        '<table class="table table-sm w-100">' +
+                                            '<tbody>' +
+                                                '<tr><th>Nomor Form IKS</th></tr>' +
+                                                '<tr><td>' + d.nomor_absen_ijin + '</td></tr>' +
+                                                '<tr><th>Nama Perizinan</th></tr>' +
+                                                '<tr><td>' + d.nama_absen_ijin + '</td></tr>' +
+                                                '<tr><th>Kode Payroll</th></tr>' +
+                                                '<tr><td>' + d.kode_ijin_payroll + '</td></tr>' +
+                                                '<tr><th>Dari Pukul</th></tr>' +
+                                                '<tr><td>' + d.permits_dari_pukul + '</td></tr>' +
+                                                '<tr><th>Sampai Pukul</th></tr>' +
+                                                '<tr><td>' + d.permits_sampai_pukul + '</td></tr>' +
+                                                '<tr><th>Total Jam IKS</th></tr>' +
+                                                '<tr><td>' + d.total_menit_permits + '</td></tr>' +
+                                            '</tbody>' +
+                                        '</table>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>';
+                }
+
+                if (d.nomor_form_perubahan_absen) {
+                    adaGagalAbsen = '<div class="col-md-4">' +
+                        '<div class="expanel expanel-light p-1 mt-1 mb-1">' +
+                            '<div class="expanel-heading p-1">' +
+                                ' <b>GAGAL ABSEN</b>' +
+                            '</div>' +
+                            '<div class="expanel-body collapse" id="collapse03' + d.uuid +'">' +
+                                '<div class="row">' +
+                                    '<div class="col-md-12">' +
+                                        '<table class="table table-sm w-100">' +
+                                            '<tr><th>Nomor Form Gagal Absen</th></tr>' +
+                                            '<tr><td>' + d.nomor_form_perubahan_absen + '</td></tr>' +
                                             '<tr><th>Tanggal Izin Dari</th></tr>' +
                                             '<tr><td>' + d.tanggal_mulai_ijin + '</td></tr>' +
                                             '<tr><th>Tanggal Izin Sampai</th></tr>' +
                                             '<tr><td>' + d.tanggal_akhir_ijin + '</td></tr>' +
-                                        '</tbody>' +
-                                    '</table>' +
+                                        '</table>' +
+                                    '</div>' +
                                 '</div>' +
                             '</div>' +
                         '</div>' +
-                    '</div>' +
-                '</div>';
-            } else if ((d.nomor_absen_ijin !== "") && (d.nomor_absen_ijin !== null) && (d.status_absen == "IKS")) {
-                adaPerizinan = '<div class="col-md-4">' +
-                    '<div class="expanel expanel-light p-1 mt-1 mb-1">' +
-                        '<div class="expanel-heading p-1">' +
-                            ' <b>PERIZINAN (IKS)</b>' +
-                        '</div>' +
-                        '<div class="expanel-body collapse" id="collapse03' + d.uuid +'">' +
-                            '<div class="row">' +
-                                '<div class="col-md-12">' +
-                                    '<table class="table table-sm w-100">' +
-                                        '<tbody>' +
-                                            '<tr><th>Nomor Form IKS</th></tr>' +
-                                            '<tr><td>' + d.nomor_absen_ijin + '</td></tr>' +
-                                            '<tr><th>Nama Perizinan</th></tr>' +
-                                            '<tr><td>' + d.nama_absen_ijin + '</td></tr>' +
-                                            '<tr><th>Kode Payroll</th></tr>' +
-                                            '<tr><td>' + d.kode_ijin_payroll + '</td></tr>' +
-                                            '<tr><th>Dari Pukul</th></tr>' +
-                                            '<tr><td>' + d.permits_dari_pukul + '</td></tr>' +
-                                            '<tr><th>Sampai Pukul</th></tr>' +
-                                            '<tr><td>' + d.permits_sampai_pukul + '</td></tr>' +
-                                            '<tr><th>Total Jam IKS</th></tr>' +
-                                            '<tr><td>' + d.total_menit_permits + '</td></tr>' +
-                                        '</tbody>' +
-                                    '</table>' +
-                                '</div>' +
-                            '</div>' +
-                        '</div>' +
-                    '</div>' +
-                '</div>';
-            }
+                    '</div>';
+                }
 
-            if (d.nomor_form_perubahan_absen) {
-                adaGagalAbsen = '<div class="col-md-4">' +
-                    '<div class="expanel expanel-light p-1 mt-1 mb-1">' +
-                        '<div class="expanel-heading p-1">' +
-                            ' <b>GAGAL ABSEN</b>' +
+                if (d.nomor_form_lembur) {
+                    adaSPL = '<div class="col-md-4">' +
+                        '<div class="expanel expanel-light p-1 mt-1 mb-1">' +
+                            '<div class="expanel-heading p-1">' +
+                                ' <b>LEMBUR (SPL)</b>' +
+                            '</div>' +
+                            '<div class="expanel-body collapse" id="collapse03' + d.uuid +'">' +
+                                '<div class="row">' +
+                                    '<div class="col-md-12">' +
+                                        '<table class="table table-sm w-100">' +
+                                            '<tbody>' +
+                                                '<tr><th>Nomor Form SPL</th></tr>' +
+                                                '<tr><td>' + d.nomor_form_lembur + '</td></tr>' +
+                                                '<tr><th>Waktu Lembur Dari</th></tr>' +
+                                                '<tr><td>' + d.mulai_jam_lembur + '</td></tr>' +
+                                                '<tr><th>Waktu Lembur Sampai</th></tr>' +
+                                                '<tr><td>' + d.akhir_jam_lembur + '</td></tr>' +
+                                                '<tr><th>Jumlah Jam Lembur</th></tr>' +
+                                                '<tr><td>' + d.jumlah_jam_lembur + '</td></tr>' +
+                                            '</tbody>' +
+                                        '</table>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>' +
                         '</div>' +
-                        '<div class="expanel-body collapse" id="collapse03' + d.uuid +'">' +
+                    '</div>';
+                }
+                return (
+                    '<div class="expanel expanel-success">' +
+                        '<div class="expanel-heading p-1">' +
+                            '<h4 class="expanel-title">' +
+                                '<div class="btn-group">' +
+                                    '<button id="btn-add" class="btn btn-icon btn-sm text-sm btn-light pl-1 pr-1 pt-0 pb-0 m-0" type="button"><i class="fa fa-plus"></i> ADD PERIZINAN</button>' +
+                                '</div>' +
+                                '<div class="btn-group">' +
+                                    '<button class="btn btn-icon btn-sm text-sm btn-light pl-1 pr-1 pt-0 pb-0 m-0" onclick="edit_jadwal(this)" uuid="' + d.uuid +'"  type="button"><i class="fa fa-plus"></i>EDIT JADWAL</button>' +
+                                '</div>' +
+                            ' <b>DETAIL DATA KEHADIRAN KARYAWAN</b></h4>' +
+                        '</div>' +
+                        '<input type="hidden" id="uuid_detail" name="uuid_detail" value="' + d.uuid +'">' +
+                        '<input type="hidden" id="nomor_absen_ijin" name="nomor_absen_ijin" value="' + d.nomor_absen_ijin +'">' +
+                        '<div class="expanel-body">' +
                             '<div class="row">' +
                                 '<div class="col-md-12">' +
-                                    '<table class="table table-sm w-100">' +
-                                        '<tr><th>Nomor Form Gagal Absen</th></tr>' +
-                                        '<tr><td>' + d.nomor_form_perubahan_absen + '</td></tr>' +
-                                        '<tr><th>Tanggal Izin Dari</th></tr>' +
-                                        '<tr><td>' + d.tanggal_mulai_ijin + '</td></tr>' +
-                                        '<tr><th>Tanggal Izin Sampai</th></tr>' +
-                                        '<tr><td>' + d.tanggal_akhir_ijin + '</td></tr>' +
-                                    '</table>' +
+                                    '<div class="expanel expanel-light p-0 mt-1 mb-1">' +
+                                        '<div class="expanel-heading p-1 clearfix">' +
+                                            '<button class="btn btn-icon btn-sm btn-light pl-0 pt-0 pb-0 pr-0 mr-0" type="button" data-toggle="collapse" data-target="#collapse01' + d.uuid +'" aria-expanded="false" aria-controls="collapse01' + d.uuid +'"><i class="fa fa-info"></i></button>' +
+                                            ' <b>DIVISI</b>' +
+                                        '</div>' +
+                                        '<div class="expanel-body collapse" id="collapse01' + d.uuid +'">' +
+                                            '<div class="row">' +
+                                                '<div class="col-md-4">' +
+                                                    '<div class="form-group">' +
+                                                        '<label class="form-label">Divisi</label>' +
+                                                        '<div>' + d.site_nirwana_name + '</div>' +
+                                                    '</div>' +
+                                                '</div>' +
+                                                '<div class="col-md-4">' +
+                                                    '<div class="form-group">' +
+                                                        '<label class="form-label">Department</label>' +
+                                                        '<div>' + d.department_name + '</div>' +
+                                                    '</div>' +
+                                                '</div>' +
+                                                '<div class="col-md-4">' +
+                                                    '<div class="form-group">' +
+                                                        '<label class="form-label">Bagian</label>' +
+                                                        '<div>' + d.sub_dept_name + '</div>' +
+                                                    '</div>' +
+                                                '</div>' +
+                                            '</div>' +
+                                        '</div>' +
+                                    '</div>' +
                                 '</div>' +
-                            '</div>' +
-                        '</div>' +
-                    '</div>' +
-                '</div>';
-            }
-
-            if (d.nomor_form_lembur) {
-                adaSPL = '<div class="col-md-4">' +
-                    '<div class="expanel expanel-light p-1 mt-1 mb-1">' +
-                        '<div class="expanel-heading p-1">' +
-                            ' <b>LEMBUR (SPL)</b>' +
-                        '</div>' +
-                        '<div class="expanel-body collapse" id="collapse03' + d.uuid +'">' +
-                            '<div class="row">' +
                                 '<div class="col-md-12">' +
-                                    '<table class="table table-sm w-100">' +
-                                        '<tbody>' +
-                                            '<tr><th>Nomor Form SPL</th></tr>' +
-                                            '<tr><td>' + d.nomor_form_lembur + '</td></tr>' +
-                                            '<tr><th>Waktu Lembur Dari</th></tr>' +
-                                            '<tr><td>' + d.mulai_jam_lembur + '</td></tr>' +
-                                            '<tr><th>Waktu Lembur Sampai</th></tr>' +
-                                            '<tr><td>' + d.akhir_jam_lembur + '</td></tr>' +
-                                            '<tr><th>Jumlah Jam Lembur</th></tr>' +
-                                            '<tr><td>' + d.jumlah_jam_lembur + '</td></tr>' +
-                                        '</tbody>' +
-                                    '</table>' +
-                                '</div>' +
-                            '</div>' +
-                        '</div>' +
-                    '</div>' +
-                '</div>';
-            }
-            return (
-                '<div class="expanel expanel-success">' +
-                    '<div class="expanel-heading p-1">' +
-                        '<h4 class="expanel-title">' +
-                            '<div class="btn-group">' +
-                                '<button id="btn-add" class="btn btn-icon btn-sm text-sm btn-light pl-1 pr-1 pt-0 pb-0 m-0" type="button"><i class="fa fa-plus"></i> ADD PERIZINAN</button>' +
-                            '</div>' +
-                            '<div class="btn-group">' +
-                                '<button class="btn btn-icon btn-sm text-sm btn-light pl-1 pr-1 pt-0 pb-0 m-0" onclick="edit_jadwal(this)" uuid="' + d.uuid +'"  type="button"><i class="fa fa-plus"></i>EDIT JADWAL</button>' +
-                            '</div>' +
-                        ' <b>DETAIL DATA KEHADIRAN KARYAWAN</b></h4>' +
-                    '</div>' +
-                    '<input type="hidden" id="uuid_detail" name="uuid_detail" value="' + d.uuid +'">' +
-                    '<input type="hidden" id="nomor_absen_ijin" name="nomor_absen_ijin" value="' + d.nomor_absen_ijin +'">' +
-                    '<div class="expanel-body">' +
-                        '<div class="row">' +
-                            '<div class="col-md-12">' +
-                                '<div class="expanel expanel-light p-0 mt-1 mb-1">' +
-                                    '<div class="expanel-heading p-1 clearfix">' +
-                                        '<button class="btn btn-icon btn-sm btn-light pl-0 pt-0 pb-0 pr-0 mr-0" type="button" data-toggle="collapse" data-target="#collapse01' + d.uuid +'" aria-expanded="false" aria-controls="collapse01' + d.uuid +'"><i class="fa fa-info"></i></button>' +
-                                        ' <b>DIVISI</b>' +
-                                    '</div>' +
-                                    '<div class="expanel-body collapse" id="collapse01' + d.uuid +'">' +
-                                        '<div class="row">' +
-                                            '<div class="col-md-4">' +
-                                                '<div class="form-group">' +
-                                                    '<label class="form-label">Divisi</label>' +
-                                                    '<div>' + d.site_nirwana_name + '</div>' +
+                                    '<div class="expanel expanel-light p-0 mt-1 mb-1">' +
+                                        '<div class="expanel-heading p-1 clearfix">' +
+                                            '<button class="btn btn-icon btn-sm btn-light pl-0 pt-0 pb-0 pr-0 mr-0" type="button" data-toggle="collapse" data-target="#collapse02' + d.uuid +'" aria-expanded="false" aria-controls="collapse02' + d.uuid +'"><i class="fa fa-info"></i></button>' +
+                                            ' <b>STATUS KARYAWAN</b>' +
+                                        '</div>' +
+                                        '<div class="expanel-body collapse" id="collapse02' + d.uuid +'">' +
+                                            '<div class="row">' +
+                                                '<div class="col-md-4">' +
+                                                    '<div class="form-group">' +
+                                                        '<label class="form-label">Aktif/Non Aktif</label>' +
+                                                        '<div>' + (d.work_status ? d.work_status : '-' ) + '</div>' +
+                                                    '</div>' +
                                                 '</div>' +
-                                            '</div>' +
-                                            '<div class="col-md-4">' +
-                                                '<div class="form-group">' +
-                                                    '<label class="form-label">Department</label>' +
-                                                    '<div>' + d.department_name + '</div>' +
+                                                '<div class="col-md-4">' +
+                                                    '<div class="form-group">' +
+                                                        '<label class="form-label">Kontrak/Tetap</label>' +
+                                                        '<div>' + (d.employee_status  ? d.employee_status : '-') + '</div>' +
+                                                    '</div>' +
                                                 '</div>' +
-                                            '</div>' +
-                                            '<div class="col-md-4">' +
-                                                '<div class="form-group">' +
-                                                    '<label class="form-label">Bagian</label>' +
-                                                    '<div>' + d.sub_dept_name + '</div>' +
+                                                '<div class="col-md-4">' +
                                                 '</div>' +
                                             '</div>' +
                                         '</div>' +
                                     '</div>' +
                                 '</div>' +
-                            '</div>' +
-                            '<div class="col-md-12">' +
-                                '<div class="expanel expanel-light p-0 mt-1 mb-1">' +
-                                    '<div class="expanel-heading p-1 clearfix">' +
-                                        '<button class="btn btn-icon btn-sm btn-light pl-0 pt-0 pb-0 pr-0 mr-0" type="button" data-toggle="collapse" data-target="#collapse02' + d.uuid +'" aria-expanded="false" aria-controls="collapse02' + d.uuid +'"><i class="fa fa-info"></i></button>' +
-                                        ' <b>STATUS KARYAWAN</b>' +
-                                    '</div>' +
-                                    '<div class="expanel-body collapse" id="collapse02' + d.uuid +'">' +
-                                        '<div class="row">' +
-                                            '<div class="col-md-4">' +
-                                                '<div class="form-group">' +
-                                                    '<label class="form-label">Aktif/Non Aktif</label>' +
-                                                    '<div>' + (d.work_status ? d.work_status : '-' ) + '</div>' +
-                                                '</div>' +
-                                            '</div>' +
-                                            '<div class="col-md-4">' +
-                                                '<div class="form-group">' +
-                                                    '<label class="form-label">Kontrak/Tetap</label>' +
-                                                    '<div>' + (d.employee_status  ? d.employee_status : '-') + '</div>' +
-                                                '</div>' +
-                                            '</div>' +
-                                            '<div class="col-md-4">' +
-                                            '</div>' +
+                                '<div class="col-md-12">' +
+                                    '<div class="expanel expanel-light p-0 mt-1 mb-1">' +
+                                        '<div class="expanel-heading p-1 clearfix">' +
+                                            '<button class="btn btn-icon btn-sm btn-light pl-0 pt-0 pb-0 pr-0 mr-0" type="button" data-toggle="collapse" data-target="#collapse03' + d.uuid +'" aria-expanded="false" aria-controls="collapse03' + d.uuid +'"><i class="fa fa-info"></i></button>' +
+                                            ' <b>GAGAL ABSEN, PERIZINAN DAN SPL</b>' +
                                         '</div>' +
-                                    '</div>' +
-                                '</div>' +
-                            '</div>' +
-                            '<div class="col-md-12">' +
-                                '<div class="expanel expanel-light p-0 mt-1 mb-1">' +
-                                    '<div class="expanel-heading p-1 clearfix">' +
-                                        '<button class="btn btn-icon btn-sm btn-light pl-0 pt-0 pb-0 pr-0 mr-0" type="button" data-toggle="collapse" data-target="#collapse03' + d.uuid +'" aria-expanded="false" aria-controls="collapse03' + d.uuid +'"><i class="fa fa-info"></i></button>' +
-                                        ' <b>GAGAL ABSEN, PERIZINAN DAN SPL</b>' +
-                                    '</div>' +
-                                    '<div class="expanel-body collapse" id="collapse03' + d.uuid +'">' +
-                                        '<div class="row">' +
-                                            '<div class="col-md-4">' +
-                                                '<div class="form-group">' +
-                                                    '<label class="form-label">Alasan Absen</label>' +
-                                                    '<div class="border">' + (d.absen_alasan ? d.absen_alasan : '-') + '</div>' +
+                                        '<div class="expanel-body collapse" id="collapse03' + d.uuid +'">' +
+                                            '<div class="row">' +
+                                                '<div class="col-md-4">' +
+                                                    '<div class="form-group">' +
+                                                        '<label class="form-label">Alasan Absen</label>' +
+                                                        '<div class="border">' + (d.absen_alasan ? d.absen_alasan : '-') + '</div>' +
+                                                    '</div>' +
                                                 '</div>' +
-                                            '</div>' +
-                                            '<div class="col-md-4">' +
-                                                '<div class="form-group">' +
-                                                    '<label class="form-label">Alasan Gagal Absen</label>' +
-                                                    '<div class="border">' + (d.log_absen_alasan ? d.log_absen_alasan : '-') + '</div>' +
+                                                '<div class="col-md-4">' +
+                                                    '<div class="form-group">' +
+                                                        '<label class="form-label">Alasan Gagal Absen</label>' +
+                                                        '<div class="border">' + (d.log_absen_alasan ? d.log_absen_alasan : '-') + '</div>' +
+                                                    '</div>' +
                                                 '</div>' +
-                                            '</div>' +
-                                            '<div class="col-md-4">' +
-                                                '<div class="form-group">' +
-                                                    '<label class="form-label">Catatan HRD</label>' +
-                                                    '<div class="border">' + (d.catatan_hrd ? d.catatan_hrd : '-') + '</div>' +
+                                                '<div class="col-md-4">' +
+                                                    '<div class="form-group">' +
+                                                        '<label class="form-label">Catatan HRD</label>' +
+                                                        '<div class="border">' + (d.catatan_hrd ? d.catatan_hrd : '-') + '</div>' +
+                                                    '</div>' +
                                                 '</div>' +
+                                                adaGagalAbsen + adaPerizinan + adaSPL +
                                             '</div>' +
-                                            adaGagalAbsen + adaPerizinan + adaSPL +
                                         '</div>' +
                                     '</div>' +
                                 '</div>' +
                             '</div>' +
                         '</div>' +
-                    '</div>' +
-                '</div>'
-            );
+                    '</div>'
+                );
+        }
         }
 
         $("#check-all-karyawan").attr('disabled','disabled');
@@ -1524,9 +1526,8 @@
                     tr.removeClass('shown');
                 } else {
                     // Open this row
-                    console.log("row",row.data());
-                    row.child(format(row.data())).show();
-                    tr.addClass('shown');
+                        row.child(format(row.data())).show();
+                        tr.addClass('shown');
                 }
 
                 $("#datatable-ajax-crud tbody tr").removeClass('bg-cyan');
