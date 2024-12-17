@@ -144,7 +144,7 @@ class MdAbsenHadirController extends AdminBaseController
     }
     public function view_excel(){
         ini_set('max_execution_time', 0);
-        ini_set('memory_limit', '1024M');
+        ini_set('memory_limit', '10240000000000000M');
         $tanggal = request()->tanggal_awal;
         $tanggal_array=explode(" s/d ",$tanggal);
         $tanggal_awal = $tanggal_array[0];
@@ -1161,8 +1161,6 @@ class MdAbsenHadirController extends AdminBaseController
     {
         ini_set("max_execution_time", 5210);
         ini_set('memory_limit', '5120000M');
-        
-        setlocale(LC_ALL, 'id-ID', 'id_ID');
 
         if($request->selectDepartment) {
             $selectDepartment = $request->selectDepartment;
