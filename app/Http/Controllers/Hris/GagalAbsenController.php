@@ -369,6 +369,7 @@ class GagalAbsenController extends AdminBaseController
                 $nestedData['status_absen'] = $q->status_absen;
                 $nestedData['status_absen_old'] = $q->status_absen_old;
                 $nestedData['absen_alasan'] = $q->absen_alasan;
+                $nestedData['absen_alasan_old'] = $q->absen_alasan_old;
                 $nestedData['operator'] = $q->operator;
                 $nestedData['updated_at'] = date_format($q->updated_at, 'Y-m-d H:i:s');
 
@@ -499,7 +500,6 @@ class GagalAbsenController extends AdminBaseController
                         'status_absen' => $status_absen,
                         'absen_masuk_kerja' => $absen_masuk_kerja,
                         'absen_pulang_kerja' => $absen_pulang_kerja,
-                        'absen_alasan' => $absen_alasan,
                         'jumlah_menit_absen_dtpc'=>$jumlah_menit_absen_dtpc,
                         'jumlah_absen_menit_kerja'=>$jumlah_absen_menit_kerja,
                         'jumlah_menit_absen_dt'=>$total_DT,

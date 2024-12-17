@@ -210,7 +210,7 @@
                 <input id="status_absen_old" type="hidden">
                 <input id="absen_in_old" type="hidden">
                 <input id="absen_out_old" type="hidden">
-                <input id="absen_alasan_old" type="hidden">
+                <input id="absen_alasan_old" type="text">
                 <div class="modal-header bg-primary p-2">
                     <h4 class="modal-title" id="ajaxGagalAbsenModel"></h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
@@ -875,7 +875,7 @@
                                 '<td></td>' +
                                 '<td>Alasan (Sebelum Di Ubah)</td>' +
                                 '<td>:</td>' +
-                                '<td>' + d.absen_alasan + '</td>' +
+                                '<td>' + d.absen_alasan_old + '</td>' +
                             '</tr>' +
                         '</table>' +
                     '</div>' +

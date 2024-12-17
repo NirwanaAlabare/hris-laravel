@@ -1201,13 +1201,19 @@
                                     '</div>' +
                                     '<div class="expanel-body collapse" id="collapse03' + d.uuid +'">' +
                                         '<div class="row">' +
-                                            '<div class="col-md-6">' +
+                                            '<div class="col-md-4">' +
                                                 '<div class="form-group">' +
                                                     '<label class="form-label">Alasan Absen</label>' +
-                                                    '<div class="border">' + d.absen_alasan + '</div>' +
+                                                    '<div class="border">' + (d.absen_alasan ? d.absen_alasan : '-') + '</div>' +
                                                 '</div>' +
                                             '</div>' +
-                                            '<div class="col-md-6">' +
+                                            '<div class="col-md-4">' +
+                                                '<div class="form-group">' +
+                                                    '<label class="form-label">Alasan Gagal Absen</label>' +
+                                                    '<div class="border">' + (d.log_absen_alasan ? d.log_absen_alasan : '-') + '</div>' +
+                                                '</div>' +
+                                            '</div>' +
+                                            '<div class="col-md-4">' +
                                                 '<div class="form-group">' +
                                                     '<label class="form-label">Catatan HRD</label>' +
                                                     '<div class="border">' + (d.catatan_hrd ? d.catatan_hrd : '-') + '</div>' +

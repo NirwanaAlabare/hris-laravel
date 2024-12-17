@@ -842,7 +842,8 @@ class MdAbsenHadirController extends AdminBaseController
                     data_absen_perijinan.absen_alasan,
                     data_absen_perijinan.tanggal_mulai_ijin,
                     data_absen_perijinan.tanggal_akhir_ijin,
-                    ref_absen_ijin.nama_absen_ijin
+                    ref_absen_ijin.nama_absen_ijin,
+                    log_data_gagal_absen.absen_alasan as log_absen_alasan
                 ')
                 ->whereRaw('
                     substr(master_data_absen_kehadiran.tanggal_berjalan, 1, 10) between "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
@@ -851,6 +852,7 @@ class MdAbsenHadirController extends AdminBaseController
                 ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
                 ->leftJoin('ref_absen_ijin','master_data_absen_kehadiran.status_absen','ref_absen_ijin.kode_absen_ijin')
                 ->leftJoin('data_absen_perijinan','master_data_absen_kehadiran.nomor_absen_ijin','data_absen_perijinan.nomor_form_perizinan')
+                ->leftJoin('log_data_gagal_absen','master_data_absen_kehadiran.uuid','log_data_gagal_absen.uuid_master')
                 ->leftJoin('data_lembur','master_data_absen_kehadiran.uuid','data_lembur.uuid_master')
                 ->offset($start)
                 ->limit($limit)
@@ -919,7 +921,8 @@ class MdAbsenHadirController extends AdminBaseController
                     data_absen_perijinan.absen_alasan,
                     data_absen_perijinan.tanggal_mulai_ijin,
                     data_absen_perijinan.tanggal_akhir_ijin,
-                    ref_absen_ijin.nama_absen_ijin
+                    ref_absen_ijin.nama_absen_ijin,
+                    log_data_gagal_absen.absen_alasan as log_absen_alasan
                 ')
                 ->whereRaw('
                     (substr(master_data_absen_kehadiran.tanggal_berjalan, 1, 10) between "' . $tanggalMulai . '" and "' . $tanggalSampai . '")
@@ -929,6 +932,7 @@ class MdAbsenHadirController extends AdminBaseController
                 ->leftJoin('ref_absen_ijin','master_data_absen_kehadiran.status_absen','ref_absen_ijin.kode_absen_ijin')
                 ->leftJoin('data_absen_perijinan','master_data_absen_kehadiran.nomor_absen_ijin','data_absen_perijinan.nomor_form_perizinan')
                 ->leftJoin('data_lembur','master_data_absen_kehadiran.uuid','data_lembur.uuid_master')
+                ->leftJoin('log_data_gagal_absen','master_data_absen_kehadiran.uuid','log_data_gagal_absen.uuid_master')
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy('master_data_absen_kehadiran.tanggal_berjalan','asc')
@@ -1092,6 +1096,7 @@ class MdAbsenHadirController extends AdminBaseController
                     $nestedData['status_aktif'] = $q->status_aktif;
                     $nestedData['status_jabatan'] = $q->status_jabatan;
                     $nestedData['status_staff'] = $q->status_staff;
+                    $nestedData['log_absen_alasan'] = $q->log_absen_alasan;
                     $nestedData['work_status'] = $q->status_aktif;
                     $nestedData['employee_status'] = $q->status_kontrak_tetap;
                     $nestedData['mulai_jam_lembur'] = $q->mulai_jam_lembur;
