@@ -121,8 +121,8 @@
                         <div class="form-group">
                             <select id="selectVerificationStatus" name="selectVerificationStatus" class="form-control">
                                 <option value="">Select Status</option>
-                                <option value="1">Verified</option>
-                                <option value="0">Unverified</option>
+                                <option value=1>Verified</option>
+                                <option value=0>Unverified</option>
                             </select>
                         </div>
                     </div>

@@ -850,6 +850,7 @@ class DataLemburController extends AdminBaseController
         $tanggal_akhir=$array_periode_lembur[1];
         $datePeriode = strtoupper(strftime("%d %b %Y", strtotime($this->awal_bulan)) . ' s/d ' . strftime("%d %b %Y", strtotime($this->akhir_bulan)));
 
+        $verification_status=$request->selectVerificationStatus;
         $dateRange = 'and master_data_absen_kehadiran.tanggal_berjalan between "' . $this->awal_bulan . '" and "' . $this->akhir_bulan . '"';
 
         if($request->input('selectPosisiName')) {
@@ -857,7 +858,10 @@ class DataLemburController extends AdminBaseController
         } else {
             $posisi = '';
         }
-
+        $inVerificationStatus='';
+        if($verification_status!=''){
+            $inVerificationStatus=' AND is_verifikasi = '.$verification_status;
+        }
        /*  $fileName = 'DepartmentAll.xlsx';
         return (new DepartmentAllExport)->download($fileName); */
         $nomor_form_lembur_rekap=RekapPerhitunganLembur::where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->pluck('nomor_form_lembur');
@@ -884,7 +888,7 @@ class DataLemburController extends AdminBaseController
                     mda.uuid = data_lembur.uuid_master
                 LEFT JOIN rekap_perhitungan_lembur rekap_lembur ON data_lembur.enroll_id = rekap_lembur.enroll_id AND data_lembur.tanggal_berjalan = rekap_lembur.tanggal_berjalan
                 WHERE 
-                    mda.nomor_form_lembur IS NOT NULL
+                    mda.nomor_form_lembur IS NOT NULL".$inVerificationStatus."
                     AND mda.tanggal_berjalan >= '$tanggal_awal'
                     AND mda.tanggal_berjalan <= '$tanggal_akhir'
                 ORDER BY 
@@ -1836,10 +1840,10 @@ class DataLemburController extends AdminBaseController
         $awal_bulan = substr($array_periode_lembur[0], 0, 10);
         $akhir_bulan = substr($array_periode_lembur[1], 0, 10);
 
-        $verification_status = $request->verificationStatus ?? null;
+        $verification_status = $request->verificationStatus;
         $selectNoSPL = $request->selectNoSPL ?? null;
         
-        if ($verification_status && !$selectNoSPL) {
+        if ($verification_status!='' && !$selectNoSPL) {
             $verification_status=$request->verificationStatus;
             $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept','data_lembur')
             ->where('nomor_form_lembur','!=',null)
@@ -1851,7 +1855,7 @@ class DataLemburController extends AdminBaseController
             })
             ->orderBy('master_data_absen_kehadiran.enroll_id')
             ->get();
-        } elseif ($selectNoSPL && !$verification_status) {
+        } elseif ($selectNoSPL && $verification_status=='') {
             $selectNoSPL = $request->selectNoSPL;   
             $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept','data_lembur')
             ->where('tanggal_berjalan','>=',$awal_bulan)
@@ -1860,7 +1864,7 @@ class DataLemburController extends AdminBaseController
             ->orderBy('master_data_absen_kehadiran.enroll_id')
             ->get();
 
-        } elseif ($selectNoSPL && $verification_status) {
+        } elseif ($selectNoSPL && $verification_status!='') {
             $selectNoSPL = $request->selectNoSPL;
             $verification_status=$request->verificationStatus;
 

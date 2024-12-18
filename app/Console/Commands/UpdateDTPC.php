@@ -208,6 +208,7 @@ class UpdateDTPC extends Command
             }else{
                 $total_pc_real=0;
             }
+            $total_pc_real=$total_pc_real<480?$total_pc_real:480;
             $jumlah_menit_absen_dtpc=$total_dt_real+$total_pc_real;
             $jumlah_absen_menit_kerja=$durasi_kerja_menit-$jumlah_menit_absen_dtpc;
             MasterDataAbsenKehadiran::where('enroll_id',$enroll_id)->where('tanggal_berjalan',date('Y-m-d'))->update([
