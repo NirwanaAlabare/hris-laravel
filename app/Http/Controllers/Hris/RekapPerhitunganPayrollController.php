@@ -1343,7 +1343,17 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 if($value->status_absen=='M'){
                     $kode_ijin_payroll='M';
                 }else if($value->status_absen=='IKS'){
-                    $kode_ijin_payroll='OK';
+                    if($value->absen_masuk_kerja!=null && $value->absen_pulang_kerja!=null){
+                        if($value->jumlah_menit_absen_dt!=0 && $value->jumlah_menit_absen_pc==0){
+                            $kode_ijin_payroll='DT';
+                        }else if($value->jumlah_menit_absen_dt==0 && $value->jumlah_menit_absen_pc!=0){
+                            $kode_ijin_payroll='PC';
+                        }else if($value->jumlah_menit_absen_dt!=0 && $value->jumlah_menit_absen_pc!=0){
+                            $kode_ijin_payroll='DTPC';
+                        }else{
+                            $kode_ijin_payroll='OK';
+                        }
+                    }
                 }else if($value->status_absen=='LP'){
                     $kode_ijin_payroll='LP';
                 }else if($value->status_absen=='S'){

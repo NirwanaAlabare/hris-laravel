@@ -48,7 +48,15 @@ class RecapLaborNonStaff implements WithTitle, FromView, WithColumnWidths
         END 
         WHEN(absen_ijin.kode_ijin_payroll='ITB') THEN
             CASE WHEN(c.status_absen='M')THEN 'M'
-            WHEN(c.status_absen='IKS') THEN 'OK'
+            WHEN(c.status_absen='IKS') THEN 
+                CASE WHEN(c.absen_masuk_kerja is not null and c.absen_pulang_kerja is not null)THEN
+                    CASE WHEN(c.jumlah_menit_absen_dt!=0 and c.jumlah_menit_absen_pc=0) THEN 'DT'
+                    WHEN(c.jumlah_menit_absen_dt=0 and c.jumlah_menit_absen_pc!=0) THEN 'PC'
+                    WHEN(c.jumlah_menit_absen_dt!=0 and c.jumlah_menit_absen_pc!=0) THEN 'DTPC'
+                    ELSE 'OK'
+                    END
+                ELSE 'OK'
+                END
             WHEN(c.status_absen='LP') THEN 'LP'
             WHEN(c.status_absen='S') THEN 'S'
             ELSE 'ITB'
@@ -99,7 +107,15 @@ class RecapLaborNonStaff implements WithTitle, FromView, WithColumnWidths
         END 
         WHEN(absen_ijin.kode_ijin_payroll='ITB') THEN
             CASE WHEN(c.status_absen='M')THEN 'M'
-            WHEN(c.status_absen='IKS') THEN 'OK'
+            WHEN(c.status_absen='IKS') THEN 
+                CASE WHEN(c.absen_masuk_kerja is not null and c.absen_pulang_kerja is not null)THEN
+                    CASE WHEN(c.jumlah_menit_absen_dt!=0 and c.jumlah_menit_absen_pc=0) THEN 'DT'
+                    WHEN(c.jumlah_menit_absen_dt=0 and c.jumlah_menit_absen_pc!=0) THEN 'PC'
+                    WHEN(c.jumlah_menit_absen_dt!=0 and c.jumlah_menit_absen_pc!=0) THEN 'DTPC'
+                    ELSE 'OK'
+                    END
+                ELSE 'OK'
+                END
             WHEN(c.status_absen='LP') THEN 'LP'
             WHEN(c.status_absen='S') THEN 'S'
             ELSE 'ITB'
