@@ -1206,8 +1206,19 @@
                                 type: "post",
                                 // dataType: 'json',
                                 success: function (data) {
-                                    console.log(data);
-                                    swal("", "Proses payroll berhasil!", "success");
+                                    if(data.length>0){
+                                        var title = "Proses payroll berhasil";
+                                        var warning_text='';
+                                        $.each(data, function (key, value) {
+                                            warning_text+=value.employee_name+'('+value.enroll_id+'), ';
+                                        });
+                                        var message="Belum di proses payroll : "+warning_text;
+                                        swal(title,message, "success");
+                                    }else{
+                                        var title = "Proses payroll berhasil";
+                                        var message="";
+                                        swal(title,message, "success");
+                                    }
 
                                     $('#BtnProsesPayroll').removeClass("btn-loading");
                                     $("#BtnProsesPayroll").html('<span><i class="fa fa-download"></i></span> PROSES PAYROLL');

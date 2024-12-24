@@ -2877,6 +2877,7 @@ class ProsesPayrollController extends AdminBaseController
                 }])->get();
             }
             $data_payroll=[];
+            $karyawan_yang_belum_terekap=[];
             foreach ($all_karyawan as $key => $value) {
                 $kode_grade2=$value->kode_grade;
                 $premi_karyawan=0;
@@ -2884,8 +2885,13 @@ class ProsesPayrollController extends AdminBaseController
                     $premis=$value->grading_salary[0]->insentif;
                     $premi_karyawan=($premis/21)*($value->rekap_kehadiran[0]->kehadiran_ok+$value->rekap_kehadiran[0]->kehadiran_dt+$value->rekap_kehadiran[0]->kehadiran_pc+$value->rekap_kehadiran[0]->kehadiran_dtpc);
                 }
-                
-                if($value->rekap_kehadiran[0]){
+                if(!isset($value->rekap_kehadiran[0])){
+                    $karyawan_yang_belum_terekap[]=[
+                        'enroll_id'=>$value->enroll_id,
+                        'employee_name'=>$value->employee_name,
+                    ];
+                }
+                if(isset($value->rekap_kehadiran[0])){
                     list($periode_tahun_payroll, $periode_bulan_payroll) = explode("-", $value->rekap_kehadiran[0]->periode_tahun_bulan);
                     //tunjangan
                     $tanggal_masuk = $value->join_date;
@@ -3253,6 +3259,7 @@ class ProsesPayrollController extends AdminBaseController
                     Jurnal::create($data);
                 }
             }
+            return $karyawan_yang_belum_terekap;
         }
         else{
             if($periode_umk!='2023-2024'){
