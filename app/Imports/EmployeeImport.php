@@ -160,7 +160,7 @@ class EmployeeImport implements ToModel, WithStartRow, WithCalculatedFormulas
             'kelurahan_desa'=>$row[37],
             'alamat_sementara'=>$row[38],
             'tunjangan'=>$row[39],
-            'kode_grade'=>$row[40],
+            'kode_grade'=>$kode_grade,
             'referensi'=>$row[41],
             'employee_name_atasan'=>$row[42],
             'status_aktif_bpjs_tk'=>$row[43],
