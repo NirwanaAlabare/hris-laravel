@@ -111,7 +111,7 @@ class EmployeeImport implements ToModel, WithStartRow, WithCalculatedFormulas
             }
         }
         $kode_grade='G';
-        if($row[40]=''){
+        if($row[40]!=''){
             $kode_grade=$row[40];
         }
         $dataArray=[
