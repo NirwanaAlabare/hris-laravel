@@ -11,6 +11,7 @@
             <ul class="slide-menu">
                 <li><a href="{{route('hris.hrd.index')}}" class="slide-item"><span> Surat Keterangan Kerja</span></a></li>
                 <li><a href="{{route('hris.hrd.kontrak_kerja')}}" class="slide-item"><span> Kontrak Kerja</span></a></li>
+                <li><a href="{{route('hris.hrd.layoff_termination')}}" class="slide-item"><span> Layoff & Termination</span></a></li>
             </ul>
         </li>
         @php

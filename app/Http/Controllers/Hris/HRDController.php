@@ -27,11 +27,82 @@ class HRDController extends AdminBaseController
         $this->dashboardActive = 'active';
         $this->pageTitle = 'Dashboard';
     }
+
     public function index(){
         $selectEmployee =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')->groupby('enroll_id')->orderby('employee_name', 'asc')->get();
         $selectNoKTP = EmployeeAtribut::selectRaw('nomor_ktp')->groupby('nomor_ktp')->orderby('nomor_ktp', 'asc')->get();
         return View::make('hris/hrd',compact('selectEmployee','selectNoKTP'), $this->data);
     }
+
+    public function layoff_termination(){
+        $selectEmployee =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')->groupby('enroll_id')->orderby('employee_name', 'asc')->get();
+        $selectNoKTP = EmployeeAtribut::selectRaw('nomor_ktp')->groupby('nomor_ktp')->orderby('nomor_ktp', 'asc')->get();
+        return View::make('hris/hrd/layoff_termination',compact('selectEmployee','selectNoKTP'), $this->data);
+    }
+
+    public function sp_hadir(){
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '10240000000000000M');
+
+        $inSearchVariable='';
+        $inEnrollId='';
+        if (request("search_variable")) {
+            $search_variable=request()->search_variable;
+            $inSearchVariable = 'AND (ea.enroll_id = "'.$search_variable.'" or ea.nik LIKE "'.$search_variable.'%" or ea.employee_name LIKE "%'.$search_variable.'%" or ea.tempat_lahir LIKE "%'.$search_variable.'%" or ea.nomor_tlpn LIKE "'.$search_variable.'%" or ea.agama LIKE "'.$search_variable.'%" or ea.status_kawin LIKE "'.$search_variable.'%" or ea.nomor_kk LIKE "'.$search_variable.'%" or ea.pendidikan_terakhir LIKE "'.$search_variable.'%" or ea.jurusan_pendidikan LIKE "'.$search_variable.'%" or ea.alamat_rumah LIKE "%'.$search_variable.'%" or ea.department_name LIKE "%'.$search_variable.'%" or ea.sub_dept_name LIKE "%'.$search_variable.'%" or ea.status_aktif LIKE "'.$search_variable.'%" or ea.ibu_kandung LIKE "%'.$search_variable.'%" or ea.nomor_ktp LIKE "'.$search_variable.'%")';
+        }
+        if(request()->enroll_id){
+            $enroll_id = request()->enroll_id;
+            $enroll_id_string = implode(',', $enroll_id);
+            $inEnrollId='AND enroll_id in ('.$enroll_id_string.')';
+        }
+
+        $date = date('Y-m-d');
+        $query =  DB::select(DB::raw("
+            SELECT 
+                    Absens.enroll_id,
+                    MIN(Absens.tanggal_berjalan) AS mulai,
+                    MAX(Absens.tanggal_berjalan) AS selesai,
+                    ea.employee_name,
+		            ea.department_name,
+                    COUNT(*) AS jumlah_hari_mangkir
+                FROM (
+                    SELECT 
+                        enroll_id,
+                        tanggal_berjalan,
+                        kode_hari,
+                        @grp := IF(
+                            @prev_enroll = enroll_id 
+                            AND (
+                                -- Hari berturut-turut biasa (misalnya Senin ke Selasa)
+                                (kode_hari = @prev_kode_hari + 1)  
+                                -- Senin setelah Minggu (jika ada gap Sabtu dan Minggu)
+                                OR (kode_hari = 0 AND @prev_kode_hari = 6)  
+                                -- Menghitung jika ada gap lebih dari 1 hari kerja berturut-turut
+                                OR (DATEDIFF(tanggal_berjalan, @prev_date) > 1)  -- Gap lebih dari 1 hari kerja dianggap grup baru
+                            ), 
+                            @grp, 
+                            @grp + 1
+                        ) AS grp,
+                        @prev_enroll := enroll_id,
+                        @prev_kode_hari := kode_hari,
+                        @prev_date := tanggal_berjalan
+                    FROM master_data_absen_kehadiran
+                    WHERE status_absen = 'M'
+                    AND kode_hari NOT IN (5, 6)  -- Abaikan Sabtu dan Minggu
+                    AND tanggal_berjalan BETWEEN '2024-01-01' AND '".$date."'
+                    ".$inEnrollId."
+                    ORDER BY enroll_id, tanggal_berjalan
+                ) AS Absens
+                JOIN employee_atribut AS ea 
+                    ON Absens.enroll_id = ea.enroll_id
+                WHERE (ea.tanggal_resign IS NULL OR ea.tanggal_resign > CURDATE()) ".$inSearchVariable." 
+                GROUP BY Absens.enroll_id, grp
+                HAVING COUNT(*) >= 5  -- Hanya tampilkan yang mangkir 5 hari berturut-turut
+                ORDER BY Absens.enroll_id, mulai
+       "));
+       return DataTables::of($query)->toJson();
+    }
+
     public function export_pdf_print_sk(){
         $tipe_surat=request()->tipe_surat;
         foreach($tipe_surat as $key=>$value){
@@ -91,6 +162,62 @@ class HRDController extends AdminBaseController
         //         return $pdf;
         //     }
         // }
+    }
+    public function export_sp_kehadiran_karyawan(){
+        $enroll_id=request()->enroll_id;
+        $no_form=request()->no_form;
+        $reason=request()->reason;
+        $fileName=request()->enroll_id.'_'.date('His');
+        $date_now = Carbon::parse(date('Y-m-d'))->translatedFormat('d F Y');
+        $query =  DB::select(DB::raw("
+            SELECT 
+                    Absens.enroll_id,
+                    MIN(Absens.tanggal_berjalan) AS mulai,
+                    MAX(Absens.tanggal_berjalan) AS selesai,
+                    ea.employee_name,
+		            ea.department_name,
+		            ea.status_jabatan,
+		            ea.nik,
+		            ea.alamat_rumah,
+                    COUNT(*) AS jumlah_hari_mangkir
+                FROM (
+                    SELECT 
+                        enroll_id,
+                        tanggal_berjalan,
+                        kode_hari,
+                        @grp := IF(
+                            @prev_enroll = enroll_id 
+                            AND (
+                                -- Hari berturut-turut biasa (misalnya Senin ke Selasa)
+                                (kode_hari = @prev_kode_hari + 1)  
+                                -- Senin setelah Minggu (jika ada gap Sabtu dan Minggu)
+                                OR (kode_hari = 0 AND @prev_kode_hari = 6)  
+                                -- Menghitung jika ada gap lebih dari 1 hari kerja berturut-turut
+                                OR (DATEDIFF(tanggal_berjalan, @prev_date) > 1)  -- Gap lebih dari 1 hari kerja dianggap grup baru
+                            ), 
+                            @grp, 
+                            @grp + 1  -- Mulai grup baru jika tidak berturut-turut
+                        ) AS grp,
+                        @prev_enroll := enroll_id,
+                        @prev_kode_hari := kode_hari,
+                        @prev_date := tanggal_berjalan
+                    FROM master_data_absen_kehadiran
+                    WHERE status_absen = 'M'
+                    AND enroll_id = '$enroll_id'
+                    AND kode_hari NOT IN (5, 6)  -- Abaikan Sabtu dan Minggu
+                    AND tanggal_berjalan BETWEEN '2024-01-01' AND '2024-12-31'
+                    ORDER BY enroll_id, tanggal_berjalan
+                ) AS Absens
+                JOIN employee_atribut AS ea 
+                    ON Absens.enroll_id = ea.enroll_id
+                WHERE (ea.tanggal_resign IS NULL OR ea.tanggal_resign > CURDATE())  -- Karyawan aktif
+                GROUP BY Absens.enroll_id, grp
+                HAVING COUNT(*) >= 5  -- Hanya tampilkan yang mangkir 5 hari berturut-turut
+                ORDER BY Absens.enroll_id, mulai LIMIT 10
+       "));
+
+        $pdf = PDF::loadView('hris.sp_kehadiran_karyawan',["data" => $query,"no_form"=>$no_form,"reason"=>$reason])->setPaper('letter', 'fotrait')->stream($fileName.'.pdf');
+        return $pdf;
     }
     public function export_pdf_paklaring(){
         $enroll_id=request()->enroll_id;
