@@ -110,9 +110,9 @@ class EmployeeImport implements ToModel, WithStartRow, WithCalculatedFormulas
                 DB::insert("insert into employee_contract (id, enroll_id, contract, contract_end, created_at, updated_at) VALUES ('','$enroll_id','$tanggal_mulai_kontrak','$tanggal_akhir_kontrak','$timestamp','$timestamp')");
             }
         }
-        $kode_grade='G';
-        if($row[40]!=''){
-            $kode_grade=$row[40];
+        $kode_grade=$row[40];
+        if($row[40]==''){
+            $kode_grade='G';
         }
         $dataArray=[
             'employee_id'=>time().$row[1],
