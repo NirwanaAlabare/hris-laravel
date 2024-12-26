@@ -1951,6 +1951,7 @@ class ProsesPayrollController extends AdminBaseController
                         $jumlah_hari_kerja=$jumlah_hari_total-$jumlah_hari_sabtu_minggu_total;
                     }
                     $row=[
+                        'uuid'=>Str::uuid('uuid'),
                         'kode_rekap_kehadiran'=> $kode_rekap_kehadiran,
                         'periode_umk'=>null,
                         'periode_payroll'=>$priode,
@@ -2007,21 +2008,11 @@ class ProsesPayrollController extends AdminBaseController
                         'kehadiran_s'=>$value['absensi']->where('status_absen','S')->count(),
                         'kehadiran_m_estimasi'=> $TL_estimasi+$M_estimasi,
                     ];
-                    // $count=RekapKehadiranKaryawan::where( 'kode_rekap_kehadiran',$kode_rekap_kehadiran)->count();
-                    // if($count){
-                    //     RekapKehadiranKaryawan::where( 'kode_rekap_kehadiran',$kode_rekap_kehadiran)->update($row);
-                    // }
-                    // else{
-                    //     RekapKehadiranKaryawan::create($row);
-                    // }
-                }
-
-                foreach ($data_absensi as $row) {
-                    $existing = RekapKehadiranKaryawan::where('kode_rekap_kehadiran', $row['kode_rekap_kehadiran'])->first();
-                    if ($existing) {
-                        $existing->update($row);
-                    } else {
-                        $row['uuid']= Str::uuid('uuid');
+                    $count=RekapKehadiranKaryawan::where( 'kode_rekap_kehadiran',$kode_rekap_kehadiran)->count();
+                    if($count){
+                        RekapKehadiranKaryawan::where( 'kode_rekap_kehadiran',$kode_rekap_kehadiran)->update($row);
+                    }
+                    else{
                         RekapKehadiranKaryawan::create($row);
                     }
                 }
@@ -2035,7 +2026,10 @@ class ProsesPayrollController extends AdminBaseController
                 $kode = str_replace(array('-', ' '), '', $periode) . str_pad($enroll_id, 5, '0', STR_PAD_LEFT);
                 $kode_rekap = date('Ymd', strtotime(substr($kode, 0, 8))) . date('Ymd', strtotime(substr($kode, 11, 8))) . substr($kode, 19);
                 $kode_grade=EmployeeAtribut::select('kode_grade')->where('enroll_id',$value->enroll_id)->pluck('kode_grade')[0];
-                $salary_bulanan=GradingSalary::select('salary_bulanan')->where('kode_grade',$kode_grade)->where('periode_umk','2024-01')->pluck('salary_bulanan')[0];
+                $salary_bulanan=2942088;
+                if(isset(GradingSalary::select('salary_bulanan')->where('kode_grade',$kode_grade)->where('periode_umk','2024-01')->pluck('salary_bulanan')[0])){
+                    $salary_bulanan=GradingSalary::select('salary_bulanan')->where('kode_grade',$kode_grade)->where('periode_umk','2024-01')->pluck('salary_bulanan')[0];
+                }
                 $hari_potongan=max($value->jumlah_hari_kerja-$value->total_kehadiran_net, 0);
                 $hari_potongan_security=max(25-$value->total_kehadiran_net, 0);
                 $hp='';
@@ -2881,7 +2875,7 @@ class ProsesPayrollController extends AdminBaseController
             foreach ($all_karyawan as $key => $value) {
                 $kode_grade2=$value->kode_grade;
                 $premi_karyawan=0;
-                if($value->grading_salary[0]->insentif){
+                if(isset($value->grading_salary[0]->insentif)){
                     $premis=$value->grading_salary[0]->insentif;
                     $premi_karyawan=($premis/21)*($value->rekap_kehadiran[0]->kehadiran_ok+$value->rekap_kehadiran[0]->kehadiran_dt+$value->rekap_kehadiran[0]->kehadiran_pc+$value->rekap_kehadiran[0]->kehadiran_dtpc);
                 }
