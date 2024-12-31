@@ -111,7 +111,7 @@
                                             <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
                                         </div>
                                     </div>
-                                    <input id="" name="periode_payrols" id="periode" type="month" class="form-control PriodeProses" required>
+                                    <input id="" name="periode_payrols" id="periode" type="month" min="{{$month}}" class="form-control PriodeProses" required>
                                 </div>
                             </div>
                         </div>
@@ -1206,6 +1206,7 @@
                                 type: "post",
                                 // dataType: 'json',
                                 success: function (data) {
+                                console.log(data);
                                     if(data.length>0){
                                         var title = "Proses payroll berhasil";
                                         var warning_text='';
