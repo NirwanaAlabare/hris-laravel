@@ -114,13 +114,13 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
                 $sheet->setCellValue('H8', 'Bagian');
                 $sheet->getDelegate()->getStyle('H8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('I7')->applyFromArray($border_top);
-                $sheet->setCellValue('I8', 'Bagian');
+                $sheet->setCellValue('I8', 'Department');
                 $sheet->getDelegate()->getStyle('I8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('J7')->applyFromArray($border_top);
-                $sheet->setCellValue('J8', 'Department');
+                $sheet->setCellValue('J8', 'Keterangan Biaya');
                 $sheet->getDelegate()->getStyle('J8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('K7')->applyFromArray($border_top);
-                $sheet->setCellValue('K8', 'Department');
+                $sheet->setCellValue('K8', 'Kerja/Libur');
                 $sheet->getDelegate()->getStyle('K8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->setCellValue('L7', 'JADWAL KERJA');
                 $sheet->mergeCells('L7:O7');
