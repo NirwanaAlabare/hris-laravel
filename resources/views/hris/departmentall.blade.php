@@ -334,13 +334,13 @@
                             </select>
                         </div>
                     </div>
-                    {{-- <div class="row py-2" style="border-bottom:1px solid rgb(180, 180, 180)">
+                    <div class="row py-2" style="border-bottom:1px solid rgb(180, 180, 180)">
                         <div class="col-2"></div>
                         <div class="col-5">
-                            <a id="btn-import-excel" data-target="#import_department_excel" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel" class="btn btn-app btn-info" title="Export data ke file rekap absen" style="padding-top: 3px;padding-bottom: 3px"><i class="fa fa-upload" aria-hidden="true"></i>  Import Excel</a>
+                            {{-- <a id="btn-import-excel" data-target="#import_department_excel" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel" class="btn btn-app btn-info" title="Export data ke file rekap absen" style="padding-top: 3px;padding-bottom: 3px"><i class="fa fa-upload" aria-hidden="true"></i>  Import Excel</a> --}}
                             <a id="btn-export-excel" class="btn btn-app btn-secondary" title="Export data ke file rekap absen" style="padding-top: 3px;padding-bottom: 3px"><i class="fa fa-download" aria-hidden="true"></i>  Export Excel</a>
                         </div>
-                    </div> --}}
+                    </div>
                     <div class="table-responsive pt-3">
                         <table id="datatable-ajax-crud" class="table table-sm table-striped table-hover table-bordered w-100 text-nowrap display">
                             <thead>
@@ -349,8 +349,8 @@
                                     <th scope="col">Site Nirwana Nama</th>
                                     <th scope="col">Department ID</th>
                                     <th scope="col">Department Nama</th>
-                                    <th scope="col">Sub Deptartment ID</th>
-                                    <th scope="col">Sub Deptartment Nama</th>
+                                    <th scope="col">Sub Deparment ID</th>
+                                    <th scope="col">Sub Department Nama</th>
                                     <th scope="col"><i class="fa fa-male" aria-hidden="true"></i></th>
                                     <th scope="col">Option</th>
                                 </tr>
