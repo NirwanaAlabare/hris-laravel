@@ -1347,7 +1347,17 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 if($value->status_absen=='M'){
                     $kode_ijin_payroll='M';
                 }else if($value->status_absen=='IKS'){
-                    $kode_ijin_payroll='OK';
+                    if($value->absen_masuk_kerja!=null && $value->absen_pulang_kerja!=null){
+                        if($value->jumlah_menit_absen_dt!=0 && $value->jumlah_menit_absen_pc==0){
+                            $kode_ijin_payroll='DT';
+                        }else if($value->jumlah_menit_absen_dt==0 && $value->jumlah_menit_absen_pc!=0){
+                            $kode_ijin_payroll='PC';
+                        }else if($value->jumlah_menit_absen_dt!=0 && $value->jumlah_menit_absen_pc!=0){
+                            $kode_ijin_payroll='DTPC';
+                        }else{
+                            $kode_ijin_payroll='OK';
+                        }
+                    }
                 }else if($value->status_absen=='LP'){
                     $kode_ijin_payroll='LP';
                 }else if($value->status_absen=='S'){
@@ -1731,7 +1741,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $koreksi_upah=$value->koreksi_upah->where('tanggal_koreksi',$value->tanggal_berjalan)->where('jenis_koreksi','!=',2)->sum('jumlah_rp_potongan');
             }
             if(count($value->koreksi_potongan->where('tanggal_koreksi',$value->tanggal_berjalan))>0){
-                $koreksi_potongan=$value->koreksi_upah->where('tanggal_koreksi',$value->tanggal_berjalan)->sum('jumlah_rp_potongan');
+                $koreksi_potongan=$value->koreksi_potongan->where('tanggal_koreksi',$value->tanggal_berjalan)->sum('jumlah_rp_potongan');
             }
             $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->get();
             $jumlah_hari_libur_security=count(DB::select("select enroll_id from master_data_absen_kehadiran where tanggal_berjalan>='".$tanggal_awal."' and tanggal_berjalan<='".$tanggal_akhir."' and enroll_id = ".$enroll_id_karyawan." and mulai_jam_kerja is null"));

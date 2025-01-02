@@ -574,7 +574,19 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
             if($Data->status_absen=='M'){
                 $kode_ijin_payroll='M';
             }else if($Data->status_absen=='IKS'){
-                $kode_ijin_payroll='OK';
+                if($Data->absen_masuk_kerja!=null && $Data->absen_pulang_kerja!=null){
+                    if($Data->jumlah_menit_absen_dt!=0 && $Data->jumlah_menit_absen_pc==0){
+                        $kode_ijin_payroll='DT';
+                    }else if($Data->jumlah_menit_absen_dt==0 && $Data->jumlah_menit_absen_pc!=0){
+                        $kode_ijin_payroll='PC';
+                    }else if($Data->jumlah_menit_absen_dt!=0 && $Data->jumlah_menit_absen_pc!=0){
+                        $kode_ijin_payroll='DTPC';
+                    }else{
+                        $kode_ijin_payroll='OK';
+                    }
+                }else{
+                    $kode_ijin_payroll='OK';
+                }
             }else if($Data->status_absen=='LP'){
                 $kode_ijin_payroll='LP';
             }else if($Data->status_absen=='S'){

@@ -1986,10 +1986,10 @@ class ProsesPayrollController extends AdminBaseController
                 $kode = str_replace(array('-', ' '), '', $periode) . str_pad($enroll_id, 5, '0', STR_PAD_LEFT);
                 $kode_rekap = date('Ymd', strtotime(substr($kode, 0, 8))) . date('Ymd', strtotime(substr($kode, 11, 8))) . substr($kode, 19);
                 $kode_grade=EmployeeAtribut::select('kode_grade')->where('enroll_id',$value->enroll_id)->pluck('kode_grade')[0];
-                $salary_bulanan = GradingSalary::where('kode_grade', $kode_grade)
-                ->orderBy('periode_umk', 'DESC') 
-                ->pluck('salary_bulanan')
-                ->first();
+                $salary_bulanan=2942088;
+                if(isset(GradingSalary::select('salary_bulanan')->where('kode_grade',$kode_grade)->where('periode_umk','2024-01')->pluck('salary_bulanan')[0])){
+                    $salary_bulanan=GradingSalary::select('salary_bulanan')->where('kode_grade',$kode_grade)->where('periode_umk','2024-01')->pluck('salary_bulanan')[0];
+                }
                 $hari_potongan=max($value->jumlah_hari_kerja-$value->total_kehadiran_net, 0);
                 $hari_potongan_security=max(25-$value->total_kehadiran_net, 0);
                 $hp='';
@@ -2825,12 +2825,18 @@ class ProsesPayrollController extends AdminBaseController
             foreach ($all_karyawan as $key => $value) {
                 $kode_grade2=$value->kode_grade;
                 $premi_karyawan=0;
-                if($value->grading_salary[0]->insentif){
+                if(isset($value->grading_salary[0]->insentif)){
                     $premis=$value->grading_salary[0]->insentif;
                     $premi_karyawan=($premis/21)*($value->rekap_kehadiran[0]->kehadiran_ok+$value->rekap_kehadiran[0]->kehadiran_dt+$value->rekap_kehadiran[0]->kehadiran_pc+$value->rekap_kehadiran[0]->kehadiran_dtpc);
                 }
+                if(!isset($value->rekap_kehadiran[0])){
+                    $karyawan_yang_belum_terekap[]=[
+                        'enroll_id'=>$value->enroll_id,
+                        'employee_name'=>$value->employee_name,
+                    ];
+                }
                 
-                if($value->rekap_kehadiran[0]){
+                if(isset($value->rekap_kehadiran[0])){
                     list($periode_tahun_payroll, $periode_bulan_payroll) = explode("-", $value->rekap_kehadiran[0]->periode_tahun_bulan);
                     //tunjangan
                     $tanggal_masuk = $value->join_date;
