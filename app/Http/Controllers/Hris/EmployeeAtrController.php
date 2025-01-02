@@ -1802,75 +1802,79 @@ class EmployeeAtrController extends AdminBaseController
     public function creat_master_absen_26()
     {
         $today=date('Y-m-d');
-        $employee=DB::select("SELECT mda.enroll_id,mda.mulai_jam_kerja,mda.akhir_jam_kerja,mda.tanggal_berjalan,b.status_staff FROM master_data_absen_kehadiran mda JOIN 
-            (SELECT enroll_id, MAX(tanggal_berjalan) AS tanggal_terakhir FROM  master_data_absen_kehadiran WHERE  tanggal_berjalan >= DATE_SUB('".$today."', INTERVAL 30 DAY) AND tanggal_berjalan <= '".$today."' AND mulai_jam_kerja IS NOT NULL GROUP BY enroll_id) subquery ON mda.enroll_id = subquery.enroll_id AND mda.tanggal_berjalan = subquery.tanggal_terakhir 
-            INNER JOIN (SELECT * FROM employee_atribut WHERE deleted_at is null and enroll_id is not null and (status_aktif = 'AKTIF' OR tanggal_resign > '".$today."')) b on subquery.enroll_id = b.enroll_id where mda.enroll_id=5321");
-            foreach ($employee as $key => $value) {
-            $staffnonstaff=$value->status_staff;
-            $tanggal_akhir='2024-10-30';
-            $tgl_berjalan=$today;
-            while (strtotime( $tgl_berjalan) <= strtotime($tanggal_akhir)) {
-                $hari=date('D',strtotime(  $tgl_berjalan));
-                if($hari=='Sun'){
-                    $kode_hari='6';
-                    $nama_hari='Minggu';
-                    $status_absen=null;
-                    $mulai_jam_kerja=null;
-                    $akhir_jam_kerja=null;
-                }else if($hari=='Mon'){
-                    $mulai_jam_kerja=$value->mulai_jam_kerja;
-                    $akhir_jam_kerja=$value->akhir_jam_kerja;
-                    $kode_hari='0';
-                    $nama_hari='Senin';
-                    $status_absen='M';
-                }else if($hari=='Tue'){
-                    $mulai_jam_kerja=$value->mulai_jam_kerja;
-                    $akhir_jam_kerja=$value->akhir_jam_kerja;
-                    $kode_hari='1';
-                    $nama_hari='Selasa';
-                    $status_absen='M';
-                }else if($hari=='Wed'){
-                    $mulai_jam_kerja=$value->mulai_jam_kerja;
-                    $akhir_jam_kerja=$value->akhir_jam_kerja;
-                    $kode_hari='2';
-                    $nama_hari='Rabu';
-                    $status_absen='M';
-                }else if($hari=='Thu'){
-                    $mulai_jam_kerja=$value->mulai_jam_kerja;
-                    $akhir_jam_kerja=$value->akhir_jam_kerja;
-                    $kode_hari='3';
-                    $nama_hari='Kamis';
-                    $status_absen='M';
-                }else if($hari=='Fri'){
-                    $mulai_jam_kerja=$value->mulai_jam_kerja;
-                    $akhir_jam_kerja=$value->akhir_jam_kerja;
-                    $kode_hari='4';
-                    $nama_hari='Jumat';
-                    $status_absen='M';
-                }else if($hari=='Sat'){
-                    $kode_hari='5';
-                    $nama_hari='Sabtu';
-                    $status_absen=null;
-                    $mulai_jam_kerja=null;
-                    $akhir_jam_kerja=null;
-                }
-                $x=[
-                    'uuid' => Str::uuid('uuid'.$key),
-                    'enroll_id' => $value->enroll_id,
-                    'tanggal_berjalan' => $tgl_berjalan,
-                    'kode_hari' =>$kode_hari,
-                    'nama_hari' => $nama_hari,
-                    'mulai_jam_kerja' => $mulai_jam_kerja,
-                    'akhir_jam_kerja' => $akhir_jam_kerja,
-                    'status_absen' => $status_absen,
-                    'operator' =>'system',
-                ];
-                MasterDataAbsenKehadiran::create($x);
-                $tgl_berjalan = date ("Y-m-d", strtotime("+1 day", strtotime($tgl_berjalan)));
-
-            }
+        $employee=DB::select("select enroll_id from master_data_absen_kehadiran where tanggal_berjalan='2024-12-25' and status_absen='TL'");
+        $arrEmp=[];
+        foreach($employee as $emp){
+            $arrEmp[]=$emp->enroll_id;
         }
-        dd('successaga');
+        $string_absen_emp=implode(',', $arrEmp);
+        dd($string_absen_emp);
+        // foreach ($employee as $key => $value) {
+        //     $staffnonstaff=$value->status_staff;
+        //     $tanggal_akhir='2024-10-30';
+        //     $tgl_berjalan=$today;
+        //     while (strtotime( $tgl_berjalan) <= strtotime($tanggal_akhir)) {
+        //         $hari=date('D',strtotime(  $tgl_berjalan));
+        //         if($hari=='Sun'){
+        //             $kode_hari='6';
+        //             $nama_hari='Minggu';
+        //             $status_absen=null;
+        //             $mulai_jam_kerja=null;
+        //             $akhir_jam_kerja=null;
+        //         }else if($hari=='Mon'){
+        //             $mulai_jam_kerja=$value->mulai_jam_kerja;
+        //             $akhir_jam_kerja=$value->akhir_jam_kerja;
+        //             $kode_hari='0';
+        //             $nama_hari='Senin';
+        //             $status_absen='M';
+        //         }else if($hari=='Tue'){
+        //             $mulai_jam_kerja=$value->mulai_jam_kerja;
+        //             $akhir_jam_kerja=$value->akhir_jam_kerja;
+        //             $kode_hari='1';
+        //             $nama_hari='Selasa';
+        //             $status_absen='M';
+        //         }else if($hari=='Wed'){
+        //             $mulai_jam_kerja=$value->mulai_jam_kerja;
+        //             $akhir_jam_kerja=$value->akhir_jam_kerja;
+        //             $kode_hari='2';
+        //             $nama_hari='Rabu';
+        //             $status_absen='M';
+        //         }else if($hari=='Thu'){
+        //             $mulai_jam_kerja=$value->mulai_jam_kerja;
+        //             $akhir_jam_kerja=$value->akhir_jam_kerja;
+        //             $kode_hari='3';
+        //             $nama_hari='Kamis';
+        //             $status_absen='M';
+        //         }else if($hari=='Fri'){
+        //             $mulai_jam_kerja=$value->mulai_jam_kerja;
+        //             $akhir_jam_kerja=$value->akhir_jam_kerja;
+        //             $kode_hari='4';
+        //             $nama_hari='Jumat';
+        //             $status_absen='M';
+        //         }else if($hari=='Sat'){
+        //             $kode_hari='5';
+        //             $nama_hari='Sabtu';
+        //             $status_absen=null;
+        //             $mulai_jam_kerja=null;
+        //             $akhir_jam_kerja=null;
+        //         }
+        //         $x=[
+        //             'uuid' => Str::uuid('uuid'.$key),
+        //             'enroll_id' => $value->enroll_id,
+        //             'tanggal_berjalan' => $tgl_berjalan,
+        //             'kode_hari' =>$kode_hari,
+        //             'nama_hari' => $nama_hari,
+        //             'mulai_jam_kerja' => $mulai_jam_kerja,
+        //             'akhir_jam_kerja' => $akhir_jam_kerja,
+        //             'status_absen' => $status_absen,
+        //             'operator' =>'system',
+        //         ];
+        //         MasterDataAbsenKehadiran::create($x);
+        //         $tgl_berjalan = date ("Y-m-d", strtotime("+1 day", strtotime($tgl_berjalan)));
+
+        //     }
+        // }
+        // dd('successaga');
 
     }
 

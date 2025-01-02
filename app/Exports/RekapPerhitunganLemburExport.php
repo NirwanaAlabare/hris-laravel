@@ -125,7 +125,13 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
                     $leftjoin->on("dl.tanggal_berjalan", "=", "rekap_perhitungan_lembur.tanggal_berjalan")
                              ->on("dl.enroll_id", "=", "rekap_perhitungan_lembur.enroll_id");
                 })
-                ->leftJoin('grading_salary', 'employee_atribut.kode_grade', '=', 'grading_salary.kode_grade')
+                ->leftJoin(\DB::raw('(SELECT * FROM grading_salary) AS grading_salary'), function($leftjoin){
+                        $leftjoin->on(\DB::raw('SUBSTRING(grading_salary.periode_umk, 1, 4)'), 
+                        '=', 
+                        \DB::raw('SUBSTRING(rekap_perhitungan_lembur.tanggal_berjalan, 1, 4)'))
+                        ->on('grading_salary.kode_grade','=','employee_atribut.kode_grade');
+                    }
+                )
                 ->orderBy('employee_atribut.employee_name','asc')
                 ->orderBy('rekap_perhitungan_lembur.tanggal_berjalan','asc')
                 ->limit(1);

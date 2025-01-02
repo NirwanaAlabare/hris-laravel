@@ -995,16 +995,12 @@ class MdAbsenHadirController extends AdminBaseController
                         if($q->status_absen=='M'){
                             $kode_ijin_payroll='M';
                         }else if($q->status_absen=='IKS'){
-                            if($q->absen_masuk_kerja!=null && $q->absen_pulang_kerja!=null){
-                                if($q->jumlah_menit_absen_dt!=0 && $q->jumlah_menit_absen_pc==0){
-                                    $kode_ijin_payroll='DT';
-                                }else if($q->jumlah_menit_absen_dt==0 && $q->jumlah_menit_absen_pc!=0){
-                                    $kode_ijin_payroll='PC';
-                                }else if($q->jumlah_menit_absen_dt!=0 && $q->jumlah_menit_absen_pc!=0){
-                                    $kode_ijin_payroll='DTPC';
-                                }else{
-                                    $kode_ijin_payroll='OK';
-                                }
+                            if($q->jumlah_menit_absen_dt!=0 && $q->jumlah_menit_absen_pc==0){
+                                $kode_ijin_payroll='DT';
+                            }else if($q->jumlah_menit_absen_dt==0 && $q->jumlah_menit_absen_pc!=0){
+                                $kode_ijin_payroll='PC';
+                            }else if($q->jumlah_menit_absen_dt!=0 && $q->jumlah_menit_absen_pc!=0){
+                                $kode_ijin_payroll='DTPC';
                             }else{
                                 $kode_ijin_payroll='OK';
                             }
@@ -1498,16 +1494,12 @@ class MdAbsenHadirController extends AdminBaseController
                 if($Kehadiran->status_absen=='M'){
                     $kode_ijin_payroll='M';
                 }else if($Kehadiran->status_absen=='IKS'){
-                    if($Kehadiran->absen_masuk_kerja!=null && $Kehadiran->absen_pulang_kerja!=null){
-                        if($Kehadiran->jumlah_menit_absen_dt!=0 && $Kehadiran->jumlah_menit_absen_pc==0){
-                            $kode_ijin_payroll='DT';
-                        }else if($Kehadiran->jumlah_menit_absen_dt==0 && $Kehadiran->jumlah_menit_absen_pc!=0){
-                            $kode_ijin_payroll='PC';
-                        }else if($Kehadiran->jumlah_menit_absen_dt!=0 && $Kehadiran->jumlah_menit_absen_pc!=0){
-                            $kode_ijin_payroll='DTPC';
-                        }else{
-                            $kode_ijin_payroll='OK';
-                        }
+                    if($Kehadiran->jumlah_menit_absen_dt!=0 && $Kehadiran->jumlah_menit_absen_pc==0){
+                        $kode_ijin_payroll='DT';
+                    }else if($Kehadiran->jumlah_menit_absen_dt==0 && $Kehadiran->jumlah_menit_absen_pc!=0){
+                        $kode_ijin_payroll='PC';
+                    }else if($Kehadiran->jumlah_menit_absen_dt!=0 && $Kehadiran->jumlah_menit_absen_pc!=0){
+                        $kode_ijin_payroll='DTPC';
                     }else{
                         $kode_ijin_payroll='OK';
                     }

@@ -45,9 +45,6 @@ class updateStatusAbsen extends Command
             MasterDataAbsenKehadiran::where('enroll_id',$absen->enroll_id)->where('tanggal_berjalan','>=',date('Y-m-d'))->where('tanggal_berjalan','<=',$absen->tanggal_akhir_ijin)->where('kode_hari','!=','5')->where('kode_hari','!=','6')->update([
                 'status_absen'=>$absen->kode_absen_ijin,
                 'nomor_absen_ijin'=>$absen->nomor_form_perizinan,
-                'tanggal_mulai_ijin'=>$absen->tanggal_mulai_ijin,
-                'tanggal_akhir_ijin'=>$absen->tanggal_akhir_ijin,
-                'absen_alasan'=>$absen->absen_alasan
             ]);
         }
     }

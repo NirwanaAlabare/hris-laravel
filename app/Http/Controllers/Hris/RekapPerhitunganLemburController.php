@@ -130,7 +130,7 @@ class RekapPerhitunganLemburController extends AdminBaseController
         $dir = $request->input('order.0.dir');
         $totalData = 0;
         $totalFiltered = 0;
-
+        
         if(empty($request->input('search.value')))
         {
             if(empty($daterange1)) {
@@ -150,7 +150,13 @@ class RekapPerhitunganLemburController extends AdminBaseController
                     mda.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                 ')
                 ->leftJoin('employee_atribut', 'rekap_perhitungan_lembur.enroll_id', '=', 'employee_atribut.enroll_id')
-                ->leftJoin('grading_salary', 'employee_atribut.kode_grade', '=', 'grading_salary.kode_grade')
+                ->leftJoin(\DB::raw('(SELECT * FROM grading_salary) AS grading_salary'), function($leftjoin){
+                        $leftjoin->on(\DB::raw('SUBSTRING(grading_salary.periode_umk, 1, 4)'), 
+                        '=', 
+                        \DB::raw('SUBSTRING(rekap_perhitungan_lembur.tanggal_berjalan, 1, 4)'))
+                        ->on('grading_salary.kode_grade','=','employee_atribut.kode_grade');
+                    }
+                )
                 ->leftJoin('master_data_absen_kehadiran as mda', function($leftjoin) {
                     $leftjoin->on("mda.tanggal_berjalan", "=", "rekap_perhitungan_lembur.tanggal_berjalan")
                              ->on("mda.enroll_id", "=", "rekap_perhitungan_lembur.enroll_id");
@@ -186,7 +192,13 @@ class RekapPerhitunganLemburController extends AdminBaseController
                     )
                 ')
                 ->leftJoin('employee_atribut', 'rekap_perhitungan_lembur.enroll_id', '=', 'employee_atribut.enroll_id')
-                ->leftJoin('grading_salary', 'employee_atribut.kode_grade', '=', 'grading_salary.kode_grade')
+                ->leftJoin(\DB::raw('(SELECT * FROM grading_salary) AS grading_salary'), function($leftjoin){
+                        $leftjoin->on(\DB::raw('SUBSTRING(grading_salary.periode_umk, 1, 4)'), 
+                        '=', 
+                        \DB::raw('SUBSTRING(rekap_perhitungan_lembur.tanggal_berjalan, 1, 4)'))
+                        ->on('grading_salary.kode_grade','=','employee_atribut.kode_grade');
+                    }
+                )
                 ->leftJoin('master_data_absen_kehadiran as mda', function($leftjoin) {
                     $leftjoin->on("mda.tanggal_berjalan", "=", "rekap_perhitungan_lembur.tanggal_berjalan")
                              ->on("mda.enroll_id", "=", "rekap_perhitungan_lembur.enroll_id");
