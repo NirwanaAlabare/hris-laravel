@@ -626,6 +626,7 @@
             });
         }
         function get_dept_name(){
+            $('#department_name_modal_sub').empty();
             $.ajax({
                 type: "GET",
                 url: '{{route('hris.departmentall.get_dept_name')}}',
