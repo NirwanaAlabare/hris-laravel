@@ -30,8 +30,8 @@
                     </span>
                 </a>
                 @if($loggedAdmin->role_user=='superadmin' || $loggedAdmin->email=='firmansyah@nirwanaindonesia.com' || $loggedAdmin->email=='willy@ptnag.com'  )
-                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addModal">
-                    <i class="fa fa-plus"></i>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addModal" style="font-weight: bold">
+                    <i class="fa fa-plus"></i> NAK
                 </button>
                 @endif
             </div>
@@ -44,7 +44,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">ADD DEPARTMENT</h5>
+              <h5 class="modal-title" id="exampleModalLabel">TAMBAH DEPARTMENT (PT. NIRWANA ALABARE KNITTING)</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -56,7 +56,7 @@
                           <button class="btn text-white text-left" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" style="font-weight: bold;width:100%">
                             <div class="row">
                                 <div class="col-6">
-                                    ADD DEPARTMENT
+                                    TAMBAH DEPARTMENT
                                 </div>
                                 <div class="col-6 text-right">
                                     <i class="fa fa-chevron-down" aria-hidden="true"></i>
@@ -69,7 +69,7 @@
                         <div class="card-body">
                             <div class="row">
                               <div class="col-4 pt-2 pl-5">
-                                  <label class="form-label" style="font-weight: bold">DEPARTMENT ID</label>
+                                  <label class="form-label" style="font-weight: bold">ID DEPARTMENT</label>
                               </div>
                               <div class="col-7">
                                   <input type="text" class="form-control" id="department_id_modal" style="background-color: white" disabled>
@@ -81,7 +81,7 @@
                             </div>
                             <div class="row pt-3">
                                 <div class="col-4 pt-2 pl-5">
-                                    <label class="form-label" style="font-weight: bold">DEPARTMENT NAME</label>
+                                    <label class="form-label" style="font-weight: bold">NAMA DEPARTMENT</label>
                                 </div>
                                 <div class="col-8">
                                     <input type="text" class="form-control" id="department_name_modal" style="background-color: white">
@@ -90,10 +90,37 @@
                             </div>
                             <div class="row pt-3">
                                 <div class="col-4 pt-2 pl-5">
-                                    <label class="form-label" style="font-weight: bold">SUB DEPARTMENT NAME</label>
+                                    <label class="form-label" style="font-weight: bold">NAMA BAGIAN</label>
                                 </div>
                                 <div class="col-8">
                                     <input type="text" class="form-control" id="sub_department_name_modal" style="background-color: white">
+                                    <h6 style="padding-bottom: 0px;"></h6>
+                                </div>
+                            </div>
+                            <div class="row pt-3">
+                                <div class="col-4 pt-2 pl-5">
+                                    <label class="form-label" style="font-weight: bold">KATEGORI DEPARTMENT</label>
+                                </div>
+                                <div class="col-8">
+                                    <select class="form-control" id="department_category" style="background-color: white">
+                                        <option value="" selected>PILIH KATEGORI</option>
+                                        <option value="PRODUCTION">PRODUCTION</option>
+                                        <option value="SUPPORTING PRODUCTION">SUPPORTING PRODUCTION</option>
+                                        <option value="SUPPORTING GENERAL">SUPPORTING GENERAL</option>
+                                    </select>
+                                    <h6 style="padding-bottom: 0px;"></h6>
+                                </div>
+                            </div>
+                            <div class="row pt-3">
+                                <div class="col-4 pt-2 pl-5">
+                                    <label class="form-label" style="font-weight: bold">KATEGORI PENEMPATAN</label>
+                                </div>
+                                <div class="col-8">
+                                    <select class="form-control" id="department_placement" style="background-color: white">
+                                        <option value="" selected>PILIH PENEMPATAN</option>
+                                        <option value="MANUFACTURING">MANUFACTURING</option>
+                                        <option value="OFFICE">OFFICE</option>
+                                    </select>
                                     <h6 style="padding-bottom: 0px;"></h6>
                                 </div>
                             </div>
@@ -110,7 +137,7 @@
                           <button class="btn text-white text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="font-weight: bold;width:100%">
                             <div class="row">
                                 <div class="col-6">
-                                    ADD SUB DEPARTMENT
+                                    TAMBAH BAGIAN
                                 </div>
                                 <div class="col-6 text-right">
                                     <i class="fa fa-chevron-down" aria-hidden="true"></i>
@@ -122,21 +149,48 @@
                         <div class="card-body">
                           <div class="row pt-3">
                                 <div class="col-4 pt-2 pl-5">
-                                    <label class="form-label" style="font-weight: bold">DEPARTMENT NAME</label>
+                                    <label class="form-label" style="font-weight: bold">NAMA DEPARMENT</label>
                                 </div>
                                 <div class="col-8">
                                     <select class="form-control" id="department_name_modal_sub" style="background-color: white">
-                                        <option value="">SELECT DEPARTMENT</option>
+                                        <option value="">PILIH DEPARTMENT</option>
                                     </select>
                                     <h6 style="padding-bottom: 0px;"></h6>
                                 </div>
                             </div>
                             <div class="row pt-3">
                                 <div class="col-4 pt-2 pl-5">
-                                    <label class="form-label" style="font-weight: bold">SUB DEPARTMENT NAME</label>
+                                    <label class="form-label" style="font-weight: bold">NAMA BAGIAN</label>
                                 </div>
                                 <div class="col-8">
                                     <input type="text" class="form-control" id="sub_department_name_modal_sub" style="background-color: white">
+                                    <h6 style="padding-bottom: 0px;"></h6>
+                                </div>
+                            </div>
+                            <div class="row pt-3">
+                                <div class="col-4 pt-2 pl-5">
+                                    <label class="form-label" style="font-weight: bold">KATEGORI DEPARTMENT</label>
+                                </div>
+                                <div class="col-8">
+                                    <select class="form-control" id="department_category_sub" style="background-color: white">
+                                        <option value="" selected>PILIH KATEGORI</option>
+                                        <option value="PRODUCTION">PRODUCTION</option>
+                                        <option value="SUPPORTING PRODUCTION">SUPPORTING PRODUCTION</option>
+                                        <option value="SUPPORTING GENERAL">SUPPORTING GENERAL</option>
+                                    </select>
+                                    <h6 style="padding-bottom: 0px;"></h6>
+                                </div>
+                            </div>
+                            <div class="row pt-3">
+                                <div class="col-4 pt-2 pl-5">
+                                    <label class="form-label" style="font-weight: bold">KATEGORI PENEMPATAN</label>
+                                </div>
+                                <div class="col-8">
+                                    <select class="form-control" id="department_placement_sub" style="background-color: white">
+                                        <option value="" selected>PILIH PENEMPATAN</option>
+                                        <option value="MANUFACTURING">MANUFACTURING</option>
+                                        <option value="OFFICE">OFFICE</option>
+                                    </select>
                                     <h6 style="padding-bottom: 0px;"></h6>
                                 </div>
                             </div>
@@ -158,90 +212,91 @@
             <!-- Begin Form Edit Absen Karyawan -->
             <div class="card" id="ajax-department-model-addedit">
                 <!-- boostrap absen time -->
-                <div class="card-body">
-                    <div class="form-group">
-                        <div class="table-responsive">
-                            <!-- BEGIN FORM-->
-                            {!! Form::open(['url' => 'javascript:void(0)', 'id' => 'formSaveChanges1', 'name' => 'formSaveChanges1']) !!}
-                            <table class="table-sm display" id="ajax-department-model-addedit-display">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <h3 class="m-0 card-title" id="ajaxEditDepartmentModel"></h3>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody id="datatable-absen-time-display-body">
-                                    <tr>
-                                        <td>
-                                            <label for="name" class="col-sm-6 control-label">Site Nirwana ID :</label>
-                                            <input id="site_nirwana_id_addedit" name="site_nirwana_id_addedit" type="text" class="form-control" placeholder="Site Nirwana ID" maxlength="5" size="5">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label for="name" class="col-sm-6 control-label">Site Nirwana Nama :</label>
-                                            <input id="site_nirwana_name_addedit" name="site_nirwana_name_addedit" type="text" class="form-control" placeholder="Site Nirwana Nama" maxlength="50" size="50">            
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label for="name" class="col-sm-6 control-label">Department ID :</label>
-                                            <input id="department_id_addedit" name="department_id_addedit" type="text" class="form-control" placeholder="Department ID" maxlength="5" size="5">            
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label for="name" class="col-sm-6 control-label">Department Nama :</label>
-                                            <input id="department_name_addedit" name="department_name_addedit" type="text" class="form-control" placeholder="Site Nirwana Nama" maxlength="50" size="50">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label for="name" class="col-sm-6 control-label">Sub Department ID :</label>
-                                            <input id="sub_dept_id_addedit" name="sub_dept_id_addedit" type="text" class="form-control" placeholder="Sub Department" maxlength="5" size="5">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label for="name" class="col-sm-6 control-label">Sub Department Nama :</label>
-                                            <input id="sub_dept_name_addedit" name="sub_dept_name_addedit" type="text" class="form-control" placeholder="Sub Department Nama" maxlength="50" size="50">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label for="name" class="col-sm-6 control-label">Jumlah Karyawan :</label>
-                                            <input id="jumlah_addedit" name="jumlah_addedit" type="text" class="form-control" placeholder="Jumlah Karyawan" maxlength="50" size="50" disabled>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label for="name" class="col-sm-6 control-label">Status :</label>
-                                            <select id="status_addedit" name="status_addedit" class="form-control">
-                                                <option value="">Choose Status</option>
-                                                <option value="AKTIF">AKTIF</option>
-                                                <option value="NONAKTIF">NONAKTIF</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                    <tr class="border-top">
-                                        <th>
-                                            <div class="btn-list">
-                                                <a href="#" id="btn-save-changes" class="btn btn-primary btn-sm">Save all changes</a>
-                                                <a href="javascript:void(0)" id="cancel-formSaveChanges1" class="btn btn-danger btn-sm">Cancel</a>
-                                            </div>
-                                        </th>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                            {{-- </form> --}}
-                            {!! Form::close() !!}
-                            <!-- END FORM-->
+                {!! Form::open(['url' => 'javascript:void(0)', 'id' => 'formSaveChanges1', 'name' => 'formSaveChanges1']) !!}
+                <div class="card-header bg-primary pt-3 pb-2">
+                    <div class="row px-3">
+                        <div class="col-12">
+                            <label class="form-label" style="font-size:12pt;color:rgb(255, 255, 255)"> Edit Department</label>
                         </div>
                     </div>
                 </div>
+                <div class="card-body px-6 pt-4 pb-4">
+                    <div class="row">
+                        <div class="col-2 pt-2"><label class="form-label" style="font-size:12pt"> ID Nirwana</label></div>
+                        <div class="col-3">
+                            <input id="site_nirwana_id_addedit" name="site_nirwana_id_addedit" type="text" class="form-control" placeholder="Site Nirwana ID" maxlength="5" size="5" readonly>
+                        </div>
+                        <div class="col-1"></div>
+                        <div class="col-2 pt-2"><label class="form-label" style="font-size:12pt"> Site Nirwana Name</label></div>
+                        <div class="col-3">
+                            <input id="site_nirwana_name_addedit" name="site_nirwana_name_addedit" type="text" class="form-control" placeholder="Site Nirwana Nama" maxlength="50" size="50" style="background-color: white">
+                        </div>
+                    </div>
+                    <div class="row pt-2">
+                        <div class="col-2 pt-2"><label class="form-label" style="font-size:12pt"> ID Department</label></div>
+                        <div class="col-3">
+                            <input id="department_id_addedit" name="department_id_addedit" type="text" class="form-control" placeholder="Department ID" maxlength="5" size="5" readonly>
+                        </div>
+                        <div class="col-1"></div>
+                        <div class="col-2 pt-2"><label class="form-label" style="font-size:12pt"> Nama Department</label></div>
+                        <div class="col-3">
+                            <input id="department_name_addedit" name="department_name_addedit" type="text" class="form-control" placeholder="Site Nirwana Nama" maxlength="50" size="50" style="background-color: white">
+                        </div>
+                    </div>
+                    <div class="row pt-2">
+                        <div class="col-2 pt-2"><label class="form-label" style="font-size:12pt"> ID Bagian</label></div>
+                        <div class="col-3">
+                            <input id="sub_dept_id_addedit" name="sub_dept_id_addedit" type="text" class="form-control" placeholder="Department ID" maxlength="5" size="5" readonly>
+                        </div>
+                        <div class="col-1"></div>
+                        <div class="col-2 pt-2"><label class="form-label" style="font-size:12pt"> Nama Bagian</label></div>
+                        <div class="col-3">
+                            <input id="sub_dept_name_addedit" name="sub_dept_name_addedit" type="text" class="form-control" placeholder="Sub Department Nama" maxlength="50" size="50" style="background-color: white">
+                        </div>
+                    </div>
+                    <div class="row pt-2">
+                        <div class="col-2 pt-2"><label class="form-label" style="font-size:12pt"> Kategori Department</label></div>
+                        <div class="col-3">
+                            <select class="form-control" id="kategori_department_addedit" name="kategori_department_addedit" style="background-color: white">
+                                <option value="" selected>PILIH KATEGORI</option>
+                                <option value="PRODUCTION">PRODUCTION</option>
+                                <option value="SUPPORTING PRODUCTION">SUPPORTING PRODUCTION</option>
+                                <option value="SUPPORTING GENERAL">SUPPORTING GENERAL</option>
+                            </select>
+                        </div>
+                        <div class="col-1"></div>
+                        <div class="col-2 pt-2"><label class="form-label" style="font-size:12pt"> Penempatan Department</label></div>
+                        <div class="col-3">
+                            <select class="form-control" id="penempatan_department_addedit" name="penempatan_department_addedit" style="background-color: white">
+                                <option value="" selected>PILIH PENEMPATAN</option>
+                                <option value="OFFICE">OFFICE</option>
+                                <option value="MANUFACTURING">MANUFACTURING</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row pt-2">
+                        <div class="col-2 pt-2"><label class="form-label" style="font-size:12pt"> Status</label></div>
+                        <div class="col-3">
+                            <select id="status_addedit" name="status_addedit" class="form-control" style="background-color: white">
+                                <option value="">Choose Status</option>
+                                <option value="AKTIF">AKTIF</option>
+                                <option value="NONAKTIF">NONAKTIF</option>
+                            </select>
+                        </div>
+                        <div class="col-1"></div>
+                        <div class="col-2 pt-2"><label class="form-label" style="font-size:12pt"> Jumlah Karyawan</label></div>
+                        <div class="col-3">
+                            <input id="jumlah_addedit" name="jumlah_addedit" type="text" class="form-control" placeholder="Jumlah Karyawan" maxlength="50" size="50" disabled style="background-color: white">
+                        </div>
+                    </div>
+                    <div class="row pt-4">
+                        <div class="col-12 text-center">
+                            <a href="#" id="btn-save-changes" class="btn btn-primary py-1 btn-sm">Save all changes</a>
+                            <a href="javascript:void(0)" id="cancel-formSaveChanges1" class="btn btn-danger py-1 btn-sm">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+                {!! Form::close() !!}
             </div>
             <!-- End Edit Form Absen Karyawan -->
 
@@ -279,13 +334,13 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row py-2" style="border-bottom:1px solid rgb(180, 180, 180)">
+                    {{-- <div class="row py-2" style="border-bottom:1px solid rgb(180, 180, 180)">
                         <div class="col-2"></div>
                         <div class="col-5">
                             <a id="btn-import-excel" data-target="#import_department_excel" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel" class="btn btn-app btn-info" title="Export data ke file rekap absen" style="padding-top: 3px;padding-bottom: 3px"><i class="fa fa-upload" aria-hidden="true"></i>  Import Excel</a>
                             <a id="btn-export-excel" class="btn btn-app btn-secondary" title="Export data ke file rekap absen" style="padding-top: 3px;padding-bottom: 3px"><i class="fa fa-download" aria-hidden="true"></i>  Export Excel</a>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="table-responsive pt-3">
                         <table id="datatable-ajax-crud" class="table table-sm table-striped table-hover table-bordered w-100 text-nowrap display">
                             <thead>
@@ -567,7 +622,7 @@
                 url: '{{route('hris.departmentall.get_last_dept_id')}}',
                 dataType: 'json',
             }).done(function (response) {
-                document.getElementById('department_id_modal').value='DEP'+(parseInt(response[0].substring(3, 5))+1);
+                document.getElementById('department_id_modal').value='DEPNK'+('0' + (parseInt(response[0].substring(7, 5))+1)).slice(-2) ;
             });
         }
         function get_dept_name(){
@@ -645,6 +700,8 @@
             data.append('department_id', $('#department_id_modal').val());
             data.append('department_name', $('#department_name_modal').val());
             data.append('sub_department_name', $('#sub_department_name_modal').val());
+            data.append('department_category',$('#department_category').val());
+            data.append('department_placement',$('#department_placement').val());
             jQuery.ajax({
                 url: '{{route('hris.departmentall.save_department_id')}}',
                 data: data,
@@ -656,10 +713,16 @@
                 success: function(data){
                     $('#department_name_modal').val('');
                     $('#sub_department_name_modal').val('');
+                    $('#department_category').val('');
+                    $('#department_placement').val('');
                     $('#department_name_modal').next().html('');
                     document.getElementById("department_name_modal").style.border = null;
                     $('#sub_department_name_modal').next().html('');
                     document.getElementById("sub_department_name_modal").style.border = null;
+                    $('#department_category').next().html('');
+                    document.getElementById("department_category").style.border = null;
+                    $('#department_placement').next().html('');
+                    document.getElementById("department_placement").style.border = null;
                     swal({
                         title: 'TAMBAH DEPARTMENT',
                         text: 'Data department berhasil di simpan',
@@ -694,6 +757,20 @@
                             $('#sub_department_name_modal').next().html('');
                             document.getElementById("sub_department_name_modal").style.border = null;
                         }
+                        if(typeof(err_log.department_category)!=='undefined'){
+                            $('#department_category').next().html('<span style="color:red">Kategori department '+error.responseJSON.errors.department_category[0]+'</span>');
+                            document.getElementById("department_category").style.border = "1px solid red";
+                        }else{
+                            $('#department_category').next().html('');
+                            document.getElementById("department_category").style.border = null;
+                        }
+                        if(typeof(err_log.department_placement)!=='undefined'){
+                            $('#department_placement').next().html('<span style="color:red">Kategori penempatan '+error.responseJSON.errors.department_placement[0]+'</span>');
+                            document.getElementById("department_placement").style.border = "1px solid red";
+                        }else{
+                            $('#department_placement').next().html('');
+                            document.getElementById("department_placement").style.border = null;
+                        }
                     }
                 }
             });
@@ -703,6 +780,8 @@
             data.append('department_id', $('#department_id_modal').val());
             data.append('department_name', $('#department_name_modal_sub').val());
             data.append('sub_department_name', $('#sub_department_name_modal_sub').val());
+            data.append('department_category', $('#department_category_sub').val());
+            data.append('department_placement', $('#department_placement_sub').val());
             jQuery.ajax({
                 url: '{{route('hris.departmentall.save_sub_department')}}',
                 data: data,
@@ -719,6 +798,10 @@
                     document.getElementById("department_name_modal_sub").style.border = null;
                     $('#sub_department_name_modal_sub').next().html('');
                     document.getElementById("sub_department_name_modal_sub").style.border = null;
+                    $('#department_category_sub').next().html('');
+                    document.getElementById("department_category_sub").style.border = null;
+                    $('#department_placement_sub').next().html('');
+                    document.getElementById("department_placement_sub").style.border = null;
                     swal({
                         title: 'TAMBAH SUB DEPARTMENT',
                         text: 'Data sub department berhasil di simpan',
@@ -745,6 +828,20 @@
                         }else{
                             $('#sub_department_name_modal').next().html('');
                             document.getElementById("sub_department_name_modal_sub").style.border = null;
+                        }
+                        if(typeof(err_log.department_category)!=='undefined'){
+                            $('#department_category_sub').next().html('<span style="color:red">Kategori department '+error.responseJSON.errors.department_category[0]+'</span>');
+                            document.getElementById("department_category_sub").style.border = "1px solid red";
+                        }else{
+                            $('#department_category_sub').next().html('');
+                            document.getElementById("department_category_sub").style.border = null;
+                        }
+                        if(typeof(err_log.department_placement)!=='undefined'){
+                            $('#department_placement_sub').next().html('<span style="color:red">Kategori penempatan '+error.responseJSON.errors.department_placement[0]+'</span>');
+                            document.getElementById("department_placement_sub").style.border = "1px solid red";
+                        }else{
+                            $('#department_placement_sub').next().html('');
+                            document.getElementById("department_placement_sub").style.border = null;
                         }
                     }
                 }
@@ -827,9 +924,6 @@
             });
         });
         $('#btn-export-excel').on('click',function(){
-
-        });
-        $('#btn-export-excel').on('click',function(){
             var site_nirwana = $('#selectNirwanaSite').val();
             var department = $('#pilih_department').val();
             var sub_department = $('#pilih_sub_department').val();
@@ -885,6 +979,8 @@
                   $('#department_name_addedit').val(res.department_name);
                   $('#sub_dept_id_addedit').val(res.sub_dept_id);
                   $('#sub_dept_name_addedit').val(res.sub_dept_name);
+                  $('#kategori_department_addedit').val(res.group_1);
+                  $('#penempatan_department_addedit').val(res.group_2);
                   $.ajax({
                     "type":"POST",
                     "url": "{{route('hris.departmentall.getJumlahKaryawan')}}",
@@ -910,6 +1006,8 @@
             var department_name = $("#department_name_addedit").val();
             var sub_dept_id = $("#sub_dept_id_addedit").val();
             var sub_dept_name = $("#sub_dept_name_addedit").val();
+            var kategori_department = $("#kategori_department_addedit").val();
+            var penempatan_department = $("#penempatan_department_addedit").val();
             var status = $("#status_addedit").val();
             $("#btn-save-change").html('Please Wait...');
             $("#btn-save-change"). attr("disabled", true);
@@ -928,13 +1026,24 @@
                     department_name:department_name,
                     sub_dept_id:sub_dept_id,
                     sub_dept_name:sub_dept_name,
+                    kategori_department:kategori_department,
+                    penempatan_department:penempatan_department,
                     status:status
                 },
                 dataType: 'json',
                 success: function(res){
                     $("#btn-save-change").html('Save all changes');
                     $("#btn-save-change"). attr("disabled", false);
-                    alert('Simpan berhasil');
+                    swal("", "EDIT DEPARTMENT BERHASIL!", "success");
+                    $("#ajax-department-model-addedit").hide('slow');
+                    $("#site_nirwana_id_addedit").val();
+                    var site_nirwana_name = $("#site_nirwana_name_addedit").val('');
+                    var department_id = $("#department_id_addedit").val('');
+                    var department_name = $("#department_name_addedit").val('');
+                    var sub_dept_id = $("#sub_dept_id_addedit").val('');
+                    var sub_dept_name = $("#sub_dept_name_addedit").val('');
+                    var status = $("#status_addedit").val('');
+                    $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
                 }
             });
         });

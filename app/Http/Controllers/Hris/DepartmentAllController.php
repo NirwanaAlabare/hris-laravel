@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Hris;
 
 use App\Models\DepartmentAll;
 use App\Models\EmployeeAtribut;
+use App\Models\BMasterCC;
 use App\Http\Controllers\AdminBaseController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use App\Exports\DepartmentAllFilterExport;
 use Datatables;
+use Carbon\Carbon;
 
 
 /**
@@ -35,54 +37,127 @@ class DepartmentAllController extends AdminBaseController
         return View::make('hris/departmentall', $this->data,compact('site_nirwana_id'));
     }
     public function get_last_dept_id(){
-        return DepartmentAll::where('site_nirwana_id','NAG')->orderBy('department_id','desc')->limit(1)->pluck('department_id');
+        return DepartmentAll::where('site_nirwana_id','NAK')->orderBy('department_id','desc')->limit(1)->pluck('department_id');
     }
     public function get_dept_name(){
-        return DepartmentAll::where('site_nirwana_id','NAG')->orderBy('department_name')->groupBy('department_name')->get();
+        return DepartmentAll::where('site_nirwana_id','NAK')->orderBy('department_name')->groupBy('department_name')->get();
     }
     public function save_department_id(){
         $this->_validation(request());
+        $sub_dept_id=request()->department_id.'SUB'.sprintf("%03d",1);
+        $sub_dept_name=strtoupper(request()->sub_department_name);
+        $department_id=request()->department_id;
+        $department_name=strtoupper(request()->department_name);
+        $department_category=request()->department_category;
+        $department_placement=request()->department_placement;
+        $timestamp=Carbon::now();
         DepartmentAll::create([
-            'site_nirwana_id'=>'NAG',
-            'site_nirwana_name'=>'PT. NIRWANA ALABARE GARMENT',
-            'department_id'=>request()->department_id,
-            'department_name'=>strtoupper(request()->department_name),
-            'sub_dept_id'=>request()->department_id.'SUB'.sprintf("%03d",1),
-            'sub_dept_name'=>strtoupper(request()->sub_department_name)
+            'site_nirwana_id'=>'NAK',
+            'site_nirwana_name'=>'PT. NIRWANA ALABARE KNITTING',
+            'department_id'=>$department_id,
+            'department_name'=>$department_name,
+            'sub_dept_id'=>$sub_dept_id,
+            'sub_dept_name'=>$sub_dept_name,
+            'group_1'=>$department_category,
+            'group_2'=>$department_placement,
+            'status'=>'AKTIF',
+            'created_at'=>$timestamp,
+            'updated_at'=>$timestamp
+        ]);
+        BMasterCC::create([
+            'no_cc'=>$sub_dept_id,
+            'cc_name'=>$sub_dept_name,
+            'id_cc'=>$department_id,
+            'group1'=>$department_name,
+            'id_group1'=>'-',
+            'group2'=>$department_category,
+            'id_group2'=>'-',
+            'group21'=>$department_placement,
+            'id_group3'=>'-',
+            'profit_center'=>'PT. NIRWANA ALABARE KNITTING',
+            'id_pc'=>'NAK',
+            'status'=>'Active',
+            'coa_gaji'=>'5.60.01',
+            'coa_tunj'=>'5.61.01',
+            'coa_lembur'=>'5.62.01',
+            'coa_bonus'=>'5.64.02',
+            'created_at'=>$timestamp,
+            'updated_at'=>$timestamp
         ]);
     }
     public function save_sub_department(){
         $this->_validation2(request());
+        $sub_dept_id=request()->department_name.'SUB'.sprintf("%03d",intval(substr(DepartmentAll::where('site_nirwana_id','NAK')->where('department_id',request()->department_name)->orderBy('sub_dept_id','desc')->limit(1)->pluck('sub_dept_id')[0],10,11))+1);
+        $sub_dept_name=request()->sub_department_name;
+        $department_id=request()->department_name;
+        $department_name=DepartmentAll::where('department_id',request()->department_name)->pluck('department_name')[0];
+        $department_category=request()->department_category;
+        $department_placement=request()->department_placement;
+        $timestamp=Carbon::now();
         DepartmentAll::create([
-            'site_nirwana_id'=>'NAG',
-            'site_nirwana_name'=>'PT. NIRWANA ALABARE GARMENT',
-            'department_id'=>request()->department_name,
-            'department_name'=>DepartmentAll::where('department_id',request()->department_name)->pluck('department_name')[0],
-            'sub_dept_id'=>request()->department_name.'SUB'.sprintf("%03d",intval(substr(DepartmentAll::where('site_nirwana_id','NAG')->where('department_id',request()->department_name)->orderBy('sub_dept_id','desc')->limit(1)->pluck('sub_dept_id')[0],8,9))+1),
-            'sub_dept_name'=>strtoupper(request()->sub_department_name)
+            'site_nirwana_id'=>'NAK',
+            'site_nirwana_name'=>'PT. NIRWANA ALABARE KNITTING',
+            'department_id'=>$department_id,
+            'department_name'=>$department_name,
+            'sub_dept_id'=>$sub_dept_id,
+            'sub_dept_name'=>$sub_dept_name,
+            'group_1'=>$department_category,
+            'group_2'=>$department_placement,
+            'status'=>'AKTIF',
+            'created_at'=>$timestamp,
+            'updated_at'=>$timestamp
         ]);
+        BMasterCC::create([
+            'no_cc'=>$sub_dept_id,
+            'cc_name'=>$sub_dept_name,
+            'id_cc'=>$department_id,
+            'group1'=>$department_name,
+            'id_group1'=>'-',
+            'group2'=>$department_category,
+            'id_group2'=>'-',
+            'group21'=>$department_placement,
+            'id_group3'=>'-',
+            'profit_center'=>'PT. NIRWANA ALABARE KNITTING',
+            'id_pc'=>'NAK',
+            'status'=>'Active',
+            'coa_gaji'=>'5.50.01',
+            'coa_tunj'=>'5.51.01',
+            'coa_lembur'=>'5.52.01',
+            'coa_bonus'=>'5.54.02',
+            'created_at'=>$timestamp,
+            'updated_at'=>$timestamp
+        ]);
+        
     }
     private function _validation(){
         $validation=request()->validate([
             'department_id'=>'unique:department_all',
-            'department_name'=>'required|unique:department_all',
-            'sub_department_name'=>'required'
+            'department_name'=>'required',
+            'sub_department_name'=>'required',
+            'department_category'=>'required',
+            'department_placement'=>'required'
         ],
         [
             'department_id.unique'=>'sudah ada di database',
             'department_name.required'=>'harus diisi',
             'department_name.unique'=>'sudah ada di database',
             'sub_department_name.required'=>'harus diisi',
+            'department_category.required'=>'harus dipilih',
+            'department_placement.required'=>'harus dipilih',
         ]);
     }
     private function _validation2(){
         $validation=request()->validate([
             'department_name'=>'required',
-            'sub_department_name'=>'required'
+            'sub_department_name'=>'required',
+            'department_category'=>'required',
+            'department_placement'=>'required'
         ],
         [
             'department_name.required'=>'harus diisi',
             'sub_department_name.required'=>'harus diisi',
+            'department_category.required'=>'harus dipilih',
+            'department_placement.required'=>'harus dipilih',
         ]);
 
     }
@@ -329,21 +404,40 @@ class DepartmentAllController extends AdminBaseController
         $department_name = $request->department_name;
         $sub_dept_id = $request->sub_dept_id;
         $sub_dept_name = $request->sub_dept_name;
+        $kategori_department = $request->kategori_department;
+        $penempatan_department = $request->penempatan_department;
         $status=$request->status;
+        $status_master='';
+        if($status=='AKTIF'){
+            $status_master='Active';
+        }else{
+            $status_master='Deactive';
+        }
 
         $query =  DepartmentAll::where('site_nirwana_id','=',$site_nirwana_id)
                     ->where('department_id', '=',$department_id)
                     ->where('sub_dept_id', '=',$sub_dept_id)
                     ->update([
-                        'site_nirwana_id' => $site_nirwana_id,
                         'site_nirwana_name' => $site_nirwana_name,
-                        'department_id' => $department_id,
                         'department_name' => $department_name,
-                        'sub_dept_id' => $sub_dept_id,
                         'sub_dept_name' => $sub_dept_name,
+                        'group_1'=> $kategori_department,
+                        'group_2'=> $penempatan_department,
                         'status'=>$status
                     ]);
-
+        BMasterCC::where('id_pc',$site_nirwana_id)->where('id_cc',$department_id)->where('no_cc',$sub_dept_id)->update([
+            'profit_center' => $site_nirwana_name,
+            'group1' => $department_name,
+            'cc_name' => $sub_dept_name,
+            'group2'=> $kategori_department,
+            'group21'=> $penempatan_department,
+            'status'=>$status_master
+        ]);
+        EmployeeAtribut::where('sub_dept_id',$sub_dept_id)->update([
+            'site_nirwana_name' => $site_nirwana_name,
+            'department_name' => $department_name,
+            'sub_dept_name' => $sub_dept_name,
+        ]);
         return Response()->json($query);
     }
 
