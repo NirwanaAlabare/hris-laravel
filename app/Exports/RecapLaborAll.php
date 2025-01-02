@@ -274,26 +274,38 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
                 $sheet->getDelegate()->getStyle('BP7')->applyFromArray($border_top);
                 $sheet->setCellValue('BP8', 'Upah Grade');
                 $sheet->getDelegate()->getStyle('BP8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
+
                 $sheet->getDelegate()->getStyle('BQ7')->applyFromArray($border_top);
                 $sheet->setCellValue('BQ8', 'Seniority Allowance');
+                $sheet->setCellValue('BQ8', 'Upah / Hari');
                 $sheet->getDelegate()->getStyle('BQ8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
+
                 $sheet->getDelegate()->getStyle('BR7')->applyFromArray($border_top);
                 $sheet->setCellValue('BR8', 'Insentif (Kehadiran)');
+                $sheet->setCellValue('BR8', 'Upah / Menit');
                 $sheet->getDelegate()->getStyle('BR8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
+                
+                
+                
                 $sheet->getDelegate()->getStyle('BS7')->applyFromArray($border_top);
                 $sheet->setCellValue('BS8', 'Insentif (Jabatan)');
+                $sheet->setCellValue('BS8', 'Seniority Allowance');
                 $sheet->getDelegate()->getStyle('BS8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('BT7')->applyFromArray($border_top);
                 $sheet->setCellValue('BT8', 'RP Lembur 1');
+                $sheet->setCellValue('BT8', 'Insentif (Kehadiran)');
                 $sheet->getDelegate()->getStyle('BT8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('BU7')->applyFromArray($border_top);
                 $sheet->setCellValue('BU8', 'RP Lembur 2');
+                $sheet->setCellValue('BU8', 'Insentif (Jabatan)');
                 $sheet->getDelegate()->getStyle('BU8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('BV7')->applyFromArray($border_top);
                 $sheet->setCellValue('BV8', 'RP Lembur 3');
+                $sheet->setCellValue('BV8', 'RP Lembur 1');
                 $sheet->getDelegate()->getStyle('BV8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('BW7')->applyFromArray($border_top);
                 $sheet->setCellValue('BW8', 'RP Lembur 4');
+                $sheet->setCellValue('BW8', 'RP Lembur 2');
                 $sheet->getDelegate()->getStyle('BW8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->setCellValue('BX7', 'Lain - Lain (Koreksi +-)');
                 $sheet->mergeCells('BX7:CD7');
@@ -303,14 +315,32 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
                 $sheet->setCellValue('BY8', '+ Lembur');
                 $sheet->getDelegate()->getStyle('BY8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
                 $sheet->setCellValue('BZ8', '+ Insentif');
+
+
+                $sheet->getDelegate()->getStyle('BX7')->applyFromArray($border_top);
+                $sheet->setCellValue('BX8', 'RP Lembur 3');
+                $sheet->getDelegate()->getStyle('BX8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
+                $sheet->getDelegate()->getStyle('BY7')->applyFromArray($border_top);
+                $sheet->setCellValue('BY8', 'RP Lembur 4');
+                $sheet->getDelegate()->getStyle('BY8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
+                $sheet->setCellValue('BZ7', 'Lain - Lain (Koreksi +-)');
+                $sheet->mergeCells('BZ7:CF7');
+                $sheet->getDelegate()->getStyle('BZ7:CF7')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
+
+
+                $sheet->setCellValue('BZ8', '+ Upah');
                 $sheet->getDelegate()->getStyle('BZ8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
                 $sheet->setCellValue('CA8', '- Upah');
+                $sheet->setCellValue('CA8', '+ Lembur');
                 $sheet->getDelegate()->getStyle('CA8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
                 $sheet->setCellValue('CB8', '- Lembur');
+                $sheet->setCellValue('CB8', '+ Insentif');
                 $sheet->getDelegate()->getStyle('CB8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
                 $sheet->setCellValue('CC8', '- Insentif');
+                $sheet->setCellValue('CC8', '- Upah');
                 $sheet->getDelegate()->getStyle('CC8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
                 $sheet->setCellValue('CD8', '- Piutang');
+                $sheet->setCellValue('CD8', '- Lembur');
                 $sheet->getDelegate()->getStyle('CD8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('CE7')->applyFromArray($border_top);
                 $sheet->setCellValue('CE8', 'RP Cuti Tahunan');
@@ -318,17 +348,25 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
                 $sheet->getDelegate()->getStyle('CF7')->applyFromArray($border_top);
                 $sheet->setCellValue('CF8', 'RP Potongan Hari Kerja');
                 $sheet->getDelegate()->getStyle('CF8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
+                $sheet->setCellValue('CE8', '- Insentif');
+                $sheet->getDelegate()->getStyle('CE8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
+                $sheet->setCellValue('CF8', '- Piutang');
+                $sheet->getDelegate()->getStyle('CF8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('CG7')->applyFromArray($border_top);
                 $sheet->setCellValue('CG8', 'RP Pot. Jam');
+                $sheet->setCellValue('CG8', 'RP Cuti Tahunan');
                 $sheet->getDelegate()->getStyle('CG8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('CH7')->applyFromArray($border_top);
                 $sheet->setCellValue('CH8', 'Bruto');
+                $sheet->setCellValue('CH8', 'RP Potongan Hari Kerja');
                 $sheet->getDelegate()->getStyle('CH8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('CI7')->applyFromArray($border_top);
                 $sheet->setCellValue('CI8', 'PPH');
+                $sheet->setCellValue('CI8', 'RP Pot. Jam');
                 $sheet->getDelegate()->getStyle('CI8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('CJ7')->applyFromArray($border_top);
                 $sheet->setCellValue('CJ8', 'Netto');
+                $sheet->setCellValue('CJ8', 'Bruto');
                 $sheet->getDelegate()->getStyle('CJ8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->setCellValue('CK7', 'Potongan Karyawan');
                 $sheet->mergeCells('CK7:CL7');
@@ -343,14 +381,30 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
                 $sheet->getDelegate()->getStyle('CN7')->applyFromArray($border_top);
                 $sheet->setCellValue('CN8', 'Koperasi');
                 $sheet->getDelegate()->getStyle('CN8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
+                $sheet->getDelegate()->getStyle('CK7')->applyFromArray($border_top);
+                $sheet->setCellValue('CK8', 'PPH');
+                $sheet->getDelegate()->getStyle('CK8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
+                $sheet->getDelegate()->getStyle('CL7')->applyFromArray($border_top);
+                $sheet->setCellValue('CL8', 'Netto');
+                $sheet->getDelegate()->getStyle('CL8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
+                $sheet->setCellValue('CM7', 'Potongan Karyawan');
+                $sheet->mergeCells('CM7:CN7');
+                $sheet->getDelegate()->getStyle('CM7:CN7')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
+                $sheet->setCellValue('CM8', 'Bpjamsostek');
+                $sheet->getDelegate()->getStyle('CM8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
+                $sheet->setCellValue('CN8', 'BPJS Kesehatan');
+                $sheet->getDelegate()->getStyle('CN8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('CO7')->applyFromArray($border_top);
                 $sheet->setCellValue('CO8', 'Total Potongan');
+                $sheet->setCellValue('CO8', 'Serikat');
                 $sheet->getDelegate()->getStyle('CO8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('CP7')->applyFromArray($border_top);
                 $sheet->setCellValue('CP8', 'Pembulatan');
+                $sheet->setCellValue('CP8', 'Koperasi');
                 $sheet->getDelegate()->getStyle('CP8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('CQ7')->applyFromArray($border_top);
                 $sheet->setCellValue('CQ8', 'Jumlah');
+                $sheet->setCellValue('CQ8', 'Total Potongan');
                 $sheet->getDelegate()->getStyle('CQ8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->setCellValue('CS7', 'Potongan Perusahaan');
                 $sheet->mergeCells('CS7:CT7');
@@ -365,18 +419,39 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
                 $sheet->getDelegate()->getStyle('CV7')->applyFromArray($border_top);
                 $sheet->setCellValue('CV8', 'THR');
                 $sheet->getDelegate()->getStyle('CV8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
+                $sheet->getDelegate()->getStyle('CR7')->applyFromArray($border_top);
+                $sheet->setCellValue('CR8', 'Pembulatan');
+                $sheet->getDelegate()->getStyle('CR8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
+                $sheet->getDelegate()->getStyle('CS7')->applyFromArray($border_top);
+                $sheet->setCellValue('CS8', 'Jumlah');
+                $sheet->getDelegate()->getStyle('CS8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
+                $sheet->setCellValue('CU7', 'Potongan Perusahaan');
+                $sheet->mergeCells('CU7:CV7');
+                $sheet->getDelegate()->getStyle('CU7:CV7')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
+                $sheet->setCellValue('CU8', 'PP Bpjamsostek');
+                $sheet->getDelegate()->getStyle('CU8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
+                $sheet->setCellValue('CV8', 'PP BPJS Kesehatan');
+                $sheet->getDelegate()->getStyle('CV8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('CW7')->applyFromArray($border_top);
                 $sheet->setCellValue('CW8', 'Makan Lembur');
+                $sheet->setCellValue('CW8', 'Kompensasi');
                 $sheet->getDelegate()->getStyle('CW8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
+                $sheet->getDelegate()->getStyle('CX7')->applyFromArray($border_top);
+                $sheet->setCellValue('CX8', 'THR');
+                $sheet->getDelegate()->getStyle('CX8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('CY7')->applyFromArray($border_top);
                 $sheet->setCellValue('CY8', 'Total Pembayaran Aktual');
+                $sheet->setCellValue('CY8', 'Makan Lembur');
                 $sheet->getDelegate()->getStyle('CY8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
+                $sheet->getDelegate()->getStyle('DA7')->applyFromArray($border_top);
+                $sheet->setCellValue('DA8', 'Total Pembayaran Aktual');
+                $sheet->getDelegate()->getStyle('DA8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
             },
         ];
     }
     public function collection()
     {
-        $query=DB::select("select a.tanggal_berjalan,a.kode_hari,a.nama_hari,b.nik,a.enroll_id,b.employee_name,if(emp_hist.status_staff is null,b.status_staff,emp_hist.status_staff) status_staff,if(emp_hist.status_jabatan is null,b.status_jabatan,emp_hist.status_jabatan) status_jabatan,if(emp_hist.sub_dept_name is null,b.sub_dept_name,emp_hist.sub_dept_name) sub_dept_name,if(emp_hist.department_name is null,b.department_name,emp_hist.department_name) department_name,c.group_department,a.mulai_jam_kerja,a.akhir_jam_kerja,a.absen_masuk_kerja,a.absen_pulang_kerja,dap.time_mulai_ijin permits_dari_pukul,dap.time_akhir_ijin permits_sampai_pukul,dap.total_time_ijin total_menit_permits,a.jumlah_menit_absen_dt,a.jumlah_menit_absen_pc,a.jumlah_menit_absen_dtpc,a.status_absen,dap.absen_alasan,h.kode_ijin_payroll,d.catatan,d.nomor_form_lembur,d.mulai_jam_lembur,d.akhir_jam_lembur,d.jumlah_jam_istirahat_lembur jumlah_jam_istirahat,d.jumlah_jam_lembur,e.final_mulai_jam_lembur,e.final_selesai_jam_lembur,e.final_jam_istirahat_lembur,e.final_total_jam_lembur,bpjs.dasar_pot_bpjs_rupiah upah_umk,c.gaji_perhari,c.gaji_permenit,c.iby,c.itb,c.m,c.dt,c.pc,c.dtpc,c.lby,c.lsm,c.r,c.ok,c.hari_kerja,c.pot_hari_kerja,c.total_absen,e.lembur_1,e.lembur_2,e.lembur_3,e.lembur_4,b.kode_grade,i.salary_bulanan,c.seniority_allowance,c.insentif_kehadiran,c.insentif_jabatan,e.lembur1_rupiah,e.lembur2_rupiah,e.lembur3_rupiah,e.lembur4_rupiah,if(f.jenis_koreksi=1,f.jumlah_rp_potongan,0) koreksi_upah,if(f.jenis_koreksi=3,f.jumlah_rp_potongan,0) koreksi_lembur,if(f.jenis_koreksi=2,f.jumlah_rp_potongan,0) koreksi_insentif,if(g.jenis_potongan=7,g.jumlah_rp_potongan,0) potongan_upah,if(g.jenis_potongan=8,g.jumlah_rp_potongan,0) potongan_lembur,if(g.jenis_potongan=5,g.jumlah_rp_potongan,0) potongan_insentif,if(g.jenis_potongan=6,g.jumlah_rp_potongan,0) potongan_piutang,c.rp_pot_hari_kerja,c.rp_pot_jam,c.bruto,c.bpjs_tk,c.bpjs_ks,c.total_potongan,c.pembulatan,c.jumlah,c.bpjs_tk_company,c.bpjs_ks_company,c.kompensasi,c.thr,c.konsumsi,c.total_pembayaran from master_data_absen_kehadiran a inner join employee_atribut b on a.enroll_id=b.enroll_id left join daily_labor_costs c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan left join rekap_perhitungan_lembur e on a.enroll_id=e.enroll_id and a.tanggal_berjalan=e.tanggal_berjalan left join data_koreksi_upah f on a.enroll_id=f.enroll_id and a.tanggal_berjalan=f.tanggal_koreksi left join data_koreksi_potongan g on a.enroll_id=g.enroll_id and a.tanggal_berjalan=g.tanggal_koreksi left join ref_absen_ijin h on a.status_absen=h.kode_absen_ijin left join data_absen_perijinan dap on a.uuid = dap.uuid_master left join (select*from grading_salary where periode_umk='2024-01')i on b.kode_grade=i.kode_grade inner join dasar_pot_bpjs bpjs on REGEXP_SUBSTR(bpjs.kode_dasar_pot_bpjs, '[0-9]+')=substring(a.tanggal_berjalan,1,4) left join employee_atribut_histories emp_hist on a.enroll_id=emp_hist.enroll_id and a.tanggal_berjalan between SUBSTRING(emp_hist.periode_payroll,1,10) and SUBSTRING(emp_hist.periode_payroll,16,10) where a.tanggal_berjalan>='".$this->tanggal_awal."' and a.tanggal_berjalan<='".$this->tanggal_akhir."'".$this->inEnrollId.$this->inStatusStaff);
+        $query=DB::select("select a.tanggal_berjalan,a.kode_hari,a.nama_hari,b.nik,a.enroll_id,b.employee_name,if(emp_hist.status_staff is null,b.status_staff,emp_hist.status_staff) status_staff,if(emp_hist.status_jabatan is null,b.status_jabatan,emp_hist.status_jabatan) status_jabatan,if(emp_hist.sub_dept_name is null,b.sub_dept_name,emp_hist.sub_dept_name) sub_dept_name,if(emp_hist.department_name is null,b.department_name,emp_hist.department_name) department_name,c.group_department,a.mulai_jam_kerja,a.akhir_jam_kerja,a.absen_masuk_kerja,a.absen_pulang_kerja,dap.time_mulai_ijin permits_dari_pukul,dap.time_akhir_ijin permits_sampai_pukul,dap.total_time_ijin total_menit_permits,a.jumlah_menit_absen_dt,a.jumlah_menit_absen_pc,a.jumlah_menit_absen_dtpc,a.status_absen,dap.absen_alasan,h.kode_ijin_payroll,d.catatan,d.nomor_form_lembur,d.mulai_jam_lembur,d.akhir_jam_lembur,d.jumlah_jam_istirahat_lembur jumlah_jam_istirahat,d.jumlah_jam_lembur,e.final_mulai_jam_lembur,e.final_selesai_jam_lembur,e.final_jam_istirahat_lembur,e.final_total_jam_lembur,bpjs.dasar_pot_bpjs_rupiah upah_umk,c.gaji_perhari,c.gaji_permenit,c.iby,c.itb,c.m,c.dt,c.pc,c.dtpc,c.lby,c.lsm,c.r,c.ok,c.hari_kerja,c.pot_hari_kerja,c.total_absen,e.lembur_1,e.lembur_2,e.lembur_3,e.lembur_4,b.kode_grade,i.salary_bulanan,c.seniority_allowance,c.insentif_kehadiran,c.insentif_jabatan,e.lembur1_rupiah,e.lembur2_rupiah,e.lembur3_rupiah,e.lembur4_rupiah,if(f.jenis_koreksi=1,f.jumlah_rp_potongan,0) koreksi_upah,if(f.jenis_koreksi=3,f.jumlah_rp_potongan,0) koreksi_lembur,if(f.jenis_koreksi=4,f.jumlah_rp_potongan,0) koreksi_insentif,if(g.jenis_potongan=7,g.jumlah_rp_potongan,0) potongan_upah,if(g.jenis_potongan=8,g.jumlah_rp_potongan,0) potongan_lembur,if(g.jenis_potongan=5,g.jumlah_rp_potongan,0) potongan_insentif,if(g.jenis_potongan=4,g.jumlah_rp_potongan,0) potongan_piutang,c.rp_pot_hari_kerja,c.rp_pot_jam,c.bruto,c.bpjs_tk,c.bpjs_ks,c.total_potongan,c.pembulatan,c.jumlah,c.bpjs_tk_company,c.bpjs_ks_company,c.kompensasi,c.thr,c.konsumsi,c.total_pembayaran from master_data_absen_kehadiran a inner join employee_atribut b on a.enroll_id=b.enroll_id left join daily_labor_costs c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan left join rekap_perhitungan_lembur e on a.enroll_id=e.enroll_id and a.tanggal_berjalan=e.tanggal_berjalan left join data_koreksi_upah f on a.enroll_id=f.enroll_id and a.tanggal_berjalan=f.tanggal_koreksi left join data_koreksi_potongan g on a.enroll_id=g.enroll_id and a.tanggal_berjalan=g.tanggal_koreksi left join ref_absen_ijin h on a.status_absen=h.kode_absen_ijin left join data_absen_perijinan dap on a.uuid = dap.uuid_master left join (select*from grading_salary where periode_umk='2024-01')i on b.kode_grade=i.kode_grade inner join dasar_pot_bpjs bpjs on REGEXP_SUBSTR(bpjs.kode_dasar_pot_bpjs, '[0-9]+')=substring(a.tanggal_berjalan,1,4) left join employee_atribut_histories emp_hist on a.enroll_id=emp_hist.enroll_id and a.tanggal_berjalan between SUBSTRING(emp_hist.periode_payroll,1,10) and SUBSTRING(emp_hist.periode_payroll,16,10) where a.tanggal_berjalan>='".$this->tanggal_awal."' and a.tanggal_berjalan<='".$this->tanggal_akhir."'".$this->inEnrollId.$this->inStatusStaff);
 
         return collect($query);
     }
@@ -675,6 +750,8 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
             '',
             $Data->kode_grade,
             $Data->salary_bulanan,
+            $Data->gaji_perhari,
+            $Data->gaji_permenit,
             $Data->seniority_allowance,
             $Data->insentif_kehadiran,
             $Data->insentif_jabatan,
@@ -700,7 +777,7 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
             0,
             0,
             $Data->total_potongan,
-            $Data->pembulatan,
+            '0',
             $Data->jumlah,
             '',
             $Data->bpjs_tk_company,
@@ -820,7 +897,7 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
             'CF'=>12,
             'CG'=>12,
             'CH'=>12,
-            'CI'=>5,
+            'CI'=>12,
             'CJ'=>12,
             'CK'=>13,
             'CL'=>13,
@@ -829,7 +906,7 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
             'CO'=>13,
             'CP'=>12,
             'CQ'=>13,
-            'CR'=>5,
+            'CR'=>12,
             'CS'=>13,
             'CT'=>13,
             'CU'=>12,
@@ -837,6 +914,7 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
             'CW'=>11,
             'CX'=>9,
             'CY'=>12,
+            'DA'=>12,
         ];
     }
 }
