@@ -14,15 +14,17 @@
         </table>
         <table>
             <tr>
-                <td width="5" style="border: 1px solid dark;background-color:yellow">No</td>
-                <td width="14" style="border: 1px solid dark;background-color:yellow">Site Nirwana Id</td>
-                <td width="31" style="border: 1px solid dark;background-color:yellow">Site Nirwana Name</td>
-                <td width="14" style="border: 1px solid dark;background-color:yellow">Department Id</td>
-                <td width="28" style="border: 1px solid dark;background-color:yellow">Department Name</td>
-                <td width="18" style="border: 1px solid dark;background-color:yellow">Sub Department Id</td>
-                <td width="28" style="border: 1px solid dark;background-color:yellow">Sub Department Name</td>
-                <td width="16" style="border: 1px solid dark;background-color:yellow">Jumlah Karyawan</td>
-                <td width="14" style="border: 1px solid dark;background-color:yellow">Status</td>
+                <td width="5" style="border: 1px solid dark;background-color:yellow;font-weight:bold">No</td>
+                <td width="14" style="border: 1px solid dark;background-color:yellow;font-weight:bold">Site Nirwana Id</td>
+                <td width="31" style="border: 1px solid dark;background-color:yellow;font-weight:bold">Site Nirwana Name</td>
+                <td width="14" style="border: 1px solid dark;background-color:yellow;font-weight:bold">Department Id</td>
+                <td width="28" style="border: 1px solid dark;background-color:yellow;font-weight:bold">Department Name</td>
+                <td width="18" style="border: 1px solid dark;background-color:yellow;font-weight:bold">Sub Department Id</td>
+                <td width="28" style="border: 1px solid dark;background-color:yellow;font-weight:bold">Sub Department Name</td>
+                <td width="28" style="border: 1px solid dark;background-color:yellow;font-weight:bold">Kategori Department</td>
+                <td width="28" style="border: 1px solid dark;background-color:yellow;font-weight:bold">Kategori Penempatan</td>
+                <td width="16" style="border: 1px solid dark;background-color:yellow;font-weight:bold">Jumlah Karyawan</td>
+                <td width="14" style="border: 1px solid dark;background-color:yellow;font-weight:bold">Status</td>
             </tr>
             @foreach ($query as $k=>$q)
               <tr>
@@ -33,6 +35,8 @@
                 <td style="border: 1px solid dark">{{$q->department_name}}</td>
                 <td style="border: 1px solid dark">{{$q->sub_dept_id}}</td>
                 <td style="border: 1px solid dark">{{$q->sub_dept_name}}</td>
+                <td style="border: 1px solid dark">{{$q->group_1}}</td>
+                <td style="border: 1px solid dark">{{$q->group_2}}</td>
                 <td style="border: 1px solid dark">{{App\Models\EmployeeAtribut::where('site_nirwana_id',$q->site_nirwana_id)->where('department_id',$q->department_id)->where('sub_dept_id',$q->sub_dept_id)->count()}}</td>
                 <td style="border: 1px solid dark">{{$q->status}}</td>
               </tr>
