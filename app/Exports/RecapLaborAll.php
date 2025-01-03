@@ -203,7 +203,7 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
                 $sheet->setCellValue('AP8', 'Upah / Hari');
                 $sheet->getDelegate()->getStyle('AP8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('AQ7')->applyFromArray($border_top);
-                $sheet->setCellValue('AQ8', 'Upah / Jam');
+                $sheet->setCellValue('AQ8', 'Upah / Menit');
                 $sheet->getDelegate()->getStyle('AQ8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('AS7')->applyFromArray($border_top);
                 $sheet->setCellValue('AS8', 'IBY');
@@ -271,121 +271,113 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
                 $sheet->getDelegate()->getStyle('BO7')->applyFromArray($border_top);
                 $sheet->setCellValue('BO8', 'Kode Grade');
                 $sheet->getDelegate()->getStyle('BO8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
+
                 $sheet->getDelegate()->getStyle('BP7')->applyFromArray($border_top);
-                $sheet->setCellValue('BP8', 'Upah Grade');
+                $sheet->setCellValue('BP8', 'Upah / Hari');
                 $sheet->getDelegate()->getStyle('BP8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
 
+                
                 $sheet->getDelegate()->getStyle('BQ7')->applyFromArray($border_top);
-                $sheet->setCellValue('BQ8', 'Upah / Hari');
+                $sheet->setCellValue('BQ8', 'Seniority Allowance');
                 $sheet->getDelegate()->getStyle('BQ8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
-
                 $sheet->getDelegate()->getStyle('BR7')->applyFromArray($border_top);
-                $sheet->setCellValue('BR8', 'Upah / Menit');
+                $sheet->setCellValue('BR8', 'Insentif (Kehadiran)');
                 $sheet->getDelegate()->getStyle('BR8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
-                
-                
-                
                 $sheet->getDelegate()->getStyle('BS7')->applyFromArray($border_top);
-                $sheet->setCellValue('BS8', 'Seniority Allowance');
+                $sheet->setCellValue('BS8', 'Insentif (Jabatan)');
                 $sheet->getDelegate()->getStyle('BS8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('BT7')->applyFromArray($border_top);
-                $sheet->setCellValue('BT8', 'Insentif (Kehadiran)');
+                $sheet->setCellValue('BT8', 'RP Lembur 1');
                 $sheet->getDelegate()->getStyle('BT8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('BU7')->applyFromArray($border_top);
-                $sheet->setCellValue('BU8', 'Insentif (Jabatan)');
+                $sheet->setCellValue('BU8', 'RP Lembur 2');
                 $sheet->getDelegate()->getStyle('BU8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
+
+
                 $sheet->getDelegate()->getStyle('BV7')->applyFromArray($border_top);
-                $sheet->setCellValue('BV8', 'RP Lembur 1');
+                $sheet->setCellValue('BV8', 'RP Lembur 3');
                 $sheet->getDelegate()->getStyle('BV8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('BW7')->applyFromArray($border_top);
-                $sheet->setCellValue('BW8', 'RP Lembur 2');
+                $sheet->setCellValue('BW8', 'RP Lembur 4');
                 $sheet->getDelegate()->getStyle('BW8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
+                $sheet->setCellValue('BX7', 'Lain - Lain (Koreksi +-)');
+                $sheet->mergeCells('BX7:CD7');
+                $sheet->getDelegate()->getStyle('BX7:CD7')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
 
 
-                $sheet->getDelegate()->getStyle('BX7')->applyFromArray($border_top);
-                $sheet->setCellValue('BX8', 'RP Lembur 3');
-                $sheet->getDelegate()->getStyle('BX8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
-                $sheet->getDelegate()->getStyle('BY7')->applyFromArray($border_top);
-                $sheet->setCellValue('BY8', 'RP Lembur 4');
-                $sheet->getDelegate()->getStyle('BY8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
-                $sheet->setCellValue('BZ7', 'Lain - Lain (Koreksi +-)');
-                $sheet->mergeCells('BZ7:CF7');
-                $sheet->getDelegate()->getStyle('BZ7:CF7')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
-
-
-                $sheet->setCellValue('BZ8', '+ Upah');
+                $sheet->setCellValue('BX8', '+ Upah');
+                $sheet->getDelegate()->getStyle('BX8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
+                $sheet->setCellValue('BY8', '+ Lembur');
+                $sheet->getDelegate()->getStyle('BY8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
+                $sheet->setCellValue('BZ8', '+ Insentif');
                 $sheet->getDelegate()->getStyle('BZ8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
-                $sheet->setCellValue('CA8', '+ Lembur');
+                $sheet->setCellValue('CA8', '- Upah');
                 $sheet->getDelegate()->getStyle('CA8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
-                $sheet->setCellValue('CB8', '+ Insentif');
+                $sheet->setCellValue('CB8', '- Lembur');
                 $sheet->getDelegate()->getStyle('CB8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
-                $sheet->setCellValue('CC8', '- Upah');
+                $sheet->setCellValue('CC8', '- Insentif');
                 $sheet->getDelegate()->getStyle('CC8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
-                $sheet->setCellValue('CD8', '- Lembur');
+                $sheet->setCellValue('CD8', '- Piutang');
                 $sheet->getDelegate()->getStyle('CD8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
-                $sheet->setCellValue('CE8', '- Insentif');
-                $sheet->getDelegate()->getStyle('CE8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
-                $sheet->setCellValue('CF8', '- Piutang');
-                $sheet->getDelegate()->getStyle('CF8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
+                $sheet->getDelegate()->getStyle('CE7')->applyFromArray($border_top);
+                $sheet->setCellValue('CE8', 'RP Cuti Tahunan');
+                $sheet->getDelegate()->getStyle('CE8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
+                $sheet->getDelegate()->getStyle('CF7')->applyFromArray($border_top);
+                $sheet->setCellValue('CF8', 'RP Potongan Hari Kerja');
+                $sheet->getDelegate()->getStyle('CF8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('CG7')->applyFromArray($border_top);
-                $sheet->setCellValue('CG8', 'RP Cuti Tahunan');
+                $sheet->setCellValue('CG8', 'RP Pot. Jam');
                 $sheet->getDelegate()->getStyle('CG8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('CH7')->applyFromArray($border_top);
-                $sheet->setCellValue('CH8', 'RP Potongan Hari Kerja');
+                $sheet->setCellValue('CH8', 'Bruto');
                 $sheet->getDelegate()->getStyle('CH8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('CI7')->applyFromArray($border_top);
-                $sheet->setCellValue('CI8', 'RP Pot. Jam');
+                $sheet->setCellValue('CI8', 'PPH');
                 $sheet->getDelegate()->getStyle('CI8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('CJ7')->applyFromArray($border_top);
-                $sheet->setCellValue('CJ8', 'Bruto');
+                $sheet->setCellValue('CJ8', 'Netto');
                 $sheet->getDelegate()->getStyle('CJ8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
-                $sheet->getDelegate()->getStyle('CK7')->applyFromArray($border_top);
-                $sheet->setCellValue('CK8', 'PPH');
-                $sheet->getDelegate()->getStyle('CK8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
-                $sheet->getDelegate()->getStyle('CL7')->applyFromArray($border_top);
-                $sheet->setCellValue('CL8', 'Netto');
-                $sheet->getDelegate()->getStyle('CL8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
-                $sheet->setCellValue('CM7', 'Potongan Karyawan');
-                $sheet->mergeCells('CM7:CN7');
-                $sheet->getDelegate()->getStyle('CM7:CN7')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
-                $sheet->setCellValue('CM8', 'Bpjamsostek');
-                $sheet->getDelegate()->getStyle('CM8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
-                $sheet->setCellValue('CN8', 'BPJS Kesehatan');
-                $sheet->getDelegate()->getStyle('CN8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
+                $sheet->setCellValue('CK7', 'Potongan Karyawan');
+                $sheet->mergeCells('CK7:CL7');
+                $sheet->getDelegate()->getStyle('CK7:CL7')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
+                $sheet->setCellValue('CK8', 'Bpjamsostek');
+                $sheet->getDelegate()->getStyle('CK8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
+                $sheet->setCellValue('CL8', 'BPJS Kesehatan');
+                $sheet->getDelegate()->getStyle('CL8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
+                $sheet->getDelegate()->getStyle('CM7')->applyFromArray($border_top);
+                $sheet->setCellValue('CM8', 'Serikat');
+                $sheet->getDelegate()->getStyle('CM8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
+                $sheet->getDelegate()->getStyle('CN7')->applyFromArray($border_top);
+                $sheet->setCellValue('CN8', 'Koperasi');
+                $sheet->getDelegate()->getStyle('CN8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('CO7')->applyFromArray($border_top);
-                $sheet->setCellValue('CO8', 'Serikat');
+                $sheet->setCellValue('CO8', 'Total Potongan');
                 $sheet->getDelegate()->getStyle('CO8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('CP7')->applyFromArray($border_top);
-                $sheet->setCellValue('CP8', 'Koperasi');
+                $sheet->setCellValue('CP8', 'Pembulatan');
                 $sheet->getDelegate()->getStyle('CP8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('CQ7')->applyFromArray($border_top);
-                $sheet->setCellValue('CQ8', 'Total Potongan');
+                $sheet->setCellValue('CQ8', 'Jumlah');
                 $sheet->getDelegate()->getStyle('CQ8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
-                $sheet->getDelegate()->getStyle('CR7')->applyFromArray($border_top);
-                $sheet->setCellValue('CR8', 'Pembulatan');
-                $sheet->getDelegate()->getStyle('CR8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
-                $sheet->getDelegate()->getStyle('CS7')->applyFromArray($border_top);
-                $sheet->setCellValue('CS8', 'Jumlah');
-                $sheet->getDelegate()->getStyle('CS8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
-                $sheet->setCellValue('CU7', 'Potongan Perusahaan');
-                $sheet->mergeCells('CU7:CV7');
-                $sheet->getDelegate()->getStyle('CU7:CV7')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
-                $sheet->setCellValue('CU8', 'PP Bpjamsostek');
-                $sheet->getDelegate()->getStyle('CU8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
-                $sheet->setCellValue('CV8', 'PP BPJS Kesehatan');
-                $sheet->getDelegate()->getStyle('CV8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
+                $sheet->setCellValue('CS7', 'Potongan Perusahaan');
+                $sheet->mergeCells('CS7:CT7');
+                $sheet->getDelegate()->getStyle('CS7:CT7')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
+                $sheet->setCellValue('CS8', 'PP Bpjamsostek');
+                $sheet->getDelegate()->getStyle('CS8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
+                $sheet->setCellValue('CT8', 'PP BPJS Kesehatan');
+                $sheet->getDelegate()->getStyle('CT8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
+                $sheet->getDelegate()->getStyle('CU7')->applyFromArray($border_top);
+                $sheet->setCellValue('CU8', 'Kompensasi');
+                $sheet->getDelegate()->getStyle('CU8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
+                $sheet->getDelegate()->getStyle('CV7')->applyFromArray($border_top);
+                $sheet->setCellValue('CV8', 'THR');
+                $sheet->getDelegate()->getStyle('CV8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('CW7')->applyFromArray($border_top);
-                $sheet->setCellValue('CW8', 'Kompensasi');
+                $sheet->setCellValue('CW8', 'Makan Lembur');
                 $sheet->getDelegate()->getStyle('CW8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
-                $sheet->getDelegate()->getStyle('CX7')->applyFromArray($border_top);
-                $sheet->setCellValue('CX8', 'THR');
-                $sheet->getDelegate()->getStyle('CX8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('CY7')->applyFromArray($border_top);
-                $sheet->setCellValue('CY8', 'Makan Lembur');
+                $sheet->setCellValue('CY8', 'Total Pembayaran Aktual');
                 $sheet->getDelegate()->getStyle('CY8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
-                $sheet->getDelegate()->getStyle('DA7')->applyFromArray($border_top);
-                $sheet->setCellValue('DA8', 'Total Pembayaran Aktual');
-                $sheet->getDelegate()->getStyle('DA8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
             },
         ];
     }
@@ -688,9 +680,7 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
             '',
             '',
             $Data->kode_grade,
-            $Data->salary_bulanan,
             $Data->gaji_perhari,
-            $Data->gaji_permenit,
             $Data->seniority_allowance,
             $Data->insentif_kehadiran,
             $Data->insentif_jabatan,
@@ -845,15 +835,14 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
             'CO'=>13,
             'CP'=>12,
             'CQ'=>13,
-            'CR'=>12,
+            'CR'=>7,
             'CS'=>13,
             'CT'=>13,
             'CU'=>12,
             'CV'=>11,
             'CW'=>11,
-            'CX'=>9,
+            'CX'=>7,
             'CY'=>12,
-            'DA'=>12,
         ];
     }
 }
