@@ -40,12 +40,17 @@
 }
 
 .theme-switcher {
-    padding: 10px 20px;
+    height:30px;
+    width:30px;
     background-color: var(--primary);
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 50px;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 18px;
 }
 button.theme-switcher:hover {
             opacity: 0.8;
@@ -65,7 +70,7 @@ button.theme-switcher:hover {
             <div class="d-flex order-lg-2 ml-auto header-rightmenu">
             <div class="dropdown text-center mt-4 pb-4">
             <a  class="">
-                <button class="theme-switcher" id="themeSwitcher">Switch Theme</button>
+                <button class="theme-switcher" id="themeSwitcher">T</button>
             </a>
             <div class="dropdown-theme text-center mt-4 pb-4" id="colorPicker">
                 <div class="color-option primarySub" data-color="primary"></div>
