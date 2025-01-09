@@ -94,9 +94,9 @@
                             <div class="col-3">
                                 <select id="periode_umk" name="periode_umk" class="form-control PriodeUmk">
                                     <option value="" selected>PILIH PERIODE UMK</option>
-                                    <option value="2023-10">UMK 2023 | 26 DES 2023 S/D 31 DES 2023</option>
-                                    <option value="2024-01">UMK 2024 | 01 JAN 2024 S/D 25 JAN 2024</option>
-                                    <option value="2023-2024">26 DES 2023 S/D 25 JAN 2024</option>
+                                    <option value="2024-01">UMK 2024 | 26 DES 2024 S/D 31 DES 2024</option>
+                                    <option value="2025-01">UMK 2025 | 01 JAN 2025 S/D 25 JAN 2025</option>
+                                    <option value="2024-2025">26 DES 2024 S/D 25 JAN 2025</option>
                                 </select>
                             </div>
                         </div>
@@ -111,7 +111,7 @@
                                             <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
                                         </div>
                                     </div>
-                                    <input id="" name="periode_payrols" id="periode" type="month"  min="{{$month}}" class="form-control PriodeProses" required>
+                                    <input id="" name="periode_payrols" id="periode" type="month" class="form-control PriodeProses" required>
                                 </div>
                             </div>
                         </div>
@@ -131,7 +131,6 @@
                         <div class="row text-white pt-3">
                             <div class="col-12">
                                 <a id="BtnProsesPayroll2" class="btn btn-app btn-sm btn-primary text-white BtnProsesPayroll2"><span><i class="fa fa-download"></i></span>PROSES REKAP LEMBUR</a>
-                                <a id="BtnProsesPayroll3" class="btn btn-app btn-sm btn-primary text-white BtnProsesPayroll3"><span><i class="fa fa-download"></i></span>PROSES REKAP LEMBUR BARU</a>
                                 <a id="BtnProsesPayroll" class="btn btn-app btn-sm btn-primary text-white BtnProsesPayroll"><span><i class="fa fa-download"></i></span> PROSES PAYROLL</a>
                             </div>
                         </div>
@@ -322,8 +321,8 @@
                     <div class="form-group m-0">
                         <select id="periode_umks" name="periode_umks" class="form-control form-control-sm">
                             <option value="">PERIODE UMK</option>
-                            <option value="2023-10">UMK 2023</option>
                             <option value="2024-01">UMK 2024</option>
+                            <option value="2025-01">UMK 2025</option>
                         </select>
                     </div>
                 </div>
@@ -1277,25 +1276,16 @@
                                 data: $('#form_proses_payroll').serialize(),
                                 url: '{{ route("hris.proses.payroll.rekap2") }}',
                                 type: "post",
-                                // dataType: 'json',
                                 success: function (data) {
-                                    console.log(data);
-                                    notif({
-                                        msg: "<b>Info:</b> Data Berhasil di Proses.",
-                                        type: "info"
-                                    });
-
+                                console.log(data);
+                                    swal("", "Proses rekap lembur berhasil", "success");
                                     $('#BtnProsesPayroll2').removeClass("btn-loading");
                                     $("#BtnProsesPayroll2").html('<span><i class="fa fa-download"></i></span> PROSES REKAP LEMBUR');
                                     $("#BtnProsesPayroll2").attr("disabled", false);
 
                                 },
                                 error: function (xhr, status, error) {
-                                    notif({
-                                        msg: "<b>Error:</b> Oops data gagal di Proses.",
-                                        type: "error"
-                                    });
-
+                                    swal("", "Proses rekap lembur gagal", "error");
                                     $('#BtnProsesPayroll2').removeClass("btn-loading");
                                     $("#BtnProsesPayroll2").attr("disabled", false);
                                     $("#BtnProsesPayroll2").html('<span><i class="fa fa-download"></i></span> PROSES REKAP LEMBUR');

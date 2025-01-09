@@ -34,11 +34,11 @@ use Illuminate\Support\Facades\DB;
 
 use Auth;
 
-class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle,  WithColumnFormatting,WithColumnWidths
+class RekapPerhitunganPayrollExportUMK2023 implements FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle,  WithColumnFormatting
 {
     use Exportable;
 
-    public function exportParams(string $periode_payroll, string $tgl_awal, $department_id, $sub_dept_id, $status_staff, $periode_umk,$enroll_id)
+    public function exportParams(string $periode_payroll, string $tgl_awal, $department_id, $sub_dept_id, $status_staff, $periode_umk, $enroll_id)
     {
         $this->periode_payroll = $periode_payroll;
         $this->tgl_awal = $tgl_awal;
@@ -199,6 +199,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                 ->orderBy('employee_name','asc')
                 ->orderBy('periode_payroll','desc')
                 ->limit(1);
+
         return $q;
     }
 
@@ -213,7 +214,6 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         $nik = $Data->nik;
         $employee_name = $Data->employee_name;
         $kode_grade= $Data->kode_grade;
-
 
         $join_date=$Data->join_date!=null?date('d-m-Y', strtotime($Data->join_date)):$Data->join_date;
         $site_nirwana_name = $Data->site_nirwana_name;
@@ -259,9 +259,9 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         if($Data->potongan_pc_rupiah == 0){ $potongan_pc_rupiah = '0';} else { $potongan_pc_rupiah = $Data->potongan_pc_rupiah; }
         if($Data->total_potongan_jam_rupiah == 0){ $total_potongan_jam_rupiah = '0';} else { $total_potongan_jam_rupiah = $Data->total_potongan_jam_rupiah; }
         if($Data->potongan_kehadiran_rupiah == 0){ $potongan_kehadiran_rupiah = '0';} else { $potongan_kehadiran_rupiah = $Data->potongan_kehadiran_rupiah; }
-        if($Data->upah_bruto_rupiah == 0){ $upah_bruto_rupiah = '0';} else { $upah_bruto_rupiah = $Data->upah_bruto_rupiah; }
+        if($Data->upah_bruto_rupiah == 0 || $Data->upah_bruto_rupiah <= 0){ $upah_bruto_rupiah = '0';} else { $upah_bruto_rupiah = $Data->upah_bruto_rupiah; }
         $pph21 = $Data->pph21;
-        if($Data->upah_neto_rupiah == 0){ $upah_neto_rupiah = '0';} else { $upah_neto_rupiah = $Data->upah_neto_rupiah; }
+        if($Data->upah_neto_rupiah == 0 || $Data->upah_bruto_rupiah <= 0){ $upah_neto_rupiah = '0';} else { $upah_neto_rupiah = $Data->upah_neto_rupiah; }
         if($Data->total_bpjs_tk == 0){ $total_bpjs_tk = '0';} else { $total_bpjs_tk = $Data->total_bpjs_tk; }
         if($Data->total_bpjs_ks == 0){ $total_bpjs_ks = '0';} else { $total_bpjs_ks = $Data->total_bpjs_ks; }
         if($Data->iuran_serikat_rupiah == 0){ $iuran_serikat_rupiah = '0';} else { $iuran_serikat_rupiah = $Data->iuran_serikat_rupiah; }
@@ -348,7 +348,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         if($pot_hari_kerja==0){$pot_hari_kerja='0';}
         $gapok=$upah_per_bulan+$tunjangan_karyawan_rupiah;
 
-        if( $total_kehadiran_net<=0 && $koreksi_upah_rupiah==0 && $total_lembur_rupiah==0 && ($total_bpjs_tk!=0 || $total_bpjs_ks!=0)){
+        if( $total_kehadiran_net<=0 && $koreksi_upah_rupiah==0 && $insentif_jabatan && $total_lembur_rupiah==0 && ($total_bpjs_tk!=0 || $total_bpjs_ks!=0)){
             $tunjangan_karyawan_rupiah='0';
             $gapok=$upah_per_bulan;
             $upah_neto_rupiah='0';
@@ -402,13 +402,13 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
             $potongan_pc_menit,
             $potongan_iks_menit,
             $nol,
-            $kosong, //$tunjangan_karyawan_rupiah
+            $kosong,
             $upah_per_hari,
             $upah_per_jam,
             $kosong,
             // $gaji_pokok,
-            $upah_per_bulan,
-            $tunjangan_karyawan_rupiah,
+            $gapok,
+            $readOnlyTunjanganKaryawanRupiah, //$tunjangan_karyawan_rupiah
             $premi_karyawan,
             $insentif_jabatan,
             $lembur1_rupiah,
@@ -429,7 +429,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
             $iuran_koperasi,
             $total_potongan,
             $pembulatan,
-            $total_upah_thp_rupiah_pembulatan,
+            $upah_neto_rupiah,
 
         ];
     }
@@ -484,12 +484,12 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                 $sheet->getDelegate()->getStyle('A1')->getFont()->setSize(18);
                 $sheet->setCellValue('A2', 'Rekap Perhitungan Payroll Karyawan');
                 $sheet->getDelegate()->getStyle('A1')->getFont()->setSize(16);
-                $sheet->getDelegate()->getStyle('BD5')->getAlignment()->setWrapText(true);
+
                 if($this->periode_umk){
-                    if($this->periode_umk=='2023-10'){
-                        $tanggal='26 - 31 desember 2023';
-                    }else if($this->periode_umk=='2024-01'){
-                        $tanggal='01 - 25 januari 2023';
+                    if($this->periode_umk=='2024-01'){
+                        $tanggal='26 - 31 desember 2024';
+                    }else if($this->periode_umk=='2025-01'){
+                        $tanggal='01 - 25 januari 2025';
                     }
                 }else{
                     setlocale(LC_ALL, 'id-ID', 'id_ID');
@@ -644,9 +644,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
 
                 $sheet->mergeCells('AQ5:AQ6');
                 $sheet->setCellValue('AQ5', 'Upah/ Jam');
-                //kosong
-
-
+            
                 $sheet->mergeCells('AR5:AR6');
                 $sheet->setCellValue('AR5', '');
 
@@ -672,7 +670,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                 $sheet->setCellValue('AY5', 'Rp Lembur 3');
 
                 $sheet->mergeCells('AZ5:AZ6');
-                $sheet->setCellValue('AZ5', 'Rp Lembur 4');
+                $sheet->setCellValue('AZ5', 'Rp Lembur 3');
 
                 $sheet->mergeCells('BA5:BB5');
                 $sheet->setCellValue('BA5','Lain- Lain (Koreksi + -)');

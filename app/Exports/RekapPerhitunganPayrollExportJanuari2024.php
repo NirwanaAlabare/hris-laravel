@@ -28,17 +28,16 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use \Maatwebsite\Excel\Sheet;
-use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Illuminate\Support\Facades\DB;
 
 use Auth;
 
-class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle,  WithColumnFormatting,WithColumnWidths
+class RekapPerhitunganPayrollExportJanuari2024 implements FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle,  WithColumnFormatting
 {
     use Exportable;
 
-    public function exportParams(string $periode_payroll, string $tgl_awal, $department_id, $sub_dept_id, $status_staff, $periode_umk,$enroll_id)
+    public function exportParams(string $periode_payroll, string $tgl_awal, $department_id, $sub_dept_id, $status_staff, $periode_umk)
     {
         $this->periode_payroll = $periode_payroll;
         $this->tgl_awal = $tgl_awal;
@@ -46,16 +45,10 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         $this->sub_dept_id=$sub_dept_id;
         $this->status_staff=$status_staff;
         $this->periode_umk=$periode_umk;
-        $this->enroll_id=$enroll_id;
 
         return $this;
     }
-    public function columnWidths(): array
-    {
-        return [
-            'BD' => 13,    
-        ];
-    }
+
     public function query()
     {
         $tgl_awal=$this->tgl_awal;
@@ -63,15 +56,10 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         $sub_dept_id=$this->sub_dept_id;
         $status_staff=$this->status_staff;
         $periode_umk=$this->periode_umk;
-        $enroll_ids=$this->enroll_id;
-        $inEnrollId='';
         $inDepartmentId='';
         $inSubDepartment='';
         $inStatusStaff='';
         $inPeriodeUMK='';
-        if($this->enroll_id!=''){
-            $inEnrollId=' AND enroll_id in ('.$enroll_ids.')';
-        }
         if($department_id){
         $nama_department=DepartmentAll::select('department_name')->where('department_id',$this->department_id)->pluck('department_name')[0];
         $inDepartmentId=' AND nama_department = "'.$nama_department.'"';
@@ -173,7 +161,6 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                     bpjs_ks_jkn_perusahaan_rupiah,
                     bpjs_ks_jkn_karyawan_rupiah,
                     jabatan_karyawan,
-                    insentif_jabatan,
                     nama_bagian,
                     nama_department,
                     kategori_karyawan,
@@ -190,7 +177,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
 
                 ')
                 ->whereRaw('
-                    CONCAT(periode_tahun_payroll, "-", periode_bulan_payroll) = "' . $this->periode_payroll . '"'.$inEnrollId.''.$inDepartmentId.''.$inSubDepartment.''.$inStatusStaff.''.$inPeriodeUMK.'
+                    CONCAT(periode_tahun_payroll, "-", periode_bulan_payroll) = "' . $this->periode_payroll . '"'.$inDepartmentId.''.$inSubDepartment.''.$inStatusStaff.''.$inPeriodeUMK.'
                 ')
                  ->where(function ($query) use ($tgl_awal) {
                     $query->orWhereNull('tanggal_resign')
@@ -199,6 +186,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                 ->orderBy('employee_name','asc')
                 ->orderBy('periode_payroll','desc')
                 ->limit(1);
+
         return $q;
     }
 
@@ -233,11 +221,11 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         if($Data->total_kehadiran_net == 0){ $total_kehadiran_net = '0';} else { $total_kehadiran_net = $Data->total_kehadiran_net; }
         $ptkp = $Data->ptkp;
         $st = $Data->status_kawin;
+
         if($Data->upah_per_bulan == 0){ $upah_per_bulan = '0';} else { $upah_per_bulan = $Data->upah_per_bulan; }
         if($Data->upah_per_hari == 0){ $upah_per_hari = '0';} else { $upah_per_hari = $Data->upah_per_hari; }
         if($Data->tunjangan_karyawan_rupiah == 0){ $tunjangan_karyawan_rupiah = '0'; $readOnlyTunjanganKaryawanRupiah = '0'; } else { $tunjangan_karyawan_rupiah = $Data->tunjangan_karyawan_rupiah; $readOnlyTunjanganKaryawanRupiah = $Data->tunjangan_karyawan_rupiah; }
         if($Data->premi_karyawan == 0){ $premi_karyawan = '0';} else { $premi_karyawan = $Data->premi_karyawan; }
-        if($Data->insentif_jabatan == 0){ $insentif_jabatan = '0';} else { $insentif_jabatan = $Data->insentif_jabatan; }
         if($Data->lembur_1 == 0){ $lembur_1 = '0';} else { $lembur_1 = $Data->lembur_1; }
         if($Data->lembur_2 == 0){ $lembur_2 = '0';} else { $lembur_2 = $Data->lembur_2; }
         if($Data->lembur_3 == 0){ $lembur_3 = '0';} else { $lembur_3 = $Data->lembur_3; }
@@ -323,11 +311,19 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         $nol='0';
         $pot_hari_kerja=$kehadiran_itb+$kehadiran_m+$kehadiran_r;
         $total_absen=$kehadiran_itb+$kehadiran_m+$kehadiran_r+$kehadiran_iby+$kehadiran_lby;
-        if($total_absen==0){
-            $total_absen='0';
+        $desember=RekapPerhitunganPayroll::where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll',$Data->periode_tahun_payroll)->where('periode_bulan_payroll',$Data->periode_bulan_payroll)->where('periode_umk','2023-10')->count();
+        if($desember==1){
+            $bruto_desember=RekapPerhitunganPayroll::select('upah_bruto_rupiah')->where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll',$Data->periode_tahun_payroll)->where('periode_bulan_payroll',$Data->periode_bulan_payroll)->where('periode_umk','2023-10')->pluck('upah_bruto_rupiah')[0];
         }else{
-            $total_absen=$total_absen;
+            $bruto_desember=0;
         }
+        $januari=RekapPerhitunganPayroll::where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll',$Data->periode_tahun_payroll)->where('periode_bulan_payroll',$Data->periode_bulan_payroll)->where('periode_umk','2024-01')->count();
+        if($januari==1){
+            $bruto_januari=RekapPerhitunganPayroll::select('upah_bruto_rupiah')->where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll',$Data->periode_tahun_payroll)->where('periode_bulan_payroll',$Data->periode_bulan_payroll)->where('periode_umk','2024-01')->pluck('upah_bruto_rupiah')[0];
+        }else{
+            $bruto_januari=0;
+        }
+        $total_bruto=$bruto_desember+$bruto_januari;
 
         $potongan_dtpc_rupiah=$Data->potongan_dtpc_rupiah;
         $rp_pot_jam=$potongan_iks_rupiah+$potongan_dtpc_rupiah;
@@ -348,11 +344,11 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         if($pot_hari_kerja==0){$pot_hari_kerja='0';}
         $gapok=$upah_per_bulan+$tunjangan_karyawan_rupiah;
 
-        if( $total_kehadiran_net<=0 && $koreksi_upah_rupiah==0 && $total_lembur_rupiah==0 && ($total_bpjs_tk!=0 || $total_bpjs_ks!=0)){
-            $tunjangan_karyawan_rupiah='0';
+        if( $total_kehadiran_net<=0){
+            $tunjangan_karyawan_rupiah=0;
             $gapok=$upah_per_bulan;
-            $upah_neto_rupiah='0';
-            $upah_bruto_rupiah='0';
+            $upah_neto_rupiah=0;
+            $upah_bruto_rupiah=0;
             $pembulatan='0';
             $total_upah_thp_rupiah_pembulatan='0';
             $total_upah_thp_rupiah_employee='0';
@@ -394,35 +390,11 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
             $total_kehadiran_net,
             $pot_hari_kerja,
             $total_absen,
-            $lembur_1,
-            $lembur_2,
-            $lembur_3,
-            $lembur_4,
-            $potongan_dt_menit,
-            $potongan_pc_menit,
-            $potongan_iks_menit,
-            $nol,
-            $kosong, //$tunjangan_karyawan_rupiah
-            $upah_per_hari,
-            $upah_per_jam,
-            $kosong,
-            // $gaji_pokok,
-            $upah_per_bulan,
-            $tunjangan_karyawan_rupiah,
-            $premi_karyawan,
-            $insentif_jabatan,
-            $lembur1_rupiah,
-            $lembur2_rupiah,
-            $lembur3_rupiah,
-            $lembur4_rupiah,
-            $koreksi_upah_rupiah,
-            $koreksi_potongan_rupiah,
-            $nol,
-            $potongan_kehadiran_rupiah,
-            $rp_pot_jam,
-            $upah_bruto_rupiah,
+            $bruto_desember,
+            $bruto_januari,
+            $total_bruto,
             $pph21,
-            $upah_neto_rupiah,
+            $total_bruto-$pph21,
             $total_bpjs_tk,
             $total_bpjs_ks,
             $iuran_serikat_rupiah,
@@ -439,33 +411,18 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         return [
             'I' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'P' => NumberFormat::FORMAT_TEXT,
+            'AG' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+            'AH' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+            'AI' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+            'AJ' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+            'AK' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+            'AL' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+            'AM' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+            'AN' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
             'AO' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
             'AP' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
             'AQ' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
             'AR' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'AS' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'AT' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'AU' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'AV' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'AW' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'AX' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'AY' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'AZ' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BA' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BB' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BC' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BD' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BE' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BF' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BG' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BH' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BI' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BJ' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BK' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BL' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BM' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BN' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BO' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
         ];
     }
 
@@ -484,7 +441,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                 $sheet->getDelegate()->getStyle('A1')->getFont()->setSize(18);
                 $sheet->setCellValue('A2', 'Rekap Perhitungan Payroll Karyawan');
                 $sheet->getDelegate()->getStyle('A1')->getFont()->setSize(16);
-                $sheet->getDelegate()->getStyle('BD5')->getAlignment()->setWrapText(true);
+
                 if($this->periode_umk){
                     if($this->periode_umk=='2023-10'){
                         $tanggal='26 - 31 desember 2023';
@@ -611,113 +568,40 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                 $sheet->setCellValue('AF5', 'Total Absensi');
 
                 $sheet->mergeCells('AG5:AG6');
-                $sheet->setCellValue('AG5', 'Jam Lembur 1');
+                $sheet->setCellValue('AG5', 'Bruto Desember');
 
                 $sheet->mergeCells('AH5:AH6');
-                $sheet->setCellValue('AH5', 'Jam Lembur 2');
+                $sheet->setCellValue('AH5', 'Bruto Januari');
 
                 $sheet->mergeCells('AI5:AI6');
-                $sheet->setCellValue('AI5', 'Jam Lembur 3');
+                $sheet->setCellValue('AI5', 'Total Bruto');
 
                 $sheet->mergeCells('AJ5:AJ6');
-                $sheet->setCellValue('AJ5', 'Jam Lembur 4');
+                $sheet->setCellValue('AJ5', 'PPH');
 
                 $sheet->mergeCells('AK5:AK6');
-                $sheet->setCellValue('AK5', 'Datang Terlambat');
+                $sheet->setCellValue('AK5', 'Netto');
 
                 $sheet->mergeCells('AL5:AL6');
-                $sheet->setCellValue('AL5', 'Pulang Cepat');
+                $sheet->setCellValue('AL5', 'Bpjamsostek');
 
                 $sheet->mergeCells('AM5:AM6');
-                $sheet->setCellValue('AM5', 'Ijin Keluar Sementara');
+                $sheet->setCellValue('AM5', 'BPJS Kesehatan');
 
                 $sheet->mergeCells('AN5:AN6');
-                $sheet->setCellValue('AN5', 'Sisa Cuti Tahunan');
-
-                //kosong
+                $sheet->setCellValue('AN5', 'Serikat');
 
                 $sheet->mergeCells('AO5:AO6');
-                $sheet->setCellValue('AO5', '');
+                $sheet->setCellValue('AO5', 'Koperasi');
 
                 $sheet->mergeCells('AP5:AP6');
-                $sheet->setCellValue('AP5', 'Upah/ Hari');
+                $sheet->setCellValue('AP5', 'Total Potongan');
 
                 $sheet->mergeCells('AQ5:AQ6');
-                $sheet->setCellValue('AQ5', 'Upah/ Jam');
-                //kosong
-
+                $sheet->setCellValue('AQ5', 'Pembulatan');
 
                 $sheet->mergeCells('AR5:AR6');
-                $sheet->setCellValue('AR5', '');
-
-                $sheet->mergeCells('AS5:AS6');
-                $sheet->setCellValue('AS5', 'Gaji Pokok');
-
-                $sheet->mergeCells('AT5:AT6');
-                $sheet->setCellValue('AT5', 'Seniority Allowance');
-
-                $sheet->mergeCells('AU5:AU6');
-                $sheet->setCellValue('AU5', 'Insentif (Kehadiran)');
-
-                $sheet->mergeCells('AV5:AV6');
-                $sheet->setCellValue('AV5', 'Insentif (Jabatan)');
-
-                $sheet->mergeCells('AW5:AW6');
-                $sheet->setCellValue('AW5', 'Rp Lembur 1');
-
-                $sheet->mergeCells('AX5:AX6');
-                $sheet->setCellValue('AX5', 'Rp Lembur 2');
-
-                $sheet->mergeCells('AY5:AY6');
-                $sheet->setCellValue('AY5', 'Rp Lembur 3');
-
-                $sheet->mergeCells('AZ5:AZ6');
-                $sheet->setCellValue('AZ5', 'Rp Lembur 4');
-
-                $sheet->mergeCells('BA5:BB5');
-                $sheet->setCellValue('BA5','Lain- Lain (Koreksi + -)');
-                $sheet->setCellValue('BA6', '+');
-                $sheet->setCellValue('BB6', '-');
-
-                $sheet->mergeCells('BC5:BC6');
-                $sheet->setCellValue('BC5', 'Rp. Cuti Tahunan');
-
-
-                $sheet->mergeCells('BD5:BD6');
-                $sheet->setCellValue('BD5', 'Rp. Potongan Hari Kerja');
-
-                $sheet->mergeCells('BE5:BE6');
-                $sheet->setCellValue('BE5', 'Rp Pot. Jam (DT,PC,IKS)');
-
-                $sheet->mergeCells('BF5:BF6');
-                $sheet->setCellValue('BF5', 'Bruto');
-
-                $sheet->mergeCells('BG5:BG6');
-                $sheet->setCellValue('BG5', 'PPH');
-
-                $sheet->mergeCells('BH5:BH6');
-                $sheet->setCellValue('BH5', 'Netto');
-
-                $sheet->mergeCells('BI5:BI6');
-                $sheet->setCellValue('BI5', 'Bpjamsostek');
-
-                $sheet->mergeCells('BJ5:BJ6');
-                $sheet->setCellValue('BJ5', 'BPJS Kesehatan');
-
-                $sheet->mergeCells('BK5:BK6');
-                $sheet->setCellValue('BK5', 'Serikat');
-
-                $sheet->mergeCells('BL5:BL6');
-                $sheet->setCellValue('BL5', 'Koperasi');
-
-                $sheet->mergeCells('BM5:BM6');
-                $sheet->setCellValue('BM5', 'Total Potongan');
-
-                $sheet->mergeCells('BN5:BN6');
-                $sheet->setCellValue('BN5', 'Pembulatan');
-
-                $sheet->mergeCells('BO5:BO6');
-                $sheet->setCellValue('BO5', 'Jumlah');
+                $sheet->setCellValue('AR5', 'Jumlah');
 
             },
         ];

@@ -34,11 +34,11 @@ use Illuminate\Support\Facades\DB;
 
 use Auth;
 
-class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle,  WithColumnFormatting,WithColumnWidths
+class RekapPerhitunganPayrollExportUMK2024 implements FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle,  WithColumnFormatting
 {
     use Exportable;
 
-    public function exportParams(string $periode_payroll, string $tgl_awal, $department_id, $sub_dept_id, $status_staff, $periode_umk,$enroll_id)
+    public function exportParams(string $periode_payroll, string $tgl_awal, $department_id, $sub_dept_id, $status_staff, $periode_umk, $enroll_id)
     {
         $this->periode_payroll = $periode_payroll;
         $this->tgl_awal = $tgl_awal;
@@ -199,6 +199,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                 ->orderBy('employee_name','asc')
                 ->orderBy('periode_payroll','desc')
                 ->limit(1);
+
         return $q;
     }
 
@@ -213,7 +214,6 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         $nik = $Data->nik;
         $employee_name = $Data->employee_name;
         $kode_grade= $Data->kode_grade;
-
 
         $join_date=$Data->join_date!=null?date('d-m-Y', strtotime($Data->join_date)):$Data->join_date;
         $site_nirwana_name = $Data->site_nirwana_name;
@@ -233,11 +233,12 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         if($Data->total_kehadiran_net == 0){ $total_kehadiran_net = '0';} else { $total_kehadiran_net = $Data->total_kehadiran_net; }
         $ptkp = $Data->ptkp;
         $st = $Data->status_kawin;
+
         if($Data->upah_per_bulan == 0){ $upah_per_bulan = '0';} else { $upah_per_bulan = $Data->upah_per_bulan; }
         if($Data->upah_per_hari == 0){ $upah_per_hari = '0';} else { $upah_per_hari = $Data->upah_per_hari; }
-        if($Data->tunjangan_karyawan_rupiah == 0){ $tunjangan_karyawan_rupiah = '0'; $readOnlyTunjanganKaryawanRupiah = '0'; } else { $tunjangan_karyawan_rupiah = $Data->tunjangan_karyawan_rupiah; $readOnlyTunjanganKaryawanRupiah = $Data->tunjangan_karyawan_rupiah; }
+        $tunjangan_karyawan_rupiah_excel=RekapPerhitunganPayroll::select('tunjangan_karyawan_rupiah')->where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll','2025')->where('periode_bulan_payroll','01')->where('periode_umk',null)->pluck('tunjangan_karyawan_rupiah')[0];
+        if($tunjangan_karyawan_rupiah_excel == 0){ $tunjangan_karyawan_rupiah_excel = '0';} else { $tunjangan_karyawan_rupiah_excel = $tunjangan_karyawan_rupiah_excel; }
         if($Data->premi_karyawan == 0){ $premi_karyawan = '0';} else { $premi_karyawan = $Data->premi_karyawan; }
-        if($Data->insentif_jabatan == 0){ $insentif_jabatan = '0';} else { $insentif_jabatan = $Data->insentif_jabatan; }
         if($Data->lembur_1 == 0){ $lembur_1 = '0';} else { $lembur_1 = $Data->lembur_1; }
         if($Data->lembur_2 == 0){ $lembur_2 = '0';} else { $lembur_2 = $Data->lembur_2; }
         if($Data->lembur_3 == 0){ $lembur_3 = '0';} else { $lembur_3 = $Data->lembur_3; }
@@ -250,7 +251,12 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         if($Data->total_lembur_rupiah == 0){ $total_lembur_rupiah = '0';} else { $total_lembur_rupiah = $Data->total_lembur_rupiah; }
         if($Data->koreksi_upah_rupiah == 0){ $koreksi_upah_rupiah = '0';} else { $koreksi_upah_rupiah = $Data->koreksi_upah_rupiah; }
         if($Data->pendapatan_lainnya_rupiah == 0){ $pendapatan_lainnya_rupiah = '0';} else { $pendapatan_lainnya_rupiah = $Data->pendapatan_lainnya_rupiah; }
-        if($Data->koreksi_potongan_rupiah == 0){ $koreksi_potongan_rupiah = '0';} else { $koreksi_potongan_rupiah = $Data->koreksi_potongan_rupiah; }
+        $koreksi_potongan_rupiah_excel=RekapPerhitunganPayroll::select('koreksi_potongan_rupiah')->where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll','2025')->where('periode_bulan_payroll','01')->where('periode_umk',null)->pluck('koreksi_potongan_rupiah')[0];
+        $koreksi_upah_rupiah_excel=RekapPerhitunganPayroll::select('koreksi_upah_rupiah')->where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll','2025')->where('periode_bulan_payroll','01')->where('periode_umk',null)->pluck('koreksi_upah_rupiah')[0];
+        $insentif_jabatan_rupiah_excel=RekapPerhitunganPayroll::select('insentif_jabatan')->where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll','2025')->where('periode_bulan_payroll','01')->where('periode_umk',null)->pluck('insentif_jabatan')[0];
+        if($koreksi_potongan_rupiah_excel==0){$koreksi_potongan_rupiah_excel='0';}
+        if($koreksi_upah_rupiah_excel==0){$koreksi_upah_rupiah_excel='0';}
+        if($insentif_jabatan_rupiah_excel==0){$insentif_jabatan_rupiah_excel='0';}
         if($Data->potongan_iks_menit == 0){ $potongan_iks_menit = '0';} else { $potongan_iks_menit = $Data->potongan_iks_menit; }
         if($Data->potongan_dt_menit == 0){ $potongan_dt_menit = '0';} else { $potongan_dt_menit = $Data->potongan_dt_menit; }
         if($Data->potongan_pc_menit == 0){ $potongan_pc_menit = '0';} else { $potongan_pc_menit = $Data->potongan_pc_menit; }
@@ -259,9 +265,9 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         if($Data->potongan_pc_rupiah == 0){ $potongan_pc_rupiah = '0';} else { $potongan_pc_rupiah = $Data->potongan_pc_rupiah; }
         if($Data->total_potongan_jam_rupiah == 0){ $total_potongan_jam_rupiah = '0';} else { $total_potongan_jam_rupiah = $Data->total_potongan_jam_rupiah; }
         if($Data->potongan_kehadiran_rupiah == 0){ $potongan_kehadiran_rupiah = '0';} else { $potongan_kehadiran_rupiah = $Data->potongan_kehadiran_rupiah; }
-        if($Data->upah_bruto_rupiah == 0){ $upah_bruto_rupiah = '0';} else { $upah_bruto_rupiah = $Data->upah_bruto_rupiah; }
+        if($Data->upah_bruto_rupiah == 0){ $upah_bruto_rupiah = '0';} else { $upah_bruto_rupiah = ($Data->upah_bruto_rupiah+$koreksi_upah_rupiah_excel+$insentif_jabatan_rupiah_excel+$tunjangan_karyawan_rupiah_excel)-$koreksi_potongan_rupiah_excel; }
         $pph21 = $Data->pph21;
-        if($Data->upah_neto_rupiah == 0){ $upah_neto_rupiah = '0';} else { $upah_neto_rupiah = $Data->upah_neto_rupiah; }
+        if($Data->upah_neto_rupiah == 0){ $upah_neto_rupiah = '0';} else { $upah_neto_rupiah = ($Data->upah_neto_rupiah+$koreksi_upah_rupiah_excel+$insentif_jabatan_rupiah_excel+$tunjangan_karyawan_rupiah_excel)-$koreksi_potongan_rupiah_excel; }
         if($Data->total_bpjs_tk == 0){ $total_bpjs_tk = '0';} else { $total_bpjs_tk = $Data->total_bpjs_tk; }
         if($Data->total_bpjs_ks == 0){ $total_bpjs_ks = '0';} else { $total_bpjs_ks = $Data->total_bpjs_ks; }
         if($Data->iuran_serikat_rupiah == 0){ $iuran_serikat_rupiah = '0';} else { $iuran_serikat_rupiah = $Data->iuran_serikat_rupiah; }
@@ -332,13 +338,20 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         $potongan_dtpc_rupiah=$Data->potongan_dtpc_rupiah;
         $rp_pot_jam=$potongan_iks_rupiah+$potongan_dtpc_rupiah;
 
-        $total_potongan= $total_bpjs_tk+$total_bpjs_ks+$iuran_serikat_rupiah+$iuran_koperasi;
+        $nominal_bpjs_tk=RekapPerhitunganPayroll::select('total_bpjs_tk')->where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll','2025')->where('periode_bulan_payroll','01')->where('periode_umk',null)->pluck('total_bpjs_tk')[0];
+        if($nominal_bpjs_tk==0){$nominal_bpjs_tk='0';}else{$nominal_bpjs_tk=$nominal_bpjs_tk;}
+        $nominal_bpjs_ks=RekapPerhitunganPayroll::select('total_bpjs_ks')->where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll','2025')->where('periode_bulan_payroll','01')->where('periode_umk',null)->pluck('total_bpjs_ks')[0];
+        if($nominal_bpjs_ks==0){$nominal_bpjs_ks='0';}else{$nominal_bpjs_ks=$nominal_bpjs_ks;}
+        $nominal_iuran_serikat=RekapPerhitunganPayroll::select('iuran_serikat_rupiah')->where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll','2025')->where('periode_bulan_payroll','01')->where('periode_umk',null)->pluck('iuran_serikat_rupiah')[0];
+        $nominal_iuran_koperasi=RekapPerhitunganPayroll::select('iuran_koperasi')->where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll','2025')->where('periode_bulan_payroll','01')->where('periode_umk',null)->pluck('iuran_koperasi')[0];
+        if($nominal_iuran_serikat==0.0){$nominal_iuran_serikat='0';}
+        if($nominal_iuran_koperasi==0.0){$nominal_iuran_koperasi='0';}
+        $total_potongan= $nominal_bpjs_tk+$nominal_bpjs_ks+$nominal_iuran_serikat+$nominal_iuran_koperasi;
         if($total_potongan==0){
             $total_potongan='0';
         }
+        $total_upah_2024=$upah_neto_rupiah-$total_potongan;
         if($total_upah_thp_rupiah_pembulatan==0){$total_upah_thp_rupiah_pembulatan='0';}
-        if($total_upah_thp_rupiah_employee==0){$total_upah_thp_rupiah_employee='0';}
-        if($total_upah_thp_rupiah_pecahan==0){$total_upah_thp_rupiah_pecahan='0';}
         if($pembulatan==0){$pembulatan='0';}
         if($years==0){$years='0';}
         if($months==0){$months='0';}
@@ -346,13 +359,13 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         if($rp_pot_jam==0){$rp_pot_jam='0';}
         if($pph21==0){$pph21='0';}
         if($pot_hari_kerja==0){$pot_hari_kerja='0';}
-        $gapok=$upah_per_bulan+$tunjangan_karyawan_rupiah;
+        $gapok=$upah_per_bulan+$tunjangan_karyawan_rupiah_excel;
 
-        if( $total_kehadiran_net<=0 && $koreksi_upah_rupiah==0 && $total_lembur_rupiah==0 && ($total_bpjs_tk!=0 || $total_bpjs_ks!=0)){
-            $tunjangan_karyawan_rupiah='0';
+        if( $total_kehadiran_net<=0 && $koreksi_upah_rupiah_excel==0 && $insentif_jabatan_rupiah_excel && $total_lembur_rupiah==0 && ($nominal_bpjs_tk!=0 || $nominal_bpjs_ks!=0)){
+            $tunjangan_karyawan_rupiah_excel=0;
             $gapok=$upah_per_bulan;
-            $upah_neto_rupiah='0';
-            $upah_bruto_rupiah='0';
+            $upah_neto_rupiah=0;
+            $upah_bruto_rupiah=0;
             $pembulatan='0';
             $total_upah_thp_rupiah_pembulatan='0';
             $total_upah_thp_rupiah_employee='0';
@@ -402,34 +415,34 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
             $potongan_pc_menit,
             $potongan_iks_menit,
             $nol,
-            $kosong, //$tunjangan_karyawan_rupiah
+            $kosong,
             $upah_per_hari,
             $upah_per_jam,
             $kosong,
             // $gaji_pokok,
-            $upah_per_bulan,
-            $tunjangan_karyawan_rupiah,
+            $gapok,
+            $tunjangan_karyawan_rupiah_excel, //$tunjangan_karyawan_rupiah
             $premi_karyawan,
-            $insentif_jabatan,
+            $insentif_jabatan_rupiah_excel,
             $lembur1_rupiah,
             $lembur2_rupiah,
             $lembur3_rupiah,
             $lembur4_rupiah,
-            $koreksi_upah_rupiah,
-            $koreksi_potongan_rupiah,
+            $koreksi_upah_rupiah_excel,
+            $koreksi_potongan_rupiah_excel,
             $nol,
             $potongan_kehadiran_rupiah,
             $rp_pot_jam,
             $upah_bruto_rupiah,
             $pph21,
             $upah_neto_rupiah,
-            $total_bpjs_tk,
-            $total_bpjs_ks,
-            $iuran_serikat_rupiah,
-            $iuran_koperasi,
+            $nominal_bpjs_tk,
+            $nominal_bpjs_ks,
+            $nominal_iuran_serikat,
+            $nominal_iuran_koperasi,
             $total_potongan,
             $pembulatan,
-            $total_upah_thp_rupiah_pembulatan,
+            $total_upah_2024,
 
         ];
     }
@@ -484,12 +497,12 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                 $sheet->getDelegate()->getStyle('A1')->getFont()->setSize(18);
                 $sheet->setCellValue('A2', 'Rekap Perhitungan Payroll Karyawan');
                 $sheet->getDelegate()->getStyle('A1')->getFont()->setSize(16);
-                $sheet->getDelegate()->getStyle('BD5')->getAlignment()->setWrapText(true);
+
                 if($this->periode_umk){
-                    if($this->periode_umk=='2023-10'){
-                        $tanggal='26 - 31 desember 2023';
-                    }else if($this->periode_umk=='2024-01'){
-                        $tanggal='01 - 25 januari 2023';
+                    if($this->periode_umk=='2024-01'){
+                        $tanggal='26 - 31 desember 2024';
+                    }else if($this->periode_umk=='2025-01'){
+                        $tanggal='01 - 25 januari 2025';
                     }
                 }else{
                     setlocale(LC_ALL, 'id-ID', 'id_ID');
@@ -644,8 +657,6 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
 
                 $sheet->mergeCells('AQ5:AQ6');
                 $sheet->setCellValue('AQ5', 'Upah/ Jam');
-                //kosong
-
 
                 $sheet->mergeCells('AR5:AR6');
                 $sheet->setCellValue('AR5', '');
@@ -681,7 +692,6 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
 
                 $sheet->mergeCells('BC5:BC6');
                 $sheet->setCellValue('BC5', 'Rp. Cuti Tahunan');
-
 
                 $sheet->mergeCells('BD5:BD6');
                 $sheet->setCellValue('BD5', 'Rp. Potongan Hari Kerja');
