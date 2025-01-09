@@ -1509,10 +1509,11 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         }])->with(['data_lembur'=>function($query)use($first_date,$last_date){
             $query->where('tanggal_berjalan','>=',$first_date)
             ->where('tanggal_berjalan','<=',$last_date);
-        }])->with(['employee_atribut.grading_salary'=>function($query){
-            $query->where('periode_umk','2024-01');
-        }])->with('employee_atribut','employee_atribut.employee_bpjs','koreksi_upah','koreksi_potongan','employee_atribut.group_department')->get();
+        }])->with('employee_atribut.grading_salary')->with('employee_atribut','employee_atribut.employee_bpjs','koreksi_upah','koreksi_potongan','employee_atribut.group_department')->get();
+
+
         $z=[];
+
         foreach($master_absen as $key=>$value){
             $enroll_id_karyawan=$value->enroll_id;
             $nomor_form_lembur=$value->nomor_form_lembur;
@@ -1545,7 +1546,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     }
                     $jam1 = strtotime($finish_in);
                     $jam2 = strtotime($finish_out);
-        
+
                     // Jika $jam2 lebih kecil dari $jam1, tambahkan 1 hari (86400 detik)
                     if ($jam2 < $jam1) {
                         $jam2 += 86400;
@@ -1555,13 +1556,13 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     }else{
                         $selisih_detik = max($jam2 - $jam1, 0);
                     }
-        
+
                     $selisih_jam = floor($selisih_detik / 3600);
                     $selisih_detik %= 3600;
-        
+
                     $selisih_menit = floor($selisih_detik / 60);
                     $selisih_detik %= 60;
-        
+
                     $final_total=sprintf("%02d:%02d:%02d", $selisih_jam, $selisih_menit, $selisih_detik);
                     if($final_total>='20:00:00'){
                         $final_total_jam_lembur ='00:00:00';
@@ -1608,7 +1609,14 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                         $l2=$le2<0?0:$le2;
                     }
                     $kode_grade=EmployeeAtribut::select('kode_grade')->where('enroll_id',$value->enroll_id)->pluck('kode_grade')[0];
-                    $salary_bulanan=GradingSalary::select('salary_bulanan')->where('kode_grade',$kode_grade)->where('periode_umk','2024-01')->pluck('salary_bulanan')[0];
+                    $tahun_berjalan = substr($value->tanggal_berjalan, 0, 4);
+
+                    $salary_bulanan = GradingSalary::select('salary_bulanan')
+                                    ->where('kode_grade', $kode_grade)
+                                    ->whereRaw("SUBSTRING(periode_umk, 1, 4) = ?", [$tahun_berjalan])
+                                    ->first()
+                                    ->salary_bulanan;
+
                     if($value->kode_hari==6 || $value->status_absen=='LN'){
                         $l1_rupiah=$l1*($salary_bulanan/173*1);
                         $l2_rupiah=$l2*($salary_bulanan/173*2);
@@ -1714,6 +1722,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $timestamp3 = strtotime($tanggal_masuk);
             $datediff = $timestamp1 - $timestamp3;
             $selisih_hari=round($datediff / (60 * 60 * 24));
+            $timestamp1 = strtotime($tanggal_awal);
+            $timestamp2 = strtotime($tanggal_akhir);
             $jumlah_hari_total=(abs($timestamp2 - $timestamp1) / (60 * 60 * 24)+1);
             $jumlah_hari_sabtu_minggu_total = 0;
             for ($i = strtotime($tanggal_awal); $i <= strtotime($tanggal_akhir); $i += 86400) {
@@ -1725,9 +1735,18 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $insentif_jabatan=0;
             $koreksi_upah=0;
             $koreksi_potongan=0;
-            if($value->employee_atribut->grading_salary->first()->insentif){
-                $insentif_kehadiran=($value->employee_atribut->grading_salary->first()->insentif)/21;
+            $tahun_berjalan = substr($value->tanggal_berjalan, 0, 4);
+            // if($value->employee_atribut->grading_salary->whereRaw("SUBSTRING(periode_umk, 1, 4) = ?", [$tahun_berjalan])->first()->insentif){
+            //     $insentif_kehadiran=($value->employee_atribut->grading_salary->whereRaw("SUBSTRING(periode_umk, 1, 4) = ?", [$tahun_berjalan])->first()->insentif)/21;
+            // }
+            $grading_salary = $value->employee_atribut->grading_salary->filter(function ($item) use ($tahun_berjalan) {
+                return substr($item->periode_umk, 0, 4) == $tahun_berjalan;
+            })->first();
+
+            if ($grading_salary && $grading_salary->insentif) {
+                $insentif_kehadiran = $grading_salary->insentif / 21;
             }
+
             if(count($value->koreksi_upah->where('tanggal_koreksi',$value->tanggal_berjalan)->where('jenis_koreksi',2))>0){
                 $insentif_jabatan=$value->koreksi_upah->where('tanggal_koreksi',$value->tanggal_berjalan)->where('jenis_koreksi',2)->sum('jumlah_rp_potongan');
             }
@@ -1745,18 +1764,6 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $jumlah_hari_kerja=$jumlah_hari_total-$jumlah_hari_sabtu_minggu_total;
             }
             $jumlah_hari_kerja_employee=$jumlah_hari_total-$jumlah_hari_sabtu_minggu_total;
-            if($tanggal_masuk>$tanggal_awal){
-                $timestamp3 = strtotime($tanggal_masuk);
-                $timestamp4 = strtotime($tanggal_akhir);
-                $jumlah_hari_total_baru=(abs($timestamp4 - $timestamp3) / (60 * 60 * 24)+1);
-                $jumlah_hari_sabtu_minggu_total_baru = 0;
-                for ($i = strtotime($tanggal_masuk); $i <= strtotime($tanggal_akhir); $i += 86400) {
-                    if ((date('N', $i) == 6)||(date('N', $i) == 7)) {
-                        $jumlah_hari_sabtu_minggu_total_baru++;
-                    }
-                }
-                $jumlah_hari_kerja_employee=$jumlah_hari_total_baru-$jumlah_hari_sabtu_minggu_total_baru;
-            }
             $insentif_kehadiran_total=(((($value->status_absen==null || $value->status_absen=='IKS') && $value->mulai_jam_kerja!=null))?$insentif_kehadiran:0);
             $total_lembur_rupiah=0;
             $countlembur=(int)count($value->rekap_lembur->where('tanggal_berjalan',$value->tanggal_berjalan));
@@ -1778,15 +1785,20 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $bpjs_tk_company=($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jkm_bruto_rupiah+$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jht_bruto_rupiah+$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jkk_bruto_rupiah+$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jpn_bruto_rupiah)/$jumlah_hari_kerja_employee;
                 $bpjs_ks_company=($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_ks_jkn_bruto_rupiah)/$jumlah_hari_kerja_employee;
             }
-            $thr=0;
+            $thr = 0;
             if($selisih_hari>30){
-                $thr=$value->employee_atribut->grading_salary->first()->salary_bulanan/12/$jumlah_hari_kerja;
+                $grading_salary = $value->employee_atribut->grading_salary->filter(function ($item) use ($tahun_berjalan) {
+                    return substr($item->periode_umk, 0, 4) == $tahun_berjalan;
+                })->first();
+
+                $thr= $grading_salary->salary_bulanan/12/$jumlah_hari_kerja;
             }
             $bpjs_tk_total=($value->kode_hari!=5 && $value->kode_hari!=6)?$bpjs_tk:0;
             $bpjs_ks_total=($value->kode_hari!=5 && $value->kode_hari!=6)?$bpjs_ks:0;
             $bpjs_tk_company_total=($value->kode_hari!=5 && $value->kode_hari!=6)?$bpjs_tk_company:0;
             $bpjs_ks_company_total=($value->kode_hari!=5 && $value->kode_hari!=6)?$bpjs_ks_company:0;
             $thr_total=($value->kode_hari!=5 && $value->kode_hari!=6)?$thr:0;
+            $thr=0;
             $id=$value->enroll_id;
             $tanggal_berjalan=$value->tanggal_berjalan;
             $count=count(DB::select('select*from mut_karyawan_input_form_lembur_det where enroll_id='.$id.' and konsumsi!=0 and no_form in (select no_form from mut_karyawan_input_form_lembur where tgl_lembur="'.$tanggal_berjalan.'")'));
@@ -1798,27 +1810,30 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             }else{
                 $uang_makan=0;
             }
+            $grading_salary = $value->employee_atribut->grading_salary->filter(function ($item) use ($tahun_berjalan) {
+                return substr($item->periode_umk, 0, 4) == $tahun_berjalan;
+            })->first();
             if($security->where('enroll_id',$value->enroll_id)->count()){
-                $gaji_perhari=($value->employee_atribut->grading_salary->first()->salary_bulanan)/$jumlah_hari_kerja;
+                $gaji_perhari=($grading_salary->salary_bulanan)/$jumlah_hari_kerja;
                 $gaji_perhari_total=($value->mulai_jam_kerja!=null)?$gaji_perhari:0;
                 $gaji_permenit=$gaji_perhari_total/420;
                 $potongan_permenit=(($value->status_absen!='TL'||$value->status_absen==null)?(($value->jumlah_menit_absen_dt+$value->jumlah_menit_absen_pc+$value->total_menit_permits)*$gaji_permenit):0);
                 $potongan_perhari=((in_array($value->status_absen, $ITB)||$value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null)||$value->status_absen=='R')?$gaji_perhari:0);
                 $seniority_allowance=$tunjangan/$jumlah_hari_kerja;
                 $seniority_allowance_total=($value->mulai_jam_kerja!=null)?$tunjangan/$jumlah_hari_kerja:0;
-                $bruto=($value->mulai_jam_kerja!=null)?(($gaji_perhari_total+$seniority_allowance_total+$insentif_kehadiran_total+$total_lembur_rupiah+$koreksi_upah+$insentif_jabatan)-($koreksi_potongan+$potongan_permenit+$potongan_perhari)):(($total_lembur_rupiah+$insentif_jabatan+$koreksi_upah)-($potongan_permenit+$potongan_perhari));
+                $bruto=($value->mulai_jam_kerja!=null)?(($gaji_perhari_total+$seniority_allowance_total+$insentif_kehadiran_total+$total_lembur_rupiah+$koreksi_upah+$insentif_jabatan)-($koreksi_potongan+$potongan_permenit+$potongan_perhari)):(($total_lembur_rupiah)-($potongan_permenit+$potongan_perhari));
                 $jumlah=$bruto-($bpjs_tk_total+$bpjs_ks_total);
                 $pembulatan=(ceil($jumlah/100)*100)-$jumlah;
                 $total_pembayaran=$jumlah+$bpjs_tk_company_total+$bpjs_ks_company_total+$thr_total+$thr_total+$uang_makan;
             }else{
-                $gaji_perhari=($value->employee_atribut->grading_salary->first()->salary_bulanan)/$jumlah_hari_kerja;
+                $gaji_perhari=($grading_salary->salary_bulanan)/$jumlah_hari_kerja;
                 $gaji_perhari_total=($value->kode_hari!=5 && $value->kode_hari!=6)?$gaji_perhari:0;
                 $gaji_permenit=$gaji_perhari_total/480;
                 $potongan_permenit=(($value->status_absen!='TL'||$value->status_absen==null)?(($value->jumlah_menit_absen_dt+$value->jumlah_menit_absen_pc+$value->total_menit_permits)*$gaji_permenit):0);
                 $potongan_perhari=((in_array($value->status_absen, $ITB)||$value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null)||$value->status_absen=='R')?$gaji_perhari:0);
                 $seniority_allowance=$tunjangan/$jumlah_hari_kerja;
                 $seniority_allowance_total=($value->kode_hari!=5 && $value->kode_hari!=6)?$tunjangan/$jumlah_hari_kerja:0;
-                $bruto=($value->kode_hari!=5 && $value->kode_hari!=6)?(($gaji_perhari_total+$seniority_allowance_total+$insentif_kehadiran_total+$total_lembur_rupiah+$koreksi_upah+$insentif_jabatan)-($koreksi_potongan+$potongan_permenit+$potongan_perhari)):(($total_lembur_rupiah+$koreksi_upah+$insentif_jabatan)-($potongan_permenit+$potongan_perhari));
+                $bruto=($value->kode_hari!=5 && $value->kode_hari!=6)?(($gaji_perhari_total+$seniority_allowance_total+$insentif_kehadiran_total+$total_lembur_rupiah+$koreksi_upah+$insentif_jabatan)-($koreksi_potongan+$potongan_permenit+$potongan_perhari)):(($total_lembur_rupiah)-($potongan_permenit+$potongan_perhari));
                 $jumlah=$bruto-($bpjs_tk_total+$bpjs_ks_total);
                 $pembulatan=(ceil($jumlah/100)*100)-$jumlah;
                 $total_pembayaran=$jumlah+$bpjs_tk_company_total+$bpjs_ks_company_total+$thr_total+$thr_total+$uang_makan;
