@@ -77,7 +77,7 @@
                     <div class="text-white"></div>
                 </div>
             </div>
-        </div>        
+        </div>
         <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
             <!-- Begin Form Edit Absen Karyawan -->
             <div id="data-gagal-absen" class="card shadow" id="datatable-data-karyawan">
@@ -93,7 +93,7 @@
                                 <li><a href="javascript:void(0)" id="btn-edit"><i class="fa fa-edit"></i> Edit</a></li>
                                 <li><a href="javascript:void(0)" id="btn-remove"><i class="fa fa-remove"></i> Hapus</a></li>
                             </ul>
-                        </div>                        
+                        </div>
                         REFERENSI HARI LIBUR
                     </div>
                     <div class="card-options ">
@@ -127,7 +127,7 @@
                                         </div>
                                     </div>
                                     <input readonly id="tanggal_libur" name="tanggal_libur" type="text" class="form-control fc-datepicker" placeholder="Tanggal Hari Libur">
-                                </div>    
+                                </div>
                             </td>
                         </tr>
                         <tr>
@@ -136,13 +136,13 @@
                                 <select class="form-control " id="status_absen" name="status_absen">
                                     <option value="">Status Absen</option>
                                     @foreach($RefAbsenIjin as $key => $value)
-                                        <option name="status_absen" value="{{$value->kode_absen_ijin}}">{{$value->kode_absen_ijin}}  {{$value->nama_absen_ijin}}</option>    
+                                        <option name="status_absen" value="{{$value->kode_absen_ijin}}">{{$value->kode_absen_ijin}}  {{$value->nama_absen_ijin}}</option>
                                     @endforeach
                                 </select>
-                            </td> 
+                            </td>
                             <!-- <td class="w-65"><input type="text" class="form-control" id="status_absen" name="status_absen"></td> -->
                         </tr>
-                    </table>                                                    
+                    </table>
                     {{-- </form> --}}
                     {!! Form::close() !!}
                     <!-- END FORM-->
@@ -158,7 +158,7 @@
                             <i class="fa fa-close"></i>
                         </span>
                         Cancel</button>
-                </div>    
+                </div>
             </div>
         </div>
     </div>
@@ -225,20 +225,20 @@
 
         $('body').on('click', '#btn-add', function (event) {
             var id = $("#id").val();
-            
+
             $("#form1 :input").prop("disabled", false);
             $("#id").prop("disabled", true);
             $("#btn-save").prop("disabled", false);
             $("#btn-cancel").prop("disabled", false);
             $("#form1").trigger('reset');
             $('#created_at').text("");
-            $('#updated_at').text("");    
+            $('#updated_at').text("");
 
         });
-        
+
         $('body').on('click', '#btn-edit', function (event) {
             var id = $("#id").val();
-            
+
             if (id.length > 0) {
                 $("#form1 :input").prop("disabled", false);
                 $("#id").prop("disabled", true);
@@ -285,16 +285,17 @@
                 },
                 dataType: 'json',
                 success: function(res){
+                    console.log("res",res);
                     notif({
                         msg: "<b>Info:</b> Data berhasil di simpan.",
                         type: "info"
-                    });    
+                    });
                 },
                 error: function(res){
                     notif({
                         msg: "<b>Error:</b> Oops data gagal di simpan.",
                         type: "error"
-                    });    
+                    });
                 }
             });
 
@@ -304,11 +305,11 @@
             $("#btn-save").html('<span><i class="fa fa-save"></i></span> Add');
             $("#form1 :input").prop("disabled", true);
             $("#btn-save").prop("disabled", true);
-            $("#btn-cancel").prop("disabled", true);    
+            $("#btn-cancel").prop("disabled", true);
             setTimeout(function myFunction() {
                 location.reload();
-              }, 3000);           
-                                 
+              }, 3000);
+
         });
 
         $('body').on('click', '#btn-remove', function (event) {
@@ -328,11 +329,14 @@
                     if(isConfirm) {
 
                         $("#form1 :input").prop("disabled", true);
+                        $('#btn-save').addClass("btn-loading");
+                        $("#btn-save").html('Please wait...');
                         $("#btn-save").prop("disabled", true);
-                        $("#btn-cancel").prop("disabled", true);    
+                        $("#btn-cancel").prop("disabled", true);
                         $('#progress-show-1').show();
                         $('#progress-hide-1').hide();
-            
+
+
                         $.ajax({
                             type:"POST",
                             url: "{{route('hris.refharilibur.destroy')}}",
@@ -344,24 +348,25 @@
                             },
                             dataType: 'json',
                             success: function(res){
+                                console.log("res gagal",res);
                                 notif({
                                     msg: "<b>Info:</b> Data berhasil di hapus.",
                                     type: "info"
-                                });    
+                                });
                             },
                             error: function(res){
                                 notif({
                                     msg: "<b>Error:</b> Oops data gagal di hapus.",
                                     type: "error"
-                                });    
+                                });
                             }
                         });
-            
+
                         $('#progress-show-1').hide();
-                        $('#progress-hide-1').show();    
+                        $('#progress-hide-1').show();
                         setTimeout(function myFunction() {
                             location.reload();
-                        }, 3000);                   
+                        }, 3000);
 
                     } else {
                         // else everythings
@@ -373,9 +378,9 @@
                     type: "warning"
                 });
             }
-                    
+
         });
-        
+
         $(document).ready(function() {
             var table1 = $('#datatable-ajax-crud').DataTable({
                 processing: true,
@@ -434,11 +439,11 @@
                 var row = table1.row(tr);
 
                 var data = row.data();
-        
+
                 $("#form1 :input").prop("disabled", true);
                 $("#btn-save").prop("disabled", true);
                 $("#btn-cancel").prop("disabled", true);
-                
+
                 $("#datatable-ajax-crud tbody tr").removeClass('bg-cyan');
                 $(this).addClass('bg-cyan');
 
@@ -450,7 +455,7 @@
              });
 
         });
-        
+
     </script>
 
 @endsection
