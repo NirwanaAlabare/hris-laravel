@@ -33,6 +33,15 @@
                 $periode_bulan=((int)$periode_bulan_payroll)-1;
                 $bulan=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','December'];
                 ?>
+                @if($periode_bulan==0)
+                <td style="font-family: Arial Nova;font-weight:bold;font-size:8pt">Periode 26 Desember {{($periode_tahun_payroll)-1}} - 25 {{$bulan[$periode_bulan]}} {{$periode_tahun_payroll}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="font-family: Arial Nova;font-weight:bold;font-size:8pt">Periode 26 Desember {{($periode_tahun_payroll)-1}} - 25 {{$bulan[$periode_bulan]}} {{$periode_tahun_payroll}}</td>
+                @else
                 <td style="font-family: Arial Nova;font-weight:bold;font-size:8pt">Periode 26 {{$bulan[$periode_awal_bulan]}} {{$periode_tahun_payroll}} - 25 {{$bulan[$periode_bulan]}} {{$periode_tahun_payroll}}</td>
                 <td></td>
                 <td></td>
@@ -40,6 +49,7 @@
                 <td></td>
                 <td></td>
                 <td style="font-family: Arial Nova;font-weight:bold;font-size:8pt">Periode 26 {{$bulan[$periode_awal_bulan]}} {{$periode_tahun_payroll}} - 25 {{$bulan[$periode_bulan]}} {{$periode_tahun_payroll}}</td>
+                @endif
             </tr>
         </table>
         <table>
