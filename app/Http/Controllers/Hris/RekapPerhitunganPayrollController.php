@@ -2136,17 +2136,17 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         }else{
             $periode_umk='';
         }
-        if($periode_payroll=='2024-01'){
-            if($periode_umk=='2023-10'){
-                $fileName = 'RekapPerhitunganPayroll_2024-01_UMK-2023_' . time() . '.xlsx';
-                return (new RekapPerhitunganPayrollExportUMK2023)->exportParams($periode_payroll,$tgl_awal,$department_id,$sub_dept_id,$status_staff,$periode_umk)->download($fileName);
-            }
+        if($periode_payroll=='2025-01'){
             if($periode_umk=='2024-01'){
-                $fileName = 'RekapPerhitunganPayroll_2024-01_UMK-2024_' . time() . '.xlsx';
-                return (new RekapPerhitunganPayrollExportUMK2024)->exportParams($periode_payroll,$tgl_awal,$department_id,$sub_dept_id,$status_staff,$periode_umk)->download($fileName);
+                $fileName = 'RekapPerhitunganPayroll_2025-01_UMK-2024_' . time() . '.xlsx';
+                return (new RekapPerhitunganPayrollExportUMK2023)->exportParams($periode_payroll,$tgl_awal,$department_id,$sub_dept_id,$status_staff,$periode_umk,$searchData)->download($fileName);
+            }
+            if($periode_umk=='2025-01'){
+                $fileName = 'RekapPerhitunganPayroll_2025-01_UMK-2025_' . time() . '.xlsx';
+                return (new RekapPerhitunganPayrollExportUMK2024)->exportParams($periode_payroll,$tgl_awal,$department_id,$sub_dept_id,$status_staff,$periode_umk,$searchData)->download($fileName);
             }else{
                 $fileName = 'RekapPerhitunganPayroll_' . time() . '.xlsx';
-                $response=(new RekapPerhitunganPayrollExportJanuari2024)->exportParams($periode_payroll,$tgl_awal,$department_id,$sub_dept_id,$status_staff,$periode_umk)->download($fileName, \Maatwebsite\Excel\Excel::XLSX);
+                $response=(new RekapPerhitunganPayrollExportJanuari2024)->exportParams($periode_payroll,$tgl_awal,$department_id,$sub_dept_id,$status_staff,$periode_umk,$searchData)->download($fileName, \Maatwebsite\Excel\Excel::XLSX);
                 ob_end_clean();
                 return $response;
             }
