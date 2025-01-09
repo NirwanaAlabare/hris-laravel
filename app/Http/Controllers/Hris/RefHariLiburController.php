@@ -70,7 +70,7 @@ class RefHariLiburController extends AdminBaseController
                             ->get();
 
             $totalData = RefHariLibur::count();
-            $totalFiltered = $totalData;  
+            $totalFiltered = $totalData;
 
         } else {
             $search = $request->input('search.value');
@@ -89,7 +89,7 @@ class RefHariLiburController extends AdminBaseController
                             ->orWhere('tanggal_libur','LIKE',"%{$search}%")
                             ->orWhere('status_absen','LIKE',"%{$search}%")
                             ->count();
-            $totalFiltered = $totalData;                            
+            $totalFiltered = $totalData;
 
         }
 
@@ -104,7 +104,6 @@ class RefHariLiburController extends AdminBaseController
                 $nestedData['status_absen'] = $q->status_absen;
                 $nestedData['created_at'] = substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5);
                 $nestedData['updated_at'] = substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5);
-        
                 $data[] = $nestedData;
 
             }
@@ -123,12 +122,9 @@ class RefHariLiburController extends AdminBaseController
 
     public function replace(Request $request)
     {
-        $id = $request->id;
         $nama_hari_libur = $request->nama_hari_libur;
         $tanggal_libur =date('Y-m-d', strtotime($request->tanggal_libur)); ;
         $status_absen = $request->status_absen;
-
-        $findDT = RefHariLibur::where('id','=', $id)->count();
         $update_libur=[
             'status_absen'=>$status_absen
         ];
@@ -139,6 +135,20 @@ class RefHariLiburController extends AdminBaseController
         $update_LP=[
             'status_absen'=>null,
         ];
+        if($request->id){
+            $query = RefHariLibur::where('id','=', $request->id)
+            ->update([
+                'nama_hari_libur' => $nama_hari_libur,
+                'tanggal_libur' => $tanggal_libur,
+                'status_absen' => $status_absen
+            ]);
+        }else{
+            $query = RefHariLibur::create([
+                'nama_hari_libur' => $nama_hari_libur,
+                'tanggal_libur' => $tanggal_libur,
+                'status_absen' => $status_absen
+            ]);
+        }
         if($status_absen=='LP'){
             MasterDataAbsenKehadiran::where('tanggal_berjalan',$tanggal_libur)
             ->whereNotIn('status_absen',['DL','KM','R'])
@@ -163,40 +173,22 @@ class RefHariLiburController extends AdminBaseController
             ->where('absen_pulang_kerja','!=',null)
             ->update($update_LP);
         }
-        elseif ($status_absen=='LN'){
+        else if ($status_absen=='LN'){
             MasterDataAbsenKehadiran::where('tanggal_berjalan',$tanggal_libur)
             ->where(function ($query) {
                 $query ->whereNotIn('status_absen',['R'])
                         ->orWhere('status_absen',null);
             })
-        //     // ->where('absen_masuk_kerja',null)
-        //     // ->where('absen_pulang_kerja',null)
             ->update($update_libur);
 
             MasterDataAbsenKehadiran::where('tanggal_berjalan',$tanggal_libur)->update($jadwal_kerjaLN);
         }
 
-        elseif ($status_absen=='L'){
+        else if ($status_absen=='L'){
             MasterDataAbsenKehadiran::where('tanggal_berjalan',$tanggal_libur)
             ->where('status_absen','M')
             ->update($update_libur);
         }
-
-        if($findDT > 0) {
-            $query = RefHariLibur::where('id','=', $id)
-            ->update([
-                'nama_hari_libur' => $nama_hari_libur,
-                'tanggal_libur' => $tanggal_libur,
-                'status_absen' => $status_absen
-            ]);
-        } else {
-            $query = RefHariLibur::create([
-                'nama_hari_libur' => $nama_hari_libur,
-                'tanggal_libur' => $tanggal_libur,
-                'status_absen' => $status_absen
-            ]);
-        }
-
         return $query;
     }
 

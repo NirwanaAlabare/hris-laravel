@@ -24,7 +24,7 @@
           <td style="font-weight:bold;border:1px solid black;background-color:#ffecdc">Total</td>
         @endforeach
       </tr>
-        <?php 
+        <?php
         $man=['man_power','working_min','bruto','bpjs_tk','bpjs_ks','thr','total'];
         ?>
       @foreach ($x as $v)
@@ -58,7 +58,8 @@
             $value=$man[$i];
           ?>
           <td style="font-weight:bold;border:1px solid black;background-color:#ffecdc">
-            {{$ab->where('tanggal_berjalan',$date_r)->first()[$value]}}
+            {{-- {{$ab->where('tanggal_berjalan',$date_r)->first()[$value]}} --}}
+            {{ optional($ab->where('tanggal_berjalan', $date_r)->first())[$value] ?? 'default_value' }}
           </td>
         @endfor
         @endforeach

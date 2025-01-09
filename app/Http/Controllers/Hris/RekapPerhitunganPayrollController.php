@@ -342,18 +342,18 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         if($bruto_total==0){$bruto_total=0;}else{$bruto_total=number_format( $bruto_total , 2 , ',' , '.');}
         $pph = array_sum(array_column($arrayData,'pph_int'));
         if($pph==0){$pph=0;}else{$pph=number_format( $pph , 2 , ',' , '.');}
-        $upah_neto_rupiah_int_total = array_sum(array_column($arrayData,'upah_neto_rupiah_int')); 
+        $upah_neto_rupiah_int_total = array_sum(array_column($arrayData,'upah_neto_rupiah_int'));
         if($upah_neto_rupiah_int_total==0){$upah_neto_rupiah_int_total=0;}else{$upah_neto_rupiah_int_total=number_format( $upah_neto_rupiah_int_total , 2 , ',' , '.');}
-        $total_bpjs_tk_total = array_sum(array_column($arrayData,'total_bpjs_tk_int')); 
+        $total_bpjs_tk_total = array_sum(array_column($arrayData,'total_bpjs_tk_int'));
         if($total_bpjs_tk_total==0){$total_bpjs_tk_total=0;}else{$total_bpjs_tk_total=number_format( $total_bpjs_tk_total , 2 , ',' , '.');}
-        $total_bpjs_ks_total = array_sum(array_column($arrayData,'total_bpjs_ks_int')); 
+        $total_bpjs_ks_total = array_sum(array_column($arrayData,'total_bpjs_ks_int'));
         if($total_bpjs_ks_total==0){$total_bpjs_ks_total=0;}else{$total_bpjs_ks_total=number_format( $total_bpjs_ks_total , 2 , ',' , '.');}
-        $potongan_total = array_sum(array_column($arrayData,'potongan_int')); 
+        $potongan_total = array_sum(array_column($arrayData,'potongan_int'));
         if($potongan_total==0){$potongan_total=0;}else{$potongan_total=number_format( $potongan_total , 2 , ',' , '.');}
-        $jumlah_total = array_sum(array_column($arrayData,'jumlah_int')); 
+        $jumlah_total = array_sum(array_column($arrayData,'jumlah_int'));
         if($jumlah_total==0){$jumlah_total=0;}else{$jumlah_total=number_format( $jumlah_total , 2 , ',' , '.');}
         $jumlah_karyawan_sebelum_total = array_sum(array_column($arrayData,'jumlah_karyawan_sebelum'));
-        $jumlah_sebelum_total = array_sum(array_column($arrayData,'jumlah_sebelum_int')); 
+        $jumlah_sebelum_total = array_sum(array_column($arrayData,'jumlah_sebelum_int'));
         if($jumlah_sebelum_total==0){$jumlah_sebelum_total=0;}else{$jumlah_sebelum_total=number_format( $jumlah_sebelum_total , 2 , ',' , '.');}
         $selisih_karyawan_total = array_sum(array_column($arrayData,'selisih_karyawan'));
         $selisih_gaji=array_sum(array_column($arrayData,'jumlah_int'));
@@ -577,25 +577,25 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $pph = array_sum(array_column($arrayData,'pph_int'));
         if($pph==0){$pph=0;}else{$pph=number_format( $pph , 2 , ',' , '.');}
         $pph_int = array_sum(array_column($arrayData,'pph_int'));
-        $upah_neto_rupiah_int_total = array_sum(array_column($arrayData,'upah_neto_rupiah_int')); 
+        $upah_neto_rupiah_int_total = array_sum(array_column($arrayData,'upah_neto_rupiah_int'));
         if($upah_neto_rupiah_int_total==0){$upah_neto_rupiah_int_total=0;}else{$upah_neto_rupiah_int_total=number_format( $upah_neto_rupiah_int_total , 2 , ',' , '.');}
-        $upah_neto_rupiah_int_total_int = array_sum(array_column($arrayData,'upah_neto_rupiah_int')); 
-        $total_bpjs_tk_total = array_sum(array_column($arrayData,'total_bpjs_tk_int')); 
+        $upah_neto_rupiah_int_total_int = array_sum(array_column($arrayData,'upah_neto_rupiah_int'));
+        $total_bpjs_tk_total = array_sum(array_column($arrayData,'total_bpjs_tk_int'));
         if($total_bpjs_tk_total==0){$total_bpjs_tk_total=0;}else{$total_bpjs_tk_total=number_format( $total_bpjs_tk_total , 2 , ',' , '.');}
-        $total_bpjs_tk_total_int = array_sum(array_column($arrayData,'total_bpjs_tk_int')); 
-        $total_bpjs_ks_total = array_sum(array_column($arrayData,'total_bpjs_ks_int')); 
+        $total_bpjs_tk_total_int = array_sum(array_column($arrayData,'total_bpjs_tk_int'));
+        $total_bpjs_ks_total = array_sum(array_column($arrayData,'total_bpjs_ks_int'));
         if($total_bpjs_ks_total==0){$total_bpjs_ks_total=0;}else{$total_bpjs_ks_total=number_format( $total_bpjs_ks_total , 2 , ',' , '.');}
-        $total_bpjs_ks_total_int = array_sum(array_column($arrayData,'total_bpjs_ks_int')); 
-        $potongan_total = array_sum(array_column($arrayData,'potongan_int')); 
+        $total_bpjs_ks_total_int = array_sum(array_column($arrayData,'total_bpjs_ks_int'));
+        $potongan_total = array_sum(array_column($arrayData,'potongan_int'));
         if($potongan_total==0){$potongan_total=0;}else{$potongan_total=number_format( $potongan_total , 2 , ',' , '.');}
-        $potongan_total_int = array_sum(array_column($arrayData,'potongan_int')); 
-        $jumlah_total = array_sum(array_column($arrayData,'jumlah_int')); 
+        $potongan_total_int = array_sum(array_column($arrayData,'potongan_int'));
+        $jumlah_total = array_sum(array_column($arrayData,'jumlah_int'));
         if($jumlah_total==0){$jumlah_total=0;}else{$jumlah_total=number_format( $jumlah_total , 2 , ',' , '.');}
-        $jumlah_total_int = array_sum(array_column($arrayData,'jumlah_int')); 
+        $jumlah_total_int = array_sum(array_column($arrayData,'jumlah_int'));
         $jumlah_karyawan_sebelum_total = array_sum(array_column($arrayData,'jumlah_karyawan_sebelum'));
-        $jumlah_sebelum_total = array_sum(array_column($arrayData,'jumlah_sebelum_int')); 
+        $jumlah_sebelum_total = array_sum(array_column($arrayData,'jumlah_sebelum_int'));
         if($jumlah_sebelum_total==0){$jumlah_sebelum_total=0;}else{$jumlah_sebelum_total=number_format( $jumlah_sebelum_total , 2 , ',' , '.');}
-        $jumlah_sebelum_total_int = array_sum(array_column($arrayData,'jumlah_sebelum_int')); 
+        $jumlah_sebelum_total_int = array_sum(array_column($arrayData,'jumlah_sebelum_int'));
         $selisih_karyawan_total = array_sum(array_column($arrayData,'selisih_karyawan'));
         $selisih_gaji=array_sum(array_column($arrayData,'jumlah_int'));
         $selisih_gaji_before=array_sum(array_column($arrayData,'jumlah_sebelum_int'));
@@ -739,11 +739,12 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $arrperiode=explode(" s/d ",request()->daterange);
         $first_date=$arrperiode[0];
         $last_date=$arrperiode[1];
-   
-        $query=DB::select("select a.tanggal_berjalan,a.kode_hari,a.nama_hari,b.nik,a.enroll_id,b.employee_name,b.status_staff,b.status_jabatan,b.sub_dept_name,b.department_name,c.group_department,a.mulai_jam_kerja,a.akhir_jam_kerja,a.absen_masuk_kerja,a.absen_pulang_kerja,dap.time_mulai_ijin permits_dari_pukul,dap.time_akhir_ijin permits_sampai_pukul,dap.total_time_ijin total_menit_permits,a.jumlah_menit_absen_dt,a.jumlah_menit_absen_pc,a.jumlah_menit_absen_dtpc,a.status_absen,dap.absen_alasan,h.kode_ijin_payroll,d.catatan,d.nomor_form_lembur,d.mulai_jam_lembur,d.akhir_jam_lembur,d.jumlah_jam_istirahat_lembur jumlah_jam_istirahat,d.jumlah_jam_lembur,e.final_mulai_jam_lembur,e.final_selesai_jam_lembur,e.final_jam_istirahat_lembur,e.final_total_jam_lembur,bpjs.dasar_pot_bpjs_rupiah upah_umk,c.gaji_perhari,c.gaji_permenit,c.iby,c.itb,c.m,c.dt,c.pc,c.dtpc,c.lby,c.lsm,c.r,c.ok,c.hari_kerja,c.pot_hari_kerja,c.total_absen,e.lembur_1,e.lembur_2,e.lembur_3,e.lembur_4,b.kode_grade,i.salary_bulanan,c.seniority_allowance,c.insentif_kehadiran,c.insentif_jabatan,e.lembur1_rupiah,e.lembur2_rupiah,e.lembur3_rupiah,e.lembur4_rupiah,if(f.jenis_koreksi=1,f.jumlah_rp_potongan,0) koreksi_upah,if(f.jenis_koreksi=3,f.jumlah_rp_potongan,0) koreksi_lembur,if(f.jenis_koreksi=4,f.jumlah_rp_potongan,0) koreksi_insentif,if(g.jenis_potongan=7,g.jumlah_rp_potongan,0) potongan_upah,if(g.jenis_potongan=8,g.jumlah_rp_potongan,0) potongan_lembur,if(g.jenis_potongan=5,g.jumlah_rp_potongan,0) potongan_insentif,if(g.jenis_potongan=4,g.jumlah_rp_potongan,0) potongan_piutang,c.rp_pot_hari_kerja,c.rp_pot_jam,c.bruto,c.bpjs_tk,c.bpjs_ks,c.total_potongan,c.pembulatan,c.jumlah,c.bpjs_tk_company,c.bpjs_ks_company,c.kompensasi,c.thr,c.konsumsi,c.total_pembayaran from master_data_absen_kehadiran a inner join employee_atribut b on a.enroll_id=b.enroll_id left join daily_labor_costs c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan left join rekap_perhitungan_lembur e on a.enroll_id=e.enroll_id and a.tanggal_berjalan=e.tanggal_berjalan left join data_koreksi_upah f on a.enroll_id=f.enroll_id and a.tanggal_berjalan=f.tanggal_koreksi left join data_koreksi_potongan g on a.enroll_id=g.enroll_id and a.tanggal_berjalan=g.tanggal_koreksi left join ref_absen_ijin h on a.status_absen=h.kode_absen_ijin left join data_absen_perijinan dap on a.nomor_absen_ijin=dap.nomor_form_perizinan left join (select*from grading_salary where periode_umk='2024-01')i on b.kode_grade=i.kode_grade inner join dasar_pot_bpjs bpjs on REGEXP_SUBSTR(bpjs.kode_dasar_pot_bpjs, '[0-9]+')=substring(a.tanggal_berjalan,1,4) where a.tanggal_berjalan>='".$first_date."' and a.tanggal_berjalan<='".$last_date."'".$inEnrollId.$inStatusStaff);
+
+        $query=DB::select("select a.tanggal_berjalan,a.kode_hari,a.nama_hari,b.nik,a.enroll_id,b.employee_name,b.status_staff,b.status_jabatan,b.sub_dept_name,b.department_name,c.group_department,a.mulai_jam_kerja,a.akhir_jam_kerja,a.absen_masuk_kerja,a.absen_pulang_kerja,dap.time_mulai_ijin permits_dari_pukul,dap.time_akhir_ijin permits_sampai_pukul,dap.total_time_ijin total_menit_permits,a.jumlah_menit_absen_dt,a.jumlah_menit_absen_pc,a.jumlah_menit_absen_dtpc,a.status_absen,dap.absen_alasan,h.kode_ijin_payroll,d.catatan,d.nomor_form_lembur,d.mulai_jam_lembur,d.akhir_jam_lembur,d.jumlah_jam_istirahat_lembur jumlah_jam_istirahat,d.jumlah_jam_lembur,e.final_mulai_jam_lembur,e.final_selesai_jam_lembur,e.final_jam_istirahat_lembur,e.final_total_jam_lembur,bpjs.dasar_pot_bpjs_rupiah upah_umk,c.gaji_perhari,c.gaji_permenit,c.iby,c.itb,c.m,c.dt,c.pc,c.dtpc,c.lby,c.lsm,c.r,c.ok,c.hari_kerja,c.pot_hari_kerja,c.total_absen,e.lembur_1,e.lembur_2,e.lembur_3,e.lembur_4,b.kode_grade,i.salary_bulanan,c.seniority_allowance,c.insentif_kehadiran,c.insentif_jabatan,e.lembur1_rupiah,e.lembur2_rupiah,e.lembur3_rupiah,e.lembur4_rupiah,if(f.jenis_koreksi=1,f.jumlah_rp_potongan,0) koreksi_upah,if(f.jenis_koreksi=3,f.jumlah_rp_potongan,0) koreksi_lembur,if(f.jenis_koreksi=4,f.jumlah_rp_potongan,0) koreksi_insentif,if(g.jenis_potongan=7,g.jumlah_rp_potongan,0) potongan_upah,if(g.jenis_potongan=8,g.jumlah_rp_potongan,0) potongan_lembur,if(g.jenis_potongan=5,g.jumlah_rp_potongan,0) potongan_insentif,if(g.jenis_potongan=4,g.jumlah_rp_potongan,0) potongan_piutang,c.rp_pot_hari_kerja,c.rp_pot_jam,c.bruto,c.bpjs_tk,c.bpjs_ks,c.total_potongan,c.pembulatan,c.jumlah,c.bpjs_tk_company,c.bpjs_ks_company,c.kompensasi,c.thr,c.konsumsi,c.total_pembayaran from master_data_absen_kehadiran a inner join employee_atribut b on a.enroll_id=b.enroll_id left join daily_labor_costs c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan left join rekap_perhitungan_lembur e on a.enroll_id=e.enroll_id and a.tanggal_berjalan=e.tanggal_berjalan left join data_koreksi_upah f on a.enroll_id=f.enroll_id and a.tanggal_berjalan=f.tanggal_koreksi left join data_koreksi_potongan g on a.enroll_id=g.enroll_id and a.tanggal_berjalan=g.tanggal_koreksi left join ref_absen_ijin h on a.status_absen=h.kode_absen_ijin left join data_absen_perijinan dap on a.nomor_absen_ijin=dap.nomor_form_perizinan left join (select*from grading_salary where substring(periode_umk,1,4)=substring(a.tanggal_berjalan,1,4)) i on b.kode_grade=i.kode_grade inner join dasar_pot_bpjs bpjs on REGEXP_SUBSTR(bpjs.kode_dasar_pot_bpjs, '[0-9]+')=substring(a.tanggal_berjalan,1,4) where a.tanggal_berjalan>='".$first_date."' and a.tanggal_berjalan<='".$last_date."'".$inEnrollId.$inStatusStaff);
+
         $excel = FastExcel::create('query');
         $sheet = $excel->getSheet();
-        
+
         $area = $sheet->beginArea();
         $style1 = [
             Style::FONT_STYLE_BOLD=>'bold',
@@ -975,15 +976,15 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $sheet->writeTo('CY7', '');
         $sheet->setStyle('CY7', $style1);
         $sheet->writeTo('A8', 'Tanggal', ['font-size' => 11])->applyFontStyleBold()->applyTextCenter();
-        $sheet->setStyle('A8', $style3); 
+        $sheet->setStyle('A8', $style3);
         $sheet->writeTo('B8', 'Hari', ['font-size' => 11]);
-        $sheet->setStyle('B8', $style3); 
+        $sheet->setStyle('B8', $style3);
         $sheet->writeTo('C8', 'NIP', ['font-size' => 11]);
-        $sheet->setStyle('C8', $style3); 
+        $sheet->setStyle('C8', $style3);
         $sheet->writeTo('D8', 'No. Absen');
-        $sheet->setStyle('D8', $style3); 
+        $sheet->setStyle('D8', $style3);
         $sheet->writeTo('E8', 'Nama Karyawan');
-        $sheet->setStyle('E8', $style3); 
+        $sheet->setStyle('E8', $style3);
         $sheet->writeTo('F8', 'Staff / Non Staff');
         $sheet->setStyle('F8', $style3);
         $sheet->writeTo('G8', 'Jabatan');
@@ -1512,10 +1513,11 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         }])->with(['data_lembur'=>function($query)use($first_date,$last_date){
             $query->where('tanggal_berjalan','>=',$first_date)
             ->where('tanggal_berjalan','<=',$last_date);
-        }])->with(['employee_atribut.grading_salary'=>function($query){
-            $query->where('periode_umk','2024-01');
-        }])->with('employee_atribut','employee_atribut.employee_bpjs','koreksi_upah','koreksi_potongan','employee_atribut.group_department')->get();
+        }])->with('employee_atribut.grading_salary')->with('employee_atribut','employee_atribut.employee_bpjs','koreksi_upah','koreksi_potongan','employee_atribut.group_department')->get();
+
+
         $z=[];
+
         foreach($master_absen as $key=>$value){
             $enroll_id_karyawan=$value->enroll_id;
             $nomor_form_lembur=$value->nomor_form_lembur;
@@ -1548,7 +1550,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     }
                     $jam1 = strtotime($finish_in);
                     $jam2 = strtotime($finish_out);
-        
+
                     // Jika $jam2 lebih kecil dari $jam1, tambahkan 1 hari (86400 detik)
                     if ($jam2 < $jam1) {
                         $jam2 += 86400;
@@ -1558,13 +1560,13 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     }else{
                         $selisih_detik = max($jam2 - $jam1, 0);
                     }
-        
+
                     $selisih_jam = floor($selisih_detik / 3600);
                     $selisih_detik %= 3600;
-        
+
                     $selisih_menit = floor($selisih_detik / 60);
                     $selisih_detik %= 60;
-        
+
                     $final_total=sprintf("%02d:%02d:%02d", $selisih_jam, $selisih_menit, $selisih_detik);
                     if($final_total>='20:00:00'){
                         $final_total_jam_lembur ='00:00:00';
@@ -1611,7 +1613,14 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                         $l2=$le2<0?0:$le2;
                     }
                     $kode_grade=EmployeeAtribut::select('kode_grade')->where('enroll_id',$value->enroll_id)->pluck('kode_grade')[0];
-                    $salary_bulanan=GradingSalary::select('salary_bulanan')->where('kode_grade',$kode_grade)->where('periode_umk','2024-01')->pluck('salary_bulanan')[0];
+                    $tahun_berjalan = substr($value->tanggal_berjalan, 0, 4);
+
+                    $salary_bulanan = GradingSalary::select('salary_bulanan')
+                                    ->where('kode_grade', $kode_grade)
+                                    ->whereRaw("SUBSTRING(periode_umk, 1, 4) = ?", [$tahun_berjalan])
+                                    ->first()
+                                    ->salary_bulanan;
+
                     if($value->kode_hari==6 || $value->status_absen=='LN'){
                         $l1_rupiah=$l1*($salary_bulanan/173*1);
                         $l2_rupiah=$l2*($salary_bulanan/173*2);
@@ -1730,9 +1739,18 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $insentif_jabatan=0;
             $koreksi_upah=0;
             $koreksi_potongan=0;
-            if($value->employee_atribut->grading_salary->first()->insentif){
-                $insentif_kehadiran=($value->employee_atribut->grading_salary->first()->insentif)/21;
+            $tahun_berjalan = substr($value->tanggal_berjalan, 0, 4);
+            // if($value->employee_atribut->grading_salary->whereRaw("SUBSTRING(periode_umk, 1, 4) = ?", [$tahun_berjalan])->first()->insentif){
+            //     $insentif_kehadiran=($value->employee_atribut->grading_salary->whereRaw("SUBSTRING(periode_umk, 1, 4) = ?", [$tahun_berjalan])->first()->insentif)/21;
+            // }
+            $grading_salary = $value->employee_atribut->grading_salary->filter(function ($item) use ($tahun_berjalan) {
+                return substr($item->periode_umk, 0, 4) == $tahun_berjalan;
+            })->first();
+
+            if ($grading_salary && $grading_salary->insentif) {
+                $insentif_kehadiran = $grading_salary->insentif / 21;
             }
+
             if(count($value->koreksi_upah->where('tanggal_koreksi',$value->tanggal_berjalan)->where('jenis_koreksi',2))>0){
                 $insentif_jabatan=$value->koreksi_upah->where('tanggal_koreksi',$value->tanggal_berjalan)->where('jenis_koreksi',2)->sum('jumlah_rp_potongan');
             }
@@ -1773,7 +1791,11 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             }
             $thr = 0;
             if($selisih_hari>30){
-                $thr=$value->employee_atribut->grading_salary->first()->salary_bulanan/12/$jumlah_hari_kerja;
+                $grading_salary = $value->employee_atribut->grading_salary->filter(function ($item) use ($tahun_berjalan) {
+                    return substr($item->periode_umk, 0, 4) == $tahun_berjalan;
+                })->first();
+
+                $thr= $grading_salary->salary_bulanan/12/$jumlah_hari_kerja;
             }
             $bpjs_tk_total=($value->kode_hari!=5 && $value->kode_hari!=6)?$bpjs_tk:0;
             $bpjs_ks_total=($value->kode_hari!=5 && $value->kode_hari!=6)?$bpjs_ks:0;
@@ -1792,8 +1814,11 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             }else{
                 $uang_makan=0;
             }
+            $grading_salary = $value->employee_atribut->grading_salary->filter(function ($item) use ($tahun_berjalan) {
+                return substr($item->periode_umk, 0, 4) == $tahun_berjalan;
+            })->first();
             if($security->where('enroll_id',$value->enroll_id)->count()){
-                $gaji_perhari=($value->employee_atribut->grading_salary->first()->salary_bulanan)/$jumlah_hari_kerja;
+                $gaji_perhari=($grading_salary->salary_bulanan)/$jumlah_hari_kerja;
                 $gaji_perhari_total=($value->mulai_jam_kerja!=null)?$gaji_perhari:0;
                 $gaji_permenit=$gaji_perhari_total/420;
                 $potongan_permenit=(($value->status_absen!='TL'||$value->status_absen==null)?(($value->jumlah_menit_absen_dt+$value->jumlah_menit_absen_pc+$value->total_menit_permits)*$gaji_permenit):0);
@@ -1805,7 +1830,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $pembulatan=(ceil($jumlah/100)*100)-$jumlah;
                 $total_pembayaran=$jumlah+$bpjs_tk_company_total+$bpjs_ks_company_total+$thr_total+$thr_total+$uang_makan;
             }else{
-                $gaji_perhari=($value->employee_atribut->grading_salary->first()->salary_bulanan)/$jumlah_hari_kerja;
+                $gaji_perhari=($grading_salary->salary_bulanan)/$jumlah_hari_kerja;
                 $gaji_perhari_total=($value->kode_hari!=5 && $value->kode_hari!=6)?$gaji_perhari:0;
                 $gaji_permenit=$gaji_perhari_total/480;
                 $potongan_permenit=(($value->status_absen!='TL'||$value->status_absen==null)?(($value->jumlah_menit_absen_dt+$value->jumlah_menit_absen_pc+$value->total_menit_permits)*$gaji_permenit):0);
@@ -1864,7 +1889,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         }
     }
     public function rekap_bpjs(){
-        
+
         $kode_bpjs =  BpjsSetting::orderBy('kode_periode_bpjs','desc')->limit(1)->first();
         $explodePeriodePayroll = explode(" s/d ", $periode_kehadiran);
         $periodePayroll = substr($explodePeriodePayroll[1], 0, 4) . substr($explodePeriodePayroll[1], 5, 2);
@@ -1977,7 +2002,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 ]);
             }
         }
-        
+
         $query =  BpjsSetting::whereRaw(' substr(kode_periode_bpjs, 1, 4) = substr("' . $kode_bpjs->kode_periode_bpjs . '", 1, 4)')
                 ->orderBy('kode_periode_bpjs','desc')
                 ->limit(1)
