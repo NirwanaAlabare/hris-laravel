@@ -75,7 +75,7 @@ class RekapKehadiranKaryawanController extends AdminBaseController
 
         $jumlah_hari_sabtu_minggu = 0;
 
-        $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->get();
+        $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->where('enroll_id','!=',7445)->get();
         for ($i = strtotime($tanggal_awal); $i <= strtotime($tanggal_akhir); $i += 86400) {
             if ((date('N', $i) == 6)||(date('N', $i) == 7)) {
                 $jumlah_hari_sabtu_minggu++;

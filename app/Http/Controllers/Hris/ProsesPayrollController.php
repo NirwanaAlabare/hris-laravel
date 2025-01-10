@@ -37,7 +37,7 @@ use Illuminate\Support\Str;
 use App\Models\RekapPerhitunganKehadiranKaryawan;
 use App\Exports\payrollTransferExport;
 use Maatwebsite\Excel\Facades\Excel;
-
+use Carbon\Carbon;
 
 /**
  * Class MdAbsenHadirController
@@ -166,7 +166,7 @@ class ProsesPayrollController extends AdminBaseController
 
         $jumlah_hari_sabtu_minggu = 0;
 
-        $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->get();
+        $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->where('enroll_id','!=',7445)->get();
 
 
 
@@ -1701,7 +1701,7 @@ class ProsesPayrollController extends AdminBaseController
         $timestamp2 = strtotime($tanggal_akhir);
         $jumlah_hari_total=(abs($timestamp2 - $timestamp1) / (60 * 60 * 24)+1);
         $jumlah_hari_sabtu_minggu_total = 0;
-        $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->get();
+        $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->where('enroll_id','!=',7445)->get();
         for ($i = strtotime($tanggal_awal); $i <= strtotime($tanggal_akhir); $i += 86400) {
             if ((date('N', $i) == 6)||(date('N', $i) == 7)) {
                 $jumlah_hari_sabtu_minggu_total++;
@@ -4543,7 +4543,7 @@ class ProsesPayrollController extends AdminBaseController
 
         $jumlah_hari_sabtu_minggu = 0;
 
-        $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->get()->toArray();
+        $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->where('enroll_id','!=',7445)->get()->toArray();
         $nik_security=array_map(function ($value){
             return ($value['enroll_id']);
         },$security);
@@ -4660,7 +4660,7 @@ class ProsesPayrollController extends AdminBaseController
         $periode_tahun=date('Y', $bulan_sekarang1);
 
 
-        $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->get()->toArray();
+        $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->where('enroll_id','!=',7445)->get()->toArray();
         $nik_security=array_map(function ($value){
             return ($value['enroll_id']);
         },$security);
@@ -5009,7 +5009,7 @@ class ProsesPayrollController extends AdminBaseController
         $timestamp2 = strtotime($tanggal_akhir);
         $jumlah_hari_total=(abs($timestamp2 - $timestamp1) / (60 * 60 * 24)+1);
         $jumlah_hari_sabtu_minggu_total = 0;
-        $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->get();
+        $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->where('enroll_id','!=',7445)->get();
         for ($i = strtotime($tanggal_awal); $i <= strtotime($tanggal_akhir); $i += 86400) {
             if ((date('N', $i) == 6)||(date('N', $i) == 7)) {
                 $jumlah_hari_sabtu_minggu_total++;
@@ -5300,7 +5300,7 @@ class ProsesPayrollController extends AdminBaseController
         $timestamp2 = strtotime($tanggal_akhir);
         $jumlah_hari_total=(abs($timestamp2 - $timestamp1) / (60 * 60 * 24)+1);
         $jumlah_hari_sabtu_minggu_total = 0;
-        $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->get();
+        $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->where('enroll_id','!=',7445)->get();
         for ($i = strtotime($tanggal_awal); $i <= strtotime($tanggal_akhir); $i += 86400) {
             if ((date('N', $i) == 6)||(date('N', $i) == 7)) {
                 $jumlah_hari_sabtu_minggu_total++;

@@ -108,7 +108,7 @@ class DailyLaborController extends AdminBaseController
             return $belum_di_proses_payroll;
         }else{
             foreach($data_master as $value){
-                $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->where('enroll_id',$value->enroll_id)->count();
+                $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->where('enroll_id',$value->enroll_id)->where('enroll_id','!=',7445)->count();
                 $tanggal_sekarang2=$value->tanggal_berjalan;
                 $bulan_sekarang2=substr($tanggal_sekarang,0,8).'26';
                 $bulan_sebelum2=date('Y-m-d',strtotime( "-1 month", strtotime( $bulan_sekarang ) ));

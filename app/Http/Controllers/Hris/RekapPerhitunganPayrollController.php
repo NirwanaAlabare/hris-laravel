@@ -1756,7 +1756,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             if(count($value->koreksi_potongan->where('tanggal_koreksi',$value->tanggal_berjalan))>0){
                 $koreksi_potongan=$value->koreksi_potongan->where('tanggal_koreksi',$value->tanggal_berjalan)->sum('jumlah_rp_potongan');
             }
-            $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->get();
+            $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->where('enroll_id','!=',7445)->get();
             $jumlah_hari_libur_security=count(DB::select("select enroll_id from master_data_absen_kehadiran where tanggal_berjalan>='".$tanggal_awal."' and tanggal_berjalan<='".$tanggal_akhir."' and enroll_id = ".$enroll_id_karyawan." and mulai_jam_kerja is null"));
             if($security->where('enroll_id',$value->enroll_id)->count()){
                 $jumlah_hari_kerja=$jumlah_hari_total-$jumlah_hari_libur_security;
