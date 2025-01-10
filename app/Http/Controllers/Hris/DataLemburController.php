@@ -99,7 +99,7 @@ class DataLemburController extends AdminBaseController
     {
         $tanggal_lembur = request()->tanggal_lembur;
         $datalembur=DB::select("select z.no_form,count(z.enroll_id) jumlah,z.dept from(select b.no_form,b.tgl_lembur,a.enroll_id,b.line dept from mut_karyawan_input_form_lembur_det a inner join mut_karyawan_input_form_lembur b on a.no_form=b.no_form where b.tgl_lembur='$tanggal_lembur'
-        union 
+        union
         select b.no_form,b.tgl_lembur,a.enroll_id,b.dept dept from mut_karyawan_input_non_sewing_form_lembur_det a inner join mut_karyawan_input_non_sewing_form_lembur b on a.no_form=b.no_form where b.tgl_lembur='$tanggal_lembur')z group by no_form order by dept");
         return $datalembur;
     }
@@ -1233,8 +1233,9 @@ class DataLemburController extends AdminBaseController
             if(isset($lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('total_lembur_rupiah')[0])){
                 $total_lembur_rupiah=$lembur['rekap_lembur']->where('tanggal_berjalan',$lembur->tanggal_berjalan)->pluck('total_lembur_rupiah')[0];
             }
+            $tahun_berjalan = substr($lembur->tanggal_berjalan, 0, 4);
             $kode_grade=EmployeeAtribut::where('enroll_id',$lembur->enroll_id)->pluck('kode_grade')[0];
-            $salary=GradingSalary::where('kode_grade',$kode_grade)->where('periode_umk','2024-01')->pluck('salary_bulanan')[0];
+            $salary=GradingSalary::where('kode_grade',$kode_grade)->whereRaw("SUBSTRING(periode_umk, 1, 4) = ?", [$tahun_berjalan])->pluck('salary_bulanan')[0];
             if(Auth::guard('admin')->user()->role_user!='payroll'){
                 if(Auth::guard('admin')->user()->email=='alex.herdian@ptnag.com'){
                     $data = [
@@ -2028,7 +2029,7 @@ class DataLemburController extends AdminBaseController
         // }
 
         //$explodeNoSPL = explode(',', $selectNoSPL);
-        
+
         if($request->selectNoSPL=='' && $request->verificationStatus!=''){
             $verification_status=$request->verificationStatus;
             $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept','data_lembur')->where('nomor_form_lembur','!=',null)->where('tanggal_berjalan','>=',$awal_bulan)->where('tanggal_berjalan','<=',$akhir_bulan)->whereHas('data_lembur',function($query) use ($verification_status){
@@ -2606,7 +2607,7 @@ class DataLemburController extends AdminBaseController
             if($count>0){
                 array_push($enroll_id,(int)substr($data[0][$i][3],-4));
                 array_push($nik,$data[0][$i][3]);
-                $excel_date = $data[0][$i][1]; 
+                $excel_date = $data[0][$i][1];
                 $unix_date = ($excel_date - 25569) * 86400;
                 $excel_date = 25569 + ($unix_date / 86400);
                 $unix_date = ($excel_date - 25569) * 86400;
@@ -2653,7 +2654,7 @@ class DataLemburController extends AdminBaseController
                 $endtimestamp = strtotime($displays);
                 $difference = abs($endtimestamp - $starttimestamp)/3600;
                 $timeDifference=$difference-$data[0][$i][7];
-                
+
                 $the_valuess = $data[0][$i][8];
                 $totalss = ($the_valuess * 24)+0.0001;
                 $hoursss = floor($totalss);
@@ -2852,7 +2853,7 @@ class DataLemburController extends AdminBaseController
             $endtimestamp = strtotime($displays);
             $difference = abs($endtimestamp - $starttimestamp)/3600;
             $timeDifference=$difference-$data[0][$i][7];
-            
+
             $the_valuess = $data[0][$i][8];
             $totalss = ($the_valuess * 24)+0.0001;
             $hoursss = floor($totalss);
