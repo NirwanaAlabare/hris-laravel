@@ -33,13 +33,13 @@ class DailyLaborController extends AdminBaseController
      */
     public function index()
     {
-        
+
         return View::make('hris/daily_labor_cost', $this->data);
     }
     public function get_last_update_labor_cost(){
         $data=DailyLaborCost::orderBy('tanggal_berjalan','desc')->limit(1)->first()->tanggal_berjalan;
-        $update_terakhir=Carbon::parse($data)->translatedFormat('d F Y');   
-        
+        $update_terakhir=Carbon::parse($data)->translatedFormat('d F Y');
+
         return $update_terakhir;
     }
     public function proses(){
@@ -104,7 +104,7 @@ class DailyLaborController extends AdminBaseController
             return $belum_di_proses_payroll;
         }else{
             foreach($data_master as $value){
-                $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->where('enroll_id',$value->enroll_id)->count();
+                $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->where('enroll_id', '!=' , 7445)->get();
                 $tanggal_sekarang2=$value->tanggal_berjalan;
                 $bulan_sekarang2=substr($tanggal_sekarang,0,8).'26';
                 $bulan_sebelum2=date('Y-m-d',strtotime( "-1 month", strtotime( $bulan_sekarang ) ));
@@ -154,7 +154,7 @@ class DailyLaborController extends AdminBaseController
                 }else{
                     $total_lembur_rupiah=0;
                 }
-                
+
                 if($value->kode_hari!=5 && $value->kode_hari!=6){
                     if($value->employee_atribut->status_aktif_bpjs_ks=='AKTIF'){
                         if(count($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_payroll))!=0){
@@ -221,7 +221,7 @@ class DailyLaborController extends AdminBaseController
         $dates = [];
         $currentDate = strtotime($startDate);
         $endDate = strtotime($endDate);
-    
+
         while ($currentDate <= $endDate) {
             $dates[] = date('Y-m-d', $currentDate);
             $currentDate = strtotime('+1 day', $currentDate);

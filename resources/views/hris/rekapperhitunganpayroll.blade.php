@@ -209,7 +209,7 @@
                 </div>
             </div>
         </div><!-- col end -->
-        
+
     </div>
     <!-- End page-header -->
 
@@ -344,11 +344,11 @@
                         <a onclick="export_excel_summary_department();" class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> SUMMARY DEPARTMENT</a>
                     </div>
                 </div>
-                <div class="col-auto pl-0">
+                {{-- <div class="col-auto pl-0">
                     <div class="input-group-append">
                         <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="export_excel_daily_labor"><i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST</a>
                     </div>
-                </div>
+                </div> --}}
                 @endif
                 {!! Form::close() !!}
             </div>
@@ -528,7 +528,7 @@
             </table>
         </div>
         <div class="card-body" style="height: 500px">
-            
+
         </div>
         <div class="card-header bg-primary p-2">
             <table width="100%">
@@ -902,7 +902,7 @@
                     $('#last_update').html('<i><b>&nbsp;&nbsp;Last Update :</b> '+new Date(data.substr(0,10)).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"})+', '+data.substr(11,5)+'&nbsp;&nbsp;</i>');
                 },
                 error: function(res){
-                    
+
                 }
             });
         }
@@ -915,7 +915,7 @@
                     $('#last_update_labor').html('<i><b>&nbsp;&nbsp;Last Update :</b> '+new Date(data).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"})+'&nbsp;&nbsp;</i>');
                 },
                 error: function(res){
-                    
+
                 }
             });
         }
@@ -1013,7 +1013,7 @@
                             </tr>"
                         );
                     });
-                    
+
                     $('#loading_payroll_department').removeClass("spinner-border");
                 }
             });

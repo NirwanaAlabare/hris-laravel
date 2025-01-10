@@ -75,7 +75,7 @@ class RekapKehadiranKaryawanController extends AdminBaseController
 
         $jumlah_hari_sabtu_minggu = 0;
 
-        $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->get();
+        $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->where('enroll_id', '!=' , 7445)->get();
         for ($i = strtotime($tanggal_awal); $i <= strtotime($tanggal_akhir); $i += 86400) {
             if ((date('N', $i) == 6)||(date('N', $i) == 7)) {
                 $jumlah_hari_sabtu_minggu++;
@@ -91,7 +91,7 @@ class RekapKehadiranKaryawanController extends AdminBaseController
         }
 
         $x=MasterDataAbsenKehadiran::selectRaw('*')->whereRaw('tanggal_berjalan >= "' . $tanggal_awal . '" and tanggal_berjalan <= "' . $tanggal_akhir.'"'.$inStatusStaff.''.$inSearchData.'')->get()->groupby('enroll_id');
-        
+
         foreach ($x as $key => $value) {
             $IBY_employe=$value->wherein('status_absen', $IBY)->count();
             $LBY_employe=$value->where('status_absen','LN')->whereNotin('kode_hari', ['5','6'])->count();
@@ -448,7 +448,7 @@ class RekapKehadiranKaryawanController extends AdminBaseController
                 }else{
                     $kode_hari=8;
                 }
-                
+
                 $libur=$v['absensi']->where('tanggal_berjalan',$value)->where('absen_masuk_kerja',null);
                 $status='';
                 if($kode_hari==5 || $kode_hari==6){
@@ -1327,7 +1327,7 @@ class RekapKehadiranKaryawanController extends AdminBaseController
         ];
         // return view('hris.Laporan.rekap_absen',compact('date_now','periode_payroll','tanggal_absensi','jumlah_tanggal_absensi','bulan_pertama','bulan_kedua','non_sewing_staff','non_sewing_nonstaff','non_sewing_total','sewing_total','sewing_staff','sewing_nonstaff','grand_total','persentase_non_sewing','persentase_sewing','non_sewing_nonstaff_present','non_sewing_staff_present','non_sewing_present','sewing_nonstaff_present','sewing_staff_present','sewing_present','grand_total_present','persentase_non_sewing_present','persentase_sewing_present','non_sewing_nonstaff_absent','non_sewing_staff_absent','non_sewing_absent','sewing_nonstaff_absent','sewing_staff_absent','sewing_absent','grand_total_absent','persentase_non_sewing_absent','persentase_sewing_absent','karyawan_sakit','karyawan_izin','karyawan_mangkir','karyawan_libur','karyawan_cuti','karyawan_dinas_luar','karyawan_resign','recruitment_sewing','recruitment_nonsewing','date_string','all_dept','all_dept_direct','total_direct_employee','all_dept_indirect','total_indirect_employee','grand_total_direct_employee'));
         $fileName='rekap_absen_'.time().'.xlsx';
-        
+
         $response = Excel::download(new DataRekapAbsenExport($date_now,$periode_payroll,$tanggal_absensi,$jumlah_tanggal_absensi,$bulan_pertama,$bulan_kedua,$non_sewing_staff,$non_sewing_nonstaff,$non_sewing_total,$sewing_total,$sewing_staff,$sewing_nonstaff,$grand_total,$persentase_non_sewing,$persentase_sewing,$non_sewing_nonstaff_present,$non_sewing_staff_present,$non_sewing_present,$sewing_nonstaff_present,$sewing_staff_present,$sewing_present,$grand_total_present,$persentase_non_sewing_present,$persentase_sewing_present,$non_sewing_nonstaff_absent,$non_sewing_staff_absent,$non_sewing_absent,$sewing_nonstaff_absent,$sewing_staff_absent,$sewing_absent,$grand_total_absent,$persentase_non_sewing_absent,$persentase_sewing_absent,$karyawan_sakit,$karyawan_izin,$karyawan_mangkir,$karyawan_libur,$karyawan_cuti,$karyawan_dinas_luar,$karyawan_resign,$recruitment_sewing,$recruitment_nonsewing,$date_string,$all_dept,$all_dept_direct,$total_direct_employee,$all_dept_indirect,$total_indirect_employee,$grand_total_direct_employee), $fileName, \Maatwebsite\Excel\Excel::XLSX);
         ob_end_clean();
         return $response;
