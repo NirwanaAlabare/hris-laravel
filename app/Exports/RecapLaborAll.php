@@ -653,7 +653,7 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
             $hour_final_istirahat_lembur,
             $hour_final__total_jam_lembur,
             '',
-            $Data->upah_umk,
+            $Data->salary_bulanan,
             $Data->gaji_perhari,
             $Data->gaji_permenit,
             '',
@@ -736,6 +736,8 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
             'AK' => NumberFormat::FORMAT_DATE_TIME3,
             'AL' => NumberFormat::FORMAT_DATE_TIME3,
             'AM' => NumberFormat::FORMAT_DATE_TIME3,
+            'CK' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            'CL' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
         ];
     }
     public function columnWidths(): array
