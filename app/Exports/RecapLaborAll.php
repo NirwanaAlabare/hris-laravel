@@ -197,7 +197,7 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
                 $sheet->setCellValue('AM8', 'Jumlah Jam Lembur');
                 $sheet->getDelegate()->getStyle('AM8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('AO7')->applyFromArray($border_top);
-                $sheet->setCellValue('AO8', 'UPAH UMK');
+                $sheet->setCellValue('AO8', 'UPAH GRADE');
                 $sheet->getDelegate()->getStyle('AO8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('AP7')->applyFromArray($border_top);
                 $sheet->setCellValue('AP8', 'Upah / Hari');
@@ -276,7 +276,7 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
                 $sheet->setCellValue('BP8', 'Upah / Hari');
                 $sheet->getDelegate()->getStyle('BP8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
 
-                
+
                 $sheet->getDelegate()->getStyle('BQ7')->applyFromArray($border_top);
                 $sheet->setCellValue('BQ8', 'Seniority Allowance');
                 $sheet->getDelegate()->getStyle('BQ8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
@@ -459,7 +459,7 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
             $akhir_jam_lembur = $excelTimestamp9 - $excelDate9;
         }
         $hour_istirahat_lembur='';
-        if($Data->jumlah_jam_istirahat!=null || $Data->jumlah_jam_istirahat!='' || $Data->jumlah_jam_istirahat!='0,0'){    
+        if($Data->jumlah_jam_istirahat!=null || $Data->jumlah_jam_istirahat!='' || $Data->jumlah_jam_istirahat!='0,0'){
             $minute_jam_istirahat_lembur=$Data->jumlah_jam_istirahat*60;
             $hour_jam_istirahat_lembur = sprintf("%02d", intdiv($minute_jam_istirahat_lembur, 60)).':'. ($minute_jam_istirahat_lembur % 60);
             $timestamp10 = new \DateTime($hour_jam_istirahat_lembur);
@@ -484,7 +484,7 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
             $final_selesai_lembur = $excelTimestamp12 - $excelDate12;
         }
         $hour_final_istirahat_lembur='';
-        if($Data->final_jam_istirahat_lembur!=null || $Data->final_jam_istirahat_lembur!='' || $Data->final_jam_istirahat_lembur!='0,0'){    
+        if($Data->final_jam_istirahat_lembur!=null || $Data->final_jam_istirahat_lembur!='' || $Data->final_jam_istirahat_lembur!='0,0'){
             $minute_final_jam_istirahat_lembur=$Data->final_jam_istirahat_lembur*60;
             $hour_final_jam_istirahat_lembur = sprintf("%02d", intdiv($minute_final_jam_istirahat_lembur, 60)).':'. ($minute_final_jam_istirahat_lembur % 60);
             $timestamp13 = new \DateTime($hour_final_jam_istirahat_lembur);
@@ -654,7 +654,7 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
             $hour_final_istirahat_lembur,
             $hour_final__total_jam_lembur,
             '',
-            $Data->upah_umk,
+            $Data->salary_bulanan,
             $Data->gaji_perhari,
             $Data->gaji_permenit,
             '',
@@ -737,6 +737,8 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
             'AK' => NumberFormat::FORMAT_DATE_TIME3,
             'AL' => NumberFormat::FORMAT_DATE_TIME3,
             'AM' => NumberFormat::FORMAT_DATE_TIME3,
+            'CK' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            'CL' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
         ];
     }
     public function columnWidths(): array
