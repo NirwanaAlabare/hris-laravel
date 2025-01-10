@@ -1818,7 +1818,11 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 return substr($item->periode_umk, 0, 4) == $tahun_berjalan;
             })->first();
             if($security->where('enroll_id',$value->enroll_id)->count()){
-                $gaji_perhari=($grading_salary->salary_bulanan)/$jumlah_hari_kerja;
+                // $gaji_perhari=($grading_salary->salary_bulanan)/$jumlah_hari_kerja;
+                // Sebelumnya seperti ini, bu mega request untuk security dibagi 25 hari
+
+                $gaji_perhari=($grading_salary->salary_bulanan)/25;
+
                 $gaji_perhari_total=($value->mulai_jam_kerja!=null)?$gaji_perhari:0;
                 $gaji_permenit=$gaji_perhari_total/420;
                 $potongan_permenit=(($value->status_absen!='TL'||$value->status_absen==null)?(($value->jumlah_menit_absen_dt+$value->jumlah_menit_absen_pc+$value->total_menit_permits)*$gaji_permenit):0);
