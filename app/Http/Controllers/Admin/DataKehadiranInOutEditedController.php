@@ -189,16 +189,20 @@ class DataKehadiranInOutEditedController extends AdminBaseController
                 $totalData = MasterDataAbsenKehadiran::
                 whereRaw('
                     substr(tanggal_berjalan, 1, 10) between "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
-                    ' . $inEmployee . ' ' . $inDepartmentID . '
-                ')
+                    ' . $inEmployee . '
+                ')->whereHas('employee_atribut',function($query)use($department_id){
+                    $query->where('department_id',$department_id);
+                })
                 ->count();
                 $totalFiltered = $totalData;
 
                 $query =  MasterDataAbsenKehadiran::
                 whereRaw('
                     (substr(tanggal_berjalan, 1, 10) between "' . $tanggalMulai . '" and "' . $tanggalSampai . '")
-                    ' . $inEmployee . ' ' . $inDepartmentID . '
-                ')
+                    ' . $inEmployee . ' 
+                ')->whereHas('employee_atribut',function($query)use($department_id){
+                    $query->where('department_id',$department_id);
+                })
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy($order,$dir)
@@ -258,7 +262,7 @@ class DataKehadiranInOutEditedController extends AdminBaseController
                     $nestedData['employee_id'] = $q->employee_id;
                     $nestedData['nik'] = $q->nik;
                     $nestedData['enroll_id'] = $q->enroll_id;
-                    $nestedData['employee_name'] = $q->employee_name;
+                    $nestedData['employee_name'] = $q->employee_atribut->employee_name;
                     $nestedData['tanggal_berjalan'] = $q->tanggal_berjalan;
                     $nestedData['kode_hari'] = $q->kode_hari;
                     $nestedData['nama_hari'] = $q->nama_hari;
@@ -295,7 +299,7 @@ class DataKehadiranInOutEditedController extends AdminBaseController
                     $nestedData['jumlah_menit_absen_pc'] = $q->jumlah_menit_absen_pc;
                     $nestedData['jumlah_menit_absen_dtpc'] = $q->jumlah_menit_absen_dtpc;
                     $nestedData['jumlah_absen_menit_kerja'] = $q->jumlah_absen_menit_kerja;
-                    $nestedData['posisi_name'] = $q->status_jabatan;
+                    $nestedData['posisi_name'] = $q->employee_atribut->status_jabatan;
                     $nestedData['work_status'] = $q->status_aktif;
                     $nestedData['employee_status'] = $q->employee_status;
                     $nestedData['mulai_jam_lembur'] = $q->mulai_jam_lembur;
@@ -440,8 +444,8 @@ class DataKehadiranInOutEditedController extends AdminBaseController
                 substr(b.absen_masuk_kerja, 1, 5) absen_masuk_kerja,
                 substr(b.absen_pulang_kerja, 1, 5) absen_pulang_kerja,
                 b.status_absen,
-                b.mulai_jam_lembur,
-                b.akhir_jam_lembur,
+                c.mulai_jam_lembur,
+                c.akhir_jam_lembur,
                 b.nomor_form_lembur,
                 a.join_date,
                 a.tanggal_resign,
@@ -449,7 +453,7 @@ class DataKehadiranInOutEditedController extends AdminBaseController
                 TIMESTAMPDIFF( MONTH, a.join_date, b.tanggal_berjalan ) lama_bekerja_bulan
             FROM
                 employee_atribut a,
-                master_data_absen_kehadiran b
+                master_data_absen_kehadiran b left join data_lembur c on b.enroll_id=c.enroll_id and b.tanggal_berjalan=c.tanggal_berjalan
             WHERE
                 a.enroll_id = b.enroll_id
                 and b.tanggal_berjalan = "' . $tanggal_berjalan . '"

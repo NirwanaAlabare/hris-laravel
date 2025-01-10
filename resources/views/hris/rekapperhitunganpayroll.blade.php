@@ -84,14 +84,14 @@
                         <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
                     </div>
                 </div>
-                <div class="card-body p-5">
+                <div class="card-body pt-5 px-5 pb-7">
                     <form id="form_proses_payroll" method="post">
                         @csrf
                         <div class="row">
                             <div class="col-3 pt-1">
                                 <label class="form-label text-primary">PERIODE UMK</label>
                             </div>
-                            <div class="col-3">
+                            <div class="col-4">
                                 <select id="periode_umk" name="periode_umk" class="form-control PriodeUmk">
                                     <option value="" selected>PILIH PERIODE UMK</option>
                                     <option value="2024-01">UMK 2024 | 26 DES 2024 S/D 31 DES 2024</option>
@@ -100,7 +100,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="row pt-2">
+                        {{-- <div class="row pt-2">
                             <div class="col-3 pt-1">
                                 <label class="form-label text-primary">PERIODE PAYROLL</label>
                             </div>
@@ -114,8 +114,8 @@
                                     <input id="" name="periode_payrols" id="periode" type="month" class="form-control PriodeProses" required>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row pt-2">
+                        </div> --}}
+                        <div class="row pt-4">
                             <div class="col-3 pt-1">
                                 <label class="form-label text-primary">ENROLL ID</label>
                             </div>
@@ -128,13 +128,13 @@
                             </div>
                         </div>
                         @if($loggedAdmin->role_user=='superadmin' || $loggedAdmin->email=='firmansyah@nirwanaindonesia.com' || $loggedAdmin->email=='willy@ptnag.com'  || $loggedAdmin->email=='alex.herdian@ptnag.com')
-                        <div class="row text-white pt-3">
+                        <div class="row text-white pt-4">
                             <div class="col-12">
                                 <a id="BtnProsesPayroll2" class="btn btn-app btn-sm btn-primary text-white BtnProsesPayroll2"><span><i class="fa fa-download"></i></span>PROSES REKAP LEMBUR</a>
                                 <a id="BtnProsesPayroll" class="btn btn-app btn-sm btn-primary text-white BtnProsesPayroll"><span><i class="fa fa-download"></i></span> PROSES PAYROLL</a>
                             </div>
                         </div>
-                        <div class="row pt-1">
+                        <div class="row pt-4">
                             <div class="col-12">
                                 <label id="last_update" style="color: black"></label>
                                 <span class="fa fa-refresh" onclick="get_last_update()" style="cursor: pointer;color:rgb(0, 0, 206)"></span>
@@ -1156,20 +1156,28 @@
             const PriodeProses = document.getElementsByClassName("PriodeProses");
             const PriodeUmk = document.getElementsByClassName("PriodeUmk");
             BtnProsesPayroll.addEventListener('click', function(event) {
-            let tmp = PriodeProses[0].value;
+            // let tmp = PriodeProses[0].value;
             let tmp2 = PriodeUmk[0].value;
-            if(tmp == '' && tmp2 == ''){
+            // if(tmp == '' && tmp2 == ''){
+            //     swal({
+            //         title: "Harap pilih periode payroll atau periode umk",
+            //         text: "Data Periode Payroll atau periode umk tidak boleh kosong",
+            //         icon: "warning",
+            //         button : false,
+            //     });
+            // }
+            // else if(tmp != '' && tmp2 != ''){
+            //     swal({
+            //         title: "Harap pilih salah satu saja diantara periode payroll atau umk",
+            //         text: "Data Periode Payroll atau periode umk tidak boleh kosong",
+            //         icon: "warning",
+            //         button : false,
+            //     });
+            // }
+            if(tmp2 == ''){
                 swal({
-                    title: "Harap pilih periode payroll atau periode umk",
-                    text: "Data Periode Payroll atau periode umk tidak boleh kosong",
-                    icon: "warning",
-                    button : false,
-                });
-            }
-            else if(tmp != '' && tmp2 != ''){
-                swal({
-                    title: "Harap pilih salah satu saja diantara periode payroll atau umk",
-                    text: "Data Periode Payroll atau periode umk tidak boleh kosong",
+                    title: "Harap pilih periode umk",
+                    text: "Data periode umk tidak boleh kosong",
                     icon: "warning",
                     button : false,
                 });

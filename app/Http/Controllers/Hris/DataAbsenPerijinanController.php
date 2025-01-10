@@ -364,8 +364,6 @@ class DataAbsenPerijinanController extends AdminBaseController
             'tanggal_perizinan' => $tanggal_perizinan,
             'nomor_form_perizinan' => $nomor_form_perizinan,
             'enroll_id' => $enroll_id,
-            'nik' => $nik,
-            'employee_name' => $employee_name,
             'kode_absen_ijin' => $kode_absen_ijin,
             'absen_alasan' => $absen_alasan,
             'time_mulai_ijin' => $time_mulai_ijin,
@@ -389,7 +387,6 @@ class DataAbsenPerijinanController extends AdminBaseController
             ->update([
                 'nomor_absen_ijin' => $nomor_form_perizinan,
                 'status_absen' => $kode_absen_ijin,
-                'absen_alasan' => $absen_alasan,
                 'operator' => $email,
                 'updated_absen_ijin' => now()
             ]);

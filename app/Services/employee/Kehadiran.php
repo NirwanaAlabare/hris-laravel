@@ -142,47 +142,12 @@ class Kehadiran{
                 'nama_hari' => $nama_hari,
                 'mulai_jam_kerja' => $mulai_jam_kerja,
                 'akhir_jam_kerja' => $akhir_jam_kerja,
-                'employee_id' => $employee->employee_id,
-                'employee_name' => $employee->employee_name,
                 'enroll_id' => $employee->enroll_id,
-                'join_date' => $employee->join_date,
-                'tanggal_resign' => $employee->tanggal_resign,
-                'work_status' => $employee->work_status,
-                'status_aktif' => $employee->status_aktif,
-                'status_kontrak_tetap' => $employee->status_kontrak_tetap,
-                'employee_status' => $employee->employee_status,
-                'status_jabatan' => $employee->status_jabatan,
-                'posisi_name' => $employee->posisi_name,
-                'status_staff' => $employee->status_staff,
-                'nik' => $employee->nik,
-                'site_nirwana_id' => $employee->site_nirwana_id,
-                'site_nirwana_name' => $employee->site_nirwana_name,
-                'department_id' => $employee->department_id,
-                'department_name' => $employee->department_name,
-                'sub_dept_id' => $employee->sub_dept_id,
-                'sub_dept_name' => $employee->sub_dept_name,
                 'status_absen' => $status_absen,
                 'operator' =>$loggedAdmin->email,
             ];
             MasterDataAbsenKehadiran::create($x);
              $tgl_berjalan = date ("Y-m-d", strtotime("+1 day", strtotime($tgl_berjalan)));
-        }
-        $employee2=EmployeeAtribut::where('enroll_id',$enroll_id)->get();
-        foreach ($employee2 as $key => $value2) {
-            $tgl_berjalan2=$value2->join_date;
-            while (strtotime( $tgl_berjalan2) <= strtotime($tanggal_akhir)) {
-                $x2=[
-                    'status_aktif' => $value2->status_aktif,
-                    'status_kontrak_tetap' => $value2->status_kontrak_tetap,
-                    'employee_status' => $value2->status_kontrak_tetap,
-                    'status_jabatan' => $value2->status_jabatan,
-                    'posisi_name' => $value2->posisi_name,
-                    'status_staff' => $value2->status_staff,
-                ];
-                MasterDataAbsenKehadiran::where('tanggal_berjalan',$tgl_berjalan2)->where('enroll_id',$value2->enroll_id)->update($x2);
-                $tgl_berjalan2 = date ("Y-m-d", strtotime("+1 day", strtotime($tgl_berjalan2)));
-
-            }
         }
 
     }

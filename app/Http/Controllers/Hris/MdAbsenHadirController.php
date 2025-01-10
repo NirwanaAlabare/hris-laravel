@@ -1296,7 +1296,7 @@ class MdAbsenHadirController extends AdminBaseController
                 LEFT JOIN `employee_atribut` ON `master_data_absen_kehadiran`.`enroll_id` = `employee_atribut`.`enroll_id`
                 LEFT JOIN ref_absen_ijin b on master_data_absen_kehadiran.status_absen=b.kode_absen_ijin
                 LEFT JOIN `data_lembur` ON `master_data_absen_kehadiran`.`enroll_id`= `data_lembur`.`enroll_id` AND `master_data_absen_kehadiran`.`tanggal_berjalan`=`data_lembur`.`tanggal_berjalan`
-                LEFT JOIN `rekap_perhitungan_lembur` ON `master_data_absen_kehadiran`.`tanggal_berjalan` = `rekap_perhitungan_lembur`.`tanggal_berjalan`
+                LEFT JOIN `rekap_perhitungan_lembur` ON `master_data_absen_kehadiran`.`tanggal_berjalan` = `rekap_perhitungan_lembur`.`tanggal_berjalan` and `master_data_absen_kehadiran`.`enroll_id` = `rekap_perhitungan_lembur`.`enroll_id`
                 LEFT JOIN data_absen_perijinan c on master_data_absen_kehadiran.nomor_absen_ijin=c.nomor_form_perizinan
             
             WHERE

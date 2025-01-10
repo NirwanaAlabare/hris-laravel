@@ -258,8 +258,8 @@
                 <div class="card-body">
                     <!-- BEGIN FORM-->
                     {!! Form::open(['route' => 'hris.employeeatr.create', 'id' => 'form1', 'name' => 'form1', 'method'=>'post']) !!}
-                    <input id="uuid" type="text">
-                    <input id="uuid_master" type="text">
+                    <input id="uuid" type="hidden">
+                    <input id="uuid_master" type="hidden">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -1110,28 +1110,28 @@
                                                 $("#btn-save-izin").html('<span><i class="fa fa-save"></i></span> Save');
                                                 $("#datatable-ajax-crud").DataTable().ajax.reload();
                                             } else {
-                                            $('#progress-show-1').hide();
-                                            $('#progress-hide-1').show();
-                                            $('#btn-save-izin').removeClass("btn-loading");
-                                            $("#btn-save-izin").html('<span><i class="fa fa-save"></i></span> Save');
-                                            $("#form1 :input").prop("disabled", true);
-                                            $("#btn-save-izin").prop("disabled", true);
-                                            $("#btn-save-iks").prop("disabled", true);
-                                            $("#btn-cancel-izin").prop("disabled", true);
-                                            $("#btn-cancel-iks").prop("disabled", true);
-                                            $("#datatable-ajax-crud").DataTable().ajax.reload();
-                                            $('#data-perizinan-iks').show();
-                                            $('#data-karyawan').hide("slow");
-                                            swal("", "create perizinan berhasil", "success");
-                                            $('#nomor_form_perizinan').val('');
-                                            $('#enroll_id').val('');
-                                            $('#nik').val('');
-                                            $('#employee_name').val('');
-                                            $('#tanggal_mulai_ijin').val('');
-                                            $('#tanggal_akhir_ijin').val('');
-                                            $('#kode_absen_ijin').val('');
-                                            $('#absen_alasan_izin').val('');
-                                        }
+                                                $('#progress-show-1').hide();
+                                                $('#progress-hide-1').show();
+                                                $('#btn-save-izin').removeClass("btn-loading");
+                                                $("#btn-save-izin").html('<span><i class="fa fa-save"></i></span> Save');
+                                                $("#form1 :input").prop("disabled", true);
+                                                $("#btn-save-izin").prop("disabled", true);
+                                                $("#btn-save-iks").prop("disabled", true);
+                                                $("#btn-cancel-izin").prop("disabled", true);
+                                                $("#btn-cancel-iks").prop("disabled", true);
+                                                $("#datatable-ajax-crud").DataTable().ajax.reload();
+                                                $('#data-perizinan-iks').show();
+                                                $('#data-karyawan').hide("slow");
+                                                swal("", "create perizinan berhasil", "success");
+                                                $('#nomor_form_perizinan').val('');
+                                                $('#enroll_id').val('');
+                                                $('#nik').val('');
+                                                $('#employee_name').val('');
+                                                $('#tanggal_mulai_ijin').val('');
+                                                $('#tanggal_akhir_ijin').val('');
+                                                $('#kode_absen_ijin').val('');
+                                                $('#absen_alasan_izin').val('');
+                                            }
                                         },
                                         error: function(res){
                                             swal("", "create perizinan gagal", "error");

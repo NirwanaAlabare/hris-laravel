@@ -376,17 +376,16 @@ class DataJadwalKerjaLogController extends AdminBaseController
             $inDepartment = '';
         } else {
             if ($department_id) {
-                $inDepartment = ' and department_all.department_id = "' . $department_id . '" ';
+                $inDepartment = ' and employee_atribut.department_id = "' . $department_id . '" ';
             } else {
                 $inDepartment = '';
             }
         }
 
         $query =  MasterDataAbsenKehadiran::selectRaw('
-                    master_data_absen_kehadiran.uuid, 
-                    master_data_absen_kehadiran.nik, master_data_absen_kehadiran.employee_name, master_data_absen_kehadiran.kode_hari, master_data_absen_kehadiran.nama_hari,
+                    master_data_absen_kehadiran.uuid, master_data_absen_kehadiran.kode_hari, master_data_absen_kehadiran.nama_hari,
                     master_data_absen_kehadiran.tanggal_berjalan, master_data_absen_kehadiran.enroll_id,                     
-                    department_all.sub_dept_id, department_all.sub_dept_name, holiday_name,
+                    employee_atribut.sub_dept_id, employee_atribut.sub_dept_name, holiday_name,employee_atribut.nik,employee_atribut.employee_name,
                     substr(master_data_absen_kehadiran.mulai_jam_kerja,1,5) mulai_jam_kerja, substr(master_data_absen_kehadiran.akhir_jam_kerja, 1, 5) akhir_jam_kerja,
                     substr(master_data_absen_kehadiran.absen_masuk_kerja, 1, 5) absen_masuk_kerja, substr(master_data_absen_kehadiran.absen_pulang_kerja, 1, 5) absen_pulang_kerja,
                     employee_atribut.status_staff')
@@ -395,13 +394,11 @@ class DataJadwalKerjaLogController extends AdminBaseController
                     ' . $inEmp . '
                     ' . $inDepartment . '
                 ')
-                ->join('department_all', 'master_data_absen_kehadiran.sub_dept_id', '=', 'department_all.sub_dept_id')
                 ->join('employee_atribut', 'master_data_absen_kehadiran.enroll_id', '=', 'employee_atribut.enroll_id')
                 ->groupBy('master_data_absen_kehadiran.tanggal_berjalan')
                 ->groupBy('master_data_absen_kehadiran.enroll_id')
-                ->groupBy('department_all.sub_dept_id')
                 ->groupBy('employee_atribut.enroll_id')
-                ->orderBy('master_data_absen_kehadiran.employee_name','asc')
+                ->orderBy('employee_atribut.employee_name','asc')
                 ->orderBy('master_data_absen_kehadiran.tanggal_berjalan','asc')
                 ->get();
         

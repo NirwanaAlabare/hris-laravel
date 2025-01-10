@@ -445,6 +445,7 @@
                 },
                 dataType: 'json',
                 success: function(res){
+                    console.log(res);
                     if(res){
                         for(i=0;i<res.length;i++) {
                             nomor_urut = i+1;
