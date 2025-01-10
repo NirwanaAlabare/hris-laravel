@@ -74,7 +74,7 @@
                     <div class="text-white"></div>
                 </div>
             </div>
-        </div>        
+        </div>
         <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
             <!-- Begin Form Edit Absen Karyawan -->
             <div id="data-gagal-absen" class="card shadow" id="datatable-data-karyawan">
@@ -90,7 +90,7 @@
                                 <li><a href="javascript:void(0)" id="btn-edit"><i class="fa fa-edit"></i> Edit</a></li>
                                 <li><a href="javascript:void(0)" id="btn-remove"><i class="fa fa-remove"></i> Hapus</a></li>
                             </ul>
-                        </div>                        
+                        </div>
                         REFERENSI ABSEN IJIN
                     </div>
                     <div class="card-options ">
@@ -130,7 +130,7 @@
                             <th class="w-35">Update At</th>
                             <td class="w-65"><div id="updated_at"></div></td>
                         </tr>
-                    </table>                                                    
+                    </table>
                     {{-- </form> --}}
                     {!! Form::close() !!}
                     <!-- END FORM-->
@@ -146,7 +146,7 @@
                             <i class="fa fa-close"></i>
                         </span>
                         Cancel</button>
-                </div>    
+                </div>
             </div>
         </div>
     </div>
@@ -202,19 +202,19 @@
 
         $('body').on('click', '#btn-add', function (event) {
             var kode_absen_ijin = $("#kode_absen_ijin").val();
-            
+
             $("#form1 :input").prop("disabled", false);
             $("#btn-save").prop("disabled", false);
             $("#btn-cancel").prop("disabled", false);
             $("#form1").trigger('reset');
             $('#created_at').text("");
-            $('#updated_at').text("");    
+            $('#updated_at').text("");
 
         });
-        
+
         $('body').on('click', '#btn-edit', function (event) {
             var kode_absen_ijin = $("#kode_absen_ijin").val();
-            
+
             if (kode_absen_ijin.length > 0) {
                 $("#form1 :input").prop("disabled", false);
                 $("#btn-save").prop("disabled", false);
@@ -262,13 +262,13 @@
                     notif({
                         msg: "<b>Info:</b> Data berhasil di simpan.",
                         type: "info"
-                    });    
+                    });
                 },
                 error: function(res){
                     notif({
                         msg: "<b>Error:</b> Oops data gagal di simpan.",
                         type: "error"
-                    });    
+                    });
                 }
             });
 
@@ -278,8 +278,8 @@
             $("#btn-save").html('<span><i class="fa fa-save"></i></span> Simpan');
             $("#form1 :input").prop("disabled", true);
             $("#btn-save").prop("disabled", true);
-            $("#btn-cancel").prop("disabled", true);    
-            $("#datatable-ajax-crud").DataTable().ajax.reload();                    
+            $("#btn-cancel").prop("disabled", true);
+            $("#datatable-ajax-crud").DataTable().ajax.reload();
         });
 
         $('body').on('click', '#btn-remove', function (event) {
@@ -298,10 +298,10 @@
 
                     $("#form1 :input").prop("disabled", true);
                     $("#btn-save").prop("disabled", true);
-                    $("#btn-cancel").prop("disabled", true);    
+                    $("#btn-cancel").prop("disabled", true);
                     $('#progress-show-1').show();
                     $('#progress-hide-1').hide();
-        
+
                     $.ajax({
                         type:"POST",
                         url: "{{route('hris.refabsenijin.destroy')}}",
@@ -316,27 +316,27 @@
                             notif({
                                 msg: "<b>Info:</b> Data berhasil di hapus.",
                                 type: "info"
-                            });    
+                            });
                         },
                         error: function(res){
                             notif({
                                 msg: "<b>Error:</b> Oops data gagal di hapus.",
                                 type: "error"
-                            });    
+                            });
                         }
                     });
-        
+
                     $('#progress-show-1').hide();
-                    $('#progress-hide-1').show();    
+                    $('#progress-hide-1').show();
                     $("#datatable-ajax-crud").DataTable().ajax.reload();
 
                 } else {
                     // else everythings
                 }
             });
-                    
+
         });
-        
+
         $(document).ready(function() {
             var table1 = $('#datatable-ajax-crud').DataTable({
                 processing: true,
@@ -395,11 +395,11 @@
                 var row = table1.row(tr);
 
                 var data = row.data();
-        
+
                 $("#form1 :input").prop("disabled", true);
                 $("#btn-save").prop("disabled", true);
                 $("#btn-cancel").prop("disabled", true);
-                
+
                 $("#datatable-ajax-crud tbody tr").removeClass('bg-cyan');
                 $(this).addClass('bg-cyan');
 
@@ -413,7 +413,7 @@
              });
 
         });
-        
+
     </script>
 
 @endsection
