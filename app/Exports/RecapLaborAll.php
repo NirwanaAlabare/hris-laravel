@@ -197,7 +197,7 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
                 $sheet->setCellValue('AM8', 'Jumlah Jam Lembur');
                 $sheet->getDelegate()->getStyle('AM8')->applyFromArray($border_all)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('AO7')->applyFromArray($border_top);
-                $sheet->setCellValue('AO8', 'UPAH UMK');
+                $sheet->setCellValue('AO8', 'Upah Grade');
                 $sheet->getDelegate()->getStyle('AO8')->applyFromArray($border_bottom)->getAlignment()->setWrapText(true);
                 $sheet->getDelegate()->getStyle('AP7')->applyFromArray($border_top);
                 $sheet->setCellValue('AP8', 'Upah / Hari');
