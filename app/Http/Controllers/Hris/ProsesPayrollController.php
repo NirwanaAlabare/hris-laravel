@@ -2025,10 +2025,19 @@ class ProsesPayrollController extends AdminBaseController
                 $enroll_id = $value->enroll_id;
                 $kode = str_replace(array('-', ' '), '', $periode) . str_pad($enroll_id, 5, '0', STR_PAD_LEFT);
                 $kode_rekap = date('Ymd', strtotime(substr($kode, 0, 8))) . date('Ymd', strtotime(substr($kode, 11, 8))) . substr($kode, 19);
-                $kode_grade=EmployeeAtribut::select('kode_grade')->where('enroll_id',$value->enroll_id)->pluck('kode_grade')[0];
+                $kode_grade=EmployeeAtribut::select('kode_grade')->where('enroll_id',$value->enroll_id)->first()->kode_grade;
                 $salary_bulanan=2942088;
-                if(isset(GradingSalary::select('salary_bulanan')->where('kode_grade',$kode_grade)->where('periode_umk','2024-01')->pluck('salary_bulanan')[0])){
-                    $salary_bulanan=GradingSalary::select('salary_bulanan')->where('kode_grade',$kode_grade)->where('periode_umk','2024-01')->pluck('salary_bulanan')[0];
+                $tahun_berjalan = $value->periode_tahun;
+                $check_salary_bulanan = GradingSalary::select('salary_bulanan')
+                                ->where('kode_grade', $kode_grade)
+                                ->whereRaw("SUBSTRING(periode_umk, 1, 4) = ?", [$tahun_berjalan])
+                                ->first();
+                if($check_salary_bulanan){
+                    $salary_bulanan=GradingSalary::select('salary_bulanan')
+                    ->where('kode_grade', $kode_grade)
+                    ->whereRaw("SUBSTRING(periode_umk, 1, 4) = ?", [$tahun_berjalan])
+                    ->first()
+                    ->salary_bulanan;
                 }
                 $hari_potongan=max($value->jumlah_hari_kerja-$value->total_kehadiran_net, 0);
                 $hari_potongan_security=max(25-$value->total_kehadiran_net, 0);
@@ -2225,8 +2234,20 @@ class ProsesPayrollController extends AdminBaseController
                         $l2=$le2<0?0:$le2;
                     }
                     
-                    $kode_grade=EmployeeAtribut::select('kode_grade')->where('enroll_id',$value2['enroll_id'])->pluck('kode_grade')[0];
-                    $salary_bulanan=GradingSalary::select('salary_bulanan')->where('kode_grade',$kode_grade)->where('periode_umk','2024-01')->pluck('salary_bulanan')[0];
+                    $kode_grade=EmployeeAtribut::select('kode_grade')->where('enroll_id',$value->enroll_id)->first()->kode_grade;
+                    $salary_bulanan=2942088;
+                    $tahun_berjalan = $value->periode_tahun;
+                    $check_salary_bulanan = GradingSalary::select('salary_bulanan')
+                                    ->where('kode_grade', $kode_grade)
+                                    ->whereRaw("SUBSTRING(periode_umk, 1, 4) = ?", [$tahun_berjalan])
+                                    ->first();
+                    if($check_salary_bulanan){
+                        $salary_bulanan=GradingSalary::select('salary_bulanan')
+                        ->where('kode_grade', $kode_grade)
+                        ->whereRaw("SUBSTRING(periode_umk, 1, 4) = ?", [$tahun_berjalan])
+                        ->first()
+                        ->salary_bulanan;
+                    }
                     if($value2['kode_hari']==6 || $value2['status_absen']=='LN'){
                         $l1_rupiah=$l1*($salary_bulanan/173*1);
                         $l2_rupiah=$l2*($salary_bulanan/173*2);
@@ -2443,8 +2464,20 @@ class ProsesPayrollController extends AdminBaseController
                         $l2=$le2<0?0:$le2;
                     }
                     
-                    $kode_grade=EmployeeAtribut::select('kode_grade')->where('enroll_id',$value2['enroll_id'])->pluck('kode_grade')[0];
-                    $salary_bulanan=GradingSalary::select('salary_bulanan')->where('kode_grade',$kode_grade)->where('periode_umk','2024-01')->pluck('salary_bulanan')[0];
+                    $kode_grade=EmployeeAtribut::select('kode_grade')->where('enroll_id',$value->enroll_id)->first()->kode_grade;
+                    $salary_bulanan=2942088;
+                    $tahun_berjalan = $value->periode_tahun;
+                    $check_salary_bulanan = GradingSalary::select('salary_bulanan')
+                                    ->where('kode_grade', $kode_grade)
+                                    ->whereRaw("SUBSTRING(periode_umk, 1, 4) = ?", [$tahun_berjalan])
+                                    ->first();
+                    if($check_salary_bulanan){
+                        $salary_bulanan=GradingSalary::select('salary_bulanan')
+                        ->where('kode_grade', $kode_grade)
+                        ->whereRaw("SUBSTRING(periode_umk, 1, 4) = ?", [$tahun_berjalan])
+                        ->first()
+                        ->salary_bulanan;
+                    }
                     if($value2['kode_hari']==6 || $value2['status_absen']=='LN'){
                         $l1_rupiah=$l1*($salary_bulanan/173*1);
                         $l2_rupiah=$l2*($salary_bulanan/173*2);
@@ -5205,7 +5238,7 @@ class ProsesPayrollController extends AdminBaseController
                 }
                 
                 $kode_grade=EmployeeAtribut::select('kode_grade')->where('enroll_id',$value2['enroll_id'])->pluck('kode_grade')[0];
-                $salary_bulanan=GradingSalary::select('salary_bulanan')->where('kode_grade',$kode_grade)->where('periode_umk','2024-01')->pluck('salary_bulanan')[0];
+                $salary_bulanan=GradingSalary::select('salary_bulanan')->where('kode_grade',$kode_grade)->where('periode_umk','2025-01')->pluck('salary_bulanan')[0];
                 if($value2['kode_hari']==6 || $value2['status_absen']=='LN'){
                     $l1_rupiah=$l1*($salary_bulanan/173*1);
                     $l2_rupiah=$l2*($salary_bulanan/173*2);
@@ -5496,7 +5529,7 @@ class ProsesPayrollController extends AdminBaseController
                 }
                 
                 $kode_grade=EmployeeAtribut::select('kode_grade')->where('enroll_id',$value2['enroll_id'])->pluck('kode_grade')[0];
-                $salary_bulanan=GradingSalary::select('salary_bulanan')->where('kode_grade',$kode_grade)->where('periode_umk','2024-01')->pluck('salary_bulanan')[0];
+                $salary_bulanan=GradingSalary::select('salary_bulanan')->where('kode_grade',$kode_grade)->where('periode_umk','2025-01')->pluck('salary_bulanan')[0];
                 if($value2['kode_hari']==6 || $value2['status_absen']=='LN'){
                     $l1_rupiah=$l1*($salary_bulanan/173*1);
                     $l2_rupiah=$l2*($salary_bulanan/173*2);
