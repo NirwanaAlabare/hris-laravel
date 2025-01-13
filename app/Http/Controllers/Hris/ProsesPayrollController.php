@@ -3108,7 +3108,7 @@ class ProsesPayrollController extends AdminBaseController
                 }
                 foreach ($data as $k => $v) {
                     $upah_per_bulan=$v['upah_per_hari']*$v['jumlah_hari_kerja'];
-                    $upah_bruto_rupiah=($upah_per_bulan+$v['tunjangan_karyawan_rupiah']+$v['premi_karyawan']+$v['total_lembur_rupiah']+$v['pendapatan_lainnya_rupiah']+$v['koreksi_upah_rupiah'])-($v['koreksi_potongan_rupiah']+$v['potongan_iks_rupiah']+$v['potongan_dtpc_rupiah']+$v['potongan_kehadiran_rupiah']);
+                    $upah_bruto_rupiah=($upah_per_bulan+$v['tunjangan_karyawan_rupiah']+$v['premi_karyawan']+$v['total_lembur_rupiah']+$v['pendapatan_lainnya_rupiah']+$v['koreksi_upah_rupiah'])-($v['koreksi_potongan_rupiah']+$v['potongan_iks_rupiah']+$v['potongan_dtpc_rupiah']+$v['potongan_kehadiran_rupiah'])-$v['pph21'];
                     $upah_neto_rupiah=($upah_per_bulan+$v['tunjangan_karyawan_rupiah']+$v['premi_karyawan']+$v['total_lembur_rupiah']+$v['pendapatan_lainnya_rupiah']+$v['koreksi_upah_rupiah'])-($v['koreksi_potongan_rupiah']+$v['potongan_iks_rupiah']+$v['potongan_dtpc_rupiah']+$v['potongan_kehadiran_rupiah'])-$v['pph21'];
                     $upah_bersih_rupiah=$upah_neto_rupiah;
                     $total_upah_thp_rupiah=$upah_neto_rupiah;
