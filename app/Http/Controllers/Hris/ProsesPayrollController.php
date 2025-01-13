@@ -2966,19 +2966,38 @@ class ProsesPayrollController extends AdminBaseController
                 }
 
                 //rekap payroll
-                $karyawan=EmployeeAtribut::selectRaw('employee_id,employee_name,jenis_kelamin,tempat_lahir,tanggal_lahir,golongan_darah,email,nomor_tlpn,agama,status_kawin,npwp,nomor_ktp,nomor_kk,ptkp,nama_sekolah_terakhir,pendidikan_terakhir,jurusan_pendidikan,nama_bank,nomor_rekening_bank,ibu_kandung,propinsi,kota_kab,kecamatan,kelurahan_desa,alamat_rumah,alamat_sementara,site_nirwana_id,site_nirwana_name,department_id,department_name,sub_dept_id,sub_dept_name,enroll_id,join_date,nik,status_aktif,status_jabatan,status_kontrak_tetap,status_staff,tanggal_resign,tunjangan,kode_grade,referensi,employee_name_atasan,status_aktif_bpjs_tk,tanggal_bpjs_ketenagakerjaan,nomor_bpjs_ketenagakerjaan,status_aktif_bpjs_ks,tanggal_bpjs_kesehatan,nomor_bpjs_kesehatan,pengalaman_bekerja,lokasi_file_cv,nama_kerabat,nomor_tlpn_kerabat,hubungan_kerabat,alamat_kerabat,tanggal_vaccine1,nama_vaksin1,tanggal_vaccine2,nama_vaksin2,tanggal_vaccine3,nama_vaksin3,golongan_sim,nomor_sim,tanggal_expire_sim,catatan,lokasi_foto,operator,tanggal_mulai_kontrak,tanggal_akhir_kontrak,catatan_kontrak,created_at,updated_at,deleted_at,shift_work_id,work_status,employee_status,posisi_name,hamlet,kode_pos,saudara_yang_bisa_dihubungi,allowance,pola_kerja')->whereRaw('((status_aktif="AKTIF" and join_date <= "'.$tanggal_akhir.'") or tanggal_resign>"'.$tanggal_awal.'")'.$inEnrollId.'')->get();
-                $data=[];
+                $karyawan=EmployeeAtribut::selectRaw('employee_id,employee_name,jenis_kelamin,tempat_lahir,tanggal_lahir,golongan_darah,email,nomor_tlpn,agama,status_kawin,npwp,nomor_ktp,nomor_kk,ptkp,nama_sekolah_terakhir,pendidikan_terakhir,jurusan_pendidikan,nama_bank,nomor_rekening_bank,ibu_kandung,propinsi,kota_kab,kecamatan,kelurahan_desa,alamat_rumah,alamat_sementara,site_nirwana_id,site_nirwana_name,department_id,department_name,sub_dept_id,sub_dept_name,enroll_id,join_date,nik,status_aktif,status_jabatan,status_kontrak_tetap,status_staff,tanggal_resign,tunjangan,kode_grade,referensi,employee_name_atasan,status_aktif_bpjs_tk,tanggal_bpjs_ketenagakerjaan,nomor_bpjs_ketenagakerjaan,status_aktif_bpjs_ks,tanggal_bpjs_kesehatan,nomor_bpjs_kesehatan,pengalaman_bekerja,lokasi_file_cv,nama_kerabat,nomor_tlpn_kerabat,hubungan_kerabat,alamat_kerabat,tanggal_vaccine1,nama_vaksin1,tanggal_vaccine2,nama_vaksin2,tanggal_vaccine3,nama_vaksin3,golongan_sim,nomor_sim,tanggal_expire_sim,catatan,lokasi_foto,operator,tanggal_mulai_kontrak,tanggal_akhir_kontrak,catatan_kontrak,created_at,updated_at,deleted_at,shift_work_id,work_status,employee_status,posisi_name,hamlet,kode_pos,saudara_yang_bisa_dihubungi,allowance,pola_kerja')->whereRaw('((status_aktif="AKTIF" and join_date <= "'.$month_umk_last.'") or (tanggal_resign>"'.$tanggal_awal.'" and join_date <= "'.$month_umk_last.'" ))'.$inEnrollId.'')->get();
                 foreach ($karyawan as $key => $value) {
                     $rekap_kehadiran=RekapPerhitunganKehadiranKaryawan::where('enroll_id',$value->enroll_id)->where('periode_payroll',$priode)->where('periode_umk',$periode_umk)->first();
                     $rekap_lembur=RekapPerhitunganLembur::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan','>=',$month_umk_first)->where('tanggal_berjalan','<=',$month_umk_last)->get();
                     $rekap_iks=RekapPerhitunganIKS::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan','>=',$month_umk_first)->where('tanggal_berjalan','<=',$month_umk_last)->get();
                     $rekap_dtpc=RekapPerhitunganDTPC::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan','>=',$month_umk_first)->where('tanggal_berjalan','<=',$month_umk_last)->get();
                     $Bpjs=EmployeeBpjs::where('enroll_id',$value->enroll_id)->where('periode_kehadiran',$priode)->first();
-                    $tunjangan=0;
-
+                    $tunjangan_karyawan_2=0;
+                    $premi_karyawan_insentif=0;
                     if($rekap_kehadiran!=null){
-                        list($periode_tahun_payroll, $periode_bulan_payroll) = explode("-", $rekap_kehadiran->periode_tahun_bulan);
+                        $salary_bulanan_insentif=GradingSalary::where('kode_grade',$value->kode_grade)->where('periode_umk','2024-01')->first()->insentif;
+                        $premi_karyawan_insentif=($salary_bulanan_insentif/21)*($rekap_kehadiran->kehadiran_ok+$rekap_kehadiran->kehadiran_dt+$rekap_kehadiran->kehadiran_pc+$rekap_kehadiran->kehadiran_dtpc);
+                        // hitung selisih tahun antara tanggal masuk dan sekarang
                         $tanggal_masuk = $value->join_date;
+                        list($periode_tahun_payroll, $periode_bulan_payroll) = explode("-", $rekap_kehadiran->periode_tahun_bulan);
+                        $selisih_tahun = date_diff(date_create($tanggal_masuk), date_create($tanggal_awal))->y;
+    
+                        // tentukan besaran tunjangan berdasarkan masa kerja
+                        if ($selisih_tahun < 1) {
+                            $tunjangan = 0;
+                        } elseif ($selisih_tahun < 3) {
+                            $tunjangan = 2500;
+                        } elseif ($selisih_tahun < 6) {
+                            $tunjangan = 5000;
+                        }elseif ($selisih_tahun < 9) {
+                            $tunjangan = 7500;
+                        }elseif ($selisih_tahun < 12) {
+                            $tunjangan = 10000;
+                        }else{
+                            $tunjangan = 12500;
+                        }
+                        $tunjangan_karyawan_2=(($tunjangan/($jumlah_hari_total-$jumlah_hari_sabtu_minggu_total))*($jumlah_hari-$jumlah_hari_sabtu_minggu));
                         // hitung selisih tahun antara tanggal masuk dan sekarang
                         $bpjs_tk_jkm_bruto_rupiah=$Bpjs->bpjs_tk_jkm_bruto_rupiah??0;
                         $bpjs_tk_jkm_neto_rupiah=$Bpjs->bpjs_tk_jkm_neto_rupiah??0;
@@ -3016,8 +3035,8 @@ class ProsesPayrollController extends AdminBaseController
                             'npwp'=>$value->npwp,
                             'operator'=>'sistem',
                             'sub_dept_id'=>$value->sub_dept_id,
-                            'tunjangan_karyawan_rupiah'=>$tunjangan,
-                            'premi_karyawan'=>0,
+                            'tunjangan_karyawan_rupiah'=>$tunjangan_karyawan_2,
+                            'premi_karyawan'=>$premi_karyawan_insentif,
                             'kehadiran_iby'=>$rekap_kehadiran->kehadiran_iby,
                             'kehadiran_itb'=>$rekap_kehadiran->kehadiran_itb,
                             'kehadiran_m'=>$rekap_kehadiran->kehadiran_m,
@@ -3441,6 +3460,7 @@ class ProsesPayrollController extends AdminBaseController
 
                     $upah_hari_kerja_total=$upah_hari_kerja_mandiri_1+$upah_hari_kerja_mandiri_2;
                     $tunjangan_mandiri=TunjanganKaryawan::where('enroll_id',$value->join_date)->where('periode_payroll',$priode)->first();
+                    $premi_kehadiran_karyawan_mandiri=RekapPerhitunganPayroll::where('enroll_id',$value->enroll_id)->where('periode_tahun_payroll','2025')->where('periode_umk','!=','')->where('periode_bulan_payroll','01')->sum('premi_karyawan');
                     $selisih_tahun = date_diff(date_create($value->join_date), date_create($tanggal_awal))->y;
                     // tentukan besaran tunjangan berdasarkan masa kerja
                     if ($selisih_tahun < 1) {
@@ -3457,8 +3477,8 @@ class ProsesPayrollController extends AdminBaseController
                         $tunjangan_mandiri = 12500;
                     }
 
-                    $upah_bruto_rupiah_mandiri=($upah_hari_kerja_total+$tunjangan_mandiri+$value->premi_karyawan+$total_lembur_rupiah_mandiri+$pendapatan_lainnya_rupiah_mandiri+$koreksi_upah_rupiah_mandiri+$insentif_jabatan_rupiah_mandiri)-($koreksi_potongan_rupiah_mandiri+$potongan_iks_rupiah_mandiri+$potongan_dtpc_rupiah_mandiri+$potongan_kehadiran_rupiah_mandiri);
-                    $upah_neto_rupiah_mandiri=($upah_hari_kerja_total+$tunjangan_mandiri+$value->premi_karyawan+$total_lembur_rupiah_mandiri+$pendapatan_lainnya_rupiah_mandiri+$koreksi_upah_rupiah_mandiri+$insentif_jabatan_rupiah_mandiri)-($koreksi_potongan_rupiah_mandiri+$potongan_iks_rupiah_mandiri+$potongan_dtpc_rupiah_mandiri+$potongan_kehadiran_rupiah_mandiri)-$value->pph21;
+                    $upah_bruto_rupiah_mandiri=($upah_hari_kerja_total+$tunjangan_mandiri+$premi_kehadiran_karyawan_mandiri+$total_lembur_rupiah_mandiri+$pendapatan_lainnya_rupiah_mandiri+$koreksi_upah_rupiah_mandiri+$insentif_jabatan_rupiah_mandiri)-($koreksi_potongan_rupiah_mandiri+$potongan_iks_rupiah_mandiri+$potongan_dtpc_rupiah_mandiri+$potongan_kehadiran_rupiah_mandiri);
+                    $upah_neto_rupiah_mandiri=($upah_hari_kerja_total+$tunjangan_mandiri+$premi_kehadiran_karyawan_mandiri+$total_lembur_rupiah_mandiri+$pendapatan_lainnya_rupiah_mandiri+$koreksi_upah_rupiah_mandiri+$insentif_jabatan_rupiah_mandiri)-($koreksi_potongan_rupiah_mandiri+$potongan_iks_rupiah_mandiri+$potongan_dtpc_rupiah_mandiri+$potongan_kehadiran_rupiah_mandiri)-$value->pph21;
 
                     $bpjs_tk_jkm_bruto_rupiah_mandiri=$Bpjs->bpjs_tk_jkm_bruto_rupiah??0;
                     $bpjs_tk_jkm_neto_rupiah_mandiri=$Bpjs->bpjs_tk_jkm_neto_rupiah??0;
