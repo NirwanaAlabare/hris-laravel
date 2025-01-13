@@ -2986,7 +2986,7 @@ class ProsesPayrollController extends AdminBaseController
                         $tanggal_masuk = $value->join_date;
                         list($periode_tahun_payroll, $periode_bulan_payroll) = explode("-", $rekap_kehadiran->periode_tahun_bulan);
                         $selisih_tahun = date_diff(date_create($tanggal_masuk), date_create($tanggal_awal))->y;
-    
+
                         // tentukan besaran tunjangan berdasarkan masa kerja
                         if ($selisih_tahun < 1) {
                             $tunjangan = 0;
@@ -3332,8 +3332,6 @@ class ProsesPayrollController extends AdminBaseController
                             'periode_bpjs' => $value['periode_bpjs'],
                             'periode_kehadiran' => $value['periode_kehadiran'],
                             'enroll_id' => $value['enroll_id'],
-                            'nik' => $value['nik'],
-                            'employee_name' => $value['employee_name'],
                             'status_aktif_bpjs_tk' => $value['status_aktif_bpjs_tk'],
                             'tanggal_bpjs_ketenagakerjaan' => $value['tanggal_bpjs_ketenagakerjaan'],
                             'nomor_bpjs_ketenagakerjaan' => $value['nomor_bpjs_ketenagakerjaan'],
