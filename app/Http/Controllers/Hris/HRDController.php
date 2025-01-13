@@ -17,6 +17,7 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Models\MasterDataAbsenKehadiran;
 use App\Exports\exportExcelKontrak;
 use App\Models\DasarPotBPJS;
+use DateTime;
 use Maatwebsite\Excel\Facades\Excel;
 
 class HRDController extends AdminBaseController
@@ -57,50 +58,110 @@ class HRDController extends AdminBaseController
         }
 
         $date = date('Y-m-d');
-        $query =  DB::select(DB::raw("
-            SELECT 
-                    Absens.enroll_id,
-                    MIN(Absens.tanggal_berjalan) AS mulai,
-                    MAX(Absens.tanggal_berjalan) AS selesai,
-                    ea.employee_name,
-		            ea.department_name,
-                    COUNT(*) AS jumlah_hari_mangkir
-                FROM (
-                    SELECT 
-                        enroll_id,
-                        tanggal_berjalan,
-                        kode_hari,
-                        @grp := IF(
-                            @prev_enroll = enroll_id 
-                            AND (
-                                -- Hari berturut-turut biasa (misalnya Senin ke Selasa)
-                                (kode_hari = @prev_kode_hari + 1)  
-                                -- Senin setelah Minggu (jika ada gap Sabtu dan Minggu)
-                                OR (kode_hari = 0 AND @prev_kode_hari = 6)  
-                                -- Menghitung jika ada gap lebih dari 1 hari kerja berturut-turut
-                                OR (DATEDIFF(tanggal_berjalan, @prev_date) > 1)  -- Gap lebih dari 1 hari kerja dianggap grup baru
-                            ), 
-                            @grp, 
-                            @grp + 1
-                        ) AS grp,
-                        @prev_enroll := enroll_id,
-                        @prev_kode_hari := kode_hari,
-                        @prev_date := tanggal_berjalan
-                    FROM master_data_absen_kehadiran
-                    WHERE status_absen = 'M'
-                    AND kode_hari NOT IN (5, 6)  -- Abaikan Sabtu dan Minggu
-                    AND tanggal_berjalan BETWEEN '2024-01-01' AND '".$date."'
-                    ".$inEnrollId."
-                    ORDER BY enroll_id, tanggal_berjalan
-                ) AS Absens
-                JOIN employee_atribut AS ea 
-                    ON Absens.enroll_id = ea.enroll_id
-                WHERE (ea.tanggal_resign IS NULL OR ea.tanggal_resign > CURDATE()) ".$inSearchVariable." 
-                GROUP BY Absens.enroll_id, grp
-                HAVING COUNT(*) >= 5  -- Hanya tampilkan yang mangkir 5 hari berturut-turut
-                ORDER BY Absens.enroll_id, mulai
-       "));
-       return DataTables::of($query)->toJson();
+
+
+       $query = DB::select(DB::raw("
+            SELECT mda.tanggal_berjalan, mda.kode_hari, mda.enroll_id, ea.employee_name, mda.status_absen, ea.department_name
+            FROM master_data_absen_kehadiran mda
+            JOIN employee_atribut AS ea ON mda.enroll_id = ea.enroll_id
+            WHERE mda.status_absen = 'M'
+            AND mda.tanggal_berjalan >= '2024-01-01'
+        "));
+
+
+        $streak = 0;
+        $maxStreak = 5;
+        $gapThreshold = 2;
+        $result = [];
+        $tempGroup = [];
+        $prevKodeHari = null;
+        $prevEnrollId = null;
+        $prevDate = null;
+        $prevMonth = null;
+        $prevYear = null;
+
+        foreach ($query as $index => $row) {
+            $currentDate = new \DateTime($row->tanggal_berjalan);
+            $currentMonth = $currentDate->format('m');
+            $currentYear = $currentDate->format('Y');
+
+
+            if ($prevEnrollId !== null && $row->enroll_id === $prevEnrollId) {
+
+                $dateDiff = $prevDate ? $prevDate->diff($currentDate)->days : 0;
+
+
+                if (($currentMonth == $prevMonth && $currentYear == $prevYear && $dateDiff <= $gapThreshold) ||
+                    ($currentMonth == $prevMonth && $currentYear == $prevYear)) {
+
+                    $streak++;
+                    $tempGroup[] = $row;
+                } else {
+
+                    if ($streak >= $maxStreak) {
+
+                        $tempGroup[0]->tanggal_mulai = $tempGroup[0]->tanggal_berjalan;
+                        $tempGroup[count($tempGroup) - 1]->tanggal_selesai = $tempGroup[count($tempGroup) - 1]->tanggal_berjalan;
+
+                        $tempGroup[0]->jumlah_hari_mangkir = count($tempGroup);
+
+
+                        $result[] = $tempGroup;
+                    }
+
+
+                    $streak = 1;
+                    $tempGroup = [$row];
+                }
+            } else {
+
+                if ($streak >= $maxStreak) {
+
+                    $tempGroup[0]->tanggal_mulai = $tempGroup[0]->tanggal_berjalan;
+                    $tempGroup[count($tempGroup) - 1]->tanggal_selesai = $tempGroup[count($tempGroup) - 1]->tanggal_berjalan;
+
+                    $tempGroup[0]->jumlah_hari_mangkir = count($tempGroup);
+                    $result[] = $tempGroup;
+                }
+
+
+                $streak = 1;
+                $tempGroup = [$row];
+            }
+
+
+            $prevKodeHari = $row->kode_hari;
+            $prevEnrollId = $row->enroll_id;
+            $prevDate = $currentDate;
+            $prevMonth = $currentMonth;
+            $prevYear = $currentYear;
+        }
+
+
+        if ($streak >= $maxStreak) {
+
+            $tempGroup[0]->tanggal_mulai = $tempGroup[0]->tanggal_berjalan;
+            $tempGroup[count($tempGroup) - 1]->tanggal_selesai = $tempGroup[count($tempGroup) - 1]->tanggal_berjalan;
+
+            $tempGroup[0]->jumlah_hari_mangkir = count($tempGroup);
+            $result[] = $tempGroup;
+        }
+
+        $firstResult = [];
+
+
+        foreach ($result as $key => $value) {
+            $firstResult[] =  [
+                'mulai' => $value[0]->tanggal_mulai,
+                'selesai' => $value[count($value) - 1]->tanggal_selesai,
+                'jumlah_hari_mangkir' => $value[0]->jumlah_hari_mangkir,
+                'enroll_id' => $value[0]->enroll_id,
+                'employee_name' => $value[0]->employee_name,
+                'department_name' => $value[0]->department_name
+            ];
+        }
+    // return response()->json($firstResult);
+        return DataTables::of($firstResult)->toJson();
     }
 
     public function export_pdf_print_sk(){
@@ -170,7 +231,7 @@ class HRDController extends AdminBaseController
         $fileName=request()->enroll_id.'_'.date('His');
         $date_now = Carbon::parse(date('Y-m-d'))->translatedFormat('d F Y');
         $query =  DB::select(DB::raw("
-            SELECT 
+            SELECT
                     Absens.enroll_id,
                     MIN(Absens.tanggal_berjalan) AS mulai,
                     MAX(Absens.tanggal_berjalan) AS selesai,
@@ -181,21 +242,21 @@ class HRDController extends AdminBaseController
 		            ea.alamat_rumah,
                     COUNT(*) AS jumlah_hari_mangkir
                 FROM (
-                    SELECT 
+                    SELECT
                         enroll_id,
                         tanggal_berjalan,
                         kode_hari,
                         @grp := IF(
-                            @prev_enroll = enroll_id 
+                            @prev_enroll = enroll_id
                             AND (
                                 -- Hari berturut-turut biasa (misalnya Senin ke Selasa)
-                                (kode_hari = @prev_kode_hari + 1)  
+                                (kode_hari = @prev_kode_hari + 1)
                                 -- Senin setelah Minggu (jika ada gap Sabtu dan Minggu)
-                                OR (kode_hari = 0 AND @prev_kode_hari = 6)  
+                                OR (kode_hari = 0 AND @prev_kode_hari = 6)
                                 -- Menghitung jika ada gap lebih dari 1 hari kerja berturut-turut
                                 OR (DATEDIFF(tanggal_berjalan, @prev_date) > 1)  -- Gap lebih dari 1 hari kerja dianggap grup baru
-                            ), 
-                            @grp, 
+                            ),
+                            @grp,
                             @grp + 1  -- Mulai grup baru jika tidak berturut-turut
                         ) AS grp,
                         @prev_enroll := enroll_id,
@@ -208,7 +269,7 @@ class HRDController extends AdminBaseController
                     AND tanggal_berjalan BETWEEN '2024-01-01' AND '2024-12-31'
                     ORDER BY enroll_id, tanggal_berjalan
                 ) AS Absens
-                JOIN employee_atribut AS ea 
+                JOIN employee_atribut AS ea
                     ON Absens.enroll_id = ea.enroll_id
                 WHERE (ea.tanggal_resign IS NULL OR ea.tanggal_resign > CURDATE())  -- Karyawan aktif
                 GROUP BY Absens.enroll_id, grp
