@@ -2545,8 +2545,8 @@
                                     var akhir_jam_kerja = res[i].akhir_jam_kerja;
                                     var absen_masuk_kerja = res[i].absen_masuk_kerja;
                                     var absen_pulang_kerja = res[i].absen_pulang_kerja;
-                                    var mulai_jam_lembur = res[i].mulai_jam_lembur;
-                                    var akhir_jam_lembur = res[i].akhir_jam_lembur;
+                                    var mulai_jam_lembur = res[i].data_lembur.mulai_jam_lembur;
+                                    var akhir_jam_lembur = res[i].data_lembur.akhir_jam_lembur;
                                     var sub_dept_name = res[i].employee_atribut.dept ? res[i].employee_atribut.dept.sub_dept_name : "-";
                                     var jumlah_jam_lembur = res[i].data_lembur.jumlah_jam_lembur;
                                     var jumlah_jam_istirahat_lembur = res[i].data_lembur.jumlah_jam_istirahat;
