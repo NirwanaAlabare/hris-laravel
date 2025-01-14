@@ -53,7 +53,7 @@ class EmployeeAtrController extends AdminBaseController
         $this->divisi = $this->ajax_getselectdivisi();
         $department=DepartmentAll::select('department_name')->distinct()->orderBy('department_id')->groupBy('department_id')->get();
         $jabatan=EmployeeAtribut::orderBy('created_at')->groupBy('status_jabatan')->pluck('status_jabatan');
-        
+
         return View::make('hris/employeeatr', $this->data,compact('department','jabatan'));
     }
     public function export_pdf_id_card(){
@@ -249,7 +249,7 @@ class EmployeeAtrController extends AdminBaseController
             $query =  EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')
             ->leftJoin(\DB::raw('
             (select y.enroll_id id_kontrak,y.id id_employee_kontrak,y.contract,y.contract_end from (
-                select a.enroll_id,a.id,e.contract,e.contract_end from (select enroll_id,max(contract) contract,max(contract_end) contract_end from employee_contract group by enroll_id)e 
+                select a.enroll_id,a.id,e.contract,e.contract_end from (select enroll_id,max(contract) contract,max(contract_end) contract_end from employee_contract group by enroll_id)e
                 inner join (select id,enroll_id,contract,contract_end from employee_contract)a on e.enroll_id=a.enroll_id and e.contract_end=a.contract_end)y
                 ) AS employee_cont'),
             'employee_atribut.enroll_id', '=', 'employee_cont.id_kontrak')->offset($start)->limit($limit)->orderBy($order,$dir)->get();
@@ -273,7 +273,7 @@ class EmployeeAtrController extends AdminBaseController
                 ->orWhere('posisi_name','LIKE',"%{$search}%");
             })->leftJoin(\DB::raw('
             (select y.enroll_id id_kontrak,y.id id_employee_kontrak,y.contract,y.contract_end from (
-                select a.enroll_id,a.id,e.contract,e.contract_end from (select enroll_id,max(contract) contract,max(contract_end) contract_end from employee_contract group by enroll_id)e 
+                select a.enroll_id,a.id,e.contract,e.contract_end from (select enroll_id,max(contract) contract,max(contract_end) contract_end from employee_contract group by enroll_id)e
                 inner join (select id,enroll_id,contract,contract_end from employee_contract)a on e.enroll_id=a.enroll_id and e.contract_end=a.contract_end)y
                 ) AS employee_cont'),
             'employee_atribut.enroll_id', '=', 'employee_cont.id_kontrak')
@@ -655,7 +655,7 @@ class EmployeeAtrController extends AdminBaseController
         $start = $request->input('start');
         $totalData = 0;
         $totalFiltered = 0;
-        
+
         if(empty($request->input('search.value'))){
             $query =  EmployeeAtribut::whereIn('enroll_id',$request->checked_employees)->limit($limit)->get();
 
@@ -1395,12 +1395,13 @@ class EmployeeAtrController extends AdminBaseController
                 'catatan_kontrak' => $catatan_kontrak
             ]);
 
+
             info('Karyawan dengan nama ' . $employee_name . ' dari departemen '. $sub_dept_name->sub_dept_name .' telah di update oleh '.$operator.' dengan tanggal resign '.$tanggal_resign);
             // update absen
             if($query) {
+
                 // jika tanggal resign kosong
                 if($request->tanggal_resign == "") {
-
                     $query1 =  MasterDataAbsenKehadiran::selectRaw('
                         tanggal_berjalan,
                         employee_atribut.enroll_id,
@@ -1441,9 +1442,9 @@ class EmployeeAtrController extends AdminBaseController
                     $query1 =  MasterDataAbsenKehadiran::selectRaw('
                         tanggal_berjalan,
                         employee_atribut.enroll_id,
-                         null AS tanggal_resign,
+                        null AS tanggal_resign,
                         employee_atribut.nik,
-                        null employee_atribut.status_aktif,
+                        null AS status_aktif,
                         IF(absen_masuk_kerja is not null AND absen_pulang_kerja is null, "TL", "M") status_absen
                     ')
                     ->whereRaw('
@@ -1472,7 +1473,7 @@ class EmployeeAtrController extends AdminBaseController
                             info('Karyawan dengan nama ' . $employee_name . ' dari departemen '. $sub_dept_name .' berubah tanggal resign nya menjadi '.$q1->tanggal_resign);
                         }
                     }
-                    
+
                     $query2 =  MasterDataAbsenKehadiran::selectRaw('
                         master_data_absen_kehadiran.tanggal_berjalan,
                         employee_atribut.enroll_id,
