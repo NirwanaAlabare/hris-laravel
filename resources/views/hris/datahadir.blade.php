@@ -118,7 +118,7 @@
                 </div>
             </div>
         </div><!-- col end -->
- 
+
         <div class="col-md-6">
             <div class="card shadow card-collapsed">
                 <div class="card-header text-white bg-gradient-primary py-2">
@@ -252,7 +252,7 @@
         {!! Form::close() !!}
         <!-- END FORM-->
 
-        
+
 
         <div id="data-absensi-karyawan" class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
             <div class="card shadow">
@@ -607,7 +607,7 @@
                         <i class="fa fa-remove"></i>
                     </button>
                 </div>
-               
+
                 <div class="modal-body">
                     <!-- BEGIN FORM-->
                     <form id="form_edit_jadwal" method="post">
@@ -1244,7 +1244,7 @@
             $('#daterange-btn1').html(htmlDateRange);
             $('#daterange1').val(daterange1);
 
-            
+
             $("#data-absensi-karyawan").hide();
             $("#selectBagian").append(new Option("-- PILIH BAGIAN --", ""));
         });
@@ -1321,11 +1321,11 @@
             }
         });
 
-        $("#formExport").on('keypress',function(e) {
-            if(e.which == 13) {
-                $('#btn-caridata').click();
-            }
-        });
+        // $("#formExport").on('keypress',function(e) {
+        //     if(e.which == 13) {
+        //         $('#btn-caridata').click();
+        //     }
+        // });
 
         $('body').on('click', '#btn-caridata', function (event) {
 
@@ -1534,7 +1534,7 @@
                 $(this).addClass('bg-cyan');
              });
 
-             table.draw();
+            //  table.draw();
 
         });
 
@@ -1604,7 +1604,7 @@
                             },
                             dataType: 'json',
                             success: function(resA){
-            
+
                                 if(resA["ada"]) {
                                     notif({
                                         type: resA["status"],
@@ -1633,14 +1633,14 @@
                                     var thn = tgl[0].substring(4,2);
                                     var bln = tgl[1];
                                     $('#nomor_form_perizinan').val('FPI/HR/' + thn + bln + '/');
-                                    
+
                                 }
 
                             },
                             error: function(resA){
-                                            
+
                             }
-                        });                       
+                        });
 
                     }
                 },
@@ -1722,7 +1722,7 @@
         $('body').on('click', '#btn-updateKehadiran', function (event) {
 
             var tgl = $('#tanggal_mesin_absensi').val();
-            
+
             // LAGI COBA TEST CLOSING PAYROLL
             $.ajax({
                 type:"POST",
@@ -1787,7 +1787,6 @@
                                         enroll_id:enroll_id
                                     },
                                     success: function(res){
-                                    console.log('res',res);
                                         swal({
                                             title: "Update Absensi",
                                             text: "Data berhasil di update",
@@ -1796,7 +1795,7 @@
                                         $('#btn-updateKehadiran').removeClass("btn-loading");
                                         $("#btn-updateKehadiran").html('<span><i class="fa fa-download"></i></span> UPDATE ABSENSI');
                                         $("#btn-updateKehadiran").attr("disabled", false);
-                                        $("#btn-caridata").click();
+                                        // $("#btn-caridata").click();
                                     },
                                     error: function(res){
                                         swal({
@@ -1815,9 +1814,9 @@
 
                 },
                 error: function(res){
-                                
+
                 }
-            });           
+            });
         });
 
         $('body').on('click', '#btn-save-izin', function (event) {
@@ -2021,7 +2020,7 @@
 
             BtnUpdateLintasHari.addEventListener('click', function(event) {
                 // let tmp = EmployeeID[0].value;
-                
+
                 // if (tmp == ''||tmp==null) {
                 //     swal({
                 //         title: "Harap Pilih Karyawan",
@@ -2047,11 +2046,11 @@
 
                             $.ajax({
                                 data: $('#form_update_lintashari').serialize(),
-                                url: '{{ route("hris.mdabsenhadir.download_mesin_kehadiran_lintas") }}',           
+                                url: '{{ route("hris.mdabsenhadir.download_mesin_kehadiran_lintas") }}',
                                 type: "post",
-                                // dataType: 'json',           
+                                // dataType: 'json',
                                 success: function (data) {
-                                    
+
                                     console.log(data);
                                         notif({
                                             msg: "<b>Info:</b> Data berhasil di UPDATE.",
@@ -2061,8 +2060,8 @@
                                     $('#BtnUpdateLintasHari').removeClass("btn-loading");
                                     $("#BtnUpdateLintasHari").html('<span><i class="fa fa-download"></i></span> UPDATE ABSENSI');
                                     $("#BtnUpdateLintasHari").attr("disabled", false);
-                                    $("#btn-caridata").click();
-                                   
+                                    // $("#btn-caridata").click();
+
                                 },
                                 error: function (xhr, status, error) {
                                     notif({
@@ -2074,9 +2073,9 @@
                                     $("#BtnUpdateLintasHari").attr("disabled", false);
                                     $("#BtnUpdateLintasHari").html('<span><i class="fa fa-download"></i></span> UPDATE ABSENSI');
                                 }
-                            }); 
+                            });
                         }
-                    });    
+                    });
                 // }
             });
         });
@@ -2112,7 +2111,7 @@
                     $('#absen_out_edit').val(res['absen_pulang_kerja']);
                     $('#status_absen_edit').val(res['status_absen']);
                     $('#modal_edit_jadwal').modal('show');
-                    
+
                 },
                 error: function(res){
                     $('#ajax-absenijin-model-add').modal('hide');
@@ -2132,10 +2131,10 @@
                     notif({
                         msg: "<b>Info:</b> Data berhasil di simpan.",
                         type: "info"
-                    });  
+                    });
                     $('#modal_edit_jadwal').modal('hide');
 
-                    $("#btn-caridata").click();
+                    // $("#btn-caridata").click();
 
                 }
             });
