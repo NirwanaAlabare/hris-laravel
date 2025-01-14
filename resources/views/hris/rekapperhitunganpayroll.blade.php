@@ -1243,28 +1243,28 @@
         jQuery(document).ready(function($) {
             const BtnProsesPayroll2 = document.getElementsByClassName('BtnProsesPayroll2')[0];
             const BtnRekapPayroll = document.getElementsByClassName('BtnRekapPayroll')[0];
-            const PriodeProses = document.getElementsByClassName("PriodeProses");
+            // const PriodeProses = document.getElementsByClassName("PriodeProses");
             const PriodeUmk = document.getElementsByClassName("PriodeUmk");
             BtnProsesPayroll2.addEventListener('click', function(event) {
-                let tmp = PriodeProses[0].value;
+                // let tmp = PriodeProses[0].value;
                 let tmp2 = PriodeUmk[0].value;
-                if(tmp == '' && tmp2 == ''){
-                    swal({
-                        title: "Harap pilih periode payroll atau periode umk",
-                        text: "Data Periode Payroll atau periode umk tidak boleh kosong",
-                        icon: "warning",
-                        button : false,
-                    });
-                }
-                else if(tmp != '' && tmp2 != ''){
-                    swal({
-                        title: "Harap pilih salah satu saja diantara periode payroll atau umk",
-                        text: "Data Periode Payroll atau periode umk tidak boleh kosong",
-                        icon: "warning",
-                        button : false,
-                    });
-                }
-                else{
+                // if(tmp == '' && tmp2 == ''){
+                //     swal({
+                //         title: "Harap pilih periode payroll atau periode umk",
+                //         text: "Data Periode Payroll atau periode umk tidak boleh kosong",
+                //         icon: "warning",
+                //         button : false,
+                //     });
+                // }
+                // else if(tmp != '' && tmp2 != ''){
+                //     swal({
+                //         title: "Harap pilih salah satu saja diantara periode payroll atau umk",
+                //         text: "Data Periode Payroll atau periode umk tidak boleh kosong",
+                //         icon: "warning",
+                //         button : false,
+                //     });
+                // }
+                // else{
                     event.preventDefault();
                     const submited =document.getElementsByTagName('form')[0];
                     swal({
@@ -1301,7 +1301,7 @@
                             });
                         }
                     });
-                }
+                // }
             });
             BtnProsesPayroll3.addEventListener('click', function(event) {
                 let tmp = PriodeProses[0].value;
