@@ -2663,7 +2663,11 @@ class ProsesPayrollController extends AdminBaseController
                 // rekap kehadiran
                 foreach($x as $key=>$value){
                     if($value->join_date>$month_umk_first){
-                        $jumlah_hari=MasterDataAbsenKehadiran::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan','>=',$month_umk_first)->where('tanggal_berjalan','<=',$month_umk_last)->count();
+                        $timestamp5 = strtotime($value->join_date);
+                        $timestamp6 = strtotime($month_umk_last);
+                        $jumlah_hari_fix = (abs($timestamp3 - $timestamp4) / (60 * 60 * 24)+1);
+                    }else{
+                        $jumlah_hari_fix=$jumlah_hari;
                     }
                     $uuid=Str::uuid('uuid');
                     $enroll_id=$value->enroll_id;
@@ -2691,8 +2695,8 @@ class ProsesPayrollController extends AdminBaseController
                         'total_kehadiran_net'=>$value->total_kehadiran_net,
                         'kehadiran_tk'=>$value->kehadiran_tk,
                         'total_kehadiran'=> $value->total_kehadiran,
-                        'jumlah_hari'=>$jumlah_hari,
-                        'jumlah_hari_kerja'=>$jumlah_hari-$value->lsm,
+                        'jumlah_hari'=>$jumlah_hari_fix,
+                        'jumlah_hari_kerja'=>$jumlah_hari_fix-$value->lsm,
                         'operator'=>$email,
                         'created_at'=>Carbon::now(),
                         'updated_at'=>Carbon::now(),
@@ -2730,7 +2734,6 @@ class ProsesPayrollController extends AdminBaseController
                     $enroll_id = $value->enroll_id;
                     $kode = str_replace(array('-', ' '), '', $periode) . str_pad($enroll_id, 5, '0', STR_PAD_LEFT);
                     $kode_rekap = date('Ymd', strtotime(substr($kode, 0, 8))) . date('Ymd', strtotime(substr($kode, 11, 8))) . substr($kode, 19);
-                    RekapPerhitunganKehadiranKaryawan::where('kode_rekap',$kode_rekap)->where('periode_umk',$periode_umk)->delete();
                     $hari_potongan=max($value->jumlah_hari_kerja-$value->total_kehadiran_net, 0);
                     $hari_potongan_security=max($value->kehadiran_m+$value->kehadiran_r+$value->kehadiran_itb, 0);
                     $hp='';
@@ -2743,7 +2746,7 @@ class ProsesPayrollController extends AdminBaseController
                         $hp=$hari_potongan;
                         $jumlah_menit_kerja=480;
                     }
-                    DB::table('rekap_perhitungan_kehadiran_karyawan')->insert([
+                    RekapPerhitunganKehadiranKaryawan::where('kode_rekap',$kode_rekap)->where('periode_umk',$periode_umk)->update([
                         'uuid'=>Str::uuid('uuid'),
                         'periode_umk'=>$periode_umk,
                         'kode_rekap'=>$kode_rekap,
