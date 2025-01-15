@@ -1825,7 +1825,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $pembulatan=(ceil($jumlah/100)*100)-$jumlah;
                 $total_pembayaran=$jumlah+$bpjs_tk_company_total+$bpjs_ks_company_total+$thr_total+$thr_total+$uang_makan;
             }
-            $z=[
+            $z[]=[
                 'tanggal_berjalan'=>$value->tanggal_berjalan,
                 'enroll_id'=>$value->enroll_id,
                 'status_staff'=>$status_staff,
@@ -1864,12 +1864,71 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 'konsumsi'=>$uang_makan,
                 'total_pembayaran'=>$total_pembayaran,
             ];
-            if(DailyLaborCost::where('tanggal_berjalan',$value->tanggal_berjalan)->where('enroll_id',$value->enroll_id)->first()){
-                DailyLaborCost::where('tanggal_berjalan',$value->tanggal_berjalan)->where('enroll_id',$value->enroll_id)->update($z);
-            }else{
-                DailyLaborCost::create($z);
-            }
+            // if(DailyLaborCost::where('tanggal_berjalan',$value->tanggal_berjalan)->where('enroll_id',$value->enroll_id)->first()){
+            //     DailyLaborCost::where('tanggal_berjalan',$value->tanggal_berjalan)->where('enroll_id',$value->enroll_id)->update($z);
+            // }else{
+            //     DailyLaborCost::create($z);
+            // }
         }
+        $datest = DB::transaction(function () use ($z) {
+            $tanggalBerjalanList = collect($z)->pluck('tanggal_berjalan')->unique();
+            $enrollIdList = collect($z)->pluck('enroll_id')->unique();
+
+
+            DailyLaborCost::whereIn('tanggal_berjalan', $tanggalBerjalanList)
+                ->whereIn('enroll_id', $enrollIdList)
+                ->delete();
+
+            return $insertData = collect($z)->map(function ($item) {
+                return [
+                    'tanggal_berjalan' => $item['tanggal_berjalan'],
+                    'enroll_id' => $item['enroll_id'],
+                    'status_staff' => $item['status_staff'],
+                    'group_department' => $item['group_department'],
+                    'iby' => $item['iby'],
+                    'itb' => $item['itb'],
+                    'm' => $item['m'],
+                    'dt' => $item['dt'],
+                    'pc' => $item['pc'],
+                    'dtpc' => $item['dtpc'],
+                    'lby' => $item['lby'],
+                    'lsm' => $item['lsm'],
+                    'r' => $item['r'],
+                    'ok' => $item['ok'],
+                    'hari_kerja' => $item['hari_kerja'],
+                    'pot_hari_kerja' => $item['pot_hari_kerja'],
+                    'total_absen' => $item['total_absen'],
+                    'gaji_perhari' => $item['gaji_perhari'],
+                    'gaji_permenit' => $item['gaji_permenit'],
+                    'total_lembur_rupiah' => $item['total_lembur_rupiah'],
+                    'seniority_allowance' => $item['seniority_allowance'],
+                    'insentif_kehadiran' => $item['insentif_kehadiran'],
+                    'insentif_jabatan' => $item['insentif_jabatan'],
+                    'rp_pot_hari_kerja' => $item['rp_pot_hari_kerja'],
+                    'rp_pot_jam' => $item['rp_pot_jam'],
+                    'bruto' => $item['bruto'],
+                    'bpjs_tk' => $item['bpjs_tk'],
+                    'bpjs_ks' => $item['bpjs_ks'],
+                    'total_potongan' => $item['total_potongan'],
+                    'pembulatan' => $item['pembulatan'],
+                    'jumlah' => $item['jumlah'],
+                    'bpjs_tk_company' => $item['bpjs_tk_company'],
+                    'bpjs_ks_company' => $item['bpjs_ks_company'],
+                    'kompensasi' => $item['kompensasi'],
+                    'thr' => $item['thr'],
+                    'konsumsi' => $item['konsumsi'],
+                    'total_pembayaran' => $item['total_pembayaran'],
+                ];
+            })->toArray();
+
+        });
+        $batchSize = 1000;
+        collect($datest)->chunk($batchSize)->each(function ($batch) {
+            DailyLaborCost::insert($batch->toArray());
+        });
+
+        // return $datest;
+
     }
     public function rekap_bpjs(){
 
