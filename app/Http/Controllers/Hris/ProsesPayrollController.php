@@ -4291,8 +4291,8 @@ class ProsesPayrollController extends AdminBaseController
             }
         }else{
             if(request()->periode_umk=='2024-01'){
-                $month_umk_first=$year_umk.'2024-12-26';
-                $month_umk_last=$year_umk.'2024-12-31';
+                $month_umk_first='2024-12-26';
+                $month_umk_last='2024-12-31';
             }else if(request()->periode_umk=='2025-01'){
                 $month_umk_first='2025-01-01';
                 $month_umk_last='2025-01-25';
