@@ -1635,7 +1635,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     }
                     $record_lemburan=[
                         'uuid'=>Str::uuid('uuid'),
-                        'periode_umk'=>null,
+                        'periode_umk'=>$tahun_berjalan."-01",
                         'tanggal_berjalan'=>$value->tanggal_berjalan,
                         'kerjalibur'=>$kerjalibur,
                         'nomor_form_lembur'=>$value->nomor_form_lembur,
