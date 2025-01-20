@@ -2048,9 +2048,8 @@ class ProsesPayrollController extends AdminBaseController
                 jumlah_menit_absen_dtpc,
                 jumlah_absen_menit_kerja
                 ')
-            ->whereRaw('tanggal_berjalan >= "'.$tanggal_awal.'" and tanggal_berjalan <= "'.$tanggal_akhir.'" and jumlah_menit_absen_dtpc != 0 AND status_absen != "TL"'.$inEnrollId.'')
+            ->whereRaw('tanggal_berjalan >= "'.$tanggal_awal.'" and tanggal_berjalan <= "'.$tanggal_akhir.'" and jumlah_menit_absen_dtpc != 0 AND (status_absen != "TL" OR status_absen IS NULL)'.$inEnrollId.'')
             ->get();
-
             foreach ($data_dtpcx as $key => $value) {
                 $salary=RekapPerhitunganKehadiranKaryawan::where('periode_payroll',$priode)->where('enroll_id',$value->enroll_id)->first();
                 $data_dtpcw=[
@@ -2951,8 +2950,9 @@ class ProsesPayrollController extends AdminBaseController
 
                 //rekap dtpc
 
-                $c=MasterDataAbsenKehadiran::selectRaw('uuid,tanggal_berjalan,tanggal_absen,shift_work_id,kode_hari,nama_hari,time_table_name,mulai_jam_kerja,akhir_jam_kerja,jam_kerja,jumlah_jam_kerja,jumlah_menit_kerja,mulai_jam_istirahat,akhir_jam_istirahat,jumlah_jam_istirahat,jumlah_menit_istirahat,absen_masuk_kerja,absen_pulang_kerja,enroll_id,nik,status_absen,nomor_absen_ijin,jumlah_menit_absen_dt,jumlah_menit_absen_pc,jumlah_menit_absen_dtpc,jumlah_absen_menit_kerja,holiday_id,holiday_name,operator,catatan_hrd,nomor_form_perubahan_absen,nomor_form_lembur,updated_absen_cekinout,updated_absen_ijin,updated_absen_dtpc,created_at,updated_at,deleted_at')->whereRaw('tanggal_berjalan >= "'.$month_umk_first.'" and tanggal_berjalan <= "'.$month_umk_last.'" and jumlah_menit_absen_dtpc != 0 AND status_absen != "TL"'.$inEnrollId.'')->get();
+                $c=MasterDataAbsenKehadiran::selectRaw('uuid,tanggal_berjalan,tanggal_absen,shift_work_id,kode_hari,nama_hari,time_table_name,mulai_jam_kerja,akhir_jam_kerja,jam_kerja,jumlah_jam_kerja,jumlah_menit_kerja,mulai_jam_istirahat,akhir_jam_istirahat,jumlah_jam_istirahat,jumlah_menit_istirahat,absen_masuk_kerja,absen_pulang_kerja,enroll_id,nik,status_absen,nomor_absen_ijin,jumlah_menit_absen_dt,jumlah_menit_absen_pc,jumlah_menit_absen_dtpc,jumlah_absen_menit_kerja,holiday_id,holiday_name,operator,catatan_hrd,nomor_form_perubahan_absen,nomor_form_lembur,updated_absen_cekinout,updated_absen_ijin,updated_absen_dtpc,created_at,updated_at,deleted_at')->whereRaw('tanggal_berjalan >= "'.$month_umk_first.'" and tanggal_berjalan <= "'.$month_umk_last.'" and jumlah_menit_absen_dtpc != 0 AND (status_absen != "TL" OR status_absen IS NULL)'.$inEnrollId.'')->get();
                 // rekap dtpc
+
                 DB::delete("delete from rekap_perhitungan_dtpc where tanggal_berjalan >= '$month_umk_first' and tanggal_berjalan <= '$month_umk_last' $inEnrollId");
                 foreach ($c as $key => $value) {
                     $salary=RekapPerhitunganKehadiranKaryawan::where('periode_payroll',$priode)->where('enroll_id',$value->enroll_id)->where('periode_umk',$periode_umk)->first();
