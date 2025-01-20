@@ -2811,6 +2811,7 @@ class ProsesPayrollController extends AdminBaseController
                     STR_TO_DATE(SUBSTRING(b.akhir_jam_lembur, 12, 5), '%H:%i'),
                     STR_TO_DATE(SUBSTRING(a.absen_pulang_kerja, 1, 5), '%H:%i')
                 ) finish_out,a.absen_masuk_kerja,a.absen_pulang_kerja,b.jumlah_jam_lembur,b.jumlah_jam_istirahat_lembur from (select*from master_data_absen_kehadiran where tanggal_berjalan>='$month_umk_first' and tanggal_berjalan<='$month_umk_last' and nomor_form_lembur is not null ".$inEnrollId.") a inner join (select*from data_lembur where tanggal_berjalan>='$month_umk_first' and tanggal_berjalan<='$month_umk_last') b on a.enroll_id=b.enroll_id and a.tanggal_berjalan=b.tanggal_berjalan inner join employee_atribut c on a.enroll_id=c.enroll_id left join employee_atribut_histories emp_hist on a.enroll_id=emp_hist.enroll_id and a.tanggal_berjalan between SUBSTRING(emp_hist.periode_payroll,1,10) and SUBSTRING(emp_hist.periode_payroll,16,10) left join (select*from grading_salary where periode_umk='$periode_umk' group by kode_grade) d on case when emp_hist.kode_grade is not null then emp_hist.kode_grade else c.kode_grade end=d.kode_grade)rekap_1)rekap_2)rekap_3)rekap_4");
+
                 foreach($rekap_lembur_gabungan as $key=>$value){
                     if($value->selisih_menit<=15){
                         $konveri_jam=0;
@@ -2890,6 +2891,8 @@ class ProsesPayrollController extends AdminBaseController
                         'deleted_at'=>null
                     ]);
                 }
+
+
                 $b=MasterDataAbsenKehadiran::selectRaw('uuid,tanggal_berjalan,tanggal_absen,shift_work_id,kode_hari,nama_hari,time_table_name,mulai_jam_kerja,akhir_jam_kerja,jam_kerja,jumlah_jam_kerja,jumlah_menit_kerja,mulai_jam_istirahat,akhir_jam_istirahat,jumlah_jam_istirahat,jumlah_menit_istirahat,absen_masuk_kerja,absen_pulang_kerja,enroll_id,nik,status_absen,nomor_absen_ijin,jumlah_menit_absen_dt,jumlah_menit_absen_pc,jumlah_menit_absen_dtpc,jumlah_absen_menit_kerja,holiday_id,holiday_name,operator,catatan_hrd,nomor_form_perubahan_absen,nomor_form_lembur,updated_absen_cekinout,updated_absen_ijin,updated_absen_dtpc,created_at,updated_at,deleted_at')->whereRaw('tanggal_berjalan >= "'.$month_umk_first.'" and tanggal_berjalan <= "'.$month_umk_last.'" and nomor_absen_ijin like "IKS%"'.$inEnrollId.'')->groupby('enroll_id')->get();
 
                 // rekap iks
@@ -3118,6 +3121,7 @@ class ProsesPayrollController extends AdminBaseController
                         ];
                     }
                 }
+
                 foreach ($data as $k => $v) {
                     $upah_per_bulan=$v['upah_per_hari']*$v['jumlah_hari_kerja'];
                     $upah_bruto_rupiah=($upah_per_bulan+$v['tunjangan_karyawan_rupiah']+$v['premi_karyawan']+$v['total_lembur_rupiah']+$v['pendapatan_lainnya_rupiah']+$v['koreksi_upah_rupiah'])-($v['koreksi_potongan_rupiah']+$v['potongan_iks_rupiah']+$v['potongan_dtpc_rupiah']+$v['potongan_kehadiran_rupiah'])-$v['pph21'];
@@ -3230,15 +3234,17 @@ class ProsesPayrollController extends AdminBaseController
                         'sub_dept_id'=>$v['sub_dept_id'],
                         'total_upah_thp_rupiah_employee'=>ceil($total_upah_thp_rupiah / 100) * 100
                     ];
-                    $count=RekapPerhitunganPayroll::where( 'kode_rekap_payroll',$v['kode_rekap_payroll'])->first();
-                    if($count){
-                        RekapPerhitunganPayroll::where( 'kode_rekap_payroll',$v['kode_rekap_payroll'])->update($records);
-                    }
-                    else{
-                        RekapPerhitunganPayroll::create($records);
-                    }
-                }
+                    // $count=RekapPerhitunganPayroll::where( 'kode_rekap_payroll',$v['kode_rekap_payroll'])->first();
+                    // if($count){
+                    //     RekapPerhitunganPayroll::where( 'kode_rekap_payroll',$v['kode_rekap_payroll'])->update($records);
+                    // }
+                    // else{
+                    //     RekapPerhitunganPayroll::create($records);
+                    // }
 
+                    RekapPerhitunganPayroll::where('kode_rekap_payroll',$v['kode_rekap_payroll'])->delete();
+                    DB::table('rekap_perhitungan_payroll')->insert($records);
+                }
                 //update tanggal resign
                 $rekap=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->where('periode_umk',$periode_umk)->where('total_kehadiran_net','0')->get();
                 foreach ($rekap as $key => $value) {
