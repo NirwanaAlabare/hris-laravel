@@ -2664,7 +2664,7 @@ class ProsesPayrollController extends AdminBaseController
                     if($value->join_date>$month_umk_first){
                         $timestamp5 = strtotime($value->join_date);
                         $timestamp6 = strtotime($month_umk_last);
-                        $jumlah_hari_fix = (abs($timestamp3 - $timestamp4) / (60 * 60 * 24)+1);
+                        $jumlah_hari_fix = (abs($timestamp6 - $timestamp5) / (60 * 60 * 24)+1);
                     }else{
                         $jumlah_hari_fix=$jumlah_hari;
                     }
