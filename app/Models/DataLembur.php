@@ -94,9 +94,7 @@ class DataLembur extends \Eloquent
 
     public $incrementing = false;
     // public $primaryKey = null;
-    public $primaryKey = [
-        'uuid','tanggal_lembur','nomor_form_lembur'
-    ];
+    public $primaryKey = 'uuid';
 
 
     public function data_kehadiran(){

@@ -61,7 +61,7 @@ class DataKoreksiPotongan extends \Eloquent
     protected $appends = [];
     public $incrementing = false;
     // public $primaryKey = null;
-    public $primaryKey = ['kode_koreksi'];
+    public $primaryKey = 'kode_koreksi';
 
     public function atribut(){
         return $this->belongsTo('App\Models\EmployeeAtribut', 'enroll_id','enroll_id');
