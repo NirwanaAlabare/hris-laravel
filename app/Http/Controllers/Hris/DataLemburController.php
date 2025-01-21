@@ -71,7 +71,7 @@ class DataLemburController extends AdminBaseController
     {
         $tanggal_lembur = request()->tanggal_lembur;
         $datalembur=DB::select("select z.no_form,count(z.enroll_id) jumlah,z.dept from(select b.no_form,b.tgl_lembur,a.enroll_id,b.line dept from mut_karyawan_input_form_lembur_det a inner join mut_karyawan_input_form_lembur b on a.no_form=b.no_form where b.tgl_lembur='$tanggal_lembur'
-        union 
+        union
         select b.no_form,b.tgl_lembur,a.enroll_id,b.dept dept from mut_karyawan_input_non_sewing_form_lembur_det a inner join mut_karyawan_input_non_sewing_form_lembur b on a.no_form=b.no_form where b.tgl_lembur='$tanggal_lembur')z group by no_form order by dept");
         return $datalembur;
     }
@@ -185,8 +185,8 @@ class DataLemburController extends AdminBaseController
                     'jumlah_jam_lembur' => request()->jam_lembur[$key],
                     'mulai_jam_lembur' => $tanggal_lembur.' '.request()->jam_lembur_awal_rencana[$key],
                     'akhir_jam_lembur' => $akhir_jam_lembur,
-                    'enroll_id'=>request()->enroll_id[$key],   
-                    'operator' => $email, 
+                    'enroll_id'=>request()->enroll_id[$key],
+                    'operator' => $email,
                     'catatan' => request()->keterangan[$key],
                     'nomor_form_lembur'=>$nomor_form_lembur,
                     'is_verifikasi'=>0
@@ -219,13 +219,13 @@ class DataLemburController extends AdminBaseController
         }
 
         $query = DB::select("
-                    SELECT 
+                    SELECT
                         CONCAT(
-                            dl.nomor_form_lembur, 
-                            ' [ ', 
-                            DATE_FORMAT(ma.tanggal_berjalan, '%d %b %Y'), 
-                            ' ] => ', 
-                            COUNT(ma.enroll_id), 
+                            dl.nomor_form_lembur,
+                            ' [ ',
+                            DATE_FORMAT(ma.tanggal_berjalan, '%d %b %Y'),
+                            ' ] => ',
+                            COUNT(ma.enroll_id),
                             ' karyawan'
                         ) AS tanggal_nomor_spl,
                         dl.nomor_form_lembur,
@@ -235,17 +235,17 @@ class DataLemburController extends AdminBaseController
                         dl.jumlah_jam_lembur,
                         dl.catatan,
                         dl.jumlah_jam_istirahat_lembur
-                    FROM 
+                    FROM
                         data_lembur dl
-                    JOIN 
-                        master_data_absen_kehadiran ma 
+                    JOIN
+                        master_data_absen_kehadiran ma
                         ON ma.uuid = dl.uuid_master
-                    WHERE 
+                    WHERE
                         ma.tanggal_berjalan BETWEEN '{$awal_bulan}' AND '{$akhir_bulan}'
                         {$inNomorSPL}
-                    GROUP BY 
+                    GROUP BY
                         dl.nomor_form_lembur, ma.tanggal_berjalan
-                    ORDER BY 
+                    ORDER BY
                         dl.nomor_form_lembur DESC;
                 ");
         return $query;
@@ -743,7 +743,7 @@ class DataLemburController extends AdminBaseController
     {
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
-
+        session(['loggedAdmin' => $loggedAdmin]);
         $uuid_master = $request->uuid_master;
         //info("Delete hapus .....");
         MasterDataAbsenKehadiran::where('uuid','=',$uuid_master)
@@ -847,32 +847,32 @@ class DataLemburController extends AdminBaseController
         return (new DepartmentAllExport)->download($fileName); */
         $nomor_form_lembur_rekap=RekapPerhitunganLembur::where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->pluck('nomor_form_lembur');
 
-        $dataLembur = DB::select("SELECT 
+        $dataLembur = DB::select("SELECT
                     mda.nomor_form_lembur,mda.kode_hari,mda.holiday_name,mda.absen_masuk_kerja,mda.absen_pulang_kerja,mda.nama_hari,
                     mda.mulai_jam_kerja,mda.akhir_jam_kerja, mda.tanggal_berjalan,
                     employee_atribut.employee_id, employee_atribut.nik, employee_atribut.employee_name,employee_atribut.enroll_id,
                     employee_atribut.department_id, employee_atribut.department_name, employee_atribut.sub_dept_id, employee_atribut.sub_dept_name,
-                    employee_atribut.site_nirwana_id, employee_atribut.site_nirwana_name, 
+                    employee_atribut.site_nirwana_id, employee_atribut.site_nirwana_name,
                     employee_atribut.status_staff,
                     data_lembur.is_verifikasi,data_lembur.mulai_jam_lembur,data_lembur.akhir_jam_lembur,data_lembur.catatan,
                     rekap_lembur.lembur_1,rekap_lembur.lembur_2,rekap_lembur.lembur_3,rekap_lembur.lembur_4, rekap_lembur.total_lembur_1234,
                     rekap_lembur.lembur1_rupiah,rekap_lembur.lembur2_rupiah,rekap_lembur.lembur3_rupiah,rekap_lembur.lembur4_rupiah, rekap_lembur.total_lembur_rupiah
-                FROM 
+                FROM
                     master_data_absen_kehadiran mda
-                JOIN 
-                    employee_atribut 
-                ON 
+                JOIN
+                    employee_atribut
+                ON
                     mda.enroll_id = employee_atribut.enroll_id
-                JOIN 
-                    data_lembur 
-                ON 
+                JOIN
+                    data_lembur
+                ON
                     mda.uuid = data_lembur.uuid_master
                 LEFT JOIN rekap_perhitungan_lembur rekap_lembur ON data_lembur.enroll_id = rekap_lembur.enroll_id AND data_lembur.tanggal_berjalan = rekap_lembur.tanggal_berjalan
-                WHERE 
+                WHERE
                     mda.nomor_form_lembur IS NOT NULL".$inVerificationStatus."
                     AND mda.tanggal_berjalan >= '$tanggal_awal'
                     AND mda.tanggal_berjalan <= '$tanggal_akhir'
-                ORDER BY 
+                ORDER BY
                     mda.tanggal_berjalan,
                     mda.nomor_form_lembur,
                     employee_atribut.employee_name;
@@ -1872,6 +1872,7 @@ class DataLemburController extends AdminBaseController
     public function remove(Request $request)
     {
         $loggedAdmin = Auth::guard('admin')->user();
+        session(['loggedAdmin' => $loggedAdmin]);
         $email = $loggedAdmin->email;
 
         $tanggal_berjalan = $request->tanggal_berjalan;
@@ -2052,6 +2053,7 @@ class DataLemburController extends AdminBaseController
     public function tambahkaryawan(Request $request)
     {
         $loggedAdmin = Auth::guard('admin')->user();
+        session(['loggedAdmin' => $loggedAdmin]);
         $email = $loggedAdmin->email;
         $nomor_form_lembur = $request->nomor_form_lembur;
 
@@ -2142,7 +2144,7 @@ class DataLemburController extends AdminBaseController
     {
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
-
+        session(['loggedAdmin' => $loggedAdmin]);
         $selectNoSPL = $request->selectNoSPL;
 
         $query = 0;
@@ -2170,6 +2172,7 @@ class DataLemburController extends AdminBaseController
     public function verifikasi(Request $request)
     {
         $loggedAdmin = Auth::guard('admin')->user();
+        session(['loggedAdmin' => $loggedAdmin]);
         $count=count($request->uuid);
         for ($i=0; $i < $count ; $i++) {
             $data=[
@@ -2186,6 +2189,7 @@ class DataLemburController extends AdminBaseController
     {
         $all_uuid=explode(",",$request->all_uuid);
         $loggedAdmin = Auth::guard('admin')->user();
+        session(['loggedAdmin' => $loggedAdmin]);
         $count=count(explode(",",$request->all_uuid));
         $all_uuid=explode(',',$request->all_uuid);
         for ($i=0; $i < $count ; $i++) {
@@ -2199,6 +2203,7 @@ class DataLemburController extends AdminBaseController
     public function unverifikasi($uuid)
     {
         $loggedAdmin = Auth::guard('admin')->user();
+        session(['loggedAdmin' => $loggedAdmin]);
         $data=[
             'is_verifikasi'=>0,
             'verifikasi_by'=>$loggedAdmin->email
@@ -2208,10 +2213,11 @@ class DataLemburController extends AdminBaseController
         return true;
     }
 
-    public function CreateSpl(Request $request) 
+    public function CreateSpl(Request $request)
     {
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
+        session(['loggedAdmin' => $loggedAdmin]);
 
         $kodelembur = "SPL/HR";
         $thnbln = date("ym");

@@ -18,7 +18,11 @@ use App\Events\LeaveRequestToAdminEvent;
 use App\Events\LeaveRequestToEvent;
 use App\Events\NoticeBoardEvent;
 use App\Models\Noticeboard;
+use App\Models\DataKoreksiUpah;
+use App\Models\DataKoreksiPotongan;
+use App\Models\DataLembur;
 use App\Observers\NoticeboardObserver;
+use App\Observers\ActivityLogObserver;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Carbon\Carbon;
@@ -46,6 +50,10 @@ class AppServiceProvider extends ServiceProvider
         date_default_timezone_set('Asia/Jakarta');
 
         // Observers
+        DataKoreksiUpah::observe(ActivityLogObserver::class);
+        DataKoreksiPotongan::observe(ActivityLogObserver::class);
+        DataLembur::observe(ActivityLogObserver::class);
+
         Noticeboard::observe(NoticeboardObserver::class);
     }
 
