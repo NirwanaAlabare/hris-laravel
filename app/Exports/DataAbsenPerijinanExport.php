@@ -91,6 +91,11 @@ class DataAbsenPerijinanExport implements WithColumnFormatting, FromQuery, WithM
                                         ->orWhere(function($q) {
                                             $q->whereNull('master_data_absen_kehadiran.absen_masuk_kerja')
                                             ->whereNull('master_data_absen_kehadiran.absen_pulang_kerja');
+                                        })
+                                        ->orWhere(function($q) {
+                                            $q->whereNotNull('master_data_absen_kehadiran.absen_masuk_kerja')
+                                                ->whereNotNull('master_data_absen_kehadiran.absen_pulang_kerja')
+                                                ->where('master_data_absen_kehadiran.status_absen', 'DL');
                                         });
                                     })
                                     ->groupBy('master_data_absen_kehadiran.tanggal_berjalan', 'employee_atribut.enroll_id')
