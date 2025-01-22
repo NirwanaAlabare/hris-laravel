@@ -54,7 +54,7 @@ class HRDController extends AdminBaseController
         if(request()->enroll_id){
             $enroll_id = request()->enroll_id;
             $enroll_id_string = implode(',', $enroll_id);
-            $inEnrollId='AND enroll_id in ('.$enroll_id_string.')';
+            $inEnrollId='AND ea.enroll_id in ('.$enroll_id_string.')';
         }
 
         $date = date('Y-m-d');
@@ -64,7 +64,7 @@ class HRDController extends AdminBaseController
             SELECT mda.tanggal_berjalan, mda.kode_hari, mda.enroll_id, ea.employee_name, mda.status_absen, ea.department_name
             FROM master_data_absen_kehadiran mda
             JOIN employee_atribut AS ea ON mda.enroll_id = ea.enroll_id
-            WHERE mda.status_absen = 'M'
+            WHERE mda.status_absen = 'M' ".$inSearchVariable." ".$inEnrollId."
             AND mda.tanggal_berjalan >= '2024-01-01'
         "));
 
