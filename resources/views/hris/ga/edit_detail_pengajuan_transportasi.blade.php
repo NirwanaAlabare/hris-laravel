@@ -431,33 +431,32 @@
     $('#tujuan_lainnya').on('click',function(){
         $('#tujuanLainnyaModal').modal('show');
         $('#route_adding').empty();
-        changeFirstElementOfArray();
-        jQuery.each(array_provinsi, function(key,value){
-            ambil_nama_provinsi(array_tujuan_id[key],value)
-            ambil_nama_kabupaten(array_tujuan_id[key],value,array_kota[key])
-            ambil_nama_kecamatan(array_tujuan_id[key],array_kota[key],array_kecamatan[key])
-            ambil_nama_desa(array_tujuan_id[key],array_kecamatan[key],array_desa[key])
+        jQuery.each(array_tujuan_id, function(key,value){
+            ambil_nama_provinsi(value,array_provinsi[key])
+            ambil_nama_kabupaten(value,array_provinsi[key],array_kota[key])
+            ambil_nama_kecamatan(value,array_kota[key],array_kecamatan[key])
+            ambil_nama_desa(value,array_kecamatan[key],array_desa[key])
             $('#route_adding').append('<tr id="row_new_route_'+value.tujuan_id+'" >\
-                <td>\
-                    <input type="hidden" id="tujuan_yang_ke_'+array_tujuan_id[key]+'" name="tujuan_ke[]" class="form-control" value='+array_tujuan_id[key]+'>\
-                    <select id="provinsi_yang_ke_'+array_tujuan_id[key]+'" name="provinsi_ke[]" class="form-control" onchange="ambil_nama_kabupaten('+array_tujuan_id[key]+','+null+','+null+')">\
+                <td width="25%">\
+                    <input type="hidden" id="tujuan_yang_ke_'+value+'" name="tujuan_ke[]" class="form-control" value='+value+'>\
+                    <select id="provinsi_yang_ke_'+value+'" name="provinsi_ke[]" class="form-control" onchange="ambil_nama_kabupaten('+value+','+null+','+null+')">\
                     </select>\
                 </td>\
-                <td>\
-                    <select id="kota_yang_ke_'+array_tujuan_id[key]+'" name="kota_ke[]" class="form-control" onchange="ambil_nama_kecamatan('+array_tujuan_id[key]+','+null+','+null+')">\
+                <td width="25%">\
+                    <select id="kota_yang_ke_'+value+'" name="kota_ke[]" class="form-control" onchange="ambil_nama_kecamatan('+value+','+null+','+null+')">\
                     </select>\
                 </td>\
-                <td>\
-                    <select id="kecamatan_yang_ke_'+array_tujuan_id[key]+'" name="kecamatan_ke[]" class="form-control" onchange="ambil_nama_desa('+array_tujuan_id[key]+','+null+','+null+')">\
+                <td width="25%">\
+                    <select id="kecamatan_yang_ke_'+value+'" name="kecamatan_ke[]" class="form-control" onchange="ambil_nama_desa('+value+','+null+','+null+')">\
                     </select>\
                 </td>\
-                <td>\
-                    <select id="desa_yang_ke_'+array_tujuan_id[key]+'" name="desa_ke[]" class="form-control" >\
+                <td width="20%">\
+                    <select id="desa_yang_ke_'+value+'" name="desa_ke[]" class="form-control" >\
                     </select>\
                 </td>\
-                <td>\
-                    <a href="#" class="btn btn-primary px-1" onclick="add_route_more('+array_tujuan_id[key]+')" id="add_route_more_button_'+array_tujuan_id[key]+'"><i class="fa fa-plus"></i></a>\
-                    <a href="#" class="btn btn-danger px-1" onclick="delete_this_route('+array_tujuan_id[key]+')" id="delete_this_route_button_'+array_tujuan_id[key]+'"><i class="fa fa-minus"></i></a>\
+                <td width="5%">\
+                    <a href="#" class="btn btn-primary px-1" onclick="add_route_more('+value+')" id="add_route_more_button_'+value+'"><i class="fa fa-plus"></i></a>\
+                    <a href="#" class="btn btn-danger px-1" onclick="delete_this_route('+value+')" id="delete_this_route_button_'+value+'"><i class="fa fa-minus"></i></a>\
                 </td>\
             </tr>');
         });
