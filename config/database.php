@@ -78,6 +78,17 @@ return [
             'prefix' => '',
         ],
 
+        'laravel_nds' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST_3'),
+            'port' => env('DB_PORT_3'),
+            'database' => env('DB_DATABASE_3'),
+            'username' => env('DB_USERNAME_3'),
+            'password' => env('DB_PASSWORD_3'),
+            'charset' => 'utf8',
+            'prefix' => '',
+        ],
+
     ],
 
     /*

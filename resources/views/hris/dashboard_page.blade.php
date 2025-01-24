@@ -102,6 +102,13 @@
                                 </a>
                             </div>
                             @endif
+                            <div class="col">
+                                <a href="{{route('hris.ga.form_pengajuan_transportasi')}}" >
+                                    <div class="card card-3">
+                                        <h3 class="text-theme">General Affair</h3>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
