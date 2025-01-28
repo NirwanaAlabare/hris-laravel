@@ -53,7 +53,7 @@ class RekapPerhitunganPayrollExportUMK2024 implements FromQuery, WithMapping, Sh
     public function columnWidths(): array
     {
         return [
-            'BD' => 13,    
+            'BD' => 13,
         ];
     }
     public function query()
@@ -359,7 +359,7 @@ class RekapPerhitunganPayrollExportUMK2024 implements FromQuery, WithMapping, Sh
         if($rp_pot_jam==0){$rp_pot_jam='0';}
         if($pph21==0){$pph21='0';}
         if($pot_hari_kerja==0){$pot_hari_kerja='0';}
-        $gapok=$upah_per_bulan+$tunjangan_karyawan_rupiah_excel;
+        $gapok=$upah_per_bulan;
 
         if( $total_kehadiran_net<=0 && $koreksi_upah_rupiah_excel==0 && $insentif_jabatan_rupiah_excel && $total_lembur_rupiah==0 && ($nominal_bpjs_tk!=0 || $nominal_bpjs_ks!=0)){
             $tunjangan_karyawan_rupiah_excel=0;
