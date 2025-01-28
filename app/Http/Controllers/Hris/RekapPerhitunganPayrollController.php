@@ -657,13 +657,24 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $this->periode_kehadiran = $this->ajax_getperiodekehadiran();
         $this->selectemployee = $this->ajax_getallemployeeatribut();
 
-        $this->month = date('Y-m');
+        $this->month = date('Y-m'); // Bulan saat ini
+        $today = date('d'); // Tanggal hari ini
+
+        // Cek apakah tanggal lebih besar atau sama dengan 26
+        if ($today >= 26) {
+            // Tambahkan 1 bulan ke tanggal saat ini
+            $minMonth = date('Y-m', strtotime('+1 month'));
+        } else {
+            // Tetap bulan saat ini
+            $minMonth = $this->month;
+        }
+
+
         $this->latestData = RekapPerhitunganPayroll::latest('updated_at')->first();
-        //$this->month = '2023-07';
         $this->loggedAdmin = Auth::guard('admin')->user();
         $rekap_payroll=RekapPerhitunganPayroll::where('periode_kehadiran',$this->latestData->periode_kehadiran)->orderBy('enroll_id')->get();
         $department_id=DepartmentAll::orderBy('department_id')->groupBy('department_id')->get();
-        return View::make('hris/rekapperhitunganpayroll', compact('rekap_payroll','department_id'), $this->data);
+        return View::make('hris/rekapperhitunganpayroll', compact('rekap_payroll','department_id','minMonth'), $this->data);
     }
     public function get_last_update_proses_payroll(){
         $last_update=DB::select('select updated_at from rekap_perhitungan_payroll order by updated_at desc limit 1')[0]->updated_at;
