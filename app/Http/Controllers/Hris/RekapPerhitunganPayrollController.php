@@ -1726,6 +1726,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 }
             }
             $insentif_kehadiran=0;
+
             $insentif_jabatan=0;
             $koreksi_upah=0;
             $koreksi_potongan=0;
@@ -1815,8 +1816,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
 
                 $gaji_perhari_total=($value->mulai_jam_kerja!=null)?$gaji_perhari:0;
                 $gaji_permenit=$gaji_perhari_total/420;
-                $potongan_permenit=(($value->status_absen!='TL'||$value->status_absen==null)?(($value->jumlah_menit_absen_dt+$value->jumlah_menit_absen_pc+$value->total_menit_permits)*$gaji_permenit):0);
-                $potongan_perhari=((in_array($value->status_absen, $ITB)||$value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null)||$value->status_absen=='R')?$gaji_perhari:0);
+                $potongan_permenit=(($value->jumlah_menit_absen_dt+$value->jumlah_menit_absen_pc+$value->total_menit_permits)*$gaji_permenit);
+                $potongan_perhari=((in_array($value->status_absen, $ITB)||$value->status_absen=='M'|| $value->status_absen=='R')?$gaji_perhari:0);
                 $seniority_allowance=$tunjangan/$jumlah_hari_kerja;
                 $seniority_allowance_total=($value->mulai_jam_kerja!=null)?$tunjangan/$jumlah_hari_kerja:0;
                 $bruto=($value->mulai_jam_kerja!=null)?(($gaji_perhari_total+$seniority_allowance_total+$insentif_kehadiran_total+$total_lembur_rupiah+$koreksi_upah+$insentif_jabatan)-($koreksi_potongan+$potongan_permenit+$potongan_perhari)):(($total_lembur_rupiah)-($potongan_permenit+$potongan_perhari));
@@ -1827,8 +1828,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $gaji_perhari=($grading_salary->salary_bulanan)/$jumlah_hari_kerja;
                 $gaji_perhari_total=($value->kode_hari!=5 && $value->kode_hari!=6)?$gaji_perhari:0;
                 $gaji_permenit=$gaji_perhari_total/480;
-                $potongan_permenit=(($value->status_absen!='TL'||$value->status_absen==null)?(($value->jumlah_menit_absen_dt+$value->jumlah_menit_absen_pc+$value->total_menit_permits)*$gaji_permenit):0);
-                $potongan_perhari=((in_array($value->status_absen, $ITB)||$value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null)||$value->status_absen=='R')?$gaji_perhari:0);
+                $potongan_permenit=(($value->jumlah_menit_absen_dt+$value->jumlah_menit_absen_pc+$value->total_menit_permits)*$gaji_permenit);
+                $potongan_perhari=((in_array($value->status_absen, $ITB)||$value->status_absen=='M'|| $value->status_absen=='R')?$gaji_perhari:0);
                 $seniority_allowance=$tunjangan/$jumlah_hari_kerja;
                 $seniority_allowance_total=($value->kode_hari!=5 && $value->kode_hari!=6)?$tunjangan/$jumlah_hari_kerja:0;
                 $bruto=($value->kode_hari!=5 && $value->kode_hari!=6)?(($gaji_perhari_total+$seniority_allowance_total+$insentif_kehadiran_total+$total_lembur_rupiah+$koreksi_upah+$insentif_jabatan)-($koreksi_potongan+$potongan_permenit+$potongan_perhari)):(($total_lembur_rupiah)-($potongan_permenit+$potongan_perhari));
@@ -1843,17 +1844,17 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 'group_department'=>$group_department,
                 'iby'=>in_array($value->status_absen, $IBY)?1:0,
                 'itb'=>in_array($value->status_absen, $ITB)?1:0,
-                'm'=>($value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null))?1:0,
+                'm'=>($value->status_absen=='M') ? 1 : 0,
                 'dt'=>($value->jumlah_menit_absen_dt!=0 && $value->jumlah_menit_absen_pc==0)?1:0,
                 'pc'=>($value->jumlah_menit_absen_dt==0 && $value->jumlah_menit_absen_pc!=0)?1:0,
                 'dtpc'=>($value->jumlah_menit_absen_dt!=0 && $value->jumlah_menit_absen_pc!=0)?1:0,
                 'lby'=>($value->status_absen=='LN' && $value->kode_hari!=5 && $value->kode_hari!=6)?1:0,
                 'lsm'=>($value->status_absen=='LN' && ($value->kode_hari==5 || $value->kode_hari==6))?1:0,
                 'r'=>$value->status_absen=='R'?1:0,
-                'ok'=>((($value->status_absen==null || $value->status_absen=='IKS') && $value->mulai_jam_kerja!=null && $value->jumlah_menit_absen_dtpc==0))?1:0,
-                'hari_kerja'=>((($value->status_absen==null || $value->status_absen=='IKS') && $value->mulai_jam_kerja!=null)||(in_array($value->status_absen, $IBY))||($value->status_absen=='LN' && $value->kode_hari!=5 && $value->kode_hari!=6))?1:0,
-                'pot_hari_kerja'=>(in_array($value->status_absen, $ITB)||$value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null)||$value->status_absen=='R')?1:0,
-                'total_absen'=>(in_array($value->status_absen, $ITB)||$value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null)||$value->status_absen=='R'||in_array($value->status_absen, $IBY)||($value->status_absen=='LN' && $value->kode_hari!=5 && $value->kode_hari!=6))?1:0,
+                'ok'=>((($value->status_absen==null || $value->status_absen=='IKS' || $value->status_absen=='TL' ) && $value->mulai_jam_kerja!=null && $value->jumlah_menit_absen_dtpc==0))?1:0,
+                'hari_kerja'=>((($value->status_absen==null || $value->status_absen=='IKS'  || $value->status_absen=='TL') && $value->mulai_jam_kerja!=null)||(in_array($value->status_absen, $IBY))||($value->status_absen=='LN' && $value->kode_hari!=5 && $value->kode_hari!=6))?1:0,
+                'pot_hari_kerja'=>(in_array($value->status_absen, $ITB)||$value->status_absen=='M'|| $value->status_absen=='R')?1:0,
+                'total_absen'=>(in_array($value->status_absen, $ITB)||$value->status_absen=='M'|| $value->status_absen=='R'||in_array($value->status_absen, $IBY)||($value->status_absen=='LN' && $value->kode_hari!=5 && $value->kode_hari!=6))?1:0,
                 'gaji_perhari'=>$gaji_perhari_total,
                 'gaji_permenit'=>$gaji_permenit,
                 'total_lembur_rupiah'=>$total_lembur_rupiah,
