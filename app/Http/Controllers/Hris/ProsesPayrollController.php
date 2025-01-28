@@ -3016,7 +3016,13 @@ class ProsesPayrollController extends AdminBaseController
                         }else{
                             $tunjangan = 12500;
                         }
-                        $tunjangan_karyawan_2=(($tunjangan/($jumlah_hari_total-$jumlah_hari_sabtu_minggu_total))*($jumlah_hari-$jumlah_hari_sabtu_minggu));
+                        if($periode_umk=='2024-01'){
+                            $tunjangan_karyawan_2=0;
+                        }else if($periode_umk=='2025-01'){
+                            $tunjangan_karyawan_2=$tunjangan;
+                            // $tunjangan_karyawan_2=(($tunjangan/($jumlah_hari_total-$jumlah_hari_sabtu_minggu_total))*($jumlah_hari-$jumlah_hari_sabtu_minggu));
+                        }
+
                         // hitung selisih tahun antara tanggal masuk dan sekarang
                         $bpjs_tk_jkm_bruto_rupiah=$Bpjs->bpjs_tk_jkm_bruto_rupiah??0;
                         $bpjs_tk_jkm_neto_rupiah=$Bpjs->bpjs_tk_jkm_neto_rupiah??0;
