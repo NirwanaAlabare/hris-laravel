@@ -297,35 +297,29 @@
                 render: function (data, type, row, meta) {
                     if (row.user==4241 || row.user==20 || row.user==5321 || row.user==17 || row.user==7765 || row.user==6083){
                         if(row.created_by==row.user){
-                            if(row.status==null){
+                            if(row.status==0){
                                 return `<button onclick="edit_detail(` + row.id + `)" class="btn btn-sm btn-block py-0 px-1 mb-1" style="font-size:9pt;background-color:orange;color:white">EDIT</button><button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1  mt-0" style="font-size:9pt">LIHAT DETAIL</button><a class='btn btn-success py-0 px-2 mt-0 btn-sm btn-block text-white' style='font-size:9pt' data-toggle="modal" data-target="#approveModal" ' onclick="approve_function(` + row.id + `,'` + row.employee_name + `','` + row.department_name + `','` + row.detail_alamat + `','` + row.desa + `','` + row.detail_alamat_tujuan + `','` + row.desa_tujuan + `')"> APPROVE </a><a class='btn btn-danger py-0 mt-1 btn-sm btn-block text-white' style='font-size:9pt' data-toggle="modal" data-target="#rejectModal" ' onclick="reject_function(` + row.id + `,'` + row.employee_name + `','` + row.department_name + `','` + row.detail_alamat + `','` + row.desa + `','` + row.detail_alamat_tujuan + `','` + row.desa_tujuan + `')"> REJECT </a>`;
-                            }else{
-                                if(row.status==1){
+                            }else if(row.status==1){
                                     return `<h6 style="font-size:11pt;color:green;text-align:center">APPROVED</h6><button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1" style="font-size:9pt">LIHAT DETAIL</button><button onclick="print_penugasan(` + row.id + `)" class="btn btn-success btn-sm btn-block px-1 py-0 mt-0" style="font-size:9pt">FORM PENUGASAN</button>`;
-                                }else{
-                                    return `<h6 style="font-size:11pt;color:red;text-align:center">REJECTED</h6><button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-sm btn-block py-0 px-1 mb-1" style="font-size:9pt">LIHAT DETAIL</button>`;
-                                }
+                            }else if(row.status==2){
+                                return `<h6 style="font-size:11pt;color:red;text-align:center">REJECTED</h6><button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-sm btn-block py-0 px-1 mb-1" style="font-size:9pt">LIHAT DETAIL</button>`;
                             }
                         }else{
-                            if(row.status==null){
+                            if(row.status==0){
                                 return `<button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-sm py-0 px-1 mb-1 " style="font-size:9pt">LIHAT DETAIL</button><a class='btn btn-success py-0 px-2 btn-sm btn-block text-white' style='font-size:9pt' data-toggle="modal" data-target="#approveModal" ' onclick="approve_function(` + row.id + `,'` + row.employee_name + `','` + row.department_name + `','` + row.detail_alamat + `','` + row.desa + `','` + row.detail_alamat_tujuan + `','` + row.desa_tujuan + `')"> APPROVE </a><a class='btn btn-danger py-0 mt-1 btn-sm btn-block text-white' style='font-size:9pt' data-toggle="modal" data-target="#rejectModal" ' onclick="reject_function(` + row.id + `,'` + row.employee_name + `','` + row.department_name + `','` + row.detail_alamat + `','` + row.desa + `','` + row.detail_alamat_tujuan + `','` + row.desa_tujuan + `')"> REJECT </a>`;
-                            }else{
-                                if(row.status==1){
-                                    return `<h6 style="font-size:11pt; margin-bottom:3px;text-align:center;color:green">APPROVED</h6><button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1" style="font-size:9pt">LIHAT DETAIL</button><button onclick="print_penugasan(` + row.id + `)" class="btn btn-success btn-sm btn-block px-1 py-0 mt-0" style="font-size:9pt">FORM PENUGASAN</button>`;
-                                }else{
-                                    return `<h6 style="font-size:11pt; margin-bottom:3px;text-align:center;color:red">REJECTED</h6><button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1" style="font-size:9pt">LIHAT DETAIL</button>`;
-                                }
+                            }else if(row.status==1){
+                                return `<h6 style="font-size:11pt; margin-bottom:3px;text-align:center;color:green">APPROVED</h6><button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1" style="font-size:9pt">LIHAT DETAIL</button><button onclick="print_penugasan(` + row.id + `)" class="btn btn-success btn-sm btn-block px-1 py-0 mt-0" style="font-size:9pt">FORM PENUGASAN</button>`;
+                            }else if(row.status==2){
+                                return `<h6 style="font-size:11pt; margin-bottom:3px;text-align:center;color:red">REJECTED</h6><button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1" style="font-size:9pt">LIHAT DETAIL</button>`;
                             }
                         }
                     }else{
-                        if(row.status==null){
+                        if(row.status==0){
                             return `<button onclick="edit_detail(` + row.id + `)" class="btn btn-sm btn-block py-0 px-1 mb-1" style="font-size:9pt;background-color:orange;color:white">EDIT</button>PENDING`;
-                        }else{
-                            if(row.status==1){
-                                return `<h6 style="font-size:11pt; margin-bottom:3px;text-align:center;color:green">APPROVED</h6><button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1 mt-0" style="font-size:9pt">LIHAT DETAIL</button><button onclick="print_penugasan(` + row.id + `)" class="btn btn-success btn-sm btn-block p-0 mt-0" style="font-size:9pt">FORM PENUGASAN</button>`;
-                            }else{
-                                return `<h6 style="font-size:11pt; margin-bottom:3px;text-align:center;color:red">REJECTED</h6><button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1 mt-0" style="font-size:9pt">LIHAT DETAIL</button>`;
-                            }
+                        }else if(row.status==1){
+                            return `<h6 style="font-size:11pt; margin-bottom:3px;text-align:center;color:green">APPROVED</h6><button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1 mt-0" style="font-size:9pt">LIHAT DETAIL</button><button onclick="print_penugasan(` + row.id + `)" class="btn btn-success btn-sm btn-block p-0 mt-0" style="font-size:9pt">FORM PENUGASAN</button>`;
+                        }else if(row.status==2){
+                            return `<h6 style="font-size:11pt; margin-bottom:3px;text-align:center;color:red">REJECTED</h6><button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1 mt-0" style="font-size:9pt">LIHAT DETAIL</button>`;
                         }
                     }
                 }

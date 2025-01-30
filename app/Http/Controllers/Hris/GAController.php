@@ -78,7 +78,7 @@ class GAController extends AdminBaseController
     }
     public function reject_car_request(){
         PermintaanTransportasi::where('id',request()->id_request)->update([
-            'status'=>0,
+            'status'=>2,
             'alasan_status'=>request()->alasan_reject
         ]);
     }
