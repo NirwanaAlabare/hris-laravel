@@ -80,6 +80,31 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('hrd/print_pdf_kontrak_2',['as'=>'hris.hrd.print_pdf_kontrak_2','uses'=>'HRDController@print_pdf_kontrak_2']);
     Route::post('hrd/ajax_getemployeeidbyfilter',['as'=>'hris.hrd.ajax_getemployeeidbyfilter','uses'=>'HRDController@ajax_getemployeeidbyfilter']);
 
+    Route::get('ga/form_pengajuan_transportasi',['as'=>'hris.ga.form_pengajuan_transportasi','uses'=>'GAController@form_pengajuan_transportasi']);
+    Route::post('ga/get_province',['as'=>'hris.ga.get_province','uses'=>'GAController@get_province']);
+    Route::post('ga/get_all_zone_name',['as'=>'hris.ga.get_all_zone_name','uses'=>'GAController@get_all_zone_name']);
+    Route::post('ga/get_cities',['as'=>'hris.ga.get_cities','uses'=>'GAController@get_cities']);
+    Route::post('ga/get_cities_name',['as'=>'hris.ga.get_cities_name','uses'=>'GAController@get_cities_name']);
+    Route::post('ga/get_districts',['as'=>'hris.ga.get_districts','uses'=>'GAController@get_districts']);
+    Route::post('ga/get_districts_name',['as'=>'hris.ga.get_districts_name','uses'=>'GAController@get_districts_name']);
+    Route::post('ga/get_subdistricts',['as'=>'hris.ga.get_subdistricts','uses'=>'GAController@get_subdistricts']);
+    Route::post('ga/get_subdistricts_name',['as'=>'hris.ga.get_subdistricts_name','uses'=>'GAController@get_subdistricts_name']);
+    Route::post('ga/post_car_request',['as'=>'hris.ga.post_car_request','uses'=>'GAController@post_car_request']);
+    Route::get('ga/data_pengajuan_transportasi',['as'=>'hris.ga.data_pengajuan_transportasi','uses'=>'GAController@data_pengajuan_transportasi']);
+    Route::get('ga/get_data_pengajuan_transportasi',['as'=>'hris.ga.get_data_pengajuan_transportasi','uses'=>'GAController@get_data_pengajuan_transportasi']);
+    Route::post('ga/approve_car_request',['as'=>'hris.ga.approve_car_request','uses'=>'GAController@approve_car_request']);
+    Route::post('ga/reject_car_request',['as'=>'hris.ga.reject_car_request','uses'=>'GAController@reject_car_request']);
+    Route::get('ga/print_penugasan_transportasi',['as'=>'hris.ga.print_penugasan_transportasi','uses'=>'GAController@print_penugasan_transportasi']);
+    Route::get('ga/lihat_detail',['as'=>'hris.ga.lihat_detail','uses'=>'GAController@lihat_detail']);
+    Route::get('ga/edit_detail',['as'=>'hris.ga.edit_detail','uses'=>'GAController@edit_detail']);
+    Route::post('ga/add_another_route',['as'=>'hris.ga.add_another_route','uses'=>'GAController@add_another_route']);
+    Route::post('ga/add_another_route_2',['as'=>'hris.ga.add_another_route_2','uses'=>'GAController@add_another_route_2']);
+    Route::post('ga/add_another_route_3',['as'=>'hris.ga.add_another_route_3','uses'=>'GAController@add_another_route_3']);
+    Route::post('ga/update_car_request',['as'=>'hris.ga.update_car_request','uses'=>'GAController@update_car_request']);
+    Route::post('ga/check_car_request',['as'=>'hris.ga.check_car_request','uses'=>'GAController@check_car_request']);
+    Route::post('ga/show_another_route',['as'=>'hris.ga.show_another_route','uses'=>'GAController@show_another_route']);
+    Route::post('ga/update_car_request_user',['as'=>'hris.ga.update_car_request_user','uses'=>'GAController@update_car_request_user']);
+
     //Route::resource('mdabsenhadir', 'MdAbsenHadirController',['as' => 'hris']);
     Route::get('mdabsenhadir/datahadir',['as'=>'hris.mdabsenhadir.datahadir','uses'=>'MdAbsenHadirController@datahadir']);
     Route::post('mdabsenhadir/ajax_datahadir/',['as'=>'hris.mdabsenhadir.ajax_datahadir','uses'=> 'MdAbsenHadirController@ajax_datahadir']);
