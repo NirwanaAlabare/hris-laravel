@@ -334,6 +334,7 @@ class GAController extends AdminBaseController
             'nama_instansi'=>$instansi,
             'nama_penerima'=>$nama_instansi,
             'keterangan_barang'=>$keterangan_barang,
+            'status'=>0,
             'created_by'=>$email
         ]);
         foreach(request()->tujuan_array as $key=>$value){
