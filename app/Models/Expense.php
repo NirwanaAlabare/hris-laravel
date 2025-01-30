@@ -23,7 +23,7 @@ class Expense extends Model
     {
         return [
             'slug' => [
-                'source' => 'itemName'
+                'source' => 'title'
             ]
         ];
     }

@@ -657,13 +657,24 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $this->periode_kehadiran = $this->ajax_getperiodekehadiran();
         $this->selectemployee = $this->ajax_getallemployeeatribut();
 
-        $this->month = date('Y-m');
+        $this->month = date('Y-m'); // Bulan saat ini
+        $today = date('d'); // Tanggal hari ini
+
+        // Cek apakah tanggal lebih besar atau sama dengan 26
+        if ($today >= 26) {
+            // Tambahkan 1 bulan ke tanggal saat ini
+            $minMonth = date('Y-m', strtotime('+1 month'));
+        } else {
+            // Tetap bulan saat ini
+            $minMonth = $this->month;
+        }
+
+
         $this->latestData = RekapPerhitunganPayroll::latest('updated_at')->first();
-        //$this->month = '2023-07';
         $this->loggedAdmin = Auth::guard('admin')->user();
         $rekap_payroll=RekapPerhitunganPayroll::where('periode_kehadiran',$this->latestData->periode_kehadiran)->orderBy('enroll_id')->get();
         $department_id=DepartmentAll::orderBy('department_id')->groupBy('department_id')->get();
-        return View::make('hris/rekapperhitunganpayroll', compact('rekap_payroll','department_id'), $this->data);
+        return View::make('hris/rekapperhitunganpayroll', compact('rekap_payroll','department_id','minMonth'), $this->data);
     }
     public function get_last_update_proses_payroll(){
         $last_update=DB::select('select updated_at from rekap_perhitungan_payroll order by updated_at desc limit 1')[0]->updated_at;
@@ -1621,7 +1632,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                                     ->first()
                                     ->salary_bulanan;
 
-                    if($value->kode_hari==6 || $value->status_absen=='LN'){
+                    if(($value->kode_hari==6 && $value->mulai_jam_kerja == null) || $value->status_absen=='LN'){
                         $l1_rupiah=$l1*($salary_bulanan/173*1);
                         $l2_rupiah=$l2*($salary_bulanan/173*2);
                         $l3_rupiah=$l3*($salary_bulanan/173*2);
@@ -1635,31 +1646,11 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     }
                     $record_lemburan=[
                         'uuid'=>Str::uuid('uuid'),
-                        'periode_umk'=>null,
+                        'periode_umk'=>$tahun_berjalan."-01",
                         'tanggal_berjalan'=>$value->tanggal_berjalan,
-                        'kode_hari'=>$value->kode_hari,
-                        'nama_hari'=>$value->nama_hari,
                         'kerjalibur'=>$kerjalibur,
-                        'holiday_name'=>$value->holiday_name,
                         'nomor_form_lembur'=>$value->nomor_form_lembur,
                         'enroll_id'=>$value->enroll_id,
-                        'nik'=>$value->nik,
-                        'employee_name'=>$value->employee_name,
-                        'site_nirwana_id'=>$value->site_nirwana_id,
-                        'site_nirwana_name'=>$value->site_nirwana_name,
-                        'department_id'=>$value->department_id,
-                        'department_name'=>$value->department_name,
-                        'sub_dept_id'=>$value->sub_dept_id,
-                        'sub_dept_name'=>$value->sub_dept_name,
-                        'posisi_name'=>$value->posisi_name,
-                        'mulai_jam_kerja'=>$value->mulai_jam_kerja,
-                        'akhir_jam_kerja'=>$value->akhir_jam_kerja,
-                        'jumlah_jam_kerja'=>sprintf('%02d:%02d:%02d', $jumlah_jam_kerja->h, $jumlah_jam_kerja->i, $jumlah_jam_kerja->s),
-                        'absen_masuk_kerja'=>$value->absen_masuk_kerja,
-                        'absen_pulang_kerja'=>$value->absen_pulang_kerja,
-                        'jam_efektif_kerja'=>sprintf('%02d:%02d:%02d', $jam_efektif_kerja->h, $jam_efektif_kerja->i, $jam_efektif_kerja->s),
-                        'mulai_jam_lembur'=>$value->mulai_jam_lembur,
-                        'akhir_jam_lembur'=>$value->akhir_jam_lembur,
                         'final_mulai_jam_lembur'=>$finish_in,
                         'final_selesai_jam_lembur'=>$value->absen_pulang_kerja,
                         'final_total_jam_lembur'=>$final_total_jam_lembur,
@@ -1672,7 +1663,6 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                         'lembur_3'=>$l3,
                         'lembur_4'=>$l4,
                         'total_lembur_1234'=>$l1+$l2+$l3+$l4,
-                        'salary'=>$salary_bulanan,
                         'lembur1_rupiah'=>$l1_rupiah,
                         'lembur2_rupiah'=> $l2_rupiah,
                         'lembur3_rupiah'=> $l3_rupiah,
@@ -1736,6 +1726,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 }
             }
             $insentif_kehadiran=0;
+
             $insentif_jabatan=0;
             $koreksi_upah=0;
             $koreksi_potongan=0;
@@ -1825,8 +1816,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
 
                 $gaji_perhari_total=($value->mulai_jam_kerja!=null)?$gaji_perhari:0;
                 $gaji_permenit=$gaji_perhari_total/420;
-                $potongan_permenit=(($value->status_absen!='TL'||$value->status_absen==null)?(($value->jumlah_menit_absen_dt+$value->jumlah_menit_absen_pc+$value->total_menit_permits)*$gaji_permenit):0);
-                $potongan_perhari=((in_array($value->status_absen, $ITB)||$value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null)||$value->status_absen=='R')?$gaji_perhari:0);
+                $potongan_permenit=(($value->jumlah_menit_absen_dt+$value->jumlah_menit_absen_pc+$value->total_menit_permits)*$gaji_permenit);
+                $potongan_perhari=((in_array($value->status_absen, $ITB)||$value->status_absen=='M'|| $value->status_absen=='R')?$gaji_perhari:0);
                 $seniority_allowance=$tunjangan/$jumlah_hari_kerja;
                 $seniority_allowance_total=($value->mulai_jam_kerja!=null)?$tunjangan/$jumlah_hari_kerja:0;
                 $bruto=($value->mulai_jam_kerja!=null)?(($gaji_perhari_total+$seniority_allowance_total+$insentif_kehadiran_total+$total_lembur_rupiah+$koreksi_upah+$insentif_jabatan)-($koreksi_potongan+$potongan_permenit+$potongan_perhari)):(($total_lembur_rupiah)-($potongan_permenit+$potongan_perhari));
@@ -1837,8 +1828,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $gaji_perhari=($grading_salary->salary_bulanan)/$jumlah_hari_kerja;
                 $gaji_perhari_total=($value->kode_hari!=5 && $value->kode_hari!=6)?$gaji_perhari:0;
                 $gaji_permenit=$gaji_perhari_total/480;
-                $potongan_permenit=(($value->status_absen!='TL'||$value->status_absen==null)?(($value->jumlah_menit_absen_dt+$value->jumlah_menit_absen_pc+$value->total_menit_permits)*$gaji_permenit):0);
-                $potongan_perhari=((in_array($value->status_absen, $ITB)||$value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null)||$value->status_absen=='R')?$gaji_perhari:0);
+                $potongan_permenit=(($value->jumlah_menit_absen_dt+$value->jumlah_menit_absen_pc+$value->total_menit_permits)*$gaji_permenit);
+                $potongan_perhari=((in_array($value->status_absen, $ITB)||$value->status_absen=='M'|| $value->status_absen=='R')?$gaji_perhari:0);
                 $seniority_allowance=$tunjangan/$jumlah_hari_kerja;
                 $seniority_allowance_total=($value->kode_hari!=5 && $value->kode_hari!=6)?$tunjangan/$jumlah_hari_kerja:0;
                 $bruto=($value->kode_hari!=5 && $value->kode_hari!=6)?(($gaji_perhari_total+$seniority_allowance_total+$insentif_kehadiran_total+$total_lembur_rupiah+$koreksi_upah+$insentif_jabatan)-($koreksi_potongan+$potongan_permenit+$potongan_perhari)):(($total_lembur_rupiah)-($potongan_permenit+$potongan_perhari));
@@ -1846,24 +1837,24 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $pembulatan=(ceil($jumlah/100)*100)-$jumlah;
                 $total_pembayaran=$jumlah+$bpjs_tk_company_total+$bpjs_ks_company_total+$thr_total+$thr_total+$uang_makan;
             }
-            $z=[
+            $z[]=[
                 'tanggal_berjalan'=>$value->tanggal_berjalan,
                 'enroll_id'=>$value->enroll_id,
                 'status_staff'=>$status_staff,
                 'group_department'=>$group_department,
                 'iby'=>in_array($value->status_absen, $IBY)?1:0,
                 'itb'=>in_array($value->status_absen, $ITB)?1:0,
-                'm'=>($value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null))?1:0,
+                'm'=>($value->status_absen=='M') ? 1 : 0,
                 'dt'=>($value->jumlah_menit_absen_dt!=0 && $value->jumlah_menit_absen_pc==0)?1:0,
                 'pc'=>($value->jumlah_menit_absen_dt==0 && $value->jumlah_menit_absen_pc!=0)?1:0,
                 'dtpc'=>($value->jumlah_menit_absen_dt!=0 && $value->jumlah_menit_absen_pc!=0)?1:0,
                 'lby'=>($value->status_absen=='LN' && $value->kode_hari!=5 && $value->kode_hari!=6)?1:0,
                 'lsm'=>($value->status_absen=='LN' && ($value->kode_hari==5 || $value->kode_hari==6))?1:0,
                 'r'=>$value->status_absen=='R'?1:0,
-                'ok'=>((($value->status_absen==null || $value->status_absen=='IKS') && $value->mulai_jam_kerja!=null && $value->jumlah_menit_absen_dtpc==0))?1:0,
-                'hari_kerja'=>((($value->status_absen==null || $value->status_absen=='IKS') && $value->mulai_jam_kerja!=null)||(in_array($value->status_absen, $IBY))||($value->status_absen=='LN' && $value->kode_hari!=5 && $value->kode_hari!=6))?1:0,
-                'pot_hari_kerja'=>(in_array($value->status_absen, $ITB)||$value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null)||$value->status_absen=='R')?1:0,
-                'total_absen'=>(in_array($value->status_absen, $ITB)||$value->status_absen=='M'||($value->status_absen=='TL' && $value->mulai_jam_kerja!=null)||$value->status_absen=='R'||in_array($value->status_absen, $IBY)||($value->status_absen=='LN' && $value->kode_hari!=5 && $value->kode_hari!=6))?1:0,
+                'ok'=>((($value->status_absen==null || $value->status_absen=='IKS' || $value->status_absen=='TL' ) && $value->mulai_jam_kerja!=null && $value->jumlah_menit_absen_dtpc==0))?1:0,
+                'hari_kerja'=>((($value->status_absen==null || $value->status_absen=='IKS'  || $value->status_absen=='TL') && $value->mulai_jam_kerja!=null)||(in_array($value->status_absen, $IBY))||($value->status_absen=='LN' && $value->kode_hari!=5 && $value->kode_hari!=6))?1:0,
+                'pot_hari_kerja'=>(in_array($value->status_absen, $ITB)||$value->status_absen=='M'|| $value->status_absen=='R')?1:0,
+                'total_absen'=>(in_array($value->status_absen, $ITB)||$value->status_absen=='M'|| $value->status_absen=='R'||in_array($value->status_absen, $IBY)||($value->status_absen=='LN' && $value->kode_hari!=5 && $value->kode_hari!=6))?1:0,
                 'gaji_perhari'=>$gaji_perhari_total,
                 'gaji_permenit'=>$gaji_permenit,
                 'total_lembur_rupiah'=>$total_lembur_rupiah,
@@ -1885,12 +1876,71 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 'konsumsi'=>$uang_makan,
                 'total_pembayaran'=>$total_pembayaran,
             ];
-            if(DailyLaborCost::where('tanggal_berjalan',$value->tanggal_berjalan)->where('enroll_id',$value->enroll_id)->first()){
-                DailyLaborCost::where('tanggal_berjalan',$value->tanggal_berjalan)->where('enroll_id',$value->enroll_id)->update($z);
-            }else{
-                DailyLaborCost::create($z);
-            }
+            // if(DailyLaborCost::where('tanggal_berjalan',$value->tanggal_berjalan)->where('enroll_id',$value->enroll_id)->first()){
+            //     DailyLaborCost::where('tanggal_berjalan',$value->tanggal_berjalan)->where('enroll_id',$value->enroll_id)->update($z);
+            // }else{
+            //     DailyLaborCost::create($z);
+            // }
         }
+        $datest = DB::transaction(function () use ($z) {
+            $tanggalBerjalanList = collect($z)->pluck('tanggal_berjalan')->unique();
+            $enrollIdList = collect($z)->pluck('enroll_id')->unique();
+
+
+            DailyLaborCost::whereIn('tanggal_berjalan', $tanggalBerjalanList)
+                ->whereIn('enroll_id', $enrollIdList)
+                ->delete();
+
+            return $insertData = collect($z)->map(function ($item) {
+                return [
+                    'tanggal_berjalan' => $item['tanggal_berjalan'],
+                    'enroll_id' => $item['enroll_id'],
+                    'status_staff' => $item['status_staff'],
+                    'group_department' => $item['group_department'],
+                    'iby' => $item['iby'],
+                    'itb' => $item['itb'],
+                    'm' => $item['m'],
+                    'dt' => $item['dt'],
+                    'pc' => $item['pc'],
+                    'dtpc' => $item['dtpc'],
+                    'lby' => $item['lby'],
+                    'lsm' => $item['lsm'],
+                    'r' => $item['r'],
+                    'ok' => $item['ok'],
+                    'hari_kerja' => $item['hari_kerja'],
+                    'pot_hari_kerja' => $item['pot_hari_kerja'],
+                    'total_absen' => $item['total_absen'],
+                    'gaji_perhari' => $item['gaji_perhari'],
+                    'gaji_permenit' => $item['gaji_permenit'],
+                    'total_lembur_rupiah' => $item['total_lembur_rupiah'],
+                    'seniority_allowance' => $item['seniority_allowance'],
+                    'insentif_kehadiran' => $item['insentif_kehadiran'],
+                    'insentif_jabatan' => $item['insentif_jabatan'],
+                    'rp_pot_hari_kerja' => $item['rp_pot_hari_kerja'],
+                    'rp_pot_jam' => $item['rp_pot_jam'],
+                    'bruto' => $item['bruto'],
+                    'bpjs_tk' => $item['bpjs_tk'],
+                    'bpjs_ks' => $item['bpjs_ks'],
+                    'total_potongan' => $item['total_potongan'],
+                    'pembulatan' => $item['pembulatan'],
+                    'jumlah' => $item['jumlah'],
+                    'bpjs_tk_company' => $item['bpjs_tk_company'],
+                    'bpjs_ks_company' => $item['bpjs_ks_company'],
+                    'kompensasi' => $item['kompensasi'],
+                    'thr' => $item['thr'],
+                    'konsumsi' => $item['konsumsi'],
+                    'total_pembayaran' => $item['total_pembayaran'],
+                ];
+            })->toArray();
+
+        });
+        $batchSize = 1000;
+        collect($datest)->chunk($batchSize)->each(function ($batch) {
+            DailyLaborCost::insert($batch->toArray());
+        });
+
+        // return $datest;
+
     }
     public function rekap_bpjs(){
 

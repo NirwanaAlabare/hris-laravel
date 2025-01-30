@@ -63,11 +63,11 @@
                     </div>
                 </div>
             </div>
-            <div class="card-footer bg-light m-0 p-1">
+            {{-- <div class="card-footer bg-light m-0 p-1">
                 <div class="text-white">
                     <a id="BtnProsesLembur" class="btn btn-app btn-primary mr-0 mt-0 mb-0 text-white BtnProsesLembur"><span><i class="fa fa-download"></i></span> PROSES Lembur</a>
                 </div>
-            </div>
+            </div> --}}
         </form>
     </div>
 

@@ -34,7 +34,7 @@ class EstimasiPayrollController extends AdminBaseController
         $this->periode_payroll = $this->ajax_getperiodepayroll();
 
         $this->latestData = RekapPerhitunganPayroll::latest('updated_at')->first();
-        
+
         $this->loggedAdmin = Auth::guard('admin')->user();
         return View::make('hris/estimasiperhitunganpayroll', $this->data);
     }
@@ -54,7 +54,7 @@ class EstimasiPayrollController extends AdminBaseController
     {
         list($year, $month) = explode('-', $request->periode_payroll);
 
-        $first=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->first();
+        $first=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->where('periode_umk', NULL)->first();
         list($tgl_awal, $tgl_akhir) = explode(' s/d ', $first->periode_kehadiran);
 
         $updatedAt = Carbon::parse($first->updated_at);
@@ -91,13 +91,13 @@ class EstimasiPayrollController extends AdminBaseController
         ];
         $query=RekapPerhitunganPayroll::query();
         //$query->where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->where('total_kehadiran_net','>','0');
-         $query->where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)
+         $query->where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->where('periode_umk', NULL)
                 ->where(function ($query) use ($tgl_awal) {
                     $query->whereNull('tanggal_resign')
                         ->orWhere('tanggal_resign', '>', $tgl_awal);
                 });
 
-        
+
         if($request->status_staff!==null && $request->status_staff!=='') {
             $query->where('kategori_karyawan',$request->status_staff);
         }
@@ -126,13 +126,13 @@ class EstimasiPayrollController extends AdminBaseController
                 "kehadiran_dtpc"    => $value->kehadiran_dtpc,
                 "kehadiran_m"       => $value->kehadiran_m,
                 "kehadiran_r"       => $value->kehadiran_r,
-                "kehadiran_tk"      => $value->kehadiran_tk, 
-                "kehadiran_ok"      => $value->kehadiran_ok, 
-                "total_kehadiran"   => $value->total_kehadiran, 
-                "total_kehadiran_net" => $value->total_kehadiran_net, 
+                "kehadiran_tk"      => $value->kehadiran_tk,
+                "kehadiran_ok"      => $value->kehadiran_ok,
+                "total_kehadiran"   => $value->total_kehadiran,
+                "total_kehadiran_net" => $value->total_kehadiran_net,
                 "updated_at"        => $value->updated_at,
-                "kehadiran_m_estimasi" => $value->kehadiran_m_estimasi, 
-                "upah_per_bulan"    => $value->upah_per_bulan, 
+                "kehadiran_m_estimasi" => $value->kehadiran_m_estimasi,
+                "upah_per_bulan"    => $value->upah_per_bulan,
                 // "upah_per_hari"     => $value->upah_per_hari,
                 'total_estimasi'    => $value->total_kehadiran_net+$value->kehadiran_m_estimasi,
                 'gross_salary'      => $gross_salary,

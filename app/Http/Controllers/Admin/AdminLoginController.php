@@ -34,6 +34,8 @@ class AdminLoginController extends AdminBaseController
         }
 
         if (Auth::guard('admin')->check()) {
+            $loggedAdmin = Auth::guard('admin')->user();
+            session(['loggedAdmin' => $loggedAdmin]);
             return Redirect::route('admin.admin.editprofile');
         }
 
@@ -57,7 +59,10 @@ class AdminLoginController extends AdminBaseController
             $user = admin();
             $user->last_login = Carbon::now();
             $user->save();
-            Session::put('lock', '0'); // Reset the lock screen session;
+            Session::put('lock', '0');
+            $loggedAdmin = Auth::guard('admin')->user();
+            session(['loggedAdmin' => $loggedAdmin]);
+
 
             return Reply::redirect(route('hris.dashboard.tes'), 'messages.loginSuccess');
         }
@@ -75,7 +80,7 @@ class AdminLoginController extends AdminBaseController
     public function logout()
     {
         Auth::guard('admin')->logout();
-
+        session()->forget('loggedAdmin');
         return Redirect::route('admin.getlogin');
     }
 }

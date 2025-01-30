@@ -304,6 +304,7 @@ class KoreksiUpahController extends AdminBaseController
     {
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
+        session(['loggedAdmin' => $loggedAdmin]); 
 
         $kode_koreksi_upah = $request->kode_koreksi_upah;
         $tanggal_koreksi = $request->tanggal_koreksi;
@@ -416,6 +417,7 @@ class KoreksiUpahController extends AdminBaseController
     public function update(Request $request)
     {
         $loggedAdmin = Auth::guard('admin')->user();
+        session(['loggedAdmin' => $loggedAdmin]); 
         $email = $loggedAdmin->email;
 
         $uuid = $request->uuid;
@@ -455,6 +457,8 @@ class KoreksiUpahController extends AdminBaseController
     public function destroy(Request $request)
     {
         $uuid = $request->uuid;
+        $loggedAdmin = Auth::guard('admin')->user();
+        session(['loggedAdmin' => $loggedAdmin]); 
 
         $findDT = DataKoreksiUpah::where('uuid','=', $uuid)->count();
 

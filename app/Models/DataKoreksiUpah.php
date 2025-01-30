@@ -63,7 +63,7 @@ class DataKoreksiUpah extends \Eloquent
     protected $appends = [];
     public $incrementing = false;
     // public $primaryKey = null;
-    public $primaryKey = ['kode_koreksi_upah'];
+    public $primaryKey = 'kode_koreksi_upah';
 
 
     public function atribut(){

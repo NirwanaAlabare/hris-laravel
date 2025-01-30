@@ -88,7 +88,7 @@
         }
 
         .content table {
-            border-collapse: collapse; 
+            border-collapse: collapse;
             margin-top: 20px;
         }
         .content td {
@@ -100,7 +100,7 @@
             margin: 0;
         }
         .footer table {
-            border-collapse: collapse; 
+            border-collapse: collapse;
             margin-top: 20px;
         }
         .footer td {
@@ -135,7 +135,7 @@
             <table class="no-padding" width="506" style="border-bottom: 2px solid black;">
                 <tr>
                     <td width="10%"></td>
-                    <td width="13%" align="right"><img src="{{ public_path('assets/images/brand/logo.jpg') }}" width="42"></td>
+                    <td width="13%" align="right"><img src="{{ public_path('assets/images/brand/logo.jpg') }}" width="42" style="margin-right: 10px"></td>
                     <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:18pt;font-weight:bold">PT NIRWANA ALABARE GARMENT</td>
                     <td width="10%"></td>
                 </tr>
@@ -191,35 +191,35 @@
                     <tr>
                         <td width="100px" class="">Nama</td>
                         <td>:</td>
-                        <td>{{$data[0]->employee_name}}</td>
+                        <td>{{$data['employee_name']}}</td>
                     </tr>
                     <tr>
                         <td width="100px">NIP</td>
                         <td>:</td>
-                        <td>{{$data[0]->nik}}</td>
+                        <td>{{$data['nik']}}</td>
                     </tr>
                     <tr>
                         <td width="100px">Bagian</td>
                         <td>:</td>
-                        <td>{{$data[0]->department_name}}</td>
+                        <td>{{$data['department_name']}}</td>
                     </tr>
                     <tr>
                         <td width="100px">Jabatan</td>
                         <td>:</td>
-                        <td>{{$data[0]->status_jabatan}}</td>
+                        <td>{{$data['status_jabatan']}}</td>
                     </tr>
                     <tr>
                         <td width="100px">Alamat</td>
                         <td>:</td>
-                        <td style="font-size:10px;">{{$data[0]->alamat_rumah}}</td>
+                        <td style="font-size:10px;">{{$data['alamat_rumah']}}</td>
                     </tr>
                 </table>
                 @php
                     $formatter = new NumberFormatter('id', NumberFormatter::SPELLOUT);
-                    $jumlahHariMangkir = $formatter->format($data[0]->jumlah_hari_mangkir);
+                    $jumlahHariMangkir = $formatter->format($data['jumlah_hari_mangkir']);
                 @endphp
                 <p style="margin-top:20px">Dengan ini kami beritahukan bahwa Sdra/i telah melakukan pelanggaran tata tertib yang ada di PT. Nirwana Alabare Garment yaitu tidak masuk
-                kerja dengan TANPA KETERANGAN berturut-turut selama <b>{{$data[0]->jumlah_hari_mangkir}}</b> ({{ ucfirst($jumlahHariMangkir) }}) hari pada tanggal <b>{{Carbon\Carbon::parse($data[0]->mulai)->translatedFormat('d F')}}</b> hingga <b>{{Carbon\Carbon::parse($data[0]->selesai)->translatedFormat('d F Y')}}</b></p>
+                kerja dengan TANPA KETERANGAN berturut-turut selama <b>{{$data['jumlah_hari_mangkir']}}</b> ({{ ucfirst($jumlahHariMangkir) }}) hari pada tanggal <b>{{Carbon\Carbon::parse($data['mulai'])->translatedFormat('d F')}}</b> hingga <b>{{Carbon\Carbon::parse($data['selesai'])->translatedFormat('d F Y')}}</b></p>
                 <p style="margin-top:20px">Maka dengan ini kami memanggil Sdra/i untuk hadir dan kembali bekerja dengan membawa bukti alasan pelanggaran absensi tersebut.
                     Demikian surat panggilan ini kami kirimkan, atas kerjasamanya kami ucapkan terima kasih.
                 </p>
@@ -239,7 +239,7 @@
                 <table class="no-padding" width="506" style="border-bottom: 2px solid black;">
                     <tr>
                         <td width="10%"></td>
-                        <td width="13%" align="right"><img src="{{ public_path('assets/images/brand/logo.jpg') }}" width="42"></td>
+                        <td width="13%" align="right"><img src="{{ public_path('assets/images/brand/logo.jpg') }}" width="42" style="margin-right: 10px"></td>
                         <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:18pt;font-weight:bold">PT NIRWANA ALABARE GARMENT</td>
                         <td width="10%"></td>
                     </tr>
@@ -279,30 +279,30 @@
                 <tr>
                         <td width="100px" class="">Nama</td>
                         <td>:</td>
-                        <td>{{$data[0]->employee_name}}</td>
+                        <td>{{$data['employee_name']}}</td>
                     </tr>
                     <tr>
                         <td width="100px">NIP</td>
                         <td>:</td>
-                        <td>{{$data[0]->nik}}</td>
+                        <td>{{$data['nik']}}</td>
                     </tr>
                     <tr>
                         <td width="100px">Bagian</td>
                         <td>:</td>
-                        <td>{{$data[0]->department_name}}</td>
+                        <td>{{$data['department_name']}}</td>
                     </tr>
                     <tr>
                         <td width="100px">Jabatan</td>
                         <td>:</td>
-                        <td>{{$data[0]->status_jabatan}}</td>
+                        <td>{{$data['status_jabatan']}}</td>
                     </tr>
                     <tr>
                         <td width="100px">Alamat</td>
                         <td>:</td>
-                        <td style="font-size:10px;">{{$data[0]->alamat_rumah}}</td>
+                        <td style="font-size:10px;">{{$data['alamat_rumah']}}</td>
                     </tr>
                 </table>
-                <p style="margin-top:10px">Tidak masuk kerja dengan TANPA KETERANGAN berturut-turut selama <b>{{$data[0]->jumlah_hari_mangkir}}</b> ({{ ucfirst($jumlahHariMangkir) }}) hari pada tanggal <b>{{Carbon\Carbon::parse($data[0]->mulai)->translatedFormat('d F')}}</b> hingga <b>{{Carbon\Carbon::parse($data[0]->selesai)->translatedFormat('d F Y')}}</b> .</p>
+                <p style="margin-top:10px">Tidak masuk kerja dengan TANPA KETERANGAN berturut-turut selama <b>{{$data['jumlah_hari_mangkir']}}</b> ({{ ucfirst($jumlahHariMangkir) }}) hari pada tanggal <b>{{Carbon\Carbon::parse($data['mulai'])->translatedFormat('d F')}}</b> hingga <b>{{Carbon\Carbon::parse($data['selesai'])->translatedFormat('d F Y')}}</b> .</p>
                 <p style="margin-top:10px">Diterima pada tanggal :</p>
                 <p>Diterima Oleh :</p>
                 <p>Hubungan dengan nama diatas :</p>
@@ -315,7 +315,7 @@
             </div>
             <div class="barcode" style="display: flex; margin-top: 1px;  position: absolute; bottom: 20px; right: 20px;">
                 <div align="right">
-                    <img src="data:image/png;base64,{{\DNS2D::getBarcodePNG(''.$data[0]->enroll_id, 'QRCODE',)}}" alt="barcode" style="width: 60px; height: 60px;background-color:white" />
+                    <img src="data:image/png;base64,{{\DNS2D::getBarcodePNG(''.$data['enroll_id'], 'QRCODE',)}}" alt="barcode" style="width: 60px; height: 60px;background-color:white" />
                 </div>
             </div>
         </div>

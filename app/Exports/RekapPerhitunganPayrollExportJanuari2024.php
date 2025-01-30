@@ -311,15 +311,15 @@ class RekapPerhitunganPayrollExportJanuari2024 implements FromQuery, WithMapping
         $nol='0';
         $pot_hari_kerja=$kehadiran_itb+$kehadiran_m+$kehadiran_r;
         $total_absen=$kehadiran_itb+$kehadiran_m+$kehadiran_r+$kehadiran_iby+$kehadiran_lby;
-        $desember=RekapPerhitunganPayroll::where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll',$Data->periode_tahun_payroll)->where('periode_bulan_payroll',$Data->periode_bulan_payroll)->where('periode_umk','2023-10')->count();
+        $desember=RekapPerhitunganPayroll::where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll',$Data->periode_tahun_payroll)->where('periode_bulan_payroll',$Data->periode_bulan_payroll)->where('periode_umk','2024-01')->count();
         if($desember==1){
-            $bruto_desember=RekapPerhitunganPayroll::select('upah_bruto_rupiah')->where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll',$Data->periode_tahun_payroll)->where('periode_bulan_payroll',$Data->periode_bulan_payroll)->where('periode_umk','2023-10')->pluck('upah_bruto_rupiah')[0];
+            $bruto_desember=RekapPerhitunganPayroll::select('upah_bruto_rupiah')->where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll',$Data->periode_tahun_payroll)->where('periode_bulan_payroll',$Data->periode_bulan_payroll)->where('periode_umk','2024-01')->pluck('upah_bruto_rupiah')[0];
         }else{
             $bruto_desember=0;
         }
-        $januari=RekapPerhitunganPayroll::where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll',$Data->periode_tahun_payroll)->where('periode_bulan_payroll',$Data->periode_bulan_payroll)->where('periode_umk','2024-01')->count();
+        $januari=RekapPerhitunganPayroll::where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll',$Data->periode_tahun_payroll)->where('periode_bulan_payroll',$Data->periode_bulan_payroll)->where('periode_umk','2025-01')->count();
         if($januari==1){
-            $bruto_januari=RekapPerhitunganPayroll::select('upah_bruto_rupiah')->where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll',$Data->periode_tahun_payroll)->where('periode_bulan_payroll',$Data->periode_bulan_payroll)->where('periode_umk','2024-01')->pluck('upah_bruto_rupiah')[0];
+            $bruto_januari=RekapPerhitunganPayroll::select('upah_bruto_rupiah')->where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll',$Data->periode_tahun_payroll)->where('periode_bulan_payroll',$Data->periode_bulan_payroll)->where('periode_umk','2025-01')->pluck('upah_bruto_rupiah')[0];
         }else{
             $bruto_januari=0;
         }
@@ -443,10 +443,10 @@ class RekapPerhitunganPayrollExportJanuari2024 implements FromQuery, WithMapping
                 $sheet->getDelegate()->getStyle('A1')->getFont()->setSize(16);
 
                 if($this->periode_umk){
-                    if($this->periode_umk=='2023-10'){
-                        $tanggal='26 - 31 desember 2023';
-                    }else if($this->periode_umk=='2024-01'){
-                        $tanggal='01 - 25 januari 2023';
+                    if($this->periode_umk=='2024-01'){
+                        $tanggal='26 - 31 desember 2024';
+                    }else if($this->periode_umk=='2025-01'){
+                        $tanggal='01 - 25 januari 2025';
                     }
                 }else{
                     setlocale(LC_ALL, 'id-ID', 'id_ID');

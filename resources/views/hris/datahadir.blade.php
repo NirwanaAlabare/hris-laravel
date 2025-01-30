@@ -1795,7 +1795,7 @@
                                         $('#btn-updateKehadiran').removeClass("btn-loading");
                                         $("#btn-updateKehadiran").html('<span><i class="fa fa-download"></i></span> UPDATE ABSENSI');
                                         $("#btn-updateKehadiran").attr("disabled", false);
-                                        // $("#btn-caridata").click();
+                                        $("#btn-caridata").click();
                                     },
                                     error: function(res){
                                         swal({
@@ -2060,7 +2060,7 @@
                                     $('#BtnUpdateLintasHari').removeClass("btn-loading");
                                     $("#BtnUpdateLintasHari").html('<span><i class="fa fa-download"></i></span> UPDATE ABSENSI');
                                     $("#BtnUpdateLintasHari").attr("disabled", false);
-                                    // $("#btn-caridata").click();
+                                    $("#btn-caridata").click();
 
                                 },
                                 error: function (xhr, status, error) {
@@ -2134,7 +2134,7 @@
                     });
                     $('#modal_edit_jadwal').modal('hide');
 
-                    // $("#btn-caridata").click();
+                    $("#btn-caridata").click();
 
                 }
             });

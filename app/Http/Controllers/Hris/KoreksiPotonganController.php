@@ -200,6 +200,7 @@ class KoreksiPotonganController extends AdminBaseController
     public function create(Request $request)
     {
         $loggedAdmin = Auth::guard('admin')->user();
+        session(['loggedAdmin' => $loggedAdmin]); 
         $email = $loggedAdmin->email;
         $kode_koreksi_potongan = $request->kode_koreksi_potongan;
         
@@ -249,6 +250,7 @@ class KoreksiPotonganController extends AdminBaseController
     {
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
+        session(['loggedAdmin' => $loggedAdmin]); 
 
         $uuid = $request->uuid;
         $kode_koreksi_potongan = $request->kode_koreksi_potongan;
@@ -285,6 +287,8 @@ class KoreksiPotonganController extends AdminBaseController
     public function destroy(Request $request)
     {
         $uuid = $request->uuid;
+        $loggedAdmin = Auth::guard('admin')->user();
+        session(['loggedAdmin' => $loggedAdmin]); 
 
         $findDT = DataKoreksiPotongan::where('uuid','=', $uuid)->count();
 
