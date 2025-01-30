@@ -265,9 +265,9 @@ class RekapPerhitunganPayrollExportUMK2024 implements FromQuery, WithMapping, Sh
         if($Data->potongan_pc_rupiah == 0){ $potongan_pc_rupiah = '0';} else { $potongan_pc_rupiah = $Data->potongan_pc_rupiah; }
         if($Data->total_potongan_jam_rupiah == 0){ $total_potongan_jam_rupiah = '0';} else { $total_potongan_jam_rupiah = $Data->total_potongan_jam_rupiah; }
         if($Data->potongan_kehadiran_rupiah == 0){ $potongan_kehadiran_rupiah = '0';} else { $potongan_kehadiran_rupiah = $Data->potongan_kehadiran_rupiah; }
-        if($Data->upah_bruto_rupiah == 0){ $upah_bruto_rupiah = '0';} else { $upah_bruto_rupiah = ($Data->upah_bruto_rupiah+$koreksi_upah_rupiah_excel+$insentif_jabatan_rupiah_excel+$tunjangan_karyawan_rupiah_excel)-$koreksi_potongan_rupiah_excel; }
+        if($Data->upah_bruto_rupiah == 0){ $upah_bruto_rupiah = '0';} else { $upah_bruto_rupiah = ($Data->upah_bruto_rupiah+$koreksi_upah_rupiah_excel+$insentif_jabatan_rupiah_excel)-$koreksi_potongan_rupiah_excel; }
         $pph21 = $Data->pph21;
-        if($Data->upah_neto_rupiah == 0){ $upah_neto_rupiah = '0';} else { $upah_neto_rupiah = ($Data->upah_neto_rupiah+$koreksi_upah_rupiah_excel+$insentif_jabatan_rupiah_excel+$tunjangan_karyawan_rupiah_excel)-$koreksi_potongan_rupiah_excel; }
+        if($Data->upah_neto_rupiah == 0){ $upah_neto_rupiah = '0';} else { $upah_neto_rupiah = ($Data->upah_neto_rupiah+$koreksi_upah_rupiah_excel+$insentif_jabatan_rupiah_excel)-$koreksi_potongan_rupiah_excel; }
         if($Data->total_bpjs_tk == 0){ $total_bpjs_tk = '0';} else { $total_bpjs_tk = $Data->total_bpjs_tk; }
         if($Data->total_bpjs_ks == 0){ $total_bpjs_ks = '0';} else { $total_bpjs_ks = $Data->total_bpjs_ks; }
         if($Data->iuran_serikat_rupiah == 0){ $iuran_serikat_rupiah = '0';} else { $iuran_serikat_rupiah = $Data->iuran_serikat_rupiah; }
