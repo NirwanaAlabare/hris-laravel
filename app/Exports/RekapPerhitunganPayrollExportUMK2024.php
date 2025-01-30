@@ -394,7 +394,6 @@ class RekapPerhitunganPayrollExportUMK2024 implements FromQuery, WithMapping, Sh
         }
         $total_upah_2024=$upah_bruto_rupiah-$total_potongan;
 
-
         return [
             $kosong,
             $enroll_id,
@@ -465,7 +464,7 @@ class RekapPerhitunganPayrollExportUMK2024 implements FromQuery, WithMapping, Sh
             $nominal_iuran_koperasi,
             $total_potongan,
             $pembulatan,
-            $total_upah_2024,
+            ceil($total_upah_2024 /100) * 100,
 
         ];
     }
