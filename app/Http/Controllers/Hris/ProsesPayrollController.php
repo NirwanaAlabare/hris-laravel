@@ -1891,7 +1891,7 @@ class ProsesPayrollController extends AdminBaseController
                     $l3=0;
                     $l4=0;
                 }
-                if($value->kode_hari==6 || $value->status_absen=='LN'){
+                if(($value->kode_hari==6 && $value->mulai_jam_kerja == null) || $value->status_absen=='LN'){
                     $l1_rupiah=$l1*($value->salary_bulanan/173*1);
                     $l2_rupiah=$l2*($value->salary_bulanan/173*2);
                     $l3_rupiah=$l3*($value->salary_bulanan/173*2);
@@ -2849,7 +2849,7 @@ class ProsesPayrollController extends AdminBaseController
                         $l3=0;
                         $l4=0;
                     }
-                    if($value->kode_hari==6 || $value->status_absen=='LN'){
+                    if(($value->kode_hari==6 && $value->mulai_jam_kerja == null) || $value->status_absen=='LN'){
                         $l1_rupiah=$l1*($value->salary_bulanan/173*1);
                         $l2_rupiah=$l2*($value->salary_bulanan/173*2);
                         $l3_rupiah=$l3*($value->salary_bulanan/173*2);
@@ -4269,7 +4269,7 @@ class ProsesPayrollController extends AdminBaseController
                     $l3=0;
                     $l4=0;
                 }
-                if($value->kode_hari==6 || $value->status_absen=='LN'){
+                if(($value->kode_hari==6 && $value->mulai_jam_kerja == null) || $value->status_absen=='LN'){
                     $l1_rupiah=$l1*($value->salary_bulanan/173*1);
                     $l2_rupiah=$l2*($value->salary_bulanan/173*2);
                     $l3_rupiah=$l3*($value->salary_bulanan/173*2);
@@ -4383,7 +4383,7 @@ class ProsesPayrollController extends AdminBaseController
                     $l3=0;
                     $l4=0;
                 }
-                if($value->kode_hari==6 || $value->status_absen=='LN'){
+                if(($value->kode_hari==6 && $value->mulai_jam_kerja == null) || $value->status_absen=='LN'){
                     $l1_rupiah=$l1*($value->salary_bulanan/173*1);
                     $l2_rupiah=$l2*($value->salary_bulanan/173*2);
                     $l3_rupiah=$l3*($value->salary_bulanan/173*2);
