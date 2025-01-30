@@ -124,13 +124,13 @@
             <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Detail Alamat</label>
         </div>
         <div class="col-4">
-            <textarea id="detail_alamat" rows="4" cols="7" class="form-control col-11" style="background-color: white"></textarea>
+            <input id="detail_alamat" class="form-control col-11" style="background-color: white" placeholder="Nama Gedung, Jalan atau Blok">
         </div>
         <div class="col-2 pt-1">
             <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Detail Alamat</label>
         </div>
         <div class="col-4">
-            <textarea id="detail_alamat_2" rows="4" cols="7" class="form-control col-11" style="background-color: white"></textarea>
+            <input id="detail_alamat_2" class="form-control col-11" style="background-color: white" placeholder="Nama Gedung, Jalan atau Blok">
         </div>
     </div>
     <div class="row pb-2">
@@ -348,10 +348,10 @@
                             </select>
                         </td>
                         <td>
-                            <textarea id="detail_alamat_yang_ke_1" name="detail_alamat_ke[]" class="form-control" disabled></textarea>
+                            <input id="detail_alamat_yang_ke_1" name="detail_alamat_ke[]" class="form-control" disabled>
                         </td>
                         <td>
-                            <input type="date" id="tanggal_kedatangan_yang_ke_1" name="tanggal_kedatangan_ke[]" class="form-control" disabled></textarea>
+                            <input type="date" id="tanggal_kedatangan_yang_ke_1" name="tanggal_kedatangan_ke[]" class="form-control" disabled>
                         </td>
                         <td>
                             <input type="time" id="jam_kedatangan_yang_ke_1" name="jam_kedatangan_ke[]" class="form-control" disabled>
@@ -410,7 +410,7 @@
                 </select>\
             </td>\
             <td>\
-                <textarea id="detail_alamat_yang_ke_'+count+'" name="detail_alamat_ke[]" class="form-control" style="background-color:white" onkeyup="isi_detail_alamat('+count+')"></textarea>\
+                <input id="detail_alamat_yang_ke_'+count+'" name="detail_alamat_ke[]" class="form-control" style="background-color:white" onkeyup="isi_detail_alamat('+count+')">\
             </td>\
             <td>\
                 <input type="date" id="tanggal_kedatangan_yang_ke_'+count+'" name="tanggal_kedatangan_ke[]" class="form-control" style="background-color:white" onchange="isi_tanggal_kedatangan('+count+')">\
@@ -430,7 +430,7 @@
         var city = $("select[name='kota_ke[]']").map(function(){return $(this).val();}).get();
         var district = $("select[name='kecamatan_ke[]']").map(function(){return $(this).val();}).get();
         var subdistrict = $("select[name='desa_ke[]']").map(function(){return $(this).val();}).get();
-        var detail_alamat = $("textarea[name='detail_alamat_ke[]']").map(function(){return $(this).val();}).get();
+        var detail_alamat = $("input[name='detail_alamat_ke[]']").map(function(){return $(this).val();}).get();
         var tanggal_kedatangan = $("input[name='tanggal_kedatangan_ke[]']").map(function(){return $(this).val();}).get();
         var jam_kedatangan = $("input[name='jam_kedatangan_ke[]']").map(function(){return $(this).val();}).get();
         for(var i=1; i<tujuan.length; i++) {
@@ -490,7 +490,7 @@
         district.splice(count, 1);
         var subdistrict = $("select[name='desa_ke[]']").map(function(){return $(this).val();}).get();
         subdistrict.splice(count, 1);
-        var detail_alamat = $("textarea[name='detail_alamat_ke[]']").map(function(){return $(this).val();}).get();
+        var detail_alamat = $("input[name='detail_alamat_ke[]']").map(function(){return $(this).val();}).get();
         detail_alamat.splice(count, 1);
         var tanggal_kedatangan = $("input[name='tanggal_kedatangan_ke[]']").map(function(){return $(this).val();}).get();
         tanggal_kedatangan.splice(count, 1);
@@ -1253,7 +1253,7 @@
             var city_array = $("select[name='kota_ke[]']").map(function(){return $(this).val();}).get();
             var district_array = $("select[name='kecamatan_ke[]']").map(function(){return $(this).val();}).get();
             var subdistrict_array = $("select[name='desa_ke[]']").map(function(){return $(this).val();}).get();
-            var detail_alamat_array = $("textarea[name='detail_alamat_ke[]']").map(function(){return $(this).val();}).get();
+            var detail_alamat_array = $("input[name='detail_alamat_ke[]']").map(function(){return $(this).val();}).get();
             var tanggal_kedatangan_array = $("input[name='tanggal_kedatangan_ke[]']").map(function(){return $(this).val();}).get();
             var jam_kedatangan_array = $("input[name='jam_kedatangan_ke[]']").map(function(){return $(this).val();}).get();
             $.ajax({

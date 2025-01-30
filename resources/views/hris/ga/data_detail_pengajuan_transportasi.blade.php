@@ -259,13 +259,15 @@
     </div>
     <div class="row pb-1">
         <div class="col-12 text-center">
-            @if ($value->status==0)
-            <a class="btn" style="background-color:rgb(236, 165, 32);color:white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Back</a>&nbsp;<label style="font-size:11pt;color:red">REJECTED</label>
-            @elseif ($value->status==1)
-            <a class="btn" style="background-color:rgb(236, 165, 32);color:white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Back</a>&nbsp;<button class="btn btn-success" id="update_request">Update</button>
-            @else
+            @if ($value->status==null)
                 <button class="btn btn-success" id="approve_request" data-toggle="modal" data-target="approveModal" data-id="{{$value->id}}">Approve</button>
                 <button class="btn btn-danger" id="reject_request" data-toggle="modal" data-target="rejectModal" data-id="{{$value->id}}">Reject</button>
+            @else
+                @if ($value->status==1)
+                <a class="btn" style="background-color:rgb(236, 165, 32);color:white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Back</a>&nbsp;<button class="btn btn-success" id="update_request">Update</button>
+                @else
+                <a class="btn" style="background-color:rgb(236, 165, 32);color:white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Back</a>&nbsp;<label style="font-size:11pt;color:red">REJECTED</label>
+                @endif
             @endif
         </div>
     </div>
@@ -284,6 +286,10 @@
                     <thead>
                         <tr>
                             <th style="font-weight: bold">No</th>
+                            <th style="font-weight: bold">Provinsi</th>
+                            <th style="font-weight: bold">Kota</th>
+                            <th style="font-weight: bold">Kecamatan</th>
+                            <th style="font-weight: bold">Desa</th>
                             <th style="font-weight: bold">Detail Alamat</th>
                             <th style="font-weight: bold">Waktu Kedatangan</th>
                         </tr>
@@ -366,7 +372,11 @@
                 jQuery.each(res, function(key,value){
                     $('#another_route').append('<tr>\
                         <td>'+(key+1)+'</td>\
-                        <td>'+value['detail_alamat']+' - '+value['subdis_name']+', '+value['dis_name']+', '+value['city_name']+', '+value['prov_name']+'</td>\
+                        <td>'+value['prov_name']+'</td>\
+                        <td>'+value['city_name']+'</td>\
+                        <td>'+value['dis_name']+'</td>\
+                        <td>'+value['subdis_name']+'</td>\
+                        <td>'+value['detail_alamat']+'</td>\
                         <td>'+new Date(value['tanggal_kedatangan']).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"})+' - '+value['jam_kedatangan']+'</td>\
                     </tr>');
                 });

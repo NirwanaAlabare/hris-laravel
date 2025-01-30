@@ -295,7 +295,7 @@
             {
                 data: null,
                 render: function (data, type, row, meta) {
-                    if (row.user==11){
+                    if (row.user==4241 || row.user==20 || row.user==5321 || row.user==17 || row.user==7765 || row.user==6083){
                         if(row.status==null){
                             return `<button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-sm py-0 px-1 mb-1 " style="font-size:10pt">LIHAT DETAIL</button><br><a class='btn btn-success py-0 px-2 btn-sm text-white' style='font-size:9pt' data-toggle="modal" data-target="#approveModal" ' onclick="approve_function(` + row.id + `,'` + row.employee_name + `','` + row.department_name + `','` + row.detail_alamat + `','` + row.desa + `','` + row.detail_alamat_tujuan + `','` + row.desa_tujuan + `')"> APPROVE </a><br><a class='btn btn-danger py-0 mt-1 btn-sm text-white' style='font-size:9pt' data-toggle="modal" data-target="#rejectModal" ' onclick="reject_function(` + row.id + `,'` + row.employee_name + `','` + row.department_name + `','` + row.detail_alamat + `','` + row.desa + `','` + row.detail_alamat_tujuan + `','` + row.desa_tujuan + `')"> REJECT </a>`;
                         }else{
@@ -310,7 +310,7 @@
                             return `<button onclick="edit_detail(` + row.id + `)" class="btn btn-sm btn-block py-0 px-1 mb-1" style="font-size:10pt;background-color:orange;color:white">EDIT</button>PENDING`;
                         }else{
                             if(row.status==1){
-                                return '<h6 style="font-size:11pt;color:green">APPROVED</h6><button onclick="print_penugasan(` + row.id + `)" class="btn btn-success btn-sm p-0" style="font-size:10pt">FORM PENUGASAN</button>';
+                                return `<h6 style="font-size:11pt;color:green">APPROVED</h6><button onclick="print_penugasan(` + row.id + `)" class="btn btn-success btn-sm p-0" style="font-size:10pt">FORM PENUGASAN</button>`;
                             }else{
                                 return '<h6 style="font-size:11pt;color:red">REJECTED</h6>';
                             }
