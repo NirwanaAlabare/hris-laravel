@@ -657,17 +657,12 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $this->periode_kehadiran = $this->ajax_getperiodekehadiran();
         $this->selectemployee = $this->ajax_getallemployeeatribut();
 
-        $this->month = date('Y-m'); // Bulan saat ini
-        $today = date('d'); // Tanggal hari ini
+        $this->month = date('Y-m');
+        $today = date('d');
 
-        // Cek apakah tanggal lebih besar atau sama dengan 26
-        if ($today >= 26) {
-            // Tambahkan 1 bulan ke tanggal saat ini
-            // $minMonth = date('Y-m', strtotime('+1 month'));
-            $minMonth = $this->month;
-        } else {
-            // Tetap bulan saat ini
-            $minMonth = $this->month;
+        $minMonth = $this->month;
+        if ($today >= 26 && $today <= 31) {
+            $minMonth = date('Y-m', strtotime(date('Y-m-01') . ' +1 month'));
         }
 
 
