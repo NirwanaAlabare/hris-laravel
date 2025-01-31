@@ -76,7 +76,7 @@ class KoreksiPotonganController extends AdminBaseController
                         data_koreksi_potongan.operator,
                         data_koreksi_potongan.keterangan,
                         data_koreksi_potongan.created_at,
-                        data_koreksi_potongan.updated_at                            
+                        data_koreksi_potongan.updated_at
                     ')
                     ->leftJoin('employee_atribut','data_koreksi_potongan.enroll_id','=','employee_atribut.enroll_id')
                     ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
@@ -86,7 +86,7 @@ class KoreksiPotonganController extends AdminBaseController
                     ->get();
 
             $totalData = DataKoreksiPotongan::count();
-            $totalFiltered = $totalData;  
+            $totalFiltered = $totalData;
 
         } else {
             $search = $request->input('search.value');
@@ -114,7 +114,7 @@ class KoreksiPotonganController extends AdminBaseController
                         OR employee_atribut.employee_name LIKE "%' . $search . '%"
                         OR department_all.sub_dept_name LIKE "%' . $search . '%"
                         OR data_koreksi_potongan.keterangan LIKE "%' . $search . '%"
-                    ')                            
+                    ')
                     ->leftJoin('employee_atribut','data_koreksi_potongan.enroll_id','=','employee_atribut.enroll_id')
                     ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
                     ->orderBy('data_koreksi_potongan.updated_at','desc')
@@ -132,7 +132,7 @@ class KoreksiPotonganController extends AdminBaseController
                         ->leftJoin('employee_atribut','data_koreksi_potongan.enroll_id','=','employee_atribut.enroll_id')
                         ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
                         ->count();
-            $totalFiltered = $totalData;                            
+            $totalFiltered = $totalData;
 
         }
 
@@ -141,7 +141,7 @@ class KoreksiPotonganController extends AdminBaseController
         {
             foreach ($query as $q)
             {
-   
+
                 $nestedData['uuid'] = $q->uuid;
                 $nestedData['kode_koreksi_potongan'] = $q->kode_koreksi_potongan;
                 $nestedData['tanggal_koreksi'] = $q->tanggal_koreksi;
@@ -180,7 +180,7 @@ class KoreksiPotonganController extends AdminBaseController
                 $nestedData['keterangan'] = $q->keterangan;
                 $nestedData['created_at'] = substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5);
                 $nestedData['updated_at'] = substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5);
-        
+
                 $data[] = $nestedData;
 
             }
@@ -200,10 +200,10 @@ class KoreksiPotonganController extends AdminBaseController
     public function create(Request $request)
     {
         $loggedAdmin = Auth::guard('admin')->user();
-        session(['loggedAdmin' => $loggedAdmin]); 
+        session(['loggedAdmin' => $loggedAdmin]);
         $email = $loggedAdmin->email;
         $kode_koreksi_potongan = $request->kode_koreksi_potongan;
-        
+
         $tanggal_koreksi = $request->tanggal_koreksi;
         $enroll_id = $request->enroll_id;
         $nik = $request->nik;
@@ -221,7 +221,7 @@ class KoreksiPotonganController extends AdminBaseController
 
         // sebelumnya
         // $findDT = DataKoreksiPotongan::where('kode_koreksi_potongan','=', $kode_koreksi_potongan)->count();
-        
+
         // if($findDT > 0) {
         //     $query = false;
         // }
@@ -250,7 +250,7 @@ class KoreksiPotonganController extends AdminBaseController
     {
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
-        session(['loggedAdmin' => $loggedAdmin]); 
+        session(['loggedAdmin' => $loggedAdmin]);
 
         $uuid = $request->uuid;
         $kode_koreksi_potongan = $request->kode_koreksi_potongan;
@@ -288,7 +288,7 @@ class KoreksiPotonganController extends AdminBaseController
     {
         $uuid = $request->uuid;
         $loggedAdmin = Auth::guard('admin')->user();
-        session(['loggedAdmin' => $loggedAdmin]); 
+        session(['loggedAdmin' => $loggedAdmin]);
 
         $findDT = DataKoreksiPotongan::where('uuid','=', $uuid)->count();
 
@@ -307,7 +307,7 @@ class KoreksiPotonganController extends AdminBaseController
          $filepath = public_path('format_import/format_import_koreksi_potongan.xlsx');
          return Response()->download($filepath);
      }
- 
+
      public function import_koreksipotongan(Request $request)
      {
         try{
@@ -363,13 +363,13 @@ class KoreksiPotonganController extends AdminBaseController
                     if($findDT){
                         $data_update=[
                             'kode_koreksi_potongan'=>$value['kode_koreksi_potongan'],
-                            'tanggal_koreksi'=>$value['tanggal_koreksi'],    
+                            'tanggal_koreksi'=>$value['tanggal_koreksi'],
                             'enroll_id'=>$value['enroll_id'],
                             'jumlah_rp_potongan'=>$value['jumlah_rp_potongan'],
                             'periode_tanggal_koreksi'=>$value['periode_tanggal_koreksi'],
                             'keterangan'=>$value['keterangan'],
-                            'operator'=>$value['operator'], 
-                            'jenis_potongan'=>$value['jenis_potongan'],        
+                            'operator'=>$value['operator'],
+                            'jenis_potongan'=>$value['jenis_potongan'],
 
                         ];
                         DataKoreksiPotongan::where('enroll_id',$value['enroll_id'])->where('periode_tanggal_koreksi',$value['periode_tanggal_koreksi'])->update($data_update);
@@ -378,13 +378,13 @@ class KoreksiPotonganController extends AdminBaseController
                         $data_insert=[
                             'uuid' => Str::uuid(),
                             'kode_koreksi_potongan'=>$value['kode_koreksi_potongan'],
-                            'tanggal_koreksi'=>$value['tanggal_koreksi'],    
+                            'tanggal_koreksi'=>$value['tanggal_koreksi'],
                             'enroll_id'=>$value['enroll_id'],
                             'jumlah_rp_potongan'=>$value['jumlah_rp_potongan'],
                             'periode_tanggal_koreksi'=>$value['periode_tanggal_koreksi'],
                             'keterangan'=>$value['keterangan'],
-                            'operator'=>$value['operator'],  
-                            'jenis_potongan'=>$value['jenis_potongan'],        
+                            'operator'=>$value['operator'],
+                            'jenis_potongan'=>$value['jenis_potongan'],
 
                         ];
                         DataKoreksiPotongan::create($data_insert);
@@ -398,11 +398,35 @@ class KoreksiPotonganController extends AdminBaseController
         }catch(\Exception $e){
             $error=$error+1;
             return back()->with("error",'gagal tersimpan terdapat kesalah di row '.$error);
-        } 
+        }
      }
-    public function export_koreksipotongan(Request $request) 
+    public function export_koreksipotongan(Request $request)
     {
-        $DataKoreksiPotongan=DataKoreksiPotongan::where('periode_tanggal_koreksi',$request->priode_payroll)->get();
+        // $DataKoreksiPotongan=DataKoreksiPotongan::where('periode_tanggal_koreksi',$request->priode_payroll)->get();
+        $DataKoreksiPotongan =  DataKoreksiPotongan::selectRaw('
+        data_koreksi_potongan.uuid,
+        data_koreksi_potongan.kode_koreksi_potongan,
+        data_koreksi_potongan.tanggal_koreksi,
+        employee_atribut.enroll_id,
+        employee_atribut.nik,
+        employee_atribut.employee_name,
+        department_all.sub_dept_name,
+        department_all.department_name,
+        data_koreksi_potongan.jumlah_rp_potongan,
+        data_koreksi_potongan.periode_tanggal_koreksi,
+        data_koreksi_potongan.jenis_potongan,
+        data_koreksi_potongan.operator,
+        data_koreksi_potongan.keterangan,
+        data_koreksi_potongan.created_at,
+        data_koreksi_potongan.updated_at
+    ')
+    ->leftJoin('employee_atribut','data_koreksi_potongan.enroll_id','=','employee_atribut.enroll_id')
+    ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
+    ->where('periode_tanggal_koreksi',$request->priode_payroll)
+    ->orderBy('data_koreksi_potongan.updated_at','asc')
+    ->get();
+
+
         return Excel::download(new KoreksiPotonganExport($DataKoreksiPotongan),'KoreksiUpah'.time().'.xlsx');
     }
 

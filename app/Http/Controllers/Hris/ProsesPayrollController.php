@@ -2893,7 +2893,16 @@ class ProsesPayrollController extends AdminBaseController
                 }
 
 
-                $b=MasterDataAbsenKehadiran::selectRaw('uuid,tanggal_berjalan,tanggal_absen,shift_work_id,kode_hari,nama_hari,time_table_name,mulai_jam_kerja,akhir_jam_kerja,jam_kerja,jumlah_jam_kerja,jumlah_menit_kerja,mulai_jam_istirahat,akhir_jam_istirahat,jumlah_jam_istirahat,jumlah_menit_istirahat,absen_masuk_kerja,absen_pulang_kerja,enroll_id,nik,status_absen,nomor_absen_ijin,jumlah_menit_absen_dt,jumlah_menit_absen_pc,jumlah_menit_absen_dtpc,jumlah_absen_menit_kerja,holiday_id,holiday_name,operator,catatan_hrd,nomor_form_perubahan_absen,nomor_form_lembur,updated_absen_cekinout,updated_absen_ijin,updated_absen_dtpc,created_at,updated_at,deleted_at')->whereRaw('tanggal_berjalan >= "'.$month_umk_first.'" and tanggal_berjalan <= "'.$month_umk_last.'" and nomor_absen_ijin like "IKS%"'.$inEnrollId.'')->groupby('enroll_id')->get();
+                $b = MasterDataAbsenKehadiran::select(
+                    'master_data_absen_kehadiran.*',
+                    'data_absen_perijinan.total_time_ijin'
+                )
+                ->leftJoin('data_absen_perijinan', function ($join) {
+                    $join->on('master_data_absen_kehadiran.nomor_absen_ijin', '=', 'data_absen_perijinan.nomor_form_perizinan');
+                })
+                ->whereRaw('tanggal_berjalan >= "'.$month_umk_first.'" and tanggal_berjalan <= "'.$month_umk_last.'" and nomor_absen_ijin like "IKS%"'.$MDAinEnrollId.'')->groupby('enroll_id')->get();
+
+
 
                 // rekap iks
                 foreach ($b as $key => $value){
@@ -2915,7 +2924,7 @@ class ProsesPayrollController extends AdminBaseController
                             $jam_selesai_istirahat='13:00';
                         }
                     }
-                    $minutes = $value->total_menit_permits;
+                    $minutes = $value->total_time_ijin;
                     $seconds = $minutes * 60;
                     $time = gmdate("H:i:s", $seconds);
                     $salary=RekapPerhitunganKehadiranKaryawan::where('periode_payroll',$priode)->where('enroll_id',$value->enroll_id)->where('periode_umk',$periode_umk)->first();
@@ -2932,13 +2941,13 @@ class ProsesPayrollController extends AdminBaseController
                         'jam_mulai_istirahat'=>$jam_mulai_istirahat,
                         'jam_selesai_istirahat'=> $jam_selesai_istirahat,
                         'lama_istirahat_menit'=>60,
-                        'lama_ijin_menit'=>$value->total_menit_permits,
+                        'lama_ijin_menit'=>$value->total_time_ijin,
                         'lama_ijin_jam'=>$time,
                         'absen_alasan'=>$value->absen_alasan,
                         'gaji_pokok'=> $salary->gaji_pokok,
                         'gaji_harian'=> $salary->gaji_harian,
                         'gaji_menit'=> $salary->gaji_menit,
-                        'potongan_iks_rupiah'=>$salary->gaji_menit*$value->total_menit_permits,
+                        'potongan_iks_rupiah'=>$salary->gaji_menit*$value->total_time_ijin,
                         'created_at'=>Carbon::now(),
                         'updated_at'=>Carbon::now()
                     ];

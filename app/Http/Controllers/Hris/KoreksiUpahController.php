@@ -68,72 +68,72 @@ class KoreksiUpahController extends AdminBaseController
             $start = $request->input('start');
             $totalData = 0;
             $totalFiltered = 0;
-            
+
             $periode_tanggal_koreksi = substr($request->periode_tanggal_koreksi,5,2).'/'.substr($request->periode_tanggal_koreksi,8,2).'/'.substr($request->periode_tanggal_koreksi,0,4).' - '.substr($request->periode_tanggal_koreksi,20,2).'/'.substr($request->periode_tanggal_koreksi,23,2).'/'.substr($request->periode_tanggal_koreksi,15,4);
-           
-            // $query =  DB::select("select 
+
+            // $query =  DB::select("select
             // a.enroll_id id,
             // a.employee_name as nama_karyawan,
             // a.sub_dept_name as nama_department,
             // a.jumlah_rp_potongan as insentif,
-            // b.jumlah_rp_potongan as koreksi_upah 
-            // from (select x.enroll_id, x.jumlah_rp_potongan from data_koreksi_upah x inner join (select max(y.periode) periode, y.enroll_id enroll_id 
-            // from (SELECT enroll_id, uuid, 
-            // CONCAT(substr(periode_tanggal_koreksi,20,4),'-',substr(periode_tanggal_koreksi,14,2),'-',substr(periode_tanggal_koreksi,17,2)) as periode, jumlah_rp_potongan 
-            // FROM data_koreksi_upah where jenis_koreksi=2 order by CONCAT(substr(periode_tanggal_koreksi,20,4),'-',substr(periode_tanggal_koreksi,14,2),'-',substr(periode_tanggal_koreksi,17,2)) desc)y 
-            // group by enroll_id)z on x.enroll_id=z.enroll_id and CONCAT(substr(x.periode_tanggal_koreksi,20,4),'-',substr(x.periode_tanggal_koreksi,14,2),'-',substr(x.periode_tanggal_koreksi,17,2))=z.periode)a 
+            // b.jumlah_rp_potongan as koreksi_upah
+            // from (select x.enroll_id, x.jumlah_rp_potongan from data_koreksi_upah x inner join (select max(y.periode) periode, y.enroll_id enroll_id
+            // from (SELECT enroll_id, uuid,
+            // CONCAT(substr(periode_tanggal_koreksi,20,4),'-',substr(periode_tanggal_koreksi,14,2),'-',substr(periode_tanggal_koreksi,17,2)) as periode, jumlah_rp_potongan
+            // FROM data_koreksi_upah where jenis_koreksi=2 order by CONCAT(substr(periode_tanggal_koreksi,20,4),'-',substr(periode_tanggal_koreksi,14,2),'-',substr(periode_tanggal_koreksi,17,2)) desc)y
+            // group by enroll_id)z on x.enroll_id=z.enroll_id and CONCAT(substr(x.periode_tanggal_koreksi,20,4),'-',substr(x.periode_tanggal_koreksi,14,2),'-',substr(x.periode_tanggal_koreksi,17,2))=z.periode)a
             // left join (select*from data_koreksi_upah where periode_tanggal_koreksi='$periode_tanggal_koreksi' and jenis_koreksi=2 group by enroll_id) b on a.enroll_id=b.enroll_id");
-           
-            $query = DB::select("SELECT 
+
+            $query = DB::select("SELECT
                         a.enroll_id AS id,
                         e.employee_name AS nama_karyawan,
                         e.sub_dept_name AS nama_department,
                         a.jumlah_rp_potongan AS insentif,
                         b.jumlah_rp_potongan AS koreksi_upah
-                    FROM 
+                    FROM
                         (
-                            SELECT 
-                                x.enroll_id, 
+                            SELECT
+                                x.enroll_id,
                                 x.jumlah_rp_potongan
-                            FROM 
+                            FROM
                                 data_koreksi_upah x
-                            INNER JOIN 
+                            INNER JOIN
                                 (
-                                    SELECT 
-                                        enroll_id, 
+                                    SELECT
+                                        enroll_id,
                                         MAX(CONCAT(SUBSTR(periode_tanggal_koreksi, 20, 4), '-', SUBSTR(periode_tanggal_koreksi, 14, 2), '-', SUBSTR(periode_tanggal_koreksi, 17, 2))) AS periode
-                                    FROM 
+                                    FROM
                                         data_koreksi_upah
-                                    WHERE 
+                                    WHERE
                                         jenis_koreksi = 2
-                                    GROUP BY 
+                                    GROUP BY
                                         enroll_id
-                                ) z 
-                            ON 
+                                ) z
+                            ON
                                 x.enroll_id = z.enroll_id
                                 AND CONCAT(SUBSTR(x.periode_tanggal_koreksi, 20, 4), '-', SUBSTR(x.periode_tanggal_koreksi, 14, 2), '-', SUBSTR(x.periode_tanggal_koreksi, 17, 2)) = z.periode
                         ) a
-                    LEFT JOIN 
+                    LEFT JOIN
                         (
-                            SELECT 
+                            SELECT
                                 enroll_id,
                                 jumlah_rp_potongan
-                            FROM 
+                            FROM
                                 data_koreksi_upah
-                            WHERE 
-                                periode_tanggal_koreksi = '$periode_tanggal_koreksi' 
+                            WHERE
+                                periode_tanggal_koreksi = '$periode_tanggal_koreksi'
                                 AND jenis_koreksi = 2
-                            GROUP BY 
+                            GROUP BY
                                 enroll_id
-                        ) b 
-                    ON 
+                        ) b
+                    ON
                         a.enroll_id = b.enroll_id
-                    LEFT JOIN 
+                    LEFT JOIN
                         employee_atribut e
-                    ON 
+                    ON
                         a.enroll_id = e.enroll_id;
                     ");
-           
+
             $totalData = DataKoreksiUpah::where('jenis_koreksi',2)->groupBy('enroll_id')->count();
             $totalFiltered = count($query);
             $data = array();
@@ -168,9 +168,9 @@ class KoreksiUpahController extends AdminBaseController
         $start = $request->input('start');
         $totalData = 0;
         $totalFiltered = 0;
-        
+
         $periode_payroll = $request->periode_payroll;
-        
+
         if(empty($request->input('search.value')))
         {
             $query =  DataKoreksiUpah::selectRaw('
@@ -198,7 +198,7 @@ class KoreksiUpahController extends AdminBaseController
                     ->get();
 
             $totalData = DataKoreksiUpah::count();
-            $totalFiltered = $totalData;  
+            $totalFiltered = $totalData;
 
         } else {
             $search = $request->input('search.value');
@@ -218,7 +218,7 @@ class KoreksiUpahController extends AdminBaseController
                         data_koreksi_upah.keterangan,
                         data_koreksi_upah.created_at,
                         data_koreksi_upah.updated_at,
-                        data_koreksi_upah.jenis_koreksi                            
+                        data_koreksi_upah.jenis_koreksi
                     ')
                     ->whereRaw('
                         data_koreksi_upah.kode_koreksi_upah LIKE "%' . $search . '%"
@@ -228,7 +228,7 @@ class KoreksiUpahController extends AdminBaseController
                         OR employee_atribut.employee_name LIKE "%' . $search . '%"
                         OR department_all.sub_dept_name LIKE "%' . $search . '%"
                         OR data_koreksi_upah.keterangan LIKE "%' . $search . '%"
-                    ')                            
+                    ')
                     ->leftJoin('employee_atribut','data_koreksi_upah.enroll_id','=','employee_atribut.enroll_id')
                     ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
                     ->orderBy('data_koreksi_upah.updated_at','desc')
@@ -246,9 +246,9 @@ class KoreksiUpahController extends AdminBaseController
                                 OR data_koreksi_upah.keterangan LIKE "%' . $search . '%"
                             ')
                             ->leftJoin('employee_atribut','data_koreksi_upah.enroll_id','=','employee_atribut.enroll_id')
-                            ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')                            
+                            ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
                             ->count();
-            $totalFiltered = $totalData;                            
+            $totalFiltered = $totalData;
 
         }
 
@@ -276,7 +276,7 @@ class KoreksiUpahController extends AdminBaseController
                 $periode_tanggal_koreksi_format = $periodeStartKoreksi . " - " . $periodeEndKoreksi;
 
                 $nestedData['periode_tanggal_koreksi_format'] = $periode_tanggal_koreksi_format;
-                
+
                 $nestedData['operator'] = $q->operator;
                 $nestedData['keterangan'] = $q->keterangan;
                 $nestedData['created_at'] = substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5);
@@ -284,7 +284,7 @@ class KoreksiUpahController extends AdminBaseController
 
                 $nestedData['jenis_koreksi'] = $q->jenis_koreksi;
 
-        
+
                 $data[] = $nestedData;
 
             }
@@ -304,7 +304,7 @@ class KoreksiUpahController extends AdminBaseController
     {
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
-        session(['loggedAdmin' => $loggedAdmin]); 
+        session(['loggedAdmin' => $loggedAdmin]);
 
         $kode_koreksi_upah = $request->kode_koreksi_upah;
         $tanggal_koreksi = $request->tanggal_koreksi;
@@ -345,7 +345,7 @@ class KoreksiUpahController extends AdminBaseController
     }
     public function cek_koreksi_upah(){
         $periode_tanggal_koreksi = request()->periode_tanggal_kehadiran;
-        
+
         $arr_periode_tgl_koreksi=explode(" s/d ",$periode_tanggal_koreksi);
         $periode_tanggal_kehadiran = date("m/d/Y", strtotime($arr_periode_tgl_koreksi[0])).' - '.date("m/d/Y", strtotime($arr_periode_tgl_koreksi[1]));
         $countData=DataKoreksiUpah::where('periode_tanggal_koreksi',$periode_tanggal_kehadiran)->where('enroll_id',request()->id)->count();
@@ -370,7 +370,7 @@ class KoreksiUpahController extends AdminBaseController
         $kode_koreksi_upah=$arr_tgl_koreksi[0].$arr_tgl_koreksi[1].ltrim(date('is'),'0').$nik;
         $jumlah_rp_potongan = request()->jumlah_rp_potongan;
         $periode_tanggal_koreksi = request()->periode_tanggal_koreksi;
-        
+
         $arr_periode_tgl_koreksi=explode(" s/d ",$periode_tanggal_koreksi);
         $periode_tanggal_kehadiran = date("m/d/Y", strtotime($arr_periode_tgl_koreksi[0])).' - '.date("m/d/Y", strtotime($arr_periode_tgl_koreksi[1]));
         $keterangan='Insentif Jabatan';
@@ -395,7 +395,7 @@ class KoreksiUpahController extends AdminBaseController
     }
     public function delete_position_insentif(){
         $periode_tanggal_koreksi = request()->periode_tanggal_koreksi;
-        
+
         $arr_periode_tgl_koreksi=explode(" s/d ",$periode_tanggal_koreksi);
         $periode_tanggal_kehadiran = date("m/d/Y", strtotime($arr_periode_tgl_koreksi[0])).' - '.date("m/d/Y", strtotime($arr_periode_tgl_koreksi[1]));
         DataKoreksiUpah::where('periode_tanggal_koreksi',$periode_tanggal_kehadiran)->where('enroll_id',request()->id)->delete();
@@ -417,7 +417,7 @@ class KoreksiUpahController extends AdminBaseController
     public function update(Request $request)
     {
         $loggedAdmin = Auth::guard('admin')->user();
-        session(['loggedAdmin' => $loggedAdmin]); 
+        session(['loggedAdmin' => $loggedAdmin]);
         $email = $loggedAdmin->email;
 
         $uuid = $request->uuid;
@@ -458,7 +458,7 @@ class KoreksiUpahController extends AdminBaseController
     {
         $uuid = $request->uuid;
         $loggedAdmin = Auth::guard('admin')->user();
-        session(['loggedAdmin' => $loggedAdmin]); 
+        session(['loggedAdmin' => $loggedAdmin]);
 
         $findDT = DataKoreksiUpah::where('uuid','=', $uuid)->count();
 
@@ -477,7 +477,7 @@ class KoreksiUpahController extends AdminBaseController
          $filepath = public_path('format_import/format_import_koreksi_upah.xlsx');
          return Response()->download($filepath);
      }
- 
+
      public function import_koreksiupah(Request $request)
      {
         try{
@@ -537,12 +537,12 @@ class KoreksiUpahController extends AdminBaseController
                     if($findDT){
                         $data_update=[
                             'kode_koreksi_upah'=>$value['kode_koreksi_upah'],
-                            'tanggal_koreksi'=>$value['tanggal_koreksi'],    
+                            'tanggal_koreksi'=>$value['tanggal_koreksi'],
                             'enroll_id'=>$value['enroll_id'],
                             'jumlah_rp_potongan'=>$value['jumlah_rp_potongan'],
                             'periode_tanggal_koreksi'=>$value['periode_tanggal_koreksi'],
                             'keterangan'=>$value['keterangan'],
-                            'operator'=>$value['operator'],  
+                            'operator'=>$value['operator'],
                             'jenis_koreksi' => $value['jenis_koreksi'],
 
                         ];
@@ -552,12 +552,12 @@ class KoreksiUpahController extends AdminBaseController
                         $data_insert=[
                             'uuid' => Str::uuid(),
                             'kode_koreksi_upah'=>$value['kode_koreksi_upah'],
-                            'tanggal_koreksi'=>$value['tanggal_koreksi'],    
+                            'tanggal_koreksi'=>$value['tanggal_koreksi'],
                             'enroll_id'=>$value['enroll_id'],
                             'jumlah_rp_potongan'=>$value['jumlah_rp_potongan'],
                             'periode_tanggal_koreksi'=>$value['periode_tanggal_koreksi'],
                             'keterangan'=>$value['keterangan'],
-                            'operator'=>$value['operator'], 
+                            'operator'=>$value['operator'],
                             'jenis_koreksi' => $value['jenis_koreksi'],
 
                         ];
@@ -573,13 +573,37 @@ class KoreksiUpahController extends AdminBaseController
         }catch(\Exception $e){
             $error=$error+1;
             return back()->with("error",'gagal tersimpan terdapat kesalah di row '.$error);
-        } 
+        }
      }
 
-     public function export_koreksiupah(Request $request) 
+     public function export_koreksiupah(Request $request)
      {
-        $DataKoreksiUpah=DataKoreksiUpah::where('periode_tanggal_koreksi',$request->priode_payroll)->get();
-   
+        // $DataKoreksiUpah=DataKoreksiUpah::where('periode_tanggal_koreksi',$request->priode_payroll)->get();
+
+        $DataKoreksiUpah =  DataKoreksiUpah::selectRaw('
+                    data_koreksi_upah.uuid,
+                    data_koreksi_upah.kode_koreksi_upah,
+                    data_koreksi_upah.tanggal_koreksi,
+                    employee_atribut.enroll_id,
+                    employee_atribut.nik,
+                    employee_atribut.employee_name,
+                    department_all.sub_dept_name,
+                    department_all.department_name,
+                    data_koreksi_upah.jumlah_rp_potongan,
+                    data_koreksi_upah.periode_tanggal_koreksi,
+                    data_koreksi_upah.operator,
+                    data_koreksi_upah.keterangan,
+                    data_koreksi_upah.created_at,
+                    data_koreksi_upah.updated_at,
+                    data_koreksi_upah.jenis_koreksi
+                ')
+                ->leftJoin('employee_atribut','data_koreksi_upah.enroll_id','=','employee_atribut.enroll_id')
+                ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
+                ->where('periode_tanggal_koreksi',$request->priode_payroll)
+                ->orderBy('data_koreksi_upah.updated_at','asc')
+                ->get();
+
+
         $time=time() ;
         return Excel::download(new KoreksiUpahExport($DataKoreksiUpah),'KoreksiPotongan'.$time.'.xlsx');
      }

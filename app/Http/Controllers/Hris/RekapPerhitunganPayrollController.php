@@ -663,7 +663,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         // Cek apakah tanggal lebih besar atau sama dengan 26
         if ($today >= 26) {
             // Tambahkan 1 bulan ke tanggal saat ini
-            $minMonth = date('Y-m', strtotime('+1 month'));
+            // $minMonth = date('Y-m', strtotime('+1 month'));
+            $minMonth = $this->month;
         } else {
             // Tetap bulan saat ini
             $minMonth = $this->month;
@@ -1526,6 +1527,46 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             ->where('tanggal_berjalan','<=',$last_date);
         }])->with('employee_atribut.grading_salary')->with('employee_atribut','employee_atribut.employee_bpjs','koreksi_upah','koreksi_potongan','employee_atribut.group_department')->get();
 
+    //     $query = "
+    //     SELECT
+    //         m.*,
+    //         dl.*,
+    //         rl.*,
+    //         ea.*,
+    //         gs.*,
+    //         eb.*,
+    //         ku.*,
+    //         kp.*,
+    //         gd.*
+    //     FROM
+    //         master_data_absen_kehadiran m
+    //     LEFT JOIN
+    //         data_lembur dl ON m.uuid = dl.uuid_master
+    //             AND dl.tanggal_berjalan >= '{$first_date}'
+    //             AND dl.tanggal_berjalan <= '{$last_date}'
+    //     LEFT JOIN
+    //         rekap_perhitungan_lembur rl ON m.uuid = rl.uuid_master
+    //             AND rl.tanggal_berjalan >= '{$first_date}'
+    //             AND rl.tanggal_berjalan <= '{$last_date}'
+    //     LEFT JOIN
+    //         employee_atribut ea ON m.enroll_id = ea.enroll_id
+    //     LEFT JOIN
+    //         grading_salary gs ON ea.grading_salary_id = gs.id
+    //     LEFT JOIN
+    //         employee_bpjs eb ON ea.employee_bpjs_id = eb.id
+    //     LEFT JOIN
+    //         data_koreksi_upah ku ON m.uuid = ku.uuid_master
+    //     LEFT JOIN
+    //         data_koreksi_potongan kp ON m.uuid = kp.uuid_master
+    //     LEFT JOIN
+    //         group_department gd ON ea.group_department_id = gd.id
+    //     WHERE
+    //         m.tanggal_berjalan BETWEEN '{$first_date}' AND '{$last_date}'
+    //         AND m.enroll_id IS NOT NULL
+    //         {$inEnrollId}
+    // ";
+
+    // $master_absen = DB::select($query);
 
         $z=[];
 
