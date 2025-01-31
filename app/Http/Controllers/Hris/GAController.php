@@ -52,9 +52,9 @@ class GAController extends AdminBaseController
         $user=request()->user;
         $department_id=EmployeeAtribut::where('enroll_id',$user)->first()->department_id;
         if($user!=6083 && $user!=5321 && $user!=17 && $user!=7765 && $user!=5321 && $user!=20 && $user!=4241){
-            $data_input=DB::select("select '$user' user,a.id,a.enroll_id,b.employee_name,b.department_name,a.detail_alamat,concat(c.subdis_name,' - ',d.dis_name,' - ',e.city_name,' - ',f.prov_name) desa,a.detail_alamat_tujuan,concat(g.subdis_name,' - ',h.dis_name,' - ',i.city_name,' - ',j.prov_name) desa_tujuan,concat(DATE_FORMAT(a.tanggal_pemberangkatan, '%d %M %Y'),' - ',substring(a.jam_pemberangkatan,1,5)) tanggal_pemberangkatan,a.jam_pemberangkatan,REPLACE(a.tujuan_pemberangkatan, '_', ' ') tujuan_pemberangkatan,a.status from (select*from permintaan_transportasi where enroll_id in (select enroll_id from employee_atribut where department_id='$department_id')) a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id order by a.tanggal_pemberangkatan,a.jam_pemberangkatan desc");
+            $data_input=DB::select("select '$user' user,a.id,a.enroll_id,b.employee_name,b.department_name,a.detail_alamat,concat(c.subdis_name,' - ',d.dis_name,' - ',e.city_name,' - ',f.prov_name) desa,a.detail_alamat_tujuan,concat(g.subdis_name,' - ',h.dis_name,' - ',i.city_name,' - ',j.prov_name) desa_tujuan,concat(DATE_FORMAT(a.tanggal_pemberangkatan, '%d %M %Y'),' - ',substring(a.jam_pemberangkatan,1,5)) tanggal_pemberangkatan,a.jam_pemberangkatan,REPLACE(a.tujuan_pemberangkatan, '_', ' ') tujuan_pemberangkatan,a.status,a.created_by from (select*from permintaan_transportasi where enroll_id in (select enroll_id from employee_atribut where department_id='$department_id') or created_by in (select enroll_id from employee_atribut where department_id='$department_id')) a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id order by a.tanggal_pemberangkatan,a.jam_pemberangkatan desc");
         }else{
-            $data_input=DB::select("select '$user' user,a.id,a.enroll_id,b.employee_name,b.department_name,a.detail_alamat,concat(c.subdis_name,' - ',d.dis_name,' - ',e.city_name,' - ',f.prov_name) desa,a.detail_alamat_tujuan,concat(g.subdis_name,' - ',h.dis_name,' - ',i.city_name,' - ',j.prov_name) desa_tujuan,concat(DATE_FORMAT(a.tanggal_pemberangkatan, '%d %M %Y'),' - ',substring(a.jam_pemberangkatan,1,5)) tanggal_pemberangkatan,a.jam_pemberangkatan,REPLACE(a.tujuan_pemberangkatan, '_', ' ') tujuan_pemberangkatan,a.status from permintaan_transportasi a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id order by a.tanggal_pemberangkatan,a.jam_pemberangkatan desc");
+            $data_input=DB::select("select '$user' user,a.id,a.enroll_id,b.employee_name,b.department_name,a.detail_alamat,concat(c.subdis_name,' - ',d.dis_name,' - ',e.city_name,' - ',f.prov_name) desa,a.detail_alamat_tujuan,concat(g.subdis_name,' - ',h.dis_name,' - ',i.city_name,' - ',j.prov_name) desa_tujuan,concat(DATE_FORMAT(a.tanggal_pemberangkatan, '%d %M %Y'),' - ',substring(a.jam_pemberangkatan,1,5)) tanggal_pemberangkatan,a.jam_pemberangkatan,REPLACE(a.tujuan_pemberangkatan, '_', ' ') tujuan_pemberangkatan,a.status,a.created_by from permintaan_transportasi a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id order by a.tanggal_pemberangkatan,a.jam_pemberangkatan desc");
         }
         return DataTables::of($data_input)->toJson();
     }
@@ -78,7 +78,7 @@ class GAController extends AdminBaseController
     }
     public function reject_car_request(){
         PermintaanTransportasi::where('id',request()->id_request)->update([
-            'status'=>0,
+            'status'=>2,
             'alasan_status'=>request()->alasan_reject
         ]);
     }
@@ -208,7 +208,7 @@ class GAController extends AdminBaseController
     public function update_car_request_user(){
         $id_request=request()->id_request;
         $loggedAdmin = Auth::guard('admin')->user();
-        $email = $loggedAdmin->id;
+        $email = $loggedAdmin->enroll_id;
         if((request()->cb_antar_tamu==1 || request()->cb_jemput_tamu==1) && request()->cb_antar_barang!=1 && request()->cb_jemput_barang!=1){
             $this->_validation8(request());
         }else if((request()->cb_antar_barang==1 || request()->cb_jemput_barang==1) && request()->cb_antar_tamu!=1 && request()->cb_jemput_tamu!=1){
@@ -334,6 +334,7 @@ class GAController extends AdminBaseController
             'nama_instansi'=>$instansi,
             'nama_penerima'=>$nama_instansi,
             'keterangan_barang'=>$keterangan_barang,
+            'status'=>0,
             'created_by'=>$email
         ]);
         foreach(request()->tujuan_array as $key=>$value){
@@ -357,6 +358,7 @@ class GAController extends AdminBaseController
         }
     }
     public function lihat_detail(){
+        $loggedAdmin = Auth::guard('admin')->user();
         $this->selectemployee = $this->ajax_getallemployeeatribut();
         $provincies=DB::select('select * from provinces order by prov_id');
         $cities=DB::select("select * from cities order by city_id");
@@ -366,7 +368,8 @@ class GAController extends AdminBaseController
         $drivers=EmployeeAtribut::where('sub_dept_id','DEP08SUB002')->get();
         $pengajuan_transportasi=DB::select("select a.id,a.created_at,a.jarak_tempuh,a.jenis_barang,a.quantity,a.nama_instansi,a.nama_penerima,a.keterangan_barang,a.nama_tamu,a.instansi_tamu,a.nomor_hp_tamu,a.id_driver,a.nomor_kendaraan,a.status,b.employee_name,b.nik,b.department_name,b.sub_dept_name,c.subdis_name nama_desa,d.dis_name nama_kecamatan,e.city_name nama_kota,f.prov_name nama_provinsi,a.detail_alamat,a.tanggal_pemberangkatan,a.jam_pemberangkatan,a.tujuan_pemberangkatan,g.subdistrict nama_desa_tujuan,g.district nama_kecamatan_tujuan,g.city nama_kota_tujuan,g.provinsi nama_provinsi_tujuan,g.detail_alamat detail_alamat_tujuan,g.tanggal_kedatangan,g.jam_kedatangan from (select*from permintaan_transportasi where id='$id') a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join (select*from tujuan_transportasi where permintaan_transportasi_id='$id' order by tujuan_id limit 1) g on a.id=g.permintaan_transportasi_id");
         $vehicles =  DB::connection('laravel_nds')->select( DB::raw("select*from ga_master_kendaraan") );
-        return View::make('hris/ga/data_detail_pengajuan_transportasi', $this->data,compact('pengajuan_transportasi','provincies','cities','districts','subdistricts','drivers','vehicles'));
+        $id_user = $loggedAdmin->enroll_id;
+        return View::make('hris/ga/data_detail_pengajuan_transportasi', $this->data,compact('id_user','pengajuan_transportasi','provincies','cities','districts','subdistricts','drivers','vehicles'));
     }
     public function edit_detail(){
         $this->selectemployee = $this->ajax_getallemployeeatribut();

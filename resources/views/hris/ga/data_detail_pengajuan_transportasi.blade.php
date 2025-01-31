@@ -257,16 +257,30 @@
             </select>
         </div>
     </div>
-    <div class="row pb-1">
+    <div class="row pb-1 pt-3">
         <div class="col-12 text-center">
-            @if ($value->status==null)
-                <button class="btn btn-success" id="approve_request" data-toggle="modal" data-target="approveModal" data-id="{{$value->id}}">Approve</button>
-                <button class="btn btn-danger" id="reject_request" data-toggle="modal" data-target="rejectModal" data-id="{{$value->id}}">Reject</button>
+            @if($id_user==6083 || $id_user==5321 || $id_user==4241)
+                @if ($value->status==1)
+                    <h6 style="font-weight: bold;color:green">STATUS : APPROVED</h6>
+                    <a class="btn" style="background-color:rgb(236, 165, 32);color:white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Back</a>
+                @elseif ($value->status==2)
+                    <h6 style="font-weight: bold;color:red">STATUS : REJECTED</h6>
+                    <a class="btn" style="background-color:rgb(236, 165, 32);color:white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Back</a>
+                @elseif($value->status==0)
+                    <a class="btn" style="background-color:rgb(236, 165, 32);color:white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Back</a>
+                    <button class="btn btn-success" id="approve_request" data-toggle="modal" data-target="approveModal" data-id="{{$value->id}}">Approve</button>
+                    <button class="btn btn-danger" id="reject_request" data-toggle="modal" data-target="rejectModal" data-id="{{$value->id}}">Reject</button>
+                @endif
             @else
                 @if ($value->status==1)
-                <a class="btn" style="background-color:rgb(236, 165, 32);color:white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Back</a>&nbsp;<button class="btn btn-success" id="update_request">Update</button>
-                @else
-                <a class="btn" style="background-color:rgb(236, 165, 32);color:white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Back</a>&nbsp;<label style="font-size:11pt;color:red">REJECTED</label>
+                    <h6 style="font-weight: bold;color:green">STATUS : APPROVED</h6>
+                    <a class="btn" style="background-color:rgb(236, 165, 32);color:white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Back</a>
+                @elseif ($value->status==2)
+                    <h6 style="font-weight: bold;color:red">STATUS : REJECTED</h6>
+                    <a class="btn" style="background-color:rgb(236, 165, 32);color:white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Back</a>
+                @elseif($value->status==0)
+                    <h6 style="font-weight: bold">STATUS : PENDING</h6>
+                    <a class="btn" style="background-color:rgb(236, 165, 32);color:white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Back</a>
                 @endif
             @endif
         </div>
