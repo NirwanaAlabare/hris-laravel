@@ -104,6 +104,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('ga/check_car_request',['as'=>'hris.ga.check_car_request','uses'=>'GAController@check_car_request']);
     Route::post('ga/show_another_route',['as'=>'hris.ga.show_another_route','uses'=>'GAController@show_another_route']);
     Route::post('ga/update_car_request_user',['as'=>'hris.ga.update_car_request_user','uses'=>'GAController@update_car_request_user']);
+    Route::post('ga/change_status_car_request',['as'=>'hris.ga.change_status_car_request','uses'=>'GAController@change_status_car_request']);
 
     //Route::resource('mdabsenhadir', 'MdAbsenHadirController',['as' => 'hris']);
     Route::get('mdabsenhadir/datahadir',['as'=>'hris.mdabsenhadir.datahadir','uses'=>'MdAbsenHadirController@datahadir']);

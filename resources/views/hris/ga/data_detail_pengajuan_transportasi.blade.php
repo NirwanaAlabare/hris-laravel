@@ -191,7 +191,7 @@
             <label class="form-label" style="font-weight: bold;font-size:12pt"> Quantity</label>
         </div>
         <div class="col-4">
-            <label style="font-size:12pt">: {{$value->quantity}}</label>
+            <label style="font-size:12pt">: {{$value->quantity}}</label> <label style="font-size:12pt"> {{$value->satuan}}</label>
         </div>
         <div class="col-2">
             <label class="form-label" style="font-weight: bold;font-size:12pt"> Nama Penerima</label>

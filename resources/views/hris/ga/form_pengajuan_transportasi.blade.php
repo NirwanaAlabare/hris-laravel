@@ -36,15 +36,18 @@
             <h6 id="warning_employee" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
         </div>
     </div>
-    <div class="row pb-2">
-        <div class="col-6 pt-1">
+    <div class="row pb-2 pt-1">
+        <div class="col-2 pt-1">
             <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Keberangkatan Awal</label>
+        </div>
+        <div class="col-4 pt-2">
+            <a href="#" id="change_initial_destination" style="text-decoration-line: underline">PT. NAG</a><img src="{{URL::asset('assets/images/brand/shortcut.png')}}" width="18">
         </div>
         <div class="col-2 pt-1">
             <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Tujuan</label>
         </div>
         <div class="col-4 pt-1">
-            <button class="btn btn-primary py-1" id="tujuan_lainnya"> + Tujuan Lainnya</button></label>
+            <button class="btn btn-primary py-1" id="tujuan_lainnya" style="font-weight:bold"> + Daftar Tujuan</button></label>
         </div>
     </div>
     <div class="row pb-2">
@@ -240,8 +243,21 @@
                     <div class="col-4 pt-1">
                         <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Quantity</label>
                     </div>
+                    <div class="col-2">
+                        <input type="number" id="quantity" class="form-control" style="background-color: white">
+                    </div>
+                    <div class="col-3 pl-0">
+                        <input type="text" id="satuan" name="satuan" class="form-control" style="background-color: white" placeholder="Masukkan satuan">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row pb-2">
+                    <div class="col-4 pt-1">
+                        <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Keterangan</label>
+                    </div>
                     <div class="col-8">
-                        <input type="number" id="quantity" class="form-control col-4" style="background-color: white">
+                        <textarea id="keterangan_barang" rows="3" cols="7" class="form-control col-11" style="background-color: white"></textarea>
                     </div>
                 </div>
                 <div class="row pb-2">
@@ -254,20 +270,10 @@
                 </div>
                 <div class="row pb-2">
                     <div class="col-4 pt-1">
-                        <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nama</label>
+                        <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nama Penerima</label>
                     </div>
                     <div class="col-8">
                         <input type="text" id="nama_instansi" class="form-control col-11" style="background-color: white" placeholder="Masukkan Nama">
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="row">
-                    <div class="col-4 pt-1">
-                        <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Keterangan</label>
-                    </div>
-                    <div class="col-8">
-                        <textarea id="keterangan_barang" rows="4" cols="7" class="form-control col-11" style="background-color: white"></textarea>
                     </div>
                 </div>
             </div>
@@ -827,6 +833,101 @@
                 }
             });
         });
+        $('#change_initial_destination').on('click',function(){
+            var province=12;
+            var city=161;
+            var district=2196;
+            var subdistrict=30109;
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.ga.get_province')}}",
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                success: function(res){
+                    $('#provinsi').empty().append('<option value="">Pilih Provinsi</option>');
+                    jQuery.each(res, function(key,value){
+                        $('#provinsi').append('<option value="'+ value['prov_id'] +'">'+ value['prov_name'] +'</option>');
+                    });
+                    $('#provinsi').val(province);
+                },
+                error: function(res){
+                    swal({
+                        title: "Ambil data provinsi",
+                        text: "Data provinsi gagal di ambil",
+                        icon: "danger",
+                    });
+                }
+            });
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.ga.get_cities')}}",
+                data: {
+                    provinsi:province,
+                },
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                success: function(res){
+                    $('#cities').empty().append('<option value="">Pilih Kabupaten/Kota</option>');
+                    document.getElementById("cities").disabled=false;
+                    jQuery.each(res, function(key,value){
+                        $('#cities').append('<option value="'+ value['city_id'] +'">'+ value['city_name'] +'</option>');
+                    });
+                    $('#cities').val(city)
+                },
+                error: function(res){
+                    swal({
+                        title: "Ambil data kota",
+                        text: "Data kota gagal di ambil",
+                        icon: "danger",
+                    });
+                }
+            });
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.ga.get_districts')}}",
+                data: {
+                    cities:city,
+                },
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                success: function(res){
+                    $('#districts').empty().append('<option value="">Pilih Kecamatan</option>');
+                    document.getElementById("districts").disabled=false;
+                    jQuery.each(res, function(key,value){
+                        $('#districts').append('<option value="'+ value['dis_id'] +'">'+ value['dis_name'] +'</option>');
+                    });
+                    $('#districts').val(district);
+                },
+                error: function(res){
+                    swal({
+                        title: "Ambil data desa",
+                        text: "Data desa gagal di ambil",
+                        icon: "danger",
+                    });
+                }
+            });
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.ga.get_subdistricts')}}",
+                data: {
+                    districts:district,
+                },
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                success: function(res){
+                    $('#sub_districts').empty().append('<option value="">Pilih Kelurahan/Desa</option>');
+                    document.getElementById("sub_districts").disabled=false;
+                    jQuery.each(res, function(key,value){
+                        $('#sub_districts').append('<option value="'+ value['subdis_id'] +'">'+ value['subdis_name'] +'</option>');
+                    });
+                    $('#sub_districts').val(subdistrict);
+                },
+                error: function(res){
+                    swal({
+                        title: "Ambil data desa",
+                        text: "Data desa gagal di ambil",
+                        icon: "danger",
+                    });
+                }
+            });
+            $('#detail_alamat').val('PT. Nirwana Alabare Garment');
+        });
         $('#provinsi').on('change',function(){
             var provinsi=$('#provinsi').val();
             if(provinsi==''){
@@ -1067,6 +1168,7 @@
                     document.getElementById('tag_jenis_barang').style.display='none';
                     $('#jenis_barang').val('');
                     $('#quantity').val('');
+                    $('#satuan').val('');
                     $('#instansi').val('');
                     $('#nama_instansi').val('');
                     $('#keterangan_barang').val('');
@@ -1081,6 +1183,7 @@
                     document.getElementById('tag_jenis_barang').style.display='none';
                     $('#jenis_barang').val('');
                     $('#quantity').val('');
+                    $('#satuan').val('');
                     $('#instansi').val('');
                     $('#nama_instansi').val('');
                     $('#keterangan_barang').val('');
@@ -1193,6 +1296,11 @@
                 document.getElementById("quantity").style.border="";
             }
         });
+        $('#satuan').on('change',function(){
+            if($(this).val()!=''){
+                document.getElementById("satuan").style.border="";
+            }
+        });
         $('#instansi').on('change',function(){
             if($(this).val()!=''){
                 document.getElementById("instansi").style.border="";
@@ -1238,6 +1346,7 @@
             var instansi_tamu=$("#instansi_tamu").val();
             var jenis_barang=$("#jenis_barang").val();
             var quantity=$("#quantity").val();
+            var satuan=$("#satuan").val();
             var instansi=$("#instansi").val();
             var nama_instansi=$("#nama_instansi").val();
             var keterangan_barang=$("#keterangan_barang").val();
@@ -1285,6 +1394,7 @@
                     cb_jemput_barang:cb_jemput_barang,
                     jenis_barang:jenis_barang,
                     quantity:quantity,
+                    satuan:satuan,
                     instansi:instansi,
                     nama_instansi:nama_instansi,
                     keterangan_barang:keterangan_barang,
@@ -1332,6 +1442,7 @@
                     $("#instansi_tamu").val('');
                     $("#jenis_barang").val('');
                     $("#quantity").val('');
+                    $("#satuan").val('');
                     $("#instansi").val('');
                     $("#nama_instansi").val('');
                     $("#keterangan_barang").val('');
@@ -1357,6 +1468,7 @@
                     document.getElementById("instansi").style.border="";
                     document.getElementById("jenis_barang").style.border="";
                     document.getElementById("quantity").style.border="";
+                    document.getElementById("satuan").style.border="";
                     document.getElementById("instansi").style.border="";
                     document.getElementById("nama_instansi").style.border="";
                     document.getElementById("keterangan_barang").style.border="";
@@ -1463,6 +1575,11 @@
                             document.getElementById("quantity").style.border = "1px solid red";
                         }else{
                             document.getElementById("quantity").style.border="";
+                        }
+                        if(typeof(err_log.satuan)!=='undefined'){
+                            document.getElementById("satuan").style.border = "1px solid red";
+                        }else{
+                            document.getElementById("satuan").style.border="";
                         }
                         if(typeof(err_log.instansi)!=='undefined'){
                             document.getElementById("instansi").style.border = "1px solid red";
