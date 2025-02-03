@@ -70,7 +70,7 @@
             <label class="form-label" style="font-weight: bold;font-size:12pt"> Tujuan</label>
         </div>
         <div class="col-4 pt-1">
-            <button class="btn btn-primary py-1" id="tujuan_lainnya" data-id="{{$value->id}}"> Tujuan Lainnya</button></label>
+            <button class="btn btn-primary py-1" id="tujuan_lainnya" data-id="{{$value->id}}"> Daftar Tujuan</button></label>
         </div>
     </div>
     <div class="row pb-1">
