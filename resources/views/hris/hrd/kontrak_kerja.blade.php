@@ -583,7 +583,7 @@
                     if(row.contract==null){
                         return '';
                     }else{
-                        return tes.toLocaleDateString("id-ID", options) 
+                        return tes.toLocaleDateString("id-ID", options)
                     }
                 }
             },
@@ -595,7 +595,7 @@
                     if(row.contract_end==null){
                         return '';
                     }else{
-                        return tes.toLocaleDateString("id-ID", options) 
+                        return tes.toLocaleDateString("id-ID", options)
                     }
                 }
             },
@@ -751,7 +751,7 @@
                     var start=new Date(res[i]['contract']);
                     var end=new Date(res[i]['contract_end']);
                     end.setHours(0, 0, 0, 0);
-                    
+
                     if(i==res.length-1){
                         if(res.length===1){
                             if(this_day.getTime()>end.getTime()){
@@ -800,10 +800,10 @@
     }
     function extendContract(enroll_id){
         document.getElementById("extendButton").style.visibility="hidden";
-        
+
         document.getElementById("deleteButton").style.visibility="hidden";
         document.getElementById("last_contract_end").style.display="none";
-        document.getElementById("last_label_end").style.display="block";
+        document.getElementById("last_label_end").style.display="none";
         $.ajax({
             type: "post",
             url: '{{ route('hris.hrd.get_employee_contract2') }}',
@@ -821,7 +821,7 @@
                 var yyyy = last_date.getFullYear();
 
                 today = yyyy + '-' + mm + '-' + dd;
-                
+
                 var start=new Date(today);
                 var options = {  year: 'numeric', month: 'long', day: 'numeric' };
                 $('#working_contract_extend').append("<div class='row px-3'>\
@@ -837,7 +837,7 @@
         document.getElementById('cancelExtendButton').style.visibility='hidden';
         document.getElementById('extendButton').style.visibility='visible';
         document.getElementById("deleteButton").style.visibility="visible";
-        
+
         document.getElementById("last_contract_end").style.display="block";
         document.getElementById("last_label_end").style.display="none";
         $('#working_contract_extend').empty();

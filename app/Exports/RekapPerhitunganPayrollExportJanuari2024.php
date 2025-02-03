@@ -37,7 +37,7 @@ class RekapPerhitunganPayrollExportJanuari2024 implements FromQuery, WithMapping
 {
     use Exportable;
 
-    public function exportParams(string $periode_payroll, string $tgl_awal, $department_id, $sub_dept_id, $status_staff, $periode_umk)
+    public function exportParams(string $periode_payroll, string $tgl_awal, $department_id, $sub_dept_id, $status_staff, $periode_umk,$enroll_id)
     {
         $this->periode_payroll = $periode_payroll;
         $this->tgl_awal = $tgl_awal;
@@ -45,6 +45,7 @@ class RekapPerhitunganPayrollExportJanuari2024 implements FromQuery, WithMapping
         $this->sub_dept_id=$sub_dept_id;
         $this->status_staff=$status_staff;
         $this->periode_umk=$periode_umk;
+        $this->enroll_id=$enroll_id;
 
         return $this;
     }
@@ -56,10 +57,15 @@ class RekapPerhitunganPayrollExportJanuari2024 implements FromQuery, WithMapping
         $sub_dept_id=$this->sub_dept_id;
         $status_staff=$this->status_staff;
         $periode_umk=$this->periode_umk;
+        $enroll_ids=$this->enroll_id;
+        $inEnrollId='';
         $inDepartmentId='';
         $inSubDepartment='';
         $inStatusStaff='';
         $inPeriodeUMK='';
+        if($this->enroll_id!=''){
+            $inEnrollId=' AND enroll_id in ('.$enroll_ids.')';
+        }
         if($department_id){
         $nama_department=DepartmentAll::select('department_name')->where('department_id',$this->department_id)->pluck('department_name')[0];
         $inDepartmentId=' AND nama_department = "'.$nama_department.'"';
@@ -177,7 +183,7 @@ class RekapPerhitunganPayrollExportJanuari2024 implements FromQuery, WithMapping
 
                 ')
                 ->whereRaw('
-                    CONCAT(periode_tahun_payroll, "-", periode_bulan_payroll) = "' . $this->periode_payroll . '"'.$inDepartmentId.''.$inSubDepartment.''.$inStatusStaff.''.$inPeriodeUMK.'
+                    CONCAT(periode_tahun_payroll, "-", periode_bulan_payroll) = "' . $this->periode_payroll . '"'.$inEnrollId.''.$inDepartmentId.''.$inSubDepartment.''.$inStatusStaff.''.$inPeriodeUMK.'
                 ')
                  ->where(function ($query) use ($tgl_awal) {
                     $query->orWhereNull('tanggal_resign')

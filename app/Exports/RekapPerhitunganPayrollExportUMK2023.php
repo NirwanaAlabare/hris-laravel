@@ -53,7 +53,7 @@ class RekapPerhitunganPayrollExportUMK2023 implements FromQuery, WithMapping, Sh
     public function columnWidths(): array
     {
         return [
-            'BD' => 13,    
+            'BD' => 13,
         ];
     }
     public function query()
@@ -359,6 +359,11 @@ class RekapPerhitunganPayrollExportUMK2023 implements FromQuery, WithMapping, Sh
             $total_upah_thp_rupiah_pecahan='0';
         }
 
+        if ($upah_neto_rupiah <= 0) {
+            $upah_neto_rupiah = '0';
+        }else {
+            $upah_neto_rupiah = ceil($upah_neto_rupiah / 100) * 100;
+        }
         return [
             $kosong,
             $enroll_id,
@@ -644,7 +649,7 @@ class RekapPerhitunganPayrollExportUMK2023 implements FromQuery, WithMapping, Sh
 
                 $sheet->mergeCells('AQ5:AQ6');
                 $sheet->setCellValue('AQ5', 'Upah/ Jam');
-            
+
                 $sheet->mergeCells('AR5:AR6');
                 $sheet->setCellValue('AR5', '');
 
