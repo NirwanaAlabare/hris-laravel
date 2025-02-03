@@ -290,8 +290,21 @@
                     <div class="col-4 pt-1">
                         <label class="form-label" style="font-weight: bold;font-size:12pt">Quantity</label>
                     </div>
+                    <div class="col-2">
+                        <input type="number" id="quantity" class="form-control" style="background-color: white" value="{{$value->quantity}}">
+                    </div>
+                    <div class="col-3 pl-0">
+                        <input type="text" id="satuan" name="satuan" class="form-control" style="background-color: white" placeholder="Masukkan satuan" value="{{$value->satuan}}">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row pb-2">
+                    <div class="col-4 pt-1">
+                        <label class="form-label" style="font-weight: bold;font-size:12pt">Keterangan</label>
+                    </div>
                     <div class="col-8">
-                        <input type="number" id="quantity" class="form-control col-2" style="background-color: white" value="{{$value->quantity}}">
+                        <textarea id="keterangan_barang" rows="4" cols="7" class="form-control col-10" style="background-color: white">{{$value->keterangan_barang}}</textarea>
                     </div>
                 </div>
                 <div class="row pb-2">
@@ -308,16 +321,6 @@
                     </div>
                     <div class="col-8">
                         <input type="text" id="nama_instansi" class="form-control col-10" style="background-color: white" placeholder="Masukkan Nama" value="{{$value->nama_penerima}}">
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="row">
-                    <div class="col-4 pt-1">
-                        <label class="form-label" style="font-weight: bold;font-size:12pt">Keterangan</label>
-                    </div>
-                    <div class="col-8">
-                        <textarea id="keterangan_barang" rows="4" cols="7" class="form-control col-10" style="background-color: white">{{$value->keterangan_barang}}</textarea>
                     </div>
                 </div>
             </div>
@@ -1280,6 +1283,11 @@
             document.getElementById("quantity").style.border="";
         }
     });
+    $('#satuan').on('change',function(){
+        if($(this).val()!=''){
+            document.getElementById("satuan").style.border="";
+        }
+    });
     $('#instansi').on('change',function(){
         if($(this).val()!=''){
             document.getElementById("instansi").style.border="";
@@ -1322,6 +1330,7 @@
                 document.getElementById('tag_jenis_barang').style.display='none';
                 $('#jenis_barang').val('');
                 $('#quantity').val('');
+                $('#satuan').val('');
                 $('#instansi').val('');
                 $('#nama_instansi').val('');
                 $('#keterangan_barang').val('');
@@ -1336,6 +1345,7 @@
                 document.getElementById('tag_jenis_barang').style.display='none';
                 $('#jenis_barang').val('');
                 $('#quantity').val('');
+                $('#satuan').val('');
                 $('#instansi').val('');
                 $('#nama_instansi').val('');
                 $('#keterangan_barang').val('');
@@ -1374,6 +1384,7 @@
         var instansi_tamu=$("#instansi_tamu").val();
         var jenis_barang=$("#jenis_barang").val();
         var quantity=$("#quantity").val();
+        var satuan=$("#satuan").val();
         var instansi=$("#instansi").val();
         var nama_instansi=$("#nama_instansi").val();
         var keterangan_barang=$("#keterangan_barang").val();
@@ -1416,6 +1427,7 @@
                 cb_jemput_barang:cb_jemput_barang,
                 jenis_barang:jenis_barang,
                 quantity:quantity,
+                satuan:satuan,
                 instansi:instansi,
                 nama_instansi:nama_instansi,
                 keterangan_barang:keterangan_barang,
@@ -1532,6 +1544,11 @@
                         document.getElementById("quantity").style.border = "1px solid red";
                     }else{
                         document.getElementById("quantity").style.border="";
+                    }
+                    if(typeof(err_log.satuan)!=='undefined'){
+                        document.getElementById("satuan").style.border = "1px solid red";
+                    }else{
+                        document.getElementById("satuan").style.border="";
                     }
                     if(typeof(err_log.instansi)!=='undefined'){
                         document.getElementById("instansi").style.border = "1px solid red";

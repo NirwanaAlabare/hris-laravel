@@ -114,8 +114,8 @@
             @foreach ($data2 as $key => $value)
             @if($key==0)
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center">{{substr($value->jam_pemberangkatan,0,5)}}</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black">{{$value->detail_alamat}} - {{ucwords(strtolower($value->desa))}}</td>
+                <td rowspan="{{count($data2)}}" style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center">{{substr($value->jam_pemberangkatan,0,5)}}</td>
+                <td rowspan="{{count($data2)}}" style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black">{{$value->detail_alamat}} - {{ucwords(strtolower($value->desa))}}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;vertical-align:middle;text-align:center"> {{$value->jarak_tempuh}} Km</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black">{{$value->detail_alamat_tujuan}} - {{ucwords(strtolower($value->desa_tujuan))}}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:left;vertical-align:top;border:1px solid black;text-align:center">{{Carbon\Carbon::parse($value->tanggal_kedatangan)->translatedFormat('d M Y')}}-{{$value->jam_kedatangan}}</td>
@@ -124,8 +124,6 @@
             </tr>
             @else
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center"></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;vertical-align:middle;text-align:center"> ....... Km</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black">{{$value->detail_alamat_tujuan}} - {{ucwords(strtolower($value->desa_tujuan))}}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:left;vertical-align:top;border:1px solid black;text-align:center">{{Carbon\Carbon::parse($value->tanggal_kedatangan)->translatedFormat('d M Y')}}-{{$value->jam_kedatangan}}</td>

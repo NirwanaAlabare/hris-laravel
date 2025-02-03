@@ -66,6 +66,15 @@ class GAController extends AdminBaseController
             'status'=>1
         ]);
     }
+    public function change_status_car_request(){
+        $status=request()->status;
+        PermintaanTransportasi::where('id',request()->id_request)->update([
+            'id_driver'=>request()->driver,
+            'nomor_kendaraan'=>request()->vehicle_id,
+            'status'=>$status
+        ]);
+        return $status;
+    }
     public function check_car_request(){
         $this->_validation5(request());
     }
@@ -233,6 +242,7 @@ class GAController extends AdminBaseController
         $instansi_tamu=request()->instansi_tamu;
         $jenis_barang=request()->jenis_barang;
         $quantity=request()->quantity;
+        $satuan=request()->satuan;
         $instansi=request()->instansi;
         $nama_instansi=request()->nama_instansi;
         $keterangan_barang=request()->keterangan_barang;
@@ -254,6 +264,7 @@ class GAController extends AdminBaseController
             'instansi_tamu'=>$instansi_tamu,
             'jenis_barang'=>$jenis_barang,
             'quantity'=>$quantity,
+            'satuan'=>$satuan,
             'nama_instansi'=>$instansi,
             'nama_penerima'=>$nama_instansi,
             'keterangan_barang'=>$keterangan_barang,
@@ -282,7 +293,7 @@ class GAController extends AdminBaseController
     }
     public function post_car_request(){
         $loggedAdmin = Auth::guard('admin')->user();
-        $email = $loggedAdmin->id;
+        $email = $loggedAdmin->enroll_id;
         if((request()->cb_antar_tamu==1 || request()->cb_jemput_tamu==1) && request()->cb_antar_barang!=1 && request()->cb_jemput_barang!=1){
             $this->_validation2(request());
         }else if((request()->cb_antar_barang==1 || request()->cb_jemput_barang==1) && request()->cb_antar_tamu!=1 && request()->cb_jemput_tamu!=1){
@@ -309,6 +320,7 @@ class GAController extends AdminBaseController
         $instansi_tamu=request()->instansi_tamu;
         $jenis_barang=request()->jenis_barang;
         $quantity=request()->quantity;
+        $satuan=request()->satuan;
         $instansi=request()->instansi;
         $nama_instansi=request()->nama_instansi;
         $keterangan_barang=request()->keterangan_barang;
@@ -331,6 +343,7 @@ class GAController extends AdminBaseController
             'instansi_tamu'=>$instansi_tamu,
             'jenis_barang'=>$jenis_barang,
             'quantity'=>$quantity,
+            'satuan'=>$satuan,
             'nama_instansi'=>$instansi,
             'nama_penerima'=>$nama_instansi,
             'keterangan_barang'=>$keterangan_barang,
@@ -366,7 +379,7 @@ class GAController extends AdminBaseController
         $subdistricts=DB::select("select * from subdistricts order by subdis_id");
         $id=request()->id;
         $drivers=EmployeeAtribut::where('sub_dept_id','DEP08SUB002')->get();
-        $pengajuan_transportasi=DB::select("select a.id,a.created_at,a.jarak_tempuh,a.jenis_barang,a.quantity,a.nama_instansi,a.nama_penerima,a.keterangan_barang,a.nama_tamu,a.instansi_tamu,a.nomor_hp_tamu,a.id_driver,a.nomor_kendaraan,a.status,b.employee_name,b.nik,b.department_name,b.sub_dept_name,c.subdis_name nama_desa,d.dis_name nama_kecamatan,e.city_name nama_kota,f.prov_name nama_provinsi,a.detail_alamat,a.tanggal_pemberangkatan,a.jam_pemberangkatan,a.tujuan_pemberangkatan,g.subdistrict nama_desa_tujuan,g.district nama_kecamatan_tujuan,g.city nama_kota_tujuan,g.provinsi nama_provinsi_tujuan,g.detail_alamat detail_alamat_tujuan,g.tanggal_kedatangan,g.jam_kedatangan from (select*from permintaan_transportasi where id='$id') a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join (select*from tujuan_transportasi where permintaan_transportasi_id='$id' order by tujuan_id limit 1) g on a.id=g.permintaan_transportasi_id");
+        $pengajuan_transportasi=DB::select("select a.id,a.created_at,a.jarak_tempuh,a.jenis_barang,a.quantity,a.satuan,a.nama_instansi,a.nama_penerima,a.keterangan_barang,a.nama_tamu,a.instansi_tamu,a.nomor_hp_tamu,a.id_driver,a.nomor_kendaraan,a.status,b.employee_name,b.nik,b.department_name,b.sub_dept_name,c.subdis_name nama_desa,d.dis_name nama_kecamatan,e.city_name nama_kota,f.prov_name nama_provinsi,a.detail_alamat,a.tanggal_pemberangkatan,a.jam_pemberangkatan,a.tujuan_pemberangkatan,g.subdistrict nama_desa_tujuan,g.district nama_kecamatan_tujuan,g.city nama_kota_tujuan,g.provinsi nama_provinsi_tujuan,g.detail_alamat detail_alamat_tujuan,g.tanggal_kedatangan,g.jam_kedatangan from (select*from permintaan_transportasi where id='$id') a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join (select*from tujuan_transportasi where permintaan_transportasi_id='$id' order by tujuan_id limit 1) g on a.id=g.permintaan_transportasi_id");
         $vehicles =  DB::connection('laravel_nds')->select( DB::raw("select*from ga_master_kendaraan") );
         $id_user = $loggedAdmin->enroll_id;
         return View::make('hris/ga/data_detail_pengajuan_transportasi', $this->data,compact('id_user','pengajuan_transportasi','provincies','cities','districts','subdistricts','drivers','vehicles'));
@@ -375,7 +388,7 @@ class GAController extends AdminBaseController
         $this->selectemployee = $this->ajax_getallemployeeatribut();
         $provincies=DB::select('select * from provinces order by prov_id');
         $id=request()->id;
-        $pengajuan_transportasi=DB::select("select a.id,b.employee_name,b.nik,b.department_name,b.sub_dept_name,a.id_desa,d.dis_id,e.city_id,f.prov_id,a.id_desa_tujuan,h.dis_id dis_tujuan,i.city_id city_tujuan,j.prov_id prov_tujuan,a.detail_alamat,a.detail_alamat_tujuan,a.tanggal_pemberangkatan,a.jam_pemberangkatan,a.tujuan_pemberangkatan,a.jarak_tempuh,a.nama_tamu,a.nomor_hp_tamu,a.instansi_tamu,a.jenis_barang,a.quantity,a.nama_instansi,a.nama_penerima,a.keterangan_barang,a.tanggal_kedatangan,a.jam_kedatangan,a.created_at,a.updated_at from (select*from permintaan_transportasi where id='$id') a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id");
+        $pengajuan_transportasi=DB::select("select a.id,b.employee_name,b.nik,b.department_name,b.sub_dept_name,a.id_desa,d.dis_id,e.city_id,f.prov_id,a.id_desa_tujuan,h.dis_id dis_tujuan,i.city_id city_tujuan,j.prov_id prov_tujuan,a.detail_alamat,a.detail_alamat_tujuan,a.tanggal_pemberangkatan,a.jam_pemberangkatan,a.tujuan_pemberangkatan,a.jarak_tempuh,a.nama_tamu,a.nomor_hp_tamu,a.instansi_tamu,a.jenis_barang,a.quantity,a.satuan,a.nama_instansi,a.nama_penerima,a.keterangan_barang,a.tanggal_kedatangan,a.jam_kedatangan,a.created_at,a.updated_at from (select*from permintaan_transportasi where id='$id') a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id");
         $prov_id=$pengajuan_transportasi[0]->prov_id;
         $prov_id_2=$pengajuan_transportasi[0]->prov_tujuan;
         $city_id=$pengajuan_transportasi[0]->city_id;
@@ -561,6 +574,7 @@ class GAController extends AdminBaseController
             'detail_alamat_2'=>'required',
             'jenis_barang'=>'required',
             'quantity'=>'required',
+            'satuan'=>'required',
             'instansi'=>'required',
             'nama_instansi'=>'required'
         ],
@@ -589,6 +603,7 @@ class GAController extends AdminBaseController
             'instansi_tamu'=>'required',
             'jenis_barang'=>'required',
             'quantity'=>'required',
+            'satuan'=>'required',
             'instansi'=>'required',
             'nama_instansi'=>'required'
         ],
