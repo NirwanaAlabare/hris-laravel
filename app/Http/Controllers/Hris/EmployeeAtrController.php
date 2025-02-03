@@ -1306,15 +1306,19 @@ class EmployeeAtrController extends AdminBaseController
             'nik'=>$request->nik
         ]);
         //update master
-        $kontrak_awal=DB::select("select max(contract) contract from employee_contract where enroll_id='$enroll_id'")[0]->contract;
-        $kontrak_akhir=DB::select("select max(contract_end) contract_end from employee_contract where enroll_id='$enroll_id'")[0]->contract_end;
-        if($kontrak_awal){
-            $tanggal_mulai_kontrak=$kontrak_awal;
-            $tanggal_akhir_kontrak=$kontrak_akhir;
-        }else{
-            if($tanggal_mulai_kontrak!='' && $tanggal_akhir_kontrak!=''){
-                DB::insert("insert into employee_contract (id, enroll_id, contract, contract_end, created_at, updated_at) VALUES ('','$enroll_id','$tanggal_mulai_kontrak','$tanggal_akhir_kontrak','$timestamp','$timestamp')");
-            }
+        // $kontrak_awal=DB::select("select max(contract) contract from employee_contract where enroll_id='$enroll_id'")[0]->contract;
+        // $kontrak_akhir=DB::select("select max(contract_end) contract_end from employee_contract where enroll_id='$enroll_id'")[0]->contract_end;
+        // if($kontrak_awal){
+        //     $tanggal_mulai_kontrak=$kontrak_awal;
+        //     $tanggal_akhir_kontrak=$kontrak_akhir;
+        // }else{
+        //     if($tanggal_mulai_kontrak!='' && $tanggal_akhir_kontrak!=''){
+        //         DB::insert("insert into employee_contract (id, enroll_id, contract, contract_end, created_at, updated_at) VALUES ('','$enroll_id','$tanggal_mulai_kontrak','$tanggal_akhir_kontrak','$timestamp','$timestamp')");
+        //     }
+        // }
+
+        if($tanggal_mulai_kontrak!='' && $tanggal_akhir_kontrak!=''){
+            DB::insert("insert into employee_contract (id, enroll_id, contract, contract_end, created_at, updated_at) VALUES ('','$enroll_id','$tanggal_mulai_kontrak','$tanggal_akhir_kontrak','$timestamp','$timestamp')");
         }
         if($query > 0) {
             $query = EmployeeAtribut::whereRaw('enroll_id = "' . $enroll_id . '"')
