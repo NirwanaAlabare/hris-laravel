@@ -216,79 +216,84 @@ class GAController extends AdminBaseController
     }
     public function update_car_request_user(){
         $id_request=request()->id_request;
-        $loggedAdmin = Auth::guard('admin')->user();
-        $email = $loggedAdmin->enroll_id;
-        if((request()->cb_antar_tamu==1 || request()->cb_jemput_tamu==1) && request()->cb_antar_barang!=1 && request()->cb_jemput_barang!=1){
-            $this->_validation8(request());
-        }else if((request()->cb_antar_barang==1 || request()->cb_jemput_barang==1) && request()->cb_antar_tamu!=1 && request()->cb_jemput_tamu!=1){
-            $this->_validation9(request());
-        }else if((request()->cb_antar_barang==1 || request()->cb_jemput_barang==1) && (request()->cb_antar_tamu==1 || request()->cb_jemput_tamu==1)){
-            $this->_validation10(request());
+        $status_request=PermintaanTransportasi::where('id',$id_request)->first()->status;
+        if($status_request!=0){
+            return 'sudah di approve';
         }else{
-            $this->_validation7(request());
-        }
-        $id_desa=request()->sub_districts;
-        $detail_alamat=request()->detail_alamat;
-        $id_desa_tujuan=request()->sub_districts_2;
-        $detail_alamat_tujuan=request()->detail_alamat_2;
-        $tanggal_pemberangkatan=request()->tanggal_pemberangkatan;
-        $jam_pemberangkatan=request()->jam_pemberangkatan;
-        $tanggal_kedatangan=request()->tanggal_kedatangan;
-        $jam_kedatangan=request()->jam_kedatangan;
-        $tujuan_pemberangkatan=request()->tujuan;
-        $jarak_tempuh=request()->jarak_tempuh;
-        $nama_tamu=request()->nama_tamu;
-        $nomor_tamu=request()->nomor_tamu;
-        $instansi_tamu=request()->instansi_tamu;
-        $jenis_barang=request()->jenis_barang;
-        $quantity=request()->quantity;
-        $satuan=request()->satuan;
-        $instansi=request()->instansi;
-        $nama_instansi=request()->nama_instansi;
-        $keterangan_barang=request()->keterangan_barang;
-        $tujuan=request()->tujuan;
-        $date_now=Carbon::now();
-        PermintaanTransportasi::where('id',$id_request)->update([
-            'id_desa'=>$id_desa,
-            'detail_alamat'=>$detail_alamat,
-            'id_desa_tujuan'=>$id_desa_tujuan,
-            'detail_alamat_tujuan'=>$detail_alamat_tujuan,
-            'tanggal_pemberangkatan'=>$tanggal_pemberangkatan,
-            'jam_pemberangkatan'=>$jam_pemberangkatan,
-            'tanggal_kedatangan'=>$tanggal_kedatangan,
-            'jam_kedatangan'=>$jam_kedatangan,
-            'tujuan_pemberangkatan'=>$tujuan_pemberangkatan,
-            'jarak_tempuh'=>$jarak_tempuh,
-            'nama_tamu'=>$nama_tamu,
-            'nomor_hp_tamu'=>$nomor_tamu,
-            'instansi_tamu'=>$instansi_tamu,
-            'jenis_barang'=>$jenis_barang,
-            'quantity'=>$quantity,
-            'satuan'=>$satuan,
-            'nama_instansi'=>$instansi,
-            'nama_penerima'=>$nama_instansi,
-            'keterangan_barang'=>$keterangan_barang,
-            'created_by'=>$email
-        ]);
-        TujuanTransportasi::where('permintaan_transportasi_id',request()->id_request)->delete();
-        foreach(request()->tujuan_array as $key=>$value){
-            $province=request()->provinsi_array[$key];
-            $city=request()->city_array[$key];
-            $district=request()->district_array[$key];
-            $subdistrict=request()->subdistrict_array[$key];
-            DB::table('tujuan_transportasi')->insert([
-                'permintaan_transportasi_id'=>$id_request,
-                'tujuan_id'=>$value,
-                'district'=>$district,
-                'city'=>$city,
-                'provinsi'=>$province,
-                'subdistrict'=>$subdistrict,
-                'detail_alamat'=>request()->detail_alamat_array[$key],
-                'tanggal_kedatangan'=>request()->tanggal_kedatangan_array[$key],
-                'jam_kedatangan'=>request()->jam_kedatangan_array[$key],
-                'created_at'=>$date_now,
-                'updated_at'=>$date_now
+            $loggedAdmin = Auth::guard('admin')->user();
+            $email = $loggedAdmin->enroll_id;
+            if((request()->cb_antar_tamu==1 || request()->cb_jemput_tamu==1) && request()->cb_antar_barang!=1 && request()->cb_jemput_barang!=1){
+                $this->_validation8(request());
+            }else if((request()->cb_antar_barang==1 || request()->cb_jemput_barang==1) && request()->cb_antar_tamu!=1 && request()->cb_jemput_tamu!=1){
+                $this->_validation9(request());
+            }else if((request()->cb_antar_barang==1 || request()->cb_jemput_barang==1) && (request()->cb_antar_tamu==1 || request()->cb_jemput_tamu==1)){
+                $this->_validation10(request());
+            }else{
+                $this->_validation7(request());
+            }
+            $id_desa=request()->sub_districts;
+            $detail_alamat=request()->detail_alamat;
+            $id_desa_tujuan=request()->sub_districts_2;
+            $detail_alamat_tujuan=request()->detail_alamat_2;
+            $tanggal_pemberangkatan=request()->tanggal_pemberangkatan;
+            $jam_pemberangkatan=request()->jam_pemberangkatan;
+            $tanggal_kedatangan=request()->tanggal_kedatangan;
+            $jam_kedatangan=request()->jam_kedatangan;
+            $tujuan_pemberangkatan=request()->tujuan;
+            $jarak_tempuh=request()->jarak_tempuh;
+            $nama_tamu=request()->nama_tamu;
+            $nomor_tamu=request()->nomor_tamu;
+            $instansi_tamu=request()->instansi_tamu;
+            $jenis_barang=request()->jenis_barang;
+            $quantity=request()->quantity;
+            $satuan=request()->satuan;
+            $instansi=request()->instansi;
+            $nama_instansi=request()->nama_instansi;
+            $keterangan_barang=request()->keterangan_barang;
+            $tujuan=request()->tujuan;
+            $date_now=Carbon::now();
+            PermintaanTransportasi::where('id',$id_request)->update([
+                'id_desa'=>$id_desa,
+                'detail_alamat'=>$detail_alamat,
+                'id_desa_tujuan'=>$id_desa_tujuan,
+                'detail_alamat_tujuan'=>$detail_alamat_tujuan,
+                'tanggal_pemberangkatan'=>$tanggal_pemberangkatan,
+                'jam_pemberangkatan'=>$jam_pemberangkatan,
+                'tanggal_kedatangan'=>$tanggal_kedatangan,
+                'jam_kedatangan'=>$jam_kedatangan,
+                'tujuan_pemberangkatan'=>$tujuan_pemberangkatan,
+                'jarak_tempuh'=>$jarak_tempuh,
+                'nama_tamu'=>$nama_tamu,
+                'nomor_hp_tamu'=>$nomor_tamu,
+                'instansi_tamu'=>$instansi_tamu,
+                'jenis_barang'=>$jenis_barang,
+                'quantity'=>$quantity,
+                'satuan'=>$satuan,
+                'nama_instansi'=>$instansi,
+                'nama_penerima'=>$nama_instansi,
+                'keterangan_barang'=>$keterangan_barang,
+                'created_by'=>$email
             ]);
+            TujuanTransportasi::where('permintaan_transportasi_id',request()->id_request)->delete();
+            foreach(request()->tujuan_array as $key=>$value){
+                $province=request()->provinsi_array[$key];
+                $city=request()->city_array[$key];
+                $district=request()->district_array[$key];
+                $subdistrict=request()->subdistrict_array[$key];
+                DB::table('tujuan_transportasi')->insert([
+                    'permintaan_transportasi_id'=>$id_request,
+                    'tujuan_id'=>$value,
+                    'district'=>$district,
+                    'city'=>$city,
+                    'provinsi'=>$province,
+                    'subdistrict'=>$subdistrict,
+                    'detail_alamat'=>request()->detail_alamat_array[$key],
+                    'tanggal_kedatangan'=>request()->tanggal_kedatangan_array[$key],
+                    'jam_kedatangan'=>request()->jam_kedatangan_array[$key],
+                    'created_at'=>$date_now,
+                    'updated_at'=>$date_now
+                ]);
+            }
         }
     }
     public function post_car_request(){

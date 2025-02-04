@@ -1443,9 +1443,13 @@
             },
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             success: function(res){
-                swal("", "Update Permintaan Transportasi Berhasil", "success");
-                var url = 'data_pengajuan_transportasi';
-                window.open(url, '_self');
+                if(res=='sudah di approve'){
+                    swal("", "Status permintaan transportasi telah di ubah oleh administrator", "error");
+                }else{
+                    swal("", "Update Permintaan Transportasi Berhasil", "success");
+                    var url = 'data_pengajuan_transportasi';
+                    window.open(url, '_self');
+                }
             },
             error: function(error){
                 let err_log=error.responseJSON.errors;
