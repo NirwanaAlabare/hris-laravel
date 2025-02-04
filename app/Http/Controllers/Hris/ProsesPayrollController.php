@@ -2672,6 +2672,7 @@ class ProsesPayrollController extends AdminBaseController
                     $enroll_id=$value->enroll_id;
                     $unik=sprintf("%04d", $enroll_id);
                     $kode_rekap_kehadiran=$bulan_sekarang.$unik;
+
                     RekapKehadiranKaryawan::where('kode_rekap_kehadiran',$kode_rekap_kehadiran)->where('periode_umk',$periode_umk)->delete();
                     DB::table('rekap_kehadiran_karyawan')->insert([
                         'uuid'=>Str::uuid('uuid'),
@@ -2695,7 +2696,7 @@ class ProsesPayrollController extends AdminBaseController
                         'kehadiran_tk'=>$value->kehadiran_tk,
                         'total_kehadiran'=> $value->total_kehadiran,
                         'jumlah_hari'=>$jumlah_hari_fix,
-                        'jumlah_hari_kerja'=>$jumlah_hari_fix-$value->lsm,
+                        'jumlah_hari_kerja'=>$value->total_kehadiran_net,
                         'operator'=>$email,
                         'created_at'=>Carbon::now(),
                         'updated_at'=>Carbon::now(),
@@ -2740,10 +2741,12 @@ class ProsesPayrollController extends AdminBaseController
                         $jh=25;
                         $hp=$hari_potongan_security;
                         $jumlah_menit_kerja=420;
+                        $jumlah_hari_payroll=$value->jumlah_hari;
                     }else{
                         $jh=$jumlah_hari_total-$jumlah_hari_sabtu_minggu_total;
                         $hp=$hari_potongan;
                         $jumlah_menit_kerja=480;
+                        $jumlah_hari_payroll=$value->total_kehadiran;
                     }
                     $rekap_kehadiran_data = [
                         'uuid'=>Str::uuid('uuid'),
@@ -2763,7 +2766,7 @@ class ProsesPayrollController extends AdminBaseController
                         'kehadiran_r'=>$value->kehadiran_r,
                         'kehadiran_tk'=>$value->kehadiran_tk,
                         'kehadiran_ok'=>$value->kehadiran_ok,
-                        'total_kehadiran'=>$value->total_kehadiran,
+                        'total_kehadiran'=>$jumlah_hari_payroll,
                         'total_kehadiran_net'=>$value->total_kehadiran_net,
                         'jumlah_hari'=>$value->jumlah_hari,
                         'jumlah_hari_kerja'=>$value->jumlah_hari_kerja,
