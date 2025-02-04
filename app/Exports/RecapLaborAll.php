@@ -384,7 +384,6 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
     public function collection()
     {
         $query=DB::select("select a.tanggal_berjalan,a.kode_hari,a.nama_hari,b.nik,a.enroll_id,b.employee_name,if(emp_hist.status_staff is null,b.status_staff,emp_hist.status_staff) status_staff,if(emp_hist.status_jabatan is null,b.status_jabatan,emp_hist.status_jabatan) status_jabatan,if(emp_hist.sub_dept_name is null,b.sub_dept_name,emp_hist.sub_dept_name) sub_dept_name,if(emp_hist.department_name is null,b.department_name,emp_hist.department_name) department_name,c.group_department,a.mulai_jam_kerja,a.akhir_jam_kerja,a.absen_masuk_kerja,a.absen_pulang_kerja,dap.time_mulai_ijin permits_dari_pukul,dap.time_akhir_ijin permits_sampai_pukul,dap.total_time_ijin total_menit_permits,a.jumlah_menit_absen_dt,a.jumlah_menit_absen_pc,a.jumlah_menit_absen_dtpc,a.status_absen,dap.absen_alasan,h.kode_ijin_payroll,d.catatan,d.nomor_form_lembur,d.mulai_jam_lembur,d.akhir_jam_lembur,d.jumlah_jam_istirahat_lembur jumlah_jam_istirahat,d.jumlah_jam_lembur,e.final_mulai_jam_lembur,e.final_selesai_jam_lembur,e.final_jam_istirahat_lembur,e.final_total_jam_lembur,bpjs.dasar_pot_bpjs_rupiah upah_umk,c.gaji_perhari,c.gaji_permenit,c.iby,c.itb,c.m,c.dt,c.pc,c.dtpc,c.lby,c.lsm,c.r,c.ok,c.hari_kerja,c.pot_hari_kerja,c.total_absen,e.lembur_1,e.lembur_2,e.lembur_3,e.lembur_4,b.kode_grade,i.salary_bulanan,c.seniority_allowance,c.insentif_kehadiran,c.insentif_jabatan,e.lembur1_rupiah,e.lembur2_rupiah,e.lembur3_rupiah,e.lembur4_rupiah,if(f.jenis_koreksi=1,f.jumlah_rp_potongan,0) koreksi_upah,if(f.jenis_koreksi=3,f.jumlah_rp_potongan,0) koreksi_lembur,if(f.jenis_koreksi=4,f.jumlah_rp_potongan,0) koreksi_insentif,if(g.jenis_potongan=7,g.jumlah_rp_potongan,0) potongan_upah,if(g.jenis_potongan=8,g.jumlah_rp_potongan,0) potongan_lembur,if(g.jenis_potongan=5,g.jumlah_rp_potongan,0) potongan_insentif,if(g.jenis_potongan=4,g.jumlah_rp_potongan,0) potongan_piutang,c.rp_pot_hari_kerja,c.rp_pot_jam,c.bruto,c.bpjs_tk,c.bpjs_ks,c.total_potongan,c.pembulatan,c.jumlah,c.bpjs_tk_company,c.bpjs_ks_company,c.kompensasi,c.thr,c.konsumsi,c.total_pembayaran from master_data_absen_kehadiran a inner join employee_atribut b on a.enroll_id=b.enroll_id left join daily_labor_costs c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan left join rekap_perhitungan_lembur e on a.enroll_id=e.enroll_id and a.tanggal_berjalan=e.tanggal_berjalan left join data_koreksi_upah f on a.enroll_id=f.enroll_id and a.tanggal_berjalan=f.tanggal_koreksi left join data_koreksi_potongan g on a.enroll_id=g.enroll_id and a.tanggal_berjalan=g.tanggal_koreksi left join ref_absen_ijin h on a.status_absen=h.kode_absen_ijin left join data_absen_perijinan dap on a.uuid = dap.uuid_master left join grading_salary i on b.kode_grade=i.kode_grade and substring(i.periode_umk,1,4)=substring(a.tanggal_berjalan,1,4) inner join dasar_pot_bpjs bpjs on REGEXP_SUBSTR(bpjs.kode_dasar_pot_bpjs, '[0-9]+')=substring(a.tanggal_berjalan,1,4) left join employee_atribut_histories emp_hist on a.enroll_id=emp_hist.enroll_id and a.tanggal_berjalan between SUBSTRING(emp_hist.periode_payroll,1,10) and SUBSTRING(emp_hist.periode_payroll,16,10) where a.tanggal_berjalan>='".$this->tanggal_awal."' and a.tanggal_berjalan<='".$this->tanggal_akhir."'".$this->inEnrollId.$this->inStatusStaff);
-
         return collect($query);
     }
     public function startCell(): string
@@ -458,13 +457,28 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
             $excelDate9 = floor($excelTimestamp9);
             $akhir_jam_lembur = $excelTimestamp9 - $excelDate9;
         }
-        $hour_istirahat_lembur='';
-        if($Data->jumlah_jam_istirahat!=null || $Data->jumlah_jam_istirahat!='' || $Data->jumlah_jam_istirahat!='0,0'){
-            $minute_jam_istirahat_lembur=$Data->jumlah_jam_istirahat*60;
-            $hour_jam_istirahat_lembur = sprintf("%02d", intdiv($minute_jam_istirahat_lembur, 60)).':'. ($minute_jam_istirahat_lembur % 60);
-            $timestamp10 = new \DateTime($hour_jam_istirahat_lembur);
+        $hour_istirahat_lembur = '';
+
+        if (!empty($Data->jumlah_jam_istirahat) && is_numeric($Data->jumlah_jam_istirahat) && $Data->jumlah_jam_istirahat != '0.0') {
+            $minute_jam_istirahat_lembur = floatval($Data->jumlah_jam_istirahat) * 60;
+
+            $jam = intdiv($minute_jam_istirahat_lembur, 60);
+            $menit = $minute_jam_istirahat_lembur % 60;
+
+            // Pastikan jam tetap dalam rentang 0-23
+            $jam = $jam % 24;
+
+            // Format menjadi string yang valid
+            $hour_jam_istirahat_lembur = sprintf("%02d:%02d:00", $jam, $menit);
+
+            // Tambahkan tanggal agar DateTime tidak error
+            $timestamp10 = new \DateTime('1970-01-01 ' . $hour_jam_istirahat_lembur);
+
+            // Konversi ke format Excel
             $excelTimestamp10 = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp10);
             $excelDate10 = floor($excelTimestamp10);
+
+            // Simpan hanya bagian waktu (tanpa tanggal)
             $hour_istirahat_lembur = $excelTimestamp10 - $excelDate10;
         }
         $final_mulai_lembur='';
