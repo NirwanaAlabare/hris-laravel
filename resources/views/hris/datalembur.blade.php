@@ -171,7 +171,7 @@
                                 <label for="checkAllVerif" class="title-14">Select All</label>
                             </div>
                         </div>
-                        
+
                         <div class="card-body m-0 p-0">
                             <div class="table-responsive">
                                 <table id="datatable-ajax-crud" class="table table-sm table-striped table-bordered table-vcenter text-nowrap table-nowrap w-100 m-0 p-0">
@@ -585,7 +585,7 @@
                                     <div class="form-group">
                                         <label class="form-label">Nomor SPL :</label>
                                         <select class="form-control select2-show-search" id="selectNoSPL_pilih1" name="selectNoSPL_pilih1">
-                                        </select>                                        
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -621,7 +621,7 @@
                                         <input class="form-control" id="catatan_tambah" name="catatan_tambah" type="text">
                                     </div>
                                 </div>
-                            </div>                            
+                            </div>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -686,13 +686,13 @@
                                             <label class="form-label">NOMOR SPL : </label>
                                             <div class="form-group">
                                                 <select id="selectNoSPLHapus2" name="selectNoSPLHapus2" multiple class="form-control select2 w-100">
-                                                </select>                
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>                            
+                        </div>
                         <div class="modal-footer bg-primary p-1">
                             <div class="btn-list">
                                 <button type="button" id="btn-remove2" class="btn btn-danger btn-app" data-dismiss="modal"><span><i class="fa fa-save"></i> Hapus NO SPL</span></button>
@@ -994,7 +994,7 @@
             $("#data-lembur").hide();
             getnomorspl();
         });
-        
+
         function getallnomorspl()
         {
             var periode_lembur = $('#periode_lembur').val();
@@ -1014,8 +1014,8 @@
                     dataType: 'json',
                     success: function(res){
                         $('#catatan_tambah').val(res[0].catatan);
-                        split_mulai_jam_lembur = res[0].mulai_jam_lembur.split(' '); 
-                        split_akhir_jam_lembur = res[0].akhir_jam_lembur.split(' '); 
+                        split_mulai_jam_lembur = res[0].mulai_jam_lembur.split(' ');
+                        split_akhir_jam_lembur = res[0].akhir_jam_lembur.split(' ');
                         mulai_jam_lembur = defaultDate(split_mulai_jam_lembur[0]) + " " + split_mulai_jam_lembur[1];
                         akhir_jam_lembur = defaultDate(split_akhir_jam_lembur[0]) + " " + split_akhir_jam_lembur[1];
                         $('#waktu_jam_lembur_tambah').val(defaultDate(split_mulai_jam_lembur[0]) + " " + split_mulai_jam_lembur[1] + " - " + defaultDate(split_akhir_jam_lembur[0]) + " " + split_akhir_jam_lembur[1]);
@@ -1363,7 +1363,7 @@
         {
             var tgl = $('#periode_lembur').val();
             var tanggal = tgl.split(' s/d ');
-            
+
             // LAGI COBA TEST CLOSING PAYROLL
             $.ajax({
                 type:"POST",
@@ -1387,13 +1387,13 @@
                             opacity: 0.6,
                             autohide: false
                         });
-                    } else {            
+                    } else {
                         var periode_lembur = $('#periode_lembur').val();
 
                         $("#ajax-modal-hapus2").modal('show');
                         $("#selectNoSPLHapus2").empty();
                         $("#selectNoSPLHapus2").val(null).trigger("change");
-                        
+
                         if(periode_lembur){
                             $.ajax({
                                 type:"POST",
@@ -1425,9 +1425,9 @@
 
                 },
                 error: function(res){
-                                
+
                 }
-            });           
+            });
 
         };
 
@@ -1574,7 +1574,7 @@
                         else{
                             sub_dept_name=data[i].employee_atribut.dept.sub_dept_name
                         }
-                        
+
                         if (data[i].data_lembur.is_verifikasi==0) {
                             htmlTable = '' +
                             '<tr class="text-center">' +
@@ -1675,7 +1675,7 @@
             var splitHapusData = hapusData.split('|');
             var tanggal_berjalan = splitHapusData[0];
             var tanggal = tanggal_berjalan;
-            
+
             // LAGI COBA TEST CLOSING PAYROLL
             $.ajax({
                 type:"POST",
@@ -1699,7 +1699,7 @@
                             opacity: 0.6,
                             autohide: false
                         });
-                    } else {            
+                    } else {
                         var enroll_id = splitHapusData[1];
                         var nomor_form_lembur = splitHapusData[2];
                         var employee_name = splitHapusData[3];
@@ -1751,8 +1751,8 @@
 
                                             setTimeout(function myFunction() {
                                                 location.reload();
-                                            }, 3000);           
-                        
+                                            }, 3000);
+
                                         },
                                         error: function(res){
                                             notif({
@@ -1778,9 +1778,9 @@
 
                 },
                 error: function(res){
-                                
+
                 }
-            });           
+            });
 
         };
 
@@ -1790,7 +1790,7 @@
             var tanggal_lembur = splitEditData[0];
 
             var tanggal = tanggal_lembur;
-            
+
             // LAGI COBA TEST CLOSING PAYROLL
             $.ajax({
                 type:"POST",
@@ -1814,7 +1814,7 @@
                             opacity: 0.6,
                             autohide: false
                         });
-                    } else {            
+                    } else {
                         var rowid = splitEditData[1];
 
                         if (editData) {
@@ -1849,9 +1849,9 @@
 
                 },
                 error: function(res){
-                                
+
                 }
-            });           
+            });
 
         };
 
@@ -1972,8 +1972,8 @@
                         $("#ajax-modal-edit1").modal('hide');
                         setTimeout(function myFunction() {
                             location.reload();
-                          }, 3000);           
-    
+                          }, 3000);
+
                     },
                     error: function(res){
                         notif({
@@ -2019,7 +2019,7 @@
                         $("#ajax-modal-edit1").modal('hide');
                         setTimeout(function myFunction() {
                             location.reload();
-                          }, 3000);               
+                          }, 3000);
 
                     },
                     error: function(res){
@@ -2042,7 +2042,7 @@
 
             var tgl = $('#periode_lembur').val();
             var tanggal = tgl.split(' s/d ');
-            
+
             // LAGI COBA TEST CLOSING PAYROLL
             $.ajax({
                 type:"POST",
@@ -2066,9 +2066,9 @@
                             opacity: 0.6,
                             autohide: false
                         });
-                    } else {            
+                    } else {
 
-                        $("#ajax-modal-pilih1").modal('show');    
+                        $("#ajax-modal-pilih1").modal('show');
                         $('#datatable-ajax-modal2').DataTable().clear();
                         $('#datatable-ajax-modal2').DataTable().destroy();
                         $('#datatable-ajax-modal2').empty();
@@ -2106,9 +2106,9 @@
 
                 },
                 error: function(res){
-                                
+
                 }
-            });           
+            });
 
         });
 
@@ -2182,7 +2182,7 @@
                 "createdRow": function (row, data, dataIndex) {
                     if (data['status_aktif'] == "TIDAK AKTIF") {
                             $(row).css('background', 'red');
-                    }                    
+                    }
                 }
             });
 
@@ -2198,8 +2198,8 @@
                 $(this).addClass('bg-cyan');
 
 
-             });      
-             
+             });
+
             $('#datatable-ajax-modal2 tbody').on('dblclick', 'tr', function () {
                 var tr = $(this).closest('tr');
                 var row = table1.row(tr);
@@ -2218,15 +2218,15 @@
                 });
 
                 $("#selectEmp_tambah").find("option[value='" + data['enroll_id'] +"'").attr("selected","selected");
-                
-            });      
-             
+
+            });
+
         }
 
         $('body').on('click', '#btn-save2', function (event) {
             var selectEmp = $('#selectEmp_tambah').val();
             var nomor_form_lembur = $('#selectNoSPL_pilih1').val();
-            
+
             var waktu_lembur = $('#waktu_jam_lembur_tambah').val();
 
             var splitWaktuLembur = waktu_lembur.split(" - ");
@@ -2266,7 +2266,7 @@
                         $("#ajax-modal-pilih1").modal('hide');
                         setTimeout(function myFunction() {
                             location.reload();
-                          }, 3000);               
+                          }, 3000);
 
                     },
                 error: function(res){
@@ -2282,12 +2282,12 @@
 
                     setTimeout(function myFunction() {
                             location.reload();
-                          }, 3000);    
+                          }, 3000);
                 }
             });
         });
 
-        
+
         $('body').on('click', '#btn-hapus-nospl', function (event) {
             getnomorsplhapus();
         });
@@ -2340,8 +2340,8 @@
 
                                 setTimeout(function myFunction() {
                                     location.reload();
-                                  }, 3000);           
-            
+                                  }, 3000);
+
                             },
                             error: function(res){
                                 notif({
@@ -2377,7 +2377,7 @@
                     notif({
                         msg: "<b>Info:</b> Data berhasil di verifikasi.",
                         type: "info"
-                    });  
+                    });
                 }
             });
             TampilDataLembur();
@@ -2419,13 +2419,13 @@
                     dataType: 'json',
                     success: function(res){
                         console.log('filter_data',res);
-                        
+
                         if(res.length > 0){
                             nomor_urut=0;
                             for(i=0;i<res.length;i++) {
-                                if (res[i].data_lembur.is_verifikasi==0) {
+                                if (res[i].data_lembur_labor.is_verifikasi==0) {
                                     nomor_urut=nomor_urut+1;
-                                    var uuid = res[i].data_lembur.uuid
+                                    var uuid = res[i].data_lembur_labor.uuid
                                     var tanggal_lembur = moment(res[i].tanggal_berjalan).format('DD MMM YYYY');
                                     var status_kerja = res[i].kode_hari;
                                     if(status_kerja!=5 && status_kerja!=6 && res[i].holiday_name!=null){
@@ -2442,14 +2442,14 @@
                                     var akhir_jam_kerja = res[i].akhir_jam_kerja;
                                     var absen_masuk_kerja = res[i].absen_masuk_kerja;
                                     var absen_pulang_kerja = res[i].absen_pulang_kerja;
-                                    var mulai_jam_lembur = res[i].data_lembur.mulai_jam_lembur;
-                                    var akhir_jam_lembur = res[i].data_lembur.akhir_jam_lembur;
+                                    var mulai_jam_lembur = res[i].data_lembur_labor.mulai_jam_lembur;
+                                    var akhir_jam_lembur = res[i].data_lembur_labor.akhir_jam_lembur;
                                     var sub_dept_name = res[i].employee_atribut.dept ? res[i].employee_atribut.dept.sub_dept_name : "-";
-                                    var jumlah_jam_lembur = res[i].data_lembur.jumlah_jam_lembur;
-                                    var jumlah_jam_istirahat_lembur = res[i].data_lembur.jumlah_jam_istirahat_lembur;
-                                    var catatan = res[i].data_lembur.catatan;
-                                    var mulai_jam_lembur_edit1 = res[i].data_lembur.mulai_jam_lembur;
-                                    var akhir_jam_lembur_edit1 = res[i].data_lembur.akhir_jam_lembur;
+                                    var jumlah_jam_lembur = res[i].data_lembur_labor.jumlah_jam_lembur;
+                                    var jumlah_jam_istirahat_lembur = res[i].data_lembur_labor.jumlah_jam_istirahat_lembur;
+                                    var catatan = res[i].data_lembur_labor.catatan;
+                                    var mulai_jam_lembur_edit1 = res[i].data_lembur_labor.mulai_jam_lembur;
+                                    var akhir_jam_lembur_edit1 = res[i].data_lembur_labor.akhir_jam_lembur;
                                     var kode_hari = res[i].kode_hari;
                                     var bgwarna = '';
                                     if(status_kerja == 'LIBUR') { bgwarna = 'style="background: yellow"'; }
@@ -2469,7 +2469,7 @@
                                     if(!catatan) { catatan = ''; }
                                     if((kode_hari == 5) || (kode_hari == 6)) { bgwarna = 'style="background: yellow"'; }
                                     var editData = res[i].tanggal_berjalan + '|' + nomor_urut;
-                                    var hapusData = res[i].tanggal_berjalan + '|' + res[i].enroll_id + '|' + res[i].data_lembur.nomor_form_lembur + '|' + res[i].employee_atribut.employee_name + '|' + 'btn-remove_' + nomor_urut  + res[i].uuid_master;
+                                    var hapusData = res[i].tanggal_berjalan + '|' + res[i].enroll_id + '|' + res[i].data_lembur_labor.nomor_form_lembur + '|' + res[i].employee_atribut.employee_name + '|' + 'btn-remove_' + nomor_urut  + res[i].uuid_master;
 
                                     htmlTable = '' +
                                     '<tr ' + bgwarna + ' class="text-center">' +
@@ -2494,9 +2494,9 @@
                                     '       <input type="hidden" id="akhir_jam_lembur_edit1_' + i + '" name="akhir_jam_lembur_edit1" value="' + akhir_jam_lembur_edit1 + '" >' +
                                     '   </td>' +
 
-                                    '   <td> <input type="checkbox" class="checked" name="uuid[]"  value="'+res[i].data_lembur.uuid+'">'+'</td>'+
+                                    '   <td> <input type="checkbox" class="checked" name="uuid[]"  value="'+res[i].data_lembur_labor.uuid+'">'+'</td>'+
 
-                                    '   <td class="text-nowrap text-center align-middle">' + res[i].data_lembur.nomor_form_lembur  + '</td>' +
+                                    '   <td class="text-nowrap text-center align-middle">' + res[i].data_lembur_labor.nomor_form_lembur  + '</td>' +
                                     '   <td class="text-nowrap text-center align-middle">' + tanggal_lembur  + '</td>' +
                                     '   <td class="text-nowrap text-left align-middle">' + res[i].nama_hari  + '</td>' +
                                     '   <td class="text-nowrap text-left align-middle">' + status_kerja  + '</td>' +
@@ -2526,9 +2526,9 @@
                             nomor_urut2= 0;
                             for(i=0;i<res.length;i++) {
                                 // nomor_urut2=0;
-                                if (res[i].data_lembur.is_verifikasi==1) {
+                                if (res[i].data_lembur_labor.is_verifikasi==1) {
                                     var nomor_urut2 = nomor_urut2+1;
-                                    var uuid = res[i].data_lembur.uuid
+                                    var uuid = res[i].data_lembur_labor.uuid
                                     var tanggal_lembur = moment(res[i].tanggal_berjalan).format('DD MMM YYYY');
                                     var status_kerja = res[i].kode_hari;
                                     if(status_kerja!=5 && status_kerja!=6 && res[i].holiday_name!=null){
@@ -2545,12 +2545,12 @@
                                     var akhir_jam_kerja = res[i].akhir_jam_kerja;
                                     var absen_masuk_kerja = res[i].absen_masuk_kerja;
                                     var absen_pulang_kerja = res[i].absen_pulang_kerja;
-                                    var mulai_jam_lembur = res[i].data_lembur.mulai_jam_lembur;
-                                    var akhir_jam_lembur = res[i].data_lembur.akhir_jam_lembur;
+                                    var mulai_jam_lembur = res[i].data_lembur_labor.mulai_jam_lembur;
+                                    var akhir_jam_lembur = res[i].data_lembur_labor.akhir_jam_lembur;
                                     var sub_dept_name = res[i].employee_atribut.dept ? res[i].employee_atribut.dept.sub_dept_name : "-";
-                                    var jumlah_jam_lembur = res[i].data_lembur.jumlah_jam_lembur;
-                                    var jumlah_jam_istirahat_lembur = res[i].data_lembur.jumlah_jam_istirahat;
-                                    var catatan = res[i].data_lembur.catatan;
+                                    var jumlah_jam_lembur = res[i].data_lembur_labor.jumlah_jam_lembur;
+                                    var jumlah_jam_istirahat_lembur = res[i].data_lembur_labor.jumlah_jam_istirahat;
+                                    var catatan = res[i].data_lembur_labor.catatan;
                                     var mulai_jam_lembur_edit1 = res[i].mulai_jam_lembur;
                                     var akhir_jam_lembur_edit1 = res[i].akhir_jam_lembur;
                                     var kode_hari = res[i].kode_hari;
@@ -2572,7 +2572,7 @@
                                     if(!catatan) { catatan = ''; }
                                     if((kode_hari == 5) || (kode_hari == 6)) { bgwarna = 'style="background: yellow"'; }
 
-                                    var hapusData = res[i].tanggal_berjalan + '|' + res[i].employee_atribut.enroll_id + '|' + res[i].data_lembur.nomor_form_lembur + '|' + res[i].employee_atribut.employee_name + '|' + 'btn-remove_' + nomor_urut;
+                                    var hapusData = res[i].tanggal_berjalan + '|' + res[i].employee_atribut.enroll_id + '|' + res[i].data_lembur_labor.nomor_form_lembur + '|' + res[i].employee_atribut.employee_name + '|' + 'btn-remove_' + nomor_urut;
                                     var editData = res[i].tanggal_berjalan + '|' + nomor_urut;
 
                                     var url = "{{ route('hris.datalembur.unverifikasi',['uuid'=>'random_id']) }}";
@@ -2582,10 +2582,10 @@
                                     '<tr ' + bgwarna + ' class="text-center">' +
                                     @if($loggedAdmin->email === 'willy@ptnag.com' || $loggedAdmin->role_user === 'superadmin' )
                                     '  <td class="text-nowrap text-right align-middle">' +
-                                    '  <a class="btn btn-secondary p-0 mr-1 text-white border-white unverif" onclick="handleClick(this)" href="'+ url + '"  no_spl="' + res[i].data_lembur.nomor_form_lembur  + '">UNVERIFY</a>'+
+                                    '  <a class="btn btn-secondary p-0 mr-1 text-white border-white unverif" onclick="handleClick(this)" href="'+ url + '"  no_spl="' + res[i].data_lembur_labor.nomor_form_lembur  + '">UNVERIFY</a>'+
                                     '  </td>' +
                                     @endif
-                                    '   <td class="text-nowrap text-center align-middle">' + res[i].data_lembur.nomor_form_lembur  + '</td>' +
+                                    '   <td class="text-nowrap text-center align-middle">' + res[i].data_lembur_labor.nomor_form_lembur  + '</td>' +
                                     '   <td class="text-nowrap text-center align-middle">' + tanggal_lembur  + '</td>' +
                                     '   <td class="text-nowrap text-left align-middle">' + res[i].nama_hari  + '</td>' +
                                     '   <td class="text-nowrap text-left align-middle">' + status_kerja  + '</td>' +
@@ -2611,7 +2611,7 @@
                             }
                             $("#subtitle-table_verif").append("");
                             $("#subtitle-table_verif").append("Total data yang ditemukan ada: " + nomor_urut2);
-                        } 
+                        }
 
 
                         else {
@@ -2657,13 +2657,13 @@
         $('#checkAllVerif').click(function() {
             if (this.checked) {
             $(':checkbox').each(function() {
-                this.checked = true;            
+                this.checked = true;
             });
             } else {
             $(':checkbox').each(function() {
-                this.checked = false; 
+                this.checked = false;
             });
-            } 
+            }
         });
 
         function handleClick(element) {
@@ -2688,7 +2688,7 @@
                         notif({
                             msg: "<b>Info:</b> Data berhasil di simpan.",
                             type: "info"
-                        });  
+                        });
                     }
                 });
                 TampilDataLembur();

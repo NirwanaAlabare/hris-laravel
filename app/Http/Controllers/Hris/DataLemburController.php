@@ -198,7 +198,7 @@ class DataLemburController extends AdminBaseController
                 ]);
             }
         }
-     
+
     }
 
     public function ajax_getnomorspl(Request $request)
@@ -1107,25 +1107,25 @@ class DataLemburController extends AdminBaseController
             }else if($lembur->is_verifikasi==1){
                 $is_verifikasi='VERIFIED';
             }
-          
+
             $lembur_1=$lembur->lembur_1;
             $lembur_2=$lembur->lembur_2;
             $lembur_3=$lembur->lembur_3;
             $lembur_4=$lembur->lembur_4;
             $total_lembur_1234=$lembur->total_lembur_1234;
-        
+
             $lembur1_rupiah=$lembur->lembur1_rupiah;
             $lembur2_rupiah=$lembur->lembur2_rupiah;
             $lembur3_rupiah=$lembur->lembur3_rupiah;
             $lembur4_rupiah=$lembur->lembur4_rupiah;
             $total_lembur_rupiah=$lembur->total_lembur_rupiah;
-            
+
             $kode_grade=EmployeeAtribut::where('enroll_id',$lembur->enroll_id)->pluck('kode_grade')->first();
             $salary = GradingSalary::where('kode_grade', $kode_grade)
-                ->orderBy('periode_umk', 'DESC') 
+                ->orderBy('periode_umk', 'DESC')
                 ->pluck('salary_bulanan')
                 ->first();
-          
+
             if(Auth::guard('admin')->user()->role_user!='payroll'){
                 if(Auth::guard('admin')->user()->email=='alex.herdian@ptnag.com'){
                     $data = [
@@ -1823,22 +1823,22 @@ class DataLemburController extends AdminBaseController
 
         $verification_status = $request->verificationStatus;
         $selectNoSPL = $request->selectNoSPL ?? null;
-        
+
         if ($verification_status!='' && !$selectNoSPL) {
             $verification_status=$request->verificationStatus;
-            $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept','data_lembur')
+            $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept','data_lembur_labor')
             ->where('nomor_form_lembur','!=',null)
             ->where('tanggal_berjalan','>=',$awal_bulan)
             ->where('tanggal_berjalan','<=',$akhir_bulan)
-            ->whereHas('data_lembur',function($query) use ($verification_status){
+            ->whereHas('data_lembur_labor',function($query) use ($verification_status){
                 $query
                 ->where('is_verifikasi',$verification_status);
             })
             ->orderBy('master_data_absen_kehadiran.enroll_id')
             ->get();
         } elseif ($selectNoSPL && $verification_status=='') {
-            $selectNoSPL = $request->selectNoSPL;   
-            $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept','data_lembur')
+            $selectNoSPL = $request->selectNoSPL;
+            $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept','data_lembur_labor')
             ->where('tanggal_berjalan','>=',$awal_bulan)
             ->where('tanggal_berjalan','<=',$akhir_bulan)
             ->whereIn('nomor_form_lembur',$selectNoSPL)
@@ -1849,22 +1849,22 @@ class DataLemburController extends AdminBaseController
             $selectNoSPL = $request->selectNoSPL;
             $verification_status=$request->verificationStatus;
 
-            $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept','data_lembur')
+            $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept','data_lembur_labor')
             ->where('tanggal_berjalan','>=',$awal_bulan)
             ->where('tanggal_berjalan','<=',$akhir_bulan)
             ->where('nomor_form_lembur',$selectNoSPL)
-            ->whereHas('data_lembur',function($query) use ($verification_status){
+            ->whereHas('data_lembur_labor',function($query) use ($verification_status){
                 $query->where('is_verifikasi',$verification_status);
             })->orderBy('master_data_absen_kehadiran.enroll_id')
             ->get();
         }else{
-            $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept','data_lembur')
+            $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept','data_lembur_labor')
             ->where('nomor_form_lembur','!=',null)
             ->where('tanggal_berjalan','>=',$awal_bulan)
             ->where('tanggal_berjalan','<=',$akhir_bulan)
             ->orderBy('master_data_absen_kehadiran.enroll_id')
             ->get();
-            
+
         }
         return Response()->json($query);
     }
@@ -2309,7 +2309,7 @@ class DataLemburController extends AdminBaseController
             if($count>0){
                 array_push($enroll_id,(int)substr($data[0][$i][3],-4));
                 array_push($nik,$data[0][$i][3]);
-                $excel_date = $data[0][$i][1]; 
+                $excel_date = $data[0][$i][1];
                 $unix_date = ($excel_date - 25569) * 86400;
                 $excel_date = 25569 + ($unix_date / 86400);
                 $unix_date = ($excel_date - 25569) * 86400;
@@ -2356,7 +2356,7 @@ class DataLemburController extends AdminBaseController
                 $endtimestamp = strtotime($displays);
                 $difference = abs($endtimestamp - $starttimestamp)/3600;
                 $timeDifference=$difference-$data[0][$i][7];
-                
+
                 $the_valuess = $data[0][$i][8];
                 $totalss = ($the_valuess * 24)+0.0001;
                 $hoursss = floor($totalss);
@@ -2557,7 +2557,7 @@ class DataLemburController extends AdminBaseController
             $endtimestamp = strtotime($displays);
             $difference = abs($endtimestamp - $starttimestamp)/3600;
             $timeDifference=$difference-$data[0][$i][7];
-            
+
             $the_valuess = $data[0][$i][8];
             $totalss = ($the_valuess * 24)+0.0001;
             $hoursss = floor($totalss);
