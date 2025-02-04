@@ -2423,9 +2423,9 @@
                         if(res.length > 0){
                             nomor_urut=0;
                             for(i=0;i<res.length;i++) {
-                                if (res[i].data_lembur_labor.is_verifikasi==0) {
+                                if (res[i].data_lembur.is_verifikasi==0) {
                                     nomor_urut=nomor_urut+1;
-                                    var uuid = res[i].data_lembur_labor.uuid
+                                    var uuid = res[i].data_lembur.uuid
                                     var tanggal_lembur = moment(res[i].tanggal_berjalan).format('DD MMM YYYY');
                                     var status_kerja = res[i].kode_hari;
                                     if(status_kerja!=5 && status_kerja!=6 && res[i].holiday_name!=null){
@@ -2442,14 +2442,14 @@
                                     var akhir_jam_kerja = res[i].akhir_jam_kerja;
                                     var absen_masuk_kerja = res[i].absen_masuk_kerja;
                                     var absen_pulang_kerja = res[i].absen_pulang_kerja;
-                                    var mulai_jam_lembur = res[i].data_lembur_labor.mulai_jam_lembur;
-                                    var akhir_jam_lembur = res[i].data_lembur_labor.akhir_jam_lembur;
+                                    var mulai_jam_lembur = res[i].data_lembur.mulai_jam_lembur;
+                                    var akhir_jam_lembur = res[i].data_lembur.akhir_jam_lembur;
                                     var sub_dept_name = res[i].employee_atribut.dept ? res[i].employee_atribut.dept.sub_dept_name : "-";
-                                    var jumlah_jam_lembur = res[i].data_lembur_labor.jumlah_jam_lembur;
-                                    var jumlah_jam_istirahat_lembur = res[i].data_lembur_labor.jumlah_jam_istirahat_lembur;
-                                    var catatan = res[i].data_lembur_labor.catatan;
-                                    var mulai_jam_lembur_edit1 = res[i].data_lembur_labor.mulai_jam_lembur;
-                                    var akhir_jam_lembur_edit1 = res[i].data_lembur_labor.akhir_jam_lembur;
+                                    var jumlah_jam_lembur = res[i].data_lembur.jumlah_jam_lembur;
+                                    var jumlah_jam_istirahat_lembur = res[i].data_lembur.jumlah_jam_istirahat_lembur;
+                                    var catatan = res[i].data_lembur.catatan;
+                                    var mulai_jam_lembur_edit1 = res[i].data_lembur.mulai_jam_lembur;
+                                    var akhir_jam_lembur_edit1 = res[i].data_lembur.akhir_jam_lembur;
                                     var kode_hari = res[i].kode_hari;
                                     var bgwarna = '';
                                     if(status_kerja == 'LIBUR') { bgwarna = 'style="background: yellow"'; }
@@ -2469,7 +2469,7 @@
                                     if(!catatan) { catatan = ''; }
                                     if((kode_hari == 5) || (kode_hari == 6)) { bgwarna = 'style="background: yellow"'; }
                                     var editData = res[i].tanggal_berjalan + '|' + nomor_urut;
-                                    var hapusData = res[i].tanggal_berjalan + '|' + res[i].enroll_id + '|' + res[i].data_lembur_labor.nomor_form_lembur + '|' + res[i].employee_atribut.employee_name + '|' + 'btn-remove_' + nomor_urut  + res[i].uuid_master;
+                                    var hapusData = res[i].tanggal_berjalan + '|' + res[i].enroll_id + '|' + res[i].data_lembur.nomor_form_lembur + '|' + res[i].employee_atribut.employee_name + '|' + 'btn-remove_' + nomor_urut  + res[i].uuid_master;
 
                                     htmlTable = '' +
                                     '<tr ' + bgwarna + ' class="text-center">' +
@@ -2494,9 +2494,9 @@
                                     '       <input type="hidden" id="akhir_jam_lembur_edit1_' + i + '" name="akhir_jam_lembur_edit1" value="' + akhir_jam_lembur_edit1 + '" >' +
                                     '   </td>' +
 
-                                    '   <td> <input type="checkbox" class="checked" name="uuid[]"  value="'+res[i].data_lembur_labor.uuid+'">'+'</td>'+
+                                    '   <td> <input type="checkbox" class="checked" name="uuid[]"  value="'+res[i].data_lembur.uuid+'">'+'</td>'+
 
-                                    '   <td class="text-nowrap text-center align-middle">' + res[i].data_lembur_labor.nomor_form_lembur  + '</td>' +
+                                    '   <td class="text-nowrap text-center align-middle">' + res[i].data_lembur.nomor_form_lembur  + '</td>' +
                                     '   <td class="text-nowrap text-center align-middle">' + tanggal_lembur  + '</td>' +
                                     '   <td class="text-nowrap text-left align-middle">' + res[i].nama_hari  + '</td>' +
                                     '   <td class="text-nowrap text-left align-middle">' + status_kerja  + '</td>' +
@@ -2526,9 +2526,9 @@
                             nomor_urut2= 0;
                             for(i=0;i<res.length;i++) {
                                 // nomor_urut2=0;
-                                if (res[i].data_lembur_labor.is_verifikasi==1) {
+                                if (res[i].data_lembur.is_verifikasi==1) {
                                     var nomor_urut2 = nomor_urut2+1;
-                                    var uuid = res[i].data_lembur_labor.uuid
+                                    var uuid = res[i].data_lembur.uuid
                                     var tanggal_lembur = moment(res[i].tanggal_berjalan).format('DD MMM YYYY');
                                     var status_kerja = res[i].kode_hari;
                                     if(status_kerja!=5 && status_kerja!=6 && res[i].holiday_name!=null){
@@ -2545,12 +2545,12 @@
                                     var akhir_jam_kerja = res[i].akhir_jam_kerja;
                                     var absen_masuk_kerja = res[i].absen_masuk_kerja;
                                     var absen_pulang_kerja = res[i].absen_pulang_kerja;
-                                    var mulai_jam_lembur = res[i].data_lembur_labor.mulai_jam_lembur;
-                                    var akhir_jam_lembur = res[i].data_lembur_labor.akhir_jam_lembur;
+                                    var mulai_jam_lembur = res[i].data_lembur.mulai_jam_lembur;
+                                    var akhir_jam_lembur = res[i].data_lembur.akhir_jam_lembur;
                                     var sub_dept_name = res[i].employee_atribut.dept ? res[i].employee_atribut.dept.sub_dept_name : "-";
-                                    var jumlah_jam_lembur = res[i].data_lembur_labor.jumlah_jam_lembur;
-                                    var jumlah_jam_istirahat_lembur = res[i].data_lembur_labor.jumlah_jam_istirahat;
-                                    var catatan = res[i].data_lembur_labor.catatan;
+                                    var jumlah_jam_lembur = res[i].data_lembur.jumlah_jam_lembur;
+                                    var jumlah_jam_istirahat_lembur = res[i].data_lembur.jumlah_jam_istirahat;
+                                    var catatan = res[i].data_lembur.catatan;
                                     var mulai_jam_lembur_edit1 = res[i].mulai_jam_lembur;
                                     var akhir_jam_lembur_edit1 = res[i].akhir_jam_lembur;
                                     var kode_hari = res[i].kode_hari;
@@ -2572,7 +2572,7 @@
                                     if(!catatan) { catatan = ''; }
                                     if((kode_hari == 5) || (kode_hari == 6)) { bgwarna = 'style="background: yellow"'; }
 
-                                    var hapusData = res[i].tanggal_berjalan + '|' + res[i].employee_atribut.enroll_id + '|' + res[i].data_lembur_labor.nomor_form_lembur + '|' + res[i].employee_atribut.employee_name + '|' + 'btn-remove_' + nomor_urut;
+                                    var hapusData = res[i].tanggal_berjalan + '|' + res[i].employee_atribut.enroll_id + '|' + res[i].data_lembur.nomor_form_lembur + '|' + res[i].employee_atribut.employee_name + '|' + 'btn-remove_' + nomor_urut;
                                     var editData = res[i].tanggal_berjalan + '|' + nomor_urut;
 
                                     var url = "{{ route('hris.datalembur.unverifikasi',['uuid'=>'random_id']) }}";
@@ -2582,10 +2582,10 @@
                                     '<tr ' + bgwarna + ' class="text-center">' +
                                     @if($loggedAdmin->email === 'willy@ptnag.com' || $loggedAdmin->role_user === 'superadmin' )
                                     '  <td class="text-nowrap text-right align-middle">' +
-                                    '  <a class="btn btn-secondary p-0 mr-1 text-white border-white unverif" onclick="handleClick(this)" href="'+ url + '"  no_spl="' + res[i].data_lembur_labor.nomor_form_lembur  + '">UNVERIFY</a>'+
+                                    '  <a class="btn btn-secondary p-0 mr-1 text-white border-white unverif" onclick="handleClick(this)" href="'+ url + '"  no_spl="' + res[i].data_lembur.nomor_form_lembur  + '">UNVERIFY</a>'+
                                     '  </td>' +
                                     @endif
-                                    '   <td class="text-nowrap text-center align-middle">' + res[i].data_lembur_labor.nomor_form_lembur  + '</td>' +
+                                    '   <td class="text-nowrap text-center align-middle">' + res[i].data_lembur.nomor_form_lembur  + '</td>' +
                                     '   <td class="text-nowrap text-center align-middle">' + tanggal_lembur  + '</td>' +
                                     '   <td class="text-nowrap text-left align-middle">' + res[i].nama_hari  + '</td>' +
                                     '   <td class="text-nowrap text-left align-middle">' + status_kerja  + '</td>' +

@@ -1826,11 +1826,11 @@ class DataLemburController extends AdminBaseController
 
         if ($verification_status!='' && !$selectNoSPL) {
             $verification_status=$request->verificationStatus;
-            $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept','data_lembur_labor')
+            $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept','data_lembur')
             ->where('nomor_form_lembur','!=',null)
             ->where('tanggal_berjalan','>=',$awal_bulan)
             ->where('tanggal_berjalan','<=',$akhir_bulan)
-            ->whereHas('data_lembur_labor',function($query) use ($verification_status){
+            ->whereHas('data_lembur',function($query) use ($verification_status){
                 $query
                 ->where('is_verifikasi',$verification_status);
             })
@@ -1838,7 +1838,7 @@ class DataLemburController extends AdminBaseController
             ->get();
         } elseif ($selectNoSPL && $verification_status=='') {
             $selectNoSPL = $request->selectNoSPL;
-            $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept','data_lembur_labor')
+            $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept','data_lembur')
             ->where('tanggal_berjalan','>=',$awal_bulan)
             ->where('tanggal_berjalan','<=',$akhir_bulan)
             ->whereIn('nomor_form_lembur',$selectNoSPL)
@@ -1849,16 +1849,16 @@ class DataLemburController extends AdminBaseController
             $selectNoSPL = $request->selectNoSPL;
             $verification_status=$request->verificationStatus;
 
-            $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept','data_lembur_labor')
+            $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept','data_lembur')
             ->where('tanggal_berjalan','>=',$awal_bulan)
             ->where('tanggal_berjalan','<=',$akhir_bulan)
             ->where('nomor_form_lembur',$selectNoSPL)
-            ->whereHas('data_lembur_labor',function($query) use ($verification_status){
+            ->whereHas('data_lembur',function($query) use ($verification_status){
                 $query->where('is_verifikasi',$verification_status);
             })->orderBy('master_data_absen_kehadiran.enroll_id')
             ->get();
         }else{
-            $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept','data_lembur_labor')
+            $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept','data_lembur')
             ->where('nomor_form_lembur','!=',null)
             ->where('tanggal_berjalan','>=',$awal_bulan)
             ->where('tanggal_berjalan','<=',$akhir_bulan)
