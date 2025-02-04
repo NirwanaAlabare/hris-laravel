@@ -2696,7 +2696,7 @@ class ProsesPayrollController extends AdminBaseController
                         'kehadiran_tk'=>$value->kehadiran_tk,
                         'total_kehadiran'=> $value->total_kehadiran,
                         'jumlah_hari'=>$jumlah_hari_fix,
-                        'jumlah_hari_kerja'=>$value->total_kehadiran_net,
+                        'jumlah_hari_kerja'=>$security->where('enroll_id',$value->enroll_id)->count() ?  : $jumlah_hari_fix-$value->lsm,
                         'operator'=>$email,
                         'created_at'=>Carbon::now(),
                         'updated_at'=>Carbon::now(),
