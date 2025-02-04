@@ -1513,55 +1513,14 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $enroll_id_string = implode(',', $enroll_id);
             $inEnrollId='AND enroll_id in ('.$enroll_id_string.')';
         }
-        $master_absen=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$first_date)->where('tanggal_berjalan','<=',$last_date)->whereRaw('enroll_id is not null '.$inEnrollId)
-        ->with(['rekap_lembur'=>function($query)use($first_date,$last_date){
-            $query->where('tanggal_berjalan','>=',$first_date)
-            ->where('tanggal_berjalan','<=',$last_date);
-        }])->with(['data_lembur'=>function($query)use($first_date,$last_date){
-            $query->where('tanggal_berjalan','>=',$first_date)
-            ->where('tanggal_berjalan','<=',$last_date);
-        }])->with('employee_atribut.grading_salary')->with('employee_atribut','employee_atribut.employee_bpjs','koreksi_upah','koreksi_potongan','employee_atribut.group_department')->get();
-
-    //     $query = "
-    //     SELECT
-    //         m.*,
-    //         dl.*,
-    //         rl.*,
-    //         ea.*,
-    //         gs.*,
-    //         eb.*,
-    //         ku.*,
-    //         kp.*,
-    //         gd.*
-    //     FROM
-    //         master_data_absen_kehadiran m
-    //     LEFT JOIN
-    //         data_lembur dl ON m.uuid = dl.uuid_master
-    //             AND dl.tanggal_berjalan >= '{$first_date}'
-    //             AND dl.tanggal_berjalan <= '{$last_date}'
-    //     LEFT JOIN
-    //         rekap_perhitungan_lembur rl ON m.uuid = rl.uuid_master
-    //             AND rl.tanggal_berjalan >= '{$first_date}'
-    //             AND rl.tanggal_berjalan <= '{$last_date}'
-    //     LEFT JOIN
-    //         employee_atribut ea ON m.enroll_id = ea.enroll_id
-    //     LEFT JOIN
-    //         grading_salary gs ON ea.grading_salary_id = gs.id
-    //     LEFT JOIN
-    //         employee_bpjs eb ON ea.employee_bpjs_id = eb.id
-    //     LEFT JOIN
-    //         data_koreksi_upah ku ON m.uuid = ku.uuid_master
-    //     LEFT JOIN
-    //         data_koreksi_potongan kp ON m.uuid = kp.uuid_master
-    //     LEFT JOIN
-    //         group_department gd ON ea.group_department_id = gd.id
-    //     WHERE
-    //         m.tanggal_berjalan BETWEEN '{$first_date}' AND '{$last_date}'
-    //         AND m.enroll_id IS NOT NULL
-    //         {$inEnrollId}
-    // ";
-
-    // $master_absen = DB::select($query);
+        $master_absen = MasterDataAbsenKehadiran::whereBetween('tanggal_berjalan', [$first_date, $last_date])
+        ->whereRaw('enroll_id is not null '.$inEnrollId)
+        ->with(['rekap_lembur' => function ($query) use ($first_date, $last_date) {
+            $query->whereBetween('tanggal_berjalan', [$first_date, $last_date]);
+        }])
+        ->with('employee_atribut.grading_salary')
+        ->with('employee_atribut', 'employee_atribut.employee_bpjs', 'koreksi_upah', 'koreksi_potongan', 'employee_atribut.group_department','data_lembur_labor')
+        ->get();
 
         $z=[];
 
@@ -1628,8 +1587,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                         $konveri_jam = 1;
                     }
                     $total_jam_lembur=$selisih_jam + $konveri_jam;
-                    $total_jam_lembur_finis=$total_jam_lembur-$value->data_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah_jam_istirahat;
-                    $total_jam_lembur_finis=min($value->data_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah_jam_lembur,$total_jam_lembur_finis);
+                    $total_jam_lembur_finis=$total_jam_lembur-$value->data_lembur_labor->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah_jam_istirahat;
+                    $total_jam_lembur_finis=min($value->data_lembur_labor->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah_jam_lembur,$total_jam_lembur_finis);
                     if($value->kode_hari==5 || $value->kode_hari==6 || $value->status_absen=='LN' || ($value->mulai_jam_kerja==null && $value->akhir_jam_kerja==null)){
                         $kerjalibur='LIBUR';
                         $l1=0;
@@ -1690,7 +1649,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                         'final_mulai_jam_lembur'=>$finish_in,
                         'final_selesai_jam_lembur'=>$value->absen_pulang_kerja,
                         'final_total_jam_lembur'=>$final_total_jam_lembur,
-                        'final_jam_istirahat_lembur'=>$value->data_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah_jam_istirahat??0,
+                        'final_jam_istirahat_lembur'=>$value->data_lembur_labor->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah_jam_istirahat??0,
                         'final_total_menit_lembur'=>($selisih_jam*60)+$selisih_menit,
                         'final_jam_lembur_roundown'=> $selisih_jam,
                         'final_menit_lembur_roundown'=>$selisih_menit,
