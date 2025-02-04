@@ -252,8 +252,7 @@ class EmployeeAtrController extends AdminBaseController
                 select a.enroll_id,a.id,e.contract,e.contract_end from (select enroll_id,max(contract) contract,max(contract_end) contract_end from employee_contract group by enroll_id)e
                 inner join (select id,enroll_id,contract,contract_end from employee_contract)a on e.enroll_id=a.enroll_id and e.contract_end=a.contract_end)y
                 ) AS employee_cont'),
-            'employee_atribut.enroll_id', '=', 'employee_cont.id_kontrak')->offset($start)->limit($limit)->orderBy($order,$dir)->get();
-
+            'employee_atribut.enroll_id', '=', 'employee_cont.id_kontrak')->groupBy('employee_atribut.enroll_id')->offset($start)->limit($limit)->orderBy($order,$dir)->get();
             $totalData = EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')->count();
             $totalFiltered = $totalData;
 
@@ -277,6 +276,7 @@ class EmployeeAtrController extends AdminBaseController
                 inner join (select id,enroll_id,contract,contract_end from employee_contract)a on e.enroll_id=a.enroll_id and e.contract_end=a.contract_end)y
                 ) AS employee_cont'),
             'employee_atribut.enroll_id', '=', 'employee_cont.id_kontrak')
+            ->groupBy('employee_atribut.enroll_id')
             ->offset($start)
             ->limit($limit)
             ->orderBy($order,$dir)
