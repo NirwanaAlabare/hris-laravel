@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\RekapPerhitunganPayroll;
+use App\Models\DataKoreksiUpah;
 use App\Http\Controllers\Hris\RekapPayrollController;
 
 use App\User;
@@ -104,6 +105,7 @@ class RekapPerhitunganPayrollExportJanuari2024 implements FromQuery, WithMapping
                     kehadiran_dt,
                     kehadiran_pc,
                     kehadiran_dtpc,
+                    sub_dept_id,
                     kehadiran_lby,
                     kehadiran_lsm,
                     kehadiran_r,
@@ -325,7 +327,14 @@ class RekapPerhitunganPayrollExportJanuari2024 implements FromQuery, WithMapping
         }
         $januari=RekapPerhitunganPayroll::where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll',$Data->periode_tahun_payroll)->where('periode_bulan_payroll',$Data->periode_bulan_payroll)->where('periode_umk','2025-01')->count();
         if($januari==1){
-            $bruto_januari=RekapPerhitunganPayroll::select('upah_bruto_rupiah')->where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll',$Data->periode_tahun_payroll)->where('periode_bulan_payroll',$Data->periode_bulan_payroll)->where('periode_umk','2025-01')->pluck('upah_bruto_rupiah')[0];
+            $insentif_jabatan_mandiri=DataKoreksiUpah::where('enroll_id',$Data->enroll_id)->where('tanggal_koreksi','>=','2024-12-26')->where('tanggal_koreksi', '<=','2025-01-25')->where('jenis_koreksi',2)->get();
+            $data_1 =  RekapPerhitunganPayroll::select('upah_bruto_rupiah')->where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll',$Data->periode_tahun_payroll)->where('periode_bulan_payroll',$Data->periode_bulan_payroll)->where('periode_umk','2025-01')->pluck('upah_bruto_rupiah')[0];
+            $data_2 =  RekapPerhitunganPayroll::select('upah_bruto_rupiah')->where('enroll_id',$Data->enroll_id)->where('periode_tahun_payroll',$Data->periode_tahun_payroll)->where('periode_bulan_payroll',$Data->periode_bulan_payroll)->where('periode_umk','2024-01')->pluck('upah_bruto_rupiah')[0];
+            if($Data->sub_dept_id == 'DEP08SUB005' && $Data->jenis_kelamin == 'LAKI-LAKI' && $Data->enroll_id != '7445'){
+                $bruto_januari=$data_1 + $insentif_jabatan_mandiri->sum('jumlah_rp_potongan')??0;
+            }else{
+                $bruto_januari=$data_1;
+            }
         }else{
             $bruto_januari=0;
         }
