@@ -222,24 +222,24 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             if($status_staff){
                 $payroll=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)
                 ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)->where('periode_umk',null)
-                ->where('total_upah_thp_rupiah_employee','>',0)->whereHas('employee_atribut',function($query)use($tanggal_awal){
+                ->whereHas('employee_atribut',function($query)use($tanggal_awal){
                     $query->where('tanggal_resign',null)
                     ->orWhere('tanggal_resign','>',$tanggal_awal);
                 })->get();
                 $payroll_before=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year_before)->where('periode_bulan_payroll', $month_before)
                 ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)->where('periode_umk',null)
-                ->where('total_upah_thp_rupiah_employee','>',0)->whereHas('employee_atribut',function($query)use($tanggal_awal2){
+                ->whereHas('employee_atribut',function($query)use($tanggal_awal2){
                     $query->where('tanggal_resign',null)
                     ->orWhere('tanggal_resign','>',$tanggal_awal2);
                 })->get();
             }else{
                 $payroll=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->where('nama_department',$value->department_name)
-                ->where('total_upah_thp_rupiah_employee','>',0)->where('periode_umk',null)->whereHas('employee_atribut',function($query)use($tanggal_awal){
+                ->where('periode_umk',null)->whereHas('employee_atribut',function($query)use($tanggal_awal){
                     $query->where('tanggal_resign',null)
                     ->orWhere('tanggal_resign','>',$tanggal_awal);
                 })->get();
                 $payroll_before=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year_before)->where('periode_bulan_payroll', $month_before)->where('nama_department',$value->department_name)->where('periode_umk',null)
-                ->where('total_upah_thp_rupiah_employee','>',0)->whereHas('employee_atribut',function($query)use($tanggal_awal2){
+                ->whereHas('employee_atribut',function($query)use($tanggal_awal2){
                     $query->where('tanggal_resign',null)
                     ->orWhere('tanggal_resign','>',$tanggal_awal2);
                 })->get();
@@ -249,7 +249,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             if($payroll->sum('pph21')==0){$pph21=0;}else{$pph21=number_format( $payroll->sum('pph21') , 2 , ',' , '.');}
             $pph21_int=$payroll->sum('pph21');
             if($payroll->sum('upah_neto_rupiah')==0){$upah_neto_rupiah=0;}else{$upah_neto_rupiah=number_format( $payroll->sum('upah_neto_rupiah') , 2 , ',' , '.');}
-            $upah_neto_rupiah_int=$payroll->sum('upah_neto_rupiah');
+            $upah_neto_rupiah_int=ceil($payroll->sum('upah_neto_rupiah')/ 100) *100;
             if($payroll->sum('total_bpjs_tk')==0){$total_bpjs_tk=0;}else{$total_bpjs_tk=number_format( $payroll->sum('total_bpjs_tk') , 2 , ',' , '.');}
             $total_bpjs_tk_int=$payroll->sum('total_bpjs_tk');
             if($payroll->sum('total_bpjs_ks')==0){$total_bpjs_ks=0;}else{$total_bpjs_ks=number_format( $payroll->sum('total_bpjs_ks') , 2 , ',' , '.');}
@@ -262,11 +262,26 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $iuran_koperasi=$payroll->sum('iuran_koperasi');
             if($potongan_lain + $rp_cuti_tahuna + $potongan_kehadiran_rupiah + $rp_pot_jam + $iuran_serikat_rupiah + $iuran_koperasi==0){$potongan=0;}else{$potongan=number_format( $potongan_lain + $rp_cuti_tahuna + $potongan_kehadiran_rupiah + $rp_pot_jam + $iuran_serikat_rupiah + $iuran_koperasi , 0 , ',' , '.');}
             $potongan_int=$potongan_lain + $rp_cuti_tahuna + $potongan_kehadiran_rupiah + $rp_pot_jam + $iuran_serikat_rupiah + $iuran_koperasi;
-            if($payroll->sum('total_upah_thp_rupiah_employee')==0){$jumlah=0;}else{$jumlah=number_format( $payroll->sum('total_upah_thp_rupiah_employee') , 0 , ',' , '.');}
+            if($payroll->sum('total_upah_thp_rupiah')==0){$jumlah=0;}else{
+                // $jumlah=number_format( $payroll->sum('total_upah_thp_rupiah') , 0 , ',' , '.');
+                $jumlah = $payroll->map(function ($item) {
+                    if($item->total_kehadiran_net<=0){
+                        return 0;
+                    }else{
+                        return ceil($item->total_upah_thp_rupiah / 100) * 100;
+                    }
+                })->sum();
+            }
             $total_upah_thp_rupiah_int=ceil($payroll->sum('total_upah_thp_rupiah') / 100) * 100;
-            $jumlah_int=$payroll->sum('total_upah_thp_rupiah_employee');
-            if($payroll_before->sum('total_upah_thp_rupiah_employee')==0){$jumlah_sebelum=0;}else{$jumlah_sebelum=number_format( $payroll_before->sum('total_upah_thp_rupiah_employee'), 0 , ',' , '.');}
-            $jumlah_sebelum_int=$payroll_before->sum('total_upah_thp_rupiah_employee');
+            $jumlah_int = $payroll->map(function ($item) {
+                if($item->total_kehadiran_net<=0){
+                    return 0;
+                }else{
+                    return ceil($item->total_upah_thp_rupiah / 100) * 100;
+                }
+            })->sum();
+            if($payroll_before->sum('total_upah_thp_rupiah')==0){$jumlah_sebelum=0;}else{$jumlah_sebelum=number_format( $payroll_before->sum('total_upah_thp_rupiah'), 0 , ',' , '.');}
+            $jumlah_sebelum_int=$payroll_before->sum('total_upah_thp_rupiah');
             if($payroll->sum('bpjs_tk_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkm_rupiah')+$payroll->sum('bpjs_tk_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkk_rupiah')+$payroll->sum('bpjs_tk_jht_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jht_rupiah')+$payroll->sum('bpjs_tk_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jpn_rupiah')+$payroll->sum('bpjs_tk_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkn_rupiah')==0){$bpjs_tk_perusahaan=0;}else{$bpjs_tk_perusahaan=$payroll->sum('bpjs_tk_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkm_rupiah')+$payroll->sum('bpjs_tk_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkk_rupiah')+$payroll->sum('bpjs_tk_jht_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jht_rupiah')+$payroll->sum('bpjs_tk_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jpn_rupiah')+$payroll->sum('bpjs_tk_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkn_rupiah');}
             $bpjs_tk_perusahaan_int=$payroll->sum('bpjs_tk_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkm_rupiah')+$payroll->sum('bpjs_tk_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkk_rupiah')+$payroll->sum('bpjs_tk_jht_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jht_rupiah')+$payroll->sum('bpjs_tk_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jpn_rupiah')+$payroll->sum('bpjs_tk_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkn_rupiah');
             if($payroll->sum('bpjs_ks_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkm_rupiah')+$payroll->sum('bpjs_ks_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkk_rupiah')+$payroll->sum('bpjs_ks_jht_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jht_rupiah')+$payroll->sum('bpjs_ks_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jpn_rupiah')+$payroll->sum('bpjs_ks_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkn_rupiah')==0){$bpjs_ks_perusahaan=0;}else{$bpjs_ks_perusahaan=$payroll->sum('bpjs_ks_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkm_rupiah')+$payroll->sum('bpjs_ks_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkk_rupiah')+$payroll->sum('bpjs_ks_jht_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jht_rupiah')+$payroll->sum('bpjs_ks_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jpn_rupiah')+$payroll->sum('bpjs_ks_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkn_rupiah');}
@@ -288,7 +303,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 'total_bpjs_ks_int'=>$total_bpjs_ks_int,
                 'potongan'=>$potongan,
                 'potongan_int'=>$potongan_int,
-                'jumlah'=>$jumlah,
+                'jumlah'=>number_format($jumlah , 0 , ',' , '.'),
                 'jumlah_int'=>$jumlah_int,
                 'jumlah_karyawan_sebelum'=>$payroll_before->count(),
                 'jumlah_sebelum'=>$jumlah_sebelum,
@@ -343,7 +358,9 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $pph = array_sum(array_column($arrayData,'pph_int'));
         if($pph==0){$pph=0;}else{$pph=number_format( $pph , 2 , ',' , '.');}
         $upah_neto_rupiah_int_total = array_sum(array_column($arrayData,'upah_neto_rupiah_int'));
-        if($upah_neto_rupiah_int_total==0){$upah_neto_rupiah_int_total=0;}else{$upah_neto_rupiah_int_total=number_format( $upah_neto_rupiah_int_total , 2 , ',' , '.');}
+        if($upah_neto_rupiah_int_total==0){$upah_neto_rupiah_int_total=0;}else{
+            $upah_neto_rupiah_int_total=ceil($upah_neto_rupiah_int_total / 100) * 100;
+        }
         $total_bpjs_tk_total = array_sum(array_column($arrayData,'total_bpjs_tk_int'));
         if($total_bpjs_tk_total==0){$total_bpjs_tk_total=0;}else{$total_bpjs_tk_total=number_format( $total_bpjs_tk_total , 2 , ',' , '.');}
         $total_bpjs_ks_total = array_sum(array_column($arrayData,'total_bpjs_ks_int'));
@@ -351,7 +368,9 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $potongan_total = array_sum(array_column($arrayData,'potongan_int'));
         if($potongan_total==0){$potongan_total=0;}else{$potongan_total=number_format( $potongan_total , 2 , ',' , '.');}
         $jumlah_total = array_sum(array_column($arrayData,'jumlah_int'));
-        if($jumlah_total==0){$jumlah_total=0;}else{$jumlah_total=number_format( $jumlah_total , 2 , ',' , '.');}
+        if($jumlah_total==0){$jumlah_total=0;}else{
+            $jumlah_total=number_format($jumlah_total , 0 , ',' , '.' );
+        }
         $jumlah_karyawan_sebelum_total = array_sum(array_column($arrayData,'jumlah_karyawan_sebelum'));
         $jumlah_sebelum_total = array_sum(array_column($arrayData,'jumlah_sebelum_int'));
         if($jumlah_sebelum_total==0){$jumlah_sebelum_total=0;}else{$jumlah_sebelum_total=number_format( $jumlah_sebelum_total , 2 , ',' , '.');}
