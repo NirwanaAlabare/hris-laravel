@@ -3496,7 +3496,7 @@ class ProsesPayrollController extends AdminBaseController
                         $upah_hari_kerja_mandiri_2=0;
                     }
                     $total_lembur_rupiah_mandiri=RekapPerhitunganPayroll::where('enroll_id',$value->enroll_id)->where('periode_tahun_payroll','2025')->where('periode_umk','!=','')->where('periode_bulan_payroll','01')->sum('total_lembur_rupiah');
-                    
+
                     $pendapatan_lainnya_rupiah_mandiri=RekapPerhitunganPayroll::where('enroll_id',$value->enroll_id)->where('periode_tahun_payroll','2025')->where('periode_umk','!=','')->where('periode_bulan_payroll','01')->sum('pendapatan_lainnya_rupiah');
                     $koreksi_upah_rupiah_mandiri=$koreksi_upah_mandiri->sum('jumlah_rp_potongan')??0;
                     $insentif_jabatan_rupiah_mandiri=$insentif_jabatan_mandiri->sum('jumlah_rp_potongan')??0;
@@ -3510,18 +3510,20 @@ class ProsesPayrollController extends AdminBaseController
                     $premi_kehadiran_karyawan_mandiri=RekapPerhitunganPayroll::where('enroll_id',$value->enroll_id)->where('periode_tahun_payroll','2025')->where('periode_umk','!=','')->where('periode_bulan_payroll','01')->sum('premi_karyawan');
                     $selisih_tahun = date_diff(date_create($value->join_date), date_create($tanggal_awal))->y;
                     // tentukan besaran tunjangan berdasarkan masa kerja
-                    if ($selisih_tahun < 1) {
-                        $tunjangan_mandiri = 0;
-                    } elseif ($selisih_tahun < 3) {
-                        $tunjangan_mandiri = 2500;
-                    } elseif ($selisih_tahun < 6) {
-                        $tunjangan_mandiri = 5000;
-                    }elseif ($selisih_tahun < 9) {
-                        $tunjangan_mandiri = 7500;
-                    }elseif ($selisih_tahun < 12) {
-                        $tunjangan_mandiri = 10000;
-                    }else{
-                        $tunjangan_mandiri = 12500;
+                    if($value->tanggal_resign >= '2025-01-01'){
+                        if ($selisih_tahun < 1) {
+                            $tunjangan_mandiri = 0;
+                        } elseif ($selisih_tahun < 3) {
+                            $tunjangan_mandiri = 2500;
+                        } elseif ($selisih_tahun < 6) {
+                            $tunjangan_mandiri = 5000;
+                        }elseif ($selisih_tahun < 9) {
+                            $tunjangan_mandiri = 7500;
+                        }elseif ($selisih_tahun < 12) {
+                            $tunjangan_mandiri = 10000;
+                        }else{
+                            $tunjangan_mandiri = 12500;
+                        }
                     }
 
                     $upah_bruto_rupiah_mandiri=($upah_hari_kerja_total+$tunjangan_mandiri+$premi_kehadiran_karyawan_mandiri+$total_lembur_rupiah_mandiri+$pendapatan_lainnya_rupiah_mandiri+$koreksi_upah_rupiah_mandiri+$insentif_jabatan_rupiah_mandiri)-($koreksi_potongan_rupiah_mandiri+$potongan_iks_rupiah_mandiri+$potongan_dtpc_rupiah_mandiri+$potongan_kehadiran_rupiah_mandiri);
