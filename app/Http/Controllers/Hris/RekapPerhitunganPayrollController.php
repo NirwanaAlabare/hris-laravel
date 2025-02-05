@@ -221,24 +221,24 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         foreach ($departement as $key => $value) {
             if($status_staff){
                 $payroll=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)
-                ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)
+                ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)->where('periode_umk',null)
                 ->where('total_upah_thp_rupiah_employee','>',0)->whereHas('employee_atribut',function($query)use($tanggal_awal){
                     $query->where('tanggal_resign',null)
                     ->orWhere('tanggal_resign','>',$tanggal_awal);
                 })->get();
                 $payroll_before=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year_before)->where('periode_bulan_payroll', $month_before)
-                ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)
+                ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)->where('periode_umk',null)
                 ->where('total_upah_thp_rupiah_employee','>',0)->whereHas('employee_atribut',function($query)use($tanggal_awal2){
                     $query->where('tanggal_resign',null)
                     ->orWhere('tanggal_resign','>',$tanggal_awal2);
                 })->get();
             }else{
                 $payroll=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->where('nama_department',$value->department_name)
-                ->where('total_upah_thp_rupiah_employee','>',0)->whereHas('employee_atribut',function($query)use($tanggal_awal){
+                ->where('total_upah_thp_rupiah_employee','>',0)->where('periode_umk',null)->whereHas('employee_atribut',function($query)use($tanggal_awal){
                     $query->where('tanggal_resign',null)
                     ->orWhere('tanggal_resign','>',$tanggal_awal);
                 })->get();
-                $payroll_before=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year_before)->where('periode_bulan_payroll', $month_before)->where('nama_department',$value->department_name)
+                $payroll_before=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year_before)->where('periode_bulan_payroll', $month_before)->where('nama_department',$value->department_name)->where('periode_umk',null)
                 ->where('total_upah_thp_rupiah_employee','>',0)->whereHas('employee_atribut',function($query)use($tanggal_awal2){
                     $query->where('tanggal_resign',null)
                     ->orWhere('tanggal_resign','>',$tanggal_awal2);
