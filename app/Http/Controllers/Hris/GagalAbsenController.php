@@ -116,7 +116,7 @@ class GagalAbsenController extends AdminBaseController
                                 AND master_data_absen_kehadiran.status_absen IN ("LP") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is 														null)
                                 OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                                 AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                                AND master_data_absen_kehadiran.mulai_jam_kerja is null AND master_data_absen_kehadiran.akhir_jam_kerja is null AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null) 
+                                AND master_data_absen_kehadiran.mulai_jam_kerja is null AND master_data_absen_kehadiran.akhir_jam_kerja is null AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
                         ')
                         ->leftJoin('employee_atribut', 'master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
                         ->leftJoin('data_absen_perijinan','master_data_absen_kehadiran.nomor_absen_ijin','data_absen_perijinan.nomor_form_perizinan')
@@ -138,7 +138,7 @@ class GagalAbsenController extends AdminBaseController
                         ')
                         ->count();
 
-                $totalFiltered = $totalData;                            
+                $totalFiltered = $totalData;
 
             } else {
 
@@ -164,7 +164,7 @@ class GagalAbsenController extends AdminBaseController
                             (
                                 (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '" AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
                                 AND master_data_absen_kehadiran.status_absen IN ("M","TL")
-                                AND 
+                                AND
                                 (
                                     upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
                                     OR upper(master_data_absen_kehadiran.nama_hari) LIKE "%' . $searchData . '%"
@@ -172,12 +172,12 @@ class GagalAbsenController extends AdminBaseController
                                     OR upper(employee_atribut.employee_name) LIKE "%' . $searchData . '%"
                                     OR upper(employee_atribut.nik) LIKE "%' . $searchData . '%"
                                 )
-                            ) OR 
+                            ) OR
                             (
                                 (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '" AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                                AND 
+                                AND
                                 (master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
-                                AND 
+                                AND
                                 (
                                     upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
                                     OR upper(master_data_absen_kehadiran.nama_hari) LIKE "%' . $searchData . '%"
@@ -185,13 +185,13 @@ class GagalAbsenController extends AdminBaseController
                                     OR upper(employee_atribut.employee_name) LIKE "%' . $searchData . '%"
                                     OR upper(employee_atribut.nik) LIKE "%' . $searchData . '%"
                                 )
-                            ) OR 
+                            ) OR
                              (
                                 (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '" AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                                AND 
+                                AND
                                 (master_data_absen_kehadiran.mulai_jam_kerja is not null AND master_data_absen_kehadiran.akhir_jam_kerja is not null AND ((master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null) OR (
                                 master_data_absen_kehadiran.absen_masuk_kerja is null AND master_data_absen_kehadiran.absen_pulang_kerja is not null)) AND master_data_absen_kehadiran.status_absen = "LP" )
-                                AND 
+                                AND
                                 (
                                     upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
                                     OR upper(master_data_absen_kehadiran.nama_hari) LIKE "%' . $searchData . '%"
@@ -206,12 +206,12 @@ class GagalAbsenController extends AdminBaseController
                         ->offset($start)
                         ->limit($limit)
                         ->get();
-    
+
                 $totalData = MasterDataAbsenKehadiran::whereRaw('
                                 (
                                     (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '" AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
                                     AND master_data_absen_kehadiran.status_absen IN ("M","TL")
-                                    AND 
+                                    AND
                                     (
                                         upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
                                         OR upper(master_data_absen_kehadiran.nama_hari) LIKE "%' . $searchData . '%"
@@ -221,9 +221,9 @@ class GagalAbsenController extends AdminBaseController
                                     )
                                 ) OR (
                                     (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '" AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                                    AND 
+                                    AND
                                     (master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
-                                    AND 
+                                    AND
                                     (
                                         upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
                                         OR upper(master_data_absen_kehadiran.nama_hari) LIKE "%' . $searchData . '%"
@@ -231,12 +231,12 @@ class GagalAbsenController extends AdminBaseController
                                         OR upper(employee_atribut.employee_name) LIKE "%' . $searchData . '%"
                                         OR upper(employee_atribut.nik) LIKE "%' . $searchData . '%"
                                     )
-                                ) OR 
+                                ) OR
                                 (
                                     (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '" AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                                    AND 
+                                    AND
                                     (master_data_absen_kehadiran.mulai_jam_kerja is null AND master_data_absen_kehadiran.akhir_jam_kerja is null AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
-                                    AND 
+                                    AND
                                     (
                                         upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
                                         OR upper(master_data_absen_kehadiran.nama_hari) LIKE "%' . $searchData . '%"
@@ -248,7 +248,7 @@ class GagalAbsenController extends AdminBaseController
                             ')
                             ->leftJoin('employee_atribut', 'master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
                             ->count();
-                $totalFiltered = $totalData;                            
+                $totalFiltered = $totalData;
 
             }
         }
@@ -424,76 +424,80 @@ class GagalAbsenController extends AdminBaseController
         }
         if ($status_absen == 'KERJA') { $status_absen = null; $absen_alasan = null; }
 
-            $absen_masuk_kerja = $request->absen_masuk_kerja;
-            $absen_pulang_kerja = $request->absen_pulang_kerja;
-            $absen_alasan = $request->absen_alasan;
-            $nomor_form_perubahan_absen = $request->nomor_form_perubahan_absen;
+        $absen_masuk_kerja = $request->absen_masuk_kerja;
+        $absen_pulang_kerja = $request->absen_pulang_kerja;
+        $absen_alasan = $request->absen_alasan;
+        $nomor_form_perubahan_absen = $request->nomor_form_perubahan_absen;
 
 
-            $query_absen=MasterDataAbsenKehadiran::where('uuid','=',$uuid)->first();
+        $query_absen=MasterDataAbsenKehadiran::where('uuid','=',$uuid)->first();
 
-                $jadwal_in=$query_absen->mulai_jam_kerja;
-                $jadwal_out=$query_absen->akhir_jam_kerja;
+        $jadwal_in=$query_absen->mulai_jam_kerja;
+        $jadwal_out=$query_absen->akhir_jam_kerja;
 
-                $absen_in=$absen_masuk_kerja;
-                $absen_out=$absen_pulang_kerja;
-// dd($absen_in);
-                $durasi_kerja=date_diff(date_create($jadwal_in),date_create($jadwal_out));
-                $durasi_kerja_menit=$durasi_kerja->i +($durasi_kerja->h*60);
-            
-                $DT = date_diff(date_create($jadwal_in),date_create($absen_in));
-                $PC = date_diff(date_create($jadwal_out),date_create($absen_out));
-                 if( $jadwal_in!=null && $absen_in!=null && $absen_in>$jadwal_in){
-                    $total_DT1 = $DT->i +($DT->h*60);
-                    if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
-                        if($absen_in >'13:00:00'){
-                            $total_DT=$total_DT1-60;
-                        }
-                        else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
-                            $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
-                            $selisih_menit = round($selisih_menit / 60);
-                            $total_DT=$total_DT1-$selisih_menit;
-                        }
-                        else {
-                            $total_DT=$total_DT1;
-                        }
-                    }else{
-                        $total_DT=$total_DT1;
-                    } 
-                    $total_DT = $total_DT < 480 ? $total_DT : 480;
+        $absen_in=$absen_masuk_kerja;
+        $absen_out=$absen_pulang_kerja;
+        // dd($absen_in);
+        $durasi_kerja=date_diff(date_create($jadwal_in),date_create($jadwal_out));
+        $durasi_kerja_menit=$durasi_kerja->i +($durasi_kerja->h*60);
+
+        $DT = date_diff(date_create($jadwal_in),date_create($absen_in));
+        $PC = date_diff(date_create($jadwal_out),date_create($absen_out));
+            if( $jadwal_in!=null && $absen_in!=null && $absen_in>$jadwal_in){
+            $total_DT1 = $DT->i +($DT->h*60);
+            if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
+                if($absen_in >'13:00:00'){
+                    $total_DT=$total_DT1-60;
+                }
+                else if($absen_in >'12:00:00' && $absen_in <='13:00:00'){
+                    $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
+                    $selisih_menit = round($selisih_menit / 60);
+                    $total_DT=$total_DT1-$selisih_menit;
+                }
+                else {
+                    $total_DT=$total_DT1;
+                }
+            }else{
+                $total_DT=$total_DT1;
+            }
+            $total_DT = $total_DT < 480 ? $total_DT : 480;
+        }else{
+            $total_DT=0;
+        }
+
+        if( $jadwal_out !=null && $absen_out !=null && $absen_out<$jadwal_out){
+            $total_PC1 = $PC->i +($PC->h*60);
+            if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
+                if($absen_out <='12:00:00'){
+                    $total_PC=$total_PC1-60;
+                }
+                else if($absen_out >'12:00:00' && $absen_out <='13:00:00'){
+                    $selisih_menit = strtotime('13:00:00') - strtotime($absen_out);
+                    $selisih_menit = round($selisih_menit / 60);
+                    $total_PC=$total_PC1-$selisih_menit;
+                }
+                else {
+                    $total_PC=$total_PC1;
+                }
+            }else{
+                    $total_PC=$total_PC1;
+            }
+            $total_PC = $total_PC < 480 ? $total_PC : 480;
                 }else{
-                    $total_DT=0;
-                }
+            $total_PC=0;
+        }
 
-                if( $jadwal_out !=null && $absen_out !=null && $absen_out<$jadwal_out){
-                    $total_PC1 = $PC->i +($PC->h*60);
-                    if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
-                        if($absen_out <='12:00:00'){
-                            $total_PC=$total_PC1-60;
-                        }
-                        else if($absen_out >'12:00:00' && $absen_out <='13:00:00'){
-                            $selisih_menit = strtotime('13:00:00') - strtotime($absen_out);
-                            $selisih_menit = round($selisih_menit / 60);
-                            $total_PC=$total_PC1-$selisih_menit;
-                        }
-                        else {
-                            $total_PC=$total_PC1;
-                        }
-                    }else{
-                         $total_PC=$total_PC1;
-                    }  
-                    $total_PC = $total_PC < 480 ? $total_PC : 480;
-                }else{
-                    $total_PC=0;
-                }
-
-                $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
-                if( $jadwal_in!=null && $jadwal_out !=null){
-                    $jumlah_absen_menit_kerja=$durasi_kerja_menit-$jumlah_menit_absen_dtpc;
-                }
-                else{
-                    $jumlah_absen_menit_kerja=0;
-                }
+            $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
+            if( $jadwal_in!=null && $jadwal_out !=null){
+                $jumlah_absen_menit_kerja=$durasi_kerja_menit-$jumlah_menit_absen_dtpc;
+            }
+            else{
+                $jumlah_absen_menit_kerja=0;
+            }
+        $is_staff = EmployeeAtribut::where('enroll_id',$request->enroll_id)->pluck('status_staff')[0];
+        if($is_staff=='STAFF' && $total_DT <= 10){
+            $total_DT = 0;
+        }
         $query =  MasterDataAbsenKehadiran::where('uuid','=',$uuid)
                     ->update([
                         'tanggal_absen' => $tanggal_absen,
@@ -510,12 +514,12 @@ class GagalAbsenController extends AdminBaseController
 
         return Response()->json($query);
     }
-    
+
     public function show_image(Request $request){
         $response = array(
           'data' => $request->image,
         );
-        return response()->json($response); 
+        return response()->json($response);
     }
 
     public function ajax_getallemployeeatribut()
@@ -595,14 +599,14 @@ class GagalAbsenController extends AdminBaseController
             ->orderby('employee_name', 'asc')
             ->get();
         }
-        
+
         //info('Query :' . $query);
         return $query;
 
     }
 
     public function ajax_getemployeselectposisi(Request $request)
-    {   
+    {
         $selectPosisiName = $request->input('selectPosisiName');
         $posisi = '';
 

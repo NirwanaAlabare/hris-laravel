@@ -129,15 +129,15 @@ class DataKehadiranInOutEditedController extends AdminBaseController
             $dataDepartment = implode('","',$department_id);
             $inDepartmentID = ' and department_id in ("' . $dataDepartment . '")';
         }
-        
+
         $inEmployee = "";
         if($request->selectEmployeeID) {
             $selectEmployeeID = $request->selectEmployeeID;
             $dataEmployee = implode('","',$selectEmployeeID);
             $inEmployee = ' and enroll_id in ("' . $dataEmployee . '")';
-            
-        } 
-        info($inEmployee);        
+
+        }
+        info($inEmployee);
         if(request()->ajax()) {
 
             $columns = array(
@@ -199,7 +199,7 @@ class DataKehadiranInOutEditedController extends AdminBaseController
                 $query =  MasterDataAbsenKehadiran::
                 whereRaw('
                     (substr(tanggal_berjalan, 1, 10) between "' . $tanggalMulai . '" and "' . $tanggalSampai . '")
-                    ' . $inEmployee . ' 
+                    ' . $inEmployee . '
                 ')->whereHas('employee_atribut',function($query)use($department_id){
                     $query->where('department_id',$department_id);
                 })
@@ -280,7 +280,7 @@ class DataKehadiranInOutEditedController extends AdminBaseController
                     $nestedData['absen_alasan'] = $q->absen_alasan;
                     $nestedData['nomor_form_perubahan_absen'] = $q->nomor_form_perubahan_absen;
                     $nestedData['nomor_absen_ijin'] = $q->nomor_absen_ijin;
-                    $nestedData['nomor_form_lembur'] = $q->nomor_form_lembur;                    
+                    $nestedData['nomor_form_lembur'] = $q->nomor_form_lembur;
                     $nestedData['tanggal_mulai_ijin'] = $q->tanggal_mulai_ijin;
                     $nestedData['tanggal_akhir_ijin'] = $q->tanggal_akhir_ijin;
                     $nestedData['permits_dari_pukul'] = $q->permits_dari_pukul;
@@ -423,7 +423,7 @@ class DataKehadiranInOutEditedController extends AdminBaseController
     {
         $tanggal_berjalan = $request->tanggal_berjalan;
         $enroll_id = $request->enroll_id;
-        
+
         $query =  DB::select('
             SELECT
                 a.employee_name,
@@ -463,7 +463,7 @@ class DataKehadiranInOutEditedController extends AdminBaseController
                 b.tanggal_absen
             LIMIT 1
         ');
-        
+
         return Response()->json($query);
     }
 
@@ -546,7 +546,7 @@ class DataKehadiranInOutEditedController extends AdminBaseController
             //     'status_absen' => $status_absen,
             //     'operator' => $operator
             // ]);
-            
+
             //andri
             MasterDataAbsenKehadiran::where('enroll_id',$enroll_id)->where('tanggal_berjalan',$tanggal_berjalan)->update([
                 'mulai_jam_kerja'=>$mulai_jam_kerja,
@@ -564,7 +564,7 @@ class DataKehadiranInOutEditedController extends AdminBaseController
 
                 $durasi_kerja=date_diff(date_create($jadwal_in),date_create($jadwal_out));
                 $durasi_kerja_menit=$durasi_kerja->i +($durasi_kerja->h*60);
-            
+
                 $DT = date_diff(date_create($jadwal_in),date_create($absen_in));
                 $PC = date_diff(date_create($jadwal_out),date_create($absen_out));
                 if( $jadwal_in!=null && $absen_in!=null && $absen_in>$jadwal_in){
@@ -583,7 +583,7 @@ class DataKehadiranInOutEditedController extends AdminBaseController
                         }
                     }else{
                         $total_DT=$total_DT1;
-                    } 
+                    }
                     $total_DT = $total_DT < 480 ? $total_DT : 480;
                 }else{
                     $total_DT=0;
@@ -612,7 +612,7 @@ class DataKehadiranInOutEditedController extends AdminBaseController
                         }
                     }else{
                          $total_PC=$total_PC1;
-                    }  
+                    }
                     $total_PC = $total_PC < 480 ? $total_PC : 480;
                 }else{
                     $total_PC=0;
@@ -639,6 +639,10 @@ class DataKehadiranInOutEditedController extends AdminBaseController
                     ];
                 }
                 else{
+                    $is_staff = EmployeeAtribut::where('enroll_id',$enroll_id)->pluck('status_staff')[0];
+                    if($is_staff=='STAFF' && $total_DT <= 10){
+                        $total_DT = 0;
+                    }
                     $data_update=[
                         'jumlah_menit_absen_dtpc'=>$jumlah_menit_absen_dtpc,
                         'jumlah_absen_menit_kerja'=>$jumlah_absen_menit_kerja,

@@ -105,7 +105,7 @@
                 <button type="submit" id="btn-exportexcel" class="btn btn-app btn-primary mr-0 mt-0 mb-0" data-toggle="tooltip" title="Export Data ke File"><i class="ion-ios7-download"></i> EXPORT</button>
                 <a href="javascript:void(0)" id="btn-caridata" class="btn btn-app btn-primary mr-0 mt-0 mb-0" data-toggle="tooltip" title="Cari Data"><i class="ion-search"></i> CARI</a>
             </div>
-        </div>    
+        </div>
     </div>
     {{-- </form> --}}
     {!! Form::close() !!}
@@ -622,7 +622,7 @@
                 var data = $("#datatable-ajax-crud").DataTable().row(this).data();
 
                 var tanggal = data['tanggal_berjalan'];
-                
+
                 $.ajax({
                     type:"POST",
                     url: "{{route('hris.dataclosingpayroll.ajax_getclosing')}}",
@@ -634,7 +634,7 @@
                     },
                     dataType: 'json',
                     success: function(res){
-    
+
                         if(res["ada"]) {
                             notif({
                                 type: res["status"],
@@ -645,13 +645,13 @@
                                 opacity: 0.6,
                                 autohide: false
                             });
-                        } else {                
+                        } else {
                             var editData = data['uuid'];
-                
+
                             $("#absen_masuk_kerja").removeClass("is-invalid state-invalid");
                             $("#absen_pulang_kerja").removeClass("is-invalid state-invalid");
                             $("#absen_alasan").removeClass("is-invalid state-invalid");
-                
+
                             $.ajax({
                                 "type":"POST",
                                 "url": "{{route('hris.gagalabsen.form_gagalabsen')}}",
@@ -689,7 +689,7 @@
                                     $('#absen_in_old').val(res.absen_masuk_kerja);
                                     $('#absen_out_old').val(res.absen_pulang_kerja);
                                     $('#absen_alasan_old').val(res.absen_alasan);
-                
+
                                     if((res.absen_masuk_kerja !== res.absen_pulang_kerja) && ((res.absen_masuk_kerja !== null) || (res.absen_pulang_kerja !== null)))
                                     {
                                         $('#status_absen').val(res.status_absen);
@@ -699,22 +699,22 @@
                                         $('#status_absen').val("M");
                                         $('#status_absen_old').val("M");
                                     }
-                
-                
+
+
                                     $('#no_form').val(res.nomor_form_perubahan_absen);
                                 }
                             });
-    
+
                         }
 
                     },
                     error: function(res){
-                                    
+
                     }
-                });           
-    
+                });
+
              });
-    
+
             var table2 = $('#datatable-ajax-log-gagal-absen-crud').DataTable({
                 processing: true,
                 serverSide: true,
@@ -967,15 +967,7 @@
                     type: "warning"
                 });
                 return false;
-            } 
-            // else if(!absen_pulang_kerja) {
-            //     $("#absen_pulang_kerja").addClass("is-invalid state-invalid");
-            //     notif({
-            //         msg: "<b>Warning:</b> Silakan di isi Absen OUT nya.",
-            //         type: "warning"
-            //     });
-            //     return false;
-            // }
+            }
             $('#btn-save-changes').addClass("btn-loading");
             $("#btn-save-changes").attr("disabled", true);
 
@@ -1028,14 +1020,13 @@
                             absen_pulang_kerja:absen_pulang_kerja,
                             absen_alasan:absen_alasan,
                             nomor_form_perubahan_absen:res,
+                            enroll_id:enroll_id,
                         },
                         dataType: 'json',
                         success: function(res){
                             $('#btn-save-changes').removeClass("btn-loading");
                             $("#btn-save-changes").html('Save all changes');
                             $("#btn-save-changes"). attr("disabled", false);
-
-
                             notif({
                                 msg: "<b>Success:</b> Data berhasil di update.",
                                 type: "success"
@@ -1247,14 +1238,14 @@
             val = val.replace(/^([2-9])[4-9]/, "$1");
             val = val.replace(/^\d[:h]/, "");
             val = val.replace(/^([01][0-9])[^:h]/, "$1");
-            val = val.replace(/^(2[0-3])[^:h]/, "$1");      
+            val = val.replace(/^(2[0-3])[^:h]/, "$1");
             val = val.replace(/^(\d{2}[:h])[^0-5]/, "$1");
-            val = val.replace(/^(\d{2}h)./, "$1");      
+            val = val.replace(/^(\d{2}h)./, "$1");
             val = val.replace(/^(\d{2}:[0-5])[^0-9]/, "$1");
             val = val.replace(/^(\d{2}:\d[0-9])./, "$1");
             return val;
         }
-        
+
         // Apply input rules as the user types or pastes input
         $('#absen_masuk_kerja').keyup(function(){
             var val = this.value;
@@ -1266,7 +1257,7 @@
             } while(val.length > 0 && lastLength !== val.length);
             this.value = val;
         });
-        
+
         // Check the final result when the input has lost focus
         $('#absen_masuk_kerja').blur(function(){
             var val = this.value;
@@ -1285,7 +1276,7 @@
             } while(val.length > 0 && lastLength !== val.length);
             this.value = val;
         });
-        
+
         // Check the final result when the input has lost focus
         $('#absen_pulang_kerja').blur(function(){
             var val = this.value;
