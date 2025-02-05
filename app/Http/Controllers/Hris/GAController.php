@@ -69,8 +69,6 @@ class GAController extends AdminBaseController
     public function change_status_car_request(){
         $status=request()->status;
         PermintaanTransportasi::where('id',request()->id_request)->update([
-            'id_driver'=>request()->driver,
-            'nomor_kendaraan'=>request()->vehicle_id,
             'status'=>$status
         ]);
         return $status;
