@@ -86,6 +86,7 @@
                 <div class="" style="background-color: #FFF">
                     <div class="card-body p-0">
                         <div class="row">
+                            @if($role=='superadmin' || $role=='absensi' || $role=='admin'|| $role=='payroll')
                             <div class="col" style="background-color: #FFF">
                                 <a href="{{route('hris.dashboard.index')}}" >
                                 <div class="card card-1">
@@ -93,6 +94,7 @@
                                         </div>
                                 </a>
                             </div>
+                            @endif
                             @if($role=='superadmin' || $role=='absensi' || $role=='admin')
                             <div class="col">
                                 <a href="{{route('hris.hrd.index')}}">
