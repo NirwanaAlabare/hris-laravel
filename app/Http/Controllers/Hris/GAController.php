@@ -42,7 +42,7 @@ class GAController extends AdminBaseController
         $drivers=EmployeeAtribut::where('sub_dept_id','DEP08SUB002')->get();
         $vehicles =  DB::connection('laravel_nds')->select(
             DB::raw("select*from ga_master_kendaraan") );
-        return View::make('hris/ga/data_pengajuan_transportasi', $this->data,compact('permintaan_transportasi','email','id_user','drivers','vehicles'));
+        return View::make('hris/ga/data_pengajuan_transportasi', $this->data,compact('email','id_user','drivers','vehicles'));
     }
     public function get_data_pengajuan_transportasi(){
         $user=request()->user;
