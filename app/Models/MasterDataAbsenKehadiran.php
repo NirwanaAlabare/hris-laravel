@@ -206,9 +206,9 @@ class MasterDataAbsenKehadiran extends \Eloquent
 
     public function data_lembur_labor()
     {
-        return $this->hasOne(DataLembur::class, 'enroll_id', 'enroll_id')
-            ->whereColumn('tanggal_berjalan', 'tanggal_berjalan');
+        return $this->hasOne(DataLembur::class, 'uuid_master','uuid');
     }
+
 
     public function rekap_lembur(){
         return $this->hasMany(RekapPerhitunganLembur::class, 'enroll_id','enroll_id');
