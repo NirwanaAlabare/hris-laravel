@@ -486,6 +486,10 @@ class GagalAbsenController extends AdminBaseController
                 }else{
             $total_PC=0;
         }
+        $is_staff = EmployeeAtribut::where('enroll_id',$request->enroll_id)->pluck('status_staff')[0];
+        if($is_staff=='STAFF' && $total_DT <= 10){
+            $total_DT = 0;
+        }
 
             $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
             if( $jadwal_in!=null && $jadwal_out !=null){
@@ -494,10 +498,7 @@ class GagalAbsenController extends AdminBaseController
             else{
                 $jumlah_absen_menit_kerja=0;
             }
-        $is_staff = EmployeeAtribut::where('enroll_id',$request->enroll_id)->pluck('status_staff')[0];
-        if($is_staff=='STAFF' && $total_DT <= 10){
-            $total_DT = 0;
-        }
+
         $query =  MasterDataAbsenKehadiran::where('uuid','=',$uuid)
                     ->update([
                         'tanggal_absen' => $tanggal_absen,
