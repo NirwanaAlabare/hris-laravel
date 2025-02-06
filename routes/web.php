@@ -390,6 +390,10 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('daily_labor/export_excel/',['as'=>'hris.daily_labor.export_excel','uses'=> 'DailyLaborController@export_excel']);
     Route::post('daily_labor/get_last_update_labor_cost/',['as'=>'hris.daily_labor.get_last_update_labor_cost','uses'=> 'DailyLaborController@get_last_update_labor_cost']);
 
+
+    Route::get('aktifitasperubahan/index',['as'=>'hris.aktifitasperubahan.index','uses'=>'AktifitasPerubahan@index']);
+    Route::post('aktifitasperubahan/ajax_data/',['as'=>'hris.aktifitasperubahan.ajax_data','uses'=> 'AktifitasPerubahan@ajax_data']);
+
     include "routechunks/new.php";
 });
 

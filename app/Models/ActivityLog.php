@@ -18,6 +18,7 @@ class ActivityLog extends Model
      * Kolom yang dapat diisi secara massal.
      */
     protected $fillable = [
+        'activity_log_id',
         'action_by_id',
         'action_by_name',
         'log_name',
@@ -34,6 +35,7 @@ class ActivityLog extends Model
      * Tipe data untuk atribut.
      */
     protected $casts = [
+        'activity_log_id',
         'action_by_id',
         'action_by_name',
         'log_name',

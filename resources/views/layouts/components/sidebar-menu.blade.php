@@ -7,7 +7,7 @@
                 <!-- <i class="side-menu__icon typcn typcn-th-large-outline"></i> -->
                 <i class="side-menu__icon fa fa-calendar-check-o" aria-hidden="true"></i>
                 <span class="side-menu__label">Absensi Karyawan</span><i class="angle fa fa-angle-right"></i></a>
-            
+
             <ul class="slide-menu">
                 <li><a class="slide-item" href="{{route('hris.dashboard.index')}}"><span> Dashboard</span></a></li>
                 <li><a class="slide-item" href="{{route('hris.mdabsenhadir.datahadir')}}"><span> Data Kehadiran</span></a></li>
@@ -58,7 +58,7 @@
                 @if($loggedAdmin->email === 'willy@ptnag.com' || $loggedAdmin->role_user === 'superadmin' )
                 <li><a class="slide-item" href="{{route('hris.nilaipayrollperhari.index')}}"><span> Nilai Payroll Per Hari</span></a></li>
                 @endif
-             
+
                 <li><a class="slide-item" href="{{route('hris.jurnal.index')}}"><span> Jurnal</span></a></li>
 
             </ul>
@@ -80,6 +80,7 @@
                 <li><a class="slide-item" href="{{route('hris.tunjangankaryawan.index')}}"><span> Tunjangan Karyawan</span></a></li>
                 <li><a class="slide-item" href="{{route('hris.rekapperhitunganpayroll.index')}}"><span> Laporan Payroll</span></a></li>
                 <li><a class="slide-item" href="{{route('hris.dataclosingpayroll.index')}}"><span> Closing Payroll</span></a></li>
+                <!-- <li><a class="slide-item" href="{{route('hris.aktifitasperubahan.index')}}"><span> Aktifitas Perubahan</span></a></li> -->
             </ul>
 
         </li>
