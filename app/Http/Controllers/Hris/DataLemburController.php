@@ -1836,6 +1836,7 @@ class DataLemburController extends AdminBaseController
             })
             ->orderBy('master_data_absen_kehadiran.enroll_id')
             ->get();
+
         } elseif ($selectNoSPL && $verification_status=='') {
             $selectNoSPL = $request->selectNoSPL;
             $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept','data_lembur')
@@ -1866,7 +1867,17 @@ class DataLemburController extends AdminBaseController
             ->get();
 
         }
-        return Response()->json($query);
+
+        // $formattedResults = [];
+
+        // foreach ($query as $row) {
+        //   if(!isset($row->data_lembur)){
+        //     $formattedResults[]= $row->uuid;
+        //   }
+        // }
+
+
+        return Response()->json($formattedResults);
     }
 
     public function remove(Request $request)
