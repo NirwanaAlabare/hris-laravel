@@ -1877,7 +1877,7 @@ class DataLemburController extends AdminBaseController
         // }
 
 
-        return Response()->json($formattedResults);
+        return Response()->json($query);
     }
 
     public function remove(Request $request)
