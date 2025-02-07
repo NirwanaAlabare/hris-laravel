@@ -363,6 +363,7 @@ class GAController extends AdminBaseController
         $keterangan_barang=request()->keterangan_barang;
         $tujuan=request()->tujuan;
         $date_now=Carbon::now();
+        $enroll_id_dinas='';
         if(request()->employee_dinas!='' || request()->employee_dinas!=null){
             $enroll_id_dinas=implode(',', request()->employee_dinas);
         }
