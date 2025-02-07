@@ -26,7 +26,7 @@ class RecapLaborStaff implements WithTitle, FromView, WithColumnWidths
     }
     public function view(): View
     {
-        $query=DB::select("select a.tanggal_berjalan,b.status_staff, b.department_id, b.department_name,b.sub_dept_id,b.sub_dept_name,a.group_department,COUNT(IF(CASE WHEN(absen_ijin.kode_ijin_payroll is null) THEN
+        $query=DB::select("select a.tanggal_berjalan,if(emp_hist.status_staff is null,b.status_staff,emp_hist.status_staff) status_staff,if(emp_hist.department_id is null,b.department_id,emp_hist.department_id) department_id,if(emp_hist.department_name is null,b.department_name,emp_hist.department_name) department_name,if(emp_hist.department_name is null,b.sub_dept_id,emp_hist.sub_dept_id) sub_dept_id,if(emp_hist.sub_dept_name is null,b.sub_dept_name,emp_hist.sub_dept_name) sub_dept_name,a.group_department,COUNT(IF(CASE WHEN(absen_ijin.kode_ijin_payroll is null) THEN
         CASE WHEN(c.mulai_jam_kerja is not null and c.akhir_jam_kerja is not null) THEN
             CASE WHEN(c.absen_masuk_kerja is not null and c.absen_pulang_kerja is not null)THEN
                 CASE WHEN(c.jumlah_menit_absen_dt!=0 and c.jumlah_menit_absen_pc=0) THEN 'DT'
@@ -66,7 +66,7 @@ class RecapLaborStaff implements WithTitle, FromView, WithColumnWidths
             CASE WHEN(c.status_absen='DL') THEN 'DL'
             ELSE 'IBY'
             END
-        ELSE absen_ijin.kode_ijin_payroll END in ('OK','DT','PC','DTPC','IBY','IKS'),1,null)) man_power,
+        ELSE absen_ijin.kode_ijin_payroll END in ('OK','DT','PC','DTPC','IBY','IKS'),1,null) OR (c.mulai_jam_kerja is null and c.absen_masuk_kerja is not null and c.absen_pulang_kerja is not null)  ) man_power,
         SUM(CASE WHEN(c.absen_masuk_kerja is not null and c.absen_pulang_kerja is not null) THEN
             CASE WHEN(c.kode_hari not in (5,6))THEN
                 CASE WHEN(TIME_TO_SEC(c.absen_masuk_kerja)<TIME_TO_SEC(c.absen_pulang_kerja))THEN
@@ -82,11 +82,11 @@ class RecapLaborStaff implements WithTitle, FromView, WithColumnWidths
                 END
             END
         ELSE 0 END) absen_menit,
-        c.mulai_jam_kerja,c.status_absen,c.absen_masuk_kerja,c.absen_pulang_kerja,c.kode_hari,sum(a.bruto) bruto,sum(a.bpjs_tk_company) bpjs_tk,sum(a.bpjs_ks_company) bpjs_ks,sum(a.thr) thr from daily_labor_costs a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join master_data_absen_kehadiran c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan left join ref_absen_ijin absen_ijin on c.status_absen=absen_ijin.kode_absen_ijin  where a.tanggal_berjalan>='".$this->tanggal_awal."' and a.tanggal_berjalan<='".$this->tanggal_akhir."'  and b.status_staff='STAFF' group by a.tanggal_berjalan,sub_dept_id");
+        c.mulai_jam_kerja,c.status_absen,c.absen_masuk_kerja,c.absen_pulang_kerja,c.kode_hari,sum(a.bruto) bruto,sum(a.bpjs_tk_company) bpjs_tk,sum(a.bpjs_ks_company) bpjs_ks,sum(a.thr) thr from daily_labor_costs a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join master_data_absen_kehadiran c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan left join ref_absen_ijin absen_ijin on c.status_absen=absen_ijin.kode_absen_ijin left join employee_atribut_histories emp_hist on a.enroll_id=emp_hist.enroll_id and a.tanggal_berjalan between SUBSTRING(emp_hist.periode_payroll,1,10) and SUBSTRING(emp_hist.periode_payroll,16,10) where a.tanggal_berjalan>='".$this->tanggal_awal."' and a.tanggal_berjalan<='".$this->tanggal_akhir."'  and (b.status_staff='STAFF' or emp_hist.status_staff='STAFF') group by a.tanggal_berjalan,sub_dept_id");
         $query_2=DB::select("select tanggal_berjalan from daily_labor_costs where tanggal_berjalan>='".$this->tanggal_awal."' and tanggal_berjalan<='".$this->tanggal_akhir."' group by tanggal_berjalan order by tanggal_berjalan");
         $query_3=DB::select("select a.department_id,a.department_name,a.sub_dept_id,a.sub_dept_name, b_master_cc.group2 group_department from (SELECT * from department_all WHERE status = 'AKTIF' and site_nirwana_id =
         'NAG') a LEFT JOIN b_master_cc ON a.sub_dept_id = b_master_cc.no_cc group by a.sub_dept_id order by a.department_id, a.sub_dept_name");
-        $query_4=DB::select("select a.tanggal_berjalan, b.status_staff,b.department_id,b.department_name,b.sub_dept_id,b.sub_dept_name,a.group_department,COUNT(IF(CASE WHEN(absen_ijin.kode_ijin_payroll is null) THEN
+        $query_4=DB::select("select a.tanggal_berjalan,if(emp_hist.status_staff is null,b.status_staff,emp_hist.status_staff) status_staff,if(emp_hist.department_id is null,b.department_id,emp_hist.department_id) department_id,if(emp_hist.department_name is null,b.department_name,emp_hist.department_name) department_name,if(emp_hist.sub_dept_id is null,b.sub_dept_id,emp_hist.sub_dept_id) sub_dept_id,if(emp_hist.sub_dept_name is null,b.sub_dept_name,emp_hist.sub_dept_name) sub_dept_name,a.group_department,COUNT(IF(CASE WHEN(absen_ijin.kode_ijin_payroll is null) THEN
         CASE WHEN(c.mulai_jam_kerja is not null and c.akhir_jam_kerja is not null) THEN
             CASE WHEN(c.absen_masuk_kerja is not null and c.absen_pulang_kerja is not null)THEN
                 CASE WHEN(c.jumlah_menit_absen_dt!=0 and c.jumlah_menit_absen_pc=0) THEN 'DT'
@@ -142,7 +142,7 @@ class RecapLaborStaff implements WithTitle, FromView, WithColumnWidths
                 END
             END
         ELSE 0 END) absen_menit,
-        c.mulai_jam_kerja,c.status_absen,c.absen_masuk_kerja,c.absen_pulang_kerja,c.kode_hari,sum(a.bruto) bruto,sum(a.bpjs_tk_company) bpjs_tk,sum(a.bpjs_ks_company) bpjs_ks,sum(a.thr) thr from daily_labor_costs a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join master_data_absen_kehadiran c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan left join ref_absen_ijin absen_ijin on c.status_absen=absen_ijin.kode_absen_ijin  where a.tanggal_berjalan>='".$this->tanggal_awal."' and a.tanggal_berjalan<='".$this->tanggal_akhir."' and b.status_staff='STAFF' group by a.tanggal_berjalan");
+        c.mulai_jam_kerja,c.status_absen,c.absen_masuk_kerja,c.absen_pulang_kerja,c.kode_hari,sum(a.bruto) bruto,sum(a.bpjs_tk_company) bpjs_tk,sum(a.bpjs_ks_company) bpjs_ks,sum(a.thr) thr from daily_labor_costs a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join master_data_absen_kehadiran c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan left join ref_absen_ijin absen_ijin on c.status_absen=absen_ijin.kode_absen_ijin left join employee_atribut_histories emp_hist on a.enroll_id=emp_hist.enroll_id and a.tanggal_berjalan between SUBSTRING(emp_hist.periode_payroll,1,10) and SUBSTRING(emp_hist.periode_payroll,16,10) where a.tanggal_berjalan>='".$this->tanggal_awal."' and a.tanggal_berjalan<='".$this->tanggal_akhir."' and (b.status_staff='STAFF' or emp_hist.status_staff='STAFF') group by a.tanggal_berjalan");
         $dateRange=array_column($query_2,'tanggal_berjalan');
         $z=[];
         foreach($query as $valquery){
