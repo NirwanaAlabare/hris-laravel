@@ -28,7 +28,6 @@
         </div>
         <div class="col-4">
             <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID col-11">
-                <option value="">Pilih Karyawan</option>
                 @foreach ($selectemployee as $r_empl)
                     <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
                 @endforeach
@@ -291,7 +290,6 @@
             </div>
             <div class="col-4">
                 <select id="selectEmployeeDinas" name="selectEmployeeDinas[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID col-12" style="width:400px">
-                    <option value="">Pilih Karyawan</option>
                     @foreach ($selectemployee as $r_empl)
                         <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
                     @endforeach

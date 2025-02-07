@@ -281,7 +281,7 @@
     
     @if (str_contains($value->tujuan_pemberangkatan, 'antar_dinas') || str_contains($value->tujuan_pemberangkatan, 'jemput_dinas'))
     <div class="row pb-1 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
-        <div class="col-6">
+        <div class="col-6 pl-0">
             <div class="row">
                 <div class="col-4">
                     <label class="form-label" style="font-weight: bold;font-size:12pt"> Karyawan yang dinas luar</label>
