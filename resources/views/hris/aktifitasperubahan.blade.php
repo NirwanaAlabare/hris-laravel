@@ -55,6 +55,17 @@
         thead tr>th:first-child {
             z-index: 3;
         }
+        .timestamp {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
     </style>
 @stop
 @section('mainarea')
@@ -93,16 +104,14 @@
                         <thead>
                             <tr class="text-center">
                                 <th style="background-color: white" scope="col"></th>
+                                <th style="background-color: white;" scope="col"></th>
+                                <th style="background-color: white;" scope="col"></th>
                                 <th style="background-color: white" scope="col"></th>
                                 <th style="background-color: white" scope="col"></th>
                                 <th style="background-color: white" scope="col"></th>
                                 <th style="background-color: white" scope="col"></th>
                                 <th style="background-color: white" scope="col"></th>
-                                <th style="background-color: white" scope="col"></th>
-                                <th style="background-color: white" scope="col"></th>
-                                <th style="background-color: white" scope="col"></th>
-                                <th style="background-color: white" scope="col"></th>
-                                <th style="background-color: white" scope="col"></th>
+                                <th  style="background-color: white" scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -183,23 +192,18 @@
                         name: 'activity_log_id'
                     },
                     {
-                        title: 'Action ID',
-                        data: 'action_by_id',
-                        name: 'action_by_id'
-                    },
-                    {
-                        title: 'Action Name',
+                        title: 'Dibuat Oleh',
                         data: 'action_by_name',
                         name: 'action_by_name',
-                        width: "200px"
+                        width: "100px"
                     },
                     {
-                        title: 'Log Name',
+                        title: 'Tujuan',
                         data: 'log_name',
                         name: 'log_name'
                     },
                     {
-                        title: 'Table Name',
+                        title: 'Table',
                         data: 'table_name',
                         name: 'table_name'
                     },
@@ -214,24 +218,32 @@
                         name: 'action'
                     },
                     {
-                        title: 'Old Data',
+                        title: 'Data Lama',
                         data: 'old_data',
-                        name: 'old_data'
+                        name: 'old_data',
                     },
                     {
-                        title: 'New Data',
+                        title: 'Data Baru',
                         data: 'new_data',
                         name: 'new_data'
                     },
                     {
                         title: 'Dibuat',
                         data: 'created_at',
-                        name: 'created_at'
+                        name: 'created_at',
+
                     },
+                ],
+                columnDefs: [
                     {
-                        title: 'Di update',
-                        data: 'updated_at',
-                        name: 'updated_at'
+                        targets: [8],
+                        render: (data, type, row, meta) => {
+                            return `
+                            <div class="timestamp">
+                                        `+moment(data.created_at).format('DD MMMM YYYY - HH:mm')+`
+                            </div>
+                            `
+                        }
                     },
                 ],
             });
