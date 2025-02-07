@@ -1538,7 +1538,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $query->whereBetween('tanggal_berjalan', [$first_date, $last_date]);
         }])
         ->with('employee_atribut.grading_salary')
-        ->with('employee_atribut', 'employee_atribut.employee_bpjs', 'koreksi_upah', 'koreksi_potongan', 'employee_atribut.group_department','data_lembur_labor')
+        ->with('employee_atribut', 'employee_atribut.employee_bpjs', 'koreksi_upah', 'koreksi_potongan', 'employee_atribut.group_department','data_lembur')
         ->get();
 
         $z=[];
@@ -1606,8 +1606,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                         $konveri_jam = 1;
                     }
                     $total_jam_lembur=$selisih_jam + $konveri_jam;
-                    $total_jam_lembur_finis=$total_jam_lembur-$value->data_lembur_labor->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah_jam_istirahat;
-                    $total_jam_lembur_finis=min($value->data_lembur_labor->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah_jam_lembur,$total_jam_lembur_finis);
+                    $total_jam_lembur_finis=$total_jam_lembur-$value->data_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah_jam_istirahat;
+                    $total_jam_lembur_finis=min($value->data_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah_jam_lembur,$total_jam_lembur_finis);
                     if($value->kode_hari==5 || $value->kode_hari==6 || $value->status_absen=='LN' || ($value->mulai_jam_kerja==null && $value->akhir_jam_kerja==null)){
                         $kerjalibur='LIBUR';
                         $l1=0;
@@ -1668,7 +1668,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                         'final_mulai_jam_lembur'=>$finish_in,
                         'final_selesai_jam_lembur'=>$value->absen_pulang_kerja,
                         'final_total_jam_lembur'=>$final_total_jam_lembur,
-                        'final_jam_istirahat_lembur'=>$value->data_lembur_labor->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah_jam_istirahat??0,
+                        'final_jam_istirahat_lembur'=>$value->data_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah_jam_istirahat??0,
                         'final_total_menit_lembur'=>($selisih_jam*60)+$selisih_menit,
                         'final_jam_lembur_roundown'=> $selisih_jam,
                         'final_menit_lembur_roundown'=>$selisih_menit,
