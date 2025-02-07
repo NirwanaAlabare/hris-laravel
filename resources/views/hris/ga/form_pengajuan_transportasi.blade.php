@@ -195,8 +195,8 @@
         </div>
     </div>
     <div style="display:none" id="tag_nama_tamu">
-        <div class="row pb-2">
-            <div class="col-12 pt-1">
+        <div class="row pb-2 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
+            <div class="col-12 pt-1 pl-0">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Keterangan Tamu</label>
             </div>
         </div>
@@ -224,13 +224,13 @@
         </div>
     </div>
     <div style="display:none" id="tag_jenis_barang">
-        <div class="row pb-2">
-            <div class="col-12 pt-1">
+        <div class="row pb-2 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
+            <div class="col-12 pt-1 pl-0">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Keterangan Barang</label>
             </div>
         </div>
         <div class="row pb-2">
-            <div class="col-6">
+            <div class="col-6 pl-3">
                 <div class="row pb-2">
                     <div class="col-4 pt-1">
                         <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Jenis Barang</label>
@@ -251,7 +251,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-6 pl-3">
                 <div class="row pb-2">
                     <div class="col-4 pt-1">
                         <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Keterangan</label>
@@ -280,13 +280,13 @@
         </div>
     </div>
     <div style="display:none" id="tag_antar_dinas">
-        <div class="row pb-2">
-            <div class="col-12 pt-1">
+        <div class="row pb-2 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
+            <div class="col-12 pt-1 pl-0">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Keterangan Dinas</label>
             </div>
         </div>
         <div class="row pb-2">
-            <div class="col-2 pt-1">
+            <div class="col-2 pt-1 pl-3">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nama Karyawan Yang Dinas Luar</label>
             </div>
             <div class="col-4">
