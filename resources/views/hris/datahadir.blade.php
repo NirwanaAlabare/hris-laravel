@@ -1787,6 +1787,7 @@
                                         enroll_id:enroll_id
                                     },
                                     success: function(res){
+                                        console.log(res);
                                         swal({
                                             title: "Update Absensi",
                                             text: "Data berhasil di update",

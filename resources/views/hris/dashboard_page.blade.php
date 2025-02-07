@@ -61,6 +61,12 @@
     background-position: right;
     background-size: 80px;
 }
+.card-4{
+   background-image: url('{{ URL::asset('assets/images/icons/mutasi-karyawan.png') }}');
+      background-repeat: no-repeat;
+    background-position: right;
+    background-size: 80px;
+}
 
 .text-theme-color{
   color: var(--primary) !important;
@@ -70,7 +76,7 @@
   .card{
     margin: 20px;
   }
-} 
+}
 </style>
 
 @stop
@@ -86,24 +92,29 @@
                 <div class="" style="background-color: #FFF">
                     <div class="card-body p-0">
                         <div class="row">
-                            @if($role=='superadmin' || $role=='absensi' || $role=='admin'|| $role=='payroll')
-                            <div class="col" style="background-color: #FFF">
-                                <a href="{{route('hris.dashboard.index')}}" >
-                                <div class="card card-1">
-                                            <h3 class="text-theme-color">Attendance & Payroll</h3>
+                            @if ($type!='mutasi_karyawan')
+                                @if($role=='superadmin' || $role=='absensi' || $role=='admin'|| $role=='payroll')
+                                <div class="col" style="background-color: #FFF">
+                                    <a href="{{route('hris.dashboard.index')}}" >
+                                    <div class="card card-1">
+                                                <h3 class="text-theme-color">Attendance & Payroll</h3>
+                                            </div>
+                                    </a>
+                                </div>
+                                @endif
+                            @endif
+                            @if ($type!='mutasi_karyawan')
+                                @if($role=='superadmin' || $role=='absensi' || $role=='admin')
+                                <div class="col">
+                                    <a href="{{route('hris.hrd.index')}}">
+                                    <div class="card card-2">
+                                            <h3 class="text-theme">Kepersonaliaan</h3>
                                         </div>
-                                </a>
-                            </div>
+                                    </a>
+                                </div>
+                                @endif
                             @endif
-                            @if($role=='superadmin' || $role=='absensi' || $role=='admin')
-                            <div class="col">
-                                <a href="{{route('hris.hrd.index')}}">
-                                <div class="card card-2">
-                                        <h3 class="text-theme">Kepersonaliaan</h3>
-                                    </div>
-                                </a>
-                            </div>
-                            @endif
+                            @if ($type!='mutasi_karyawan')
                             <div class="col">
                                 <a href="{{route('hris.ga.form_pengajuan_transportasi')}}" >
                                     <div class="card card-3">
@@ -111,6 +122,16 @@
                                     </div>
                                 </a>
                             </div>
+                            @endif
+                            @if($type=='mutasi_karyawan' || $role=='superadmin')
+                            <div class="col">
+                                <a href="{{route('hris.mutasi-karyawan.dashboard')}}">
+                                <div class="card card-4">
+                                        <h3 class="text-theme">Mutasi Karyawan</h3>
+                                    </div>
+                                </a>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>

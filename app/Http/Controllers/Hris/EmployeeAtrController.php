@@ -1403,7 +1403,6 @@ class EmployeeAtrController extends AdminBaseController
             info('Karyawan dengan nama ' . $employee_name . ' dari departemen '. $sub_dept_name->sub_dept_name .' telah di update oleh '.$operator.' dengan tanggal resign '.$tanggal_resign);
             // update absen
             if($query) {
-
                 // jika tanggal resign kosong
                 if($request->tanggal_resign == "") {
                     $query1 =  MasterDataAbsenKehadiran::selectRaw('
@@ -1424,7 +1423,6 @@ class EmployeeAtrController extends AdminBaseController
                     ')
                     ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
                     ->get();
-
                     if(!empty($query1))
                     {
                         foreach ($query1 as $q1)
@@ -1461,7 +1459,6 @@ class EmployeeAtrController extends AdminBaseController
                     ')
                     ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
                     ->get();
-
                     if(!empty($query1))
                     {
                         foreach ($query1 as $q1)
@@ -1477,7 +1474,6 @@ class EmployeeAtrController extends AdminBaseController
                             info('Karyawan dengan nama ' . $employee_name . ' dari departemen '. $sub_dept_name .' berubah tanggal resign nya menjadi '.$q1->tanggal_resign);
                         }
                     }
-
                     $query2 =  MasterDataAbsenKehadiran::selectRaw('
                         master_data_absen_kehadiran.tanggal_berjalan,
                         employee_atribut.enroll_id,
@@ -1493,8 +1489,8 @@ class EmployeeAtrController extends AdminBaseController
                         AND master_data_absen_kehadiran.holiday_name is null
                     ')
                     ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
-                    ->get();
-
+                    ->toSql();
+                    return $query2;
                     if(!empty($query2))
                     {
                         foreach ($query2 as $q2)

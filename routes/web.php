@@ -62,6 +62,95 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('hrd/layoff_termination',['as'=>'hris.hrd.layoff_termination','uses'=>'HRDController@layoff_termination']);
     Route::get('hrd/sp_hadir',['as'=>'hris.hrd.sp_hadir','uses'=>'HRDController@sp_hadir']);
 
+
+    // MUTASI KARYAWAN
+    Route::get('mutasi-karyawan/dashboard', ['as' => 'hris.mutasi-karyawan.dashboard', 'uses' => 'MutasiKaryawan\MutasiKaryawanController@index']);
+    Route::get('/line-dashboard-mutasi-karyawan', ['as' => 'hris.line-dashboard-mutasi-karyawan', 'uses' => 'MutasiKaryawan\MutasiKaryawanController@line_dashboard']);
+    Route::get('mutasi-karyawan', ['as' => 'hris.mutasi-karyawan', 'uses' => 'MutasiKaryawan\MutasiKaryawanController@mutasi_karyawan']);
+    Route::get('mutasi-karyawan/create', ['as' => 'hris.mutasi-karyawan-create', 'uses' => 'MutasiKaryawan\MutasiKaryawanController@create_mut_karyawan']);
+    Route::get('mutasi-karyawan-list', ['as' => 'hris.mutasi-karyawan-list','uses' => 'MutasiKaryawan\MutasiKaryawanController@get_mutasi_list']);
+    Route::get('/export_line/{line?}', ['as' => 'hris.export-mutasi-karyawan','uses' => 'MutasiKaryawan\MutasiKaryawanController@export_line']);
+    Route::get('/export_excel_mutasi', ['as' => 'export-excel-mutasi-karyawan','uses' => 'MutasiKaryawan\MutasiKaryawanController@export_excel']);
+    Route::get('/export_excel_mut_karyawan', ['as' => 'export_excel_mut_karyawan','uses' => 'MutasiKaryawan\MutasiKaryawanController@export_excel_mut_karyawan']);
+    Route::get('/getdatalinekaryawan', ['as' => 'getdatalinekaryawan','uses' => 'MutasiKaryawan\MutasiKaryawanController@getdatalinekaryawan']);
+    Route::post('/store_add_non_qr', ['as' => 'store_add_non_qr','uses' => 'MutasiKaryawan\MutasiKaryawanController@store_add_non_qr']);
+    Route::get('/getdatakaryawan_nonqr', ['as' => 'getdatakaryawan_nonqr','uses' => 'MutasiKaryawan\MutasiKaryawanController@getdatakaryawan_nonqr']);
+    Route::post('/delete_mutasi', ['as' => 'delete_mutasi','uses' => 'MutasiKaryawan\MutasiKaryawanController@delete_mutasi']);
+    Route::post('/store-mut-karyawan', ['as' => 'store-mut-karyawan','uses' => 'MutasiKaryawan\MutasiKaryawanController@store']);
+    Route::put('/update-mut-karyawan', ['as' => 'update-mut-karyawan','uses' => 'MutasiKaryawan\MutasiKaryawanController@update']);
+    Route::delete('/destroy-mut-karyawan', ['as' => 'destroy-mut-karyawan','uses' => 'MutasiKaryawan\MutasiKaryawanController@destroy']);
+    Route::get('/getdataline', ['as' => 'getdataline','uses' => 'MutasiKaryawan\MutasiKaryawanController@getdataline']);
+    Route::get('/gettotal', ['as' => 'gettotal','uses' => 'MutasiKaryawan\MutasiKaryawanController@gettotal']);
+    Route::get('/getdatanik', ['as' => 'getdatanik','uses' => 'MutasiKaryawan\MutasiKaryawanController@getdatanik']);
+
+    // FORM LEMBUR SEWING MUTASI KARYAWAN
+    Route::get('/fls', ['as' => 'fls.index','uses' => 'FormLembur\FormLemburSewingController@index']);
+    Route::get('/fls/create', ['as' => 'fls.create','uses' => 'FormLembur\FormLemburSewingController@create']);
+    Route::get('/fls/show_list_karyawan',  ['as' => 'fls.show_list_karyawan','uses' => 'FormLembur\FormLemburSewingController@show_list_karyawan']);
+    Route::post('/fls/store', ['as' => 'fls.store','uses' => 'FormLembur\FormLemburSewingController@store']);
+    Route::post('/fls/cek_data_lembur', ['as' => 'fls.cek_data_lembur','uses' => 'FormLembur\FormLemburSewingController@cek_data_lembur']);
+    Route::get('/fls/cek_data_karyawan_tmp', ['as' => 'fls.cek_data_karyawan_tmp','uses' => 'FormLembur\FormLemburSewingController@cek_data_karyawan_tmp']);
+    Route::post('/fls/store_data_karyawan_tmp', ['as' => 'fls.store_data_karyawan_tmp','uses' => 'FormLembur\FormLemburSewingController@store_data_karyawan_tmp']);
+    Route::post('/fls/hapus_data_karyawan_tmp', ['as' => 'fls.hapus_data_karyawan_tmp','uses' => 'FormLembur\FormLemburSewingController@hapus_data_karyawan_tmp']);
+    Route::get('/fls/show_list_karyawan_tmp', ['as' => 'fls.show_list_karyawan_tmp','uses' => 'FormLembur\FormLemburSewingController@show_list_karyawan_tmp']);
+    Route::get('/fls/getdatakaryawanspl', ['as' => 'fls.getdatakaryawanspl','uses' => 'FormLembur\FormLemburSewingController@getdatakaryawanspl']);
+    Route::get('/fls/getket', ['as' => 'fls.getket','uses' => 'FormLembur\FormLemburSewingController@getket']);
+    Route::post('/fls/del_tmp', ['as' => 'fls.del_tmp','uses' => 'FormLembur\FormLemburSewingController@del_tmp']);
+    Route::post('/fls/del_karyawan', ['as' => 'fls.del_karyawan','uses' => 'FormLembur\FormLemburSewingController@del_karyawan']);
+    Route::get('/fls/export_spl', ['as' => 'fls.export_spl','uses' => 'FormLembur\FormLemburSewingController@export_spl']);
+    Route::get('/fls/export_excel_spl_all', ['as' => 'fls.export_excel_spl_all','uses' => 'FormLembur\FormLemburSewingController@export_excel_spl_all']);
+    Route::get('/fls/export_spl_import', ['as' => 'fls.export_spl_import','uses' => 'FormLembur\FormLemburSewingController@export_spl_import']);
+    Route::post('/fls/update_form_lembur', ['as' => 'fls.update_form_lembur','uses' => 'FormLembur\FormLemburSewingController@update_form_lembur']);
+    Route::post('/fls/view_tambahan_data_karyawan_lembur_sewing', ['as' => 'fls.view_tambahan_data_karyawan_lembur_sewing','uses' => 'FormLembur\FormLemburSewingController@view_tambahan_data_karyawan_lembur_sewing']);
+    Route::post('/fls/get_time_from_id_data_lembur_sewing',['as' => 'fls.get_time_from_id_data_lembur_sewing','uses' => 'FormLembur\FormLemburSewingController@get_time_from_id_data_lembur_sewing']);
+    Route::post('/fls/del_tmp_non_sewing_enroll_id_sewing', ['as' => 'fls.del_tmp_non_sewing_enroll_id_sewing','uses' => 'FormLembur\FormLemburSewingController@del_tmp_non_sewing_enroll_id_sewing']);
+    Route::post('/fls/store_tambahan_data_karyawan_lembur_sewing', ['as' => 'fls.store_tambahan_data_karyawan_lembur_sewing','uses' => 'FormLembur\FormLemburSewingController@store_tambahan_data_karyawan_lembur_sewing']);
+    Route::post('/fls/cek_data_koreksi_upah_sewing', ['as' => 'fls.cek_data_koreksi_upah_sewing','uses' => 'FormLembur\FormLemburSewingController@cek_data_koreksi_upah_sewing']);
+    Route::get('/fls/export_pdf_insentif', ['as' => 'fls.export_pdf_insentif','uses' => 'FormLembur\FormLemburSewingController@export_pdf_insentif']);
+    Route::get('/fls/export_excel_insentif', ['as' => 'fls.export_excel_insentif','uses' => 'FormLembur\FormLemburSewingController@export_excel_insentif']);
+    Route::get('/fls/export_pdf_sewing_spl', ['as' => 'fls.export_pdf_sewing_spl','uses' => 'FormLembur\FormLemburSewingController@export_pdf_sewing_spl']);
+    Route::get('/fls/export_excel_konsumsi',  ['as' => 'fls.export_excel_konsumsi','uses' => 'FormLembur\FormLemburSewingController@export_excel_konsumsi']);
+
+    // FORM LEMBUR NON SEWING MUTASI KARYAWAN
+    Route::get('/flns', ['as' => 'flns.index','uses' => 'FormLembur\FormLemburNonSewingController@index']);
+    Route::get('/flns/create', ['as' => 'flns.create','uses' => 'FormLembur\FormLemburNonSewingController@create']);
+    Route::get('/flns/show_list_karyawan_non_sewing', ['as' => 'flns.show_list_karyawan_non_sewing','uses' => 'FormLembur\FormLemburNonSewingController@show_list_karyawan_non_sewing']);
+    Route::post('/flns/store', ['as' => 'flns.store','uses' => 'FormLembur\FormLemburNonSewingController@store']);
+    Route::get('/flns/cek_data_karyawan_tmp_non_sewing', ['as' => 'flns.cek_data_karyawan_tmp_non_sewing','uses' => 'FormLembur\FormLemburNonSewingController@cek_data_karyawan_tmp_non_sewing']);
+    Route::post('/flns/store_data_karyawan_tmp_non_sewing', ['as' => 'flns.store_data_karyawan_tmp_non_sewing','uses' => 'FormLembur\FormLemburNonSewingController@store_data_karyawan_tmp_non_sewing']);
+    Route::get('/flns/show_list_karyawan_tmp_non_sewing', ['as' => 'flns.show_list_karyawan_tmp_non_sewing','uses' => 'FormLembur\FormLemburNonSewingController@show_list_karyawan_tmp_non_sewing']);
+    Route::post('/flns/hapus_data_karyawan_tmp_non_sewing', ['as' => 'flns.hapus_data_karyawan_tmp_non_sewing','uses' => 'FormLembur\FormLemburNonSewingController@hapus_data_karyawan_tmp_non_sewing']);
+    Route::post('/flns/del_tmp_non_sewing', ['as' => 'flns.del_tmp_non_sewing','uses' => 'FormLembur\FormLemburNonSewingController@del_tmp_non_sewing']);
+    Route::post('/flns/del_tmp_non_sewing_enroll_id', ['as' => 'flns.del_tmp_non_sewing_enroll_id','uses' => 'FormLembur\FormLemburNonSewingController@del_tmp_non_sewing_enroll_id']);
+    Route::get('/flns/getdatakaryawanspl_non_sewing', ['as' => 'flns.getdatakaryawanspl_non_sewing','uses' => 'FormLembur\FormLemburNonSewingController@getdatakaryawanspl_non_sewing']);
+    Route::get('/flns/export_spl_non_sewing', ['as' => 'flns.export_spl_non_sewing','uses' => 'FormLembur\FormLemburNonSewingController@export_spl_non_sewing']);
+    Route::get('/flns/export_excel_non_sewing_spl_all', ['as' => 'flns.export_excel_non_sewing_spl_all','uses' => 'FormLembur\FormLemburNonSewingController@export_excel_non_sewing_spl_all']);
+    Route::post('/flns/update_form_lembur_non_sewing', ['as' => 'flns.update_form_lembur_non_sewing','uses' => 'FormLembur\FormLemburNonSewingController@update_form_lembur_non_sewing']);
+    Route::get('/flns/getdept_name', ['as' => 'flns.getdept_name','uses' => 'FormLembur\FormLemburNonSewingController@getdept_name']);
+    Route::post('/flns/del_karyawan_non_sewing', ['as' => 'flns.del_karyawan_non_sewing','uses' => 'FormLembur\FormLemburNonSewingController@del_karyawan_non_sewing']);
+    Route::post('/flns/store_tambahan_data_karyawan_lembur',['as' => 'flns.store_tambahan_data_karyawan_lembur','uses' => 'FormLembur\FormLemburNonSewingController@store_tambahan_data_karyawan_lembur']);
+    Route::post('/flns/view_tambahan_data_karyawan_lembur',['as' => 'flns.view_tambahan_data_karyawan_lembur','uses' => 'FormLembur\FormLemburNonSewingController@view_tambahan_data_karyawan_lembur']);
+    Route::post('/flns/get_time_from_id_data_lembur',['as' => 'flns.get_time_from_id_data_lembur','uses' => 'FormLembur\FormLemburNonSewingController@get_time_from_id_data_lembur']);
+    Route::get('/flns/export_excel_spl_all_non_sewing', ['as' => 'flns.export_excel_spl_all_non_sewing','uses' => 'FormLembur\FormLemburNonSewingController@export_excel_spl_all_non_sewing']);
+    Route::post('/flns/cek_data_koreksi_upah', ['as' => 'flns.cek_data_koreksi_upah','uses' => 'FormLembur\FormLemburNonSewingController@cek_data_koreksi_upah']);
+    Route::post('/flns/cek_data_lembur', ['as' => 'flns.cek_data_lembur','uses' => 'FormLembur\FormLemburNonSewingController@cek_data_lembur']);
+    Route::get('/flns/export_pdf_non_sewing_insentif',['as' => 'flns.export_pdf_non_sewing_insentif','uses' => 'FormLembur\FormLemburNonSewingController@export_pdf_non_sewing_insentif']);
+    Route::get('/flns/export_excel_insentif_non_sewing',['as' => 'flns.export_excel_insentif_non_sewing','uses' => 'FormLembur\FormLemburNonSewingController@export_excel_insentif_non_sewing']);
+    Route::get('/flns/export_pdf_non_sewing_spl', ['as' => 'flns.export_pdf_non_sewing_spl','uses' => 'FormLembur\FormLemburNonSewingController@export_pdf_non_sewing_spl']);
+
+    // ESTIMASI ANGGARAN MAKAN
+    Route::get('/anggaran-makan',  ['as' => 'anggaran_makan.index','uses' => 'FormLembur\AnggaranMakanController@index']);
+    Route::get('/anggaran-makan/create',  ['as' => 'anggaran_makan.create','uses' => 'FormLembur\AnggaranMakanController@create']);
+    Route::post('/anggaran-makan/store',  ['as' => 'anggaran_makan.store','uses' => 'FormLembur\AnggaranMakanController@store']);
+    Route::post('/anggaran-makan/edit',  ['as' => 'anggaran_makan.edit','uses' => 'FormLembur\AnggaranMakanController@edit']);
+    Route::post('/anggaran-makan/update',  ['as' => 'anggaran_makan.update','uses' => 'FormLembur\AnggaranMakanController@update']);
+    Route::post('/anggaran-makan/delete',  ['as' => 'anggaran_makan.delete','uses' => 'FormLembur\AnggaranMakanController@delete']);
+    Route::get('/anggaran-makan/export_excel_konsumsi_estimasi', ['as' => 'anggaran_makan.export_excel_konsumsi_estimasi','uses' => 'FormLembur\AnggaranMakanController@export_excel_konsumsi_estimasi']);
+    Route::get('/anggaran-makan/export_excel_overtime_recap',  ['as' => 'anggaran_makan.export_excel_overtime_recap','uses' => 'FormLembur\AnggaranMakanController@export_excel_overtime_recap']);
+    Route::get('/anggaran-makan/export_excel_overtime_recap2',  ['as' => 'anggaran_makan.export_excel_overtime_recap2','uses' => 'FormLembur\AnggaranMakanController@export_excel_overtime_recap2']);
+    Route::get('/anggaran-makan/export_pdf_konsumsi', ['as' => 'anggaran_makan.export_pdf_konsumsi','uses' => 'FormLembur\AnggaranMakanController@export_pdf_konsumsi']);
+
+
     Route::get('hrd/export_sp_kehadiran_karyawan',['as'=>'hris.hrd.export_sp_kehadiran_karyawan','uses'=>'HRDController@export_sp_kehadiran_karyawan']);
     Route::get('hrd/export_pdf_sk_kerja',['as'=>'hris.hrd.export_pdf_sk_kerja','uses'=>'HRDController@export_pdf_sk_kerja']);
     Route::get('hrd/export_pdf_paklaring',['as'=>'hris.hrd.export_pdf_paklaring','uses'=>'HRDController@export_pdf_paklaring']);

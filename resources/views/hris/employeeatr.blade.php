@@ -2577,9 +2577,9 @@
                                             $("#btn-save").prop("disabled", true);
                                             $("#btn-cancel").prop("disabled", true);
 
-                                            setTimeout(function myFunction() {
-                                                location.reload();
-                                            }, 3000);
+                                            // setTimeout(function myFunction() {
+                                            //     location.reload();
+                                            // }, 3000);
 
                                         },
                                         error: function(res){
@@ -2757,9 +2757,9 @@
                                 $("#btn-save").prop("disabled", true);
                                 $("#btn-cancel").prop("disabled", true);
 
-                                setTimeout(function myFunction() {
-                                    location.reload();
-                                }, 3000);
+                                // setTimeout(function myFunction() {
+                                //     location.reload();
+                                // }, 3000);
 
                             },
                             error: function(res){
@@ -2859,9 +2859,9 @@
                         $('#progress-show-1').hide();
                         $('#progress-hide-1').show();
 
-                        setTimeout(function myFunction() {
-                            location.reload();
-                          }, 3000);
+                        // setTimeout(function myFunction() {
+                        //     location.reload();
+                        //   }, 3000);
 
                     } else {
                         // else everythings

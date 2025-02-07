@@ -49,7 +49,7 @@
                     <button type="button" id="btn-import" class="btn btn-icon btn-warning text-white p-0 mr-1"  data-target="#import_koreksiupah" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Data</button>
                 </div>
                     <!-- modal -->
-             
+
                     <form id="upload" name="custForm" action="{{route ('hris.employeeatr.import.koreksiupah')}}" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="modal fade" id="import_koreksiupah" role="dialog" data-backdrop="static" aria-hidden="true">
@@ -113,7 +113,7 @@
                                                             <label class="form-label">Priode payroll : </label>
                                                             <select id="" class="form-control" name="priode_payroll">
                                                             @foreach($priode_koreksi as $key2 => $value2)
-                                                                <option name="priode_payroll" value="{{$value2['periode']}}">{{$value2['periode']}}</option>    
+                                                                <option name="priode_payroll" value="{{$value2['periode']}}">{{$value2['periode']}}</option>
                                                             @endforeach
                                                             </select>
                                                         </div>
@@ -360,8 +360,8 @@
                 <div class="card-footer bg-primary br-br-7 br-bl-7">
                     <div class="text-white"></div>
                 </div>
-            </div>            
-        </div>        
+            </div>
+        </div>
         <div class="col-sm-12 col-md-12 col-lg-5 col-xl-5">
             <!-- Begin Form Edit Absen Karyawan -->
             <div id="data-add-koreksiupah" class="card shadow">
@@ -377,7 +377,7 @@
                                 <li><a href="javascript:void(0)" id="btn-edit"><i class="fa fa-edit"></i> Edit</a></li>
                                 <li><a href="javascript:void(0)" id="btn-remove"><i class="fa fa-remove"></i> Hapus</a></li>
                             </ul>
-                        </div>                        
+                        </div>
                         KOREKSI UPAH KARYAWAN
                     </div>
                     <div class="card-options ">
@@ -469,7 +469,7 @@
                             <i class="fa fa-close"></i>
                         </span>
                         CANCEL</button>
-                </div>    
+                </div>
             </div>
         </div>
     </div>
@@ -524,9 +524,9 @@
             var dd = String(today.getDate()).padStart(2, '0');
             var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
             var yyyy = today.getFullYear();
-            
+
             today = yyyy + '-' + mm + '-' + dd;
-            
+
             $('#tanggal_koreksi2').val(today);
             $('#nama_karyawan2').val('');
             $('#jumlah_rp_potongan2').val('');
@@ -534,7 +534,7 @@
                 type:"POST",
                 url: "{{route('hris.koreksiupah.get_active_employee')}}",
                 data:{
-                    tanggal_koreksi:today 
+                    tanggal_koreksi:today
                 },
                 success: function(res){
                     $("#nama_karyawan2").append("<option value=''>Daftar karyawan</option>");
@@ -549,7 +549,7 @@
                     });
                 }
             });
-            
+
         });
         $('#tanggal_koreksi2').on('change',function(){
             testing3();
@@ -559,7 +559,7 @@
                 type:"POST",
                 url: "{{route('hris.koreksiupah.get_active_employee')}}",
                 data:{
-                    tanggal_koreksi:today 
+                    tanggal_koreksi:today
                 },
                 success: function(res){
                     $("#nama_karyawan2").append("<option value=''>Daftar karyawan</option>");
@@ -622,7 +622,7 @@
                     notif({
                         msg: "<b>Error:</b> Oops data gagal di update.",
                         type: "error"
-                    });    
+                    });
                 }
             });
         });
@@ -650,7 +650,7 @@
                     notif({
                         msg: "<b>Error:</b> Oops data gagal di delete.",
                         type: "error"
-                    });    
+                    });
                 }
             });
         });
@@ -676,7 +676,7 @@
         $("#btn-save").prop("disabled", true);
         $("#btn-cancel").prop("disabled", true);
         $("#periode_tanggal_koreksi").val('');
-        
+
         $('body').on('keyup', '#jumlah_rp_potongan', function (event) {
             this.value = this.value.replace(/[^-0-9\.]/g,'');
         });
@@ -699,10 +699,10 @@
             var dd = String(today.getDate()).padStart(2, '0');
             var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
             var yyyy = today.getFullYear();
-            
+
             today = yyyy + '-' + mm + '-' + dd;
-            
-            $('#tanggal_koreksi').val(today); 
+
+            $('#tanggal_koreksi').val(today);
 
             var table1 = $('#datatable-ajax-karyawan').DataTable({
                 processing: true,
@@ -757,19 +757,19 @@
                 var row = table1.row(tr);
 
                 var data = row.data();
-        
+
                 $("#datatable-ajax-karyawan tbody tr").removeClass('bg-cyan');
                 $(this).addClass('bg-cyan');
 
-                $('#employee_name').val(data['employee_name']);  
-                $('#site_nirwana_id').val(data['site_nirwana_id']);  
-                $('#site_nirwana_name').val(data['site_nirwana_name']);  
-                $('#department_id').val(data['department_id']);  
-                $('#department_name').val(data['department_name']);  
-                $('#sub_dept_id').val(data['sub_dept_id']);  
-                $('#sub_dept_name').val(data['sub_dept_name']);  
+                $('#employee_name').val(data['employee_name']);
+                $('#site_nirwana_id').val(data['site_nirwana_id']);
+                $('#site_nirwana_name').val(data['site_nirwana_name']);
+                $('#department_id').val(data['department_id']);
+                $('#department_name').val(data['department_name']);
+                $('#sub_dept_id').val(data['sub_dept_id']);
+                $('#sub_dept_name').val(data['sub_dept_name']);
 
-                $('#enroll_id').val(data['enroll_id']);  
+                $('#enroll_id').val(data['enroll_id']);
                 $('#nik').val(data['nik']);
                 $('#nama_karyawan').val(data['enroll_id'] + " - " + data['nik'] + " - " + data['employee_name']);
                 $('#nama_department').val(data['department_name'] + " - " + data['sub_dept_name']);
@@ -778,11 +778,11 @@
                 var gettimenow = new Date();
 
                 var kode_koreksi_upah = tglkoreksi[0] + tglkoreksi[1] + gettimenow.getMinutes() + gettimenow.getSeconds() + data['nik']
-                $('#kode_koreksi_upah').val(kode_koreksi_upah);  
-            });           
+                $('#kode_koreksi_upah').val(kode_koreksi_upah);
+            });
 
         });
-        
+
         $('body').on('click', '#btn-cancel', function (event) {
             location.reload();
         });
@@ -840,7 +840,7 @@
                         $("#btn-save").attr("disabled", true);
                         $('#progress-show-1').show();
                         $('#progress-hide-1').hide();
-                        
+
                         if (uuid) {
 
                             $.ajax({
@@ -873,20 +873,20 @@
                                     notif({
                                         msg: "<b>Info:</b> Data berhasil di update.",
                                         type: "info"
-                                    });    
+                                    });
                                 },
                                 error: function(res){
                                     notif({
                                         msg: "<b>Error:</b> Oops data gagal di update.",
                                         type: "error"
-                                    });    
+                                    });
                                 }
-                                
+
                             });
 
                             setTimeout(function myFunction() {
-                                $("#datatable-ajax-crud").DataTable().ajax.reload(); 
-                            }, 3000); 
+                                $("#datatable-ajax-crud").DataTable().ajax.reload();
+                            }, 3000);
 
                         } else {
 
@@ -919,19 +919,19 @@
                                     notif({
                                         msg: "<b>Info:</b> Data berhasil di simpan.",
                                         type: "info"
-                                    });    
+                                    });
                                 },
                                 error: function(res){
                                     notif({
                                         msg: "<b>Error:</b> Oops data gagal di simpan.",
                                         type: "error"
-                                    });    
+                                    });
                                 }
                             });
 
                             setTimeout(function myFunction() {
-                                location.reload(); 
-                            }, 3000); 
+                                location.reload();
+                            }, 3000);
 
                         }
 
@@ -941,17 +941,17 @@
                         $("#btn-save").html('<span><i class="fa fa-save"></i></span> TAMBAH');
                         $("#form1 :input").prop("disabled", true);
                         $("#btn-save").prop("disabled", true);
-                        $("#btn-cancel").prop("disabled", true);    
-                        
-                          
+                        $("#btn-cancel").prop("disabled", true);
+
+
                     }
 
                 },
                 error: function(res){
-                                
+
                 }
-            });  
-                        
+            });
+
         });
 
         $('body').on('click', '#btn-remove', function (event) {
@@ -959,7 +959,7 @@
             var periodetglkoreksi = $("#periode_tanggal_koreksi").val();
             var tgl = periodetglkoreksi.split(' - ');
             var tanggal = defaultDate(tgl[0]);
-            
+
             // LAGI COBA TEST CLOSING PAYROLL
             $.ajax({
                 type:"POST",
@@ -1001,10 +1001,10 @@
 
                                 $("#form1 :input").prop("disabled", true);
                                 $("#btn-save").prop("disabled", true);
-                                $("#btn-cancel").prop("disabled", true);    
+                                $("#btn-cancel").prop("disabled", true);
                                 $('#progress-show-1').show();
                                 $('#progress-hide-1').hide();
-                    
+
                                 $.ajax({
                                     type:"POST",
                                     url: "{{route('hris.koreksiupah.destroy')}}",
@@ -1019,39 +1019,39 @@
                                         notif({
                                             msg: "<b>Info:</b> Data berhasil di hapus.",
                                             type: "info"
-                                        });    
+                                        });
                                     },
                                     error: function(res){
                                         notif({
                                             msg: "<b>Error:</b> Oops data gagal di hapus.",
                                             type: "error"
-                                        });    
+                                        });
                                     }
                                 });
-                    
+
                                 $('#progress-show-1').hide();
-                                $('#progress-hide-1').show();    
+                                $('#progress-hide-1').show();
 
                                 setTimeout(function myFunction() {
                                     location.reload();
-                                }, 3000);                   
+                                }, 3000);
 
                             } else {
                                 // else everythings
                             }
                         });
-           
+
                     }
 
                 },
                 error: function(res){
-                                
+
                 }
-            });           
-                        
+            });
+
         });
         var periode_payroll = $('#periode_payroll').val();
-        
+
         function testing(){
             var periode_tanggal_koreksi = $('#periode_tanggal_kehadiran').val();
             $('#datatable_ins_jabatan').DataTable().ajax.reload(null, false);
@@ -1197,11 +1197,11 @@
                 var row = table1.row(tr);
 
                 var data = row.data();
-        
+
                 $("#form1 :input").prop("disabled", true);
                 $("#btn-save").prop("disabled", true);
                 $("#btn-cancel").prop("disabled", true);
-                
+
                 $("#datatable-ajax-crud tbody tr").removeClass('bg-cyan');
                 $(this).addClass('bg-cyan');
 
@@ -1226,7 +1226,7 @@
                 $("#keterangan").val(data["keterangan"]);
                 $("#jenis_koreksi").val(data["jenis_koreksi"]).trigger("change");
 
-    
+
             });
             var table2 = $('#datatable_ins_jabatan').DataTable({
                 processing: true,
@@ -1283,7 +1283,7 @@
                 var tr = $(this).closest('tr');
                 var row = table2.row(tr);
                 var data = row.data();
-                
+
                 $("#datatable_ins_jabatan tbody tr").removeClass('bg-cyan');
                 $(this).addClass('bg-cyan');
                 $("#nama_karyawan2").val(data["enroll_id"]);
@@ -1337,7 +1337,7 @@
                 $("#btn-periksa_nik").attr("disabled", true);
                 $("#nik").attr("readonly", true);
                 $('#is_periksanik').val(1);
-                
+
             } else {
                 notif({
                     msg: "<b>Warning:</b> Data belum ada yang di pilih.",
@@ -1355,15 +1355,15 @@
             notif({
                 msg: "<b>Error:</b> "+meseg,
                 type: "error"
-            }); 
+            });
         @endif
 
         @if(Session::has('success'))
             notif({
                 msg: "<b>Info:</b> Data berhasil di simpan.",
                 type: "info"
-            }); 
-        @endif    
+            });
+        @endif
     </script>
 
 @endsection

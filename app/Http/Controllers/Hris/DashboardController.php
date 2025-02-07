@@ -35,7 +35,8 @@ class DashboardController extends AdminBaseController
     public function tes(){
         $loggedAdmin = Auth::guard('admin')->user();
         $role=$loggedAdmin->role_user;
-        return View::make('hris/dashboard_page',compact('role'), $this->data);
+        $type=$loggedAdmin->type;
+        return View::make('hris/dashboard_page',compact('role','type'), $this->data);
     }
 
 }

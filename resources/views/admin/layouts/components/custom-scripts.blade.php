@@ -17,8 +17,12 @@
 		<!--Moment js-->
 		<script src="{{URL::asset('assets/plugins/moment/moment.min.js')}}"></script>
 
+        <script src="{{URL::asset('assets/js/script.js') }}"></script>
+
 		<!-- Daterangepicker js-->
 		<script src="{{URL::asset('assets/plugins/bootstrap-daterangepicker/daterangepicker.js')}}"></script>
+
+        <script src="{{ asset('plugins/html5-qrcode/html5-qrcode.min.js') }}"></script>
 
 		@yield('custom-scripts')
 
