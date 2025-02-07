@@ -420,7 +420,10 @@ class GAController extends AdminBaseController
         $districts=DB::select("select * from districts order by dis_id");
         $subdistricts=DB::select("select * from subdistricts order by subdis_id");
         $id=request()->id;
-        $drivers=EmployeeAtribut::where('sub_dept_id','DEP08SUB002')->get();
+        $drivers=EmployeeAtribut::where('sub_dept_id','DEP08SUB002')->where(function($query){
+            $query->where('status_aktif','AKTIF')
+            ->orWhere('tanggal_resign','>',date('Y-m-d'));
+        })->get();
         $pengajuan_transportasi=DB::select("select a.id,a.created_at,a.jarak_tempuh,a.jenis_barang,a.quantity,a.satuan,a.nama_instansi,a.nama_penerima,a.keterangan_barang,a.nama_tamu,a.instansi_tamu,a.nomor_hp_tamu,a.id_driver,a.nomor_kendaraan,a.status,a.karyawan_dinas,b.employee_name,b.nik,b.department_name,b.sub_dept_name,c.subdis_name nama_desa,d.dis_name nama_kecamatan,e.city_name nama_kota,f.prov_name nama_provinsi,a.detail_alamat,a.tanggal_pemberangkatan,a.jam_pemberangkatan,a.tujuan_pemberangkatan,g.subdistrict nama_desa_tujuan,g.district nama_kecamatan_tujuan,g.city nama_kota_tujuan,g.provinsi nama_provinsi_tujuan,g.detail_alamat detail_alamat_tujuan,g.tanggal_kedatangan,g.jam_kedatangan from (select*from permintaan_transportasi where id='$id') a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join (select*from tujuan_transportasi where permintaan_transportasi_id='$id' order by tujuan_id limit 1) g on a.id=g.permintaan_transportasi_id");
         $karyawan_dinas=$pengajuan_transportasi[0]->karyawan_dinas;
         $nama_karyawan_dinas=[];
