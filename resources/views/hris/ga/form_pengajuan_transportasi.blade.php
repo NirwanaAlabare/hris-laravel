@@ -279,6 +279,27 @@
             </div>
         </div>
     </div>
+    <div style="display:none" id="tag_antar_dinas">
+        <div class="row pb-2">
+            <div class="col-12 pt-1">
+                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Keterangan Dinas</label>
+            </div>
+        </div>
+        <div class="row pb-2">
+            <div class="col-2 pt-1">
+                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nama Karyawan Yang Dinas Luar</label>
+            </div>
+            <div class="col-4">
+                <select id="selectEmployeeDinas" name="selectEmployeeDinas[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID col-12" style="width:400px">
+                    <option value="">Pilih Karyawan</option>
+                    @foreach ($selectemployee as $r_empl)
+                        <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
+                    @endforeach
+                </select>
+                <h6 id="warning_employee_dinas" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-12 text-center">
             <button id="save_request" class="btn btn-success">Submit</button>
@@ -1190,6 +1211,26 @@
                 }
             }
         });
+        $('#checkbox_5').on('change', function() { 
+            if (this.checked) {
+                document.getElementById('tag_antar_dinas').style.display='block';
+            }else{
+                if(!document.getElementById("checkbox_6").checked){
+                    document.getElementById('tag_antar_dinas').style.display='none';
+                    $('#selectEmployeeDinas').val(null).trigger('change');
+                }
+            }
+        });
+        $('#checkbox_6').on('change', function() { 
+            if (this.checked) {
+                document.getElementById('tag_antar_dinas').style.display='block';
+            }else{
+                if(!document.getElementById("checkbox_5").checked){
+                    document.getElementById('tag_antar_dinas').style.display='none';
+                    $('#selectEmployeeDinas').val(null).trigger('change');
+                }
+            }
+        });
         $('#selectEmployeeID').on('change',function(){
             var employee_array = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
             if(employee_array.length>0){
@@ -1311,6 +1352,12 @@
                 document.getElementById("nama_instansi").style.border="";
             }
         });
+        $('#selectEmployeeDinas').on('change',function(){
+            var employee_dinas_array = $("select[name='selectEmployeeDinas[]']").map(function(){return $(this).val();}).get();
+            if(employee_dinas_array.length>0){
+                document.getElementById("warning_employee_dinas").innerHTML='';
+            }
+        });
         $('#save_request').on('click',function(){
             var employee='';
             var employee_array = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
@@ -1341,6 +1388,8 @@
             var cb_jemput_tamu=document.getElementById("checkbox_2").checked?1:0;
             var cb_antar_barang=document.getElementById("checkbox_3").checked?1:0;
             var cb_jemput_barang=document.getElementById("checkbox_4").checked?1:0;
+            var cb_antar_dinas=document.getElementById("checkbox_5").checked?1:0;
+            var cb_jemput_dinas=document.getElementById("checkbox_6").checked?1:0;
             var nama_tamu=$("#nama_tamu").val();
             var nomor_tamu=$("#nomor_tamu").val();
             var instansi_tamu=$("#instansi_tamu").val();
@@ -1365,6 +1414,7 @@
             var detail_alamat_array = $("input[name='detail_alamat_ke[]']").map(function(){return $(this).val();}).get();
             var tanggal_kedatangan_array = $("input[name='tanggal_kedatangan_ke[]']").map(function(){return $(this).val();}).get();
             var jam_kedatangan_array = $("input[name='jam_kedatangan_ke[]']").map(function(){return $(this).val();}).get();
+            var employee_dinas = $("select[name='selectEmployeeDinas[]']").map(function(){return $(this).val();}).get();
             $.ajax({
                 type:"POST",
                 url: "{{route('hris.ga.post_car_request')}}",
@@ -1406,7 +1456,10 @@
                     subdistrict_array:subdistrict_array,
                     detail_alamat_array:detail_alamat_array,
                     tanggal_kedatangan_array:tanggal_kedatangan_array,
-                    jam_kedatangan_array:jam_kedatangan_array
+                    jam_kedatangan_array:jam_kedatangan_array,
+                    cb_antar_dinas:cb_antar_dinas,
+                    cb_jemput_dinas:cb_jemput_dinas,
+                    employee_dinas:employee_dinas
                 },
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 success: function(res){
@@ -1429,6 +1482,7 @@
                     $('#jam_kedatangan').val('');
                     $('#jarak_tempuh').val(0);
                     $('#selectEmployeeID').val(null).trigger('change');
+                    $('#selectEmployeeDinas').val(null).trigger('change');
                     document.getElementById("checkbox_1").checked=false;
                     document.getElementById("checkbox_2").checked=false;
                     document.getElementById("checkbox_3").checked=false;
@@ -1591,12 +1645,18 @@
                         }else{
                             document.getElementById("nama_instansi").style.border="";
                         }
+                        if(typeof(err_log.employee_dinas)!=='undefined'){
+                            document.getElementById("warning_employee_dinas").innerHTML='Karyawan '+error.responseJSON.errors.employee[0];
+                        }else{
+                            document.getElementById("warning_employee_dinas").innerHTML='';
+                        }
                     }
                 }
             });
         });
     });
     $(document).ready(function() {
+        document.getElementsByClassId("select2Dinas").style.width="264.481px";
         document.getElementById('cities').disabled=true;
         document.getElementById('districts').disabled=true;
         document.getElementById('sub_districts').disabled=true;

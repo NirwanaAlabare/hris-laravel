@@ -238,28 +238,28 @@
     @else
     <div style="display:none" id="tag_nama_tamu">
     @endif
-        <div class="row pb-2">
-            <div class="col-12 pt-1">
+        <div class="row pb-2 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
+            <div class="col-12 pt-1 pl-0">
                 <label class="form-label" style="font-weight: bold;font-size:12pt">Keterangan Tamu</label>
             </div>
         </div>
         <div class="row pb-2">
-            <div class="col-2 pt-1">
-                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nama Tamu</label>
+            <div class="col-2 pt-1 pl-3">
+                <label class="form-label" style="font-weight: bold;font-size:12pt"> Nama Tamu</label>
             </div>
             <div class="col-4">
                 <input type="text" id="nama_tamu" class="form-control col-10" style="background-color: white" placeholder="Masukkan Nama Tamu" value="{{$value->nama_tamu}}">
             </div>
             <div class="col-2 pt-1">
-                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nomor Hp Tamu</label>
+                <label class="form-label" style="font-weight: bold;font-size:12pt"> Nomor Hp Tamu</label>
             </div>
             <div class="col-4">
                 <input type="text" id="nomor_tamu" class="form-control col-10" style="background-color: white" placeholder="E.g. 089501940612" value="{{$value->nomor_hp_tamu}}">
             </div>
         </div>
         <div class="row pb-2">
-            <div class="col-2 pt-1">
-                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Instansi</label>
+            <div class="col-2 pt-1 pl-3">
+                <label class="form-label" style="font-weight: bold;font-size:12pt"> Instansi</label>
             </div>
             <div class="col-4">
                 <input type="text" id="instansi_tamu" class="form-control col-10" style="background-color: white" placeholder="Masukkan Instansi Tamu" value="{{$value->instansi_tamu}}">
@@ -271,8 +271,8 @@
     @else
     <div style="display:none" id="tag_jenis_barang">
     @endif
-        <div class="row pb-2">
-            <div class="col-12 pt-1">
+        <div class="row pb-2 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
+            <div class="col-12 pt-1 pl-0">
                 <label class="form-label" style="font-weight: bold;font-size:12pt">Keterangan Barang</label>
             </div>
         </div>
@@ -321,6 +321,35 @@
                     </div>
                     <div class="col-8">
                         <input type="text" id="nama_instansi" class="form-control col-10" style="background-color: white" placeholder="Masukkan Nama" value="{{$value->nama_penerima}}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (str_contains($value->tujuan_pemberangkatan, 'antar_dinas')||str_contains($value->tujuan_pemberangkatan, 'jemput_dinas'))
+    <div style="display:block" id="tag_antar_dinas">
+    @else
+    <div style="display:none" id="tag_antar_dinas">
+    @endif
+        <div class="row pb-2 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
+            <div class="col-12 pl-0 pt-1">
+                <label class="form-label" style="font-weight: bold;font-size:12pt">Keterangan Dinas</label>
+            </div>
+        </div>
+        <div class="row pb-2">
+            <div class="col-6 pl-3">
+                <div class="row pb-2">
+                    <div class="col-4 pt-1">
+                        <label class="form-label" style="font-weight: bold;font-size:12pt">Karyawan Yang Dinas Luar</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" id="EmployeeDinas" value="{{$value->karyawan_dinas}}">
+                        <select id="selectEmployeeID" name="selectEmployeeDinas[]" multiple class="form-control select2 EmployeeID col-11">
+                            @foreach ($selectemployee as $r_empl)
+                                <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
+                            @endforeach
+                        </select>
+                        <h6 id="warning_employee_dinas" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
                     </div>
                 </div>
             </div>
@@ -381,6 +410,22 @@
 <script src="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.js')}}"></script>
 <script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
 <script>
+    
+    'use strict';
+
+    $('.select2').select2({
+        minimumResultsForSearch: Infinity
+    });
+
+    // Select2 by showing the search
+    $('.select2-show-search').select2({
+        minimumResultsForSearch: ''
+    });
+
+    // Colored Hover
+    $('#select2').select2({
+        dropdownCssClass: 'hover-success',// disabling search
+    });
     var array_tujuan_id=[];
     var array_provinsi=[];
     var array_kota=[];
@@ -391,6 +436,8 @@
     var array_jam_kedatangan=[];
     $(document).ready(function() {
         pass_to_array();
+        var arr_emp=$('#EmployeeDinas').val();
+        $('#selectEmployeeID').val(arr_emp.split(",")).change();
     });
     function pass_to_array(){
         var id=$('#id_request').val();
@@ -1352,7 +1399,33 @@
             }
         }
     });
+    $('#checkbox_5').on('change', function() { 
+        if (this.checked) {
+            document.getElementById('tag_antar_dinas').style.display='block';
+        }else{
+            if(!document.getElementById("checkbox_6").checked){
+                document.getElementById('tag_antar_dinas').style.display='none';
+                $('#selectEmployeeID').val(null).trigger('change');
+            }
+        }
+    });
+    $('#checkbox_6').on('change', function() { 
+        if (this.checked) {
+            document.getElementById('tag_antar_dinas').style.display='block';
+        }else{
+            if(!document.getElementById("checkbox_5").checked){
+                document.getElementById('tag_antar_dinas').style.display='none';
+                $('#selectEmployeeID').val(null).trigger('change');
+            }
+        }
+    });
     
+    $('#selectEmployeeID').on('change',function(){
+        var employee_array = $("select[name='selectEmployeeDinas[]']").map(function(){return $(this).val();}).get();
+        if(employee_array.length>0){
+            document.getElementById("warning_employee_dinas").innerHTML='';
+        }
+    });
     $('#save_edited_form').on('click',function(){
         var id_request=$('#id_request').val();
         var provinsi=$('#provinsi').val();
@@ -1379,6 +1452,8 @@
         var cb_jemput_tamu=document.getElementById("checkbox_2").checked?1:0;
         var cb_antar_barang=document.getElementById("checkbox_3").checked?1:0;
         var cb_jemput_barang=document.getElementById("checkbox_4").checked?1:0;
+        var cb_antar_dinas=document.getElementById("checkbox_5").checked?1:0;
+        var cb_jemput_dinas=document.getElementById("checkbox_6").checked?1:0;
         var nama_tamu=$("#nama_tamu").val();
         var nomor_tamu=$("#nomor_tamu").val();
         var instansi_tamu=$("#instansi_tamu").val();
@@ -1388,6 +1463,11 @@
         var instansi=$("#instansi").val();
         var nama_instansi=$("#nama_instansi").val();
         var keterangan_barang=$("#keterangan_barang").val();
+        var employee_dinas='';
+        var employee_dinas_array = $("select[name='selectEmployeeDinas[]']").map(function(){return $(this).val();}).get();
+        if(employee_dinas_array.length>0){
+            var employee_dinas=employee_dinas_array.toString();
+        }
         var tujuan_array = array_tujuan_id;
         var provinsi_array = array_provinsi;
         var city_array = array_kota;
@@ -1431,6 +1511,9 @@
                 instansi:instansi,
                 nama_instansi:nama_instansi,
                 keterangan_barang:keterangan_barang,
+                cb_antar_dinas:cb_antar_dinas,
+                cb_jemput_dinas:cb_jemput_dinas,
+                employee_dinas:employee_dinas,
                 tujuan:tujuan,
                 tujuan_array:tujuan_array,
                 provinsi_array:provinsi_array,
@@ -1454,6 +1537,11 @@
             error: function(error){
                 let err_log=error.responseJSON.errors;
                 if(error.status==422){
+                    if(typeof(err_log.employee_dinas)!=='undefined'){
+                        document.getElementById("warning_employee_dinas").innerHTML='Karyawan '+error.responseJSON.errors.employee_dinas[0];
+                    }else{
+                        document.getElementById("warning_employee_dinas").innerHTML='';
+                    }
                     if(typeof(err_log.provinsi)!=='undefined'){
                         document.getElementById("provinsi").style.border = "1px solid red";
                     }else{

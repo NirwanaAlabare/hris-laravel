@@ -39,7 +39,10 @@ class GAController extends AdminBaseController
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
         $id_user = $loggedAdmin->enroll_id;
-        $drivers=EmployeeAtribut::where('sub_dept_id','DEP08SUB002')->get();
+        $drivers=EmployeeAtribut::where('sub_dept_id','DEP08SUB002')->where(function($query){
+            $query->where('status_aktif','AKTIF')
+            ->orWhere('tanggal_resign','>',date('Y-m-d'));
+        })->get();
         $vehicles =  DB::connection('laravel_nds')->select(
             DB::raw("select*from ga_master_kendaraan") );
         return View::make('hris/ga/data_pengajuan_transportasi', $this->data,compact('email','id_user','drivers','vehicles'));
@@ -48,9 +51,9 @@ class GAController extends AdminBaseController
         $user=request()->user;
         $department_id=EmployeeAtribut::where('enroll_id',$user)->first()->department_id;
         if($user!=6083 && $user!=5321 && $user!=17 && $user!=7765 && $user!=5321 && $user!=20 && $user!=4241 && $user!=6713 && $user!=0){
-            $data_input=DB::select("select '$user' user,a.id,a.enroll_id,b.employee_name,b.department_name,a.detail_alamat,concat(c.subdis_name,' - ',d.dis_name,' - ',e.city_name,' - ',f.prov_name) desa,a.detail_alamat_tujuan,concat(g.subdis_name,' - ',h.dis_name,' - ',i.city_name,' - ',j.prov_name) desa_tujuan,concat(DATE_FORMAT(a.tanggal_pemberangkatan, '%d %M %Y'),' - ',substring(a.jam_pemberangkatan,1,5)) tanggal_pemberangkatan,a.jam_pemberangkatan,REPLACE(a.tujuan_pemberangkatan, '_', ' ') tujuan_pemberangkatan,a.status,a.created_by from (select*from permintaan_transportasi where enroll_id in (select enroll_id from employee_atribut where department_id='$department_id') or created_by in (select enroll_id from employee_atribut where department_id='$department_id')) a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id order by a.tanggal_pemberangkatan,a.jam_pemberangkatan desc");
+            $data_input=DB::select("select '$user' user,a.id,a.enroll_id,b.employee_name,b.department_name,a.detail_alamat,concat(c.subdis_name,' - ',d.dis_name,' - ',e.city_name,' - ',f.prov_name) desa,a.detail_alamat_tujuan,concat(g.subdis_name,' - ',h.dis_name,' - ',i.city_name,' - ',j.prov_name) desa_tujuan,concat(DATE_FORMAT(a.tanggal_pemberangkatan, '%d %M %Y'),' - ',substring(a.jam_pemberangkatan,1,5)) tanggal_pemberangkatan,a.jam_pemberangkatan,REPLACE(a.tujuan_pemberangkatan, '_', ' ') tujuan_pemberangkatan,a.status,a.alasan_status,a.id_driver,a.nomor_kendaraan,a.created_by from (select*from permintaan_transportasi where enroll_id in (select enroll_id from employee_atribut where department_id='$department_id') or created_by in (select enroll_id from employee_atribut where department_id='$department_id')) a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id order by a.tanggal_pemberangkatan,a.jam_pemberangkatan desc");
         }else{
-            $data_input=DB::select("select '$user' user,a.id,a.enroll_id,b.employee_name,b.department_name,a.detail_alamat,concat(c.subdis_name,' - ',d.dis_name,' - ',e.city_name,' - ',f.prov_name) desa,a.detail_alamat_tujuan,concat(g.subdis_name,' - ',h.dis_name,' - ',i.city_name,' - ',j.prov_name) desa_tujuan,concat(DATE_FORMAT(a.tanggal_pemberangkatan, '%d %M %Y'),' - ',substring(a.jam_pemberangkatan,1,5)) tanggal_pemberangkatan,a.jam_pemberangkatan,REPLACE(a.tujuan_pemberangkatan, '_', ' ') tujuan_pemberangkatan,a.status,a.created_by from permintaan_transportasi a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id order by a.tanggal_pemberangkatan,a.jam_pemberangkatan desc");
+            $data_input=DB::select("select '$user' user,a.id,a.enroll_id,b.employee_name,b.department_name,a.detail_alamat,concat(c.subdis_name,' - ',d.dis_name,' - ',e.city_name,' - ',f.prov_name) desa,a.detail_alamat_tujuan,concat(g.subdis_name,' - ',h.dis_name,' - ',i.city_name,' - ',j.prov_name) desa_tujuan,concat(DATE_FORMAT(a.tanggal_pemberangkatan, '%d %M %Y'),' - ',substring(a.jam_pemberangkatan,1,5)) tanggal_pemberangkatan,a.jam_pemberangkatan,REPLACE(a.tujuan_pemberangkatan, '_', ' ') tujuan_pemberangkatan,a.status,a.alasan_status,a.id_driver,a.nomor_kendaraan,a.created_by from permintaan_transportasi a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id order by a.tanggal_pemberangkatan,a.jam_pemberangkatan desc");
         }
         return DataTables::of($data_input)->toJson();
     }
@@ -80,19 +83,35 @@ class GAController extends AdminBaseController
         ]);
     }
     public function reject_car_request(){
+        $this->_validation_reject(request());
         PermintaanTransportasi::where('id',request()->id_request)->update([
             'status'=>2,
             'alasan_status'=>request()->alasan_reject
         ]);
     }
+    public function _validation_reject(){
+        $validation=request()->validate([
+            'alasan_reject'=>'required',
+        ]);
+    }
     public function print_penugasan_transportasi(){
         $id=request()->id;
-        $data=DB::select("select a.id,a.enroll_id,b.nik,b.employee_name,b.department_name,a.detail_alamat,concat(c.subdis_name,', ',d.dis_name,', ',e.city_name,', ',f.prov_name) desa,a.detail_alamat_tujuan,concat(g.subdis_name,', ',h.dis_name,', ',i.city_name,', ',j.prov_name) desa_tujuan,a.tanggal_pemberangkatan,a.tanggal_kedatangan,substring(a.jam_kedatangan,1,5) jam_kedatangan,a.tujuan_pemberangkatan,substring(a.jam_pemberangkatan,1,5) jam_keberangkatan,a.jarak_tempuh,k.employee_name driver,k.nik nik_driver,a.nomor_kendaraan from (select*from permintaan_transportasi where id='$id') a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id inner join employee_atribut k on a.id_driver=k.enroll_id order by a.tanggal_pemberangkatan,a.jam_pemberangkatan desc");
+        $data=DB::select("select a.id,a.enroll_id,b.nik,b.employee_name,b.department_name,a.detail_alamat,concat(c.subdis_name,', ',d.dis_name,', ',e.city_name,', ',f.prov_name) desa,a.detail_alamat_tujuan,concat(g.subdis_name,', ',h.dis_name,', ',i.city_name,', ',j.prov_name) desa_tujuan,a.tanggal_pemberangkatan,a.tanggal_kedatangan,substring(a.jam_kedatangan,1,5) jam_kedatangan,a.tujuan_pemberangkatan,substring(a.jam_pemberangkatan,1,5) jam_keberangkatan,a.jarak_tempuh,k.employee_name driver,k.nik nik_driver,a.nomor_kendaraan,a.jenis_barang,a.quantity,a.satuan,a.nama_instansi,a.nama_penerima,a.keterangan_barang,a.nama_tamu,a.instansi_tamu,a.nomor_hp_tamu,a.karyawan_dinas,a.alasan_status from (select*from permintaan_transportasi where id='$id') a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id inner join employee_atribut k on a.id_driver=k.enroll_id order by a.tanggal_pemberangkatan,a.jam_pemberangkatan desc");
         $data2=DB::select("select a.jam_pemberangkatan,a.detail_alamat,concat(c.subdis_name,', ',d.dis_name,', ',e.city_name,', ',f.prov_name) desa,a.jarak_tempuh,b.id,b.permintaan_transportasi_id,b.tujuan_id,b.detail_alamat detail_alamat_tujuan,concat(b.subdistrict,', ',b.district,', ',b.city,', ',b.provinsi) desa_tujuan,b.tanggal_kedatangan,b.jam_kedatangan from permintaan_transportasi a left join tujuan_transportasi b on a.id=b.permintaan_transportasi_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id where b.permintaan_transportasi_id='$id' order by b.tujuan_id");
+        $karyawan_dinas=$data[0]->karyawan_dinas;
+        $nama_karyawan_dinas=[];
+        $nama_karyawan_dinas_luar='';
+        if($karyawan_dinas!=null){
+            $karyawan_dinas=explode(",",$karyawan_dinas);
+            foreach($karyawan_dinas as $value){
+                $nama_karyawan_dinas[]=EmployeeAtribut::where('enroll_id',$value)->first()->employee_name;
+            }
+            $nama_karyawan_dinas_luar=(implode(", ",$nama_karyawan_dinas));
+        }
         $kendaraan=$data[0]->nomor_kendaraan;
         $nomor_kendaraan=DB::connection('laravel_nds')->select( DB::raw("select*from ga_master_kendaraan where id ='$kendaraan'") );
         $fileName='Form Penugasan Transportasi '.date('His');
-        $pdf = PDF::loadView('hris.laporan.penugasan_transportasi',["data"=>$data,"data2"=>$data2,"nomor_kendaraan"=>$nomor_kendaraan])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+        $pdf = PDF::loadView('hris.laporan.penugasan_transportasi',["data"=>$data,"data2"=>$data2,"nomor_kendaraan"=>$nomor_kendaraan,"nama_karyawan_dinas"=>$nama_karyawan_dinas_luar])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
         return $pdf;
     }
     public function add_another_route(){
@@ -216,12 +235,21 @@ class GAController extends AdminBaseController
         }else{
             $loggedAdmin = Auth::guard('admin')->user();
             $email = $loggedAdmin->enroll_id;
-            if((request()->cb_antar_tamu==1 || request()->cb_jemput_tamu==1) && request()->cb_antar_barang!=1 && request()->cb_jemput_barang!=1){
+
+            if((request()->cb_antar_tamu==1 || request()->cb_jemput_tamu==1) && request()->cb_antar_barang!=1 && request()->cb_jemput_barang!=1 && request()->cb_antar_dinas!=1 && request()->cb_jemput_dinas!=1){
                 $this->_validation8(request());
-            }else if((request()->cb_antar_barang==1 || request()->cb_jemput_barang==1) && request()->cb_antar_tamu!=1 && request()->cb_jemput_tamu!=1){
+            }else if((request()->cb_antar_barang==1 || request()->cb_jemput_barang==1) && request()->cb_antar_tamu!=1 && request()->cb_jemput_tamu!=1 && request()->cb_antar_dinas!=1 && request()->cb_jemput_dinas!=1){
                 $this->_validation9(request());
-            }else if((request()->cb_antar_barang==1 || request()->cb_jemput_barang==1) && (request()->cb_antar_tamu==1 || request()->cb_jemput_tamu==1)){
+            }else if((request()->cb_antar_dinas==1 || request()->cb_jemput_dinas==1) && request()->cb_antar_tamu!=1 && request()->cb_jemput_tamu!=1 && request()->cb_antar_barang!=1 && request()->cb_antar_barang!=1){
+                $this->_validation15(request());
+            }else if((request()->cb_antar_tamu==1 || request()->cb_jemput_tamu==1) && (request()->cb_antar_barang==1 || request()->cb_jemput_barang==1) && request()->cb_antar_dinas!=1 && request()->cb_jemput_dinas!=1){
                 $this->_validation10(request());
+            }else if((request()->cb_antar_tamu==1 || request()->cb_jemput_tamu==1) && request()->cb_antar_barang!=1 && request()->cb_jemput_barang!=1 && (request()->cb_antar_dinas==1 || request()->cb_jemput_dinas==1)){
+                $this->_validation16(request());
+            }else if(request()->cb_antar_tamu!=1 && request()->cb_jemput_tamu!=1 && (request()->cb_antar_barang==1 || request()->cb_jemput_barang==1) && (request()->cb_antar_dinas==1 || request()->cb_jemput_dinas==1)){
+                $this->_validation17(request());
+            }else if((request()->cb_antar_barang==1 || request()->cb_jemput_barang==1) && (request()->cb_antar_tamu==1 || request()->cb_jemput_tamu==1) && (request()->cb_antar_dinas==1 || request()->cb_antar_dinas==1)){
+                $this->_validation18(request());
             }else{
                 $this->_validation7(request());
             }
@@ -244,6 +272,7 @@ class GAController extends AdminBaseController
             $instansi=request()->instansi;
             $nama_instansi=request()->nama_instansi;
             $keterangan_barang=request()->keterangan_barang;
+            $employee_dinas=request()->employee_dinas;
             $tujuan=request()->tujuan;
             $date_now=Carbon::now();
             PermintaanTransportasi::where('id',$id_request)->update([
@@ -266,6 +295,7 @@ class GAController extends AdminBaseController
                 'nama_instansi'=>$instansi,
                 'nama_penerima'=>$nama_instansi,
                 'keterangan_barang'=>$keterangan_barang,
+                'karyawan_dinas'=>$employee_dinas,
                 'created_by'=>$email
             ]);
             TujuanTransportasi::where('permintaan_transportasi_id',request()->id_request)->delete();
@@ -293,11 +323,19 @@ class GAController extends AdminBaseController
     public function post_car_request(){
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->enroll_id;
-        if((request()->cb_antar_tamu==1 || request()->cb_jemput_tamu==1) && request()->cb_antar_barang!=1 && request()->cb_jemput_barang!=1){
+        if((request()->cb_antar_tamu==1 || request()->cb_jemput_tamu==1) && request()->cb_antar_barang!=1 && request()->cb_jemput_barang!=1 && request()->cb_antar_dinas!=1 && request()->cb_jemput_dinas!=1){
             $this->_validation2(request());
-        }else if((request()->cb_antar_barang==1 || request()->cb_jemput_barang==1) && request()->cb_antar_tamu!=1 && request()->cb_jemput_tamu!=1){
+        }else if((request()->cb_antar_barang==1 || request()->cb_jemput_barang==1) && request()->cb_antar_tamu!=1 && request()->cb_jemput_tamu!=1 && request()->cb_antar_dinas!=1 && request()->cb_jemput_dinas!=1){
             $this->_validation3(request());
-        }else if((request()->cb_antar_barang==1 || request()->cb_jemput_barang==1) && (request()->cb_antar_tamu==1 || request()->cb_jemput_tamu==1)){
+        }else if((request()->cb_antar_dinas==1 || request()->cb_jemput_dinas==1) && request()->cb_antar_tamu!=1 && request()->cb_jemput_tamu!=1 && request()->cb_antar_barang!=1 && request()->cb_antar_barang!=1){
+            $this->_validation11(request());
+        }else if((request()->cb_antar_tamu==1 || request()->cb_jemput_tamu==1) && (request()->cb_antar_barang==1 || request()->cb_jemput_barang==1) && request()->cb_antar_dinas!=1 && request()->cb_jemput_dinas!=1){
+            $this->_validation12(request());
+        }else if((request()->cb_antar_tamu==1 || request()->cb_jemput_tamu==1) && request()->cb_antar_barang!=1 && request()->cb_jemput_barang!=1 && (request()->cb_antar_dinas==1 || request()->cb_jemput_dinas==1)){
+            $this->_validation13(request());
+        }else if(request()->cb_antar_tamu!=1 && request()->cb_jemput_tamu!=1 && (request()->cb_antar_barang==1 || request()->cb_jemput_barang==1) && (request()->cb_antar_dinas==1 || request()->cb_jemput_dinas==1)){
+            $this->_validation14(request());
+        }else if((request()->cb_antar_barang==1 || request()->cb_jemput_barang==1) && (request()->cb_antar_tamu==1 || request()->cb_jemput_tamu==1) && (request()->cb_antar_dinas==1 || request()->cb_antar_dinas==1)){
             $this->_validation4(request());
         }else{
             $this->_validation(request());
@@ -325,6 +363,7 @@ class GAController extends AdminBaseController
         $keterangan_barang=request()->keterangan_barang;
         $tujuan=request()->tujuan;
         $date_now=Carbon::now();
+        $enroll_id_dinas=implode(',', request()->employee_dinas);
         $query=PermintaanTransportasi::create([
             'enroll_id'=>$enroll_id,
             'id_desa'=>$id_desa,
@@ -346,6 +385,7 @@ class GAController extends AdminBaseController
             'nama_instansi'=>$instansi,
             'nama_penerima'=>$nama_instansi,
             'keterangan_barang'=>$keterangan_barang,
+            'karyawan_dinas'=>$enroll_id_dinas,
             'status'=>0,
             'created_by'=>$email
         ]);
@@ -378,16 +418,26 @@ class GAController extends AdminBaseController
         $subdistricts=DB::select("select * from subdistricts order by subdis_id");
         $id=request()->id;
         $drivers=EmployeeAtribut::where('sub_dept_id','DEP08SUB002')->get();
-        $pengajuan_transportasi=DB::select("select a.id,a.created_at,a.jarak_tempuh,a.jenis_barang,a.quantity,a.satuan,a.nama_instansi,a.nama_penerima,a.keterangan_barang,a.nama_tamu,a.instansi_tamu,a.nomor_hp_tamu,a.id_driver,a.nomor_kendaraan,a.status,b.employee_name,b.nik,b.department_name,b.sub_dept_name,c.subdis_name nama_desa,d.dis_name nama_kecamatan,e.city_name nama_kota,f.prov_name nama_provinsi,a.detail_alamat,a.tanggal_pemberangkatan,a.jam_pemberangkatan,a.tujuan_pemberangkatan,g.subdistrict nama_desa_tujuan,g.district nama_kecamatan_tujuan,g.city nama_kota_tujuan,g.provinsi nama_provinsi_tujuan,g.detail_alamat detail_alamat_tujuan,g.tanggal_kedatangan,g.jam_kedatangan from (select*from permintaan_transportasi where id='$id') a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join (select*from tujuan_transportasi where permintaan_transportasi_id='$id' order by tujuan_id limit 1) g on a.id=g.permintaan_transportasi_id");
+        $pengajuan_transportasi=DB::select("select a.id,a.created_at,a.jarak_tempuh,a.jenis_barang,a.quantity,a.satuan,a.nama_instansi,a.nama_penerima,a.keterangan_barang,a.nama_tamu,a.instansi_tamu,a.nomor_hp_tamu,a.id_driver,a.nomor_kendaraan,a.status,a.karyawan_dinas,b.employee_name,b.nik,b.department_name,b.sub_dept_name,c.subdis_name nama_desa,d.dis_name nama_kecamatan,e.city_name nama_kota,f.prov_name nama_provinsi,a.detail_alamat,a.tanggal_pemberangkatan,a.jam_pemberangkatan,a.tujuan_pemberangkatan,g.subdistrict nama_desa_tujuan,g.district nama_kecamatan_tujuan,g.city nama_kota_tujuan,g.provinsi nama_provinsi_tujuan,g.detail_alamat detail_alamat_tujuan,g.tanggal_kedatangan,g.jam_kedatangan from (select*from permintaan_transportasi where id='$id') a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join (select*from tujuan_transportasi where permintaan_transportasi_id='$id' order by tujuan_id limit 1) g on a.id=g.permintaan_transportasi_id");
+        $karyawan_dinas=$pengajuan_transportasi[0]->karyawan_dinas;
+        $nama_karyawan_dinas=[];
+        $nama_karyawan_dinas_luar='';
+        if($karyawan_dinas!=null){
+            $karyawan_dinas=explode(",",$karyawan_dinas);
+            foreach($karyawan_dinas as $value){
+                $nama_karyawan_dinas[]=EmployeeAtribut::where('enroll_id',$value)->first()->employee_name;
+            }
+            $nama_karyawan_dinas_luar=(implode(", ",$nama_karyawan_dinas));
+        }
         $vehicles =  DB::connection('laravel_nds')->select( DB::raw("select*from ga_master_kendaraan") );
         $id_user = $loggedAdmin->enroll_id;
-        return View::make('hris/ga/data_detail_pengajuan_transportasi', $this->data,compact('id_user','pengajuan_transportasi','provincies','cities','districts','subdistricts','drivers','vehicles'));
+        return View::make('hris/ga/data_detail_pengajuan_transportasi', $this->data,compact('id_user','pengajuan_transportasi','provincies','cities','districts','subdistricts','drivers','vehicles','nama_karyawan_dinas_luar'));
     }
     public function edit_detail(){
         $this->selectemployee = $this->ajax_getallemployeeatribut();
         $provincies=DB::select('select * from provinces order by prov_id');
         $id=request()->id;
-        $pengajuan_transportasi=DB::select("select a.id,b.employee_name,b.nik,b.department_name,b.sub_dept_name,a.id_desa,d.dis_id,e.city_id,f.prov_id,a.id_desa_tujuan,h.dis_id dis_tujuan,i.city_id city_tujuan,j.prov_id prov_tujuan,a.detail_alamat,a.detail_alamat_tujuan,a.tanggal_pemberangkatan,a.jam_pemberangkatan,a.tujuan_pemberangkatan,a.jarak_tempuh,a.nama_tamu,a.nomor_hp_tamu,a.instansi_tamu,a.jenis_barang,a.quantity,a.satuan,a.nama_instansi,a.nama_penerima,a.keterangan_barang,a.tanggal_kedatangan,a.jam_kedatangan,a.created_at,a.updated_at from (select*from permintaan_transportasi where id='$id') a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id");
+        $pengajuan_transportasi=DB::select("select a.id,b.employee_name,b.nik,b.department_name,b.sub_dept_name,a.id_desa,d.dis_id,e.city_id,f.prov_id,a.id_desa_tujuan,h.dis_id dis_tujuan,i.city_id city_tujuan,j.prov_id prov_tujuan,a.detail_alamat,a.detail_alamat_tujuan,a.tanggal_pemberangkatan,a.jam_pemberangkatan,a.tujuan_pemberangkatan,a.jarak_tempuh,a.nama_tamu,a.nomor_hp_tamu,a.instansi_tamu,a.jenis_barang,a.quantity,a.satuan,a.nama_instansi,a.nama_penerima,a.keterangan_barang,a.tanggal_kedatangan,a.jam_kedatangan,a.created_at,a.updated_at,a.karyawan_dinas from (select*from permintaan_transportasi where id='$id') a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id");
         $prov_id=$pengajuan_transportasi[0]->prov_id;
         $prov_id_2=$pengajuan_transportasi[0]->prov_tujuan;
         $city_id=$pengajuan_transportasi[0]->city_id;
@@ -480,6 +530,30 @@ class GAController extends AdminBaseController
             'employee.required'=>'harus dipilih',
         ]);
     }
+    private function _validation11(){
+        $validation=request()->validate([
+            'employee'=>'required',
+            'provinsi'=>'required',
+            'cities'=>'required',
+            'districts'=>'required',
+            'sub_districts'=>'required',
+            'detail_alamat'=>'required',
+            'tanggal_pemberangkatan'=>'required',
+            'jam_pemberangkatan'=>'required',
+            'tanggal_kedatangan'=>'required',
+            'jam_kedatangan'=>'required',
+            'provinsi_2'=>'required',
+            'cities_2'=>'required',
+            'districts_2'=>'required',
+            'sub_districts_2'=>'required',
+            'detail_alamat_2'=>'required',
+            'employee_dinas'=>'required',
+        ],
+        [
+            'employee.required'=>'harus dipilih',
+            'employee_dinas.required'=>'harus dipilih',
+        ]);
+    }
     private function _validation4(){
         $validation=request()->validate([
             'employee'=>'required',
@@ -503,10 +577,95 @@ class GAController extends AdminBaseController
             'jenis_barang'=>'required',
             'quantity'=>'required',
             'instansi'=>'required',
-            'nama_instansi'=>'required'
+            'nama_instansi'=>'required',
+            'employee_dinas'=>'required',
         ],
         [
             'employee.required'=>'harus dipilih',
+            'employee_dinas.required'=>'harus dipilih',
+        ]);
+    }
+    private function _validation12(){
+        $validation=request()->validate([
+            'employee'=>'required',
+            'provinsi'=>'required',
+            'cities'=>'required',
+            'districts'=>'required',
+            'sub_districts'=>'required',
+            'detail_alamat'=>'required',
+            'tanggal_pemberangkatan'=>'required',
+            'jam_pemberangkatan'=>'required',
+            'tanggal_kedatangan'=>'required',
+            'jam_kedatangan'=>'required',
+            'provinsi_2'=>'required',
+            'cities_2'=>'required',
+            'districts_2'=>'required',
+            'sub_districts_2'=>'required',
+            'detail_alamat_2'=>'required',
+            'nama_tamu'=>'required',
+            'nomor_tamu'=>'required',
+            'instansi_tamu'=>'required',
+            'employee_dinas'=>'required',
+        ],
+        [
+            'employee.required'=>'harus dipilih',
+            'employee_dinas.required'=>'harus dipilih',
+        ]);
+    }
+    private function _validation13(){
+        $validation=request()->validate([
+            'employee'=>'required',
+            'provinsi'=>'required',
+            'cities'=>'required',
+            'districts'=>'required',
+            'sub_districts'=>'required',
+            'detail_alamat'=>'required',
+            'tanggal_pemberangkatan'=>'required',
+            'jam_pemberangkatan'=>'required',
+            'tanggal_kedatangan'=>'required',
+            'jam_kedatangan'=>'required',
+            'provinsi_2'=>'required',
+            'cities_2'=>'required',
+            'districts_2'=>'required',
+            'sub_districts_2'=>'required',
+            'detail_alamat_2'=>'required',
+            'jenis_barang'=>'required',
+            'quantity'=>'required',
+            'instansi'=>'required',
+            'nama_instansi'=>'required',
+            'employee_dinas'=>'required',
+        ],
+        [
+            'employee.required'=>'harus dipilih',
+            'employee_dinas.required'=>'harus dipilih',
+        ]);
+    }
+    private function _validation14(){
+        $validation=request()->validate([
+            'employee'=>'required',
+            'provinsi'=>'required',
+            'cities'=>'required',
+            'districts'=>'required',
+            'sub_districts'=>'required',
+            'detail_alamat'=>'required',
+            'tanggal_pemberangkatan'=>'required',
+            'jam_pemberangkatan'=>'required',
+            'tanggal_kedatangan'=>'required',
+            'jam_kedatangan'=>'required',
+            'provinsi_2'=>'required',
+            'cities_2'=>'required',
+            'districts_2'=>'required',
+            'sub_districts_2'=>'required',
+            'detail_alamat_2'=>'required',
+            'jenis_barang'=>'required',
+            'quantity'=>'required',
+            'instansi'=>'required',
+            'nama_instansi'=>'required',
+            'employee_dinas'=>'required',
+        ],
+        [
+            'employee.required'=>'harus dipilih',
+            'employee_dinas.required'=>'harus dipilih',
         ]);
     }
     
@@ -581,6 +740,28 @@ class GAController extends AdminBaseController
             'employee.required'=>'harus dipilih',
         ]);
     }
+    private function _validation15(){
+        $validation=request()->validate([
+            'provinsi'=>'required',
+            'cities'=>'required',
+            'districts'=>'required',
+            'sub_districts'=>'required',
+            'detail_alamat'=>'required',
+            'tanggal_pemberangkatan'=>'required',
+            'jam_pemberangkatan'=>'required',
+            'tanggal_kedatangan'=>'required',
+            'jam_kedatangan'=>'required',
+            'provinsi_2'=>'required',
+            'cities_2'=>'required',
+            'districts_2'=>'required',
+            'sub_districts_2'=>'required',
+            'detail_alamat_2'=>'required',
+            'employee_dinas'=>'required',
+        ],
+        [
+            'employee_dinas.required'=>'harus dipilih',
+        ]);
+    }
     private function _validation10(){
         $validation=request()->validate([
             'provinsi'=>'required',
@@ -608,6 +789,88 @@ class GAController extends AdminBaseController
         ],
         [
             'employee.required'=>'harus dipilih',
+        ]);
+    }
+    private function _validation16(){
+        $validation=request()->validate([
+            'provinsi'=>'required',
+            'cities'=>'required',
+            'districts'=>'required',
+            'sub_districts'=>'required',
+            'detail_alamat'=>'required',
+            'tanggal_pemberangkatan'=>'required',
+            'jam_pemberangkatan'=>'required',
+            'tanggal_kedatangan'=>'required',
+            'jam_kedatangan'=>'required',
+            'provinsi_2'=>'required',
+            'cities_2'=>'required',
+            'districts_2'=>'required',
+            'sub_districts_2'=>'required',
+            'detail_alamat_2'=>'required',
+            'nama_tamu'=>'required',
+            'nomor_tamu'=>'required',
+            'instansi_tamu'=>'required',
+            'employee_dinas'=>'required'
+        ],
+        [
+            'employee.required'=>'harus dipilih',
+        ]);
+    }
+    private function _validation17(){
+        $validation=request()->validate([
+            'provinsi'=>'required',
+            'cities'=>'required',
+            'districts'=>'required',
+            'sub_districts'=>'required',
+            'detail_alamat'=>'required',
+            'tanggal_pemberangkatan'=>'required',
+            'jam_pemberangkatan'=>'required',
+            'tanggal_kedatangan'=>'required',
+            'jam_kedatangan'=>'required',
+            'provinsi_2'=>'required',
+            'cities_2'=>'required',
+            'districts_2'=>'required',
+            'sub_districts_2'=>'required',
+            'detail_alamat_2'=>'required',
+            'jenis_barang'=>'required',
+            'quantity'=>'required',
+            'satuan'=>'required',
+            'instansi'=>'required',
+            'nama_instansi'=>'required',
+            'employee_dinas'=>'required'
+        ],
+        [
+            'employee_dinas.required'=>'harus dipilih',
+        ]);
+    }
+    private function _validation18(){
+        $validation=request()->validate([
+            'provinsi'=>'required',
+            'cities'=>'required',
+            'districts'=>'required',
+            'sub_districts'=>'required',
+            'detail_alamat'=>'required',
+            'tanggal_pemberangkatan'=>'required',
+            'jam_pemberangkatan'=>'required',
+            'tanggal_kedatangan'=>'required',
+            'jam_kedatangan'=>'required',
+            'provinsi_2'=>'required',
+            'cities_2'=>'required',
+            'districts_2'=>'required',
+            'sub_districts_2'=>'required',
+            'detail_alamat_2'=>'required',
+            'nama_tamu'=>'required',
+            'nomor_tamu'=>'required',
+            'instansi_tamu'=>'required',
+            'jenis_barang'=>'required',
+            'quantity'=>'required',
+            'satuan'=>'required',
+            'instansi'=>'required',
+            'nama_instansi'=>'required',
+            'employee_dinas'=>'required'
+        ],
+        [
+            'employee_dinas.required'=>'harus dipilih',
         ]);
     }
 }

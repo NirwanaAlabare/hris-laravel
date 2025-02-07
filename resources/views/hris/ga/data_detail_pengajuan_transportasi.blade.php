@@ -26,235 +26,303 @@
 <div class="card-body px-6 py-4" style="border: 1px solid #d8d4dc">
     @foreach ($pengajuan_transportasi as $value)
     <div class="row py-1">
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Tanggal Pengajuan</label>
-        </div>
-        <div class="col-4">
-            <input type="hidden" value="{{$value->id}}" id="id_request">
-            <label style="font-size:12pt">: {{Carbon\Carbon::parse($value->created_at)->translatedFormat('l d F Y, H:i')}}</label>
-        </div>
-    </div>
-    <div class="row pb-1">
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Nama Karyawan</label>
-        </div>
-        <div class="col-4">
-           <label style="font-size:12pt">: {{$value->employee_name}}</label>
-        </div>
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Nama Department</label>
-        </div>
-        <div class="col-4">
-            <label style="font-size:12pt">: {{$value->department_name}}</label>
-        </div>
-    </div>
-    <div class="row pb-1">
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> NIK</label>
-        </div>
-        <div class="col-4">
-           <label style="font-size:12pt">: {{$value->nik}}</label>
-        </div>
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Nama Bagian</label>
-        </div>
-        <div class="col-4">
-           <label style="font-size:12pt">: {{$value->sub_dept_name}}</label>
-        </div>
-    </div>
-    <div class="row pb-2">
         <div class="col-6">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Keberangkatan Awal</label>
+            <div class="row">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Tanggal Pengajuan</label>
+                </div>
+                <div class="col-8">
+                    <input type="hidden" value="{{$value->id}}" id="id_request">
+                    <label style="font-size:12pt">: {{Carbon\Carbon::parse($value->created_at)->translatedFormat('l d F Y, H:i')}}</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Nama Karyawan</label>
+                </div>
+                <div class="col-8">
+                    <label style="font-size:12pt">: {{$value->employee_name}}</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> NIK</label>
+                </div>
+                <div class="col-8">
+                    <label style="font-size:12pt">: {{$value->nik}}</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Keberangkatan Awal</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Provinsi</label>
+                </div>
+                <div class="col-8">
+                    <label style="font-size:12pt">: {{$value->nama_provinsi}}</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Kota</label>
+                </div>
+                <div class="col-8">
+                    <label style="font-size:12pt">: {{$value->nama_kota}}</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Kecamatan</label>
+                </div>
+                <div class="col-8">
+                    <label style="font-size:12pt">: {{$value->nama_kecamatan}}</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Desa</label>
+                </div>
+                <div class="col-8">
+                    <label style="font-size:12pt">: {{$value->nama_desa}}</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Detail Alamat</label>
+                </div>
+                <div class="col-8">
+                    <label style="font-size:12pt">: {{$value->detail_alamat}}</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Waktu Pemberangkatan</label>
+                </div>
+                <div class="col-8">
+                    <label style="font-size:12pt">: {{Carbon\Carbon::parse($value->tanggal_pemberangkatan)->translatedFormat('l, d F Y')}}, {{Carbon\Carbon::parse($value->jam_pemberangkatan)->translatedFormat('H:i')}}</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Tujuan Pemberangkatan</label>
+                </div>
+                <div class="col-8">
+                    <label style="font-size:12pt">: {{ucfirst(str_replace('_', ' ', $value->tujuan_pemberangkatan))}}</label>
+                </div>
+            </div>
         </div>
-        <div class="col-2 pt-1">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Tujuan</label>
-        </div>
-        <div class="col-4 pt-1">
-            <button class="btn btn-primary py-1" id="tujuan_lainnya" data-id="{{$value->id}}"> Tujuan Lainnya</button></label>
+        <div class="col-6">
+            <div class="row pb-1">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Nama Department</label>
+                </div>
+                <div class="col-8">
+                    <label style="font-size:12pt">: {{$value->department_name}}</label>
+                </div>
+            </div>
+            <div class="row pb-1">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Nama Bagian</label>
+                </div>
+                <div class="col-8">
+                   <label style="font-size:12pt">: {{$value->sub_dept_name}}</label>
+                </div>
+            </div>
+            <div class="row pb-2">
+                <div class="col-4 pt-1">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Tujuan</label>
+                </div>
+                <div class="col-8 pt-1">
+                    <button class="btn btn-primary py-1" id="tujuan_lainnya" data-id="{{$value->id}}"> Tujuan Lainnya</button></label>
+                </div>
+            </div>
+            <div class="row pb-1">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Provinsi</label>
+                </div>
+                <div class="col-8">
+                   <label style="font-size:12pt">: {{$value->nama_provinsi_tujuan}}</label>
+                </div>
+            </div>
+            <div class="row pb-1">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Kota</label>
+                </div>
+                <div class="col-8">
+                   <label style="font-size:12pt">: {{$value->nama_kota_tujuan}}</label>
+                </div>
+            </div>
+            <div class="row pb-1">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Kecamatan</label>
+                </div>
+                <div class="col-8">
+                   <label style="font-size:12pt">: {{$value->nama_kecamatan_tujuan}}</label>
+                </div>
+            </div>
+            <div class="row pb-1">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Desa</label>
+                </div>
+                <div class="col-8">
+                   <label style="font-size:12pt">: {{$value->nama_desa_tujuan}}</label>
+                </div>
+            </div>
+            <div class="row pb-1">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Detail Alamat</label>
+                </div>
+                <div class="col-8">
+                   <label style="font-size:12pt">: {{$value->detail_alamat_tujuan}}</label>
+                </div>
+            </div>
+            <div class="row pb-1">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Waktu Kedatangan</label>
+                </div>
+                <div class="col-8">
+                   <label style="font-size:12pt">: {{Carbon\Carbon::parse($value->tanggal_kedatangan)->translatedFormat('l, d F Y')}}, {{Carbon\Carbon::parse($value->jam_kedatangan)->translatedFormat('H:i')}}</label>
+                </div>
+            </div>
+            <div class="row pb-1">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Jarak Tempuh</label>
+                </div>
+                <div class="col-8">
+                   <label style="font-size:12pt">: {{$value->jarak_tempuh}} Km</label>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row pb-1">
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Provinsi</label>
-        </div>
-        <div class="col-4">
-           <label style="font-size:12pt">: {{$value->nama_provinsi}}</label>
-        </div>
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Provinsi</label>
-        </div>
-        <div class="col-4">
-           <label style="font-size:12pt">: {{$value->nama_provinsi_tujuan}}</label>
-        </div>
-    </div>
-    <div class="row pb-1">
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Kota</label>
-        </div>
-        <div class="col-4">
-           <label style="font-size:12pt">: {{$value->nama_kota}}</label>
-        </div>
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Kota</label>
-        </div>
-        <div class="col-4">
-           <label style="font-size:12pt">: {{$value->nama_kota_tujuan}}</label>
-        </div>
-    </div>
-    <div class="row pb-1">
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Kecamatan</label>
-        </div>
-        <div class="col-4">
-           <label style="font-size:12pt">: {{$value->nama_kecamatan}}</label>
-        </div>
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Kecamatan</label>
-        </div>
-        <div class="col-4">
-           <label style="font-size:12pt">: {{$value->nama_kecamatan_tujuan}}</label>
-        </div>
-    </div>
-    <div class="row pb-1">
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Desa</label>
-        </div>
-        <div class="col-4">
-           <label style="font-size:12pt">: {{$value->nama_desa}}</label>
-        </div>
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Desa</label>
-        </div>
-        <div class="col-4">
-           <label style="font-size:12pt">: {{$value->nama_desa_tujuan}}</label>
-        </div>
-    </div>
-    <div class="row pb-1">
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Detail Alamat</label>
-        </div>
-        <div class="col-4">
-           <label style="font-size:12pt">: {{$value->detail_alamat}}</label>
-        </div>
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Detail Alamat</label>
-        </div>
-        <div class="col-4">
-           <label style="font-size:12pt">: {{$value->detail_alamat_tujuan}}</label>
-        </div>
-    </div>
-    <div class="row pb-1">
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Waktu Pemberangkatan</label>
-        </div>
-        <div class="col-4">
-           <label style="font-size:12pt">: {{Carbon\Carbon::parse($value->tanggal_pemberangkatan)->translatedFormat('l, d F Y')}}, {{Carbon\Carbon::parse($value->jam_pemberangkatan)->translatedFormat('H:i')}}</label>
-        </div>
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Waktu Pemberangkatan</label>
-        </div>
-        <div class="col-4">
-           <label style="font-size:12pt">: {{Carbon\Carbon::parse($value->tanggal_kedatangan)->translatedFormat('l, d F Y')}}, {{Carbon\Carbon::parse($value->jam_kedatangan)->translatedFormat('H:i')}}</label>
-        </div>
-    </div>
-    <div class="row pb-1">
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Tujuan Pemberangkatan</label>
-        </div>
-        <div class="col-4">
-            <label style="font-size:12pt">: {{ucfirst(str_replace('_', ' ', $value->tujuan_pemberangkatan))}}</label>
-        </div>
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Jarak Tempuh</label>
-        </div>
-        <div class="col-4">
-           <label style="font-size:12pt">: {{$value->jarak_tempuh}} Km</label>
-        </div>
-    </div>
+    
     @if (str_contains($value->tujuan_pemberangkatan, 'antar_barang') || str_contains($value->tujuan_pemberangkatan, 'jemput_barang'))
-    <div class="row pb-1">
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Jenis Barang</label>
+    <div class="row pb-1 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Jenis Barang</label>
+                </div>
+                <div class="col-8">
+                    <label style="font-size:12pt">: {{$value->jenis_barang}}</label>
+                </div>
+            </div>
+            <div class="row pb-1">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Quantity</label>
+                </div>
+                <div class="col-8">
+                    <label style="font-size:12pt">: {{$value->quantity}}</label> <label style="font-size:12pt"> {{$value->satuan}}</label>
+                </div>
+            </div>
+            <div class="row pb-1">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Keterangan Barang</label>
+                </div>
+                <div class="col-8">
+                    <label style="font-size:12pt">: {{$value->keterangan_barang}}</label>
+                </div>
+            </div>
         </div>
-        <div class="col-4">
-            <label style="font-size:12pt">: {{$value->jenis_barang}}</label>
-        </div>
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Instansi</label>
-        </div>
-        <div class="col-4">
-            <label style="font-size:12pt">: {{$value->nama_instansi}}</label>
-        </div>
-    </div>
-    <div class="row pb-1">
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Quantity</label>
-        </div>
-        <div class="col-4">
-            <label style="font-size:12pt">: {{$value->quantity}}</label> <label style="font-size:12pt"> {{$value->satuan}}</label>
-        </div>
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Nama Penerima</label>
-        </div>
-        <div class="col-4">
-            <label style="font-size:12pt">: {{$value->nama_penerima}}</label>
-        </div>
-    </div>
-    <div class="row pb-1">
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Keterangan Barang</label>
-        </div>
-        <div class="col-4">
-            <label style="font-size:12pt">: {{$value->keterangan_barang}}</label>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Instansi</label>
+                </div>
+                <div class="col-8">
+                    <label style="font-size:12pt">: {{$value->nama_instansi}}</label>
+                </div>
+            </div>
+            <div class="row pb-1">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Nama Penerima</label>
+                </div>
+                <div class="col-8">
+                    <label style="font-size:12pt">: {{$value->nama_penerima}}</label>
+                </div>
+            </div>
         </div>
     </div>
     @endif
     @if (str_contains($value->tujuan_pemberangkatan, 'antar_tamu') || str_contains($value->tujuan_pemberangkatan, 'jemput_tamu') )
-    <div class="row pb-1">
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Nama Tamu</label>
+    <div class="row pb-1 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Nama Tamu</label>
+                </div>
+                <div class="col-8">
+                    <label style="font-size:12pt">: {{$value->nama_tamu}}</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Instansi Tamu</label>
+                </div>
+                <div class="col-8">
+                    <label style="font-size:12pt">: {{$value->instansi_tamu}}</label>
+                </div>
+            </div>
         </div>
-        <div class="col-4">
-            <label style="font-size:12pt">: {{$value->nama_tamu}}</label>
-        </div>
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Nomor Hp Tamu</label>
-        </div>
-        <div class="col-4">
-            <label style="font-size:12pt">: {{$value->nomor_hp_tamu}}</label>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Nomor Hp Tamu</label>
+                </div>
+                <div class="col-8">
+                    <label style="font-size:12pt">: {{$value->nomor_hp_tamu}}</label>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row pb-1">
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Instansi Tamu</label>
-        </div>
-        <div class="col-4">
-            <label style="font-size:12pt">: {{$value->instansi_tamu}}</label>
+    @endif
+    
+    @if (str_contains($value->tujuan_pemberangkatan, 'antar_dinas') || str_contains($value->tujuan_pemberangkatan, 'jemput_dinas'))
+    <div class="row pb-1 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Karyawan yang dinas luar</label>
+                </div>
+                <div class="col-8">
+                    <label style="font-size:12pt">: {{ucwords(strtolower($nama_karyawan_dinas_luar))}}</label>
+                </div>
+            </div>
         </div>
     </div>
     @endif
     <div class="row pb-1">
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Driver</label>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Driver</label>
+                </div>
+                <div class="col-8">
+                    <select class="form-control col-10" id="driver">
+                        <option value="">Pilih Driver</option>
+                        @foreach ($drivers as $drive)
+                            <option value="{{ $drive->enroll_id }}" {{ ( $drive->enroll_id == $value->id_driver) ? 'selected' : '' }}> {{ $drive->employee_name }} </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
         </div>
-        <div class="col-4">
-            <select class="form-control col-10" id="driver">
-                <option value="">Pilih Driver</option>
-                @foreach ($drivers as $drive)
-                    <option value="{{ $drive->enroll_id }}" {{ ( $drive->enroll_id == $value->id_driver) ? 'selected' : '' }}> {{ $drive->employee_name }} </option>
-                @endforeach
-            </select>
-        </div>
-        <div class="col-2">
-            <label class="form-label" style="font-weight: bold;font-size:12pt"> Kendaraan</label>
-        </div>
-        <div class="col-4">
-            <select class="form-control col-10" id="vehicle">
-                <option value="">Pilih Kendaraan</option>
-                @foreach ($vehicles as $v)
-                    <option value="{{$v->id}}"{{ ( $v->id == $value->nomor_kendaraan) ? 'selected' : '' }}>{{$v->plat_no}} || {{$v->merk}} {{$v->tipe}}</option>
-                @endforeach
-            </select>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4">
+                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Kendaraan</label>
+                </div>
+                <div class="col-8">
+                    <select class="form-control col-10" id="vehicle">
+                        <option value="">Pilih Kendaraan</option>
+                        @foreach ($vehicles as $v)
+                            <option value="{{$v->id}}"{{ ( $v->id == $value->nomor_kendaraan) ? 'selected' : '' }}>{{$v->plat_no}} || {{$v->merk}} {{$v->tipe}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row pb-1 pt-3">

@@ -45,7 +45,7 @@
 </div>
 <div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-scrollable" style="max-width: 40%;">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
@@ -98,6 +98,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="row py-2 bg-light text-dark">
+                    <div class="col-5 pl-6 pt-2">
+                        <h6 style="font-size:12pt;">Tujuan Pemberangkatan</h6>
+                    </div>
+                    <div class="col-7 pr-5 pl-0">
+                        <div class="col-12" id="tujuan_pemberangkatan_modal">
+                        </div>
+                    </div>
+                </div>
                 <div class="row py-2">
                     <div class="col-5 pl-6 pt-2">
                         <h6 style="font-size:12pt;">Driver</h6>
@@ -136,7 +145,7 @@
 </div>
 <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-scrollable" style="max-width: 40%;">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
@@ -189,9 +198,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="row py-2 bg-light text-dark">
+                    <div class="col-5 pl-6 pt-2">
+                        <h6 style="font-size:12pt;">Tujuan Pemberangkatan</h6>
+                    </div>
+                    <div class="col-7 pr-5">
+                        <div class="col-12 pl-0" id="tujuan_pemberangkatan_modal_2">
+                        </div>
+                    </div>
+                </div>
                 <div class="row py-2">
                     <div class="col-5 pl-6 pt-2">
-                        <h6 style="font-size:12pt;">Alasan Reject</h6>
+                        <h6 style="font-size:12pt;">Alternative</h6>
                     </div>
                     <div class="col-7 pr-5">
                         <textarea id="alasan_reject" class="form-control" style="background-color: white"></textarea>
@@ -199,8 +217,74 @@
                 </div>
                 <div class="row pt-2">
                     <div class="col-12 text-center">
-                        <button class="btn btn-danger btn-sm py-1" id="reject_this_request">REJECT</button>
+                        <button class="btn btn-success btn-sm py-1" id="reject_this_request">Save</button>
                         <button class="btn btn-light btn-sm py-1" data-dismiss="modal">CANCEL</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="alternativeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row py-2">
+                    <div class="col-5 pl-6 pt-2">
+                        <h6 style="font-size:12pt;">Alternative</h6>
+                    </div>
+                    <div class="col-7 pr-5">
+                        <input type="hidden" id="alasan_reject_id">
+                        <textarea id="alasan_reject_alternative" class="form-control" style="background-color: white"></textarea>
+                    </div>
+                </div>
+                <div class="row pt-2">
+                    <div class="col-12 text-center">
+                        <button class="btn btn-warning text-dark btn-sm py-1" id="update_reject_request">UPDATE</button>
+                        <button class="btn btn-light btn-sm py-1" data-dismiss="modal" id="cancel_reject_request">CANCEL</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="showDriverModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row py-2">
+                    <div class="col-5 pl-6 pt-2">
+                        <h6 style="font-size:12pt;">Driver</h6>
+                    </div>
+                    <div class="col-7 pr-5">
+                        <input type="hidden" id="id_request_approve_modal">
+                        <select class="form-control" id="show_driver_modal">
+                            <option value="">Pilih Driver</option>
+                            @foreach ($drivers as $key=>$value)
+                                <option value="{{$value->enroll_id}}">{{$value->employee_name}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="row py-2 bg-light text-dark">
+                    <div class="col-5 pl-6 pt-2">
+                        <h6 style="font-size:12pt;">Nomor Kendaraan</h6>
+                    </div>
+                    <div class="col-7 pr-5">
+                        <select class="form-control" id="nomor_kendaraan_modal">
+                            <option value="">Pilih Kendaraan</option>
+                            @foreach ($vehicles as $key=>$value)
+                                <option value="{{$value->id}}">{{$value->plat_no}} || {{$value->merk}} {{$value->tipe}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="row pt-2">
+                    <div class="col-12 text-center">
+                        <button class="btn btn-success btn-sm py-1" id="approve_this_request_info">UPDATE</button>
+                        <button class="btn btn-light btn-sm py-1" data-dismiss="modal" id="cancel_this_request">CANCEL</button>
                     </div>
                 </div>
             </div>
@@ -296,18 +380,33 @@
             {
                 data: null,
                 render: function (data, type, row, meta) {
-                    if (row.user==4241 || row.user==20 || row.user==17 || row.user==5321 || row.user==7765 || row.user==6083 || row.user==6713){
+                    if (row.user==4241 || row.user==20 || row.user==17 || row.user==7765 || row.user==5321 || row.user==6083 || row.user==6713){
                         if(row.status==0){
-                            return `<a class='btn btn-success py-0 px-2 mt-0 btn-sm btn-block text-white' style='font-size:9pt' data-toggle="modal" data-target="#approveModal" ' onclick="approve_function(` + row.id + `,'` + row.employee_name + `','` + row.department_name + `','` + row.detail_alamat + `','` + row.desa + `','` + row.detail_alamat_tujuan + `','` + row.desa_tujuan + `')"> APPROVE </a><a class='btn btn-danger py-0 mt-1 btn-sm btn-block text-white' style='font-size:9pt' data-toggle="modal" data-target="#rejectModal" ' onclick="reject_function(` + row.id + `,'` + row.employee_name + `','` + row.department_name + `','` + row.detail_alamat + `','` + row.desa + `','` + row.detail_alamat_tujuan + `','` + row.desa_tujuan + `')"> REJECT </a>`;
+                            return `<a class='btn btn-success py-0 px-2 mt-0 btn-sm btn-block text-white' style='font-size:9pt' data-toggle="modal" data-target="#approveModal" ' onclick="approve_function(` + row.id + `,'` + row.employee_name + `','` + row.department_name + `','` + row.detail_alamat + `','` + row.desa + `','` + row.detail_alamat_tujuan + `','` + row.desa_tujuan + `','` + row.tujuan_pemberangkatan + `')"> APPROVE </a><a class='btn btn-danger py-0 mt-1 btn-sm btn-block text-white' style='font-size:9pt' data-toggle="modal" data-target="#rejectModal" ' onclick="reject_function(` + row.id + `,'` + row.employee_name + `','` + row.department_name + `','` + row.detail_alamat + `','` + row.desa + `','` + row.detail_alamat_tujuan + `','` + row.desa_tujuan + `','` + row.tujuan_pemberangkatan + `')"> ALTERNATIVE </a>`;
                         }else{
-                            return `<select class="form-control px-1" onChange="approveButton(`+row.id+`)" id="value_status_`+row.id+`">\
-                                <option value=0 ${row.status == 0 ? 'selected' : ''}>Pilih Status</option>\
-                                <option value=1 ${row.status == 1 ? 'selected' : ''}>Approved</option>\
-                                <option value=2 ${row.status == 2 ? 'selected' : ''}>Rejected</option>\
-                                <option value=3 ${row.status == 3 ? 'selected' : ''}>On The Way</option>\
-                                <option value=4 ${row.status == 4 ? 'selected' : ''}>Done</option>\
-                                <option value=5 ${row.status == 5 ? 'selected' : ''}>Cancel</option>\
-                                </select>`;
+                            if(row.status==2){
+                                return `
+                                    <select class="form-control px-1" onChange="approveButton(`+row.id+`)" id="value_status_`+row.id+`">\
+                                    <option value=0 ${row.status == 0 ? 'selected' : ''}>Pilih Status</option>\
+                                    <option value=1 ${row.status == 1 ? 'selected' : ''}>Approved</option>\
+                                    <option value=2 ${row.status == 2 ? 'selected' : ''}>Alternative</option>\
+                                    <option value=3 ${row.status == 3 ? 'selected' : ''}>On The Way</option>\
+                                    <option value=4 ${row.status == 4 ? 'selected' : ''}>Done</option>\
+                                    <option value=6 ${row.status == 6 ? 'selected' : ''}>Late</option>\
+                                    <option value=5 ${row.status == 5 ? 'selected' : ''}>Cancel</option>\
+                                    </select>`;
+                            }else{
+                                return `
+                                    <select class="form-control px-1" onChange="approveButton(`+row.id+`)" id="value_status_`+row.id+`">\
+                                    <option value=0 ${row.status == 0 ? 'selected' : ''}>Pilih Status</option>\
+                                    <option value=1 ${row.status == 1 ? 'selected' : ''}>Approved</option>\
+                                    <option value=2 ${row.status == 2 ? 'selected' : ''}>Alternative</option>\
+                                    <option value=3 ${row.status == 3 ? 'selected' : ''}>On The Way</option>\
+                                    <option value=4 ${row.status == 4 ? 'selected' : ''}>Done</option>\
+                                    <option value=6 ${row.status == 6 ? 'selected' : ''}>Late</option>\
+                                    <option value=5 ${row.status == 5 ? 'selected' : ''}>Cancel</option>\
+                                    </select>`;
+                            }
                         }
                     }else{
                         if(row.status==0){
@@ -315,11 +414,13 @@
                         }else if(row.status==1){
                             return `<h6 style="font-size:11pt; margin-bottom:3px;text-align:center;color:green;font-weight:bold">APPROVED</h6>`;
                         }else if(row.status==2){
-                            return `<h6 style="font-size:11pt; margin-bottom:3px;text-align:center;color:red;font-weight:bold">REJECTED</h6>`;
+                            return `<h6 style="font-size:11pt; margin-bottom:3px;text-align:center;color:red;font-weight:bold">Alternative</h6>`;
                         }else if(row.status==3){
                             return `<h6 style="font-size:11pt; margin-bottom:3px;text-align:center;color:green;font-weight:bold">ON THE WAY</h6>`;
                         }else if(row.status==4){
                             return `<h6 style="font-size:11pt; margin-bottom:3px;text-align:center;color:green;font-weight:bold">DONE</h6>`;
+                        }else if(row.status==6){
+                            return `<h6 style="font-size:11pt; margin-bottom:3px;text-align:center;color:orange;font-weight:bold">LATE</h6>`;
                         }else if(row.status==5){
                             return `<h6 style="font-size:11pt; margin-bottom:3px;text-align:center;color:red;font-weight:bold">CANCEL</h6>`;
                         }
@@ -329,22 +430,34 @@
             {
                 data: null,
                 render: function (data, type, row, meta) {
-                    if (row.user==4241 || row.user==20 || row.user==17 || row.user==7765 || row.user==6083 || row.user==6713){
+                    if (row.user==4241 || row.user==20 || row.user==17 || row.user==7765 || row.user==5321 || row.user==6083 || row.user==6713){
                         if(row.created_by==row.user){
                             if(row.status==0){
                                 return `<button onclick="edit_detail(` + row.id + `)" class="btn btn-sm btn-block py-0 px-1 mb-1" style="font-size:9pt;background-color:orange;color:white">EDIT</button><button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1  mt-0" style="font-size:9pt">LIHAT DETAIL</button>`;
                             }else if(row.status!=2 && row.status!=5){
-                                    return `<button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1" style="font-size:9pt">LIHAT DETAIL</button><button onclick="print_penugasan(` + row.id + `)" class="btn btn-success btn-sm btn-block px-1 py-0 mt-0" style="font-size:9pt">FORM PENUGASAN</button>`;
+                                    return `<center><a href="#" data-toggle="modal" data-target="#showDriverModal" onclick="show_driver_function(` + row.id_driver + `,`+row.nomor_kendaraan+`,` + row.id+ `,'admin')"><img src="{{URL::asset('assets/images/brand/info.png')}}" width="23" style="padding-bottom:4px"></a></center>\
+                                    <button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1" style="font-size:9pt">LIHAT DETAIL</button><button onclick="print_penugasan(` + row.id + `)" class="btn btn-success btn-sm btn-block px-1 py-0 mt-0" style="font-size:9pt">FORM PENUGASAN</button>`;
                             }else{
-                                return `<button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-sm btn-block py-0 px-1 mb-1" style="font-size:9pt">LIHAT DETAIL</button>`;
+                                if(row.status==2){
+                                    return `<center><a href="#" data-toggle="modal" data-target="#alternativeModal" onclick="alternative_function('` + row.alasan_status + `',` + row.id+ `,'admin')"><img src="{{URL::asset('assets/images/brand/info.png')}}" width="23" style="padding-bottom:4px"></a></center>\
+                                    <button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-sm btn-block py-0 px-1 mb-1" style="font-size:9pt">LIHAT DETAIL</button>`;
+                                }else{
+                                    return `<button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-sm btn-block py-0 px-1 mb-1" style="font-size:9pt">LIHAT DETAIL</button>`;
+                                }
                             }
                         }else{
                             if(row.status==0){
                                 return `<button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-sm btn-block py-0 px-1 mb-1 " style="font-size:9pt">LIHAT DETAIL</button>`;
                             }else if(row.status!=2 && row.status!=5){
-                                return `<button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1" style="font-size:9pt">LIHAT DETAIL</button><button onclick="print_penugasan(` + row.id + `)" class="btn btn-success btn-sm btn-block px-1 py-0 mt-0" style="font-size:9pt">FORM PENUGASAN</button>`;
+                                return `<center><a href="#" data-toggle="modal" data-target="#showDriverModal" onclick="show_driver_function(` + row.id_driver + `,`+row.nomor_kendaraan+`,` + row.id+ `,'admin')"><img src="{{URL::asset('assets/images/brand/info.png')}}" width="23" style="padding-bottom:4px"></a></center>\
+                                <button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1" style="font-size:9pt">LIHAT DETAIL</button><button onclick="print_penugasan(` + row.id + `)" class="btn btn-success btn-sm btn-block px-1 py-0 mt-0" style="font-size:9pt">FORM PENUGASAN</button>`;
                             }else{
-                                return `<button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1" style="font-size:9pt">LIHAT DETAIL</button>`;
+                                if(row.status==2){
+                                    return `<center><a href="#" data-toggle="modal" data-target="#alternativeModal" ' onclick="alternative_function('` + row.alasan_status + `',` + row.id+ `,'admin')"><img src="{{URL::asset('assets/images/brand/info.png')}}" width="23" style="padding-bottom:4px"></a></center>\
+                                    <button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-sm btn-block py-0 px-1 mb-1" style="font-size:9pt">LIHAT DETAIL</button>`;
+                                }else{
+                                    return `<button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-sm btn-block py-0 px-1 mb-1" style="font-size:9pt">LIHAT DETAIL</button>`;
+                                }
                             }
                         }
                     }else{
@@ -352,17 +465,31 @@
                             if(row.status==0){
                                 return `<button onclick="edit_detail(` + row.id + `)" class="btn btn-sm btn-block py-0 px-1 mb-1" style="font-size:9pt;background-color:orange;color:white">EDIT</button>`;
                             }else if(row.status!=2 && row.status!=5){
-                                return `<button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1 mt-0" style="font-size:9pt">LIHAT DETAIL</button><button onclick="print_penugasan(` + row.id + `)" class="btn btn-success btn-sm btn-block p-0 mt-0" style="font-size:9pt">FORM PENUGASAN</button>`;
+                                return `<center><a href="#" data-toggle="modal" data-target="#showDriverModal" onclick="show_driver_function(` + row.id_driver + `,`+row.nomor_kendaraan+`,` + row.id+ `,'user')"><img src="{{URL::asset('assets/images/brand/info.png')}}" width="23" style="padding-bottom:4px"></a></center>\
+                                <button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1 mt-0" style="font-size:9pt">LIHAT DETAIL</button><button onclick="print_penugasan(` + row.id + `)" class="btn btn-success btn-sm btn-block p-0 mt-0" style="font-size:9pt">FORM PENUGASAN</button>`;
                             }else{
-                                return `<button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1 mt-0" style="font-size:9pt">LIHAT DETAIL</button>`;
+                                if(row.status==2){
+                                    return `<center><a href="#" data-toggle="modal" data-target="#alternativeModal" ' onclick="alternative_function('` + row.alasan_status + `',` + row.id+ `,'user')"><img src="{{URL::asset('assets/images/brand/info.png')}}" width="23" style="padding-bottom:4px"></a></center>\
+                                    <button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-sm btn-block py-0 px-1 mb-1" style="font-size:9pt">LIHAT DETAIL</button>`;
+                                }else{
+                                    return `<center><a href="#" data-toggle="modal" data-target="#showDriverModal" onclick="show_driver_function(` + row.id_driver + `,`+row.nomor_kendaraan+`,` + row.id+ `,'user')"><img src="{{URL::asset('assets/images/brand/info.png')}}" width="23" style="padding-bottom:4px"></a></center>\
+                                    <button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1 mt-0" style="font-size:9pt">LIHAT DETAIL</button>`;
+                                }
                             }
                         }else{
                             if(row.status==0){
                                 return `<button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1 mt-0" style="font-size:9pt">LIHAT DETAIL</button>`;
                             }else if(row.status!=2 && row.status!=5){
-                                return `<button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1 mt-0" style="font-size:9pt">LIHAT DETAIL</button><button onclick="print_penugasan(` + row.id + `)" class="btn btn-success btn-sm btn-block p-0 mt-0" style="font-size:9pt">FORM PENUGASAN</button>`;
+                                return `<center><a href="#" data-toggle="modal" data-target="#showDriverModal" onclick="show_driver_function(` + row.id_driver + `,`+row.nomor_kendaraan+`,` + row.id+ `,'user')"><img src="{{URL::asset('assets/images/brand/info.png')}}" width="23" style="padding-bottom:4px"></a></center>\
+                                <button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1 mt-0" style="font-size:9pt">LIHAT DETAIL</button><button onclick="print_penugasan(` + row.id + `)" class="btn btn-success btn-sm btn-block p-0 mt-0" style="font-size:9pt">FORM PENUGASAN</button>`;
                             }else{
-                                return `<button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1 mt-0" style="font-size:9pt">LIHAT DETAIL</button>`;
+                                if(row.status==2){
+                                    return `<center><a href="#" data-toggle="modal" data-target="#alternativeModal" ' onclick="alternative_function('` + row.alasan_status + `',` + row.id+ `,'user')"><img src="{{URL::asset('assets/images/brand/info.png')}}" width="23" style="padding-bottom:4px"></a></center>\
+                                    <button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-sm btn-block py-0 px-1 mb-1" style="font-size:9pt">LIHAT DETAIL</button>`;
+                                }else{
+                                    return `<center><a href="#" data-toggle="modal" data-target="#showDriverModal" onclick="show_driver_function(` + row.id_driver + `,`+row.nomor_kendaraan+`,` + row.id+ `,'user')"><img src="{{URL::asset('assets/images/brand/info.png')}}" width="23" style="padding-bottom:4px"></a></center>\
+                                    <button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1 mt-0" style="font-size:9pt">LIHAT DETAIL</button>`;
+                                }
                             }
                         }
                     }
@@ -405,7 +532,7 @@
         var url = 'print_penugasan_transportasi?id='+id;
         window.open(url, '_blank');
     }
-    function approve_function(id,employee_name,department_name,detail_alamat,desa,detail_alamat_tujuan,desa_tujuan){
+    function approve_function(id,employee_name,department_name,detail_alamat,desa,detail_alamat_tujuan,desa_tujuan,tujuan_pemberangkatan){
         $('#id_request').val(id);
         $("#nama_karyawan_modal").html(employee_name);
         $("#department_modal").html(department_name);
@@ -413,8 +540,9 @@
         $("#city_modal").html(desa);
         $("#detail_alamat_tujuan_modal").html(detail_alamat_tujuan);
         $("#city_tujuan_modal").html(desa_tujuan);
+        $("#tujuan_pemberangkatan_modal").html(tujuan_pemberangkatan.toUpperCase());
     }
-    function reject_function(id,employee_name,department_name,detail_alamat,desa,detail_alamat_tujuan,desa_tujuan){
+    function reject_function(id,employee_name,department_name,detail_alamat,desa,detail_alamat_tujuan,desa_tujuan,tujuan_pemberangkatan){
         $('#id_request_2').val(id);
         $("#nama_karyawan_modal_2").html(employee_name);
         $("#department_modal_2").html(department_name);
@@ -422,6 +550,42 @@
         $("#city_modal_2").html(desa);
         $("#detail_alamat_tujuan_modal_2").html(detail_alamat_tujuan);
         $("#city_tujuan_modal_2").html(desa_tujuan);
+        $("#tujuan_pemberangkatan_modal_2").html(tujuan_pemberangkatan);
+    }
+    function alternative_function(alternative,id,role){
+        $('#alasan_reject_id').val(id);
+        $('#alasan_reject_alternative').val(alternative);
+        if(role=='user'){
+            document.getElementById('alasan_reject_alternative').style.backgroundColor='white';
+            $('#alasan_reject_alternative').attr('disabled',true);
+            document.getElementById('update_reject_request').style.visibility='hidden';
+            document.getElementById('cancel_reject_request').style.visibility='hidden';
+        }else{
+            document.getElementById('alasan_reject_alternative').style.backgroundColor='white';
+            $('#alasan_reject_alternative').attr('disabled',false);
+            document.getElementById('update_reject_request').style.visibility='visible';
+            document.getElementById('cancel_reject_request').style.visibility='visible';
+        }
+    }
+    function show_driver_function(id_driver,nomor_kendaraan,id_request,role){
+        $('#show_driver_modal').val(id_driver);
+        $('#nomor_kendaraan_modal').val(nomor_kendaraan);
+        $('#id_request_approve_modal').val(id_request);
+        if(role=='user'){
+            document.getElementById('show_driver_modal').style.backgroundColor='white';
+            document.getElementById('nomor_kendaraan_modal').style.backgroundColor='white';
+            $('#show_driver_modal').attr('disabled',true);
+            $('#nomor_kendaraan_modal').attr('disabled',true);
+            document.getElementById('approve_this_request_info').style.visibility='hidden';
+            document.getElementById('cancel_this_request').style.visibility='hidden';
+        }else{
+            document.getElementById('show_driver_modal').style.backgroundColor='white';
+            document.getElementById('nomor_kendaraan_modal').style.backgroundColor='white';
+            $('#show_driver_modal').attr('disabled',false);
+            $('#nomor_kendaraan_modal').attr('disabled',false);
+            document.getElementById('approve_this_request_info').style.visibility='visible';
+            document.getElementById('cancel_this_request').style.visibility='visible';
+        }
     }
     $('#approve_this_request').on('click',function(){
         var id_request=$('#id_request').val();
@@ -461,6 +625,69 @@
             }
         });
     });
+    $('#approve_this_request_info').on('click',function(){
+        var id_request=$('#id_request_approve_modal').val();
+        var driver=$('#show_driver_modal').val();
+        var vehicle_id=$('#nomor_kendaraan_modal').val();
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.approve_car_request')}}",
+            data: {
+                id_request:id_request,
+                driver:driver,
+                vehicle_id:vehicle_id
+            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                swal("", "Permintaan transportasi di update", "success");
+                $('#showDriverModal').modal('hide');
+                dataTableReload();
+            },
+            error: function(error){
+                let err_log=error.responseJSON.errors;
+                if(error.status==422){
+                    if(typeof(err_log.driver)!=='undefined'){
+                        document.getElementById("show_driver_modal").style.border = "1px solid red";
+                    }else{
+                        document.getElementById("show_driver_modal").style.border="";
+                    }
+                    if(typeof(err_log.vehicle_id)!=='undefined'){
+                        document.getElementById("nomor_kendaraan_modal").style.border = "1px solid red";
+                    }else{
+                        document.getElementById("nomor_kendaraan_modal").style.border="";
+                    }
+                }
+            }
+        });
+    });
+    $('#update_reject_request').on('click',function(){
+        var id_request=$('#alasan_reject_id').val();
+        var alasan_reject=$('#alasan_reject_alternative').val();
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.reject_car_request')}}",
+            data: {
+                id_request:id_request,
+                alasan_reject:alasan_reject,
+            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                swal("", "Permintaan transportasi di update", "success");
+                $('#alternativeModal').modal('hide');
+                dataTableReload();
+            },
+            error: function(error){
+                let err_log=error.responseJSON.errors;
+                if(error.status==422){
+                    if(typeof(err_log.alasan_reject)!=='undefined'){
+                        document.getElementById("alasan_reject_alternative").style.border = "1px solid red";
+                    }else{
+                        document.getElementById("alasan_reject_alternative").style.border="";
+                    }
+                }
+            }
+        });
+    });
     $('#reject_this_request').on('click',function(){
         var id_request=$('#id_request_2').val();
         var alasan_reject=$('#alasan_reject').val();
@@ -478,7 +705,14 @@
                 dataTableReload();
             },
             error: function(error){
-                swal("", "Permintaan transportasi gagal di reject", "success");
+                let err_log=error.responseJSON.errors;
+                if(error.status==422){
+                    if(typeof(err_log.alasan_reject)!=='undefined'){
+                        document.getElementById("alasan_reject").style.border = "1px solid red";
+                    }else{
+                        document.getElementById("alasan_reject").style.border="";
+                    }
+                }
             }
         });
     });
