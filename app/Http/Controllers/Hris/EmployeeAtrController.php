@@ -1489,8 +1489,7 @@ class EmployeeAtrController extends AdminBaseController
                         AND master_data_absen_kehadiran.holiday_name is null
                     ')
                     ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
-                    ->toSql();
-                    return $query2;
+                    ->get();
                     if(!empty($query2))
                     {
                         foreach ($query2 as $q2)
