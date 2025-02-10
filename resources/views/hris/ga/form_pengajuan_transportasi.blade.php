@@ -159,7 +159,7 @@
                 <input type="date" id="tanggal_pemberangkatan" class="form-control" style="background-color: white">
             </div>
             <div class="col-2 pr-0">
-                <input class="form-control col-9" id="jam_pemberangkatan" name="jam_pemberangkatan" type="text" style="background-color: white; cursor:pointer;" readonly>
+                <input class="form-control col-9" id="jam_pemberangkatan" name="jam_pemberangkatan" type="text" style="background-color: white; cursor:pointer;">
                 {{-- <input type="time" id="jam_pemberangkatan" class="form-control" style="background-color: white"> --}}
             </div>
             <div class="col-2 pt-1">
@@ -169,7 +169,7 @@
                 <input type="date" id="tanggal_kedatangan" class="form-control" style="background-color: white">
             </div>
             <div class="col-2 pr-0">
-                <input class="form-control col-9" id="jam_kedatangan" name="jam_kedatangan" type="text" style="background-color: white; cursor:pointer;" readonly>
+                <input class="form-control col-9" id="jam_kedatangan" name="jam_kedatangan" type="text" style="background-color: white; cursor:pointer;">
             </div>
         </div>
         <div class="row pb-2">
@@ -577,7 +577,7 @@
                 <input type="date" id="tanggal_kedatangan_yang_ke_'+count+'" name="tanggal_kedatangan_ke[]" class="form-control" style="background-color:white" onchange="isi_tanggal_kedatangan('+count+')">\
             </td>\
             <td>\
-                <input type="text" id="jam_kedatangan_yang_ke_'+count+'" name="jam_kedatangan_ke[]" class="form-control jam_kedatangan_add" style="background-color: white; cursor:pointer;" onchange="isi_jam_kedatangan('+count+')" readonly>\
+                <input type="text" id="jam_kedatangan_yang_ke_'+count+'" name="jam_kedatangan_ke[]" class="form-control jam_kedatangan_add" style="background-color: white; cursor:pointer;" onchange="isi_jam_kedatangan('+count+')">\
             </td>\
             <td>\
                 <a href="#" class="btn btn-primary px-1" onclick="add_route_more('+count+')" id="add_route_more_button_'+count+'"><i class="fa fa-plus"></i></a>\
