@@ -18,6 +18,8 @@ use App\Exports\DailyLaborCosts;
 use App\Exports\RecapDailyLaborCostExport;
 use App\Exports\DailyLaborCost2;
 use App\Models\RekapPerhitunganLembur;
+use App\Models\MutKaryawanInputFormLemburDet;
+use App\Models\MutKaryawanInputNonSewingFormLemburDet;
 use App\Models\DataKoreksiPotongan;
 use App\Models\DepartmentAll;
 use App\Models\DailyLaborCost;
@@ -1542,6 +1544,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         ->get();
 
         $z=[];
+        $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->where('enroll_id', '!=' , 7445)->get();
 
         foreach($master_absen as $key=>$value){
             $enroll_id_karyawan=$value->enroll_id;
@@ -1745,9 +1748,6 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $koreksi_upah=0;
             $koreksi_potongan=0;
             $tahun_berjalan = substr($value->tanggal_berjalan, 0, 4);
-            // if($value->employee_atribut->grading_salary->whereRaw("SUBSTRING(periode_umk, 1, 4) = ?", [$tahun_berjalan])->first()->insentif){
-            //     $insentif_kehadiran=($value->employee_atribut->grading_salary->whereRaw("SUBSTRING(periode_umk, 1, 4) = ?", [$tahun_berjalan])->first()->insentif)/21;
-            // }
             $grading_salary = $value->employee_atribut->grading_salary->filter(function ($item) use ($tahun_berjalan) {
                 return substr($item->periode_umk, 0, 4) == $tahun_berjalan;
             })->first();
@@ -1765,8 +1765,10 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             if(count($value->koreksi_potongan->where('tanggal_koreksi',$value->tanggal_berjalan))>0){
                 $koreksi_potongan=$value->koreksi_potongan->where('tanggal_koreksi',$value->tanggal_berjalan)->sum('jumlah_rp_potongan');
             }
-            $security=EmployeeAtribut::where('sub_dept_id','DEP08SUB005')->where('jenis_kelamin','LAKI-LAKI')->where('enroll_id', '!=' , 7445)->get();
-            $jumlah_hari_libur_security=count(DB::select("select enroll_id from master_data_absen_kehadiran where tanggal_berjalan>='".$tanggal_awal."' and tanggal_berjalan<='".$tanggal_akhir."' and enroll_id = ".$enroll_id_karyawan." and mulai_jam_kerja is null"));
+            $jumlah_hari_libur_security = MasterDataAbsenKehadiran::where('enroll_id', $enroll_id_karyawan)
+                    ->whereBetween('tanggal_berjalan', [$tanggal_awal, $tanggal_akhir])
+                    ->whereNull('mulai_jam_kerja')
+                    ->count();
             if($security->where('enroll_id',$value->enroll_id)->count()){
                 $jumlah_hari_kerja=$jumlah_hari_total-$jumlah_hari_libur_security;
             }else{
@@ -1810,8 +1812,22 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $thr=0;
             $id=$value->enroll_id;
             $tanggal_berjalan=$value->tanggal_berjalan;
-            $count=count(DB::select('select*from mut_karyawan_input_form_lembur_det where enroll_id='.$id.' and konsumsi!=0 and no_form in (select no_form from mut_karyawan_input_form_lembur where tgl_lembur="'.$tanggal_berjalan.'")'));
-            $count2=count(DB::select('select*from mut_karyawan_input_non_sewing_form_lembur_det where enroll_id='.$id.' and konsumsi!=0 and no_form in (select no_form from mut_karyawan_input_non_sewing_form_lembur where tgl_lembur="'.$tanggal_berjalan.'")'));
+            $count = MutKaryawanInputFormLemburDet::where('enroll_id', $id)
+                ->where('konsumsi', '!=', 0)
+                ->whereIn('no_form', function ($query) use ($tanggal_berjalan) {
+                    $query->select('no_form')
+                        ->from('mut_karyawan_input_form_lembur')
+                        ->where('tgl_lembur', $tanggal_berjalan);
+                })
+                ->count();
+            $count2 = MutKaryawanInputNonSewingFormLemburDet::where('enroll_id', $id)
+                    ->where('konsumsi', '!=', 0)
+                    ->whereIn('no_form', function ($query) use ($tanggal_berjalan) {
+                        $query->select('no_form')
+                            ->from('mut_karyawan_input_non_sewing_form_lembur')
+                            ->where('tgl_lembur', $tanggal_berjalan);
+                    })
+                    ->count();
             if($count==1 && $count2!=1){
                 $uang_makan=8000;
             }else if($count2==1 && $count2){
@@ -1822,10 +1838,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $grading_salary = $value->employee_atribut->grading_salary->filter(function ($item) use ($tahun_berjalan) {
                 return substr($item->periode_umk, 0, 4) == $tahun_berjalan;
             })->first();
-            if($security->where('enroll_id',$value->enroll_id)->count()){
-                // $gaji_perhari=($grading_salary->salary_bulanan)/$jumlah_hari_kerja;
-                // Sebelumnya seperti ini, bu mega request untuk security dibagi 25 hari
 
+            if($security->where('enroll_id',$value->enroll_id)->count()){
                 $gaji_perhari=($grading_salary->salary_bulanan)/25;
 
                 $gaji_perhari_total=($value->mulai_jam_kerja!=null)?$gaji_perhari:0;
@@ -1890,11 +1904,6 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 'konsumsi'=>$uang_makan,
                 'total_pembayaran'=>$total_pembayaran,
             ];
-            // if(DailyLaborCost::where('tanggal_berjalan',$value->tanggal_berjalan)->where('enroll_id',$value->enroll_id)->first()){
-            //     DailyLaborCost::where('tanggal_berjalan',$value->tanggal_berjalan)->where('enroll_id',$value->enroll_id)->update($z);
-            // }else{
-            //     DailyLaborCost::create($z);
-            // }
         }
         $datest = DB::transaction(function () use ($z) {
             $tanggalBerjalanList = collect($z)->pluck('tanggal_berjalan')->unique();
@@ -1944,6 +1953,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     'thr' => $item['thr'],
                     'konsumsi' => $item['konsumsi'],
                     'total_pembayaran' => $item['total_pembayaran'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ];
             })->toArray();
 
@@ -1952,9 +1963,6 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         collect($datest)->chunk($batchSize)->each(function ($batch) {
             DailyLaborCost::insert($batch->toArray());
         });
-
-        // return $datest;
-
     }
     public function rekap_bpjs(){
 
