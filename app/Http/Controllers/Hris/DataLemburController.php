@@ -1868,14 +1868,14 @@ class DataLemburController extends AdminBaseController
 
         }
 
-        // $formattedResults = [];
+        $formattedResults = [];
 
-        // foreach ($query as $row) {
-        //   if(!isset($row->data_lembur)){
-        //     $formattedResults[]= $row->uuid;
-        //   }
-        // }
-
+        foreach ($query as $row) {
+          if(!isset($row->data_lembur)){
+            $formattedResults[]= $row->uuid;
+          }
+        }
+        dd($formattedResults);
 
         return Response()->json($query);
     }

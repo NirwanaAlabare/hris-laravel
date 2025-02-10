@@ -1,12 +1,12 @@
 
-         
+
 <style>
 .dropdown-theme {
     display: none;
     position: absolute;
     height: 50px;
     justify-content: center;
-    align-items: center;    
+    align-items: center;
     top: 40px;
     left: 0;
     background-color:rgb(255, 255, 255);
@@ -58,12 +58,12 @@ button.theme-switcher:hover {
         button.theme-switcher{
             transition: all 0.7s ease;
             box-sizing: border-box;
-        } 
+        }
 
 </style>
-        
+
         <div class="d-flex">
-            <a class="header-brand" href="{{url('hris/dashboard/index')}}">
+            <a class="header-brand" href="{{url('hris/dashboard')}}">
                 <img src="{{URL::asset('assets/images/brand/hris.png')}}" class="header-brand-img main-logo" alt="Sparic logo">
                 <img src="{{URL::asset('assets/images/brand/icon.png')}}" class="header-brand-img icon-logo" alt="Sparic logo">
             </a><!-- logo-->

@@ -9,8 +9,8 @@
 <?php ini_set('date.timezone', 'Asia/Jakarta'); ?>
     <div class="page-header shadow pr-2 m-0 pt-0 pb-0 pl-2">
         <ol class="breadcrumb breadcrumb-arrow m-0 p-0">
-            <li><a href="{{route('flns.index')}}">Form Lembur</a></li>
-            <li class="active"><span>Penginputan Form Lembur Non Sewing</span></li>
+            <li><a href="{{route('flns.index')}}">Bazzar</a></li>
+            <li class="active"><span>Pengajuan kupon bazzar</span></li>
         </ol>
         <div class="ml-auto">
             <div class="input-group">
@@ -23,160 +23,27 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <form action="#" method="post" onsubmit="submitForm(this, event)" name='form_modal' id='form_modal'>
-            <div class="modal-dialog modal-xl modal-dialog-scrollable">
-                <div class="modal-content">
-                    <div class="modal-header bg-sb">
-                        <h1 class="modal-title fs-1 text-black">Scan QR Tambah Karyawan Non Sewing</h1>
-                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <div class="mb-3">
-                                        <label class="form-label label-input">Department :</label>
-                                        <label id = "dep_name"></label>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="mb-3">
-                                        <label class="form-label label-input">Scan QR</label>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control form-control-sm border-input"
-                                                name="txtqr" id="txtqr" autocomplete="off" enterkeyhint="go"
-                                                onkeyup="if (event.keyCode == 13)
-                                                document.getElementById('scanqr').click()"
-                                                autofocus>
-                                            <button class="btn btn-sm btn-primary" type="button" id="scanqr"
-                                                onclick="scan_qr()">Scan</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <div id="reader"></div>
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                </div>
-                            </div>
-                        </div>
-                        <div class = "row">
-                            <div class="col-sm-12">
-                                <div class="table-responsive">
-                                    <table id="datatable_modal" class="table table-bordered table-sm w-100 table-hover">
-                                        <thead class="table-primary">
-                                            <tr>
-                                                <th>No.</th>
-                                                <th>ID</th>
-                                                <th>Nama Karyawan</th>
-                                                <th>NIK</th>
-                                                <th>Jabatan</th>
-                                                <th>Department</th>
-                                                <th>Sub Dept Name</th>
-                                                <th>Absen In</th>
-                                                <th>Absen Out</th>
-                                                <th>Act</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-
 
     <form id="form" name='form' method='post' action="{{ route('flns.store') }}"
         onsubmit="submitForm(this, event)">
         <div class="card card-sb">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center ">
-                    <a href="{{ route('flns.index') }}" class="btn btn-sm btn-primary">
-                        <i class="fa fa-reply"></i> Kembali
-                    </a>
-                </div>
-            </div>
+
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-5">
                         <div class="form-group">
-                            <label><small><b>Tanggal Lembur</b></small></label>
-                            <input type="date" class="form-control" id="tgl_lembur" name="tgl_lembur"
-                                value="{{ date('Y-m-d') }}" onchange="dataTableReload()">
-                            <input type="hidden" class="form-control" id="tgl_filter" name="tgl_filter"
-                                value="{{ date('Y-m-d') }}" onchange="dataTableReload()" readonly>
-                            <input type="hidden" class="form-control" id="user" name="user"
-                                value="{{ $user }}">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label><small><b>Department</b></small></label>
-                            <select class='form-control select2' style='width: 100%;' name='cbodept' id='cbodept'
-                                onchange="dataTableReload();getdeptname();" required>
-                                <option selected="selected" value="" disabled="true">Pilih Department</option>
-                                @foreach ($data_dept as $datadept)
-                                    <option value="{{ $datadept->isi }}">
-                                        {{ $datadept->tampil }}
-                                    </option>
+                            <label class="form-label">CARI DATA : </label>
+                            <select id="selectEmployeeID" name="selectEmployeeID[]" data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID" onchange="cek_filter_modal();">
+                                @foreach ($selectemployee as $r_empl)
+                                    <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
                                 @endforeach
                             </select>
-                            <input type="hidden" class="form-control" id="cbodept_name" name="cbodept_name"
-                                autocomplete="off">
                         </div>
                     </div>
                     <div class="col-md-5">
-                        <div class="form-group mb-0">
-                            <label><small><b>Keterangan</b></small></label>
-                            <input type="text" class="form-control" id="txtket" name="txtket" autocomplete="off">
-                            <a href="#" onclick="fillallfields()" style="font-size: 8pt;font-weight:bold"><u>APPLY TO ALL</u></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label><small><b>Dari</b></small></label>
-                            <input class="form-control" id="from_lembur" name="from_lembur" type="time" onchange='sum();' required style="background-color: white; cursor:pointer;">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label><small><b>Sampai</b></small></label>
-                            <input class="form-control" id="to_lembur" name="to_lembur" type="time" onchange='sum();autominute();' required style="background-color: white; cursor:pointer;">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <label><small><b>Istirahat</b></small></label>
+                        <label><small><b>Jumlah</b></small></label>
                         <div class="input-group mb-3">
-                            <input type="number" class="form-control " name="txtistirahat" id="txtistirahat"
-                                oninput='sum()'>
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="inputGroup-sizing-sm">Menit</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label><small><b>Jumlah Jam</b></small></label>
-                            <input type="text" class="form-control" id="jml_lembur" name="jml_lembur" readonly>
+                            <input type="text" class="form-control " name="txtistirahat" id="txtistirahat">
                         </div>
                     </div>
                 </div>
@@ -344,17 +211,20 @@
         }
 
         function cek_filter_modal() {
-            let cbodept = document.form.cbodept.value;
-            if (cbodept == '') {
-                $('#exampleModal').modal('hide');
-                iziToast.error({
-                    message: 'Departemen masih kosong, Silahkan pilih Departemen lebih dahulu',
-                    position: 'topCenter'
-                });
-            } else {
-                $('#exampleModal').modal('show');
-                dataTableModalReload();
-            }
+            const data= @json($selectemployee);
+            var employee = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+            console.log('employee',employee)
+            console.log(data.filter(x => x.enroll_id == employee));
+            // if (cbodept == '') {
+            //     $('#exampleModal').modal('hide');
+            //     iziToast.error({
+            //         message: 'Departemen masih kosong, Silahkan pilih Departemen lebih dahulu',
+            //         position: 'topCenter'
+            //     });
+            // } else {
+            //     $('#exampleModal').modal('show');
+            //     dataTableModalReload();
+            // }
         }
 
         $(document).ready(function() {
