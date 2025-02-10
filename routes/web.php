@@ -150,6 +150,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('/anggaran-makan/export_excel_overtime_recap2',  ['as' => 'anggaran_makan.export_excel_overtime_recap2','uses' => 'FormLembur\AnggaranMakanController@export_excel_overtime_recap2']);
     Route::get('/anggaran-makan/export_pdf_konsumsi', ['as' => 'anggaran_makan.export_pdf_konsumsi','uses' => 'FormLembur\AnggaranMakanController@export_pdf_konsumsi']);
 
+    // BAZZAR
+    Route::get('/bazzar', ['as' => 'bazzar.index','uses' => 'Bazzar\BazzarController@index']);
 
     Route::get('hrd/export_sp_kehadiran_karyawan',['as'=>'hris.hrd.export_sp_kehadiran_karyawan','uses'=>'HRDController@export_sp_kehadiran_karyawan']);
     Route::get('hrd/export_pdf_sk_kerja',['as'=>'hris.hrd.export_pdf_sk_kerja','uses'=>'HRDController@export_pdf_sk_kerja']);

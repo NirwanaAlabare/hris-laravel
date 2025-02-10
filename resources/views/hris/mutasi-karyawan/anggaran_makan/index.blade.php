@@ -1,16 +1,9 @@
 @extends('admin.adminlayouts.adminlayout-mut-karyawan')
 
 @section('head')
-<link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
-<link href="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.css')}}" rel="stylesheet" />
-<link href="{{URL::asset('assets/plugins/sweet-alert/sweetalert.css')}}" rel="stylesheet" />
-<link href="{{URL::asset('assets/plugins/spectrum-date-picker/spectrum.css')}}" rel="stylesheet" />
-<link rel="stylesheet" href="{{ URL::asset('assets/css/iziToast.min.css') }}">
-<link href="{{ URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
-<link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
-<link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
-<link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
-<link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+    <link href="{{ URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
+    <link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
 @stop
 @section('mainarea')
 <div class="page-header shadow pr-2 m-0 pt-0 pb-0 pl-2">
@@ -185,7 +178,7 @@
                         <h6 class="modal-title fs-1">DEPARTMENT</h6>
                     </div>
                     <div class="col-8">
-                        <select class="form-select" id="edit_bagian">
+                        <select class="form-select select2" id="edit_bagian">
                             <option value="" selected hidden>PILIH BAGIAN</option>
                             @foreach ($dept as $d)
                                 <option value="{{$d->department_id}}">{{$d->department_name}}</option>
@@ -247,92 +240,34 @@
     </div>
 </div>
 @endsection
+
 @section('footerjs')
-<script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.js') }}"></script>
+<script src="{{URL::asset('assets/js/script.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.js') }}"></script>
+<script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}"></script>
 <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
 <script src="{{ URL::asset('assets/plugins/datatable/dataTables.responsive.min.js') }}"></script>
 <script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
 <script src="{{URL::asset('assets/js/iziToast.min.js')}}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}"></script>
-<script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-<script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('assets/plugins/html5-qrcode/html5-qrcode.min.js') }}"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
 <script>
-       $(function(){
-                'use strict';
+    $(document).ready(function() {
+        $('#newEstimationModal').on('shown.bs.modal', function () {
+            console.log('hallo');
+            $('.select2').select2();
 
-                $('.select2').select2({
-                minimumResultsForSearch: Infinity
-                });
-
-                // Select2 by showing the search
-                $('.select2-show-search').select2({
-                minimumResultsForSearch: ''
-                });
-
-                // Colored Hover
-                $('#select2').select2({
-                dropdownCssClass: 'hover-success',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                $('#select3').select2({
-                dropdownCssClass: 'hover-danger',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                // Outline Select
-                $('#select4').select2({
-                containerCssClass: 'select2-outline-success',
-                dropdownCssClass: 'bd-success hover-success',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                $('#select5').select2({
-                containerCssClass: 'select2-outline-info',
-                dropdownCssClass: 'bd-info hover-info',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                // Full Colored Select Box
-                $('#select6').select2({
-                containerCssClass: 'select2-full-color select2-primary',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                $('#select7').select2({
-                containerCssClass: 'select2-full-color select2-danger',
-                dropdownCssClass: 'hover-danger',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                // Full Colored Dropdown
-                $('#select8').select2({
-                dropdownCssClass: 'select2-drop-color select2-drop-primary',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                $('#select9').select2({
-                dropdownCssClass: 'select2-drop-color select2-drop-indigo',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                // Full colored for both box and dropdown
-                $('#select10').select2({
-                containerCssClass: 'select2-full-color select2-primary',
-                dropdownCssClass: 'select2-drop-color select2-drop-primary',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                $('#select11').select2({
-                containerCssClass: 'select2-full-color select2-indigo',
-                dropdownCssClass: 'select2-drop-color select2-drop-indigo',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-            });
+        });
+    });
 </script>
+<script>
+    $(document).on('select2:open', () => {
+        document.querySelector('.select2-search__field').focus();
+    });
+    $('.select2').select2();
+</script>
+
     <script>
         var logged_user=$('#logged_user').val();
 
@@ -352,7 +287,7 @@
                         currentdate.toLocaleString('default', { month: 'long' }) + ' ' +
                         currentdate.getFullYear();
 
-                    var stringSelectDate = tanggal_date.getDate() + ' ' +
+                    var stringSelectDate = tanggal_date?.getDate() + ' ' +
                         tanggal_date.toLocaleString('default', { month: 'long' }) + ' ' +
                         tanggal_date.getFullYear();
 
@@ -760,4 +695,5 @@
             });
         });
     </script>
+
 @endsection

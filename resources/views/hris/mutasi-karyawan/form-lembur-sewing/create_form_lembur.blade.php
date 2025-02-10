@@ -1,10 +1,9 @@
 @extends('admin.adminlayouts.adminlayout-mut-karyawan')
 
 @section('head')
-    <!-- DataTables -->
+    <link href="{{ URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
     <link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
-    <link rel="stylesheet" href="{{ URL::asset('assets/css/iziToast.min.css') }}">
 @stop
 @section('mainarea')
 <?php ini_set('date.timezone', 'Asia/Jakarta'); ?>
@@ -151,6 +150,7 @@
                             </select>
                         </div>
                     </div>
+
                     <div class="col-md-5">
                         <div class="form-group">
                             <label><small><b>Keterangan</b></small></label>
@@ -255,54 +255,15 @@
 @section('footerjs')
 <script src="{{URL::asset('assets/js/script.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="{{ URL::asset('assets/plugins/vendors/jquery.sparkline.min.js') }}"></script>
-<script src="{{ asset('assets/plugins/html5-qrcode/html5-qrcode.min.js') }}"></script>
-<script src="{{URL::asset('assets/js/iziToast.min.js')}}"></script>
-<!-- Chart Circle js-->
-<script src="{{ URL::asset('assets/plugins/vendors/circle-progress.min.js') }}"></script>
-
-<!--Time Counter js-->
-<script src="{{ URL::asset('assets/plugins/counters/jquery.missofis-countdown.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/counters/counter.js') }}"></script>
-
-<!-- INTERNAL Data tables -->
 <script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.js') }}"></script>
 <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}"></script>
 <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/buttons.bootstrap4.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/jszip.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/vfs_fonts.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/buttons.html5.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/buttons.print.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/buttons.colVis.min.js') }}"></script>
 <script src="{{ URL::asset('assets/plugins/datatable/dataTables.responsive.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.js') }}"></script>
-
-<!--Select2 js -->
 <script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
+<script src="{{URL::asset('assets/js/iziToast.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/html5-qrcode/html5-qrcode.min.js') }}"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
 
-<!--MutipleSelect js-->
-<script src="{{URL::asset('assets/plugins/multipleselect/multiple-select.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/multipleselect/multi-select.js')}}"></script>
-
-<!-- Datepicker js -->
-<script src="{{URL::asset('assets/plugins/spectrum-date-picker/spectrum.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/spectrum-date-picker/jquery-ui.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/input-mask/jquery.maskedinput.js')}}"></script>
-
-<!-- Timepicker js -->
-
-
-<!---Tabs js-->
-<script src="{{URL::asset('assets/plugins/tabs/jquery.multipurpose_tabcontent.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/tabs/tabs.js')}}"></script>
-
-<!-- Popover js -->
-<script src="{{URL::asset('assets/js/popover.js')}}"></script>
-
-<!-- Sweet alert js-->
-<script src="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.js')}}"></script>
-<script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
     <style>
         .checkbox-xl .form-check-input {
             scale: 1.5;
@@ -362,78 +323,7 @@
                 }
             }
 
-            $(function(){
-                'use strict';
 
-                $('.select2').select2({
-                minimumResultsForSearch: Infinity
-                });
-
-                // Select2 by showing the search
-                $('.select2-show-search').select2({
-                minimumResultsForSearch: ''
-                });
-
-                // Colored Hover
-                $('#select2').select2({
-                dropdownCssClass: 'hover-success',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                $('#select3').select2({
-                dropdownCssClass: 'hover-danger',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                // Outline Select
-                $('#select4').select2({
-                containerCssClass: 'select2-outline-success',
-                dropdownCssClass: 'bd-success hover-success',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                $('#select5').select2({
-                containerCssClass: 'select2-outline-info',
-                dropdownCssClass: 'bd-info hover-info',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                // Full Colored Select Box
-                $('#select6').select2({
-                containerCssClass: 'select2-full-color select2-primary',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                $('#select7').select2({
-                containerCssClass: 'select2-full-color select2-danger',
-                dropdownCssClass: 'hover-danger',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                // Full Colored Dropdown
-                $('#select8').select2({
-                dropdownCssClass: 'select2-drop-color select2-drop-primary',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                $('#select9').select2({
-                dropdownCssClass: 'select2-drop-color select2-drop-indigo',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                // Full colored for both box and dropdown
-                $('#select10').select2({
-                containerCssClass: 'select2-full-color select2-primary',
-                dropdownCssClass: 'select2-drop-color select2-drop-primary',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                $('#select11').select2({
-                containerCssClass: 'select2-full-color select2-indigo',
-                dropdownCssClass: 'select2-drop-color select2-drop-indigo',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-            });
 
     </script>
     <script>
@@ -452,8 +342,6 @@
         });
 
         $('.select2').select2();
-
-        $('.select2bs4').select2();
     </script>
     <script>
         function notif() {
@@ -802,4 +690,5 @@
             }
         }
     </script>
+
 @endsection

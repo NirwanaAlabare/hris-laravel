@@ -798,7 +798,9 @@ class FormLemburNonSewingController extends AdminBaseController
             select concat(department_name, ' - ', sub_dept_name) dept_name, sub_dept_name from department_all where sub_dept_id = '" . $request->sub_dept_id . "'
         ",
         );
-        return json_encode($ket[0]);
+        if(isset($ket[0])){
+            return json_encode($ket[0]);
+        }
     }
 
     public function export_pdf_non_sewing_spl(Request $request){
