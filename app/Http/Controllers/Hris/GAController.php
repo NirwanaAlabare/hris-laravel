@@ -32,7 +32,15 @@ class GAController extends AdminBaseController
         $cities=DB::select("select * from cities order by city_id");
         $districts=DB::select("select * from districts order by dis_id");
         $subdistricts=DB::select("select * from subdistricts order by subdis_id");
-        return View::make('hris/ga/form_pengajuan_transportasi', $this->data,compact('provincies','cities','districts','subdistricts'));
+        $loggedAdmin = Auth::guard('admin')->user();
+        $id_user = $loggedAdmin->enroll_id;
+        $tujuan_short=DB::select("select a.provinsi,a.city,a.district,a.subdistrict,e.prov_id,d.city_id,c.dis_id,b.subdis_id,a.detail_alamat from (select*from tujuan_transportasi where permintaan_transportasi_id in (select id from permintaan_transportasi where created_by = '$id_user'))a inner join subdistricts b on a.subdistrict=b.subdis_name inner join districts c on a.district=c.dis_name and b.dis_id=c.dis_id inner join cities d on c.city_id=d.city_id inner join provinces e on e.prov_id=d.prov_id group by a.detail_alamat,b.subdis_id");
+        return View::make('hris/ga/form_pengajuan_transportasi', $this->data,compact('id_user','provincies','cities','districts','subdistricts','tujuan_short'));
+    }
+    public function get_all_history_alamat(){
+        $id_user=request()->user;
+        $tujuan_short=DB::select("select a.provinsi,a.city,a.district,a.subdistrict,e.prov_id,d.city_id,c.dis_id,b.subdis_id,a.detail_alamat from (select*from tujuan_transportasi where permintaan_transportasi_id in (select id from permintaan_transportasi where created_by = '$id_user'))a inner join subdistricts b on a.subdistrict=b.subdis_name inner join districts c on a.district=c.dis_name and b.dis_id=c.dis_id inner join cities d on c.city_id=d.city_id inner join provinces e on e.prov_id=d.prov_id group by a.detail_alamat,b.subdis_id");
+        return $tujuan_short;
     }
     public function data_pengajuan_transportasi(){
         $this->selectemployee = $this->ajax_getallemployeeatribut();

@@ -188,6 +188,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('ga/edit_detail',['as'=>'hris.ga.edit_detail','uses'=>'GAController@edit_detail']);
     Route::post('ga/get_route_from_user',['as'=>'hris.ga.get_route_from_user','uses'=>'GAController@get_route_from_user']);
     Route::post('ga/get_route_from_user_choice',['as'=>'hris.ga.get_route_from_user_choice','uses'=>'GAController@get_route_from_user_choice']);
+    Route::post('ga/get_all_history_alamat',['as'=>'hris.ga.get_all_history_alamat','uses'=>'GAController@get_all_history_alamat']);
     Route::post('ga/add_another_route',['as'=>'hris.ga.add_another_route','uses'=>'GAController@add_another_route']);
     Route::post('ga/add_another_route_2',['as'=>'hris.ga.add_another_route_2','uses'=>'GAController@add_another_route_2']);
     Route::post('ga/add_another_route_3',['as'=>'hris.ga.add_another_route_3','uses'=>'GAController@add_another_route_3']);
