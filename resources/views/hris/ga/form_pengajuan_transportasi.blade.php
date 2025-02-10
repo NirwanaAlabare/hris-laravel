@@ -41,7 +41,7 @@
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Keberangkatan Awal</label>
             </div>
             <div class="col-4 pt-2">
-                <a href="#" id="change_initial_destination" style="text-decoration-line: underline">PT. NAG</a><img src="{{URL::asset('assets/images/brand/shortcut.png')}}" width="18"> PT. NAG</a><img src="{{URL::asset('assets/images/brand/shortcut.png')}}" width="18">
+                <a href="#" id="change_initial_destination" style="text-decoration-line: underline">PT. NAG</a><img src="{{URL::asset('assets/images/brand/shortcut.png')}}" width="18">
             </div>
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Tujuan</label>
