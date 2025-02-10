@@ -443,7 +443,7 @@ class GAController extends AdminBaseController
         $this->selectemployee = $this->ajax_getallemployeeatribut();
         $provincies=DB::select('select * from provinces order by prov_id');
         $id=request()->id;
-        $pengajuan_transportasi=DB::select("select a.id,b.employee_name,b.nik,b.department_name,b.sub_dept_name,a.id_desa,d.dis_id,e.city_id,f.prov_id,a.id_desa_tujuan,h.dis_id dis_tujuan,i.city_id city_tujuan,j.prov_id prov_tujuan,a.detail_alamat,a.detail_alamat_tujuan,a.tanggal_pemberangkatan,a.jam_pemberangkatan,a.tujuan_pemberangkatan,a.jarak_tempuh,a.nama_tamu,a.nomor_hp_tamu,a.instansi_tamu,a.jenis_barang,a.quantity,a.satuan,a.nama_instansi,a.nama_penerima,a.keterangan_barang,a.tanggal_kedatangan,a.jam_kedatangan,a.created_at,a.updated_at,a.karyawan_dinas from (select*from permintaan_transportasi where id='$id') a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id");
+        $pengajuan_transportasi=DB::select("select a.created_by,a.id,b.employee_name,b.nik,b.department_name,b.sub_dept_name,a.id_desa,d.dis_id,e.city_id,f.prov_id,a.id_desa_tujuan,h.dis_id dis_tujuan,i.city_id city_tujuan,j.prov_id prov_tujuan,a.detail_alamat,a.detail_alamat_tujuan,a.tanggal_pemberangkatan,a.jam_pemberangkatan,a.tujuan_pemberangkatan,a.jarak_tempuh,a.nama_tamu,a.nomor_hp_tamu,a.instansi_tamu,a.jenis_barang,a.quantity,a.satuan,a.nama_instansi,a.nama_penerima,a.keterangan_barang,a.tanggal_kedatangan,a.jam_kedatangan,a.created_at,a.updated_at,a.karyawan_dinas from (select*from permintaan_transportasi where id='$id') a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id");
         $prov_id=$pengajuan_transportasi[0]->prov_id;
         $prov_id_2=$pengajuan_transportasi[0]->prov_tujuan;
         $city_id=$pengajuan_transportasi[0]->city_id;
@@ -457,6 +457,14 @@ class GAController extends AdminBaseController
         $subdistricts=DB::select("select * from subdistricts where dis_id='$district'");
         $subdistricts_2=DB::select("select * from subdistricts where dis_id='$district_2'");
         return View::make('hris/ga/edit_detail_pengajuan_transportasi', $this->data,compact('pengajuan_transportasi','provincies','cities','cities_2','districts','districts_2','subdistricts','subdistricts_2'));
+    }
+    public function get_route_from_user(){
+        $user=request()->user;
+        return DB::select("select*from tujuan_transportasi where permintaan_transportasi_id in (select id from permintaan_transportasi where created_by = '$user') group by provinsi,city,district,subdistrict,detail_alamat");
+    }
+    public function get_route_from_user_choice(){
+        $query=TujuanTransportasi::where('permintaan_transportasi_id',request()->permintaan_transportasi_id)->where('tujuan_id',request()->tujuan_id)->get();
+        return $query;
     }
     public function show_another_route(){
         $id=request()->id;
