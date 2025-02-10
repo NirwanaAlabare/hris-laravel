@@ -30,6 +30,7 @@
             <label class="form-label" style="font-weight: bold;font-size:12pt"> Tanggal Pengajuan</label>
         </div>
         <div class="col-4">
+            <input type="hidden" value="{{$value->created_by}}" id="user_login">
             <input type="hidden" value="{{$value->id}}" id="id_request">
             <label style="font-size:12pt">: {{Carbon\Carbon::parse($value->created_at)->translatedFormat('l d F Y, H:i')}}</label>
         </div>
@@ -183,7 +184,7 @@
             <input type="date" id="tanggal_pemberangkatan" class="form-control" style="background-color: white" value="{{$value->tanggal_pemberangkatan}}">
         </div>
         <div class="col-2">
-            <input type="time" id="jam_pemberangkatan" class="form-control col-8" style="background-color: white" value="{{$value->jam_pemberangkatan}}">
+            <input class="form-control col-8" id="jam_pemberangkatan" name="jam_pemberangkatan" type="text" style="background-color: white; cursor:pointer;" readonly value="{{substr($value->jam_pemberangkatan,0,5)}}">
         </div>
         <div class="col-2 pt-1">
             <label class="form-label" style="font-weight: bold;font-size:12pt">Tanggal & Jam Kedatangan</label>
@@ -192,7 +193,7 @@
             <input type="date" id="tanggal_kedatangan" class="form-control" style="background-color: white" value="{{$value->tanggal_kedatangan}}">
         </div>
         <div class="col-2">
-            <input type="time" id="jam_kedatangan" class="form-control col-8" style="background-color: white" value="{{$value->jam_kedatangan}}">
+            <input class="form-control col-8" id="jam_kedatangan" name="jam_kedatangan" type="text" style="background-color: white; cursor:pointer;" readonly value="{{substr($value->jam_kedatangan,0,5)}}">
         </div>
     </div>
     <div class="row pb-2">
@@ -409,7 +410,14 @@
 <!-- Sweet alert js-->
 <script src="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.js')}}"></script>
 <script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
+<script src="{{URL::asset('assets/js/timepicker.js') }}"></script>
 <script>
+    $("#jam_pemberangkatan").timepicker({
+      timeFormat: "%H:%i"
+    });
+    $("#jam_kedatangan").timepicker({
+      timeFormat: "%H:%i"
+    });
     
     'use strict';
 
@@ -581,7 +589,7 @@
         });
         
     });
-    function add_route_more(tujuan_id){
+    function add_route_more(key,tujuan_id){
         var id=$('#tujuan_yang_ke_'+tujuan_id).val();
         var provinsi=$('#provinsi_yang_ke_'+tujuan_id).val();
         var city=$('#kota_yang_ke_'+tujuan_id).val();
@@ -613,6 +621,13 @@
                 array_detail_alamat.push('');
                 array_tanggal_kedatangan.push('');
                 array_jam_kedatangan.push('');
+                array_provinsi[key]=provinsi;
+                array_kota[key]=city;
+                array_kecamatan[key]=districts;
+                array_desa[key]=subdistricts;
+                array_detail_alamat[key]=detail_alamat;
+                array_tanggal_kedatangan[key]=tanggal_kedatangan;
+                array_jam_kedatangan[key]=jam_kedatangan
                 addListTujuan();
             },
             error: function(error){
@@ -659,9 +674,10 @@
     }
     function addListTujuan(){
         $('#route_adding').empty();
+        pass_to_dropdown();
         jQuery.each(array_tujuan_id, function(key,value){
             if(array_tujuan_id.length==1){
-                $('#route_adding').append('<tr id="row_new_route_'+value+'" >\
+                $('#route_adding').append('<tr>\
                     <td>\
                         '+(key+1)+'\
                     </td>\
@@ -686,12 +702,12 @@
                         <input id="jam_kedatangan_yang_ke_'+value+'" name="jam_kedatangan_ke[]" type="time" class="form-control" value="'+array_jam_kedatangan[key]+'" disabled>\
                     </td>\
                     <td width="5%">\
-                        <a href="#" class="btn btn-primary px-1" onclick="add_route_more('+value+')" id="add_route_more_button_'+value+'"><i class="fa fa-plus"></i></a>\
+                        <a href="#" class="btn btn-primary px-1" onclick="add_route_more('+key+','+value+')" id="add_route_more_button_'+value+'"><i class="fa fa-plus"></i></a>\
                     </td>\
                 </tr>');
             }else{
                 if(value==1){
-                    $('#route_adding').append('<tr id="row_new_route_'+value+'" >\
+                    $('#route_adding').append('<tr>\
                         <td>\
                             '+(key+1)+'\
                         </td>\
@@ -720,13 +736,16 @@
                     </tr>');
                 }else{
                     if(key==(array_tujuan_id.length-1)){
-                        $('#route_adding').append('<tr id="row_new_route_'+value+'" >\
+                        $('#route_adding').append('<tr>\
                             <td>\
                                 '+(key+1)+'\
                             </td>\
                             <td width="20%">\
                                 <input type="hidden" id="tujuan_yang_ke_'+value+'" name="tujuan_ke[]" class="form-control" value='+value+'>\
                                 <input id="provinsi_yang_ke_'+value+'" name="provinsi_ke[]" value="'+array_provinsi[key]+'" class="form-control" style="background-color:white">\
+                                <select class="form-control form-control-sm" id="pilihan_alamat_yang_ke_'+value+'" style="margin-top:6px;background-color:white" name="history_alamat" onchange="change_alamat('+key+','+value+')">\
+                                    <option value="">History Alamat</option>\
+                                </select>\
                             </td>\
                             <td width="20%">\
                                 <input id="kota_yang_ke_'+value+'" name="kota_ke[]" class="form-control" value="'+array_kota[key]+'" style="background-color:white">\
@@ -742,21 +761,24 @@
                             </td>\
                             <td width="10%">\
                                 <input id="tanggal_kedatangan_yang_ke_'+value+'" name="tanggal_kedatangan_ke[]" type="date" class="form-control" value="'+array_tanggal_kedatangan[key]+'" style="background-color:white">\
-                                <input id="jam_kedatangan_yang_ke_'+value+'" name="jam_kedatangan_ke[]" type="time" class="form-control" value="'+array_jam_kedatangan[key]+'" style="background-color:white">\
+                                <input id="jam_kedatangan_yang_ke_'+value+'" name="jam_kedatangan_ke[]" type="text" class="form-control" value="'+(array_jam_kedatangan[key]).substring(0,5)+'" style="background-color:white; cursor:pointer;">\
                             </td>\
                             <td width="5%">\
-                                <a href="#" class="btn btn-primary px-1" onclick="add_route_more('+value+')" id="add_route_more_button_'+value+'"><i class="fa fa-plus"></i></a>\
+                                <a href="#" class="btn btn-primary px-1" onclick="add_route_more('+key+','+value+')" id="add_route_more_button_'+value+'"><i class="fa fa-plus"></i></a>\
                                 <a href="#" class="btn btn-danger px-1" onclick="delete_this_route('+value+')" id="delete_this_route_button_'+value+'"><i class="fa fa-minus"></i></a>\
                             </td>\
                         </tr>');
                     }else{
-                        $('#route_adding').append('<tr id="row_new_route_'+value+'" >\
+                        $('#route_adding').append('<tr>\
                             <td>\
                                 '+(key+1)+'\
                             </td>\
                             <td width="20%">\
                                 <input type="hidden" id="tujuan_yang_ke_'+value+'" name="tujuan_ke[]" class="form-control" value='+value+'>\
                                 <input id="provinsi_yang_ke_'+value+'" name="provinsi_ke[]" value="'+array_provinsi[key]+'" class="form-control" style="background-color:white">\
+                                <select id="pilihan_alamat_yang_ke_'+value+'" class="form-control form-control-sm" style="margin-top:6px;background-color:white" name="history_alamat" onchange="change_alamat('+key+','+value+')">\
+                                    <option value="">History Alamat</option>\
+                                </select>\
                             </td>\
                             <td width="20%">\
                                 <input id="kota_yang_ke_'+value+'" name="kota_ke[]" class="form-control" value="'+array_kota[key]+'" style="background-color:white">\
@@ -772,7 +794,7 @@
                             </td>\
                             <td width="10%">\
                                 <input id="tanggal_kedatangan_yang_ke_'+value+'" name="tanggal_kedatangan_ke[]" type="date" class="form-control" value="'+array_tanggal_kedatangan[key]+'" style="background-color:white">\
-                                <input id="jam_kedatangan_yang_ke_'+value+'" name="jam_kedatangan_ke[]" type="time" class="form-control" value="'+array_jam_kedatangan[key]+'" style="background-color:white">\
+                                <input id="jam_kedatangan_yang_ke_'+value+'" name="jam_kedatangan_ke[]" type="text" class="form-control" value="'+(array_jam_kedatangan[key]).substring(0,5)+'" style="background-color:white; cursor:pointer;">\
                             </td>\
                             <td width="5%">\
                                 <a href="#" class="btn btn-danger px-1" onclick="delete_this_route('+value+')" id="delete_this_route_button_'+value+'"><i class="fa fa-minus"></i></a>\
@@ -781,7 +803,42 @@
                     }
                 }
             }
+            $("#jam_kedatangan_yang_ke_"+value).timepicker({
+                timeFormat: "%H:%i"
+            });
         });
+    }
+    function pass_to_dropdown(){
+        var user=$('#user_login').val();
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_route_from_user')}}",
+            data: {
+                user:user,
+            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(data){
+                jQuery.each(data, function(key,value){
+                    $('select[name="history_alamat"]').append('<option value="'+value.detail_alamat+' | '+value.subdistrict+' | '+value.district+' | '+value.city+' | '+value.provinsi+'">'+value.detail_alamat+' ('+value.subdistrict+' - '+value.district+' - '+value.city+' - '+value.provinsi+')</option>');
+                });
+            }
+        });
+    };
+    function change_alamat(key,value){
+        myArray=[];
+        var tujuan_id = $('#pilihan_alamat_yang_ke_'+value).val();
+        myArray = tujuan_id.split(" | ");
+        $('#detail_alamat_yang_ke_'+value).val(myArray[0]);
+        $('#desa_yang_ke_'+value).val(myArray[1]);
+        $('#kecamatan_yang_ke_'+value).val(myArray[2]);
+        $('#kota_yang_ke_'+value).val(myArray[3]);
+        $('#provinsi_yang_ke_'+value).val(myArray[4]);
+        $('#pilihan_alamat_yang_ke_'+value).val('');
+        array_provinsi[key]=myArray[4];
+        array_kota[key]=myArray[3];
+        array_kecamatan[key]=myArray[2];
+        array_desa[key]=myArray[1];
+        array_detail_alamat[key]=myArray[0];
     }
     function delete_this_route(count){
         var index_array=(array_tujuan_id.indexOf(count));

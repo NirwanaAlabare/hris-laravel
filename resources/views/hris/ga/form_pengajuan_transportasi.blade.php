@@ -6,301 +6,304 @@
 <!---Sweetalert Css-->
 <link href="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.css')}}" rel="stylesheet" />
 <link href="{{URL::asset('assets/plugins/sweet-alert/sweetalert.css')}}" rel="stylesheet" />
+<link href="{{URL::asset('assets/js/jquery-ui/jquery-ui.min.css') }}" rel="stylesheet">
 
 @stop
 @section('mainarea')
+<div class="card">
+    <div class="card-header mt-7 pt-1 pb-0">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="btn btn-primary" style="background-color:blue" href="{{route('hris.ga.form_pengajuan_transportasi')}}">Formulir</a>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data</a>
+            </li>
+        </ul>
+    </div>
 
-<div class="card-header mt-7 pt-1 pb-0">
-    <ul class="nav nav-tabs">
-        <li class="nav-item">
-            <a class="btn btn-primary" style="background-color:blue" href="{{route('hris.ga.form_pengajuan_transportasi')}}">Formulir</a>
-        </li>
-        <li class="nav-item">
-            <a class="btn btn-white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data</a>
-        </li>
-    </ul>
-</div>
-
-<div class="card-body px-6 py-4" style="border: 1px solid #d8d4dc">
-    <div class="row">
-        <div class="col-2 pt-1">
-            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nama Karyawan</label>
-        </div>
-        <div class="col-4">
-            <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID col-11">
-                @foreach ($selectemployee as $r_empl)
-                    <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
-                @endforeach
-            </select>
-            <h6 id="warning_employee" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
-        </div>
-    </div>
-    <div class="row pb-2 pt-1">
-        <div class="col-2 pt-1">
-            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Keberangkatan Awal</label>
-        </div>
-        <div class="col-4 pt-2">
-            <a href="#" id="change_initial_destination" style="text-decoration-line: underline">PT. NAG</a><img src="{{URL::asset('assets/images/brand/shortcut.png')}}" width="18">
-        </div>
-        <div class="col-2 pt-1">
-            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Tujuan</label>
-        </div>
-        <div class="col-4 pt-1">
-            <button class="btn btn-primary py-1" id="tujuan_lainnya" style="font-weight:bold"> + Daftar Tujuan</button></label>
-        </div>
-    </div>
-    <div class="row pb-2">
-        <div class="col-2 pt-1">
-            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Provinsi</label>
-        </div>
-        <div class="col-4">
-            <select class="form-control col-11" id="provinsi" style="background-color: white">
-                <option value="">Pilih Provinsi</option>
-                @foreach($provincies as $prov)
-                    <option value="{{$prov->prov_id}}">{{$prov->prov_name}}</option>
-                @endforeach
-            </select>
-        </div>
-        <div class="col-2 pt-1">
-            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Provinsi</label>
-        </div>
-        <div class="col-4">
-            <select class="form-control col-11" id="provinsi_2" style="background-color: white">
-                <option value="">Pilih Provinsi</option>
-                @foreach($provincies as $prov)
-                    <option value="{{$prov->prov_id}}">{{$prov->prov_name}}</option>
-                @endforeach
-            </select>
-        </div>
-    </div>
-    <div class="row pb-2">
-        <div class="col-2 pt-1">
-            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kabupaten/Kota</label>
-        </div>
-        <div class="col-4">
-            <select class="form-control col-11" id="cities" style="background-color: white">
-            </select>
-        </div>
-        <div class="col-2 pt-1">
-            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kabupaten/Kota</label>
-        </div>
-        <div class="col-4">
-            <select class="form-control col-11" id="cities_2" style="background-color: white">
-            </select>
-        </div>
-    </div>
-    <div class="row pb-2">
-        <div class="col-2 pt-1">
-            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kecamatan</label>
-        </div>
-        <div class="col-4">
-            <select class="form-control col-11" id="districts" style="background-color: white">
-            </select>
-        </div>
-        <div class="col-2 pt-1">
-            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kecamatan</label>
-        </div>
-        <div class="col-4">
-            <select class="form-control col-11" id="districts_2" style="background-color: white">
-            </select>
-        </div>
-    </div>
-    <div class="row pb-2">
-        <div class="col-2 pt-1">
-            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kelurahan/Desa</label>
-        </div>
-        <div class="col-4">
-            <select class="form-control col-11" id="sub_districts" style="background-color: white">
-            </select>
-        </div>
-        <div class="col-2 pt-1">
-            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kelurahan/Desa</label>
-        </div>
-        <div class="col-4">
-            <select class="form-control col-11" id="sub_districts_2" style="background-color: white">
-            </select>
-        </div>
-    </div>
-    <div class="row pb-2">
-        <div class="col-2 pt-1">
-            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Detail Alamat</label>
-        </div>
-        <div class="col-4">
-            <input id="detail_alamat" class="form-control col-11" style="background-color: white" placeholder="Nama Gedung, Jalan atau Blok">
-        </div>
-        <div class="col-2 pt-1">
-            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Detail Alamat</label>
-        </div>
-        <div class="col-4">
-            <input id="detail_alamat_2" class="form-control col-11" style="background-color: white" placeholder="Nama Gedung, Jalan atau Blok">
-        </div>
-    </div>
-    <div class="row pb-2">
-        <div class="col-2 pt-1">
-            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Tanggal & Jam Pemberangkatan</label>
-        </div>
-        <div class="col-2">
-            <input type="date" id="tanggal_pemberangkatan" class="form-control" style="background-color: white">
-        </div>
-        <div class="col-2 pr-0">
-            <input type="time" id="jam_pemberangkatan" class="form-control col-9" style="background-color: white">
-        </div>
-        <div class="col-2 pt-1">
-            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Tanggal & Jam Kedatangan</label>
-        </div>
-        <div class="col-2">
-            <input type="date" id="tanggal_kedatangan" class="form-control" style="background-color: white">
-        </div>
-        <div class="col-2 pr-0">
-            <input type="time" id="jam_kedatangan" class="form-control col-9" style="background-color: white">
-        </div>
-    </div>
-    <div class="row pb-2">
-        <div class="col-2 pt-1">
-            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Tujuan Pemberangkatan</label>
-        </div>
-        <div class="col-4 pl-4">
-            <div class="row">
-                <div class="col-xl-4">
-                  <input type="checkbox" name="tujuan_pemberangkatan" value="antar_tamu" id="checkbox_1" >&nbsp;Antar tamu
-                </div>
-                <div class="col-xl-4">
-                  <input type="checkbox" name="tujuan_pemberangkatan" value="antar_barang" id="checkbox_3">&nbsp;Antar barang
-                </div>
-                <div class="col-xl-4">
-                  <input type="checkbox" name="tujuan_pemberangkatan" value="antar_dinas" id="checkbox_5">&nbsp;Antar dinas
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xl-4">
-                    <input type="checkbox" name="tujuan_pemberangkatan" value="jemput_tamu" id="checkbox_2" >&nbsp;Jemput tamu
-                </div>
-                <div class="col-xl-4">
-                    <input type="checkbox" name="tujuan_pemberangkatan" value="jemput_barang" id="checkbox_4">&nbsp;Jemput barang
-                </div>
-                <div class="col-xl-4">
-                    <input type="checkbox" name="tujuan_pemberangkatan" value="jemput_dinas" id="checkbox_6">&nbsp;Jemput dinas
-                </div>
-            </div>
-        </div>
-        <div class="col-2 pt-1">
-            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Jarak Tempuh</label>
-        </div>
-        <div class="col-1">
-            <input type="number" id="jarak_tempuh" class="form-control" style="background-color: white" value="0">
-        </div>
-        <div class="col-2 pl-0 pt-2">
-            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:10pt">KM</label>
-        </div>
-    </div>
-    <div style="display:none" id="tag_nama_tamu">
-        <div class="row pb-2 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
-            <div class="col-12 pt-1 pl-0">
-                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Keterangan Tamu</label>
-            </div>
-        </div>
-        <div class="row pb-2">
+    <div class="card-body px-6 py-4" style="border: 1px solid #d8d4dc">
+        <div class="row">
             <div class="col-2 pt-1">
-                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nama Tamu</label>
+                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nama Karyawan</label>
             </div>
             <div class="col-4">
-                <input type="text" id="nama_tamu" class="form-control col-11" style="background-color: white" placeholder="Masukkan Nama Tamu">
-            </div>
-            <div class="col-2 pt-1">
-                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nomor Hp Tamu</label>
-            </div>
-            <div class="col-4">
-                <input type="text" id="nomor_tamu" class="form-control col-11" style="background-color: white" placeholder="E.g. 089501940612">
-            </div>
-        </div>
-        <div class="row pb-2">
-            <div class="col-2 pt-1">
-                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Instansi</label>
-            </div>
-            <div class="col-4">
-                <input type="text" id="instansi_tamu" class="form-control col-11" style="background-color: white" placeholder="Masukkan Instansi Tamu">
-            </div>
-        </div>
-    </div>
-    <div style="display:none" id="tag_jenis_barang">
-        <div class="row pb-2 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
-            <div class="col-12 pt-1 pl-0">
-                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Keterangan Barang</label>
-            </div>
-        </div>
-        <div class="row pb-2">
-            <div class="col-6 pl-3">
-                <div class="row pb-2">
-                    <div class="col-4 pt-1">
-                        <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Jenis Barang</label>
-                    </div>
-                    <div class="col-8">
-                        <input type="text" id="jenis_barang" class="form-control col-11" style="background-color: white" placeholder="Masukkan Jenis Barang">
-                    </div>
-                </div>
-                <div class="row pb-2">
-                    <div class="col-4 pt-1">
-                        <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Quantity</label>
-                    </div>
-                    <div class="col-2">
-                        <input type="number" id="quantity" class="form-control" style="background-color: white">
-                    </div>
-                    <div class="col-3 pl-0">
-                        <input type="text" id="satuan" name="satuan" class="form-control" style="background-color: white" placeholder="Masukkan satuan">
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 pl-3">
-                <div class="row pb-2">
-                    <div class="col-4 pt-1">
-                        <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Keterangan</label>
-                    </div>
-                    <div class="col-8">
-                        <textarea id="keterangan_barang" rows="3" cols="7" class="form-control col-11" style="background-color: white"></textarea>
-                    </div>
-                </div>
-                <div class="row pb-2">
-                    <div class="col-4 pt-1">
-                        <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Instansi</label>
-                    </div>
-                    <div class="col-8">
-                        <input type="text" id="instansi" class="form-control col-11" style="background-color: white" placeholder="Masukkan Instansi">
-                    </div>
-                </div>
-                <div class="row pb-2">
-                    <div class="col-4 pt-1">
-                        <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nama Penerima</label>
-                    </div>
-                    <div class="col-8">
-                        <input type="text" id="nama_instansi" class="form-control col-11" style="background-color: white" placeholder="Masukkan Nama">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div style="display:none" id="tag_antar_dinas">
-        <div class="row pb-2 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
-            <div class="col-12 pt-1 pl-0">
-                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Keterangan Dinas</label>
-            </div>
-        </div>
-        <div class="row pb-2">
-            <div class="col-2 pt-1 pl-3">
-                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nama Karyawan Yang Dinas Luar</label>
-            </div>
-            <div class="col-4">
-                <select id="selectEmployeeDinas" name="selectEmployeeDinas[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID col-12" style="width:400px">
+                <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID col-11">
                     @foreach ($selectemployee as $r_empl)
                         <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
                     @endforeach
                 </select>
-                <h6 id="warning_employee_dinas" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
+                <h6 id="warning_employee" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-12 text-center">
-            <button id="save_request" class="btn btn-success">Submit</button>
+        <div class="row pb-2 pt-1">
+            <div class="col-2 pt-1">
+                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Keberangkatan Awal</label>
+            </div>
+            <div class="col-4 pt-2">
+                <a href="#" id="change_initial_destination" style="text-decoration-line: underline">PT. NAG</a><img src="{{URL::asset('assets/images/brand/shortcut.png')}}" width="18"> PT. NAG</a><img src="{{URL::asset('assets/images/brand/shortcut.png')}}" width="18">
+            </div>
+            <div class="col-2 pt-1">
+                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Tujuan</label>
+            </div>
+            <div class="col-4 pt-1">
+                <button class="btn btn-primary py-1" id="tujuan_lainnya" style="font-weight:bold"> + Daftar Tujuan</button></label>
+            </div>
+        </div>
+        <div class="row pb-2">
+            <div class="col-2 pt-1">
+                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Provinsi</label>
+            </div>
+            <div class="col-4">
+                <select class="form-control col-11" id="provinsi" style="background-color: white">
+                    <option value="">Pilih Provinsi</option>
+                    @foreach($provincies as $prov)
+                        <option value="{{$prov->prov_id}}">{{$prov->prov_name}}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-2 pt-1">
+                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Provinsi</label>
+            </div>
+            <div class="col-4">
+                <select class="form-control col-11" id="provinsi_2" style="background-color: white">
+                    <option value="">Pilih Provinsi</option>
+                    @foreach($provincies as $prov)
+                        <option value="{{$prov->prov_id}}">{{$prov->prov_name}}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="row pb-2">
+            <div class="col-2 pt-1">
+                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kabupaten/Kota</label>
+            </div>
+            <div class="col-4">
+                <select class="form-control col-11" id="cities" style="background-color: white">
+                </select>
+            </div>
+            <div class="col-2 pt-1">
+                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kabupaten/Kota</label>
+            </div>
+            <div class="col-4">
+                <select class="form-control col-11" id="cities_2" style="background-color: white">
+                </select>
+            </div>
+        </div>
+        <div class="row pb-2">
+            <div class="col-2 pt-1">
+                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kecamatan</label>
+            </div>
+            <div class="col-4">
+                <select class="form-control col-11" id="districts" style="background-color: white">
+                </select>
+            </div>
+            <div class="col-2 pt-1">
+                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kecamatan</label>
+            </div>
+            <div class="col-4">
+                <select class="form-control col-11" id="districts_2" style="background-color: white">
+                </select>
+            </div>
+        </div>
+        <div class="row pb-2">
+            <div class="col-2 pt-1">
+                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kelurahan/Desa</label>
+            </div>
+            <div class="col-4">
+                <select class="form-control col-11" id="sub_districts" style="background-color: white">
+                </select>
+            </div>
+            <div class="col-2 pt-1">
+                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kelurahan/Desa</label>
+            </div>
+            <div class="col-4">
+                <select class="form-control col-11" id="sub_districts_2" style="background-color: white">
+                </select>
+            </div>
+        </div>
+        <div class="row pb-2">
+            <div class="col-2 pt-1">
+                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Detail Alamat</label>
+            </div>
+            <div class="col-4">
+                <input id="detail_alamat" class="form-control col-11" style="background-color: white" placeholder="Nama Gedung, Jalan atau Blok">
+            </div>
+            <div class="col-2 pt-1">
+                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Detail Alamat</label>
+            </div>
+            <div class="col-4">
+                <input id="detail_alamat_2" class="form-control col-11" style="background-color: white" placeholder="Nama Gedung, Jalan atau Blok">
+            </div>
+        </div>
+        <div class="row pb-2">
+            <div class="col-2 pt-1">
+                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Tanggal & Jam Pemberangkatan</label>
+            </div>
+            <div class="col-2">
+                <input type="date" id="tanggal_pemberangkatan" class="form-control" style="background-color: white">
+            </div>
+            <div class="col-2 pr-0">
+                <input class="form-control col-9" id="jam_pemberangkatan" name="jam_pemberangkatan" type="text" style="background-color: white; cursor:pointer;" readonly>
+                {{-- <input type="time" id="jam_pemberangkatan" class="form-control" style="background-color: white"> --}}
+            </div>
+            <div class="col-2 pt-1">
+                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Tanggal & Jam Kedatangan</label>
+            </div>
+            <div class="col-2">
+                <input type="date" id="tanggal_kedatangan" class="form-control" style="background-color: white">
+            </div>
+            <div class="col-2 pr-0">
+                <input class="form-control col-9" id="jam_kedatangan" name="jam_kedatangan" type="text" style="background-color: white; cursor:pointer;" readonly>
+            </div>
+        </div>
+        <div class="row pb-2">
+            <div class="col-2 pt-1">
+                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Tujuan Pemberangkatan</label>
+            </div>
+            <div class="col-4 pl-4">
+                <div class="row">
+                    <div class="col-xl-4">
+                    <input type="checkbox" name="tujuan_pemberangkatan" value="antar_tamu" id="checkbox_1" >&nbsp;Antar tamu
+                    </div>
+                    <div class="col-xl-4">
+                    <input type="checkbox" name="tujuan_pemberangkatan" value="antar_barang" id="checkbox_3">&nbsp;Antar barang
+                    </div>
+                    <div class="col-xl-4">
+                    <input type="checkbox" name="tujuan_pemberangkatan" value="antar_dinas" id="checkbox_5">&nbsp;Antar dinas
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-4">
+                        <input type="checkbox" name="tujuan_pemberangkatan" value="jemput_tamu" id="checkbox_2" >&nbsp;Jemput tamu
+                    </div>
+                    <div class="col-xl-4">
+                        <input type="checkbox" name="tujuan_pemberangkatan" value="jemput_barang" id="checkbox_4">&nbsp;Jemput barang
+                    </div>
+                    <div class="col-xl-4">
+                        <input type="checkbox" name="tujuan_pemberangkatan" value="jemput_dinas" id="checkbox_6">&nbsp;Jemput dinas
+                    </div>
+                </div>
+            </div>
+            <div class="col-2 pt-1">
+                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Jarak Tempuh</label>
+            </div>
+            <div class="col-1">
+                <input type="number" id="jarak_tempuh" class="form-control" style="background-color: white" value="0">
+            </div>
+            <div class="col-2 pl-0 pt-2">
+                <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:10pt">KM</label>
+            </div>
+        </div>
+        <div style="display:none" id="tag_nama_tamu">
+            <div class="row pb-2 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
+                <div class="col-12 pt-1 pl-0">
+                    <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Keterangan Tamu</label>
+                </div>
+            </div>
+            <div class="row pb-2">
+                <div class="col-2 pt-1">
+                    <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nama Tamu</label>
+                </div>
+                <div class="col-4">
+                    <input type="text" id="nama_tamu" class="form-control col-11" style="background-color: white" placeholder="Masukkan Nama Tamu">
+                </div>
+                <div class="col-2 pt-1">
+                    <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nomor Hp Tamu</label>
+                </div>
+                <div class="col-4">
+                    <input type="text" id="nomor_tamu" class="form-control col-11" style="background-color: white" placeholder="E.g. 089501940612">
+                </div>
+            </div>
+            <div class="row pb-2">
+                <div class="col-2 pt-1">
+                    <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Instansi</label>
+                </div>
+                <div class="col-4">
+                    <input type="text" id="instansi_tamu" class="form-control col-11" style="background-color: white" placeholder="Masukkan Instansi Tamu">
+                </div>
+            </div>
+        </div>
+        <div style="display:none" id="tag_jenis_barang">
+            <div class="row pb-2 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
+                <div class="col-12 pt-1 pl-0">
+                    <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Keterangan Barang</label>
+                </div>
+            </div>
+            <div class="row pb-2">
+                <div class="col-6 pl-3">
+                    <div class="row pb-2">
+                        <div class="col-4 pt-1">
+                            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Jenis Barang</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="jenis_barang" class="form-control col-11" style="background-color: white" placeholder="Masukkan Jenis Barang">
+                        </div>
+                    </div>
+                    <div class="row pb-2">
+                        <div class="col-4 pt-1">
+                            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Quantity</label>
+                        </div>
+                        <div class="col-2">
+                            <input type="number" id="quantity" class="form-control" style="background-color: white">
+                        </div>
+                        <div class="col-3 pl-0">
+                            <input type="text" id="satuan" name="satuan" class="form-control" style="background-color: white" placeholder="Masukkan satuan">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 pl-3">
+                    <div class="row pb-2">
+                        <div class="col-4 pt-1">
+                            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Keterangan</label>
+                        </div>
+                        <div class="col-8">
+                            <textarea id="keterangan_barang" rows="3" cols="7" class="form-control col-11" style="background-color: white"></textarea>
+                        </div>
+                    </div>
+                    <div class="row pb-2">
+                        <div class="col-4 pt-1">
+                            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Instansi</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="instansi" class="form-control col-11" style="background-color: white" placeholder="Masukkan Instansi">
+                        </div>
+                    </div>
+                    <div class="row pb-2">
+                        <div class="col-4 pt-1">
+                            <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nama Penerima</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="nama_instansi" class="form-control col-11" style="background-color: white" placeholder="Masukkan Nama">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="display:none" id="tag_antar_dinas">
+            <div class="row pb-2 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
+                <div class="col-12 pt-1 pl-0">
+                    <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Keterangan Dinas</label>
+                </div>
+            </div>
+            <div class="row pb-2">
+                <div class="col-2 pt-1 pl-3">
+                    <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nama Karyawan Yang Dinas Luar</label>
+                </div>
+                <div class="col-4">
+                    <select id="selectEmployeeDinas" name="selectEmployeeDinas[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID col-12" style="width:400px">
+                        @foreach ($selectemployee as $r_empl)
+                            <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
+                        @endforeach
+                    </select>
+                    <h6 id="warning_employee_dinas" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-center">
+                <button id="save_request" class="btn btn-success">Submit</button>
+            </div>
         </div>
     </div>
 </div>
@@ -407,7 +410,18 @@
 <!-- Sweet alert js-->
 <script src="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.js')}}"></script>
 <script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
+<script src="{{URL::asset('assets/js/timepicker.js') }}"></script>
+<script src="{{URL::asset('assets/js/script2.js') }}"></script>
+<script src="{{ URL::asset('assets/js/jquery-ui/jquery-ui.min.js') }}"></script>
+
 <script>
+    $("#jam_pemberangkatan").timepicker({
+      timeFormat: "%H:%i"
+    });
+    $("#jam_kedatangan").timepicker({
+      timeFormat: "%H:%i"
+    });
+    
     var count=1;
     function add_route(){
         count++;
@@ -441,13 +455,16 @@
                 <input type="date" id="tanggal_kedatangan_yang_ke_'+count+'" name="tanggal_kedatangan_ke[]" class="form-control" style="background-color:white" onchange="isi_tanggal_kedatangan('+count+')">\
             </td>\
             <td>\
-                <input type="time" id="jam_kedatangan_yang_ke_'+count+'" name="jam_kedatangan_ke[]" class="form-control" style="background-color:white" onchange="isi_jam_kedatangan('+count+')">\
+                <input type="text" id="jam_kedatangan_yang_ke_'+count+'" name="jam_kedatangan_ke[]" class="form-control jam_kedatangan_add" style="background-color: white; cursor:pointer;" onchange="isi_jam_kedatangan('+count+')" readonly>\
             </td>\
             <td>\
                 <a href="#" class="btn btn-primary px-1" onclick="add_route_more('+count+')" id="add_route_more_button_'+count+'"><i class="fa fa-plus"></i></a>\
                 <a href="#" class="btn btn-danger px-1" onclick="delete_this_route('+count+')" id="delete_this_route_button_'+count+'"><i class="fa fa-minus"></i></a>\
             </td>\
         </tr>');
+        $(".jam_kedatangan_add").timepicker({
+            timeFormat: "%H:%i"
+        });
     }
     function simpan_array_tujuan(){
         var tujuan = $("input[name='tujuan_ke[]']").map(function(){return $(this).val();}).get();
@@ -1654,7 +1671,6 @@
         });
     });
     $(document).ready(function() {
-        document.getElementsByClassId("select2Dinas").style.width="264.481px";
         document.getElementById('cities').disabled=true;
         document.getElementById('districts').disabled=true;
         document.getElementById('sub_districts').disabled=true;
