@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Dompdf\Options;
 use Dompdf\FontMetrics;
 use App\Models\EmployeeAtribut;
+use App\Models\PengajuanBazzar;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use DateTime;
@@ -45,8 +46,6 @@ class BazzarController extends AdminBaseController
         group by d.sub_dept_id
         order by department_name asc");
 
-        // $sql_temp = DB::select("select * from mut_karyawan_input_form_lembur_tmp_det where created_by = '$user' group by created_by");
-        // $cek_temp = $sql_temp ? $sql_temp[0]->enroll_id : null;
         $selectemployee = $this->ajax_getallemployeeatribut();
         return view('hris/mutasi-karyawan/bazzar/pengajuan_bazzar', [
             'page' => 'dashboard-mut-karyawan', "subPageGroup" => "proses-karyawan", "subPage" => "form-lembur-non-sewing",
@@ -57,8 +56,8 @@ class BazzarController extends AdminBaseController
 
     public function ajax_getallemployeeatribut()
     {
-        $query =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, jenis_kelamin, employee_status, department_name, sub_dept_name, status_aktif,
-                                           concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')
+        $query =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, jenis_kelamin, employee_status, department_name, sub_dept_name, status_aktif, status_staff,
+                                           concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')->where('status_aktif', 'aktif')
                                     ->groupby('enroll_id')
                                     ->orderby('employee_name', 'asc')
                                     ->get();
@@ -66,5 +65,51 @@ class BazzarController extends AdminBaseController
 
     }
 
+
+    public function store(Request $request)
+    {
+
+        $user               = Auth::guard('admin')->user()->name;
+        $enroll_id         = $request->enroll_id;
+        $jumlah            = $request->jumlah;
+        if(isset($enroll_id) || isset($jumlah)){
+            PengajuanBazzar::create([
+                'enroll_id' => $enroll_id,
+                'jumlah' => $jumlah,
+                'status' => 'pending',
+            ]);
+            return response()->json(['status' => 'success', 'message' => 'Data berhasil disimpan']);
+        }else{
+            return response()->json(['status' => 'error', 'message' => 'Data gagal disimpan']);
+        }
+
+    }
+
+    public function hapus(Request $request)
+    {
+
+        $user               = Auth::guard('admin')->user()->name;
+        $id_bazzar         = $request->id_bazzar;
+        if(isset($id_bazzar)){
+            PengajuanBazzar::destroy($id_bazzar);
+            return response()->json(['status' => 'success', 'message' => 'Data berhasil dihappus']);
+        }else{
+            return response()->json(['status' => 'error', 'message' => 'Data gagal dihappus']);
+        }
+
+    }
+    public function get_bazzar(Request $request)
+    {
+
+        $user = Auth::guard('admin')->user()->name;
+        $line = $request->cboline;
+        $tgl_filter = $request->tgl_filter;
+        $tgl_lembur = $request->tgl_lembur;
+        if ($request->ajax()) {
+            $data_tmp = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('status', 'pending')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->get();
+            return DataTables::of($data_tmp)->toJson();
+        }
+
+    }
 
 }

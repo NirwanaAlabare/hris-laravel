@@ -152,6 +152,9 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
 
     // BAZZAR
     Route::get('/bazzar', ['as' => 'bazzar.index','uses' => 'Bazzar\BazzarController@index']);
+    Route::get('/bazzar/get_bazzar', ['as' => 'bazzar.get_bazzar','uses' => 'Bazzar\BazzarController@get_bazzar']);
+    Route::post('/bazzar/store', ['as' => 'bazzar.store','uses' => 'Bazzar\BazzarController@store']);
+    Route::post('/bazzar/hapus', ['as' => 'bazzar.hapus','uses' => 'Bazzar\BazzarController@hapus']);
 
     Route::get('hrd/export_sp_kehadiran_karyawan',['as'=>'hris.hrd.export_sp_kehadiran_karyawan','uses'=>'HRDController@export_sp_kehadiran_karyawan']);
     Route::get('hrd/export_pdf_sk_kerja',['as'=>'hris.hrd.export_pdf_sk_kerja','uses'=>'HRDController@export_pdf_sk_kerja']);
@@ -190,7 +193,6 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('ga/edit_detail',['as'=>'hris.ga.edit_detail','uses'=>'GAController@edit_detail']);
     Route::post('ga/get_route_from_user',['as'=>'hris.ga.get_route_from_user','uses'=>'GAController@get_route_from_user']);
     Route::post('ga/get_route_from_user_choice',['as'=>'hris.ga.get_route_from_user_choice','uses'=>'GAController@get_route_from_user_choice']);
-    Route::post('ga/get_all_history_alamat',['as'=>'hris.ga.get_all_history_alamat','uses'=>'GAController@get_all_history_alamat']);
     Route::post('ga/add_another_route',['as'=>'hris.ga.add_another_route','uses'=>'GAController@add_another_route']);
     Route::post('ga/add_another_route_2',['as'=>'hris.ga.add_another_route_2','uses'=>'GAController@add_another_route_2']);
     Route::post('ga/add_another_route_3',['as'=>'hris.ga.add_another_route_3','uses'=>'GAController@add_another_route_3']);
