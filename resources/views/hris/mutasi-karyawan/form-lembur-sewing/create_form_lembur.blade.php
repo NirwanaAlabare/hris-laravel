@@ -262,7 +262,7 @@
 <script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
 <script src="{{URL::asset('assets/js/iziToast.min.js')}}"></script>
 <script src="{{ asset('assets/plugins/html5-qrcode/html5-qrcode.min.js') }}"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+<script src="{{URL::asset('assets/js/timepicker.js') }}"></script>
 
     <style>
         .checkbox-xl .form-check-input {
