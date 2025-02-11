@@ -161,7 +161,7 @@ class GAController extends AdminBaseController
         $kendaraan=$data[0]->nomor_kendaraan;
         $nomor_kendaraan=DB::connection('laravel_nds')->select( DB::raw("select*from ga_master_kendaraan where id ='$kendaraan'") );
         $fileName='Form Penugasan Transportasi '.date('His');
-        $pdf = PDF::loadView('hris.laporan.penugasan_transportasi',["data"=>$data,"data2"=>$data2,"nomor_kendaraan"=>$nomor_kendaraan,"nama_karyawan_dinas"=>$nama_karyawan_dinas_luar])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+        $pdf = PDF::loadView('hris.laporan.penugasan_transportasi',["data"=>$data,"data2"=>$data2,"nomor_kendaraan"=>$nomor_kendaraan,"nama_karyawan_dinas_luar"=>$nama_karyawan_dinas_luar])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
         return $pdf;
     }
     public function add_another_route(){
