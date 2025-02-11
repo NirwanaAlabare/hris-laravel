@@ -380,7 +380,7 @@
             {
                 data: null,
                 render: function (data, type, row, meta) {
-                    if (row.user==4241 || row.user==20 || row.user==17 || row.user==7765 || row.user==5321 || row.user==6083 || row.user==6713){
+                    if (row.user==4241 || row.user==20 || row.user==17 || row.user==7765 || row.user==5321 || row.user==6083 || row.user==6081|| row.user==6713){
                         if(row.status==0){
                             return `<a class='btn btn-success py-0 px-2 mt-0 btn-sm btn-block text-white' style='font-size:9pt' data-toggle="modal" data-target="#approveModal" ' onclick="approve_function(` + row.id + `,'` + row.employee_name + `','` + row.department_name + `','` + row.detail_alamat + `','` + row.desa + `','` + row.detail_alamat_tujuan + `','` + row.desa_tujuan + `','` + row.tujuan_pemberangkatan + `')"> APPROVE </a><a class='btn btn-danger py-0 mt-1 btn-sm btn-block text-white' style='font-size:9pt' data-toggle="modal" data-target="#rejectModal" ' onclick="reject_function(` + row.id + `,'` + row.employee_name + `','` + row.department_name + `','` + row.detail_alamat + `','` + row.desa + `','` + row.detail_alamat_tujuan + `','` + row.desa_tujuan + `','` + row.tujuan_pemberangkatan + `')"> ALTERNATIVE </a>`;
                         }else{
@@ -430,7 +430,7 @@
             {
                 data: null,
                 render: function (data, type, row, meta) {
-                    if (row.user==4241 || row.user==20 || row.user==17 || row.user==7765 || row.user==5321 || row.user==6083 || row.user==6713){
+                    if (row.user==4241 || row.user==20 || row.user==17 || row.user==7765 || row.user==5321 || row.user==6083 || row.user==6081 || row.user==6713){
                         if(row.created_by==row.user){
                             if(row.status==0){
                                 return `<button onclick="edit_detail(` + row.id + `)" class="btn btn-sm btn-block py-0 px-1 mb-1" style="font-size:9pt;background-color:orange;color:white">EDIT</button><button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1  mt-0" style="font-size:9pt">LIHAT DETAIL</button>`;

@@ -184,7 +184,7 @@
             <input type="date" id="tanggal_pemberangkatan" class="form-control" style="background-color: white" value="{{$value->tanggal_pemberangkatan}}">
         </div>
         <div class="col-2">
-            <input class="form-control col-8" id="jam_pemberangkatan" name="jam_pemberangkatan" type="text" style="background-color: white; cursor:pointer;" readonly value="{{substr($value->jam_pemberangkatan,0,5)}}">
+            <input class="form-control col-8" id="jam_pemberangkatan" name="jam_pemberangkatan" type="text" style="background-color: white; cursor:pointer;" value="{{substr($value->jam_pemberangkatan,0,5)}}">
         </div>
         <div class="col-2 pt-1">
             <label class="form-label" style="font-weight: bold;font-size:12pt">Tanggal & Jam Kedatangan</label>
@@ -193,7 +193,7 @@
             <input type="date" id="tanggal_kedatangan" class="form-control" style="background-color: white" value="{{$value->tanggal_kedatangan}}">
         </div>
         <div class="col-2">
-            <input class="form-control col-8" id="jam_kedatangan" name="jam_kedatangan" type="text" style="background-color: white; cursor:pointer;" readonly value="{{substr($value->jam_kedatangan,0,5)}}">
+            <input class="form-control col-8" id="jam_kedatangan" name="jam_kedatangan" type="text" style="background-color: white; cursor:pointer;" value="{{substr($value->jam_kedatangan,0,5)}}">
         </div>
     </div>
     <div class="row pb-2">

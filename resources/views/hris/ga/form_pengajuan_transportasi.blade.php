@@ -28,6 +28,7 @@
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nama Karyawan</label>
             </div>
             <div class="col-4">
+                <input type="hidden" value="{{$id_user}}" id="user">
                 <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID col-11">
                     @foreach ($selectemployee as $r_empl)
                         <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
@@ -46,8 +47,22 @@
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Tujuan</label>
             </div>
-            <div class="col-4 pt-1">
-                <button class="btn btn-primary py-1" id="tujuan_lainnya" style="font-weight:bold"> + Daftar Tujuan</button></label>
+            <div class="col-4 pt-1 pr-7">
+                <table>
+                    <tr>
+                        <td width="1000px">
+                            <button class="btn btn-primary py-1 mr-3" id="tujuan_lainnya" style="font-weight:bold"> + Daftar Tujuan</button></label>
+                        </td>
+                        <td width="1000px">
+                            <select id="pilihan_history" class="form-control col-12" onchange="pilih_history_alamat(1)">
+                                <option value="">History Alamat</option>
+                                @foreach ($tujuan_short as $tujuan)
+                                    <option value="{{$tujuan->prov_id}}-{{$tujuan->city_id}}-{{$tujuan->dis_id}}-{{$tujuan->subdis_id}}-{{$tujuan->detail_alamat}}">{{$tujuan->detail_alamat}} ({{$tujuan->subdistrict}} - {{$tujuan->district}} - {{$tujuan->city}} - {{$tujuan->provinsi}})</option>
+                                @endforeach
+                            </select>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
         <div class="row pb-2">
@@ -144,7 +159,7 @@
                 <input type="date" id="tanggal_pemberangkatan" class="form-control" style="background-color: white">
             </div>
             <div class="col-2 pr-0">
-                <input class="form-control col-9" id="jam_pemberangkatan" name="jam_pemberangkatan" type="text" style="background-color: white; cursor:pointer;" readonly>
+                <input class="form-control col-9" id="jam_pemberangkatan" name="jam_pemberangkatan" type="text" style="background-color: white; cursor:pointer;">
                 {{-- <input type="time" id="jam_pemberangkatan" class="form-control" style="background-color: white"> --}}
             </div>
             <div class="col-2 pt-1">
@@ -154,7 +169,7 @@
                 <input type="date" id="tanggal_kedatangan" class="form-control" style="background-color: white">
             </div>
             <div class="col-2 pr-0">
-                <input class="form-control col-9" id="jam_kedatangan" name="jam_kedatangan" type="text" style="background-color: white; cursor:pointer;" readonly>
+                <input class="form-control col-9" id="jam_kedatangan" name="jam_kedatangan" type="text" style="background-color: white; cursor:pointer;">
             </div>
         </div>
         <div class="row pb-2">
@@ -413,7 +428,6 @@
 <script src="{{URL::asset('assets/js/timepicker.js') }}"></script>
 <script src="{{URL::asset('assets/js/script2.js') }}"></script>
 <script src="{{ URL::asset('assets/js/jquery-ui/jquery-ui.min.js') }}"></script>
-
 <script>
     $("#jam_pemberangkatan").timepicker({
       timeFormat: "%H:%i"
@@ -421,9 +435,114 @@
     $("#jam_kedatangan").timepicker({
       timeFormat: "%H:%i"
     });
-    
     var count=1;
+    var all_history_alamat=[];
+    function pilih_history_alamat(value){
+        var pilihan_history=$('#pilihan_history').val();
+        const myArray = pilihan_history.split("-");
+        var province=myArray[0];
+        var city=myArray[1];
+        var district=myArray[2];
+        var subdistrict=myArray[3];
+        var detail_alamat=myArray[4];
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_province')}}",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                $('#provinsi_2').empty().append('<option value="">Pilih Provinsi</option>');
+                document.getElementById("provinsi_2").style.border="";
+                document.getElementById("provinsi_2").disabled=false;
+                jQuery.each(res, function(key,value){
+                    $('#provinsi_2').append('<option value="'+ value['prov_id'] +'">'+ value['prov_name'] +'</option>');
+                });
+                $('#provinsi_2').val(province);
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data provinsi",
+                    text: "Data provinsi gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_cities')}}",
+            data: {
+                provinsi:province,
+            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                $('#cities_2').empty().append('<option value="">Pilih Kabupaten/Kota</option>');
+                document.getElementById("cities_2").style.border="";
+                document.getElementById("cities_2").disabled=false;
+                jQuery.each(res, function(key,value){
+                    $('#cities_2').append('<option value="'+ value['city_id'] +'">'+ value['city_name'] +'</option>');
+                });
+                $('#cities_2').val(city)
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data kota",
+                    text: "Data kota gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_districts')}}",
+            data: {
+                cities:city,
+            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                $('#districts_2').empty().append('<option value="">Pilih Kecamatan</option>');
+                document.getElementById("districts_2").style.border="";
+                document.getElementById("districts_2").disabled=false;
+                jQuery.each(res, function(key,value){
+                    $('#districts_2').append('<option value="'+ value['dis_id'] +'">'+ value['dis_name'] +'</option>');
+                });
+                $('#districts_2').val(district);
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data desa",
+                    text: "Data desa gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_subdistricts')}}",
+            data: {
+                districts:district,
+            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                $('#sub_districts_2').empty().append('<option value="">Pilih Kelurahan/Desa</option>');
+                document.getElementById("sub_districts_2").style.border="";
+                document.getElementById("sub_districts_2").disabled=false;
+                jQuery.each(res, function(key,value){
+                    $('#sub_districts_2').append('<option value="'+ value['subdis_id'] +'">'+ value['subdis_name'] +'</option>');
+                });
+                $('#sub_districts_2').val(subdistrict);
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data desa",
+                    text: "Data desa gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
+        $('#detail_alamat_2').val(detail_alamat);
+        $('#provinsi_2').val
+    }
     function add_route(){
+        get_all_history_alamat();
         count++;
         document.getElementById('add_route_satu').style.display='none';
         ambil_nama_provinsi(count);
@@ -431,6 +550,9 @@
             <td>\
                 <input type="hidden" value="'+count+'" id="tujuan_yang_ke_'+count+'" name="tujuan_ke[]">\
                 <select id="provinsi_yang_ke_'+count+'" name="provinsi_ke[]" class="form-control" style="background-color:white" onchange="ambil_nama_kabupaten('+count+')">\
+                </select>\
+                <select class="form-control form-control-sm pt-1" name="history_alamat" id="pilih_history_alamat_ke_'+count+'" onchange="pilih_history_alamat_ke('+count+')">\
+                    <option value="">History Alamat</option>\
                 </select>\
             </td>\
             <td>\
@@ -455,7 +577,7 @@
                 <input type="date" id="tanggal_kedatangan_yang_ke_'+count+'" name="tanggal_kedatangan_ke[]" class="form-control" style="background-color:white" onchange="isi_tanggal_kedatangan('+count+')">\
             </td>\
             <td>\
-                <input type="text" id="jam_kedatangan_yang_ke_'+count+'" name="jam_kedatangan_ke[]" class="form-control jam_kedatangan_add" style="background-color: white; cursor:pointer;" onchange="isi_jam_kedatangan('+count+')" readonly>\
+                <input type="text" id="jam_kedatangan_yang_ke_'+count+'" name="jam_kedatangan_ke[]" class="form-control jam_kedatangan_add" style="background-color: white; cursor:pointer;" onchange="isi_jam_kedatangan('+count+')">\
             </td>\
             <td>\
                 <a href="#" class="btn btn-primary px-1" onclick="add_route_more('+count+')" id="add_route_more_button_'+count+'"><i class="fa fa-plus"></i></a>\
@@ -465,6 +587,131 @@
         $(".jam_kedatangan_add").timepicker({
             timeFormat: "%H:%i"
         });
+    }
+    function get_all_history_alamat(){
+        var user=$('#user').val();
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_all_history_alamat')}}",
+            data: {
+                user:user,
+            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                console.log(res);
+                $('select[name="history_alamat"]').empty();
+                $('select[name="history_alamat"]').append('<option value="">History Alamat</option>')
+                jQuery.each(res, function(key,value){
+                    $('select[name="history_alamat"]').append('<option value="'+value.detail_alamat+'-'+value.prov_id+'-'+value.city_id+'-'+value.dis_id+'-'+value.subdis_id+'">'+value.detail_alamat+' - ('+value.subdistrict+' - '+value.district+' - '+value.city+' - '+value.provinsi+')'+'</option>');
+                });
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data provinsi",
+                    text: "Data provinsi gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
+    }
+    function pilih_history_alamat_ke(count){
+        var history_alamat_ke=$('#pilih_history_alamat_ke_'+count).val();
+        var myArray = history_alamat_ke.split("-");
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_province')}}",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                $('#provinsi_yang_ke_'+count).empty().append('<option value="">Pilih Provinsi</option>');
+                jQuery.each(res, function(key,value){
+                    $('#provinsi_yang_ke_'+count).append('<option value="'+ value['prov_id'] +'">'+ value['prov_name'] +'</option>');
+                });
+                document.getElementById("provinsi_yang_ke_"+count).style.border="";
+                document.getElementById("provinsi_yang_ke_"+count).disabled=false;
+                $('#provinsi_yang_ke_'+count).val(myArray[1]);
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data kota",
+                    text: "Data kota gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_cities')}}",
+            data: {
+                provinsi:myArray[1],
+            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                $('#kota_yang_ke_'+count).empty().append('<option value="">Pilih Kabupaten/Kota</option>');
+                jQuery.each(res, function(key,value){
+                    $('#kota_yang_ke_'+count).append('<option value="'+ value['city_id'] +'">'+ value['city_name'] +'</option>');
+                });
+                document.getElementById("kota_yang_ke_"+count).style.border="";
+                document.getElementById("kota_yang_ke_"+count).disabled=false;
+                $('#kota_yang_ke_'+count).val(myArray[2]);
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data kota",
+                    text: "Data kota gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_districts')}}",
+            data: {
+                cities:myArray[2],
+            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                $('#kecamatan_yang_ke_'+count).empty().append('<option value="">Pilih Kecamatan</option>');
+                jQuery.each(res, function(key,value){
+                    $('#kecamatan_yang_ke_'+count).append('<option value="'+ value['dis_id'] +'">'+ value['dis_name'] +'</option>');
+                });
+                document.getElementById("kecamatan_yang_ke_"+count).disabled=false;
+                document.getElementById("kecamatan_yang_ke_"+count).style.border="";
+                $('#kecamatan_yang_ke_'+count).val(myArray[3]);
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data desa",
+                    text: "Data desa gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_subdistricts')}}",
+            data: {
+                districts:myArray[3],
+            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                $('#desa_yang_ke_'+count).empty().append('<option value="">Pilih Kelurahan/Desa</option>');
+                jQuery.each(res, function(key,value){
+                    $('#desa_yang_ke_'+count).append('<option value="'+ value['subdis_id'] +'">'+ value['subdis_name'] +'</option>');
+                });
+                document.getElementById("desa_yang_ke_"+count).disabled=false;
+                document.getElementById("desa_yang_ke_"+count).style.border="";
+                $('#desa_yang_ke_'+count).val(myArray[4]);
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data desa",
+                    text: "Data desa gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
+        $('#detail_alamat_yang_ke_'+count).val(myArray[0]);
+        $('#pilih_history_alamat_ke_'+count).val('');
     }
     function simpan_array_tujuan(){
         var tujuan = $("input[name='tujuan_ke[]']").map(function(){return $(this).val();}).get();

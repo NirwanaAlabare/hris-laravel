@@ -114,7 +114,7 @@
                                 </div>
                                 @endif
                             @endif
-                            @if ($type!='mutasi_karyawan')
+                            @if ($type!='mutasi_karyawan' || $email=='GA')
                             <div class="col">
                                 <a href="{{route('hris.ga.form_pengajuan_transportasi')}}" >
                                     <div class="card card-3">
