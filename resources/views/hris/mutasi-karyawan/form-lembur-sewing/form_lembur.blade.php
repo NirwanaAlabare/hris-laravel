@@ -140,7 +140,7 @@
         <div class="card-body">
             <div class="row mb-3 flex justify-content-between align-items-center">
                 <div class="d-flex gap-4 align-items-end">
-                    <div class="">'
+                    <div class="">
                         <input type="hidden" id="tgl-awal" name="tgl-awal">
                         <input type="hidden" id="tgl-akhir" name="tgl-akhir">
                         <input type="hidden" id="daterange1" name="daterange1" oninput="dataTableReload()" onchange="dataTableReload()" value="{{ date('Y-m-d') }}">
