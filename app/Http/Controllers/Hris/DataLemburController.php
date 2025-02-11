@@ -1875,7 +1875,7 @@ class DataLemburController extends AdminBaseController
             $formattedResults[]= $row->uuid;
           }
         }
-        dd($formattedResults);
+        info($formattedResults);
 
         return Response()->json($query);
     }
