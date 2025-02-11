@@ -21,8 +21,48 @@
     </ul>
 </div>
 
-<div class="card-body px-6 py-4" style="border: 1px solid #d8d4dc">
-    <div class="row">
+<div class="card-body p-0" style="border: 1px solid #d8d4dc">
+    <div id="accordion" class="px-5">
+        <div class="card mb-3">
+            <div class="card-header p-0 bg-light" id="headingOne">
+                <h5 class="mb-0">
+                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <i class="fa fa-filter" aria-hidden="true"></i> Filter
+                </button>
+            </h5>
+        </div>
+      
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body px-0 py-2">
+                <div class="row">
+                    <div class="col-2 pl-6 pt-1">
+                        <label class="form-label" style="font-size:11pt">Tanggal Pemberangkatan</label>
+                    </div>
+                    <div class="col-3 pl-0">
+                        <input type="date" class="form-control bg-white col-10" id="filter_tanggal">
+                    </div>
+                </div>
+                <div class="row pt-1">
+                    <div class="col-2 pl-6 pt-1">
+                        <label class="form-label" style="font-size:11pt">Status</label>
+                    </div>
+                    <div class="col-3 pl-0">
+                        <select class="form-control col-10" id="value_status" style="background-color: white" onchange="perubahanan_status()">\
+                            <option value=''>Pilih Status</option>
+                            <option value=0>Pengajuan Baru</option>
+                            <option value=1>Approved</option>
+                            <option value=2>Alternative</option>
+                            <option value=3>On The Way</option>
+                            <option value=4>Done</option>
+                            <option value=6>Late</option>
+                            <option value=5>Cancel</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row px-3 pt-0 pb-6">
         <div class="col-12">
             <input type="hidden" id="user" value="{{$id_user}}">
             <table id="datatable" class="table table-bordered">
@@ -328,6 +368,8 @@
             url: '{{ route('hris.ga.get_data_pengajuan_transportasi') }}',
             data: function(d) {
                 d.user = $('#user').val();
+                d.status = $('#value_status').val();
+                d.tanggal = $('#filter_tanggal').val();
             },
         },
         columns: [
@@ -497,6 +539,12 @@
             },
         ],
         columnDefs: [{ width: 115, targets: [7,8] }],
+    });
+    $('#value_status').on('change',function(){
+        dataTableReload();
+    });
+    $('#filter_tanggal').on('change',function(){
+        dataTableReload();
     });
     function approveButton(id){
         var status_val=$('#value_status_'+id).val();
