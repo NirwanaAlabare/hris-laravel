@@ -199,7 +199,7 @@
     </div>
     
     @if (str_contains($value->tujuan_pemberangkatan, 'antar_barang') || str_contains($value->tujuan_pemberangkatan, 'jemput_barang'))
-    <div class="row pb-1 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
+    <div class="row pb-1 pl-1 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
         <div class="col-6">
             <div class="row">
                 <div class="col-4">
@@ -247,7 +247,7 @@
     </div>
     @endif
     @if (str_contains($value->tujuan_pemberangkatan, 'antar_tamu') || str_contains($value->tujuan_pemberangkatan, 'jemput_tamu') )
-    <div class="row pb-1 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
+    <div class="row pb-1 pl-0 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
         <div class="col-6">
             <div class="row">
                 <div class="col-4">
@@ -280,7 +280,7 @@
     @endif
     
     @if (str_contains($value->tujuan_pemberangkatan, 'antar_dinas') || str_contains($value->tujuan_pemberangkatan, 'jemput_dinas'))
-    <div class="row pb-1 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
+    <div class="row pb-1 pl-3 border-left-0 border-right-0 border-bottom-0 border-dark-0 border border-secondary">
         <div class="col-6 pl-0">
             <div class="row">
                 <div class="col-4">
@@ -293,66 +293,116 @@
         </div>
     </div>
     @endif
+    @if($id_user==4241 || $id_user==20 || $id_user==17 || $id_user==7765 || $id_user==5321 || $id_user==6083 || $id_user==6081 || $id_user==6713)
     <div class="row pb-1">
-        <div class="col-6">
-            <div class="row">
-                <div class="col-4">
-                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Driver</label>
-                </div>
-                <div class="col-8">
-                    <select class="form-control col-10" id="driver">
-                        <option value="">Pilih Driver</option>
-                        @foreach ($drivers as $drive)
-                            <option value="{{ $drive->enroll_id }}" {{ ( $drive->enroll_id == $value->id_driver) ? 'selected' : '' }}> {{ $drive->employee_name }} </option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
+        <div class="col-2">
+            <label class="form-label" style="font-weight: bold;font-size:12pt"> Pilih Status</label>
         </div>
-        <div class="col-6">
-            <div class="row">
-                <div class="col-4">
-                    <label class="form-label" style="font-weight: bold;font-size:12pt"> Kendaraan</label>
-                </div>
-                <div class="col-8">
-                    <select class="form-control col-10" id="vehicle">
-                        <option value="">Pilih Kendaraan</option>
-                        @foreach ($vehicles as $v)
-                            <option value="{{$v->id}}"{{ ( $v->id == $value->nomor_kendaraan) ? 'selected' : '' }}>{{$v->plat_no}} || {{$v->merk}} {{$v->tipe}}</option>
-                        @endforeach
-                    </select>
-                </div>
+        <div class="col-4">
+            <select class="form-control col-10" id="value_status" style="background-color: white" onchange="perubahanan_status()">\
+                <option value=0 @if ($value->status == 0) {{ 'selected' }} @endif>Pilih Status</option>\
+                <option value=1 @if ($value->status == 1) {{ 'selected' }} @endif>Approved</option>\
+                <option value=2 @if ($value->status == 2) {{ 'selected' }} @endif>Alternative</option>\
+                <option value=3 @if ($value->status == 3) {{ 'selected' }} @endif>On The Way</option>\
+                <option value=4 @if ($value->status == 4) {{ 'selected' }} @endif>Done</option>\
+                <option value=6 @if ($value->status == 5) {{ 'selected' }} @endif>Late</option>\
+                <option value=5 @if ($value->status == 6) {{ 'selected' }} @endif>Cancel</option>\
+            </select>
+        </div>
+    </div>
+    <div id="status_approved_tag">
+        <div class="row">
+            <div class="col-2">
+                <label class="form-label" style="font-weight: bold;font-size:12pt"> Driver</label>
+            </div>
+            <div class="col-4">
+                <select class="form-control col-10" style="background-color: white" id="driver">
+                    <option value="">Pilih Driver</option>
+                    @foreach ($drivers as $drive)
+                        <option value="{{ $drive->enroll_id }}" {{ ( $drive->enroll_id == $value->id_driver) ? 'selected' : '' }}> {{ $drive->employee_name }} </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-2">
+                <label class="form-label" style="font-weight: bold;font-size:12pt"> Kendaraan</label>
+            </div>
+            <div class="col-4">
+                <select class="form-control col-10" style="background-color: white" id="vehicle">
+                    <option value="">Pilih Kendaraan</option>
+                    @foreach ($vehicles as $v)
+                        <option value="{{$v->id}}"{{ ( $v->id == $value->nomor_kendaraan) ? 'selected' : '' }}>{{$v->plat_no}} || {{$v->merk}} {{$v->tipe}}</option>
+                    @endforeach
+                </select>
             </div>
         </div>
     </div>
-    <div class="row pb-1 pt-3">
+    <div id="status_alternative_tag">
+        <div class="row pl-0 pt-1">
+            <div class="col-2">
+                <label class="form-label" style="font-weight: bold;font-size:12pt"> Alternative</label>
+            </div>
+            <div class="col-4">
+                <textarea id="status_alternative" class="form-control col-10" style="background-color: white">{{$value->alasan_status}}</textarea>
+            </div>
+        </div>
+    </div>
+    <div class="row pt-2">
         <div class="col-12 text-center">
-            @if($id_user==6083 || $id_user==5321 || $id_user==4241)
-                @if ($value->status==1)
-                    <h6 style="font-weight: bold;color:green">STATUS : APPROVED</h6>
-                    <a class="btn" style="background-color:rgb(236, 165, 32);color:white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Back</a>
-                @elseif ($value->status==2)
-                    <h6 style="font-weight: bold;color:red">STATUS : REJECTED</h6>
-                    <a class="btn" style="background-color:rgb(236, 165, 32);color:white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Back</a>
-                @elseif($value->status==0)
-                    <a class="btn" style="background-color:rgb(236, 165, 32);color:white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Back</a>
-                    <button class="btn btn-success" id="approve_request" data-toggle="modal" data-target="approveModal" data-id="{{$value->id}}">Approve</button>
-                    <button class="btn btn-danger" id="reject_request" data-toggle="modal" data-target="rejectModal" data-id="{{$value->id}}">Reject</button>
-                @endif
-            @else
-                @if ($value->status==1)
-                    <h6 style="font-weight: bold;color:green">STATUS : APPROVED</h6>
-                    <a class="btn" style="background-color:rgb(236, 165, 32);color:white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Back</a>
-                @elseif ($value->status==2)
-                    <h6 style="font-weight: bold;color:red">STATUS : REJECTED</h6>
-                    <a class="btn" style="background-color:rgb(236, 165, 32);color:white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Back</a>
-                @elseif($value->status==0)
-                    <h6 style="font-weight: bold">STATUS : PENDING</h6>
-                    <a class="btn" style="background-color:rgb(236, 165, 32);color:white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Back</a>
-                @endif
+            <a class="btn" style="background-color:rgb(236, 165, 32);color:white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Back</a>
+            <button class="btn btn-success" id="approve_this_request">Save Changes</button>
+        </div>
+    </div>
+    @else
+    <div class="row pb-1 pl-0">
+        <div class="col-2">
+            <label class="form-label" style="font-weight: bold;font-size:12pt"> Status</label>
+        </div>
+        <div class="col-4">
+            @if($value->status==0)
+                <h6 style="font-size:11pt;color:grey;font-weight:bold">: PENDING</h6>
+            @elseif($value->status==1)
+                <h6 style="font-size:11pt;color:green;font-weight:bold">: APPROVED</h6>
+            @elseif($value->status==2)
+                <h6 style="font-size:11pt;color:red;font-weight:bold">: Alternative</h6>
+            @elseif($value->status==3)
+                <h6 style="font-size:11pt;color:green;font-weight:bold">: ON THE WAY</h6>
+            @elseif($value->status==4)
+                <h6 style="font-size:11pt;color:green;font-weight:bold">: DONE</h6>
+            @elseif($value->status==6)
+                <h6 style="font-size:11pt;color:orange;font-weight:bold">: LATE</h6>
+            @elseif($value->status==5)
+                <h6 style="font-size:11pt;color:red;font-weight:bold">: CANCEL</h6>
             @endif
         </div>
     </div>
+    <div class="row pl-0">
+        <div class="col-2">
+            <label class="form-label" style="font-weight: bold;font-size:12pt"> Driver</label>
+        </div>
+        <div class="col-4">
+            <label style="font-size:12pt">: {{$value->id_driver}}</label>
+        </div>
+        <div class="col-2">
+            <label class="form-label" style="font-weight: bold;font-size:12pt"> Kendaraan</label>
+        </div>
+        <div class="col-4">
+            <label style="font-size:12pt">: {{$value->nomor_kendaraan}}</label>
+        </div>
+    </div>
+    <div class="row pl-0">
+        <div class="col-2">
+            <label class="form-label" style="font-weight: bold;font-size:12pt"> Alternative</label>
+        </div>
+        <div class="col-4">
+            <label style="font-size:12pt">: {{$value->alasan_status}}</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 text-center">
+            <a class="btn" style="background-color:rgb(236, 165, 32);color:white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Back</a>
+        </div>
+    </div>
+    @endif
     @endforeach
 </div>
 <div class="modal fade" id="tujuanLainnyaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -439,6 +489,52 @@
 <script src="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.js')}}"></script>
 <script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
 <script>
+    var first_value_status=$('#value_status').val();
+    $(document).ready(function() {
+        console.log(first_value_status);
+        if(first_value_status==2){
+            document.getElementById('status_approved_tag').style.display='none';
+            document.getElementById('status_alternative_tag').style.display='block';
+        }else{
+            if(first_value_status==0){
+                document.getElementById('status_approved_tag').style.display='none';
+                document.getElementById('status_alternative_tag').style.display='none';
+            }else{
+                document.getElementById('status_approved_tag').style.display='block';
+                document.getElementById('status_alternative_tag').style.display='none';
+            }
+        }
+    });
+    function perubahanan_status(){
+        var value_status=$('#value_status').val();
+        if(value_status==2){
+            document.getElementById('status_approved_tag').style.display='none';
+            document.getElementById('status_alternative_tag').style.display='block';
+            $('#driver').val('');
+            $('#vehicle').val('');
+            document.getElementById("driver").style.border="";
+            document.getElementById("vehicle").style.border="";
+            document.getElementById("value_status").style.border="";
+        }else{
+            if(value_status==0){
+                document.getElementById('status_approved_tag').style.display='none';
+                document.getElementById('status_alternative_tag').style.display='none';
+                document.getElementById("driver").style.border="";
+                document.getElementById("vehicle").style.border="";
+                document.getElementById("status_alternative").style.border="";
+                document.getElementById("value_status").style.border="";
+                $('#status_alternative').val('');
+                $('#driver').val('');
+                $('#vehicle').val('');
+            }else{
+                document.getElementById('status_approved_tag').style.display='block';
+                document.getElementById('status_alternative_tag').style.display='none';
+                document.getElementById("status_alternative").style.border="";
+                $('#status_alternative').val('');
+                document.getElementById("value_status").style.border="";
+            }
+        }
+    }
     $('#tujuan_lainnya').on('click',function(){
         $('#another_route').empty();
         var id=$(this).data('id');
@@ -523,16 +619,20 @@
         });
     });
     $('#approve_this_request').on('click',function(){
-        var id_request=$('#id_request_modal').val();
+        var id_request=$('#id_request').val();
+        var status=$('#value_status').val();
         var driver=$('#driver').val();
-        var vehicle_id=$('#vehicle').val();
+        var vehicle=$('#vehicle').val();
+        var alternative=$('#status_alternative').val();
         $.ajax({
             type:"POST",
-            url: "{{route('hris.ga.approve_car_request')}}",
+            url: "{{route('hris.ga.approve_this_car_request')}}",
             data: {
                 id_request:id_request,
+                status:status,
                 driver:driver,
-                vehicle_id:vehicle_id
+                vehicle:vehicle,
+                alternative:alternative
             },
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             success: function(res){
@@ -540,7 +640,29 @@
                 location.reload();
             },
             error: function(error){
-                swal("", "Permintaan transportasi gagal di approve", "error");
+                let err_log=error.responseJSON.errors;
+                if(error.status==422){
+                    if(typeof(err_log.status)!=='undefined'){
+                        document.getElementById("value_status").style.border = "1px solid red";
+                    }else{
+                        document.getElementById("value_status").style.border="";
+                    }
+                    if(typeof(err_log.alternative)!=='undefined'){
+                        document.getElementById("status_alternative").style.border = "1px solid red";
+                    }else{
+                        document.getElementById("status_alternative").style.border="";
+                    }
+                    if(typeof(err_log.driver)!=='undefined'){
+                        document.getElementById("driver").style.border = "1px solid red";
+                    }else{
+                        document.getElementById("driver").style.border="";
+                    }
+                    if(typeof(err_log.vehicle)!=='undefined'){
+                        document.getElementById("vehicle").style.border = "1px solid red";
+                    }else{
+                        document.getElementById("vehicle").style.border="";
+                    }
+                }
             }
         });
     });

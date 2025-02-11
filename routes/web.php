@@ -187,6 +187,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('ga/data_pengajuan_transportasi',['as'=>'hris.ga.data_pengajuan_transportasi','uses'=>'GAController@data_pengajuan_transportasi']);
     Route::get('ga/get_data_pengajuan_transportasi',['as'=>'hris.ga.get_data_pengajuan_transportasi','uses'=>'GAController@get_data_pengajuan_transportasi']);
     Route::post('ga/approve_car_request',['as'=>'hris.ga.approve_car_request','uses'=>'GAController@approve_car_request']);
+    Route::post('ga/approve_this_car_request',['as'=>'hris.ga.approve_this_car_request','uses'=>'GAController@approve_this_car_request']);
     Route::post('ga/reject_car_request',['as'=>'hris.ga.reject_car_request','uses'=>'GAController@reject_car_request']);
     Route::get('ga/print_penugasan_transportasi',['as'=>'hris.ga.print_penugasan_transportasi','uses'=>'GAController@print_penugasan_transportasi']);
     Route::get('ga/lihat_detail',['as'=>'hris.ga.lihat_detail','uses'=>'GAController@lihat_detail']);

@@ -73,6 +73,38 @@ class GAController extends AdminBaseController
             'status'=>1
         ]);
     }
+    public function approve_this_car_request(){
+        $status= request()->status;
+        if($status==0){
+            $this->_validationWithoutStatus(request());
+        }else if($status==2){
+            $this->_validationWithoutAlternate(request());
+        }else if($status==1 || $status==3 || $status==4){
+            $this->_validationWithoutDriver(request());
+        }
+        PermintaanTransportasi::where('id',request()->id_request)->update([
+            'id_driver'=>request()->driver,
+            'nomor_kendaraan'=>request()->vehicle,
+            'alasan_status'=>request()->alternative,
+            'status'=>$status,
+        ]);
+    }
+    public function _validationWithoutStatus(){
+        $validation=request()->validate([
+            'status'=>'required|not_in:0',
+        ]);
+    }
+    public function _validationWithoutAlternate(){
+        $validation=request()->validate([
+            'alternative'=>'required',
+        ]);
+    }
+    public function _validationWithoutDriver(){
+        $validation=request()->validate([
+            'driver'=>'required',
+            'vehicle'=>'required',
+        ]);
+    }
     public function change_status_car_request(){
         $status=request()->status;
         PermintaanTransportasi::where('id',request()->id_request)->update([
@@ -432,7 +464,7 @@ class GAController extends AdminBaseController
             $query->where('status_aktif','AKTIF')
             ->orWhere('tanggal_resign','>',date('Y-m-d'));
         })->get();
-        $pengajuan_transportasi=DB::select("select a.id,a.created_at,a.jarak_tempuh,a.jenis_barang,a.quantity,a.satuan,a.nama_instansi,a.nama_penerima,a.keterangan_barang,a.nama_tamu,a.instansi_tamu,a.nomor_hp_tamu,a.id_driver,a.nomor_kendaraan,a.status,a.karyawan_dinas,b.employee_name,b.nik,b.department_name,b.sub_dept_name,c.subdis_name nama_desa,d.dis_name nama_kecamatan,e.city_name nama_kota,f.prov_name nama_provinsi,a.detail_alamat,a.tanggal_pemberangkatan,a.jam_pemberangkatan,a.tujuan_pemberangkatan,g.subdistrict nama_desa_tujuan,g.district nama_kecamatan_tujuan,g.city nama_kota_tujuan,g.provinsi nama_provinsi_tujuan,g.detail_alamat detail_alamat_tujuan,g.tanggal_kedatangan,g.jam_kedatangan from (select*from permintaan_transportasi where id='$id') a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join (select*from tujuan_transportasi where permintaan_transportasi_id='$id' order by tujuan_id limit 1) g on a.id=g.permintaan_transportasi_id");
+        $pengajuan_transportasi=DB::select("select a.id,a.created_at,a.jarak_tempuh,a.jenis_barang,a.quantity,a.satuan,a.nama_instansi,a.nama_penerima,a.keterangan_barang,a.nama_tamu,a.instansi_tamu,a.nomor_hp_tamu,a.id_driver,a.nomor_kendaraan,a.status,a.alasan_status,a.karyawan_dinas,b.employee_name,b.nik,b.department_name,b.sub_dept_name,c.subdis_name nama_desa,d.dis_name nama_kecamatan,e.city_name nama_kota,f.prov_name nama_provinsi,a.detail_alamat,a.tanggal_pemberangkatan,a.jam_pemberangkatan,a.tujuan_pemberangkatan,g.subdistrict nama_desa_tujuan,g.district nama_kecamatan_tujuan,g.city nama_kota_tujuan,g.provinsi nama_provinsi_tujuan,g.detail_alamat detail_alamat_tujuan,g.tanggal_kedatangan,g.jam_kedatangan from (select*from permintaan_transportasi where id='$id') a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join (select*from tujuan_transportasi where permintaan_transportasi_id='$id' order by tujuan_id limit 1) g on a.id=g.permintaan_transportasi_id");
         $karyawan_dinas=$pengajuan_transportasi[0]->karyawan_dinas;
         $nama_karyawan_dinas=[];
         $nama_karyawan_dinas_luar='';
