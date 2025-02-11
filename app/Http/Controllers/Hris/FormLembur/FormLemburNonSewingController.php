@@ -779,7 +779,7 @@ class FormLemburNonSewingController extends AdminBaseController
                             where a.no_form in ('$no_form') and a.uuid_koreksi_upah!='' order by employee_name");
         $date_now=Carbon::now()->translatedFormat('d F Y');
         $fileName=date('Ym').' Form Insentif '.' - '.substr_replace(substr($no_form,13),"",-9).' '.Carbon::parse(strtotime(substr($no_form,-4).'-'.substr($no_form,-6,2).'-'.substr($no_form,-8,2)))->translatedFormat('dmY');
-        $pdf = PDF::loadView('form-lembur-non-sewing.form_insentif_non_sewing',["data" => $data,"no_form"=>$no_form,"date_now"=>$date_now,"tgl_lembur"=>$tgl_lembur,"dept"=>$dept,"sub_dept"=>$sub_dept])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
+        $pdf = PDF::loadView('hris.mutasi-karyawan.form-lembur-non-sewing.form_insentif_non_sewing',["data" => $data,"no_form"=>$no_form,"date_now"=>$date_now,"tgl_lembur"=>$tgl_lembur,"dept"=>$dept,"sub_dept"=>$sub_dept])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
         return $pdf;
         // Pdf::setOption(['dpi' => 150, 'defaultFont' => 'sans-serif']);
         // $pdf = Pdf::loadView('form-lembur-non-sewing.export-spl-pdf', [
@@ -841,7 +841,7 @@ class FormLemburNonSewingController extends AdminBaseController
         ");
         $date_now=Carbon::now()->translatedFormat('d F Y');
         $fileName=$no_form.'_'.date('His');
-        $pdf = PDF::loadView('form-lembur-non-sewing.export-spl-pdf',["data" => $data,"id"=>$request->id,"tgl_lembur"=>$tgl_lembur,"no_form"=>$no_form,"dept"=>$dept])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
+        $pdf = PDF::loadView('hris.mutasi-karyawan.form-lembur-non-sewing.export-spl-pdf',["data" => $data,"id"=>$request->id,"tgl_lembur"=>$tgl_lembur,"no_form"=>$no_form,"dept"=>$dept])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
         return $pdf;
     }
     public function export_spl_non_sewing(Request $request)

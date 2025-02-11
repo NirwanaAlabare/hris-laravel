@@ -30,8 +30,6 @@ class FormLemburSewingController extends AdminBaseController
         $tgl_awal = $request->dateFrom;
         $tgl_akhir = $request->dateTo;
         $user = Auth::guard('admin')->user()->name;
-        // $dept= Auth::user()->department;
-
         $dept= 'sewing';
 
         if ($request->ajax()) {
@@ -97,6 +95,7 @@ class FormLemburSewingController extends AdminBaseController
                 order by tgl_lembur desc,line asc
                 ");
             }
+
             return DataTables::of($data_input)->toJson();
         }
 
@@ -785,7 +784,7 @@ class FormLemburSewingController extends AdminBaseController
         where a.no_form='$no_form' and a.uuid_koreksi_upah!=''");
         $date_now=Carbon::now()->translatedFormat('d F Y');
         $fileName=date('Ym').' Form Insentif '.' - '.substr_replace(substr($no_form,13),"",-9).' '.Carbon::parse(strtotime(substr($no_form,-4).'-'.substr($no_form,-6,2).'-'.substr($no_form,-8,2)))->translatedFormat('dmY');
-        $pdf = PDF::loadView('form-lembur.form_insentif_sewing',["data" => $data,"no_form"=>$no_form,"date_now"=>$date_now,"tgl_lembur"=>$tgl_lembur,"dept"=>$dept,"sub_dept"=>$sub_dept])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
+        $pdf = PDF::loadView('hris.mutasi-karyawan.form-lembur-sewing.form_insentif_sewing',["data" => $data,"no_form"=>$no_form,"date_now"=>$date_now,"tgl_lembur"=>$tgl_lembur,"dept"=>$dept,"sub_dept"=>$sub_dept])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
         return $pdf;
     }
     public function export_pdf_sewing_spl(Request $request){
@@ -823,7 +822,7 @@ class FormLemburSewingController extends AdminBaseController
             order by  employee_name asc
         ");
         $fileName=$no_form.'_'.date('His');
-        $pdf = PDF::loadView('form-lembur.export-spl-pdf',["data" => $data,"no_form"=>$no_form,"tgl_lembur"=>$tgl_lembur,"line"=>$line])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
+        $pdf = PDF::loadView('hris.mutasi-karyawan.form-lembur-sewing.export-spl-pdf',["data" => $data,"no_form"=>$no_form,"tgl_lembur"=>$tgl_lembur,"line"=>$line])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
         return $pdf;
     }
     public function update_form_lembur_2(Request $request)

@@ -553,6 +553,14 @@
             }
         });
 
+
+
+        function dataTableReload() {
+            var daterange = $("#daterange1").val();
+            var dates = daterange.split(" s/d ");
+            var from = dates[0];
+            var to = dates[1];
+
         let datatable = $("#datatable").DataTable({
             ordering: false,
             processing: true,
@@ -564,8 +572,8 @@
             ajax: {
                 url: '{{ route('fls.index') }}',
                 data: function(d) {
-                    d.dateFrom = $('#tgl-awal').val();
-                    d.dateTo = $('#tgl-akhir').val();
+                    d.dateFrom = from;
+                    d.dateTo = to;
                     d.employee_name = $('#employee_name_filter').val();
                 },
             },
@@ -638,9 +646,6 @@
                 }
             ]
         });
-
-        function dataTableReload() {
-            datatable.ajax.reload();
         }
 
         function getdetail(id_c,id_l) {
@@ -1053,12 +1058,12 @@
         function export_spl(id_n, no_form_n) {
             var id=id_n;
             var no_form=no_form_n;
-            var url = 'form-lembur/export_pdf_sewing_spl?no_form='+no_form+'&id='+id;
+            var url = 'fls/export_pdf_sewing_spl?no_form='+no_form+'&id='+id;
             window.open(url, '_blank');
 
         }
         function export_pdf_insentif(no_form){
-            var url = 'form-lembur/export_pdf_insentif?no_form='+no_form;
+            var url = 'fls/export_pdf_insentif?no_form='+no_form;
             window.open(url, '_blank');
         }
         function export_spl_import(id_e, no_form_e) {

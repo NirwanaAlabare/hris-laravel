@@ -28,7 +28,7 @@
             border: none;
         }
 
-        table tbody tr th, 
+        table tbody tr th,
         table tbody tr td {
             height: 28px !important;
             min-height: 28px !important;
@@ -70,7 +70,7 @@
     <thead>
         <tr>
             <td style="vertical-align: middle; text-align: center; width: 100%;" colspan="2" rowspan="4">
-                <img height="50" src="{{ public_path('/assets/dist/img/nag-logo.png') }}" alt="">
+                <img height="50" src="{{ public_path('/assets/images/hrd/nag-logo.png') }}" alt="">
             </td>
             <td style="vertical-align: middle; font-size: 15px; text-align: center; font-weight: 800;" colspan="7" rowspan="4">FORM PERSETUJUAN LEMBUR</td>
             <td colspan="2" class="border-left" style="border-top: 1px solid;">Kode Dokumen</td>
@@ -206,8 +206,8 @@
         <tfoot>
             <tr>
                 <td colspan="15" class="border-between">
-                    <span style="padding-left: 15px;">Catatan : </span> 
-                    <ol> 
+                    <span style="padding-left: 15px;">Catatan : </span>
+                    <ol>
                         <li>Pengajuan Rencana Lembur dilakukan sebelum pelaksanaan lembur</li>
                         <li>Approval realisasi lembur harus sudah diserahkan kepada HRD
                         paling lambat 1 hari setelah pelaksanaan lembur pukul 09.00</li>
@@ -254,17 +254,17 @@
                 <td colspan="3" class="borderless text-center" style="text-decoration: underline;">
                     @for ($i = 0; $i < 15; $i++)
                         &nbsp;
-                    @endfor    
+                    @endfor
                 </td>
                 <td colspan="3" class="borderless text-center" style="text-decoration: underline;">
                     @for ($i = 0; $i < 15; $i++)
                         &nbsp;
-                    @endfor    
+                    @endfor
                 </td>
                 <td colspan="3" class="border-right text-center" style="text-decoration: underline;">
                     @for ($i = 0; $i < 15; $i++)
                         &nbsp;
-                    @endfor    
+                    @endfor
                 </td>
             </tr>
             <tr>
@@ -311,22 +311,22 @@
                 <td colspan="3" class="borderless text-center" style="text-decoration: underline;">
                     @for ($i = 0; $i < 15; $i++)
                         &nbsp;
-                    @endfor    
+                    @endfor
                 </td>
                 <td colspan="3" class="borderless text-center" style="text-decoration: underline;">
                     @for ($i = 0; $i < 15; $i++)
                         &nbsp;
-                    @endfor    
+                    @endfor
                 </td>
                 <td colspan="3" class="borderless text-center" style="text-decoration: underline;">
                     @for ($i = 0; $i < 15; $i++)
                         &nbsp;
-                    @endfor        
+                    @endfor
                 </td>
                 <td colspan="2" class="border-right text-center" style="text-decoration: underline;">
                     @for ($i = 0; $i < 15; $i++)
                         &nbsp;
-                    @endfor    
+                    @endfor
                 </td>
             </tr>
             <tr>

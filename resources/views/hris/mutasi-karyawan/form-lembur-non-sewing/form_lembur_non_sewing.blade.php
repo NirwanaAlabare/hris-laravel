@@ -531,7 +531,15 @@
             }
         });
 
-        let datatable = $("#datatable").DataTable({
+
+
+
+        function dataTableReload() {
+            var daterange = $("#daterange1").val();
+            var dates = daterange.split(" s/d ");
+            var from = dates[0];
+            var to = dates[1];
+            let datatable = $("#datatable").DataTable({
             ordering: false,
             processing: true,
             serverSide: true,
@@ -542,8 +550,8 @@
             ajax: {
                 url: '{{ route('flns.index') }}',
                 data: function(d) {
-                    d.dateFrom = $('#tgl-awal').val();
-                    d.dateTo = $('#tgl-akhir').val();
+                    d.dateFrom = from;
+                    d.dateTo = to;
                     d.employee_name = $('#employee_name').val();
                 },
             },
@@ -618,10 +626,6 @@
                 }
             ]
         });
-
-
-        function dataTableReload() {
-            datatable.ajax.reload();
         }
         function dataTableModalReload() {
             datatable_modal.ajax.reload();
@@ -1083,12 +1087,12 @@
         function export_spl(id_n, no_form_n) {
             var id=id_n;
             var no_form=no_form_n;
-            var url = 'form-lembur-non-sewing/export_pdf_non_sewing_spl?no_form='+no_form+'&id='+id;
+            var url = 'flns/export_pdf_non_sewing_spl?no_form='+no_form+'&id='+id;
             window.open(url, '_blank');
 
         }
         function export_pdf_insentif(no_form){
-            var url = 'form-lembur-non-sewing/export_pdf_non_sewing_insentif?no_form='+no_form;
+            var url = 'flns/export_pdf_non_sewing_insentif?no_form='+no_form;
             window.open(url, '_blank');
         }
         function export_spl_import(id_e, no_form_e) {

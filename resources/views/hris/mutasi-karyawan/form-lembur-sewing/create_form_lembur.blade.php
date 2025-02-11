@@ -451,14 +451,11 @@
         function sum() {
             const from = document.getElementById('from_lembur').value;
             const [hours, minutes] = from.split(':');
-            // const totalSecondsfrom = (+hours) * 60 * 60 + (+minutes);
             const totalSecondsfrom = (+hours) * 60 + (+minutes);
 
-            // console.log(totalSecondsfrom);
 
             const to = document.getElementById('to_lembur').value;
             const [hoursto, minutesto] = to.split(':');
-            // const totalSecondsto = (+hoursto) * 60 * 60 + (+minutesto);
             const totalSecondsto = (+hoursto) * 60 + (+minutesto);
 
             if (totalSecondsfrom > totalSecondsto) {
@@ -466,8 +463,6 @@
             } else {
                 x = parseFloat(totalSecondsto) - parseFloat(totalSecondsfrom);
             }
-            // console.log(x);
-            // console.log(totalSecondsfrom);
 
             let x_fix = x - document.getElementById("txtistirahat").value;
 
@@ -481,22 +476,7 @@
             let h = Math.floor(x_fix / 60);
             let m = x_fix % 60;
 
-            // console.log(x);
-
-
-            // result.innerHTML = Math.floor(jam) + ' Jam ' + Math.floor(menit) + ' Menit ';
-            // document.getElementById("jml_lembur").value = Math.floor(jam) + ' Jam ' + Math.floor(y) + ' Menit ';
             document.getElementById("jml_lembur").value = Math.floor(h) + ' Jam ' + Math.floor(m) + ' Menit ';
-
-
-            // document.getElementById("jml_lembur").value = hour;
-
-            // console.log(from.split(':'));
-
-            // let result_fix = Math.ceil(result)
-            // if (!isNaN(result)) {
-            //     document.getElementById("jml_lembur").value = result_fix;
-            // }
         }
 
         function dataTableReload() {

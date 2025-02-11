@@ -29,7 +29,7 @@
             border: none;
         }
 
-        table tbody tr th, 
+        table tbody tr th,
         table tbody tr td {
             height: 24px !important;
             min-height: 24px !important;
@@ -70,7 +70,7 @@
         <thead>
             <tr>
                 <td style="vertical-align: middle; text-align: center; width: 100%;" colspan="2" rowspan="4">
-                    <img height="50" src="{{ public_path('/assets/dist/img/nag-logo.png') }}" alt="">
+                    <img height="50" src="{{ public_path('/assets/images/hrd/nag-logo.png') }}" alt="">
                 </td>
                 <td style="vertical-align: middle; font-size: 15px; text-align: center; font-weight: 800;" colspan="4" rowspan="4">FORM INSENTIF</td>
                 <td style="border-top: 1px solid;">Kode Dokumen</td>
