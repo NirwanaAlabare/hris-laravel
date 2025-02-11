@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Document</title>
     <style>
-        @page { margin: 25px 60px 60px 60px; }
+        @page { margin: 20px 45px 0px 45px; }
         #watermark {
             position: fixed;
             top: 30%;
@@ -47,8 +47,8 @@
     </table>
     <table width="506">
         <thead>
-            @foreach ($data as $key=>$value)    
-            <?php 
+            @foreach ($data as $key=>$value)
+            <?php
             $tanggal_akhir='';
             if($value->status_aktif=='AKTIF'){
                 $tanggal_akhir='SEKARANG';
@@ -66,7 +66,7 @@
                 <td colspan="5" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top;font-size:14pt" align="center"><b>{{$no_form}}</b></td>
             </tr>
             <tr>
-                <td colspan="5" style="height: 15"></td>
+                <td colspan="5" style="height: 0"></td>
             </tr>
             <tr>
                 <td></td>
@@ -213,7 +213,7 @@
                 <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">PT. Nirwana Alabare Garment</td>
             </tr>
             <tr>
-                <td colspan="5" style="height: 55"></td>
+                <td colspan="5" style="height: 45"></td>
             </tr>
             <tr>
                 <td></td>
@@ -223,8 +223,20 @@
                 <td></td>
                 <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><b>Compliance - HRGA</b></td>
             </tr>
+            <table width="562">
+                <thead >
+                    <tr>
+                        <td style="border-bottom:1px solid black;" width="85%"></td>
+                        <td rowspan="2"><img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/hrd/export_pdf_paklaring') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($no_form) . '&reason=' . urlencode($reason), 'QRCODE') }}"  alt="barcode" style="width: 60px; height: 60px;background-color:white" /></td>
+                    </tr>
+                    <tr>
+                        <td style="height:24px"></td>
+                    </tr>
+                </thead>
+            </table>
             @endforeach
         </thead>
     </table>
+
 </body>
 </html>

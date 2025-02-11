@@ -155,6 +155,9 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('/bazzar/get_bazzar', ['as' => 'bazzar.get_bazzar','uses' => 'Bazzar\BazzarController@get_bazzar']);
     Route::post('/bazzar/store', ['as' => 'bazzar.store','uses' => 'Bazzar\BazzarController@store']);
     Route::post('/bazzar/hapus', ['as' => 'bazzar.hapus','uses' => 'Bazzar\BazzarController@hapus']);
+    Route::post('/bazzar/approve', ['as' => 'bazzar.approve','uses' => 'Bazzar\BazzarController@approve']);
+    Route::post('/bazzar/reject', ['as' => 'bazzar.reject','uses' => 'Bazzar\BazzarController@reject']);
+    Route::post('/bazzar/edit_pengajuan', ['as' => 'bazzar.edit_pengajuan','uses' => 'Bazzar\BazzarController@edit_pengajuan']);
 
     Route::get('hrd/export_sp_kehadiran_karyawan',['as'=>'hris.hrd.export_sp_kehadiran_karyawan','uses'=>'HRDController@export_sp_kehadiran_karyawan']);
     Route::get('hrd/export_pdf_sk_kerja',['as'=>'hris.hrd.export_pdf_sk_kerja','uses'=>'HRDController@export_pdf_sk_kerja']);

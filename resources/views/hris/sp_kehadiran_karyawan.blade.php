@@ -315,7 +315,7 @@
             </div>
             <div class="barcode" style="display: flex; margin-top: 1px;  position: absolute; bottom: 20px; right: 20px;">
                 <div align="right">
-                    <img src="data:image/png;base64,{{\DNS2D::getBarcodePNG(''.$data['enroll_id'], 'QRCODE',)}}" alt="barcode" style="width: 60px; height: 60px;background-color:white" />
+                    <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/hrd/export_sp_kehadiran_karyawan') . '?enroll_id=' . $data['enroll_id'] , 'QRCODE') }}" alt="barcode" style="width: 60px; height: 60px;background-color:white" />
                 </div>
             </div>
         </div>
