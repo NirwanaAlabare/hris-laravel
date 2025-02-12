@@ -44,7 +44,7 @@
                 <td style="height:10px"></td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top" width="17%">Tanggal</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top" width="17%">Tanggal Input</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top" width="1%">:</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top" width="42%">{{Carbon\Carbon::parse($value->created_at)->translatedFormat('d F Y')}}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top" width="16%"></td>
