@@ -69,9 +69,9 @@ class GAController extends AdminBaseController
         }
         $department_id=EmployeeAtribut::where('enroll_id',$user)->first()->department_id;
         if($user!=6083 && $user!=5321 && $user!=17 && $user!=7765 && $user!=5321 && $user!=20 && $user!=4241 && $user!=6713 && $user!=0 && $user!=6081){
-            $data_input=DB::select("select '$user' user,a.id,a.enroll_id,b.employee_name,b.department_name,a.detail_alamat,concat(c.subdis_name,' - ',d.dis_name,' - ',e.city_name,' - ',f.prov_name) desa,a.detail_alamat_tujuan,concat(g.subdis_name,' - ',h.dis_name,' - ',i.city_name,' - ',j.prov_name) desa_tujuan,concat(DATE_FORMAT(a.tanggal_pemberangkatan, '%d %M %Y'),' - ',substring(a.jam_pemberangkatan,1,5)) tanggal_pemberangkatan,a.jam_pemberangkatan,REPLACE(a.tujuan_pemberangkatan, '_', ' ') tujuan_pemberangkatan,a.jarak_tempuh,a.status,a.alasan_status,a.id_driver,a.nomor_kendaraan,a.created_by from (select*from permintaan_transportasi where enroll_id in (select enroll_id from employee_atribut where department_id='$department_id') or created_by in (select enroll_id from employee_atribut where department_id='$department_id')) a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id ".$inStatus.$inTanggal." order by a.tanggal_pemberangkatan desc");
+            $data_input=DB::select("select '$user' user,a.id,a.enroll_id,b.employee_name,b.department_name,a.detail_alamat,concat(c.subdis_name,' - ',d.dis_name,' - ',e.city_name,' - ',f.prov_name) desa,a.detail_alamat_tujuan,concat(g.subdis_name,' - ',h.dis_name,' - ',i.city_name,' - ',j.prov_name) desa_tujuan,concat(DATE_FORMAT(a.tanggal_pemberangkatan, '%d %M %Y'),' - ',substring(a.jam_pemberangkatan,1,5)) tanggal_pemberangkatan,a.jam_pemberangkatan,REPLACE(a.tujuan_pemberangkatan, '_', ' ') tujuan_pemberangkatan,a.jarak_tempuh,a.status,a.alasan_status,a.id_driver,a.nomor_kendaraan,a.created_by from (select*from permintaan_transportasi where enroll_id in (select enroll_id from employee_atribut where department_id='$department_id') or created_by in (select enroll_id from employee_atribut where department_id='$department_id')) a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id ".$inStatus.$inTanggal." order by a.created_at desc");
         }else{
-            $data_input=DB::select("select '$user' user,a.id,a.enroll_id,b.employee_name,b.department_name,a.detail_alamat,concat(c.subdis_name,' - ',d.dis_name,' - ',e.city_name,' - ',f.prov_name) desa,a.detail_alamat_tujuan,concat(g.subdis_name,' - ',h.dis_name,' - ',i.city_name,' - ',j.prov_name) desa_tujuan,concat(DATE_FORMAT(a.tanggal_pemberangkatan, '%d %M %Y'),' - ',substring(a.jam_pemberangkatan,1,5)) tanggal_pemberangkatan,a.jarak_tempuh,a.jam_pemberangkatan,REPLACE(a.tujuan_pemberangkatan, '_', ' ') tujuan_pemberangkatan,a.status,a.alasan_status,a.id_driver,a.nomor_kendaraan,a.created_by from permintaan_transportasi a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id ".$inStatus.$inTanggal." order by a.tanggal_pemberangkatan desc");
+            $data_input=DB::select("select '$user' user,a.id,a.enroll_id,b.employee_name,b.department_name,a.detail_alamat,concat(c.subdis_name,' - ',d.dis_name,' - ',e.city_name,' - ',f.prov_name) desa,a.detail_alamat_tujuan,concat(g.subdis_name,' - ',h.dis_name,' - ',i.city_name,' - ',j.prov_name) desa_tujuan,concat(DATE_FORMAT(a.tanggal_pemberangkatan, '%d %M %Y'),' - ',substring(a.jam_pemberangkatan,1,5)) tanggal_pemberangkatan,a.jarak_tempuh,a.jam_pemberangkatan,REPLACE(a.tujuan_pemberangkatan, '_', ' ') tujuan_pemberangkatan,a.status,a.alasan_status,a.id_driver,a.nomor_kendaraan,a.created_by from permintaan_transportasi a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id ".$inStatus.$inTanggal." order by a.created_at desc");
         }
         return DataTables::of($data_input)->toJson();
     }
@@ -146,7 +146,7 @@ class GAController extends AdminBaseController
     }
     public function print_penugasan_transportasi(){
         $id=request()->id;
-        $data=DB::select("select a.id,a.enroll_id,b.nik,b.employee_name,b.department_name,a.detail_alamat,concat(c.subdis_name,', ',d.dis_name,', ',e.city_name,', ',f.prov_name) desa,a.detail_alamat_tujuan,concat(g.subdis_name,', ',h.dis_name,', ',i.city_name,', ',j.prov_name) desa_tujuan,a.tanggal_pemberangkatan,a.tanggal_kedatangan,substring(a.jam_kedatangan,1,5) jam_kedatangan,a.tujuan_pemberangkatan,substring(a.jam_pemberangkatan,1,5) jam_keberangkatan,a.jarak_tempuh,k.employee_name driver,k.nik nik_driver,a.nomor_kendaraan,a.jenis_barang,a.quantity,a.satuan,a.nama_instansi,a.nama_penerima,a.keterangan_barang,a.nama_tamu,a.instansi_tamu,a.nomor_hp_tamu,a.karyawan_dinas,a.alasan_status from (select*from permintaan_transportasi where id='$id') a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id inner join employee_atribut k on a.id_driver=k.enroll_id order by a.tanggal_pemberangkatan,a.jam_pemberangkatan desc");
+        $data=DB::select("select a.id,a.enroll_id,b.nik,b.employee_name,b.department_name,a.detail_alamat,concat(c.subdis_name,', ',d.dis_name,', ',e.city_name,', ',f.prov_name) desa,a.detail_alamat_tujuan,concat(g.subdis_name,', ',h.dis_name,', ',i.city_name,', ',j.prov_name) desa_tujuan,a.tanggal_pemberangkatan,a.tanggal_kedatangan,substring(a.jam_kedatangan,1,5) jam_kedatangan,a.tujuan_pemberangkatan,substring(a.jam_pemberangkatan,1,5) jam_keberangkatan,a.jarak_tempuh,k.employee_name driver,k.nik nik_driver,a.nomor_kendaraan,a.jenis_barang,a.quantity,a.satuan,a.nama_instansi,a.nama_penerima,a.keterangan_barang,a.nama_tamu,a.instansi_tamu,a.nomor_hp_tamu,a.karyawan_dinas,a.alasan_status,a.created_at from (select*from permintaan_transportasi where id='$id') a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id inner join employee_atribut k on a.id_driver=k.enroll_id order by a.tanggal_pemberangkatan,a.jam_pemberangkatan desc");
         $data2=DB::select("select a.jam_pemberangkatan,a.detail_alamat,concat(c.subdis_name,', ',d.dis_name,', ',e.city_name,', ',f.prov_name) desa,a.jarak_tempuh,b.id,b.permintaan_transportasi_id,b.tujuan_id,b.detail_alamat detail_alamat_tujuan,concat(b.subdistrict,', ',b.district,', ',b.city,', ',b.provinsi) desa_tujuan,b.tanggal_kedatangan,b.jam_kedatangan from permintaan_transportasi a left join tujuan_transportasi b on a.id=b.permintaan_transportasi_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id where b.permintaan_transportasi_id='$id' order by b.tujuan_id");
         $karyawan_dinas=$data[0]->karyawan_dinas;
         $nama_karyawan_dinas=[];
@@ -391,7 +391,7 @@ class GAController extends AdminBaseController
             $this->_validation(request());
         }
         $enroll_id_array[]=explode(",",request()->employee);
-        $enroll_id=implode('', $enroll_id_array[0]);
+        $enroll_id= $enroll_id_array[0][0];
         $id_desa=request()->sub_districts;
         $detail_alamat=request()->detail_alamat;
         $id_desa_tujuan=request()->sub_districts_2;
@@ -669,7 +669,10 @@ class GAController extends AdminBaseController
             'nama_tamu'=>'required',
             'nomor_tamu'=>'required',
             'instansi_tamu'=>'required',
-            'employee_dinas'=>'required',
+            'jenis_barang'=>'required',
+            'quantity'=>'required',
+            'instansi'=>'required',
+            'nama_instansi'=>'required',
         ],
         [
             'employee.required'=>'harus dipilih',
@@ -693,10 +696,9 @@ class GAController extends AdminBaseController
             'districts_2'=>'required',
             'sub_districts_2'=>'required',
             'detail_alamat_2'=>'required',
-            'jenis_barang'=>'required',
-            'quantity'=>'required',
-            'instansi'=>'required',
-            'nama_instansi'=>'required',
+            'nama_tamu'=>'required',
+            'nomor_tamu'=>'required',
+            'instansi_tamu'=>'required',
             'employee_dinas'=>'required',
         ],
         [
