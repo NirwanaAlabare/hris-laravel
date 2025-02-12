@@ -237,18 +237,18 @@ class GAController extends AdminBaseController
     }
     public function get_cities(){
         $provinsi = request()->provinsi;
-        $cities = DB::select("select*from cities where prov_id = '$provinsi'");
+        $cities = DB::select("select*from cities where prov_id = '$provinsi' order by city_name");
         return $cities;
     }
     public function get_cities_name(){
         $provinsi = request()->provinsi;
         $prov_id=Province::where('prov_name',$provinsi)->first()->prov_id;
-        $cities = DB::select("select*from cities where prov_id = '$prov_id'");
+        $cities = DB::select("select*from cities where prov_id = '$prov_id' order by city_name");
         return $cities;
     }
     public function get_districts(){
         $cities = request()->cities;
-        $districts = DB::select("select*from districts where city_id = '$cities'");
+        $districts = DB::select("select*from districts where city_id = '$cities' order by dis_name");
         return $districts;
     }
     public function get_districts_name(){
@@ -257,12 +257,12 @@ class GAController extends AdminBaseController
         $cities_id=City::where('city_name',$cities)->whereHas('prov',function($query)use($prov_name){
             $query->where('prov_name',$prov_name);
         })->first()->city_id;
-        $districts = DB::select("select*from districts where city_id = '$cities_id'");
+        $districts = DB::select("select*from districts where city_id = '$cities_id' order by dis_name");
         return $districts;
     }
     public function get_subdistricts(){
         $districts = request()->districts;
-        $subdistricts = DB::select("select*from subdistricts where dis_id = '$districts'");
+        $subdistricts = DB::select("select*from subdistricts where dis_id = '$districts' order by subdis_name");
         return $subdistricts;
     }
     public function get_subdistricts_name(){
@@ -274,7 +274,7 @@ class GAController extends AdminBaseController
         })->whereHas('city.prov',function($query)use($prov){
             $query->where('prov_name',$prov);
         })->first()->dis_id;
-        $subdistricts = DB::select("select*from subdistricts where dis_id = '$districts_id'");
+        $subdistricts = DB::select("select*from subdistricts where dis_id = '$districts_id' order by subdis_name");
         return $subdistricts;
     }
     public function update_car_request_user(){
