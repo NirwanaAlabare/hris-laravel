@@ -147,6 +147,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="row py-2 bg-light text-dark">
+                    <div class="col-5 pl-6 pt-2">
+                        <h6 style="font-size:12pt;">Jarak Tempuh</h6>
+                    </div>
+                    <div class="col-7 pr-5 pl-0 pt-2">
+                        <div class="col-12" id="jarak_tempuh_modal">
+                        </div>
+                    </div>
+                </div>
                 <div class="row py-2">
                     <div class="col-5 pl-6 pt-2">
                         <h6 style="font-size:12pt;">Driver</h6>
@@ -424,7 +433,7 @@
                 render: function (data, type, row, meta) {
                     if (row.user==4241 || row.user==20 || row.user==17 || row.user==7765 || row.user==5321 || row.user==6083 || row.user==6081|| row.user==6713){
                         if(row.status==0){
-                            return `<a class='btn btn-success py-0 px-2 mt-0 btn-sm btn-block text-white' style='font-size:9pt' data-toggle="modal" data-target="#approveModal" ' onclick="approve_function(` + row.id + `,'` + row.employee_name + `','` + row.department_name + `','` + row.detail_alamat + `','` + row.desa + `','` + row.detail_alamat_tujuan + `','` + row.desa_tujuan + `','` + row.tujuan_pemberangkatan + `')"> APPROVE </a><a class='btn btn-danger py-0 mt-1 btn-sm btn-block text-white' style='font-size:9pt' data-toggle="modal" data-target="#rejectModal" ' onclick="reject_function(` + row.id + `,'` + row.employee_name + `','` + row.department_name + `','` + row.detail_alamat + `','` + row.desa + `','` + row.detail_alamat_tujuan + `','` + row.desa_tujuan + `','` + row.tujuan_pemberangkatan + `')"> ALTERNATIVE </a>`;
+                            return `<a class='btn btn-success py-0 px-2 mt-0 btn-sm btn-block text-white' style='font-size:9pt' data-toggle="modal" data-target="#approveModal" ' onclick="approve_function(` + row.id + `,'` + row.employee_name + `','` + row.department_name + `','` + row.detail_alamat + `','` + row.desa + `','` + row.detail_alamat_tujuan + `','` + row.desa_tujuan + `','` + row.tujuan_pemberangkatan + `','` + row.jarak_tempuh + `')"> APPROVE </a><a class='btn btn-danger py-0 mt-1 btn-sm btn-block text-white' style='font-size:9pt' data-toggle="modal" data-target="#rejectModal" ' onclick="reject_function(` + row.id + `,'` + row.employee_name + `','` + row.department_name + `','` + row.detail_alamat + `','` + row.desa + `','` + row.detail_alamat_tujuan + `','` + row.desa_tujuan + `','` + row.tujuan_pemberangkatan + `','` + row.jarak_tempuh + `')"> ALTERNATIVE </a>`;
                         }else{
                             if(row.status==2){
                                 return `
@@ -580,7 +589,7 @@
         var url = 'print_penugasan_transportasi?id='+id;
         window.open(url, '_blank');
     }
-    function approve_function(id,employee_name,department_name,detail_alamat,desa,detail_alamat_tujuan,desa_tujuan,tujuan_pemberangkatan){
+    function approve_function(id,employee_name,department_name,detail_alamat,desa,detail_alamat_tujuan,desa_tujuan,tujuan_pemberangkatan,jarak_tempuh){
         $('#id_request').val(id);
         $("#nama_karyawan_modal").html(employee_name);
         $("#department_modal").html(department_name);
@@ -589,8 +598,9 @@
         $("#detail_alamat_tujuan_modal").html(detail_alamat_tujuan);
         $("#city_tujuan_modal").html(desa_tujuan);
         $("#tujuan_pemberangkatan_modal").html(tujuan_pemberangkatan.toUpperCase());
+        $("#jarak_tempuh_modal").html(jarak_tempuh+' Km');
     }
-    function reject_function(id,employee_name,department_name,detail_alamat,desa,detail_alamat_tujuan,desa_tujuan,tujuan_pemberangkatan){
+    function reject_function(id,employee_name,department_name,detail_alamat,desa,detail_alamat_tujuan,desa_tujuan,tujuan_pemberangkatan,jarak_tempuh){
         $('#id_request_2').val(id);
         $("#nama_karyawan_modal_2").html(employee_name);
         $("#department_modal_2").html(department_name);
@@ -599,6 +609,7 @@
         $("#detail_alamat_tujuan_modal_2").html(detail_alamat_tujuan);
         $("#city_tujuan_modal_2").html(desa_tujuan);
         $("#tujuan_pemberangkatan_modal_2").html(tujuan_pemberangkatan);
+        $("#jarak_tempuh_modal").html(jarak_tempuh+' Km');
     }
     function alternative_function(alternative,id,role){
         $('#alasan_reject_id').val(id);
