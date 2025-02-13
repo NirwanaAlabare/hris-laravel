@@ -1540,7 +1540,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $query->whereBetween('tanggal_berjalan', [$first_date, $last_date]);
         }])
         ->with('employee_atribut.grading_salary')
-        ->with('employee_atribut', 'employee_atribut.employee_bpjs', 'koreksi_upah', 'koreksi_potongan', 'employee_atribut.group_department','data_lembur')
+        ->with('employee_atribut', 'employee_atribut.employee_bpjs', 'koreksi_upah', 'koreksi_potongan', 'employee_atribut.group_department')
         ->get();
 
         $z=[];
