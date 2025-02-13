@@ -225,7 +225,7 @@ class MutasiKaryawanController extends AdminBaseController
 
     public function store_add_non_qr(Request $request)
     {
-        $user = Auth::guard('admin')->user()->name;
+        $user = Auth::user()->name;
         $timestamp = Carbon::now();
         $tgl_pindah = date('Y-m-d');
         $validatedRequest = $request->validate([
@@ -283,106 +283,112 @@ class MutasiKaryawanController extends AdminBaseController
         $department_id=DB::select("select department_id from department_all where sub_dept_id='".$sub_dept_id."' and site_nirwana_id='NAG'")[0]->department_id;
         $department_name=DB::select("select department_name from department_all where sub_dept_id='".$sub_dept_id."' and site_nirwana_id='NAG'")[0]->department_name;
         if($department_name=='SEWING'){
-            DB::update("update employee_atribut set sub_dept_name='$nm_line',sub_dept_id='$sub_dept_id' where enroll_id='$enroll_id'");
-            $employeeUpdate=DB::select("select*from employee_atribut where enroll_id ='$enroll_id'");
-            foreach($employeeUpdate as $value){
-                $tanggal_hari_ini=date('Y-m-d');
-                $bulan_hari_ini=substr($tanggal_hari_ini,0,8).'26';
-                $bulan_sebelum_hari_ini=date('Y-m-d',strtotime( "-1 month", strtotime( $bulan_hari_ini ) ));
-                $bulan_setelah_hari_ini=date('Y-m-d',strtotime( "+1 month", strtotime( $bulan_hari_ini ) ));
-                if($tanggal_hari_ini>=$bulan_sebelum_hari_ini && $tanggal_hari_ini<$bulan_hari_ini){
-                    $tanggal_awal_hari_ini=$bulan_sebelum_hari_ini;
-                }else if($tanggal_hari_ini>=$bulan_hari_ini && $tanggal_hari_ini<$bulan_setelah_hari_ini){
-                    $tanggal_awal_hari_ini=$bulan_hari_ini;
-                }else{
-                    $tanggal_awal_hari_ini='';
-                }
-                $tanggal_akhir_hari_ini=date('Y-m-25',strtotime("+1 month",strtotime($tanggal_awal_hari_ini)));
-                $periode_payroll_hari_ini=$tanggal_awal_hari_ini.' s/d '.$tanggal_akhir_hari_ini;
-                $countEmpHistory=EmployeeAtributHistory::where('enroll_id',$enroll_id)->where('periode_payroll',$periode_payroll_hari_ini)->count();
-                if($countEmpHistory>0){
-                    EmployeeAtributHistory::where('enroll_id',$enroll_id)->where('periode_payroll',$periode_payroll_hari_ini)->update([
-                        'tanggal_dirubah'=>$tanggal_hari_ini,
-                        'sub_dept_id'=>$sub_dept_id,
-                        'sub_dept_name'=>$nm_line
-                    ]);
-                }else{
-                    EmployeeAtributHistory::create([
-                        'enroll_id'=>$value->enroll_id,
-                        'tanggal_dirubah'=>$tanggal_hari_ini,
-                        'periode_payroll'=>$periode_payroll_hari_ini,
-                        'employee_id' => $value->employee_id,
-                        'employee_name' => $value->employee_name,
-                        'jenis_kelamin' => $value->jenis_kelamin,
-                        'tempat_lahir' => $value->tempat_lahir,
-                        'tanggal_lahir' => $value->tanggal_lahir,
-                        'golongan_darah' => $value->golongan_darah,
-                        'email' => $value->email,
-                        'nomor_tlpn' => $value->nomor_tlpn,
-                        'agama' => $value->agama,
-                        'status_kawin' => $value->status_kawin,
-                        'npwp' => $value->npwp,
-                        'nomor_ktp' => $value->nomor_ktp,
-                        'nomor_kk' => $value->nomor_kk,
-                        'pendidikan_terakhir' => $value->pendidikan_terakhir,
-                        'jurusan_pendidikan' => $value->jurusan_pendidikan,
-                        'nama_bank' => $value->nama_bank,
-                        'nomor_rekening_bank' => $value->nomor_rekening_bank,
-                        'ibu_kandung' => $value->ibu_kandung,
-                        'propinsi' => $value->propinsi,
-                        'kota_kab' => $value->kota_kab,
-                        'kecamatan' => $value->kecamatan,
-                        'kelurahan_desa' => $value->kelurahan_desa,
-                        'alamat_rumah' => $value->alamat_rumah,
-                        'alamat_sementara' => $value->alamat_sementara,
-                        'site_nirwana_id' => $value->site_nirwana_id,
-                        'site_nirwana_name' => $value->site_nirwana_name,
-                        'department_id' => $value->department_id,
-                        'department_name' => $value->department_name,
-                        'sub_dept_id' => $value->sub_dept_id,
-                        'sub_dept_name' => $value->sub_dept_name,
-                        'sewing_nonsewing'=>$value->sewing_nonsewing,
-                        'direct_indirect'=>$value->direct_indirect,
-                        'enroll_id' => $value->enroll_id,
-                        'join_date' => $value->join_date,
-                        'nik' => $value->nik,
-                        'status_aktif' => $value->status_aktif,
-                        'status_jabatan' => $value->status_jabatan,
-                        'status_kontrak_tetap' => $value->status_kontrak_tetap,
-                        'status_staff' => $value->status_staff,
-                        'tanggal_resign' => $value->tanggal_resign,
-                        'sebab_resign' => $value->sebab_resign,
-                        'tunjangan' => $value->tunjangan,
-                        'kode_grade' => $value->kode_grade,
-                        'referensi' => $value->referensi,
-                        'employee_name_atasan' => $value->employee_name_atasan,
-                        'status_aktif_bpjs_tk' => $value->status_aktif_bpjs_tk,
-                        'tanggal_bpjs_ketenagakerjaan' => $value->tanggal_bpjs_ketenagakerjaan,
-                        'nomor_bpjs_ketenagakerjaan' => $value->nomor_bpjs_ketenagakerjaan,
-                        'status_aktif_bpjs_ks' => $value->status_aktif_bpjs_ks,
-                        'tanggal_bpjs_kesehatan' => $value->tanggal_bpjs_kesehatan,
-                        'nomor_bpjs_kesehatan' => $value->nomor_bpjs_kesehatan,
-                        'premi' => $value->premi,
-                        'pengalaman_bekerja' => $value->pengalaman_bekerja,
-                        'nama_kerabat' => $value->nama_kerabat,
-                        'nomor_tlpn_kerabat' => $value->nomor_tlpn_kerabat,
-                        'hubungan_kerabat' => $value->hubungan_kerabat,
-                        'alamat_kerabat' => $value->alamat_kerabat,
-                        'tanggal_vaccine1' => $value->tanggal_vaccine1,
-                        'nama_vaksin1' => $value->nama_vaksin1,
-                        'tanggal_vaccine2' => $value->tanggal_vaccine2,
-                        'nama_vaksin2' => $value->nama_vaksin2,
-                        'golongan_sim' => $value->golongan_sim,
-                        'nomor_sim' => $value->nomor_sim,
-                        'tanggal_expire_sim' => $value->tanggal_expire_sim,
-                        'catatan' => $value->catatan,
-                        'no_surat'=>$value->no_surat,
-                        'lokasi_foto' => $value->lokasi_foto,
-                        'operator' => $value->operator,
-                        'tanggal_mulai_kontrak' => $value->tanggal_mulai_kontrak,
-                        'tanggal_akhir_kontrak' => $value->tanggal_akhir_kontrak,
-                        'catatan_kontrak' => $value->catatan_kontrak
-                    ]);
+            $master_karyawan = DB::select(
+                "select enroll_id,ifnull(nik,nik_new) nik, employee_name, sub_dept_name, department_id from employee_atribut
+                where enroll_id ='" . $enroll_id . "' and status_aktif = 'AKTIF'",
+            );
+            if($master_karyawan[0]->department_id =='DEP20'){
+                DB::update("update employee_atribut set sub_dept_name='$nm_line',sub_dept_id='$sub_dept_id' where enroll_id='$enroll_id'");
+                $employeeUpdate=DB::select("select*from employee_atribut where enroll_id ='$enroll_id'");
+                foreach($employeeUpdate as $value){
+                    $tanggal_hari_ini=date('Y-m-d');
+                    $bulan_hari_ini=substr($tanggal_hari_ini,0,8).'26';
+                    $bulan_sebelum_hari_ini=date('Y-m-d',strtotime( "-1 month", strtotime( $bulan_hari_ini ) ));
+                    $bulan_setelah_hari_ini=date('Y-m-d',strtotime( "+1 month", strtotime( $bulan_hari_ini ) ));
+                    if($tanggal_hari_ini>=$bulan_sebelum_hari_ini && $tanggal_hari_ini<$bulan_hari_ini){
+                        $tanggal_awal_hari_ini=$bulan_sebelum_hari_ini;
+                    }else if($tanggal_hari_ini>=$bulan_hari_ini && $tanggal_hari_ini<$bulan_setelah_hari_ini){
+                        $tanggal_awal_hari_ini=$bulan_hari_ini;
+                    }else{
+                        $tanggal_awal_hari_ini='';
+                    }
+                    $tanggal_akhir_hari_ini=date('Y-m-25',strtotime("+1 month",strtotime($tanggal_awal_hari_ini)));
+                    $periode_payroll_hari_ini=$tanggal_awal_hari_ini.' s/d '.$tanggal_akhir_hari_ini;
+                    $countEmpHistory=EmployeeAtributHistory::where('enroll_id',$enroll_id)->where('periode_payroll',$periode_payroll_hari_ini)->count();
+                    if($countEmpHistory>0){
+                        EmployeeAtributHistory::where('enroll_id',$enroll_id)->where('periode_payroll',$periode_payroll_hari_ini)->update([
+                            'tanggal_dirubah'=>$tanggal_hari_ini,
+                            'sub_dept_id'=>$sub_dept_id,
+                            'sub_dept_name'=>$nm_line
+                        ]);
+                    }else{
+                        EmployeeAtributHistory::create([
+                            'enroll_id'=>$value->enroll_id,
+                            'tanggal_dirubah'=>$tanggal_hari_ini,
+                            'periode_payroll'=>$periode_payroll_hari_ini,
+                            'employee_id' => $value->employee_id,
+                            'employee_name' => $value->employee_name,
+                            'jenis_kelamin' => $value->jenis_kelamin,
+                            'tempat_lahir' => $value->tempat_lahir,
+                            'tanggal_lahir' => $value->tanggal_lahir,
+                            'golongan_darah' => $value->golongan_darah,
+                            'email' => $value->email,
+                            'nomor_tlpn' => $value->nomor_tlpn,
+                            'agama' => $value->agama,
+                            'status_kawin' => $value->status_kawin,
+                            'npwp' => $value->npwp,
+                            'nomor_ktp' => $value->nomor_ktp,
+                            'nomor_kk' => $value->nomor_kk,
+                            'pendidikan_terakhir' => $value->pendidikan_terakhir,
+                            'jurusan_pendidikan' => $value->jurusan_pendidikan,
+                            'nama_bank' => $value->nama_bank,
+                            'nomor_rekening_bank' => $value->nomor_rekening_bank,
+                            'ibu_kandung' => $value->ibu_kandung,
+                            'propinsi' => $value->propinsi,
+                            'kota_kab' => $value->kota_kab,
+                            'kecamatan' => $value->kecamatan,
+                            'kelurahan_desa' => $value->kelurahan_desa,
+                            'alamat_rumah' => $value->alamat_rumah,
+                            'alamat_sementara' => $value->alamat_sementara,
+                            'site_nirwana_id' => $value->site_nirwana_id,
+                            'site_nirwana_name' => $value->site_nirwana_name,
+                            'department_id' => $value->department_id,
+                            'department_name' => $value->department_name,
+                            'sub_dept_id' => $value->sub_dept_id,
+                            'sub_dept_name' => $value->sub_dept_name,
+                            'sewing_nonsewing'=>$value->sewing_nonsewing,
+                            'direct_indirect'=>$value->direct_indirect,
+                            'enroll_id' => $value->enroll_id,
+                            'join_date' => $value->join_date,
+                            'nik' => $value->nik,
+                            'status_aktif' => $value->status_aktif,
+                            'status_jabatan' => $value->status_jabatan,
+                            'status_kontrak_tetap' => $value->status_kontrak_tetap,
+                            'status_staff' => $value->status_staff,
+                            'tanggal_resign' => $value->tanggal_resign,
+                            'sebab_resign' => $value->sebab_resign,
+                            'tunjangan' => $value->tunjangan,
+                            'kode_grade' => $value->kode_grade,
+                            'referensi' => $value->referensi,
+                            'employee_name_atasan' => $value->employee_name_atasan,
+                            'status_aktif_bpjs_tk' => $value->status_aktif_bpjs_tk,
+                            'tanggal_bpjs_ketenagakerjaan' => $value->tanggal_bpjs_ketenagakerjaan,
+                            'nomor_bpjs_ketenagakerjaan' => $value->nomor_bpjs_ketenagakerjaan,
+                            'status_aktif_bpjs_ks' => $value->status_aktif_bpjs_ks,
+                            'tanggal_bpjs_kesehatan' => $value->tanggal_bpjs_kesehatan,
+                            'nomor_bpjs_kesehatan' => $value->nomor_bpjs_kesehatan,
+                            'premi' => $value->premi,
+                            'pengalaman_bekerja' => $value->pengalaman_bekerja,
+                            'nama_kerabat' => $value->nama_kerabat,
+                            'nomor_tlpn_kerabat' => $value->nomor_tlpn_kerabat,
+                            'hubungan_kerabat' => $value->hubungan_kerabat,
+                            'alamat_kerabat' => $value->alamat_kerabat,
+                            'tanggal_vaccine1' => $value->tanggal_vaccine1,
+                            'nama_vaksin1' => $value->nama_vaksin1,
+                            'tanggal_vaccine2' => $value->tanggal_vaccine2,
+                            'nama_vaksin2' => $value->nama_vaksin2,
+                            'golongan_sim' => $value->golongan_sim,
+                            'nomor_sim' => $value->nomor_sim,
+                            'tanggal_expire_sim' => $value->tanggal_expire_sim,
+                            'catatan' => $value->catatan,
+                            'no_surat'=>$value->no_surat,
+                            'lokasi_foto' => $value->lokasi_foto,
+                            'operator' => $value->operator,
+                            'tanggal_mulai_kontrak' => $value->tanggal_mulai_kontrak,
+                            'tanggal_akhir_kontrak' => $value->tanggal_akhir_kontrak,
+                            'catatan_kontrak' => $value->catatan_kontrak
+                        ]);
+                    }
                 }
             }
         }
@@ -532,111 +538,116 @@ class MutasiKaryawanController extends AdminBaseController
 
             $department_name=DB::select("select department_name from department_all where sub_dept_id='".$sub_dept_id."' and site_nirwana_id='NAG'")[0]->department_name;
             if($department_name=='SEWING'){
-                DB::update("update employee_atribut set sub_dept_name='$nm_line',sub_dept_id='$sub_dept_id' where enroll_id='$enroll_id'");
-                $employeeUpdate=DB::select("select*from employee_atribut where enroll_id ='$enroll_id'");
-                foreach($employeeUpdate as $value){
-                    $tanggal_hari_ini=date('Y-m-d');
-                    $bulan_hari_ini=substr($tanggal_hari_ini,0,8).'26';
-                    $bulan_sebelum_hari_ini=date('Y-m-d',strtotime( "-1 month", strtotime( $bulan_hari_ini ) ));
-                    $bulan_setelah_hari_ini=date('Y-m-d',strtotime( "+1 month", strtotime( $bulan_hari_ini ) ));
-                    if($tanggal_hari_ini>=$bulan_sebelum_hari_ini && $tanggal_hari_ini<$bulan_hari_ini){
-                        $tanggal_awal_hari_ini=$bulan_sebelum_hari_ini;
-                    }else if($tanggal_hari_ini>=$bulan_hari_ini && $tanggal_hari_ini<$bulan_setelah_hari_ini){
-                        $tanggal_awal_hari_ini=$bulan_hari_ini;
-                    }else{
-                        $tanggal_awal_hari_ini='';
-                    }
-                    $tanggal_akhir_hari_ini=date('Y-m-25',strtotime("+1 month",strtotime($tanggal_awal_hari_ini)));
-                    $periode_payroll_hari_ini=$tanggal_awal_hari_ini.' s/d '.$tanggal_akhir_hari_ini;
-                    $countEmpHistory=EmployeeAtributHistory::where('enroll_id',$enroll_id)->where('periode_payroll',$periode_payroll_hari_ini)->count();
-                    if($countEmpHistory>0){
-                        EmployeeAtributHistory::where('enroll_id',$enroll_id)->where('periode_payroll',$periode_payroll_hari_ini)->update([
-                            'tanggal_dirubah'=>$tanggal_hari_ini,
-                            'sub_dept_id'=>$sub_dept_id,
-                            'sub_dept_name'=>$nm_line
-                        ]);
-                    }else{
-                        EmployeeAtributHistory::create([
-                            'enroll_id'=>$value->enroll_id,
-                            'tanggal_dirubah'=>$tanggal_hari_ini,
-                            'periode_payroll'=>$periode_payroll_hari_ini,
-                            'employee_id' => $value->employee_id,
-                            'employee_name' => $value->employee_name,
-                            'jenis_kelamin' => $value->jenis_kelamin,
-                            'tempat_lahir' => $value->tempat_lahir,
-                            'tanggal_lahir' => $value->tanggal_lahir,
-                            'golongan_darah' => $value->golongan_darah,
-                            'email' => $value->email,
-                            'nomor_tlpn' => $value->nomor_tlpn,
-                            'agama' => $value->agama,
-                            'status_kawin' => $value->status_kawin,
-                            'npwp' => $value->npwp,
-                            'nomor_ktp' => $value->nomor_ktp,
-                            'nomor_kk' => $value->nomor_kk,
-                            'pendidikan_terakhir' => $value->pendidikan_terakhir,
-                            'jurusan_pendidikan' => $value->jurusan_pendidikan,
-                            'nama_bank' => $value->nama_bank,
-                            'nomor_rekening_bank' => $value->nomor_rekening_bank,
-                            'ibu_kandung' => $value->ibu_kandung,
-                            'propinsi' => $value->propinsi,
-                            'kota_kab' => $value->kota_kab,
-                            'kecamatan' => $value->kecamatan,
-                            'kelurahan_desa' => $value->kelurahan_desa,
-                            'alamat_rumah' => $value->alamat_rumah,
-                            'alamat_sementara' => $value->alamat_sementara,
-                            'site_nirwana_id' => $value->site_nirwana_id,
-                            'site_nirwana_name' => $value->site_nirwana_name,
-                            'department_id' => $value->department_id,
-                            'department_name' => $value->department_name,
-                            'sub_dept_id' => $value->sub_dept_id,
-                            'sub_dept_name' => $value->sub_dept_name,
-                            'sewing_nonsewing'=>$value->sewing_nonsewing,
-                            'direct_indirect'=>$value->direct_indirect,
-                            'enroll_id' => $value->enroll_id,
-                            'join_date' => $value->join_date,
-                            'nik' => $value->nik,
-                            'status_aktif' => $value->status_aktif,
-                            'status_jabatan' => $value->status_jabatan,
-                            'status_kontrak_tetap' => $value->status_kontrak_tetap,
-                            'status_staff' => $value->status_staff,
-                            'tanggal_resign' => $value->tanggal_resign,
-                            'sebab_resign' => $value->sebab_resign,
-                            'tunjangan' => $value->tunjangan,
-                            'kode_grade' => $value->kode_grade,
-                            'referensi' => $value->referensi,
-                            'employee_name_atasan' => $value->employee_name_atasan,
-                            'status_aktif_bpjs_tk' => $value->status_aktif_bpjs_tk,
-                            'tanggal_bpjs_ketenagakerjaan' => $value->tanggal_bpjs_ketenagakerjaan,
-                            'nomor_bpjs_ketenagakerjaan' => $value->nomor_bpjs_ketenagakerjaan,
-                            'status_aktif_bpjs_ks' => $value->status_aktif_bpjs_ks,
-                            'tanggal_bpjs_kesehatan' => $value->tanggal_bpjs_kesehatan,
-                            'nomor_bpjs_kesehatan' => $value->nomor_bpjs_kesehatan,
-                            'premi' => $value->premi,
-                            'pengalaman_bekerja' => $value->pengalaman_bekerja,
-                            'nama_kerabat' => $value->nama_kerabat,
-                            'nomor_tlpn_kerabat' => $value->nomor_tlpn_kerabat,
-                            'hubungan_kerabat' => $value->hubungan_kerabat,
-                            'alamat_kerabat' => $value->alamat_kerabat,
-                            'tanggal_vaccine1' => $value->tanggal_vaccine1,
-                            'nama_vaksin1' => $value->nama_vaksin1,
-                            'tanggal_vaccine2' => $value->tanggal_vaccine2,
-                            'nama_vaksin2' => $value->nama_vaksin2,
-                            'golongan_sim' => $value->golongan_sim,
-                            'nomor_sim' => $value->nomor_sim,
-                            'tanggal_expire_sim' => $value->tanggal_expire_sim,
-                            'catatan' => $value->catatan,
-                            'no_surat'=>$value->no_surat,
-                            'lokasi_foto' => $value->lokasi_foto,
-                            'operator' => $value->operator,
-                            'tanggal_mulai_kontrak' => $value->tanggal_mulai_kontrak,
-                            'tanggal_akhir_kontrak' => $value->tanggal_akhir_kontrak,
-                            'catatan_kontrak' => $value->catatan_kontrak
-                        ]);
+
+                $master_karyawan = DB::select(
+                    "select enroll_id,ifnull(nik,nik_new) nik, employee_name, sub_dept_name, department_id from employee_atribut
+                    where enroll_id ='" . $enroll_id . "' and status_aktif = 'AKTIF'",
+                );
+                if($master_karyawan[0]->department_id =='DEP20'){
+                    DB::update("update employee_atribut set sub_dept_name='$nm_line',sub_dept_id='$sub_dept_id' where enroll_id='$enroll_id'");
+                    $employeeUpdate=DB::select("select*from employee_atribut where enroll_id ='$enroll_id'");
+                    foreach($employeeUpdate as $value){
+                        $tanggal_hari_ini=date('Y-m-d');
+                        $bulan_hari_ini=substr($tanggal_hari_ini,0,8).'26';
+                        $bulan_sebelum_hari_ini=date('Y-m-d',strtotime( "-1 month", strtotime( $bulan_hari_ini ) ));
+                        $bulan_setelah_hari_ini=date('Y-m-d',strtotime( "+1 month", strtotime( $bulan_hari_ini ) ));
+                        if($tanggal_hari_ini>=$bulan_sebelum_hari_ini && $tanggal_hari_ini<$bulan_hari_ini){
+                            $tanggal_awal_hari_ini=$bulan_sebelum_hari_ini;
+                        }else if($tanggal_hari_ini>=$bulan_hari_ini && $tanggal_hari_ini<$bulan_setelah_hari_ini){
+                            $tanggal_awal_hari_ini=$bulan_hari_ini;
+                        }else{
+                            $tanggal_awal_hari_ini='';
+                        }
+                        $tanggal_akhir_hari_ini=date('Y-m-25',strtotime("+1 month",strtotime($tanggal_awal_hari_ini)));
+                        $periode_payroll_hari_ini=$tanggal_awal_hari_ini.' s/d '.$tanggal_akhir_hari_ini;
+                        $countEmpHistory=EmployeeAtributHistory::where('enroll_id',$enroll_id)->where('periode_payroll',$periode_payroll_hari_ini)->count();
+                        if($countEmpHistory>0){
+                            EmployeeAtributHistory::where('enroll_id',$enroll_id)->where('periode_payroll',$periode_payroll_hari_ini)->update([
+                                'tanggal_dirubah'=>$tanggal_hari_ini,
+                                'sub_dept_id'=>$sub_dept_id,
+                                'sub_dept_name'=>$nm_line
+                            ]);
+                        }else{
+                            EmployeeAtributHistory::create([
+                                'enroll_id'=>$value->enroll_id,
+                                'tanggal_dirubah'=>$tanggal_hari_ini,
+                                'periode_payroll'=>$periode_payroll_hari_ini,
+                                'employee_id' => $value->employee_id,
+                                'employee_name' => $value->employee_name,
+                                'jenis_kelamin' => $value->jenis_kelamin,
+                                'tempat_lahir' => $value->tempat_lahir,
+                                'tanggal_lahir' => $value->tanggal_lahir,
+                                'golongan_darah' => $value->golongan_darah,
+                                'email' => $value->email,
+                                'nomor_tlpn' => $value->nomor_tlpn,
+                                'agama' => $value->agama,
+                                'status_kawin' => $value->status_kawin,
+                                'npwp' => $value->npwp,
+                                'nomor_ktp' => $value->nomor_ktp,
+                                'nomor_kk' => $value->nomor_kk,
+                                'pendidikan_terakhir' => $value->pendidikan_terakhir,
+                                'jurusan_pendidikan' => $value->jurusan_pendidikan,
+                                'nama_bank' => $value->nama_bank,
+                                'nomor_rekening_bank' => $value->nomor_rekening_bank,
+                                'ibu_kandung' => $value->ibu_kandung,
+                                'propinsi' => $value->propinsi,
+                                'kota_kab' => $value->kota_kab,
+                                'kecamatan' => $value->kecamatan,
+                                'kelurahan_desa' => $value->kelurahan_desa,
+                                'alamat_rumah' => $value->alamat_rumah,
+                                'alamat_sementara' => $value->alamat_sementara,
+                                'site_nirwana_id' => $value->site_nirwana_id,
+                                'site_nirwana_name' => $value->site_nirwana_name,
+                                'department_id' => $value->department_id,
+                                'department_name' => $value->department_name,
+                                'sub_dept_id' => $value->sub_dept_id,
+                                'sub_dept_name' => $value->sub_dept_name,
+                                'sewing_nonsewing'=>$value->sewing_nonsewing,
+                                'direct_indirect'=>$value->direct_indirect,
+                                'enroll_id' => $value->enroll_id,
+                                'join_date' => $value->join_date,
+                                'nik' => $value->nik,
+                                'status_aktif' => $value->status_aktif,
+                                'status_jabatan' => $value->status_jabatan,
+                                'status_kontrak_tetap' => $value->status_kontrak_tetap,
+                                'status_staff' => $value->status_staff,
+                                'tanggal_resign' => $value->tanggal_resign,
+                                'sebab_resign' => $value->sebab_resign,
+                                'tunjangan' => $value->tunjangan,
+                                'kode_grade' => $value->kode_grade,
+                                'referensi' => $value->referensi,
+                                'employee_name_atasan' => $value->employee_name_atasan,
+                                'status_aktif_bpjs_tk' => $value->status_aktif_bpjs_tk,
+                                'tanggal_bpjs_ketenagakerjaan' => $value->tanggal_bpjs_ketenagakerjaan,
+                                'nomor_bpjs_ketenagakerjaan' => $value->nomor_bpjs_ketenagakerjaan,
+                                'status_aktif_bpjs_ks' => $value->status_aktif_bpjs_ks,
+                                'tanggal_bpjs_kesehatan' => $value->tanggal_bpjs_kesehatan,
+                                'nomor_bpjs_kesehatan' => $value->nomor_bpjs_kesehatan,
+                                'premi' => $value->premi,
+                                'pengalaman_bekerja' => $value->pengalaman_bekerja,
+                                'nama_kerabat' => $value->nama_kerabat,
+                                'nomor_tlpn_kerabat' => $value->nomor_tlpn_kerabat,
+                                'hubungan_kerabat' => $value->hubungan_kerabat,
+                                'alamat_kerabat' => $value->alamat_kerabat,
+                                'tanggal_vaccine1' => $value->tanggal_vaccine1,
+                                'nama_vaksin1' => $value->nama_vaksin1,
+                                'tanggal_vaccine2' => $value->tanggal_vaccine2,
+                                'nama_vaksin2' => $value->nama_vaksin2,
+                                'golongan_sim' => $value->golongan_sim,
+                                'nomor_sim' => $value->nomor_sim,
+                                'tanggal_expire_sim' => $value->tanggal_expire_sim,
+                                'catatan' => $value->catatan,
+                                'no_surat'=>$value->no_surat,
+                                'lokasi_foto' => $value->lokasi_foto,
+                                'operator' => $value->operator,
+                                'tanggal_mulai_kontrak' => $value->tanggal_mulai_kontrak,
+                                'tanggal_akhir_kontrak' => $value->tanggal_akhir_kontrak,
+                                'catatan_kontrak' => $value->catatan_kontrak
+                            ]);
+                        }
                     }
                 }
             }
-            // dd($savemutasi);
-            // $message .= "$tglpindah <br>";
 
         }
 
