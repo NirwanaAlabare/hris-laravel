@@ -1908,7 +1908,7 @@
                             document.getElementById("nama_instansi").style.border="";
                         }
                         if(typeof(err_log.employee_dinas)!=='undefined'){
-                            document.getElementById("warning_employee_dinas").innerHTML='Karyawan '+error.responseJSON.errors.employee[0];
+                            document.getElementById("warning_employee_dinas").innerHTML='Karyawan '+error.responseJSON.errors.employee_dinas[0];
                         }else{
                             document.getElementById("warning_employee_dinas").innerHTML='';
                         }
