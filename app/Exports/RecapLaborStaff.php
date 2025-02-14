@@ -76,9 +76,9 @@ class RecapLaborStaff implements WithTitle, FromView, WithColumnWidths
                 END
             ELSE
                 CASE WHEN(TIME_TO_SEC(c.absen_masuk_kerja)<TIME_TO_SEC(c.absen_pulang_kerja))THEN
-                    ((TIME_TO_SEC(c.absen_pulang_kerja)-TIME_TO_SEC(c.absen_masuk_kerja))/60)-30
+                    ((TIME_TO_SEC(c.absen_pulang_kerja)-TIME_TO_SEC(c.absen_masuk_kerja))/60)-60
                 WHEN(TIME_TO_SEC(c.absen_pulang_kerja)<TIME_TO_SEC(c.absen_masuk_kerja))THEN
-                    ((TIME_TO_SEC(c.absen_masuk_kerja)-TIME_TO_SEC(c.absen_pulang_kerja))/60)-30
+                    ((TIME_TO_SEC(c.absen_masuk_kerja)-TIME_TO_SEC(c.absen_pulang_kerja))/60)-60
                 END
             END
         ELSE 0 END) absen_menit,
@@ -126,7 +126,7 @@ class RecapLaborStaff implements WithTitle, FromView, WithColumnWidths
             CASE WHEN(c.status_absen='DL') THEN 'DL'
             ELSE 'IBY'
             END
-        ELSE absen_ijin.kode_ijin_payroll END in ('OK','DT','PC','DTPC','IBY','IKS'),1,null)) man_power,
+        ELSE absen_ijin.kode_ijin_payroll END in ('OK','DT','PC','DTPC','IBY','IKS'),1,null) OR (c.mulai_jam_kerja is null and c.absen_masuk_kerja is not null and c.absen_pulang_kerja is not null)) man_power,
         SUM(CASE WHEN(c.absen_masuk_kerja is not null and c.absen_pulang_kerja is not null) THEN
             CASE WHEN(c.kode_hari not in (5,6))THEN
                 CASE WHEN(TIME_TO_SEC(c.absen_masuk_kerja)<TIME_TO_SEC(c.absen_pulang_kerja))THEN
@@ -136,9 +136,9 @@ class RecapLaborStaff implements WithTitle, FromView, WithColumnWidths
                 END
             ELSE
                 CASE WHEN(TIME_TO_SEC(c.absen_masuk_kerja)<TIME_TO_SEC(c.absen_pulang_kerja))THEN
-                    ((TIME_TO_SEC(c.absen_pulang_kerja)-TIME_TO_SEC(c.absen_masuk_kerja))/60)-30
+                    ((TIME_TO_SEC(c.absen_pulang_kerja)-TIME_TO_SEC(c.absen_masuk_kerja))/60)-60
                 WHEN(TIME_TO_SEC(c.absen_pulang_kerja)<TIME_TO_SEC(c.absen_masuk_kerja))THEN
-                    ((TIME_TO_SEC(c.absen_masuk_kerja)-TIME_TO_SEC(c.absen_pulang_kerja))/60)-30
+                    ((TIME_TO_SEC(c.absen_masuk_kerja)-TIME_TO_SEC(c.absen_pulang_kerja))/60)-60
                 END
             END
         ELSE 0 END) absen_menit,
