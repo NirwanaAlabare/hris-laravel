@@ -7,6 +7,7 @@
 <link href="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.css')}}" rel="stylesheet" />
 <link href="{{URL::asset('assets/plugins/sweet-alert/sweetalert.css')}}" rel="stylesheet" />
 <link href="{{URL::asset('assets/js/jquery-ui/jquery-ui.min.css') }}" rel="stylesheet">
+<link href="{{URL::asset('assets/plugins/izitoast/dist/css/iziToast.min.css') }}" rel="stylesheet">
 
 @stop
 @section('mainarea')
@@ -42,7 +43,7 @@
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Keberangkatan Awal</label>
             </div>
             <div class="col-4 pt-2">
-                <a href="#" id="change_initial_destination" style="text-decoration-line: underline">PT. NAG</a><img src="{{URL::asset('assets/images/brand/shortcut.png')}}" width="18">
+                <a href="#" onclick="change_initial_destination(12,161,2196,30109)" style="text-decoration-line: underline">PT. NAG</a><img src="{{URL::asset('assets/images/brand/shortcut.png')}}" width="18">
             </div>
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Tujuan</label>
@@ -70,23 +71,17 @@
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Provinsi</label>
             </div>
             <div class="col-4">
-                <select class="form-control col-11" id="provinsi" style="background-color: white">
-                    <option value="">Pilih Provinsi</option>
-                    @foreach($provincies as $prov)
-                        <option value="{{$prov->prov_id}}">{{$prov->prov_name}}</option>
-                    @endforeach
+                <select id="provinsi" name="selectProvinsi[]" multiple data-placeholder="Pilih Provinsi" class="form-control select2oneSelect col-11" onchange="change_city(this.value)">
                 </select>
+                <h6 id="warning_provinsi" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
             </div>
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Provinsi</label>
             </div>
             <div class="col-4">
-                <select class="form-control col-11" id="provinsi_2" style="background-color: white">
-                    <option value="">Pilih Provinsi</option>
-                    @foreach($provincies as $prov)
-                        <option value="{{$prov->prov_id}}">{{$prov->prov_name}}</option>
-                    @endforeach
+                <select id="provinsi_2" name="selectProvinsi2[]" multiple data-placeholder="Pilih Provinsi" class="form-control select2oneSelect col-11" onchange="change_city2(this.value)">
                 </select>
+                <h6 id="warning_provinsi_2" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
             </div>
         </div>
         <div class="row pb-2">
@@ -94,15 +89,17 @@
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kabupaten/Kota</label>
             </div>
             <div class="col-4">
-                <select class="form-control col-11" id="cities" style="background-color: white">
+                <select id="cities" name="selectCity[]" multiple data-placeholder="Pilih Kota" class="form-control select2oneSelect col-11" style="background-color: white" onchange="change_district(this.value)">
                 </select>
+                <h6 id="warning_kota" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
             </div>
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kabupaten/Kota</label>
             </div>
             <div class="col-4">
-                <select class="form-control col-11" id="cities_2" style="background-color: white">
+                <select id="cities_2" name="selectCity2[]" multiple data-placeholder="Pilih Kota" class="form-control select2oneSelect col-11" style="background-color: white" onchange="change_district2(this.value)">
                 </select>
+                <h6 id="warning_kota_2" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
             </div>
         </div>
         <div class="row pb-2">
@@ -110,15 +107,17 @@
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kecamatan</label>
             </div>
             <div class="col-4">
-                <select class="form-control col-11" id="districts" style="background-color: white">
+                <select id="districts" name="selectDistrict[]" multiple data-placeholder="Pilih Kecamatan" class="form-control select2oneSelect col-11" style="background-color: white"onchange="change_subdistrict(this.value)">
                 </select>
+                <h6 id="warning_kecamatan" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
             </div>
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kecamatan</label>
             </div>
             <div class="col-4">
-                <select class="form-control col-11" id="districts_2" style="background-color: white">
+                <select id="districts_2" name="selectDistrict2[]" multiple data-placeholder="Pilih Kecamatan" class="form-control select2oneSelect col-11" style="background-color: white"onchange="change_subdistrict2(this.value)">
                 </select>
+                <h6 id="warning_kecamatan_2" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
             </div>
         </div>
         <div class="row pb-2">
@@ -126,15 +125,17 @@
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kelurahan/Desa</label>
             </div>
             <div class="col-4">
-                <select class="form-control col-11" id="sub_districts" style="background-color: white">
+                <select id="sub_districts" name="selectSubdistrict[]" multiple data-placeholder="Pilih Desa" class="form-control select2oneSelect col-11" style="background-color: white">
                 </select>
+                <h6 id="warning_desa" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
             </div>
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kelurahan/Desa</label>
             </div>
             <div class="col-4">
-                <select class="form-control col-11" id="sub_districts_2" style="background-color: white">
+                <select id="sub_districts_2" name="selectSubdistrict2[]" multiple data-placeholder="Pilih Desa" class="form-control select2oneSelect col-11" style="background-color: white">
                 </select>
+                <h6 id="warning_desa_2" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
             </div>
         </div>
         <div class="row pb-2">
@@ -422,6 +423,7 @@
 <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
 <script src="{{ URL::asset('assets/plugins/datatable/dataTables.responsive.min.js') }}"></script>
 <script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/izitoast/dist/js/iziToast.min.js')}}"></script>
 <!-- Sweet alert js-->
 <script src="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.js')}}"></script>
 <script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
@@ -437,6 +439,7 @@
     });
     var count=1;
     var all_history_alamat=[];
+    
     function pilih_history_alamat(value){
         var pilihan_history=$('#pilihan_history').val();
         const myArray = pilihan_history.split("-");
@@ -450,13 +453,11 @@
             url: "{{route('hris.ga.get_province')}}",
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             success: function(res){
-                $('#provinsi_2').empty().append('<option value="">Pilih Provinsi</option>');
-                document.getElementById("provinsi_2").style.border="";
-                document.getElementById("provinsi_2").disabled=false;
+                $('#provinsi_2').empty();
                 jQuery.each(res, function(key,value){
                     $('#provinsi_2').append('<option value="'+ value['prov_id'] +'">'+ value['prov_name'] +'</option>');
                 });
-                $('#provinsi_2').val(province);
+                $('#provinsi_2 option[value="' + province + '"]').prop('selected',true);
             },
             error: function(res){
                 swal({
@@ -474,13 +475,11 @@
             },
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             success: function(res){
-                $('#cities_2').empty().append('<option value="">Pilih Kabupaten/Kota</option>');
-                document.getElementById("cities_2").style.border="";
-                document.getElementById("cities_2").disabled=false;
+                $('#cities_2').empty();
                 jQuery.each(res, function(key,value){
                     $('#cities_2').append('<option value="'+ value['city_id'] +'">'+ value['city_name'] +'</option>');
                 });
-                $('#cities_2').val(city)
+                $('#cities_2 option[value="' + city + '"]').prop('selected',true);
             },
             error: function(res){
                 swal({
@@ -498,13 +497,11 @@
             },
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             success: function(res){
-                $('#districts_2').empty().append('<option value="">Pilih Kecamatan</option>');
-                document.getElementById("districts_2").style.border="";
-                document.getElementById("districts_2").disabled=false;
+                $('#districts_2').empty();
                 jQuery.each(res, function(key,value){
                     $('#districts_2').append('<option value="'+ value['dis_id'] +'">'+ value['dis_name'] +'</option>');
                 });
-                $('#districts_2').val(district);
+                $('#districts_2 option[value="' + district + '"]').prop('selected',true);
             },
             error: function(res){
                 swal({
@@ -522,13 +519,11 @@
             },
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             success: function(res){
-                $('#sub_districts_2').empty().append('<option value="">Pilih Kelurahan/Desa</option>');
-                document.getElementById("sub_districts_2").style.border="";
-                document.getElementById("sub_districts_2").disabled=false;
+                $('#sub_districts_2').empty();
                 jQuery.each(res, function(key,value){
                     $('#sub_districts_2').append('<option value="'+ value['subdis_id'] +'">'+ value['subdis_name'] +'</option>');
                 });
-                $('#sub_districts_2').val(subdistrict);
+                $('#sub_districts_2 option[value="' + subdistrict + '"]').prop('selected',true);
             },
             error: function(res){
                 swal({
@@ -539,7 +534,6 @@
             }
         });
         $('#detail_alamat_2').val(detail_alamat);
-        $('#provinsi_2').val
     }
     function add_route(){
         get_all_history_alamat();
@@ -1023,11 +1017,241 @@
             document.getElementById("jam_kedatangan_yang_ke_"+count).style.border="";
         }
     }
+    function change_initial_destination(province,city,district,subdistrict){
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_province')}}",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                $('#provinsi').empty();
+                jQuery.each(res, function(key,value){
+                    $('#provinsi').append('<option value="'+ value['prov_id'] +'">'+ value['prov_name'] +'</option>');
+                });
+                $('#provinsi option[value="' + province + '"]').prop('selected',true);
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data provinsi",
+                    text: "Data provinsi gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_cities')}}",
+            data: {
+                provinsi:province,
+            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                $('#cities').empty();
+                jQuery.each(res, function(key,value){
+                    $('#cities').append('<option value="'+ value['city_id'] +'">'+ value['city_name'] +'</option>');
+                });
+                $('#cities option[value="' + city + '"]').prop('selected',true);
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data kota",
+                    text: "Data kota gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_districts')}}",
+            data: {
+                cities:city,
+            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                $('#districts').empty();
+                jQuery.each(res, function(key,value){
+                    $('#districts').append('<option value="'+ value['dis_id'] +'">'+ value['dis_name'] +'</option>');
+                });
+                $('#districts option[value="' + district + '"]').prop('selected',true);
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data desa",
+                    text: "Data desa gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_subdistricts')}}",
+            data: {
+                districts:district,
+            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                $('#sub_districts').empty();
+                jQuery.each(res, function(key,value){
+                    $('#sub_districts').append('<option value="'+ value['subdis_id'] +'">'+ value['subdis_name'] +'</option>');
+                });
+                $('#sub_districts option[value="' + subdistrict + '"]').prop('selected',true);
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data desa",
+                    text: "Data desa gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
+        $('#detail_alamat').val('PT. Nirwana Alabare Garment');
+    }
+    function change_city(prov){
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_cities')}}",
+            data: {
+                provinsi:prov,
+            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                $('#cities').empty();
+                jQuery.each(res, function(key,value){
+                    $('#cities').append('<option value="'+ value['city_id'] +'">'+ value['city_name'] +'</option>');
+                });
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data kota",
+                    text: "Data kota gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
+    }
+    function change_city2(prov){
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_cities')}}",
+            data: {
+                provinsi:prov,
+            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                $('#cities_2').empty();
+                jQuery.each(res, function(key,value){
+                    $('#cities_2').append('<option value="'+ value['city_id'] +'">'+ value['city_name'] +'</option>');
+                });
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data kota",
+                    text: "Data kota gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
+    }
+    function change_district(city){
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_districts')}}",
+            data: {
+                cities:city,
+            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                $('#districts').empty();
+                jQuery.each(res, function(key,value){
+                    $('#districts').append('<option value="'+ value['dis_id'] +'">'+ value['dis_name'] +'</option>');
+                });
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data desa",
+                    text: "Data desa gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
+    }
+    function change_district2(city){
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_districts')}}",
+            data: {
+                cities:city,
+            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                $('#districts_2').empty();
+                jQuery.each(res, function(key,value){
+                    $('#districts_2').append('<option value="'+ value['dis_id'] +'">'+ value['dis_name'] +'</option>');
+                });
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data desa",
+                    text: "Data desa gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
+    }
+    function change_subdistrict(district,subdistrict){
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_subdistricts')}}",
+            data: {
+                districts:district,
+            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                $('#sub_districts').empty();
+                jQuery.each(res, function(key,value){
+                    $('#sub_districts').append('<option value="'+ value['subdis_id'] +'">'+ value['subdis_name'] +'</option>');
+                });
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data desa",
+                    text: "Data desa gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
+    }
+    function change_subdistrict2(district,subdistrict){
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_subdistricts')}}",
+            data: {
+                districts:district,
+            },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                $('#sub_districts_2').empty();
+                jQuery.each(res, function(key,value){
+                    $('#sub_districts_2').append('<option value="'+ value['subdis_id'] +'">'+ value['subdis_name'] +'</option>');
+                });
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data desa",
+                    text: "Data desa gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
+    }
     $(function(){
         'use strict';
 
         $('.select2').select2({
-            minimumResultsForSearch: Infinity
+            minimumResultsForSearch: Infinity,
+        });
+        $('.select2oneSelect').select2({
+            minimumResultsForSearch: Infinity,
+            maximumSelectionLength: 1
         });
 
         // Select2 by showing the search
@@ -1039,11 +1263,14 @@
         $('#select2').select2({
             dropdownCssClass: 'hover-success',// disabling search
         });
+        $('#select2oneSelect').select2({
+            dropdownCssClass: 'hover-success',// disabling search
+        });
         $('#tujuan_lainnya').on('click',function(){
-            var provinsi=$('#provinsi_2').val();
-            var city=$('#cities_2').val();
-            var districts=$('#districts_2').val();
-            var subdistricts=$('#sub_districts_2').val();
+            var provinsi=$('#provinsi_2').val()[0];
+            var city=$('#cities_2').val()[0];
+            var districts=$('#districts_2').val()[0];
+            var subdistricts=$('#sub_districts_2').val()[0];
             var detail_alamat=$('#detail_alamat_2').val();
             var tanggal_kedatangan=$('#tanggal_kedatangan').val();
             var jam_kedatangan=$('#jam_kedatangan').val();
@@ -1115,309 +1342,6 @@
                     }
                 }
             });
-        });
-        $('#change_initial_destination').on('click',function(){
-            var province=12;
-            var city=161;
-            var district=2196;
-            var subdistrict=30109;
-            $.ajax({
-                type:"POST",
-                url: "{{route('hris.ga.get_province')}}",
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                success: function(res){
-                    $('#provinsi').empty().append('<option value="">Pilih Provinsi</option>');
-                    jQuery.each(res, function(key,value){
-                        $('#provinsi').append('<option value="'+ value['prov_id'] +'">'+ value['prov_name'] +'</option>');
-                    });
-                    $('#provinsi').val(province);
-                },
-                error: function(res){
-                    swal({
-                        title: "Ambil data provinsi",
-                        text: "Data provinsi gagal di ambil",
-                        icon: "danger",
-                    });
-                }
-            });
-            $.ajax({
-                type:"POST",
-                url: "{{route('hris.ga.get_cities')}}",
-                data: {
-                    provinsi:province,
-                },
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                success: function(res){
-                    $('#cities').empty().append('<option value="">Pilih Kabupaten/Kota</option>');
-                    document.getElementById("cities").disabled=false;
-                    jQuery.each(res, function(key,value){
-                        $('#cities').append('<option value="'+ value['city_id'] +'">'+ value['city_name'] +'</option>');
-                    });
-                    $('#cities').val(city)
-                },
-                error: function(res){
-                    swal({
-                        title: "Ambil data kota",
-                        text: "Data kota gagal di ambil",
-                        icon: "danger",
-                    });
-                }
-            });
-            $.ajax({
-                type:"POST",
-                url: "{{route('hris.ga.get_districts')}}",
-                data: {
-                    cities:city,
-                },
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                success: function(res){
-                    $('#districts').empty().append('<option value="">Pilih Kecamatan</option>');
-                    document.getElementById("districts").disabled=false;
-                    jQuery.each(res, function(key,value){
-                        $('#districts').append('<option value="'+ value['dis_id'] +'">'+ value['dis_name'] +'</option>');
-                    });
-                    $('#districts').val(district);
-                },
-                error: function(res){
-                    swal({
-                        title: "Ambil data desa",
-                        text: "Data desa gagal di ambil",
-                        icon: "danger",
-                    });
-                }
-            });
-            $.ajax({
-                type:"POST",
-                url: "{{route('hris.ga.get_subdistricts')}}",
-                data: {
-                    districts:district,
-                },
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                success: function(res){
-                    $('#sub_districts').empty().append('<option value="">Pilih Kelurahan/Desa</option>');
-                    document.getElementById("sub_districts").disabled=false;
-                    jQuery.each(res, function(key,value){
-                        $('#sub_districts').append('<option value="'+ value['subdis_id'] +'">'+ value['subdis_name'] +'</option>');
-                    });
-                    $('#sub_districts').val(subdistrict);
-                },
-                error: function(res){
-                    swal({
-                        title: "Ambil data desa",
-                        text: "Data desa gagal di ambil",
-                        icon: "danger",
-                    });
-                }
-            });
-            $('#detail_alamat').val('PT. Nirwana Alabare Garment');
-        });
-        $('#provinsi').on('change',function(){
-            var provinsi=$('#provinsi').val();
-            if(provinsi==''){
-                document.getElementById("cities").disabled=true;
-                $('#cities').empty().append('<option value="">Pilih Kabupaten/Kota</option>');
-                document.getElementById("districts").disabled=true;
-                $('#districts').empty().append('<option value="">Pilih Kecamatan/option>');
-                document.getElementById("sub_districts").disabled=true;
-                $('#sub_districts').empty().append('<option value="">Pilih Kelurahan/Desa</option>');
-            }else{
-                $.ajax({
-                    type:"POST",
-                    url: "{{route('hris.ga.get_cities')}}",
-                    data: {
-                        provinsi:provinsi,
-                    },
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    success: function(res){
-                        $('#cities').empty().append('<option value="">Pilih Kabupaten/Kota</option>');
-                        document.getElementById("cities").disabled=false;
-                        $('#cities').val('');
-                        jQuery.each(res, function(key,value){
-                            $('#cities').append('<option value="'+ value['city_id'] +'">'+ value['city_name'] +'</option>');
-                        });
-                        $('#districts').empty().append('<option value="">Pilih Kecamatan</option>');
-                        document.getElementById("districts").disabled=true;
-                        $('#sub_districts').empty().append('<option value="">Pilih Kelurahan/Desa</option>');
-                        document.getElementById("sub_districts").disabled=true;
-                    },
-                    error: function(res){
-                        swal({
-                            title: "Ambil data kota",
-                            text: "Data kota gagal di ambil",
-                            icon: "danger",
-                        });
-                    }
-                });
-            }
-        });
-        $('#cities').on('change',function(){
-            var cities=$('#cities').val();
-            if(cities==''){
-                document.getElementById("districts").disabled=true;
-                $('#districts').empty().append('<option value="">Pilih Kecamatan</option>');
-            }else{
-                $.ajax({
-                    type:"POST",
-                    url: "{{route('hris.ga.get_districts')}}",
-                    data: {
-                        cities:cities,
-                    },
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    success: function(res){
-                        $('#districts').empty().append('<option value="">Pilih Kecamatan</option>');
-                        document.getElementById("districts").disabled=false;
-                        $('#districts').val('');
-                        jQuery.each(res, function(key,value){
-                            $('#districts').append('<option value="'+ value['dis_id'] +'">'+ value['dis_name'] +'</option>');
-                        });
-                        $('#sub_districts').empty().append('<option value="">Pilih Kelurahan/Desa</option>');
-                        document.getElementById("sub_districts").disabled=true;
-                    },
-                    error: function(res){
-                        swal({
-                            title: "Ambil data desa",
-                            text: "Data desa gagal di ambil",
-                            icon: "danger",
-                        });
-                    }
-                });
-            }
-        });
-        $('#districts').on('change',function(){
-            var districts=$('#districts').val();
-            if(districts==''){
-                document.getElementById("sub_districts").disabled=true;
-                $('#sub_districts').empty().append('<option value="">Pilih Kelurahan/Desa</option>');
-            }else{
-                $.ajax({
-                    type:"POST",
-                    url: "{{route('hris.ga.get_subdistricts')}}",
-                    data: {
-                        districts:districts,
-                    },
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    success: function(res){
-                        $('#sub_districts').empty().append('<option value="">Pilih Kelurahan/Desa</option>');
-                        document.getElementById("sub_districts").disabled=false;
-                        $('#sub_districts').val('');
-                        jQuery.each(res, function(key,value){
-                            $('#sub_districts').append('<option value="'+ value['subdis_id'] +'">'+ value['subdis_name'] +'</option>');
-                        });
-                    },
-                    error: function(res){
-                        swal({
-                            title: "Ambil data desa",
-                            text: "Data desa gagal di ambil",
-                            icon: "danger",
-                        });
-                    }
-                });
-            }
-        });
-        $('#provinsi_2').on('change',function(){
-            var provinsi=$('#provinsi_2').val();
-            if(provinsi==''){
-                document.getElementById("cities_2").disabled=true;
-                $('#cities_2').empty().append('<option value="">Pilih Kabupaten/Kota</option>');
-                document.getElementById("districts_2").disabled=true;
-                $('#districts_2').empty().append('<option value="">Pilih Kecamatan</option>');
-                document.getElementById("sub_districts_2").disabled=true;
-                $('#sub_districts_2').empty().append('<option value="">Pilih Kelurahan/Desa</option>');
-            }else{
-                $.ajax({
-                    type:"POST",
-                    url: "{{route('hris.ga.get_cities')}}",
-                    data: {
-                        provinsi:provinsi,
-                    },
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    success: function(res){
-                        $('#cities_2').empty().append('<option value="">Pilih Kabupaten/Kota</option>');
-                        document.getElementById("cities_2").disabled=false;
-                        $('#cities_2').val('');
-                        jQuery.each(res, function(key,value){
-                            $('#cities_2').append('<option value="'+ value['city_id'] +'">'+ value['city_name'] +'</option>');
-                        });
-                        $('#districts_2').empty().append('<option value="">Pilih Kecamatan</option>');
-                        document.getElementById("districts_2").disabled=true;
-                        $('#sub_districts_2').empty().append('<option value="">Pilih Kelurahan/Desa</option>');
-                        document.getElementById("sub_districts_2").disabled=true;
-                    },
-                    error: function(res){
-                        swal({
-                            title: "Ambil data kota",
-                            text: "Data kota gagal di ambil",
-                            icon: "danger",
-                        });
-                    }
-                });
-            }
-        });
-        $('#cities_2').on('change',function(){
-            var cities=$('#cities_2').val();
-            if(cities==''){
-                document.getElementById("districts_2").disabled=true;
-                $('#districts_2').empty().append('<option value="">Pilih Kecamatan</option>');
-                document.getElementById("sub_districts_2").disabled=true;
-                $('#sub_districts_2').empty().append('<option value="">Pilih Kelurahan/Desa</option>');
-            }else{
-                $.ajax({
-                    type:"POST",
-                    url: "{{route('hris.ga.get_districts')}}",
-                    data: {
-                        cities:cities,
-                    },
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    success: function(res){
-                        $('#districts_2').empty().append('<option value="">Pilih Kecamatan</option>');
-                        document.getElementById("districts_2").disabled=false;
-                        $('#districts_2').val('');
-                        jQuery.each(res, function(key,value){
-                            $('#districts_2').append('<option value="'+ value['dis_id'] +'">'+ value['dis_name'] +'</option>');
-                        });
-                        $('#sub_districts_2').empty().append('<option value="">Pilih Kelurahan/Desa</option>');
-                        document.getElementById("sub_districts_2").disabled=true;
-                    },
-                    error: function(res){
-                        swal({
-                            title: "Ambil data desa",
-                            text: "Data desa gagal di ambil",
-                            icon: "danger",
-                        });
-                    }
-                });
-            }
-        });
-        $('#districts_2').on('change',function(){
-            var districts=$('#districts_2').val();
-            if(districts==''){
-                document.getElementById("sub_districts_2").disabled=true;
-                $('#sub_districts_2').empty().append('<option value="">Pilih Kelurahan/Desa</option>');
-            }else{
-                $.ajax({
-                    type:"POST",
-                    url: "{{route('hris.ga.get_subdistricts')}}",
-                    data: {
-                        districts:districts,
-                    },
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    success: function(res){
-                        $('#sub_districts_2').empty().append('<option value="">Pilih Kelurahan/Desa</option>');
-                        document.getElementById("sub_districts_2").disabled=false;
-                        $('#sub_districts_2').val('');
-                        jQuery.each(res, function(key,value){
-                            $('#sub_districts_2').append('<option value="'+ value['subdis_id'] +'">'+ value['subdis_name'] +'</option>');
-                        });
-                    },
-                    error: function(res){
-                        swal({
-                            title: "Ambil data desa",
-                            text: "Data desa gagal di ambil",
-                            icon: "danger",
-                        });
-                    }
-                });
-            }
         });
         $('#checkbox_1').on('change', function() { 
             if (this.checked) {
@@ -1499,9 +1423,9 @@
                 document.getElementById("warning_employee").innerHTML='';
             }
         });
-        $('#provinsi').on('change',function(){
+        $('#cities').on('change',function(){
             if($(this).val()!=''){
-                document.getElementById("provinsi").style.border="";
+                document.getElementById("cities").style.border="";
             }
         });
         $('#cities').on('change',function(){
@@ -1626,15 +1550,15 @@
             if(employee_array.length>0){
                 var employee=employee_array.toString();
             }
-            var provinsi=$('#provinsi').val();
-            var cities=$('#cities').val();
-            var districts=$('#districts').val();
-            var sub_districts=$('#sub_districts').val();
+            var provinsi=$('#provinsi').val()[0];
+            var cities=$('#cities').val()[0];
+            var districts=$('#districts').val()[0];
+            var sub_districts=$('#sub_districts').val()[0];
             var detail_alamat=$('#detail_alamat').val();
-            var provinsi_2=$('#provinsi_2').val();
-            var cities_2=$('#cities_2').val();
-            var districts_2=$('#districts_2').val();
-            var sub_districts_2=$('#sub_districts_2').val();
+            var provinsi_2=$('#provinsi_2').val()[0];
+            var cities_2=$('#cities_2').val()[0];
+            var districts_2=$('#districts_2').val()[0];
+            var sub_districts_2=$('#sub_districts_2').val()[0];
             var detail_alamat_2=$('#detail_alamat_2').val();
             var tanggal_pemberangkatan=$('#tanggal_pemberangkatan').val();
             var jam_pemberangkatan=$('#jam_pemberangkatan').val();
@@ -1743,6 +1667,14 @@
                     $('#jam_pemberangkatan').val('');
                     $('#jam_kedatangan').val('');
                     $('#jarak_tempuh').val(0);
+                    $('#provinsi').val(null).trigger('change');
+                    $('#cities').val(null).trigger('change');
+                    $('#district').val(null).trigger('change');
+                    $('#sub_districts').val(null).trigger('change');
+                    $('#provinsi_2').val(null).trigger('change');
+                    $('#cities_2').val(null).trigger('change');
+                    $('#district_2').val(null).trigger('change');
+                    $('#sub_districts_2').val(null).trigger('change');
                     $('#selectEmployeeID').val(null).trigger('change');
                     $('#selectEmployeeDinas').val(null).trigger('change');
                     document.getElementById("checkbox_1").checked=false;
@@ -1763,6 +1695,14 @@
                     $("#nama_instansi").val('');
                     $("#keterangan_barang").val('');
                     document.getElementById("warning_employee").innerHTML='';
+                    document.getElementById("warning_provinsi").innerHTML='';
+                    document.getElementById("warning_kota").innerHTML='';
+                    document.getElementById("warning_kecamatan").innerHTML='';
+                    document.getElementById("warning_desa").innerHTML='';
+                    document.getElementById("warning_provinsi_2").innerHTML='';
+                    document.getElementById("warning_kota_2").innerHTML='';
+                    document.getElementById("warning_kecamatan_2").innerHTML='';
+                    document.getElementById("warning_desa_2").innerHTML='';
                     document.getElementById("provinsi").style.border="";
                     document.getElementById("cities").style.border="";
                     document.getElementById("districts").style.border="";
@@ -1798,24 +1738,24 @@
                             document.getElementById("warning_employee").innerHTML='';
                         }
                         if(typeof(err_log.provinsi)!=='undefined'){
-                            document.getElementById("provinsi").style.border = "1px solid red";
+                            document.getElementById("warning_provinsi").innerHTML='Provinsi '+error.responseJSON.errors.provinsi[0];
                         }else{
-                            document.getElementById("provinsi").style.border="";
+                            document.getElementById("warning_provinsi").innerHTML='';
                         }
                         if(typeof(err_log.cities)!=='undefined'){
-                            document.getElementById("cities").style.border = "1px solid red";
+                            document.getElementById("warning_kota").innerHTML='Kota '+error.responseJSON.errors.employee[0];
                         }else{
-                            document.getElementById("cities").style.border="";
+                            document.getElementById("warning_kota").innerHTML='';
                         }
                         if(typeof(err_log.districts)!=='undefined'){
-                            document.getElementById("districts").style.border = "1px solid red";
+                            document.getElementById("warning_kecamatan").innerHTML='Kecamatan '+error.responseJSON.errors.districts[0];
                         }else{
-                            document.getElementById("districts").style.border="";
+                            document.getElementById("warning_kecamatan").innerHTML='';
                         }
                         if(typeof(err_log.sub_districts)!=='undefined'){
-                            document.getElementById("sub_districts").style.border = "1px solid red";
+                            document.getElementById("warning_desa").innerHTML='Desa '+error.responseJSON.errors.sub_districts[0];
                         }else{
-                            document.getElementById("sub_districts").style.border="";
+                            document.getElementById("warning_desa").innerHTML='';
                         }
                         if(typeof(err_log.detail_alamat)!=='undefined'){
                             document.getElementById("detail_alamat").style.border = "1px solid red";
@@ -1843,24 +1783,24 @@
                             document.getElementById("jam_kedatangan").style.border="";
                         }
                         if(typeof(err_log.provinsi_2)!=='undefined'){
-                            document.getElementById("provinsi_2").style.border = "1px solid red";
+                            document.getElementById("warning_provinsi_2").innerHTML='Provinsi '+error.responseJSON.errors.provinsi_2[0];
                         }else{
-                            document.getElementById("provinsi_2").style.border="";
+                            document.getElementById("warning_provinsi_2").innerHTML='';
                         }
                         if(typeof(err_log.cities_2)!=='undefined'){
-                            document.getElementById("cities_2").style.border = "1px solid red";
+                            document.getElementById("warning_kota_2").innerHTML='Kota '+error.responseJSON.errors.cities_2[0];
                         }else{
-                            document.getElementById("cities_2").style.border="";
+                            document.getElementById("warning_kota_2").innerHTML='';
                         }
                         if(typeof(err_log.districts_2)!=='undefined'){
-                            document.getElementById("districts_2").style.border = "1px solid red";
+                            document.getElementById("warning_kecamatan_2").innerHTML='Kecamatan '+error.responseJSON.errors.districts_2[0];
                         }else{
-                            document.getElementById("districts_2").style.border="";
+                            document.getElementById("warning_kecamatan_2").innerHTML='';
                         }
                         if(typeof(err_log.sub_districts_2)!=='undefined'){
-                            document.getElementById("sub_districts_2").style.border = "1px solid red";
+                            document.getElementById("warning_desa_2").innerHTML='Desa '+error.responseJSON.errors.sub_districts_2[0];
                         }else{
-                            document.getElementById("sub_districts_2").style.border="";
+                            document.getElementById("warning_desa_2").innerHTML='';
                         }
                         if(typeof(err_log.detail_alamat_2)!=='undefined'){
                             document.getElementById("detail_alamat_2").style.border = "1px solid red";
@@ -1918,18 +1858,42 @@
         });
     });
     $(document).ready(function() {
-        document.getElementById('cities').disabled=true;
-        document.getElementById('districts').disabled=true;
-        document.getElementById('sub_districts').disabled=true;
-        $('#cities').append('<option value="">Pilih Kabupaten/Kota</option>');
-        $('#districts').append('<option value="">Pilih Kecamatan</option>');
-        $('#sub_districts').append('<option value="">Pilih Kelurahan/Desa</option>');
-        document.getElementById('cities_2').disabled=true;
-        document.getElementById('districts_2').disabled=true;
-        document.getElementById('sub_districts_2').disabled=true;
-        $('#cities_2').append('<option value="">Pilih Kabupaten/Kota</option>');
-        $('#districts_2').append('<option value="">Pilih Kecamatan</option>');
-        $('#sub_districts_2').append('<option value="">Pilih Kelurahan/Desa</option>');
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_province')}}",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                $('#provinsi').empty();
+                jQuery.each(res, function(key,value){
+                    $('#provinsi').append('<option value="'+ value['prov_id'] +'">'+ value['prov_name'] +'</option>');
+                });
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data provinsi",
+                    text: "Data provinsi gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.ga.get_province')}}",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(res){
+                $('#provinsi_2').empty();
+                jQuery.each(res, function(key,value){
+                    $('#provinsi_2').append('<option value="'+ value['prov_id'] +'">'+ value['prov_name'] +'</option>');
+                });
+            },
+            error: function(res){
+                swal({
+                    title: "Ambil data provinsi",
+                    text: "Data provinsi gagal di ambil",
+                    icon: "danger",
+                });
+            }
+        });
     });
 </script>
 @endsection

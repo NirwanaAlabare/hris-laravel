@@ -33,21 +33,22 @@
         </div>
       
         <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-            <div class="card-body px-0 py-2">
+            <div class="card-body px-0 pt-5">
                 <div class="row">
-                    <div class="col-2 pl-6 pt-1">
+                    <div class="col-2 pl-6">
                         <label class="form-label" style="font-size:11pt">Tanggal Pemberangkatan</label>
                     </div>
                     <div class="col-3 pl-0">
-                        <input type="date" class="form-control bg-white col-10" id="filter_tanggal">
+                        <input type="hidden" id="daterange1" name="daterange1">
+                        <a class="nav-link card-title border border-secondary" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
                     </div>
                 </div>
-                <div class="row pt-1">
+                <div class="row">
                     <div class="col-2 pl-6 pt-1">
                         <label class="form-label" style="font-size:11pt">Status</label>
                     </div>
                     <div class="col-3 pl-0">
-                        <select class="form-control col-10" id="value_status" style="background-color: white" onchange="perubahanan_status()">\
+                        <select class="form-control" id="value_status" style="background-color: white" onchange="perubahanan_status()">\
                             <option value=''>Pilih Status</option>
                             <option value=0>Pengajuan Baru</option>
                             <option value=1>Approved</option>
@@ -57,6 +58,13 @@
                             <option value=6>Late</option>
                             <option value=5>Cancel</option>
                         </select>
+                    </div>
+                </div>
+                <div class="row pt-1">
+                    <div class="col-2 pl-6 pt-1">
+                    </div>
+                    <div class="col-3 pl-0">
+                        <button class="btn btn-success py-1 my-1" id="export_excel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
                     </div>
                 </div>
             </div>
@@ -360,10 +368,57 @@
 <script src="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.js')}}"></script>
 <script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
 <script>
+    $('body').on('click', '#export_excel', function (event) {
+        var status=$('#value_status').val();
+        var daterange = $('#daterange1').val();
+        $('#export_excel').addClass("btn-loading");
+        $("#export_excel").attr("disabled", true);
+        $.ajax({
+            type: 'POST',
+            url: '{{route('hris.ga.export_excel_transportasi')}}',
+            data: {
+                status:status,
+                daterange:daterange
+            },
+            xhrFields: { responseType : 'blob' },
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success:function(data){
+                var blob = new Blob([data]);
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                let file_name = 'Report permintaan transportasi '+daterange+' '+Math.ceil(Math.random()*1000000);
+                link.download = file_name+".xlsx";
+                link.click();
+                swal("", "Export Car Request", "success");
+                $('#export_excel').removeClass("btn-loading");
+                $("#export_excel").attr("disabled", false);
+            },
+            error: function(res){
+                swal("", "Export Car Request", "error");
+                $('#export_excel').removeClass("btn-loading");
+                $("#export_excel").attr("disabled", false);
+            }
+        });
+    });
     $(document).ready(function() {
         $('#datatable').DataTable();
     });
-    
+    $('#daterange-btn1').daterangepicker({
+        ranges: {
+            'Hari ini': [moment(), moment()],
+            'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            '7 Hari Kemarin': [moment().subtract(6, 'days'), moment()],
+            '30 Hari Kemarin': [moment().subtract(29, 'days'), moment()],
+            'Bulan Sekarang': [moment().startOf('month'), moment().endOf('month')],
+            'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        startDate: moment().subtract(29, 'days'),
+        endDate: moment()
+    }, function(start, end) {
+        $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>');
+        var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
+        $('#daterange1').val(daterange1).trigger('change');
+    })
     $('#driver').on('change',function(){
         if($(this).val()!=''){
             document.getElementById("driver").style.border="";
@@ -374,6 +429,14 @@
             document.getElementById("vehicle_id").style.border="";
         }
     });
+    var start = moment().subtract(29, 'days');
+    var end = moment();
+    var htmlDateRange = '<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>'
+    var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
+    var dateUpdateKehadiran = end.format("DD-MM-YYYY");
+
+    $('#daterange-btn1').html(htmlDateRange);
+    $('#daterange1').val(daterange1);
     let datatable = $("#datatable").DataTable({
         ordering: true,
         processing: true,
@@ -387,7 +450,7 @@
             data: function(d) {
                 d.user = $('#user').val();
                 d.status = $('#value_status').val();
-                d.tanggal = $('#filter_tanggal').val();
+                d.daterange = $('#daterange1').val();
             },
         },
         columns: [
@@ -561,7 +624,7 @@
     $('#value_status').on('change',function(){
         dataTableReload();
     });
-    $('#filter_tanggal').on('change',function(){
+    $('#daterange1').on('change',function(){
         dataTableReload();
     });
     function approveButton(id){

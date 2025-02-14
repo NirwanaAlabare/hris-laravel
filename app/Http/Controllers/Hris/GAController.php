@@ -14,6 +14,8 @@ use Yajra\DataTables\Facades\DataTables;
 use DB;
 use Auth;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PermintaanTransportasiExport;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 use Illuminate\Http\Request;
@@ -55,25 +57,90 @@ class GAController extends AdminBaseController
             DB::raw("select*from ga_master_kendaraan") );
         return View::make('hris/ga/data_pengajuan_transportasi', $this->data,compact('email','id_user','drivers','vehicles'));
     }
-    public function get_data_pengajuan_transportasi(){
+    public function get_data_pengajuan_transportasi(Request $request){
         $user=request()->user;
         $status=request()->status;
-        $tanggal=request()->tanggal;
         $inStatus='';
         if($status!=''){
             $inStatus='where a.status= '.$status.' ';
         }
-        $inTanggal='';
-        if($tanggal!=''){
-            $inTanggal='and a.tanggal_pemberangkatan= "'.$tanggal.'"';
-        }
+        $daterange = $request->daterange;
+        $tanggal_array=explode(' s/d ',$daterange);
+        $tanggal_awal=Carbon::parse($tanggal_array[0])->format('Y-m-d');
+        $tanggal_akhir=Carbon::parse($tanggal_array[1])->format('Y-m-d');
+        info($tanggal_awal.' - '.$tanggal_akhir);
         $department_id=EmployeeAtribut::where('enroll_id',$user)->first()->department_id;
         if($user!=6083 && $user!=5321 && $user!=17 && $user!=7765 && $user!=5321 && $user!=20 && $user!=4241 && $user!=6713 && $user!=0 && $user!=6081){
-            $data_input=DB::select("select '$user' user,a.id,a.enroll_id,b.employee_name,b.department_name,a.detail_alamat,concat(c.subdis_name,' - ',d.dis_name,' - ',e.city_name,' - ',f.prov_name) desa,a.detail_alamat_tujuan,concat(g.subdis_name,' - ',h.dis_name,' - ',i.city_name,' - ',j.prov_name) desa_tujuan,concat(DATE_FORMAT(a.tanggal_pemberangkatan, '%d %M %Y'),' - ',substring(a.jam_pemberangkatan,1,5)) tanggal_pemberangkatan,a.jam_pemberangkatan,REPLACE(a.tujuan_pemberangkatan, '_', ' ') tujuan_pemberangkatan,a.jarak_tempuh,a.status,a.alasan_status,a.id_driver,a.nomor_kendaraan,a.created_by from (select*from permintaan_transportasi where enroll_id in (select enroll_id from employee_atribut where department_id='$department_id') or created_by in (select enroll_id from employee_atribut where department_id='$department_id')) a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id ".$inStatus.$inTanggal." order by a.created_at desc");
+            $data_input=DB::select("select '$user' user,a.id,a.enroll_id,b.employee_name,b.department_name,a.detail_alamat,concat(c.subdis_name,' - ',d.dis_name,' - ',e.city_name,' - ',f.prov_name) desa,a.detail_alamat_tujuan,concat(g.subdis_name,' - ',h.dis_name,' - ',i.city_name,' - ',j.prov_name) desa_tujuan,concat(DATE_FORMAT(a.tanggal_pemberangkatan, '%d %M %Y'),' - ',substring(a.jam_pemberangkatan,1,5)) tanggal_pemberangkatan,a.jam_pemberangkatan,REPLACE(a.tujuan_pemberangkatan, '_', ' ') tujuan_pemberangkatan,a.jarak_tempuh,a.status,a.alasan_status,a.id_driver,a.nomor_kendaraan,a.created_by from (select*from permintaan_transportasi where enroll_id in (select enroll_id from employee_atribut where department_id='$department_id') or created_by in (select enroll_id from employee_atribut where department_id='$department_id')) a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id where DATE_FORMAT(a.created_at, '%Y-%m-%d')>='$tanggal_awal' and DATE_FORMAT(a.created_at, '%Y-%m-%d')<='$tanggal_akhir'".$inStatus." order by a.created_at desc");
         }else{
-            $data_input=DB::select("select '$user' user,a.id,a.enroll_id,b.employee_name,b.department_name,a.detail_alamat,concat(c.subdis_name,' - ',d.dis_name,' - ',e.city_name,' - ',f.prov_name) desa,a.detail_alamat_tujuan,concat(g.subdis_name,' - ',h.dis_name,' - ',i.city_name,' - ',j.prov_name) desa_tujuan,concat(DATE_FORMAT(a.tanggal_pemberangkatan, '%d %M %Y'),' - ',substring(a.jam_pemberangkatan,1,5)) tanggal_pemberangkatan,a.jarak_tempuh,a.jam_pemberangkatan,REPLACE(a.tujuan_pemberangkatan, '_', ' ') tujuan_pemberangkatan,a.status,a.alasan_status,a.id_driver,a.nomor_kendaraan,a.created_by from permintaan_transportasi a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id ".$inStatus.$inTanggal." order by a.created_at desc");
+            $data_input=DB::select("select '$user' user,a.id,a.enroll_id,b.employee_name,b.department_name,a.detail_alamat,concat(c.subdis_name,' - ',d.dis_name,' - ',e.city_name,' - ',f.prov_name) desa,a.detail_alamat_tujuan,concat(g.subdis_name,' - ',h.dis_name,' - ',i.city_name,' - ',j.prov_name) desa_tujuan,concat(DATE_FORMAT(a.tanggal_pemberangkatan, '%d %M %Y'),' - ',substring(a.jam_pemberangkatan,1,5)) tanggal_pemberangkatan,a.jarak_tempuh,a.jam_pemberangkatan,REPLACE(a.tujuan_pemberangkatan, '_', ' ') tujuan_pemberangkatan,a.status,a.alasan_status,a.id_driver,a.nomor_kendaraan,a.created_by from permintaan_transportasi a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join subdistricts g on a.id_desa_tujuan=g.subdis_id inner join districts h on g.dis_id=h.dis_id inner join cities i on h.city_id=i.city_id inner join provinces j on i.prov_id=j.prov_id where DATE_FORMAT(a.created_at, '%Y-%m-%d')>='$tanggal_awal' and DATE_FORMAT(a.created_at, '%Y-%m-%d')<='$tanggal_akhir'".$inStatus." order by a.created_at desc");
         }
         return DataTables::of($data_input)->toJson();
+    }
+    public function export_excel_transportasi(){
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '1024M');
+        $tanggal_mesin_absensi = request()->daterange;
+        $tanggal_array=explode(' s/d ',$tanggal_mesin_absensi);
+        $tanggal_awal=Carbon::parse($tanggal_array[0])->format('Y-m-d');
+        $tanggal_akhir=Carbon::parse($tanggal_array[1])->format('Y-m-d');
+        $tanggal_awal_string=Carbon::parse($tanggal_array[0])->translatedFormat('d F Y');
+        $tanggal_akhir_string=Carbon::parse($tanggal_array[1])->translatedFormat('d F Y');
+        $status=request()->status;
+        $inTanggal='';
+        $inStatus='';
+        if($status!=''){
+            $inStatus='where status= '.$status.' ';
+        }
+        $pengajuan_transportasi=DB::select("select a.permintaan_transportasi_id,a.tujuan_id,b.created_at,b.enroll_id,c.employee_name,c.department_name department,c.sub_dept_name bagian,concat(b.detail_alamat,' (',d.subdis_name,' - ',e.dis_name,' - ',f.city_name,' - ',g.prov_name,')') destinasi_awal,b.tanggal_pemberangkatan,substring(b.jam_pemberangkatan,1,5) jam_pemberangkatan,concat(a.detail_alamat,' (',a.subdistrict,' - ',a.district,' - ',a.city,' - ',a.provinsi,')') destinasi_akhir,a.tanggal_kedatangan,substring(a.jam_kedatangan,1,5) jam_kedatangan,b.tujuan_pemberangkatan,b.nama_tamu,b.instansi_tamu,b.nomor_hp_tamu,b.jenis_barang,b.quantity,b.quantity,b.satuan,b.nama_instansi,b.nama_penerima,b.keterangan_barang,b.karyawan_dinas,b.created_by,i.employee_name nama_pembuat,b.status,b.id_driver,h.employee_name nama_driver,b.nomor_kendaraan,b.alasan_status from (select*from tujuan_transportasi)a inner join (select*from permintaan_transportasi where DATE_FORMAT(created_at, '%Y-%m-%d')>='$tanggal_awal' and DATE_FORMAT(created_at, '%Y-%m-%d')<='$tanggal_akhir'".$inStatus.")b on a.permintaan_transportasi_id=b.id inner join employee_atribut c on b.enroll_id=c.enroll_id inner join subdistricts d on b.id_desa=d.subdis_id inner join districts e on d.dis_id=e.dis_id inner join cities f on e.city_id=f.city_id inner join provinces g on f.prov_id=g.prov_id left join employee_atribut h on b.id_driver=h.enroll_id inner join employee_atribut i on b.created_by=i.enroll_id order by b.created_at desc,a.permintaan_transportasi_id,a.tujuan_id");
+        foreach($pengajuan_transportasi as $value){
+            $karyawan_dinas=$value->karyawan_dinas;
+            $nama_karyawan_dinas='';
+            if($karyawan_dinas!=null){
+                $karyawan_dinas=explode(",",$karyawan_dinas);
+                foreach($karyawan_dinas as $kardin){
+                    $nama_karyawan_dinas.=(EmployeeAtribut::where('enroll_id',$kardin)->first()->employee_name).',';
+                }
+            }
+
+            $pengajuan[]=[
+                'permintaan_transportasi_id'=>$value->permintaan_transportasi_id,
+                'tujuan_id'=>$value->tujuan_id,
+                'created_at'=>substr($value->created_at,0,10),
+                'enroll_id'=>$value->enroll_id,
+                'employee_name'=>$value->employee_name,
+                'department'=>$value->department,
+                'bagian'=>$value->bagian,
+                'destinasi_awal'=>$value->destinasi_awal,
+                'tanggal_pemberangkatan'=>$value->tanggal_pemberangkatan,
+                'jam_pemberangkatan'=>$value->jam_pemberangkatan,
+                'destinasi_akhir'=>$value->destinasi_akhir,
+                'tanggal_kedatangan'=>$value->tanggal_kedatangan,
+                'jam_kedatangan'=>$value->jam_kedatangan,
+                'tujuan_pemberangkatan'=>$value->tujuan_pemberangkatan,
+                'nama_tamu'=>$value->nama_tamu,
+                'instansi_tamu'=>$value->instansi_tamu,
+                'nomor_hp_tamu'=>$value->nomor_hp_tamu,
+                'jenis_barang'=>$value->jenis_barang,
+                'quantity'=>$value->quantity,
+                'satuan'=>$value->satuan,
+                'nama_instansi'=>$value->nama_instansi,
+                'nama_penerima'=>$value->nama_penerima,
+                'keterangan_barang'=>$value->keterangan_barang,
+                'karyawan_dinas'=>$nama_karyawan_dinas,
+                'created_by'=>$value->created_by,
+                'nama_pembuat'=>$value->nama_pembuat,
+                'status'=>$value->status,
+                'id_driver'=>$value->id_driver,
+                'nama_driver'=>$value->nama_driver,
+                'nomor_kendaraan'=>$value->nomor_kendaraan,
+                'alternative'=>$value->alasan_status
+            ];
+        }
+        $fileName = 'Daily Labor Cost';
+        $response = Excel::download(new PermintaanTransportasiExport($pengajuan,$tanggal_awal_string,$tanggal_akhir_string), $fileName, \Maatwebsite\Excel\Excel::XLSX);
+        ob_end_clean();
+        return $response;
     }
     public function approve_car_request(){
         $this->_validation5(request());
