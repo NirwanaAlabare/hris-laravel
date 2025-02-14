@@ -43,7 +43,7 @@
             @if(isset($v['gaji']->where('tanggal_berjalan',$date_r)->first()[$value]))
               {{$v['gaji']->where('tanggal_berjalan',$date_r)->first()[$value]}}
             @else
-              -
+              0
             @endif
           </td>
         @endfor
@@ -58,8 +58,7 @@
             $value=$man[$i];
           ?>
           <td style="font-weight:bold;border:1px solid black;background-color:#ffecdc">
-            {{-- {{$ab->where('tanggal_berjalan',$date_r)->first()[$value]}} --}}
-            {{ optional($ab->where('tanggal_berjalan', $date_r)->first())[$value] ?? 'default_value' }}
+            {{$ab->where('tanggal_berjalan',$date_r)->first()[$value]}}
           </td>
         @endfor
         @endforeach

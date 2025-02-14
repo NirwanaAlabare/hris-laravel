@@ -24,7 +24,7 @@
           <td style="font-weight:bold;border:1px solid black;background-color:#ffecdc">Total</td>
         @endforeach
       </tr>
-        <?php 
+        <?php
         $man=['man_power','working_min','bruto','bpjs_tk','bpjs_ks','thr','total'];
         ?>
       @foreach ($x as $v)
@@ -43,7 +43,7 @@
             @if(isset($v['gaji']->where('tanggal_berjalan',$date_r)->first()[$value]))
               {{$v['gaji']->where('tanggal_berjalan',$date_r)->first()[$value]}}
             @else
-              -
+              0
             @endif
           </td>
         @endfor
