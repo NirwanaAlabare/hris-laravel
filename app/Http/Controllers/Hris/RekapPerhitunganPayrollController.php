@@ -1583,7 +1583,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     if ($jam2 < $jam1) {
                         $jam2 += 86400;
                     }
-                    if($value->jumlah_menit_absen_pc!=0 || $value->absen_masuk_kerja==null || $value->absen_pulang_kerja==null){
+                    if(($value->jumlah_menit_absen_pc!=0 && $value->mulai_jam_lembur >= $value->akhir_jam_kerja) || $value->absen_masuk_kerja==null || $value->absen_pulang_kerja==null){
                         $selisih_detik=0;
                     }else{
                         $selisih_detik = max($jam2 - $jam1, 0);
