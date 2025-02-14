@@ -87,7 +87,7 @@
                 <div class="card-body pt-5 px-5 pb-7">
                     <form id="form_proses_payroll" method="post">
                         @csrf
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-3 pt-1">
                                 <label class="form-label text-primary">PERIODE UMK</label>
                             </div>
@@ -99,7 +99,7 @@
                                     <option value="2024-2025">26 DES 2024 S/D 25 JAN 2025</option>
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="row pt-2">
                             <div class="col-3 pt-1">
                                 <label class="form-label text-primary">PERIODE PAYROLL</label>
