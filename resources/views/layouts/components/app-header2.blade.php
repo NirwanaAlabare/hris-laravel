@@ -61,16 +61,24 @@ button.theme-switcher:hover {
         }
 
 </style>
-
         <div class="d-flex">
-            <a class="header-brand" href="{{url('hris/dashboard')}}">
-                <img src="{{URL::asset('assets/images/brand/hris.png')}}" class="header-brand-img main-logo" alt="Sparic logo">
-                <img src="{{URL::asset('assets/images/brand/icon.png')}}" class="header-brand-img icon-logo" alt="Sparic logo">
-            </a><!-- logo-->
+            @if (url()->current() == url('hris/dashboard'))
+                <a class="header-brand" href="{{ route('admin.getlogin') }}">
+                    <img src="{{ URL::asset('assets/images/brand/hris.png') }}" class="header-brand-img main-logo" alt="Sparic logo">
+                    <img src="{{ URL::asset('assets/images/brand/icon.png') }}" class="header-brand-img icon-logo" alt="Sparic logo">
+                </a>
+            @else
+                <a class="header-brand" href="{{ url('hris/dashboard') }}">
+                    <img src="{{ URL::asset('assets/images/brand/hris.png') }}" class="header-brand-img main-logo" alt="Sparic logo">
+                    <img src="{{ URL::asset('assets/images/brand/icon.png') }}" class="header-brand-img icon-logo" alt="Sparic logo">
+                </a>
+            @endif
+
             <div class="d-flex order-lg-2 ml-auto header-rightmenu">
             <div class="dropdown text-center mt-4 pb-4">
             <a  class="">
-                <button class="theme-switcher" id="themeSwitcher">T</button>
+                <button class="theme-switcher" id="themeSwitcher">T
+                </button>
             </a>
             <div class="dropdown-theme text-center mt-4 pb-4" id="colorPicker">
                 <div class="color-option primarySub" data-color="primary"></div>

@@ -32,7 +32,7 @@
 
             </div>
         </div>
-        @if (url()->current() !== url('http://localhost/hris/public/index.php'))
+        @if (url()->current() !== url('hris/public/index.php'))
             @include('layouts.components.footer')
         @endif
 
