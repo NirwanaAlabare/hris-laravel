@@ -21,7 +21,7 @@
                 @if ($id_user==4241 || $id_user==20 || $id_user==17 || $id_user==7765 || $id_user==5321 || $id_user==6083 || $id_user==6081 || $id_user==6713)
                     <a class="btn btn-white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data <span class="badge text-dark" style="font-weight:bold; background-color:#d2eafc;padding-left:5px;padding-right:5px;border:1px solid black">{{$pengajuan_transportasi}}</span></a>
                 @else
-                    <a class="btn btn-white" style="background-color:blue" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data</a>
+                    <a class="btn btn-white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data</a>
                 @endif
             </li>
         </ul>
