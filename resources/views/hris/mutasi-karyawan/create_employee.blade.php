@@ -302,7 +302,10 @@
                 data: 'nama_karyawan'
             },
             {
-                data: 'line_asal'
+                data: 'line_asal',
+                render: function(data, type, row) {
+                    return data ? data : '-';
+                }
             },
             {
                 data: 'tgl_update_fix'

@@ -77,6 +77,7 @@ class BazzarController extends AdminBaseController
                 'enroll_id' => $enroll_id,
                 'jumlah' => $jumlah,
                 'status' => 'pending',
+                'operator' => $user,
             ]);
             return response()->json(['status' => 'success', 'message' => 'Data berhasil disimpan']);
         }else{
@@ -106,10 +107,98 @@ class BazzarController extends AdminBaseController
         $tgl_filter = $request->tgl_filter;
         $tgl_lembur = $request->tgl_lembur;
         if ($request->ajax()) {
-            $data_tmp = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('status', 'pending')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->get();
+            $data_tmp = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('status', $request->status)->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->get();
             return DataTables::of($data_tmp)->toJson();
         }
 
+    }
+
+    public function approve(Request $request)
+    {
+
+        $user= Auth::guard('admin')->user()->name;
+        $ids = $request->input('ids');
+
+        if (!empty($ids)) {
+            PengajuanBazzar::whereIn('id', $ids)->update([
+                'status' => 'approve',
+                'operator' => $user,
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil diubah'
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Tidak ada data yang dipilih'
+            ]);
+        }
+    }
+
+    public function reject(Request $request)
+    {
+
+        $user= Auth::guard('admin')->user()->name;
+        $ids = $request->input('ids');
+
+        if (!empty($ids)) {
+            PengajuanBazzar::whereIn('id', $ids)->update([
+                'status' => 'reject',
+                'operator' => $user,
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil diubah'
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Tidak ada data yang dipilih'
+            ]);
+        }
+
+    }
+    public function edit_pengajuan(Request $request)
+    {
+
+        $user= Auth::guard('admin')->user()->name;
+        $ids = $request->input('id_pengajuan');
+        $jumlah = $request->input('jumlah_edit');
+
+        if (!empty($ids)) {
+            PengajuanBazzar::where('id', $ids)->update([
+                'jumlah' => $jumlah,
+                'operator' => $user,
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil diubah'
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Tidak ada data yang dipilih'
+            ]);
+        }
+
+    }
+
+    public function export_laporan_pengajuan(Request $request)
+    {
+        $user = Auth::guard('admin')->user()->name;
+        if($request->id){
+            $data = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('status', 'approve')->where('id', $request->id)->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->get();
+        }else{
+            $data = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('status', 'approve')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->get();
+        }
+        $total_jumlah = $data->sum('jumlah');
+        $fileName='Pengajuan-Bazzar_'.date('His');
+        $pdf = PDF::loadView('hris.mutasi-karyawan.bazzar.export-bazzar-pdf',["data" => $data,"total_jumlah"=>$total_jumlah])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
+        return $pdf;
     }
 
 }

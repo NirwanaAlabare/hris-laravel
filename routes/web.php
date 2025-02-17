@@ -163,6 +163,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('/bazzar/approve', ['as' => 'bazzar.approve','uses' => 'Bazzar\BazzarController@approve']);
     Route::post('/bazzar/reject', ['as' => 'bazzar.reject','uses' => 'Bazzar\BazzarController@reject']);
     Route::post('/bazzar/edit_pengajuan', ['as' => 'bazzar.edit_pengajuan','uses' => 'Bazzar\BazzarController@edit_pengajuan']);
+    Route::get('/bazzar/export_laporan_pengajuan', ['as' => 'bazzar.export_laporan_pengajuan','uses' => 'Bazzar\BazzarController@export_laporan_pengajuan']);
 
     Route::get('hrd/export_pdf_sk_bni',['as'=>'hris.hrd.export_pdf_sk_bni','uses'=>'HRDController@export_pdf_sk_bni']);
     Route::post('hrd/export_pdf_print_sk',['as'=>'hris.hrd.export_pdf_print_sk','uses'=>'HRDController@export_pdf_print_sk']);
@@ -190,7 +191,6 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('ga/get_subdistricts_name',['as'=>'hris.ga.get_subdistricts_name','uses'=>'GAController@get_subdistricts_name']);
     Route::post('ga/post_car_request',['as'=>'hris.ga.post_car_request','uses'=>'GAController@post_car_request']);
     Route::get('ga/data_pengajuan_transportasi',['as'=>'hris.ga.data_pengajuan_transportasi','uses'=>'GAController@data_pengajuan_transportasi']);
-    Route::post('ga/export_excel_transportasi',['as'=>'hris.ga.export_excel_transportasi','uses'=>'GAController@export_excel_transportasi']);
     Route::get('ga/get_data_pengajuan_transportasi',['as'=>'hris.ga.get_data_pengajuan_transportasi','uses'=>'GAController@get_data_pengajuan_transportasi']);
     Route::post('ga/approve_car_request',['as'=>'hris.ga.approve_car_request','uses'=>'GAController@approve_car_request']);
     Route::post('ga/approve_this_car_request',['as'=>'hris.ga.approve_this_car_request','uses'=>'GAController@approve_this_car_request']);

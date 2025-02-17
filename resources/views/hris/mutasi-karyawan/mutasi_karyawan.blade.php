@@ -96,6 +96,7 @@
                 <div class="modal-content">
                     <div class="modal-header bg-sb">
                         <h1 class="modal-title fs-2 text-black">Tambah Karyawan Non QR</h1>
+                        <input type="hidden" value="{{$username}}" id="username_who_access">
                         <button type="button" class=" btn-danger rounded-circle" data-dismiss="modal" aria-label="Close">
                             <i class="fa fa-times"></i>
                         </button>
@@ -138,8 +139,10 @@
                                 <div class="form-group w-100">
                                     <label>&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
                                     <div class="input-group w-100">
+                                    @if ($username == 'HR' || $username == 'IT')
                                         <input class="btn btn-primary w-100" type="button" value="Tambah"
                                             onclick="tambah_non_qr();">
+                                    @endif
                                     </div>
                                 </div>
                             </div>
@@ -477,7 +480,10 @@
                             data: 'nama_karyawan'
                         },
                         {
-                            data: 'line_asal'
+                            data: 'line_asal',
+                            render: function(data, type, row) {
+                                return data ? data : '-';
+                            }
                         },
                         {
                             data: 'tgl_update_fix'
@@ -610,7 +616,10 @@
                     data: 'nm_karyawan'
                 },
                 {
-                    data: 'line_asal'
+                    data: 'line_asal',
+                    render: function(data, type, row) {
+                        return data ? data : '-';
+                    }
                 },
                 {
                     data: 'tgl_update_fix'

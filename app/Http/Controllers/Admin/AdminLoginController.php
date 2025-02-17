@@ -20,6 +20,8 @@ class AdminLoginController extends AdminBaseController
     public function __construct()
     {
         parent::__construct();
+        $this->dashboardActive = 'active';
+        $this->pageTitle = 'Dashboard';
     }
 
     /**
@@ -36,7 +38,8 @@ class AdminLoginController extends AdminBaseController
         if (Auth::guard('admin')->check()) {
             $loggedAdmin = Auth::guard('admin')->user();
             session(['loggedAdmin' => $loggedAdmin]);
-            return Redirect::route('admin.admin.editprofile');
+            // return Redirect::route('admin.admin.editprofile');
+            return View::make('dashboard_master', $this->data);
         }
 
         return View::make('admin/login', $this->data);

@@ -27,9 +27,9 @@
         <h5 class="card-title fw-bold mb-0"><i class="fa fa-utensils"></i> ESTIMASI ANGGARAN MAKAN</h5>
     </div>
     <div class="card-body">
-        <div class="row mb-3 flex justify-content-between align-items-center">
+        <div class="row mb-3 flex justify-content-between align-items-center p-3">
             <div class="d-flex gap-4 align-items-end">
-                <div class="">'
+                <div class="">
                     <label class="form-label"><small><b>Tanggal Form</b></small></label>
                     <div class="col pl-0"><input type="date" class="form-control form-control-sm " id="tgl-awal" name="tgl_awal" oninput="dataTableReload()" onchange="dataTableReload()" value="{{ date('Y-m-d') }}" readonly style="background-color:white"></div>
                 </div>

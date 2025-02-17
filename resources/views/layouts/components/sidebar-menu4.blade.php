@@ -24,11 +24,11 @@
         <ul class="slide-menu">
             <li><a href="{{route('anggaran_makan.index')}}" class="slide-item"><span> Anggaran Makan</span></a></li>
     </ul>
-    {{-- <li class="slide">
+    <li class="slide">
         <a class="side-menu__item"  data-toggle="slide" href="#"><i class="side-menu__icon fa fa-cart-arrow-down"></i><span class="side-menu__label">Bazzar</span><i class="angle fa fa-angle-right"></i></a>
         <ul class="slide-menu">
             <li><a href="{{route('bazzar.index')}}" class="slide-item"><span>Pengajuan Kupon</span></a></li>
-    </ul> --}}
+    </ul>
     @php
     if (($loggedAdmin->name == "HR") || ($loggedAdmin->name == "HRD")|| ($loggedAdmin->name == "GA")) {
         @endphp
