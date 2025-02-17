@@ -12,7 +12,7 @@
 
 		<!-- Perfect scroll bar css-->
 		<link href="{{URL::asset('assets/plugins/pscrollbar/perfect-scrollbar.css')}}" rel="stylesheet" />
-		
+
         <!-- Sidemenu css -->
 
 		<!--Daterangepicker css-->

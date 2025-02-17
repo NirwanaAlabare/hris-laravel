@@ -18,6 +18,7 @@ class PengajuanBazzar extends Model
         'enroll_id',
         'jumlah',
         'status',
+        'operator',
         'created_at',
         'updated_at',
     ];
@@ -27,6 +28,7 @@ class PengajuanBazzar extends Model
         'enroll_id',
         'jumlah',
         'status',
+        'operator',
         'created_at',
         'updated_at',
     ];

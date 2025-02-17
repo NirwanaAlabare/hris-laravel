@@ -1,10 +1,4 @@
 <!DOCTYPE html>
-
-<!--[if IE 8]>
-<html lang="en" class="ie8 no-js"> <![endif]-->
-<!--[if IE 9]>
-<html lang="en" class="ie9 no-js"> <![endif]-->
-<!--[if !IE]><!-->
 <html lang="en" class="no-js">
 @include('admin.include.head2')
 
@@ -23,26 +17,12 @@
 
     <div class="page">
         <div class="page-main" style="background-color: #FFF">
-            <!--app-header-->
             <div class="app-header header d-flex    ">
                 <div class="container-fluid">
 
-                    @include('layouts.components.app-header2')
-
+                        @include('layouts.components.app-header2')
                 </div>
             </div>
-            <!--/app-header-->
-
-{{--              <!--News Ticker-->
-            <div class="container-fluid bg-white news-ticker">
-
-                @include('layouts.components.news-ticket')
-
-            </div>
-            <!--/News Ticker-->  --}}
-
-
-            <!-- app-content-->
             <div class="app-content my-3 my-md-5">
                 <div class="side-app">
 
@@ -51,17 +31,15 @@
                 </div>
 
             </div>
-            <!-- End app-content-->
         </div>
-
-        @include('layouts.components.footer')
+        @if (url()->current() !== url('http://localhost/hris/public/index.php'))
+            @include('layouts.components.footer')
+        @endif
 
     </div>
-    <!-- End Page -->
 
     @include('layouts.verticalmenu.closed-sidebar.scripts')
 
-    <!-- Notifications js -->
     <script src="{{URL::asset('assets/plugins/notify-growl/js/rainbow.js')}}"></script>
     <script src="{{URL::asset('assets/plugins/notify-growl/js/sample.js')}}"></script>
     <script src="{{URL::asset('assets/plugins/notify-growl/js/jquery.growl.js')}}"></script>
