@@ -129,7 +129,7 @@
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kelurahan/Desa</label>
             </div>
             <div class="col-4">
-                <select id="sub_districts" name="selectSubdistrict[]" multiple data-placeholder="Pilih Desa" class="form-control select2oneSelect col-11" style="background-color: white">
+                <select id="sub_districts" name="selectSubdistrict[]" multiple data-placeholder="Pilih Desa" class="form-control select2oneSelect col-11" style="background-color: white" onchange="subdistrict_change(this.value)">
                 </select>
                 <h6 id="warning_desa" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
             </div>
@@ -137,7 +137,7 @@
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kelurahan/Desa</label>
             </div>
             <div class="col-4">
-                <select id="sub_districts_2" name="selectSubdistrict2[]" multiple data-placeholder="Pilih Desa" class="form-control select2oneSelect col-11" style="background-color: white">
+                <select id="sub_districts_2" name="selectSubdistrict2[]" multiple data-placeholder="Pilih Desa" class="form-control select2oneSelect col-11" style="background-color: white" onchange="subdistrict_change2(this.value)">
                 </select>
                 <h6 id="warning_desa_2" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
             </div>
@@ -1122,6 +1122,9 @@
                 jQuery.each(res, function(key,value){
                     $('#cities').append('<option value="'+ value['city_id'] +'">'+ value['city_name'] +'</option>');
                 });
+                if(res.length>0){
+                    document.getElementById("warning_provinsi").innerHTML='';
+                }
             },
             error: function(res){
                 swal({
@@ -1145,6 +1148,9 @@
                 jQuery.each(res, function(key,value){
                     $('#cities_2').append('<option value="'+ value['city_id'] +'">'+ value['city_name'] +'</option>');
                 });
+                if(res.length>0){
+                    document.getElementById("warning_provinsi_2").innerHTML='';
+                }
             },
             error: function(res){
                 swal({
@@ -1168,6 +1174,9 @@
                 jQuery.each(res, function(key,value){
                     $('#districts').append('<option value="'+ value['dis_id'] +'">'+ value['dis_name'] +'</option>');
                 });
+                if(res.length>0){
+                    document.getElementById("warning_kota").innerHTML='';
+                }
             },
             error: function(res){
                 swal({
@@ -1191,6 +1200,9 @@
                 jQuery.each(res, function(key,value){
                     $('#districts_2').append('<option value="'+ value['dis_id'] +'">'+ value['dis_name'] +'</option>');
                 });
+                if(res.length>0){
+                    document.getElementById("warning_kota_2").innerHTML='';
+                }
             },
             error: function(res){
                 swal({
@@ -1214,6 +1226,9 @@
                 jQuery.each(res, function(key,value){
                     $('#sub_districts').append('<option value="'+ value['subdis_id'] +'">'+ value['subdis_name'] +'</option>');
                 });
+                if(res.length>0){
+                    document.getElementById("warning_kecamatan").innerHTML='';
+                }
             },
             error: function(res){
                 swal({
@@ -1237,6 +1252,9 @@
                 jQuery.each(res, function(key,value){
                     $('#sub_districts_2').append('<option value="'+ value['subdis_id'] +'">'+ value['subdis_name'] +'</option>');
                 });
+                if(res.length>0){
+                    document.getElementById("warning_kecamatan_2").innerHTML='';
+                }
             },
             error: function(res){
                 swal({
@@ -1246,6 +1264,16 @@
                 });
             }
         });
+    }
+    function subdistrict_change(value){
+        if(value!=''){
+            document.getElementById("warning_desa").innerHTML='';
+        }
+    }
+    function subdistrict_change2(value){
+        if(value!=''){
+            document.getElementById("warning_desa_2").innerHTML='';
+        }
     }
     $(function(){
         'use strict';
@@ -1310,24 +1338,24 @@
                 error: function(error){
                     let err_log=error.responseJSON.errors;
                     if(typeof(err_log.provinsi)!=='undefined'){
-                        document.getElementById("provinsi_2").style.border = "1px solid red";
+                        document.getElementById("warning_provinsi_2").innerHTML='Provinsi '+error.responseJSON.errors.provinsi[0];
                     }else{
-                        document.getElementById("provinsi_2").style.border="";
+                        document.getElementById("warning_provinsi_2").innerHTML='';
                     }
                     if(typeof(err_log.city)!=='undefined'){
-                        document.getElementById("cities_2").style.border = "1px solid red";
+                        document.getElementById("warning_kota_2").innerHTML='Kota '+error.responseJSON.errors.city[0];
                     }else{
-                        document.getElementById("cities_2").style.border="";
+                        document.getElementById("warning_kota_2").innerHTML='';
                     }
                     if(typeof(err_log.districts)!=='undefined'){
-                        document.getElementById("districts_2").style.border = "1px solid red";
+                        document.getElementById("warning_kecamatan_2").innerHTML='Kecamatan '+error.responseJSON.errors.districts[0];
                     }else{
-                        document.getElementById("districts_2").style.border="";
+                        document.getElementById("warning_kecamatan_2").innerHTML='';
                     }
                     if(typeof(err_log.subdistricts)!=='undefined'){
-                        document.getElementById("sub_districts_2").style.border = "1px solid red";
+                        document.getElementById("warning_desa_2").innerHTML='Desa '+error.responseJSON.errors.subdistricts[0];
                     }else{
-                        document.getElementById("sub_districts_2").style.border="";
+                        document.getElementById("warning_desa_2").innerHTML='';
                     }
                     if(typeof(err_log.detail_alamat)!=='undefined'){
                         document.getElementById("detail_alamat_2").style.border = "1px solid red";
@@ -1787,22 +1815,22 @@
                             document.getElementById("jam_kedatangan").style.border="";
                         }
                         if(typeof(err_log.provinsi_2)!=='undefined'){
-                            document.getElementById("warning_provinsi_2").innerHTML='Provinsi '+error.responseJSON.errors.provinsi_2[0];
+                            document.getElementById("warning_provinsi_2").innerHTML='Provinsi harus dipilih';
                         }else{
                             document.getElementById("warning_provinsi_2").innerHTML='';
                         }
                         if(typeof(err_log.cities_2)!=='undefined'){
-                            document.getElementById("warning_kota_2").innerHTML='Kota '+error.responseJSON.errors.cities_2[0];
+                            document.getElementById("warning_kota_2").innerHTML='Kota harus dipilih';
                         }else{
                             document.getElementById("warning_kota_2").innerHTML='';
                         }
                         if(typeof(err_log.districts_2)!=='undefined'){
-                            document.getElementById("warning_kecamatan_2").innerHTML='Kecamatan '+error.responseJSON.errors.districts_2[0];
+                            document.getElementById("warning_kecamatan_2").innerHTML='Kecamatan harus dipilih';
                         }else{
                             document.getElementById("warning_kecamatan_2").innerHTML='';
                         }
                         if(typeof(err_log.sub_districts_2)!=='undefined'){
-                            document.getElementById("warning_desa_2").innerHTML='Desa '+error.responseJSON.errors.sub_districts_2[0];
+                            document.getElementById("warning_desa_2").innerHTML='Desa harus dipilih';
                         }else{
                             document.getElementById("warning_desa_2").innerHTML='';
                         }
