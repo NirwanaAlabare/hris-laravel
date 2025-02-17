@@ -278,6 +278,12 @@ class GAController extends AdminBaseController
             'detail_alamat'=>'required',
             'tanggal_kedatangan'=>'required',
             'jam_kedatangan'=>'required',
+        ],
+        [
+            'provinsi.required'=>'harus dipilih',
+            'city.required'=>'harus dipilih',
+            'districts.required'=>'harus dipilih',
+            'subdistricts.required'=>'harus dipilih',
         ]);
     }
     public function ajax_getallemployeeatribut()
@@ -610,6 +616,14 @@ class GAController extends AdminBaseController
         ],
         [
             'employee.required'=>'harus dipilih',
+            'provinsi.required'=>'harus dipilih',
+            'cities.required'=>'harus dipilih',
+            'districts.required'=>'harus dipilih',
+            'sub_districts.required'=>'harus dipilih',
+            'provinsi_2'=>'harus dipilih ya',
+            'cities_2'=>'harus dipilih',
+            'districts_2'=>'harus dipilih',
+            'sub_districts_2'=>'harus dipilih',
         ]);
     }
     private function _validation2(){
@@ -635,6 +649,14 @@ class GAController extends AdminBaseController
         ],
         [
             'employee.required'=>'harus dipilih',
+            'provinsi.required'=>'harus dipilih',
+            'cities.required'=>'harus dipilih',
+            'districts.required'=>'harus dipilih',
+            'sub_districts.required'=>'harus dipilih',
+            'provinsi_2'=>'harus dipilih',
+            'cities_2'=>'harus dipilih',
+            'districts_2'=>'harus dipilih',
+            'sub_districts_2'=>'harus dipilih',
         ]);
     }
     private function _validation3(){
@@ -661,6 +683,14 @@ class GAController extends AdminBaseController
         ],
         [
             'employee.required'=>'harus dipilih',
+            'provinsi.required'=>'harus dipilih',
+            'cities.required'=>'harus dipilih',
+            'districts.required'=>'harus dipilih',
+            'sub_districts.required'=>'harus dipilih',
+            'provinsi_2'=>'harus dipilih',
+            'cities_2'=>'harus dipilih',
+            'districts_2'=>'harus dipilih',
+            'sub_districts_2'=>'harus dipilih',
         ]);
     }
     private function _validation11(){
@@ -685,6 +715,14 @@ class GAController extends AdminBaseController
         [
             'employee.required'=>'harus dipilih',
             'employee_dinas.required'=>'harus dipilih',
+            'provinsi.required'=>'harus dipilih',
+            'cities.required'=>'harus dipilih',
+            'districts.required'=>'harus dipilih',
+            'sub_districts.required'=>'harus dipilih',
+            'provinsi_2'=>'harus dipilih',
+            'cities_2'=>'harus dipilih',
+            'districts_2'=>'harus dipilih',
+            'sub_districts_2'=>'harus dipilih',
         ]);
     }
     private function _validation4(){
@@ -716,6 +754,14 @@ class GAController extends AdminBaseController
         [
             'employee.required'=>'harus dipilih',
             'employee_dinas.required'=>'harus dipilih',
+            'provinsi.required'=>'harus dipilih',
+            'cities.required'=>'harus dipilih',
+            'districts.required'=>'harus dipilih',
+            'sub_districts.required'=>'harus dipilih',
+            'provinsi_2'=>'harus dipilih',
+            'cities_2'=>'harus dipilih',
+            'districts_2'=>'harus dipilih',
+            'sub_districts_2'=>'harus dipilih',
         ]);
     }
     private function _validation12(){
@@ -746,6 +792,14 @@ class GAController extends AdminBaseController
         [
             'employee.required'=>'harus dipilih',
             'employee_dinas.required'=>'harus dipilih',
+            'provinsi.required'=>'harus dipilih',
+            'cities.required'=>'harus dipilih',
+            'districts.required'=>'harus dipilih',
+            'sub_districts.required'=>'harus dipilih',
+            'provinsi_2'=>'harus dipilih',
+            'cities_2'=>'harus dipilih',
+            'districts_2'=>'harus dipilih',
+            'sub_districts_2'=>'harus dipilih',
         ]);
     }
     private function _validation13(){
@@ -773,6 +827,14 @@ class GAController extends AdminBaseController
         [
             'employee.required'=>'harus dipilih',
             'employee_dinas.required'=>'harus dipilih',
+            'provinsi.required'=>'harus dipilih',
+            'cities.required'=>'harus dipilih',
+            'districts.required'=>'harus dipilih',
+            'sub_districts.required'=>'harus dipilih',
+            'provinsi_2'=>'harus dipilih',
+            'cities_2'=>'harus dipilih',
+            'districts_2'=>'harus dipilih',
+            'sub_districts_2'=>'harus dipilih',
         ]);
     }
     private function _validation14(){
@@ -801,6 +863,14 @@ class GAController extends AdminBaseController
         [
             'employee.required'=>'harus dipilih',
             'employee_dinas.required'=>'harus dipilih',
+            'provinsi.required'=>'harus dipilih',
+            'cities.required'=>'harus dipilih',
+            'districts.required'=>'harus dipilih',
+            'sub_districts.required'=>'harus dipilih',
+            'provinsi_2'=>'harus dipilih',
+            'cities_2'=>'harus dipilih',
+            'districts_2'=>'harus dipilih',
+            'sub_districts_2'=>'harus dipilih',
         ]);
     }
     
@@ -820,6 +890,14 @@ class GAController extends AdminBaseController
             'districts_2'=>'required',
             'sub_districts_2'=>'required',
             'detail_alamat_2'=>'required',
+            'provinsi.required'=>'harus dipilih',
+            'cities.required'=>'harus dipilih',
+            'districts.required'=>'harus dipilih',
+            'sub_districts.required'=>'harus dipilih',
+            'provinsi_2'=>'harus dipilih',
+            'cities_2'=>'harus dipilih',
+            'districts_2'=>'harus dipilih',
+            'sub_districts_2'=>'harus dipilih',
         ],
         [
             'employee.required'=>'harus dipilih',
@@ -847,6 +925,14 @@ class GAController extends AdminBaseController
         ],
         [
             'employee.required'=>'harus dipilih',
+            'provinsi.required'=>'harus dipilih',
+            'cities.required'=>'harus dipilih',
+            'districts.required'=>'harus dipilih',
+            'sub_districts.required'=>'harus dipilih',
+            'provinsi_2'=>'harus dipilih',
+            'cities_2'=>'harus dipilih',
+            'districts_2'=>'harus dipilih',
+            'sub_districts_2'=>'harus dipilih',
         ]);
     }
     private function _validation9(){
@@ -873,6 +959,15 @@ class GAController extends AdminBaseController
         ],
         [
             'employee.required'=>'harus dipilih',
+            'provinsi.required'=>'harus dipilih',
+            'cities.required'=>'harus dipilih',
+            'districts.required'=>'harus dipilih',
+            'sub_districts.required'=>'harus dipilih',
+            'provinsi_2'=>'harus dipilih',
+            'cities_2'=>'harus dipilih',
+            'districts_2'=>'harus dipilih',
+            'sub_districts_2'=>'harus dipilih',
+            'detail_alamat_2'=>'harus dipilih',
         ]);
     }
     private function _validation15(){
@@ -895,6 +990,15 @@ class GAController extends AdminBaseController
         ],
         [
             'employee_dinas.required'=>'harus dipilih',
+            'provinsi.required'=>'harus dipilih',
+            'cities.required'=>'harus dipilih',
+            'districts.required'=>'harus dipilih',
+            'sub_districts.required'=>'harus dipilih',
+            'provinsi_2'=>'harus dipilih',
+            'cities_2'=>'harus dipilih',
+            'districts_2'=>'harus dipilih',
+            'sub_districts_2'=>'harus dipilih',
+            'detail_alamat_2'=>'harus dipilih',
         ]);
     }
     private function _validation10(){
@@ -924,6 +1028,15 @@ class GAController extends AdminBaseController
         ],
         [
             'employee.required'=>'harus dipilih',
+            'provinsi.required'=>'harus dipilih',
+            'cities.required'=>'harus dipilih',
+            'districts.required'=>'harus dipilih',
+            'sub_districts.required'=>'harus dipilih',
+            'provinsi_2'=>'harus dipilih',
+            'cities_2'=>'harus dipilih',
+            'districts_2'=>'harus dipilih',
+            'sub_districts_2'=>'harus dipilih',
+            'detail_alamat_2'=>'harus dipilih',
         ]);
     }
     private function _validation16(){
@@ -949,6 +1062,15 @@ class GAController extends AdminBaseController
         ],
         [
             'employee.required'=>'harus dipilih',
+            'provinsi.required'=>'harus dipilih',
+            'cities.required'=>'harus dipilih',
+            'districts.required'=>'harus dipilih',
+            'sub_districts.required'=>'harus dipilih',
+            'provinsi_2'=>'harus dipilih',
+            'cities_2'=>'harus dipilih',
+            'districts_2'=>'harus dipilih',
+            'sub_districts_2'=>'harus dipilih',
+            'detail_alamat_2'=>'harus dipilih',
         ]);
     }
     private function _validation17(){
@@ -976,6 +1098,15 @@ class GAController extends AdminBaseController
         ],
         [
             'employee_dinas.required'=>'harus dipilih',
+            'provinsi.required'=>'harus dipilih',
+            'cities.required'=>'harus dipilih',
+            'districts.required'=>'harus dipilih',
+            'sub_districts.required'=>'harus dipilih',
+            'provinsi_2'=>'harus dipilih',
+            'cities_2'=>'harus dipilih',
+            'districts_2'=>'harus dipilih',
+            'sub_districts_2'=>'harus dipilih',
+            'detail_alamat_2'=>'harus dipilih',
         ]);
     }
     private function _validation18(){
@@ -1006,6 +1137,15 @@ class GAController extends AdminBaseController
         ],
         [
             'employee_dinas.required'=>'harus dipilih',
+            'provinsi.required'=>'harus dipilih',
+            'cities.required'=>'harus dipilih',
+            'districts.required'=>'harus dipilih',
+            'sub_districts.required'=>'harus dipilih',
+            'provinsi_2'=>'harus dipilih',
+            'cities_2'=>'harus dipilih',
+            'districts_2'=>'harus dipilih',
+            'sub_districts_2'=>'harus dipilih',
+            'detail_alamat_2'=>'harus dipilih',
         ]);
     }
 }
