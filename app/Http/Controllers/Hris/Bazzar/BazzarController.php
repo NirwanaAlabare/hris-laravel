@@ -33,7 +33,7 @@ class BazzarController extends AdminBaseController
 
     public function index(){
         $tglskrg = date('Y-m-d');
-        $user = Auth::guard('admin')->user()->name;
+        $user = Auth::guard('admin')->user()->email;
         $data_dept = DB::select("select
         d.sub_dept_id isi,
         concat(department_name,' - ', sub_dept_name) tampil

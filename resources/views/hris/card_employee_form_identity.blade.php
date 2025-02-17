@@ -85,7 +85,7 @@
                 </div>
         </div>
         <div class="card-footer">
-            Kartu ini adalah dokumen resmi. Harap dijaga dengan baik.
+            Dokumen ini menggunakan verifikasi digital, keterangan tercantum dalam dokumen harus sesuai dengan data hasil pemindaian.
         </div>
     </div>
 </body>

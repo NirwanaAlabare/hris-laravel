@@ -422,6 +422,7 @@
 
 
         $(document).ready(function() {
+            console.log($('#username_who_access').val()=='IT');
             $("#selectEmployeeID").val('');
             $("#txt_name").val('');
             $("#txt_enroll_id").val('');
@@ -601,7 +602,7 @@
                 },
                 columns: columns,
                 initComplete: function(settings, json) {
-                    if (json.data.length > 0 && status === "pending" && ($('#username_who_access').val()=='HR' || $('#username_who_access').val()=='IT') ) {
+                    if (json.data.length > 0 && status === "pending" && ($('#username_who_access').val()=='HR' || $('#username_who_access').val()=='fadli' || $('#username_who_access').val()=='mega@ptnag.com' || $('#username_who_access').val()=='IT') ) {
                         $(".BtnVerifikasiOt").show(); // Tampilkan tombol jika ada data
                     } else {
                         $(".BtnVerifikasiOt").hide(); // Sembunyikan tombol jika tidak ada data
