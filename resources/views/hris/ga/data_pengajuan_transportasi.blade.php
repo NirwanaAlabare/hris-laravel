@@ -33,14 +33,14 @@
         </div>
       
         <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-            <div class="card-body px-0 pt-5">
+            <div class="card-body px-0">
                 <div class="row">
                     <div class="col-2 pl-6">
-                        <label class="form-label" style="font-size:11pt">Tanggal Pemberangkatan</label>
+                        <label class="form-label pt-1" style="font-size:11pt">Tanggal Pemberangkatan</label>
                     </div>
                     <div class="col-3 pl-0">
                         <input type="hidden" id="daterange1" name="daterange1">
-                        <a class="nav-link card-title border border-secondary" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
+                        <a class="nav-link card-title p-3" style="border:1px solid #d8d4dc;" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
                     </div>
                 </div>
                 <div class="row">
