@@ -16,7 +16,11 @@
             <a class="btn btn-white" href="{{route('hris.ga.form_pengajuan_transportasi')}}">Formulir</a>
         </li>
         <li class="nav-item">
+            @if ($id_user==4241 || $id_user==20 || $id_user==17 || $id_user==7765 || $id_user==5321 || $id_user==6083 || $id_user==6081 || $id_user==6713)
+                <a class="btn btn-primary" style="background-color:blue" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data <span class="badge text-dark" style="font-weight:bold; background-color:#d2eafc;padding-left:5px;padding-right:5px">{{$pengajuan_transportasi}}</span></a>
+            @else
             <a class="btn btn-primary" style="background-color:blue" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data</a>
+            @endif
         </li>
     </ul>
 </div>
@@ -64,7 +68,28 @@
                     <div class="col-2 pl-6 pt-1">
                     </div>
                     <div class="col-3 pl-0">
-                        <button class="btn btn-success py-1 my-1" id="export_excel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+                        @if ($id_user==4241 || $id_user==20 || $id_user==17 || $id_user==7765 || $id_user==5321 || $id_user==6083 || $id_user==6081 || $id_user==6713)
+                            <button class="btn btn-success py-1 my-1" id="export_excel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+                        @endif
+                    </div>
+                    <div class="col-5">
+                    </div>
+                    <div class="col-2">
+                        <div class="row">
+                            <div class="col-6 p-0 border border-dark border-left-0 border-right-0 border-top-0" style="font-weight:bold">
+                                Keterangan
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 pt-2 pl-0">
+                                <table>
+                                    <tr>
+                                        <td width="1%"><h6 style="background-color:#d2eafc; border:1px solid grey;height:20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h6></td>
+                                        <td style="vertical-align:top">Pengajuan Baru</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -619,6 +644,12 @@
                 }
             },
         ],
+        "createdRow": function (row, data, dataIndex) {
+            // if ((data['kode_hari'] == "5") || (data['kode_hari'] == "6") || (data['kerjalibur'] == "LIBUR")) {
+            if (data['status'] == 0) {
+                $(row).css('background', '#d2eafc');
+            }
+        },
         columnDefs: [{ width: 115, targets: [7,8] }],
     });
     $('#value_status').on('change',function(){
