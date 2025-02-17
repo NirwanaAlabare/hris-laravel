@@ -160,7 +160,7 @@
             <thead >
                 <tr>
                     <td style="border-bottom:1px solid black;" width="80%"></td>
-                    <td rowspan="2"><img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/hrd/export_pdf_sk_kerja') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($no_form) . '&reason=' . urlencode($reason), 'QRCODE') }}" alt="barcode" style="width: 60px; height: 60px;background-color:white" /></td>
+                    <td rowspan="2"><img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($no_form), 'QRCODE') }}"  alt="barcode" style="width: 60px; height: 60px;background-color:white" /></td>
                 </tr>
                 <tr>
                     <td style="height:24px"></td>
