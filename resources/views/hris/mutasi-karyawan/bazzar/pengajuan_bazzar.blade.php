@@ -129,7 +129,10 @@
 
     <div class="row p-3">
         <div class="col-2">
-            <button class="btn btn-app w-100" onclick="export_all()" style="background-color: #eb0a0a" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Export Pengajuan</button>
+            <button class="btn btn-app w-100" onclick="export_all()" style="background-color: #eb0a0a" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Export Pengajuan</button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-app w-100" onclick="export_excel_all()" style="background-color: #02c945" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Pengajuan</button>
         </div>
     </div>
 
@@ -555,14 +558,17 @@
                  {
                     data: 'id',
                     className: "text-center",
-                    width:'10%',
+                    width:'15%',
                     render: (data, type, row, meta) => {
-                        let excelButton = "";
+                        let pdfButton = "";
                         let editButton = "";
                         if (isApprove) {
-                            excelButton = `
-                                <a class='btn btn-success btn-sm' data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2" onClick="export_laporan_pengajuan(`+row.id+`, '` + row.nik + `')">
+                            pdfButton = `
+                                <a class='btn btn-danger btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_laporan_pengajuan(`+row.id+`, '` + row.nik + `')">
                                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                </a>
+                                <a class='btn btn-success btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2" onClick="export_laporan_pengajuan_excel(`+row.id+`, '` + row.nik + `')">
+                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>
                                 </a>
                             `;
                         }
@@ -575,8 +581,8 @@
                         return `
                             <div>
                                 ${editButton}
-                                ${excelButton}
-                                <a style="text-align:center" class='btn btn-danger btn-sm' onclick="hapus('` + row.id + `');">
+                                ${pdfButton}
+                                <a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapus('` + row.id + `');">
                                 <i class='fa fa-trash'></i>
                                 </a>
                             </div>
@@ -617,10 +623,21 @@
             window.open(url, '_blank');
 
         }
+
+        function export_laporan_pengajuan_excel(id_n, no_form_n) {
+            var id=id_n;
+            var url = 'bazzar/export_excel?id='+id;
+            window.open(url, '_blank');
+
+        }
         function export_all() {
             var url = 'bazzar/export_laporan_pengajuan';
             window.open(url, '_blank');
 
+        }
+        function export_excel_all() {
+            var url = 'bazzar/export_excel';
+            window.open(url, '_blank');
         }
 
 

@@ -19,8 +19,7 @@ use DateTime;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use App\Exports\ExportLineSheet;
-use App\Exports\ExportLaporanMutasi;
-use App\Exports\ExportLaporanMutasiKaryawan;
+use App\Exports\ExportPengajuanBazzar;
 
 class BazzarController extends AdminBaseController
 {
@@ -52,6 +51,11 @@ class BazzarController extends AdminBaseController
             "data_dept" => $data_dept, "user" => $user,
             "selectemployee" => $selectemployee
         ], $this->data);
+    }
+
+    public function export_excel()
+    {
+        return Excel::download(new ExportPengajuanBazzar(request()->id), 'Laporan_pengajuan_kupon.xlsx');
     }
 
     public function ajax_getallemployeeatribut()
