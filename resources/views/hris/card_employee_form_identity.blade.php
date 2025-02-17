@@ -32,7 +32,7 @@
             padding: 24px;
         }
         .card-body div {
-            margin-bottom: 16px;
+            margin-bottom:1px;
         }
         .label {
             font-size: 0.875rem;
@@ -73,6 +73,16 @@
                 <p class="label">Tempat, Tanggal Lahir</p>
                 <p class="value">{{$data[0]->tempat_lahir . ', '. $data[0]->tanggal_lahir}}</p>
             </div>
+                <div style="display: flex; justify-content: flex-start; gap: 20px; align-items: center; width: 100%;">
+                    <div>
+                        <p class="label">Tanggal Masuk</p>
+                        <p class="value">{{$data[0]->tanggal_mulai_kontrak}}</p>
+                    </div>
+                    <div>
+                        <p class="label">Tanggal Berakhir</p>
+                        <p class="value">{{$data[0]->tanggal_akhir_kontrak}}</p>
+                    </div>
+                </div>
         </div>
         <div class="card-footer">
             Kartu ini adalah dokumen resmi. Harap dijaga dengan baik.
