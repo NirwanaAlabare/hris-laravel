@@ -1156,26 +1156,16 @@
             const PriodeUmk = document.getElementsByClassName("PriodeUmk");
             BtnProsesPayroll.addEventListener('click', function(event) {
                 let tmp = PriodeProses[0].value;
-                let tmp2 = PriodeUmk[0].value;
-                console.log("PriodeProses",tmp);
-                console.log("PriodeUmk",tmp2);
-                if(tmp == '' && tmp2 == ''){
+                console.log("tmp",tmp);
+                console.log("PriodeUmk",tmp);
+                if(tmp == ''){
                     swal({
-                        title: "Harap pilih periode payroll atau periode umk",
-                        text: "Data Periode Payroll atau periode umk tidak boleh kosong",
+                        title: "Harap pilih periode payroll",
+                        text: "Data Periode Payroll tidak boleh kosong",
                         icon: "warning",
                         button : false,
                     });
-                }
-                else if(tmp != '' && tmp2 != ''){
-                    swal({
-                        title: "Harap pilih salah satu saja diantara periode payroll atau umk",
-                        text: "Data Periode Payroll atau periode umk tidak boleh kosong",
-                        icon: "warning",
-                        button : false,
-                    });
-                }
-                else{
+                }else{
                         event.preventDefault();
                         const submited =document.getElementsByTagName('form')[0];
                         swal({
@@ -1218,7 +1208,68 @@
                         });
                     }
                 });
+
+                // if(tmp == '' && tmp2 == ''){
+                //     swal({
+                //         title: "Harap pilih periode payroll atau periode umk",
+                //         text: "Data Periode Payroll atau periode umk tidak boleh kosong",
+                //         icon: "warning",
+                //         button : false,
+                //     });
+                // }
+                // else if(tmp != '' && tmp2 != ''){
+                //     swal({
+                //         title: "Harap pilih salah satu saja diantara periode payroll atau umk",
+                //         text: "Data Periode Payroll atau periode umk tidak boleh kosong",
+                //         icon: "warning",
+                //         button : false,
+                //     });
+                // }
+                // else{
+                //         event.preventDefault();
+                //         const submited =document.getElementsByTagName('form')[0];
+                //         swal({
+                //             title: 'Apakah Anda Yakin ?',
+                //             text: 'Proses payroll',
+                //             type: "warning",
+                //             showCancelButton: true,
+                //             confirmButtonText: 'YES',
+                //             cancelButtonText: 'NO'
+                //         },function(isConfirm){
+                //             if(isConfirm) {
+                //                 $('#BtnProsesPayroll').addClass("btn-loading");
+                //                 $("#BtnProsesPayroll").html('Please wait...');
+                //                 $("#BtnProsesPayroll").attr("disabled", true);
+
+                //                 $.ajax({
+                //                     data: $('#form_proses_payroll').serialize(),
+                //                     url: '{{ route("hris.proses.payroll.rekap") }}',
+                //                     type: "post",
+                //                     // dataType: 'json',
+                //                     success: function (data) {
+                //                         console.log("data",data);
+                //                         swal("", "Proses payroll berhasil!", "success");
+
+                //                         $('#BtnProsesPayroll').removeClass("btn-loading");
+                //                         $("#BtnProsesPayroll").html('<span><i class="fa fa-download"></i></span> PROSES PAYROLL');
+                //                         $("#BtnProsesPayroll").attr("disabled", false);
+
+                //                     },
+                //                     error: function (xhr, status, error) {
+                //                         console.log(error);
+                //                         swal("", "Proses payroll gagal!", "error");
+
+                //                         $('#BtnProsesPayroll').removeClass("btn-loading");
+                //                         $("#BtnProsesPayroll").attr("disabled", false);
+                //                         $("#BtnProsesPayroll").html('<span><i class="fa fa-download"></i></span> PROSES PAYROLL');
+                //                     }
+                //                 });
+                //             }
+                //         });
+                //     }
+                // });
             });
+
     jQuery(document).ready(function($) {
         const BtnProsesPayroll2 = document.getElementsByClassName('BtnProsesPayroll2')[0];
         const BtnRekapPayroll = document.getElementsByClassName('BtnRekapPayroll')[0];
@@ -1226,24 +1277,16 @@
         const PriodeUmk = document.getElementsByClassName("PriodeUmk");
         BtnProsesPayroll2.addEventListener('click', function(event) {
             let tmp = PriodeProses[0].value;
-            let tmp2 = PriodeUmk[0].value;
-                if(tmp == '' && tmp2 == ''){
+            console.log("tmp",tmp);
+            console.log("PriodeUmk",tmp);
+            if(tmp == ''){
                     swal({
-                        title: "Harap pilih periode payroll atau periode umk",
-                        text: "Data Periode Payroll atau periode umk tidak boleh kosong",
+                        title: "Harap pilih periode payroll",
+                        text: "Data Periode Payroll tidak boleh kosong",
                         icon: "warning",
                         button : false,
                     });
-                }
-                else if(tmp != '' && tmp2 != ''){
-                    swal({
-                        title: "Harap pilih salah satu saja diantara periode payroll atau umk",
-                        text: "Data Periode Payroll atau periode umk tidak boleh kosong",
-                        icon: "warning",
-                        button : false,
-                    });
-                }
-                else{
+            }else{
                 event.preventDefault();
                 const submited =document.getElementsByTagName('form')[0];
                 swal({
@@ -1280,28 +1323,74 @@
                         });
                     }
                 });
-                }
+            }
+            // let tmp2 = PriodeUmk[0].value;
+            //     if(tmp == '' && tmp2 == ''){
+            //         swal({
+            //             title: "Harap pilih periode payroll atau periode umk",
+            //             text: "Data Periode Payroll atau periode umk tidak boleh kosong",
+            //             icon: "warning",
+            //             button : false,
+            //         });
+            //     }
+            //     else if(tmp != '' && tmp2 != ''){
+            //         swal({
+            //             title: "Harap pilih salah satu saja diantara periode payroll atau umk",
+            //             text: "Data Periode Payroll atau periode umk tidak boleh kosong",
+            //             icon: "warning",
+            //             button : false,
+            //         });
+            //     }
+            //     else{
+            //     event.preventDefault();
+            //     const submited =document.getElementsByTagName('form')[0];
+            //     swal({
+            //         title: 'Apakah Anda Yakin ?',
+            //         text: 'Proses payroll',
+            //         type: "warning",
+            //         showCancelButton: true,
+            //         confirmButtonText: 'YES',
+            //         cancelButtonText: 'NO'
+            //     },function(isConfirm){
+            //         if(isConfirm) {
+            //             $('#BtnProsesPayroll2').addClass("btn-loading");
+            //             $("#BtnProsesPayroll2").html('Please wait...');
+            //             $("#BtnProsesPayroll2").attr("disabled", true);
+
+            //             $.ajax({
+            //                 data: $('#form_proses_payroll').serialize(),
+            //                 url: '{{ route("hris.proses.payroll.rekap2") }}',
+            //                 type: "post",
+            //                 success: function (data) {
+            //                 console.log(data);
+            //                     swal("", "Proses rekap lembur berhasil", "success");
+            //                     $('#BtnProsesPayroll2').removeClass("btn-loading");
+            //                     $("#BtnProsesPayroll2").html('<span><i class="fa fa-download"></i></span> PROSES REKAP LEMBUR');
+            //                     $("#BtnProsesPayroll2").attr("disabled", false);
+
+            //                 },
+            //                 error: function (xhr, status, error) {
+            //                     swal("", "Proses rekap lembur gagal", "error");
+            //                     $('#BtnProsesPayroll2').removeClass("btn-loading");
+            //                     $("#BtnProsesPayroll2").attr("disabled", false);
+            //                     $("#BtnProsesPayroll2").html('<span><i class="fa fa-download"></i></span> PROSES REKAP LEMBUR');
+            //                 }
+            //             });
+            //         }
+            //     });
+            //     }
         });
         BtnProsesPayroll3.addEventListener('click', function(event) {
             let tmp = PriodeProses[0].value;
-            let tmp2 = PriodeUmk[0].value;
-            if(tmp == '' && tmp2 == ''){
-                swal({
-                    title: "Harap pilih periode payroll atau periode umk",
-                    text: "Data Periode Payroll atau periode umk tidak boleh kosong",
-                    icon: "warning",
-                    button : false,
-                });
-            }
-            else if(tmp != '' && tmp2 != ''){
-                swal({
-                    title: "Harap pilih salah satu saja diantara periode payroll atau umk",
-                    text: "Data Periode Payroll atau periode umk tidak boleh kosong",
-                    icon: "warning",
-                    button : false,
-                });
-            }
-            else{
+            // let tmp2 = PriodeUmk[0].value;
+            if(tmp == ''){
+                    swal({
+                        title: "Harap pilih periode payroll",
+                        text: "Data Periode Payroll tidak boleh kosong",
+                        icon: "warning",
+                        button : false,
+                    });
+            } else{
                 event.preventDefault();
                 const submited =document.getElementsByTagName('form')[0];
                 swal({
@@ -1348,6 +1437,69 @@
                     }
                 });
             }
+            // if(tmp == '' && tmp2 == ''){
+            //     swal({
+            //         title: "Harap pilih periode payroll atau periode umk",
+            //         text: "Data Periode Payroll atau periode umk tidak boleh kosong",
+            //         icon: "warning",
+            //         button : false,
+            //     });
+            // }
+            // else if(tmp != '' && tmp2 != ''){
+            //     swal({
+            //         title: "Harap pilih salah satu saja diantara periode payroll atau umk",
+            //         text: "Data Periode Payroll atau periode umk tidak boleh kosong",
+            //         icon: "warning",
+            //         button : false,
+            //     });
+            // }
+            // else{
+            //     event.preventDefault();
+            //     const submited =document.getElementsByTagName('form')[0];
+            //     swal({
+            //         title: 'Apakah Anda Yakin ?',
+            //         text: 'Proses payroll',
+            //         type: "warning",
+            //         showCancelButton: true,
+            //         confirmButtonText: 'YES',
+            //         cancelButtonText: 'NO'
+            //     },function(isConfirm){
+            //         if(isConfirm) {
+            //             $('#BtnProsesPayroll3').addClass("btn-loading");
+            //             $("#BtnProsesPayroll3").html('Please wait...');
+            //             $("#BtnProsesPayroll3").attr("disabled", true);
+
+            //             $.ajax({
+            //                 data: $('#form_proses_payroll').serialize(),
+            //                 url: '{{ route("hris.proses.payroll.rekap3") }}',
+            //                 type: "post",
+            //                 // dataType: 'json',
+            //                 success: function (data) {
+            //                     console.log(data);
+            //                     notif({
+            //                         msg: "<b>Info:</b> Data Berhasil di Proses.",
+            //                         type: "info"
+            //                     });
+
+            //                     $('#BtnProsesPayroll3').removeClass("btn-loading");
+            //                     $("#BtnProsesPayroll3").html('<span><i class="fa fa-download"></i></span> PROSES REKAP LEMBUR BARU');
+            //                     $("#BtnProsesPayroll3").attr("disabled", false);
+
+            //                 },
+            //                 error: function (xhr, status, error) {
+            //                     notif({
+            //                         msg: "<b>Error:</b> Oops data gagal di Proses.",
+            //                         type: "error"
+            //                     });
+
+            //                     $('#BtnProsesPayroll3').removeClass("btn-loading");
+            //                     $("#BtnProsesPayroll3").attr("disabled", false);
+            //                     $("#BtnProsesPayroll3").html('<span><i class="fa fa-download"></i></span> PROSES REKAP LEMBUR BARU');
+            //                 }
+            //             });
+            //         }
+            //     });
+            // }
         });
     });
     </script>
