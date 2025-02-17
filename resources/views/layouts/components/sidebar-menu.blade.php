@@ -80,7 +80,13 @@
                 <li><a class="slide-item" href="{{route('hris.tunjangankaryawan.index')}}"><span> Tunjangan Karyawan</span></a></li>
                 <li><a class="slide-item" href="{{route('hris.rekapperhitunganpayroll.index')}}"><span> Laporan Payroll</span></a></li>
                 <li><a class="slide-item" href="{{route('hris.dataclosingpayroll.index')}}"><span> Closing Payroll</span></a></li>
-                <!-- <li><a class="slide-item" href="{{route('hris.aktifitasperubahan.index')}}"><span> Aktifitas Perubahan</span></a></li> -->
+                @php
+                    if (($loggedAdmin->email == "reza") || ($loggedAdmin->email == "fadli")) {
+                    @endphp
+                        <li><a class="slide-item" href="{{route('hris.aktifitasperubahan.index')}}"><span> Aktifitas Perubahan</span></a></li>
+                    @php
+                    }
+                @endphp
             </ul>
 
         </li>

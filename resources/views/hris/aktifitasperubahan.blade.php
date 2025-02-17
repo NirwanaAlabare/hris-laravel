@@ -192,6 +192,11 @@
                         name: 'activity_log_id'
                     },
                     {
+                        title: 'Dibuat',
+                        data: 'created_at',
+                        name: 'created_at',
+                    },
+                    {
                         title: 'Dibuat Oleh',
                         data: 'action_by_name',
                         name: 'action_by_name',
@@ -227,16 +232,11 @@
                         data: 'new_data',
                         name: 'new_data'
                     },
-                    {
-                        title: 'Dibuat',
-                        data: 'created_at',
-                        name: 'created_at',
 
-                    },
                 ],
                 columnDefs: [
                     {
-                        targets: [8],
+                        targets: [1],
                         render: (data, type, row, meta) => {
                             return `
                             <div class="timestamp">
