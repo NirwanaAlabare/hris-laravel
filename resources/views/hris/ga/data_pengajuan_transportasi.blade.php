@@ -40,7 +40,7 @@
                     </div>
                     <div class="col-3 pl-0">
                         <input type="hidden" id="daterange1" name="daterange1">
-                        <a class="nav-link card-title p-3" style="border:1px solid #d8d4dc;" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
+                        <a class="nav-link card-title p-3" style="border:1px solid #d8d4dc;border-radius: 4px;" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
                     </div>
                 </div>
                 <div class="row">
