@@ -160,6 +160,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
 
     // BAZZAR
     Route::get('/bazzar', ['as' => 'bazzar.index','uses' => 'Bazzar\BazzarController@index']);
+    Route::get('/bazzar/export_excel', ['as' => 'bazzar.export_excel','uses' => 'Bazzar\BazzarController@export_excel']);
     Route::get('/bazzar/get_bazzar', ['as' => 'bazzar.get_bazzar','uses' => 'Bazzar\BazzarController@get_bazzar']);
     Route::post('/bazzar/store', ['as' => 'bazzar.store','uses' => 'Bazzar\BazzarController@store']);
     Route::post('/bazzar/hapus', ['as' => 'bazzar.hapus','uses' => 'Bazzar\BazzarController@hapus']);

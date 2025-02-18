@@ -212,8 +212,10 @@ class HRDController extends AdminBaseController
     public function card_employee_form_identity(){
         $enroll_id=request()->enroll_id;
         $no_form=request()->no_form;
+        $type=request()->type;
+
         $data=DB::select("select*from employee_atribut where enroll_id='$enroll_id'");
-        return view('hris/card_employee_form_identity', ["data" => $data,"no_form"=>$no_form]);
+        return view('hris/card_employee_form_identity', ["data" => $data,"no_form"=>$no_form, "type"=>$type]);
     }
     public function export_sp_kehadiran_karyawan(){
         $enroll_id=request()->enroll_id;

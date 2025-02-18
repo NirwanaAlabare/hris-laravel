@@ -315,8 +315,7 @@
             </div>
             <div class="barcode" style="display: flex; margin-top: 1px;  position: absolute; bottom: 20px; right: 20px;">
                 <div align="right">
-                <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $data['enroll_id'] . '&no_form=3872/HRD-NAC/EXT/XII/2024
-', 'QRCODE') }}" alt="barcode" style="width: 60px; height: 60px;background-color:white" />
+                <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $data['enroll_id'] . '&no_form=3872/HRD-NAC/EXT/XII/2024' . '&type=SP_HADIR', 'QRCODE') }}" alt="barcode" style="width: 60px; height: 60px;background-color:white" />
                 </div>
             </div>
         </div>
