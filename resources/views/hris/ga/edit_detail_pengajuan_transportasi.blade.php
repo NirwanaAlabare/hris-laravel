@@ -369,7 +369,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
-                <button aria-label="Close" style="background-color: rgb(255, 255, 255)" id="close_route_adding"><span class="fa fa-times"></span></button>
+                <button aria-label="Close" style="background-color: rgb(255, 255, 255)" data-dismiss="modal"><span class="fa fa-times"></span></button>
             </div>
             <div class="modal-body" style="height:1000px">
                 <div class="row">
