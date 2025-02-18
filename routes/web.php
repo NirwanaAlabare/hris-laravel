@@ -214,6 +214,25 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('ga/show_another_route',['as'=>'hris.ga.show_another_route','uses'=>'GAController@show_another_route']);
     Route::post('ga/update_car_request_user',['as'=>'hris.ga.update_car_request_user','uses'=>'GAController@update_car_request_user']);
     Route::post('ga/change_status_car_request',['as'=>'hris.ga.change_status_car_request','uses'=>'GAController@change_status_car_request']);
+    Route::get('ga/pemeliharaan_kendaraan',['as'=>'hris.ga.pemeliharaan_kendaraan','uses'=>'PemeliharaanKendaraanController@index']);
+    Route::get('ga/get_data_kendaraan',['as'=>'hris.ga.get_data_kendaraan','uses'=>'PemeliharaanKendaraanController@get_data_kendaraan']);
+    Route::get('ga/get_data_jenis_pemeliharaan',['as'=>'hris.ga.get_data_jenis_pemeliharaan','uses'=>'PemeliharaanKendaraanController@get_data_jenis_pemeliharaan']);
+    Route::post('ga/store_vehicle_maintenance',['as'=>'hris.ga.store_vehicle_maintenance','uses'=>'PemeliharaanKendaraanController@store_vehicle_maintenance']);
+    Route::post('ga/delete_vehicle_maintenance',['as'=>'hris.ga.delete_vehicle_maintenance','uses'=>'PemeliharaanKendaraanController@delete_vehicle_maintenance']);
+    Route::post('ga/store_vehicle_item_master',['as'=>'hris.ga.store_vehicle_item_master','uses'=>'PemeliharaanKendaraanController@store_vehicle_item_master']);
+    Route::get('ga/get_vehicle_item_data',['as'=>'hris.ga.get_vehicle_item_data','uses'=>'PemeliharaanKendaraanController@get_vehicle_item_data']);
+    Route::post('ga/delete_vehicle_item',['as'=>'hris.ga.delete_vehicle_item','uses'=>'PemeliharaanKendaraanController@delete_vehicle_item']);
+    Route::get('ga/get_vehicle_maintenance_data',['as'=>'hris.ga.get_vehicle_maintenance_data','uses'=>'PemeliharaanKendaraanController@get_vehicle_maintenance_data']);
+    Route::post('ga/store_vehicle_item_maintenance',['as'=>'hris.ga.store_vehicle_item_maintenance','uses'=>'PemeliharaanKendaraanController@store_vehicle_item_maintenance']);
+    Route::post('ga/delete_vehicle_maintenance',['as'=>'hris.ga.delete_vehicle_maintenance','uses'=>'PemeliharaanKendaraanController@delete_vehicle_maintenance']);
+    Route::get('ga/print_vehicle_maintenance',['as'=>'hris.ga.print_vehicle_maintenance','uses'=>'PemeliharaanKendaraanController@print_vehicle_maintenance']);
+    Route::post('ga/get_vehicle_item_maintenance_price',['as'=>'hris.ga.get_vehicle_item_maintenance_price','uses'=>'PemeliharaanKendaraanController@get_vehicle_item_maintenance_price']);
+    Route::get('ga/vehicle_monitoring',['as'=>'hris.ga.vehicle_monitoring','uses'=>'PemeliharaanKendaraanController@vehicle_monitoring']);
+    Route::get('ga/get_vehicle_item_monitoring',['as'=>'hris.ga.get_vehicle_item_monitoring','uses'=>'PemeliharaanKendaraanController@get_vehicle_item_monitoring']);
+    Route::post('ga/store_kategori_item',['as'=>'hris.ga.store_kategori_item','uses'=>'PemeliharaanKendaraanController@store_kategori_item']);
+    Route::get('ga/get_vehicle_category_name',['as'=>'hris.ga.get_vehicle_category_name','uses'=>'PemeliharaanKendaraanController@get_vehicle_category_name']);
+    Route::get('ga/get_kategori_item',['as'=>'hris.ga.get_kategori_item','uses'=>'PemeliharaanKendaraanController@get_kategori_item']);
+    Route::post('ga/store_item',['as'=>'hris.ga.store_item','uses'=>'PemeliharaanKendaraanController@store_item']);
 
     //Route::resource('mdabsenhadir', 'MdAbsenHadirController',['as' => 'hris']);
     Route::get('mdabsenhadir/datahadir',['as'=>'hris.mdabsenhadir.datahadir','uses'=>'MdAbsenHadirController@datahadir']);
