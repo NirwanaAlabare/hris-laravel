@@ -384,6 +384,7 @@
                                     <th>Kelurahan/Desa</th>
                                     <th>Detail Alamat</th>
                                     <th>Waktu Kedatangan</th>
+                                    <th>Keterangan</th>
                                 </tr>
                             </thead>
                             <tbody id="route_adding">
@@ -442,6 +443,7 @@
     var array_detail_alamat=[];
     var array_tanggal_kedatangan=[];
     var array_jam_kedatangan=[];
+    var array_keterangan=[];
     $(document).ready(function() {
         pass_to_array();
         var arr_emp=$('#EmployeeDinas').val();
@@ -480,6 +482,7 @@
                     array_detail_alamat.push(value.detail_alamat);
                     array_tanggal_kedatangan.push(value.tanggal_kedatangan);
                     array_jam_kedatangan.push(value.jam_kedatangan);
+                    array_keterangan.push(value.keterangan);
                 });
             }
         });
@@ -493,6 +496,10 @@
         var detail_alamat=$('#detail_alamat_2').val();
         var tanggal_kedatangan=$('#tanggal_kedatangan').val();
         var jam_kedatangan=$('#jam_kedatangan').val();
+        var tujuan_pemberang = [];
+        $("input:checkbox[name=tujuan_pemberangkatan]:checked").each(function() {
+            tujuan_pemberang.push($(this).val());
+        });
         $.ajax({
             type:"POST",
             url: "{{route('hris.ga.add_another_route_2')}}",
@@ -519,6 +526,7 @@
                         jam_kedatangan:jam_kedatangan,
                     },
                     success: function(res){
+                        console.log(res);
                         array_provinsi[0]=res[0].prov_name;
                         array_kota[0]=res[0].city_name;
                         array_kecamatan[0]=res[0].dis_name;
@@ -526,6 +534,7 @@
                         array_detail_alamat[0]=res[0].detail_alamat;
                         array_tanggal_kedatangan[0]=res[0].tanggal_kedatangan;
                         array_jam_kedatangan[0]=res[0].jam_kedatangan;
+                        array_keterangan[0]=tujuan_pemberang;
                     },
                     error: function(res){
                         swal({
@@ -598,6 +607,7 @@
         var detail_alamat=$('#detail_alamat_yang_ke_'+tujuan_id).val();
         var tanggal_kedatangan=$('#tanggal_kedatangan_yang_ke_'+tujuan_id).val();
         var jam_kedatangan=$('#jam_kedatangan_yang_ke_'+tujuan_id).val();
+        var keterangan=$('#keterangan_yang_ke_'+tujuan_id).val();
         $.ajax({
             type:"POST",
             url: "{{route('hris.ga.add_another_route_3')}}",
@@ -621,13 +631,15 @@
                 array_detail_alamat.push('');
                 array_tanggal_kedatangan.push('');
                 array_jam_kedatangan.push('');
+                array_keterangan.push('');
                 array_provinsi[key]=provinsi;
                 array_kota[key]=city;
                 array_kecamatan[key]=districts;
                 array_desa[key]=subdistricts;
                 array_detail_alamat[key]=detail_alamat;
                 array_tanggal_kedatangan[key]=tanggal_kedatangan;
-                array_jam_kedatangan[key]=jam_kedatangan
+                array_jam_kedatangan[key]=jam_kedatangan;
+                array_keterangan[key]=keterangan;
                 addListTujuan();
             },
             error: function(error){
@@ -678,125 +690,137 @@
         jQuery.each(array_tujuan_id, function(key,value){
             if(array_tujuan_id.length==1){
                 $('#route_adding').append('<tr>\
-                    <td>\
+                    <td style="padding:4px" width="2%">\
                         '+(key+1)+'\
                     </td>\
-                    <td width="20%">\
+                    <td style="padding:4px" width="15%">\
                         <input type="hidden" id="tujuan_yang_ke_'+value+'" name="tujuan_ke[]" class="form-control" value='+value+'>\
                         <input id="provinsi_yang_ke_'+value+'" name="provinsi_ke[]" value="'+array_provinsi[key]+'" class="form-control" disabled>\
                     </td>\
-                    <td width="20%">\
+                    <td style="padding:4px" width="10%">\
                         <input id="kota_yang_ke_'+value+'" name="kota_ke[]" class="form-control" value="'+array_kota[key]+'" disabled>\
                     </td>\
-                    <td width="15%">\
+                    <td style="padding:4px" width="15%">\
                         <input id="kecamatan_yang_ke_'+value+'" name="kecamatan_ke[]" class="form-control" value="'+array_kecamatan[key]+'" disabled>\
                     </td>\
-                    <td width="15%">\
+                    <td style="padding:4px" width="15%">\
                         <input id="desa_yang_ke_'+value+'" name="desa_ke[]" class="form-control" value="'+array_desa[key]+'" disabled>\
                     </td>\
-                    <td width="15%">\
+                    <td style="padding:4px" width="15%">\
                         <input id="detail_alamat_yang_ke_'+value+'" name="detail_alamat_ke[]" class="form-control" value="'+array_detail_alamat[key]+'" disabled>\
                     </td>\
-                    <td width="10%">\
+                    <td style="padding:4px" width="10%">\
                         <input id="tanggal_kedatangan_yang_ke_'+value+'" name="tanggal_kedatangan_ke[]" type="date" class="form-control" value="'+array_tanggal_kedatangan[key]+'" disabled>\
                         <input id="jam_kedatangan_yang_ke_'+value+'" name="jam_kedatangan_ke[]" type="time" class="form-control" value="'+array_jam_kedatangan[key]+'" disabled>\
                     </td>\
-                    <td width="5%">\
+                    <td style="padding:4px" width="15%">\
+                        <input id="keterangan_yang_ke_'+value+'" name="keterangan_ke[]" class="form-control" value="'+array_keterangan[key]+'" disabled>\
+                    </td>\
+                    <td style="padding:4px" width="3%">\
                         <a href="#" class="btn btn-primary px-1" onclick="add_route_more('+key+','+value+')" id="add_route_more_button_'+value+'"><i class="fa fa-plus"></i></a>\
                     </td>\
                 </tr>');
             }else{
                 if(value==1){
                     $('#route_adding').append('<tr>\
-                        <td>\
+                        <td style="padding:4px" width="2%">\
                             '+(key+1)+'\
                         </td>\
-                        <td width="20%">\
+                        <td style="padding:4px" width="15%">\
                             <input type="hidden" id="tujuan_yang_ke_'+value+'" name="tujuan_ke[]" class="form-control" value='+value+'>\
                             <input id="provinsi_yang_ke_'+value+'" name="provinsi_ke[]" value="'+array_provinsi[key]+'" class="form-control" disabled>\
                         </td>\
-                        <td width="20%">\
+                        <td style="padding:4px" width="10%">\
                             <input id="kota_yang_ke_'+value+'" name="kota_ke[]" class="form-control" value="'+array_kota[key]+'" disabled>\
                         </td>\
-                        <td width="15%">\
+                        <td style="padding:4px" width="15%">\
                             <input id="kecamatan_yang_ke_'+value+'" name="kecamatan_ke[]" class="form-control" value="'+array_kecamatan[key]+'" disabled>\
                         </td>\
-                        <td width="15%">\
+                        <td style="padding:4px" width="15%">\
                             <input id="desa_yang_ke_'+value+'" name="desa_ke[]" class="form-control" value="'+array_desa[key]+'" disabled>\
                         </td>\
-                        <td width="15%">\
+                        <td style="padding:4px" width="15%">\
                             <input id="detail_alamat_yang_ke_'+value+'" name="detail_alamat_ke[]" class="form-control" value="'+array_detail_alamat[key]+'" disabled>\
                         </td>\
-                        <td width="10%">\
+                        <td style="padding:4px" width="10%">\
                             <input id="tanggal_kedatangan_yang_ke_'+value+'" name="tanggal_kedatangan_ke[]" type="date" class="form-control" value="'+array_tanggal_kedatangan[key]+'" disabled>\
                             <input id="jam_kedatangan_yang_ke_'+value+'" name="jam_kedatangan_ke[]" type="time" class="form-control" value="'+array_jam_kedatangan[key]+'" disabled>\
                         </td>\
-                        <td width="5%">\
+                        <td style="padding:4px" width="15%">\
+                            <input id="keterangan_yang_ke_'+value+'" name="keterangan_ke[]" class="form-control" value="'+array_keterangan[key]+'" disabled>\
+                        </td>\
+                        <td style="padding:4px" width="3%">\
                         </td>\
                     </tr>');
                 }else{
                     if(key==(array_tujuan_id.length-1)){
                         $('#route_adding').append('<tr>\
-                            <td>\
+                            <td style="padding:4px" width="2%">\
                                 '+(key+1)+'\
                             </td>\
-                            <td width="20%">\
+                            <td style="padding:4px" width="15%">\
                                 <input type="hidden" id="tujuan_yang_ke_'+value+'" name="tujuan_ke[]" class="form-control" value='+value+'>\
                                 <input id="provinsi_yang_ke_'+value+'" name="provinsi_ke[]" value="'+array_provinsi[key]+'" class="form-control" style="background-color:white">\
                                 <select class="form-control form-control-sm" id="pilihan_alamat_yang_ke_'+value+'" style="margin-top:6px;background-color:white" name="history_alamat" onchange="change_alamat('+key+','+value+')">\
                                     <option value="">History Alamat</option>\
                                 </select>\
                             </td>\
-                            <td width="20%">\
+                            <td style="padding:4px" width="10%">\
                                 <input id="kota_yang_ke_'+value+'" name="kota_ke[]" class="form-control" value="'+array_kota[key]+'" style="background-color:white">\
                             </td>\
-                            <td width="15%">\
+                            <td style="padding:4px" width="15%">\
                                 <input id="kecamatan_yang_ke_'+value+'" name="kecamatan_ke[]" class="form-control" value="'+array_kecamatan[key]+'" style="background-color:white">\
                             </td>\
-                            <td width="15%">\
+                            <td style="padding:4px" width="15%">\
                                 <input id="desa_yang_ke_'+value+'" name="desa_ke[]" class="form-control" value="'+array_desa[key]+'" style="background-color:white">\
                             </td>\
-                            <td width="15%">\
+                            <td style="padding:4px" width="15%">\
                                 <input id="detail_alamat_yang_ke_'+value+'" name="detail_alamat_ke[]" class="form-control" value="'+array_detail_alamat[key]+'" style="background-color:white">\
                             </td>\
-                            <td width="10%">\
+                            <td style="padding:4px" width="10%">\
                                 <input id="tanggal_kedatangan_yang_ke_'+value+'" name="tanggal_kedatangan_ke[]" type="date" class="form-control" value="'+array_tanggal_kedatangan[key]+'" style="background-color:white">\
                                 <input id="jam_kedatangan_yang_ke_'+value+'" name="jam_kedatangan_ke[]" type="text" class="form-control" value="'+(array_jam_kedatangan[key]).substring(0,5)+'" style="background-color:white; cursor:pointer;">\
                             </td>\
-                            <td width="5%">\
+                            <td style="padding:4px" width="15%">\
+                                <input id="keterangan_yang_ke_'+value+'" name="keterangan_ke[]" class="form-control" value="'+array_keterangan[key]+'" style="background-color:white">\
+                            </td>\
+                            <td style="padding:4px" width="3%">\
                                 <a href="#" class="btn btn-primary px-1" onclick="add_route_more('+key+','+value+')" id="add_route_more_button_'+value+'"><i class="fa fa-plus"></i></a>\
                                 <a href="#" class="btn btn-danger px-1" onclick="delete_this_route('+value+')" id="delete_this_route_button_'+value+'"><i class="fa fa-minus"></i></a>\
                             </td>\
                         </tr>');
                     }else{
                         $('#route_adding').append('<tr>\
-                            <td>\
+                            <td style="padding:4px" width="2%">\
                                 '+(key+1)+'\
                             </td>\
-                            <td width="20%">\
+                            <td style="padding:4px" width="15%">\
                                 <input type="hidden" id="tujuan_yang_ke_'+value+'" name="tujuan_ke[]" class="form-control" value='+value+'>\
                                 <input id="provinsi_yang_ke_'+value+'" name="provinsi_ke[]" value="'+array_provinsi[key]+'" class="form-control" style="background-color:white">\
                                 <select id="pilihan_alamat_yang_ke_'+value+'" class="form-control form-control-sm" style="margin-top:6px;background-color:white" name="history_alamat" onchange="change_alamat('+key+','+value+')">\
                                     <option value="">History Alamat</option>\
                                 </select>\
                             </td>\
-                            <td width="20%">\
+                            <td style="padding:4px" width="10%">\
                                 <input id="kota_yang_ke_'+value+'" name="kota_ke[]" class="form-control" value="'+array_kota[key]+'" style="background-color:white">\
                             </td>\
-                            <td width="15%">\
+                            <td style="padding:4px" width="15%">\
                                 <input id="kecamatan_yang_ke_'+value+'" name="kecamatan_ke[]" class="form-control" value="'+array_kecamatan[key]+'" style="background-color:white">\
                             </td>\
-                            <td width="15%">\
+                            <td style="padding:4px" width="15%">\
                                 <input id="desa_yang_ke_'+value+'" name="desa_ke[]" class="form-control" value="'+array_desa[key]+'" style="background-color:white">\
                             </td>\
-                            <td width="15%">\
+                            <td style="padding:4px" width="15%">\
                                 <input id="detail_alamat_yang_ke_'+value+'" name="detail_alamat_ke[]" class="form-control" value="'+array_detail_alamat[key]+'" style="background-color:white">\
                             </td>\
-                            <td width="10%">\
+                            <td style="padding:4px" width="10%">\
                                 <input id="tanggal_kedatangan_yang_ke_'+value+'" name="tanggal_kedatangan_ke[]" type="date" class="form-control" value="'+array_tanggal_kedatangan[key]+'" style="background-color:white">\
                                 <input id="jam_kedatangan_yang_ke_'+value+'" name="jam_kedatangan_ke[]" type="text" class="form-control" value="'+(array_jam_kedatangan[key]).substring(0,5)+'" style="background-color:white; cursor:pointer;">\
                             </td>\
-                            <td width="5%">\
+                            <td style="padding:4px" width="15%">\
+                                <input id="keterangan_yang_ke_'+value+'" name="keterangan_ke[]" style="background-color:white;" class="form-control" value="'+array_keterangan[key]+'">\
+                            </td>\
+                            <td style="padding:4px" width="3%">\
                                 <a href="#" class="btn btn-danger px-1" onclick="delete_this_route('+value+')" id="delete_this_route_button_'+value+'"><i class="fa fa-minus"></i></a>\
                             </td>\
                         </tr>');
@@ -850,6 +874,7 @@
         array_detail_alamat.splice(index_array, 1);
         array_tanggal_kedatangan.splice(index_array, 1);
         array_jam_kedatangan.splice(index_array, 1);
+        array_keterangan.splice(index_array, 1);
         addListTujuan();
     }
     function changeFirstElementOfArray(){
@@ -937,6 +962,7 @@
             array_detail_alamat=[];
             array_tanggal_kedatangan=[];
             array_jam_kedatangan=[];
+            array_keterangan=[];
             var array_tujuan=($("input[name='tujuan_ke[]']").map(function(){return $(this).val();}).get());
             array_tujuan.forEach(function(value){
                 array_tujuan_id.push(parseInt(value));
@@ -968,6 +994,10 @@
             var array_jam_kdt=($("input[name='jam_kedatangan_ke[]']").map(function(){return $(this).val();}).get());
             array_jam_kdt.forEach(function(value){
                 array_jam_kedatangan.push(value);
+            });
+            var array_keter=($("input[name='keterangan_ke[]']").map(function(){return $(this).val();}).get());
+            array_keter.forEach(function(value){
+                array_keterangan.push(value);
             });
             $('#tujuanLainnyaModal').modal('hide');
         }
@@ -1533,6 +1563,7 @@
         var detail_alamat_array = array_detail_alamat;
         var tanggal_kedatangan_array = array_tanggal_kedatangan;
         var jam_kedatangan_array = array_jam_kedatangan;
+        var keterangan_array = array_keterangan;
         
         changeFirstElementOfArray();
         $.ajax({
@@ -1579,7 +1610,8 @@
                 subdistrict_array:subdistrict_array,
                 detail_alamat_array:detail_alamat_array,
                 tanggal_kedatangan_array:tanggal_kedatangan_array,
-                jam_kedatangan_array:jam_kedatangan_array
+                jam_kedatangan_array:jam_kedatangan_array,
+                keterangan_array:keterangan_array
             },
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             success: function(res){

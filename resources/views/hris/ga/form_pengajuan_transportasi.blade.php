@@ -329,14 +329,14 @@
 </div>
 <div class="modal fade" id="tujuanLainnyaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-dialog-scrollable" style="max-width: 94%">
+    <div class="modal-dialog modal-dialog-scrollable" style="max-width: 97%">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
                 <button aria-label="Close" style="background-color: rgb(255, 255, 255)" data-dismiss="modal"><span class="fa fa-times"></span></button>
             </div>
             <div class="modal-body" style="height:1000px">
-                <table class="table table-bordered" id="route_adding">
+                <table class="table table-bordered w-100" id="route_adding">
                     <tr>
                         <th>
                             Provinsi
@@ -357,12 +357,15 @@
                             Tgl Kedatangan
                         </th>
                         <th>
-                            Jam Kedatangan
+                            Jam
+                        </th>
+                        <th>
+                            Keterangan
                         </th>
                         <th></th>
                     </tr>
                     <tr>
-                        <td>
+                        <td style="padding:4px" width="15%">
                             <input type="hidden" value="1" id="tujuan_yang_ke_1" name="tujuan_ke[]">
                             <select class="form-control" id="provinsi_yang_ke_1" name="provinsi_ke[]" style="background-color: white" disabled>
                                 <option value="">Pilih Provinsi</option>
@@ -371,7 +374,7 @@
                                 @endforeach
                             </select>
                         </td>
-                        <td>
+                        <td style="padding:4px" width="13%">
                             <select class="form-control" id="kota_yang_ke_1" name="kota_ke[]" style="background-color: white" disabled>
                                 <option value="">Pilih Kabupaten/Kota</option>
                                 @foreach($cities as $city)
@@ -379,7 +382,7 @@
                                 @endforeach
                             </select>
                         </td>
-                        <td>
+                        <td style="padding:4px" width="15%">
                             <select class="form-control" id="kecamatan_yang_ke_1" name="kecamatan_ke[]" style="background-color: white" disabled>
                                 <option value="">Pilih Kecamatan</option>
                                 @foreach($districts as $dis)
@@ -387,7 +390,7 @@
                                 @endforeach
                             </select>
                         </td>
-                        <td>
+                        <td style="padding:4px" width="15%">
                             <select class="form-control" id="desa_yang_ke_1" name="desa_ke[]" style="background-color: white" disabled>
                                 <option value="">Pilih Kelurahan/Desa</option>
                                 @foreach($subdistricts as $subdis)
@@ -395,16 +398,19 @@
                                 @endforeach
                             </select>
                         </td>
-                        <td>
+                        <td style="padding:4px" width="20%">
                             <input id="detail_alamat_yang_ke_1" name="detail_alamat_ke[]" class="form-control" disabled>
                         </td>
-                        <td>
+                        <td style="padding:4px" width="3%">
                             <input type="date" id="tanggal_kedatangan_yang_ke_1" name="tanggal_kedatangan_ke[]" class="form-control" disabled>
                         </td>
-                        <td>
+                        <td style="padding:4px" width="2%">
                             <input type="time" id="jam_kedatangan_yang_ke_1" name="jam_kedatangan_ke[]" class="form-control" disabled>
                         </td>
-                        <td>
+                        <td style="padding:4px" width="15%">
+                            <input type="text" id="keterangan_yang_ke_1" name="keterangan_ke[]" class="form-control" disabled>
+                        </td>
+                        <td style="padding:4px" width="2%">
                             <a href="#" id="add_route_satu" class="btn btn-primary px-1" onclick="add_route()"><i class="fa fa-plus"></i></a>
                         </td>
                     </tr>
@@ -545,7 +551,7 @@
         document.getElementById('add_route_satu').style.display='none';
         ambil_nama_provinsi(count);
         $('#route_adding').append('<tr id="row_new_route_'+count+'" >\
-            <td>\
+            <td style="padding:4px" width="15%">\
                 <input type="hidden" value="'+count+'" id="tujuan_yang_ke_'+count+'" name="tujuan_ke[]">\
                 <select id="provinsi_yang_ke_'+count+'" name="provinsi_ke[]" class="form-control" style="background-color:white" onchange="ambil_nama_kabupaten('+count+')">\
                 </select>\
@@ -553,31 +559,34 @@
                     <option value="">History Alamat</option>\
                 </select>\
             </td>\
-            <td>\
+            <td style="padding:4px" width="13%">\
                 <select id="kota_yang_ke_'+count+'" name="kota_ke[]" class="form-control" style="background-color:white" disabled onchange="ambil_nama_kecamatan('+count+')">\
                     <option value="">Pilih Kabupaten/Kota</option>\
                 </select>\
             </td>\
-            <td>\
+            <td style="padding:4px" width="15%">\
                 <select id="kecamatan_yang_ke_'+count+'" name="kecamatan_ke[]" class="form-control" style="background-color:white" disabled onchange="ambil_nama_desa('+count+')">\
                     <option value="">Pilih Kecamatan</option>\
                 </select>\
             </td>\
-            <td>\
+            <td style="padding:4px" width="15%">\
                 <select id="desa_yang_ke_'+count+'" name="desa_ke[]" class="form-control" style="background-color:white" disabled onchange="ambil_desa('+count+')">\
                     <option value="">Pilih Kelurahan/Desa</option>\
                 </select>\
             </td>\
-            <td>\
+            <td style="padding:4px" width="20%">\
                 <input id="detail_alamat_yang_ke_'+count+'" name="detail_alamat_ke[]" class="form-control" style="background-color:white" onkeyup="isi_detail_alamat('+count+')">\
             </td>\
-            <td>\
+            <td style="padding:4px" width="3%">\
                 <input type="date" id="tanggal_kedatangan_yang_ke_'+count+'" name="tanggal_kedatangan_ke[]" class="form-control" style="background-color:white" onchange="isi_tanggal_kedatangan('+count+')">\
             </td>\
-            <td>\
+            <td style="padding:4px" width="2%">\
                 <input type="text" id="jam_kedatangan_yang_ke_'+count+'" name="jam_kedatangan_ke[]" class="form-control jam_kedatangan_add" style="background-color: white; cursor:pointer;" onchange="isi_jam_kedatangan('+count+')">\
             </td>\
-            <td>\
+            <td style="padding:4px" width="15%">\
+                <input type="text" id="keterangan_yang_ke_'+count+'" name="keterangan_ke[]" class="form-control" style="background-color: white;" onchange="isi_keterangan('+count+')">\
+            </td>\
+            <td style="padding:4px" width="2%">\
                 <a href="#" class="btn btn-primary px-1" onclick="add_route_more('+count+')" id="add_route_more_button_'+count+'"><i class="fa fa-plus"></i></a>\
                 <a href="#" class="btn btn-danger px-1" onclick="delete_this_route('+count+')" id="delete_this_route_button_'+count+'"><i class="fa fa-minus"></i></a>\
             </td>\
@@ -709,6 +718,7 @@
             }
         });
         $('#detail_alamat_yang_ke_'+count).val(myArray[0]);
+        document.getElementById("detail_alamat_yang_ke_"+count).style.border="";
         $('#pilih_history_alamat_ke_'+count).val('');
     }
     function simpan_array_tujuan(){
@@ -720,6 +730,7 @@
         var detail_alamat = $("input[name='detail_alamat_ke[]']").map(function(){return $(this).val();}).get();
         var tanggal_kedatangan = $("input[name='tanggal_kedatangan_ke[]']").map(function(){return $(this).val();}).get();
         var jam_kedatangan = $("input[name='jam_kedatangan_ke[]']").map(function(){return $(this).val();}).get();
+        var keterangan = $("input[name='keterangan_ke[]']").map(function(){return $(this).val();}).get();
         for(var i=1; i<tujuan.length; i++) {
             if(!province[i]){
                 document.getElementById("provinsi_yang_ke_"+tujuan[i]).style.border = "1px solid red";
@@ -760,11 +771,6 @@
         if(!province.includes('') && !city.includes('') && !district.includes('') && !subdistrict.includes('') && !detail_alamat.includes('') && !tanggal_kedatangan.includes('') && !jam_kedatangan.includes('')){
             $('#tujuanLainnyaModal').modal('hide');
         }
-        console.log(province);
-        console.log(city);
-        console.log(district);
-        console.log(subdistrict);
-        console.log(detail_alamat);
     }
     function delete_this_route(count){
         var tujuan = $("input[name='tujuan_ke[]']").map(function(){return $(this).val();}).get();
@@ -783,6 +789,8 @@
         tanggal_kedatangan.splice(count, 1);
         var jam_kedatangan = $("input[name='jam_kedatangan_ke[]']").map(function(){return $(this).val();}).get();
         jam_kedatangan.splice(count, 1);
+        var keterangan = $("input[name='keterangan_ke[]']").map(function(){return $(this).val();}).get();
+        keterangan.splice(count, 1);
         var row = document.getElementById('row_new_route_'+count);
         row.parentNode.removeChild(row);
         if(tujuan.length==2){
@@ -1334,6 +1342,12 @@
                     $('#detail_alamat_yang_ke_1').val(detail_alamat);
                     $('#tanggal_kedatangan_yang_ke_1').val(tanggal_kedatangan);
                     $('#jam_kedatangan_yang_ke_1').val(jam_kedatangan);
+                    var tujuan_pemberangkatan_ke_1 = [];
+                    $("input:checkbox[name=tujuan_pemberangkatan]:checked").each(function() {
+                        tujuan_pemberangkatan_ke_1.push($(this).val());
+                    });
+                    var tujuan_pemberangkatan_=tujuan_pemberangkatan_ke_1.toString();
+                    $('#keterangan_yang_ke_1').val(tujuan_pemberangkatan_);
                 },
                 error: function(error){
                     let err_log=error.responseJSON.errors;
@@ -1624,6 +1638,7 @@
             $('#detail_alamat_yang_ke_1').val(detail_alamat_2);
             $('#tanggal_kedatangan_yang_ke_1').val(tanggal_kedatangan);
             $('#jam_kedatangan_yang_ke_1').val(jam_kedatangan);
+            $('#keterangan_yang_ke_1').val(tujuan_pemberangkatan);
             var tujuan_array = $("input[name='tujuan_ke[]']").map(function(){return $(this).val();}).get();
             var provinsi_array = $("select[name='provinsi_ke[]']").map(function(){return $(this).val();}).get();
             var city_array = $("select[name='kota_ke[]']").map(function(){return $(this).val();}).get();
@@ -1632,6 +1647,7 @@
             var detail_alamat_array = $("input[name='detail_alamat_ke[]']").map(function(){return $(this).val();}).get();
             var tanggal_kedatangan_array = $("input[name='tanggal_kedatangan_ke[]']").map(function(){return $(this).val();}).get();
             var jam_kedatangan_array = $("input[name='jam_kedatangan_ke[]']").map(function(){return $(this).val();}).get();
+            var keterangan_array = $("input[name='keterangan_ke[]']").map(function(){return $(this).val();}).get();
             var employee_dinas = $("select[name='selectEmployeeDinas[]']").map(function(){return $(this).val();}).get();
             $.ajax({
                 type:"POST",
@@ -1675,6 +1691,7 @@
                     detail_alamat_array:detail_alamat_array,
                     tanggal_kedatangan_array:tanggal_kedatangan_array,
                     jam_kedatangan_array:jam_kedatangan_array,
+                    keterangan_array:keterangan_array,
                     cb_antar_dinas:cb_antar_dinas,
                     cb_jemput_dinas:cb_jemput_dinas,
                     employee_dinas:employee_dinas

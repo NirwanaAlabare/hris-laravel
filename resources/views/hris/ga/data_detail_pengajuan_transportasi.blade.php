@@ -424,6 +424,7 @@
                             <th style="font-weight: bold">Desa</th>
                             <th style="font-weight: bold">Detail Alamat</th>
                             <th style="font-weight: bold">Waktu Kedatangan</th>
+                            <th style="font-weight: bold">Keterangan</th>
                         </tr>
                     </thead>
                     <tbody id="another_route">
@@ -556,6 +557,7 @@
                         <td>'+value['subdis_name']+'</td>\
                         <td>'+value['detail_alamat']+'</td>\
                         <td>'+new Date(value['tanggal_kedatangan']).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"})+' - '+value['jam_kedatangan']+'</td>\
+                        <td>'+value['keterangan']+'</td>\
                     </tr>');
                 });
             },
