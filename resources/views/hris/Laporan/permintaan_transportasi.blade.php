@@ -48,16 +48,16 @@
         @if($key==0)
         <tr>
             <td>{{$key+1}}</td>
-            <td>{{$value['created_at']}}</td>
+            <td>{{PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($value['created_at'])}}</td>
             <td>{{$value['enroll_id']}}</td>
             <td>{{$value['employee_name']}}</td>
             <td>{{$value['department']}}</td>
             <td>{{$value['bagian']}}</td>
             <td>{{$value['destinasi_awal']}}</td>
-            <td>{{$value['tanggal_pemberangkatan']}}</td>
+            <td>{{PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($value['tanggal_pemberangkatan'])}}</td>
             <td>{{$value['jam_pemberangkatan']}}</td>
             <td>{{$value['destinasi_akhir']}}</td>
-            <td>{{$value['tanggal_kedatangan']}}</td>
+            <td>{{PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($value['tanggal_kedatangan'])}}</td>
             <td>{{$value['jam_kedatangan']}}</td>
             <td>{{str_replace("_"," ",$value['tujuan_pemberangkatan'])}}</td>
             <td>{{$value['nama_tamu']}}</td>
@@ -112,7 +112,7 @@
             <td></td>
             <td></td>
             <td>{{$value['destinasi_akhir']}}</td>
-            <td>{{$value['tanggal_kedatangan']}}</td>
+            <td>{{PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($value['tanggal_kedatangan'])}}</td>
             <td>{{$value['jam_kedatangan']}}</td>
             <td></td>
             <td></td>
@@ -136,16 +136,16 @@
         @else
         <tr>
             <td>{{$key+1}}</td>
-            <td>{{$value['created_at']}}</td>
+            <td>{{PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($value['created_at'])}}</td>
             <td>{{$value['enroll_id']}}</td>
             <td>{{$value['employee_name']}}</td>
             <td>{{$value['department']}}</td>
             <td>{{$value['bagian']}}</td>
             <td>{{$value['destinasi_awal']}}</td>
-            <td>{{$value['tanggal_pemberangkatan']}}</td>
+            <td>{{PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($value['tanggal_pemberangkatan'])}}</td>
             <td>{{$value['jam_pemberangkatan']}}</td>
             <td>{{$value['destinasi_akhir']}}</td>
-            <td>{{$value['tanggal_kedatangan']}}</td>
+            <td>{{PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($value['tanggal_kedatangan'])}}</td>
             <td>{{$value['jam_kedatangan']}}</td>
             <td>{{str_replace("_"," ",$value['tujuan_pemberangkatan'])}}</td>
             <td>{{$value['nama_tamu']}}</td>

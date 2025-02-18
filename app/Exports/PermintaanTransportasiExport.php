@@ -13,7 +13,7 @@ use PhpOffice\PhpSpreadsheet\Cell\DefaultValueBinder;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class PermintaanTransportasiExport extends DefaultValueBinder implements FromView, WithColumnFormatting, ShouldAutoSize
+class PermintaanTransportasiExport extends DefaultValueBinder  implements  FromView, WithColumnFormatting, ShouldAutoSize
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -35,7 +35,10 @@ class PermintaanTransportasiExport extends DefaultValueBinder implements FromVie
     public function columnFormats(): array
     {
         return [
-            'K' => NumberFormat::FORMAT_DATE_YYYYMMDD,
+            'B' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'H' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'I' => NumberFormat::FORMAT_DATE_TIME3,
+            'K' => NumberFormat::FORMAT_DATE_DDMMYYYY,
         ];
     }
 }
