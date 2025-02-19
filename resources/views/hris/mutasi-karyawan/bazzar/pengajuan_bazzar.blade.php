@@ -22,6 +22,16 @@
     background-color: #ffe6e6;
 }
 
+/* Misalnya, modal edit memiliki z-index lebih tinggi daripada modal list */
+#ajax-modal-edit1 {
+    z-index: 1060 !important;
+}
+#ajax-modal-edit1 .modal-dialog {
+    z-index: 1070 !important;
+}
+
+
+
 </style>
 @section('mainarea')
 <?php ini_set('date.timezone', 'Asia/Jakarta'); ?>
@@ -138,88 +148,22 @@
 
     <div class="row p-3">
         <div class="col-md-12">
-            <div clasl="card-header">
-                <ul class="nav nav-tabs mx-0 mb-3" id="myTab" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" id="pending-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="true">Waiting</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="approve-tab" data-toggle="tab" href="#approve_tab" role="tab" aria-controls="approve" aria-selected="false">approve</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="reject-tab" data-toggle="tab" href="#reject_tab" role="tab" aria-controls="reject" aria-selected="false">reject</a>
-                    </li>
-                </ul>
-            </div>
             <div class="card card-primary card-outline tab-content">
                     <div class="card-header bg-primary p-3">
                         <div class="card-title">PENGAJUAN KUPON KARYAWAN</div>
                     </div>
-                    <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
+                    <div class=""  aria-labelledby="">
                         <div class="card-body">
-                            <div class="d-flex align-items-center justify-content-start">
-                                <button type="submit" class="btn mr-2 ml-1 mb-2 btn-secondary BtnVerifikasiOt" onclick="handleApprove()" >Approve</button>
-                                <button type="submit"  class="btn mr-2 ml-1 mb-2 btn-danger BtnVerifikasiOt" onclick="handleReject()" >Reject</button>
-                            </div>
+
                             <div class="table-responsive">
-                                <table id="datatable_pending" class="table  table-bordered table-sm w-100 table-hover">
+                                <table id="datatable_all" class="table  table-bordered table-sm w-100 table-hover">
                                     <thead class="table-primary">
                                         <tr>
-                                            <th>No.</th>
-                                            <th> <input type="checkbox" onclick="toggle(this);"></th>
-                                            <th>Enroll id</th>
-                                            <th>Nama</th>
-                                            <th>Department</th>
+                                            <th>Act.</th>
+                                            <th>Tgl Pengajuan</th>
                                             <th>Bagian</th>
-                                            <th>Status</th>
+                                            <th>JML PER BAGIAN</th>
                                             <th>Jumlah</th>
-                                            <th>Status</th>
-                                            <th>Dibuat</th>
-                                            <th>Act</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade show" id="approve_tab" role="tabpanel" aria-labelledby="approve-tab">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="datatable_approve" class="table table-bordered table-sm w-100 table-hover">
-                                    <thead class="table-primary">
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Enroll id</th>
-                                            <th>Nama</th>
-                                            <th>Department</th>
-                                            <th>Bagian</th>
-                                            <th>Status</th>
-                                            <th>Jumlah</th>
-                                            <th>Status</th>
-                                            <th>Dibuat</th>
-                                            <th>Act</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade show" id="reject_tab" role="tabpanel" aria-labelledby="reject-tab">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="datatable_reject" class="table table-bordered table-sm w-100 table-hover">
-                                    <thead class="table-primary">
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Enroll id</th>
-                                            <th>Nama</th>
-                                            <th>Department</th>
-                                            <th>Bagian</th>
-                                            <th>Status</th>
-                                            <th>Jumlah</th>
-                                            <th>Status</th>
-                                            <th>Dibuat</th>
-                                            <th>Act</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -230,7 +174,8 @@
         </div>
     </div>
 
-    <div class="modal fade" id="ajax-modal-edit1" role="dialog" data-backdrop="static" aria-hidden="true">
+
+    <div class="modal fade" id="ajax-modal-edit1"  role="dialog" data-backdrop="static" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="row">
                 <div class="col-md-12">
@@ -307,6 +252,115 @@
             </div>
         </div>
     </div>
+
+
+    <div class="modal fade" id="ajax-modal-list" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document" style="max-width: 85%;">
+            <div class="modal-content">
+                <div class="modal-header bg-primary p-2">
+                    <h4 class="modal-title pl-2 font-weight-bold" id="title-modal-list"></h4>
+                    <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
+                        <i class="fa fa-remove"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row p-3">
+                        <div class="col-md-12">
+                            <div clasl="card-header">
+                                <ul class="nav nav-tabs mx-0 mb-3" id="myTab" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="pending-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="true">Waiting</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="approve-tab" data-toggle="tab" href="#approve_tab" role="tab" aria-controls="approve" aria-selected="false">approve</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="reject-tab" data-toggle="tab" href="#reject_tab" role="tab" aria-controls="reject" aria-selected="false">reject</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="card card-primary card-outline tab-content">
+                                    <div class="card-header bg-primary p-3">
+                                        <div class="card-title">PENGAJUAN KUPON KARYAWAN</div>
+                                    </div>
+                                    <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center justify-content-start">
+                                                <button type="submit" class="btn mr-2 ml-1 mb-2 btn-secondary BtnVerifikasiOt" onclick="handleApprove()" >Approve</button>
+                                                <button type="submit"  class="btn mr-2 ml-1 mb-2 btn-danger BtnVerifikasiOt" onclick="handleReject()" >Reject</button>
+                                            </div>
+                                            <div class="table-responsive">
+                                                <table id="datatable_pending" class="table  table-bordered table-sm w-100 table-hover">
+                                                    <thead class="table-primary">
+                                                        <tr>
+                                                            <th>No.</th>
+                                                            <th> <input type="checkbox" onclick="toggle(this);"></th>
+                                                            <th>Enroll id</th>
+                                                            <th>Nama</th>
+                                                            <th>Department</th>
+                                                            <th>Bagian</th>
+                                                            <th>Status</th>
+                                                            <th>Jumlah</th>
+                                                            <th>Status</th>
+                                                            <th>Dibuat</th>
+                                                            <th>Act</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade show" id="approve_tab" role="tabpanel" aria-labelledby="approve-tab">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table id="datatable_approve" class="table table-bordered table-sm w-100 table-hover">
+                                                    <thead class="table-primary">
+                                                        <tr>
+                                                            <th>No.</th>
+                                                            <th>Enroll id</th>
+                                                            <th>Nama</th>
+                                                            <th>Department</th>
+                                                            <th>Bagian</th>
+                                                            <th>Status</th>
+                                                            <th>Jumlah</th>
+                                                            <th>Status</th>
+                                                            <th>Dibuat</th>
+                                                            <th>Act</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade show" id="reject_tab" role="tabpanel" aria-labelledby="reject-tab">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table id="datatable_reject" class="table table-bordered table-sm w-100 table-hover">
+                                                    <thead class="table-primary">
+                                                        <tr>
+                                                            <th>No.</th>
+                                                            <th>Enroll id</th>
+                                                            <th>Nama</th>
+                                                            <th>Department</th>
+                                                            <th>Bagian</th>
+                                                            <th>Status</th>
+                                                            <th>Jumlah</th>
+                                                            <th>Status</th>
+                                                            <th>Dibuat</th>
+                                                            <th>Act</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('footerjs')
     <!-- DataTables & Plugins -->
@@ -326,16 +380,16 @@
     }
     </style>
 
-<script>
-    function toggle(source) {
-        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        for (var i = 0; i < checkboxes.length; i++) {
-            if (checkboxes[i] != source)
-                checkboxes[i].checked = source.checked;
+    <script>
+        function toggle(source) {
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i] != source)
+                    checkboxes[i].checked = source.checked;
+            }
         }
-    }
 
-</script>
+    </script>
 
 
     <script>
@@ -407,7 +461,7 @@
                     jumlah: jumlah_value,
                 },
                 success: function(response) {
-                    dataTableReload();
+                    dataTableDepartmentReload();
 
                     $("#selectEmployeeID").val(null).trigger("change");
                     $("#txt_name").val('');
@@ -425,7 +479,6 @@
 
 
         $(document).ready(function() {
-            console.log($('#username_who_access').val()=='IT');
             $("#selectEmployeeID").val('');
             $("#txt_name").val('');
             $("#txt_enroll_id").val('');
@@ -434,7 +487,7 @@
             $("#txt_staff").val('');
             $("#txt_nik").val('');
             $("#txt_jumlah").val('');
-            dataTableReload();
+            dataTableDepartmentReload();
             $("#txt_jumlah").on("input", function() {
                 let value = $(this).val().replace(/[^\d]/g, ""); // Hanya angka
                 if (value) {
@@ -461,21 +514,113 @@
         })
 
 
-        function dataTableReload() {
-            let activeTab = $(".nav-tabs .nav-link.active").attr("id");
-            let status = activeTab.replace("-tab", ""); // Ambil status dari tab yang aktif
-            let tableId = "#datatable_" + status; // Tentukan ID tabel yang sesuai
+        function dataTableDepartmentReload() {
+            let tableId = "#datatable_all"; // Tentukan ID tabel yang sesuai
 
             // Hapus DataTable lama jika ada
             if ($.fn.DataTable.isDataTable(tableId)) {
                 $(tableId).DataTable().clear().destroy();
             }
 
+            // Tambahkan kolom lainnya
+            let columns = [
+                {
+                    data: 'id',
+                    className: "text-center",
+                    width:'15%',
+                    render: (data, type, row, meta) => {
+                        return `
+                            <div>
+                                <a style="text-align:center; color:white;" class="btn btn-primary btn-sm" onclick="showModalDepartment('${row.sub_dept_name}', '${row.sub_dept_id}')">
+                                    <i class="fa fa-search"></i>
+                                </a>
+                                <a class="btn btn-gray btn-sm mt-1" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_voucher_bagian('${row.sub_dept_id}')">
+                                    <i class="fa fa-print" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        `;
+                    }
+                },
+                {
+                    data: 'created_at',
+                    className: "text-center",
+                    render: (data, type, row, meta) => {
+                            return `
+                            <div class="">
+                                        `+moment(data.created_at).format('DD MMMM YYYY - HH:mm')+`
+                            </div>
+                            `
+                    }
+                 },
+                { data: 'sub_dept_name' },
+                { data: 'jml_data', className: "text-center", },
+                {
+                    data: 'jumlah',
+                    className: "text-center",
+                    render: function(data, type, row) {
+                        if (!data) return "Rp 0"; // Jika kosong, tampilkan Rp 0
+                        return "Rp " + parseInt(data, 10).toLocaleString("id-ID");
+                    }
+                },
+
+            ];
+            // Inisialisasi DataTable
+            $(tableId).DataTable({
+                processing: true,
+                paging: false,
+                searching: false,
+                ordering: false,
+                destroy: true,
+                ajax: {
+                    url: '{{ route('bazzar.get_bazzar_detail') }}',
+                    dataSrc: "data",
+                    data: {
+                        status: status, // Kirim status yang sesuai
+                    },
+                    onSuccess: function (response) {
+                        console.log(response);
+                    }
+                },
+                columns: columns
+            });
+        }
+
+        function showModalDepartment(data, id) {
+        // Set judul modal
+        $("#title-modal-list").text('PENGAJUAN KUPON BAZZAR : ' + data);
+        // Simpan id di modal (atribut data)
+        $("#ajax-modal-list").data("subDeptId", id);
+        // Pastikan default tab adalah pending
+        $("#pending-tab").tab('show');
+        // Buka modal
+        $("#ajax-modal-list").modal('show');
+
+        // Panggil reload untuk tab default pending
+        dataTableReload('pending', id);
+    }
+
+    // Pasang event handler untuk tab, hanya sekali saja
+    $(document).on("shown.bs.tab", ".nav-tabs .nav-link", function (e) {
+        let activeTab = $(e.target).attr("id"); // Ambil ID tab aktif yang baru
+        let status = activeTab.replace("-tab", ""); // Bersihkan format ID
+        // Ambil nilai id yang sudah disimpan di modal
+        let id = $("#ajax-modal-list").data("subDeptId");
+        dataTableReload(status, id);
+    });
+
+
+
+        function dataTableReload(status, id) {
+            let tableId = "#datatable_" + status;
+            console.log('id',id)
+            // Hapus DataTable lama jika ada
+            if ($.fn.DataTable.isDataTable(tableId)) {
+                $(tableId).DataTable().clear().destroy();
+            }
             // Tentukan apakah kolom checkbox harus ditampilkan
             let isPending = status === "pending"; // Hanya tampil jika di tab "pending"
             let isApprove = status === "approve"; // Hanya tampil jika di tab "pending"
             let isReject = status === "reject"; // Hanya tampil jika di tab "pending"
-
             // Konfigurasi kolom
             let columns = [
                 {
@@ -562,6 +707,7 @@
                     render: (data, type, row, meta) => {
                         let pdfButton = "";
                         let editButton = "";
+                        let rowStr = encodeURIComponent(JSON.stringify(row));
                         if (isApprove) {
                             pdfButton = `
                                 <a class='btn btn-danger btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_laporan_pengajuan(`+row.id+`, '` + row.nik + `')">
@@ -574,7 +720,7 @@
                         }
                         if(isPending || isApprove){
                             editButton = `<a style="text-align:center" class='btn btn-primary btn-sm'
-                                    onclick="edit_data(` + row.id + `, '` + row.nik + `');">
+                                    onclick="edit_data('` + rowStr + `');">
                                     <i class='fa fa-edit text-white'></i>
                                 </a>`;
                         }
@@ -605,8 +751,11 @@
                 ajax: {
                     url: '{{ route('bazzar.get_bazzar') }}',
                     dataSrc: "data",
+                    cache: false,
                     data: {
-                        status: status, // Kirim status yang sesuai
+                        status: status,
+                        sub_dept_id: id,
+                        _: new Date().getTime()
                     },
                 },
                 columns: columns,
@@ -617,6 +766,7 @@
                         $(".BtnVerifikasiOt").hide(); // Sembunyikan tombol jika tidak ada data
                     }
                 }
+
             });
         }
 
@@ -631,6 +781,10 @@
             var url = 'bazzar/export_voucher?id='+id;
             window.open(url, '_blank');
 
+        }
+        function export_voucher_bagian(sub_dept_id) {
+            var url = 'bazzar/export_voucher?sub_dept_id='+sub_dept_id;
+            window.open(url, '_blank');
         }
 
         function export_laporan_pengajuan_excel(id_n, no_form_n) {
@@ -673,7 +827,7 @@
                                 msg: "<b>Info:</b> Data berhasil di hapus",
                                 type: "info"
                             });
-                            dataTableReload();
+                            dataTableDepartmentReload();
                             $('.modal').modal('hide');
 
                         }, error: function (jqXHR) {
@@ -683,7 +837,7 @@
                             for (let key in res.errors) {
                                 message = res.errors[key];
                             }
-                            dataTableReload();
+                            dataTableDepartmentReload();
                             notif({
                                     msg: "<b>Info:</b> Terjadi kesalahan",
                                     type: "error"
@@ -764,38 +918,21 @@
             });
         }
 
-        function edit_data(editData, nik)
+        function edit_data(editData)
         {
-            let activeTab = $(".nav-tabs .nav-link.active").attr("id");
-            let status = activeTab.replace("-tab", ""); // Ambil status dari tab yang aktif
-            let tableId = "#datatable_" + status; // Tentukan ID tabel yang sesuai
+            editData = JSON.parse(decodeURIComponent(editData));
+            console.log('editData',editData)
             if (editData) {
                 $("#ajax-modal-edit1").modal('show');
-                var currentRow = $(tableId).find("tr:eq(" + editData + ")").prevObject;
-                if(tableId == "#datatable_pending"){
-                    var employee_name = currentRow.find("td:eq(3)").html();
-                    var department_name = currentRow.find("td:eq(4)").html();
-                    var bagian_name = currentRow.find("td:eq(5)").html();
-                    var status_staff = currentRow.find("td:eq(6)").html();
-                    var jumlah = currentRow.find("td:eq(7)").html();
-                } else if(tableId == "#datatable_approve"){
-                    var employee_name = currentRow.find("td:eq(2)").html();
-                    var department_name = currentRow.find("td:eq(3)").html();
-                    var bagian_name = currentRow.find("td:eq(4)").html();
-                    var status_staff = currentRow.find("td:eq(5)").html();
-                    var jumlah = currentRow.find("td:eq(6)").html();
-                }
 
-
-
-                $('#title-modal-edit1').text('EDIT PENGAJUAN KUPON : '+ employee_name);
-                $('#id_pengajuan').val(editData);
-                $('#employee_name_edit1').val(employee_name);
-                $('#department_edit1').val(department_name);
-                $('#bagain_edit1').val(bagian_name);
-                $('#status_staff_edit1').val(status_staff);
-                $('#nik_edit1').val(nik);
-                $('#jumlah_edit1').val(jumlah);
+                $('#title-modal-edit1').text('EDIT PENGAJUAN KUPON : '+ editData.employee_name);
+                $('#id_pengajuan').val(editData.id);
+                $('#employee_name_edit1').val(editData.employee_name);
+                $('#department_edit1').val(editData.department_name);
+                $('#bagain_edit1').val(editData.sub_dept_name);
+                $('#status_staff_edit1').val(editData.status_staff);
+                $('#nik_edit1').val(editData.nik);
+                $('#jumlah_edit1').val(editData.jumlah);
             }
 
         };
@@ -803,18 +940,18 @@
         $('body').on('click', '#btn-update_edit1', function (event) {
             var jumlah_edit = $('#jumlah_edit1').val();
             var id_pengajuan = $('#id_pengajuan').val();
-            console.log('jumlah_edit',jumlah_edit)
-            console.log('id_pengajuan',id_pengajuan)
+            let jumlah_value = jumlah_edit.trim().replace(/Rp\s?|[^0-9]/g, "");
             $('#btn-update_edit1').addClass("btn-loading");
             $('#btn-update_edit1').html('Loading...');
             $('#btn-update_edit1').attr("disabled", true);
-
+            console.log('id_pengajuan',id_pengajuan)
+            console.log('jumlah_value',jumlah_value)
             $.ajax({
                 type:"POST",
                 url: "{{route('bazzar.edit_pengajuan')}}",
                 data: {
                     id_pengajuan:id_pengajuan,
-                    jumlah_edit:jumlah_edit
+                    jumlah_edit:jumlah_value
                 },
                 success: function(res){
                     notif({
@@ -828,6 +965,10 @@
 
                     $("#ajax-modal-edit1").modal('hide');
                     dataTableReload();
+                    dataTableDepartmentReload();
+                    setTimeout(function myFunction() {
+                            location.reload();
+                          }, 3000);
                 },
                 error: function(res){
                     notif({

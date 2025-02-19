@@ -13,6 +13,7 @@ use Dompdf\Options;
 use Dompdf\FontMetrics;
 use App\Models\EmployeeAtribut;
 use App\Models\PengajuanBazzar;
+use App\Models\VoucherBazzar;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use DateTime;
@@ -107,11 +108,19 @@ class BazzarController extends AdminBaseController
     {
 
         $user = Auth::guard('admin')->user()->name;
-        $line = $request->cboline;
-        $tgl_filter = $request->tgl_filter;
-        $tgl_lembur = $request->tgl_lembur;
+        $sub_dept_id = $request->sub_dept_id;
         if ($request->ajax()) {
-            $data_tmp = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('status', $request->status)->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->get();
+            $data_tmp = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('employee_atribut.sub_dept_id', $sub_dept_id)->where('status', $request->status)->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->get();
+            return DataTables::of($data_tmp)->toJson();
+        }
+
+    }
+    public function get_bazzar_detail(Request $request)
+    {
+
+        $user = Auth::guard('admin')->user()->name;
+        if ($request->ajax()) {
+            $data_tmp = PengajuanBazzar::select(DB::raw('SUM(pengajuan_bazzar.jumlah) as jumlah') , DB::raw('COUNT(*) as jml_data'),'pengajuan_bazzar.created_at', 'employee_atribut.nik', 'employee_atribut.employee_name','employee_atribut.sub_dept_name', 'employee_atribut.sub_dept_id','employee_atribut.department_name', 'employee_atribut.status_staff')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->groupby('employee_atribut.sub_dept_id')->get();
             return DataTables::of($data_tmp)->toJson();
         }
 
@@ -124,6 +133,43 @@ class BazzarController extends AdminBaseController
         $ids = $request->input('ids');
 
         if (!empty($ids)) {
+            $pengajuanList = PengajuanBazzar::select('employee_atribut.*','pengajuan_bazzar.id','pengajuan_bazzar.jumlah')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->whereIn('id', $ids)->get(['id', 'jumlah']);
+            $currentYear = date('Y');
+            $voucherCount = DB::table('voucher_bazzar')
+                ->where('nomor_voucher', 'like', $currentYear . '.%')
+                ->count();
+            // Simpan voucher
+
+            $vouchers = [];
+            $nextVoucherNumber = $voucherCount + 1;
+            foreach ($pengajuanList as $pengajuan) {
+                $jumlahVoucher = floor($pengajuan->jumlah / 50000);
+
+                for ($i = 0; $i < $jumlahVoucher; $i++) {
+                    $formattedVoucher = sprintf(
+                        '%s.%05d.%s %s',
+                        $currentYear,
+                        $nextVoucherNumber,
+                        $pengajuan->enroll_id,
+                        $pengajuan->employee_name
+                    );
+
+                    $vouchers[] = [
+                        'nomor_voucher' => $formattedVoucher,
+                        'id_pengajuan_bazzar' => $pengajuan->id,
+                        'enroll_id' => $pengajuan->enroll_id,
+                        'nominal' => ($jumlahVoucher * 50000) / $jumlahVoucher,
+                    ];
+
+                    $nextVoucherNumber++;
+                }
+            }
+
+            // Insert ke database
+            if (!empty($vouchers)) {
+                DB::table('voucher_bazzar')->insert($vouchers);
+            }
+
             PengajuanBazzar::whereIn('id', $ids)->update([
                 'status' => 'approve',
                 'operator' => $user,
@@ -171,8 +217,7 @@ class BazzarController extends AdminBaseController
         $user= Auth::guard('admin')->user()->name;
         $ids = $request->input('id_pengajuan');
         $jumlah = $request->input('jumlah_edit');
-
-        if (!empty($ids)) {
+        if ($ids) {
             PengajuanBazzar::where('id', $ids)->update([
                 'jumlah' => $jumlah,
                 'operator' => $user,
@@ -188,7 +233,6 @@ class BazzarController extends AdminBaseController
                 'message' => 'Tidak ada data yang dipilih'
             ]);
         }
-
     }
 
     public function export_laporan_pengajuan(Request $request)
@@ -205,7 +249,15 @@ class BazzarController extends AdminBaseController
         return $pdf;
     }
     public function export_voucher(){
-        $data=PengajuanBazzar::where('id',request()->id)->get();
+        if(request()->id){
+            $data = VoucherBazzar::where('id_pengajuan_bazzar', request()->id)
+            ->orderBy('nomor_voucher', 'ASC')
+            ->get();
+        }else{
+            $data = VoucherBazzar::leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'voucher_bazzar.enroll_id')->where('sub_dept_id', request()->sub_dept_id)
+            ->orderBy('nomor_voucher', 'ASC')
+            ->get();
+        }
         $fileName='Voucher_Bazzar_'.$data[0]->employee->employee_name.' '.date('Y-m-d').' '.rand(10,1000000);
         $pdf = PDF::loadView('hris.mutasi-karyawan.bazzar.export-voucher-pdf',["data" => $data])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
         return $pdf;
