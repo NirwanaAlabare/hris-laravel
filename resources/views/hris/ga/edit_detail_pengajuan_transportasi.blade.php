@@ -488,6 +488,7 @@
         });
     };
     $('#tujuan_lainnya').on('click',function(){
+        array_keterangan[0]=$('#keterangan_barang').val();
         var id=$('#id_request').val();
         var provinsi=$('#provinsi_2').val();
         var city=$('#cities_2').val();
@@ -496,10 +497,6 @@
         var detail_alamat=$('#detail_alamat_2').val();
         var tanggal_kedatangan=$('#tanggal_kedatangan').val();
         var jam_kedatangan=$('#jam_kedatangan').val();
-        var tujuan_pemberang = [];
-        $("input:checkbox[name=tujuan_pemberangkatan]:checked").each(function() {
-            tujuan_pemberang.push($(this).val());
-        });
         $.ajax({
             type:"POST",
             url: "{{route('hris.ga.add_another_route_2')}}",
@@ -534,7 +531,6 @@
                         array_detail_alamat[0]=res[0].detail_alamat;
                         array_tanggal_kedatangan[0]=res[0].tanggal_kedatangan;
                         array_jam_kedatangan[0]=res[0].jam_kedatangan;
-                        array_keterangan[0]=tujuan_pemberang;
                     },
                     error: function(res){
                         swal({
@@ -714,7 +710,7 @@
                         <input id="jam_kedatangan_yang_ke_'+value+'" name="jam_kedatangan_ke[]" type="time" class="form-control" value="'+array_jam_kedatangan[key]+'" disabled>\
                     </td>\
                     <td style="padding:4px" width="15%">\
-                        <input id="keterangan_yang_ke_'+value+'" name="keterangan_ke[]" class="form-control" value="'+array_keterangan[key]+'" disabled>\
+                        <input id="keterangan_yang_ke_'+value+'" name="keterangan_ke[]" class="form-control" value="'+array_keterangan[key]+'" style="background-color:white">\
                     </td>\
                     <td style="padding:4px" width="3%">\
                         <a href="#" class="btn btn-primary px-1" onclick="add_route_more('+key+','+value+')" id="add_route_more_button_'+value+'"><i class="fa fa-plus"></i></a>\
@@ -747,7 +743,7 @@
                             <input id="jam_kedatangan_yang_ke_'+value+'" name="jam_kedatangan_ke[]" type="time" class="form-control" value="'+array_jam_kedatangan[key]+'" disabled>\
                         </td>\
                         <td style="padding:4px" width="15%">\
-                            <input id="keterangan_yang_ke_'+value+'" name="keterangan_ke[]" class="form-control" value="'+array_keterangan[key]+'" disabled>\
+                            <input id="keterangan_yang_ke_'+value+'" name="keterangan_ke[]" class="form-control" value="'+array_keterangan[key]+'" style="background-color:white">\
                         </td>\
                         <td style="padding:4px" width="3%">\
                         </td>\
@@ -818,7 +814,7 @@
                                 <input id="jam_kedatangan_yang_ke_'+value+'" name="jam_kedatangan_ke[]" type="text" class="form-control" value="'+(array_jam_kedatangan[key]).substring(0,5)+'" style="background-color:white; cursor:pointer;">\
                             </td>\
                             <td style="padding:4px" width="15%">\
-                                <input id="keterangan_yang_ke_'+value+'" name="keterangan_ke[]" style="background-color:white;" class="form-control" value="'+array_keterangan[key]+'">\
+                                <input id="keterangan_yang_ke_'+value+'" name="keterangan_ke[]" style="background-color:white;" class="form-control" value="'+array_keterangan[key]+'" style="background-color:white;">\
                             </td>\
                             <td style="padding:4px" width="3%">\
                                 <a href="#" class="btn btn-danger px-1" onclick="delete_this_route('+value+')" id="delete_this_route_button_'+value+'"><i class="fa fa-minus"></i></a>\
@@ -999,6 +995,7 @@
             array_keter.forEach(function(value){
                 array_keterangan.push(value);
             });
+            $('#keterangan_barang').val(array_keter[0]);
             $('#tujuanLainnyaModal').modal('hide');
         }
     }
@@ -1467,7 +1464,6 @@
                 $('#satuan').val('');
                 $('#instansi').val('');
                 $('#nama_instansi').val('');
-                $('#keterangan_barang').val('');
             }
         }
     });
@@ -1482,7 +1478,6 @@
                 $('#satuan').val('');
                 $('#instansi').val('');
                 $('#nama_instansi').val('');
-                $('#keterangan_barang').val('');
             }
         }
     });

@@ -408,7 +408,7 @@
                             <input type="time" id="jam_kedatangan_yang_ke_1" name="jam_kedatangan_ke[]" class="form-control" disabled>
                         </td>
                         <td style="padding:4px" width="15%">
-                            <input type="text" id="keterangan_yang_ke_1" name="keterangan_ke[]" class="form-control" disabled>
+                            <input type="text" id="keterangan_yang_ke_1" name="keterangan_ke[]" class="form-control" style="background-color: white;">
                         </td>
                         <td style="padding:4px" width="2%">
                             <a href="#" id="add_route_satu" class="btn btn-primary px-1" onclick="add_route()"><i class="fa fa-plus"></i></a>
@@ -771,6 +771,7 @@
         if(!province.includes('') && !city.includes('') && !district.includes('') && !subdistrict.includes('') && !detail_alamat.includes('') && !tanggal_kedatangan.includes('') && !jam_kedatangan.includes('')){
             $('#tujuanLainnyaModal').modal('hide');
         }
+        $('#keterangan_barang').val(keterangan[0]);
     }
     function delete_this_route(count){
         var tujuan = $("input[name='tujuan_ke[]']").map(function(){return $(this).val();}).get();
@@ -1343,11 +1344,7 @@
                     $('#tanggal_kedatangan_yang_ke_1').val(tanggal_kedatangan);
                     $('#jam_kedatangan_yang_ke_1').val(jam_kedatangan);
                     var tujuan_pemberangkatan_ke_1 = [];
-                    $("input:checkbox[name=tujuan_pemberangkatan]:checked").each(function() {
-                        tujuan_pemberangkatan_ke_1.push($(this).val());
-                    });
-                    var tujuan_pemberangkatan_=tujuan_pemberangkatan_ke_1.toString();
-                    $('#keterangan_yang_ke_1').val(tujuan_pemberangkatan_);
+                    $('#keterangan_yang_ke_1').val($('#keterangan_barang').val());
                 },
                 error: function(error){
                     let err_log=error.responseJSON.errors;
@@ -1424,7 +1421,6 @@
                     $('#satuan').val('');
                     $('#instansi').val('');
                     $('#nama_instansi').val('');
-                    $('#keterangan_barang').val('');
                 }
             }
         });
@@ -1439,7 +1435,6 @@
                     $('#satuan').val('');
                     $('#instansi').val('');
                     $('#nama_instansi').val('');
-                    $('#keterangan_barang').val('');
                 }
             }
         });
