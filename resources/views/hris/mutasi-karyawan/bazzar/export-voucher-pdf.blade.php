@@ -52,7 +52,7 @@
                     </div>
                     <div class="barcode" style="display: flex; margin-top: 1px;  position: absolute; bottom: -6px; right: 0px;">
                         <div align="right">
-                            <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=3872/HRD-NAC/EXT/XII/2024' . '&type=SP_HADIR', 'QRCODE') }}" alt="barcode" style="width: 53px; height: 53px;background-color:white" />
+                            <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . $value->nomor_voucher  . '&type=VOUCHER', 'QRCODE') }}" alt="barcode" style="width: 53px; height: 53px;background-color:white" />
                         </div>
                     </div>
                 </td>
