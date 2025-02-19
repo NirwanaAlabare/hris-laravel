@@ -585,6 +585,9 @@
                                 <a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapus('` + row.id + `');">
                                 <i class='fa fa-trash'></i>
                                 </a>
+                                <a class='btn btn-dark btn-sm mt-1' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_voucher(`+row.id+`, '` + row.nik + `')">
+                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                </a>
                             </div>
                         `;
                     }
@@ -620,6 +623,12 @@
         function export_laporan_pengajuan(id_n, no_form_n) {
             var id=id_n;
             var url = 'bazzar/export_laporan_pengajuan?id='+id;
+            window.open(url, '_blank');
+
+        }
+        function export_voucher(id_n, no_form_n) {
+            var id=id_n;
+            var url = 'bazzar/export_voucher?id='+id;
             window.open(url, '_blank');
 
         }

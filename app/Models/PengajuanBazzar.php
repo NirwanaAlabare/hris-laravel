@@ -33,5 +33,7 @@ class PengajuanBazzar extends Model
         'updated_at',
     ];
 
-
+    public function employee(){
+        return $this->belongsTo(EmployeeAtribut::class,'enroll_id','enroll_id');
+    }
 }
