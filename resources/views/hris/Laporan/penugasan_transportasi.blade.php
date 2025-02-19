@@ -124,11 +124,6 @@
                     <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">:</td>
                     <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">{{$value->nama_instansi}}</td>
                 </tr>
-                <tr>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">Keterangan</td>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">:</td>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">{{$value->keterangan_barang}}</td>
-                </tr>
             @endif
             @if (str_contains($value->tujuan_pemberangkatan,'antar_tamu')||str_contains($value->tujuan_pemberangkatan,'jemput_tamu'))
                 <tr>
