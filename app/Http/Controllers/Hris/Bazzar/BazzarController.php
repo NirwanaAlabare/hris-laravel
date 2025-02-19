@@ -251,11 +251,11 @@ class BazzarController extends AdminBaseController
     public function export_voucher(){
         if(request()->id){
             $data = VoucherBazzar::where('id_pengajuan_bazzar', request()->id)
-            ->orderBy('nomor_voucher', 'ASC')
+            ->orderBy('voucher_bazzar.enroll_id', 'ASC')
             ->get();
         }else{
             $data = VoucherBazzar::leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'voucher_bazzar.enroll_id')->where('sub_dept_id', request()->sub_dept_id)
-            ->orderBy('nomor_voucher', 'ASC')
+            ->orderBy('voucher_bazzar.enroll_id', 'ASC')
             ->get();
         }
         $fileName='Voucher_Bazzar_'.$data[0]->employee->employee_name.' '.date('Y-m-d').' '.rand(10,1000000);
