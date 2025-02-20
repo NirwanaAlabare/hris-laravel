@@ -37,24 +37,32 @@
 </head>
 
 <body>
-    <table width="100%" page-break-inside: auto; >
-    <thead>
-        <tr>
-            @foreach ($data as $key=>$value)
-            @for ($i=0;$i<($value->jumlah/50000);$i++)
-            <td style="height:265px;vertical-align:top">
-                <div class="parent">
-                    <img class="image1" width="100%" src="{{ public_path('/assets/images/hrd/voucher bazar.png') }}">
-                    <h6 class="text1">2025.<span style="color:red;font-size:9pt">{{sprintf("%05d", ($i+1))}}</span>.{{$value->enroll_id}}.{{$value->employee->employee_name}}</h6>
-                </div>
-            </td>
-            @if (($i+1)%2==0)
-            </tr><tr>
-            @endif
-            @endfor
-            @endforeach
-        </tr>
-    </thead>
+    <table width=" {{ count($data) === 1 ? '50%' : '100%' }}"  style="page-break-inside:auto;">
+        <thead>
+            {{$data}}
+            <tr>
+                @foreach ($data as $key=>$value)
+                <td style="height:265px;vertical-align:top;position: relative;">
+                    <div class="parent">
+                        <img class="image1" width="100%" src="{{ public_path('/assets/images/hrd/voucher bazar.png') }}">
+                        <h6 class="text1"><span style="color:red;font-size:9pt">{{$value->nomor_voucher}}</span></h6>
+                    </div>
+                    <div class="barcode" style="display: flex; margin-top: 1px; position: absolute; bottom: -2px; left: 14px;">
+                            <h6>{{$value->employee->sub_dept_name}}</h6>
+                    </div>
+                    <div class="barcode" style="display: flex; margin-top: 1px;  position: absolute; bottom: -6px; right: 0px;">
+                        <div align="right">
+                            <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . $value->nomor_voucher  . '&type=VOUCHER', 'QRCODE') }}" alt="barcode" style="width: 53px; height: 53px;background-color:white" />
+                        </div>
+                    </div>
+                </td>
+                @if (($key+1)%2==0)
+                </tr><tr>
+                @endif
+                @endforeach
+            </tr>
+        </thead>
+    </table>
     <script type="text/php">
     if ( isset($pdf) ) {
         $pdf->page_script('
@@ -69,6 +77,7 @@
         ');
     }
     </script>
+
 </body>
 
 </html>
