@@ -775,12 +775,17 @@
         if(!province.includes('') && !city.includes('') && !district.includes('') && !subdistrict.includes('') && !detail_alamat.includes('') && !tanggal_kedatangan.includes('') && !jam_kedatangan.includes('')){
             $('#tujuanLainnyaModal').modal('hide');
         }
-        if($('#checkbox_3').is(':checked')||$('#checkbox_4').is(':checked'))
+        
+        if(($('#checkbox_3').is(':checked')||$('#checkbox_4').is(':checked')) && !$('#checkbox_1').is(':checked') && !$('#checkbox_2').is(':checked'))
         {
-            $('#keterangan_barang').val(keterangan[0]);
+            $('#instansi').val($('#instansi_yang_ke_1').val());
+        }else if(($('#checkbox_1').is(':checked')||$('#checkbox_2').is(':checked')) && !$('#checkbox_3').is(':checked') && !$('#checkbox_4').is(':checked')){
+            $('#instansi_tamu').val($('#instansi_yang_ke_1').val());
+        }else if(($('#checkbox_1').is(':checked')||$('#checkbox_2').is(':checked')) && ($('#checkbox_3').is(':checked') || $('#checkbox_4').is(':checked'))){
+        }else{
+            $('#instansi').val('');
+            $('#instansi_tamu').val('');
         }
-        $('#instansi_tamu').val($('#instansi_yang_ke_1').val());
-        $('#instansi').val($('#instansi_yang_ke_1').val());
     }
     function delete_this_route(count){
         var tujuan = $("input[name='tujuan_ke[]']").map(function(){return $(this).val();}).get();
@@ -1326,8 +1331,6 @@
             var detail_alamat=$('#detail_alamat_2').val();
             var tanggal_kedatangan=$('#tanggal_kedatangan').val();
             var jam_kedatangan=$('#jam_kedatangan').val();
-            var instansi_tamu=$('#instansi_tamu').val();
-            var instansi_barang=$('#instansi').val();
             $.ajax({
                 type:"POST",
                 url: "{{route('hris.ga.add_another_route')}}",
@@ -1361,12 +1364,16 @@
                     }else{
                         $('#keterangan_yang_ke_1').val('');
                     }
-                    if(instansi_tamu!='' || instansi_barang!=''){
-                        if(instansi_tamu==instansi_barang){
-                            $('#instansi_yang_ke_1').val(instansi_tamu);
-                        }else{
-                            $('#instansi_yang_ke_1').val(instansi_tamu+' '+instansi_barang);
-                        }
+                    if(($('#checkbox_3').is(':checked')||$('#checkbox_4').is(':checked')) && !$('#checkbox_1').is(':checked') && !$('#checkbox_2').is(':checked'))
+                    {
+                        $('#instansi_yang_ke_1').val($('#instansi').val());
+                    }else if(($('#checkbox_1').is(':checked')||$('#checkbox_2').is(':checked')) && !$('#checkbox_3').is(':checked') && !$('#checkbox_4').is(':checked'))
+                    {
+                        $('#instansi_yang_ke_1').val($('#instansi_tamu').val());
+                    }else if(($('#checkbox_1').is(':checked')||$('#checkbox_2').is(':checked')) && ($('#checkbox_3').is(':checked') || $('#checkbox_4').is(':checked'))){
+                        $('#instansi_yang_ke_1').val($('#instansi_tamu').val()+' '+$('#instansi').val());
+                    }else{
+                        $('#instansi_yang_ke_1').val('');
                     }
                 },
                 error: function(error){
@@ -1660,12 +1667,16 @@
             $('#kota_yang_ke_1').val(cities_2);
             $('#kecamatan_yang_ke_1').val(districts_2);
             $('#desa_yang_ke_1').val(sub_districts_2);
-            if(instansi_tamu!='' || instansi!=''){
-                if(instansi_tamu==instansi){
-                    $('#instansi_yang_ke_1').val(instansi_tamu);
-                }else{
-                    $('#instansi_yang_ke_1').val(instansi_tamu+' '+instansi);
-                }
+            if(($('#checkbox_3').is(':checked')||$('#checkbox_4').is(':checked')) && !$('#checkbox_1').is(':checked') && !$('#checkbox_2').is(':checked'))
+            {
+                $('#instansi_yang_ke_1').val($('#instansi').val());
+            }else if(($('#checkbox_1').is(':checked')||$('#checkbox_2').is(':checked')) && !$('#checkbox_3').is(':checked') && !$('#checkbox_4').is(':checked'))
+            {
+                $('#instansi_yang_ke_1').val($('#instansi_tamu').val());
+            }else if(($('#checkbox_1').is(':checked')||$('#checkbox_2').is(':checked')) && ($('#checkbox_3').is(':checked') || $('#checkbox_4').is(':checked'))){
+                $('#instansi_yang_ke_1').val($('#instansi_tamu').val()+' '+$('#instansi').val());
+            }else{
+                $('#instansi_yang_ke_1').val('');
             }
             $('#detail_alamat_yang_ke_1').val(detail_alamat_2);
             $('#tanggal_kedatangan_yang_ke_1').val(tanggal_kedatangan);
