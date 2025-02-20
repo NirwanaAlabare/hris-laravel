@@ -775,7 +775,10 @@
         if(!province.includes('') && !city.includes('') && !district.includes('') && !subdistrict.includes('') && !detail_alamat.includes('') && !tanggal_kedatangan.includes('') && !jam_kedatangan.includes('')){
             $('#tujuanLainnyaModal').modal('hide');
         }
-        $('#keterangan_barang').val(keterangan[0]);
+        if($('#checkbox_3').is(':checked')||$('#checkbox_4').is(':checked'))
+        {
+            $('#keterangan_barang').val(keterangan[0]);
+        }
         $('#instansi_tamu').val($('#instansi_yang_ke_1').val());
         $('#instansi').val($('#instansi_yang_ke_1').val());
     }
@@ -1353,7 +1356,11 @@
                     $('#detail_alamat_yang_ke_1').val(detail_alamat);
                     $('#tanggal_kedatangan_yang_ke_1').val(tanggal_kedatangan);
                     $('#jam_kedatangan_yang_ke_1').val(jam_kedatangan);
-                    $('#keterangan_yang_ke_1').val($('#keterangan_barang').val());
+                    if($('#keterangan_barang').val()!=''){
+                        $('#keterangan_yang_ke_1').val($('#keterangan_barang').val());
+                    }else{
+                        $('#keterangan_yang_ke_1').val('');
+                    }
                     if(instansi_tamu!='' || instansi_barang!=''){
                         $('#instansi_yang_ke_1').val(instansi_tamu+' '+instansi_barang);
                     }
@@ -1425,6 +1432,8 @@
         $('#checkbox_3').on('change', function() { 
             if (this.checked) {
                 document.getElementById('tag_jenis_barang').style.display='block';
+                var keterangan = $("input[name='keterangan_ke[]']").map(function(){return $(this).val();}).get();
+                $('#keterangan_barang').val(keterangan[0]);
             }else{
                 if(!document.getElementById("checkbox_4").checked){
                     document.getElementById('tag_jenis_barang').style.display='none';
@@ -1433,12 +1442,16 @@
                     $('#satuan').val('');
                     $('#instansi').val('');
                     $('#nama_instansi').val('');
+                    $('#keterangan_barang').val('');
+                    console.log($('#keterangan_barang').val());
                 }
             }
         });
         $('#checkbox_4').on('change', function() { 
             if (this.checked) {
                 document.getElementById('tag_jenis_barang').style.display='block';
+                var keterangan = $("input[name='keterangan_ke[]']").map(function(){return $(this).val();}).get();
+                $('#keterangan_barang').val(keterangan[0]);
             }else{
                 if(!document.getElementById("checkbox_3").checked){
                     document.getElementById('tag_jenis_barang').style.display='none';
@@ -1447,6 +1460,7 @@
                     $('#satuan').val('');
                     $('#instansi').val('');
                     $('#nama_instansi').val('');
+                    $('#keterangan_barang').val('');
                 }
             }
         });
@@ -1652,7 +1666,7 @@
             $('#detail_alamat_yang_ke_1').val(detail_alamat_2);
             $('#tanggal_kedatangan_yang_ke_1').val(tanggal_kedatangan);
             $('#jam_kedatangan_yang_ke_1').val(jam_kedatangan);
-            $('#keterangan_yang_ke_1').val(tujuan_pemberangkatan);
+            $('#keterangan_yang_ke_1').val(keterangan_barang);
             var tujuan_array = $("input[name='tujuan_ke[]']").map(function(){return $(this).val();}).get();
             var provinsi_array = $("select[name='provinsi_ke[]']").map(function(){return $(this).val();}).get();
             var city_array = $("select[name='kota_ke[]']").map(function(){return $(this).val();}).get();
