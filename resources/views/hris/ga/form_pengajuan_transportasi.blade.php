@@ -62,7 +62,7 @@
                             <select id="pilihan_history" class="form-control col-12" onchange="pilih_history_alamat(1)">
                                 <option value="">History Alamat</option>
                                 @foreach ($tujuan_short as $tujuan)
-                                    <option value="{{$tujuan->prov_id}}-{{$tujuan->city_id}}-{{$tujuan->dis_id}}-{{$tujuan->subdis_id}}-{{$tujuan->detail_alamat}}">{{$tujuan->detail_alamat}} ({{$tujuan->subdistrict}} - {{$tujuan->district}} - {{$tujuan->city}} - {{$tujuan->provinsi}})</option>
+                                    <option value="{{$tujuan->prov_id}}-{{$tujuan->city_id}}-{{$tujuan->dis_id}}-{{$tujuan->subdis_id}}-{{$tujuan->detail_alamat}}-{{$tujuan->instansi}}">{{$tujuan->instansi}} {{$tujuan->detail_alamat}} ({{$tujuan->subdistrict}} - {{$tujuan->district}} - {{$tujuan->city}} - {{$tujuan->provinsi}})</option>
                                 @endforeach
                             </select>
                         </td>
@@ -351,7 +351,7 @@
                             Kelurahan/Desa
                         </th>
                         <th>
-                            Detail Alamat
+                            Instansi & Detail Alamat
                         </th>
                         <th>
                             Tgl Kedatangan
@@ -399,7 +399,8 @@
                             </select>
                         </td>
                         <td style="padding:4px" width="20%">
-                            <input id="detail_alamat_yang_ke_1" name="detail_alamat_ke[]" class="form-control" disabled>
+                            <input id="instansi_yang_ke_1" name="instansi_ke[]" class="form-control" style="background-color: white;" placeholder="Masukkan Instansi">
+                            <input id="detail_alamat_yang_ke_1" name="detail_alamat_ke[]" class="form-control" style="background-color:white" placeholder="Masukkan Detail Alamat">
                         </td>
                         <td style="padding:4px" width="3%">
                             <input type="date" id="tanggal_kedatangan_yang_ke_1" name="tanggal_kedatangan_ke[]" class="form-control" disabled>
@@ -458,6 +459,7 @@
         var district=myArray[2];
         var subdistrict=myArray[3];
         var detail_alamat=myArray[4];
+        var instansi=myArray[5];
         $.ajax({
             type:"POST",
             url: "{{route('hris.ga.get_province')}}",
@@ -575,7 +577,8 @@
                 </select>\
             </td>\
             <td style="padding:4px" width="20%">\
-                <input id="detail_alamat_yang_ke_'+count+'" name="detail_alamat_ke[]" class="form-control" style="background-color:white" onkeyup="isi_detail_alamat('+count+')">\
+                <input id="instansi_yang_ke_'+count+'" name="instansi_ke[]" class="form-control" style="background-color:white" placeholder="Masukkan Instansi">\
+                <input id="detail_alamat_yang_ke_'+count+'" name="detail_alamat_ke[]" class="form-control" style="background-color:white" onkeyup="isi_detail_alamat('+count+')" placeholder="Masukkan Detail Alamat">\
             </td>\
             <td style="padding:4px" width="3%">\
                 <input type="date" id="tanggal_kedatangan_yang_ke_'+count+'" name="tanggal_kedatangan_ke[]" class="form-control" style="background-color:white" onchange="isi_tanggal_kedatangan('+count+')">\
@@ -609,7 +612,7 @@
                 $('select[name="history_alamat"]').empty();
                 $('select[name="history_alamat"]').append('<option value="">History Alamat</option>')
                 jQuery.each(res, function(key,value){
-                    $('select[name="history_alamat"]').append('<option value="'+value.detail_alamat+'-'+value.prov_id+'-'+value.city_id+'-'+value.dis_id+'-'+value.subdis_id+'">'+value.detail_alamat+' - ('+value.subdistrict+' - '+value.district+' - '+value.city+' - '+value.provinsi+')'+'</option>');
+                    $('select[name="history_alamat"]').append('<option value="'+value.detail_alamat+'-'+value.prov_id+'-'+value.city_id+'-'+value.dis_id+'-'+value.subdis_id+'-'+value.instansi+'">'+value.instansi+' - ('+value.detail_alamat+' - ('+value.subdistrict+' - '+value.district+' - '+value.city+' - '+value.provinsi+')'+'</option>');
                 });
             },
             error: function(res){
@@ -718,6 +721,7 @@
             }
         });
         $('#detail_alamat_yang_ke_'+count).val(myArray[0]);
+        $('#instansi_yang_ke_'+count).val(myArray[5]);
         document.getElementById("detail_alamat_yang_ke_"+count).style.border="";
         $('#pilih_history_alamat_ke_'+count).val('');
     }
@@ -772,6 +776,8 @@
             $('#tujuanLainnyaModal').modal('hide');
         }
         $('#keterangan_barang').val(keterangan[0]);
+        $('#instansi_tamu').val($('#instansi_yang_ke_1').val());
+        $('#instansi').val($('#instansi_yang_ke_1').val());
     }
     function delete_this_route(count){
         var tujuan = $("input[name='tujuan_ke[]']").map(function(){return $(this).val();}).get();
@@ -784,6 +790,8 @@
         district.splice(count, 1);
         var subdistrict = $("select[name='desa_ke[]']").map(function(){return $(this).val();}).get();
         subdistrict.splice(count, 1);
+        var instansi = $("input[name='instansi_ke[]']").map(function(){return $(this).val();}).get();
+        instansi.splice(count, 1);
         var detail_alamat = $("input[name='detail_alamat_ke[]']").map(function(){return $(this).val();}).get();
         detail_alamat.splice(count, 1);
         var tanggal_kedatangan = $("input[name='tanggal_kedatangan_ke[]']").map(function(){return $(this).val();}).get();
@@ -1315,6 +1323,8 @@
             var detail_alamat=$('#detail_alamat_2').val();
             var tanggal_kedatangan=$('#tanggal_kedatangan').val();
             var jam_kedatangan=$('#jam_kedatangan').val();
+            var instansi_tamu=$('#instansi_tamu').val();
+            var instansi_barang=$('#instansi').val();
             $.ajax({
                 type:"POST",
                 url: "{{route('hris.ga.add_another_route')}}",
@@ -1343,8 +1353,10 @@
                     $('#detail_alamat_yang_ke_1').val(detail_alamat);
                     $('#tanggal_kedatangan_yang_ke_1').val(tanggal_kedatangan);
                     $('#jam_kedatangan_yang_ke_1').val(jam_kedatangan);
-                    var tujuan_pemberangkatan_ke_1 = [];
                     $('#keterangan_yang_ke_1').val($('#keterangan_barang').val());
+                    if(instansi_tamu!='' || instansi_barang!=''){
+                        $('#instansi_yang_ke_1').val(instansi_tamu+' '+instansi_barang);
+                    }
                 },
                 error: function(error){
                     let err_log=error.responseJSON.errors;
@@ -1630,6 +1642,13 @@
             $('#kota_yang_ke_1').val(cities_2);
             $('#kecamatan_yang_ke_1').val(districts_2);
             $('#desa_yang_ke_1').val(sub_districts_2);
+            if(instansi_tamu!='' || instansi!=''){
+                if(instansi_tamu==instansi){
+                    $('#instansi_yang_ke_1').val(instansi_tamu);
+                }else{
+                    $('#instansi_yang_ke_1').val(instansi_tamu+' '+instansi);
+                }
+            }
             $('#detail_alamat_yang_ke_1').val(detail_alamat_2);
             $('#tanggal_kedatangan_yang_ke_1').val(tanggal_kedatangan);
             $('#jam_kedatangan_yang_ke_1').val(jam_kedatangan);
@@ -1639,6 +1658,7 @@
             var city_array = $("select[name='kota_ke[]']").map(function(){return $(this).val();}).get();
             var district_array = $("select[name='kecamatan_ke[]']").map(function(){return $(this).val();}).get();
             var subdistrict_array = $("select[name='desa_ke[]']").map(function(){return $(this).val();}).get();
+            var instansi_array = $("input[name='instansi_ke[]']").map(function(){return $(this).val();}).get();
             var detail_alamat_array = $("input[name='detail_alamat_ke[]']").map(function(){return $(this).val();}).get();
             var tanggal_kedatangan_array = $("input[name='tanggal_kedatangan_ke[]']").map(function(){return $(this).val();}).get();
             var jam_kedatangan_array = $("input[name='jam_kedatangan_ke[]']").map(function(){return $(this).val();}).get();
@@ -1683,6 +1703,7 @@
                     city_array:city_array,
                     district_array:district_array,
                     subdistrict_array:subdistrict_array,
+                    instansi_array:instansi_array,
                     detail_alamat_array:detail_alamat_array,
                     tanggal_kedatangan_array:tanggal_kedatangan_array,
                     jam_kedatangan_array:jam_kedatangan_array,
@@ -1695,83 +1716,8 @@
                 success: function(res){
                     console.log(res);
                     swal("", "Permintaan transportasi terkirim", "success");
-                    $('#provinsi').val('');
-                    $('#cities').val('');
-                    $('#districts').val('');
-                    $('#sub_districts').val('');
-                    $('#detail_alamat').val('');
-                    $('#provinsi_2').val('');
-                    $('#cities_2').val('');
-                    $('#districts_2').val('');
-                    $('#sub_districts_2').val('');
-                    $('#detail_alamat_2').val('');
-                    $('#tanggal_pemberangkatan').val('');
-                    $('#jam_pemberangkatan').val('');
-                    $('#tanggal_kedatangan').val('');
-                    $('#jam_pemberangkatan').val('');
-                    $('#jam_kedatangan').val('');
-                    $('#jarak_tempuh').val(0);
-                    $('#provinsi').val(null).trigger('change');
-                    $('#cities').val(null).trigger('change');
-                    $('#district').val(null).trigger('change');
-                    $('#sub_districts').val(null).trigger('change');
-                    $('#provinsi_2').val(null).trigger('change');
-                    $('#cities_2').val(null).trigger('change');
-                    $('#district_2').val(null).trigger('change');
-                    $('#sub_districts_2').val(null).trigger('change');
-                    $('#selectEmployeeID').val(null).trigger('change');
-                    $('#selectEmployeeDinas').val(null).trigger('change');
-                    document.getElementById("checkbox_1").checked=false;
-                    document.getElementById("checkbox_2").checked=false;
-                    document.getElementById("checkbox_3").checked=false;
-                    document.getElementById("checkbox_4").checked=false;
-                    document.getElementById("checkbox_5").checked=false;
-                    document.getElementById("checkbox_6").checked=false;
-                    document.getElementById('tag_nama_tamu').style.display='none';
-                    document.getElementById('tag_jenis_barang').style.display='none';
-                    $("#nama_tamu").val('');
-                    $("#nomor_tamu").val('');
-                    $("#instansi_tamu").val('');
-                    $("#jenis_barang").val('');
-                    $("#quantity").val('');
-                    $("#satuan").val('');
-                    $("#instansi").val('');
-                    $("#nama_instansi").val('');
-                    $("#keterangan_barang").val('');
-                    document.getElementById("warning_employee").innerHTML='';
-                    document.getElementById("warning_provinsi").innerHTML='';
-                    document.getElementById("warning_kota").innerHTML='';
-                    document.getElementById("warning_kecamatan").innerHTML='';
-                    document.getElementById("warning_desa").innerHTML='';
-                    document.getElementById("warning_provinsi_2").innerHTML='';
-                    document.getElementById("warning_kota_2").innerHTML='';
-                    document.getElementById("warning_kecamatan_2").innerHTML='';
-                    document.getElementById("warning_desa_2").innerHTML='';
-                    document.getElementById("provinsi").style.border="";
-                    document.getElementById("cities").style.border="";
-                    document.getElementById("districts").style.border="";
-                    document.getElementById("sub_districts").style.border="";
-                    document.getElementById("detail_alamat").style.border="";
-                    document.getElementById("tanggal_pemberangkatan").style.border="";
-                    document.getElementById("jam_pemberangkatan").style.border="";
-                    document.getElementById("tanggal_kedatangan").style.border="";
-                    document.getElementById("jam_kedatangan").style.border="";
-                    document.getElementById("provinsi_2").style.border="";
-                    document.getElementById("cities_2").style.border="";
-                    document.getElementById("districts_2").style.border="";
-                    document.getElementById("sub_districts_2").style.border="";
-                    document.getElementById("nama_tamu").style.border="";
-                    document.getElementById("nomor_tamu").style.border="";
-                    document.getElementById("instansi_tamu").style.border="";
-                    document.getElementById("nama_tamu").style.border="";
-                    document.getElementById("nomor_tamu").style.border="";
-                    document.getElementById("instansi").style.border="";
-                    document.getElementById("jenis_barang").style.border="";
-                    document.getElementById("quantity").style.border="";
-                    document.getElementById("satuan").style.border="";
-                    document.getElementById("instansi").style.border="";
-                    document.getElementById("nama_instansi").style.border="";
-                    document.getElementById("keterangan_barang").style.border="";
+                    var url = 'data_pengajuan_transportasi';
+                    window.open(url, '_self');
                 },
                 error: function(error){
                     let err_log=error.responseJSON.errors;

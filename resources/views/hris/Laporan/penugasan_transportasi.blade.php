@@ -96,61 +96,6 @@
             </tr>
         </thead>
     </table>
-    <table style="padding-top:8px">
-        <thead>
-            <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">Tujuan Pemberangkatan</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">{{ucwords(str_replace("_"," ",$value->tujuan_pemberangkatan))}}</td>
-            </tr>
-            @if (str_contains($value->tujuan_pemberangkatan,'antar_barang')||str_contains($value->tujuan_pemberangkatan,'jemput_barang'))
-                <tr>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top;width:150px">Jenis Barang</td>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">:</td>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">{{$value->jenis_barang}}</td>
-                </tr>
-                <tr>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">Quantity</td>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">:</td>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">{{$value->quantity}} {{$value->satuan}}</td>
-                </tr>
-                <tr>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">Nama Penerima</td>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">:</td>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">{{$value->nama_penerima}}</td>
-                </tr>
-                <tr>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">Nama Instansi</td>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">:</td>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">{{$value->nama_instansi}}</td>
-                </tr>
-            @endif
-            @if (str_contains($value->tujuan_pemberangkatan,'antar_tamu')||str_contains($value->tujuan_pemberangkatan,'jemput_tamu'))
-                <tr>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">Nama Tamu</td>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">:</td>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">{{$value->nama_tamu}}</td>
-                </tr>
-                <tr>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">Instansi Tamu</td>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">:</td>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">{{$value->instansi_tamu}}</td>
-                </tr>
-                <tr>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">No. HP Tamu</td>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">:</td>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">{{$value->nomor_hp_tamu}}</td>
-                </tr>
-            @endif
-            @if (str_contains($value->tujuan_pemberangkatan,'antar_dinas')||str_contains($value->tujuan_pemberangkatan,'jemput_dinas'))
-                <tr>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">Nama Karyawan Yang Dinas Luar</td>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">:</td>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">{{$nama_karyawan_dinas_luar}}</td>
-                </tr>
-            @endif
-        </thead>
-    </table>
     @endforeach
     <table width="100%" style="padding-top:8px;">
         <thead>
@@ -173,7 +118,7 @@
                 <td rowspan="{{count($data2)}}" style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center">{{substr($value->jam_pemberangkatan,0,5)}}</td>
                 <td rowspan="{{count($data2)}}" style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;padding-left:4px;padding-right:4px">{{$value->detail_alamat}} - {{ucwords(strtolower($value->desa))}}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;vertical-align:middle;text-align:center"> {{$value->jarak_tempuh}} Km</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;padding-left:4px;padding-right:4px">{{$value->detail_alamat_tujuan}} - {{ucwords(strtolower($value->desa_tujuan))}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;padding-left:4px;padding-right:4px">{{$value->instansi}} {{$value->detail_alamat_tujuan}} - {{ucwords(strtolower($value->desa_tujuan))}}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:left;vertical-align:top;border:1px solid black;text-align:center">{{Carbon\Carbon::parse($value->tanggal_kedatangan)->translatedFormat('d M Y')}}-{{$value->jam_kedatangan}}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;padding-left:4px;padding-right:4px">{{$value->keterangan}}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black"></td>
@@ -182,7 +127,7 @@
             @else
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;vertical-align:middle;text-align:center"> ....... Km</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;padding-left:4px;padding-right:4px">{{$value->detail_alamat_tujuan}} - {{ucwords(strtolower($value->desa_tujuan))}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;padding-left:4px;padding-right:4px">{{$value->instansi}} {{$value->detail_alamat_tujuan}} - {{ucwords(strtolower($value->desa_tujuan))}}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:left;vertical-align:top;border:1px solid black;text-align:center">{{Carbon\Carbon::parse($value->tanggal_kedatangan)->translatedFormat('d M Y')}}-{{$value->jam_kedatangan}}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;padding-left:4px;padding-right:4px">{{$value->keterangan}}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black"></td>
