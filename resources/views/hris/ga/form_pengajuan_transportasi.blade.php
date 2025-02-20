@@ -1362,7 +1362,11 @@
                         $('#keterangan_yang_ke_1').val('');
                     }
                     if(instansi_tamu!='' || instansi_barang!=''){
-                        $('#instansi_yang_ke_1').val(instansi_tamu+' '+instansi_barang);
+                        if(instansi_tamu==instansi_barang){
+                            $('#instansi_yang_ke_1').val(instansi_tamu);
+                        }else{
+                            $('#instansi_yang_ke_1').val(instansi_tamu+' '+instansi_barang);
+                        }
                     }
                 },
                 error: function(error){
