@@ -4259,8 +4259,10 @@ class ProsesPayrollController extends AdminBaseController
             foreach($rekap_lembur_gabungan as $key=>$value){
                 if($value->selisih_menit<=15){
                     $konveri_jam=0;
-                }else if($value->selisih_menit>15 && $value->selisih_menit<=45){
+                }else if($value->selisih_menit>15 && $value->selisih_menit<=45 && $value->jumlah_jam_lembur<1){
                     $konveri_jam=0.5;
+                }else if($value->selisih_menit>15 && $value->selisih_menit<=45 && $value->jumlah_jam_lembur==1){
+                    $konveri_jam=1;
                 }else{
                     $konveri_jam=1;
                 }

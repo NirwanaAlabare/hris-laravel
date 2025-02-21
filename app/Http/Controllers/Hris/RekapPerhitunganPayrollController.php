@@ -1603,8 +1603,10 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     }
                     if ($selisih_menit <= 15) {
                         $konveri_jam = 0;
-                    } elseif ($selisih_menit > 15 && $selisih_menit <= 45) {
+                    } elseif ($selisih_menit > 15 && $selisih_menit <= 45 && $value->data_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah_jam_lembur<1) {
                         $konveri_jam = 0.5;
+                    }elseif ($selisih_menit > 15 && $selisih_menit <= 45 && $value->data_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah_jam_lembur==1) {
+                        $konveri_jam = 1;
                     } else {
                         $konveri_jam = 1;
                     }
@@ -1640,6 +1642,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                         $l1=$le1<0?0:$le1;
                         $l2=$le2<0?0:$le2;
                     }
+
                     $kode_grade=EmployeeAtribut::select('kode_grade')->where('enroll_id',$value->enroll_id)->pluck('kode_grade')[0];
                     $tahun_berjalan = substr($value->tanggal_berjalan, 0, 4);
 
@@ -1696,7 +1699,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     }
                 }
             }
-            $group_department='SUPPORTING PRODUCTION';
+                        $group_department='SUPPORTING PRODUCTION';
             if($value->employee_atribut->group_department!=null){
                 $group_department=$value->employee_atribut->group_department->group2;
             }
