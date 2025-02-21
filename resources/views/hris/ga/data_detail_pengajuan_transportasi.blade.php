@@ -418,10 +418,6 @@
                     <thead>
                         <tr>
                             <th style="font-weight: bold">No</th>
-                            <th style="font-weight: bold">Provinsi</th>
-                            <th style="font-weight: bold">Kota</th>
-                            <th style="font-weight: bold">Kecamatan</th>
-                            <th style="font-weight: bold">Desa</th>
                             <th style="font-weight: bold">Detail Alamat</th>
                             <th style="font-weight: bold">Waktu Kedatangan</th>
                             <th style="font-weight: bold">Keterangan</th>
@@ -551,11 +547,7 @@
                 jQuery.each(res, function(key,value){
                     $('#another_route').append('<tr>\
                         <td>'+(key+1)+'</td>\
-                        <td>'+value['prov_name']+'</td>\
-                        <td>'+value['city_name']+'</td>\
-                        <td>'+value['dis_name']+'</td>\
-                        <td>'+value['subdis_name']+'</td>\
-                        <td>'+value['detail_alamat']+'</td>\
+                        <td>'+value['instansi']+' '+value['detail_alamat']+' ('+value['subdis_name']+' - '+value['dis_name']+' - '+value['city_name']+' - '+value['prov_name']+')'+'</td>\
                         <td>'+new Date(value['tanggal_kedatangan']).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"})+' - '+value['jam_kedatangan']+'</td>\
                         <td>'+value['keterangan']+'</td>\
                     </tr>');

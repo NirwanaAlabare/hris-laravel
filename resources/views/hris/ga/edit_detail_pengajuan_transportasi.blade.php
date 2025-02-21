@@ -382,7 +382,7 @@
                                     <th>Kota/Kabupaten</th>
                                     <th>Kecamatan</th>
                                     <th>Kelurahan/Desa</th>
-                                    <th>Detail Alamat</th>
+                                    <th>Instansi & Detail Alamat</th>
                                     <th>Waktu Kedatangan</th>
                                     <th>Keterangan</th>
                                 </tr>
@@ -440,6 +440,7 @@
     var array_kota=[];
     var array_kecamatan=[];
     var array_desa=[];
+    var array_instansi=[];
     var array_detail_alamat=[];
     var array_tanggal_kedatangan=[];
     var array_jam_kedatangan=[];
@@ -479,6 +480,7 @@
                     array_kota.push(value.city);
                     array_kecamatan.push(value.district);
                     array_desa.push(value.subdistrict);
+                    array_instansi.push(value.instansi);
                     array_detail_alamat.push(value.detail_alamat);
                     array_tanggal_kedatangan.push(value.tanggal_kedatangan);
                     array_jam_kedatangan.push(value.jam_kedatangan);
@@ -494,9 +496,18 @@
         var city=$('#cities_2').val();
         var districts=$('#districts_2').val();
         var subdistricts=$('#sub_districts_2').val();
+        var instansi_tamu=$('#instansi_tamu').val();
+        var instansi_barang=$('#instansi').val();
         var detail_alamat=$('#detail_alamat_2').val();
         var tanggal_kedatangan=$('#tanggal_kedatangan').val();
         var jam_kedatangan=$('#jam_kedatangan').val();
+        if(instansi_tamu!='' || instansi_barang!=''){
+            if(instansi_tamu==instansi_barang){
+                instansi_var=instansi_barang;
+            }else{
+                instansi_var=instansi_barang+' '+instansi_tamu;
+            }
+        }
         $.ajax({
             type:"POST",
             url: "{{route('hris.ga.add_another_route_2')}}",
@@ -523,11 +534,11 @@
                         jam_kedatangan:jam_kedatangan,
                     },
                     success: function(res){
-                        console.log(res);
                         array_provinsi[0]=res[0].prov_name;
                         array_kota[0]=res[0].city_name;
                         array_kecamatan[0]=res[0].dis_name;
                         array_desa[0]=res[0].subdis_name;
+                        array_instansi[0]=instansi_var;
                         array_detail_alamat[0]=res[0].detail_alamat;
                         array_tanggal_kedatangan[0]=res[0].tanggal_kedatangan;
                         array_jam_kedatangan[0]=res[0].jam_kedatangan;
@@ -600,6 +611,7 @@
         var city=$('#kota_yang_ke_'+tujuan_id).val();
         var districts=$('#kecamatan_yang_ke_'+tujuan_id).val();
         var subdistricts=$('#desa_yang_ke_'+tujuan_id).val();
+        var instansi=$('#instansi_yang_ke_'+tujuan_id).val();
         var detail_alamat=$('#detail_alamat_yang_ke_'+tujuan_id).val();
         var tanggal_kedatangan=$('#tanggal_kedatangan_yang_ke_'+tujuan_id).val();
         var jam_kedatangan=$('#jam_kedatangan_yang_ke_'+tujuan_id).val();
@@ -624,6 +636,7 @@
                 array_kota.push('');
                 array_kecamatan.push('');
                 array_desa.push('');
+                array_instansi.push('');
                 array_detail_alamat.push('');
                 array_tanggal_kedatangan.push('');
                 array_jam_kedatangan.push('');
@@ -632,6 +645,7 @@
                 array_kota[key]=city;
                 array_kecamatan[key]=districts;
                 array_desa[key]=subdistricts;
+                array_instansi[key]=instansi;
                 array_detail_alamat[key]=detail_alamat;
                 array_tanggal_kedatangan[key]=tanggal_kedatangan;
                 array_jam_kedatangan[key]=jam_kedatangan;
@@ -703,7 +717,8 @@
                         <input id="desa_yang_ke_'+value+'" name="desa_ke[]" class="form-control" value="'+array_desa[key]+'" disabled>\
                     </td>\
                     <td style="padding:4px" width="15%">\
-                        <input id="detail_alamat_yang_ke_'+value+'" name="detail_alamat_ke[]" class="form-control" value="'+array_detail_alamat[key]+'" disabled>\
+                        <input id="instansi_yang_ke_'+value+'" name="instansi_ke[]" class="form-control" value="'+array_instansi[key]+'">\
+                        <input id="detail_alamat_yang_ke_'+value+'" name="detail_alamat_ke[]" class="form-control" value="'+array_detail_alamat[key]+'">\
                     </td>\
                     <td style="padding:4px" width="10%">\
                         <input id="tanggal_kedatangan_yang_ke_'+value+'" name="tanggal_kedatangan_ke[]" type="date" class="form-control" value="'+array_tanggal_kedatangan[key]+'" disabled>\
@@ -736,7 +751,8 @@
                             <input id="desa_yang_ke_'+value+'" name="desa_ke[]" class="form-control" value="'+array_desa[key]+'" disabled>\
                         </td>\
                         <td style="padding:4px" width="15%">\
-                            <input id="detail_alamat_yang_ke_'+value+'" name="detail_alamat_ke[]" class="form-control" value="'+array_detail_alamat[key]+'" disabled>\
+                            <input id="instansi_yang_ke_'+value+'" name="instansi_ke[]" class="form-control" value="'+array_instansi[key]+'" style="background-color:white">\
+                            <input id="detail_alamat_yang_ke_'+value+'" name="detail_alamat_ke[]" class="form-control" value="'+array_detail_alamat[key]+'" style="background-color:white">\
                         </td>\
                         <td style="padding:4px" width="10%">\
                             <input id="tanggal_kedatangan_yang_ke_'+value+'" name="tanggal_kedatangan_ke[]" type="date" class="form-control" value="'+array_tanggal_kedatangan[key]+'" disabled>\
@@ -771,6 +787,7 @@
                                 <input id="desa_yang_ke_'+value+'" name="desa_ke[]" class="form-control" value="'+array_desa[key]+'" style="background-color:white">\
                             </td>\
                             <td style="padding:4px" width="15%">\
+                                <input id="instansi_yang_ke_'+value+'" name="instansi_ke[]" class="form-control" value="'+array_instansi[key]+'" style="background-color:white">\
                                 <input id="detail_alamat_yang_ke_'+value+'" name="detail_alamat_ke[]" class="form-control" value="'+array_detail_alamat[key]+'" style="background-color:white">\
                             </td>\
                             <td style="padding:4px" width="10%">\
@@ -807,6 +824,7 @@
                                 <input id="desa_yang_ke_'+value+'" name="desa_ke[]" class="form-control" value="'+array_desa[key]+'" style="background-color:white">\
                             </td>\
                             <td style="padding:4px" width="15%">\
+                                <input id="instansi_yang_ke_'+value+'" name="instansi_ke[]" class="form-control" value="'+array_instansi[key]+'" style="background-color:white">\
                                 <input id="detail_alamat_yang_ke_'+value+'" name="detail_alamat_ke[]" class="form-control" value="'+array_detail_alamat[key]+'" style="background-color:white">\
                             </td>\
                             <td style="padding:4px" width="10%">\
@@ -839,7 +857,7 @@
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             success: function(data){
                 jQuery.each(data, function(key,value){
-                    $('select[name="history_alamat"]').append('<option value="'+value.detail_alamat+' | '+value.subdistrict+' | '+value.district+' | '+value.city+' | '+value.provinsi+'">'+value.detail_alamat+' ('+value.subdistrict+' - '+value.district+' - '+value.city+' - '+value.provinsi+')</option>');
+                    $('select[name="history_alamat"]').append('<option value="'+value.detail_alamat+' | '+value.subdistrict+' | '+value.district+' | '+value.city+' | '+value.provinsi+' | '+value.instansi+'">'+value.instansi+' '+value.detail_alamat+' ('+value.subdistrict+' - '+value.district+' - '+value.city+' - '+value.provinsi+')</option>');
                 });
             }
         });
@@ -853,11 +871,13 @@
         $('#kecamatan_yang_ke_'+value).val(myArray[2]);
         $('#kota_yang_ke_'+value).val(myArray[3]);
         $('#provinsi_yang_ke_'+value).val(myArray[4]);
+        $('#instansi_yang_ke_'+value).val(myArray[5]);
         $('#pilihan_alamat_yang_ke_'+value).val('');
         array_provinsi[key]=myArray[4];
         array_kota[key]=myArray[3];
         array_kecamatan[key]=myArray[2];
         array_desa[key]=myArray[1];
+        array_instansi[key]=myArray[5];
         array_detail_alamat[key]=myArray[0];
     }
     function delete_this_route(count){
@@ -871,6 +891,7 @@
         array_tanggal_kedatangan.splice(index_array, 1);
         array_jam_kedatangan.splice(index_array, 1);
         array_keterangan.splice(index_array, 1);
+        array_instansi.splice(index_array, 1);
         addListTujuan();
     }
     function changeFirstElementOfArray(){
@@ -955,6 +976,7 @@
             array_kota=[];
             array_kecamatan=[];
             array_desa=[];
+            array_instansi=[];
             array_detail_alamat=[];
             array_tanggal_kedatangan=[];
             array_jam_kedatangan=[];
@@ -978,6 +1000,10 @@
             var array_subdistrict=($("input[name='desa_ke[]']").map(function(){return $(this).val();}).get());
             array_subdistrict.forEach(function(value){
                 array_desa.push(value);
+            });
+            var array_inst=($("input[name='instansi_ke[]']").map(function(){return $(this).val();}).get());
+            array_inst.forEach(function(value){
+                array_instansi.push(value);
             });
             var array_detail_alm=($("input[name='detail_alamat_ke[]']").map(function(){return $(this).val();}).get());
             array_detail_alm.forEach(function(value){
@@ -1559,6 +1585,7 @@
         var tanggal_kedatangan_array = array_tanggal_kedatangan;
         var jam_kedatangan_array = array_jam_kedatangan;
         var keterangan_array = array_keterangan;
+        var instansi_array = array_instansi;
         
         changeFirstElementOfArray();
         $.ajax({
@@ -1603,6 +1630,7 @@
                 city_array:city_array,
                 district_array:district_array,
                 subdistrict_array:subdistrict_array,
+                instansi_array:instansi_array,
                 detail_alamat_array:detail_alamat_array,
                 tanggal_kedatangan_array:tanggal_kedatangan_array,
                 jam_kedatangan_array:jam_kedatangan_array,
