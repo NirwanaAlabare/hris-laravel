@@ -1609,16 +1609,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     // } else {
                     //     $konveri_jam = 1;
                     // }
-                    if ($selisih_menit <= 15) {
-                        $konveri_jam = 0;
-                    } elseif ($selisih_menit > 15 && $selisih_menit <= 45 && $value->data_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah_jam_lembur<1) {
-                        $konveri_jam = 0.5;
-                    }elseif ($selisih_menit > 15 && $selisih_menit <= 45 && $value->data_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah_jam_lembur==1) {
-                        $konveri_jam = 1;
-                    } else {
-                        $konveri_jam = 1;
-                    }
-                    $total_jam_lembur=$selisih_jam + $konveri_jam;
+
+                    $total_jam_lembur=$value->data_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah_jam_lembur;
                     $total_jam_lembur_finis=$total_jam_lembur-$value->data_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah_jam_istirahat;
                     $total_jam_lembur_finis=min($value->data_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah_jam_lembur,$total_jam_lembur_finis);
                     if($value->kode_hari==5 || $value->kode_hari==6 || $value->status_absen=='LN' || ($value->mulai_jam_kerja==null && $value->akhir_jam_kerja==null)){
