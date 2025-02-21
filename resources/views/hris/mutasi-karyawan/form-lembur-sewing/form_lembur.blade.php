@@ -547,7 +547,6 @@
 
         $('#datatable thead tr').clone(true).appendTo('#datatable thead');
         $('#datatable thead tr:eq(1) th').each(function(i) {
-            var datatable = $('#example').DataTable();
             if (i != 0) {
                 var title = $(this).text();
                 $(this).html('<input type="text" class="form-control form-control-sm" />');
@@ -567,97 +566,99 @@
 
 
 
-        function dataTableReload() {
-            var daterange = $("#daterange1").val();
-            var dates = daterange.split(" s/d ");
-            var from = dates[0];
-            var to = dates[1];
+        var daterange = $("#daterange1").val();
+        var dates = daterange.split(" s/d ");
+        var from = dates[0];
+        var to = dates[1];
 
-            let datatable = $("#datatable").DataTable({
-                ordering: false,
-                processing: true,
-                serverSide: true,
-                paging: true,
-                searching: true,
-                destroy: true,
-                scrollX: true,
-                ajax: {
-                    url: '{{ route('fls.index') }}',
-                    data: function(d) {
-                        d.dateFrom = from;
-                        d.dateTo = to ? to :from;
-                        d.employee_name = $('#employee_name_filter').val();
-                    },
+        let datatable = $("#datatable").DataTable({
+            ordering: false,
+            processing: true,
+            serverSide: true,
+            paging: true,
+            searching: true,
+            destroy: true,
+            scrollX: true,
+            ajax: {
+                url: '{{ route('fls.index') }}',
+                data: function(d) {
+                    d.dateFrom = from;
+                    d.dateTo = to ? to :from;
+                    d.employee_name = $('#employee_name_filter').val();
                 },
-                columns: [{
-                        data: 'id'
-                    }, {
-                        data: 'no_form'
+            },
+            columns: [{
+                    data: 'id'
+                }, {
+                    data: 'no_form'
 
-                    },
-                    {
-                        data: 'tgl_lembur_fix'
-                    },
-                    {
-                        data: 'tgl_filter_fix'
-                    },
-                    {
-                        data: 'line'
-                    },
-                    {
-                        data: 'ket'
-                    },
-                    {
-                        data: 'jml_org_line'
-                    },
-                    {
-                        data: 'jml_org_pinjam'
-                    },
-                    {
-                        data: 'jml_org'
-                    },
-                ],
-                columnDefs: [{
-                        "className": "dt-center",
-                        "targets": "_all"
-                    },
-                    {
-                        targets: [0],
-                        render: (data, type, row, meta) => {
-                            if(row.jml_insentif>0){
-                                return `
-                                  <div class='d-flex gap-1 justify-content-center align-items-center'>
-                                        <a class='btn btn-primary btn-sm  mr-2' style="color:white;" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                        onclick="getdetail('` + row.no_form + `','` + row.line+ `');
-                                            getket('` + row.no_form + `');">
-                                                    <i class='fa fa-search'></i>
-                                        </a>
-                                        <a class='btn btn-secondary btn-sm' onclick="export_spl(` + row.id + `,'` + row.no_form + `')">
-                                                    <i class='fa fa-print'></i>
-                                        </a>
-                                        <a class='btn btn-danger btn-sm'>
-                                            <i class="fa fa-file-pdf-o" aria-hidden="true" onclick="export_pdf_insentif('` + row.no_form + `')" title="reward"></i>
-                                        </a>
-                                    </div>
-                                `
-                            }else{
-                                return `
-                                    <div class='d-flex gap-1 justify-content-center align-items-center'>
-                                        <a class='btn btn-primary btn-sm mr-2' style="color:white;" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                        onclick="getdetail('` + row.no_form + `','` + row.line+ `');
-                                            getket('` + row.no_form + `');">
-                                                    <i class='fa fa-search'></i>
-                                        </a>
-                                        <a class='btn btn-secondary btn-sm' onclick="export_spl(` + row.id + `,'` + row.no_form + `')">
-                                                    <i class='fa fa-print'></i>
-                                        </a>
-                                    </div>
-                                `
-                            }
+                },
+                {
+                    data: 'tgl_lembur_fix'
+                },
+                {
+                    data: 'tgl_filter_fix'
+                },
+                {
+                    data: 'line'
+                },
+                {
+                    data: 'ket'
+                },
+                {
+                    data: 'jml_org_line'
+                },
+                {
+                    data: 'jml_org_pinjam'
+                },
+                {
+                    data: 'jml_org'
+                },
+            ],
+            columnDefs: [{
+                    "className": "dt-center",
+                    "targets": "_all"
+                },
+                {
+                    targets: [0],
+                    render: (data, type, row, meta) => {
+                        if(row.jml_insentif>0){
+                            return `
+                                <div class='d-flex gap-1 justify-content-center align-items-center'>
+                                    <a class='btn btn-primary btn-sm  mr-2' style="color:white;" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                    onclick="getdetail('` + row.no_form + `','` + row.line+ `');
+                                        getket('` + row.no_form + `');">
+                                                <i class='fa fa-search'></i>
+                                    </a>
+                                    <a class='btn btn-secondary btn-sm' onclick="export_spl(` + row.id + `,'` + row.no_form + `')">
+                                                <i class='fa fa-print'></i>
+                                    </a>
+                                    <a class='btn btn-danger btn-sm'>
+                                        <i class="fa fa-file-pdf-o" aria-hidden="true" onclick="export_pdf_insentif('` + row.no_form + `')" title="reward"></i>
+                                    </a>
+                                </div>
+                            `
+                        }else{
+                            return `
+                                <div class='d-flex gap-1 justify-content-center align-items-center'>
+                                    <a class='btn btn-primary btn-sm mr-2' style="color:white;" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                    onclick="getdetail('` + row.no_form + `','` + row.line+ `');
+                                        getket('` + row.no_form + `');">
+                                                <i class='fa fa-search'></i>
+                                    </a>
+                                    <a class='btn btn-secondary btn-sm' onclick="export_spl(` + row.id + `,'` + row.no_form + `')">
+                                                <i class='fa fa-print'></i>
+                                    </a>
+                                </div>
+                            `
                         }
                     }
-                ]
-            });
+                }
+            ]
+        });
+
+        function dataTableReload() {
+            datatable.ajax.reload();
         }
 
         function getdetail(id_c,id_l) {

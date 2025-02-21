@@ -450,7 +450,6 @@ table.dataTable td {
     <script>
         $(document).ready(function() {
             dataTableReload();
-            var datatable = $('#example').DataTable(); // Pastikan inisialisasi seperti ini
             var z = document.getElementById("overtime_employee_header");
             z.style.display = "none";
             var w = document.getElementById("overtime_employee_submit");
@@ -523,7 +522,6 @@ table.dataTable td {
         });
         $('#datatable thead tr').clone(true).appendTo('#datatable thead');
         $('#datatable thead tr:eq(1) th').each(function(i) {
-        var datatable = $('#example').DataTable();
             if (i != 0) {
                 var title = $(this).text();
                 $(this).html('<input type="text" class="form-control form-control-sm" />');
@@ -544,12 +542,11 @@ table.dataTable td {
 
 
 
-        function dataTableReload() {
-            var daterange = $("#daterange1").val();
-            var dates = daterange.split(" s/d ");
-            var from = dates[0];
-            var to = dates[1];
-            let datatable = $("#datatable").DataTable({
+        var daterange = $("#daterange1").val();
+        var dates = daterange.split(" s/d ");
+        var from = dates[0];
+        var to = dates[1];
+        let datatable = $("#datatable").DataTable({
             ordering: false,
             processing: true,
             serverSide: true,
@@ -593,10 +590,6 @@ table.dataTable td {
                     data: 'jml_org'
                 },
             ],
-            // columnDefs: [{
-            //     "className": "dt-center",
-            //     "targets": "_all"
-            // }, ],
             columnDefs: [{
                     "className": "dt-center",
                     "targets": "_all"
@@ -636,6 +629,8 @@ table.dataTable td {
                 }
             ]
         });
+        function dataTableReload() {
+            datatable.ajax.reload();
         }
         function dataTableModalReload() {
             datatable_modal.ajax.reload();
