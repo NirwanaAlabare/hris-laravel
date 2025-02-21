@@ -58,8 +58,13 @@
         <div class="card-header">Kartu Identitas</div>
         <div class="card-body">
             <div>
-                <p class="label">Nomor Dokumen</p>
-                <p class="value">{{$no_form}}</p>
+                <p class="label">Nomor {{$type != 'VOUCHER' ? 'Form' : 'Voucher'}}</p>
+
+                @if($type == 'VOUCHER')
+                    <p class="value">{{$data[0]->nomor_voucher ? $data[0]->nomor_voucher : 'VOUCHER TIDAK VALID'}}</p>
+                @else
+                    <p class="value">{{$no_form}}</p>
+                @endif
             </div>
             <div>
                 <p class="label">Nama Lengkap</p>
@@ -73,20 +78,33 @@
                 <p class="label">Tempat, Tanggal Lahir</p>
                 <p class="value">{{$data[0]->tempat_lahir . ', '. $data[0]->tanggal_lahir}}</p>
             </div>
-                <div style="display: flex; justify-content: flex-start; gap: 20px; align-items: center; width: 100%;">
-                    <div>
-                        <p class="label">Tanggal Masuk</p>
-                        <p class="value">{{$data[0]->tanggal_mulai_kontrak}}</p>
-                    </div>
-                    <div>
-                        <p class="label">Tanggal Berakhir</p>
-                        <p class="value">{{$data[0]->tanggal_akhir_kontrak}}</p>
-                    </div>
+            @if($type == 'VOUCHER' && $data[0]->nomor_voucher != null)
+            <div>
+                <p class="label">Nominal</p>
+                <p class="value">Rp50.000</p>
+            </div>
+            @else
+            <div style="display: flex; justify-content: flex-start; gap: 20px; align-items: center; width: 100%;">
+                <div>
+                    <p class="label">Tanggal Masuk</p>
+                    <p class="value">{{$data[0]->tanggal_mulai_kontrak}}</p>
                 </div>
+                <div>
+                    <p class="label">Tanggal Berakhir</p>
+                    <p class="value">{{$data[0]->tanggal_akhir_kontrak}}</p>
+                </div>
+            </div>
+            @endif
         </div>
+        @if($type == 'VOUCHER' && $data[0]->nomor_voucher != null)
+            <div class="card-footer">
+                Voucher Valid!
+            </div>
+        @else
         <div class="card-footer">
             Dokumen ini menggunakan verifikasi digital, keterangan tercantum dalam dokumen harus sesuai dengan data hasil pemindaian.
         </div>
+        @endif
     </div>
 </body>
 </html>

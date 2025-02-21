@@ -152,24 +152,52 @@
                     <div class="card-header bg-primary p-3">
                         <div class="card-title">PENGAJUAN KUPON KARYAWAN</div>
                     </div>
-                    <div class=""  aria-labelledby="">
-                        <div class="card-body">
-
-                            <div class="table-responsive">
-                                <table id="datatable_all" class="table  table-bordered table-sm w-100 table-hover">
-                                    <thead class="table-primary">
-                                        <tr>
-                                            <th>Act.</th>
-                                            <th>Tgl Pengajuan</th>
-                                            <th>Bagian</th>
-                                            <th>JML PER BAGIAN</th>
-                                            <th>Jumlah</th>
-                                        </tr>
-                                    </thead>
-                                </table>
+                        <div class="mt-4 ml-4"  aria-labelledby="">
+                            <div clasl="card-header m-0 p-0">
+                                <ul class="nav nav-tabs mx-0" id="myTabList" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link list active" id="waiting_list-tab" data-toggle="tab" href="#waiting_list" role="tab" aria-controls="waiting" aria-selected="true">Waiting</a>
+                                    </li>
+                                    <li class="nav-item ml-2">
+                                        <a class="nav-link list" id="approve_list-tab" data-toggle="tab" href="#approve_list" role="tab" aria-controls="approve" aria-selected="false">approve</a>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
-                    </div>
+                        <div class="tab-pane fade show active" id="waiting_list" role="tabpanel" aria-labelledby="waiting_list-tab">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="datatable_waiting_list" class="table  table-bordered table-sm w-100 table-hover">
+                                        <thead class="table-primary">
+                                            <tr>
+                                                <th>Act.</th>
+                                                <th>Tgl Pengajuan</th>
+                                                <th>Bagian</th>
+                                                <th>JML PER BAGIAN</th>
+                                                <th>Jumlah</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade show active" id="approve_list" role="tabpanel" aria-labelledby="approve_list-tab">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="datatable_approve_list" class="table  table-bordered table-sm w-100 table-hover">
+                                        <thead class="table-primary">
+                                            <tr>
+                                                <th>Act.</th>
+                                                <th>Tgl Pengajuan</th>
+                                                <th>Bagian</th>
+                                                <th>JML PER BAGIAN</th>
+                                                <th>Jumlah</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
             </div>
         </div>
     </div>
@@ -269,13 +297,13 @@
                             <div clasl="card-header">
                                 <ul class="nav nav-tabs mx-0 mb-3" id="myTab" role="tablist">
                                     <li class="nav-item">
-                                        <a class="nav-link active" id="pending-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="true">Waiting</a>
+                                        <a class="nav-link modal_list active" id="pending-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="true">Waiting</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="approve-tab" data-toggle="tab" href="#approve_tab" role="tab" aria-controls="approve" aria-selected="false">approve</a>
+                                        <a class="nav-link modal_list" id="approve-tab" data-toggle="tab" href="#approve_tab" role="tab" aria-controls="approve" aria-selected="false">approve</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="reject-tab" data-toggle="tab" href="#reject_tab" role="tab" aria-controls="reject" aria-selected="false">reject</a>
+                                        <a class="nav-link modal_list" id="reject-tab" data-toggle="tab" href="#reject_tab" role="tab" aria-controls="reject" aria-selected="false">reject</a>
                                     </li>
                                 </ul>
                             </div>
@@ -515,7 +543,9 @@
 
 
         function dataTableDepartmentReload() {
-            let tableId = "#datatable_all"; // Tentukan ID tabel yang sesuai
+            let activeTab = $(".nav-tabs .list.active").attr("id"); // Dapatkan tab yang aktif saat ini
+            let status = activeTab ? activeTab.replace("-tab", "") : "default";
+            let tableId = "#datatable_" + status;
 
             // Hapus DataTable lama jika ada
             if ($.fn.DataTable.isDataTable(tableId)) {
@@ -536,6 +566,9 @@
                                 </a>
                                 <a class="btn btn-gray btn-sm mt-1" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_voucher_bagian('${row.sub_dept_id}')">
                                     <i class="fa fa-print" aria-hidden="true"></i>
+                                </a>
+                                <a class="btn btn-success btn-sm mt-1" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_pengajuan_excel_bagian('${row.sub_dept_id}','${row.status}')">
+                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>
                                 </a>
                             </div>
                         `;
@@ -575,7 +608,7 @@
                     url: '{{ route('bazzar.get_bazzar_detail') }}',
                     dataSrc: "data",
                     data: {
-                        status: status, // Kirim status yang sesuai
+                        status: status,
                     },
                     onSuccess: function (response) {
                         console.log(response);
@@ -600,7 +633,7 @@
     }
 
     // Pasang event handler untuk tab, hanya sekali saja
-    $(document).on("shown.bs.tab", ".nav-tabs .nav-link", function (e) {
+    $(document).on("shown.bs.tab", ".nav-tabs .modal_list", function (e) {
         let activeTab = $(e.target).attr("id"); // Ambil ID tab aktif yang baru
         let status = activeTab.replace("-tab", ""); // Bersihkan format ID
         // Ambil nilai id yang sudah disimpan di modal
@@ -608,19 +641,23 @@
         dataTableReload(status, id);
     });
 
+    $(document).on("shown.bs.tab", ".nav-tabs .list", function (e) {
+        let activeTab = $(e.target).attr("id");
+        let status = activeTab.replace("-tab", "");
+        console.log("status",status);
+        dataTableDepartmentReload();
+    });
+
 
 
         function dataTableReload(status, id) {
             let tableId = "#datatable_" + status;
-            console.log('id',id)
-            // Hapus DataTable lama jika ada
             if ($.fn.DataTable.isDataTable(tableId)) {
                 $(tableId).DataTable().clear().destroy();
             }
-            // Tentukan apakah kolom checkbox harus ditampilkan
-            let isPending = status === "pending"; // Hanya tampil jika di tab "pending"
-            let isApprove = status === "approve"; // Hanya tampil jika di tab "pending"
-            let isReject = status === "reject"; // Hanya tampil jika di tab "pending"
+            let isPending = status === "pending";
+            let isApprove = status === "approve";
+            let isReject = status === "reject";
             // Konfigurasi kolom
             let columns = [
                 {
@@ -718,7 +755,7 @@
                                 </a>
                             `;
                         }
-                        if(isPending || isApprove){
+                        if(isPending){
                             editButton = `<a style="text-align:center" class='btn btn-primary btn-sm'
                                     onclick="edit_data('` + rowStr + `');">
                                     <i class='fa fa-edit text-white'></i>
@@ -728,9 +765,9 @@
                             <div>
                                 ${editButton}
                                 ${pdfButton}
-                                <a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapus('` + row.id + `');">
-                                <i class='fa fa-trash'></i>
-                                </a>
+                                ${isPending ? `<a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapus('` + row.id + `');">
+                                                <i class='fa fa-trash'></i>
+                                                </a>` : ''}
                                 <a class='btn btn-dark btn-sm mt-1' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_voucher(`+row.id+`, '` + row.nik + `')">
                                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                 </a>
@@ -784,6 +821,11 @@
         }
         function export_voucher_bagian(sub_dept_id) {
             var url = 'bazzar/export_voucher?sub_dept_id='+sub_dept_id;
+            window.open(url, '_blank');
+        }
+        function export_pengajuan_excel_bagian(sub_dept_id,status) {
+            console.log('status',status)
+            var url = 'bazzar/export_excel?sub_dept_id='+sub_dept_id+'&status='+status;
             window.open(url, '_blank');
         }
 
@@ -858,6 +900,7 @@
 
         function handleApprove() {
             let ids = getCheckedIds();
+            let id = $("#ajax-modal-list").data("subDeptId");
             if (ids.length === 0) {
                 notif({
                         msg: "<b>Info:</b> Pilih minimal satu data untuk dikirim.",
@@ -876,7 +919,8 @@
                         msg: "<b>Info:</b> Data berhasil di verifikasi.",
                         type: "info"
                     });
-                dataTableReload();
+                dataTableReload('pending', id);
+                dataTableDepartmentReload();
             },
             error: function(xhr) {
                 notif({
@@ -889,6 +933,7 @@
 
         function handleReject() {
             let ids = getCheckedIds();
+            let id = $("#ajax-modal-list").data("subDeptId");
             if (ids.length === 0) {
                 notif({
                         msg: "<b>Info:</b> Pilih minimal satu data untuk dikirim.",
@@ -907,7 +952,8 @@
                         msg: "<b>Info:</b> Data berhasil di reject.",
                         type: "info"
                     });
-                dataTableReload();
+                dataTableReload('pending', id);
+                dataTableDepartmentReload();
             },
             error: function(xhr) {
                 notif({

@@ -26,13 +26,13 @@
         }
         .text1 {
             position: absolute;
-            top: 80px;
+            top: 88px;
             left: 55px;
             font-weight: bold;
             font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
             font-size: 9pt;
         }
-        @page { margin: 20px 20px 20px 20px; }
+        @page { margin: 0px 20px 0px 0px; }
     </style>
 </head>
 
@@ -42,7 +42,7 @@
             {{$data}}
             <tr>
                 @foreach ($data as $key=>$value)
-                <td style="height:265px;vertical-align:top;position: relative;">
+                <td style="width:10.5cm; height:7.425cm; vertical-align:top; position:relative; box-sizing: border-box;">
                     <div class="parent">
                         <img class="image1" width="100%" src="{{ public_path('/assets/images/hrd/voucher bazar.png') }}">
                         <h6 class="text1"><span style="color:red;font-size:9pt">{{$value->nomor_voucher}}</span></h6>

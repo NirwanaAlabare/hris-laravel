@@ -260,14 +260,14 @@
             height: calc(100vh - 4px); }
 
 
-        @media (min-width: 1200px)
+        @media (min-width: 1024px)
         {
         .col-lg-offset-2 {
             margin-left: 16.66666667%;
         }
         }
 
-        @media (min-width: 1200px)
+        @media (min-width: 1024px)
         {
         .col-lg-8 {
             width: 66.66666667%;
@@ -323,24 +323,7 @@
             opacity: 1;
         }
         }
-        @media only screen and (max-width: 767px)
-        {
-        .hexagon-item {
-            float: none;
-            margin: 0 auto 50px;
-        }
-        .hexagon-item:first-child {
-            margin-left: auto;
-        }
-        .page-home .hexagon-item:nth-last-child(1), .page-home .hexagon-item:nth-last-child(2), .page-home .hexagon-item:nth-last-child(3) {
-            -webkit-transform: rotate(30deg) translate(0px, 0px);
-            -moz-transform: rotate(30deg) translate(0px, 0px);
-            -ms-transform: rotate(30deg) translate(0px, 0px);
-            -o-transform: rotate(30deg) translate(0px, 0px);
-            transform: rotate(30deg) translate(0px, 0px);
-        }
 
-        }
 
     .content-right-side {
         display: flex;

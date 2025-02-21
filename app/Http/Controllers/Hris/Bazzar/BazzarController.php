@@ -56,7 +56,7 @@ class BazzarController extends AdminBaseController
 
     public function export_excel()
     {
-        return Excel::download(new ExportPengajuanBazzar(request()->id), 'Laporan_pengajuan_kupon.xlsx');
+        return Excel::download(new ExportPengajuanBazzar(request()->id,request()->sub_dept_id,request()->status), 'Laporan_pengajuan_kupon.xlsx');
     }
 
     public function ajax_getallemployeeatribut()
@@ -120,7 +120,14 @@ class BazzarController extends AdminBaseController
 
         $user = Auth::guard('admin')->user()->name;
         if ($request->ajax()) {
-            $data_tmp = PengajuanBazzar::select(DB::raw('SUM(pengajuan_bazzar.jumlah) as jumlah') , DB::raw('COUNT(*) as jml_data'),'pengajuan_bazzar.created_at', 'employee_atribut.nik', 'employee_atribut.employee_name','employee_atribut.sub_dept_name', 'employee_atribut.sub_dept_id','employee_atribut.department_name', 'employee_atribut.status_staff')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->groupby('employee_atribut.sub_dept_id')->get();
+            $status = $request->status;
+
+            if ($status === "waiting_list") {
+                $status = "pending";
+            } elseif ($status === "approve_list") {
+                $status = "approve";
+            }
+            $data_tmp = PengajuanBazzar::select(DB::raw('SUM(pengajuan_bazzar.jumlah) as jumlah') , DB::raw('COUNT(*) as jml_data'),'pengajuan_bazzar.created_at','pengajuan_bazzar.status', 'employee_atribut.nik', 'employee_atribut.employee_name','employee_atribut.sub_dept_name', 'employee_atribut.sub_dept_id','employee_atribut.department_name', 'employee_atribut.status_staff')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->where('status', $status)->groupby('employee_atribut.sub_dept_id')->get();
             return DataTables::of($data_tmp)->toJson();
         }
 
@@ -259,7 +266,7 @@ class BazzarController extends AdminBaseController
             ->get();
         }
         $fileName='Voucher_Bazzar_'.$data[0]->employee->employee_name.' '.date('Y-m-d').' '.rand(10,1000000);
-        $pdf = PDF::loadView('hris.mutasi-karyawan.bazzar.export-voucher-pdf',["data" => $data])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
+        $pdf = PDF::loadView('hris.mutasi-karyawan.bazzar.export-voucher-pdf',["data" => $data])->setPaper('F4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
         return $pdf;
     }
 

@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Dompdf\Options;
 use Dompdf\FontMetrics;
 use App\Models\EmployeeAtribut;
+use App\Models\VoucherBazzar;
 use App\Imports\KontrakKerjaImport;
 use App\Imports\KontrakKerjaImportToDatabase;
 use Illuminate\Http\Request;
@@ -214,7 +215,13 @@ class HRDController extends AdminBaseController
         $no_form=request()->no_form;
         $type=request()->type;
 
-        $data=DB::select("select*from employee_atribut where enroll_id='$enroll_id'");
+        if($type == 'VOUCHER'){
+            $data = VoucherBazzar::leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'voucher_bazzar.enroll_id')->where('nomor_voucher', $no_form)
+                ->orderBy('voucher_bazzar.enroll_id', 'ASC')
+                ->get();
+        }else{
+            $data=DB::select("select*from employee_atribut where enroll_id='$enroll_id'");
+        }
         return view('hris/card_employee_form_identity', ["data" => $data,"no_form"=>$no_form, "type"=>$type]);
     }
     public function export_sp_kehadiran_karyawan(){
