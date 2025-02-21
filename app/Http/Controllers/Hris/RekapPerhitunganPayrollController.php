@@ -1601,6 +1601,14 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     }else{
                         $final_total_jam_lembur = sprintf("%02d:%02d:%02d", $selisih_jam, $selisih_menit, $selisih_detik);
                     }
+                    // SEBELUMNYA SEPERTI INI JIKA SELISIH DI LEMBUR BALIKAN LALU PROSES ULANG
+                    // if ($selisih_menit <= 15) {
+                    //     $konveri_jam = 0;
+                    // } elseif ($selisih_menit > 15 && $selisih_menit <= 45) {
+                    //     $konveri_jam = 0.5;
+                    // } else {
+                    //     $konveri_jam = 1;
+                    // }
                     if ($selisih_menit <= 15) {
                         $konveri_jam = 0;
                     } elseif ($selisih_menit > 15 && $selisih_menit <= 45 && $value->data_lembur->where('tanggal_berjalan',$value->tanggal_berjalan)->first()->jumlah_jam_lembur<1) {

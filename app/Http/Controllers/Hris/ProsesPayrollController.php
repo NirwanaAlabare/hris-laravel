@@ -4257,6 +4257,15 @@ class ProsesPayrollController extends AdminBaseController
                 STR_TO_DATE(SUBSTRING(a.absen_pulang_kerja, 1, 5), '%H:%i')
             ) finish_out,a.absen_masuk_kerja,a.absen_pulang_kerja,b.jumlah_jam_lembur,b.jumlah_jam_istirahat_lembur,b.mulai_jam_lembur from (select*from master_data_absen_kehadiran where tanggal_berjalan>='$tanggal_awal' and tanggal_berjalan<='$tanggal_akhir' and nomor_form_lembur is not null ".$inEnrollId.") a inner join (select*from data_lembur where tanggal_berjalan>='$tanggal_awal' and tanggal_berjalan<='$tanggal_akhir') b on a.enroll_id=b.enroll_id and a.tanggal_berjalan=b.tanggal_berjalan inner join employee_atribut c on a.enroll_id=c.enroll_id left join employee_atribut_histories emp_hist on a.enroll_id=emp_hist.enroll_id and a.tanggal_berjalan between SUBSTRING(emp_hist.periode_payroll,1,10) and SUBSTRING(emp_hist.periode_payroll,16,10) left join grading_salary d on substring(a.tanggal_berjalan,1,4)=substring(d.periode_umk,1,4) and case when emp_hist.kode_grade is not null then emp_hist.kode_grade else c.kode_grade end=d.kode_grade)rekap_1)rekap_2)rekap_3)rekap_4");
             foreach($rekap_lembur_gabungan as $key=>$value){
+
+                // SEBELUMNYA SEPERTI INI JIKA SELISIH DI LEMBUR BALIKAN LALU PROSES ULANG
+                // if($value->selisih_menit<=15){
+                //     $konveri_jam=0;
+                // }else if($value->selisih_menit>15 && $value->selisih_menit<=45){
+                //     $konveri_jam=0.5;
+                // }else{
+                //     $konveri_jam=1;
+                // }
                 if($value->selisih_menit<=15){
                     $konveri_jam=0;
                 }else if($value->selisih_menit>15 && $value->selisih_menit<=45 && $value->jumlah_jam_lembur<1){

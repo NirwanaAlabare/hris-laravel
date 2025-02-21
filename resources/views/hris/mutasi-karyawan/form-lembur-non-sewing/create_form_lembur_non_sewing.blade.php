@@ -30,7 +30,7 @@
                 <div class="modal-content">
                     <div class="modal-header bg-sb">
                         <h1 class="modal-title fs-1 text-black">Scan QR Tambah Karyawan Non Sewing</h1>
-                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close btn-primary" data-dismiss="modal" aria-label="Close">x</button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
