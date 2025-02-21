@@ -16,7 +16,7 @@
             <a class="btn btn-white" href="{{route('hris.ga.form_pengajuan_transportasi')}}">Formulir</a>
         </li>
         <li class="nav-item">
-            @if ($id_user==4241 || $id_user==20 || $id_user==17 || $id_user==7765 || $id_user==5321 || $id_user==6083 || $id_user==6081 || $id_user==6713)
+            @if ($id_user==4241 || $id_user==20 || $id_user==17 || $id_user==7765 || $id_user==5321 || $id_user==6083 || $id_user==6081 || $id_user==6713 || $id_user==0)
                 <a class="btn btn-primary" style="background-color:blue" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data <span class="badge text-dark" style="font-weight:bold; background-color:#d2eafc;padding-left:5px;padding-right:5px">{{$pengajuan_transportasi}}</span></a>
             @else
             <a class="btn btn-primary" style="background-color:blue" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data</a>
@@ -68,7 +68,7 @@
                     <div class="col-2 pl-6 pt-1">
                     </div>
                     <div class="col-3 pl-0">
-                        @if ($id_user==4241 || $id_user==20 || $id_user==17 || $id_user==7765 || $id_user==5321 || $id_user==6083 || $id_user==6081 || $id_user==6713)
+                        @if ($id_user==4241 || $id_user==20 || $id_user==17 || $id_user==7765 || $id_user==5321 || $id_user==6083 || $id_user==6081 || $id_user==6713 || $id_user==0)
                             <button class="btn btn-success py-1 my-1" id="export_excel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
                         @endif
                     </div>
