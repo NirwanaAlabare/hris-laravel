@@ -1834,7 +1834,8 @@ class DataLemburController extends AdminBaseController
                 $query
                 ->where('is_verifikasi',$verification_status);
             })
-            ->orderBy('master_data_absen_kehadiran.enroll_id')
+            ->join('employee_atribut', 'master_data_absen_kehadiran.enroll_id', '=', 'employee_atribut.enroll_id')
+            ->orderBy('employee_atribut.employee_name')
             ->get();
         }
         elseif ($selectNoSPL && $verification_status=='') {
@@ -1843,7 +1844,8 @@ class DataLemburController extends AdminBaseController
             ->where('tanggal_berjalan','>=',$awal_bulan)
             ->where('tanggal_berjalan','<=',$akhir_bulan)
             ->whereIn('nomor_form_lembur',$selectNoSPL)
-            ->orderBy('master_data_absen_kehadiran.enroll_id')
+             ->join('employee_atribut', 'master_data_absen_kehadiran.enroll_id', '=', 'employee_atribut.enroll_id')
+            ->orderBy('employee_atribut.employee_name')
             ->get();
 
         } elseif ($selectNoSPL && $verification_status!='') {
@@ -1856,14 +1858,16 @@ class DataLemburController extends AdminBaseController
             ->where('nomor_form_lembur',$selectNoSPL)
             ->whereHas('data_lembur',function($query) use ($verification_status){
                 $query->where('is_verifikasi',$verification_status);
-            })->orderBy('master_data_absen_kehadiran.enroll_id')
+            }) ->join('employee_atribut', 'master_data_absen_kehadiran.enroll_id', '=', 'employee_atribut.enroll_id')
+            ->orderBy('employee_atribut.employee_name')
             ->get();
         }else{
             $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept')
             ->where('nomor_form_lembur','!=',null)
             ->where('tanggal_berjalan','>=',$awal_bulan)
             ->where('tanggal_berjalan','<=',$akhir_bulan)
-            ->orderBy('master_data_absen_kehadiran.enroll_id')
+             ->join('employee_atribut', 'master_data_absen_kehadiran.enroll_id', '=', 'employee_atribut.enroll_id')
+            ->orderBy('employee_atribut.employee_name')
             ->get();
 
         }

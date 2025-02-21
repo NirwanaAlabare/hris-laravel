@@ -131,39 +131,40 @@ class MutasiKaryawanController extends AdminBaseController
 
         $tgl_skrg = Carbon::now()->isoFormat('D MMMM Y hh:mm:ss');
         $tglskrg = date('Y-m-d');
-            $additionalQuery = '';
+        $additionalQuery = '';
+        $nama = $request->input('search_variable');
 
-            if (request("employee_name")) {
-                $line_skrg=DB::select('select line from mut_karyawan_input where tgl_pindah ="'.$tglskrg.'" and nm_karyawan like "%'.request("employee_name").'%" or enroll_id like "%'.request("employee_name").'%" or line like "%'.request("employee_name").'%" or enroll_id like "%'.request("employee_name").'%" or nik like "%'.request("employee_name").'%"');
-                $lines=[];
-                foreach($line_skrg as $no){
-                    $lines[]=$no->line;
-                }
-                $lineString = "'" . implode("', '", $lines) ."'";
-                $additionalQuery .= ' AND b.line in ('.$lineString.')';
+        if ($nama) {
+            $line_skrg=DB::select('select line from mut_karyawan_input where tgl_pindah ="'.$tglskrg.'" and nm_karyawan like "%'.$nama.'%" or enroll_id like "%'.$nama.'%" or line like "%'.$nama.'%" or enroll_id like "%'.$nama.'%" or nik like "%'.$nama.'%"');
+            $lines=[];
+            foreach($line_skrg as $no){
+                $lines[]=$no->line;
             }
-            $data_line = DB::select("
-                SELECT
-                b.tgl_pindah,
-                line,
-                count(b.id) tot_orang,
-                cast(right(line,2) as UNSIGNED) urutan,
-                count(IF(mk.absen_masuk_kerja is null,1,null)) tot_absen,
-                count(b.id)  - count(IF(mk.absen_masuk_kerja is null,1,null)) selisih
-                from
-                    (
-                    select max(id) id from mut_karyawan_input a where tgl_pindah = '" . $tglskrg . "'
-                    group by nik
-                    )a
-                inner join mut_karyawan_input b on a.id = b.id
-                left join
-                    (
-                    select enroll_id, absen_masuk_kerja,status_absen from master_data_absen_kehadiran where tanggal_berjalan = '" . $tglskrg . "'
-                    ) mk on b.enroll_id = mk.enroll_id
-                where b.id is not null".$additionalQuery."
-                group by line
-                order by cast(right(line,2) as UNSIGNED) asc
-            ");
+            $lineString = "'" . implode("', '", $lines) ."'";
+            $additionalQuery .= ' AND b.line in ('.$lineString.')';
+        }
+        $data_line = DB::select("
+            SELECT
+            b.tgl_pindah,
+            line,
+            count(b.id) tot_orang,
+            cast(right(line,2) as UNSIGNED) urutan,
+            count(IF(mk.absen_masuk_kerja is null,1,null)) tot_absen,
+            count(b.id)  - count(IF(mk.absen_masuk_kerja is null,1,null)) selisih
+            from
+                (
+                select max(id) id from mut_karyawan_input a where tgl_pindah = '" . $tglskrg . "'
+                group by nik
+                )a
+            inner join mut_karyawan_input b on a.id = b.id
+            left join
+                (
+                select enroll_id, absen_masuk_kerja,status_absen from master_data_absen_kehadiran where tanggal_berjalan = '" . $tglskrg . "'
+                ) mk on b.enroll_id = mk.enroll_id
+            where b.id is not null".$additionalQuery."
+            group by line
+            order by cast(right(line,2) as UNSIGNED) asc
+        ");
 
         return DataTables::of($data_line)->toJson();
     }

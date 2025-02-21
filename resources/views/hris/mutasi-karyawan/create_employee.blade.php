@@ -47,8 +47,8 @@
                     <div class="col-6 col-md-4">
                         <div class="mb-3">
                                 <label class="form-label label-scan"><small><b>Bagian</b></small></label>
-                                <select class="form-control" name="txtline" id="txtline" onchange="scanline()" autocomplete="off" enterkeyhint="go" autofocus>
-                                    <option value="">-- PILIH BAGIAN --</option>
+                                <select class='form-control select2' style='width: 100%;' name="txtline" id="txtline" onchange="scanline()" enterkeyhint="go" autofocus required>
+                                    <option selected="selected" value="" disabled="true">Pilih Bagian</option>
                                     @foreach ($departments as $dept)
                                     <option value="{{$dept->sub_dept_name}}">{{$dept->sub_dept_name}}</option>
                                 @endforeach
