@@ -15,6 +15,17 @@
     #datatable {
     table-layout: fixed;
     }
+    table.dataTable {
+        table-layout: auto !important;
+        width: 100% !important;
+    }
+
+    table.dataTable th,
+    table.dataTable td {
+        white-space: nowrap; /* Mencegah teks berpindah ke baris baru */
+        text-overflow: ellipsis; /* Menambahkan "..." jika teks terlalu panjang */
+        overflow: hidden;
+    }
 
     #datatable thead th {
     background-color: #15435A;
@@ -95,7 +106,7 @@
                             <div class="row">
                                 <div class="col-md-12 table-responsive">
                                     <table id="datatable-modal"
-                                        class="table table-striped table-bordered  table-sm w-100 text-nowrap">
+                                        class="table table-striped table-bordered text-nowrap">
                                         <thead>
                                             <tr class="text-center">
                                                 <th rowspan="2" class="align-middle">No</th>
@@ -536,6 +547,7 @@
 
         $('#datatable thead tr').clone(true).appendTo('#datatable thead');
         $('#datatable thead tr:eq(1) th').each(function(i) {
+            var datatable = $('#example').DataTable();
             if (i != 0) {
                 var title = $(this).text();
                 $(this).html('<input type="text" class="form-control form-control-sm" />');
@@ -573,7 +585,7 @@
                     url: '{{ route('fls.index') }}',
                     data: function(d) {
                         d.dateFrom = from;
-                        d.dateTo = to;
+                        d.dateTo = to ? to :from;
                         d.employee_name = $('#employee_name_filter').val();
                     },
                 },
@@ -614,8 +626,8 @@
                         render: (data, type, row, meta) => {
                             if(row.jml_insentif>0){
                                 return `
-                                    <div class='d-flex gap-1'>
-                                        <a class='btn btn-primary btn-sm' data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                  <div class='d-flex gap-1 justify-content-center align-items-center'>
+                                        <a class='btn btn-primary btn-sm  mr-2' style="color:white;" data-bs-toggle="modal" data-bs-target="#exampleModal"
                                         onclick="getdetail('` + row.no_form + `','` + row.line+ `');
                                             getket('` + row.no_form + `');">
                                                     <i class='fa fa-search'></i>
@@ -630,8 +642,8 @@
                                 `
                             }else{
                                 return `
-                                    <div class='d-flex gap-1'>
-                                        <a class='btn btn-primary btn-sm' data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                    <div class='d-flex gap-1 justify-content-center align-items-center'>
+                                        <a class='btn btn-primary btn-sm mr-2' style="color:white;" data-bs-toggle="modal" data-bs-target="#exampleModal"
                                         onclick="getdetail('` + row.no_form + `','` + row.line+ `');
                                             getket('` + row.no_form + `');">
                                                     <i class='fa fa-search'></i>

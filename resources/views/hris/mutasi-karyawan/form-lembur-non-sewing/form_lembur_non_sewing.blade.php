@@ -18,14 +18,23 @@
 <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
 
 <style>
-    #datatable {
-    table-layout: fixed;
-    }
+  table.dataTable {
+    table-layout: auto !important;
+    width: 100% !important;
+}
+
+table.dataTable th,
+table.dataTable td {
+    white-space: nowrap; /* Mencegah teks berpindah ke baris baru */
+    text-overflow: ellipsis; /* Menambahkan "..." jika teks terlalu panjang */
+    overflow: hidden;
+}
+
 
     #datatable thead th {
     background-color: #15435A;
     color: white;
-}
+    }
 </style>
     @stop
     @section('mainarea')
@@ -172,7 +181,7 @@
                 @endif
             </div>
             <div class="table-responsive">
-                <table id="datatable" class="table table-bordered table-sm w-100 table-hover text-nowrap">
+                <table id="datatable" class="table table-bordered table-hover text-nowrap">
                     <thead class="bg-primary">
                         <tr style='text-align:center; vertical-align:middle'>
                             <th>Act</th>
@@ -441,6 +450,7 @@
     <script>
         $(document).ready(function() {
             dataTableReload();
+            var datatable = $('#example').DataTable(); // Pastikan inisialisasi seperti ini
             var z = document.getElementById("overtime_employee_header");
             z.style.display = "none";
             var w = document.getElementById("overtime_employee_submit");
@@ -508,12 +518,12 @@
             });
 
         }
-
         $('#add_karyawan_lembur').click(function(){
             alert('add karyawan lembur');
         });
         $('#datatable thead tr').clone(true).appendTo('#datatable thead');
         $('#datatable thead tr:eq(1) th').each(function(i) {
+        var datatable = $('#example').DataTable();
             if (i != 0) {
                 var title = $(this).text();
                 $(this).html('<input type="text" class="form-control form-control-sm" />');
@@ -551,15 +561,15 @@
                 url: '{{ route('flns.index') }}',
                 data: function(d) {
                     d.dateFrom = from;
-                    d.dateTo = to;
+                    d.dateTo = to ? to : from;
                     d.employee_name = $('#employee_name').val();
                 },
             },
-            columns: [{
+            columns: [
+                {
                     data: 'id'
                 }, {
-                    data: 'no_form'
-
+                    data: 'no_form',
                 },
                 {
                     data: 'tgl_lembur_fix'
@@ -596,8 +606,8 @@
                     render: (data, type, row, meta) => {
                         if(row.jml_insentif>0){
                             return `
-                                <div class='d-flex gap-1'>
-                                    <a class='btn btn-primary btn-sm' data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                <div class='d-flex gap-1 justify-content-center align-items-center'>
+                                    <a class='btn btn-primary btn-sm  mr-2' style="color:white;" data-bs-toggle="modal" data-bs-target="#exampleModal"
                                     onclick="getdetail('` + row.no_form + `','` + row.dept + `','` + row.ket + `');">
                                     <i class='fa fa-search'></i>
                                     </a>
@@ -611,8 +621,8 @@
                             `
                         }else{
                             return `
-                                <div class='d-flex gap-1'>
-                                    <a class='btn btn-primary btn-sm' data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                <div class='d-flex gap-1 justify-content-center align-items-center'>
+                                    <a class='btn btn-primary btn-sm mr-2' style="color:white;" data-bs-toggle="modal" data-bs-target="#exampleModal"
                                     onclick="getdetail('` + row.no_form + `','` + row.dept + `','` + row.ket + `');">
                                     <i class='fa fa-search'></i>
                                     </a>
