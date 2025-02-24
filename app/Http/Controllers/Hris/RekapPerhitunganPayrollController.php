@@ -1583,7 +1583,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $total_jam_lembur=$value->selisih_jam+$konveri_jam;
             $total_jam_lembur_finis=$total_jam_lembur-$value->jumlah_jam_istirahat_lembur;
             $total_jam_lembur_finis=min($value->jumlah_jam_lembur,$total_jam_lembur_finis);
-            if($value->capai_target != null || $value->capai_target != ''){
+            if(($value->capai_target != null || $value->capai_target != '') && $value->jumlah_jam_lembur <= '1.0'){
                 $total_jam_lembur_finis=1;
             }
             if($value->kode_hari==5 || $value->kode_hari==6 || $value->status_absen=='LN' || $value->mulai_jam_kerja==null || $value->akhir_jam_kerja==null){
