@@ -1322,7 +1322,6 @@
                     processData: false,
                     data: formData,
                     success:function(data){
-                        console.log(data);
                         var count=0;
                         var count2=0;
                         jQuery.each(data, function(key,value){
@@ -1370,7 +1369,6 @@
                 processData: false,
                 data: formData,
                 success:function(data){
-                    console.log(data);
                     $('#employeeImportButton').removeClass("btn-loading");
                     $("#employeeImportButton").html('<i class="fa fa-upload" aria-hidden="true"></i> IMPORT');
                     $("#employeeImportButton").attr("disabled", false);
@@ -1429,12 +1427,12 @@
         $("#btn-save").prop("disabled", true);
         $("#btn-reset").prop("disabled", true);
         $("#btn-cancel").prop("disabled", true);
-        $('#alamat_rumah').text('');
-        $('#alamat_sementara').text('');
-        $('#pengalaman_bekerja').text('');
-        $('#alamat_kerabat').text('');
-        $('#catatan').text('');
-        $('#catatan_kontrak').text('');
+        // $('#alamat_rumah').val('');
+        // $('#alamat_sementara').val('');
+        // $('#pengalaman_bekerja').val('');
+        // $('#alamat_kerabat').val('');
+        // $('#catatan').val('');
+        // $('#catatan_kontrak').val('');
 
         $('#employee_name').keyup(function(){
             var terisi = $('#employee_name').val();
@@ -1575,12 +1573,12 @@
             $("#btn-reset").prop("disabled", false);
             $("#btn-cancel").prop("disabled", false);
             $('#btn-save').html('<i class="fa fa-save"></i> Save');
-            $('#alamat_rumah').text('');
-            $('#alamat_sementara').text('');
-            $('#pengalaman_bekerja').text('');
-            $('#alamat_kerabat').text('');
-            $('#catatan').text('');
-            $('#catatan_kontrak').text('');
+            $('#alamat_rumah').val('');
+            $('#alamat_sementara').val('');
+            $('#pengalaman_bekerja').val('');
+            $('#alamat_kerabat').val('');
+            $('#catatan').val('');
+            $('#catatan_kontrak').val('');
             $('#is_periksaenroll_id').val(0);
             $('#is_periksanik').val(0);
 
@@ -1602,12 +1600,12 @@
 
         $('body').on('click', '#btn-reset', function (event) {
             $("#form1").trigger('reset');
-            $('#alamat_rumah').text('');
-            $('#alamat_sementara').text('');
-            $('#pengalaman_bekerja').text('');
-            $('#alamat_kerabat').text('');
-            $('#catatan').text('');
-            $('#catatan_kontrak').text('');
+            $('#alamat_rumah').val('');
+            $('#alamat_sementara').val('');
+            $('#pengalaman_bekerja').val('');
+            $('#alamat_kerabat').val('');
+            $('#catatan').val('');
+            $('#catatan_kontrak').val('');
             $('#is_periksaenroll_id').val(0);
             $('#is_periksanik').val(0);
         });
@@ -1846,7 +1844,6 @@
 
                 //var data = $("#datatable-ajax-crud").DataTable().row(this).data();
                 //alert(data['employee_name']);
-                //console.log(data);
 
                 $('#employee_name').val(data['employee_name']);
                 $("#jenis_kelamin").val(data['jenis_kelamin']).trigger("change");
@@ -1871,8 +1868,8 @@
                 $('#kota_kab').val(data['kota_kab']);
                 $('#kecamatan').val(data['kecamatan']);
                 $('#kelurahan_desa').val(data['kelurahan_desa']);
-                $('#alamat_rumah').text(data['alamat_rumah']);
-                $('#alamat_sementara').text(data['alamat_sementara']);
+                $('#alamat_rumah').val(data['alamat_rumah']);
+                $('#alamat_sementara').val(data['alamat_sementara']);
 
                 $("#site_nirwana_id").val(data['site_nirwana_id']).trigger("change");
 
@@ -1910,12 +1907,12 @@
                 $('#tanggal_bpjs_kesehatan').val(tanggal_bpjs_kesehatan);
                 $('#nomor_bpjs_kesehatan').val(data['nomor_bpjs_kesehatan']);
                 $('#premi').val(data['premi']);
-                $('#pengalaman_bekerja').text(data['pengalaman_bekerja']);
+                $('#pengalaman_bekerja').val(data['pengalaman_bekerja']);
                 $('#lokasi_file_cv').val(data['lokasi_file_cv']);
                 $('#nama_kerabat').val(data['nama_kerabat']);
                 $('#nomor_tlpn_kerabat').val(data['nomor_tlpn_kerabat']);
                 $('#hubungan_kerabat').val(data['hubungan_kerabat']);
-                $('#alamat_kerabat').text(data['alamat_kerabat']);
+                $('#alamat_kerabat').val(data['alamat_kerabat']);
                 tanggal_vaccine1 = defaultDate(data['tanggal_vaccine1']);
                 $('#tanggal_vaccine1').val(tanggal_vaccine1);
                 $('#nama_vaksin1').val(data['nama_vaksin1']);
@@ -1929,7 +1926,7 @@
                 $('#nomor_sim').val(data['nomor_sim']);
                 tanggal_expire_sim = defaultDate(data['tanggal_expire_sim']);
                 $('#tanggal_expire_sim').val(tanggal_expire_sim);
-                $('#catatan').text(data['catatan']);
+                $('#catatan').val(data['catatan']);
                 $('#lokasi_foto').val(data['lokasi_foto']);
                 tanggal_mulai_kontrak = defaultDate(data['tanggal_mulai_kontrak']);
                 tanggal_akhir_kontrak = defaultDate(data['tanggal_akhir_kontrak']);
@@ -1937,7 +1934,7 @@
                 $('#tanggal_akhir_kontrak').val(tanggal_akhir_kontrak);
                 // if(data['kontrak_awal']!=null){
                 //     tanggal_mulai_kontrak = defaultDate(data['kontrak_awal']);
-                //     $('#tanggal_mulai_kontrak_string').text(tanggal_mulai_kontrak);
+                //     $('#tanggal_mulai_kontrak_string').val(tanggal_mulai_kontrak);
                 //     document.getElementById('tanggal_mulai_kontrak_string').style.display='none';
                 //     document.getElementById('tanggal_mulai_kontrak').style.display='block';
 
@@ -1948,14 +1945,14 @@
                 // }
                 // if(data['kontrak_awal']!=null){
                 //     tanggal_akhir_kontrak = defaultDate(data['kontrak_akhir']);
-                //     $('#tanggal_akhir_kontrak_string').text(tanggal_akhir_kontrak);
+                //     $('#tanggal_akhir_kontrak_string').val(tanggal_akhir_kontrak);
                 //     document.getElementById('tanggal_akhir_kontrak_string').style.display='none';
                 //     document.getElementById('tanggal_akhir_kontrak').style.display='block';
                 // }else{
                 //     document.getElementById('tanggal_akhir_kontrak').style.display='block';
                 //     document.getElementById('tanggal_akhir_kontrak_string').style.display='none';
                 // }
-                $('#catatan_kontrak').text(data['catatan_kontrak']);
+                $('#catatan_kontrak').val(data['catatan_kontrak']);
                 $('#operator').val(data['operator']);
                 $('#created_at').val(data['created_at']);
                 $('#updated_at').val(data['updated_at']);
