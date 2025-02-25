@@ -95,7 +95,7 @@
             wheelY: "zoomX",
             pinchZoomX: true,
             paddingLeft:0,
-            paddingRight:1
+            paddingRight:0
         }));
 
         var title = chart.plotContainer.children.push(am5.Label.new(root, {
@@ -218,10 +218,11 @@
 
         series.bullets.push(function() {
             return am5.Bullet.new(root, {
-                locationY: 1,
+                locationY: 0,
                 sprite: am5.Label.new(root, {
                     text: "{valueYWorking.formatNumber('#.')}",
                     fill: am5.color(0x000000),
+                    fontWeight: "bold",
                     centerY: am5.p100,
                     centerX: am5.p50,
                     populateText: true
