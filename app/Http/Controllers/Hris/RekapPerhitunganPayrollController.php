@@ -682,7 +682,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $today = date('d');
 
         $minMonth = $this->month;
-        if ($today >= 26 && $today <= 31) {
+        if ($today >= 28 && $today <= 31) {
             $minMonth = date('Y-m', strtotime(date('Y-m-01') . ' +1 month'));
         }
 
