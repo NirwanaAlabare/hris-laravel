@@ -67,102 +67,107 @@
 
 <body>
     <table width="100%"  page-break-inside: auto; >
-    <thead>
-        <tr>
-            <td style="vertical-align: middle; text-align: center; width: 100%;" colspan="2" rowspan="4">
-                <img height="50" src="{{ public_path('/assets/images/hrd/nag-logo.png') }}" alt="">
-            </td>
-            <td style="vertical-align: middle; font-size: 15px; text-align: center; font-weight: 800;" colspan="4" rowspan="4">PENGAJUAN VOUCHER BAZZAR</td>
-            <td colspan="1" class="border-left" style="border-top: 1px solid;">Kode Dokumen</td>
-            <td colspan="1" class="border-right" style="border-top: 1px solid;">:</td>
-        </tr>
-        <tr>
-            <td colspan="1" class="border-left" style="border-top: 1px solid;">Revisi</td>
-            <td colspan="1" class="border-right" style="border-top: 1px solid;">: </td>
-        </tr>
-        <tr>
-            <td colspan="1" class="border-left" style="border-top: 1px solid;">Tanggal Revisi</td>
-            <td colspan="1" class="border-right" style="border-top: 1px solid;">: </td>
-        </tr>
-        <tr>
-            <td colspan="1" class="border-left" style="border-top: 1px solid;border-bottom: 1px solid;">Tanggal Efektif</td>
-            <td colspan="1" class="border-right" style="border-top: 1px solid; border-bottom: 1px solid;">: </td>
-        </tr>
-        <tr>
-            <td colspan="1" class="border-left text-center"
-                style="vertical-align: top; height: 15px; border-bottom: 1px solid;"></td>
-            <td colspan="1" class="borderless text-center"
-                style="vertical-align: top; height: 15px; border-bottom: 1px solid;"></td>
-            <td colspan="1" class="borderless text-center"
-                style="vertical-align: top; height: 15px; border-bottom: 1px solid;"></td>
-            <td colspan="1" class="borderless text-center"
-                style="vertical-align: top; height: 15px; border-bottom: 1px solid;"></td>
-            <td colspan="2" class="borderless text-center"
-                style="vertical-align: top; height: 15px; border-bottom: 1px solid;"></td>
-            <td colspan="2" class="border-right text-center"
-                style="vertical-align: top; height: 15px; border-bottom: 1px solid;"></td>
-        </tr>
-        <tr>
-            <th>NO</th>
-            <th>ID</th>
-            <th>NAMA KARAYWAN</th>
-            <th>BAGIAN</th>
-            <th>STATUS</th>
-            <th>JUMLAH</th>
-            <th colspan="2">TANDA TANGAN</th>
-        </tr>
-    </thead>
-    <tbody>
-        @php
-            $no = 1;
-            $style = '';
-            $total = 1;
-        @endphp
-        @foreach ($data as $item)
+        @if($data->count() == 0)
             <tr>
-                <td style="text-align: center;">{{ $no++ }}.</td>
-                <td style="text-align: left;padding-left:3px">{{ $item->enroll_id }}</td>
-                <td style="text-align: left;padding-left:3px">{{ $item->employee_name }}</td>
-                <td style="text-align: left;padding-left:3px">{{ $item->sub_dept_name }}</td>
-                <td style="text-align: left;padding-left:3px">{{ $item->status_staff }}</td>
-                <td style="text-align: center;padding-left:3px">{{ $item->jumlah == 0 ? 'Rp 0' : 'Rp ' . number_format($item->jumlah, 0, ',', '.') }}</td>
-                @if ($no % 2 == 0)
-                    <td style="vertical-align: top;" rowspan="2">
-                        <span><small>{{ $total }}</small></span>
-                        @for ($i = 0; $i < 30; $i++)
-                            &nbsp;
-                        @endfor
-                        @php
-                            $total++
-                        @endphp
-                    </td>
-                    <td style="vertical-align: top;" rowspan="2">
-                        <span><small>{{ $total }}</small></span>
-                        @for ($i = 0; $i < 30; $i++)
-                            &nbsp;
-                        @endfor
-                        @php
-                            $total++
-                        @endphp
-                    </td>
-                @endif
+                <td colspan="8" style="border:red 1px solid; color:red" class="text-center">Tidak ada data yang memerlukan tanda tangan.</td>
             </tr>
-
-            @if (($no - 1) % 2 != 0 && $no > count($data))
+        @else
+        <thead>
+            <tr>
+                <td style="vertical-align: middle; text-align: center; width: 100%;" colspan="2" rowspan="4">
+                    <img height="50" src="{{ public_path('/assets/images/hrd/nag-logo.png') }}" alt="">
+                </td>
+                <td style="vertical-align: middle; font-size: 15px; text-align: center; font-weight: 800;" colspan="4" rowspan="4">PENGAJUAN VOUCHER BAZZAR</td>
+                <td colspan="1" class="border-left" style="border-top: 1px solid;">Kode Dokumen</td>
+                <td colspan="1" class="border-right" style="border-top: 1px solid;">:</td>
+            </tr>
+            <tr>
+                <td colspan="1" class="border-left" style="border-top: 1px solid;">Revisi</td>
+                <td colspan="1" class="border-right" style="border-top: 1px solid;">: </td>
+            </tr>
+            <tr>
+                <td colspan="1" class="border-left" style="border-top: 1px solid;">Tanggal Revisi</td>
+                <td colspan="1" class="border-right" style="border-top: 1px solid;">: </td>
+            </tr>
+            <tr>
+                <td colspan="1" class="border-left" style="border-top: 1px solid;border-bottom: 1px solid;">Tanggal Efektif</td>
+                <td colspan="1" class="border-right" style="border-top: 1px solid; border-bottom: 1px solid;">: </td>
+            </tr>
+            <tr>
+                <td colspan="1" class="border-left text-center"
+                    style="vertical-align: top; height: 15px; border-bottom: 1px solid;"></td>
+                <td colspan="1" class="borderless text-center"
+                    style="vertical-align: top; height: 15px; border-bottom: 1px solid;"></td>
+                <td colspan="1" class="borderless text-center"
+                    style="vertical-align: top; height: 15px; border-bottom: 1px solid;"></td>
+                <td colspan="1" class="borderless text-center"
+                    style="vertical-align: top; height: 15px; border-bottom: 1px solid;"></td>
+                <td colspan="2" class="borderless text-center"
+                    style="vertical-align: top; height: 15px; border-bottom: 1px solid;"></td>
+                <td colspan="2" class="border-right text-center"
+                    style="vertical-align: top; height: 15px; border-bottom: 1px solid;"></td>
+            </tr>
+            <tr>
+                <th>NO</th>
+                <th>ID</th>
+                <th>NAMA KARAYWAN</th>
+                <th>BAGIAN</th>
+                <th>STATUS</th>
+                <th>JUMLAH</th>
+                <th colspan="2">TANDA TANGAN</th>
+            </tr>
+        </thead>
+        <tbody>
+            @php
+                $no = 1;
+                $style = '';
+                $total = 1;
+            @endphp
+            @foreach ($data as $item)
                 <tr>
-                    <td style="background-color: {{ $style }}">&nbsp;</td>
-                    <td style="background-color: {{ $style }}">&nbsp;</td>
-                    <td style="background-color: {{ $style }}">&nbsp;</td>
-                    <td style="background-color: {{ $style }}">&nbsp;</td>
-                    <td style="background-color: {{ $style }}">&nbsp;</td>
-                    <td style="background-color: {{ $style }}">&nbsp;</td>
+                    <td style="text-align: center;">{{ $no++ }}.</td>
+                    <td style="text-align: left;padding-left:3px">{{ $item->enroll_id }}</td>
+                    <td style="text-align: left;padding-left:3px">{{ $item->employee_name }}</td>
+                    <td style="text-align: left;padding-left:3px">{{ $item->sub_dept_name }}</td>
+                    <td style="text-align: left;padding-left:3px">{{ $item->status_staff }}</td>
+                    <td style="text-align: center;padding-left:3px">{{ $item->jumlah == 0 ? 'Rp 0' : 'Rp ' . number_format($item->jumlah, 0, ',', '.') }}</td>
+                    @if ($no % 2 == 0)
+                        <td style="vertical-align: top;" rowspan="2">
+                            <span><small>{{ $total }}</small></span>
+                            @for ($i = 0; $i < 30; $i++)
+                                &nbsp;
+                            @endfor
+                            @php
+                                $total++
+                            @endphp
+                        </td>
+                        <td style="vertical-align: top;" rowspan="2">
+                            <span><small>{{ $total }}</small></span>
+                            @for ($i = 0; $i < 30; $i++)
+                                &nbsp;
+                            @endfor
+                            @php
+                                $total++
+                            @endphp
+                        </td>
+                    @endif
                 </tr>
-            @endif
-            @if (($no - 1) % 26 == 0 && count($data)>26)
-            <tr style="page-break-before:always">
-            </tr>
-            @endif
-        @endforeach
+
+                @if (($no - 1) % 2 != 0 && $no > count($data))
+                    <tr>
+                        <td style="background-color: {{ $style }}">&nbsp;</td>
+                        <td style="background-color: {{ $style }}">&nbsp;</td>
+                        <td style="background-color: {{ $style }}">&nbsp;</td>
+                        <td style="background-color: {{ $style }}">&nbsp;</td>
+                        <td style="background-color: {{ $style }}">&nbsp;</td>
+                        <td style="background-color: {{ $style }}">&nbsp;</td>
+                    </tr>
+                @endif
+                @if (($no - 1) % 26 == 0 && count($data)>26)
+                <tr style="page-break-before:always">
+                </tr>
+                @endif
+            @endforeach
         </tbody>
         <tfoot>
             <tr>
@@ -180,7 +185,7 @@
                 </td>
                 <td colspan="1" class="border-right text-center"
                     style="vertical-align: middle; height: 20px; border-bottom: 1px solid;">
-               <b>{{ $total_jumlah == 0 ? 'Rp 0' : 'Rp ' . number_format($total_jumlah, 0, ',', '.') }}</b>
+            <b>{{ $total_jumlah == 0 ? 'Rp 0' : 'Rp ' . number_format($total_jumlah, 0, ',', '.') }}</b>
             </td>
 
                 <td colspan="2" class="border-right text-center"
@@ -212,6 +217,7 @@
                         style="vertical-align: top; height: 0px; border-bottom: 1px solid;"></td>
             </tr>
         </tfoot>
+        @endif
     </table>
     <script type="text/php">
     if ( isset($pdf) ) {

@@ -38,8 +38,12 @@
 
 <body>
     <table width=" {{ count($data) === 1 ? '50%' : '100%' }}"  style="page-break-inside:auto;">
+        @if($data->count() == 0)
+            <tr>
+                <td colspan="8" style="border:red 1px solid; color:red" class="text-center">Data belum di approve.</td>
+            </tr>
+        @else
         <thead>
-            {{$data}}
             <tr>
                 @foreach ($data as $key=>$value)
                 <td style="width:10.5cm; height:7.425cm; vertical-align:top; position:relative; box-sizing: border-box;">
@@ -62,6 +66,8 @@
                 @endforeach
             </tr>
         </thead>
+        @endif
+
     </table>
     <script type="text/php">
     if ( isset($pdf) ) {

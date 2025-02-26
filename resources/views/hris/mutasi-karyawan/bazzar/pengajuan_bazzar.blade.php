@@ -146,10 +146,10 @@
 
     <div class="row p-3">
         <div class="col-2">
-            <button class="btn btn-app w-100" onclick="export_all()" style="background-color: #eb0a0a" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Export Pengajuan</button>
+            <button class="btn btn-app w-100 btn_export" onclick="export_all()" style="background-color: #eb0a0a" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Export Pengajuan</button>
         </div>
         <div class="col-2">
-            <button class="btn btn-app w-100" onclick="export_excel_all()" style="background-color: #02c945" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Pengajuan</button>
+            <button class="btn btn-app w-100 btn_export" onclick="export_excel_all()" style="background-color: #02c945" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Pengajuan</button>
         </div>
     </div>
 
@@ -546,6 +546,13 @@
                 cek_filter_modal();
             });
 
+
+            if ($('#username_who_access').val() === 'mega@ptnag.com ' || $('#username_who_access').val() === 'rudy@patnag.com') {
+                        $(".btn_export").show();
+                    } else {
+                        $(".btn_export").hide();
+                    }
+
         })
 
 
@@ -566,23 +573,33 @@
                     className: "text-center",
                     width:'15%',
                     render: (data, type, row, meta) => {
-                        return `
-                            <div>
-                                <a style="text-align:center; color:white;" class="btn btn-primary btn-sm" onclick="showModalDepartment('${row.sub_dept_name}', '${row.sub_dept_id}')">
-                                    <i class="fa fa-search"></i>
-                                </a>
-                                <a class='btn btn-danger btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2"  onclick="export_laporan_pengajuan_bagian('${row.sub_dept_id}')">
-                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                                </a>
-                                <a class="btn btn-gray btn-sm mt-1" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_voucher_bagian('${row.sub_dept_id}')">
-                                    <i class="fa fa-print" aria-hidden="true"></i>
-                                </a>
-                                <a class="btn btn-success btn-sm mt-1" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_pengajuan_excel_bagian('${row.sub_dept_id}','${row.status}')">
-                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>
-                                </a>
-                            </div>
+                    let username = $('#username_who_access').val();
+                    // Tombol yang bisa diakses semua user
+                    let buttons = `
+                        <div>
+
+                            <a class='btn btn-danger btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_pengajuan_bagian('${row.sub_dept_id}')">
+                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                            </a>
+                    `;
+
+                    if (username === 'mega@ptnag.com ' || username === 'rudy@patnag.com' || username === 'fadli') {
+                        buttons += `
+                          <a style="text-align:center; color:white;" class="btn btn-primary btn-sm" onclick="showModalDepartment('${row.sub_dept_name}', '${row.sub_dept_id}')">
+                                <i class="fa fa-search"></i>
+                            </a>
+                            <a class="btn btn-gray btn-sm mt-1" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_voucher_bagian('${row.sub_dept_id}')">
+                                <i class="fa fa-print" aria-hidden="true"></i>
+                            </a>
+                            <a class="btn btn-success btn-sm mt-1" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_pengajuan_excel_bagian('${row.sub_dept_id}','${row.status}')">
+                                <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                            </a>
                         `;
                     }
+
+                    buttons += `</div>`;
+                    return buttons;
+                },
                 },
                 {
                     data: 'created_at',
@@ -807,10 +824,10 @@
                 },
                 columns: columns,
                 initComplete: function(settings, json) {
-                    if (json.data.length > 0 && status === "pending" && ($('#username_who_access').val()=='HR' || $('#username_who_access').val()=='fadli' || $('#username_who_access').val()=='mega@ptnag.com' || $('#username_who_access').val()=='IT') ) {
-                        $(".BtnVerifikasiOt").show(); // Tampilkan tombol jika ada data
+                    if ($('#username_who_access').val() === 'mega@ptnag.com ' || $('#username_who_access').val() === 'rudy@patnag.com') {
+                        $(".BtnVerifikasiOt").show();
                     } else {
-                        $(".BtnVerifikasiOt").hide(); // Sembunyikan tombol jika tidak ada data
+                        $(".BtnVerifikasiOt").hide();
                     }
                 }
 

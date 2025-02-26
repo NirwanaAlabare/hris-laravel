@@ -110,7 +110,7 @@ class BazzarController extends AdminBaseController
         $user = Auth::guard('admin')->user()->name;
         $sub_dept_id = $request->sub_dept_id;
         if ($request->ajax()) {
-            $data_tmp = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('employee_atribut.sub_dept_id', $sub_dept_id)->where('status', $request->status)->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->get();
+            $data_tmp = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('pengajuan_bazzar.operator', $user)->where('employee_atribut.sub_dept_id', $sub_dept_id)->where('status', $request->status)->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->get();
             return DataTables::of($data_tmp)->toJson();
         }
 
@@ -127,7 +127,7 @@ class BazzarController extends AdminBaseController
             } elseif ($status === "approve_list") {
                 $status = "approve";
             }
-            $data_tmp = PengajuanBazzar::select(DB::raw('SUM(pengajuan_bazzar.jumlah) as jumlah') , DB::raw('COUNT(*) as jml_data'),'pengajuan_bazzar.created_at','pengajuan_bazzar.status', 'employee_atribut.nik', 'employee_atribut.employee_name','employee_atribut.sub_dept_name', 'employee_atribut.sub_dept_id','employee_atribut.department_name', 'employee_atribut.status_staff')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->where('status', $status)->groupby('employee_atribut.sub_dept_id')->get();
+            $data_tmp = PengajuanBazzar::select(DB::raw('SUM(pengajuan_bazzar.jumlah) as jumlah') , DB::raw('COUNT(*) as jml_data'),'pengajuan_bazzar.created_at','pengajuan_bazzar.status', 'employee_atribut.nik', 'employee_atribut.employee_name','employee_atribut.sub_dept_name', 'employee_atribut.sub_dept_id','employee_atribut.department_name', 'employee_atribut.status_staff')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->where('pengajuan_bazzar.operator', $user)->where('status', $status)->groupby('employee_atribut.sub_dept_id')->get();
             return DataTables::of($data_tmp)->toJson();
         }
 
@@ -246,11 +246,11 @@ class BazzarController extends AdminBaseController
     {
         $user = Auth::guard('admin')->user()->name;
         if($request->id){
-            $data = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('status', 'approve')->where('id', $request->id)->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->get();
+            $data = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('status', 'pending')->where('id', $request->id)->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->get();
         }else if($request->sub_dept_id){
-            $data = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('status', 'approve')->where('employee_atribut.sub_dept_id', $request->sub_dept_id)->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->get();
+            $data = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('status', 'pending')->where('employee_atribut.sub_dept_id', $request->sub_dept_id)->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->get();
         }else{
-            $data = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('status', 'approve')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->get();
+            $data = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('status', 'pending')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->get();
         }
         $total_jumlah = $data->sum('jumlah');
         $fileName='Pengajuan-Bazzar_'.date('His');
@@ -267,7 +267,7 @@ class BazzarController extends AdminBaseController
             ->orderBy('voucher_bazzar.enroll_id', 'ASC')
             ->get();
         }
-        $fileName='Voucher_Bazzar_'.$data[0]->employee->employee_name.' '.date('Y-m-d').' '.rand(10,1000000);
+        $fileName='Voucher_Bazzar_ '.date('Y-m-d').' '.rand(10,1000000);
         $pdf = PDF::loadView('hris.mutasi-karyawan.bazzar.export-voucher-pdf',["data" => $data])->setPaper('F4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
         return $pdf;
     }
