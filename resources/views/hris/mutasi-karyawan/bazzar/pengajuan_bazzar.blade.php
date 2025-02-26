@@ -547,7 +547,7 @@
             });
 
 
-            if ($('#username_who_access').val() === 'mega@ptnag.com ' || $('#username_who_access').val() === 'rudy@patnag.com') {
+            if ($('#username_who_access').val() === 'mega@ptnag.com' || $('#username_who_access').val() === 'rudy@patnag.com') {
                         $(".btn_export").show();
                     } else {
                         $(".btn_export").hide();
@@ -585,7 +585,7 @@
                             </a>
                     `;
 
-                    if (username === 'mega@ptnag.com ' || username === 'rudy@patnag.com') {
+                    if (username === 'mega@ptnag.com' || username === 'rudy@patnag.com') {
                         buttons += `
                             <a class="btn btn-gray btn-sm mt-1" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_voucher_bagian('${row.sub_dept_id}')">
                                 <i class="fa fa-print" aria-hidden="true"></i>
@@ -773,7 +773,7 @@
                         let username = $('#username_who_access').val();
                         let rowStr = encodeURIComponent(JSON.stringify(row));
 
-                        if (isApprove && username === 'mega@ptnag.com ' || username === 'rudy@patnag.com') {
+                        if (isApprove && username === 'mega@ptnag.com' || username === 'rudy@patnag.com') {
                             pdfButton = `
                                 <a class='btn btn-danger btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_laporan_pengajuan(`+row.id+`, '` + row.nik + `')">
                                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
@@ -826,7 +826,7 @@
                 },
                 columns: columns,
                 initComplete: function(settings, json) {
-                    if ($('#username_who_access').val() === 'mega@ptnag.com ' || $('#username_who_access').val() === 'rudy@patnag.com') {
+                    if ($('#username_who_access').val() === 'mega@ptnag.com' || $('#username_who_access').val() === 'rudy@patnag.com') {
                         $(".BtnVerifikasiOt").show();
                     } else {
                         $(".BtnVerifikasiOt").hide();
