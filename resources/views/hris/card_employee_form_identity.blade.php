@@ -87,11 +87,11 @@
             <div style="display: flex; justify-content: flex-start; gap: 20px; align-items: center; width: 100%;">
                 <div>
                     <p class="label">Tanggal Masuk</p>
-                    <p class="value">{{$data[0]->tanggal_mulai_kontrak}}</p>
+                    <p class="value">{{$data[0]->join_date}}</p>
                 </div>
                 <div>
                     <p class="label">Tanggal Berakhir</p>
-                    <p class="value">{{$data[0]->tanggal_akhir_kontrak}}</p>
+                    <p class="value">{{$data[0]->tanggal_akhir_kontrak ? $data[0]->tanggal_akhir_kontrak : '-'}}</p>
                 </div>
             </div>
             @endif

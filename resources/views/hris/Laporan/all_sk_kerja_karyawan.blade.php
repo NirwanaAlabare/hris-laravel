@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Document</title>
     <style>
-        @page { margin: 25px 60px 60px 60px; }
+        @page { margin: 20px 45px 0px 45px; }
         #watermark {
             position: fixed;
             top: 30%;
@@ -18,7 +18,7 @@
     </style>
 </head>
 @foreach($data as $value)
-<?php 
+<?php
 
     $tanggal_masuk = $value['join_date'];
     $tanggal_resign = $value['tanggal_resign'];
@@ -56,7 +56,7 @@
     </table>
     <table width="506">
     <thead>
-        <?php 
+        <?php
         $tanggal_akhir='';
         if($value['status_aktif']=='AKTIF'){
             $tanggal_akhir='SEKARANG';
@@ -203,8 +203,8 @@
         </tr>
     </table>
     <table width="506">
-        <thead>  
-            <?php 
+        <thead>
+            <?php
             $tanggal_akhir='';
             if($value['status_aktif']=='AKTIF'){
                 $tanggal_akhir='SEKARANG';
@@ -249,7 +249,7 @@
                 <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><i>Name</i></td>
             </tr>
             <tr>
-                <td colspan="5" style="height: 8"></td>
+                <td colspan="5" style="height: 4"></td>
             </tr>
             <tr>
                 <td></td>
@@ -263,7 +263,7 @@
                 <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><i>Reg. No.</i></td>
             </tr>
             <tr>
-                <td colspan="5" style="height: 8"></td>
+                <td colspan="5" style="height: 4"></td>
             </tr>
             <tr>
                 <td></td>
@@ -277,7 +277,7 @@
                 <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><i>Section</i></td>
             </tr>
             <tr>
-                <td colspan="5" style="height: 8"></td>
+                <td colspan="5" style="height: 4"></td>
             </tr>
             <tr>
                 <td></td>
@@ -291,7 +291,7 @@
                 <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><i>Department</i></td>
             </tr>
             <tr>
-                <td colspan="5" style="height: 8"></td>
+                <td colspan="5" style="height: 4"></td>
             </tr>
             <tr>
                 <td></td>
@@ -305,7 +305,7 @@
                 <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><i>Last Position</i></td>
             </tr>
             <tr>
-                <td colspan="5" style="height: 8"></td>
+                <td colspan="5" style="height: 4"></td>
             </tr>
             <tr>
                 <td></td>
@@ -319,7 +319,7 @@
                 <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><i>Length of Service</i></td>
             </tr>
             <tr>
-                <td colspan="5" style="height: 8"></td>
+                <td colspan="5" style="height: 4"></td>
             </tr>
             <tr>
                 <td></td>
@@ -333,7 +333,7 @@
                 <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><i>Reason Of Termination</i></td>
             </tr>
             <tr>
-                <td colspan="5" style="height: 8"></td>
+                <td colspan="5" style="height: 4"></td>
             </tr>
             <tr>
                 <td></td>
@@ -379,6 +379,17 @@
                 <td></td>
                 <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><b>HR & GA Manager</b></td>
             </tr>
+            <table width="562">
+                <thead >
+                    <tr>
+                        <td style="border-bottom:1px solid black;" width="85%"></td>
+                        <td rowspan="2"><img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value['enroll_id'] . '&no_form=' . urlencode($value['no_surat'] . "/HRD/NAG-PK/" . $no_form)  . '&type=PAKLARING', 'QRCODE') }}"  alt="barcode" style="width: 60px; height: 60px;background-color:white" /></td>
+                    </tr>
+                    <tr>
+                        <td style="height:24px"></td>
+                    </tr>
+                </thead>
+            </table>
         </thead>
     </table>
 </body>
