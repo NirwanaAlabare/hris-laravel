@@ -125,7 +125,7 @@
                 <td style="text-align: left;padding-left:3px">{{ $item->employee_name }}</td>
                 <td style="text-align: left;padding-left:3px">{{ $item->sub_dept_name }}</td>
                 <td style="text-align: left;padding-left:3px">{{ $item->status_staff }}</td>
-                <td style="text-align: center;padding-left:3px">{{ $item->jumlah }}</td>
+                <td style="text-align: center;padding-left:3px">{{ $item->jumlah == 0 ? 'Rp 0' : 'Rp ' . number_format($item->jumlah, 0, ',', '.') }}</td>
                 @if ($no % 2 == 0)
                     <td style="vertical-align: top;" rowspan="2">
                         <span><small>{{ $total }}</small></span>
