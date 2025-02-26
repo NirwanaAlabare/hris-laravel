@@ -577,17 +577,16 @@
                     // Tombol yang bisa diakses semua user
                     let buttons = `
                         <div>
-
+                            <a style="text-align:center; color:white;" class="btn btn-primary btn-sm" onclick="showModalDepartment('${row.sub_dept_name}', '${row.sub_dept_id}')">
+                                <i class="fa fa-search"></i>
+                            </a>
                             <a class='btn btn-danger btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_pengajuan_bagian('${row.sub_dept_id}')">
                                 <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                             </a>
                     `;
 
-                    if (username === 'mega@ptnag.com ' || username === 'rudy@patnag.com' || username === 'fadli') {
+                    if (username === 'mega@ptnag.com ' || username === 'rudy@patnag.com') {
                         buttons += `
-                          <a style="text-align:center; color:white;" class="btn btn-primary btn-sm" onclick="showModalDepartment('${row.sub_dept_name}', '${row.sub_dept_id}')">
-                                <i class="fa fa-search"></i>
-                            </a>
                             <a class="btn btn-gray btn-sm mt-1" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_voucher_bagian('${row.sub_dept_id}')">
                                 <i class="fa fa-print" aria-hidden="true"></i>
                             </a>
@@ -771,8 +770,10 @@
                     render: (data, type, row, meta) => {
                         let pdfButton = "";
                         let editButton = "";
+                        let username = $('#username_who_access').val();
                         let rowStr = encodeURIComponent(JSON.stringify(row));
-                        if (isApprove) {
+
+                        if (isApprove && username === 'mega@ptnag.com ' || username === 'rudy@patnag.com') {
                             pdfButton = `
                                 <a class='btn btn-danger btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_laporan_pengajuan(`+row.id+`, '` + row.nik + `')">
                                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
@@ -780,6 +781,8 @@
                                 <a class='btn btn-success btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2" onClick="export_laporan_pengajuan_excel(`+row.id+`, '` + row.nik + `')">
                                     <i class="fa fa-file-excel-o" aria-hidden="true"></i>
                                 </a>
+                                <a class='btn btn-dark btn-sm mt-1' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_voucher(`+row.id+`, '` + row.nik + `')">
+                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                             `;
                         }
                         if(isPending){
@@ -795,8 +798,7 @@
                                 ${isPending ? `<a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapus('` + row.id + `');">
                                                 <i class='fa fa-trash'></i>
                                                 </a>` : ''}
-                                <a class='btn btn-dark btn-sm mt-1' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_voucher(`+row.id+`, '` + row.nik + `')">
-                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+
                                 </a>
                             </div>
                         `;

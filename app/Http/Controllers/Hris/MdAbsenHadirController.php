@@ -907,7 +907,6 @@ class MdAbsenHadirController extends AdminBaseController
                     employee_atribut.status_aktif,
                     employee_atribut.status_jabatan,
                     employee_atribut.status_kontrak_tetap,
-                    employee_atribut.status_staff,
                     employee_atribut.site_nirwana_id,
                     employee_atribut.work_status,
                     employee_atribut.employee_status,
@@ -956,7 +955,9 @@ class MdAbsenHadirController extends AdminBaseController
                     if($kode_ijin_payroll==null){
                         if($q->mulai_jam_kerja!=null && $q->akhir_jam_kerja!=null){
                             if($q->absen_masuk_kerja!=null && $q->absen_pulang_kerja!=null && $q->status_absen!='R'){
-                                if($q->jumlah_menit_absen_dt!=0 && $q->jumlah_menit_absen_pc==0){
+                                if($q->jumlah_menit_absen_dt!=0 && $q->jumlah_menit_absen_pc==0 && $q->status_staff=="NON STAFF"){
+                                    $kode_ijin_payroll='DT';
+                                }else if($q->jumlah_menit_absen_dt>10 && $q->jumlah_menit_absen_pc==0 && $q->status_staff=="STAFF"){
                                     $kode_ijin_payroll='DT';
                                 }else if($q->jumlah_menit_absen_dt==0 && $q->jumlah_menit_absen_pc!=0){
                                     $kode_ijin_payroll='PC';
@@ -996,8 +997,10 @@ class MdAbsenHadirController extends AdminBaseController
                             $kode_ijin_payroll='M';
                         }else if($q->status_absen=='IKS'){
                             if($q->absen_masuk_kerja!=null && $q->absen_pulang_kerja!=null){
-                                if($q->jumlah_menit_absen_dt!=0 && $q->jumlah_menit_absen_pc==0){
+                                if($q->jumlah_menit_absen_dt!=0 && $q->jumlah_menit_absen_pc==0 && $q->status_staff=="NON STAFF"){
                                     $kode_ijin_payroll='DT';
+                                    }else if($q->jumlah_menit_absen_dt>10 && $q->jumlah_menit_absen_pc==0 && $q->status_staff=="STAFF"){
+                                        $kode_ijin_payroll='DT';
                                     }else if($q->jumlah_menit_absen_dt==0 && $q->jumlah_menit_absen_pc!=0){
                                         $kode_ijin_payroll='PC';
                                     }else if($q->jumlah_menit_absen_dt!=0 && $q->jumlah_menit_absen_pc!=0){
