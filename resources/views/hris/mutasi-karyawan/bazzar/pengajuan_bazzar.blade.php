@@ -31,11 +31,11 @@
 }
 
 #datatable_waiting_list thead th {
-    background-color: #15435A;
+    background-color: var(--primary);
     color: white;
 }
 #datatable_approve_list thead th {
-    background-color: #15435A;
+    background-color: var(--primary);
     color: white;
 }
 .dataTables_filter input {
