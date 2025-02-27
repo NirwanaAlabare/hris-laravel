@@ -173,7 +173,7 @@
                 <div class="col-2">
                     <button class="btn btn-app w-100" onclick="export_excel_insentif()" style="background-color: #16a34a" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2"><i class="fa fa-file-excel-o" aria-hidden="true"></i>  Export Excel Insentif</button>
                 </div>
-                @if (Auth::guard('admin')->user()->name == 'HR' || Auth::guard('admin')->user()->name =='IT')
+                @if (Auth::guard('admin')->user()->name == 'HR' || Auth::guard('admin')->user()->name =='IT' || Auth::guard('admin')->user()->email =='mega@ptnag.com' || Auth::guard('admin')->user()->email =='rudy@patnag.com' || Auth::guard('admin')->user()->email =='fadli')
                 <div class="col-2">
                     <button class="btn btn-app w-100" onclick="export_excel_konsumsi()" style="background-color: #16a34a" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2"><i class="fa fa-file-excel-o" aria-hidden="true"></i>  Anggaran Makanan</button>
                 </div>
@@ -582,8 +582,13 @@
             ajax: {
                 url: '{{ route('fls.index') }}',
                 data: function(d) {
+                    let daterange = $("#daterange1").val();
+                    let dates = daterange.split(" s/d ");
+                    let from = dates[0];
+                    let to = dates[1] ? dates[1] : from;
+
                     d.dateFrom = from;
-                    d.dateTo = to ? to :from;
+                    d.dateTo = to;
                     d.employee_name = $('#employee_name_filter').val();
                 },
             },
@@ -658,8 +663,20 @@
         });
 
         function dataTableReload() {
+            var daterange = $("#daterange1").val();
+            var dates = daterange.split(" s/d ");
+            var from = dates[0];
+            var to = dates[1] ? dates[1] : from;
+
+            console.log('Updated from:', from);
+            console.log('Updated to:', to);
             datatable.ajax.reload();
         }
+
+        $("#daterange1").on("change input", function() {
+            dataTableReload();
+        });
+
 
         function getdetail(id_c,id_l) {
             $("#exampleModalLabel").html(id_c);

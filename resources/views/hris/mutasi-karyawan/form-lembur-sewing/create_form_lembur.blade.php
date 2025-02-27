@@ -202,7 +202,7 @@
             <div class="col-md-12">
                 <div class="card card-primary card-outline">
                     <div class="card-header">
-                        <h5 class="card-title"><i class="fas fa-list"></i> List Karyawan</h5>
+                        <h5 class="card-title"><i class="fa fa-users"></i> List Karyawan</h5>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">

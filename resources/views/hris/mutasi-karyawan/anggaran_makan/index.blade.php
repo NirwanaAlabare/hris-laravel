@@ -1,306 +1,295 @@
 @extends('admin.adminlayouts.adminlayout-mut-karyawan')
 
 @section('head')
-    <link href="{{ URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
-    <link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
-@stop
-@section('mainarea')
-<div class="page-header shadow pr-2 m-0 pt-0 pb-0 pl-2">
-    <ol class="breadcrumb breadcrumb-arrow m-0 p-0">
-        <li><a href="{{route('anggaran_makan.index')}}">Anggaran Makan</a></li>
-        <li class="active"><span>Estimasi Anggaran Makan</span></li>
-    </ol>
-    <div class="ml-auto">
-        <div class="input-group">
-            <a href="#" id="btn-refresh-data" class="btn btn-icon btn-secondary p-0 m-0" data-toggle="tooltip"
-                title="" data-placement="bottom" data-original-title="Refresh Halaman">
-                <span>
-                    <i class="fa fa-refresh"></i>
-                </span>
-            </a>
-        </div>
-    </div>
-</div>
-<div class="card card-sb">
-    <div class="card-header">
-        <h5 class="card-title fw-bold mb-0"><i class="fa fa-utensils"></i> ESTIMASI ANGGARAN MAKAN</h5>
-    </div>
-    <div class="card-body">
-        <div class="row mb-3 flex justify-content-between align-items-center p-3">
-            <div class="d-flex gap-4 align-items-end">
-                <div class="">
-                    <label class="form-label"><small><b>Tanggal Form</b></small></label>
-                    <div class="col pl-0"><input type="date" class="form-control form-control-sm " id="tgl-awal" name="tgl_awal" oninput="dataTableReload()" onchange="dataTableReload()" value="{{ date('Y-m-d') }}" readonly style="background-color:white"></div>
-                </div>
-            </div>
-            <div class="col-3">
-                <button data-toggle="modal" data-target="#newEstimationModal" id="btn_new" class="btn btn-primary position-relative w-100">
-                    <i class="fa fa-plus"></i>
-                    Baru
-                </button>
-            </div>
-        </div>
-        @if(Auth::guard('admin')->user()->name=='HR' || Auth::guard('admin')->user()->name=='HRD' || Auth::guard('admin')->user()->name=='IT' || Auth::guard('admin')->user()->name=='GA')
-        <div class="row mb-5">
-            <div class="col-2">
-                <button class="btn btn-app w-100" onclick="export_excel_konsumsi()" style="background-color: #16a34a" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2"><i class="fa fa-file-excel-o" aria-hidden="true"></i>Estimasi Anggaran Makan</button>
-            </div>
-            <div class="col-2">
-                <button class="btn btn-app w-100" onclick="export_excel_overtime_recap()" style="background-color: #16a34a" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2"><i class="fa fa-file-excel-o" aria-hidden="true"></i>Overtime Recap</button>
-            </div>
-            <div class="col-2">
-                <button class="btn btn-danger w-100 text-black" onclick="export_pdf_konsumsi()" style="background-color: #7a0000;" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2">
-                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                    Estimasi Anggaran Makan
-                </button>
-            </div>
-        </div>
-        @endif
+<link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
+<link href="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.css')}}" rel="stylesheet" />
+<link href="{{URL::asset('assets/plugins/sweet-alert/sweetalert.css')}}" rel="stylesheet" />
+<link href="{{URL::asset('assets/plugins/spectrum-date-picker/spectrum.css')}}" rel="stylesheet" />
+<link rel="stylesheet" href="{{ URL::asset('assets/css/iziToast.min.css') }}">
 
-        <div class="table-responsive">
-            <table id="datatable" class="table table-bordered table-sm w-100 table-hover text-nowrap">
-                <thead class="bg-primary">
-                    <tr style='text-align:center; vertical-align:middle'>
-                        <th>TANGGAL</th>
-                        <th>KETERANGAN</th>
-                        <th>BAGIAN</th>
-                        <th>STAFF</th>
-                        <th>NON STAFF</th>
-                        <th>CREATED BY</th>
-                        <th><span class="fa fa-cog"></span></th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="newEstimationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-sb">
-                <h1 class="modal-title fs-1 px-2" id="exampleModalLabel">Tambah Data Estimasi Makan</h1>
-                <button type="button" class="btn-close btn-primary" data-dismiss="modal" aria-label="Close">x</button>
-            </div>
-            <div class="modal-body py-0">
-                <div class="row bg-gradient-light py-3 px-2">
-                    <div class="col-4">
-                        <h6 class="modal-title fs-1">TANGGAL</h6>
-                    </div>
-                    <div class="col-8">
-                        <input type="date" class="form-control" id="tanggal">
-                        <h6 style="margin-bottom:0"></h6>
-                    </div>
-                </div>
-                <div class="row py-3 px-2">
-                    <div class="col-4">
-                        <h6 class="modal-title fs-1">KETERANGAN</h6>
-                    </div>
-                    <div class="form-group col-8">
-                        <select class='form-control' style='width: 100%;' name='keterangan' id='keterangan' required>
-                            <option value="">PILIH KETERANGAN</option>
-                            <option value="LEMBUR">LEMBUR</option>
-                            <option value="SHIFT MALAM">SHIFT MALAM</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row bg-gradient-light py-3 px-2">
-                    <div class="col-4">
-                        <h6 class="modal-title fs-1">BAGIAN</h6>
-                    </div>
-                    <div class="form-group col-8">
-                        <select class='form-control select2' style='width: 100%;' name='bagian' id='bagian' required>
-                            <option selected="selected" value="" disabled="true">Pilih Bagian</option>
-                            @foreach ($dept as $d)
-                                <option value="{{$d->department_id}}">{{$d->department_name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="row py-3 px-2">
-                    <div class="col-4">
-                        <h6 class="modal-title fs-1">NON STAFF</h6>
-                    </div>
-                    <div class="col-8">
-                        <input type="number" class="form-control" id="non_staff">
-                    </div>
-                </div>
-                <div class="row bg-gradient-light py-3 px-2">
-                    <div class="col-4">
-                        <h6 class="modal-title fs-1">STAFF</h6>
-                    </div>
-                    <div class="col-8">
-                        <input type="number" class="form-control" id="staff">
-                    </div>
-                </div>
-                <div class="row py-3 px-2">
-                    <div class="col-12 text-center">
-                        <button onclick="save_estimation()" class="btn btn-success fs-1" id="save_estimation">SUBMIT</button>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
+@stop
+
+@section('mainarea')
+    <div class="page-header shadow pr-2 m-0 pt-0 pb-0 pl-2">
+        <ol class="breadcrumb breadcrumb-arrow m-0 p-0">
+            <li><a href="{{route('fls.index')}}">Anggaran Makan</a></li>
+            <li class="active"><span>Estimasi Anggaran Makan</span></li>
+        </ol>
+        <div class="ml-auto">
+            <div class="input-group">
+                <a href="#" id="btn-refresh-data" class="btn btn-icon btn-secondary p-0 m-0" data-toggle="tooltip"
+                    title="" data-placement="bottom" data-original-title="Refresh Halaman">
+                    <span>
+                        <i class="fa fa-refresh"></i>
+                    </span>
+                </a>
             </div>
         </div>
     </div>
-</div>
-<div class="modal fade" id="editEstimationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-sb text-light">
-                <h1 class="modal-title fs-1 px-2" id="exampleModalLabel">Edit Data Estimasi Makan</h1>
-                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body py-0">
-                <div class="row py-3 px-2">
-                    <div class="col-4">
-                        <h6 class="modal-title fs-1">TANGGAL</h6>
-                    </div>
-                    <div class="col-8">
-                        <input type="date" class="form-control" id="edit_tanggal" value="{{ date('Y-m-d') }}">
-                    </div>
+    <input type="hidden" id="tgl-awal-display" name="tgl_awal-display" value="{{ date('d-m-Y') }}" >
+
+    <div class="card card-sb">
+        <div class="card-header">
+            <h5 class="card-title fw-bold mb-0"><i class="fa fa-utensils"></i> ESTIMASI ANGGARAN MAKAN</h5>
+        </div>
+        <div class="card-body">
+            <div class="row pb-2">
+                <div class="col-9">
+                    <input type="hidden" id="logged_user" value="{{$user}}">
+                    <button class="btn btn-outline-primary position-relative" data-toggle="modal" data-target="#newEstimationModal" id="btn_new">
+                        <i class="fa fa-plus"></i>
+                        Baru
+                    </button>
+                    @if (Auth::guard('admin')->user()->name == 'HR' || Auth::guard('admin')->user()->name =='IT' || Auth::guard('admin')->user()->email =='mega@ptnag.com' || Auth::guard('admin')->user()->email =='rudy@patnag.com' || Auth::guard('admin')->user()->email =='fadli')
+                    <a onclick="export_excel_konsumsi()" class="btn btn-outline-success position-relative">
+                        <i class="fa fa-file-excel"></i>
+                        Estimasi Anggaran Makan
+                    </a>
+                    <a onclick="export_excel_overtime_recap()" class="btn btn-outline-success position-relative">
+                        <i class="fa fa-file-excel"></i>
+                        Overtime Recap
+                    </a>
+                    <a onclick="export_pdf_konsumsi()" class="btn btn-outline-danger position-relative">
+                        <i class="fa fa-file-pdf"></i>
+                        Approval Anggaran Makan
+                    </a>
+                    @endif
                 </div>
-                <div class="row py-3 px-2">
-                    <div class="col-4">
-                        <h6 class="modal-title fs-1">KETERANGAN</h6>
-                    </div>
-                    <div class="col-8">
-                        <input type="hidden" id="edit_id">
-                        <select class="form-select" id="edit_keterangan">
-                            <option value="">PILIH KETERANGAN</option>
-                            <option value="LEMBUR">LEMBUR</option>
-                            <option value="SHIFT MALAM">SHIFT MALAM</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row bg-gradient-light py-3 px-2">
-                    <div class="col-4">
-                        <h6 class="modal-title fs-1">DEPARTMENT</h6>
-                    </div>
-                    <div class="col-8">
-                        <select class="form-select select2" id="edit_bagian">
-                            <option value="" selected hidden>PILIH BAGIAN</option>
-                            @foreach ($dept as $d)
-                                <option value="{{$d->department_id}}">{{$d->department_name}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="row py-3 px-2">
-                    <div class="col-4">
-                        <h6 class="modal-title fs-1">NON STAFF</h6>
-                    </div>
-                    <div class="col-8">
-                        <input type="number" class="form-control" id="edit_non_staff">
-                    </div>
-                </div>
-                <div class="row bg-gradient-light py-3 px-2">
-                    <div class="col-4">
-                        <h6 class="modal-title fs-1">STAFF</h6>
-                    </div>
-                    <div class="col-8">
-                        <input type="number" class="form-control" id="edit_staff">
-                    </div>
-                </div>
-                <div class="row py-3 px-2">
-                    <div class="col-12 text-center">
-                        <button class="btn btn-success fs-1" id="update_estimation">SAVE</button>
+                <div class="col">
+                    <div class="row">
+                        <div class="col-4 text-right">Tanggal :</div>
+                        <div class="col pl-0"><input type="date" class="form-control form-control-sm " id="tgl-awal" name="tgl_awal" oninput="dataTableReload()" onchange="dataTableReload()" value="{{ date('Y-m-d') }}" style="background-color:white"></div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="table-responsive">
+                <table id="datatable" class="table table-bordered table-sm w-100 table-hover text-nowrap">
+                    <thead class="bg-primary">
+                        <tr style='text-align:center; vertical-align:middle'>
+                            <th>TANGGAL</th>
+                            <th>KETERANGAN</th>
+                            <th>BAGIAN</th>
+                            <th>STAFF</th>
+                            <th>NON STAFF</th>
+                            <th>CREATED BY</th>
+                            <th><span class="fa fa-cog"></span></th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
         </div>
     </div>
-</div>
-<div class="modal fade" id="deleteEstimationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-light">
-                <h1 class="modal-title fs-1 px-2" id="exampleModalLabel">Delete Data Estimasi Makan</h1>
-                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body py-0">
-                <input type="hidden" id="delete_id">
-                <div class="row bg-gradient-light py-3 px-2">
-                    <div class="col-12 text-center">
-                        <h6 class="modal-title fs-1">Apakah anda yakin?</h6>
+    <div class="modal fade" id="newEstimationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-sb">
+                    <h1 class="modal-title fs-1 px-2" id="exampleModalLabel">Tambah Data Estimasi Makan</h1>
+                    <button type="button" class="btn-close btn-primary" data-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body py-0">
+                    <div class="row bg-gradient-light py-3 px-2">
+                        <div class="col-4">
+                            <h6 class="modal-title fs-1">TANGGAL</h6>
+                        </div>
+                        <div class="col-8">
+                            <input type="date" class="form-control" id="tanggal">
+                            <h6 style="margin-bottom:0"></h6>
+                        </div>
+                    </div>
+                    <div class="row py-3 px-2">
+                        <div class="col-4">
+                            <h6 class="modal-title fs-1">KETERANGAN</h6>
+                        </div>
+                        <div class="form-group col-8">
+                            <select class='form-control' style='width: 100%;' name='keterangan' id='keterangan' required>
+                                <option value="">PILIH KETERANGAN</option>
+                                <option value="LEMBUR">LEMBUR</option>
+                                <option value="SHIFT MALAM">SHIFT MALAM</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row bg-gradient-light py-3 px-2">
+                        <div class="col-4">
+                            <h6 class="modal-title fs-1">BAGIAN</h6>
+                        </div>
+                        <div class="form-group col-8">
+                            <select class='form-control select2' style='width: 100%;' name='bagian' id='bagian' required>
+                                <option selected="selected" value="" disabled="true">Pilih Bagian</option>
+                                @foreach ($dept as $d)
+                                    <option value="{{$d->department_id}}">{{$d->department_name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row py-3 px-2">
+                        <div class="col-4">
+                            <h6 class="modal-title fs-1">NON STAFF</h6>
+                        </div>
+                        <div class="col-8">
+                            <input type="number" class="form-control" id="non_staff">
+                        </div>
+                    </div>
+                    <div class="row bg-gradient-light py-3 px-2">
+                        <div class="col-4">
+                            <h6 class="modal-title fs-1">STAFF</h6>
+                        </div>
+                        <div class="col-8">
+                            <input type="number" class="form-control" id="staff">
+                        </div>
+                    </div>
+                    <div class="row py-3 px-2">
+                        <div class="col-12 text-center">
+                            <button onclick="save_estimation()" class="btn btn-success fs-1" id="save_estimation">SUBMIT</button>
+                        </div>
                     </div>
                 </div>
-                <div class="row py-3 px-2">
-                    <div class="col-12 text-center">
-                        <button class="btn btn-danger fs-1" id="delete_estimasi">Ya</button>
-                        <button class="btn btn-secondary fs-1" data-dismiss="modal">Tidak</button>
-                    </div>
+                <div class="modal-footer">
                 </div>
-            </div>
-            <div class="modal-footer">
             </div>
         </div>
     </div>
-</div>
+    <div class="modal fade" id="editEstimationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-sb">
+                    <h1 class="modal-title fs-1 px-2" id="exampleModalLabel">Edit Data Estimasi Makan</h1>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body py-0">
+                    <div class="row py-3 px-2">
+                        <div class="col-4">
+                            <h6 class="modal-title fs-1">TANGGAL</h6>
+                        </div>
+                        <div class="col-8">
+                            <input type="date" class="form-control" id="edit_tanggal" value="{{ date('Y-m-d') }}">
+                        </div>
+                    </div>
+                    <div class="row py-3 px-2">
+                        <div class="col-4">
+                            <h6 class="modal-title fs-1">KETERANGAN</h6>
+                        </div>
+                        <div class="col-8">
+                            <input type="hidden" id="edit_id">
+                            <select class="form-control" id="edit_keterangan">
+                                <option value="">PILIH KETERANGAN</option>
+                                <option value="LEMBUR">LEMBUR</option>
+                                <option value="SHIFT MALAM">SHIFT MALAM</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="row bg-gradient-light py-3 px-2">
+                        <div class="col-4">
+                            <h6 class="modal-title fs-1">DEPARTMENT</h6>
+                        </div>
+                        <div class="col-8">
+                            <select class="form-control select2" id="edit_bagian">
+                                <option value="" selected hidden>PILIH BAGIAN</option>
+                                @foreach ($dept as $d)
+                                    <option value="{{$d->department_id}}">{{$d->department_name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row py-3 px-2">
+                        <div class="col-4">
+                            <h6 class="modal-title fs-1">NON STAFF</h6>
+                        </div>
+                        <div class="col-8">
+                            <input type="number" class="form-control" id="edit_non_staff">
+                        </div>
+                    </div>
+                    <div class="row bg-gradient-light py-3 px-2">
+                        <div class="col-4">
+                            <h6 class="modal-title fs-1">STAFF</h6>
+                        </div>
+                        <div class="col-8">
+                            <input type="number" class="form-control" id="edit_staff">
+                        </div>
+                    </div>
+                    <div class="row py-3 px-2">
+                        <div class="col-12 text-center">
+                            <button class="btn btn-success fs-1" id="update_estimation">SAVE</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="deleteEstimationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h1 class="modal-title fs-1 px-2" id="exampleModalLabel">Delete Data Estimasi Makan</h1>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body py-0">
+                    <input type="hidden" id="delete_id">
+                    <div class="row bg-gradient-light py-3 px-2">
+                        <div class="col-12 text-center">
+                            <h6 class="modal-title fs-1">Apakah anda yakin?</h6>
+                        </div>
+                    </div>
+                    <div class="row py-3 px-2">
+                        <div class="col-12 text-center">
+                            <button class="btn btn-danger fs-1" id="delete_estimasi">Ya</button>
+                            <button class="btn btn-secondary fs-1" data-dismiss="modal">Tidak</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('footerjs')
-<script src="{{URL::asset('assets/js/script.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/dataTables.responsive.min.js') }}"></script>
-<script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
-<script src="{{URL::asset('assets/js/iziToast.min.js')}}"></script>
-<script src="{{ asset('assets/plugins/html5-qrcode/html5-qrcode.min.js') }}"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('#newEstimationModal').on('shown.bs.modal', function () {
-            console.log('hallo');
-            $('.select2').select2();
-
-        });
-    });
-</script>
-<script>
-    $(document).on('select2:open', () => {
-        document.querySelector('.select2-search__field').focus();
-    });
-    $('.select2').select2();
-</script>
-
+    <!-- DataTables & Plugins -->
+    <script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/dataTables.responsive.min.js') }}"></script>
+    <script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
+    <script src="{{URL::asset('assets/js/iziToast.min.js')}}"></script>
+    <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}"></script>
     <script>
-        var logged_user=$('#logged_user').val();
+          $(document).ready(function() {
+               // Ambil tanggal hari ini
+            let today = new Date();
+            let formattedDate = today.getDate().toString().padStart(2, '0') + '/' +
+                                (today.getMonth() + 1).toString().padStart(2, '0') + '/' +
+                                today.getFullYear();
 
-        $(document).ready(function () {
-            var selected_tanggal = $('#tgl-awal-display').val();
-            if (selected_tanggal) {
-                try {
-                    var tanggal_date = new Date(
-                        selected_tanggal.substr(6, 4) + '-' +
-                        selected_tanggal.substr(3, 2) + '-' +
-                        selected_tanggal.substr(0, 2)
-                    );
-
-                    var currentdate = new Date();
-
-                    var stringCurrentDate = currentdate.getDate() + ' ' +
-                        currentdate.toLocaleString('default', { month: 'long' }) + ' ' +
-                        currentdate.getFullYear();
-
-                    var stringSelectDate = tanggal_date?.getDate() + ' ' +
-                        tanggal_date.toLocaleString('default', { month: 'long' }) + ' ' +
-                        tanggal_date.getFullYear();
-
-                    console.log('Tanggal saat ini:', stringCurrentDate);
-                    console.log('Tanggal yang dipilih:', stringSelectDate);
-                } catch (error) {
-                    console.error('Error saat memproses tanggal:', error.message);
+            // Set nilai ke input
+            $('#tgl-awal-display').val(formattedDate);
+            if(logged_user!='HR' && logged_user!='GA' && logged_user!='IT' && logged_user!='rudy' && logged_user!='Mega Fitriana Haryono' && logged_user!='fadli'){
+                if(stringSelectDate<stringCurrentDate){
+                    $('#btn_new').attr('disabled','disabled');
+                }else if(stringCurrentDate==stringSelectDate){
+                    if(currentdate.getHours()>12){
+                        $('#btn_new').attr('disabled','disabled');
+                    }else if(currentdate.getHours()<13){
+                        $('#btn_new').removeAttr('disabled');
+                    }
+                }else{
+                    $('#btn_new').removeAttr('disabled');
                 }
-            } else {
-                console.error('Input #tgl-awal-display tidak memiliki nilai atau elemen tidak ditemukan.');
+            }else{
+                $('#btn_new').removeAttr('disabled');
             }
         });
 
+        var currentdate = new Date();
+        var selected_tanggal = $('#tgl-awal-display').val();
+        var tanggal_date=new Date(selected_tanggal.substr(6,4)+'-'+selected_tanggal.substr(3,2)+'-'+selected_tanggal.substr(0,2))
+        var stringCurrentDate=currentdate.getDate()+' '+currentdate.toLocaleString('default', { month: 'long' })+' '+currentdate.getFullYear();
+        var stringSelectDate=tanggal_date.getDate()+' '+tanggal_date.toLocaleString('default', { month: 'long' })+' '+tanggal_date.getFullYear();
+        var logged_user=$('#logged_user').val();
 
         function export_excel_konsumsi() {
             let from = document.getElementById("tgl-awal").value;
@@ -352,7 +341,6 @@
                 },
                 allowOutsideClick: false,
             });
-
             $.ajax({
                 type: "get",
                 url: '{{ route('anggaran_makan.export_excel_overtime_recap') }}',
@@ -384,7 +372,6 @@
             var tanggal=$('#tgl-awal').val();
             var url = 'anggaran-makan/export_pdf_konsumsi?tanggal='+tanggal;
             window.open(url, '_blank');
-
         }
         $('#datatable thead tr').clone(true).appendTo('#datatable thead');
         $('#datatable thead tr:eq(1) th').each(function(i) {
@@ -408,7 +395,7 @@
             ordering: false,
             processing: true,
             serverSide: true,
-            paging: true,
+            paging: false,
             searching: true,
             destroy: true,
             scrollX: true,
@@ -445,79 +432,77 @@
                 {
                     targets: [6],
                     render: (data, type, row, meta) => {
-                        if(logged_user!='HR' && logged_user!='GA' && logged_user!='IT'){
+                        if(logged_user!='HR' && logged_user!='GA' && logged_user!='IT' && logged_user!='rudy' && logged_user!='Mega Fitriana Haryono' && logged_user!='fadli'){
                             if(stringSelectDate<stringCurrentDate){
                                 return `
-                                <button class='btn btn-warning btn-sm' disabled>
-                                    <i class='fa fa-edit' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#editEstimationModal"></i>
+                                <button class='btn btn-warning btn-sm' disabled onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#editEstimationModal">
+                                    <i class='fa fa-edit'></i>
                                 </button>
-                                <button class='btn btn-danger btn-sm' disabled>
-                                    <i class='fa fa-trash' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#deleteEstimationModal"></i>
+                                <button class='btn btn-danger btn-sm' disabled onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#deleteEstimationModal">
+                                    <i class='fa fa-trash'></i>
                                 </button>`
                             }else if(stringSelectDate==stringCurrentDate){
                                 if(currentdate.getHours()>12){
                                     return `
-                                    <button class='btn btn-warning btn-sm' disabled>
-                                        <i class='fa fa-edit' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#editEstimationModal"></i>
+                                    <button class='btn btn-warning btn-sm' disabled onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#editEstimationModal">
+                                        <i class='fa fa-edit'></i>
                                     </button>
-                                    <button class='btn btn-danger btn-sm' disabled>
-                                        <i class='fa fa-trash' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#deleteEstimationModal"></i>
+                                    <button class='btn btn-danger btn-sm' disabled onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#deleteEstimationModal">
+                                        <i class='fa fa-trash'></i>
                                     </button>`
                                 }else if(currentdate.getHours()<13){
                                     return `
-                                    <button class='btn btn-warning btn-sm'>
-                                        <i class='fa fa-edit' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#editEstimationModal"></i>
+                                    <button class='btn btn-warning btn-sm' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#editEstimationModal">
+                                        <i class='fa fa-edit'></i>
                                     </button>
-                                    <button class='btn btn-danger btn-sm'>
-                                        <i class='fa fa-trash' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#deleteEstimationModal"></i>
+                                    <button class='btn btn-danger btn-sm' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#deleteEstimationModal">
+                                        <i class='fa fa-trash'></i>
                                     </button>`
                                 }
                             }else{
                                 return `
-                                <button class='btn btn-warning btn-sm'>
-                                    <i class='fa fa-edit' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#editEstimationModal"></i>
+                                <button class='btn btn-warning btn-sm' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#editEstimationModal">
+                                    <i class='fa fa-edit'></i>
                                 </button>
-                                <button class='btn btn-danger btn-sm'>
-                                    <i class='fa fa-trash' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#deleteEstimationModal"></i>
+                                <button class='btn btn-danger btn-sm' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#deleteEstimationModal">
+                                    <i class='fa fa-trash'></i>
                                 </button>`
                             }
                         }else{
                             return `
-                                <button class='btn btn-warning btn-sm'>
-                                    <i class='fa fa-edit' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#editEstimationModal"></i>
+                                <button class='btn btn-warning btn-sm' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#editEstimationModal">
+                                    <i class='fa fa-edit'></i>
                                 </button>
-                                <button class='btn btn-danger btn-sm'>
-                                    <i class='fa fa-trash' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#deleteEstimationModal"></i>
+                                <button class='btn btn-danger btn-sm' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#deleteEstimationModal">
+                                    <i class='fa fa-trash'></i>
                                 </button>`
                         }
-                        if((currentdate.getHours()>13 || selected_tanggal<currentdate)&&(logged_user!='HR' && logged_user!='GA' && logged_user!='IT')){
+                        if((currentdate.getHours()>13 || selected_tanggal<currentdate)&&(logged_user!='HR' && logged_user!='GA' && logged_user!='IT' && logged_user!='rudy' && logged_user!='Mega Fitriana Haryono' && logged_user!='fadli')){
                             return `
-                                <button class='btn btn-warning btn-sm' disabled>
-                                    <i class='fa fa-edit' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#editEstimationModal"></i>
+                                <button class='btn btn-warning btn-sm' disabled onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#editEstimationModal">
+                                    <i class='fa fa-edit'></i>
                                 </button>
-                                <button class='btn btn-danger btn-sm' disabled>
-                                    <i class='fa fa-trash' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#deleteEstimationModal"></i>
+                                <button class='btn btn-danger btn-sm' disabled onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#deleteEstimationModal">
+                                    <i class='fa fa-trash'></i>
                                 </button>`
                         }else{
                             return `
-                                <button class='btn btn-warning btn-sm'>
-                                    <i class='fa fa-edit' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#editEstimationModal"></i>
+                                <button class='btn btn-warning btn-sm' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#editEstimationModal">
+                                    <i class='fa fa-edit'></i>
                                 </button>
-                                <button class='btn btn-danger btn-sm'>
-                                    <i class='fa fa-trash' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#deleteEstimationModal"></i>
+                                <button class='btn btn-danger btn-sm' onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#deleteEstimationModal">
+                                    <i class='fa fa-trash'></i>
                                 </button>`
                         }
                     }
             }]
         });
-        function dataTableReload() {
-            datatable.ajax.reload();
-        }
+
         $('#tgl-awal-display').change(function(){
             var selected_tanggals=$('#tgl-awal-display').val();
             var select_tanggal=new Date(selected_tanggals.substr(6,4)+'-'+selected_tanggals.substr(3,2)+'-'+selected_tanggals.substr(0,2));
             var stringSelectedDate=select_tanggal.getDate()+' '+select_tanggal.toLocaleString('default', { month: 'long' })+' '+select_tanggal.getFullYear();
-            if(logged_user!='HR' && logged_user!='GA' && logged_user!='IT'){
+            if(logged_user!='HR' && logged_user!='GA' && logged_user!='IT' && logged_user!='rudy' && logged_user!='Mega Fitriana Haryono' && logged_user!='fadli'){
                 if(stringSelectedDate<stringCurrentDate){
                     $('#btn_new').attr('disabled','disabled');
                 }else if(stringSelectedDate==stringCurrentDate){
@@ -533,27 +518,10 @@
                 $('#btn_new').removeAttr('disabled');
             }
         });
-        $(document).ready(function() {
-            function dataTableReload() {
-                datatable.ajax.reload();
-            }
-            console.log('hallo')
-            if(logged_user!='HR' && logged_user!='GA' && logged_user!='IT'){
-                if(stringSelectDate<stringCurrentDate){
-                    $('#btn_new').attr('disabled','disabled');
-                }else if(stringCurrentDate==stringSelectDate){
-                    if(currentdate.getHours()>12){
-                        $('#btn_new').attr('disabled','disabled');
-                    }else if(currentdate.getHours()<13){
-                        $('#btn_new').removeAttr('disabled');
-                    }
-                }else{
-                    $('#btn_new').removeAttr('disabled');
-                }
-            }else{
-                $('#btn_new').removeAttr('disabled');
-            }
-        });
+
+        function dataTableReload() {
+            datatable.ajax.reload();
+        }
         function edit_estimasi(id){
             var id_estimasi=id;
             $.ajax({
@@ -589,13 +557,12 @@
                         allowOutsideClick: false
                     });
                     $('#deleteEstimationModal').modal('hide');
-                    $('#datatable').DataTable().ajax.reload();
+                    dataTableReload();
                 }
             });
         });
-        function save_estimation(){
+        $('#save_estimation').click(function(){
             var tanggal=$('#tanggal').val();
-            console.log(tanggal);
             var keterangan=$('#keterangan').val();
             var bagian=$('#bagian').val();
             var staff=$('#staff').val();
@@ -618,7 +585,7 @@
                         allowOutsideClick: false
                     });
                     $('#newEstimationModal').modal('hide');
-                    $('#datatable').DataTable().ajax.reload();
+                    dataTableReload();
                     $('#keterangan').val('');
                     $('#bagian').val('');
                     $('#staff').val('');
@@ -657,7 +624,7 @@
                     }
                 }
             });
-        };
+        });
         $('#update_estimation').click(function(){
             var id=$('#edit_id').val();
             var tanggal=$('#edit_tanggal').val();
@@ -684,7 +651,7 @@
                         allowOutsideClick: false
                     });
                     $('#editEstimationModal').modal('hide');
-                    $('#datatable').DataTable().ajax.reload();
+                    dataTableReload();
                     $('#edit_id').val('');
                     $('#edit_tanggal').val('');
                     $('#edit_keterangan').val('');
@@ -695,5 +662,4 @@
             });
         });
     </script>
-
 @endsection

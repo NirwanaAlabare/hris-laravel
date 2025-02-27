@@ -30,6 +30,7 @@ class FormLemburSewingController extends AdminBaseController
         $tgl_awal = $request->dateFrom;
         $tgl_akhir = $request->dateTo;
         $user = Auth::guard('admin')->user()->name;
+        $user_email = Auth::guard('admin')->user()->email;
         $dept= 'sewing';
 
         if ($request->ajax()) {
@@ -44,7 +45,7 @@ class FormLemburSewingController extends AdminBaseController
                 $noFormString = "'" . implode("', '", $forms) ."'";
                 $additionalQuery .= 'AND a.no_form in ('.$noFormString.')';
             }
-            if($user=='HR' || $user=='IT' || $user=='sophia' || $user=='Shopie' || $user=='sewing' || $dept=='FINANCE,ACCOUNTING&TAX'){
+            if($user=='HR' || $user=='IT' || $user=='sophia' || $user=='Shopie' || $user=='sewing' || $dept=='FINANCE,ACCOUNTING&TAX' || $user_email == 'mega@ptnag.com' || $user_email == 'rudy@ptnag.com' || $user_email == 'fadli'){
                 $data_input = DB::select("
                 SELECT
                 a.id,
