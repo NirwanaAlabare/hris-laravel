@@ -165,6 +165,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('/bazzar/get_bazzar_detail', ['as' => 'bazzar.get_bazzar_detail','uses' => 'Bazzar\BazzarController@get_bazzar_detail']);
     Route::post('/bazzar/store', ['as' => 'bazzar.store','uses' => 'Bazzar\BazzarController@store']);
     Route::post('/bazzar/hapus', ['as' => 'bazzar.hapus','uses' => 'Bazzar\BazzarController@hapus']);
+    Route::post('/bazzar/hapus_per_bagian', ['as' => 'bazzar.hapus_per_bagian','uses' => 'Bazzar\BazzarController@hapus_per_bagian']);
     Route::post('/bazzar/approve', ['as' => 'bazzar.approve','uses' => 'Bazzar\BazzarController@approve']);
     Route::post('/bazzar/reject', ['as' => 'bazzar.reject','uses' => 'Bazzar\BazzarController@reject']);
     Route::post('/bazzar/edit_pengajuan', ['as' => 'bazzar.edit_pengajuan','uses' => 'Bazzar\BazzarController@edit_pengajuan']);
