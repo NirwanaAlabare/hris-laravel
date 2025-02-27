@@ -117,6 +117,33 @@ class BazzarController extends AdminBaseController
         return response()->json(['status' => 'success', 'message' => 'Data berhasil dihapus']);
     }
 
+    public function hapus_per_bagian(Request $request)
+    {
+        $user = Auth::guard('admin')->user()->name;
+        $sub_dept_id = $request->sub_dept_id;
+
+        if (!$sub_dept_id) {
+            return response()->json(['status' => 'error', 'message' => 'Data gagal dihapus']);
+        }
+
+        // Pastikan ada data yang akan dihapus
+        $data_tmp = PengajuanBazzar::leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')
+            ->where('employee_atribut.sub_dept_id', $sub_dept_id)
+            ->where('pengajuan_bazzar.status', $request->status)
+            ->select('pengajuan_bazzar.*')
+            ->get();
+
+        if ($data_tmp->isEmpty()) {
+            return response()->json(['status' => 'error', 'message' => 'Tidak ada data yang ditemukan']);
+        }
+
+        // Hapus data yang ditemukan
+        PengajuanBazzar::whereIn('id', $data_tmp->pluck('id'))->delete();
+
+        return response()->json(['status' => 'success', 'message' => 'Data berhasil dihapus']);
+    }
+
+
 
     public function get_bazzar(Request $request)
     {
@@ -125,7 +152,7 @@ class BazzarController extends AdminBaseController
         $user_email = Auth::guard('admin')->user()->email;
         $sub_dept_id = $request->sub_dept_id;
         if ($request->ajax()) {
-            if($user_email == 'mega@ptnag.com' || $user_email == 'rudy@patnag.com' || $user_email == 'fadli'){
+            if($user_email == 'mega@ptnag.com' || $user_email == 'rudy@patnag.com' || $user_email == 'fadli' || $user_email == 'HR' || $user_email == 'ersa@ptnag.com' || $user_email == 'kiki@ptnag.com' || $user_email == 'hrd'){
                 $data_tmp = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('employee_atribut.sub_dept_id', $sub_dept_id)->where('status', $request->status)->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->get();
             }else{
                 $data_tmp = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('pengajuan_bazzar.operator', $user)->where('employee_atribut.sub_dept_id', $sub_dept_id)->where('status', $request->status)->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->get();
@@ -135,26 +162,57 @@ class BazzarController extends AdminBaseController
     }
     public function get_bazzar_detail(Request $request)
     {
-
         $user = Auth::guard('admin')->user()->name;
         $user_email = Auth::guard('admin')->user()->email;
+
         if ($request->ajax()) {
             $status = $request->status;
+            $search = $request->search; // Ambil input pencarian
 
             if ($status === "waiting_list") {
                 $status = "pending";
             } elseif ($status === "approve_list") {
                 $status = "approve";
             }
-            if($user_email == 'mega@ptnag.com' || $user_email == 'rudy@patnag.com' || $user_email == 'fadli'){
-                $data_tmp = PengajuanBazzar::select(DB::raw('SUM(pengajuan_bazzar.jumlah) as jumlah') , DB::raw('COUNT(*) as jml_data'),'pengajuan_bazzar.created_at','pengajuan_bazzar.status', 'employee_atribut.nik', 'employee_atribut.employee_name','employee_atribut.sub_dept_name', 'employee_atribut.sub_dept_id','employee_atribut.department_name', 'employee_atribut.status_staff')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->where('status', $status)->groupby('employee_atribut.sub_dept_id')->get();
-            }else{
-                $data_tmp = PengajuanBazzar::select(DB::raw('SUM(pengajuan_bazzar.jumlah) as jumlah') , DB::raw('COUNT(*) as jml_data'),'pengajuan_bazzar.created_at','pengajuan_bazzar.status', 'employee_atribut.nik', 'employee_atribut.employee_name','employee_atribut.sub_dept_name', 'employee_atribut.sub_dept_id','employee_atribut.department_name', 'employee_atribut.status_staff')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->where('pengajuan_bazzar.operator', $user)->where('status', $status)->groupby('employee_atribut.sub_dept_id')->get();
+
+            // Query dasar
+            $query = PengajuanBazzar::select(
+                    DB::raw('SUM(pengajuan_bazzar.jumlah) as jumlah'),
+                    DB::raw('COUNT(*) as jml_data'),
+                    'pengajuan_bazzar.id',
+                    'pengajuan_bazzar.created_at',
+                    'pengajuan_bazzar.status',
+                    'employee_atribut.nik',
+                    'employee_atribut.employee_name',
+                    'employee_atribut.sub_dept_name',
+                    'employee_atribut.sub_dept_id',
+                    'employee_atribut.department_name',
+                    'employee_atribut.status_staff'
+                )
+                ->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')
+                ->where('pengajuan_bazzar.status', $status);
+
+            // Jika user bukan admin tertentu, filter berdasarkan operator
+            if (!in_array($user_email, ['mega@ptnag.com', 'rudy@patnag.com', 'fadli', 'HR', 'ersa@ptnag.com', 'kiki@ptnag.com', 'hrd'])) {
+                $query->where('pengajuan_bazzar.operator', $user);
             }
+
+            // Filter hanya berdasarkan nama karyawan, tanpa mengubah agregasi
+            if (!empty($search)) {
+                $query->whereExists(function ($subquery) use ($search) {
+                    $subquery->select(DB::raw(1))
+                             ->from('employee_atribut')
+                             ->whereRaw('employee_atribut.enroll_id = pengajuan_bazzar.enroll_id')
+                             ->where('employee_atribut.employee_name', 'like', "%{$search}%");
+                });
+            }
+
+            $data_tmp = $query->groupBy('employee_atribut.sub_dept_id')->get();
             return DataTables::of($data_tmp)->toJson();
         }
-
     }
+
+
 
     public function approve(Request $request)
     {

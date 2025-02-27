@@ -38,6 +38,12 @@
     background-color: #15435A;
     color: white;
 }
+.dataTables_filter input {
+    width: 300px !important; /* Atur lebar sesuai kebutuhan */
+    height: 38px; /* Perbesar tinggi */
+    font-size: 16px; /* Perbesar ukuran teks */
+    padding: 5px 10px; /* Tambahkan padding agar lebih nyaman */
+}
 
 </style>
 @section('mainarea')
@@ -159,8 +165,8 @@
                     <div class="card-header bg-primary p-3">
                         <div class="card-title">PENGAJUAN KUPON KARYAWAN</div>
                     </div>
-                        <div class="mt-4 ml-4"  aria-labelledby="">
-                            <div clasl="card-header m-0 p-0">
+                        <div class="mt-4 ml-4 mr-4"  aria-labelledby="">
+                            <div class="card-header justify-content-between m-0 p-0">
                                 <ul class="nav nav-tabs mx-0" id="myTabList" role="tablist">
                                     <li class="nav-item">
                                         <a class="nav-link list active" id="waiting_list-tab" data-toggle="tab" href="#waiting_list" role="tab" aria-controls="waiting" aria-selected="true">Waiting</a>
@@ -169,6 +175,7 @@
                                         <a class="nav-link list" id="approve_list-tab" data-toggle="tab" href="#approve_list" role="tab" aria-controls="approve" aria-selected="false">approve</a>
                                     </li>
                                 </ul>
+                                <div class="data_search"></div>
                             </div>
                         </div>
                         <div class="tab-pane fade show active" id="waiting_list" role="tabpanel" aria-labelledby="waiting_list-tab">
@@ -188,7 +195,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade show active" id="approve_list" role="tabpanel" aria-labelledby="approve_list-tab">
+                        <div class="tab-pane fade" id="approve_list" role="tabpanel" aria-labelledby="approve_list-tab">
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table id="datatable_approve_list" class="table  table-bordered table-sm w-100 table-hover">
@@ -301,7 +308,7 @@
                 <div class="modal-body">
                     <div class="row p-3">
                         <div class="col-md-12">
-                            <div clasl="card-header">
+                            <div class="card-header">
                                 <ul class="nav nav-tabs mx-0 mb-3" id="myTab" role="tablist">
                                     <li class="nav-item">
                                         <a class="nav-link modal_list active" id="pending-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="true">Waiting</a>
@@ -436,6 +443,7 @@
     </script>
     <script>
 
+
         function undo() {
             location.reload();
         }
@@ -514,6 +522,7 @@
 
 
         $(document).ready(function() {
+
             $("#selectEmployeeID").val('');
             $("#txt_name").val('');
             $("#txt_enroll_id").val('');
@@ -522,7 +531,16 @@
             $("#txt_staff").val('');
             $("#txt_nik").val('');
             $("#txt_jumlah").val('');
-            dataTableDepartmentReload();
+
+            dataTableDepartmentReload("waiting_list");
+            dataTableDepartmentReload("approve_list");
+
+            // Tunggu sampai kedua tabel dibuat, lalu pindahkan search bar
+            setTimeout(function () {
+                moveDataTableFilter();
+            }, 500);
+
+
             $("#txt_jumlah").on("input", function() {
                 let value = $(this).val().replace(/[^\d]/g, ""); // Hanya angka
                 if (value) {
@@ -575,6 +593,8 @@
                     render: (data, type, row, meta) => {
                     let username = $('#username_who_access').val();
                     // Tombol yang bisa diakses semua user
+                    let isPending = row.status === "pending";
+                    let isApprove = row.status === "approve";
                     let buttons = `
                         <div>
                             <a style="text-align:center; color:white;" class="btn btn-primary btn-sm" onclick="showModalDepartment('${row.sub_dept_name}', '${row.sub_dept_id}')">
@@ -595,6 +615,16 @@
                             </a>
                         `;
                     }
+                    if(isPending){
+                        buttons += `<a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapusPerBagian('${row.sub_dept_id}', 'pending');">
+                                                <i class='fa fa-trash'></i>
+                                                </a>`;
+                    }
+                    if(isApprove && (username === 'mega@ptnag.com' || username === 'rudy@patnag.com' || username === 'fadli')){
+                        buttons += `<a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapusPerBagian('${row.sub_dept_id}', 'approve');">
+                                                <i class='fa fa-trash'></i>
+                                                </a>`;
+                    }
 
                     buttons += `</div>`;
                     return buttons;
@@ -606,7 +636,7 @@
                     render: (data, type, row, meta) => {
                             return `
                             <div class="">
-                                        `+moment(data.created_at).format('DD MMMM YYYY - HH:mm')+`
+                                        `+moment(data).format('DD MMMM YYYY - HH:mm')+`
                             </div>
                             `
                     }
@@ -626,15 +656,17 @@
             // Inisialisasi DataTable
             $(tableId).DataTable({
                 processing: true,
+                serverSide: true,
                 paging: false,
-                searching: false,
+                searching: true,
                 ordering: false,
                 destroy: true,
                 ajax: {
                     url: '{{ route('bazzar.get_bazzar_detail') }}',
                     dataSrc: "data",
-                    data: {
-                        status: status,
+                    data: function(d) {  // Kirim parameter tambahan ke backend
+                        d.status = status;
+                        d.search = $('div.dataTables_filter input').val();
                     },
                     onSuccess: function (response) {
                         console.log(response);
@@ -645,34 +677,60 @@
         }
 
         function showModalDepartment(data, id) {
-        // Set judul modal
-        $("#title-modal-list").text('PENGAJUAN KUPON BAZZAR : ' + data);
-        // Simpan id di modal (atribut data)
-        $("#ajax-modal-list").data("subDeptId", id);
-        // Pastikan default tab adalah pending
-        $("#pending-tab").tab('show');
-        // Buka modal
-        $("#ajax-modal-list").modal('show');
+            // Set judul modal
+            $("#title-modal-list").text('PENGAJUAN KUPON BAZZAR : ' + data);
+            // Simpan id di modal (atribut data)
+            $("#ajax-modal-list").data("subDeptId", id);
+            // Pastikan default tab adalah pending
+            $("#pending-tab").tab('show');
+            // Buka modal
+            $("#ajax-modal-list").modal('show');
 
-        // Panggil reload untuk tab default pending
-        dataTableReload('pending', id);
-    }
+            // Panggil reload untuk tab default pending
+            dataTableReload('pending', id);
+        }
 
-    // Pasang event handler untuk tab, hanya sekali saja
-    $(document).on("shown.bs.tab", ".nav-tabs .modal_list", function (e) {
-        let activeTab = $(e.target).attr("id"); // Ambil ID tab aktif yang baru
-        let status = activeTab.replace("-tab", ""); // Bersihkan format ID
-        // Ambil nilai id yang sudah disimpan di modal
-        let id = $("#ajax-modal-list").data("subDeptId");
-        dataTableReload(status, id);
-    });
+        // Pasang event handler untuk tab, hanya sekali saja
+        $(document).on("shown.bs.tab", ".nav-tabs .modal_list", function (e) {
+            let activeTab = $(e.target).attr("id"); // Ambil ID tab aktif yang baru
+            let status = activeTab.replace("-tab", ""); // Bersihkan format ID
+            // Ambil nilai id yang sudah disimpan di modal
+            let id = $("#ajax-modal-list").data("subDeptId");
+            dataTableReload(status, id);
+        });
 
-    $(document).on("shown.bs.tab", ".nav-tabs .list", function (e) {
-        let activeTab = $(e.target).attr("id");
-        let status = activeTab.replace("-tab", "");
-        console.log("status",status);
-        dataTableDepartmentReload();
-    });
+
+        function moveDataTableFilter() {
+            $("div.dataTables_filter").each(function () {
+                let searchBar = $(this).detach(); // Hapus dan simpan filter
+                $(".data_search").empty().append(searchBar); // Pastikan hanya ada satu filter
+            });
+
+            // Ubah placeholder
+            $("div.dataTables_filter input").attr("placeholder", "Cari data...");
+
+            // Hapus teks "Search:"
+            $("div.dataTables_filter label").contents().filter(function () {
+                return this.nodeType === 3;
+            }).remove();
+        }
+
+        $(document).on("shown.bs.tab", ".nav-tabs .list", function (e) {
+            let activeTab = $(e.target).attr("id").replace("-tab", "");
+
+            // Kosongkan input pencarian tanpa menambah elemen baru
+            $("div.dataTables_filter input").val("").trigger("input");
+
+            // Reload DataTable jika sudah ada, atau inisialisasi ulang
+            if ($.fn.DataTable.isDataTable("#datatable_" + activeTab)) {
+                $("#datatable_" + activeTab).DataTable().ajax.reload();
+            } else {
+                dataTableDepartmentReload(activeTab);
+            }
+
+            // Pastikan search bar tetap ada di .data_search
+            moveDataTableFilter();
+        });
 
 
 
@@ -758,7 +816,7 @@
                     render: (data, type, row, meta) => {
                             return `
                             <div class="">
-                                        `+moment(data.created_at).format('DD MMMM YYYY - HH:mm')+`
+                                        `+moment(data).format('DD MMMM YYYY - HH:mm')+`
                             </div>
                             `
                     }
@@ -785,7 +843,7 @@
                                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                             `;
                         }
-                        if(isPending){
+                        if(isPending || (isApprove && username === 'mega@ptnag.com' || username === 'rudy@patnag.com' || username === 'fadli')){
                             editButton = `<a style="text-align:center" class='btn btn-primary btn-sm'
                                     onclick="edit_data('` + rowStr + `');">
                                     <i class='fa fa-edit text-white'></i>
@@ -795,7 +853,7 @@
                             <div>
                                 ${editButton}
                                 ${pdfButton}
-                                ${isPending ? `<a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapus('` + row.id + `');">
+                                ${isPending || (isApprove && username === 'mega@ptnag.com' || username === 'rudy@patnag.com' || username === 'fadli') ? `<a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapus('` + row.id + `');">
                                                 <i class='fa fa-trash'></i>
                                                 </a>` : ''}
 
@@ -880,6 +938,52 @@
         }
 
 
+        function hapusPerBagian(a, status) {
+            let sub_dept_id = a;
+            Swal.fire({
+            icon: 'error',
+            title: 'Hapus data?',
+            showCancelButton: true,
+            showConfirmButton: true,
+            confirmButtonText: 'Hapus',
+            cancelButtonText: 'Batal',
+            confirmButtonColor: '#fa4456',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route('bazzar.hapus_per_bagian') }}',
+                        type: 'POST',
+                        data: {
+                            sub_dept_id: sub_dept_id,
+                            status: status,
+                        },
+                        success: function (res) {
+                            notif({
+                                msg: "<b>Info:</b> Data berhasil di hapus",
+                                type: "info"
+                            });
+                            dataTableDepartmentReload();
+                            $('.modal').modal('hide');
+
+                        }, error: function (jqXHR) {
+                            let res = jqXHR.responseJSON;
+                            let message = '';
+
+                            for (let key in res.errors) {
+                                message = res.errors[key];
+                            }
+                            dataTableDepartmentReload();
+                            notif({
+                                    msg: "<b>Info:</b> Terjadi kesalahan",
+                                    type: "error"
+                                })
+                        }
+                    })
+                }
+            })
+
+
+        }
         function hapus(a) {
             let id_tmp = a;
             Swal.fire({
