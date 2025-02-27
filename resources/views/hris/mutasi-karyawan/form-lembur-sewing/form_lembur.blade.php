@@ -638,8 +638,8 @@
                                     <a class='btn btn-secondary btn-sm' onclick="export_spl(` + row.id + `,'` + row.no_form + `')">
                                                 <i class='fa fa-print'></i>
                                     </a>
-                                    <a class='btn btn-danger btn-sm'>
-                                        <i class="fa fa-file-pdf-o" aria-hidden="true" onclick="export_pdf_insentif('` + row.no_form + `')" title="reward"></i>
+                                    <a class='btn btn-danger btn-sm' onclick="export_pdf_insentif('` + row.no_form + `')" title="reward">
+                                        <i class="fa fa-file-pdf-o" aria-hidden="true" ></i>
                                     </a>
                                 </div>
                             `
