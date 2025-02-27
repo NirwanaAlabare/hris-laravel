@@ -480,7 +480,7 @@ table.dataTable td {
                     'Bulan Sekarang': [moment().startOf('month'), moment().endOf('month')],
                     'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
                 },
-                startDate: moment().subtract(29, 'days'),
+                startDate: moment(), // Ubah ke hari ini
                 endDate: moment()
             }, function (start, end) {
                 $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>');
