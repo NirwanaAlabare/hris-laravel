@@ -8,8 +8,6 @@
 <link href="{{URL::asset('assets/plugins/spectrum-date-picker/spectrum.css')}}" rel="stylesheet" />
 <link rel="stylesheet" href="{{ URL::asset('assets/css/iziToast.min.css') }}">
 
-
-<link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
 
@@ -57,9 +55,9 @@ table.dataTable td {
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable" style="max-width: 85%;">
             <div class="modal-content">
-                <div class="modal-header bg-sb text-light">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header bg-primary">
+                    <h1 class="modal-title" id="exampleModalLabel"></h1>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">x</button>
                 </div>
                 <div style="height: 100vh; overflow-y: auto; over-flow-x:none;">
                     <div class="row p-2">
@@ -136,7 +134,7 @@ table.dataTable td {
                         </div>
                         <div class="modal-footer">
                             <div class="p-2 bd-highlight">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
                                 <button type="submit" class="btn btn-outline-success">Simpan </button>
                             </div>
                         </div>
@@ -212,7 +210,6 @@ table.dataTable td {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
@@ -228,9 +225,7 @@ table.dataTable td {
     </style>
 
     <script>
-        $("#from_lembur").timepicker({
-          timeFormat: "%H:%i"
-        });
+
         var m = 0;
         function myFunction() {
             $('#tambah_karyawan').attr('disabled','true');
@@ -276,7 +271,7 @@ table.dataTable td {
                     </td>\
                 </tr>\
             </div>');
-            document.getElementById("karyawan_"+m).autofocus;
+            document.getElementById("karyawan_" + m).focus();
             var y = document.getElementById("overtime_employee_header");
             var f = document.getElementById("overtime_employee_submit");
             if(m>0){
@@ -605,7 +600,7 @@ table.dataTable td {
                         if(row.jml_insentif>0){
                             return `
                                 <div class='d-flex gap-1 justify-content-center align-items-center'>
-                                    <a class='btn btn-primary btn-sm  mr-2' style="color:white;" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                    <a class='btn btn-primary btn-sm  mr-2' style="color:white;" data-toggle="modal" data-target="#exampleModal"
                                     onclick="getdetail('` + row.no_form + `','` + row.dept + `','` + row.ket + `');">
                                     <i class='fa fa-search'></i>
                                     </a>
@@ -620,7 +615,7 @@ table.dataTable td {
                         }else{
                             return `
                                 <div class='d-flex gap-1 justify-content-center align-items-center'>
-                                    <a class='btn btn-primary btn-sm mr-2' style="color:white;" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                    <a class='btn btn-primary btn-sm mr-2' style="color:white;" data-toggle="modal" data-target="#exampleModal"
                                     onclick="getdetail('` + row.no_form + `','` + row.dept + `','` + row.ket + `');">
                                     <i class='fa fa-search'></i>
                                     </a>
@@ -645,6 +640,7 @@ table.dataTable td {
         var checkedEmployeeArr = [];
         var inputedAmountArr = [];
         function getdetail(id_c,id_d, id_k) {
+            $("#exampleModal").modal('show');
             $("#exampleModalLabel").html(id_c);
             $("#txtket_modal").html(id_k);
             $("#no_form_modal").html(id_c);

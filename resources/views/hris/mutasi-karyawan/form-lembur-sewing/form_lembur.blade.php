@@ -7,7 +7,6 @@
 <link href="{{URL::asset('assets/plugins/spectrum-date-picker/spectrum.css')}}" rel="stylesheet" />
 <link rel="stylesheet" href="{{ URL::asset('assets/css/iziToast.min.css') }}">
 <link href="{{ URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
-<link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
@@ -55,9 +54,9 @@
         aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable" style="max-width: 85%;">
             <div class="modal-content">
-                <div class="modal-header bg-sb text-light">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal-header bg-primary">
+                    <h1 class="modal-title" id="exampleModalLabel"></h1>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">x</button>
                 </div>
                 <div style="height: 100vh; overflow-y: auto; over-flow-x:none;">
                     <div class="row p-2">
@@ -136,7 +135,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
                             <button type="submit" class="btn btn-outline-success">Simpan </button>
                         </div>
                     </form>
@@ -211,7 +210,6 @@
     <script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
     <script src="{{URL::asset('assets/js/iziToast.min.js')}}"></script>
     <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}"></script>
-<script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
 <script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
     <style>
         #datatable {
@@ -630,7 +628,7 @@
                         if(row.jml_insentif>0){
                             return `
                                 <div class='d-flex gap-1 justify-content-center align-items-center'>
-                                    <a class='btn btn-primary btn-sm  mr-2' style="color:white;" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                    <a class='btn btn-primary btn-sm  mr-2' style="color:white;" data-toggle="modal" data-target="#exampleModal"
                                     onclick="getdetail('` + row.no_form + `','` + row.line+ `');
                                         getket('` + row.no_form + `');">
                                                 <i class='fa fa-search'></i>
@@ -646,7 +644,7 @@
                         }else{
                             return `
                                 <div class='d-flex gap-1 justify-content-center align-items-center'>
-                                    <a class='btn btn-primary btn-sm mr-2' style="color:white;" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                    <a class='btn btn-primary btn-sm mr-2' style="color:white;" data-toggle="modal" data-target="#exampleModal"
                                     onclick="getdetail('` + row.no_form + `','` + row.line+ `');
                                         getket('` + row.no_form + `');">
                                                 <i class='fa fa-search'></i>
@@ -679,6 +677,7 @@
 
 
         function getdetail(id_c,id_l) {
+            $("#exampleModal").modal('show');
             $("#exampleModalLabel").html(id_c);
             $("#no_form").html(id_c);
             $("#no_form_modal_input").val(id_c);
