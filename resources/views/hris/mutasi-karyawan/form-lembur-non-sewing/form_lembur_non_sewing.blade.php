@@ -199,6 +199,7 @@ table.dataTable td {
     </div>
     @endsection
     @section('footerjs')
+    <script src="{{URL::asset('assets/js/script.js') }}"></script>
     <script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.js') }}"></script>
     <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}"></script>
     <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
@@ -608,7 +609,7 @@ table.dataTable td {
                                         <i class='fa fa-print'></i>
                                     </a>
                                     <a class='btn btn-danger btn-sm ml-2' onclick="export_pdf_insentif('` + row.no_form + `')" title="reward">
-                                        <i class="fa fa-file-pdf" aria-hidden="true"></i>
+                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
                                 </div>
                             `

@@ -201,6 +201,7 @@
 @endsection
 @section('footerjs')
     <!-- DataTables & Plugins -->
+    <script src="{{URL::asset('assets/js/script.js') }}"></script>
     <script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
