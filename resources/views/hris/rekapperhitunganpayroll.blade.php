@@ -201,6 +201,7 @@
                     </div>
                     <div class="row pt-1">
                         <div class="col-12">
+                            <label id="last_periode_labor" style="color: black"></label>
                             <label id="last_update_labor" style="color: black"></label>
                             <span class="fa fa-refresh" onclick="get_last_update_labor()" style="cursor: pointer;color:rgb(0, 0, 206)"></span>
                         </div>
@@ -908,11 +909,14 @@
         }
         function get_last_update_labor(){
             $('#last_update_labor').empty();
+            $('#last_periode_labor').empty();
             $.ajax({
                 type: 'GET',
                 url: '{{route('hris.rekapperhitunganpayroll.get_last_update_labor')}}',
                 success:function(data){
-                    $('#last_update_labor').html('<i><b>&nbsp;&nbsp;Last Update :</b> '+new Date(data).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"})+'&nbsp;&nbsp;</i>');
+                    console.log(data);
+                    $('#last_periode_labor').html('<i><b>&nbsp;&nbsp;Last Period Proses (Labor Cost ) :</b> '+new Date(data.tanggal_berjalan).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"})+'&nbsp;&nbsp;</i>');
+                    $('#last_update_labor').html('<i><b>&nbsp;&nbsp;Last Update :</b> '+new Date(data.created_at).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"})+', '+data.created_at.substr(11,5)+'&nbsp;&nbsp;</i>');
                 },
                 error: function(res){
 

@@ -14,6 +14,7 @@ use App\Models\RefAbsenIjin;
 use App\Models\GradingSalary;
 use App\Models\BpjsSetting;
 use App\Models\EmployeeBpjs;
+use App\Models\HistoryProsesLabor;
 use App\Exports\DailyLaborCosts;
 use App\Exports\RecapDailyLaborCostExport;
 use App\Exports\DailyLaborCost2;
@@ -698,7 +699,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         return $last_update;
     }
     public function get_last_update_labor(){
-        $last_update=DB::select('select tanggal_berjalan from daily_labor_costs order by tanggal_berjalan desc limit 1')[0]->tanggal_berjalan;
+        $last_update=DB::select('select * from daily_labor_costs order by tanggal_berjalan desc limit 1')[0];
         return $last_update;
     }
 
@@ -2071,7 +2072,15 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         collect($datest)->chunk($batchSize)->each(function ($batch) {
             DailyLaborCost::insert($batch->toArray());
         });
+        HistoryProsesLabor::create([
+            'tanggal_awal' => $first_date,
+            'tanggal_akhir' => $last_date,
+            'operator' => $email,
+          ]);
+
     }
+
+
     public function rekap_bpjs(){
 
         $kode_bpjs =  BpjsSetting::orderBy('kode_periode_bpjs','desc')->limit(1)->first();
