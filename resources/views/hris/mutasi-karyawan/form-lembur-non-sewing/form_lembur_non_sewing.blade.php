@@ -271,7 +271,7 @@ table.dataTable td {
                     </td>\
                 </tr>\
             </div>');
-            document.getElementById("karyawan_" + m).focus();
+            document.getElementById("karyawan_" + m).autofocus;
             var y = document.getElementById("overtime_employee_header");
             var f = document.getElementById("overtime_employee_submit");
             if(m>0){
