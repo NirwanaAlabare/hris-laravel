@@ -686,6 +686,7 @@
             // Buka modal
             $("#ajax-modal-list").modal('show');
 
+
             // Panggil reload untuk tab default pending
             dataTableReload('pending', id);
         }
@@ -884,7 +885,7 @@
                 },
                 columns: columns,
                 initComplete: function(settings, json) {
-                    if ($('#username_who_access').val() === 'mega@ptnag.com' || $('#username_who_access').val() === 'rudy@patnag.com') {
+                    if ($('#username_who_access').val() === 'mega@ptnag.com' || $('#username_who_access').val() === 'rudy@patnag.com' || $('#username_who_access').val() === 'fadli') {
                         $(".BtnVerifikasiOt").show();
                     } else {
                         $(".BtnVerifikasiOt").hide();

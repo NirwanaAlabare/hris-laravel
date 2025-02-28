@@ -13,11 +13,13 @@ use Dompdf\Options;
 use Dompdf\FontMetrics;
 use App\Models\EmployeeAtribut;
 use App\Models\PengajuanBazzar;
+use App\Models\DataKoreksiPotongan;
 use App\Models\VoucherBazzar;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use DateTime;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use App\Exports\ExportLineSheet;
 use App\Exports\ExportPengajuanBazzar;
@@ -95,8 +97,8 @@ class BazzarController extends AdminBaseController
     public function hapus(Request $request)
     {
         $user = Auth::guard('admin')->user()->name;
+        $email = Auth::guard('admin')->user()->email;
         $id_bazzar = $request->id_bazzar;
-
         if (!$id_bazzar) {
             return response()->json(['status' => 'error', 'message' => 'Data gagal dihapus']);
         }
@@ -108,11 +110,23 @@ class BazzarController extends AdminBaseController
             return response()->json(['status' => 'error', 'message' => 'Data tidak ditemukan']);
         }
 
+
         if ($pengajuan->status == 'approve') {
-            return response()->json(['status' => 'error', 'message' => 'Data sudah di-approve dan tidak dapat dihapus']);
+            if ($email != 'fadli' && $email != 'mega@ptnag.com' && $email != 'rudy@ptnag.com'){
+                return response()->json(['status' => 'error', 'message' => 'Anda tidak memiliki izin untuk menghapus data yang sudah di-approve']);
+            }
+
+            // Hapus DataKoreksiPotongan
+            $periode_tanggal_koreksi = '02/26/2025 - 03/25/2025';
+            DataKoreksiPotongan::whereIn('enroll_id', [$pengajuan->enroll_id])
+                ->where('jenis_potongan', 3)
+                ->where('periode_tanggal_koreksi', $periode_tanggal_koreksi)
+                ->delete();
         }
 
         $pengajuan->delete();
+
+        VoucherBazzar::where('id_pengajuan_bazzar', $id_bazzar)->delete();
 
         return response()->json(['status' => 'success', 'message' => 'Data berhasil dihapus']);
     }
@@ -136,8 +150,11 @@ class BazzarController extends AdminBaseController
         if ($data_tmp->isEmpty()) {
             return response()->json(['status' => 'error', 'message' => 'Tidak ada data yang ditemukan']);
         }
-
-        // Hapus data yang ditemukan
+        if($request->status == 'approve'){
+            VoucherBazzar::whereIn('id_pengajuan_bazzar', $data_tmp->pluck('id'))->delete();
+            $periode_tanggal_koreksi = '02/26/2025 - 03/25/2025';
+            DataKoreksiPotongan::whereIn('enroll_id', $data_tmp->pluck('enroll_id'))->where('jenis_potongan', 3)->where('periode_tanggal_koreksi', $periode_tanggal_koreksi)->delete();
+        }
         PengajuanBazzar::whereIn('id', $data_tmp->pluck('id'))->delete();
 
         return response()->json(['status' => 'success', 'message' => 'Data berhasil dihapus']);
@@ -152,7 +169,7 @@ class BazzarController extends AdminBaseController
         $user_email = Auth::guard('admin')->user()->email;
         $sub_dept_id = $request->sub_dept_id;
         if ($request->ajax()) {
-            if($user_email == 'mega@ptnag.com' || $user_email == 'rudy@patnag.com' || $user_email == 'fadli' || $user_email == 'HR' || $user_email == 'ersa@ptnag.com' || $user_email == 'kiki@ptnag.com' || $user_email == 'hrd'){
+            if($user_email == 'mega@ptnag.com' && $user_email == 'rudy@patnag.com' && $user_email == 'fadli' && $user_email == 'HR' && $user_email == 'ersa@ptnag.com' && $user_email == 'kiki@ptnag.com' && $user_email == 'hrd'){
                 $data_tmp = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('employee_atribut.sub_dept_id', $sub_dept_id)->where('status', $request->status)->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->get();
             }else{
                 $data_tmp = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('pengajuan_bazzar.operator', $user)->where('employee_atribut.sub_dept_id', $sub_dept_id)->where('status', $request->status)->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->get();
@@ -218,8 +235,9 @@ class BazzarController extends AdminBaseController
     {
 
         $user= Auth::guard('admin')->user()->name;
-        $ids = $request->input('ids');
+        $email = Auth::guard('admin')->user()->email;
 
+        $ids = $request->input('ids');
         if (!empty($ids)) {
             $pengajuanList = PengajuanBazzar::select('employee_atribut.*','pengajuan_bazzar.id','pengajuan_bazzar.jumlah')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->whereIn('id', $ids)->get(['id', 'jumlah']);
             $currentYear = date('Y');
@@ -230,6 +248,8 @@ class BazzarController extends AdminBaseController
 
             $vouchers = [];
             $nextVoucherNumber = $voucherCount + 1;
+
+
             foreach ($pengajuanList as $pengajuan) {
                 $jumlahVoucher = floor($pengajuan->jumlah / 50000);
 
@@ -251,6 +271,32 @@ class BazzarController extends AdminBaseController
 
                     $nextVoucherNumber++;
                 }
+                $periode_tanggal_koreksi = '02/26/2025 - 03/25/2025';
+
+                $exists = DataKoreksiPotongan::where('enroll_id', $pengajuan->enroll_id)
+                ->where('periode_tanggal_koreksi', $periode_tanggal_koreksi)
+                ->where('jenis_potongan', 3)
+                ->exists();
+
+                $now = Carbon::now();
+                $kode_koreksi_potongan = $now->format('YmdHi') . $pengajuan->nik;
+                $tanggal_koreksi = $now->format('Y-m-d');
+                $jumlah_rp_potongan = $pengajuan->jumlah;
+                $jenis_potongan = 3;
+                $keterangan = 'Pengajuan Bazzar';
+                if(!$exists) {
+                    DataKoreksiPotongan::create([
+                        'uuid' => Str::uuid(),
+                        'kode_koreksi_potongan' => $kode_koreksi_potongan,
+                        'tanggal_koreksi' => $tanggal_koreksi,
+                        'enroll_id' => $pengajuan->enroll_id,
+                        'jumlah_rp_potongan' => $jumlah_rp_potongan,
+                        'periode_tanggal_koreksi' => $periode_tanggal_koreksi,
+                        'jenis_potongan' => $jenis_potongan,
+                        'keterangan' => $keterangan,
+                        'operator' => $email
+                    ]);
+                }
             }
 
             // Insert ke database
@@ -262,6 +308,8 @@ class BazzarController extends AdminBaseController
                 'status' => 'approve',
                 'operator' => $user,
             ]);
+
+
 
             return response()->json([
                 'status' => 'success',
@@ -302,6 +350,7 @@ class BazzarController extends AdminBaseController
     public function edit_pengajuan(Request $request)
     {
         $user = Auth::guard('admin')->user()->name;
+        $email = Auth::guard('admin')->user()->email;
         $ids = $request->input('id_pengajuan');
         $jumlah = $request->input('jumlah_edit');
 
@@ -323,10 +372,24 @@ class BazzarController extends AdminBaseController
         }
 
         if ($pengajuan->status == 'approve') {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Data sudah di-approve dan tidak dapat diedit'
-            ]);
+            if ($email != 'fadli' && $email != 'mega@ptnag.com' && $email != 'rudy@ptnag.com'){
+                return response()->json(['status' => 'error', 'message' => 'Anda tidak memiliki izin untuk mengedit data yang sudah di-approve']);
+            }
+
+            $periode_tanggal_koreksi = '02/26/2025 - 03/25/2025';
+            $dataKoreksi = DataKoreksiPotongan::where('enroll_id', $pengajuan->enroll_id)
+            ->where('periode_tanggal_koreksi', $periode_tanggal_koreksi)
+            ->where('jenis_potongan', 3)
+            ->first();
+
+            if ($dataKoreksi) {
+                DataKoreksiPotongan::where('uuid','=', $dataKoreksi->uuid)
+                    ->update([
+                      'jumlah_rp_potongan' => $jumlah,
+                    'operator' => $email
+                    ]);
+
+            }
         }
 
         // Update data jika belum di-approve

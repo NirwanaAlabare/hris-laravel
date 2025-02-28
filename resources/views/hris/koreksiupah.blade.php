@@ -516,6 +516,10 @@
     <script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
 
     <script type="text/javascript">
+
+        function formatRupiah(angka) {
+            return "Rp " + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
         $('#insentif_jabatan_modal_button').on('click',function(){
             $('#store_insentif_jabatan').attr("disabled");
             $('#delete_insentif_jabatan').attr("disabled");
@@ -678,8 +682,12 @@
         $("#periode_tanggal_koreksi").val('');
 
         $('body').on('keyup', '#jumlah_rp_potongan', function (event) {
-            this.value = this.value.replace(/[^-0-9\.]/g,'');
+            // this.value = this.value.replace(/[^-0-9\.]/g,'');
+            let value = $(this).val().replace(/[^0-9]/g, ""); // Hapus semua karakter kecuali angka
+            $(this).val(formatRupiah(value));
+
         });
+
 
         $('body').on('click', '#btn-refresh-page', function (event) {
             location.reload();
@@ -1221,7 +1229,7 @@
                 $("#department_name").val(data["department_name"]);
                 $("#sub_dept_id").val(data["sub_dept_id"]);
                 $("#sub_dept_name").val(data["sub_dept_name"]);
-                $("#jumlah_rp_potongan").val(data["jumlah_rp_potongan"]);
+                $("#jumlah_rp_potongan").val(formatRupiah(data["jumlah_rp_potongan"]));
                 $("#periode_tanggal_koreksi").val(data["periode_tanggal_koreksi"]);
                 $("#keterangan").val(data["keterangan"]);
                 $("#jenis_koreksi").val(data["jenis_koreksi"]).trigger("change");
