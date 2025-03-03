@@ -21,6 +21,7 @@ class PengajuanBazzar extends Model
         'operator',
         'created_at',
         'updated_at',
+        'diajukan_oleh',
     ];
 
     protected $casts = [
@@ -31,6 +32,7 @@ class PengajuanBazzar extends Model
         'operator',
         'created_at',
         'updated_at',
+        'diajukan_oleh',
     ];
 
     public function employee(){
