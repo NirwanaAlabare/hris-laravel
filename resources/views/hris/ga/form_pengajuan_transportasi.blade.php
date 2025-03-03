@@ -19,7 +19,7 @@
             </li>
             <li class="nav-item">
                 @if ($id_user==4241 || $id_user==20 || $id_user==17 || $id_user==7765 || $id_user==5321 || $id_user==6083 || $id_user==6081 || $id_user==6713)
-                    <a class="btn btn-white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data <span class="badge text-dark" style="font-weight:bold; background-color:#d2eafc;padding-left:5px;padding-right:5px;border:1px solid black">{{$pengajuan_transportasi}}</span></a>
+                    <a class="btn btn-white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data <span class="badge text-dark" style="font-weight:bold; background-color:#d2eafc;padding-left:5px;padding-right:5px">{{$pengajuan_transportasi}}</span></a>
                 @else
                     <a class="btn btn-white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data</a>
                 @endif
@@ -49,6 +49,175 @@
             <div class="col-4 pt-2">
                 <a href="#" onclick="change_initial_destination(12,161,2196,30109)" style="text-decoration-line: underline">PT. NAG</a><img src="{{URL::asset('assets/images/brand/shortcut.png')}}" width="18">
             </div>
+        </div>
+        <div class="row pb-2 pt-1">
+            <div class="col-12">
+                <table class="w-100 table-striped">
+                    <tr>
+                        <th style="padding:6px">Provinsi</th>
+                        <th style="padding:6px">Kabupaten/Kota</th>
+                        <th style="padding:6px">Kecamatan</th>
+                        <th style="padding:6px">Desa</th>
+                        <th style="padding:6px">Detail Alamat</th>
+                        <th style="padding:6px">Waktu Pemberangkatan</th>
+                    </tr>
+                    <tr>
+                        <th width="16%" style="padding:6px;vertical-align:top">
+                            <select id="provinsi" name="selectProvinsi[]" multiple data-placeholder="Pilih Provinsi" class="form-control select2oneSelect" onchange="change_city(this.value)">
+                            </select>
+                            <h6 id="warning_provinsi" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
+                        </th>
+                        <th width="16%" style="padding:6px;vertical-align:top">
+                            <select id="cities" name="selectCity[]" multiple data-placeholder="Pilih Kota" class="form-control select2oneSelect" style="background-color: white" onchange="change_district(this.value)">
+                            </select>
+                            <h6 id="warning_kota" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
+                        </th>
+                        <th width="16%" style="padding:6px;vertical-align:top">
+                            <select id="districts" name="selectDistrict[]" multiple data-placeholder="Pilih Kecamatan" class="form-control select2oneSelect" style="background-color: white"onchange="change_subdistrict(this.value)">
+                            </select>
+                            <h6 id="warning_kecamatan" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
+                        </th>
+                        <th width="16%" style="padding:6px;vertical-align:top">
+                            <select id="sub_districts" name="selectSubdistrict[]" multiple data-placeholder="Pilih Desa" class="form-control select2oneSelect" style="background-color: white" onchange="subdistrict_change(this.value)">
+                            </select>
+                            <h6 id="warning_desa" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
+                        </th>
+                        <th width="18%" style="padding:6px;vertical-align:top">
+                            <input id="instansi" class="form-control" style="background-color: white" placeholder="Instansi">
+                            <input id="detail_alamat" class="form-control mt-1" style="background-color: white" placeholder="Nama Gedung, Jalan atau Blok">
+                        </th>
+                        <th width="18%" style="padding:6px;vertical-align:top">
+                            <div class="row">
+                                <div class="col-7 pr-0">
+                                    <input type="date" id="tanggal_pemberangkatan" class="form-control" style="background-color: white">
+                                </div>
+                                <div class="col-5 pl-0">
+                                    <input class="form-control" id="jam_pemberangkatan" name="jam_pemberangkatan" type="text" style="background-color: white; cursor:pointer;">
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="tujuan_advanced">
+            <div class="row pb-2 pt-1">
+                <div class="col-2 pt-2">
+                    <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Tujuan Pertama</label>
+                </div>
+            </div>
+            <div class="row p-0">
+                <div class="col-12 px-0">
+                    <table class="w-100">
+                        <tr>
+                            <th width="16%" class="bg-primary" style="padding:6px;border:1px solid #c4c0c0">Provinsi</th>
+                            <th width="16%" class="bg-primary" style="padding:6px;border:1px solid #c4c0c0">Kabupaten/Kota</th>
+                            <th width="16%" class="bg-primary" style="padding:6px;border:1px solid #c4c0c0">Kecamatan</th>
+                            <th width="16%" class="bg-primary" style="padding:6px;border:1px solid #c4c0c0">Desa</th>
+                            <th width="16%" class="bg-primary" style="padding:6px;border:1px solid #c4c0c0">Detail Alamat</th>
+                            <th width="18%" class="bg-primary" style="padding:6px;border:1px solid #c4c0c0">Waktu Pemberangkatan</th>
+                            <th width="2%" style="padding:6px"></th>
+                        </tr>
+                        <tr>
+                            <td style="padding:6px;vertical-align:top;border:1px solid #c4c0c0">
+                                <select id="provinsi" name="selectProvinsi[]" multiple data-placeholder="Pilih Provinsi" class="form-control select2oneSelect" onchange="change_city(this.value)">
+                                </select>
+                                <h6 id="warning_provinsi" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
+                                <select class="form-control form-control-sm pt-1" name="history_alamat" id="pilih_history_alamat_ke_'+count+'" onchange="pilih_history_alamat_ke('+count+')">
+                                    <option value="">History Alamat</option>
+                                </select>
+                            </td>
+                            <td style="padding:6px;vertical-align:top;border:1px solid #c4c0c0">
+                                <select id="cities" name="selectCity[]" multiple data-placeholder="Pilih Kota" class="form-control select2oneSelect" style="background-color: white" onchange="change_district(this.value)">
+                                </select>
+                                <h6 id="warning_kota" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
+                            </th>
+                            <td style="padding:6px;vertical-align:top;border:1px solid #c4c0c0">
+                                <select id="districts" name="selectDistrict[]" multiple data-placeholder="Pilih Kecamatan" class="form-control select2oneSelect" style="background-color: white"onchange="change_subdistrict(this.value)">
+                                </select>
+                                <h6 id="warning_kecamatan" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
+                            </td>
+                            <td style="padding:6px;vertical-align:top;border:1px solid #c4c0c0">
+                                <select id="sub_districts" name="selectSubdistrict[]" multiple data-placeholder="Pilih Desa" class="form-control select2oneSelect" style="background-color: white" onchange="subdistrict_change(this.value)">
+                                </select>
+                                <h6 id="warning_desa" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
+                            </td>
+                            <td style="padding:6px;vertical-align:top;border:1px solid #c4c0c0">
+                                <input id="instansi" class="form-control" style="background-color: white" placeholder="Instansi">
+                                <input id="detail_alamat" class="form-control mt-1" style="background-color: white" placeholder="Nama Gedung, Jalan atau Blok">
+                            </td>
+                            <td style="padding:6px;vertical-align:top;border:1px solid #c4c0c0">
+                                <div class="row">
+                                    <div class="col-7 pr-0">
+                                        <input type="date" id="tanggal_pemberangkatan" class="form-control" style="background-color: white">
+                                    </div>
+                                    <div class="col-5 pl-0">
+                                        <input class="form-control" id="jam_pemberangkatan" name="jam_pemberangkatan" type="text" style="background-color: white; cursor:pointer;">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="padding:6px;vertical-align:top">
+                                <button class="btn btn-primary p-1 text-light"><i class="fa fa-plus"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="bg-primary" width="32%" colspan="2" style="padding:6px;border:1px solid #c4c0c0">Tujuan</th>
+                            <th class="bg-primary" width="16%" style="padding:6px;border:1px solid #c4c0c0"></th>
+                            <th class="bg-primary" width="16%" style="padding:6px;border:1px solid #c4c0c0"></th>
+                            <th class="bg-primary" width="16%" style="padding:6px;border:1px solid #c4c0c0"></th>
+                            <th class="bg-primary" width="18%" style="padding:6px;border:1px solid #c4c0c0"></th>
+                            <th width="2%" style="padding:6px"></th>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="padding:6px;vertical-align:top;border:1px solid #c4c0c0">
+                                <div class="row">
+                                    <div class="col-xl-4">
+                                    <input type="checkbox" name="tujuan_pemberangkatan" value="antar_tamu" id="checkbox_1" >&nbsp;Antar tamu
+                                    </div>
+                                    <div class="col-xl-4">
+                                    <input type="checkbox" name="tujuan_pemberangkatan" value="antar_barang" id="checkbox_3">&nbsp;Antar barang
+                                    </div>
+                                    <div class="col-xl-4">
+                                    <input type="checkbox" name="tujuan_pemberangkatan" value="antar_dinas" id="checkbox_5">&nbsp;Antar dinas
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xl-4">
+                                        <input type="checkbox" name="tujuan_pemberangkatan" value="jemput_tamu" id="checkbox_2" >&nbsp;Jemput tamu
+                                    </div>
+                                    <div class="col-xl-4">
+                                        <input type="checkbox" name="tujuan_pemberangkatan" value="jemput_barang" id="checkbox_4">&nbsp;Jemput barang
+                                    </div>
+                                    <div class="col-xl-4">
+                                        <input type="checkbox" name="tujuan_pemberangkatan" value="jemput_dinas" id="checkbox_6">&nbsp;Jemput dinas
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="padding:6px;vertical-align:top;border:1px solid #c4c0c0">
+                            </td>
+                            <td style="padding:6px;vertical-align:top;border:1px solid #c4c0c0">
+                            </td>
+                            <td style="padding:6px;vertical-align:top;border:1px solid #c4c0c0">
+                            </td>
+                            <td style="padding:6px;vertical-align:top;border:1px solid #c4c0c0">
+                            </td>
+                            <td style="padding:6px;vertical-align:top">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body px-6 py-4" style="border: 1px solid #d8d4dc">
+        
+        <div class="row pb-2 pt-1">
+            <div class="col-2 pt-1">
+                
+            </div>
+            <div class="col-4 pt-2">
+                
+            </div>
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Tujuan</label>
             </div>
@@ -59,12 +228,7 @@
                             <button class="btn btn-primary py-1 mr-3" id="tujuan_lainnya" style="font-weight:bold"> + Daftar Tujuan</button></label>
                         </td>
                         <td width="1000px">
-                            <select id="pilihan_history" class="form-control col-12" onchange="pilih_history_alamat(1)">
-                                <option value="">History Alamat</option>
-                                @foreach ($tujuan_short as $tujuan)
-                                    <option value="{{$tujuan->prov_id}}-{{$tujuan->city_id}}-{{$tujuan->dis_id}}-{{$tujuan->subdis_id}}-{{$tujuan->detail_alamat}}-{{$tujuan->instansi}}">{{$tujuan->instansi}} {{$tujuan->detail_alamat}} ({{$tujuan->subdistrict}} - {{$tujuan->district}} - {{$tujuan->city}} - {{$tujuan->provinsi}})</option>
-                                @endforeach
-                            </select>
+                            
                         </td>
                     </tr>
                 </table>
@@ -75,9 +239,7 @@
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Provinsi</label>
             </div>
             <div class="col-4">
-                <select id="provinsi" name="selectProvinsi[]" multiple data-placeholder="Pilih Provinsi" class="form-control select2oneSelect col-11" onchange="change_city(this.value)">
-                </select>
-                <h6 id="warning_provinsi" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
+                
             </div>
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Provinsi</label>
@@ -93,9 +255,7 @@
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kabupaten/Kota</label>
             </div>
             <div class="col-4">
-                <select id="cities" name="selectCity[]" multiple data-placeholder="Pilih Kota" class="form-control select2oneSelect col-11" style="background-color: white" onchange="change_district(this.value)">
-                </select>
-                <h6 id="warning_kota" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
+                
             </div>
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kabupaten/Kota</label>
@@ -111,9 +271,6 @@
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kecamatan</label>
             </div>
             <div class="col-4">
-                <select id="districts" name="selectDistrict[]" multiple data-placeholder="Pilih Kecamatan" class="form-control select2oneSelect col-11" style="background-color: white"onchange="change_subdistrict(this.value)">
-                </select>
-                <h6 id="warning_kecamatan" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
             </div>
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kecamatan</label>
@@ -129,9 +286,7 @@
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kelurahan/Desa</label>
             </div>
             <div class="col-4">
-                <select id="sub_districts" name="selectSubdistrict[]" multiple data-placeholder="Pilih Desa" class="form-control select2oneSelect col-11" style="background-color: white" onchange="subdistrict_change(this.value)">
-                </select>
-                <h6 id="warning_desa" style="margin-bottom: 0px;padding-top:1px;color:red"></h6>
+                
             </div>
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kelurahan/Desa</label>
@@ -147,7 +302,7 @@
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Detail Alamat</label>
             </div>
             <div class="col-4">
-                <input id="detail_alamat" class="form-control col-11" style="background-color: white" placeholder="Nama Gedung, Jalan atau Blok">
+                
             </div>
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Detail Alamat</label>
@@ -159,13 +314,6 @@
         <div class="row pb-2">
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Tanggal & Jam Pemberangkatan</label>
-            </div>
-            <div class="col-2">
-                <input type="date" id="tanggal_pemberangkatan" class="form-control" style="background-color: white">
-            </div>
-            <div class="col-2 pr-0">
-                <input class="form-control col-9" id="jam_pemberangkatan" name="jam_pemberangkatan" type="text" style="background-color: white; cursor:pointer;">
-                {{-- <input type="time" id="jam_pemberangkatan" class="form-control" style="background-color: white"> --}}
             </div>
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Tanggal & Jam Kedatangan</label>
@@ -182,28 +330,6 @@
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Tujuan Pemberangkatan</label>
             </div>
             <div class="col-4 pl-4">
-                <div class="row">
-                    <div class="col-xl-4">
-                    <input type="checkbox" name="tujuan_pemberangkatan" value="antar_tamu" id="checkbox_1" >&nbsp;Antar tamu
-                    </div>
-                    <div class="col-xl-4">
-                    <input type="checkbox" name="tujuan_pemberangkatan" value="antar_barang" id="checkbox_3">&nbsp;Antar barang
-                    </div>
-                    <div class="col-xl-4">
-                    <input type="checkbox" name="tujuan_pemberangkatan" value="antar_dinas" id="checkbox_5">&nbsp;Antar dinas
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xl-4">
-                        <input type="checkbox" name="tujuan_pemberangkatan" value="jemput_tamu" id="checkbox_2" >&nbsp;Jemput tamu
-                    </div>
-                    <div class="col-xl-4">
-                        <input type="checkbox" name="tujuan_pemberangkatan" value="jemput_barang" id="checkbox_4">&nbsp;Jemput barang
-                    </div>
-                    <div class="col-xl-4">
-                        <input type="checkbox" name="tujuan_pemberangkatan" value="jemput_dinas" id="checkbox_6">&nbsp;Jemput dinas
-                    </div>
-                </div>
             </div>
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Jarak Tempuh</label>
