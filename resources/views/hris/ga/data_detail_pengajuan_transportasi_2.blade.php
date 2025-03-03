@@ -1912,7 +1912,7 @@
                                 </td>
                                 <td width="20%" style="padding-left:13px">
                                   ${
-                                        iid_user==4241 || id_user==20 || id_user==5321 || id_user==6083
+                                        id_user==4241 || id_user==20 || id_user==5321 || id_user==6083
                                         ? `<div id="tag_alternative_yang_ke_`+key+`" style="display:none"><input type="text" class="form-control" placeholder="Masukkan Alternative" id="alternative_yang_ke_`+key+`" onchange="alternativeChange(`+key+`,this.value)"></div>` 
                                         : (array_alternative[key]===null?'':array_alternative[key])
                                   }
