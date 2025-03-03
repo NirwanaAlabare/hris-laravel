@@ -220,7 +220,12 @@ class BazzarController extends AdminBaseController
                     $subquery->select(DB::raw(1))
                              ->from('employee_atribut')
                              ->whereRaw('employee_atribut.enroll_id = pengajuan_bazzar.enroll_id')
-                             ->where('employee_atribut.employee_name', 'like', "%{$search}%");
+                             ->where(function ($q) use ($search) {
+                                 $q->where('employee_atribut.employee_name', 'like', "%{$search}%")
+                                   ->orWhere('employee_atribut.enroll_id', 'like', "%{$search}%")
+                                   ->orWhere('employee_atribut.nik', 'like', "%{$search}%")
+                                   ->orWhere('employee_atribut.sub_dept_name', 'like', "%{$search}%");
+                             });
                 });
             }
 
