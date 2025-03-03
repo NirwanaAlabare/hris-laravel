@@ -170,6 +170,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('/bazzar/reject', ['as' => 'bazzar.reject','uses' => 'Bazzar\BazzarController@reject']);
     Route::post('/bazzar/edit_pengajuan', ['as' => 'bazzar.edit_pengajuan','uses' => 'Bazzar\BazzarController@edit_pengajuan']);
     Route::get('/bazzar/export_laporan_pengajuan', ['as' => 'bazzar.export_laporan_pengajuan','uses' => 'Bazzar\BazzarController@export_laporan_pengajuan']);
+    Route::get('/bazzar/export_laporan_tanda_terima_bagian', ['as' => 'bazzar.export_laporan_tanda_terima_bagian','uses' => 'Bazzar\BazzarController@export_laporan_tanda_terima_bagian']);
+    Route::get('/bazzar/export_laporan_pengajuan_ids', ['as' => 'bazzar.export_laporan_pengajuan_ids','uses' => 'Bazzar\BazzarController@export_laporan_pengajuan_ids']);
     Route::get('/bazzar/export_voucher', ['as' => 'bazzar.export_voucher','uses' => 'Bazzar\BazzarController@export_voucher']);
 
     Route::get('hrd/export_pdf_sk_bni',['as'=>'hris.hrd.export_pdf_sk_bni','uses'=>'HRDController@export_pdf_sk_bni']);
