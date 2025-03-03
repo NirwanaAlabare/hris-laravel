@@ -218,5 +218,30 @@
             @endforeach
         </thead>
     </table>
+    <table width="100%" style="padding-top:8px;">
+        <thead>
+            <tr>
+                <td style="height:20px"></td>
+            </tr>
+            <tr>
+                <td width="37%"></td>
+                <td width="21%" style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center" >Dibuat</td>
+                <td width="21%" style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center">Disetujui</td>
+                <td width="21%" style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center">Diketahui</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="height: 55px;border:1px solid black;"></td>
+                <td style="border:1px solid black;"></td>
+                <td style="border:1px solid black;"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="border:1px solid black;text-align:center" ></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center">Manager</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center">General Affair</td>
+            </tr>
+        </thead>
+    </table>
 </body>
 </html>
