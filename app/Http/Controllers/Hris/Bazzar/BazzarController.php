@@ -199,6 +199,7 @@ class BazzarController extends AdminBaseController
                     DB::raw('COUNT(*) as jml_data'),
                     'pengajuan_bazzar.id',
                     'pengajuan_bazzar.created_at',
+                    'pengajuan_bazzar.is_print',
                     'pengajuan_bazzar.status',
                     'employee_atribut.nik',
                     'employee_atribut.employee_name',
@@ -233,6 +234,52 @@ class BazzarController extends AdminBaseController
             $data_tmp = $query->groupBy('employee_atribut.sub_dept_id')->get();
             return DataTables::of($data_tmp)->toJson();
         }
+    }
+
+    public function already_printed(Request $request)
+    {
+        $user = Auth::guard('admin')->user()->name;
+        $user_email = Auth::guard('admin')->user()->email;
+        $sub_dept_id = $request->sub_dept_id;
+        if (!$sub_dept_id) {
+            return response()->json([
+                'message' => 'sub_dept_id tidak boleh kosong!',
+            ], 400);
+        }
+
+        // Update is_print berdasarkan sub_dept_id
+        PengajuanBazzar::whereHas('employee', function ($query) use ($sub_dept_id) {
+            $query->where('sub_dept_id', $sub_dept_id);
+        })->update([
+            'is_print' => now(),
+        ]);
+
+        return response()->json([
+            'message' => 'Data berhasil diperbarui!',
+        ]);
+    }
+    public function not_yet_printed(Request $request)
+    {
+        $user = Auth::guard('admin')->user()->name;
+        $user_email = Auth::guard('admin')->user()->email;
+        $sub_dept_id = $request->sub_dept_id;
+
+        if (!$sub_dept_id) {
+            return response()->json([
+                'message' => 'sub_dept_id tidak boleh kosong!',
+            ], 400);
+        }
+
+        // Update is_print berdasarkan sub_dept_id
+        PengajuanBazzar::whereHas('employee', function ($query) use ($sub_dept_id) {
+            $query->where('sub_dept_id', $sub_dept_id);
+        })->update([
+            'is_print' => null,
+        ]);
+
+        return response()->json([
+            'message' => 'Data berhasil diperbarui!',
+        ]);
     }
 
 

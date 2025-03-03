@@ -22,6 +22,7 @@ class PengajuanBazzar extends Model
         'created_at',
         'updated_at',
         'diajukan_oleh',
+        'is_print',
     ];
 
     protected $casts = [
@@ -33,6 +34,7 @@ class PengajuanBazzar extends Model
         'created_at',
         'updated_at',
         'diajukan_oleh',
+        'is_print',
     ];
 
     public function employee(){

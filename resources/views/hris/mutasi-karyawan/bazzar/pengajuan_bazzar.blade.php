@@ -177,11 +177,6 @@
                                 </ul>
                                 <div class="data_search"></div>
                             </div>
-                            {{-- <div class="card-body">
-                                <div class="d-flex align-items-center justify-content-start">
-                                    <button type="submit" class="btn mr-2 ml-1 mb-2 btn-secondary BtnVerifikasiOt" onclick="handleApproveBagian()" >Approve</button>
-                                </div>
-                            </div> --}}
                         </div>
                         <div class="tab-pane fade show active" id="waiting_list" role="tabpanel" aria-labelledby="waiting_list-tab">
                             <div class="card-body">
@@ -194,7 +189,6 @@
                                                 <th>Bagian</th>
                                                 <th>JML PER BAGIAN</th>
                                                 <th>Jumlah</th>
-                                                {{-- <th class="text-center"> <input type="checkbox" onclick="toggleOutside(this);"></th> --}}
 
                                             </tr>
                                         </thead>
@@ -213,6 +207,7 @@
                                                 <th>Bagian</th>
                                                 <th>JML PER BAGIAN</th>
                                                 <th>Jumlah</th>
+                                                <th class="text-center"> <input type="checkbox" onclick="toggleOutside(this);"></th>
                                             </tr>
                                         </thead>
                                     </table>
@@ -601,6 +596,9 @@ function toggleOutside(source) {
             let activeTab = $(".nav-tabs .list.active").attr("id"); // Dapatkan tab yang aktif saat ini
             let status = activeTab ? activeTab.replace("-tab", "") : "waiting_list";
             let tableId = "#datatable_" + status;
+            let isApprove = status === "approve_list";
+            let username = $('#username_who_access').val();
+
             // Hapus DataTable lama jika ada
             if ($.fn.DataTable.isDataTable(tableId)) {
                 $(tableId).DataTable().clear().destroy();
@@ -616,10 +614,9 @@ function toggleOutside(source) {
                     className: "text-center",
                     width:'15%',
                     render: (data, type, row, meta) => {
-                    let username = $('#username_who_access').val();
                     // Tombol yang bisa diakses semua user
                     let isPending = row.status === "pending";
-                    let isApprove = row.status === "approve";
+
                     let buttons = `
                         <div>
                             <a style="text-align:center; color:white;" class="btn btn-primary btn-sm" onclick="showModalDepartment('${row.sub_dept_name}', '${row.sub_dept_id}')">
@@ -684,21 +681,28 @@ function toggleOutside(source) {
                 },
             ]);
 
+            if (isApprove && (username === 'mega@ptnag.com' || username === 'rudy@patnag.com' || username === 'fadli')) {
+                columns.push({
+                    title: 'Print',
+                    data: 'id',
+                    render: function (data, type, row, meta) {
+                        if(row.is_print!=null){
+                            return `
+                                <div class="row"><div class="col text-center"><div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="`+row.is_print+`" style='width: 20px; height: 20px;' id="checked_enroll_id_print_` + row.is_print + `"  onchange="alreadyPrintEmployeeCheck(this, '` + row.sub_dept_id + `')" checked >
+                                </div></div></div>
+                            `
+                        }else{
+                            return `
+                                <div class="row"><div class="col text-center"><div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="`+row.is_print+`" style='width: 20px; height: 20px;' id="checked_enroll_id_print_` + row.is_print + `"  onchange="alreadyPrintEmployeeCheck(this, '` + row.sub_dept_id + `')">
+                                </div></div></div>
+                            `
+                        }
+                    }
+                });
+            }
 
-            // if (status === "waiting_list") {
-            //     columns.push({
-            //         data: 'id',
-            //         render: (data, type, row, meta) => {
-            //             return `
-            //                 <div class="form-check checkbox-xl text-center">
-            //                     <input class="form-check-input row-checkbox"
-            //                         type="checkbox" value="` + row.sub_dept_id + `"
-            //                         data-id="` + row.sub_dept_id + `" />
-            //                 </div>
-            //             `;
-            //         }
-            //     });
-            // }
 
             // Inisialisasi DataTable
             $(tableId).DataTable({
@@ -944,6 +948,36 @@ function toggleOutside(source) {
                 }
 
             });
+        }
+
+        function alreadyPrintEmployeeCheck(element,sub_dept_id){
+            if (element.checked) {
+                $.ajax({
+                    type:"POST",
+                    url: "{{route('bazzar.already_print')}}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    data: {
+                        sub_dept_id:sub_dept_id,
+                    },
+                    success: function(data){
+                        $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+                    }
+                });
+            }else{
+                $.ajax({
+                    type:"POST",
+                    url: "{{route('bazzar.not_yet_printed')}}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    data: {
+                        sub_dept_id:sub_dept_id,
+                    },
+                    success: function(data){
+                        $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+                    }
+                });
+            }
         }
 
         function export_laporan_pengajuan(id_n, no_form_n) {
