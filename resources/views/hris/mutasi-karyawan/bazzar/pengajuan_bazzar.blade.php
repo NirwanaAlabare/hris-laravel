@@ -636,7 +636,7 @@ function toggleOutside(source) {
                     }
                     if(isPending){
                         buttons += `
-                                    <a class='btn btn-warning btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_pengajuan_bagian('${row.sub_dept_id}')">
+                                    <a class='btn btn-warning btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_pengajuan_bagian('${row.sub_dept_id}','${row.status}')">
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
                                     <a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapusPerBagian('${row.sub_dept_id}', 'pending');">
@@ -646,7 +646,7 @@ function toggleOutside(source) {
 
                     if(isApprove && (username === 'mega@ptnag.com' || username === 'rudy@patnag.com' || username === 'fadli')){
                         buttons += `
-                             <a class='btn btn-warning btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_pengajuan_bagian('${row.sub_dept_id}')">
+                             <a class='btn btn-warning btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_pengajuan_bagian('${row.sub_dept_id}','${row.status}')">
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
                             <a class='btn btn-danger btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_tanda_terima_bagian('${row.sub_dept_id}')">
@@ -992,8 +992,8 @@ function toggleOutside(source) {
             window.open(url, '_blank');
 
         }
-        function export_laporan_pengajuan_bagian(sub_dept_id, no_form_n) {
-            var url = 'bazzar/export_laporan_pengajuan?sub_dept_id='+sub_dept_id;
+        function export_laporan_pengajuan_bagian(sub_dept_id, status) {
+            var url = 'bazzar/export_laporan_pengajuan?sub_dept_id='+sub_dept_id+'&status='+status;
             window.open(url, '_blank');
 
         }

@@ -464,13 +464,13 @@ class BazzarController extends AdminBaseController
         $email = Auth::guard('admin')->user()->email;
         if($request->id){
              if($email == 'fadli' || $email == 'mega@ptnag.com' || $email == 'rudy@ptnag.com'){
-                $data = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->where('id', $request->id)->get();
+                $data = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->where('id', $request->id)->where('pengajuan_bazzar.status', $request->status)->get();
             }else{
                 $data = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->where('id', $request->id)->where('pengajuan_bazzar.diajukan_oleh', $email)->where('pengajuan_bazzar.status', 'pending')->get();
             }
         }else if($request->sub_dept_id){
             if($email == 'fadli' || $email == 'mega@ptnag.com' || $email == 'rudy@ptnag.com'){
-                $data = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('employee_atribut.sub_dept_id', $request->sub_dept_id)->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->orderby('employee_atribut.employee_name','asc')->get();
+                $data = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('employee_atribut.sub_dept_id', $request->sub_dept_id)->where('pengajuan_bazzar.status', $request->status)->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->orderby('employee_atribut.employee_name','asc')->get();
             }else{
                 $data = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('employee_atribut.sub_dept_id', $request->sub_dept_id)->where('pengajuan_bazzar.status', 'pending')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->orderby('employee_atribut.employee_name','asc')->get();
             }
