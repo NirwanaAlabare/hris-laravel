@@ -42,7 +42,7 @@ class GAController extends AdminBaseController
     }
     public function get_all_destination_history(){
         $id=request()->id;
-        $tujuan_short=DB::select("select a.instansi,a.detail_alamat,a.subdistrict,c.dis_id,d.city_id,e.prov_id,b.subdis_name,c.dis_name,d.city_name,e.prov_name,concat(a.instansi,' (',a.detail_alamat,') - ',b.subdis_name,' - ',c.dis_name,' - ',d.city_name,' - ',e.prov_name) detail_alamat_tujuan from (select*from tujuan_transportasi where permintaan_transportasi_id in (select id from permintaan_transportasi where created_by = '5321') order by created_at)a inner join subdistricts b on a.subdistrict=b.subdis_id inner join districts c on b.dis_id=c.dis_id inner join cities d on c.city_id=d.city_id inner join provinces e on d.prov_id=e.prov_id group by instansi,detail_alamat,subdistrict");
+        $tujuan_short=DB::select("select a.instansi,a.detail_alamat,a.subdistrict,c.dis_id,d.city_id,e.prov_id,b.subdis_name,c.dis_name,d.city_name,e.prov_name,concat(a.instansi,' (',a.detail_alamat,') - ',b.subdis_name,' - ',c.dis_name,' - ',d.city_name,' - ',e.prov_name) detail_alamat_tujuan from (select*from tujuan_transportasi where permintaan_transportasi_id in (select id from permintaan_transportasi where created_by = $id) order by created_at)a inner join subdistricts b on a.subdistrict=b.subdis_id inner join districts c on b.dis_id=c.dis_id inner join cities d on c.city_id=d.city_id inner join provinces e on d.prov_id=e.prov_id group by instansi,detail_alamat,subdistrict");
         return $tujuan_short;
     }
     public function get_all_history_alamat(){

@@ -55,58 +55,68 @@
                 <a href="#" onclick="change_initial_destination(12,161,2196,30109)" style="text-decoration-line: underline">PT. NAG</a><img src="{{URL::asset('assets/images/brand/shortcut.png')}}" width="18">
             </div>
         </div>
-        <div class="row pb-2 pt-1">
-            <div class="col-12 px-1">
-                <table class="w-100 table-striped">
-                    <tr>
-                        <th style="padding:6px">Provinsi</th>
-                        <th style="padding:6px">Kabupaten/Kota</th>
-                        <th style="padding:6px">Kecamatan</th>
-                        <th style="padding:6px">Desa</th>
-                        <th style="padding:6px">Detail Alamat</th>
-                        <th style="padding:6px">Waktu Pemberangkatan</th>
-                    </tr>
-                    <tr>
-                        <th width="16%" style="padding:6px;vertical-align:top">
-                            <select id="provinsi" name="selectProvinsi[]" multiple data-placeholder="Pilih Provinsi" class="form-control select2oneSelect" onchange="change_city(this.value)">
-                                @foreach($provincies as $prov)
-                                    <option value="{{$prov->prov_id}}">{{$prov->prov_name}}</option>
-                                @endforeach
-                            </select>
-                            <h6 id="warning_provinsi" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
-                        </th>
-                        <th width="16%" style="padding:6px;vertical-align:top">
-                            <select id="cities" name="selectCity[]" multiple data-placeholder="Pilih Kota" class="form-control select2oneSelect" style="background-color: white" onchange="change_district(this.value)">
-                            </select>
-                            <h6 id="warning_kota" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
-                        </th>
-                        <th width="16%" style="padding:6px;vertical-align:top">
-                            <select id="districts" name="selectDistrict[]" multiple data-placeholder="Pilih Kecamatan" class="form-control select2oneSelect" style="background-color: white"onchange="change_subdistrict(this.value)">
-                            </select>
-                            <h6 id="warning_kecamatan" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
-                        </th>
-                        <th width="16%" style="padding:6px;vertical-align:top">
-                            <select id="sub_districts" name="selectSubdistrict[]" multiple data-placeholder="Pilih Desa" class="form-control select2oneSelect" style="background-color: white" onchange="subdistrict_change(this.value)">
-                            </select>
-                            <h6 id="warning_desa" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
-                        </th>
-                        <th width="18%" style="padding:6px;vertical-align:top">
-                            <input id="instansi" class="form-control" style="background-color: white" placeholder="Instansi">
-                            <input id="detail_alamat" class="form-control mt-1" style="background-color: white" placeholder="Nama Gedung, Jalan atau Blok" onchange="detail_alamat_change(this.value)">
-                        </th>
-                        <th width="18%" style="padding:6px;vertical-align:top">
-                            <div class="row">
-                                <div class="col-7 pr-0">
-                                    <input type="date" id="tanggal_pemberangkatan" class="form-control" style="background-color: white;cursor:pointer" readonly onchange="tanggal_pemberangkatan_change(this.value)">
-                                </div>
-                                <div class="col-5 pl-0">
-                                    <input class="form-control" id="jam_pemberangkatan" name="jam_pemberangkatan" type="text" style="background-color: white; cursor:pointer;"  onchange="jam_pemberangkatan_change(this.value)">
-                                </div>
-                            </div>
-                        </th>
-                    </tr>
-                </table>
+        <div class="row px-1 pt-3">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-2 pr-0">
+                <label class="form-label">Provinsi</label>
+              </div>
+              <div class="col-2 px-1">
+                <label class="form-label">Kabupaten/Kota</label>
+              </div>
+              <div class="col-2 px-1">
+                <label class="form-label">Kecamatan</label>
+              </div>
+              <div class="col-2 px-1">
+                <label class="form-label">Desa</label>
+              </div>
+              <div class="col-2 px-1">
+                <label class="form-label">Detail Alamat</label>
+              </div>
+              <div class="col-2 pl-1">
+                <label class="form-label">Waktu Pemberangkatan</label>
+              </div>
             </div>
+            <div class="row">
+              <div class="col-2 pr-0">
+                <select id="provinsi" name="selectProvinsi[]" multiple data-placeholder="Pilih Provinsi" class="form-control select2oneSelect" onchange="change_city(this.value)">
+                    @foreach($provincies as $prov)
+                        <option value="{{$prov->prov_id}}">{{$prov->prov_name}}</option>
+                    @endforeach
+                </select>
+                <h6 id="warning_provinsi" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
+              </div>
+              <div class="col-2 px-1">
+                <select id="cities" name="selectCity[]" multiple data-placeholder="Pilih Kota" class="form-control select2oneSelect" style="background-color: white" onchange="change_district(this.value)">
+                </select>
+                <h6 id="warning_kota" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
+              </div>
+              <div class="col-2 px-1">
+                <select id="districts" name="selectDistrict[]" multiple data-placeholder="Pilih Kecamatan" class="form-control select2oneSelect" style="background-color: white"onchange="change_subdistrict(this.value)">
+                </select>
+                <h6 id="warning_kecamatan" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
+              </div>
+              <div class="col-2 px-1">
+                <select id="sub_districts" name="selectSubdistrict[]" multiple data-placeholder="Pilih Desa" class="form-control select2oneSelect" style="background-color: white" onchange="subdistrict_change(this.value)">
+                </select>
+                <h6 id="warning_desa" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
+              </div>
+              <div class="col-2 px-1">
+                <input id="instansi" class="form-control" style="background-color: white" placeholder="Instansi">
+                <input id="detail_alamat" class="form-control mt-1" style="background-color: white" placeholder="Nama Gedung, Jalan atau Blok" onchange="detail_alamat_change(this.value)">
+              </div>
+              <div class="col-2 pl-1">
+                <div class="row">
+                    <div class="col-7 pr-0">
+                        <input type="date" id="tanggal_pemberangkatan" class="form-control" style="background-color: white;cursor:pointer" readonly onchange="tanggal_pemberangkatan_change(this.value)">
+                    </div>
+                    <div class="col-5 pl-0">
+                        <input class="form-control" id="jam_pemberangkatan" name="jam_pemberangkatan" type="text" style="background-color: white; cursor:pointer;"  onchange="jam_pemberangkatan_change(this.value)">
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div id="tujuan_advanced">
             
@@ -811,7 +821,7 @@
       $(picker).css("width", "6rem");
       $(picker).css("position", "absolute");
       $(picker).css('z-index', 1);
-      $(picker).css('padding-left', 8);
+      $(picker).css('padding-left', 0);
       hour_select.className = "form-control col-6 hour-select";
       min_select.className = "form-control col-6 min-select";
     }
@@ -2952,6 +2962,7 @@
         },
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
         success: function(res){
+          console.log(res);
           $('select[name="history_alamat"]').append('<option value="">History Alamat</option>');
           jQuery.each(res, function(key,value){
             $('select[name="history_alamat"]').append('<option value="'+value.instansi+' | '+value.detail_alamat+' | '+value.subdistrict+' | '+value.dis_id+' | '+value.city_id+' | '+value.prov_id+'">'+value.detail_alamat_tujuan+'</option>');
