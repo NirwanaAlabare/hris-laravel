@@ -123,7 +123,7 @@
                             {{$value->nama_desa}}
                         </td>
                         <td width="18%" style="padding:6px;vertical-align:top">
-                            {{$value->instansi}} - {{$value->detail_alamat}}
+                            {{$value->instansi}} <br><h6 style="font-size:8pt"> {{$value->detail_alamat}}</h6>
                         </td>
                         <td width="18%" style="padding:6px;vertical-align:top">
                             {{$tanggal_pemberangkatan}} - {{$value->jam_pemberangkatan}}
@@ -1930,7 +1930,7 @@
                         <th width="16%" class="bg-primary" style="padding:9px;border:1px solid #c4c0c0">Kabupaten/Kota</th>
                         <th width="16%" class="bg-primary" style="padding:9px;border:1px solid #c4c0c0">Kecamatan</th>
                         <th width="16%" class="bg-primary" style="padding:9px;border:1px solid #c4c0c0">Desa</th>
-                        <th width="16%" class="bg-primary" style="padding:9px;border:1px solid #c4c0c0">Detail Alamat</th>
+                        <th width="16%" class="bg-primary" style="padding:9px;border:1px solid #c4c0c0">Instansi & Detail Alamat</th>
                         <th width="18%" class="bg-primary" style="padding:9px;border:1px solid #c4c0c0">Waktu Kedatangan</th>
                         <th width="1%" style="padding:9px"></th
                         </tr>
@@ -1943,7 +1943,7 @@
                             </td>
                             <td style="padding:9px;vertical-align:top;border:1px solid #c4c0c0">`+array_desa[key]+`
                             </td>
-                            <td style="padding:9px;vertical-align:top;border:1px solid #c4c0c0">`+array_instansi[key]+`
+                            <td style="padding:9px;vertical-align:top;border:1px solid #c4c0c0">`+array_instansi[key]+`<br><h6 style='font-size:8pt'>`+array_detail_alamat[key]+`</h6>
                             </td>
                             <td style="padding:9px;vertical-align:top;border:1px solid #c4c0c0">`+formattedDate+` - `+array_jam_pemberangkatan[key]+`
                             </td>

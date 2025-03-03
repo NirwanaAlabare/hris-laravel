@@ -109,22 +109,43 @@
             <td>{{$value['destinasi_akhir']}}</td>
             <td>{{PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($value['tanggal_kedatangan'])}}</td>
             <td>{{$value['jam_kedatangan']}}</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>{{str_replace("_"," ",$value['tujuan_pemberangkatan'])}}</td>
+            <td>{{$value['nama_tamu']}}</td>
+            <td>{{$value['nomor_hp_tamu']}}</td>
+            <td>{{$value['jenis_barang']}}</td>
+            <td>{{$value['quantity']}}</td>
+            <td>{{$value['satuan']}}</td>
+            <td>{{$value['nama_penerima']}}</td>
+            <td>{{$value['keterangan_barang']}}</td>
+            <td>{{$value['karyawan_dinas']}}</td>
+            <td>{{$value['created_by']}}</td>
+            <td>{{$value['nama_pembuat']}}</td>
+            <td>@switch($value['status'])
+                @case(0)
+                    Pending
+                    @break
+                @case(1)
+                    Approved
+                    @break
+                @case(2)
+                    Alternative
+                    @break
+                @case(3)
+                    On The Way
+                    @break
+                @case(4)
+                    Done
+                    @break
+                @case(5)
+                    Cancel
+                    @break
+                @default
+                    Late
+            @endswitch</td>
+            <td>{{$value['id_driver']}}</td>
+            <td>{{$value['nama_driver']}}</td>
+            <td>{{$value['vehicle_name']}}</td>
+            <td>{{$value['alternative']}}</td>
         </tr>
         @else
         <tr>
@@ -151,7 +172,28 @@
             <td>{{$value['karyawan_dinas']}}</td>
             <td>{{$value['created_by']}}</td>
             <td>{{$value['nama_pembuat']}}</td>
-            <td>{{$value['status']}}</td>
+            <td>@switch($value['status'])
+                @case(0)
+                    Pending
+                    @break
+                @case(1)
+                    Approved
+                    @break
+                @case(2)
+                    Alternative
+                    @break
+                @case(3)
+                    On The Way
+                    @break
+                @case(4)
+                    Done
+                    @break
+                @case(5)
+                    Cancel
+                    @break
+                @default
+                    Late
+            @endswitch</td>
             <td>{{$value['id_driver']}}</td>
             <td>{{$value['nama_driver']}}</td>
             <td>{{$value['vehicle_name']}}</td>
