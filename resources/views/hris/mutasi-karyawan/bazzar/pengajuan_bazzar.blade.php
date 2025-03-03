@@ -177,6 +177,11 @@
                                 </ul>
                                 <div class="data_search"></div>
                             </div>
+                            {{-- <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-start">
+                                    <button type="submit" class="btn mr-2 ml-1 mb-2 btn-secondary BtnVerifikasiOt" onclick="handleApproveBagian()" >Approve</button>
+                                </div>
+                            </div> --}}
                         </div>
                         <div class="tab-pane fade show active" id="waiting_list" role="tabpanel" aria-labelledby="waiting_list-tab">
                             <div class="card-body">
@@ -189,6 +194,8 @@
                                                 <th>Bagian</th>
                                                 <th>JML PER BAGIAN</th>
                                                 <th>Jumlah</th>
+                                                {{-- <th class="text-center"> <input type="checkbox" onclick="toggleOutside(this);"></th> --}}
+
                                             </tr>
                                         </thead>
                                     </table>
@@ -336,7 +343,7 @@
                                                     <thead class="table-primary">
                                                         <tr>
                                                             <th>No.</th>
-                                                            <th> <input type="checkbox" onclick="toggle(this);"></th>
+                                                            <th> <input type="checkbox" onclick="toggleInside(this);"></th>
                                                             <th>Enroll id</th>
                                                             <th>Nama</th>
                                                             <th>Department</th>
@@ -430,6 +437,22 @@
                     checkboxes[i].checked = source.checked;
             }
         }
+
+        function toggleInside(source) {
+            var modal = source.closest('table'); // Cari parent table dalam modal
+            var checkboxes = modal.querySelectorAll('tbody input[type="checkbox"]'); // Pilih hanya checkbox dalam modal
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = source.checked;
+            });
+        }
+
+function toggleOutside(source) {
+        var table = source.closest('table'); // Cari parent table di luar modal
+        var checkboxes = table.querySelectorAll('tbody input[type="checkbox"]'); // Pilih hanya checkbox di luar modal
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = source.checked;
+        });
+    }
 
     </script>
 
@@ -576,16 +599,18 @@
 
         function dataTableDepartmentReload() {
             let activeTab = $(".nav-tabs .list.active").attr("id"); // Dapatkan tab yang aktif saat ini
-            let status = activeTab ? activeTab.replace("-tab", "") : "default";
+            let status = activeTab ? activeTab.replace("-tab", "") : "waiting_list";
             let tableId = "#datatable_" + status;
-
             // Hapus DataTable lama jika ada
             if ($.fn.DataTable.isDataTable(tableId)) {
                 $(tableId).DataTable().clear().destroy();
             }
+            let columns = [];
+
+
 
             // Tambahkan kolom lainnya
-            let columns = [
+            columns = columns.concat([
                 {
                     data: 'id',
                     className: "text-center",
@@ -600,9 +625,6 @@
                             <a style="text-align:center; color:white;" class="btn btn-primary btn-sm" onclick="showModalDepartment('${row.sub_dept_name}', '${row.sub_dept_id}')">
                                 <i class="fa fa-search"></i>
                             </a>
-                            <a class='btn btn-danger btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_pengajuan_bagian('${row.sub_dept_id}')">
-                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                            </a>
                     `;
 
                     if (username === 'mega@ptnag.com' || username === 'rudy@patnag.com') {
@@ -616,14 +638,23 @@
                         `;
                     }
                     if(isPending){
-                        buttons += `<a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapusPerBagian('${row.sub_dept_id}', 'pending');">
+                        buttons += `
+                                    <a class='btn btn-danger btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_pengajuan_bagian('${row.sub_dept_id}')">
+                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                    </a>
+                                    <a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapusPerBagian('${row.sub_dept_id}', 'pending');">
                                                 <i class='fa fa-trash'></i>
-                                                </a>`;
+                                    </a>`;
                     }
+
                     if(isApprove && (username === 'mega@ptnag.com' || username === 'rudy@patnag.com' || username === 'fadli')){
-                        buttons += `<a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapusPerBagian('${row.sub_dept_id}', 'approve');">
-                                                <i class='fa fa-trash'></i>
-                                                </a>`;
+                        buttons += `
+                            <a class='btn btn-danger btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_tanda_terima_bagian('${row.sub_dept_id}')">
+                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                            </a>
+                            <a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapusPerBagian('${row.sub_dept_id}', 'approve');">
+                            <i class='fa fa-trash'></i>
+                            </a>`;
                     }
 
                     buttons += `</div>`;
@@ -651,8 +682,24 @@
                         return "Rp " + parseInt(data, 10).toLocaleString("id-ID");
                     }
                 },
+            ]);
 
-            ];
+
+            // if (status === "waiting_list") {
+            //     columns.push({
+            //         data: 'id',
+            //         render: (data, type, row, meta) => {
+            //             return `
+            //                 <div class="form-check checkbox-xl text-center">
+            //                     <input class="form-check-input row-checkbox"
+            //                         type="checkbox" value="` + row.sub_dept_id + `"
+            //                         data-id="` + row.sub_dept_id + `" />
+            //                 </div>
+            //             `;
+            //         }
+            //     });
+            // }
+
             // Inisialisasi DataTable
             $(tableId).DataTable({
                 processing: true,
@@ -668,11 +715,15 @@
                         d.status = status;
                         d.search = $('div.dataTables_filter input').val();
                     },
-                    onSuccess: function (response) {
-                        console.log(response);
-                    }
                 },
-                columns: columns
+                columns: columns,
+                initComplete: function(settings, json) {
+                    if ($('#username_who_access').val() === 'mega@ptnag.com' || $('#username_who_access').val() === 'rudy@patnag.com' || $('#username_who_access').val() === 'fadli') {
+                        $(".BtnVerifikasiOt").show();
+                    } else {
+                        $(".BtnVerifikasiOt").hide();
+                    }
+                }
             });
         }
 
@@ -906,6 +957,11 @@
             window.open(url, '_blank');
 
         }
+        function export_laporan_tanda_terima_bagian(sub_dept_id, no_form_n) {
+            var url = 'bazzar/export_laporan_tanda_terima_bagian?sub_dept_id='+sub_dept_id;
+            window.open(url, '_blank');
+
+        }
         function export_voucher(id_n, no_form_n) {
             var id=id_n;
             var url = 'bazzar/export_voucher?id='+id;
@@ -1031,14 +1087,17 @@
 
         }
 
-        function getCheckedIds(){
-            let checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
+
+        function getCheckedIds(context) {
+            let selector = context === 'inside' ? '#ajax-modal-list .row-checkbox:checked' : 'table:not(#ajax-modal-list) .row-checkbox:checked';
+            let checkedBoxes = document.querySelectorAll(selector);
             let ids = Array.from(checkedBoxes).map(cb => cb.getAttribute('data-id'));
             return ids;
-        }
+    }
 
         function handleApprove() {
             let ids = getCheckedIds();
+            console.log('ids',ids)
             let id = $("#ajax-modal-list").data("subDeptId");
             if (ids.length === 0) {
                 notif({
@@ -1068,6 +1127,40 @@
                     });
                 }
             });
+        }
+
+        function handleApproveBagian() {
+            let ids = getCheckedIds();
+            console.log('ids',ids)
+            let id = $("#ajax-modal-list").data("subDeptId");
+            if (ids.length === 0) {
+                notif({
+                        msg: "<b>Info:</b> Pilih minimal satu data untuk dikirim.",
+                        type: "error"
+                    });
+                return;
+            }
+            // $.ajax({
+            // url: '{{ route('bazzar.approve') }}',
+            // type: "POST",
+            // data: {
+            //     ids: ids,
+            // },
+            // success: function(response) {
+            //     notif({
+            //             msg: "<b>Info:</b> Data berhasil di verifikasi.",
+            //             type: "info"
+            //         });
+            //     dataTableReload('pending', id);
+            //     dataTableDepartmentReload();
+            // },
+            // error: function(xhr) {
+            //     notif({
+            //             msg: "<b>Info:</b> Terjadi kesalahan : " + xhr.responseText,
+            //             type: "error"
+            //         });
+            //     }
+            // });
         }
 
         function handleReject() {
