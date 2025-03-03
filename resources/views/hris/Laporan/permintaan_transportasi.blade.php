@@ -26,21 +26,18 @@
             <td>Jam Kedatangan</td>
             <td>Tujuan Pemberangkatan</td>
             <td>Nama Tamu</td>
-            <td>Intansi Tamu</td>
             <td>Nomor HP Tamu</td>
             <td>Jenis Barang</td>
             <td>Quantity</td>
             <td>Satuan</td>
-            <td>Nama instansi</td>
             <td>Nama Penerima</td>
             <td>Keterangan Barang</td>
             <td>Karyawan yang dinas luar</td>
             <td>ID Pembuat</td>
             <td>Nama Pembuat</td>
             <td>Status</td>
-            <td>ID Driver</td>
+            <td>NIK Driver</td>
             <td>Nama Driver</td>
-            <td>Nomor Kendaraan</td>
             <td>Merk Kendaraan</td>
             <td>Alternative</td>
         </tr>
@@ -61,12 +58,10 @@
             <td>{{$value['jam_kedatangan']}}</td>
             <td>{{str_replace("_"," ",$value['tujuan_pemberangkatan'])}}</td>
             <td>{{$value['nama_tamu']}}</td>
-            <td>{{$value['instansi_tamu']}}</td>
             <td>{{$value['nomor_hp_tamu']}}</td>
             <td>{{$value['jenis_barang']}}</td>
             <td>{{$value['quantity']}}</td>
             <td>{{$value['satuan']}}</td>
-            <td>{{$value['nama_instansi']}}</td>
             <td>{{$value['nama_penerima']}}</td>
             <td>{{$value['keterangan_barang']}}</td>
             <td>{{$value['karyawan_dinas']}}</td>
@@ -96,7 +91,7 @@
             @endswitch</td>
             <td>{{$value['id_driver']}}</td>
             <td>{{$value['nama_driver']}}</td>
-            <td>{{$value['nomor_kendaraan']}}</td>
+            <td>{{$value['vehicle_name']}}</td>
             <td>{{$value['alternative']}}</td>
         </tr>
         @else
@@ -130,8 +125,6 @@
             <td></td>
             <td></td>
             <td></td>
-            <td></td>
-            <td></td>
         </tr>
         @else
         <tr>
@@ -149,12 +142,10 @@
             <td>{{$value['jam_kedatangan']}}</td>
             <td>{{str_replace("_"," ",$value['tujuan_pemberangkatan'])}}</td>
             <td>{{$value['nama_tamu']}}</td>
-            <td>{{$value['instansi_tamu']}}</td>
             <td>{{$value['nomor_hp_tamu']}}</td>
             <td>{{$value['jenis_barang']}}</td>
             <td>{{$value['quantity']}}</td>
             <td>{{$value['satuan']}}</td>
-            <td>{{$value['nama_instansi']}}</td>
             <td>{{$value['nama_penerima']}}</td>
             <td>{{$value['keterangan_barang']}}</td>
             <td>{{$value['karyawan_dinas']}}</td>
@@ -163,7 +154,7 @@
             <td>{{$value['status']}}</td>
             <td>{{$value['id_driver']}}</td>
             <td>{{$value['nama_driver']}}</td>
-            <td>{{$value['nomor_kendaraan']}}</td>
+            <td>{{$value['vehicle_name']}}</td>
             <td>{{$value['alternative']}}</td>
         </tr>
         @endif

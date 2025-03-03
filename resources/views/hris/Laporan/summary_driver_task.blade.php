@@ -37,16 +37,18 @@
             </tr>
         </thead>
     </table>
-    @foreach ($data as $key=>$value)
     <table width="100%" style="padding-top:8px">
         <thead>
             <tr>
                 <td style="height:10px"></td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top" width="17%">Tanggal Input</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top" width="17%">Driver</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top" width="1%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top" width="42%">{{Carbon\Carbon::parse($value->created_at)->translatedFormat('d F Y')}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top" width="42%">
+                    @if($driver_name=='')Semua Driver
+                    @else {{$driver_name}}
+                    @endif</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top" width="16%"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top" width="1%"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
@@ -55,48 +57,19 @@
                 <td style="height:10px"></td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">Nomor Pengajuan</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
-            </tr>
-            <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">Tanggal Penugasan</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">Hari/Tanggal</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">{{Carbon\Carbon::parse($value->tanggal_pemberangkatan)->translatedFormat('d F Y')}}</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
-            </tr>
-            <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top;width:150px">Nama User</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">{{$value->employee_name}}</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
-            </tr>
-            <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">NIK</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">{{$value->nik}}</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
-            </tr>
-            <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">Department</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">{{$value->department_name}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">
+                    @if($tanggal=='')Semua Tanggal
+                    @else {{Carbon\Carbon::parse(str_replace('"', "", $tanggal))->translatedFormat('l, d F Y')}}
+                    @endif
+                </td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
             </tr>
         </thead>
     </table>
-    @endforeach
     <table width="100%" style="padding-top:8px;">
         <thead>
             <tr>
@@ -112,14 +85,12 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center" width="6%">Status</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center" width="6%">Tanda Tangan Driver</td>
             </tr>
-            @foreach ($data2 as $key => $value)
+            @foreach ($data as $key => $value)
             <tr>
-                @if($key==0)
-                <td rowspan={{count($data2)}} style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center">{{substr($value['jam_pemberangkatan'],0,5)}}</td>
-                <td rowspan={{count($data2)}} style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;padding-left:4px;padding-right:4px">{{$value['detail_alamat_asal']}}<br>{{ucwords(strtolower($value['desa']))}}</td>
-                @endif
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center">{{substr($value['jam_pemberangkatan'],0,5)}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;padding-left:4px;padding-right:4px">{{$value['instansi']}}<br>{{ucwords(strtolower($value['detail_alamat']))}}<br>{{ucwords(strtolower($value['detail_alamat_asal']))}}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;vertical-align:top;text-align:left"> {{$value['jarak_tempuh']}} Km</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;padding-left:4px;padding-right:4px">{{$value['detail_alamat_tujuan']}}<br>{{ucwords(strtolower($value['desa_tujuan']))}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;padding-left:4px;padding-right:4px">{{$value['instansi_tujuan']}}<br>{{ucwords(strtolower($value['detail_alamat2']))}}<br>{{ucwords(strtolower($value['detail_alamat_tujuan']))}}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:left;vertical-align:top;border:1px solid black;text-align:center">{{Carbon\Carbon::parse($value['tanggal_kedatangan'])->translatedFormat('d M Y')}}-{{$value['jam_kedatangan']}}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;border:1px solid black;padding-left:4px;padding-right:4px">
                     @if(str_contains($value['tujuan_pemberangkatan'], 'antar_barang')||str_contains($value['tujuan_pemberangkatan'], 'jemput_barang'))

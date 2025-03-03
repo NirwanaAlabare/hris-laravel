@@ -19,7 +19,7 @@
             <a class="btn btn-white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data</a>
         </li>
         <li class="nav-item">
-            <a class="btn btn-primary" href="#">Edit Pengajuan Transportasi</a>
+            <a class="btn btn-primary" href="#">Detail Pengajuan Transportasi</a>
         </li>
     </ul>
 </div>
