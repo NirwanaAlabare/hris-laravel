@@ -432,7 +432,7 @@ class BazzarController extends AdminBaseController
         }
         $total_jumlah = $data->sum('jumlah');
         $fileName='Pengajuan-Bazzar_'.date('His');
-        $pdf = PDF::loadView('hris.mutasi-karyawan.bazzar.export-bazzar-pdf',["data" => $data,"total_jumlah"=>$total_jumlah])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
+        $pdf = PDF::loadView('hris.mutasi-karyawan.bazzar.export-pengajuan-tanda-terima',["data" => $data,"total_jumlah"=>$total_jumlah])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
         return $pdf;
     }
     public function export_laporan_tanda_terima_bagian(Request $request)
