@@ -3124,7 +3124,7 @@
                 sub_districts:desa_asal_string,
                 instansi:instansi,
                 detail_alamat:detail_alamat_asal_string,
-                tanggal_pemberangkatan:tanggal_pemberangkatan_asal,
+                tanggal_pemberangkatan:tanggal,
                 jam_pemberangkatan:jam_pemberangkatan_asal,
                 tujuan_pemberangkatan_array:array_tujuan_pemberangkatan,
                 provinsi_array:array_provinsi,
