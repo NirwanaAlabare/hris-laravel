@@ -534,7 +534,7 @@ class BazzarController extends AdminBaseController
                 ->get();
             }else{
                 $data = VoucherBazzar::leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'voucher_bazzar.enroll_id')->where('sub_dept_id', request()->sub_dept_id)
-                ->orderBy('voucher_bazzar.enroll_id', 'ASC')
+                ->orderBy('employee_atribut.employee_name', 'ASC')
                 ->get();
             }
         }
