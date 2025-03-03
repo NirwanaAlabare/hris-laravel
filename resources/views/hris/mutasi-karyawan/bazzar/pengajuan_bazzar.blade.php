@@ -885,7 +885,7 @@ function toggleOutside(source) {
 
                         if (isApprove && username === 'mega@ptnag.com' || username === 'rudy@patnag.com') {
                             pdfButton = `
-                                <a class='btn btn-danger btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_laporan_pengajuan(`+row.id+`, '` + row.nik + `')">
+                                <a class='btn btn-danger btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_laporan_tanda_terima_id(`+row.id+`, '` + row.nik + `')">
                                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                 </a>
                                 <a class='btn btn-success btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2" onClick="export_laporan_pengajuan_excel(`+row.id+`, '` + row.nik + `')">
@@ -960,7 +960,10 @@ function toggleOutside(source) {
         function export_laporan_tanda_terima_bagian(sub_dept_id, no_form_n) {
             var url = 'bazzar/export_laporan_tanda_terima_bagian?sub_dept_id='+sub_dept_id;
             window.open(url, '_blank');
-
+        }
+        function export_laporan_tanda_terima_id(id, no_form_n) {
+            var url = 'bazzar/export_laporan_tanda_terima_bagian?id='+id;
+            window.open(url, '_blank');
         }
         function export_voucher(id_n, no_form_n) {
             var id=id_n;
