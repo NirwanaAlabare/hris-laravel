@@ -100,7 +100,7 @@
                                     <input type="date" id="tanggal_pemberangkatan" class="form-control" style="background-color: white;cursor:pointer" readonly onchange="tanggal_pemberangkatan_change(this.value)">
                                 </div>
                                 <div class="col-5 pl-0">
-                                    <input class="form-control" id="jam_pemberangkatan" name="jam_pemberangkatan" type="text" style="background-color: white; cursor:pointer;" readonly onchange="jam_pemberangkatan_change(this.value)">
+                                    <input class="form-control" id="jam_pemberangkatan" name="jam_pemberangkatan" type="text" style="background-color: white; cursor:pointer;"  onchange="jam_pemberangkatan_change(this.value)">
                                 </div>
                             </div>
                         </th>
@@ -1597,7 +1597,7 @@
                                       <input type="date" id="tanggal_pemberangkatan_yang_ke_`+key+`" class="form-control" style="background-color: white;cursor:pointer" onChange="tanggalPemberangkatanChange(`+key+`,this.value)" readonly>\
                                   </div>\
                                   <div class="col-5 pl-0">\
-                                      <input class="form-control" id="jam_pemberangkatan_yang_ke_`+key+`" type="text" style="background-color: white; cursor:pointer;" onChange="jamPemberangkatanChange(`+key+`,this.value)" readonly value="`+array_jam_pemberangkatan[key]+`">\
+                                      <input class="form-control" id="jam_pemberangkatan_yang_ke_`+key+`" type="text" style="background-color: white; cursor:pointer;" onChange="jamPemberangkatanChange(`+key+`,this.value)"  value="`+array_jam_pemberangkatan[key]+`">\
                                   </div>\
                               </div>\
                           </td>\
@@ -1812,7 +1812,7 @@
                                               <input type="date" id="tanggal_pemberangkatan_yang_ke_`+key+`" class="form-control" style="background-color: white;cursor:pointer" onChange="tanggalPemberangkatanChange(`+key+`,this.value)" readonly>\
                                           </div>\
                                           <div class="col-5 pl-0">\
-                                              <input class="form-control" id="jam_pemberangkatan_yang_ke_`+key+`" type="text" style="background-color: white; cursor:pointer;" onChange="jamPemberangkatanChange(`+key+`,this.value)" readonly value="`+array_jam_pemberangkatan[key]+`">\
+                                              <input class="form-control" id="jam_pemberangkatan_yang_ke_`+key+`" type="text" style="background-color: white; cursor:pointer;" onChange="jamPemberangkatanChange(`+key+`,this.value)"  value="`+array_jam_pemberangkatan[key]+`">\
                                           </div>\
                                       </div>\
                                   </td>\
@@ -2037,7 +2037,7 @@
                                           <input type="date" id="tanggal_pemberangkatan_yang_ke_`+key+`" class="form-control" style="background-color: white;cursor:pointer" onChange="tanggalPemberangkatanChange(`+key+`,this.value)" readonly>\
                                       </div>\
                                       <div class="col-5 pl-0">\
-                                          <input class="form-control" id="jam_pemberangkatan_yang_ke_`+key+`" type="text" style="background-color: white; cursor:pointer;" onChange="jamPemberangkatanChange(`+key+`,this.value)" readonly value="`+array_jam_pemberangkatan[key]+`">\
+                                          <input class="form-control" id="jam_pemberangkatan_yang_ke_`+key+`" type="text" style="background-color: white; cursor:pointer;" onChange="jamPemberangkatanChange(`+key+`,this.value)"  value="`+array_jam_pemberangkatan[key]+`">\
                                       </div>\
                                   </div>\
                               </td>\
