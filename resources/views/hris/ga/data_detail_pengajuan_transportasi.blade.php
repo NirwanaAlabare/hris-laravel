@@ -293,7 +293,7 @@
         </div>
     </div>
     @endif
-    @if($id_user==4241 || $id_user==20 || $id_user==17 || $id_user==7765 || $id_user==5321 || $id_user==6083 || $id_user==6081 || $id_user==6713)
+    @if($id_user==4241 || $id_user==20 || $id_user==5321 || $id_user==6083)
     <div class="row pb-1">
         <div class="col-2">
             <label class="form-label" style="font-weight: bold;font-size:12pt"> Pilih Status</label>

@@ -48,7 +48,7 @@
                 <label class="form-label pt-1"> Status Pengajuan</label>
             </div>
             <div class="col-4">
-                @if($id_user==4241 || $id_user==20 || $id_user==17 || $id_user==7765 || $id_user==5321 || $id_user==6083 || $id_user==6081 || $id_user==6713)
+                @if($id_user==4241 || $id_user==20 || $id_user==5321 || $id_user==6083)
                 <select class="form-control col-11" id="status" onchange="changeStatus()" style="background-color:white">
                     <option value=0 @if ($value->status == 0) {{ 'selected' }} @endif>Pilih Status</option>
                     <option value=1 @if ($value->status == 1) {{ 'selected' }} @endif>Approved</option>
@@ -83,7 +83,7 @@
                     <label class="form-label"> Alternative</label>
                 </div>
                 <div class="col-4">
-                    @if($id_user==4241 || $id_user==20 || $id_user==17 || $id_user==7765 ||$id_user==5321 || $id_user==6083 || $id_user==6081 || $id_user==6713)
+                    @if($id_user==4241 || $id_user==20 || $id_user==5321 || $id_user==6083)
                     <textarea class="form-control col-11" id="alternative" style="background-color:white" onchange="alternative_change()"></textarea>
                     @else
                     <textarea class="form-control col-11" id="alternative" style="background-color:white" onchange="alternative_change()" disabled style="background-color:white"></textarea>
@@ -138,7 +138,7 @@
         <div class="row pt-2">
             <div class="col-12 text-center">
                 <a class="btn" style="background-color:rgb(236, 165, 32);color:rgb(0, 0, 0)" href="{{route('hris.ga.data_pengajuan_transportasi')}}"><i class="fa fa-caret-left" style="font-size:12pt" aria-hidden="true"></i> Back</a>
-                @if($id_user==4241 || $id_user==20 || $id_user==17 || $id_user==7765 ||$id_user==5321 || $id_user==6083 || $id_user==6081 || $id_user==6713)
+                @if($id_user==4241 || $id_user==20 || $id_user==5321 || $id_user==6083)
                 <button class="btn btn-success" onclick="saveChanges()"><i class="fa fa-save" style="font-size:11pt"></i> UPDATE REQUEST</button>
                 @endif
             </div>
@@ -1867,7 +1867,7 @@
                                 <td style="padding-left:13px" width="10%"><label class="form-label pt-1 pl-3 border-left border-dark">Driver</label></td>
                                 <td width="20%" style="padding-left:13px">
                                 ${
-                                    id_user==4241 || id_user==20 || id_user==17 || id_user==7765 || id_user==5321 || id_user==6083 || id_user==6081 || id_user==6713
+                                    id_user==4241 || id_user==20 || id_user==5321 || id_user==6083
                                     ? `
                                             <select id="driver_yang_ke_`+key+`" class="form-control" onchange="driverChange(`+key+`,this.value)">
                                                 <option value="">Pilih Driver</option>
@@ -1881,7 +1881,7 @@
                                 <td style="padding-left:13px" width="10%"><label class="form-label pt-1 pl-3 border-left border-dark">Kendaraan</label></td>
                                 <td width="20%" style="padding-left:13px">
                                     ${
-                                        id_user==4241 || id_user==20 || id_user==17 || id_user==7765 || id_user==5321 || id_user==6083 || id_user==6081 || id_user==6713
+                                      id_user==4241 || id_user==20 || id_user==5321 || id_user==6083
                                         ? `
                                             <select id="kendaraan_yang_ke_`+key+`" class="form-control" onchange="vehicleChange(`+key+`,this.value)">
                                                 <option value="">Pilih Kendaraan</option>
@@ -1896,7 +1896,7 @@
                                 <td style="padding-left:13px" width="5%"><label class="form-label pt-1 pl-3 border-left border-dark">Status</label></td>
                                 <td width="15%" style="padding-left:13px">
                                     ${
-                                        id_user==4241 || id_user==20 || id_user==17 || id_user==7765 || id_user==5321 || id_user==6083 || id_user==6081 || id_user==6713
+                                        id_user==4241 || id_user==20 || id_user==5321 || id_user==6083
                                         ? `
                                             <select id="status_yang_ke_`+key+`" class="form-control" onchange="statusChange(`+key+`,this.value)">
                                                 <option value=0>Pilih Status</option>
@@ -1912,7 +1912,7 @@
                                 </td>
                                 <td width="20%" style="padding-left:13px">
                                   ${
-                                        id_user==4241 || id_user==20 || id_user==17 || id_user==7765 || id_user==5321 || id_user==6083 || id_user==6081 || id_user==6713
+                                        iid_user==4241 || id_user==20 || id_user==5321 || id_user==6083
                                         ? `<div id="tag_alternative_yang_ke_`+key+`" style="display:none"><input type="text" class="form-control" placeholder="Masukkan Alternative" id="alternative_yang_ke_`+key+`" onchange="alternativeChange(`+key+`,this.value)"></div>` 
                                         : (array_alternative[key]===null?'':array_alternative[key])
                                   }
