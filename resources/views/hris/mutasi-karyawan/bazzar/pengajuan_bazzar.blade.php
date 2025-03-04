@@ -892,7 +892,7 @@ function toggleOutside(source) {
 
                         if (isApprove && username === 'mega@ptnag.com' || username === 'rudy@patnag.com' || username === 'fadli') {
                             pdfButton = `
-                             <a class='btn btn-warning btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_pengajuan('${row.id}')">
+                             <a class='btn btn-warning btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_pengajuan(`+row.id+`, '` + status + `')">
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
                                 <a class='btn btn-danger btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_laporan_tanda_terima_id(`+row.id+`, '` + row.nik + `')">
@@ -986,9 +986,9 @@ function toggleOutside(source) {
             }
         }
 
-        function export_laporan_pengajuan(id_n, no_form_n) {
+        function export_laporan_pengajuan(id_n, status) {
             var id=id_n;
-            var url = 'bazzar/export_laporan_pengajuan?id='+id;
+            var url = 'bazzar/export_laporan_pengajuan?id='+id+'&status='+status;
             window.open(url, '_blank');
 
         }
@@ -1016,7 +1016,6 @@ function toggleOutside(source) {
             window.open(url, '_blank');
         }
         function export_pengajuan_excel_bagian(sub_dept_id,status) {
-            console.log('status',status)
             var url = 'bazzar/export_excel?sub_dept_id='+sub_dept_id+'&status='+status;
             window.open(url, '_blank');
         }
