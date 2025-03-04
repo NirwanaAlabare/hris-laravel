@@ -80,12 +80,20 @@ class BazzarController extends AdminBaseController
         $enroll_id         = $request->enroll_id;
         $jumlah            = $request->jumlah;
         if(isset($enroll_id) || isset($jumlah)){
+            $data_karyawan = EmployeeAtribut::where('enroll_id', $enroll_id)->first();
+            if(!$data_karyawan){
+                return response()->json(['status' => 'error', 'message' => 'Data karyawan tidak ditemukan']);
+            }
             PengajuanBazzar::create([
                 'enroll_id' => $enroll_id,
                 'jumlah' => $jumlah,
                 'status' => 'pending',
                 'operator' => $user,
                 'diajukan_oleh' => $user,
+                'department_name' => $data_karyawan->department_name,
+                'department_id' => $data_karyawan->department_id,
+                'sub_dept_id' => $data_karyawan->sub_dept_id,
+                'sub_dept_name' => $data_karyawan->sub_dept_name,
             ]);
             return response()->json(['status' => 'success', 'message' => 'Data berhasil disimpan']);
         }else{
@@ -171,9 +179,9 @@ class BazzarController extends AdminBaseController
         $sub_dept_id = $request->sub_dept_id;
         if ($request->ajax()) {
             if($user_email == 'mega@ptnag.com' || $user_email == 'rudy@patnag.com' || $user_email == 'fadli' || $user_email == 'HR' || $user_email == 'ersa@ptnag.com' || $user_email == 'kiki@ptnag.com' || $user_email == 'hrd'){
-                $data_tmp = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('employee_atribut.sub_dept_id', $sub_dept_id)->where('status', $request->status)->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->orderby('employee_atribut.employee_name','asc')->get();
+                $data_tmp = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.status_staff')->where('employee_atribut.sub_dept_id', $sub_dept_id)->where('status', $request->status)->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->orderby('employee_atribut.employee_name','asc')->get();
             }else{
-                $data_tmp = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.department_name', 'employee_atribut.sub_dept_name', 'employee_atribut.status_staff')->where('pengajuan_bazzar.diajukan_oleh', $user_email)->where('employee_atribut.sub_dept_id', $sub_dept_id)->where('status', $request->status)->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->orderby('employee_atribut.employee_name','asc')->get();
+                $data_tmp = PengajuanBazzar::select('pengajuan_bazzar.*', 'employee_atribut.nik', 'employee_atribut.employee_name', 'employee_atribut.status_staff')->where('pengajuan_bazzar.diajukan_oleh', $user_email)->where('employee_atribut.sub_dept_id', $sub_dept_id)->where('status', $request->status)->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')->orderby('employee_atribut.employee_name','asc')->get();
             }
             return DataTables::of($data_tmp)->toJson();
         }
@@ -203,9 +211,9 @@ class BazzarController extends AdminBaseController
                     'pengajuan_bazzar.status',
                     'employee_atribut.nik',
                     'employee_atribut.employee_name',
-                    'employee_atribut.sub_dept_name',
-                    'employee_atribut.sub_dept_id',
-                    'employee_atribut.department_name',
+                    DB::raw('COALESCE(pengajuan_bazzar.sub_dept_name, employee_atribut.sub_dept_name) as sub_dept_name'),
+                    DB::raw('COALESCE(pengajuan_bazzar.sub_dept_id, employee_atribut.sub_dept_id) as sub_dept_id'),
+                    'pengajuan_bazzar.department_name',
                     'employee_atribut.status_staff'
                 )
                 ->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')
@@ -227,12 +235,12 @@ class BazzarController extends AdminBaseController
                                  $q->where('employee_atribut.employee_name', 'like', "%{$search}%")
                                    ->orWhere('employee_atribut.enroll_id', 'like', "%{$search}%")
                                    ->orWhere('employee_atribut.nik', 'like', "%{$search}%")
-                                   ->orWhere('employee_atribut.sub_dept_name', 'like', "%{$search}%");
+                                   ->orWhere('pengajuan_bazzar.sub_dept_name', 'like', "%{$search}%");
                              });
                 });
             }
 
-            $data_tmp = $query->groupBy('employee_atribut.sub_dept_id')->get();
+            $data_tmp = $query->groupBy('sub_dept_id')->get();
             return DataTables::of($data_tmp)->toJson();
         }
     }
