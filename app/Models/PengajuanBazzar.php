@@ -23,6 +23,10 @@ class PengajuanBazzar extends Model
         'updated_at',
         'diajukan_oleh',
         'is_print',
+        'department_name',
+        'department_id',
+        'sub_dept_id',
+        'sub_dept_name',
     ];
 
     protected $casts = [
@@ -35,6 +39,10 @@ class PengajuanBazzar extends Model
         'updated_at',
         'diajukan_oleh',
         'is_print',
+        'department_name',
+        'department_id',
+        'sub_dept_id',
+        'sub_dept_name',
     ];
 
     public function employee(){
