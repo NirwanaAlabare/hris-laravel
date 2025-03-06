@@ -583,7 +583,7 @@ function toggleOutside(source) {
             });
 
 
-            if ($('#username_who_access').val() === 'mega@ptnag.com' || $('#username_who_access').val() === 'rudy@patnag.com') {
+            if ($('#username_who_access').val() === 'mega@ptnag.com' || $('#username_who_access').val() === 'rudy@patnag.com' || $('#username_who_access').val() === 'fadli') {
                         $(".btn_export").show();
                     } else {
                         $(".btn_export").hide();

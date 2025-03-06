@@ -648,6 +648,7 @@ h1 {
                     // Reset total nominal
                     $('#total-nominal').text('RP.0');
                     $("#ajax-modal-tambah").modal('hide');
+                    $('#entertaintTable').DataTable().ajax.reload();
                 },
                 error: function (xhr) {
                     console.log(xhr);
