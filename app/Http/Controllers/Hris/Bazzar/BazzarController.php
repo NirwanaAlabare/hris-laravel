@@ -154,6 +154,7 @@ class BazzarController extends AdminBaseController
         $data_tmp = PengajuanBazzar::leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')
             ->where('employee_atribut.sub_dept_id', $sub_dept_id)
             ->where('pengajuan_bazzar.status', $request->status)
+            ->where('pengajuan_bazzar.tanggal_pengajuan', $request->tanggal)
             ->select('pengajuan_bazzar.*')
             ->get();
 

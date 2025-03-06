@@ -639,7 +639,7 @@ function toggleOutside(source) {
                                     <a class='btn btn-warning btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_pengajuan_bagian('${row.sub_dept_id}','${row.status}','${row.tanggal_pengajuan}')">
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
-                                    <a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapusPerBagian('${row.sub_dept_id}', 'pending');">
+                                    <a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapusPerBagian('${row.sub_dept_id}', 'pending', '${row.tanggal_pengajuan}');">
                                                 <i class='fa fa-trash'></i>
                                     </a>`;
                     }
@@ -652,7 +652,7 @@ function toggleOutside(source) {
                             <a class='btn btn-danger btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_tanda_terima_bagian('${row.sub_dept_id}','${row.tanggal_pengajuan}')">
                                 <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                             </a>
-                            <a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapusPerBagian('${row.sub_dept_id}', 'approve');">
+                            <a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapusPerBagian('${row.sub_dept_id}', 'approve', '${row.tanggal_pengajuan}');">
                             <i class='fa fa-trash'></i>
                             </a>`;
                     }
@@ -1042,7 +1042,7 @@ function toggleOutside(source) {
         }
 
 
-        function hapusPerBagian(a, status) {
+        function hapusPerBagian(a, status,tanggal) {
             let sub_dept_id = a;
             Swal.fire({
             icon: 'error',
@@ -1060,6 +1060,7 @@ function toggleOutside(source) {
                         data: {
                             sub_dept_id: sub_dept_id,
                             status: status,
+                            tanggal: tanggal,
                         },
                         success: function (res) {
                             notif({
