@@ -2908,7 +2908,7 @@
           }
         }
       });
-      if(provinsi_asal_string!='' && kota_asal_string!='' && kecamatan_asal_string!='' && desa_asal_string!='' && detail_alamat_asal_string!='' && tanggal_pemberangkatan_asal!='' && jam_pemberangkatan_asal!='' && !array_provinsi.includes('') && !array_kota.includes('') && !array_kecamatan.includes('') && !array_desa.includes('') && !array_detail_alamat.includes('') && !array_tanggal_pemberangkatan.includes('') && !array_jam_pemberangkatan.includes('') && !array_tujuan_pemberangkatan.includes('') && !array_keterangan.includes('')){
+      if(employeeId_string!='' && provinsi_asal_string!='' && kota_asal_string!='' && kecamatan_asal_string!='' && desa_asal_string!='' && detail_alamat_asal_string!='' && tanggal_pemberangkatan_asal!='' && jam_pemberangkatan_asal!='' && !array_provinsi.includes('') && !array_kota.includes('') && !array_kecamatan.includes('') && !array_desa.includes('') && !array_detail_alamat.includes('') && !array_tanggal_pemberangkatan.includes('') && !array_jam_pemberangkatan.includes('') && !array_tujuan_pemberangkatan.includes('') && !array_keterangan.includes('')){
         $.ajax({
           type:"POST",
           url: "{{route('hris.ga.store_car_request')}}",
