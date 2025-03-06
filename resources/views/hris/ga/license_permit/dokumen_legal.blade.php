@@ -527,6 +527,9 @@ h1 {
                             });
                             $("#form-dokumen")[0].reset();
                             $("#file-list").empty();
+
+                            $("#ajax-modal-tambah").modal('hide');
+                            $("#datatable").DataTable().ajax.reload();
                         },
                         error: function (xhr) {
                             let errors = xhr.responseJSON.errors;
