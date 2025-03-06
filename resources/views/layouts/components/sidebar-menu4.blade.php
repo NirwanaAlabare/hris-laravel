@@ -30,7 +30,7 @@
             <li><a href="{{route('bazzar.index')}}" class="slide-item"><span>Pengajuan Kupon</span></a></li>
     </ul>
     @php
-    if (($loggedAdmin->name == "HR") || ($loggedAdmin->name == "HRD")|| ($loggedAdmin->name == "GA")) {
+    if (($loggedAdmin->name == "HR") || ($loggedAdmin->name == "HRD")|| ($loggedAdmin->name == "GA") || ($loggedAdmin->email == 'mega@ptnag.com') || ($loggedAdmin->email == 'rudy@patnag.com') || ($loggedAdmin->email == 'fadli')) {
         @endphp
     <li class="mt-4">
         <a class="btn btn-app w-100" style="background-color: #16a34a" data-toggle="tooltip" title="Export Rekap Overtime" href="{{ route('anggaran_makan.export_excel_overtime_recap2') }}"

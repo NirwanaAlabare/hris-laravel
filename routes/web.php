@@ -176,6 +176,22 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('/bazzar/not_yet_printed', ['as' => 'bazzar.not_yet_printed','uses' => 'Bazzar\BazzarController@not_yet_printed']);
     Route::get('/bazzar/export_voucher', ['as' => 'bazzar.export_voucher','uses' => 'Bazzar\BazzarController@export_voucher']);
 
+
+    // LICENSE PERMIT
+    Route::get('/dokumen_legal', ['as' => 'dokumen_legal.index','uses' => 'LicensePermit\LicensePermitController@index']);
+    Route::post('/dokumen_legal/store', ['as' => 'dokumen_legal.store','uses' => 'LicensePermit\LicensePermitController@store']);
+    Route::get('/get-dokumen-legal', ['as' => 'dokumen_legal.get_dokumen_legal','uses' => 'LicensePermit\LicensePermitController@get_dokumen_legal']);
+    Route::delete('/delete-dokumen-legal/{id}', ['as' => 'dokumen_legal.delete_dokumen_legal','uses' => 'LicensePermit\LicensePermitController@delete_dokumen_legal']);
+    Route::get('/get-dokumen-legal/{id}', ['as' => 'dokumen_legal.get_edit_dokumen_legal','uses' => 'LicensePermit\LicensePermitController@getDokumenLegal']);
+    Route::post('/update-dokumen-legal', ['as' => 'dokumen_legal.update_dokumen_legal','uses' => 'LicensePermit\LicensePermitController@updateDokumenLegal']);
+    Route::get('/download_watermark/{id}', ['as' => 'dokumen_legal.download_watermark','uses' => 'LicensePermit\LicensePermitController@download_watermark']);
+
+    // ENTERTAINT
+    Route::get('/entertaint-tamu', ['as' => 'entertaint_tamu.index','uses' => 'Entertaint\EntertaintController@index']);
+    Route::post('/entertaint_tamu/store', ['as' => 'entertaint_tamu.store','uses' => 'Entertaint\EntertaintController@store']);
+    Route::get('/entertaint_tamu/show', ['as' => 'entertaint_tamu.show','uses' => 'Entertaint\EntertaintController@getData']);
+    Route::get('/entertaint_tamu/export_pengajuan_permintaan_kas', ['as' => 'entertaint_tamu.export_pengajuan_permintaan_kas','uses' => 'Entertaint\EntertaintController@export_pengajuan_permintaan_kas']);
+
     Route::get('hrd/export_pdf_sk_bni',['as'=>'hris.hrd.export_pdf_sk_bni','uses'=>'HRDController@export_pdf_sk_bni']);
     Route::post('hrd/export_pdf_print_sk',['as'=>'hris.hrd.export_pdf_print_sk','uses'=>'HRDController@export_pdf_print_sk']);
     Route::get('hrd/get_employee_contract',['as'=>'hris.hrd.get_employee_contract','uses'=>'HRDController@get_employee_contract']);
@@ -291,6 +307,39 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('logdatagagalabsen/store/',['as'=>'hris.logdatagagalabsen.store','uses'=> 'LogDataGagalAbsenController@store']);
     Route::post('gagalabsen/ajax_exportexcel/',['as'=>'hris.gagalabsen.ajax_exportexcel','uses'=> 'GagalAbsenController@ajax_exportexcel']);
 
+    // VERIFIKASI INSENTIF LEMBUR
+    Route::get('verifikasi_insentif_lembur/index/',['as'=>'hris.verifikasi_insentif_lembur.index','uses'=> 'VerifikasiInsentifLemburController@index']);
+    Route::post('verifikasi_insentif_lembur/ajax_datahadir/',['as'=>'hris.verifikasi_insentif_lembur.ajax_datahadir','uses'=> 'VerifikasiInsentifLemburController@ajax_datahadir']);
+    Route::post('verifikasi_insentif_lembur/form_verifikasi_insentif_lembur/',['as'=>'hris.verifikasi_insentif_lembur.form_verifikasi_insentif_lembur','uses'=> 'VerifikasiInsentifLemburController@form_verifikasi_insentif_lembur']);
+    Route::post('verifikasi_insentif_lembur/getEmployeeLembur/',['as'=>'hris.verifikasi_insentif_lembur.getEmployeeLembur','uses'=> 'VerifikasiInsentifLemburController@getEmployeeLembur']);
+    Route::post('verifikasi_insentif_lembur/ajax_getNomorFormLembur/',['as'=>'hris.verifikasi_insentif_lembur.ajax_getNomorFormLembur','uses'=> 'VerifikasiInsentifLemburController@ajax_getNomorFormLembur']);
+    Route::get('verifikasi_insentif_lembur/add_verifikasi_insentif_lembur/',['as'=>'hris.verifikasi_insentif_lembur.add_verifikasi_insentif_lembur','uses'=> 'VerifikasiInsentifLemburController@add_verifikasi_insentif_lembur']);
+    Route::post('verifikasi_insentif_lembur/ajax_getemployeselectdeptid/',['as'=>'hris.verifikasi_insentif_lembur.ajax_getemployeselectdeptid','uses'=> 'VerifikasiInsentifLemburController@ajax_getemployeselectdeptid']);
+    Route::post('verifikasi_insentif_lembur/ajax_getemployeselectnfl/',['as'=>'hris.verifikasi_insentif_lembur.ajax_getemployeselectnfl','uses'=> 'VerifikasiInsentifLemburController@ajax_getemployeselectnfl']);
+    Route::post('verifikasi_insentif_lembur/ajax_gettanggalnfl/',['as'=>'hris.verifikasi_insentif_lembur.ajax_gettanggalnfl','uses'=> 'VerifikasiInsentifLemburController@ajax_gettanggalnfl']);
+    Route::post('verifikasi_insentif_lembur/store_multi/',['as'=>'hris.verifikasi_insentif_lembur.store_multi','uses'=> 'VerifikasiInsentifLemburController@store_multi']);
+    Route::post('verifikasi_insentif_lembur/update/',['as'=>'hris.verifikasi_insentif_lembur.update','uses'=> 'VerifikasiInsentifLemburController@update']);
+    Route::post('verifikasi_insentif_lembur/delete/',['as'=>'hris.verifikasi_insentif_lembur.delete','uses'=> 'VerifikasiInsentifLemburController@delete']);
+    Route::post('verifikasi_insentif_lembur/remove/',['as'=>'hris.verifikasi_insentif_lembur.remove','uses'=> 'VerifikasiInsentifLemburController@remove']);
+    Route::post('verifikasi_insentif_lembur/ajax_exportexcel/',['as'=>'hris.verifikasi_insentif_lembur.ajax_exportexcel','uses'=> 'VerifikasiInsentifLemburController@ajax_exportexcel']);
+    Route::post('verifikasi_insentif_lembur/ajax_getemployee',['as'=>'hris.verifikasi_insentif_lembur.ajax_getemployee','uses'=>'VerifikasiInsentifLemburController@ajax_getemployee']);
+    Route::post('verifikasi_insentif_lembur/ajax_getsubdept',['as'=>'hris.verifikasi_insentif_lembur.ajax_getsubdept','uses'=>'VerifikasiInsentifLemburController@ajax_getsubdept']);
+    Route::post('verifikasi_insentif_lembur/ajax_getnomorspl',['as'=>'hris.verifikasi_insentif_lembur.ajax_getnomorspl','uses'=>'VerifikasiInsentifLemburController@ajax_getnomorspl']);
+    Route::post('verifikasi_insentif_lembur/ajax_verifikasi_insentif_lembur',['as'=>'hris.verifikasi_insentif_lembur.ajax_verifikasi_insentif_lembur','uses'=>'VerifikasiInsentifLemburController@ajax_verifikasi_insentif_lembur']);
+    Route::post('verifikasi_insentif_lembur/ajax_verifikasi_insentif_lembur2',['as'=>'hris.verifikasi_insentif_lembur.ajax_verifikasi_insentif_lembur2','uses'=>'VerifikasiInsentifLemburController@ajax_verifikasi_insentif_lembur2']);
+    Route::post('verifikasi_insentif_lembur/verificating',['as'=>'hris.verifikasi_insentif_lembur.verificating','uses'=>'VerifikasiInsentifLemburController@verificating']);
+    Route::post('verifikasi_insentif_lembur/replace',['as'=>'hris.verifikasi_insentif_lembur.replace','uses'=>'VerifikasiInsentifLemburController@replace']);
+    Route::post('verifikasi_insentif_lembur/updatelembur',['as'=>'hris.verifikasi_insentif_lembur.updatelembur','uses'=>'VerifikasiInsentifLemburController@updatelembur']);
+    Route::post('verifikasi_insentif_lembur/updatelemburall',['as'=>'hris.verifikasi_insentif_lembur.updatelemburall','uses'=>'VerifikasiInsentifLemburController@updatelemburall']);
+    Route::post('verifikasi_insentif_lembur/tambahkaryawan',['as'=>'hris.verifikasi_insentif_lembur.tambahkaryawan','uses'=>'VerifikasiInsentifLemburController@tambahkaryawan']);
+    Route::post('verifikasi_insentif_lembur/removenospl',['as'=>'hris.verifikasi_insentif_lembur.removenospl','uses'=>'VerifikasiInsentifLemburController@removenospl']);
+    Route::post('verifikasi_insentif_lembur/getnomorform',['as'=>'hris.verifikasi_insentif_lembur.getnomorform','uses'=>'VerifikasiInsentifLemburController@getnomorform']);
+    Route::post('verifikasi_insentif_lembur/getnomorformnonsewing',['as'=>'hris.verifikasi_insentif_lembur.getnomorformnonsewing','uses'=>'VerifikasiInsentifLemburController@getnomorformnonsewing']);
+    Route::post('verifikasi_insentif_lembur/getkaryawanlembur',['as'=>'hris.verifikasi_insentif_lembur.getkaryawanlembur','uses'=>'VerifikasiInsentifLemburController@getkaryawanlembur']);
+    Route::post('verifikasi_insentif_lembur/importkaryawanlembur',['as'=>'hris.verifikasi_insentif_lembur.importkaryawanlembur','uses'=>'VerifikasiInsentifLemburController@importkaryawanlembur']);
+    Route::post('verifikasi_insentif_lembur/import_data_lembur',['as'=>'hris.verifikasi_insentif_lembur.import_data_lembur','uses'=>'VerifikasiInsentifLemburController@import_data_lembur']);
+    Route::post('verifikasi_insentif_lembur/importing_data_lembur',['as'=>'hris.verifikasi_insentif_lembur.importing_data_lembur','uses'=>'VerifikasiInsentifLemburController@importing_data_lembur']);
+    Route::get('verifikasi_insentif_lembur/get_last_nomor_form_lembur',['as'=>'hris.verifikasi_insentif_lembur.get_last_nomor_form_lembur','uses'=>'VerifikasiInsentifLemburController@get_last_nomor_form_lembur']);
     // DATA LEMBUR
     Route::get('datalembur/index/',['as'=>'hris.datalembur.index','uses'=> 'DataLemburController@index']);
     Route::post('datalembur/ajax_datahadir/',['as'=>'hris.datalembur.ajax_datahadir','uses'=> 'DataLemburController@ajax_datahadir']);

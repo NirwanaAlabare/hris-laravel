@@ -24,6 +24,7 @@
                     <a href="#" data-toggle="sub-slide" class="sub-slide-item"><span class="sub-side-menu__label">Lembur Karyawan</span><i class="sub-angle fa fa-angle-right"></i></a>
                     <ul class="sub-slide-menu">
                         <li><a class="sub-slide-item" href="{{route('hris.datalembur.index')}}"><span> Data Lembur</span></a></li>
+                        <li><a class="sub-slide-item" href="{{route('hris.verifikasi_insentif_lembur.index')}}"><span> Verifikasi Insentif Lembur</span></a></li>
                         <li><a class="sub-slide-item" href="{{route('hris.datalembur.add_datalembur')}}"><span> Tambah Data Lembur</span></a></li>
                     </ul>
                 </li>
