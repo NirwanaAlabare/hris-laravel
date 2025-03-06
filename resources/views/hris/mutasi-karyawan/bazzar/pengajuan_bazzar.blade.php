@@ -619,24 +619,24 @@ function toggleOutside(source) {
 
                     let buttons = `
                         <div>
-                            <a style="text-align:center; color:white;" class="btn btn-primary btn-sm" onclick="showModalDepartment('${row.sub_dept_name}', '${row.sub_dept_id}')">
+                            <a style="text-align:center; color:white;" class="btn btn-primary btn-sm" onclick="showModalDepartment('${row.sub_dept_name}', '${row.sub_dept_id}', '${row.tanggal_pengajuan}')">
                                 <i class="fa fa-search"></i>
                             </a>
                     `;
 
                     if (username === 'mega@ptnag.com' || username === 'rudy@patnag.com' || username === 'fadli') {
                         buttons += `
-                            <a class="btn btn-gray btn-sm mt-1" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_voucher_bagian('${row.sub_dept_id}')">
+                            <a class="btn btn-gray btn-sm mt-1" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_voucher_bagian('${row.sub_dept_id}','${row.tanggal_pengajuan}')">
                                 <i class="fa fa-print" aria-hidden="true"></i>
                             </a>
-                            <a class="btn btn-success btn-sm mt-1" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_pengajuan_excel_bagian('${row.sub_dept_id}','${row.status}')">
+                            <a class="btn btn-success btn-sm mt-1" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_pengajuan_excel_bagian('${row.sub_dept_id}','${row.status}','${row.tanggal_pengajuan}')">
                                 <i class="fa fa-file-excel-o" aria-hidden="true"></i>
                             </a>
                         `;
                     }
                     if(isPending){
                         buttons += `
-                                    <a class='btn btn-warning btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_pengajuan_bagian('${row.sub_dept_id}','${row.status}')">
+                                    <a class='btn btn-warning btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_pengajuan_bagian('${row.sub_dept_id}','${row.status}','${row.tanggal_pengajuan}')">
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
                                     <a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapusPerBagian('${row.sub_dept_id}', 'pending');">
@@ -646,10 +646,10 @@ function toggleOutside(source) {
 
                     if(isApprove && (username === 'mega@ptnag.com' || username === 'rudy@patnag.com' || username === 'fadli')){
                         buttons += `
-                             <a class='btn btn-warning btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_pengajuan_bagian('${row.sub_dept_id}','${row.status}')">
+                             <a class='btn btn-warning btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_pengajuan_bagian('${row.sub_dept_id}','${row.status}','${row.tanggal_pengajuan}')">
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
-                            <a class='btn btn-danger btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_tanda_terima_bagian('${row.sub_dept_id}')">
+                            <a class='btn btn-danger btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_tanda_terima_bagian('${row.sub_dept_id}','${row.tanggal_pengajuan}')">
                                 <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                             </a>
                             <a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapusPerBagian('${row.sub_dept_id}', 'approve');">
@@ -662,12 +662,12 @@ function toggleOutside(source) {
                 },
                 },
                 {
-                    data: 'created_at',
+                    data: 'tanggal_pengajuan',
                     className: "text-center",
                     render: (data, type, row, meta) => {
                             return `
                             <div class="">
-                                        `+moment(data).format('DD MMMM YYYY - HH:mm')+`
+                                        `+moment(data).format('DD MMMM YYYY')+`
                             </div>
                             `
                     }
@@ -734,11 +734,13 @@ function toggleOutside(source) {
             });
         }
 
-        function showModalDepartment(data, id) {
+        function showModalDepartment(data, id,tanggal_pengajuan) {
             // Set judul modal
             $("#title-modal-list").text('PENGAJUAN KUPON BAZZAR : ' + data);
             // Simpan id di modal (atribut data)
             $("#ajax-modal-list").data("subDeptId", id);
+            $("#ajax-modal-list").data("tanggal_pengajuan", tanggal_pengajuan);
+
             // Pastikan default tab adalah pending
             $("#pending-tab").tab('show');
             // Buka modal
@@ -801,6 +803,8 @@ function toggleOutside(source) {
             let isPending = status === "pending";
             let isApprove = status === "approve";
             let isReject = status === "reject";
+            let tanggal_pengajuan = $("#ajax-modal-list").data("tanggal_pengajuan");
+
             // Konfigurasi kolom
             let columns = [
                 {
@@ -892,7 +896,7 @@ function toggleOutside(source) {
 
                         if (isApprove && username === 'mega@ptnag.com' || username === 'rudy@patnag.com' || username === 'fadli') {
                             pdfButton = `
-                             <a class='btn btn-warning btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_pengajuan(`+row.id+`, '` + status + `')">
+                             <a class='btn btn-warning btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_pengajuan(`+row.id+`, '` + status + `', '` + row.tanggal_pengajuan + `')">
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>
                                 <a class='btn btn-danger btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_laporan_tanda_terima_id(`+row.id+`, '` + row.nik + `')">
@@ -901,7 +905,7 @@ function toggleOutside(source) {
                                 <a class='btn btn-success btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2" onClick="export_laporan_pengajuan_excel(`+row.id+`, '` + row.nik + `')">
                                     <i class="fa fa-file-excel-o" aria-hidden="true"></i>
                                 </a>
-                                <a class='btn btn-dark btn-sm mt-1' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_voucher(`+row.id+`, '` + row.nik + `')">
+                                <a class='btn btn-dark btn-sm mt-1' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_voucher(`+row.id+`, '` + row.nik + `', '` + row.tanggal_pengajuan + `')">
                                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                             `;
                         }
@@ -941,6 +945,7 @@ function toggleOutside(source) {
                     data: {
                         status: status,
                         sub_dept_id: id,
+                        tanggal: tanggal_pengajuan,
                         _: new Date().getTime()
                     },
                 },
@@ -986,37 +991,37 @@ function toggleOutside(source) {
             }
         }
 
-        function export_laporan_pengajuan(id_n, status) {
+        function export_laporan_pengajuan(id_n, status, tanggal) {
             var id=id_n;
-            var url = 'bazzar/export_laporan_pengajuan?id='+id+'&status='+status;
+            var url = 'bazzar/export_laporan_pengajuan?id='+id+'&status='+status+'&tanggal='+tanggal;
             window.open(url, '_blank');
 
         }
-        function export_laporan_pengajuan_bagian(sub_dept_id, status) {
-            var url = 'bazzar/export_laporan_pengajuan?sub_dept_id='+sub_dept_id+'&status='+status;
+        function export_laporan_pengajuan_bagian(sub_dept_id, status, tanggal) {
+            var url = 'bazzar/export_laporan_pengajuan?sub_dept_id='+sub_dept_id+'&status='+status+'&tanggal='+tanggal;
             window.open(url, '_blank');
 
         }
-        function export_laporan_tanda_terima_bagian(sub_dept_id, no_form_n) {
-            var url = 'bazzar/export_laporan_tanda_terima_bagian?sub_dept_id='+sub_dept_id;
+        function export_laporan_tanda_terima_bagian(sub_dept_id, tanggal) {
+            var url = 'bazzar/export_laporan_tanda_terima_bagian?sub_dept_id='+sub_dept_id+'&tanggal='+tanggal;
             window.open(url, '_blank');
         }
         function export_laporan_tanda_terima_id(id, no_form_n) {
             var url = 'bazzar/export_laporan_pengajuan_ids?id='+id;
             window.open(url, '_blank');
         }
-        function export_voucher(id_n, no_form_n) {
+        function export_voucher(id_n, tanggal) {
             var id=id_n;
-            var url = 'bazzar/export_voucher?id='+id;
+            var url = 'bazzar/export_voucher?id='+id+'&tanggal='+tanggal;
             window.open(url, '_blank');
 
         }
-        function export_voucher_bagian(sub_dept_id) {
-            var url = 'bazzar/export_voucher?sub_dept_id='+sub_dept_id;
+        function export_voucher_bagian(sub_dept_id, tanggal) {
+            var url = 'bazzar/export_voucher?sub_dept_id='+sub_dept_id+'&tanggal='+tanggal;
             window.open(url, '_blank');
         }
-        function export_pengajuan_excel_bagian(sub_dept_id,status) {
-            var url = 'bazzar/export_excel?sub_dept_id='+sub_dept_id+'&status='+status;
+        function export_pengajuan_excel_bagian(sub_dept_id,status, tanggal) {
+            var url = 'bazzar/export_excel?sub_dept_id='+sub_dept_id+'&status='+status+'&tanggal='+tanggal;
             window.open(url, '_blank');
         }
 

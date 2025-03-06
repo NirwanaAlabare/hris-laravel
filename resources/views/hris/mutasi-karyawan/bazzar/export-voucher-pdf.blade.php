@@ -40,7 +40,7 @@
     <table width=" {{ count($data) === 1 ? '50%' : '100%' }}"  style="page-break-inside:auto;">
         @if($data->count() == 0)
             <tr>
-                <td colspan="8" style="border:red 1px solid; color:red" class="text-center">Data belum di approve.</td>
+                <td colspan="8" style="border:red 1px solid; color:red" class="text-center">Data belum di approve / Tidak ditemukan.</td>
             </tr>
         @else
         <thead>
