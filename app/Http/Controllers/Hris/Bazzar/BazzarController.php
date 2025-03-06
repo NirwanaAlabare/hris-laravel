@@ -218,24 +218,6 @@ class BazzarController extends AdminBaseController
             ->where('pengajuan_bazzar.status', $status)
             ->groupBy('pengajuan_bazzar.tanggal_pengajuan',  'pengajuan_bazzar.sub_dept_id')
             ->orderBy('pengajuan_bazzar.tanggal_pengajuan', 'ASC');
-            // Query dasar
-            // $query = PengajuanBazzar::select(
-            //         DB::raw('SUM(pengajuan_bazzar.jumlah) as jumlah'),
-            //         DB::raw('COUNT(*) as jml_data'),
-            //         'pengajuan_bazzar.id',
-            //         'pengajuan_bazzar.created_at',
-            //         'pengajuan_bazzar.is_print',
-            //         'pengajuan_bazzar.status',
-            //         'employee_atribut.nik',
-            //         'employee_atribut.employee_name',
-            //         DB::raw('COALESCE(pengajuan_bazzar.sub_dept_name, employee_atribut.sub_dept_name) as sub_dept_name'),
-            //         DB::raw('COALESCE(pengajuan_bazzar.sub_dept_id, employee_atribut.sub_dept_id) as sub_dept_id'),
-            //         'pengajuan_bazzar.department_name',
-            //         'employee_atribut.status_staff'
-            //     )
-            //     ->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'pengajuan_bazzar.enroll_id')
-            //     ->orderby('employee_atribut.employee_name','asc')
-            //     ->where('pengajuan_bazzar.status', $status);
 
             // Jika user bukan admin tertentu, filter berdasarkan operator
             if (!in_array($user_email, ['mega@ptnag.com', 'rudy@patnag.com', 'fadli', 'HR', 'ersa@ptnag.com', 'kiki@ptnag.com', 'hrd'])) {
@@ -243,19 +225,19 @@ class BazzarController extends AdminBaseController
             }
 
             // Filter hanya berdasarkan nama karyawan, tanpa mengubah agregasi
-            // if (!empty($search)) {
-            //     $query->whereExists(function ($subquery) use ($search) {
-            //         $subquery->select(DB::raw(1))
-            //                  ->from('employee_atribut')
-            //                  ->whereRaw('employee_atribut.enroll_id = pengajuan_bazzar.enroll_id')
-            //                  ->where(function ($q) use ($search) {
-            //                      $q->where('employee_atribut.employee_name', 'like', "%{$search}%")
-            //                        ->orWhere('employee_atribut.enroll_id', 'like', "%{$search}%")
-            //                        ->orWhere('employee_atribut.nik', 'like', "%{$search}%")
-            //                        ->orWhere('pengajuan_bazzar.sub_dept_name', 'like', "%{$search}%");
-            //                  });
-            //     });
-            // }
+            if (!empty($search)) {
+                $query->whereExists(function ($subquery) use ($search) {
+                    $subquery->select(DB::raw(1))
+                             ->from('employee_atribut')
+                             ->whereRaw('employee_atribut.enroll_id = pengajuan_bazzar.enroll_id')
+                             ->where(function ($q) use ($search) {
+                                 $q->where('employee_atribut.employee_name', 'like', "%{$search}%")
+                                   ->orWhere('employee_atribut.enroll_id', 'like', "%{$search}%")
+                                   ->orWhere('employee_atribut.nik', 'like', "%{$search}%")
+                                   ->orWhere('pengajuan_bazzar.sub_dept_name', 'like', "%{$search}%");
+                             });
+                });
+            }
 
             return DataTables::of($query)->toJson();
         }

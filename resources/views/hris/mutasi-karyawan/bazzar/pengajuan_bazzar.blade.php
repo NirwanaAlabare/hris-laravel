@@ -874,12 +874,12 @@ function toggleOutside(source) {
                   }
                 },
                 {
-                    data: 'created_at',
+                    data: 'tanggal_pengajuan',
                     className: "text-center",
                     render: (data, type, row, meta) => {
                             return `
                             <div class="">
-                                        `+moment(data).format('DD MMMM YYYY - HH:mm')+`
+                                        `+moment(data).format('DD MMMM YYYY')+`
                             </div>
                             `
                     }
