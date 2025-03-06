@@ -196,6 +196,8 @@
                         return `<h6 style="font-size:11pt;color:orange;font-weight:bold">LATE</h6>`;
                     }else if(row.status==6){
                         return `<h6 style="font-size:11pt;color:orange;font-weight:bold">CANCEL</h6>`;
+                    }else if(row.status==0){
+                        return `<h6 style="font-size:11pt;color:grey;font-weight:bold">PENDING</h6>`;
                     }
                 }
             },
