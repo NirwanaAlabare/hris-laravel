@@ -905,7 +905,7 @@ function toggleOutside(source) {
                                 <a class='btn btn-success btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2" onClick="export_laporan_pengajuan_excel(`+row.id+`, '` + row.nik + `')">
                                     <i class="fa fa-file-excel-o" aria-hidden="true"></i>
                                 </a>
-                                <a class='btn btn-dark btn-sm mt-1' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_voucher(`+row.id+`, '` + row.nik + `', '` + row.tanggal_pengajuan + `')">
+                                <a class='btn btn-dark btn-sm mt-1' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_voucher(`+row.id+`, '` + row.tanggal_pengajuan + `')">
                                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                             `;
                         }
