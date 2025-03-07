@@ -21,11 +21,13 @@ use App\Models\PengajuanDokumenLegal;
 use App\Models\DepartmentAll;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Barryvdh\Snappy\Facades\SnappyPdf;
 use Yajra\DataTables\Facades\DataTables;
 use DateTime;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use App\Exports\ExportLineSheet;
+use App\Exports\ExportPengajuanKas;
 use App\Exports\ExportPengajuanBazzar;
 use Illuminate\Support\Facades\Storage;
 use FilippoToso\PdfWatermarker\Facades\ImageWatermarker;
@@ -130,6 +132,9 @@ class EntertaintController extends AdminBaseController
             ->addColumn('actions', function ($row) {
                 return  '<a class="btn btn-warning btn-sm" style="color:white;" data-toggle="tooltip" title="Export Pengajuan"  onclick="export_pengajuan_permintaan_kas('.$row->id.')">
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                    </a>
+                                    <a class="btn btn-danger btn-sm" style="color:white;" data-toggle="tooltip" title="Export Realisasi"  onclick="export_realisasi_permintaan_kas('.$row->id.')">
+                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     </a>';
             })
             ->rawColumns(['keterangan', 'actions'])
@@ -178,22 +183,24 @@ class EntertaintController extends AdminBaseController
         return $query;
     }
 
-    public function export_pengajuan_permintaan_kas(){
-        $email = Auth::guard('admin')->user()->email;
-        if($email == 'fadli' || $email == 'mega@ptnag.com' || $email == 'rudy@ptnag.com'){
-            if(request()->id){
-                $data = VoucherBazzar::where('id_pengajuan_bazzar', request()->id)
-                ->orderBy('voucher_bazzar.enroll_id', 'ASC')
-                ->get();
-            }else{
-                $data = VoucherBazzar::leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'voucher_bazzar.enroll_id')->where('sub_dept_id', request()->sub_dept_id)
-                ->orderBy('employee_atribut.employee_name', 'ASC')
-                ->get();
-            }
+
+    public function export_pengajuan_permintaan_kas(Request $request)
+        {
+            $pengajuan = EntertainPengajuanTamu::with(['pendamping', 'keterangan'])->where('id', $request->entertain_id)->first();
+            $department = DepartmentAll::where('department_id', $pengajuan->department_id)->where('sub_dept_id', $pengajuan->sub_dept_id)->first();
+            $employee =  EmployeeAtribut::where('enroll_id', $pengajuan->enroll_id)->first();
+            $employee_manager =  EmployeeAtribut::where('department_id', $pengajuan->department_id)->where('sub_dept_id', $pengajuan->sub_dept_id)->where('status_jabatan', 'MANAGER')->first();
+            $total_jumlah = $pengajuan->keterangan->sum('jumlah');
+            return view('hris/ga/entertaint/export_pengajuan_permintaan_kas_pdf', compact('pengajuan', 'department', 'employee', 'total_jumlah','employee','employee_manager'));
         }
-        $fileName='Voucher_Bazzar_ '.date('Y-m-d').' '.rand(10,1000000);
-        $pdf = PDF::loadView('hris.ga.entertaint.export_pengajuan_permintaan_kas_pdf',["data" => $data])->setPaper('F4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
-        return $pdf;
-    }
+    public function export_realisasi_permintaan_kas(Request $request)
+        {
+            $pengajuan = EntertainPengajuanTamu::with(['pendamping', 'keterangan'])->where('id', $request->entertain_id)->first();
+            $department = DepartmentAll::where('department_id', $pengajuan->department_id)->where('sub_dept_id', $pengajuan->sub_dept_id)->first();
+            $employee =  EmployeeAtribut::where('enroll_id', $pengajuan->enroll_id)->first();
+            $employee_manager =  EmployeeAtribut::where('department_id', $pengajuan->department_id)->where('sub_dept_id', $pengajuan->sub_dept_id)->where('status_jabatan', 'MANAGER')->first();
+            $total_jumlah = $pengajuan->keterangan->sum('jumlah');
+            return view('hris/ga/entertaint/export_realisasi_permintaan_kas', compact('pengajuan', 'department', 'employee', 'total_jumlah','employee','employee_manager'));
+        }
 
 }

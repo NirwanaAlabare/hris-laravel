@@ -700,6 +700,10 @@ h1 {
             var url = 'entertaint_tamu/export_pengajuan_permintaan_kas?entertain_id='+entertain_id;
             window.open(url, '_blank');
         }
+        function export_realisasi_permintaan_kas(entertain_id) {
+            var url = 'entertaint_tamu/export_realisasi_permintaan_kas?entertain_id='+entertain_id;
+            window.open(url, '_blank');
+        }
     </script>
 
     <script>

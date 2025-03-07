@@ -19,7 +19,7 @@ function formatNama($name) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FORM PERMINTAAN KAS</title>
+    <title>FORM REALISASI KAS BON</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         p {
@@ -146,7 +146,7 @@ function formatNama($name) {
                 <img src="{{ asset('/assets/images/hrd/nag-logo.png') }}" width="100px" height="50px" alt="Nirwana Image">
             </div>
             <div class="d-flex justify-content-center w-100 align-items-center" style="margin:0px">
-                <p class="ms-2" style="text-align:center; font-size:18px"><strong>FORM PERMINTAAN KAS</strong></p>
+                <p class="ms-2" style="text-align:center; font-size:18px"><strong>FORM REALISASI KAS BON</strong></p>
             </div>
         </div>
         {{-- <div class="line"></div> --}}
@@ -155,19 +155,12 @@ function formatNama($name) {
                 <div class="size12px d-flex align-items-left">
                     <p class="col-md-4 margin0">No Form</p>
                     <p class="margin0">:</p>
+                    <p class="margin0 ms-2">RKK/NAG/</p>
+                </div>
+                <div class="size12px d-flex align-items-left">
+                    <p class="col-md-4 margin0">No Ref Kas Bon</p>
+                    <p class="margin0">:</p>
                     <p class="margin0 ms-2">FPK/NAG/</p>
-                </div>
-                <div class="size12px d-flex align-items-left">
-                    <p class="col-md-4 margin0">Tanggal Form</p>
-                    <p class="margin0">:</p>
-                    <p class="margin0 ms-2">
-                        {{ Carbon\Carbon::parse($pengajuan->tanggal_kedatangan_tamu)->translatedFormat('d F Y') }}
-                    </p>
-                </div>
-                <div class="size12px d-flex align-items-left">
-                    <p class="col-md-4 margin0">Tanggal Kebutuhan</p>
-                    <p class="margin0">:</p>
-                    <p class="margin0 ms-2">{{ Carbon\Carbon::parse($pengajuan->tanggal_kedatangan_tamu)->translatedFormat('d F Y') }}</p>
                 </div>
             </div>
             <div class="col-md-6">
@@ -177,22 +170,11 @@ function formatNama($name) {
                     <p class="margin0 ms-2">{{$department->department_name}}</p>
                 </div>
                 <div class="size12px d-flex align-items-left">
-                    <p class="col-md-4 margin0">Tipe Permintaan</p>
+                    <p class="col-md-4 margin0">Tanggal Realisasi</p>
                     <p class="margin0">:</p>
                     <p class="margin0 ms-2 d-flex align-items-center">
-                        <input type="checkbox"/>
-                        <span class="ms-2"></span>
-                        Fixed Amount
-                        <span class="ms-4"></span>
-                        <input type="checkbox"/>
-                        <span class="ms-2"></span>
-                        Advance
+
                     </p>
-                </div>
-                <div class="size12px d-flex align-items-left">
-                    <p class="col-md-4 margin0">No Jurnal</p>
-                    <p class="margin0">:</p>
-                    <p class="margin0 ms-2"></p>
                 </div>
             </div>
         </div>
@@ -216,15 +198,35 @@ function formatNama($name) {
                     </tr>
                 @endforeach
                 <tr>
-                    <th style="font-weight: bold; width:70%; text-align: left; margin: 0px; padding: 3px; background-color:#E7E6E6; border-bottom:none;"><strong>TOTAL</strong></th>
+                    <th style="font-weight: bold; width:70%; text-align: left; margin: 0px; padding: 3px; background-color:#E7E6E6; border-bottom:none;"><strong>TOTAL REALISASI</strong></th>
+                    <th style="font-weight: bold; width:30%; text-align: center; margin: 0px; padding: 3px; background-color:#E7E6E6; border-bottom:none; border-left: none;"><strong>{{formatHarga($total_jumlah)}}</strong></th>
+                </tr>
+                <tr>
+                    <th style="font-weight: bold; width:70%; text-align: left; margin: 0px; padding: 3px; background-color:#E7E6E6; border-bottom:none;"><strong>NILAI KAS BON (ADVANCE)</strong></th>
+                    <th style="font-weight: bold; width:30%; text-align: center; margin: 0px; padding: 3px; background-color:#E7E6E6; border-bottom:none; border-left: none;"><strong>{{formatHarga($total_jumlah)}}</strong></th>
+                </tr>
+                <tr>
+                    <th style="font-weight: bold; width:70%; text-align: left; margin: 0px; padding: 3px; background-color:#E7E6E6; border-bottom:none;"><strong>KELEBIHAN / (KEKURANGAN) DANA</strong></th>
                     <th style="font-weight: bold; width:30%; text-align: center; margin: 0px; padding: 3px; background-color:#E7E6E6; border-bottom:none; border-left: none;"><strong>{{formatHarga($total_jumlah)}}</strong></th>
                 </tr>
             </tbody>
         </table>
         <table class="table-bottom">
             <tr>
-                <th colspan="3" class="approval-header" style="border-left: none;">PERSETUJUAN PERMINTAAN</th>
-                <th colspan="3" class="payment-header" style="border-left: none; border-right: none;">PEMBAYARAN</th>
+                <th colspan="3" class="approval-header" style="border-left: none;">PERSETUJUAN REALISASI</th>
+                <th colspan="3" class="payment-header" style="border-left: none; border-right: none;">
+
+                    <p class="margin0 ms-2 d-flex align-items-center">
+                        <input type="checkbox"/>
+                        <span class="ms-2"></span>
+                        PEMBAYARAN DANA
+                        <span class="ms-5"></span>
+                        <span class="ms-4"></span>
+                        <input type="checkbox"/>
+                        <span class="ms-2"></span>
+                        PENGEMBALIAN DANA
+                    </p>
+                </th>
             </tr>
             <tr>
                 <th  style="border-left: none;">PEMOHON</th>
@@ -287,7 +289,7 @@ function formatNama($name) {
         // Opsi untuk meningkatkan kualitas PDF
         var opt = {
             margin: [15, 0, 15, 0],
-            filename: 'FORM PERMINTAAN KAS.pdf',
+            filename: 'FORM REALISASI KAS BON.pdf',
             image: { type: 'jpeg', quality: 1 },
             html2canvas: {
                 dpi: 192, // Resolusi DPI

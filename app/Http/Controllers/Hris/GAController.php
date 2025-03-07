@@ -79,7 +79,7 @@ class GAController extends AdminBaseController
         if($user!=0){
             $department_id=EmployeeAtribut::where('enroll_id',$user)->first()->department_id;
         }
-        if($user!=6083 && $user!=5321 && $user!=20 && $user!=4241 && $user!=0){
+        if($user!=6083 && $user!=5321 && $user!=20 && $user!=4241 && $user!=0 && $user!=7765){
             $data_input=DB::select("select '$user' user,a.id,a.enroll_id,b.employee_name,b.department_name,a.detail_alamat detail_address,a.instansi detail_alamat,concat(c.subdis_name,' - ',d.dis_name,' - ',e.city_name,' - ',f.prov_name) desa,g.instansi detail_alamat_tujuan,concat(h.subdis_name,' - ',i.dis_name,' - ',j.city_name,' - ',k.prov_name) desa_tujuan,g.tujuan_pemberangkatan,concat(DATE_FORMAT(a.tanggal_pemberangkatan, '%d %M %Y'),' - ',substring(a.jam_pemberangkatan,1,5)) tanggal_pemberangkatan,a.jam_pemberangkatan,a.status,a.alasan_status,a.created_by from (select*from permintaan_transportasi where enroll_id in (select enroll_id from employee_atribut where department_id='$department_id') or created_by in (select enroll_id from employee_atribut where department_id='$department_id')) a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join (select*from tujuan_transportasi where tujuan_id=0) g on a.id=g.permintaan_transportasi_id inner join subdistricts h on g.subdistrict=h.subdis_id inner join districts i on h.dis_id=i.dis_id inner join cities j on i.city_id=j.city_id inner join provinces k on j.prov_id=k.prov_id where DATE_FORMAT(a.created_at, '%Y-%m-%d')>='$tanggal_awal' and DATE_FORMAT(a.created_at, '%Y-%m-%d')<='$tanggal_akhir' ".$inStatus." order by a.created_at desc");
         }else{
             $data_input=DB::select("select '$user' user,a.id,a.enroll_id,b.employee_name,b.department_name,a.detail_alamat detail_address,a.instansi detail_alamat,concat(c.subdis_name,' - ',d.dis_name,' - ',e.city_name,' - ',f.prov_name) desa,g.instansi detail_alamat_tujuan,concat(h.subdis_name,' - ',i.dis_name,' - ',j.city_name,' - ',k.prov_name) desa_tujuan,g.tujuan_pemberangkatan,concat(DATE_FORMAT(a.tanggal_pemberangkatan, '%d %M %Y'),' - ',substring(a.jam_pemberangkatan,1,5)) tanggal_pemberangkatan,a.jam_pemberangkatan,a.status,a.alasan_status,a.created_by from permintaan_transportasi a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join (select*from tujuan_transportasi where tujuan_id=0) g on a.id=g.permintaan_transportasi_id inner join subdistricts h on g.subdistrict=h.subdis_id inner join districts i on h.dis_id=i.dis_id inner join cities j on i.city_id=j.city_id inner join provinces k on j.prov_id=k.prov_id where DATE_FORMAT(a.created_at, '%Y-%m-%d')>='$tanggal_awal' and DATE_FORMAT(a.created_at, '%Y-%m-%d')<='$tanggal_akhir' ".$inStatus." order by a.created_at desc");
@@ -477,7 +477,7 @@ class GAController extends AdminBaseController
             $driver=request()->driver;
             $inDriver=" and driver = $driver";
         }
-        
+
         $data_input=DB::select("SELECT b.enroll_id,g.nik,g.employee_name,g.department_name,b.instansi,b.detail_alamat,concat(c.subdis_name,' - ',d.dis_name,' - ',e.city_name,' - ',f.prov_name) detail_alamat_asal,b.tanggal_pemberangkatan,b.jam_pemberangkatan,a.instansi instansi_tujuan,a.detail_alamat detail_alamat2,concat(h.subdis_name,' - ',i.dis_name,' - ',j.city_name,' - ',k.prov_name) detail_alamat_tujuan,a.tanggal_kedatangan,a.jam_kedatangan,a.jarak_tempuh,a.tujuan_pemberangkatan,a.jenis_barang,a.quantity,a.satuan,a.nama_penerima,a.keterangan_barang,a.nama_tamu,a.nomor_hp_tamu,a.karyawan_dinas_luar,a.status,a.driver,l.employee_name nama_driver,l.nik nik_driver,a.vehicle,concat(m.merk,' ',m.tipe,' (',m.plat_no,')') vehicle_merk FROM (select*from tujuan_transportasi where permintaan_transportasi_id in (select id from permintaan_transportasi $inTanggal) and driver is not null $inDriver)a inner join permintaan_transportasi b on a.permintaan_transportasi_id=b.id inner join subdistricts c on b.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id inner join employee_atribut g on b.enroll_id=g.enroll_id inner join subdistricts h on a.subdistrict=h.subdis_id inner join districts i on h.dis_id=i.dis_id inner join cities j on i.city_id=j.city_id inner join provinces k on j.prov_id=k.prov_id left join employee_atribut l on a.driver=l.enroll_id left join ga_master_kendaraan m on a.vehicle=m.id ORDER BY b.tanggal_pemberangkatan desc,a.tujuan_id");
         $data_input2=[];
         foreach($data_input as $key=>$value){
@@ -1051,7 +1051,7 @@ class GAController extends AdminBaseController
             'sub_districts_2'=>'harus dipilih',
         ]);
     }
-    
+
     private function _validation7(){
         $validation=request()->validate([
             'provinsi'=>'required',

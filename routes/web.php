@@ -191,6 +191,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('/entertaint_tamu/store', ['as' => 'entertaint_tamu.store','uses' => 'Entertaint\EntertaintController@store']);
     Route::get('/entertaint_tamu/show', ['as' => 'entertaint_tamu.show','uses' => 'Entertaint\EntertaintController@getData']);
     Route::get('/entertaint_tamu/export_pengajuan_permintaan_kas', ['as' => 'entertaint_tamu.export_pengajuan_permintaan_kas','uses' => 'Entertaint\EntertaintController@export_pengajuan_permintaan_kas']);
+    Route::get('/entertaint_tamu/export_realisasi_permintaan_kas', ['as' => 'entertaint_tamu.export_realisasi_permintaan_kas','uses' => 'Entertaint\EntertaintController@export_realisasi_permintaan_kas']);
 
     Route::get('hrd/export_pdf_sk_bni',['as'=>'hris.hrd.export_pdf_sk_bni','uses'=>'HRDController@export_pdf_sk_bni']);
     Route::post('hrd/export_pdf_print_sk',['as'=>'hris.hrd.export_pdf_print_sk','uses'=>'HRDController@export_pdf_print_sk']);
