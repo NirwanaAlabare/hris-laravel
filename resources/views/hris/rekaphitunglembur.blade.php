@@ -177,7 +177,7 @@
                     <div class="text-white"></div>
                 </div>
             </div>
-        </div>        
+        </div>
     </div>
     <!-- row end -->
 </div>
@@ -493,15 +493,15 @@
                     {
                         "targets": [1,11,12,13,15,16,17,18,19,20,21,22,23,24],
                         "className": "w-5 text-center",
-                    },                    
+                    },
                     {
                         "targets": [2,3,4,5,6,7,8,10],
                         "className": "text-nowrap",
-                    },                    
+                    },
                     {
                         "targets": [14,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37],
                         "className": "w-10 text-right",
-                    },                    
+                    },
                 ],
                 order: [
                     [3, 'asc'],[4, 'asc']
@@ -523,29 +523,29 @@
                 var row = table1.row(tr);
 
                 var data = row.data();
-        
+
                 $("#datatable-ajax-crud tbody tr").removeClass('bg-cyan');
                 $(this).addClass('bg-cyan');
 
              });
-               
+
 
         }
         $('body').on('click', '#btn-caridata', function (event) {
-            cari_rekap_lembur()        
+            cari_rekap_lembur()
         });
 
     </script>
 
      <!-- Andri -->
 
-     <script>
+     {{-- <script>
         // $('.fc-datepickeraaaa').datepicker({
         // format: 'Y',
         // showButtonPanel: true
         // })
         // const datePicker = document.getElementById('report_date');
-            
+
         jQuery(document).ready(function($) {
 
         $('#report_date').datepicker({
@@ -557,7 +557,7 @@
 
             BtnProsesLembur.addEventListener('click', function(event) {
                 let tmp = PriodeProses[0].value;
-                
+
                 if (tmp == ''||tmp==null) {
                     swal({
                         title: "Harap Pilih Periode",
@@ -580,43 +580,43 @@
                             $('#BtnProsesLembur').addClass("btn-loading");
                             $("#BtnProsesLembur").html('Please wait...');
                             $("#BtnProsesLembur").attr("disabled", true);
+                            console.log('submited',submited);
+                            // $.ajax({
+                            //     data: $('#form_proses_Lembur').serialize(),
+                            //     url: '{{ route("hris.proses.lembur.rekap") }}',
+                            //     type: "post",
+                            //     success: function (data) {
+                            //         console.log('data',data);
+                            //         notif({
+                            //             msg: "<b>Info:</b> Data Berhasil di Proses.",
+                            //             type: "info"
+                            //         });
 
-                            $.ajax({
-                                data: $('#form_proses_Lembur').serialize(),
-                                url: '{{ route("hris.proses.lembur.rekap") }}',           
-                                type: "post",
-                                success: function (data) {
-                                    console.log('data',data);
-                                    notif({
-                                        msg: "<b>Info:</b> Data Berhasil di Proses.",
-                                        type: "info"
-                                    });
+                            //         $('#BtnProsesLembur').removeClass("btn-loading");
+                            //         $("#BtnProsesLembur").html('<span><i class="fa fa-download"></i></span> PROSES Lembur');
+                            //         $("#BtnProsesLembur").attr("disabled", false);
 
-                                    $('#BtnProsesLembur').removeClass("btn-loading");
-                                    $("#BtnProsesLembur").html('<span><i class="fa fa-download"></i></span> PROSES Lembur');
-                                    $("#BtnProsesLembur").attr("disabled", false);
-                                   
-                                },
-                                error: function (xhr, status, error) {
-                                    console.log('error',error);
-                                    notif({
-                                        msg: "<b>Error:</b> Oops data gagal di Proses.",
-                                        type: "error"
-                                    });
+                            //     },
+                            //     error: function (xhr, status, error) {
+                            //         console.log('error',error);
+                            //         notif({
+                            //             msg: "<b>Error:</b> Oops data gagal di Proses.",
+                            //             type: "error"
+                            //         });
 
-                                    $('#BtnProsesLembur').removeClass("btn-loading");
-                                    $("#BtnProsesLembur").attr("disabled", false);
-                                    $("#BtnProsesLembur").html('<span><i class="fa fa-download"></i></span> PROSES Lembur');
-                                }
-                            }); 
+                            //         $('#BtnProsesLembur').removeClass("btn-loading");
+                            //         $("#BtnProsesLembur").attr("disabled", false);
+                            //         $("#BtnProsesLembur").html('<span><i class="fa fa-download"></i></span> PROSES Lembur');
+                            //     }
+                            // });
 
                             cari_rekap_lembur()
                         }
-                    });    
+                    });
                 }
             });
         });
-    </script>
+    </script> --}}
 
 
 @endsection
