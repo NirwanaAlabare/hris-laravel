@@ -33,7 +33,7 @@
         ?>
         <tr>
             <td style="border:1px solid black">{{ $no }}.</td>
-            <td style="border:1px solid black">{{ \Carbon\Carbon::parse($value->created_at)->format('Y-m-d') }}</td>
+            <td style="border:1px solid black">{{ \Carbon\Carbon::parse($value->tanggal_pengajuan)->format('d-m-Y') }}</td>
             <td style="border:1px solid black">{{ $value->nomor_voucher }}</td>
             <td style="border:1px solid black">{{ $value->enroll_id }}</td>
             <td style="border:1px solid black">{{ $value->employee_name }}</td>
