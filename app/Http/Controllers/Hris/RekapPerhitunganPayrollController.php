@@ -1871,9 +1871,17 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             if(count($value->koreksi_upah->where('tanggal_koreksi',$value->tanggal_berjalan)->where('jenis_koreksi','!=',2))>0){
                 $koreksi_upah=$value->koreksi_upah->where('tanggal_koreksi',$value->tanggal_berjalan)->where('jenis_koreksi','!=',2)->sum('jumlah_rp_potongan');
             }
-            if(count($value->koreksi_potongan->where('tanggal_koreksi',$value->tanggal_berjalan))>0){
-                $koreksi_potongan=$value->koreksi_potongan->where('tanggal_koreksi',$value->tanggal_berjalan)->sum('jumlah_rp_potongan');
+            // if(count($value->koreksi_potongan->where('tanggal_koreksi',$value->tanggal_berjalan))>0){
+            //     $koreksi_potongan=$value->koreksi_potongan->where('tanggal_koreksi',$value->tanggal_berjalan)->sum('jumlah_rp_potongan');
+            // }
+
+            if ($value->koreksi_potongan->where('tanggal_koreksi', $value->tanggal_berjalan)->where('jenis_potongan', '!=', 3)->count() > 0) {
+                $koreksi_potongan = $value->koreksi_potongan
+                    ->where('tanggal_koreksi', $value->tanggal_berjalan)
+                    ->where('jenis_potongan', '!=', 3)
+                    ->sum('jumlah_rp_potongan');
             }
+
             $jumlah_hari_libur_security = MasterDataAbsenKehadiran::where('enroll_id', $enroll_id_karyawan)
                     ->whereBetween('tanggal_berjalan', [$tanggal_awal, $tanggal_akhir])
                     ->whereNull('mulai_jam_kerja')
