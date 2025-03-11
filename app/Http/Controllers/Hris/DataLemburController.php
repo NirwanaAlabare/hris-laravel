@@ -1129,7 +1129,7 @@ class DataLemburController extends AdminBaseController
             if(Auth::guard('admin')->user()->role_user!='payroll'){
                 if(Auth::guard('admin')->user()->email=='alex.herdian@ptnag.com'){
                     $data = [
-                        $lembur->tanggal_berjalan,
+                        Date::stringToExcel($lembur->tanggal_berjalan),
                         $lembur->nama_hari,
                         $lembur->nomor_form_lembur,
                         $lembur->nik,
@@ -2781,5 +2781,15 @@ class DataLemburController extends AdminBaseController
         $last_nomor =substr($nomor_form_lembur,12);
         $ldate = date('Ym');
         return 'SPL/HR/'.substr($ldate,2).'/'.sprintf("%04d", (int)$last_nomor+1);
+    }
+
+    public function verifikasi_insentif_lembur()
+    {
+        $this->department = $this->ajax_getselectdepart();
+        $this->selectemployee = $this->ajax_getallemployeeatribut();
+        // $this->allnfl = $this->ajax_getAllNomorFormLembur();
+        $this->periode_lembur = $this->ajax_gettanggallembur();
+
+        return View::make('hris/verifikasi_insentif_lembur', $this->data);
     }
 }
