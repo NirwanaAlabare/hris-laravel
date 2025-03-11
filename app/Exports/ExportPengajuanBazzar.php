@@ -26,15 +26,18 @@ class ExportPengajuanBazzar implements FromView
     {
         if($this->sub_dept_id){
             $data = VoucherBazzar::leftJoin('pengajuan_bazzar', 'pengajuan_bazzar.enroll_id', '=', 'voucher_bazzar.enroll_id')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'voucher_bazzar.enroll_id')->where('pengajuan_bazzar.tanggal_pengajuan', $this->tanggal)->where('pengajuan_bazzar.sub_dept_id', $this->sub_dept_id)->where('pengajuan_bazzar.status', $this->status)
+            ->groupBy('voucher_bazzar.nomor_voucher')
             ->orderBy('voucher_bazzar.enroll_id', 'ASC')
             ->get();
 
         } else if($this->id){
             $data = VoucherBazzar::leftJoin('pengajuan_bazzar', 'pengajuan_bazzar.enroll_id', '=', 'voucher_bazzar.enroll_id')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'voucher_bazzar.enroll_id')->where('pengajuan_bazzar.tanggal_pengajuan', $this->tanggal)->where('pengajuan_bazzar.status', $this->status)->where('pengajuan_bazzar.id', $this->id)
+            ->groupBy('voucher_bazzar.nomor_voucher')
             ->orderBy('voucher_bazzar.enroll_id', 'ASC')
             ->get();
         }else{
             $data = VoucherBazzar::leftJoin('pengajuan_bazzar', 'pengajuan_bazzar.enroll_id', '=', 'voucher_bazzar.enroll_id')->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'voucher_bazzar.enroll_id')->where('pengajuan_bazzar.status', 'approve')
+            ->groupBy('voucher_bazzar.nomor_voucher')
             ->orderBy('voucher_bazzar.enroll_id', 'ASC')
             ->get();
         }
