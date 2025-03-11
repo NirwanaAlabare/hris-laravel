@@ -336,7 +336,7 @@ class BazzarController extends AdminBaseController
                 $exists = DataKoreksiPotongan::where('enroll_id', $pengajuan->enroll_id)
                 ->where('periode_tanggal_koreksi', $periode_tanggal_koreksi)
                 ->where('jenis_potongan', 3)
-                ->exists();
+                ->first();
 
                 $now = Carbon::now();
                 $kode_koreksi_potongan = $now->format('YmdHi') . $pengajuan->nik;
@@ -344,7 +344,12 @@ class BazzarController extends AdminBaseController
                 $jumlah_rp_potongan = $pengajuan->jumlah;
                 $jenis_potongan = 3;
                 $keterangan = 'Pengajuan Bazzar';
-                if(!$exists) {
+
+                if ($exists) {
+                    $exists->update([
+                        'jumlah_rp_potongan' => $exists->jumlah_rp_potongan + $jumlah_rp_potongan
+                    ]);
+                } else {
                     DataKoreksiPotongan::create([
                         'uuid' => Str::uuid(),
                         'kode_koreksi_potongan' => $kode_koreksi_potongan,
