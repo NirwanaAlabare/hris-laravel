@@ -875,19 +875,53 @@ class ProsesPayrollController extends AdminBaseController
         $email = $loggedAdmin->email;
         $selectedEnrollId=$request->selectEmployeeID;
         $periode_umk=$request->periode_umk;
-        if(request()->periode_payrols){
-            $periode_payroll=request()->periode_payrols;
-        }else{
-            $periode_payroll = '2025-01';
+        // if(request()->periode_payrols){
+        //     $periode_payroll=request()->periode_payrols;
+        // }else{
+        //     $periode_payroll = '2025-01';
+        // }
+
+        // $bulan_sekarang1 = strtotime(date($periode_payroll));
+        // $tanggal_sekarang=date('Y-m-d');
+        // $bulan_sebelum = strtotime("-1 month", $bulan_sekarang1);
+        // $bulan_sekarang=date('Y-m-', $bulan_sekarang1);
+        // $bulan_sebelum=date('Y-m-', $bulan_sebelum);
+        // $tanggal_awal=$bulan_sebelum.'26';
+        // $tanggal_akhir=$bulan_sekarang.'25';
+
+        $skema_payroll = $request->skema_payroll; // Ambil skema payroll dari request
+        $periode_payroll = $request->periode_payrols ?: '2025-01';
+        if ($skema_payroll === "MONTHLY_PAYROLL") {
+            // Menggunakan periode_payrols
+
+            $bulan_sekarang1 = strtotime($periode_payroll);
+            $tanggal_sekarang = date('Y-m-d');
+            $bulan_sebelum = strtotime("-1 month", $bulan_sekarang1);
+
+            $bulan_sekarang = date('Y-m-', $bulan_sekarang1);
+            $bulan_sebelum = date('Y-m-', $bulan_sebelum);
+
+            $tanggal_awal = $bulan_sebelum . '26';
+            $tanggal_akhir = $bulan_sekarang . '25';
+
+        } else {
+            // Menggunakan daterange2
+            if ($request->has('daterange2')) {
+                $daterange = explode(" s/d ", $request->daterange2);
+                $tanggal_awal = date('Y-m-d', strtotime($daterange[0]));
+                $tanggal_akhir = date('Y-m-d', strtotime($daterange[1]));
+
+                $bulan_sekarang1 = strtotime($tanggal_akhir);
+                $tanggal_sekarang = date('Y-m-d');
+                $bulan_sebelum = strtotime("-1 month", $bulan_sekarang1);
+
+                $bulan_sekarang = date('Y-m-', $bulan_sekarang1);
+                $bulan_sebelum = date('Y-m-', $bulan_sebelum);
+            } else {
+                return response()->json(["error" => "daterange2 tidak ditemukan"], 400);
+            }
         }
 
-        $bulan_sekarang1 = strtotime(date($periode_payroll));
-        $tanggal_sekarang=date('Y-m-d');
-        $bulan_sebelum = strtotime("-1 month", $bulan_sekarang1);
-        $bulan_sekarang=date('Y-m-', $bulan_sekarang1);
-        $bulan_sebelum=date('Y-m-', $bulan_sebelum);
-        $tanggal_awal=$bulan_sebelum.'26';
-        $tanggal_akhir=$bulan_sekarang.'25';
         $tahun=date('Y', $bulan_sekarang1);
         $bulan=date('m', $bulan_sekarang1);
 

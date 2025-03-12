@@ -102,6 +102,18 @@
                         </div> --}}
                         <div class="row pt-2">
                             <div class="col-3 pt-1">
+                                <label class="form-label text-primary">SKEMA PAYROLL</label>
+                            </div>
+                            <div class="col-8">
+                                <select id="skema_payroll" name="skema_payroll" class="form-control">
+                                    <option value='0'>-- PILIH SKEMA PAYROLL --</option>
+                                    <option value='MONTHLY_PAYROLL'>MONTHLY PAYROLL (26 - 25)</option>
+                                    <option value='EARLY_CLOSING'>EARLY CLOSING</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row pt-2" id="periode_container">
+                            <div class="col-3 pt-1">
                                 <label class="form-label text-primary">PERIODE PAYROLL</label>
                             </div>
                             <div class="col-3">
@@ -113,6 +125,15 @@
                                     </div>
                                     <input id="" min="{{$minMonth }}" name="periode_payrols" id="periode" type="month" class="form-control PriodeProses" required>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row pt-2" id="periode_container_custom">
+                            <div class="col-3 pt-1">
+                                <label class="form-label text-primary">PERIODE PAYROLL</label>
+                            </div>
+                            <div class="col-auto">
+                                <input type="hidden" id="daterange2" name="daterange2">
+                                <a class="nav-link card-title py-2 pl-3" style="border: 1px solid #d8d4dc" id="daterange-btn2" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal closing"></a>
                             </div>
                         </div>
                         <div class="row pt-4">
@@ -578,6 +599,32 @@
     <!-- Sweet alert js-->
     <script src="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.js')}}"></script>
     <script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const skemaPayroll = document.getElementById("skema_payroll");
+            const periodeContainer = document.getElementById("periode_container");
+            const periodeContainerCustom = document.getElementById("periode_container_custom");
+
+            // Sembunyikan semua input saat halaman pertama kali dimuat
+            periodeContainer.style.display = "none";
+            periodeContainerCustom.style.display = "none";
+
+            skemaPayroll.addEventListener("change", function () {
+                if (this.value === "MONTHLY_PAYROLL") {
+                    periodeContainer.style.display = "flex"; // Tampilkan Monthly Payroll
+                    periodeContainerCustom.style.display = "none"; // Sembunyikan Custom Payroll
+                } else if (this.value === "EARLY_CLOSING") {
+                    periodeContainer.style.display = "none"; // Sembunyikan Monthly Payroll
+                    periodeContainerCustom.style.display = "flex"; // Tampilkan Custom Payroll
+                } else {
+                    // Jika tidak ada yang dipilih, sembunyikan keduanya
+                    periodeContainer.style.display = "none";
+                    periodeContainerCustom.style.display = "none";
+                }
+            });
+        });
+    </script>
+
 
     <script type="text/javascript">
 
@@ -631,6 +678,22 @@
             $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>');
             var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
             $('#daterange1').val(daterange1);
+        });
+        $('#daterange-btn2').daterangepicker({
+            ranges: {
+                'Hari ini': [moment(), moment()],
+                'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                '7 Hari Kemarin': [moment().subtract(6, 'days'), moment()],
+                '30 Hari Kemarin': [moment().subtract(29, 'days'), moment()],
+                'Bulan Sekarang': [moment().startOf('month'), moment().endOf('month')],
+                'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            startDate: moment().subtract(29, 'days'),
+            endDate: moment()
+        }, function(start, end) {
+            $('#daterange-btn2').html('<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>');
+            var daterange2 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
+            $('#daterange2').val(daterange2);
         });
         $('body').on('click', '#BtnProsesPayroll4', function (event) {
             $('#BtnProsesPayroll4').addClass("btn-loading");
@@ -894,6 +957,21 @@
             get_last_update();
             get_last_update_labor();
         });
+
+        $(document).ready(function() {
+            let periode_payroll = $('#periode_payroll').val();
+            let years=periode_payroll.substring(0,4);
+            let month=parseInt(periode_payroll.substring(5,7));
+            let months=['DECEMBER','JANUARI','FEBRUARI','MARET','APRIL','MEI','JUNI','JULI','AGUSTUS','SEPTEMBER','OKTOBER','NOVEMBER','DECEMBER'];
+            $('#card_title').text('FILTER DATA PAYROLL PERIODE 26 '+months[month-1]+' S/D 25 '+months[month]+' '+years);
+            var start = moment();
+            var end = moment();
+            var htmlDateRange = '<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>'
+            $('#daterange-btn2').html(htmlDateRange);
+            var daterange2 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
+            $('#daterange2').val(daterange2);
+        });
+
         function get_last_update(){
             $('#last_update').empty();
             $.ajax({
@@ -907,6 +985,7 @@
                 }
             });
         }
+
         function get_last_update_labor(){
             $('#last_update_labor').empty();
             $('#last_periode_labor').empty();
@@ -932,6 +1011,7 @@
             let months=['DECEMBER','JANUARI','FEBRUARI','MARET','APRIL','MEI','JUNI','JULI','AGUSTUS','SEPTEMBER','OKTOBER','NOVEMBER','DECEMBER'];
             $('#card_title').text('FILTER DATA PAYROLL PERIODE 26 '+months[month-1]+' S/D 25 '+months[month]+' '+years);
         });
+
         $('body').on('change', '#department_id', function (event) {
             var department_id  =document.getElementsByName("department_id")[0].value;
             if(department_id){
@@ -957,16 +1037,20 @@
                 $('#card_department').text('');
             }
         });
+
         $('body').on('change', '#sub_dept_id', function (event) {
             rekapperhitunganpayroll();
         });
+
         $('body').on('change', '#status_staff', function (event) {
             rekapperhitunganpayroll();
             rekapperhitunganpayrolldepartment();
         });
+
         $('body').on('change', '#periode_umks', function (event) {
             rekapperhitunganpayroll();
         });
+
         function rekapperhitunganpayrolldepartment(){
             $('#payroll_department').empty();
             $('#loading_payroll_department').addClass("spinner-border");
@@ -1026,9 +1110,9 @@
     <script>
 
         $('.fc-datepicker').datepicker({
-      format: 'Y-MM',
-      showButtonPanel: true
-    })
+            format: 'Y-MM',
+            showButtonPanel: true
+        })
 
 
     function func(){
@@ -1044,6 +1128,7 @@
         var status_staff=document.getElementById("status_staff").value;
         window.location.href = "export_excel_summary_department?param1="+periode_payroll+"&param2="+status_staff;
     }
+
     $('#export_excel_daily_labor').click(function(e){
         var enroll_id=$('#selectEmployeeID2').val();
         var daterange = $('#daterange1').val();
@@ -1158,60 +1243,151 @@
             const BtnRekapPayroll = document.getElementsByClassName('BtnRekapPayroll')[0];
              const PriodeProses = document.getElementsByClassName("PriodeProses");
             const PriodeUmk = document.getElementsByClassName("PriodeUmk");
-            BtnProsesPayroll.addEventListener('click', function(event) {
+            // BtnProsesPayroll.addEventListener('click', function(event) {
+            //     let tmp = PriodeProses[0].value;
+            //     const skemaPayroll = document.getElementById("skema_payroll");
+            //     const date_range_2 = $('#daterange2').val();
+            //     if(skemaPayroll.value == '0'){
+            //         swal({
+            //             title: "Harap pilih skema payroll",
+            //             text: "Skema Payroll tidak boleh kosong",
+            //             icon: "warning",
+            //             button : false,
+            //         });
+            //         return;
+            //     }
+            //     if(tmp == ''){
+            //         swal({
+            //             title: "Harap pilih periode payroll",
+            //             text: "Data Periode Payroll tidak boleh kosong",
+            //             icon: "warning",
+            //             button : false,
+            //         });
+            //         return;
+            //     }
+            //     event.preventDefault();
+            //     const submited =document.getElementsByTagName('form')[0];
+            //     swal({
+            //         title: 'Apakah Anda Yakin ?',
+            //         text: 'Proses payroll',
+            //         type: "warning",
+            //         showCancelButton: true,
+            //         confirmButtonText: 'YES',
+            //         cancelButtonText: 'NO'
+            //     },function(isConfirm){
+            //         console.log('isConfirm',isConfirm);
+            //         if(isConfirm) {
+            //             $('#BtnProsesPayroll').addClass("btn-loading");
+            //             $("#BtnProsesPayroll").html('Please wait...');
+            //             $("#BtnProsesPayroll").attr("disabled", true);
+
+            //             $.ajax({
+            //                 data: $('#form_proses_payroll').serialize(),
+            //                 url: '{{ route("hris.proses.payroll.rekap") }}',
+            //                 type: "post",
+            //                 // dataType: 'json',
+            //                 success: function (data) {
+            //                     console.log("data",data);
+            //                     swal("", "Proses payroll berhasil!", "success");
+
+            //                     $('#BtnProsesPayroll').removeClass("btn-loading");
+            //                     $("#BtnProsesPayroll").html('<span><i class="fa fa-download"></i></span> PROSES PAYROLL');
+            //                     $("#BtnProsesPayroll").attr("disabled", false);
+
+            //                 },
+            //                 error: function (xhr, status, error) {
+            //                     console.log(error);
+            //                     swal("", "Proses payroll gagal!", "error");
+
+            //                     $('#BtnProsesPayroll').removeClass("btn-loading");
+            //                     $("#BtnProsesPayroll").attr("disabled", false);
+            //                     $("#BtnProsesPayroll").html('<span><i class="fa fa-download"></i></span> PROSES PAYROLL');
+            //                 }
+            //             });
+            //         }
+            //     });
+            // });
+            BtnProsesPayroll.addEventListener("click", function (event) {
+                event.preventDefault();
+                const skemaPayroll = document.getElementById("skema_payroll");
+                const selectedSkema = skemaPayroll.value;
                 let tmp = PriodeProses[0].value;
-                console.log("tmp",tmp);
-                console.log("PriodeUmk",tmp);
-                if(tmp == ''){
-                    swal({
-                        title: "Harap pilih periode payroll",
-                        text: "Data Periode Payroll tidak boleh kosong",
-                        icon: "warning",
-                        button : false,
-                    });
-                }else{
-                        event.preventDefault();
-                        const submited =document.getElementsByTagName('form')[0];
+                const date_range_2 = document.getElementById("daterange2").value;
+                let payrollPeriod = "";
+
+                // Validasi berdasarkan skema payroll yang dipilih
+                if (selectedSkema === "MONTHLY_PAYROLL") {
+                    payrollPeriod = tmp;
+                    if (!tmp) {
                         swal({
-                            title: 'Apakah Anda Yakin ?',
-                            text: 'Proses payroll',
-                            type: "warning",
-                            showCancelButton: true,
-                            confirmButtonText: 'YES',
-                            cancelButtonText: 'NO'
-                        },function(isConfirm){
-                            if(isConfirm) {
-                                $('#BtnProsesPayroll').addClass("btn-loading");
-                                $("#BtnProsesPayroll").html('Please wait...');
-                                $("#BtnProsesPayroll").attr("disabled", true);
-
-                                $.ajax({
-                                    data: $('#form_proses_payroll').serialize(),
-                                    url: '{{ route("hris.proses.payroll.rekap") }}',
-                                    type: "post",
-                                    // dataType: 'json',
-                                    success: function (data) {
-                                        console.log("data",data);
-                                        swal("", "Proses payroll berhasil!", "success");
-
-                                        $('#BtnProsesPayroll').removeClass("btn-loading");
-                                        $("#BtnProsesPayroll").html('<span><i class="fa fa-download"></i></span> PROSES PAYROLL');
-                                        $("#BtnProsesPayroll").attr("disabled", false);
-
-                                    },
-                                    error: function (xhr, status, error) {
-                                        console.log(error);
-                                        swal("", "Proses payroll gagal!", "error");
-
-                                        $('#BtnProsesPayroll').removeClass("btn-loading");
-                                        $("#BtnProsesPayroll").attr("disabled", false);
-                                        $("#BtnProsesPayroll").html('<span><i class="fa fa-download"></i></span> PROSES PAYROLL');
-                                    }
-                                });
-                            }
+                            title: "Harap pilih periode payroll",
+                            text: "Data Periode Payroll tidak boleh kosong",
+                            icon: "warning",
+                            button: false,
                         });
+                        return;
                     }
-                });
+                } else if (selectedSkema === "EARLY_CLOSING") {
+                    payrollPeriod = date_range_2;
+                    if (!date_range_2) {
+                        swal({
+                            title: "Harap pilih periode payroll",
+                            text: "Data Periode Payroll tidak boleh kosong",
+                            icon: "warning",
+                            button: false,
+                        });
+                        return;
+                    }
+                } else {
+                    swal({
+                        title: "Harap pilih skema payroll",
+                        text: "Skema Payroll tidak boleh kosong",
+                        icon: "warning",
+                        button: false,
+                    });
+                    return;
+                }
+                // Konfirmasi sebelum mengirim request
+                        swal({
+                title: 'Apakah Anda Yakin ?',
+                text: 'Proses payroll',
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonText: 'YES',
+                cancelButtonText: 'NO'
+            },function(isConfirm){
+                console.log('isConfirm',isConfirm);
+                if(isConfirm) {
+                    $('#BtnProsesPayroll').addClass("btn-loading");
+                    $("#BtnProsesPayroll").html('Please wait...');
+                    $("#BtnProsesPayroll").attr("disabled", true);
+
+                    $.ajax({
+                        data: $('#form_proses_payroll').serialize(),
+                        url: '{{ route("hris.proses.payroll.rekap") }}',
+                        type: "post",
+                        // dataType: 'json',
+                        success: function (data) {
+                            console.log("data",data);
+                            swal("", "Proses payroll berhasil!", "success");
+
+                            $('#BtnProsesPayroll').removeClass("btn-loading");
+                            $("#BtnProsesPayroll").html('<span><i class="fa fa-download"></i></span> PROSES PAYROLL');
+                            $("#BtnProsesPayroll").attr("disabled", false);
+
+                        },
+                        error: function (xhr, status, error) {
+                            console.log(error);
+                            swal("", "Proses payroll gagal!", "error");
+
+                            $('#BtnProsesPayroll').removeClass("btn-loading");
+                            $("#BtnProsesPayroll").attr("disabled", false);
+                            $("#BtnProsesPayroll").html('<span><i class="fa fa-download"></i></span> PROSES PAYROLL');
+                        }
+                    });
+                }
+            });
+            });
 
                 // if(tmp == '' && tmp2 == ''){
                 //     swal({
@@ -1272,7 +1448,7 @@
                 //         });
                 //     }
                 // });
-            });
+    });
 
     jQuery(document).ready(function($) {
         const BtnProsesPayroll2 = document.getElementsByClassName('BtnProsesPayroll2')[0];
