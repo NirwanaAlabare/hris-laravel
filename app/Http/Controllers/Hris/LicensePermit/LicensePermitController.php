@@ -69,6 +69,7 @@ class LicensePermitController extends AdminBaseController
             'tanggal_berlaku'     => 'required|date',
             'tanggal_kadaluarsa'  => 'required|date|after:tanggal_berlaku',
             'penanggung_jawab'    => 'required|string',
+            'penanggung_jawab_email'    => 'required|string',
             'revisi_ke'           => 'required|integer|min:1',
             'keterangan'          => 'nullable|string',
             'dokumen_file.*'      => 'required|file|mimes:pdf,doc,docx,xls,xlsx,jpg,png|max:2048', // Maks 2MB per file
@@ -84,7 +85,7 @@ class LicensePermitController extends AdminBaseController
             'tanggal_berlaku'     => $request->tanggal_berlaku,
             'tanggal_kadaluarsa'  => $request->tanggal_kadaluarsa,
             'penanggung_jawab'    => $request->penanggung_jawab,
-            'penanggung_jawab_email' => $request->penanggung_jawab,
+            'penanggung_jawab_email' => $request->penanggung_jawab_email,
             'revisi_ke'           => $request->revisi_ke,
             'keterangan'          => $request->keterangan,
             'dokumen_url'         => null,

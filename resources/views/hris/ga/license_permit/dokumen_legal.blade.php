@@ -137,7 +137,7 @@ h1 {
         </ol>
         <div class="ml-auto">
             <div class="input-group">
-                <a href="#" id="btn-refresh-data" class="btn btn-icon btn-secondary p-0 m-0" data-toggle="tooltip"
+                <a href="#" id="btn-refresh-data" onclick="undo()" class="btn btn-icon btn-secondary p-0 m-0" data-toggle="tooltip"
                     title="" data-placement="bottom" data-original-title="Refresh Halaman">
                     <span>
                         <i class="fa fa-refresh"></i>
@@ -203,18 +203,7 @@ h1 {
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="form-label">TANGGAL BERLAKU : </label>
-                                    <input type="date" class="form-control filter-control" id="tanggal_berlaku_filter" name="tanggal_berlaku_filter">
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="form-label">TANGGAL KADALUARSA : </label>
-                                    <input type="date" class="form-control filter-control" id="tanggal_berlaku_filter" name="tanggal_berlaku_filter">
-                                </div>
-                            </div>
+
                         </div>
                         </div>
                         <div class="m-0 p-0">
@@ -295,7 +284,9 @@ h1 {
                                     <div class="form-group">
                                         <label class="form-label">TGL BERLAKU : </label>
                                         <div class="input-group">
-                                            <input  class="form-control create-control" id="tanggal_berlaku" name="tanggal_berlaku" type="date">
+                                            {{-- <input  class="form-control create-control" id="tanggal_berlaku" name="tanggal_berlaku" type="date"> --}}
+                                            <input type="text" id="tanggal_berlaku" name="tanggal_berlaku" class="form-control create-control datepicker">
+
                                         </div>
                                     </div>
                                 </div>
@@ -303,21 +294,30 @@ h1 {
                                     <div class="form-group">
                                         <label class="form-label">TGL KADALUARSA : </label>
                                         <div class="input-group">
-                                            <input  class="form-control create-control" id="tanggal_kadaluarsa" name="tanggal_kadaluarsa" type="date">
+                                            <input  class="form-control create-control datepicker" id="tanggal_kadaluarsa" name="tanggal_kadaluarsa" type="text">
                                         </div>
                                         <small class="error-message text-danger"></small>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-5">
                                     <div class="form-group">
-                                        <label class="form-label">PENANGGUNG JAWAB & EMAIL : </label>
+                                        <label class="form-label">PENANGGUNG JAWAB : </label>
                                         <div class="input-group">
                                             <input  class="form-control create-control" id="penanggung_jawab" name="penanggung_jawab" type="text">
                                         </div>
                                         <small class="error-message text-danger"></small>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label class="form-label">PENANGGUNG JAWAB & EMAIL : </label>
+                                        <div class="input-group">
+                                            <input  class="form-control create-control" id="penanggung_jawab_email" name="penanggung_jawab_email" type="text">
+                                        </div>
+                                        <small class="error-message text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label class="form-label">REVISI KE : </label>
                                         <div class="input-group">
@@ -409,19 +409,24 @@ h1 {
 
                         <div class="form-group">
                             <label>Tanggal Berlaku</label>
-                            <input type="date" class="form-control" id="edit_tanggal_berlaku" name="tanggal_berlaku">
+                            <input type="text" class="form-control datepicker" id="edit_tanggal_berlaku" name="tanggal_berlaku">
                             <small class="error-message text-danger"></small>
                         </div>
 
                         <div class="form-group">
                             <label>Tanggal Kadaluarsa</label>
-                            <input type="date" class="form-control" id="edit_tanggal_kadaluarsa" name="tanggal_kadaluarsa">
+                            <input type="text" class="form-control datepicker" id="edit_tanggal_kadaluarsa" name="tanggal_kadaluarsa">
                             <small class="error-message text-danger"></small>
                         </div>
 
                         <div class="form-group">
                             <label>Penanggung Jawab</label>
                             <input type="text" class="form-control" id="edit_penanggung_jawab" name="penanggung_jawab">
+                            <small class="error-message text-danger"></small>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Penanggung Jawab</label>
+                            <input type="text" class="form-control" id="edit_penanggung_jawab_email" name="penanggung_jawab_email">
                             <small class="error-message text-danger"></small>
                         </div>
 
@@ -466,6 +471,8 @@ h1 {
     <script src="{{URL::asset('assets/js/iziToast.min.js')}}"></script>
     <script src="{{ asset('assets/plugins/html5-qrcode/html5-qrcode.min.js') }}"></script>
     <script src="{{URL::asset('assets/js/timepicker.js') }}"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     <style>
     .checkbox-xl .form-check-input {
         scale: 1.5;
@@ -480,7 +487,16 @@ h1 {
 
     </script>
     <script>
+        $(function() {
+            $("#tanggal_berlaku, #tanggal_kadaluarsa, #edit_tanggal_berlaku, #edit_tanggal_kadaluarsa").datepicker({
+                dateFormat: "dd-mm-yy", // Format tanggal dd-mm-yyyy
+                changeMonth: true,
+                changeYear: true
+            });
+        });
+    </script>
 
+    <script>
         $(document).ready(function () {
             $("#submit-form").click(function (e) {
                 e.preventDefault();
@@ -498,6 +514,10 @@ h1 {
                         input.siblings(".error-message").text("Field ini wajib diisi!");
                         isValid = false;
                     } else {
+                        if (input.hasClass("datepicker") && value.match(/^\d{2}-\d{2}-\d{4}$/)) {
+                            let parts = value.split("-"); // Pisahkan berdasarkan "-"
+                            value = `${parts[2]}-${parts[1]}-${parts[0]}`; // Ubah ke yyyy-MM-dd
+                        }
                         formData.append(fieldName, value);
                     }
                 });
@@ -525,11 +545,15 @@ h1 {
                                 msg: "<b>Success:</b> Data berhasil di simpan.",
                                 type: "success"
                             });
-                            $("#form-dokumen")[0].reset();
-                            $("#file-list").empty();
+                            // $("#form-dokumen")[0].reset();
+                            // $("#file-list").empty();
 
-                            $("#ajax-modal-tambah").modal('hide');
-                            $("#datatable").DataTable().ajax.reload();
+                            // $("#ajax-modal-tambah").modal('hide');
+                            // $("#datatable").DataTable().ajax.reload();
+                            setTimeout(function myFunction() {
+                                undo();
+                            }, 2000);
+
                         },
                         error: function (xhr) {
                             let errors = xhr.responseJSON.errors;
@@ -643,7 +667,11 @@ h1 {
 
         $(document).on("click", ".edit-btn", function () {
             let id = $(this).data("id");
-
+            $("#edit_tanggal_berlaku, #edit_tanggal_kadaluarsa").datepicker({
+                dateFormat: "dd-mm-yy", // Format tanggal dd-mm-yyyy
+                changeMonth: true,
+                changeYear: true
+            });
             $.ajax({
                 url: '{{ route('dokumen_legal.get_edit_dokumen_legal', '') }}/' + id, // Route untuk mendapatkan data
                 type: "GET",
@@ -655,8 +683,8 @@ h1 {
                         $("#edit_jenis_dokumen").val(data.jenis_dokumen);
                         $("#edit_kode_dokumen").val(data.kode_dokumen);
                         $("#edit_nama_dokumen").val(data.nama_dokumen);
-                        $("#edit_tanggal_berlaku").val(data.tanggal_berlaku);
-                        $("#edit_tanggal_kadaluarsa").val(data.tanggal_kadaluarsa);
+                        $("#edit_tanggal_berlaku").val(formatTanggal(data.tanggal_berlaku));
+                        $("#edit_tanggal_kadaluarsa").val(formatTanggal(data.tanggal_kadaluarsa));
                         $("#edit_penanggung_jawab").val(data.penanggung_jawab);
                         $("#edit_penanggung_jawab_email").val(data.penanggung_jawab_email);
                         $("#edit_revisi_ke").val(data.revisi_ke);
@@ -677,7 +705,7 @@ h1 {
 
                         $("#edit-file-preview").html(fileItem);
                         selectedFile = fileUrl;
-                                // Tampilkan modal edit
+
                                 $("#editModal").modal("show");
 
                             }
@@ -699,7 +727,10 @@ h1 {
             window.open(url, '_blank');
         });
 
-
+        function formatTanggal(dateString) {
+            let parts = dateString.split("-"); // Pisahkan berdasarkan "-"
+            return `${parts[2]}-${parts[1]}-${parts[0]}`; // Susun kembali sebagai dd-MM-yyyy
+        }
 
         $("#remove-file").click(function () {
             $("#file-preview").hide(); // Sembunyikan preview file
@@ -744,6 +775,7 @@ h1 {
             let tanggalBerlaku = $("#edit_tanggal_berlaku").val().trim();
             let tanggalKadaluarsa = $("#edit_tanggal_kadaluarsa").val().trim();
             let penanggungJawab = $("#edit_penanggung_jawab").val().trim();
+            let penanggungJawabEmail = $("#edit_penanggung_jawab_email").val().trim();
             let revisiKe = $("#edit_revisi_ke").val().trim();
             let dokumenFile = $("#edit-file-upload")[0].files[0]; // Ambil file jika ada
 
@@ -784,6 +816,10 @@ h1 {
                 $("#edit_penanggung_jawab").siblings(".error-message").text("Penanggung jawab wajib diisi!");
                 isValid = false;
             }
+            if (penanggungJawabEmail === "") {
+                $("#edit_penanggung_jawab_email").siblings(".error-message").text("Penanggung jawab email wajib diisi!");
+                isValid = false;
+            }
             if (revisiKe === "") {
                 $("#edit_revisi_ke").siblings(".error-message").text("Revisi ke wajib diisi!");
                 isValid = false;
@@ -820,8 +856,11 @@ h1 {
                                 msg: "<b>Success:</b> Dokumen berhasil diperbarui!",
                                 type: "success"
                             });
-                            $("#editModal").modal("hide");
-                            $("#datatable").DataTable().ajax.reload(); // Refresh DataTables
+                            // $("#editModal").modal("hide");
+                            // $("#datatable").DataTable().ajax.reload();
+                            setTimeout(function myFunction() {
+                                undo();
+                            }, 2000);
                         }
                     },
                     error: function () {
@@ -844,57 +883,10 @@ h1 {
         }
 
         function undo() {
-            location.reload();
+            window.location.reload();
         }
 
-        function onSave() {
-            var employee = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
-            let txt_jumlah = document.getElementById("txt_jumlah");
-            let enroll_id = document.getElementById("txt_enroll_id").value.trim();
-            let jumlah_value = txt_jumlah.value.trim().replace(/Rp\s?|[^0-9]/g, "");
-            console.log('jumlah_value',jumlah_value)
-            txt_jumlah.classList.remove("is-invalid");
-            if(employee == ""){
-                notif({
-                        msg: "<b>Info:</b> Harap pilih karyawan terlebih dahulu!",
-                        type: "error"
-                    });
-                return;
-            }
 
-            if (jumlah_value === "" || isNaN(jumlah_value) || parseFloat(jumlah_value) <= 0) {
-                notif({
-                        msg: "<b>Info:</b> Jumlah tidak boleh kosong atau bernilai 0!",
-                        type: "error"
-                    });
-                txt_jumlah.classList.add("is-invalid");
-                txt_jumlah.focus()
-                return;
-            }
-
-            $.ajax({
-                type: "POST",
-                url: '{{ route('bazzar.store') }}',
-                data: {
-                    enroll_id: enroll_id,
-                    jumlah: jumlah_value,
-                },
-                success: function(response) {
-                    dataTableDepartmentReload();
-
-                    $("#selectEmployeeID").val(null).trigger("change");
-                    $("#txt_name").val('');
-                    $("#txt_enroll_id").val('');
-                    $("#txt_department").val('');
-                    $("#txt_bagian").val('');
-                    $("#txt_staff").val('');
-                    $("#txt_nik").val('');
-                    $("#txt_jumlah").val('');
-                },
-                error: function(request, status, error) {
-                },
-            });
-        }
 
 
         $(document).ready(function() {
@@ -1102,8 +1094,8 @@ h1 {
                     dataTableReload();
                     dataTableDepartmentReload();
                     setTimeout(function myFunction() {
-                            location.reload();
-                          }, 3000);
+                        undo();
+                    }, 2000);
                 },
                 error: function(res){
                     notif({
