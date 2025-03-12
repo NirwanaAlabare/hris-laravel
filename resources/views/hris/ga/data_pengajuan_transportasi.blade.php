@@ -22,7 +22,7 @@
             <a class="btn btn-primary" style="background-color:blue" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data</a>
             @endif
         </li>
-        @if ($id_user==4241 || $id_user==20 || $id_user==5321 || $id_user==6083 || $id_user==0 || $id_user==7765 || $id_user==109)
+        @if ($id_user==4241 || $id_user==20 || $id_user==5321 || $id_user==6083 || $id_user==0)
         <li class="nav-item">
             <a class="btn btn-white" href="{{route('hris.ga.summary_driver_task')}}">Summary Driver</a>
         </li>
