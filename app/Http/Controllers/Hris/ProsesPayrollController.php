@@ -1786,13 +1786,23 @@ class ProsesPayrollController extends AdminBaseController
                     'total_upah_thp_rupiah_employee'=>ceil($total_upah_thp_rupiah / 100) * 100
                 ];
 
-                $count=RekapPerhitunganPayroll::where( 'kode_rekap_payroll',$v['kode_rekap_payroll'])->count();
-                if($count){
-                    RekapPerhitunganPayroll::where( 'kode_rekap_payroll',$v['kode_rekap_payroll'])->update($records_payroll);
-                }
-                else{
-                    RekapPerhitunganPayroll::create($records_payroll);
-                }
+                RekapPerhitunganPayroll::where('enroll_id', $v['enroll_id'])
+                    ->where('periode_tahun_payroll', $v['periode_tahun_payroll'])
+                    ->whereNull('periode_umk')
+                    ->where('periode_bulan_payroll', $v['periode_bulan_payroll'])
+                    ->delete();
+
+                // Setelah data lama dihapus, buat data baru
+                RekapPerhitunganPayroll::create($records_payroll);
+
+
+                // $count=RekapPerhitunganPayroll::where('kode_rekap_payroll',$v['kode_rekap_payroll'])->count();
+                // if($count){
+                //     RekapPerhitunganPayroll::where('kode_rekap_payroll',$v['kode_rekap_payroll'])->update($records_payroll);
+                // }
+                // else{
+                //     RekapPerhitunganPayroll::create($records_payroll);
+                // }
             }
 
             //update tanggal resign
