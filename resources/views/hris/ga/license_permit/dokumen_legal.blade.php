@@ -177,33 +177,6 @@ h1 {
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="form-label">KODE DOKUMEN : </label>
-                                    <select class='form-control filter-control select2' style='width: 100%;' name='kode_dokumen_filter' id='kode_dokumen_filter' required>
-                                        <option value="">PILIH KODE DOKUMEN</option>
-                                        <option value="PERIJINAN">PERIJINAN</option>
-                                        <option value="LAPORAN">LAPORAN</option>
-                                        <option value="PROSEDUR">PROSEDUR</option>
-                                        <option value="FORMULIR">FORMULIR</option>
-                                        <option value="SURAT">SURAT</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    <label class="form-label">PENANGGUNG JAWAB : </label>
-                                    <select class='form-control filter-control select2' style='width: 100%;' name='penanggung_jawab_filter' id='penanggung_jawab_filter' required>
-                                        <option value="">PILIH PENANGGUNG JAWAB</option>
-                                        <option value="PERIJINAN">PERIJINAN</option>
-                                        <option value="LAPORAN">LAPORAN</option>
-                                        <option value="PROSEDUR">PROSEDUR</option>
-                                        <option value="FORMULIR">FORMULIR</option>
-                                        <option value="SURAT">SURAT</option>
-                                    </select>
-                                </div>
-                            </div>
-
                         </div>
                         </div>
                         <div class="m-0 p-0">
@@ -497,6 +470,11 @@ h1 {
     </script>
 
     <script>
+
+        $('body').on('change', '#jenis_dokumen_filter', function (event) {
+            $('#datatable').DataTable().ajax.reload();
+        });
+
         $(document).ready(function () {
             $("#submit-form").click(function (e) {
                 e.preventDefault();
@@ -632,7 +610,12 @@ h1 {
             $('#datatable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: '{{ route('dokumen_legal.get_dokumen_legal') }}',
+                ajax: {
+                    url: '{{ route('dokumen_legal.get_dokumen_legal') }}',
+                    data: function(d) {
+                        d.jenis_dokumen = document.getElementById("jenis_dokumen_filter").value;
+                    }
+                },
                 columns: [
                     { data: 'id', name: 'id' },
                     { data: 'jenis_dokumen', name: 'jenis_dokumen' },
@@ -874,9 +857,6 @@ h1 {
         });
 
 
-
-
-
         function open_modal_buat_dokumen() {
             $("#ajax-modal-tambah").modal('show');
             $('#title-modal-list').text('PENGAJUAN KUPON KARYAWAN');
@@ -885,8 +865,6 @@ h1 {
         function undo() {
             window.location.reload();
         }
-
-
 
 
         $(document).ready(function() {

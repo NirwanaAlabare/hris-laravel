@@ -109,36 +109,30 @@ class LicensePermitController extends AdminBaseController
 
     }
 
-    public function get_dokumen_legal(Request $request){
-        if ($request->ajax()) {
-            $data = PengajuanDokumenLegal::select([
-                'id',
-                'jenis_dokumen',
-                'kode_dokumen',
-                'nama_dokumen',
-                'tanggal_berlaku',
-                'tanggal_kadaluarsa',
-                'penanggung_jawab',
-                'penanggung_jawab_email',
-                'revisi_ke',
-                'keterangan',
-                'dokumen_url',
-            ]);
+    public function get_dokumen_legal(Request $request)
+{
+    if ($request->ajax()) {
+        $data = PengajuanDokumenLegal::query();
 
-            return DataTables::of($data)
+        if ($request->jenis_dokumen) {
+            $data->where('jenis_dokumen', $request->jenis_dokumen);
+        }
+
+        if ($request->kode_dokumen) {
+            $data->where('kode_dokumen', $request->kode_dokumen);
+        }
+
+        return DataTables::of($data)
             ->addColumn('action', function ($row) {
-                return '<a href="' .$row->dokumen_url . '" class="btn btn-primary btn-sm" target="_blank">Lihat</a>
+                return '<a href="' . $row->dokumen_url . '" class="btn btn-primary btn-sm" target="_blank">Lihat</a>
                         <button class="btn btn-warning btn-sm download-btn" data-id="' . $row->id . '">Download</button>
                         <button class="btn btn-warning btn-sm edit-btn" data-id="' . $row->id . '">Edit</button>
                         <button class="btn btn-danger btn-sm delete-btn" data-id="' . $row->id . '">Hapus</button>';
             })
             ->rawColumns(['action'])
             ->make(true);
-
-
-        }
     }
-
+}
     public function getDokumenLegal($id)
     {
         $dokumen = PengajuanDokumenLegal::find($id);
