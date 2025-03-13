@@ -1,12 +1,12 @@
 
-        
+
 <style>
 .dropdown-theme {
     display: none;
     position: absolute;
     height: 50px;
     justify-content: center;
-    align-items: center;    
+    align-items: center;
     top: 40px;
     left: 0;
     background-color:rgb(255, 255, 255);
@@ -58,7 +58,24 @@ button.theme-switcher:hover {
         button.theme-switcher{
             transition: all 0.7s ease;
             box-sizing: border-box;
-        } 
+        }
+        .dropdown-menu {
+    width: 300px !important;
+}
+
+    .notifyimg {
+        width: 40px; /* Sesuaikan ukuran lingkaran */
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .notifyimg i {
+        font-size: 18px; /* Sesuaikan ukuran ikon */
+        color: white;
+}
 
 </style>
 <div class="d-flex">
@@ -79,41 +96,62 @@ button.theme-switcher:hover {
             </div>
         </div>
 
-        
+        <div class="dropdown header-notify">
+            <a href="#" class="nav-link icon" data-toggle="dropdown" aria-expanded="false">
+                <i class="fe fe-bell "></i>
+                <span class="pulse bg-success"></span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right  dropdown-menu-arrow ">
+                <a href="#" class="dropdown-item text-center">4 New Notifications</a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item d-flex pb-3">
+                    <div class="notifyimg bg-green">
+                        <i class="fe fe-mail"></i>
+                    </div>
+                    <div>
+                        <strong>Message Sent.</strong>
+                        <div class="small text-muted">12 mins ago</div>
+                    </div>
+                </a>
+                <a href="#" class="dropdown-item d-flex pb-3">
+                    <div class="notifyimg bg-pink">
+                        <i class="fe fe-shopping-cart"></i>
+                    </div>
+                    <div>
+                        <strong>Order Placed</strong>
+                        <div class="small text-muted">2  hour ago</div>
+                    </div>
+                </a>
+                <a href="#" class="dropdown-item d-flex pb-3">
+                    <div class="notifyimg bg-blue">
+                        <i class="fe fe-calendar"></i>
+                    </div>
+                    <div>
+                        <strong> Event Started</strong>
+                        <div class="small text-muted">1  hour ago</div>
+                    </div>
+                </a>
+                <a href="#" class="dropdown-item d-flex pb-3">
+                    <div class="notifyimg bg-orange">
+                        <i class="fe fe-monitor"></i>
+                    </div>
+                    <div>
+                        <strong>Your Admin Lanuch</strong>
+                        <div class="small text-muted">2  days ago</div>
+                    </div>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item text-center">View all Notifications</a>
+            </div>
+        </div>
         <div class="dropdown">
             <a  class="nav-link icon full-screen-link" id="fullscreen-button">
                 <i class="fe fe-maximize-2"></i>
             </a>
         </div><!-- full-screen -->
-        
+
         <!-- notifications -->
-        <div class="dropdown header-user">
-            <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                <div class="header-user text-center mt-4 pb-4">
-                    <span class="avatar avatar-xxl brround"><img src="{{URL::asset('assets/images/users/avatars/19.png')}}" alt="Profile-img" class="avatar avatar-xxl brround"></span>
-                    <a href="#" class="dropdown-item text-center font-weight-semibold user h3 mb-0">Alison</a>
-                    <small>Web Designer</small>
-                </div>
-                <a class="dropdown-item" href="#">
-                    <i class="dropdown-icon mdi mdi-account-outline "></i> Spruko technologies
-                </a>
-                <a class="dropdown-item" href="#">
-                    <i class="dropdown-icon  mdi mdi-account-plus"></i> Add another Account
-                </a>
-                <div class="card-body border-top">
-                    <div class="row">
-                        <div class="col-6 text-center">
-                            <a class="" href=""><i class="dropdown-icon mdi  mdi-message-outline fs-30 m-0 leading-tight"></i></a>
-                            <div>Inbox</div>
-                        </div>
-                        <div class="col-6 text-center">
-                            <a class="" href=""><i class="dropdown-icon mdi mdi-logout-variant fs-30 m-0 leading-tight"></i></a>
-                            <div>Sign out</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
         <!-- profile -->
         <div class="dropdown">
             <a class="nav-link leading-none siderbar-link" data-toggle="sidebar-right" data-target=".sidebar-right">
