@@ -680,6 +680,7 @@
             $('#daterange1').val(daterange1);
         });
         $('#daterange-btn2').daterangepicker({
+            minDate: moment("2025-02-26"),
             ranges: {
                 'Hari ini': [moment(), moment()],
                 'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
