@@ -51,6 +51,7 @@ Route::prefix('mdabsenhadir')->group(function() {
 
 Route::prefix('payroll')->group(function() {
     Route::post('proses-rekap', 'ProsesPayrollController@index')->name("hris.proses.payroll.rekap");
+    Route::post('proses-rekap-early-payroll', 'ProsesPayrollController@early_closing_payroll_bulanan')->name("hris.proses.payroll.rekap_early");
     Route::post('proses-rekap2', 'ProsesPayrollController@index2')->name("hris.proses.payroll.rekap2");
     Route::post('proses-rekap3', 'ProsesPayrollController@index3')->name("hris.proses.payroll.rekap3");
 
