@@ -902,27 +902,43 @@ class ProsesPayrollController extends AdminBaseController
 
             $tanggal_awal = $bulan_sebelum . '26';
             $tanggal_akhir = $bulan_sekarang . '25';
+            $tahun=date('Y', $bulan_sekarang1);
+            $bulan=date('m', $bulan_sekarang1);
 
         } else {
             // Menggunakan daterange2
             if ($request->has('daterange2')) {
                 $daterange = explode(" s/d ", $request->daterange2);
-                $tanggal_awal = date('Y-m-d', strtotime($daterange[0]));
-                $tanggal_akhir = date('Y-m-d', strtotime($daterange[1]));
+                $tanggal_awal_early = date('Y-m-d', strtotime($daterange[0]));
+                $tanggal_akhir_early = date('Y-m-d', strtotime($daterange[1]));
 
-                $bulan_sekarang1 = strtotime($tanggal_akhir);
+                $bulan_sekarang1 = strtotime($tanggal_akhir_early);
                 $tanggal_sekarang = date('Y-m-d');
                 $bulan_sebelum = strtotime("-1 month", $bulan_sekarang1);
 
                 $bulan_sekarang = date('Y-m-', $bulan_sekarang1);
                 $bulan_sebelum = date('Y-m-', $bulan_sebelum);
+                $tahun=date('Y', $bulan_sekarang1);
+                $bulan=date('m', $bulan_sekarang1);
             } else {
                 return response()->json(["error" => "daterange2 tidak ditemukan"], 400);
             }
         }
 
-        $tahun=date('Y', $bulan_sekarang1);
-        $bulan=date('m', $bulan_sekarang1);
+        $today = date('d'); // Ambil tanggal hari ini
+        $currentMonth = date('Y-m'); // Format YYYY-MM (bulan sekarang)
+        $previousMonth = date('Y-m', strtotime('-1 month')); // Format YYYY-MM (bulan sebelumnya)
+        $nextMonth = date('Y-m', strtotime('+1 month')); // Format YYYY-MM (bulan berikutnya)
+
+        if ($today >= 26) {
+            // Jika tanggal >= 26, maka periode dari bulan ini (26) sampai bulan depan (25)
+            $tanggal_awal = $currentMonth . '-26';
+            $tanggal_akhir = $nextMonth . '-25';
+        } else {
+            // Jika tanggal < 26, maka periode dari bulan sebelumnya (26) sampai bulan ini (25)
+            $tanggal_awal = $previousMonth . '-26';
+            $tanggal_akhir = $currentMonth . '-25';
+        }
 
         $timestamp1 = strtotime($tanggal_awal);
         $timestamp2 = strtotime($tanggal_akhir);
@@ -935,9 +951,9 @@ class ProsesPayrollController extends AdminBaseController
             }
         }
 
-        $priode='2025-02-26 s/d 2025-03-25';
-        // $priode=$tanggal_awal.' s/d '. $tanggal_akhir;
-        $priode_early_closing = $tanggal_awal.' s/d '. $tanggal_akhir;
+        // $priode='2025-02-26 s/d 2025-03-25';
+        $priode=$tanggal_awal.' s/d '. $tanggal_akhir;
+        $priode_early_closing = $tanggal_awal_early.' s/d '. $tanggal_akhir_early;
 
 
         $inEnrollId='';
@@ -1516,6 +1532,7 @@ class ProsesPayrollController extends AdminBaseController
                        FROM employee_atribut_histories
                        WHERE enroll_id = employee_atribut_histories.enroll_id
                          AND periode_payroll = '$priode')) emp_hist on a.enroll_id=emp_hist.enroll_id left join (select*from grading_salary where SUBSTRING(periode_umk,1,4)='$tahun') c on if(emp_hist.kode_grade is not null,emp_hist.kode_grade,a.kode_grade)=c.kode_grade inner join (select*from rekap_perhitungan_kehadiran_karyawan where periode_payroll='$priode_early_closing')d on a.enroll_id=d.enroll_id left join (select enroll_id,sum(lembur_1) lembur_1,sum(lembur_2) lembur_2,sum(lembur_3) lembur_3,sum(lembur_4) lembur_4,sum(total_lembur_1234) total_lembur_1234,sum(lembur1_rupiah)lembur1_rupiah,sum(lembur2_rupiah) lembur2_rupiah,sum(lembur3_rupiah) lembur3_rupiah,sum(lembur4_rupiah) lembur4_rupiah,sum(total_lembur_rupiah) total_lembur_rupiah from rekap_perhitungan_lembur where tanggal_berjalan>='$tanggal_awal' and tanggal_berjalan<='$tanggal_akhir' group by enroll_id) e on a.enroll_id=e.enroll_id left join (select enroll_id, SUM(case when jenis_koreksi != 2 or jenis_koreksi is null THEN jumlah_rp_potongan else 0 end) koreksi_upah_rupiah, SUM(case when jenis_koreksi = 2 THEN jumlah_rp_potongan else 0 end) insentif_jabatan from data_koreksi_upah where periode_tanggal_koreksi='$periode_payroll2' group by enroll_id) f on a.enroll_id=f.enroll_id left join (select enroll_id,sum(jumlah_rp_potongan) koreksi_potongan from data_koreksi_potongan where periode_tanggal_koreksi='$periode_payroll2' group by enroll_id) g on a.enroll_id=g.enroll_id left join (select*from employee_bpjs where periode_kehadiran='$priode') bpjs on a.enroll_id=bpjs.enroll_id left join (select enroll_id,sum(jumlah_menit_absen_dt) potongan_dt_menit,sum(jumlah_menit_absen_pc) potongan_pc_menit,sum(jumlah_menit_absen_dtpc) potongan_dtpc_menit,sum(potongan_dt_rupiah) potongan_dt_rupiah,sum(potongan_pc_rupiah) potongan_pc_rupiah, sum(potongan_dtpc_rupiah) potongan_dtpc_rupiah from rekap_perhitungan_dtpc where tanggal_berjalan>='$tanggal_awal' and tanggal_berjalan<='$tanggal_akhir' group by enroll_id) dtpc on a.enroll_id=dtpc.enroll_id left join (select enroll_id,sum(lama_ijin_menit) potongan_iks_menit,sum(potongan_iks_rupiah) potongan_iks_rupiah from rekap_perhitungan_iks where tanggal_berjalan>='$tanggal_awal' and tanggal_berjalan<='$tanggal_akhir' group by enroll_id) iks on a.enroll_id=iks.enroll_id");
+                        //  DISINII DATANYA POTONGAN JAM
             $data_payroll=[];
             foreach ($all_karyawan as $key => $value) {
                 $premi_karyawan=0;
