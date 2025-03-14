@@ -1,5 +1,6 @@
 
-
+<link href="{{URL::asset('assets/plugins/notify-growl/css/jquery.growl.css')}}" rel="stylesheet" />
+<link href="{{URL::asset('assets/plugins/notify-growl/css/notifIt.css')}}" rel="stylesheet" />
 <style>
 .dropdown-theme {
     display: none;
@@ -53,28 +54,24 @@
     margin-right: 18px;
 }
 button.theme-switcher:hover {
-            opacity: 0.8;
-        }
-        button.theme-switcher{
-            transition: all 0.7s ease;
-            box-sizing: border-box;
-        }
-        .dropdown-menu {
-    width: 300px !important;
+    opacity: 0.8;
+}
+button.theme-switcher{
+    transition: all 0.7s ease;
+    box-sizing: border-box;
+}
+.notifyimg {
+    width: 40px; /* Sesuaikan ukuran lingkaran */
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-    .notifyimg {
-        width: 40px; /* Sesuaikan ukuran lingkaran */
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .notifyimg i {
-        font-size: 18px; /* Sesuaikan ukuran ikon */
-        color: white;
+.notifyimg i {
+    font-size: 18px; /* Sesuaikan ukuran ikon */
+    color: white;
 }
 
 </style>
@@ -268,6 +265,31 @@ button.theme-switcher:hover {
 
         </script> -->
 
+            <!-- Notifications js -->
+    <script src="{{URL::asset('assets/plugins/notify-growl/js/rainbow.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/notify-growl/js/sample.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/notify-growl/js/jquery.growl.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/notify-growl/js/notifIt.js')}}"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+        <script> window.laravel_echo_port='{{env("LARAVEL_ECHO_PORT")}}';</script>
+        <script src="http://{{ Request::getHost() }}:{{ config('redis.echo_port') }}/socket.io/socket.io.js"></script>
+        <script src="{{ config('redis.redis_url_public') }}/js/laravel-echo-setup.js" type="text/javascript"></script>
+
+        <script>
+            console.log("Data TEST:");
+
+            var i = 0;
+            window.Echo.channel('user-channel')
+            .listen('.UserEvent', (data) => {
+                i++;
+                notif({
+                            msg: "<b>Inbox:</b> " + data.data + "!",
+                            type: "info"
+                        });
+                console.log("Data received:", data);
+                // $("#realtimeUpdateWrap").html('<div class="alert alert-success">' + i + '.' + data.data + '</div>');
+            });
+        </script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const themeSwitcher = document.getElementById('themeSwitcher');
