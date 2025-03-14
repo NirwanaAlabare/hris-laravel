@@ -239,7 +239,7 @@
                                                         <label class="form-label" style="font-weight: bold">Jumlah Rp.</label>
                                                     </div>
                                                     <div class="col-8">
-                                                        <input id="jumlah_rp_potongan2" name="jumlah_rp_potongan2" type="number" class="form-control" style="background-color: white" placeholder="0" maxlength="50" size="50">
+                                                        <input id="jumlah_rp_potongan2" name="jumlah_rp_potongan2" type="text" class="form-control" style="background-color: white" placeholder="0" maxlength="50" size="50">
                                                     </div>
                                                 </div>
                                             </div>
@@ -602,6 +602,9 @@
             var tanggal_koreksi=$('#tanggal_koreksi2').val();
             var id=$('#nama_karyawan2').val();
             var jumlah_rp_potongan=$('#jumlah_rp_potongan2').val();
+            var jumlah_potongan_bersih = jumlah_rp_potongan.replace(/[^\d]/g, '');
+            console.log('jumlah_rp_potongan',jumlah_rp_potongan);
+            console.log('jumlah_potongan_bersih',jumlah_potongan_bersih);
             var periode_tanggal_koreksi=$('#periode_tanggal_kehadiran').val();
             $.ajax({
                 type:"POST",
@@ -609,7 +612,7 @@
                 data:{
                     tanggal_koreksi:tanggal_koreksi,
                     id:id,
-                    jumlah_rp_potongan:jumlah_rp_potongan,
+                    jumlah_rp_potongan:jumlah_potongan_bersih,
                     periode_tanggal_koreksi:periode_tanggal_koreksi,
                 },
                 success: function(res){
@@ -685,7 +688,11 @@
             // this.value = this.value.replace(/[^-0-9\.]/g,'');
             let value = $(this).val().replace(/[^0-9]/g, ""); // Hapus semua karakter kecuali angka
             $(this).val(formatRupiah(value));
-
+        });
+        $('body').on('keyup', '#jumlah_rp_potongan2', function (event) {
+            // this.value = this.value.replace(/[^-0-9\.]/g,'');
+            let value = $(this).val().replace(/[^0-9]/g, ""); // Hapus semua karakter kecuali angka
+            $(this).val(formatRupiah(value));
         });
 
 
@@ -842,7 +849,7 @@
                         var keterangan = $("#keterangan").val();
                         var jenis_koreksi = $("#jenis_koreksi").val();
 
-
+                        var jumlah_potongan_bersih = jumlah_rp_potongan.replace(/[^\d]/g, '');
                         $('#btn-save').addClass("btn-loading");
                         $("#btn-save").html('Please wait...');
                         $("#btn-save").attr("disabled", true);
@@ -870,7 +877,7 @@
                                     department_name:department_name,
                                     sub_dept_id:sub_dept_id,
                                     sub_dept_name:sub_dept_name,
-                                    jumlah_rp_potongan:jumlah_rp_potongan,
+                                    jumlah_rp_potongan:jumlah_potongan_bersih,
                                     periode_tanggal_koreksi:periode_tanggal_koreksi,
                                     keterangan:keterangan,
                                     jenis_koreksi:jenis_koreksi,
@@ -916,7 +923,7 @@
                                     department_name:department_name,
                                     sub_dept_id:sub_dept_id,
                                     sub_dept_name:sub_dept_name,
-                                    jumlah_rp_potongan:jumlah_rp_potongan,
+                                    jumlah_rp_potongan:jumlah_potongan_bersih,
                                     periode_tanggal_koreksi:periode_tanggal_koreksi,
                                     keterangan:keterangan,
                                     jenis_koreksi:jenis_koreksi,
@@ -1304,7 +1311,7 @@
                     $('#delete_insentif_jabatan').attr("disabled");
                     $('#store_insentif_jabatan').removeAttr("disabled");
                 }
-                $("#jumlah_rp_potongan2").val(data["insentif"]);
+                $("#jumlah_rp_potongan2").val(formatRupiah(data["insentif"]));
             });
         });
     </script>
