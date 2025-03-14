@@ -1327,6 +1327,46 @@
                             button: false,
                         });
                         return;
+                    }else{
+                        swal({
+                                title: 'Apakah Anda Yakin ?',
+                                text: 'Proses payroll',
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonText: 'YES',
+                                cancelButtonText: 'NO'
+                            },function(isConfirm){
+                                console.log('isConfirm',isConfirm);
+                                if(isConfirm) {
+                                    $('#BtnProsesPayroll').addClass("btn-loading");
+                                    $("#BtnProsesPayroll").html('Please wait...');
+                                    $("#BtnProsesPayroll").attr("disabled", true);
+
+                                    $.ajax({
+                                        data: $('#form_proses_payroll').serialize(),
+                                        url: '{{ route("hris.proses.payroll.rekap") }}',
+                                        type: "post",
+                                        // dataType: 'json',
+                                        success: function (data) {
+                                            console.log("data",data);
+                                            swal("", "Proses payroll berhasil!", "success");
+
+                                            $('#BtnProsesPayroll').removeClass("btn-loading");
+                                            $("#BtnProsesPayroll").html('<span><i class="fa fa-download"></i></span> PROSES PAYROLL');
+                                            $("#BtnProsesPayroll").attr("disabled", false);
+
+                                        },
+                                        error: function (xhr, status, error) {
+                                            console.log(error);
+                                            swal("", "Proses payroll gagal!", "error");
+
+                                            $('#BtnProsesPayroll').removeClass("btn-loading");
+                                            $("#BtnProsesPayroll").attr("disabled", false);
+                                            $("#BtnProsesPayroll").html('<span><i class="fa fa-download"></i></span> PROSES PAYROLL');
+                                        }
+                                    });
+                                }
+                            });
                     }
                 } else if (selectedSkema === "EARLY_CLOSING") {
                     payrollPeriod = date_range_2;
@@ -1338,6 +1378,46 @@
                             button: false,
                         });
                         return;
+                    }else{
+                        swal({
+                            title: 'Apakah Anda Yakin ?',
+                            text: 'Proses payroll',
+                            type: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: 'YES',
+                            cancelButtonText: 'NO'
+                        },function(isConfirm){
+                            console.log('isConfirm',isConfirm);
+                            if(isConfirm) {
+                                $('#BtnProsesPayroll').addClass("btn-loading");
+                                $("#BtnProsesPayroll").html('Please wait...');
+                                $("#BtnProsesPayroll").attr("disabled", true);
+
+                                $.ajax({
+                                    data: $('#form_proses_payroll').serialize(),
+                                    url: '{{ route("hris.proses.payroll.rekap_early") }}',
+                                    type: "post",
+                                    // dataType: 'json',
+                                    success: function (data) {
+                                        console.log("data",data);
+                                        swal("", "Proses payroll berhasil!", "success");
+
+                                        $('#BtnProsesPayroll').removeClass("btn-loading");
+                                        $("#BtnProsesPayroll").html('<span><i class="fa fa-download"></i></span> PROSES PAYROLL');
+                                        $("#BtnProsesPayroll").attr("disabled", false);
+
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.log(error);
+                                        swal("", "Proses payroll gagal!", "error");
+
+                                        $('#BtnProsesPayroll').removeClass("btn-loading");
+                                        $("#BtnProsesPayroll").attr("disabled", false);
+                                        $("#BtnProsesPayroll").html('<span><i class="fa fa-download"></i></span> PROSES PAYROLL');
+                                    }
+                                });
+                            }
+                        });
                     }
                 } else {
                     swal({
@@ -1349,45 +1429,7 @@
                     return;
                 }
                 // Konfirmasi sebelum mengirim request
-                        swal({
-                title: 'Apakah Anda Yakin ?',
-                text: 'Proses payroll',
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonText: 'YES',
-                cancelButtonText: 'NO'
-            },function(isConfirm){
-                console.log('isConfirm',isConfirm);
-                if(isConfirm) {
-                    $('#BtnProsesPayroll').addClass("btn-loading");
-                    $("#BtnProsesPayroll").html('Please wait...');
-                    $("#BtnProsesPayroll").attr("disabled", true);
 
-                    $.ajax({
-                        data: $('#form_proses_payroll').serialize(),
-                        url: '{{ route("hris.proses.payroll.rekap") }}',
-                        type: "post",
-                        // dataType: 'json',
-                        success: function (data) {
-                            console.log("data",data);
-                            swal("", "Proses payroll berhasil!", "success");
-
-                            $('#BtnProsesPayroll').removeClass("btn-loading");
-                            $("#BtnProsesPayroll").html('<span><i class="fa fa-download"></i></span> PROSES PAYROLL');
-                            $("#BtnProsesPayroll").attr("disabled", false);
-
-                        },
-                        error: function (xhr, status, error) {
-                            console.log(error);
-                            swal("", "Proses payroll gagal!", "error");
-
-                            $('#BtnProsesPayroll').removeClass("btn-loading");
-                            $("#BtnProsesPayroll").attr("disabled", false);
-                            $("#BtnProsesPayroll").html('<span><i class="fa fa-download"></i></span> PROSES PAYROLL');
-                        }
-                    });
-                }
-            });
             });
 
                 // if(tmp == '' && tmp2 == ''){
