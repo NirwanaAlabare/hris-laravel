@@ -925,7 +925,7 @@ class ProsesPayrollController extends AdminBaseController
 
         // $priode='2025-02-26 s/d 2025-03-25';
         $priode=$tanggal_awal.' s/d '. $tanggal_akhir;
-        $priode_early_closing = $tanggal_awal_early.' s/d '. $tanggal_akhir_early;
+        $priode_early_closing = date('d-m-Y', strtotime($tanggal_awal_early)) . ' s/d ' . date('d-m-Y', strtotime($tanggal_akhir_early));
 
         $inEnrollId='';
         $inEnrollId1='';
@@ -3022,7 +3022,7 @@ class ProsesPayrollController extends AdminBaseController
         }
 
         $priode=$tanggal_awal.' s/d '. $tanggal_akhir;
-
+        $priode_early_closing = date('d-m-Y', strtotime($tanggal_awal)) . ' s/d ' . date('d-m-Y', strtotime($tanggal_akhir));
         $inEnrollId='';
         $inEnrollId1='';
         $inEnrollId2='';
@@ -3963,7 +3963,7 @@ class ProsesPayrollController extends AdminBaseController
             }
 
             HistoryProsesPayroll::create([
-                'last_periode' => $periode,
+                'last_periode' => $priode_early_closing,
                 'operator' => $email,
               ]);
         }
