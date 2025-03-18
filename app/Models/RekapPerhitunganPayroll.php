@@ -9,6 +9,7 @@ class RekapPerhitunganPayroll extends \Eloquent
         'kode_rekap_payroll',
         'periode_umk',
         'periode_kehadiran',
+        'periode_early',
         'periode_tahun_payroll',
         'periode_bulan_payroll',
         'enroll_id',
@@ -118,6 +119,7 @@ class RekapPerhitunganPayroll extends \Eloquent
         'kode_rekap_payroll',
         'periode_umk',
         'periode_kehadiran',
+        'periode_early',
         'periode_tahun_payroll',
         'periode_bulan_payroll',
         'enroll_id',
@@ -215,7 +217,7 @@ class RekapPerhitunganPayroll extends \Eloquent
     public $incrementing = false;
     // public $primaryKey = null;
     public $primaryKey = ['kode_rekap_payroll'];
-    
+
     public function employee_atribut(){
         return $this->belongsTo(EmployeeAtribut::class, 'enroll_id', 'enroll_id');
     }

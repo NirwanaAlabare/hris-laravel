@@ -94,6 +94,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                 ->selectRaw('
                     kode_rekap_payroll,
                     periode_kehadiran,
+                    periode_early,
                     CONCAT(periode_tahun_payroll,"-",periode_bulan_payroll) periode_payroll,
                     periode_tahun_payroll,
                     periode_bulan_payroll,
@@ -310,16 +311,35 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         $total_upah_thp_rupiah_pembulatan= ceil($total_upah_thp_rupiah / 100) * 100;
         $pembulatan=$total_upah_thp_rupiah_pembulatan-$total_upah_thp_rupiah;
         $upah_per_jam=$upah_per_bulan/173;
-        $periode_kehadiran= $Data->periode_kehadiran;
-        $explodePeriodePayroll = explode(" s/d ", $periode_kehadiran);
-        $periodePayroll =$explodePeriodePayroll[0];
+        $periode_kehadiran = $Data->periode_early ?? $periode_kehadiran;
 
-        $startDate = Carbon::parse($join_date);
-        $endDate = Carbon::parse($periodePayroll);
-        $diff = $startDate->diff($endDate);
+        // $explodePeriodePayroll = explode(" s/d ", $periode_kehadiran);
+        // $periodePayroll =$explodePeriodePayroll[1];
+
+        // $startDate = Carbon::parse($join_date);
+        // $endDate = Carbon::parse($periodePayroll);
+        // $diff = $startDate->diff($endDate);
+        // $years = $diff->y;
+        // $months = $diff->m;
+        // $days = $diff->d;
+        $explodePeriodePayroll = explode(" s/d ", $periode_kehadiran);
+        $startPeriode = Carbon::parse($explodePeriodePayroll[0]); // 2025-02-26
+        $endPeriode = Carbon::parse($explodePeriodePayroll[1]);   // 2025-03-25
+
+        // Ubah join_date menjadi objek Carbon
+        $startDate = Carbon::createFromFormat("d-m-Y", $join_date);
+        $today = Carbon::today();
+        if ($startDate->lessThan($startPeriode)) {
+            // Jika join_date sebelum periode awal, hitung ke startPeriode
+            $diff = $startDate->diff($startPeriode);
+        } else {
+            // Jika join_date dalam rentang periode, hitung ke endPeriode
+            $diff = $startDate->diff($today);
+        }
+
         $years = $diff->y;
         $months = $diff->m;
-        $days = $diff->d;
+        $days = $diff->d + 1;
         $kosong=" ";
         $nol='0';
         $pot_hari_kerja=$kehadiran_itb+$kehadiran_m+$kehadiran_r;

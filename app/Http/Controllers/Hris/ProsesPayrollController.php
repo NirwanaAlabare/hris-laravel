@@ -922,10 +922,20 @@ class ProsesPayrollController extends AdminBaseController
                 $jumlah_hari_sabtu_minggu_total++;
             }
         }
+        $timestamp1_early = strtotime($tanggal_awal_early);
+        $timestamp2_early = strtotime($tanggal_akhir_early);
+        $jumlah_hari_total_early=(abs($timestamp2_early - $timestamp1_early) / (60 * 60 * 24)+1);
+        $jumlah_hari_sabtu_minggu_total_early = 0;
+        for ($i = strtotime($tanggal_awal_early); $i <= strtotime($tanggal_akhir_early); $i += 86400) {
+            if ((date('N', $i) == 6)||(date('N', $i) == 7)) {
+                $jumlah_hari_sabtu_minggu_total_early++;
+            }
+        }
 
         // $priode='2025-02-26 s/d 2025-03-25';
         $priode=$tanggal_awal.' s/d '. $tanggal_akhir;
         $priode_early_closing = date('d-m-Y', strtotime($tanggal_awal_early)) . ' s/d ' . date('d-m-Y', strtotime($tanggal_akhir_early));
+        $priode_early_closing_no_format = $tanggal_awal_early . ' s/d ' . $tanggal_akhir_early;
 
         $inEnrollId='';
         $inEnrollId1='';
@@ -974,7 +984,7 @@ class ProsesPayrollController extends AdminBaseController
                 if($security->where('enroll_id',$value->enroll_id)->count()){
                     $jumlah_hari_kerja=25;
                 }else{
-                    $jumlah_hari_kerja=$jumlah_hari_total-$jumlah_hari_sabtu_minggu_total;
+                    $jumlah_hari_kerja=$jumlah_hari_total_early-$jumlah_hari_sabtu_minggu_total_early;
                 }
                 $uuid=Str::uuid('uuid');
                 $enroll_id=$value->enroll_id;
@@ -992,9 +1002,9 @@ class ProsesPayrollController extends AdminBaseController
                 $kehadiran_r=$value->kehadiran_r;
                 $kehadiran_ok=$value->kehadiran_ok;
                 $total_kehadiran_net=$value->total_kehadiran_net;
-                $kehadiran_tk=$jumlah_hari_total-$value->kehadiran_tk;
+                $kehadiran_tk=$jumlah_hari_total_early-$value->kehadiran_tk;
                 $total_kehadiran= $value->total_kehadiran;
-                $jumlah_hari=$jumlah_hari_total;
+                $jumlah_hari=$jumlah_hari_total_early;
                 $jumlah_hari_kerja=$jumlah_hari_kerja;
                 $kehadiran_dl= $value->kehadiran_dl;
                 $kehadiran_cb=$value->kehadiran_cb;
@@ -1025,7 +1035,8 @@ class ProsesPayrollController extends AdminBaseController
             }
 
             // rekap perhitungan kehadiran karyawan
-            $rekap_kehadiran_karyawan=DB::select("select a.enroll_id,a.periode_payroll,concat(a.periode_tahun,'-',a.periode_bulan) periode_tahun_bulan,if(emp_hist.kode_grade is not null, emp_hist.kode_grade,b.kode_grade) kode_grade,a.kehadiran_iby,a.kehadiran_itb,a.kehadiran_lby,a.kehadiran_lsm,a.kehadiran_dt,a.kehadiran_pc,a.kehadiran_dtpc,a.kehadiran_m,a.kehadiran_m_estimasi,a.kehadiran_r,a.kehadiran_tk,a.kehadiran_ok,a.total_kehadiran,a.total_kehadiran_net,a.jumlah_hari,a.jumlah_hari_kerja,c.salary_bulanan gaji_pokok,c.salary_bulanan/a.jumlah_hari_kerja gaji_harian, (c.salary_bulanan/a.jumlah_hari_kerja)/case when b.sub_dept_id='DEP08SUB005' and b.jenis_kelamin='LAKI-LAKI' and b.enroll_id != 7445 then 420 else 480 end gaji_menit, case when b.sub_dept_id='DEP08SUB005' and b.jenis_kelamin='LAKI-LAKI' and b.enroll_id != 7445 then (c.salary_bulanan/25)*(GREATEST((25-a.total_kehadiran_net),0)) else (c.salary_bulanan/a.jumlah_hari_kerja)*(a.kehadiran_itb + a.kehadiran_m + a.kehadiran_r) end potongan_kehadiran_rupiah from (select*from rekap_kehadiran_karyawan where periode_bulan='$bulan' and periode_tahun='$tahun'".$inEnrollId.")a inner join (select*from employee_atribut where status_aktif='AKTIF' or (status_aktif='TIDAK AKTIF' and tanggal_resign>'$tanggal_awal')) b on a.enroll_id=b.enroll_id left join (select * from employee_atribut_histories where periode_payroll='$priode') emp_hist on a.enroll_id=emp_hist.enroll_id left join grading_salary c on a.periode_tahun=SUBSTR(c.periode_umk,1,4) and case when emp_hist.kode_grade is not null then emp_hist.kode_grade else b.kode_grade end=c.kode_grade");
+            // $rekap_kehadiran_karyawan=DB::select("select c.salary_bulanan, a.enroll_id,a.periode_payroll,concat(a.periode_tahun,'-',a.periode_bulan) periode_tahun_bulan,if(emp_hist.kode_grade is not null, emp_hist.kode_grade,b.kode_grade) kode_grade,a.kehadiran_iby,a.kehadiran_itb,a.kehadiran_lby,a.kehadiran_lsm,a.kehadiran_dt,a.kehadiran_pc,a.kehadiran_dtpc,a.kehadiran_m,a.kehadiran_m_estimasi,a.kehadiran_r,a.kehadiran_tk,a.kehadiran_ok,a.total_kehadiran,a.total_kehadiran_net,a.jumlah_hari,a.jumlah_hari_kerja,c.salary_bulanan gaji_pokok,c.salary_bulanan/a.jumlah_hari_kerja gaji_harian, (c.salary_bulanan/a.jumlah_hari_kerja)/case when b.sub_dept_id='DEP08SUB005' and b.jenis_kelamin='LAKI-LAKI' and b.enroll_id != 7445 then 420 else 480 end gaji_menit, case when b.sub_dept_id='DEP08SUB005' and b.jenis_kelamin='LAKI-LAKI' and b.enroll_id != 7445 then (c.salary_bulanan/25)*(GREATEST((25-a.total_kehadiran_net),0)) else (c.salary_bulanan/a.jumlah_hari_kerja)*(a.kehadiran_itb + a.kehadiran_m + a.kehadiran_r + (GREATEST((a.jumlah_hari_kerja-a.total_kehadiran_net),0)) end potongan_kehadiran_rupiah from (select*from rekap_kehadiran_karyawan where periode_bulan='$bulan' and periode_tahun='$tahun'".$inEnrollId.")a inner join (select*from employee_atribut where status_aktif='AKTIF' or (status_aktif='TIDAK AKTIF' and tanggal_resign>'$tanggal_awal')) b on a.enroll_id=b.enroll_id left join (select * from employee_atribut_histories where periode_payroll='$priode') emp_hist on a.enroll_id=emp_hist.enroll_id left join grading_salary c on a.periode_tahun=SUBSTR(c.periode_umk,1,4) and case when emp_hist.kode_grade is not null then emp_hist.kode_grade else b.kode_grade end=c.kode_grade");
+            $rekap_kehadiran_karyawan=DB::select("select c.salary_bulanan, a.enroll_id,a.periode_payroll,concat(a.periode_tahun,'-',a.periode_bulan) periode_tahun_bulan,if(emp_hist.kode_grade is not null, emp_hist.kode_grade,b.kode_grade) kode_grade,a.kehadiran_iby,a.kehadiran_itb,a.kehadiran_lby,a.kehadiran_lsm,a.kehadiran_dt,a.kehadiran_pc,a.kehadiran_dtpc,a.kehadiran_m,a.kehadiran_m_estimasi,a.kehadiran_r,a.kehadiran_tk,a.kehadiran_ok,a.total_kehadiran,a.total_kehadiran_net,a.jumlah_hari,a.jumlah_hari_kerja,c.salary_bulanan gaji_pokok,c.salary_bulanan/a.jumlah_hari gaji_harian, (c.salary_bulanan/a.jumlah_hari)/case when b.sub_dept_id='DEP08SUB005' and b.jenis_kelamin='LAKI-LAKI' and b.enroll_id != 7445 then 420 else 480 end gaji_menit, case when b.sub_dept_id='DEP08SUB005' and b.jenis_kelamin='LAKI-LAKI' and b.enroll_id != 7445 then (c.salary_bulanan/25)*(GREATEST((25-a.total_kehadiran_net),0)) else (c.salary_bulanan/a.jumlah_hari)* (a.jumlah_hari - (a.total_kehadiran_net + a.kehadiran_lsm)) end potongan_kehadiran_rupiah, (a.jumlah_hari - (a.total_kehadiran_net + a.kehadiran_lsm)) total_hari_potongan from (select*from rekap_kehadiran_karyawan where periode_bulan='$bulan' and periode_tahun='$tahun'".$inEnrollId.")a inner join (select*from employee_atribut where status_aktif='AKTIF' or (status_aktif='TIDAK AKTIF' and tanggal_resign>'$tanggal_awal')) b on a.enroll_id=b.enroll_id left join (select * from employee_atribut_histories where periode_payroll='$priode') emp_hist on a.enroll_id=emp_hist.enroll_id left join grading_salary c on a.periode_tahun=SUBSTR(c.periode_umk,1,4) and case when emp_hist.kode_grade is not null then emp_hist.kode_grade else b.kode_grade end=c.kode_grade");
             foreach($rekap_kehadiran_karyawan as $key=>$value){
                 $uuid2=Str::uuid('uuid');
                 $periode = $value->periode_payroll;
@@ -1650,6 +1661,7 @@ class ProsesPayrollController extends AdminBaseController
                 $upah_bruto_rupiah=($v['upah_per_bulan']+$v['tunjangan_karyawan_rupiah']+$v['premi_karyawan']+$v['total_lembur_rupiah']+$v['pendapatan_lainnya_rupiah']+$v['koreksi_upah_rupiah']+$v['insentif_jabatan'])-
                     ($v['koreksi_potongan_rupiah']+$v['potongan_iks_rupiah']+$v['potongan_dtpc_rupiah']+$v['potongan_kehadiran_rupiah']);
 
+
                 $upah_neto_rupiah=($v['upah_per_bulan']+$v['tunjangan_karyawan_rupiah']+$v['premi_karyawan']+$v['total_lembur_rupiah']+$v['pendapatan_lainnya_rupiah']+$v['koreksi_upah_rupiah']+$v['insentif_jabatan'])-
                     ($v['koreksi_potongan_rupiah']+$v['potongan_iks_rupiah']+$v['potongan_dtpc_rupiah']+$v['potongan_kehadiran_rupiah'])-$v['pph21'];
 
@@ -1671,6 +1683,7 @@ class ProsesPayrollController extends AdminBaseController
                 $records_payroll=[
                     'kode_rekap_payroll'=>$v['kode_rekap_payroll'],
                     'periode_kehadiran'=>$v['periode_kehadiran'],
+                    'periode_early'=>$priode_early_closing_no_format,
                     'periode_tahun_payroll'=>$v['periode_tahun_payroll'],
                     'periode_bulan_payroll'=>$v['periode_bulan_payroll'],
                     'enroll_id'=>$v['enroll_id'],
@@ -3766,6 +3779,7 @@ class ProsesPayrollController extends AdminBaseController
                 $records_payroll=[
                     'kode_rekap_payroll'=>$v['kode_rekap_payroll'],
                     'periode_kehadiran'=>$v['periode_kehadiran'],
+                    'periode_early'=>$v['periode_kehadiran'],
                     'periode_tahun_payroll'=>$v['periode_tahun_payroll'],
                     'periode_bulan_payroll'=>$v['periode_bulan_payroll'],
                     'enroll_id'=>$v['enroll_id'],
@@ -3963,7 +3977,7 @@ class ProsesPayrollController extends AdminBaseController
             }
 
             HistoryProsesPayroll::create([
-                'last_periode' => $priode_early_closing,
+                'last_periode' => $priode,
                 'operator' => $email,
               ]);
         }
