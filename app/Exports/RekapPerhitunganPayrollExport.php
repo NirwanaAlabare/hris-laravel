@@ -38,7 +38,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
 {
     use Exportable;
 
-    public function exportParams(string $periode_payroll, string $tgl_awal, $department_id, $sub_dept_id, $status_staff, $periode_umk,$enroll_id)
+    public function exportParams(string $periode_payroll, string $tgl_awal, $department_id, $sub_dept_id, $status_staff, $periode_umk,$enroll_id, $last_process_history)
     {
         $this->periode_payroll = $periode_payroll;
         $this->tgl_awal = $tgl_awal;
@@ -47,13 +47,14 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         $this->status_staff=$status_staff;
         $this->periode_umk=$periode_umk;
         $this->enroll_id=$enroll_id;
+        $this->last_process_history=$last_process_history;
 
         return $this;
     }
     public function columnWidths(): array
     {
         return [
-            'BD' => 13,    
+            'BD' => 13,
         ];
     }
     public function query()
@@ -496,7 +497,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                     $datePeriode = explode("-", $this->periode_payroll);
                     $tanggal = strtoupper(date("F", mktime(0, 0, 0, $datePeriode[1], 10))) . ' ' . $datePeriode[0];
                 }
-                $sheet->setCellValue('A3', 'Periode  : ' . $tanggal);
+                $sheet->setCellValue('A3', 'Periode  : ' . $this->last_process_history->last_periode);
                 $sheet->getDelegate()->getStyle('A1')->getFont()->setSize(14);
                 $sheet->mergeCells('A1:D1');
                 $sheet->mergeCells('A2:D2');

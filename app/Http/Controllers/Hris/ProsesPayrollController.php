@@ -20,6 +20,7 @@ use App\Models\DataKoreksiUpah;
 
 use App\Models\RekapPerhitunganLembur;
 use App\Models\RekapKehadiranKaryawan;
+use App\Models\HistoryProsesPayroll;
 use App\Models\DataLembur;
 use App\Models\EmployeeGrading;
 use App\Models\DataAbsenPerijinan;
@@ -925,7 +926,6 @@ class ProsesPayrollController extends AdminBaseController
         // $priode='2025-02-26 s/d 2025-03-25';
         $priode=$tanggal_awal.' s/d '. $tanggal_akhir;
         $priode_early_closing = $tanggal_awal_early.' s/d '. $tanggal_akhir_early;
-
 
         $inEnrollId='';
         $inEnrollId1='';
@@ -1876,6 +1876,11 @@ class ProsesPayrollController extends AdminBaseController
                     Jurnal::create($data);
                 }
             }
+
+            HistoryProsesPayroll::create([
+                'last_periode' => $priode_early_closing,
+                'operator' => $email,
+              ]);
         }
         else{
             if($periode_umk!='2024-2025'){
@@ -3956,6 +3961,11 @@ class ProsesPayrollController extends AdminBaseController
                     Jurnal::create($data);
                 }
             }
+
+            HistoryProsesPayroll::create([
+                'last_periode' => $periode,
+                'operator' => $email,
+              ]);
         }
         else{
             if($periode_umk!='2024-2025'){

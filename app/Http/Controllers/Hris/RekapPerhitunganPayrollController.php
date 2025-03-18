@@ -9,6 +9,7 @@ use App\Exports\RekapPerhitunganPayrollExportJanuari2024;
 use App\Http\Controllers\AdminBaseController;
 use App\Models\MasterDataAbsenKehadiran;
 use App\Models\RekapPerhitunganPayroll;
+use App\Models\HistoryProsesPayroll;
 use App\Models\EmployeeAtribut;
 use App\Models\RefAbsenIjin;
 use App\Models\GradingSalary;
@@ -2307,6 +2308,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $periode_payroll = $request->input('periode_payroll');
         list($year, $month) = explode('-', $request->periode_payroll);
         $first=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->first();
+        $last_process_history = HistoryProsesPayroll::orderBy('created_at', 'desc')->first();
         list($tgl_awal, $tgl_akhir) = explode(' s/d ', $first->periode_kehadiran);
         $department_id=request()->department_id;
         $searchData='';
@@ -2353,7 +2355,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             }
         }else{
             $fileName = 'RekapPerhitunganPayroll_' . time() . '.xlsx';
-            $response=(new RekapPerhitunganPayrollExport)->exportParams($periode_payroll,$tgl_awal,$department_id,$sub_dept_id,$status_staff,$periode_umk,$searchData)->download($fileName, \Maatwebsite\Excel\Excel::XLSX);
+            $response=(new RekapPerhitunganPayrollExport)->exportParams($periode_payroll,$tgl_awal,$department_id,$sub_dept_id,$status_staff,$periode_umk,$searchData, $last_process_history)->download($fileName, \Maatwebsite\Excel\Excel::XLSX);
             ob_end_clean();
             return $response;
         }
