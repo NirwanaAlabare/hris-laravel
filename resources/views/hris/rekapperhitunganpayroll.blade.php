@@ -157,6 +157,7 @@
                         </div>
                         <div class="row pt-4">
                             <div class="col-12">
+                                <label id="last_periode_payroll" style="color: black"></label>
                                 <label id="last_update" style="color: black"></label>
                                 <span class="fa fa-refresh" onclick="get_last_update()" style="cursor: pointer;color:rgb(0, 0, 206)"></span>
                             </div>
@@ -975,11 +976,13 @@
 
         function get_last_update(){
             $('#last_update').empty();
+            $('#last_periode_payroll').empty();
             $.ajax({
                 type: 'GET',
                 url: '{{route('hris.rekapperhitunganpayroll.get_last_update_proses_payroll')}}',
                 success:function(data){
-                    $('#last_update').html('<i><b>&nbsp;&nbsp;Last Update :</b> '+new Date(data.substr(0,10)).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"})+', '+data.substr(11,5)+'&nbsp;&nbsp;</i>');
+                    $('#last_periode_payroll').html('<i><b>&nbsp;&nbsp;Last Period Payroll :</b> '+ data.periode_early +'&nbsp;&nbsp;</i>');
+                    $('#last_update').html('<i><b>&nbsp;&nbsp;Last Update :</b> '+new Date(data.updated_at.substr(0,10)).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"})+', '+data.updated_at.substr(11,5)+'&nbsp;&nbsp;</i>');
                 },
                 error: function(res){
 
@@ -994,7 +997,6 @@
                 type: 'GET',
                 url: '{{route('hris.rekapperhitunganpayroll.get_last_update_labor')}}',
                 success:function(data){
-                    console.log(data);
                     $('#last_periode_labor').html('<i><b>&nbsp;&nbsp;Last Period Proses (Labor Cost ) :</b> '+new Date(data.tanggal_berjalan).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"})+'&nbsp;&nbsp;</i>');
                     $('#last_update_labor').html('<i><b>&nbsp;&nbsp;Last Update :</b> '+new Date(data.created_at).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"})+', '+data.created_at.substr(11,5)+'&nbsp;&nbsp;</i>');
                 },

@@ -46,6 +46,9 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Illuminate\Support\Facades\App;
+use Carbon\CarbonImmutable;
+Carbon::setLocale('id');
 
 /**
  * Class RekapPerhitunganPayrollController
@@ -695,10 +698,35 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $department_id=DepartmentAll::orderBy('department_id')->groupBy('department_id')->get();
         return View::make('hris/rekapperhitunganpayroll', compact('rekap_payroll','department_id','minMonth'), $this->data);
     }
-    public function get_last_update_proses_payroll(){
-        $last_update=DB::select('select updated_at from rekap_perhitungan_payroll order by updated_at desc limit 1')[0]->updated_at;
-        return $last_update;
+    public function get_last_update_proses_payroll() {
+        $last_update = DB::select('select * from rekap_perhitungan_payroll order by updated_at desc limit 1');
+
+        if (!empty($last_update)) {
+            $last_update = $last_update[0]; // Ambil objek pertama
+
+            // Pecah periode
+            $explodePeriodePayroll = explode(" s/d ", $last_update->periode_early);
+
+            // Cek apakah hasil explode memiliki dua bagian
+            if (isset($explodePeriodePayroll[1])) {
+                $tanggalAkhir = trim($explodePeriodePayroll[1]); // Bersihkan spasi
+
+                // Cek apakah format tanggal sesuai (YYYY-MM-DD)
+                if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $tanggalAkhir)) {
+                    $startPeriode = Carbon::createFromFormat('Y-m-d', $tanggalAkhir);
+                    $last_update->periode_early = $startPeriode->translatedFormat('l, d F Y');
+                } else {
+                    $last_update->periode_early = "Invalid Date Format: " . $tanggalAkhir;
+                }
+            } else {
+                $last_update->periode_early = "Periode Tidak Lengkap";
+            }
+
+            return $last_update;
+        }
+        return null;
     }
+
     public function get_last_update_labor(){
         $last_update=DB::select('select * from daily_labor_costs order by tanggal_berjalan desc limit 1')[0];
         return $last_update;
