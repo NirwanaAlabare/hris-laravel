@@ -311,7 +311,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         $total_upah_thp_rupiah_pembulatan= ceil($total_upah_thp_rupiah / 100) * 100;
         $pembulatan=$total_upah_thp_rupiah_pembulatan-$total_upah_thp_rupiah;
         $upah_per_jam=$upah_per_bulan/173;
-        $periode_kehadiran = $Data->periode_early ?? $periode_kehadiran;
+        $periode_kehadiran = $Data->periode_early ?? $Data->periode_kehadiran;
 
         // $explodePeriodePayroll = explode(" s/d ", $periode_kehadiran);
         // $periodePayroll =$explodePeriodePayroll[1];
