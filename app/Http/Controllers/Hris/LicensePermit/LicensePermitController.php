@@ -123,11 +123,17 @@ class LicensePermitController extends AdminBaseController
         }
 
         return DataTables::of($data)
+        ->editColumn('tanggal_berlaku', function ($row) {
+            return Carbon::parse($row->tanggal_berlaku)->translatedFormat('d F Y');
+        })
+        ->editColumn('tanggal_kadaluarsa', function ($row) {
+            return Carbon::parse($row->tanggal_kadaluarsa)->translatedFormat('d F Y');
+        })
             ->addColumn('action', function ($row) {
-                return '<a href="' . $row->dokumen_url . '" class="btn btn-primary btn-sm" target="_blank">Lihat</a>
-                        <button class="btn btn-warning btn-sm download-btn" data-id="' . $row->id . '">Download</button>
-                        <button class="btn btn-warning btn-sm edit-btn" data-id="' . $row->id . '">Edit</button>
-                        <button class="btn btn-danger btn-sm delete-btn" data-id="' . $row->id . '">Hapus</button>';
+                return '<a href="' . $row->dokumen_url . '" class="btn btn-primary btn-sm" target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                        <button class="btn btn-warning btn-sm download-btn" data-id="' . $row->id . '"><i class="fa fa-download" aria-hidden="true"></i></button>
+                        <button class="btn btn-success btn-sm edit-btn" data-id="' . $row->id . '"><i class="fa fa-edit" aria-hidden="true"></i></button>
+                        <button class="btn btn-danger btn-sm delete-btn" data-id="' . $row->id . '"><i class="fa fa-trash" aria-hidden="true"></i></button>';
             })
             ->rawColumns(['action'])
             ->make(true);
