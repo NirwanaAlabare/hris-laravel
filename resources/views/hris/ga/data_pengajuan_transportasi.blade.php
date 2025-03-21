@@ -723,7 +723,7 @@
                     if(row.alasan_status!==null){
                         alasan_status_alternative=row.alasan_status;
                     }
-                    if (row.user==4241 || row.user==20 || row.user==6083 || row.user==5321 || row.user== 7765 || row.user == 109){
+                    if (row.user==4241 || row.user==20 || row.user==6083 || row.user==5321 || row.user== 7765 || row.user == 109 || row.user == 1932){
                         if(row.status==0){
                             return `<a class='btn btn-success py-0 px-2 mt-0 btn-sm btn-block text-white' style='font-size:9pt' data-toggle="modal" data-target="#approveModal" ' onclick="approve_function(` + row.id + `,'` + row.employee_name + `','` + row.department_name + `','` + row.detail_alamat + `','` + row.detail_address +  `','` + row.desa + `','` + row.detail_alamat_tujuan + `','` + row.desa_tujuan + `','` + row.tujuan_pemberangkatan + `','` + row.tanggal_pemberangkatan + `','` + row.jarak_tempuh + `','` + (row.alasan_status===null?'':row.alasan_status) + `','approve')">APPROVE</a><a class='btn btn-danger py-0 px-2 mt-1 btn-sm btn-block text-white' style='font-size:9pt' data-toggle="modal" data-target="#approveModal" ' onclick="approve_function(` + row.id + `,'` + row.employee_name + `','` + row.department_name + `','` + row.detail_alamat + `','` + row.detail_address +  `','` + row.desa + `','` + row.detail_alamat_tujuan + `','` + row.desa_tujuan + `','` + row.tujuan_pemberangkatan + `','` + row.tanggal_pemberangkatan + `','` + row.jarak_tempuh + `','` + (row.alasan_status===null?'':row.alasan_status) + `','alternative')">ALTERNATIVE</a>`;
                         }else if(row.status==1){
