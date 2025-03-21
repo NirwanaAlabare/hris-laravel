@@ -227,6 +227,50 @@ table.dataTable td {
 
     <script>
 
+    function export_excel_konsumsi() {
+            var daterange = $("#daterange1").val();
+            var dates = daterange.split(" s/d ");
+            var from = dates[0];
+            var to = dates[1];
+
+                Swal.fire({
+                    title: 'Please Wait...',
+                    html: 'Exporting Data...',
+                    didOpen: () => {
+                        Swal.showLoading()
+                    },
+                    allowOutsideClick: false,
+                });
+
+                $.ajax({
+                    type: "get",
+                    url: '{{ route('fls.export_excel_konsumsi') }}',
+                    data: {
+                        from: from,
+                        to: to
+                    },
+                    xhrFields: {
+                        responseType: 'blob'
+                    },
+                    success: function(response) {
+                        {
+                            swal.close();
+                            Swal.fire({
+                                title: 'Data Sudah Di Export!',
+                                icon: "success",
+                                showConfirmButton: true,
+                                allowOutsideClick: false
+                            });
+                            var blob = new Blob([response]);
+                            var link = document.createElement('a');
+                            link.href = window.URL.createObjectURL(blob);
+                            link.download = from + " to "+to+" Laporan Budgeting Makanan.xlsx";
+                            link.click();
+                        }
+                    },
+                });
+            }
+
         var m = 0;
         function myFunction() {
             $('#tambah_karyawan').attr('disabled','true');
