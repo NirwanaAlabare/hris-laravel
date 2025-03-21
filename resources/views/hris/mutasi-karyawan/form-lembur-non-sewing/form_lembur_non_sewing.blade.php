@@ -1007,8 +1007,11 @@ table.dataTable td {
             });
         }
         function export_excel_insentif() {
-            let from = document.getElementById("tgl-awal").value;
-            let to = document.getElementById("tgl-akhir").value;
+
+            var daterange = $("#daterange1").val();
+            var dates = daterange.split(" s/d ");
+            var from = dates[0];
+            var to = dates[1];
             Swal.fire({
                 title: 'Please Wait...',
                 html: 'Exporting Data...',
@@ -1048,8 +1051,10 @@ table.dataTable td {
             });
         }
         function export_excel_all() {
-            let from = document.getElementById("tgl-awal").value;
-            let to = document.getElementById("tgl-akhir").value;
+            var daterange = $("#daterange1").val();
+            var dates = daterange.split(" s/d ");
+            var from = dates[0];
+            var to = dates[1];
 
             Swal.fire({
                 title: 'Please Wait...',
