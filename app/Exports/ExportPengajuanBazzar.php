@@ -42,7 +42,6 @@ class ExportPengajuanBazzar implements FromView
             ->get();
         }
         $total_jumlah = $data->sum('jumlah');
-
         return view('hris/mutasi-karyawan.bazzar.export_pengajuan_excel', [
             'data' => $data,
             'total_jumlah' => $total_jumlah,
