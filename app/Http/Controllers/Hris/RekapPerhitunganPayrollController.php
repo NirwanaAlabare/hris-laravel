@@ -691,7 +691,6 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $minMonth = date('Y-m', strtotime(date('Y-m-01') . ' +1 month'));
         }
 
-
         $this->latestData = RekapPerhitunganPayroll::latest('updated_at')->first();
         $this->loggedAdmin = Auth::guard('admin')->user();
         $rekap_payroll=RekapPerhitunganPayroll::where('periode_kehadiran',$this->latestData->periode_kehadiran)->orderBy('enroll_id')->get();

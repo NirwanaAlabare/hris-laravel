@@ -439,7 +439,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
             $koreksi_upah_rupiah,
             $koreksi_potongan_rupiah,
             $nol,
-            $potongan_kehadiran_rupiah,
+            abs($potongan_kehadiran_rupiah),
             $rp_pot_jam,
             $upah_bruto_rupiah,
             $pph21,

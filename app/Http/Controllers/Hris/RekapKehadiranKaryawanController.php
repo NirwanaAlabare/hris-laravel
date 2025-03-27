@@ -217,10 +217,11 @@ class RekapKehadiranKaryawanController extends AdminBaseController
 
     public function ajax_getperiodepayroll()
     {
-        $query =  RekapKehadiranKaryawan::selectRaw('periode_payroll')
+        $query =  RekapKehadiranKaryawan::selectRaw('periode_payroll, periode_tahun, periode_bulan')
                                     ->groupby('periode_payroll')
                                     ->orderby('periode_payroll', 'desc')
                                     ->get();
+
         return $query;
 
     }
