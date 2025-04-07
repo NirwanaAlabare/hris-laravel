@@ -660,7 +660,7 @@ h1 {
                         <div class="form-group">
                             <label class="form-label">JUMLAH :</label>
                             <div class="input-group">
-                                <input type="text" class="form-control jml_permintaan_uang_realisasi" name="jml_permintaan_uang_realisasi[]" value="">
+                                <input type="text" class="form-control jml_permintaan_uang" name="jml_permintaan_uang[]" value="">
                                 <button class="btn btn-danger ml-3 remove-form"><i class="fa fa-trash"></i></button>
                             </div>
                         </div>
@@ -778,14 +778,12 @@ h1 {
                     data.keterangan_list.push({ keterangan, jumlah });
                 }
             });
-
             $.ajax({
                 url: '{{ route('entertaint_tamu.store') }}',
                 type: "POST",
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 success: function (response) {
-                    console.log(response);
                     notif({
                         msg: "<b>Success:</b> Data berhasil disimpan.",
                         type: "success"
