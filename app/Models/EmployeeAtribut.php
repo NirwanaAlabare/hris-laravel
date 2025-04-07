@@ -242,4 +242,8 @@ class EmployeeAtribut extends \Eloquent
     public function group_department(){
         return $this->belongsTo(BMasterCC::class, 'sub_dept_id','no_cc');
     }
+    public function pengajuan_tamu()
+    {
+        return $this->hasMany(EntertainPengajuanTamu::class, 'enroll_id', 'enroll_id');
+    }
 }

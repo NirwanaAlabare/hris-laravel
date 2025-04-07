@@ -1125,6 +1125,13 @@
             font-size: 9pt; /* Hide the horizontal scroll */
         }
     </style>
+    <script>
+        $(document).ready(function() {
+            $('#nomor_rekening_bank').on('input', function() {
+                $('#nama_bank').val('');
+            });
+        });
+    </script>
     <script type="text/javascript">
         $('#btndownloadid').click(function(e){
             if($('#enroll_id').val()==''){
@@ -2422,6 +2429,15 @@
 
                 return false;
             }
+            if($('#nama_bank').val() == '') {
+                    notif({
+                        msg: "<b>Error:</b> Oops Nama Bank belum di pilih.",
+                        type: "error"
+                        });
+                $("#nama_bank").addClass('border-danger');
+                return false;
+                }
+
 
             if($('#tanggal_resign').val()) {
                 var tgl = defaultDate($('#tanggal_resign').val());
@@ -2574,9 +2590,9 @@
                                             $("#btn-save").prop("disabled", true);
                                             $("#btn-cancel").prop("disabled", true);
 
-                                            // setTimeout(function myFunction() {
-                                            //     location.reload();
-                                            // }, 3000);
+                                            setTimeout(function myFunction() {
+                                                location.reload();
+                                            }, 3000);
 
                                         },
                                         error: function(res){
@@ -2631,7 +2647,6 @@
                     }
                 });
             } else {
-
                 $('#btn-save').addClass("btn-loading");
                 $("#btn-save").html('Please wait...');
                 $("#btn-save").attr("disabled", true);
@@ -2754,9 +2769,9 @@
                                 $("#btn-save").prop("disabled", true);
                                 $("#btn-cancel").prop("disabled", true);
 
-                                // setTimeout(function myFunction() {
-                                //     location.reload();
-                                // }, 3000);
+                                setTimeout(function myFunction() {
+                                    location.reload();
+                                }, 3000);
 
                             },
                             error: function(res){
