@@ -18,6 +18,7 @@ use App\Models\EntertainPengajuanTamu;
 use App\Models\EntertainPengajuanPendamping;
 use App\Models\EntertainPengajuanKeterangan;
 use App\Models\PengajuanDokumenLegal;
+use App\Models\EntertainRealisasiPengajuan;
 use App\Models\DepartmentAll;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -106,9 +107,41 @@ class EntertaintController extends AdminBaseController
 
         return response()->json(['message' => 'Pengajuan berhasil disimpan'], 201);
     }
+    public function realisasi(Request $request)
+    {
+        $request->validate([
+            'pengajuan_id' => 'required|string|max:10',
+            'keterangan_list' => 'array',
+        ]);
+
+        $totalRealisasi = 0;
+
+        if ($request->has('keterangan_list')) {
+            foreach ($request->keterangan_list as $item) {
+                $jumlah = preg_replace('/[^0-9]/', '', $item['jumlah']);
+                $totalRealisasi += (int) $jumlah;
+
+                EntertainRealisasiPengajuan::create([
+                    'pengajuan_id' => $request->pengajuan_id,
+                    'keterangan' => $item['keterangan'],
+                    'jumlah' => $jumlah,
+                ]);
+            }
+        }
+
+        $pengajuan = EntertainPengajuanTamu::where('id', $request->pengajuan_id)->first();
+        $pengajuan->update([
+            'is_realisasi' => 1,
+            'realisasi_by' => Auth::guard('admin')->user()->email,
+            'jumlah_realisasi' => $totalRealisasi,
+            'jumlah_sisa' => $pengajuan->jumlah_pengajuan - $totalRealisasi,
+        ]);
+
+        return response()->json(['message' => 'Realisasi berhasil disimpan'], 201);
+    }
     public function getData()
     {
-        $pengajuan = EntertainPengajuanTamu::with(['pendamping', 'keterangan'])->get();
+        $pengajuan = EntertainPengajuanTamu::with(['pendamping', 'keterangan','employee'])->get();
 
         return datatables()->of($pengajuan)
             ->addColumn('pendamping', function ($row) {
@@ -127,15 +160,33 @@ class EntertaintController extends AdminBaseController
                 return  $bagian->sub_dept_name;
             })
             ->addColumn('jumlah', function ($row) {
-                return $row->keterangan->sum('jumlah');
+                return $row->jumlah_pengajuan;
+            })
+            ->addColumn('jumlah_realisasi', function ($row) {
+                return $row->jumlah_realisasi;
+            })
+            ->addColumn('jumlah_sisa', function ($row) {
+                return $row->jumlah_sisa;
             })
             ->addColumn('actions', function ($row) {
-                return  '<a class="btn btn-warning btn-sm" style="color:white;" data-toggle="tooltip" title="Export Pengajuan"  onclick="export_pengajuan_permintaan_kas('.$row->id.')">
-                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                                    </a>
-                                    <a class="btn btn-danger btn-sm" style="color:white;" data-toggle="tooltip" title="Export Realisasi"  onclick="export_realisasi_permintaan_kas('.$row->id.')">
-                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                                    </a>';
+                return  '<div class="btn-group d-flex justify-content-center">
+                            <button type="button" class="btn btn-primary rounded-circle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <button class="dropdown-item" type="button" onclick="export_pengajuan_permintaan_kas('.$row->id.')">
+                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                    <span class="ml-2">Export Pengajuan</span>
+                                </button>
+                                <button class="dropdown-item" type="button" onclick="export_realisasi_permintaan_kas('.$row->id.')">
+                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                    <span class="ml-2">Export Realisasi</span>
+                                </button>
+                                <button class="dropdown-item" type="button" onclick="open_modal_realisasi_pengajuan('.htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8').')">
+                                    <span class="ml-2">Realisasi</span>
+                                </button>
+                            </div>
+                        </div>';
             })
             ->rawColumns(['keterangan', 'actions'])
             ->make(true);

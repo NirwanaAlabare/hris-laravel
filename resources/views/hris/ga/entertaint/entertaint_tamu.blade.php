@@ -187,6 +187,8 @@ h1 {
                                                 <th>Keperluan</th>
                                                 {{-- <th>Pendamping</th> --}}
                                                 <th>Jumlah</th>
+                                                <th>Jumlah Realisasi</th>
+                                                <th>Sisa</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
@@ -365,80 +367,150 @@ h1 {
         </div>
     </div>
 
-    <div id="editModal" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Dokumen</h5>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <form id="editForm">
-                        <input type="hidden" id="edit_id" name="id">
-
-                        <div class="form-group">
-                            <label>Jenis Dokumen</label>
-                            <select class="form-control" id="edit_jenis_dokumen" name="jenis_dokumen">
-                                <option value="PERIJINAN">PERIJINAN</option>
-                                <option value="LAPORAN">LAPORAN</option>
-                                <option value="PROSEDUR">PROSEDUR</option>
-                                <option value="FORMULIR">FORMULIR</option>
-                                <option value="SURAT">SURAT</option>
-                            </select>
-                            <small class="error-message text-danger"></small>
+    <div class="modal fade" id="ajax-modal-realisasi-pengajuan"  role="dialog" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document" style="max-width: 50%;">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary p-2">
+                            <h4 class="modal-title pl-2 font-weight-bold" id="title-modal-edit1">REALISASI PENGAJUAN</h4>
+                            <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
+                                <i class="fa fa-remove"></i>
+                            </button>
                         </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">DIAJUKAN OLEH : </label>
+                                        <input readonly class="form-control" id="realisasi_diajukan_oleh" name="realisasi_diajukan_oleh" type="text">
+                                        <input readonly class="form-control" id="pengajuan_id" name="pengajuan_id" type="hidden">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">DEPARTMENT : </label>
+                                        <input type="text" readonly value="" class="form-control" id="realisasi_department" name="realisasi_department">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">BAGIAN : </label>
+                                        <input type="text" readonly value="" class="form-control" id="realisasi_bagian" name="realisasi_bagian">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">TANGGAL KEDATANGAN TAMU : </label>
+                                        <div class="input-group">
+                                            <input type="date" class="form-control" id="realisasi_tanggal_kedatangan_tamu" name="realisasi_tanggal_kedatangan_tamu"
+                                            value="{{ date('Y-m-d') }}" onchange="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">NAMA INSTANSI : </label>
+                                        <div class="input-group">
+                                            <input type="text" readonly value="" class="form-control" id="realisasi_nama_instansi" name="realisasi_nama_instansi">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">NAMA TAMU : </label>
+                                        <div class="input-group">
+                                            <input type="text" readonly value="" class="form-control" id="realisasi_nama_tamu" name="realisasi_nama_tamu">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">JABATAN TAMU : </label>
+                                        <div class="input-group">
+                                            <input type="text" readonly value="" class="form-control" id="realisasi_jabatan_tamu" name="realisasi_jabatan_tamu">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="form-label">JML TAMU : </label>
+                                        <div class="input-group">
+                                            <input type="number" readonly value="" maxlength="2" class="form-control" id="realisasi_jumlah_tamu" name="realisasi_jumlah_tamu">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">KEPERLUAN : </label>
+                                        <div class="input-group">
+                                            <input type="text" readonly class="form-control" id="realisasi_keperluan" name="realisasi_keperluan">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <button id="add-form-realisasi" class="btn btn-primary">Tambah Detail Realisasi<i class="fa fa-plus ml-2"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">PENGAJUAN : </label>
+                                        <div class="input-group">
+                                            <input type="text" readonly class="form-control" id="jml_realisasi_pengajuan" name="jml_realisasi_pengajuan">
+                                        </div>
+                                    </div>
+                                </div>
 
-                        <div class="form-group">
-                            <label>Kode Dokumen</label>
-                            <input type="text" class="form-control" id="edit_kode_dokumen" name="kode_dokumen">
-                            <small class="error-message text-danger"></small>
+                                <div class="col-md-12">
+                                    <div id="form-container-realisasi">
+                                        <!-- Default input yang tidak bisa dihapus -->
+                                        <div class="row form-group-item-realisasi">
+                                            <div class="col-md-8">
+                                                <div class="form-group">
+                                                    <label class="form-label">KETERANGAN :</label>
+                                                    <input type="text" class="form-control keterangan_realisasi" name="keterangan_realisasi[]">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">JUMLAH :</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control jml_permintaan_uang_realisasi" name="jml_permintaan_uang_realisasi[]" value="">
+                                                        <button class="btn btn-danger ml-3 remove-form-realisasi" disabled><i class="fa fa-trash"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label class="form-label">TOTAL</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                            <label class="form-label " id="total-nominal-realisasi">RP.0</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <hr class="m-0 p-0"/>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="form-group">
-                            <label>Nama Dokumen</label>
-                            <input type="text" class="form-control" id="edit_nama_dokumen" name="nama_dokumen">
+                        <div class="modal-footer bg-primary p-1">
+                            <div class="btn-list">
+                                <button type="button" id="submit-form-realisasi" class="btn btn-secondary btn-app">Simpan</button>
+                                <button type="button" id="btn-close_edit1" class="btn btn-warning btn-app" data-dismiss="modal">Tutup</button>
+                            </div>
                         </div>
-
-                        <div class="form-group">
-                            <label>Tanggal Berlaku</label>
-                            <input type="date" class="form-control" id="edit_tanggal_berlaku" name="tanggal_berlaku">
-                            <small class="error-message text-danger"></small>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Tanggal Kadaluarsa</label>
-                            <input type="date" class="form-control" id="edit_tanggal_kadaluarsa" name="tanggal_kadaluarsa">
-                            <small class="error-message text-danger"></small>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Penanggung Jawab</label>
-                            <input type="text" class="form-control" id="edit_penanggung_jawab" name="penanggung_jawab">
-                            <small class="error-message text-danger"></small>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Revisi Ke</label>
-                            <input type="number" class="form-control" id="edit_revisi_ke" name="revisi_ke">
-                            <small class="error-message text-danger"></small>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Keterangan</label>
-                            <textarea class="form-control" id="edit_keterangan" name="keterangan"></textarea>
-                            <small class="error-message text-danger"></small>
-                        </div>
-
-                        <div class="form-group">
-                            <label>File Dokumen</label>
-                            <div id="edit-file-preview"></div> <!-- Preview file -->
-                            <input type="file" id="edit-file-upload" name="dokumen_file" class="form-control">
-                            <small class="error-message text-danger"></small>
-                        </div>
-
-
-                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -515,7 +587,7 @@ h1 {
 
     <script>
         function formatRupiah(angka) {
-            return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            return angka?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         }
 
         function parseRupiah(value) {
@@ -536,6 +608,24 @@ h1 {
         });
 
         $(document).on("focus", ".jml_permintaan_uang", function () {
+            let value = $(this).val().replace(/[^0-9]/g, "");
+            $(this).val(value ? value : "");
+        });
+        $(document).on("input", ".jml_permintaan_uang_realisasi", function () {
+            let value = $(this).val().replace(/[^0-9]/g, ""); // Hanya angka
+            if (value) {
+                $(this).val("Rp " + formatRupiah(value));
+            } else {
+                $(this).val("");
+            }
+        });
+
+        $(document).on("blur", ".jml_permintaan_uang_realisasi", function () {
+            let value = $(this).val().replace(/[^0-9]/g, "");
+            $(this).val(value ? "Rp " + formatRupiah(value) : "Rp 0");
+        });
+
+        $(document).on("focus", ".jml_permintaan_uang_realisasi", function () {
             let value = $(this).val().replace(/[^0-9]/g, "");
             $(this).val(value ? value : "");
         });
@@ -570,7 +660,7 @@ h1 {
                         <div class="form-group">
                             <label class="form-label">JUMLAH :</label>
                             <div class="input-group">
-                                <input type="text" class="form-control jml_permintaan_uang" name="jml_permintaan_uang[]" value="">
+                                <input type="text" class="form-control jml_permintaan_uang_realisasi" name="jml_permintaan_uang_realisasi[]" value="">
                                 <button class="btn btn-danger ml-3 remove-form"><i class="fa fa-trash"></i></button>
                             </div>
                         </div>
@@ -594,6 +684,69 @@ h1 {
 
             formContainer.addEventListener("input", function (e) {
                 if (e.target.classList.contains("jml_permintaan_uang")) {
+                    updateTotal();
+                }
+            });
+
+            updateTotal();
+        });
+
+        // REALISASI FORM
+        document.addEventListener("DOMContentLoaded", function () {
+            let formContainer = document.getElementById("form-container-realisasi");
+            let addButton = document.getElementById("add-form-realisasi");
+            let totalLabel = document.getElementById("total-label-realisasi");
+
+
+            function updateTotal() {
+                let total = 0;
+                $(".jml_permintaan_uang_realisasi").each(function () {
+                    let value = parseRupiah($(this).val()); // Ambil hanya angka
+                    total += value ? parseInt(value) : 0;
+                });
+
+                $("#total-nominal-realisasi").text("Rp " + formatRupiah(total)); // Update total
+            }
+
+            addButton.addEventListener("click", function (e) {
+                e.preventDefault();
+                let newForm = document.createElement("div");
+                newForm.classList.add("row", "form-group-item-realisasi");
+                newForm.innerHTML = `
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label class="form-label">KETERANGAN :</label>
+                            <input type="text" class="form-control keterangan_realisasi" name="keterangan_realisasi[]">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">JUMLAH :</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control jml_permintaan_uang_realisasi" name="jml_permintaan_uang_realisasi[]" value="">
+                                <button class="btn btn-danger ml-3 remove-form-realisasi"><i class="fa fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                formContainer.appendChild(newForm);
+                updateTotal();
+            });
+
+
+            formContainer.addEventListener("click", function (e) {
+                if (e.target.classList.contains("remove-form-realisasi") || e.target.closest(".remove-form-realisasi")) {
+                    e.preventDefault();
+                    let allForms = document.querySelectorAll(".form-group-item-realisasi");
+                    if (allForms.length > 1) {
+                        e.target.closest(".form-group-item-realisasi").remove();
+                        updateTotal();
+                    }
+                }
+            });
+
+            formContainer.addEventListener("input", function (e) {
+                if (e.target.classList.contains("jml_permintaan_uang_realisasi")) {
                     updateTotal();
                 }
             });
@@ -659,11 +812,108 @@ h1 {
                 },
             });
         });
+        $("#submit-form-realisasi").click(function (e) {
+            e.preventDefault();
+
+            let data = {
+                pengajuan_id: $('#pengajuan_id').val(),
+                keterangan_list: []
+            };
+
+            $(".form-group-item-realisasi").each(function () {
+                let keterangan = $(this).find(".keterangan_realisasi").val();
+                let jumlah = $(this).find(".jml_permintaan_uang_realisasi").val();
+                if (keterangan && jumlah) {
+                    data.keterangan_list.push({ keterangan, jumlah });
+                }
+            });
+            $.ajax({
+                url: '{{ route('entertaint_tamu.realisasi') }}',
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (response) {
+                    console.log(response);
+                    notif({
+                        msg: "<b>Success:</b> Data berhasil disimpan.",
+                        type: "success"
+                    });
+
+                    $("#form-container_realisasi").find(".form-group-item-realisasi:not(:first)").remove();
+                    $("#form-container_realisasi .form-group-item-realisasi:first input").val('');
+
+                    // Reset total nominal
+                    $("#ajax-modal-realisasi-pengajuan").modal('hide');
+                    $('#entertaintTable').DataTable().ajax.reload();
+                },
+                error: function (xhr) {
+                    console.log(xhr);
+                    notif({
+                        msg: "<b>Info:</b> Terjadi kesalahan saat mengirim data!",
+                        type: "error"
+                    });
+                },
+            });
+        });
 
 
         function open_modal_buat_dokumen() {
             $("#ajax-modal-tambah").modal('show');
             $('#title-modal-list').text('PENGAJUAN KUPON KARYAWAN');
+        }
+
+        function open_modal_realisasi_pengajuan(row) {
+            console.log(row);
+
+            let container = $('#form-container-realisasi');
+            container.empty();
+
+            let total = 0;
+
+            if (row.keterangan && row.keterangan.length > 0) {
+                row.keterangan.forEach((item, index) => {
+                    let jumlah = parseInt(item.jumlah) || 0;
+                    total += jumlah;
+
+                    let formItem = `
+                        <div class="row form-group-item-realisasi">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="form-label">KETERANGAN :</label>
+                                    <input type="text" class="form-control keterangan_realisasi" name="keterangan_realisasi[]" value="${item.keterangan}">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">JUMLAH :</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control jml_permintaan_uang_realisasi" name="jml_permintaan_uang_realisasi[]" value="${formatRupiah(jumlah.toString())}">
+                                        <button class="btn btn-danger ml-3 remove-form-realisasi" ${index === 0 ? "disabled" : ""}><i class="fa fa-trash"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.append(formItem);
+                });
+            }
+
+            $('#total-nominal-realisasi').text("Rp " + formatRupiah(total));
+            $('#jml_realisasi_pengajuan').val("Rp" + formatRupiah(total));
+
+            $('#pengajuan_id').val(row['id'] || "");
+            $('#realisasi_jabatan_tamu').val(row['jabatan_tamu'] || "");
+            $('#realisasi_jumlah_tamu').val(row['qty_tamu'] || "");
+            $('#realisasi_keperluan').val(row['keperluan'] || "");
+            $('#jml_realisasi_pengajuan').val("Rp" + formatRupiah(row['keterangan'].reduce((total, item) => total + parseInt(item.jumlah), 0) || ""));
+            $('#realisasi_nama_instansi').val(row['tamu_instansi'] || "");
+            $('#realisasi_nama_tamu').val(row['nama_tamu'] || "");
+            $("#ajax-modal-realisasi-pengajuan").modal('show');
+            $('#realisasi_diajukan_oleh').val(row['employee']['employee_name']);
+            $('#realisasi_department').val(row['employee']['department_name'] || "");
+            $('#realisasi_bagian').val(row['employee']['sub_dept_name']);
+
+
         }
 
 
@@ -688,6 +938,18 @@ h1 {
                         name: 'jumlah',
                         render: function(data, type, row) {
                             return "Rp" + formatRupiah(data);
+                        }
+                    },
+                    {   data: 'jumlah_realisasi',
+                        name: 'jumlah_realisasi',
+                        render: function(data, type, row) {
+                            return  data ? ("Rp" + formatRupiah(data)) : "Belum Realisasi";
+                        }
+                    },
+                    {   data: 'jumlah_sisa',
+                        name: 'jumlah_sisa',
+                        render: function(data, type, row) {
+                            return  data ? ("Rp" + formatRupiah(data)) : "-";
                         }
                     },
                     { data: 'actions', name: 'actions', orderable: false, searchable: false }
