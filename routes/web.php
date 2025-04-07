@@ -10,6 +10,8 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+use App\Events\TestEvent;
 Route::get('/base64', function(){
     $image = public_path('installer/img/pattern.png');;
     $img = \Image::make($image);
@@ -189,9 +191,18 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     // ENTERTAINT
     Route::get('/entertaint-tamu', ['as' => 'entertaint_tamu.index','uses' => 'Entertaint\EntertaintController@index']);
     Route::post('/entertaint_tamu/store', ['as' => 'entertaint_tamu.store','uses' => 'Entertaint\EntertaintController@store']);
+    Route::post('/entertaint_tamu/realisasi', ['as' => 'entertaint_tamu.realisasi','uses' => 'Entertaint\EntertaintController@realisasi']);
     Route::get('/entertaint_tamu/show', ['as' => 'entertaint_tamu.show','uses' => 'Entertaint\EntertaintController@getData']);
     Route::get('/entertaint_tamu/export_pengajuan_permintaan_kas', ['as' => 'entertaint_tamu.export_pengajuan_permintaan_kas','uses' => 'Entertaint\EntertaintController@export_pengajuan_permintaan_kas']);
     Route::get('/entertaint_tamu/export_realisasi_permintaan_kas', ['as' => 'entertaint_tamu.export_realisasi_permintaan_kas','uses' => 'Entertaint\EntertaintController@export_realisasi_permintaan_kas']);
+
+    // CUTI KARYAWAN
+    Route::get('/cuti_karyawan', ['as' => 'cuti_karyawan.index','uses' => 'MasterData\CutiKaryawanController@index']);
+    Route::post('/cuti_karyawan/store', ['as' => 'cuti_karyawan.store','uses' => 'MasterData\CutiKaryawanController@store']);
+    Route::get('/cuti_karyawan/show', ['as' => 'cuti_karyawan.show','uses' => 'MasterData\CutiKaryawanController@getData']);
+    Route::get('/cuti_karyawan/export_pengajuan_permintaan_kas', ['as' => 'cuti_karyawan.export_pengajuan_permintaan_kas','uses' => 'MasterData\CutiKaryawanController@export_pengajuan_permintaan_kas']);
+    Route::get('/cuti_karyawan/export_realisasi_permintaan_kas', ['as' => 'cuti_karyawan.export_realisasi_permintaan_kas','uses' => 'MasterData\CutiKaryawanController@export_realisasi_permintaan_kas']);
+    Route::get('/cuti_karyawan/export_form_pengajuan_cuti_pdf', ['as' => 'cuti_karyawan.export_form_pengajuan_cuti_pdf','uses' => 'MasterData\CutiKaryawanController@export_form_pengajuan_cuti_pdf']);
 
     Route::get('hrd/export_pdf_sk_bni',['as'=>'hris.hrd.export_pdf_sk_bni','uses'=>'HRDController@export_pdf_sk_bni']);
     Route::post('hrd/export_pdf_print_sk',['as'=>'hris.hrd.export_pdf_print_sk','uses'=>'HRDController@export_pdf_print_sk']);
@@ -614,6 +625,11 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'admin','names
     Route::get('admin/editprofile/',['as'=>'admin.admin.editprofile','uses'=> 'AdminController@editprofile']);
     Route::post('admin/ajax_resetpwd/',['as'=>'admin.admin.ajax_resetpwd','uses'=> 'AdminController@ajax_resetpwd']);
 
+    // NOTIFIKASI
+    Route::get('/notifications',['as'=>'admin.admin.get_notifications','uses'=>'AdminController@get_notifications']);
+
+    Route::post('/notifications/mark-as-read/{id}',['as'=>'admin.admin.markAsRead','uses'=>'AdminController@markAsRead']);
+
     Route::get('datakehadiraninoutedited/abseninout/',['as'=>'admin.datakehadiraninoutedited.abseninout','uses'=> 'DataKehadiranInOutEditedController@abseninout']);
     Route::post('datakehadiraninoutedited/ajax_abseninout/',['as'=>'admin.datakehadiraninoutedited.ajax_abseninout','uses'=> 'DataKehadiranInOutEditedController@ajax_abseninout']);
     Route::post('datakehadiraninoutedited/ajax_abseninout_edited/',['as'=>'admin.datakehadiraninoutedited.ajax_abseninout_edited','uses'=> 'DataKehadiranInOutEditedController@ajax_abseninout_edited']);
@@ -633,8 +649,16 @@ Event::listen('auth.login', function($user)
 // Lock Screen Routing
 Route::get('screenlock', 'Admin\AdminController@screenlock');
 
+
 Route::get('/show-absensi', function(){
     return view('hris.show-absensi.show_absensi');
 });
 
 Route::get('/controller-show-absensi','HandleAbsensiController@index');
+
+
+Route::get('/trigger', 'Admin\AdminController@trigger_event');
+
+
+
+    // NOTIFIKASI
