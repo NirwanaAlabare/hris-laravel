@@ -96,11 +96,19 @@ class EntertaintController extends AdminBaseController
         }
 
         if ($request->has('keterangan_list')) {
+            $totalJumlah = 0;
             foreach ($request->keterangan_list as $item) {
+
+                $jumlah = (int) preg_replace('/[^0-9]/', '', $item['jumlah']);
+                $totalJumlah += $jumlah;
+
                 EntertainPengajuanKeterangan::create([
                     'pengajuan_id' => $pengajuan->id,
                     'keterangan' => $item['keterangan'],
-                    'jumlah' => preg_replace('/[^0-9]/', '', $item['jumlah']),
+                    'jumlah' => $jumlah,
+                ]);
+                $pengajuan->update([
+                    'jumlah_pengajuan' => $totalJumlah,
                 ]);
             }
         }
