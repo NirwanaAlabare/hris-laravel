@@ -42,4 +42,8 @@ class EntertainPengajuanTamu extends Model
     {
         return $this->hasMany(EntertainPengajuanKeterangan::class, 'pengajuan_id');
     }
+    public function realisasi()
+    {
+        return $this->hasMany(EntertainRealisasiPengajuan::class, 'pengajuan_id');
+    }
 }
