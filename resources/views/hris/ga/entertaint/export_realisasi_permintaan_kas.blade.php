@@ -191,23 +191,23 @@ function formatNama($name) {
                 $style = '';
                 $total = 1;
                 @endphp
-                @foreach ($pengajuan->keterangan as $keterangan)
+                @foreach ($pengajuan->realisasi as $realisasi)
                     <tr>
-                        <td style="margin: 0px; padding: 3px; text-align: left;">{{$keterangan->keterangan}}</td>
-                        <td style="margin: 0px; padding: 3px; border-left: none;">{{formatHarga($keterangan->jumlah)}}</td>
+                        <td style="margin: 0px; padding: 3px; text-align: left;">{{$realisasi->keterangan}}</td>
+                        <td style="margin: 0px; padding: 3px; border-left: none;">{{formatHarga($realisasi->jumlah)}}</td>
                     </tr>
                 @endforeach
                 <tr>
                     <th style="font-weight: bold; width:70%; text-align: left; margin: 0px; padding: 3px; background-color:#E7E6E6; border-bottom:none;"><strong>TOTAL REALISASI</strong></th>
-                    <th style="font-weight: bold; width:30%; text-align: center; margin: 0px; padding: 3px; background-color:#E7E6E6; border-bottom:none; border-left: none;"><strong>{{formatHarga($total_jumlah)}}</strong></th>
+                    <th style="font-weight: bold; width:30%; text-align: center; margin: 0px; padding: 3px; background-color:#E7E6E6; border-bottom:none; border-left: none;"><strong>{{formatHarga($pengajuan->jumlah_realisasi)}}</strong></th>
                 </tr>
                 <tr>
                     <th style="font-weight: bold; width:70%; text-align: left; margin: 0px; padding: 3px; background-color:#E7E6E6; border-bottom:none;"><strong>NILAI KAS BON (ADVANCE)</strong></th>
-                    <th style="font-weight: bold; width:30%; text-align: center; margin: 0px; padding: 3px; background-color:#E7E6E6; border-bottom:none; border-left: none;"><strong>{{formatHarga($total_jumlah)}}</strong></th>
+                    <th style="font-weight: bold; width:30%; text-align: center; margin: 0px; padding: 3px; background-color:#E7E6E6; border-bottom:none; border-left: none;"><strong>{{formatHarga(0)}}</strong></th>
                 </tr>
                 <tr>
                     <th style="font-weight: bold; width:70%; text-align: left; margin: 0px; padding: 3px; background-color:#E7E6E6; border-bottom:none;"><strong>KELEBIHAN / (KEKURANGAN) DANA</strong></th>
-                    <th style="font-weight: bold; width:30%; text-align: center; margin: 0px; padding: 3px; background-color:#E7E6E6; border-bottom:none; border-left: none;"><strong>{{formatHarga($total_jumlah)}}</strong></th>
+                    <th style="font-weight: bold; width:30%; text-align: center; margin: 0px; padding: 3px; background-color:#E7E6E6; border-bottom:none; border-left: none;"><strong>{{formatHarga($pengajuan->jumlah_sisa)}}</strong></th>
                 </tr>
             </tbody>
         </table>

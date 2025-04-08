@@ -182,6 +182,10 @@ class EntertaintController extends AdminBaseController
                                 <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right">
+                                <button class="dropdown-item" type="button" onclick="open_modal_realisasi_pengajuan('.htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8').')">
+                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                    <span class="ml-2">Realisasi</span>
+                                </button>
                                 <button class="dropdown-item" type="button" onclick="export_pengajuan_permintaan_kas('.$row->id.')">
                                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     <span class="ml-2">Export Pengajuan</span>
@@ -189,9 +193,6 @@ class EntertaintController extends AdminBaseController
                                 <button class="dropdown-item" type="button" onclick="export_realisasi_permintaan_kas('.$row->id.')">
                                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                                     <span class="ml-2">Export Realisasi</span>
-                                </button>
-                                <button class="dropdown-item" type="button" onclick="open_modal_realisasi_pengajuan('.htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8').')">
-                                    <span class="ml-2">Realisasi</span>
                                 </button>
                             </div>
                         </div>';
