@@ -353,7 +353,7 @@ class RekapKehadiranKaryawanController extends AdminBaseController
         $sheet->writeTo('A1', 'Controlling Absensi', ['font-size' => 14]);
         $sheet->writeTo('A2', 'Periode '.$bulan.' '.$tahun, ['font-size' => 12]);
         $dataCollect=[];
-        $tanggal=MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->where('enroll_id','5321')->pluck('tanggal_berjalan');
+        $tanggal=MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->where('enroll_id','2')->pluck('tanggal_berjalan');
         array_push($dataCollect, 'ID','NIK','NAMA','AKTIF/NON AKTIF','JOIN DATE','RESIGN DATE','STAFF/NON STAFF','JABATAN','BAGIAN','DEPARTMENT');
         $sheet->writeArrayTo('A4', [$dataCollect]);
         $style = [
