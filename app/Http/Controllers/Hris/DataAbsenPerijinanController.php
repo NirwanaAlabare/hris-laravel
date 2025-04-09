@@ -1127,6 +1127,8 @@ class DataAbsenPerijinanController extends AdminBaseController
     }
 
     public function import_data_perizinan(){
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '5120M');
         $data=Excel::toArray([],request()->file('excel_file'));
         return $data;
     }
@@ -1166,20 +1168,6 @@ class DataAbsenPerijinanController extends AdminBaseController
                 break;
             }
 
-            // $query=DB::select('select nomor_form_perizinan,CAST(substring(nomor_form_perizinan,13) AS int) as nomor_form from data_absen_perijinan where nomor_form_perizinan LIKE "'.$nomor_form_perizinan.'%" order by nomor_form desc limit 1');
-
-            // if($query == "") {
-            //     $nomor = "0000";
-            // } else {
-            //     $nomor = $query[0]->nomor_form_perizinan;
-            // }
-            // if(strlen($query[0]->nomor_form)<5){
-            //     $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
-            // }else{
-            //     $nomorform = str_pad(substr($nomor, -5) + 1,4,"0",STR_PAD_LEFT);
-            // }
-
-
             $query = DB::select('
             SELECT nomor_form_perizinan,
                    CAST(SUBSTRING(nomor_form_perizinan, 13) AS INT) AS nomor_form
@@ -1202,6 +1190,14 @@ class DataAbsenPerijinanController extends AdminBaseController
             }
 
             if ($data[0][$i][4]=='LP') {
+                $is_verifikasi=1;
+                $verifikasi_by='system';
+            }
+            else{
+                $is_verifikasi=0;
+                $verifikasi_by=null;
+            }
+            if($data[0][$i][6]!='' && $data[0][$i][6] == true){
                 $is_verifikasi=1;
                 $verifikasi_by='system';
             }

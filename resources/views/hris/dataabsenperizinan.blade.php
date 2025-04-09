@@ -106,6 +106,7 @@
                                                                 <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">NAMA KARYAWAN</td>
                                                                 <td width="120px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;padding-left:11px;font-size:10pt">STATUS ABSEN</td>
                                                                 <td width="300px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">KETERANGAN</td>
+                                                                <td width="120px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;padding-left:11px;font-size:10pt">VERIFIKASI</td>
                                                             </tr>
                                                         </thead>
                                                         <tbody id="tabel_perizinan">
@@ -149,7 +150,7 @@
                 {{-- </form> --}}
                 {!! Form::close() !!}
                 <!-- END FORM-->
-                
+
 
                 {!! Form::open(['route' => 'hris.dataabsenperijinan.ajax_exportexcel2', 'id' => 'formExport2', 'name' => 'formExport2','method'=>'post']) !!}
                     <input type="hidden" id="daterange2" name="daterange2">
@@ -605,8 +606,8 @@
                     data: formData,
                     success:function(data){
                         var count=0;
-                        for (let i = 4; i < data[0].length; i++){
-                            if (data[0][i][1] === null) continue;
+                        for (let i = 6; i < data[0].length; i++){
+                            if (data[0][i][1    ] === null) continue;
                             count++;
                             let tanggal_mulai_izin=new Date(Math.round((data[0][i][0] - 25569)*86400*1000));
                             let month = ('0' + tanggal_mulai_izin.getMonth()).slice(-2);
@@ -622,6 +623,7 @@
                                 <td width='200px'>"+data[0][i][3]+"</td>\
                                 <td width='120px'>"+data[0][i][4]+"</td>\
                                 <td width='300px'>"+data[0][i][5]+"</td>\
+                                <td width='120px'>"+data[0][i][6]+"</td>\
                             </tr>");
                         };
                         $('#length_data_perizinan').text(count);
