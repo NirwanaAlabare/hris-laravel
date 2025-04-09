@@ -1010,7 +1010,7 @@ class ProsesPayrollController extends AdminBaseController
             }
 
             // rekap perhitungan kehadiran karyawan
-          $rekap_kehadiran_karyawan = DB::select("
+            $rekap_kehadiran_karyawan = DB::select("
                     SELECT
                         a.enroll_id,
                         a.periode_payroll,
@@ -1049,9 +1049,8 @@ class ProsesPayrollController extends AdminBaseController
                         CASE
                             WHEN b.sub_dept_id = 'DEP08SUB005'
                                 AND b.jenis_kelamin = 'LAKI-LAKI'
-                                AND b.enroll_id != 7445
                             THEN
-                                (c.salary_bulanan / 25) * GREATEST((25 - a.total_kehadiran_net), 0)
+                                (c.salary_bulanan / 25) * a.kehadiran_itb
                             ELSE
                                 (c.salary_bulanan / a.jumlah_hari_kerja) *
                                 CASE
@@ -1089,7 +1088,88 @@ class ProsesPayrollController extends AdminBaseController
                             THEN emp_hist.kode_grade
                             ELSE b.kode_grade
                         END) = c.kode_grade
-                ");
+            ");
+            // dd($rekap_kehadiran_karyawan);
+            // $rekap_kehadiran_karyawan = DB::select("
+            //         SELECT
+            //             a.enroll_id,
+            //             a.periode_payroll,
+            //             CONCAT(a.periode_tahun, '-', a.periode_bulan) AS periode_tahun_bulan,
+            //             IF(emp_hist.kode_grade IS NOT NULL, emp_hist.kode_grade, b.kode_grade) AS kode_grade,
+            //             a.kehadiran_iby,
+            //             a.kehadiran_itb,
+            //             a.kehadiran_lby,
+            //             a.kehadiran_lsm,
+            //             a.kehadiran_dt,
+            //             a.kehadiran_pc,
+            //             a.kehadiran_dtpc,
+            //             a.kehadiran_m,
+            //             a.kehadiran_m_estimasi,
+            //             a.kehadiran_r,
+            //             a.kehadiran_tk,
+            //             a.kehadiran_ok,
+            //             a.total_kehadiran,
+            //             a.total_kehadiran_net,
+            //             a.jumlah_hari,
+            //             a.jumlah_hari_kerja,
+            //             c.salary_bulanan AS gaji_pokok,
+            //             (c.salary_bulanan / a.jumlah_hari_kerja) AS gaji_harian,
+
+            //             -- Gaji per menit
+            //             (c.salary_bulanan / a.jumlah_hari_kerja) /
+            //             CASE
+            //                 WHEN b.sub_dept_id = 'DEP08SUB005'
+            //                     AND b.jenis_kelamin = 'LAKI-LAKI'
+            //                     AND b.enroll_id != 7445
+            //                 THEN 420
+            //                 ELSE 480
+            //             END AS gaji_menit,
+
+            //             -- Potongan Kehadiran
+            //             CASE
+            //                 WHEN b.sub_dept_id = 'DEP08SUB005'
+            //                     AND b.jenis_kelamin = 'LAKI-LAKI'
+            //                     AND b.enroll_id != 7445
+            //                 THEN
+            //                     (c.salary_bulanan / 25) * GREATEST((25 - a.total_kehadiran_net), 0)
+            //                 ELSE
+            //                     (c.salary_bulanan / a.jumlah_hari_kerja) *
+            //                     CASE
+            //                         WHEN a.kehadiran_r = 0
+            //                         THEN GREATEST((a.jumlah_hari_kerja - (a.total_kehadiran_net + 2)), 0)
+            //                         ELSE GREATEST((a.jumlah_hari_kerja - a.total_kehadiran_net), 0)
+            //                     END
+            //             END AS potongan_kehadiran_rupiah
+
+            //         FROM (
+            //             SELECT *
+            //             FROM rekap_kehadiran_karyawan
+            //             WHERE periode_bulan = '$bulan'
+            //             AND periode_tahun = '$tahun'
+            //             $inEnrollId
+            //         ) a
+
+            //         INNER JOIN (
+            //             SELECT *
+            //             FROM employee_atribut
+            //             WHERE status_aktif = 'AKTIF'
+            //             OR (status_aktif = 'TIDAK AKTIF' AND tanggal_resign > '$tanggal_awal')
+            //         ) b ON a.enroll_id = b.enroll_id
+
+            //         LEFT JOIN (
+            //             SELECT *
+            //             FROM employee_atribut_histories
+            //             WHERE periode_payroll = '$priode'
+            //         ) emp_hist ON a.enroll_id = emp_hist.enroll_id
+
+            //         LEFT JOIN grading_salary c
+            //             ON a.periode_tahun = SUBSTR(c.periode_umk, 1, 4)
+            //             AND (CASE
+            //                 WHEN emp_hist.kode_grade IS NOT NULL
+            //                 THEN emp_hist.kode_grade
+            //                 ELSE b.kode_grade
+            //             END) = c.kode_grade
+            // ");
 
 
             foreach($rekap_kehadiran_karyawan as $key=>$value){
