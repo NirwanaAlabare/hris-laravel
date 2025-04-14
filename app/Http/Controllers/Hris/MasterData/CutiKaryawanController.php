@@ -772,7 +772,7 @@ class CutiKaryawanController extends AdminBaseController
                 'H' => ['width' => 20], // MASA KERJA
                 'I' => ['width' => 20], // HAK CUTI
                 'J' => ['width' => 12], // CUTI TERPAKAI
-                'K' => ['width' => 10], // CUTI SISA
+                'K' => ['width' => 15], // CUTI TERPAKAI
                 'L' => ['width' => 10], // CUTI SISA
             ]);
 
