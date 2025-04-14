@@ -916,6 +916,7 @@ class CutiKaryawanController extends AdminBaseController
 
         $sheet->writeTo('A1', 'PT NIRWANA ALABARE GARMENT', ['font-size' => 18]);
         $sheet->writeTo('A2', 'REKAP CUTI KARYAWAN', ['font-size' => 16]);
+        $sheet->writeTo('A3', 'PERIODE : ' . strtoupper(strftime("%d %b %Y", strtotime($awal)) . ' s/d ' . strftime("%d %b %Y", strtotime($akhir))), ['font-size' => 14]);
 
         $sheet->writeTo('A5', 'NIK');
 
