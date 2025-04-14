@@ -257,7 +257,9 @@ h1 {
                                                 <th>Nama</th>
                                                 <th>Department</th>
                                                 <th>Bagian</th>
+                                                <th>Status Aktif</th>
                                                 <th>Tanggal Masuk</th>
+                                                <th>Tanggal Resign</th>
                                                 <th>Awal Periode</th>
                                                 <th>Akhir Periode</th>
                                                 <th>Masa Kerja</th>
@@ -1070,7 +1072,9 @@ h1 {
                     { data: 'employee_name', name: 'employee_name' },
                     { data: 'department_name', name: 'department_name' },
                     { data: 'sub_dept_name', name: 'sub_dept_name' },
+                    { data: 'status_aktif', name: 'status_aktif' },
                     { data: 'join_date', name: 'join_date' },
+                    { data: 'tanggal_resign', name: 'tanggal_resign' },
                     { data: 'start_date', name: 'start_date' },
                     { data: 'end_date', name: 'end_date' },
                     { data: 'lama_bekerja', name: 'lama_bekerja' },

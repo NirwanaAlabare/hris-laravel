@@ -340,6 +340,8 @@ class CutiKaryawanController extends AdminBaseController
                     ea.enroll_id,
                     ea.employee_name,
                     ea.department_name,
+                    ea.status_aktif,
+                    ea.tanggal_resign,
                     ea.sub_dept_name,
                     ea.join_date,
                     ea.join_date AS start_date,
@@ -359,6 +361,8 @@ class CutiKaryawanController extends AdminBaseController
                     p.enroll_id,
                     p.employee_name,
                     p.department_name,
+                    p.status_aktif,
+                    p.tanggal_resign,
                     p.sub_dept_name,
                     p.join_date,
                     p.end_date AS start_date,
@@ -387,6 +391,8 @@ class CutiKaryawanController extends AdminBaseController
                     p.enroll_id,
                     p.employee_name,
                     p.department_name,
+                    p.status_aktif,
+                    p.tanggal_resign,
                     p.sub_dept_name,
                     p.join_date,
                     p.start_date,
@@ -425,6 +431,9 @@ class CutiKaryawanController extends AdminBaseController
 
             return datatables()->of($data_cuti)
             ->addColumn('join_date', function ($row) {
+                return Carbon::parse($row->join_date)->format('d-m-Y'); // Format: DDMMYYYY
+            })
+            ->addColumn('tanggal_resign', function ($row) {
                 return Carbon::parse($row->join_date)->format('d-m-Y'); // Format: DDMMYYYY
             })
             ->addColumn('start_date', function ($row) {
@@ -635,6 +644,8 @@ class CutiKaryawanController extends AdminBaseController
                     ea.status_staff,
                     ea.status_jabatan,
                     ea.department_name,
+                    ea.status_aktif,
+                    ea.tanggal_resign,
                     ea.sub_dept_name,
                     ea.join_date,
                     ea.join_date AS start_date,
@@ -656,6 +667,8 @@ class CutiKaryawanController extends AdminBaseController
                     p.status_staff,
                     p.status_jabatan,
                     p.department_name,
+                    p.status_aktif,
+                    p.tanggal_resign,
                     p.sub_dept_name,
                     p.join_date,
                     p.end_date AS start_date,
@@ -687,6 +700,8 @@ class CutiKaryawanController extends AdminBaseController
                     p.status_staff,
                     p.status_jabatan,
                     p.department_name,
+                    p.status_aktif,
+                    p.tanggal_resign,
                     p.sub_dept_name,
                     p.join_date,
                     p.start_date,
@@ -756,33 +771,32 @@ class CutiKaryawanController extends AdminBaseController
 
         $sheet->writeTo('G5', 'DEPARTMENT');
 
-        $sheet->writeTo('H5', 'TANGGAL MASUK');
+        $sheet->writeTo('H5', 'AKTIF / TIDAK AKTIF');
 
-        $sheet->writeTo('I5', 'MASA KERJA');
+        $sheet->writeTo('I5', 'TANGGAL MASUK');
+        $sheet->writeTo('J5', 'TANGGAL RESIGN');
 
-        $sheet->writeTo('J5', 'HAK CUTI');
+        $sheet->writeTo('K5', 'MASA KERJA');
 
-        $sheet->writeTo('K5', 'CUTI TERPAKAI');
-        $sheet->writeTo('L5', 'CUTI SISA');
+        $sheet->writeTo('L5', 'HAK CUTI');
 
-        $sheet->writeTo('M5', 'REKAP PENGAMBILAN CUTI', [
-            'font-size' => 14,
-            'halign' => 'center',
-            'valign' => 'center'
-        ]);
+        $sheet->writeTo('M5', 'CUTI TERPAKAI');
+        $sheet->writeTo('N5', 'CUTI SISA');
 
-        $sheet->writeTo('M6', '1');
-        $sheet->writeTo('N6', '2');
-        $sheet->writeTo('O6', '3');
-        $sheet->writeTo('P6', '4');
-        $sheet->writeTo('Q6', '5');
-        $sheet->writeTo('R6', '6');
-        $sheet->writeTo('S6', '7');
-        $sheet->writeTo('T6', '8');
-        $sheet->writeTo('U6', '9');
-        $sheet->writeTo('V6', '10');
-        $sheet->writeTo('W6', '11');
-        $sheet->writeTo('X6', '12');
+        $sheet->writeTo('O5', 'REKAP PENGAMBILAN CUTI');
+
+        $sheet->writeTo('O6', '1');
+        $sheet->writeTo('P6', '2');
+        $sheet->writeTo('Q6', '3');
+        $sheet->writeTo('R6', '4');
+        $sheet->writeTo('S6', '5');
+        $sheet->writeTo('T6', '6');
+        $sheet->writeTo('U6', '7');
+        $sheet->writeTo('V6', '8');
+        $sheet->writeTo('W6', '9');
+        $sheet->writeTo('X6', '10');
+        $sheet->writeTo('Y6', '11');
+        $sheet->writeTo('Z6', '12');
 
 
 
@@ -798,8 +812,10 @@ class CutiKaryawanController extends AdminBaseController
         $sheet->mergeCells('J5:J6');
         $sheet->mergeCells('K5:K6');
         $sheet->mergeCells('L5:L6');
+        $sheet->mergeCells('M5:M6');
+        $sheet->mergeCells('N5:N6');
 
-        $sheet->mergeCells('M5:Y5');
+        $sheet->mergeCells('O5:Z5');
 
 
 
@@ -814,24 +830,26 @@ class CutiKaryawanController extends AdminBaseController
             'E' => ['width' => 25], // BAGIAN
             'F' => ['width' => 25], // DEPARTMENT
             'G' => ['width' => 25], // TANGGAL MASUK
-            'H' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 20], // MASA KERJA
-            'I' => ['width' => 20], // HAK CUTI
-            'J' => ['width' => 12], // CUTI TERPAKAI
+            'H' => ['width' => 20], // MASA KERJA
+            'I' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY,'width' => 20], // HAK CUTI
+            'J' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY,'width' => 20], // CUTI TERPAKAI
             'K' => ['width' => 15], // CUTI TERPAKAI
             'L' => ['width' => 10], // CUTI SISA
 
-            'M' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'N' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'O' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'P' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'Q' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'R' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'S' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'T' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'U' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'V' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'W' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'X' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'M' => ['width' => 15], // MASA KERJA
+            'N' => ['width' => 15], // MASA KERJA
+            'O' => ['width' => 15], // MASA KERJA
+            'P' => ['width' => 15], // MASA KERJA
+            'Q' => ['width' => 15], // MASA KERJA
+            'R' => ['width' => 15], // MASA KERJA
+            'S' => ['width' => 15], // MASA KERJA
+            'T' => ['width' => 15], // MASA KERJA
+            'U' => ['width' => 15], // MASA KERJA
+            'V' => ['width' => 15], // MASA KERJA
+            'W' => ['width' => 15], // MASA KERJA
+            'X' => ['width' => 15], // MASA KERJA
+            'Y' => ['width' => 15], // MASA KERJA
+            'Z' => ['width' => 15], // MASA KERJA
         ]);
 
 
@@ -844,7 +862,9 @@ class CutiKaryawanController extends AdminBaseController
                 $cuti->status_jabatan,
                 $cuti->sub_dept_name,
                 $cuti->department_name,
+                $cuti->status_aktif,
                 $cuti->join_date,
+                $cuti->tanggal_resign,
                 $cuti->lama_bekerja,
                 $cuti->is_eligible == 1 ? 12 : 0,
                 $cuti->used_leave,
@@ -916,6 +936,8 @@ class CutiKaryawanController extends AdminBaseController
                     ea.status_staff,
                     ea.status_jabatan,
                     ea.department_name,
+                    ea.status_aktif,
+                    ea.tanggal_resign,
                     ea.sub_dept_name,
                     ea.join_date,
                     ea.join_date AS start_date,
@@ -937,6 +959,8 @@ class CutiKaryawanController extends AdminBaseController
                     p.status_staff,
                     p.status_jabatan,
                     p.department_name,
+                    p.status_aktif,
+                    p.tanggal_resign,
                     p.sub_dept_name,
                     p.join_date,
                     p.end_date AS start_date,
@@ -968,6 +992,8 @@ class CutiKaryawanController extends AdminBaseController
                     p.status_staff,
                     p.status_jabatan,
                     p.department_name,
+                    p.status_aktif,
+                    p.tanggal_resign,
                     p.sub_dept_name,
                     p.join_date,
                     p.start_date,
@@ -1042,32 +1068,32 @@ class CutiKaryawanController extends AdminBaseController
 
         $sheet->writeTo('G5', 'DEPARTMENT');
 
-        $sheet->writeTo('H5', 'TANGGAL MASUK');
+        $sheet->writeTo('H5', 'AKTIF / TIDAK AKTIF');
 
-        $sheet->writeTo('I5', 'MASA KERJA');
+        $sheet->writeTo('I5', 'TANGGAL MASUK');
+        $sheet->writeTo('J5', 'TANGGAL RESIGN');
 
-        $sheet->writeTo('J5', 'HAK CUTI');
+        $sheet->writeTo('K5', 'MASA KERJA');
 
-        $sheet->writeTo('K5', 'CUTI TERPAKAI');
-        $sheet->writeTo('L5', 'CUTI SISA');
+        $sheet->writeTo('L5', 'HAK CUTI');
 
+        $sheet->writeTo('M5', 'CUTI TERPAKAI');
+        $sheet->writeTo('N5', 'CUTI SISA');
 
+        $sheet->writeTo('O5', 'REKAP PENGAMBILAN CUTI');
 
-
-
-
-        $sheet->writeTo('M6', '1');
-        $sheet->writeTo('N6', '2');
-        $sheet->writeTo('O6', '3');
-        $sheet->writeTo('P6', '4');
-        $sheet->writeTo('Q6', '5');
-        $sheet->writeTo('R6', '6');
-        $sheet->writeTo('S6', '7');
-        $sheet->writeTo('T6', '8');
-        $sheet->writeTo('U6', '9');
-        $sheet->writeTo('V6', '10');
-        $sheet->writeTo('W6', '11');
-        $sheet->writeTo('X6', '12');
+        $sheet->writeTo('O6', '1');
+        $sheet->writeTo('P6', '2');
+        $sheet->writeTo('Q6', '3');
+        $sheet->writeTo('R6', '4');
+        $sheet->writeTo('S6', '5');
+        $sheet->writeTo('T6', '6');
+        $sheet->writeTo('U6', '7');
+        $sheet->writeTo('V6', '8');
+        $sheet->writeTo('W6', '9');
+        $sheet->writeTo('X6', '10');
+        $sheet->writeTo('Y6', '11');
+        $sheet->writeTo('Z6', '12');
 
 
 
@@ -1083,15 +1109,10 @@ class CutiKaryawanController extends AdminBaseController
         $sheet->mergeCells('J5:J6');
         $sheet->mergeCells('K5:K6');
         $sheet->mergeCells('L5:L6');
+        $sheet->mergeCells('M5:M6');
+        $sheet->mergeCells('N5:N6');
 
-        $sheet->mergeCells('M5:Y5');
-
-        $sheet->writeTo('M5', 'REKAP PENGAMBILAN CUTI', [
-            'font-size' => 14,
-            'halign' => 'center',
-            'valign' => 'center'
-        ]);
-
+        $sheet->mergeCells('O5:Z5');
 
 
         $sheet->writeAreas();
@@ -1105,24 +1126,26 @@ class CutiKaryawanController extends AdminBaseController
             'E' => ['width' => 25], // BAGIAN
             'F' => ['width' => 25], // DEPARTMENT
             'G' => ['width' => 25], // TANGGAL MASUK
-            'H' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 20], // MASA KERJA
-            'I' => ['width' => 20], // HAK CUTI
-            'J' => ['width' => 12], // CUTI TERPAKAI
+            'H' => ['width' => 20], // MASA KERJA
+            'I' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY,'width' => 20], // HAK CUTI
+            'J' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY,'width' => 20], // CUTI TERPAKAI
             'K' => ['width' => 15], // CUTI TERPAKAI
             'L' => ['width' => 10], // CUTI SISA
 
-            'M' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'N' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'O' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'P' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'Q' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'R' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'S' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'T' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'U' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'V' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'W' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
-            'X' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'M' => ['width' => 15], // MASA KERJA
+            'N' => ['width' => 15], // MASA KERJA
+            'O' => ['width' => 15], // MASA KERJA
+            'P' => ['width' => 15], // MASA KERJA
+            'Q' => ['width' => 15], // MASA KERJA
+            'R' => ['width' => 15], // MASA KERJA
+            'S' => ['width' => 15], // MASA KERJA
+            'T' => ['width' => 15], // MASA KERJA
+            'U' => ['width' => 15], // MASA KERJA
+            'V' => ['width' => 15], // MASA KERJA
+            'W' => ['width' => 15], // MASA KERJA
+            'X' => ['width' => 15], // MASA KERJA
+            'Y' => ['width' => 15], // MASA KERJA
+            'Z' => ['width' => 15], // MASA KERJA
         ]);
 
 
@@ -1135,7 +1158,9 @@ class CutiKaryawanController extends AdminBaseController
                 $cuti->status_jabatan,
                 $cuti->sub_dept_name,
                 $cuti->department_name,
+                $cuti->status_aktif,
                 $cuti->join_date,
+                $cuti->tanggal_resign,
                 $cuti->lama_bekerja,
                 $cuti->is_eligible == 1 ? 12 : 0,
                 $cuti->used_leave,
