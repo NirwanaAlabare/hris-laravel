@@ -765,18 +765,41 @@ class CutiKaryawanController extends AdminBaseController
         $sheet->writeTo('K5', 'CUTI TERPAKAI');
         $sheet->writeTo('L5', 'CUTI SISA');
 
-        $sheet->writeTo('M5', '1');
-        $sheet->writeTo('N5', '2');
-        $sheet->writeTo('O5', '3');
-        $sheet->writeTo('P5', '4');
-        $sheet->writeTo('Q5', '5');
-        $sheet->writeTo('R5', '6');
-        $sheet->writeTo('S5', '7');
-        $sheet->writeTo('T5', '8');
-        $sheet->writeTo('U5', '9');
-        $sheet->writeTo('V5', '10');
-        $sheet->writeTo('W5', '11');
-        $sheet->writeTo('X5', '12');
+        $sheet->writeTo('M5', 'REKAP PENGAMBILAN CUTI', [
+            'font-size' => 14,
+            'halign' => 'center',
+            'valign' => 'center'
+        ]);
+
+        $sheet->writeTo('M6', '1');
+        $sheet->writeTo('N6', '2');
+        $sheet->writeTo('O6', '3');
+        $sheet->writeTo('P6', '4');
+        $sheet->writeTo('Q6', '5');
+        $sheet->writeTo('R6', '6');
+        $sheet->writeTo('S6', '7');
+        $sheet->writeTo('T6', '8');
+        $sheet->writeTo('U6', '9');
+        $sheet->writeTo('V6', '10');
+        $sheet->writeTo('Q6', '11');
+        $sheet->writeTo('X6', '12');
+
+
+
+        $sheet->mergeCells('A5:A6');
+        $sheet->mergeCells('B5:B6');
+        $sheet->mergeCells('C5:C6');
+        $sheet->mergeCells('D5:D6');
+        $sheet->mergeCells('E5:E6');
+        $sheet->mergeCells('F5:F6');
+        $sheet->mergeCells('G5:G6');
+        $sheet->mergeCells('H5:H6');
+        $sheet->mergeCells('I5:I6');
+        $sheet->mergeCells('J5:J6');
+        $sheet->mergeCells('K5:K6');
+        $sheet->mergeCells('L5:L6');
+
+        $sheet->mergeCells('M5:Y5');
 
 
 
@@ -1001,18 +1024,46 @@ class CutiKaryawanController extends AdminBaseController
         $sheet->writeTo('K5', 'CUTI TERPAKAI');
         $sheet->writeTo('L5', 'CUTI SISA');
 
-        $sheet->writeTo('M5', '1');
-        $sheet->writeTo('N5', '2');
-        $sheet->writeTo('O5', '3');
-        $sheet->writeTo('P5', '4');
-        $sheet->writeTo('Q5', '5');
-        $sheet->writeTo('R5', '6');
-        $sheet->writeTo('S5', '7');
-        $sheet->writeTo('T5', '8');
-        $sheet->writeTo('U5', '9');
-        $sheet->writeTo('V5', '10');
-        $sheet->writeTo('W5', '11');
-        $sheet->writeTo('X5', '12');
+
+
+
+
+
+        $sheet->writeTo('M6', '1');
+        $sheet->writeTo('N6', '2');
+        $sheet->writeTo('O6', '3');
+        $sheet->writeTo('P6', '4');
+        $sheet->writeTo('Q6', '5');
+        $sheet->writeTo('R6', '6');
+        $sheet->writeTo('S6', '7');
+        $sheet->writeTo('T6', '8');
+        $sheet->writeTo('U6', '9');
+        $sheet->writeTo('V6', '10');
+        $sheet->writeTo('Q6', '11');
+        $sheet->writeTo('X6', '12');
+
+
+
+        $sheet->mergeCells('A5:A6');
+        $sheet->mergeCells('B5:B6');
+        $sheet->mergeCells('C5:C6');
+        $sheet->mergeCells('D5:D6');
+        $sheet->mergeCells('E5:E6');
+        $sheet->mergeCells('F5:F6');
+        $sheet->mergeCells('G5:G6');
+        $sheet->mergeCells('H5:H6');
+        $sheet->mergeCells('I5:I6');
+        $sheet->mergeCells('J5:J6');
+        $sheet->mergeCells('K5:K6');
+        $sheet->mergeCells('L5:L6');
+
+        $sheet->mergeCells('M5:Y5');
+
+        $sheet->writeTo('M5', 'REKAP PENGAMBILAN CUTI', [
+            'font-size' => 14,
+            'halign' => 'center',
+            'valign' => 'center'
+        ]);
 
 
 
