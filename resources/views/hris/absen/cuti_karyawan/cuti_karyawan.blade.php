@@ -183,13 +183,35 @@ h1 {
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-2">
                                     <div clasl="" style="display: flex; justify-content: flex-start; align-items: center; gap: 10px;">
                                         <div class="mt-5 p-0">
                                             <button class="btn btn-primary w-100" onclick="searchData()"  data-toggle="tooltip" title="Cari Data" id="recap_labor_cost_2"><i class="fa fa-search" aria-hidden="true"></i> Cari</button>
                                         </div>
                                         <div class="mt-5 p-0">
                                             <button id="btn-view_excel" class="btn btn-success w-100 text-white" data-toggle="tooltip" title="Preview by excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Excel</button>
+                                        </div>
+                                    </div>
+                                    <div clasl="" style="display: flex; justify-content: space-between; align-items: center;">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">EXPORT RANGE TANGGAL : </label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                                </div>
+                                            </div>
+                                            <input id="data_range_export_cuti" type="text" class="form-control data_range" required></input>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div clasl="" style="display: flex; justify-content: flex-start; align-items: center; gap: 10px;">
+                                        <div class="mt-5 p-0">
+                                            <button id="btn_export_cuti_by_date" class="btn btn-success w-100 text-white" data-toggle="tooltip" title="Preview by excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Excel</button>
                                         </div>
                                     </div>
                                     <div clasl="" style="display: flex; justify-content: space-between; align-items: center;">
@@ -385,6 +407,22 @@ h1 {
     }
     </style>
     <script>
+
+        $('.data_range').daterangepicker({
+                    ranges: {
+                        'Hari ini': [moment(), moment()],
+                        'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        '7 Hari Kemarin': [moment().subtract(6, 'days'), moment()],
+                        '30 Hari Kemarin': [moment().subtract(29, 'days'), moment()],
+                        'Bulan Sekarang': [moment().startOf('month'), moment().endOf('month')],
+                        'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    },
+                    startDate: moment().startOf('month'),
+                    endDate: moment().endOf('month')
+                    }, function(start, end) {
+                        $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+        })
+
         function updateFields() {
             let inputTgl = document.getElementById('tanggal_kedatangan_tamu');
             let tanggal = new Date(inputTgl.value);
@@ -854,6 +892,37 @@ h1 {
                     $('#btn-view_excel').removeClass("btn-loading");
                     $("#btn-view_excel").attr("disabled", false);
                     $("#btn-view_excel").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel');
+                    swal("", "Export rekap cuti karyawan", "error");
+                }
+            });
+        })
+        $('#btn_export_cuti_by_date').click(function(e){
+            var tgl = $('#data_range_export_cuti').val();
+            $('#btn_export_cuti_by_date').addClass("btn-loading");
+            $("#btn_export_cuti_by_date").html('Please wait...');
+            $("#btn_export_cuti_by_date").attr("disabled", true);
+            $.ajax({
+                type: 'POST',
+                url: '{{route('cuti_karyawan.show_export_by_join_date')}}',
+                data: {
+                    join_date:tgl,
+                },
+                xhrFields: { responseType : 'blob' },
+                success:function(data){
+                    $('#btn_export_cuti_by_date').removeClass("btn-loading");
+                    $("#btn_export_cuti_by_date").attr("disabled", false);
+                    $("#btn_export_cuti_by_date").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel');
+                    var blob = new Blob([data]);
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "cuti_karyawan.xlsx";
+                    link.click();
+                    swal("", "Export rekap cuti karyawan", "success");
+                },
+                error: function(res){
+                    $('#btn_export_cuti_by_date').removeClass("btn-loading");
+                    $("#btn_export_cuti_by_date").attr("disabled", false);
+                    $("#btn_export_cuti_by_date").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel');
                     swal("", "Export rekap cuti karyawan", "error");
                 }
             });
