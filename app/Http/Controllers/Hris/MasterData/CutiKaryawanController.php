@@ -267,7 +267,6 @@ class CutiKaryawanController extends AdminBaseController
         //                         LEAST(DATE_ADD(p.end_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
         //                     FROM periode p
         //                     WHERE p.end_date < CURDATE()
-        //                     AND TIMESTAMPDIFF(YEAR, p.join_date, p.end_date) < 10
         //                 ),
 
         //                 cuti_dipakai AS (
@@ -366,7 +365,6 @@ class CutiKaryawanController extends AdminBaseController
                     LEAST(DATE_ADD(p.end_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
                 FROM periode p
                 WHERE p.end_date < CURDATE()
-                AND TIMESTAMPDIFF(YEAR, p.join_date, p.end_date) < 10
             ),
 
             cuti_dipakai AS (
@@ -664,7 +662,6 @@ class CutiKaryawanController extends AdminBaseController
                     LEAST(DATE_ADD(p.end_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
                 FROM periode p
                 WHERE p.end_date < CURDATE()
-                AND TIMESTAMPDIFF(YEAR, p.join_date, p.end_date) < 10
             ),
 
             cuti_dipakai AS (
@@ -897,7 +894,6 @@ class CutiKaryawanController extends AdminBaseController
                     LEAST(DATE_ADD(p.end_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
                 FROM periode p
                 WHERE p.end_date < CURDATE()
-                AND TIMESTAMPDIFF(YEAR, p.join_date, p.end_date) < 10
             ),
 
             cuti_dipakai AS (
@@ -1129,7 +1125,6 @@ class CutiKaryawanController extends AdminBaseController
                     LEAST(DATE_ADD(p.end_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
                 FROM periode p
                 WHERE p.end_date < CURDATE()
-                AND TIMESTAMPDIFF(YEAR, p.join_date, p.end_date) < 10
             ),
 
             cuti_dipakai AS (
