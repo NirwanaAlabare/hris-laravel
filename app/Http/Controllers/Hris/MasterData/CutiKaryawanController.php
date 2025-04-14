@@ -436,8 +436,9 @@ class CutiKaryawanController extends AdminBaseController
                 return Carbon::parse($row->end_date)->format('d-m-Y'); // Format: DDMMYYYY
             })
             ->addColumn('is_eligible', function ($row) {
-                $badgeClass = $row->is_eligible ? 'badge-success' : 'badge-danger';
-                $text = $row->is_eligible ? 'Ya' : 'Tidak';
+                $isEligible = (int) $row->is_eligible;
+                $badgeClass = $isEligible ? 'badge-success' : 'badge-danger';
+                $text = $isEligible ? '12' : '0';
 
                 return '<span class="badge ' . $badgeClass . '">' . $text . '</span>';
             })
@@ -451,7 +452,7 @@ class CutiKaryawanController extends AdminBaseController
                 //             <a style="text-align:center; color:white;" class="btn btn-danger btn-sm">
                 //             <i class="fa fa-trash"></i>
                 //             </a></div>';
-                return  '<div> <a class="btn btn-success btn-sm" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2">
+                return  '<div> <a class="btn btn-success btn-sm" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="export_detail_cuti_karyawan_'.$row->enroll_id.'">
                                         <i class="fa fa-file-excel-o" aria-hidden="true"></i>
                                     </a>
                             <a class="btn btn-primary btn-sm" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="open_detail_'.$row->enroll_id.'">
@@ -610,199 +611,10 @@ class CutiKaryawanController extends AdminBaseController
             return view('hris/ga/entertaint/export_realisasi_permintaan_kas', compact('pengajuan', 'department', 'employee', 'total_jumlah','employee','employee_manager'));
         }
 
-        public function show_export(Request $request)
-        {
-            ini_set("max_execution_time", 5210);
-            ini_set('memory_limit', '5120000M');
-            $enroll_ids = $request->input('selectEmployeeID', []);
-
-            $has_filter = count($enroll_ids) > 0;
-
-            $bindings = [];
-            $filterClause = '';
-
-            if ($has_filter) {
-                $placeholders = implode(',', array_fill(0, count($enroll_ids), '?'));
-                $filterClause = "AND enroll_id IN ($placeholders)";
-                $bindings = $enroll_ids;
-            }
-
-            $query = "
-                WITH RECURSIVE periode AS (
-                    SELECT
-                        ea.enroll_id,
-                        ea.employee_name,
-                        ea.nik,
-                        ea.status_staff,
-                        ea.status_jabatan,
-                        ea.department_name,
-                        ea.sub_dept_name,
-                        ea.join_date,
-                        ea.join_date AS start_date,
-                        LEAST(DATE_ADD(ea.join_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
-                    FROM (
-                        SELECT *
-                        FROM employee_atribut
-                        WHERE join_date IS NOT NULL
-                        $filterClause
-                        ORDER BY enroll_id
-                    ) ea
-
-                    UNION ALL
-
-                    SELECT
-                        p.enroll_id,
-                        p.employee_name,
-                        p.nik,
-                        p.status_staff,
-                        p.status_jabatan,
-                        p.department_name,
-                        p.sub_dept_name,
-                        p.join_date,
-                        p.end_date AS start_date,
-                        LEAST(DATE_ADD(p.end_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
-                    FROM periode p
-                    WHERE p.end_date < CURDATE()
-                    AND TIMESTAMPDIFF(YEAR, p.join_date, p.end_date) < 10
-                ),
-
-                cuti_dipakai AS (
-                    SELECT
-                        p.enroll_id,
-                        p.start_date,
-                        p.end_date,
-                        COUNT(d.uuid) AS used_leave
-                    FROM periode p
-                    LEFT JOIN data_absen_perijinan d
-                    ON d.enroll_id = p.enroll_id
-                    AND d.kode_absen_ijin = 'CT'
-                    AND d.tanggal_mulai_ijin >= p.start_date
-                    AND d.tanggal_mulai_ijin < p.end_date
-                    GROUP BY p.enroll_id, p.start_date, p.end_date
-                ),
-
-                data_cuti AS (
-                    SELECT
-                        p.enroll_id,
-                        p.employee_name,
-                        p.nik,
-                        p.status_staff,
-                        p.status_jabatan,
-                        p.department_name,
-                        p.sub_dept_name,
-                        p.join_date,
-                        p.start_date,
-                        p.end_date,
-                        CONCAT(
-                            TIMESTAMPDIFF(YEAR, p.join_date, p.end_date), ' tahun ',
-                            TIMESTAMPDIFF(MONTH, p.join_date, p.end_date) % 12, ' bulan'
-                        ) AS lama_bekerja,
-                        CASE
-                            WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 0
-                            ELSE 1
-                        END AS is_eligible,
-                        COALESCE(c.used_leave, 0) AS used_leave,
-                        CASE
-                            WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 0
-                            ELSE 12 - COALESCE(c.used_leave, 0)
-                        END AS remaining_leave,
-                        CASE
-                            WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 'Belum Berhak'
-                            WHEN (12 - COALESCE(c.used_leave, 0)) > 0 THEN 'Masih Memiliki Cuti'
-                            ELSE 'Cuti Habis'
-                        END AS leave_status,
-                        ROW_NUMBER() OVER (PARTITION BY p.enroll_id ORDER BY p.end_date DESC) AS rn
-                    FROM periode p
-                    LEFT JOIN cuti_dipakai c
-                        ON p.enroll_id = c.enroll_id AND p.start_date = c.start_date
-                )
-
-                SELECT *
-                FROM data_cuti
-                WHERE rn = 1
-                ORDER BY enroll_id
-            ";
-
-            $data_cuti = DB::select($query, $bindings);
-
-            $excel = FastExcel::create('cuti karyawan');
-            $sheet = $excel->getSheet();
-
-            $area = $sheet->beginArea();
-
-            $sheet->writeTo('A1', 'PT NIRWANA ALABARE GARMENT', ['font-size' => 18]);
-            $sheet->writeTo('A2', 'REKAP CUTI KARYAWAN', ['font-size' => 16]);
-
-            $sheet->writeTo('A5', 'NIK');
-
-            $sheet->writeTo('B5', 'NO ABSEN');
-
-            $sheet->writeTo('C5', 'NAMA KARYAWAN');
-
-            $sheet->writeTo('D5', 'STAFF / NON STAFF');
-
-            $sheet->writeTo('E5', 'JABATAN');
-
-            $sheet->writeTo('F5', 'BAGIAN');
-
-            $sheet->writeTo('G5', 'DEPARTMENT');
-
-            $sheet->writeTo('H5', 'TANGGAL MASUK');
-
-            $sheet->writeTo('I5', 'MASA KERJA');
-
-            $sheet->writeTo('J5', 'HAK CUTI');
-
-            $sheet->writeTo('K5', 'CUTI TERPAKAI');
-            $sheet->writeTo('L5', 'CUTI SISA');
-
-
-
-            $sheet->writeAreas();
-
-            $sheet->setColOptions([
-
-                'A' => ['width' => 15], // NIK
-                'B' => ['width' => 15], // NAMA KARYAWAN
-                'C' => ['width' => 18], // STAFF / NON STAFF
-                'D' => ['width' => 20], // JABATAN
-                'E' => ['width' => 25], // BAGIAN
-                'F' => ['width' => 25], // DEPARTMENT
-                'G' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 20], // TANGGAL MASUK
-                'H' => ['width' => 20], // MASA KERJA
-                'I' => ['width' => 20], // HAK CUTI
-                'J' => ['width' => 12], // CUTI TERPAKAI
-                'K' => ['width' => 15], // CUTI TERPAKAI
-                'L' => ['width' => 10], // CUTI SISA
-            ]);
-
-
-            foreach($data_cuti as $cuti) {
-                $data = [
-                    $cuti->nik,
-                    $cuti->enroll_id,
-                    $cuti->employee_name,
-                    $cuti->status_staff,
-                    $cuti->status_jabatan,
-                    $cuti->sub_dept_name,
-                    $cuti->department_name,
-                    $cuti->join_date,
-                    $cuti->lama_bekerja,
-                    $cuti->is_eligible == 1 ? 12 : 0,
-                    $cuti->used_leave,
-                    $cuti->remaining_leave,
-                ];
-
-                $sheet->writeRow($data);
-            }
-            $finename='Rekap Cuti Karyawan'.'xlsx';
-            ob_end_clean();
-            $excel->download($finename);
-        }
-
-    public function show_export_detail(Request $request){
-        ini_set('max_execution_time', 0);
-        ini_set('memory_limit', '10240000000000000M');
+    public function show_export(Request $request)
+    {
+        ini_set("max_execution_time", 5210);
+        ini_set('memory_limit', '5120000M');
         $enroll_ids = $request->input('selectEmployeeID', []);
 
         $has_filter = count($enroll_ids) > 0;
@@ -821,6 +633,9 @@ class CutiKaryawanController extends AdminBaseController
                 SELECT
                     ea.enroll_id,
                     ea.employee_name,
+                    ea.nik,
+                    ea.status_staff,
+                    ea.status_jabatan,
                     ea.department_name,
                     ea.sub_dept_name,
                     ea.join_date,
@@ -831,6 +646,181 @@ class CutiKaryawanController extends AdminBaseController
                     FROM employee_atribut
                     WHERE join_date IS NOT NULL
                     $filterClause
+                    ORDER BY enroll_id
+                ) ea
+
+                UNION ALL
+
+                SELECT
+                    p.enroll_id,
+                    p.employee_name,
+                    p.nik,
+                    p.status_staff,
+                    p.status_jabatan,
+                    p.department_name,
+                    p.sub_dept_name,
+                    p.join_date,
+                    p.end_date AS start_date,
+                    LEAST(DATE_ADD(p.end_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
+                FROM periode p
+                WHERE p.end_date < CURDATE()
+                AND TIMESTAMPDIFF(YEAR, p.join_date, p.end_date) < 10
+            ),
+
+            cuti_dipakai AS (
+                SELECT
+                    p.enroll_id,
+                    p.start_date,
+                    p.end_date,
+                    COUNT(d.uuid) AS used_leave
+                FROM periode p
+                LEFT JOIN data_absen_perijinan d
+                ON d.enroll_id = p.enroll_id
+                AND d.kode_absen_ijin = 'CT'
+                AND d.tanggal_mulai_ijin >= p.start_date
+                AND d.tanggal_mulai_ijin < p.end_date
+                GROUP BY p.enroll_id, p.start_date, p.end_date
+            ),
+
+            data_cuti AS (
+                SELECT
+                    p.enroll_id,
+                    p.employee_name,
+                    p.nik,
+                    p.status_staff,
+                    p.status_jabatan,
+                    p.department_name,
+                    p.sub_dept_name,
+                    p.join_date,
+                    p.start_date,
+                    p.end_date,
+                    CONCAT(
+                        TIMESTAMPDIFF(YEAR, p.join_date, p.end_date), ' tahun ',
+                        TIMESTAMPDIFF(MONTH, p.join_date, p.end_date) % 12, ' bulan'
+                    ) AS lama_bekerja,
+                    CASE
+                        WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 0
+                        ELSE 1
+                    END AS is_eligible,
+                    COALESCE(c.used_leave, 0) AS used_leave,
+                    CASE
+                        WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 0
+                        ELSE 12 - COALESCE(c.used_leave, 0)
+                    END AS remaining_leave,
+                    CASE
+                        WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 'Belum Berhak'
+                        WHEN (12 - COALESCE(c.used_leave, 0)) > 0 THEN 'Masih Memiliki Cuti'
+                        ELSE 'Cuti Habis'
+                    END AS leave_status,
+                    ROW_NUMBER() OVER (PARTITION BY p.enroll_id ORDER BY p.end_date DESC) AS rn
+                FROM periode p
+                LEFT JOIN cuti_dipakai c
+                    ON p.enroll_id = c.enroll_id AND p.start_date = c.start_date
+            )
+
+            SELECT *
+            FROM data_cuti
+            WHERE rn = 1
+            ORDER BY enroll_id
+        ";
+
+        $data_cuti = DB::select($query, $bindings);
+
+        $excel = FastExcel::create('cuti karyawan');
+        $sheet = $excel->getSheet();
+
+        $area = $sheet->beginArea();
+
+        $sheet->writeTo('A1', 'PT NIRWANA ALABARE GARMENT', ['font-size' => 18]);
+        $sheet->writeTo('A2', 'REKAP CUTI KARYAWAN', ['font-size' => 16]);
+
+        $sheet->writeTo('A5', 'NIK');
+
+        $sheet->writeTo('B5', 'NO ABSEN');
+
+        $sheet->writeTo('C5', 'NAMA KARYAWAN');
+
+        $sheet->writeTo('D5', 'STAFF / NON STAFF');
+
+        $sheet->writeTo('E5', 'JABATAN');
+
+        $sheet->writeTo('F5', 'BAGIAN');
+
+        $sheet->writeTo('G5', 'DEPARTMENT');
+
+        $sheet->writeTo('H5', 'TANGGAL MASUK');
+
+        $sheet->writeTo('I5', 'MASA KERJA');
+
+        $sheet->writeTo('J5', 'HAK CUTI');
+
+        $sheet->writeTo('K5', 'CUTI TERPAKAI');
+        $sheet->writeTo('L5', 'CUTI SISA');
+
+
+
+        $sheet->writeAreas();
+
+        $sheet->setColOptions([
+
+            'A' => ['width' => 15], // NIK
+            'B' => ['width' => 15], // NAMA KARYAWAN
+            'C' => ['width' => 18], // STAFF / NON STAFF
+            'D' => ['width' => 20], // JABATAN
+            'E' => ['width' => 25], // BAGIAN
+            'F' => ['width' => 25], // DEPARTMENT
+            'G' => ['width' => 25], // TANGGAL MASUK
+            'H' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 20], // MASA KERJA
+            'I' => ['width' => 20], // HAK CUTI
+            'J' => ['width' => 12], // CUTI TERPAKAI
+            'K' => ['width' => 15], // CUTI TERPAKAI
+            'L' => ['width' => 10], // CUTI SISA
+        ]);
+
+
+        foreach($data_cuti as $cuti) {
+            $data = [
+                $cuti->nik,
+                $cuti->enroll_id,
+                $cuti->employee_name,
+                $cuti->status_staff,
+                $cuti->status_jabatan,
+                $cuti->sub_dept_name,
+                $cuti->department_name,
+                $cuti->join_date,
+                $cuti->lama_bekerja,
+                $cuti->is_eligible == 1 ? 12 : 0,
+                $cuti->used_leave,
+                $cuti->remaining_leave,
+            ];
+
+            $sheet->writeRow($data);
+        }
+        $finename='Rekap Cuti Karyawan'.'xlsx';
+        ob_end_clean();
+        $excel->download($finename);
+    }
+
+    public function show_export_detail_cuti_karyawan(Request $request){
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '10240000000000000M');
+        $enroll_id = $request->enroll_id;
+
+        $query = "
+            WITH RECURSIVE periode AS (
+                SELECT
+                    ea.enroll_id,
+                    ea.employee_name,
+                    ea.department_name,
+                    ea.sub_dept_name,
+                    ea.join_date,
+                    ea.join_date AS start_date,
+                    LEAST(DATE_ADD(ea.join_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
+                FROM (
+                    SELECT *
+                    FROM employee_atribut
+                    WHERE join_date IS NOT NULL
+                    AND enroll_id = $enroll_id
                     ORDER BY enroll_id
                     LIMIT 10
                 ) ea
@@ -904,8 +894,17 @@ class CutiKaryawanController extends AdminBaseController
             ORDER BY enroll_id
         ";
 
-        $data_cuti = DB::select($query, $bindings);
+        $data_cuti = DB::select($query);
 
+        $perijinan = DB::table('data_absen_perijinan')
+                    ->where('enroll_id', $enroll_id)
+                    ->orderBy('tanggal_mulai_ijin', 'desc')
+                    ->get();
+
+        $data_cuti = collect($data_cuti)->map(function ($cuti) use ($perijinan) {
+            $cuti->perijinan = $perijinan;
+            return $cuti;
+        });
         $fileName = 'RekapCutiKaryawanKaryawan.xlsx';
 
         $response= Excel::download(new RekapCutiKaryawanKaryawanAll($data_cuti), $fileName, \Maatwebsite\Excel\Excel::XLSX);

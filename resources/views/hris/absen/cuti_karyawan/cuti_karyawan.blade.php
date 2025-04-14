@@ -794,6 +794,28 @@ h1 {
             var url = 'cuti_karyawan/export_form_pengajuan_cuti_pdf?enroll_id=' + id + '&periode=' + id;
             window.open(url, '_blank');
         });
+        $(document).on("click", "[id^=export_detail_cuti_karyawan_]", function (e) {
+            var enroll_id = this.id.replace('export_detail_cuti_karyawan_', '');
+            $.ajax({
+                type: 'POST',
+                url: '{{route('cuti_karyawan.show_export_detail_cuti_karyawan')}}',
+                data: {
+                    enroll_id:enroll_id,
+                },
+                xhrFields: { responseType : 'blob' },
+                success:function(data){
+                    var blob = new Blob([data]);
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "cuti_karyawan.xlsx";
+                    link.click();
+                    swal("", "Export rekap cuti karyawan", "success");
+                },
+                error: function(res){
+                    swal("", "Export rekap cuti karyawan", "error");
+                }
+            });
+        });
 
 
         function open_modal_buat_dokumen() {
