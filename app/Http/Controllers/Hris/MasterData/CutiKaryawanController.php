@@ -890,7 +890,7 @@ class CutiKaryawanController extends AdminBaseController
 
             $filterJoinDate = "MONTH(join_date) = '$bulan'";
             $bulanNama = strtoupper(strftime("%B", mktime(0, 0, 0, (int)$bulan, 1)));
-            $periodeLabel = 'BULAN: ' . $bulanNama;
+            $periodeLabel = $bulanNama;
         }
          else {
             // CUSTOM_RANGE
