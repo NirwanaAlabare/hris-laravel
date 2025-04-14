@@ -5903,9 +5903,9 @@ class ProsesPayrollController extends AdminBaseController
         $receiver_email = ['fadli', 'mega@ptnag.com', 'rudy@ptnag.com', 'admin_01'];
         $type = 'REKAP LEMBUR';
 
-        for ($i = 0; $i < count($receiver_email); $i++) {
-            trigger_event($user, $receiver_email[$i], 'Baru saja memproses rekap lembur', $type);
-        }
+        // for ($i = 0; $i < count($receiver_email); $i++) {
+        //     trigger_event($user, $receiver_email[$i], 'Baru saja memproses rekap lembur', $type);
+        // }
     }
     public function index3(Request $request)
     {
