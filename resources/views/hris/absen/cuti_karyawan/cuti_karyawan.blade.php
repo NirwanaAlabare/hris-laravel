@@ -206,7 +206,7 @@ h1 {
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="form-label">EXPORT RANGE TANGGAL : </label>
+                                        <label class="form-label">EXPORT DATA : </label>
                                         <div class="input-group" id="data_range_export_cuti_select">
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text">
