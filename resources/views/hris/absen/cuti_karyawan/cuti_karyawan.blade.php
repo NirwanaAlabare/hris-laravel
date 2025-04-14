@@ -173,7 +173,7 @@ h1 {
                                 </div>
                             </div> --}}
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label class="form-label">CARI DATA : </label>
                                         <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID">
@@ -192,19 +192,47 @@ h1 {
                                             <button id="btn-view_excel" class="btn btn-success w-100 text-white" data-toggle="tooltip" title="Preview by excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Excel</button>
                                         </div>
                                     </div>
-                                    <div clasl="" style="display: flex; justify-content: space-between; align-items: center;">
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="form-label">PILIH SKEMA : </label>
+                                        <div class="input-group">
+                                            <select id="skema_payroll" name="skema_payroll" class="form-control">
+                                                <option value='CUSTOM_RANGE'>CUSTOM RANGE</option>
+                                                <option value='MONTHLY'>MONTHLY</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">EXPORT RANGE TANGGAL : </label>
-                                        <div class="input-group">
+                                        <div class="input-group" id="data_range_export_cuti_select">
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text">
                                                     <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
                                                 </div>
                                             </div>
                                             <input id="data_range_export_cuti" type="text" class="form-control data_range" required></input>
+                                        </div>
+
+
+                                        <div class="input-group" id="periode_month_cuti_select">
+                                            <select name="periode_month" id="periode_month" class="form-control" required>
+                                                <option value="01">Januari</option>
+                                                <option value="02">Februari</option>
+                                                <option value="03">Maret</option>
+                                                <option value="04">April</option>
+                                                <option value="05">Mei</option>
+                                                <option value="06">Juni</option>
+                                                <option value="07">Juli</option>
+                                                <option value="08">Agustus</option>
+                                                <option value="09">September</option>
+                                                <option value="10">Oktober</option>
+                                                <option value="11">November</option>
+                                                <option value="12">Desember</option>
+                                            </select>
+
                                         </div>
                                     </div>
                                 </div>
@@ -406,6 +434,33 @@ h1 {
         scale: 1.5;
     }
     </style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const skemaPayroll = document.getElementById("skema_payroll");
+        const periodeContainer = document.getElementById("periode_month_cuti_select");
+        const periodeContainerCustom = document.getElementById("data_range_export_cuti_select");
+
+        // Sembunyikan semua input saat halaman pertama kali dimuat
+        periodeContainer.style.display = "none";
+        periodeContainerCustom.style.display = "none";
+
+        skemaPayroll.addEventListener("change", function () {
+            if (this.value === "MONTHLY") {
+                periodeContainer.style.display = "flex"; // Tampilkan Monthly Payroll
+                periodeContainerCustom.style.display = "none"; // Sembunyikan Custom Payroll
+            } else if (this.value === "CUSTOM_RANGE") {
+                periodeContainer.style.display = "none"; // Sembunyikan Monthly Payroll
+                periodeContainerCustom.style.display = "flex"; // Tampilkan Custom Payroll
+            } else {
+                // Jika tidak ada yang dipilih, sembunyikan keduanya
+                periodeContainer.style.display = "none";
+                periodeContainerCustom.style.display = "none";
+            }
+        });
+        skemaPayroll.dispatchEvent(new Event("change"));
+    });
+</script>
     <script>
 
         $('.data_range').daterangepicker({
@@ -896,37 +951,89 @@ h1 {
                 }
             });
         })
-        $('#btn_export_cuti_by_date').click(function(e){
-            var tgl = $('#data_range_export_cuti').val();
-            $('#btn_export_cuti_by_date').addClass("btn-loading");
-            $("#btn_export_cuti_by_date").html('Please wait...');
-            $("#btn_export_cuti_by_date").attr("disabled", true);
-            $.ajax({
-                type: 'POST',
-                url: '{{route('cuti_karyawan.show_export_by_join_date')}}',
-                data: {
-                    join_date:tgl,
-                },
-                xhrFields: { responseType : 'blob' },
-                success:function(data){
-                    $('#btn_export_cuti_by_date').removeClass("btn-loading");
-                    $("#btn_export_cuti_by_date").attr("disabled", false);
-                    $("#btn_export_cuti_by_date").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel');
-                    var blob = new Blob([data]);
-                    var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = "cuti_karyawan.xlsx";
-                    link.click();
-                    swal("", "Export rekap cuti karyawan", "success");
-                },
-                error: function(res){
-                    $('#btn_export_cuti_by_date').removeClass("btn-loading");
-                    $("#btn_export_cuti_by_date").attr("disabled", false);
-                    $("#btn_export_cuti_by_date").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel');
-                    swal("", "Export rekap cuti karyawan", "error");
-                }
-            });
-        })
+
+        $('#btn_export_cuti_by_date').click(function (e) {
+    const tipe = $('#skema_payroll').val();
+    let tgl = '';
+
+    if (tipe === 'CUSTOM_RANGE') {
+        tgl = $('#data_range_export_cuti').val();
+    } else if (tipe === 'MONTHLY') {
+        tgl = $('#periode_month').val(); // Ambil dari input type="month"
+    }
+
+    if (!tgl) {
+        swal("Oops!", "Silakan pilih periode terlebih dahulu!", "warning");
+        return;
+    }
+
+    $('#btn_export_cuti_by_date').addClass("btn-loading");
+    $("#btn_export_cuti_by_date").html('Please wait...');
+    $("#btn_export_cuti_by_date").attr("disabled", true);
+
+    $.ajax({
+        type: 'POST',
+        url: '{{ route('cuti_karyawan.show_export_by_join_date') }}',
+        data: {
+            join_date: tgl,
+            type: tipe
+        },
+        xhrFields: { responseType: 'blob' },
+        success: function (data) {
+            $('#btn_export_cuti_by_date').removeClass("btn-loading");
+            $("#btn_export_cuti_by_date").attr("disabled", false);
+            $("#btn_export_cuti_by_date").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel');
+            const blob = new Blob([data]);
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "cuti_karyawan.xlsx";
+            link.click();
+            swal("", "Export rekap cuti karyawan", "success");
+        },
+        error: function () {
+            $('#btn_export_cuti_by_date').removeClass("btn-loading");
+            $("#btn_export_cuti_by_date").attr("disabled", false);
+            $("#btn_export_cuti_by_date").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel');
+            swal("", "Export rekap cuti karyawan gagal", "error");
+        }
+    });
+});
+
+
+
+
+        // $('#btn_export_cuti_by_date').click(function(e){
+        //     var tgl = $('#data_range_export_cuti').val();
+        //     $('#btn_export_cuti_by_date').addClass("btn-loading");
+        //     $("#btn_export_cuti_by_date").html('Please wait...');
+        //     $("#btn_export_cuti_by_date").attr("disabled", true);
+        //     $.ajax({
+        //         type: 'POST',
+        //         url: '{{route('cuti_karyawan.show_export_by_join_date')}}',
+        //         data: {
+        //             join_date:tgl,
+        //         },
+        //         xhrFields: { responseType : 'blob' },
+        //         success:function(data){
+        //             $('#btn_export_cuti_by_date').removeClass("btn-loading");
+        //             $("#btn_export_cuti_by_date").attr("disabled", false);
+        //             $("#btn_export_cuti_by_date").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel');
+        //             var blob = new Blob([data]);
+        //             var link = document.createElement('a');
+        //             link.href = window.URL.createObjectURL(blob);
+        //             link.download = "cuti_karyawan.xlsx";
+        //             link.click();
+        //             swal("", "Export rekap cuti karyawan", "success");
+        //         },
+        //         error: function(res){
+        //             $('#btn_export_cuti_by_date').removeClass("btn-loading");
+        //             $("#btn_export_cuti_by_date").attr("disabled", false);
+        //             $("#btn_export_cuti_by_date").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel');
+        //             swal("", "Export rekap cuti karyawan", "error");
+        //         }
+        //     });
+        // })
+
 
 
         function open_modal_realisasi_pengajuan($row) {

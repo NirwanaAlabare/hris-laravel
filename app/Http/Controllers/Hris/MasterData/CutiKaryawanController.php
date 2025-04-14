@@ -874,13 +874,39 @@ class CutiKaryawanController extends AdminBaseController
     {
         ini_set("max_execution_time", 5210);
         ini_set('memory_limit', '5120000M');
-        $tanggal = $request->join_date;
-        $tanggal_all=explode(' - ',$tanggal);
 
-        $tanggal_awal=$tanggal_all[0];
-        $tanggal_akhir=$tanggal_all[1];
-        $awal = Carbon::parse($tanggal_awal)->format('Y-m-d');
-        $akhir = Carbon::parse($tanggal_akhir)->format('Y-m-d');
+        $type = $request->input('type');
+        $tanggal = $request->input('join_date');
+
+        $periodeLabel = '';
+
+
+        if ($type === 'MONTHLY') {
+            $bulan = $tanggal;
+
+            if (!preg_match('/^(0?[1-9]|1[0-2])$/', $bulan)) {
+                return response()->json(['message' => 'Format bulan tidak valid'], 422);
+            }
+
+            $filterJoinDate = "MONTH(join_date) = '$bulan'";
+            $bulanNama = strtoupper(strftime("%B", mktime(0, 0, 0, (int)$bulan, 1)));
+            $periodeLabel = 'BULAN: ' . $bulanNama;
+        }
+         else {
+            // CUSTOM_RANGE
+            $tanggal_all = explode(' - ', $tanggal);
+            $tanggal_awal = Carbon::parse($tanggal_all[0])->format('Y-m-d');
+            $tanggal_akhir = Carbon::parse($tanggal_all[1])->format('Y-m-d');
+            $awal = Carbon::parse($tanggal_awal)->format('Y-m-d');
+            $akhir = Carbon::parse($tanggal_akhir)->format('Y-m-d');
+
+            // Buat filter untuk join_date antara dua tanggal
+            $filterJoinDate = "join_date BETWEEN '$tanggal_awal' AND '$tanggal_akhir'";
+
+            $periodeLabel = strtoupper(strftime("%d %b %Y", strtotime($awal)) . ' s/d ' . strftime("%d %b %Y", strtotime($akhir)));
+        }
+
+
         $query = "
             WITH RECURSIVE periode AS (
                 SELECT
@@ -898,7 +924,7 @@ class CutiKaryawanController extends AdminBaseController
                     SELECT *
                     FROM employee_atribut
                     WHERE join_date IS NOT NULL
-                    AND join_date BETWEEN '$awal' AND '$akhir'
+                    AND $filterJoinDate
                     ORDER BY enroll_id
                 ) ea
 
@@ -999,7 +1025,8 @@ class CutiKaryawanController extends AdminBaseController
 
         $sheet->writeTo('A1', 'PT NIRWANA ALABARE GARMENT', ['font-size' => 18]);
         $sheet->writeTo('A2', 'REKAP CUTI KARYAWAN', ['font-size' => 16]);
-        $sheet->writeTo('A3', 'PERIODE : ' . strtoupper(strftime("%d %b %Y", strtotime($awal)) . ' s/d ' . strftime("%d %b %Y", strtotime($akhir))), ['font-size' => 14]);
+        $sheet->writeTo('A3', 'PERIODE : ' . $periodeLabel, ['font-size' => 14]);
+
 
         $sheet->writeTo('A5', 'NIK');
 
