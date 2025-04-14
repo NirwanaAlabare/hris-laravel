@@ -4,6 +4,10 @@
     <link href="{{ URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
     <link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+
+	<!---Sweetalert Css-->
+	<link href="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.css')}}" rel="stylesheet" />
+	<link href="{{URL::asset('assets/plugins/sweet-alert/sweetalert.css')}}" rel="stylesheet" />
 @stop
 <style>
  .timestamp {
@@ -180,10 +184,15 @@ h1 {
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div clasl="" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div clasl="" style="display: flex; justify-content: flex-start; align-items: center; gap: 10px;">
                                         <div class="mt-5 p-0">
                                             <button class="btn btn-primary w-100" onclick="searchData()"  data-toggle="tooltip" title="Cari Data" id="recap_labor_cost_2"><i class="fa fa-search" aria-hidden="true"></i> Cari</button>
                                         </div>
+                                        <div class="mt-5 p-0">
+                                            <button id="btn-view_excel" class="btn btn-success w-100 text-white" data-toggle="tooltip" title="Preview by excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Excel</button>
+                                        </div>
+                                    </div>
+                                    <div clasl="" style="display: flex; justify-content: space-between; align-items: center;">
                                     </div>
                                 </div>
                             </div>
@@ -366,6 +375,9 @@ h1 {
     <script src="{{URL::asset('assets/js/iziToast.min.js')}}"></script>
     <script src="{{ asset('assets/plugins/html5-qrcode/html5-qrcode.min.js') }}"></script>
     <script src="{{URL::asset('assets/js/timepicker.js') }}"></script>
+      <!-- Sweet alert js-->
+      <script src="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.js')}}"></script>
+      <script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
 
     <style>
     .checkbox-xl .form-check-input {
@@ -790,9 +802,40 @@ h1 {
         }
         function searchData() {
             var selectEmployeeID = $('#selectEmployeeID').val();
-            console.log(selectEmployeeID);
             $('#entertaintTable').DataTable().ajax.reload();
         }
+
+        $('#btn-view_excel').click(function(e){
+            var selectEmployeeID = $('#selectEmployeeID').val();
+            $('#btn-view_excel').addClass("btn-loading");
+            $("#btn-view_excel").html('Please wait...');
+            $("#btn-view_excel").attr("disabled", true);
+            $.ajax({
+                type: 'POST',
+                url: '{{route('cuti_karyawan.show_export')}}',
+                data: {
+                    selectEmployeeID:selectEmployeeID,
+                },
+                xhrFields: { responseType : 'blob' },
+                success:function(data){
+                    $('#btn-view_excel').removeClass("btn-loading");
+                    $("#btn-view_excel").attr("disabled", false);
+                    $("#btn-view_excel").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel');
+                    var blob = new Blob([data]);
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "cuti_karyawan.xlsx";
+                    link.click();
+                    swal("", "Export rekap cuti karyawan", "success");
+                },
+                error: function(res){
+                    $('#btn-view_excel').removeClass("btn-loading");
+                    $("#btn-view_excel").attr("disabled", false);
+                    $("#btn-view_excel").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel');
+                    swal("", "Export rekap cuti karyawan", "error");
+                }
+            });
+        })
 
 
         function open_modal_realisasi_pengajuan($row) {

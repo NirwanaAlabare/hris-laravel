@@ -200,6 +200,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('/cuti_karyawan', ['as' => 'cuti_karyawan.index','uses' => 'MasterData\CutiKaryawanController@index']);
     Route::post('/cuti_karyawan/store', ['as' => 'cuti_karyawan.store','uses' => 'MasterData\CutiKaryawanController@store']);
     Route::get('/cuti_karyawan/show', ['as' => 'cuti_karyawan.show','uses' => 'MasterData\CutiKaryawanController@getData']);
+    Route::post('/cuti_karyawan/show_export', ['as' => 'cuti_karyawan.show_export','uses' => 'MasterData\CutiKaryawanController@show_export']);
     Route::get('/cuti_karyawan/export_pengajuan_permintaan_kas', ['as' => 'cuti_karyawan.export_pengajuan_permintaan_kas','uses' => 'MasterData\CutiKaryawanController@export_pengajuan_permintaan_kas']);
     Route::get('/cuti_karyawan/export_realisasi_permintaan_kas', ['as' => 'cuti_karyawan.export_realisasi_permintaan_kas','uses' => 'MasterData\CutiKaryawanController@export_realisasi_permintaan_kas']);
     Route::get('/cuti_karyawan/export_form_pengajuan_cuti_pdf', ['as' => 'cuti_karyawan.export_form_pengajuan_cuti_pdf','uses' => 'MasterData\CutiKaryawanController@export_form_pengajuan_cuti_pdf']);
