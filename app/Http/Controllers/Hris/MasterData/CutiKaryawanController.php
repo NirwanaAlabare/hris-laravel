@@ -781,7 +781,7 @@ class CutiKaryawanController extends AdminBaseController
         $sheet->writeTo('T6', '8');
         $sheet->writeTo('U6', '9');
         $sheet->writeTo('V6', '10');
-        $sheet->writeTo('Q6', '11');
+        $sheet->writeTo('W6', '11');
         $sheet->writeTo('X6', '12');
 
 
@@ -1039,7 +1039,7 @@ class CutiKaryawanController extends AdminBaseController
         $sheet->writeTo('T6', '8');
         $sheet->writeTo('U6', '9');
         $sheet->writeTo('V6', '10');
-        $sheet->writeTo('Q6', '11');
+        $sheet->writeTo('W6', '11');
         $sheet->writeTo('X6', '12');
 
 
