@@ -726,6 +726,17 @@ class CutiKaryawanController extends AdminBaseController
 
         $data_cuti = DB::select($query, $bindings);
 
+        $data_cuti = collect($data_cuti)->map(function ($cuti) {
+            $perijinan = DB::table('data_absen_perijinan')
+                ->where('enroll_id', $cuti->enroll_id)
+                ->where('kode_absen_ijin', 'CT')
+                ->where('tanggal_mulai_ijin', '>=', $cuti->start_date)
+                ->orderBy('tanggal_mulai_ijin', 'asc')
+                ->get();
+
+            $cuti->perijinan = $perijinan;
+            return $cuti;
+        });
         $excel = FastExcel::create('cuti karyawan');
         $sheet = $excel->getSheet();
 
@@ -757,6 +768,19 @@ class CutiKaryawanController extends AdminBaseController
         $sheet->writeTo('K5', 'CUTI TERPAKAI');
         $sheet->writeTo('L5', 'CUTI SISA');
 
+        $sheet->writeTo('M5', '1');
+        $sheet->writeTo('N5', '2');
+        $sheet->writeTo('O5', '3');
+        $sheet->writeTo('P5', '4');
+        $sheet->writeTo('Q5', '5');
+        $sheet->writeTo('R5', '6');
+        $sheet->writeTo('S5', '7');
+        $sheet->writeTo('T5', '8');
+        $sheet->writeTo('U5', '9');
+        $sheet->writeTo('V5', '10');
+        $sheet->writeTo('W5', '11');
+        $sheet->writeTo('X5', '12');
+
 
 
         $sheet->writeAreas();
@@ -775,11 +799,24 @@ class CutiKaryawanController extends AdminBaseController
             'J' => ['width' => 12], // CUTI TERPAKAI
             'K' => ['width' => 15], // CUTI TERPAKAI
             'L' => ['width' => 10], // CUTI SISA
+
+            'M' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'N' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'O' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'P' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'Q' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'R' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'S' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'T' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'U' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'V' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'W' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'X' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
         ]);
 
 
         foreach($data_cuti as $cuti) {
-            $data = [
+            $row  = [
                 $cuti->nik,
                 $cuti->enroll_id,
                 $cuti->employee_name,
@@ -794,7 +831,20 @@ class CutiKaryawanController extends AdminBaseController
                 $cuti->remaining_leave,
             ];
 
-            $sheet->writeRow($data);
+            $izinDates = collect($cuti->perijinan)
+            ->pluck('tanggal_mulai_ijin')
+            ->take(12)
+            ->values()
+            ->toArray();
+
+        // Tambahkan 12 kolom kosong default
+            for ($i = 0; $i < 12; $i++) {
+                $row[] = $izinDates[$i] ?? ''; // Isi tanggal jika ada, kalau tidak isi string kosong
+            }
+
+            $rows[] = $row;
+
+            $sheet->writeRow($row);
         }
         $finename='Rekap Cuti Karyawan'.'xlsx';
         ob_end_clean();
@@ -909,6 +959,20 @@ class CutiKaryawanController extends AdminBaseController
 
         $data_cuti = DB::select($query);
 
+
+        $data_cuti = collect($data_cuti)->map(function ($cuti) {
+            $perijinan = DB::table('data_absen_perijinan')
+                ->where('enroll_id', $cuti->enroll_id)
+                ->where('kode_absen_ijin', 'CT')
+                ->where('tanggal_mulai_ijin', '>=', $cuti->start_date)
+                ->orderBy('tanggal_mulai_ijin', 'asc')
+                ->get();
+
+            $cuti->perijinan = $perijinan;
+            return $cuti;
+        });
+
+
         $excel = FastExcel::create('cuti karyawan');
         $sheet = $excel->getSheet();
 
@@ -941,6 +1005,19 @@ class CutiKaryawanController extends AdminBaseController
         $sheet->writeTo('K5', 'CUTI TERPAKAI');
         $sheet->writeTo('L5', 'CUTI SISA');
 
+        $sheet->writeTo('M5', '1');
+        $sheet->writeTo('N5', '2');
+        $sheet->writeTo('O5', '3');
+        $sheet->writeTo('P5', '4');
+        $sheet->writeTo('Q5', '5');
+        $sheet->writeTo('R5', '6');
+        $sheet->writeTo('S5', '7');
+        $sheet->writeTo('T5', '8');
+        $sheet->writeTo('U5', '9');
+        $sheet->writeTo('V5', '10');
+        $sheet->writeTo('W5', '11');
+        $sheet->writeTo('X5', '12');
+
 
 
         $sheet->writeAreas();
@@ -959,11 +1036,24 @@ class CutiKaryawanController extends AdminBaseController
             'J' => ['width' => 12], // CUTI TERPAKAI
             'K' => ['width' => 15], // CUTI TERPAKAI
             'L' => ['width' => 10], // CUTI SISA
+
+            'M' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'N' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'O' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'P' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'Q' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'R' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'S' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'T' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'U' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'V' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'W' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
+            'X' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY, 'width' => 15], // MASA KERJA
         ]);
 
 
         foreach($data_cuti as $cuti) {
-            $data = [
+            $row  = [
                 $cuti->nik,
                 $cuti->enroll_id,
                 $cuti->employee_name,
@@ -978,7 +1068,20 @@ class CutiKaryawanController extends AdminBaseController
                 $cuti->remaining_leave,
             ];
 
-            $sheet->writeRow($data);
+            $izinDates = collect($cuti->perijinan)
+            ->pluck('tanggal_mulai_ijin')
+            ->take(12)
+            ->values()
+            ->toArray();
+
+        // Tambahkan 12 kolom kosong default
+            for ($i = 0; $i < 12; $i++) {
+                $row[] = $izinDates[$i] ?? ''; // Isi tanggal jika ada, kalau tidak isi string kosong
+            }
+
+            $rows[] = $row;
+
+            $sheet->writeRow($row);
         }
         $finename='Rekap Cuti Karyawan'.'xlsx';
         ob_end_clean();
@@ -995,6 +1098,9 @@ class CutiKaryawanController extends AdminBaseController
                 SELECT
                     ea.enroll_id,
                     ea.employee_name,
+                    ea.nik,
+                    ea.status_staff,
+                    ea.status_jabatan,
                     ea.department_name,
                     ea.sub_dept_name,
                     ea.join_date,
@@ -1006,7 +1112,6 @@ class CutiKaryawanController extends AdminBaseController
                     WHERE join_date IS NOT NULL
                     AND enroll_id = $enroll_id
                     ORDER BY enroll_id
-                    LIMIT 10
                 ) ea
 
                 UNION ALL
@@ -1014,6 +1119,9 @@ class CutiKaryawanController extends AdminBaseController
                 SELECT
                     p.enroll_id,
                     p.employee_name,
+                    p.nik,
+                    p.status_staff,
+                    p.status_jabatan,
                     p.department_name,
                     p.sub_dept_name,
                     p.join_date,
@@ -1043,6 +1151,9 @@ class CutiKaryawanController extends AdminBaseController
                 SELECT
                     p.enroll_id,
                     p.employee_name,
+                    p.nik,
+                    p.status_staff,
+                    p.status_jabatan,
                     p.department_name,
                     p.sub_dept_name,
                     p.join_date,
@@ -1071,23 +1182,30 @@ class CutiKaryawanController extends AdminBaseController
                 LEFT JOIN cuti_dipakai c
                     ON p.enroll_id = c.enroll_id AND p.start_date = c.start_date
             )
+
             SELECT *
             FROM data_cuti
             WHERE rn = 1
             ORDER BY enroll_id
         ";
 
+
         $data_cuti = DB::select($query);
 
         $perijinan = DB::table('data_absen_perijinan')
                     ->where('enroll_id', $enroll_id)
+                    ->where('kode_absen_ijin', 'CT') // Tambahkan kondisi kode_absen_ijin
+                    ->where('tanggal_mulai_ijin', '>=', $start_date) // Gunakan parameter start_date yang sesuai
+                    ->where('tanggal_mulai_ijin', '<', $end_date) // Gunakan parameter end_date yang sesuai
                     ->orderBy('tanggal_mulai_ijin', 'desc')
                     ->get();
+
 
         $data_cuti = collect($data_cuti)->map(function ($cuti) use ($perijinan) {
             $cuti->perijinan = $perijinan;
             return $cuti;
         });
+        // dd($data_cuti);
         $fileName = 'RekapCutiKaryawanKaryawan.xlsx';
 
         $response= Excel::download(new RekapCutiKaryawanKaryawanAll($data_cuti), $fileName, \Maatwebsite\Excel\Excel::XLSX);
