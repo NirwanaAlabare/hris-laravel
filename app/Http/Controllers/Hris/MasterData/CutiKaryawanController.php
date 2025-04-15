@@ -562,7 +562,7 @@ class CutiKaryawanController extends AdminBaseController
                     'tahun' => $item->tahun,
                     'enroll_id' => $item->enroll_id,
                     'kode_absen_ijin' => $item->kode_absen_ijin,
-                    'tanggal_perizinan' => $item->tanggal_perizinan,
+                    'tanggal_perizinan' => Carbon::parse($item->tanggal_perizinan)->format('d-m-Y'),
                     'nomor_form_perizinan' => $item->nomor_form_perizinan,
                     'tanggal_mulai_ijin' => Carbon::parse($item->tanggal_mulai_ijin)->format('d-m-Y'),
                     'tanggal_akhir_ijin' => Carbon::parse($item->tanggal_akhir_ijin)->format('d-m-Y'),
