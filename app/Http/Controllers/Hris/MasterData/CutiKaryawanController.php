@@ -433,7 +433,9 @@ class CutiKaryawanController extends AdminBaseController
                 return Carbon::parse($row->join_date)->format('d-m-Y'); // Format: DDMMYYYY
             })
             ->addColumn('tanggal_resign', function ($row) {
-                return Carbon::parse($row->tanggal_resign)->format('d-m-Y'); // Format: DDMMYYYY
+                return $row->tanggal_resign
+                    ? Carbon::parse($row->tanggal_resign)->format('d-m-Y')
+                    : '-';
             })
             ->addColumn('start_date', function ($row) {
                 return Carbon::parse($row->start_date)->format('d-m-Y'); // Format: DDMMYYYY
