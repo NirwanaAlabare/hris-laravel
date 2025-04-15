@@ -38,6 +38,10 @@
     background-color: var(--primary);
     color: white;
 }
+#table_detail_cuti_karyawan thead th {
+    background-color: var(--primary);
+    color: white;
+}
 
 .wrapper {
   margin: auto;
@@ -157,7 +161,6 @@ h1 {
     </div>
 
 
-
     <div class="row p-3">
         <div class="col-md-12">
             <div class="card card-primary card-outline tab-content">
@@ -165,13 +168,6 @@ h1 {
                         <div class="card-title">Cuti Karyawan</div>
                     </div>
                         <div class="mt-4 ml-4 mr-5 mb-0">
-                            {{-- <div class=""  aria-labelledby="">
-                                <div clasl="card-header m-0 p-0" style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div class="m-0 p-0">
-                                        <button class="btn btn-primary w-100" onclick="open_modal_buat_dokumen()"  data-toggle="tooltip" title="Tambah dokumen" id="recap_labor_cost_2"><i class="fa fa-plus" aria-hidden="true"></i> Buat Pengajuan</button>
-                                    </div>
-                                </div>
-                            </div> --}}
                             <div class="row">
                                 <div class="col-md-2">
                                     <div class="form-group">
@@ -271,14 +267,13 @@ h1 {
                                         </thead>
                                     </table>
                                 </div>
-
                             </div>
                         </div>
             </div>
         </div>
     </div>
 
-
+    {{-- MODAL TAMBAH --}}
     <div class="modal fade" id="ajax-modal-tambah"  role="dialog" data-backdrop="static" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document" style="max-width: 50%;">
             <div class="row">
@@ -414,6 +409,50 @@ h1 {
         </div>
     </div>
 
+
+    {{-- MODAL DETAIL --}}
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-scrollable" style="max-width: 65%;">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <p class="modal-title   " style="font-size: 18px; font-weight: bold;" id="exampleModalLabel"></p>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div style="height: 80vh; overflow-y: auto; over-flow-x:none;">
+                    <div class="row p-5">
+                        <div class="col">
+                            <div class="d-flex mb-2">
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 14px;">Nama Karyawan</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 14px;">:</p>
+                                <p class="mb-0" id="nama_karyawan_modal"></p>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 14px;">NIK</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 14px;">:</p>
+                                <p class="mb-0" id="nik_karyawan_modal"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive px-5">
+                        <table id="table_detail_cuti_karyawan" class="table table-striped table-sm w-100 table-hover">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>Tanggal Form</th>
+                                    <th>No Form</th>
+                                    <th>Tanggal Mulai</th>
+                                    <th>Tanggal Akhir</th>
+                                    <th>Kode Absen</th>
+                                    <th>Keterangan</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 @section('footerjs')
     <!-- DataTables & Plugins -->
@@ -527,6 +566,49 @@ h1 {
 
     </script>
 
+
+    <script>
+      $(document).on('click', '[id^=open_detail_]', function () {
+            const enrollId = $(this).attr('id').replace('open_detail_', '');
+
+            const nik = document.getElementById('nik').value;
+            const employeeName = document.getElementById('employee_name').value;
+
+            $('#exampleModal').modal('show');
+            $("#exampleModalLabel").html('Detail Cuti');
+            $("#nama_karyawan_modal").html(employeeName);
+            $("#nik_karyawan_modal").html(nik);
+
+            if ($.fn.DataTable.isDataTable('#table_detail_cuti_karyawan')) {
+                $('#table_detail_cuti_karyawan').DataTable().clear().destroy();
+            }
+
+
+            $('#table_detail_cuti_karyawan').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                autoWidth: false,
+                paging: false,
+                searching: false,
+                info: false,
+                ajax: {
+                    url: '{{ route('cuti_karyawan.show_by_id') }}',
+                    data: function(d) {
+                        d.enroll_id = enrollId;
+                    }
+                },
+                columns: [
+                    { data: 'tanggal_perizinan', name: 'tanggal_perizinan' },
+                    { data: 'nomor_form_perizinan', name: 'nomor_form_perizinan' },
+                    { data: 'tanggal_mulai_ijin', name: 'tanggal_mulai_ijin' },
+                    { data: 'tanggal_akhir_ijin', name: 'tanggal_akhir_ijin' },
+                    { data: 'kode_absen_ijin', name: 'kode_absen_ijin' },
+                    { data: 'absen_alasan', name: 'absen_alasan' },
+                ]
+            });
+        });
+    </script>
 
     <script>
         function formatRupiah(angka) {
@@ -952,90 +1034,54 @@ h1 {
                     swal("", "Export rekap cuti karyawan", "error");
                 }
             });
-        })
+        });
 
         $('#btn_export_cuti_by_date').click(function (e) {
-    const tipe = $('#skema_payroll').val();
-    let tgl = '';
+            const tipe = $('#skema_payroll').val();
+            let tgl = '';
 
-    if (tipe === 'CUSTOM_RANGE') {
-        tgl = $('#data_range_export_cuti').val();
-    } else if (tipe === 'MONTHLY') {
-        tgl = $('#periode_month').val(); // Ambil dari input type="month"
-    }
+            if (tipe === 'CUSTOM_RANGE') {
+                tgl = $('#data_range_export_cuti').val();
+            } else if (tipe === 'MONTHLY') {
+                tgl = $('#periode_month').val(); // Ambil dari input type="month"
+            }
 
-    if (!tgl) {
-        swal("Oops!", "Silakan pilih periode terlebih dahulu!", "warning");
-        return;
-    }
+            if (!tgl) {
+                swal("Oops!", "Silakan pilih periode terlebih dahulu!", "warning");
+                return;
+            }
 
-    $('#btn_export_cuti_by_date').addClass("btn-loading");
-    $("#btn_export_cuti_by_date").html('Please wait...');
-    $("#btn_export_cuti_by_date").attr("disabled", true);
+            $('#btn_export_cuti_by_date').addClass("btn-loading");
+            $("#btn_export_cuti_by_date").html('Please wait...');
+            $("#btn_export_cuti_by_date").attr("disabled", true);
 
-    $.ajax({
-        type: 'POST',
-        url: '{{ route('cuti_karyawan.show_export_by_join_date') }}',
-        data: {
-            join_date: tgl,
-            type: tipe
-        },
-        xhrFields: { responseType: 'blob' },
-        success: function (data) {
-            $('#btn_export_cuti_by_date').removeClass("btn-loading");
-            $("#btn_export_cuti_by_date").attr("disabled", false);
-            $("#btn_export_cuti_by_date").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel');
-            const blob = new Blob([data]);
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = "cuti_karyawan.xlsx";
-            link.click();
-            swal("", "Export rekap cuti karyawan", "success");
-        },
-        error: function () {
-            $('#btn_export_cuti_by_date').removeClass("btn-loading");
-            $("#btn_export_cuti_by_date").attr("disabled", false);
-            $("#btn_export_cuti_by_date").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel');
-            swal("", "Export rekap cuti karyawan gagal", "error");
-        }
-    });
-});
-
-
-
-
-        // $('#btn_export_cuti_by_date').click(function(e){
-        //     var tgl = $('#data_range_export_cuti').val();
-        //     $('#btn_export_cuti_by_date').addClass("btn-loading");
-        //     $("#btn_export_cuti_by_date").html('Please wait...');
-        //     $("#btn_export_cuti_by_date").attr("disabled", true);
-        //     $.ajax({
-        //         type: 'POST',
-        //         url: '{{route('cuti_karyawan.show_export_by_join_date')}}',
-        //         data: {
-        //             join_date:tgl,
-        //         },
-        //         xhrFields: { responseType : 'blob' },
-        //         success:function(data){
-        //             $('#btn_export_cuti_by_date').removeClass("btn-loading");
-        //             $("#btn_export_cuti_by_date").attr("disabled", false);
-        //             $("#btn_export_cuti_by_date").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel');
-        //             var blob = new Blob([data]);
-        //             var link = document.createElement('a');
-        //             link.href = window.URL.createObjectURL(blob);
-        //             link.download = "cuti_karyawan.xlsx";
-        //             link.click();
-        //             swal("", "Export rekap cuti karyawan", "success");
-        //         },
-        //         error: function(res){
-        //             $('#btn_export_cuti_by_date').removeClass("btn-loading");
-        //             $("#btn_export_cuti_by_date").attr("disabled", false);
-        //             $("#btn_export_cuti_by_date").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel');
-        //             swal("", "Export rekap cuti karyawan", "error");
-        //         }
-        //     });
-        // })
-
+            $.ajax({
+                type: 'POST',
+                url: '{{ route('cuti_karyawan.show_export_by_join_date') }}',
+                data: {
+                    join_date: tgl,
+                    type: tipe
+                },
+                xhrFields: { responseType: 'blob' },
+                success: function (data) {
+                    $('#btn_export_cuti_by_date').removeClass("btn-loading");
+                    $("#btn_export_cuti_by_date").attr("disabled", false);
+                    $("#btn_export_cuti_by_date").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel');
+                    const blob = new Blob([data]);
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "cuti_karyawan.xlsx";
+                    link.click();
+                    swal("", "Export rekap cuti karyawan", "success");
+                },
+                error: function () {
+                    $('#btn_export_cuti_by_date').removeClass("btn-loading");
+                    $("#btn_export_cuti_by_date").attr("disabled", false);
+                    $("#btn_export_cuti_by_date").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel');
+                    swal("", "Export rekap cuti karyawan gagal", "error");
+                }
+            });
+        });
 
 
         function open_modal_realisasi_pengajuan($row) {
@@ -1099,77 +1145,77 @@ h1 {
 
     <script>
         $(function(){
-                'use strict';
+            'use strict';
 
-                $('.select2').select2({
-                minimumResultsForSearch: Infinity
-                });
-
-                // Select2 by showing the search
-                $('.select2-show-search').select2({
-                minimumResultsForSearch: ''
-                });
-
-                // Colored Hover
-                $('#select2').select2({
-                dropdownCssClass: 'hover-success',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                $('#select3').select2({
-                dropdownCssClass: 'hover-danger',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                // Outline Select
-                $('#select4').select2({
-                containerCssClass: 'select2-outline-success',
-                dropdownCssClass: 'bd-success hover-success',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                $('#select5').select2({
-                containerCssClass: 'select2-outline-info',
-                dropdownCssClass: 'bd-info hover-info',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                // Full Colored Select Box
-                $('#select6').select2({
-                containerCssClass: 'select2-full-color select2-primary',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                $('#select7').select2({
-                containerCssClass: 'select2-full-color select2-danger',
-                dropdownCssClass: 'hover-danger',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                // Full Colored Dropdown
-                $('#select8').select2({
-                dropdownCssClass: 'select2-drop-color select2-drop-primary',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                $('#select9').select2({
-                dropdownCssClass: 'select2-drop-color select2-drop-indigo',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                // Full colored for both box and dropdown
-                $('#select10').select2({
-                containerCssClass: 'select2-full-color select2-primary',
-                dropdownCssClass: 'select2-drop-color select2-drop-primary',
-                minimumResultsForSearch: Infinity // disabling search
-                });
-
-                $('#select11').select2({
-                containerCssClass: 'select2-full-color select2-indigo',
-                dropdownCssClass: 'select2-drop-color select2-drop-indigo',
-                minimumResultsForSearch: Infinity // disabling search
-                });
+            $('.select2').select2({
+            minimumResultsForSearch: Infinity
             });
+
+            // Select2 by showing the search
+            $('.select2-show-search').select2({
+            minimumResultsForSearch: ''
+            });
+
+            // Colored Hover
+            $('#select2').select2({
+            dropdownCssClass: 'hover-success',
+            minimumResultsForSearch: Infinity // disabling search
+            });
+
+            $('#select3').select2({
+            dropdownCssClass: 'hover-danger',
+            minimumResultsForSearch: Infinity // disabling search
+            });
+
+            // Outline Select
+            $('#select4').select2({
+            containerCssClass: 'select2-outline-success',
+            dropdownCssClass: 'bd-success hover-success',
+            minimumResultsForSearch: Infinity // disabling search
+            });
+
+            $('#select5').select2({
+            containerCssClass: 'select2-outline-info',
+            dropdownCssClass: 'bd-info hover-info',
+            minimumResultsForSearch: Infinity // disabling search
+            });
+
+            // Full Colored Select Box
+            $('#select6').select2({
+            containerCssClass: 'select2-full-color select2-primary',
+            minimumResultsForSearch: Infinity // disabling search
+            });
+
+            $('#select7').select2({
+            containerCssClass: 'select2-full-color select2-danger',
+            dropdownCssClass: 'hover-danger',
+            minimumResultsForSearch: Infinity // disabling search
+            });
+
+            // Full Colored Dropdown
+            $('#select8').select2({
+            dropdownCssClass: 'select2-drop-color select2-drop-primary',
+            minimumResultsForSearch: Infinity // disabling search
+            });
+
+            $('#select9').select2({
+            dropdownCssClass: 'select2-drop-color select2-drop-indigo',
+            minimumResultsForSearch: Infinity // disabling search
+            });
+
+            // Full colored for both box and dropdown
+            $('#select10').select2({
+            containerCssClass: 'select2-full-color select2-primary',
+            dropdownCssClass: 'select2-drop-color select2-drop-primary',
+            minimumResultsForSearch: Infinity // disabling search
+            });
+
+            $('#select11').select2({
+            containerCssClass: 'select2-full-color select2-indigo',
+            dropdownCssClass: 'select2-drop-color select2-drop-indigo',
+            minimumResultsForSearch: Infinity // disabling search
+            });
+        });
     </script>
 
 @endsection

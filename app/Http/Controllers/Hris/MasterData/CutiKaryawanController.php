@@ -236,92 +236,6 @@ class CutiKaryawanController extends AdminBaseController
     public function getData(Request $request)
     {
 
-
-
-        // Siapkan binding untuk IN clause
-        // $data_cuti    = DB::select("
-        //                 WITH RECURSIVE periode AS (
-        //                     SELECT
-        //                         ea.enroll_id,
-        //                         ea.employee_name,
-        //                         ea.department_name,
-        //                         ea.sub_dept_name,
-        //                         ea.join_date,
-        //                         ea.join_date AS start_date,
-        //                         LEAST(DATE_ADD(ea.join_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
-        //                     FROM (
-        //                         SELECT *
-        //                         FROM employee_atribut
-        //                         WHERE join_date IS NOT NULL
-        //                         ORDER BY enroll_id
-        //                         LIMIT 10
-        //                     ) ea
-        //                     UNION ALL
-        //                     SELECT
-        //                         p.enroll_id,
-        //                         p.employee_name,
-        //                         p.department_name,
-        //                         p.sub_dept_name,
-        //                         p.join_date,
-        //                         p.end_date AS start_date,
-        //                         LEAST(DATE_ADD(p.end_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
-        //                     FROM periode p
-        //                     WHERE p.end_date < CURDATE()
-        //                 ),
-
-        //                 cuti_dipakai AS (
-        //                     SELECT
-        //                         p.enroll_id,
-        //                         p.start_date,
-        //                         p.end_date,
-        //                         COUNT(d.uuid) AS used_leave
-        //                     FROM periode p
-        //                     LEFT JOIN data_absen_perijinan d
-        //                     ON d.enroll_id = p.enroll_id
-        //                     AND d.kode_absen_ijin = 'CT'
-        //                     AND d.tanggal_mulai_ijin >= p.start_date
-        //                     AND d.tanggal_mulai_ijin < p.end_date
-        //                     GROUP BY p.enroll_id, p.start_date, p.end_date
-        //                 ),
-
-        //                 data_cuti AS (
-        //                     SELECT
-        //                         p.enroll_id,
-        //                         p.employee_name,
-        //                         p.department_name,
-        //                         p.sub_dept_name,
-        //                         p.join_date,
-        //                         p.start_date,
-        //                         p.end_date,
-        //                         CONCAT(
-        //                             TIMESTAMPDIFF(YEAR, p.join_date, p.end_date), ' tahun ',
-        //                             TIMESTAMPDIFF(MONTH, p.join_date, p.end_date) % 12, ' bulan'
-        //                         ) AS lama_bekerja,
-        //                         CASE
-        //                             WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 0
-        //                             ELSE 1
-        //                         END AS is_eligible,
-        //                         COALESCE(c.used_leave, 0) AS used_leave,
-        //                         CASE
-        //                             WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 0
-        //                             ELSE 12 - COALESCE(c.used_leave, 0)
-        //                         END AS remaining_leave,
-        //                         CASE
-        //                             WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 'Belum Berhak'
-        //                             WHEN (12 - COALESCE(c.used_leave, 0)) > 0 THEN 'Masih Memiliki Cuti'
-        //                             ELSE 'Cuti Habis'
-        //                         END AS leave_status,
-        //                         ROW_NUMBER() OVER (PARTITION BY p.enroll_id ORDER BY p.end_date DESC) AS rn
-        //                     FROM periode p
-        //                     LEFT JOIN cuti_dipakai c
-        //                         ON p.enroll_id = c.enroll_id AND p.start_date = c.start_date
-        //                 )
-
-        //                 SELECT *
-        //                 FROM data_cuti
-        //                 WHERE rn = 1
-        //                 ORDER BY enroll_id;", [$enroll_id, $enroll_id]);
-
         $enroll_ids = $request->input('selectEmployeeID', []);
         $has_filter = count($enroll_ids) > 0;
 
@@ -340,6 +254,7 @@ class CutiKaryawanController extends AdminBaseController
                     ea.enroll_id,
                     ea.employee_name,
                     ea.department_name,
+                    ea.nik,
                     ea.status_aktif,
                     ea.tanggal_resign,
                     ea.sub_dept_name,
@@ -351,6 +266,151 @@ class CutiKaryawanController extends AdminBaseController
                     FROM employee_atribut
                     WHERE join_date IS NOT NULL
                     $filterClause
+                    ORDER BY enroll_id
+                    LIMIT 10
+                ) ea
+
+                UNION ALL
+
+                SELECT
+                    p.enroll_id,
+                    p.employee_name,
+                    p.department_name,
+                    p.nik,
+                    p.status_aktif,
+                    p.tanggal_resign,
+                    p.sub_dept_name,
+                    p.join_date,
+                    p.end_date AS start_date,
+                    LEAST(DATE_ADD(p.end_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
+                FROM periode p
+                WHERE p.end_date < CURDATE()
+            ),
+
+            cuti_dipakai AS (
+                SELECT
+                    p.enroll_id,
+                    p.start_date,
+                    p.end_date,
+                    COUNT(d.uuid) AS used_leave
+                FROM periode p
+                LEFT JOIN data_absen_perijinan d
+                ON d.enroll_id = p.enroll_id
+                AND d.kode_absen_ijin = 'CT'
+                AND d.tanggal_mulai_ijin >= p.start_date
+                AND d.tanggal_mulai_ijin < p.end_date
+                GROUP BY p.enroll_id, p.start_date, p.end_date
+            ),
+
+            data_cuti AS (
+                SELECT
+                    p.enroll_id,
+                    p.employee_name,
+                    p.department_name,
+                    p.nik,
+                    p.status_aktif,
+                    p.tanggal_resign,
+                    p.sub_dept_name,
+                    p.join_date,
+                    p.start_date,
+                    p.end_date,
+                    CONCAT(
+                        TIMESTAMPDIFF(YEAR, p.join_date, p.end_date), ' tahun ',
+                        TIMESTAMPDIFF(MONTH, p.join_date, p.end_date) % 12, ' bulan'
+                    ) AS lama_bekerja,
+                    CASE
+                        WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 0
+                        ELSE 1
+                    END AS is_eligible,
+                    COALESCE(c.used_leave, 0) AS used_leave,
+                    CASE
+                        WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 0
+                        ELSE 12 - COALESCE(c.used_leave, 0)
+                    END AS remaining_leave,
+                    CASE
+                        WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 'Belum Berhak'
+                        WHEN (12 - COALESCE(c.used_leave, 0)) > 0 THEN 'Masih Memiliki Cuti'
+                        ELSE 'Cuti Habis'
+                    END AS leave_status,
+                    ROW_NUMBER() OVER (PARTITION BY p.enroll_id ORDER BY p.end_date DESC) AS rn
+                FROM periode p
+                LEFT JOIN cuti_dipakai c
+                    ON p.enroll_id = c.enroll_id AND p.start_date = c.start_date
+            )
+
+            SELECT *
+            FROM data_cuti
+            WHERE rn = 1
+            ORDER BY enroll_id
+        ";
+
+        $data_cuti = DB::select($query, $bindings);
+            return datatables()->of($data_cuti)
+            ->addColumn('join_date', function ($row) {
+                return Carbon::parse($row->join_date)->format('d-m-Y'); // Format: DDMMYYYY
+            })
+            ->addColumn('tanggal_resign', function ($row) {
+                return $row->tanggal_resign
+                    ? Carbon::parse($row->tanggal_resign)->format('d-m-Y')
+                    : '-';
+            })
+            ->addColumn('start_date', function ($row) {
+                return Carbon::parse($row->start_date)->format('d-m-Y'); // Format: DDMMYYYY
+            })
+            ->addColumn('end_date', function ($row) {
+                return Carbon::parse($row->end_date)->format('d-m-Y'); // Format: DDMMYYYY
+            })
+            ->addColumn('is_eligible', function ($row) {
+                $isEligible = (int) $row->is_eligible;
+                $badgeClass = $isEligible ? 'badge-success' : 'badge-danger';
+                $text = $isEligible ? '12' : '0';
+
+                return '<span class="badge ' . $badgeClass . '">' . $text . '</span>';
+            })
+            ->addColumn('actions', function ($row) {
+
+                return  '<div>
+                            <input type="hidden" id="employee_name" value="'.$row->employee_name.'"/>
+                            <input type="hidden" id="nik" value="'.$row->nik.'"/>
+                            <a class="btn btn-primary btn-sm" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="open_detail_'.$row->enroll_id.'">
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </a>
+                        </div>';
+            })
+            ->rawColumns(['is_eligible','actions'])
+            ->make(true);
+               // return  '<div> <a class="btn btn-success btn-sm" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2">
+                //                         <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                //                     </a>
+                //             <a class="btn btn-danger btn-sm" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="export_form_pengajuan_cuti_'.$row->enroll_id.'">
+                //                 <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                //             </a>
+                //             <a style="text-align:center; color:white;" class="btn btn-danger btn-sm">
+                //             <i class="fa fa-trash"></i>
+                //             </a></div>';
+    }
+    public function show_by_id(Request $request)
+    {
+
+        $enroll_id = $request->enroll_id;
+
+        $query = "
+            WITH RECURSIVE periode AS (
+                SELECT
+                    ea.enroll_id,
+                    ea.employee_name,
+                    ea.department_name,
+                    ea.status_aktif,
+                    ea.tanggal_resign,
+                    ea.sub_dept_name,
+                    ea.join_date,
+                    ea.join_date AS start_date,
+                    LEAST(DATE_ADD(ea.join_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
+                FROM (
+                    SELECT *
+                    FROM employee_atribut
+                    WHERE join_date IS NOT NULL
+                    AND enroll_id = $enroll_id
                     ORDER BY enroll_id
                     LIMIT 10
                 ) ea
@@ -427,48 +487,31 @@ class CutiKaryawanController extends AdminBaseController
             ORDER BY enroll_id
         ";
 
-        $data_cuti = DB::select($query, $bindings);
-            return datatables()->of($data_cuti)
-            ->addColumn('join_date', function ($row) {
-                return Carbon::parse($row->join_date)->format('d-m-Y'); // Format: DDMMYYYY
-            })
-            ->addColumn('tanggal_resign', function ($row) {
-                return $row->tanggal_resign
-                    ? Carbon::parse($row->tanggal_resign)->format('d-m-Y')
-                    : '-';
-            })
-            ->addColumn('start_date', function ($row) {
-                return Carbon::parse($row->start_date)->format('d-m-Y'); // Format: DDMMYYYY
-            })
-            ->addColumn('end_date', function ($row) {
-                return Carbon::parse($row->end_date)->format('d-m-Y'); // Format: DDMMYYYY
-            })
-            ->addColumn('is_eligible', function ($row) {
-                $isEligible = (int) $row->is_eligible;
-                $badgeClass = $isEligible ? 'badge-success' : 'badge-danger';
-                $text = $isEligible ? '12' : '0';
+        $data_cuti = DB::select($query);
+        $data_cuti = collect($data_cuti)->map(function ($cuti) {
+            $perijinan = DB::table('data_absen_perijinan')
+                ->where('enroll_id', $cuti->enroll_id)
+                ->where('kode_absen_ijin', 'CT')
+                ->where('tanggal_mulai_ijin', '>=', $cuti->start_date)
+                ->orderBy('tanggal_mulai_ijin', 'asc')
+                ->get();
 
-                return '<span class="badge ' . $badgeClass . '">' . $text . '</span>';
+            $cuti->perijinan = $perijinan;
+            return $cuti;
+        });
+            return datatables()->of($data_cuti[0]->perijinan)
+            ->addColumn('tanggal_perizinan', function ($row) {
+                return Carbon::parse($row->tanggal_perizinan)->format('d-m-Y'); // Format: DDMMYYYY
             })
-            ->addColumn('actions', function ($row) {
-                // return  '<div> <a class="btn btn-success btn-sm" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2">
-                //                         <i class="fa fa-file-excel-o" aria-hidden="true"></i>
-                //                     </a>
-                //             <a class="btn btn-danger btn-sm" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="export_form_pengajuan_cuti_'.$row->enroll_id.'">
-                //                 <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                //             </a>
-                //             <a style="text-align:center; color:white;" class="btn btn-danger btn-sm">
-                //             <i class="fa fa-trash"></i>
-                //             </a></div>';
-                return  '<div> <a class="btn btn-success btn-sm" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="export_detail_cuti_karyawan_'.$row->enroll_id.'">
-                                        <i class="fa fa-file-excel-o" aria-hidden="true"></i>
-                                    </a>
-                            <a class="btn btn-primary btn-sm" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="open_detail_'.$row->enroll_id.'">
-                                <i class="fa fa-eye" aria-hidden="true"></i>
-                            </a>
-                          </div>';
+            ->addColumn('nomor_form_perizinan', function ($row) {
+                return $row->nomor_form_perizinan;
             })
-            ->rawColumns(['is_eligible','actions'])
+            ->addColumn('tanggal_mulai_ijin', function ($row) {
+                return Carbon::parse($row->tanggal_mulai_ijin)->format('d-m-Y'); // Format: DDMMYYYY
+            })
+            ->addColumn('tanggal_akhir_ijin', function ($row) {
+                return Carbon::parse($row->tanggal_akhir_ijin)->format('d-m-Y'); // Format: DDMMYYYY
+            })
             ->make(true);
     }
 
