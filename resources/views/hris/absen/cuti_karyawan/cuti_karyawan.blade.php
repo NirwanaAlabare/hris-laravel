@@ -42,6 +42,10 @@
     background-color: var(--primary);
     color: white;
 }
+#footer-primary {
+    background-color: var(--primary);
+    color: white;
+}
 
 .wrapper {
   margin: auto;
@@ -136,6 +140,10 @@ h1 {
 
 #total-nominal {
     font-weight: bold;
+}
+#table_detail_cuti_karyawan {
+    border-collapse: separate;
+    border-spacing: 0 2px;
 }
 
 
@@ -433,11 +441,16 @@ h1 {
                             </div>
                         </div>
                     </div>
-
+                    <div class="px-5 pt-2">
+                        <div id="periodeTabs" class="nav nav-tabs mb-3" style="gap: 8px;" role="tablist">
+                            <!-- Button tabs akan di-generate via JavaScript -->
+                        </div>
+                    </div>
                     <div class="table-responsive px-5">
                         <table id="table_detail_cuti_karyawan" class="table table-striped table-sm w-100 table-hover">
                             <thead class="table-primary">
                                 <tr>
+                                    <th>No</th>
                                     <th>Tanggal Form</th>
                                     <th>No Form</th>
                                     <th>Tanggal Mulai</th>
@@ -446,6 +459,9 @@ h1 {
                                     <th>Keterangan</th>
                                 </tr>
                             </thead>
+                            <tbody id="cutiTableBody">
+                                <!-- Data akan dimasukkan via JavaScript -->
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -580,34 +596,141 @@ h1 {
             $("#nama_karyawan_modal").html(employeeName);
             $("#nik_karyawan_modal").html(nik);
 
-            if ($.fn.DataTable.isDataTable('#table_detail_cuti_karyawan')) {
-                $('#table_detail_cuti_karyawan').DataTable().clear().destroy();
-            }
+
+            $.ajax({
+                type: 'GET',
+                url: '{{route('cuti_karyawan.showing_list_year_period')}}',
+                data: {
+                    enroll_id:enrollId,
+                },
+                success: function (data) {
+                    const tabsContainer = document.getElementById('periodeTabs');
+                    const tableBody = document.getElementById('cutiTableBody');
 
 
-            $('#table_detail_cuti_karyawan').DataTable({
-                processing: true,
-                serverSide: true,
-                responsive: true,
-                autoWidth: false,
-                paging: false,
-                searching: false,
-                info: false,
-                ajax: {
-                    url: '{{ route('cuti_karyawan.show_by_id') }}',
-                    data: function(d) {
-                        d.enroll_id = enrollId;
+
+                    tabsContainer.innerHTML = '';
+                    tableBody.innerHTML = '';
+
+                    function renderTable(data) {
+                            tableBody.innerHTML = '';
+
+                            let totalDipakai = 0;
+                            let totalHangus = 0;
+
+                            // Jika data kosong, buat 12 baris CUTI HANGUS
+                            if (data.length === 0) {
+                                for (let i = 0; i < 12; i++) {
+                                    totalHangus++;
+                                    const row = `
+                                        <tr style="background-color: #f8d7da; color: #721c24;">
+                                            <td>${i + 1}</td>
+                                            <td colspan="6" class="text-center fw-bold">CUTI HANGUS</td>
+                                        </tr>`;
+                                    tableBody.innerHTML += row;
+                                }
+                            } else {
+                                data.forEach((item, index) => {
+                                    let row = '';
+
+                                    if (item.absen_alasan === 'CUTI HANGUS') {
+                                        totalHangus++;
+                                        row = `
+                                            <tr style="background-color: #DDDFE2;">
+                                                <td>${index + 1}</td>
+                                                <td colspan="6" class="text-center fw-bold fs-1">-</td>
+                                            </tr>`;
+                                    } else {
+                                        totalDipakai++;
+                                        row = `
+                                            <tr>
+                                                <td>${index + 1}</td>
+                                                <td>${item.tanggal_perizinan ?? '-'}</td>
+                                                <td>${item.nomor_form_perizinan}</td>
+                                                <td>${item.tanggal_mulai_ijin}</td>
+                                                <td>${item.tanggal_akhir_ijin}</td>
+                                                <td>${item.kode_absen_ijin}</td>
+                                                <td>${item.absen_alasan}</td>
+                                            </tr>`;
+                                    }
+
+                                    tableBody.innerHTML += row;
+                                });
+                            }
+
+                            // Bersihkan footer sebelumnya (jika ada)
+                            const tfoot = document.querySelector('#table_detail_cuti_karyawan tfoot');
+                            if (tfoot) tfoot.remove();
+
+                            // Tambahkan baris total di bawah tabel
+                            const footer = document.createElement('tfoot');
+                            footer.innerHTML = `
+                               <tr id="footer-primary" class="fw-bold">
+                                    <td colspan="7" class="text-end">
+                                        Total Cuti Dipakai: ${totalDipakai} &nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp; Cuti Hangus / Tidak Terpakai: ${totalHangus}
+                                    </td>
+                                </tr>
+                            `;
+                            document.querySelector('#table_detail_cuti_karyawan').appendChild(footer);
+                        }
+
+
+
+
+                    // Buat tab untuk tiap periode
+                    data.forEach((periodeObj, index) => {
+                        const isActive = index === 0 ? 'active' : '';
+                        const tab = document.createElement('button');
+                        tab.className = `nav-link ${isActive}`;
+                        tab.textContent = periodeObj.periode;
+                        tab.setAttribute('data-index', index);
+                        tab.setAttribute('type', 'button');
+                        tab.onclick = () => {
+                            document.querySelectorAll('#periodeTabs .nav-link').forEach(btn => btn.classList.remove('active'));
+                            tab.classList.add('active');
+                            renderTable(periodeObj.data);
+                        };
+                        tabsContainer.appendChild(tab);
+                    });
+
+                    // Tampilkan data periode pertama kalau ada
+                    if (data.length > 0) {
+                        renderTable(data[0].data);
                     }
                 },
-                columns: [
-                    { data: 'tanggal_perizinan', name: 'tanggal_perizinan' },
-                    { data: 'nomor_form_perizinan', name: 'nomor_form_perizinan' },
-                    { data: 'tanggal_mulai_ijin', name: 'tanggal_mulai_ijin' },
-                    { data: 'tanggal_akhir_ijin', name: 'tanggal_akhir_ijin' },
-                    { data: 'kode_absen_ijin', name: 'kode_absen_ijin' },
-                    { data: 'absen_alasan', name: 'absen_alasan' },
-                ]
+                error: function(res){
+                    swal("", "Export rekap cuti karyawan", "error");
+                }
             });
+
+            // if ($.fn.DataTable.isDataTable('#table_detail_cuti_karyawan')) {
+            //     $('#table_detail_cuti_karyawan').DataTable().clear().destroy();
+            // }
+
+
+            // $('#table_detail_cuti_karyawan').DataTable({
+            //     processing: true,
+            //     serverSide: true,
+            //     responsive: true,
+            //     autoWidth: false,
+            //     paging: false,
+            //     searching: false,
+            //     info: false,
+            //     ajax: {
+            //         url: '{{ route('cuti_karyawan.show_by_id') }}',
+            //         data: function(d) {
+            //             d.enroll_id = enrollId;
+            //         }
+            //     },
+            //     columns: [
+            //         { data: 'tanggal_perizinan', name: 'tanggal_perizinan' },
+            //         { data: 'nomor_form_perizinan', name: 'nomor_form_perizinan' },
+            //         { data: 'tanggal_mulai_ijin', name: 'tanggal_mulai_ijin' },
+            //         { data: 'tanggal_akhir_ijin', name: 'tanggal_akhir_ijin' },
+            //         { data: 'kode_absen_ijin', name: 'kode_absen_ijin' },
+            //         { data: 'absen_alasan', name: 'absen_alasan' },
+            //     ]
+            // });
         });
     </script>
 

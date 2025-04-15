@@ -203,6 +203,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('/cuti_karyawan/show_export', ['as' => 'cuti_karyawan.show_export','uses' => 'MasterData\CutiKaryawanController@show_export']);
     Route::post('/cuti_karyawan/show_export_detail_cuti_karyawan', ['as' => 'cuti_karyawan.show_export_detail_cuti_karyawan','uses' => 'MasterData\CutiKaryawanController@show_export_detail_cuti_karyawan']);
     Route::get('/cuti_karyawan/show_by_id', ['as' => 'cuti_karyawan.show_by_id','uses' => 'MasterData\CutiKaryawanController@show_by_id']);
+    Route::get('/cuti_karyawan/showing_list_year_period', ['as' => 'cuti_karyawan.showing_list_year_period','uses' => 'MasterData\CutiKaryawanController@showing_list_year_period']);
     Route::post('/cuti_karyawan/show_export_by_join_date', ['as' => 'cuti_karyawan.show_export_by_join_date','uses' => 'MasterData\CutiKaryawanController@show_export_by_join_date']);
     Route::get('/cuti_karyawan/export_pengajuan_permintaan_kas', ['as' => 'cuti_karyawan.export_pengajuan_permintaan_kas','uses' => 'MasterData\CutiKaryawanController@export_pengajuan_permintaan_kas']);
     Route::get('/cuti_karyawan/export_realisasi_permintaan_kas', ['as' => 'cuti_karyawan.export_realisasi_permintaan_kas','uses' => 'MasterData\CutiKaryawanController@export_realisasi_permintaan_kas']);
