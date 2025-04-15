@@ -571,8 +571,9 @@ h1 {
       $(document).on('click', '[id^=open_detail_]', function () {
             const enrollId = $(this).attr('id').replace('open_detail_', '');
 
-            const nik = document.getElementById('nik').value;
-            const employeeName = document.getElementById('employee_name').value;
+
+            const nik = $(this).data('nik');
+            const employeeName = $(this).data('employee_name');
 
             $('#exampleModal').modal('show');
             $("#exampleModalLabel").html('Detail Cuti');

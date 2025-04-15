@@ -370,11 +370,9 @@ class CutiKaryawanController extends AdminBaseController
             ->addColumn('actions', function ($row) {
 
                 return  '<div>
-                            <input type="hidden" id="employee_name" value="'.$row->employee_name.'"/>
-                            <input type="hidden" id="nik" value="'.$row->nik.'"/>
-                            <a class="btn btn-primary btn-sm" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="open_detail_'.$row->enroll_id.'">
-                                <i class="fa fa-eye" aria-hidden="true"></i>
-                            </a>
+                           <a class="btn btn-primary btn-sm" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="open_detail_'.$row->enroll_id.'" data-nik="'.$row->nik.'" data-employee_name="'.$row->employee_name.'">
+                    <i class="fa fa-eye" aria-hidden="true"></i>
+                </a>
                         </div>';
             })
             ->rawColumns(['is_eligible','actions'])
