@@ -428,13 +428,12 @@ class CutiKaryawanController extends AdminBaseController
         ";
 
         $data_cuti = DB::select($query, $bindings);
-
             return datatables()->of($data_cuti)
             ->addColumn('join_date', function ($row) {
                 return Carbon::parse($row->join_date)->format('d-m-Y'); // Format: DDMMYYYY
             })
             ->addColumn('tanggal_resign', function ($row) {
-                return Carbon::parse($row->join_date)->format('d-m-Y'); // Format: DDMMYYYY
+                return Carbon::parse($row->tanggal_resign)->format('d-m-Y'); // Format: DDMMYYYY
             })
             ->addColumn('start_date', function ($row) {
                 return Carbon::parse($row->start_date)->format('d-m-Y'); // Format: DDMMYYYY
