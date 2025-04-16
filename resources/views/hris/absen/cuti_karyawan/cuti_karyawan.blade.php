@@ -153,7 +153,7 @@ h1 {
     <div class="page-header shadow pr-2 m-0 pt-0 pb-0 pl-2">
         <ol class="breadcrumb breadcrumb-arrow m-0 p-0">
             <li><a href="{{route('entertaint_tamu.index')}}">Master Data</a></li>
-            <li class="active"><span>Cuti Karyawan</span></li>
+            <li class="active"><span>Cuti Tahunan</span></li>
             <input type="hidden" value="{{$user}}" id="username_who_access">
         </ol>
         <div class="ml-auto">
@@ -173,7 +173,7 @@ h1 {
         <div class="col-md-12">
             <div class="card card-primary card-outline tab-content">
                     <div class="card-header bg-primary p-3">
-                        <div class="card-title">Cuti Karyawan</div>
+                        <div class="card-title">Cuti Tahunan</div>
                     </div>
                         <div class="mt-4 ml-4 mr-5 mb-0">
                             <div class="row">
