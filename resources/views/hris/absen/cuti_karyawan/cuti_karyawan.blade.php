@@ -427,17 +427,23 @@ h1 {
                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">x</button>
                 </div>
                 <div style="height: 80vh; overflow-y: auto; over-flow-x:none;">
-                    <div class="row p-5">
+                    <div class="row p-5 d-flex justify-content-between">
                         <div class="col">
                             <div class="d-flex mb-2">
                                 <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 14px;">Nama Karyawan</p>
                                 <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 14px;">:</p>
                                 <p class="mb-0" id="nama_karyawan_modal"></p>
+                                <input type="hidden" class="mb-0" id="enroll_id_karyawan_modal"/>
                             </div>
                             <div class="d-flex mb-2">
                                 <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 14px;">NIK</p>
                                 <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 14px;">:</p>
                                 <p class="mb-0" id="nik_karyawan_modal"></p>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="d-flex mb-2 justify-content-end">
+                                <button id="btn_export_cuti_by_user" class="btn btn-success w-25 text-white" data-toggle="tooltip" title="Preview by excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Download Rekap</button>
                             </div>
                         </div>
                     </div>
@@ -595,6 +601,7 @@ h1 {
             $("#exampleModalLabel").html('Detail Cuti');
             $("#nama_karyawan_modal").html(employeeName);
             $("#nik_karyawan_modal").html(nik);
+            $("#enroll_id_karyawan_modal").val(enrollId);
 
 
             $.ajax({
@@ -606,9 +613,6 @@ h1 {
                 success: function (data) {
                     const tabsContainer = document.getElementById('periodeTabs');
                     const tableBody = document.getElementById('cutiTableBody');
-
-
-
                     tabsContainer.innerHTML = '';
                     tableBody.innerHTML = '';
 
@@ -1202,6 +1206,39 @@ h1 {
                     $('#btn_export_cuti_by_date').removeClass("btn-loading");
                     $("#btn_export_cuti_by_date").attr("disabled", false);
                     $("#btn_export_cuti_by_date").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel');
+                    swal("", "Export rekap cuti karyawan gagal", "error");
+                }
+            });
+        });
+
+        $('#btn_export_cuti_by_user').click(function (e) {
+            const enroll_id = $("#enroll_id_karyawan_modal").val();
+            $('#btn_export_cuti_by_user').addClass("btn-loading");
+            $("#btn_export_cuti_by_user").html('Please wait...');
+            $("#btn_export_cuti_by_user").attr("disabled", true);
+
+            $.ajax({
+                type: 'POST',
+                url: '{{ route('cuti_karyawan.show_export_by_user') }}',
+                data: {
+                    enroll_id: enroll_id,
+                },
+                xhrFields: { responseType: 'blob' },
+                success: function (data) {
+                    $('#btn_export_cuti_by_user').removeClass("btn-loading");
+                    $("#btn_export_cuti_by_user").attr("disabled", false);
+                    $("#btn_export_cuti_by_user").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel');
+                    const blob = new Blob([data]);
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "cuti_karyawan.xlsx";
+                    link.click();
+                    swal("", "Export rekap cuti karyawan", "success");
+                },
+                error: function () {
+                    $('#btn_export_cuti_by_user').removeClass("btn-loading");
+                    $("#btn_export_cuti_by_user").attr("disabled", false);
+                    $("#btn_export_cuti_by_user").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel');
                     swal("", "Export rekap cuti karyawan gagal", "error");
                 }
             });

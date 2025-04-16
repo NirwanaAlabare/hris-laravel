@@ -1043,11 +1043,6 @@ class CutiKaryawanController extends AdminBaseController
 
         $sheet->mergeCells('O5:Z5');
 
-
-
-
-
-
         $sheet->writeAreas();
 
         $sheet->setColOptions([
@@ -1105,65 +1100,32 @@ class CutiKaryawanController extends AdminBaseController
             ->values()
             ->toArray();
 
-        // Tambahkan 12 kolom kosong default
             for ($i = 0; $i < 12; $i++) {
-                $row[] = isset($izinDates[$i]) ? Carbon::parse($izinDates[$i])->format('Y-m-d') : ''; // Jika ada tanggal, format menjadi 'Y-m-d', jika tidak kosong
+                $row[] = isset($izinDates[$i]) ? Carbon::parse($izinDates[$i])->format('Y-m-d') : '';
             }
-
-            // foreach ($list as $year) {
-            //     // Cari data periode_tahun yang sama dengan tahun yang ada di $list
-            //     $matchingPeriod = collect($cuti->data_list_perijinan)
-            //         ->firstWhere('periode_tahun', $year); // Mencari periode berdasarkan tahun yang sama
-
-            //         if ($matchingPeriod) {
-            //             // Hitung jumlah cuti terpakai dari array 'data'
-            //             $jumlahCutiTerpakai = count($matchingPeriod['data']);
-
-            //             // Jika ada cuti terpakai, hitung sisa cuti
-            //             $sisaCuti = 12 - $jumlahCutiTerpakai;
-            //         } else {
-            //             // Jika tidak ada data untuk tahun ini, anggap cuti sisa 12
-            //             $sisaCuti = 12;
-            //         }
-
-            //         // Masukkan sisa cuti ke dalam row
-            //         $row[] = $sisaCuti;
-            // }
 
 
             foreach ($list as $year) {
-                // Cari data periode_tahun yang sama dengan tahun yang ada di $list
                 $matchingPeriod = collect($cuti->data_list_perijinan)
-                    ->firstWhere('periode_tahun', $year); // Mencari periode berdasarkan tahun yang sama
+                    ->firstWhere('periode_tahun', $year);
 
-                // Cek apakah join_date lebih baru dari tahun yang sedang diproses
                 $joinDate = Carbon::parse($cuti->join_date);
-                $startOfYear = Carbon::parse($year . '-01-01'); // Tanggal 1 Januari tahun ini
+                $startOfYear = Carbon::parse($year . '-01-01');
 
-                // Jika join_date lebih baru dari tanggal 1 Januari tahun ini, maka belum berhak cuti (sisa cuti 0)
                 if ($joinDate > $startOfYear) {
                     $sisaCuti = 0;
                 } else {
-                    // Jika ada matchingPeriod, hitung sisa cuti
                     if ($matchingPeriod) {
-                        // Hitung jumlah cuti terpakai dari array 'data'
                         $jumlahCutiTerpakai = count($matchingPeriod['data']);
 
-                        // Jika ada cuti terpakai, hitung sisa cuti
                         $sisaCuti = 12 - $jumlahCutiTerpakai;
                     } else {
-                        // Jika tidak ada data untuk tahun ini, anggap cuti sisa 12
                         $sisaCuti = 12;
                     }
                 }
 
-                // Masukkan sisa cuti ke dalam row
                 $row[] = $sisaCuti;
             }
-
-
-
-
 
             $rows[] = $row;
 
@@ -1183,22 +1145,417 @@ class CutiKaryawanController extends AdminBaseController
         return $letters;
     }
 
-    // public function show_export(Request $request)
+
+    public function show_export_by_join_date(Request $request)
+    {
+        ini_set("max_execution_time", 5210);
+        ini_set('memory_limit', '5120000M');
+
+        $type = $request->input('type');
+        $tanggal = $request->input('join_date');
+
+        $periodeLabel = '';
+
+
+        if ($type === 'MONTHLY') {
+            $bulan = $tanggal;
+
+            if (!preg_match('/^(0?[1-9]|1[0-2])$/', $bulan)) {
+                return response()->json(['message' => 'Format bulan tidak valid'], 422);
+            }
+
+            $filterJoinDate = "MONTH(join_date) = '$bulan'";
+            $bulanNama = strtoupper(strftime("%B", mktime(0, 0, 0, (int)$bulan, 1)));
+            $periodeLabel = $bulanNama;
+        }
+         else {
+            // CUSTOM_RANGE
+            $tanggal_all = explode(' - ', $tanggal);
+            $tanggal_awal = Carbon::parse($tanggal_all[0])->format('Y-m-d');
+            $tanggal_akhir = Carbon::parse($tanggal_all[1])->format('Y-m-d');
+            $awal = Carbon::parse($tanggal_awal)->format('Y-m-d');
+            $akhir = Carbon::parse($tanggal_akhir)->format('Y-m-d');
+
+            // Buat filter untuk join_date antara dua tanggal
+            $filterJoinDate = "join_date BETWEEN '$tanggal_awal' AND '$tanggal_akhir'";
+
+            $periodeLabel = strtoupper(strftime("%d %b %Y", strtotime($awal)) . ' s/d ' . strftime("%d %b %Y", strtotime($akhir)));
+        }
+
+        $query = "
+        WITH RECURSIVE periode AS (
+            SELECT
+                ea.enroll_id,
+                ea.employee_name,
+                ea.nik,
+                ea.status_staff,
+                ea.status_jabatan,
+                ea.department_name,
+                ea.status_aktif,
+                ea.tanggal_resign,
+                ea.sub_dept_name,
+                ea.join_date,
+                ea.join_date AS start_date,
+                LEAST(DATE_ADD(ea.join_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
+            FROM (
+                SELECT *
+                FROM employee_atribut
+                WHERE join_date IS NOT NULL
+                AND $filterJoinDate
+                ORDER BY enroll_id
+            ) ea
+
+            UNION ALL
+
+            SELECT
+                p.enroll_id,
+                p.employee_name,
+                p.nik,
+                p.status_staff,
+                p.status_jabatan,
+                p.department_name,
+                p.status_aktif,
+                p.tanggal_resign,
+                p.sub_dept_name,
+                p.join_date,
+                p.end_date AS start_date,
+                LEAST(DATE_ADD(p.end_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
+            FROM periode p
+            WHERE p.end_date < CURDATE()
+        ),
+
+        cuti_dipakai AS (
+            SELECT
+                p.enroll_id,
+                p.start_date,
+                p.end_date,
+                COUNT(d.uuid) AS used_leave
+            FROM periode p
+            LEFT JOIN data_absen_perijinan d
+            ON d.enroll_id = p.enroll_id
+            AND d.kode_absen_ijin = 'CT'
+            AND d.tanggal_mulai_ijin >= p.start_date
+            AND d.tanggal_mulai_ijin < p.end_date
+            GROUP BY p.enroll_id, p.start_date, p.end_date
+        ),
+
+        data_cuti AS (
+            SELECT
+                p.enroll_id,
+                p.employee_name,
+                p.nik,
+                p.status_staff,
+                p.status_jabatan,
+                p.department_name,
+                p.status_aktif,
+                p.tanggal_resign,
+                p.sub_dept_name,
+                p.join_date,
+                p.start_date,
+                p.end_date,
+                YEAR(p.start_date) AS periode_tahun,
+                CONCAT(DATE_FORMAT(p.start_date, '%d-%m-%Y'), ' - ', DATE_FORMAT(p.end_date, '%d-%m-%Y')) AS periode,
+                CONCAT(
+                    TIMESTAMPDIFF(YEAR, p.join_date, p.end_date), ' tahun ',
+                    TIMESTAMPDIFF(MONTH, p.join_date, p.end_date) % 12, ' bulan'
+                ) AS lama_bekerja,
+                CASE
+                    WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 0
+                    ELSE 1
+                END AS is_eligible,
+                COALESCE(c.used_leave, 0) AS used_leave,
+                CASE
+                    WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 0
+                    ELSE 12 - COALESCE(c.used_leave, 0)
+                END AS remaining_leave,
+                CASE
+                    WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 'Belum Berhak'
+                    WHEN (12 - COALESCE(c.used_leave, 0)) > 0 THEN 'Masih Memiliki Cuti'
+                    ELSE 'Cuti Habis'
+                END AS leave_status
+            FROM periode p
+            LEFT JOIN cuti_dipakai c
+                ON p.enroll_id = c.enroll_id AND p.start_date = c.start_date
+                )
+
+            SELECT *
+            FROM data_cuti
+            ORDER BY enroll_id, start_date
+
+            ";
+
+            $data_cuti = collect(DB::select($query));
+            $grouped = $data_cuti->groupBy('enroll_id')->map(function ($items) {
+                $first = $items->first();
+
+                $lastPeriod = $items->last();
+                $lastPeriodUtama = $items->sortByDesc('end_date')->first();
+
+
+                $perijinanLast = DB::table('data_absen_perijinan')
+                    ->where('enroll_id', $lastPeriod->enroll_id)
+                    ->where('kode_absen_ijin', 'CT')
+                    ->where('tanggal_mulai_ijin', '>=', $lastPeriod->start_date)
+                    ->where('tanggal_mulai_ijin', '<', $lastPeriod->end_date)
+                    ->orderBy('tanggal_mulai_ijin','asc')
+                    ->get(['tanggal_mulai_ijin', 'tanggal_akhir_ijin']);
+
+
+
+                return (object) [
+                    'enroll_id'        => $first->enroll_id,
+                    'employee_name'    => $first->employee_name,
+                    'nik'              => $first->nik,
+                    'status_staff'     => $first->status_staff,
+                    'status_jabatan'   => $first->status_jabatan,
+                    'department_name'  => $first->department_name,
+                    'status_aktif'     => $first->status_aktif,
+                    'tanggal_resign'   => $first->tanggal_resign,
+                    'sub_dept_name'    => $first->sub_dept_name,
+                    'join_date'        => $first->join_date,
+                    'lama_bekerja'     => $lastPeriodUtama->lama_bekerja,
+                    'used_leave'       => $lastPeriodUtama->used_leave,
+                    'remaining_leave'  => $lastPeriodUtama->remaining_leave,
+                    'leave_status'     => $lastPeriodUtama->leave_status,
+                    'is_eligible'     => $lastPeriodUtama->is_eligible,
+                    'perijinan_last'   => $perijinanLast,
+                    'data_list_perijinan'        => $items->map(function ($item) {
+                        return [
+                            'periode'         => $item->periode,
+                            'periode_tahun'   => $item->periode_tahun,
+                            'cuti_terpakai'   => $item->used_leave,
+                            'sisa_cuti'       => $item->remaining_leave,
+                            'status_cuti'     => $item->leave_status,
+                            'lama_bekerja'    => $item->lama_bekerja,
+                            'data'            => DB::table('data_absen_perijinan')
+                                                ->where('enroll_id', $item->enroll_id)
+                                                ->where('kode_absen_ijin', 'CT')
+                                                ->where('tanggal_mulai_ijin', '>=', $item->start_date)
+                                                ->where('tanggal_mulai_ijin', '<', $item->end_date)
+                                                ->orderBy('tanggal_mulai_ijin', 'asc')
+                                                ->get(['tanggal_mulai_ijin', 'tanggal_akhir_ijin']),
+                        ];
+                    })->values(),
+                ];
+            })->values();
+
+            $excel = FastExcel::create('cuti karyawan');
+            $sheet = $excel->getSheet();
+
+            $area = $sheet->beginArea();
+
+            $sheet->writeTo('A1', 'PT NIRWANA ALABARE GARMENT', ['font-size' => 18]);
+            $sheet->writeTo('A2', 'REKAP CUTI KARYAWAN', ['font-size' => 16]);
+                $sheet->writeTo('A3', 'PERIODE : ' . $periodeLabel, ['font-size' => 14]);
+
+            $sheet->writeTo('A5', 'NIK');
+
+            $sheet->writeTo('B5', 'NO ABSEN');
+
+            $sheet->writeTo('C5', 'NAMA KARYAWAN');
+
+            $sheet->writeTo('D5', 'STAFF / NON STAFF');
+
+            $sheet->writeTo('E5', 'JABATAN');
+
+            $sheet->writeTo('F5', 'BAGIAN');
+
+            $sheet->writeTo('G5', 'DEPARTMENT');
+
+            $sheet->writeTo('H5', 'AKTIF / TIDAK AKTIF');
+
+            $sheet->writeTo('I5', 'TANGGAL MASUK');
+            $sheet->writeTo('J5', 'TANGGAL RESIGN');
+
+            $sheet->writeTo('K5', 'MASA KERJA');
+
+            $sheet->writeTo('L5', 'HAK CUTI');
+
+            $sheet->writeTo('M5', 'CUTI TERPAKAI');
+            $sheet->writeTo('N5', 'CUTI SISA');
+
+            $sheet->writeTo('O5', 'REKAP PENGAMBILAN CUTI');
+
+            $sheet->writeTo('O6', '1');
+            $sheet->writeTo('P6', '2');
+            $sheet->writeTo('Q6', '3');
+            $sheet->writeTo('R6', '4');
+            $sheet->writeTo('S6', '5');
+            $sheet->writeTo('T6', '6');
+            $sheet->writeTo('U6', '7');
+            $sheet->writeTo('V6', '8');
+            $sheet->writeTo('W6', '9');
+            $sheet->writeTo('X6', '10');
+            $sheet->writeTo('Y6', '11');
+            $sheet->writeTo('Z6', '12');
+
+            $sheet->writeTo('AA5', 'CUTI TIDAK DIPAKAI');
+
+            $list = ['2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025']; // Contoh data periode
+            $periodeCount = count($list); // Menghitung jumlah periode
+
+            $startColumnIndex = 26; // Kolom AA, indeks 26
+            $endColumnIndex = $startColumnIndex + $periodeCount - 1; // Kolom terakhir yang sesuai dengan jumlah periode
+
+            // Loop untuk menulis ke baris 6 dan menggabungkan di baris 5
+            for ($i = 0; $i < $periodeCount; $i++) {
+                $col = $this->getExcelColumn($startColumnIndex + $i); // Menentukan kolom berdasarkan indeks
+                $sheet->writeTo("{$col}6", $list[$i]); // Menulis periode ke baris 6
+            }
+
+            // Menggabungkan sel pada baris 5 dari kolom AA sampai kolom sesuai panjang $list
+            $startCol = $this->getExcelColumn($startColumnIndex); // Kolom pertama (AA)
+            $endCol = $this->getExcelColumn($endColumnIndex); // Kolom terakhir sesuai jumlah periode
+
+            $sheet->mergeCells("{$startCol}5:{$endCol}5"); // Menggabungkan kolom AA5 sampai dengan kolom terakhir di baris 5
+
+
+
+            $sheet->mergeCells('A5:A6');
+            $sheet->mergeCells('B5:B6');
+            $sheet->mergeCells('C5:C6');
+            $sheet->mergeCells('D5:D6');
+            $sheet->mergeCells('E5:E6');
+            $sheet->mergeCells('F5:F6');
+            $sheet->mergeCells('G5:G6');
+            $sheet->mergeCells('H5:H6');
+            $sheet->mergeCells('I5:I6');
+            $sheet->mergeCells('J5:J6');
+            $sheet->mergeCells('K5:K6');
+            $sheet->mergeCells('L5:L6');
+            $sheet->mergeCells('M5:M6');
+            $sheet->mergeCells('N5:N6');
+
+            $sheet->mergeCells('O5:Z5');
+
+            $sheet->writeAreas();
+
+            $sheet->setColOptions([
+
+                'A' => ['width' => 15], // NIK
+                'B' => ['width' => 15], // NAMA KARYAWAN
+                'C' => ['width' => 18], // STAFF / NON STAFF
+                'D' => ['width' => 20], // JABATAN
+                'E' => ['width' => 25], // BAGIAN
+                'F' => ['width' => 25], // DEPARTMENT
+                'G' => ['width' => 25], // TANGGAL MASUK
+                'H' => ['width' => 20], // MASA KERJA
+                'I' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY,'width' => 20], // HAK CUTI
+                'J' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY,'width' => 20], // CUTI TERPAKAI
+                'K' => ['width' => 15], // CUTI TERPAKAI
+                'L' => ['width' => 10], // CUTI SISA
+
+                'M' => ['width' => 15], // MASA KERJA
+                'N' => ['width' => 15], // MASA KERJA
+                'O' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY,'width' => 15], // MASA KERJA
+                'P' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY,'width' => 15], // MASA KERJA
+                'Q' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY,'width' => 15], // MASA KERJA
+                'R' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY,'width' => 15], // MASA KERJA
+                'S' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY,'width' => 15], // MASA KERJA
+                'T' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY,'width' => 15], // MASA KERJA
+                'U' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY,'width' => 15], // MASA KERJA
+                'V' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY,'width' => 15], // MASA KERJA
+                'W' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY,'width' => 15], // MASA KERJA
+                'X' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY,'width' => 15], // MASA KERJA
+                'Y' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY,'width' => 15], // MASA KERJA
+                'Z' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY,'width' => 15], // MASA KERJA
+            ]);
+
+            foreach($grouped as $cuti) {
+                $row  = [
+                    $cuti->nik,
+                    $cuti->enroll_id,
+                    $cuti->employee_name,
+                    $cuti->status_staff,
+                    $cuti->status_jabatan,
+                    $cuti->sub_dept_name,
+                    $cuti->department_name,
+                    $cuti->status_aktif,
+                    $cuti->join_date,
+                    $cuti->tanggal_resign,
+                    $cuti->lama_bekerja,
+                    $cuti->is_eligible == 1 ? 12 : 0,
+                    $cuti->used_leave,
+                    $cuti->remaining_leave,
+                ];
+
+                $izinDates = collect($cuti->perijinan_last)
+                ->pluck('tanggal_mulai_ijin')
+                ->take(12)
+                ->values()
+                ->toArray();
+
+                for ($i = 0; $i < 12; $i++) {
+                    $row[] = isset($izinDates[$i]) ? Carbon::parse($izinDates[$i])->format('Y-m-d') : '';
+                }
+
+
+                foreach ($list as $year) {
+                    $matchingPeriod = collect($cuti->data_list_perijinan)
+                        ->firstWhere('periode_tahun', $year);
+
+                    $joinDate = Carbon::parse($cuti->join_date);
+                    $startOfYear = Carbon::parse($year . '-01-01');
+
+                    if ($joinDate > $startOfYear) {
+                        $sisaCuti = 0;
+                    } else {
+                        if ($matchingPeriod) {
+                            $jumlahCutiTerpakai = count($matchingPeriod['data']);
+
+                            $sisaCuti = 12 - $jumlahCutiTerpakai;
+                        } else {
+                            $sisaCuti = 12;
+                        }
+                    }
+
+                    $row[] = $sisaCuti;
+                }
+
+                $rows[] = $row;
+
+                $sheet->writeRow($row);
+            }
+            $finename='Rekap Cuti Karyawan By Join Date'.'xlsx';
+            ob_end_clean();
+            $excel->download($finename);
+    }
+    // public function show_export_by_join_date(Request $request)
     // {
     //     ini_set("max_execution_time", 5210);
     //     ini_set('memory_limit', '5120000M');
-    //     $enroll_ids = $request->input('selectEmployeeID', []);
 
-    //     $has_filter = count($enroll_ids) > 0;
+    //     $type = $request->input('type');
+    //     $tanggal = $request->input('join_date');
 
-    //     $bindings = [];
-    //     $filterClause = '';
+    //     $periodeLabel = '';
 
-    //     if ($has_filter) {
-    //         $placeholders = implode(',', array_fill(0, count($enroll_ids), '?'));
-    //         $filterClause = "AND enroll_id IN ($placeholders)";
-    //         $bindings = $enroll_ids;
+
+    //     if ($type === 'MONTHLY') {
+    //         $bulan = $tanggal;
+
+    //         if (!preg_match('/^(0?[1-9]|1[0-2])$/', $bulan)) {
+    //             return response()->json(['message' => 'Format bulan tidak valid'], 422);
+    //         }
+
+    //         $filterJoinDate = "MONTH(join_date) = '$bulan'";
+    //         $bulanNama = strtoupper(strftime("%B", mktime(0, 0, 0, (int)$bulan, 1)));
+    //         $periodeLabel = $bulanNama;
     //     }
+    //      else {
+    //         // CUSTOM_RANGE
+    //         $tanggal_all = explode(' - ', $tanggal);
+    //         $tanggal_awal = Carbon::parse($tanggal_all[0])->format('Y-m-d');
+    //         $tanggal_akhir = Carbon::parse($tanggal_all[1])->format('Y-m-d');
+    //         $awal = Carbon::parse($tanggal_awal)->format('Y-m-d');
+    //         $akhir = Carbon::parse($tanggal_akhir)->format('Y-m-d');
+
+    //         // Buat filter untuk join_date antara dua tanggal
+    //         $filterJoinDate = "join_date BETWEEN '$tanggal_awal' AND '$tanggal_akhir'";
+
+    //         $periodeLabel = strtoupper(strftime("%d %b %Y", strtotime($awal)) . ' s/d ' . strftime("%d %b %Y", strtotime($akhir)));
+    //     }
+
 
     //     $query = "
     //         WITH RECURSIVE periode AS (
@@ -1219,7 +1576,7 @@ class CutiKaryawanController extends AdminBaseController
     //                 SELECT *
     //                 FROM employee_atribut
     //                 WHERE join_date IS NOT NULL
-    //                 $filterClause
+    //                 AND $filterJoinDate
     //                 ORDER BY enroll_id
     //             ) ea
 
@@ -1301,7 +1658,8 @@ class CutiKaryawanController extends AdminBaseController
     //         ORDER BY enroll_id
     //     ";
 
-    //     $data_cuti = DB::select($query, $bindings);
+    //     $data_cuti = DB::select($query);
+
 
     //     $data_cuti = collect($data_cuti)->map(function ($cuti) {
     //         $perijinan = DB::table('data_absen_perijinan')
@@ -1314,7 +1672,8 @@ class CutiKaryawanController extends AdminBaseController
     //         $cuti->perijinan = $perijinan;
     //         return $cuti;
     //     });
-    //     dd($data_cuti);
+
+
     //     $excel = FastExcel::create('cuti karyawan');
     //     $sheet = $excel->getSheet();
 
@@ -1322,6 +1681,8 @@ class CutiKaryawanController extends AdminBaseController
 
     //     $sheet->writeTo('A1', 'PT NIRWANA ALABARE GARMENT', ['font-size' => 18]);
     //     $sheet->writeTo('A2', 'REKAP CUTI KARYAWAN', ['font-size' => 16]);
+    //     $sheet->writeTo('A3', 'PERIODE : ' . $periodeLabel, ['font-size' => 14]);
+
 
     //     $sheet->writeTo('A5', 'NIK');
 
@@ -1382,7 +1743,6 @@ class CutiKaryawanController extends AdminBaseController
     //     $sheet->mergeCells('N5:N6');
 
     //     $sheet->mergeCells('O5:Z5');
-
 
 
     //     $sheet->writeAreas();
@@ -1456,159 +1816,122 @@ class CutiKaryawanController extends AdminBaseController
     //     ob_end_clean();
     //     $excel->download($finename);
     // }
-    public function show_export_by_join_date(Request $request)
+    public function show_export_by_user(Request $request)
     {
         ini_set("max_execution_time", 5210);
         ini_set('memory_limit', '5120000M');
 
-        $type = $request->input('type');
-        $tanggal = $request->input('join_date');
+        $enrollId = $request->enroll_id;
+        $kodeAbsen = 'CT';
 
-        $periodeLabel = '';
+        // Ambil join_date
+        $employee = DB::table('employee_atribut')
+            ->where('enroll_id', $enrollId)
+            ->first();
 
-
-        if ($type === 'MONTHLY') {
-            $bulan = $tanggal;
-
-            if (!preg_match('/^(0?[1-9]|1[0-2])$/', $bulan)) {
-                return response()->json(['message' => 'Format bulan tidak valid'], 422);
-            }
-
-            $filterJoinDate = "MONTH(join_date) = '$bulan'";
-            $bulanNama = strtoupper(strftime("%B", mktime(0, 0, 0, (int)$bulan, 1)));
-            $periodeLabel = $bulanNama;
-        }
-         else {
-            // CUSTOM_RANGE
-            $tanggal_all = explode(' - ', $tanggal);
-            $tanggal_awal = Carbon::parse($tanggal_all[0])->format('Y-m-d');
-            $tanggal_akhir = Carbon::parse($tanggal_all[1])->format('Y-m-d');
-            $awal = Carbon::parse($tanggal_awal)->format('Y-m-d');
-            $akhir = Carbon::parse($tanggal_akhir)->format('Y-m-d');
-
-            // Buat filter untuk join_date antara dua tanggal
-            $filterJoinDate = "join_date BETWEEN '$tanggal_awal' AND '$tanggal_akhir'";
-
-            $periodeLabel = strtoupper(strftime("%d %b %Y", strtotime($awal)) . ' s/d ' . strftime("%d %b %Y", strtotime($akhir)));
+        if (!$employee) {
+            return [];
         }
 
+        $joinDate = Carbon::parse($employee->join_date);
+        $today = Carbon::now();
 
-        $query = "
-            WITH RECURSIVE periode AS (
-                SELECT
-                    ea.enroll_id,
-                    ea.employee_name,
-                    ea.nik,
-                    ea.status_staff,
-                    ea.status_jabatan,
-                    ea.department_name,
-                    ea.status_aktif,
-                    ea.tanggal_resign,
-                    ea.sub_dept_name,
-                    ea.join_date,
-                    ea.join_date AS start_date,
-                    LEAST(DATE_ADD(ea.join_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
-                FROM (
-                    SELECT *
-                    FROM employee_atribut
-                    WHERE join_date IS NOT NULL
-                    AND $filterJoinDate
-                    ORDER BY enroll_id
-                ) ea
+        $results = [];
+        $currentStart = $joinDate->copy();
+        $periodeKe = 1;
 
-                UNION ALL
+        while ($currentStart->lessThanOrEqualTo($today)) {
+            $currentEnd = $currentStart->copy()->addYear();
 
-                SELECT
-                    p.enroll_id,
-                    p.employee_name,
-                    p.nik,
-                    p.status_staff,
-                    p.status_jabatan,
-                    p.department_name,
-                    p.status_aktif,
-                    p.tanggal_resign,
-                    p.sub_dept_name,
-                    p.join_date,
-                    p.end_date AS start_date,
-                    LEAST(DATE_ADD(p.end_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
-                FROM periode p
-                WHERE p.end_date < CURDATE()
-            ),
-
-            cuti_dipakai AS (
-                SELECT
-                    p.enroll_id,
-                    p.start_date,
-                    p.end_date,
-                    COUNT(d.uuid) AS used_leave
-                FROM periode p
-                LEFT JOIN data_absen_perijinan d
-                ON d.enroll_id = p.enroll_id
-                AND d.kode_absen_ijin = 'CT'
-                AND d.tanggal_mulai_ijin >= p.start_date
-                AND d.tanggal_mulai_ijin < p.end_date
-                GROUP BY p.enroll_id, p.start_date, p.end_date
-            ),
-
-            data_cuti AS (
-                SELECT
-                    p.enroll_id,
-                    p.employee_name,
-                    p.nik,
-                    p.status_staff,
-                    p.status_jabatan,
-                    p.department_name,
-                    p.status_aktif,
-                    p.tanggal_resign,
-                    p.sub_dept_name,
-                    p.join_date,
-                    p.start_date,
-                    p.end_date,
-                    CONCAT(
-                        TIMESTAMPDIFF(YEAR, p.join_date, p.end_date), ' tahun ',
-                        TIMESTAMPDIFF(MONTH, p.join_date, p.end_date) % 12, ' bulan'
-                    ) AS lama_bekerja,
-                    CASE
-                        WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 0
-                        ELSE 1
-                    END AS is_eligible,
-                    COALESCE(c.used_leave, 0) AS used_leave,
-                    CASE
-                        WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 0
-                        ELSE 12 - COALESCE(c.used_leave, 0)
-                    END AS remaining_leave,
-                    CASE
-                        WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 'Belum Berhak'
-                        WHEN (12 - COALESCE(c.used_leave, 0)) > 0 THEN 'Masih Memiliki Cuti'
-                        ELSE 'Cuti Habis'
-                    END AS leave_status,
-                    ROW_NUMBER() OVER (PARTITION BY p.enroll_id ORDER BY p.end_date DESC) AS rn
-                FROM periode p
-                LEFT JOIN cuti_dipakai c
-                    ON p.enroll_id = c.enroll_id AND p.start_date = c.start_date
-            )
-
-            SELECT *
-            FROM data_cuti
-            WHERE rn = 1
-            ORDER BY enroll_id
-        ";
-
-        $data_cuti = DB::select($query);
-
-
-        $data_cuti = collect($data_cuti)->map(function ($cuti) {
-            $perijinan = DB::table('data_absen_perijinan')
-                ->where('enroll_id', $cuti->enroll_id)
-                ->where('kode_absen_ijin', 'CT')
-                ->where('tanggal_mulai_ijin', '>=', $cuti->start_date)
-                ->orderBy('tanggal_mulai_ijin', 'asc')
+            // Ambil data per periode
+            $data = DB::table('data_absen_perijinan as dap')
+                ->leftJoin('employee_atribut as ea', 'dap.enroll_id', '=', 'ea.enroll_id')
+                ->select(
+                    DB::raw('YEAR(dap.tanggal_mulai_ijin) as tahun'),
+                    'dap.enroll_id',
+                    'dap.kode_absen_ijin',
+                    'dap.tanggal_perizinan',
+                    'dap.nomor_form_perizinan',
+                    'dap.tanggal_mulai_ijin',
+                    'dap.tanggal_akhir_ijin',
+                    'dap.absen_alasan',
+                    'ea.join_date',
+                    DB::raw("'{$periodeKe}' as periode_ke"),
+                    DB::raw("'{$currentStart->toDateString()}' as periode_mulai"),
+                    DB::raw("'{$currentEnd->toDateString()}' as periode_selesai")
+                )
+                ->where('dap.enroll_id', $enrollId)
+                ->where('dap.kode_absen_ijin', $kodeAbsen)
+                ->whereBetween('dap.tanggal_mulai_ijin', [$currentStart->toDateString(), $currentEnd->toDateString()])
                 ->get();
 
-            $cuti->perijinan = $perijinan;
-            return $cuti;
-        });
+            $formattedData = $data->map(function ($item) use ($currentStart, $currentEnd, $periodeKe, $employee) {
+                return [
+                    'tahun' => $item->tahun,
+                    'enroll_id' => $item->enroll_id,
+                    'kode_absen_ijin' => $item->kode_absen_ijin,
+                    'tanggal_perizinan' => Carbon::parse($item->tanggal_perizinan)->format('d-m-Y'),
+                    'nomor_form_perizinan' => $item->nomor_form_perizinan,
+                    'tanggal_mulai_ijin' => Carbon::parse($item->tanggal_mulai_ijin)->format('d-m-Y'),
+                    'tanggal_akhir_ijin' => Carbon::parse($item->tanggal_akhir_ijin)->format('d-m-Y'),
+                    'absen_alasan' => $item->absen_alasan,
+                    'join_date' => Carbon::parse($item->join_date)->format('d-m-Y'),
+                    'periode_ke' => $item->periode_ke,
+                    'periode_mulai' => Carbon::parse($item->periode_mulai)->format('d-m-Y'),
+                    'periode_selesai' => Carbon::parse($item->periode_selesai)->format('d-m-Y'),
+                ];
+            });
 
+            // Jika kurang dari 12, tambahkan cuti hangus
+            $jumlahSaatIni = $formattedData->count();
+            if ($jumlahSaatIni < 12) {
+                for ($i = $jumlahSaatIni; $i < 12; $i++) {
+                    $formattedData->push([
+                        'tahun' => null,
+                        'enroll_id' => $enrollId,
+                        'kode_absen_ijin' => '-',
+                        'tanggal_perizinan' => null,
+                        'nomor_form_perizinan' => '-',
+                        'tanggal_mulai_ijin' => '-',
+                        'tanggal_akhir_ijin' => '-',
+                        'absen_alasan' => 'CUTI HANGUS / TIDAK DIGUNAKAN',
+                        'join_date' => Carbon::parse($employee->join_date)->format('d-m-Y'),
+                        'periode_ke' => $periodeKe,
+                        'periode_mulai' => $currentStart->format('d-m-Y'),
+                        'periode_selesai' => $currentEnd->format('d-m-Y'),
+                    ]);
+                }
+            }
+            $results[] = [
+                'periode' => $currentStart->format('d-m-Y') . ' - ' . $currentEnd->format('d-m-Y'),
+                'data' => $formattedData,
+            ];
+
+
+            $currentStart = $currentEnd;
+            $periodeKe++;
+        }
+
+        // Format ulang tanggal pada results
+        foreach ($results as &$periodeItem) {
+            foreach ($periodeItem['data'] as &$item) {
+                // Cek dan pastikan hanya tanggal yang valid yang diparsing
+                $item['tanggal_perizinan'] = ($item['tanggal_perizinan'] && $item['tanggal_perizinan'] !== '-')
+                                            ? Carbon::parse($item['tanggal_perizinan'])->format('d-m-Y')
+                                            : '-';
+                $item['tanggal_mulai_ijin'] = ($item['tanggal_mulai_ijin'] && $item['tanggal_mulai_ijin'] !== '-')
+                                              ? Carbon::parse($item['tanggal_mulai_ijin'])->format('d-m-Y')
+                                              : '-';
+                $item['tanggal_akhir_ijin'] = ($item['tanggal_akhir_ijin'] && $item['tanggal_akhir_ijin'] !== '-')
+                                              ? Carbon::parse($item['tanggal_akhir_ijin'])->format('d-m-Y')
+                                              : '-';
+                $item['join_date'] = ($item['join_date'] && $item['join_date'] !== '-')
+                                     ? Carbon::parse($item['join_date'])->format('d-m-Y')
+                                     : '-';
+                $item['periode_mulai'] = Carbon::parse($item['periode_mulai'])->format('d-m-Y');
+                $item['periode_selesai'] = Carbon::parse($item['periode_selesai'])->format('d-m-Y');
+            }
+        }
 
         $excel = FastExcel::create('cuti karyawan');
         $sheet = $excel->getSheet();
@@ -1616,139 +1939,71 @@ class CutiKaryawanController extends AdminBaseController
         $area = $sheet->beginArea();
 
         $sheet->writeTo('A1', 'PT NIRWANA ALABARE GARMENT', ['font-size' => 18]);
-        $sheet->writeTo('A2', 'REKAP CUTI KARYAWAN', ['font-size' => 16]);
-        $sheet->writeTo('A3', 'PERIODE : ' . $periodeLabel, ['font-size' => 14]);
+        $sheet->writeTo('A2', 'REKAP CUTI KARYAWAN', ['font-size' => 14]);
+        $sheet->writeTo('A3', 'Nama' . ' : ' . $employee->employee_name);
+        $sheet->writeTo('C3', 'NIK' . ' : ' . $employee->nik);
 
+        $sheet->writeTo('A5', 'PERIODE');
 
-        $sheet->writeTo('A5', 'NIK');
+        $sheet->writeTo('B5', 'Tanggal Form');
 
-        $sheet->writeTo('B5', 'NO ABSEN');
+        $sheet->writeTo('C5', 'No Form');
 
-        $sheet->writeTo('C5', 'NAMA KARYAWAN');
+        $sheet->writeTo('D5', ' Tanggal Mulai');
 
-        $sheet->writeTo('D5', 'STAFF / NON STAFF');
+        $sheet->writeTo('E5', 'Tanggal Akhir');
 
-        $sheet->writeTo('E5', 'JABATAN');
+        $sheet->writeTo('F5', 'Kode Absen');
 
-        $sheet->writeTo('F5', 'BAGIAN');
-
-        $sheet->writeTo('G5', 'DEPARTMENT');
-
-        $sheet->writeTo('H5', 'AKTIF / TIDAK AKTIF');
-
-        $sheet->writeTo('I5', 'TANGGAL MASUK');
-        $sheet->writeTo('J5', 'TANGGAL RESIGN');
-
-        $sheet->writeTo('K5', 'MASA KERJA');
-
-        $sheet->writeTo('L5', 'HAK CUTI');
-
-        $sheet->writeTo('M5', 'CUTI TERPAKAI');
-        $sheet->writeTo('N5', 'CUTI SISA');
-
-        $sheet->writeTo('O5', 'REKAP PENGAMBILAN CUTI');
-
-        $sheet->writeTo('O6', '1');
-        $sheet->writeTo('P6', '2');
-        $sheet->writeTo('Q6', '3');
-        $sheet->writeTo('R6', '4');
-        $sheet->writeTo('S6', '5');
-        $sheet->writeTo('T6', '6');
-        $sheet->writeTo('U6', '7');
-        $sheet->writeTo('V6', '8');
-        $sheet->writeTo('W6', '9');
-        $sheet->writeTo('X6', '10');
-        $sheet->writeTo('Y6', '11');
-        $sheet->writeTo('Z6', '12');
-
-
-
-        $sheet->mergeCells('A5:A6');
-        $sheet->mergeCells('B5:B6');
-        $sheet->mergeCells('C5:C6');
-        $sheet->mergeCells('D5:D6');
-        $sheet->mergeCells('E5:E6');
-        $sheet->mergeCells('F5:F6');
-        $sheet->mergeCells('G5:G6');
-        $sheet->mergeCells('H5:H6');
-        $sheet->mergeCells('I5:I6');
-        $sheet->mergeCells('J5:J6');
-        $sheet->mergeCells('K5:K6');
-        $sheet->mergeCells('L5:L6');
-        $sheet->mergeCells('M5:M6');
-        $sheet->mergeCells('N5:N6');
-
-        $sheet->mergeCells('O5:Z5');
-
+        $sheet->writeTo('G5', 'Keterangan');
 
         $sheet->writeAreas();
 
         $sheet->setColOptions([
-
-            'A' => ['width' => 15], // NIK
-            'B' => ['width' => 15], // NAMA KARYAWAN
-            'C' => ['width' => 18], // STAFF / NON STAFF
+            'A' => ['width' => 25], // NIK
+            'B' => ['width' => 20], // NAMA KARYAWAN
+            'C' => ['width' => 20], // STAFF / NON STAFF
             'D' => ['width' => 20], // JABATAN
-            'E' => ['width' => 25], // BAGIAN
-            'F' => ['width' => 25], // DEPARTMENT
-            'G' => ['width' => 25], // TANGGAL MASUK
-            'H' => ['width' => 20], // MASA KERJA
-            'I' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY,'width' => 20], // HAK CUTI
-            'J' => ['format' => NumberFormat::FORMAT_DATE_DDMMYYYY,'width' => 20], // CUTI TERPAKAI
-            'K' => ['width' => 15], // CUTI TERPAKAI
-            'L' => ['width' => 10], // CUTI SISA
-
-            'M' => ['width' => 15], // MASA KERJA
-            'N' => ['width' => 15], // MASA KERJA
-            'O' => ['width' => 15], // MASA KERJA
-            'P' => ['width' => 15], // MASA KERJA
-            'Q' => ['width' => 15], // MASA KERJA
-            'R' => ['width' => 15], // MASA KERJA
-            'S' => ['width' => 15], // MASA KERJA
-            'T' => ['width' => 15], // MASA KERJA
-            'U' => ['width' => 15], // MASA KERJA
-            'V' => ['width' => 15], // MASA KERJA
-            'W' => ['width' => 15], // MASA KERJA
-            'X' => ['width' => 15], // MASA KERJA
-            'Y' => ['width' => 15], // MASA KERJA
-            'Z' => ['width' => 15], // MASA KERJA
+            'E' => ['width' => 20], // BAGIAN
+            'F' => ['width' => 20], // DEPARTMENT
+            'G' => ['width' => 30], // TANGGAL MASUK
         ]);
 
+        $rowIndex = 6;
+        foreach ($results as $periodeItem) {
+            $periode = $periodeItem['periode'];
+            $data = $periodeItem['data'];
+            $startRow = $rowIndex;
+            $endRow = $rowIndex + count($data) - 1;
 
-        foreach($data_cuti as $cuti) {
-            $row  = [
-                $cuti->nik,
-                $cuti->enroll_id,
-                $cuti->employee_name,
-                $cuti->status_staff,
-                $cuti->status_jabatan,
-                $cuti->sub_dept_name,
-                $cuti->department_name,
-                $cuti->status_aktif,
-                $cuti->join_date,
-                $cuti->tanggal_resign,
-                $cuti->lama_bekerja,
-                $cuti->is_eligible == 1 ? 12 : 0,
-                $cuti->used_leave,
-                $cuti->remaining_leave,
-            ];
-
-            $izinDates = collect($cuti->perijinan)
-            ->pluck('tanggal_mulai_ijin')
-            ->take(12)
-            ->values()
-            ->toArray();
-
-        // Tambahkan 12 kolom kosong default
-            for ($i = 0; $i < 12; $i++) {
-                $row[] = $izinDates[$i] ?? ''; // Isi tanggal jika ada, kalau tidak isi string kosong
+            $sheet->writeTo('A' . $startRow, $periode);
+            if (count($data) > 1) {
+                $sheet->mergeCells("A{$startRow}:A{$endRow}");
             }
+            $sheet->writeTo('A' . $startRow, $periode, [
+                'align' => 'center',
+                'valign' => 'middle',
+                'bold' => true
+            ]);
+            $first = true;
 
-            $rows[] = $row;
+            foreach ($periodeItem['data'] as $cuti) {
+                $sheet->writeTo('A' . $rowIndex, $first ? $periode : '');
+                $sheet->writeTo('B' . $rowIndex, $cuti['tanggal_perizinan']);
+                $sheet->writeTo('C' . $rowIndex, $cuti['nomor_form_perizinan']);
+                $sheet->writeTo('D' . $rowIndex, $cuti['tanggal_mulai_ijin']);
+                $sheet->writeTo('E' . $rowIndex, $cuti['tanggal_akhir_ijin']);
+                $sheet->writeTo('F' . $rowIndex, $cuti['kode_absen_ijin'] ?? '');
+                $sheet->writeTo('G' . $rowIndex, $cuti['absen_alasan'] ?? '');
 
-            $sheet->writeRow($row);
+                $rowIndex++;
+                $first = false;
+            }
         }
-        $finename='Rekap Cuti Karyawan'.'xlsx';
+
+
+
+        $finename='Rekap Detail Cuti Karyawan '.'xlsx';
         ob_end_clean();
         $excel->download($finename);
     }
