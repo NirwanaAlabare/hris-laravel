@@ -60,8 +60,7 @@ class EmployeeAtrController extends AdminBaseController
         $employee=EmployeeAtribut::where('enroll_id',request()->enroll_id)->where(function ($query){
             $query->where('status_aktif','AKTIF')
             ->orWhere(function($queryes){
-                $queryes->where('status_aktif','TIDAK AKTIF')
-                ->where('tanggal_resign','>',date('Y-m-d'));
+                $queryes->where('status_aktif','TIDAK AKTIF');
             });
         })->get();
         $pdf = PDF::loadView('hris.Laporan.id_card',["employee" => $employee])->stream('Id card karyawan'.'.pdf',array('Attachment'=>0));
@@ -79,8 +78,7 @@ class EmployeeAtrController extends AdminBaseController
         $employee=EmployeeAtribut::whereRaw('status_aktif!=""'.$inDepartment.''.$inSubDepartment.'')->where(function ($query){
             $query->where('status_aktif','AKTIF')
             ->orWhere(function($queryes){
-                $queryes->where('status_aktif','TIDAK AKTIF')
-                ->where('tanggal_resign','>',date('Y-m-d'));
+                $queryes->where('status_aktif','TIDAK AKTIF');
             });
         })->get();
         $pdf = PDF::loadView('hris.Laporan.id_card_department',["employee" => $employee])->setPaper('letter', 'landscape')->stream('Id card karyawan department'.'.pdf',array('Attachment'=>0));
@@ -104,8 +102,7 @@ class EmployeeAtrController extends AdminBaseController
         $employee=EmployeeAtribut::whereRaw('status_aktif!=""'.$inDepartment.''.$inSubDepartment.'')->where(function ($query){
             $query->where('status_aktif','AKTIF')
             ->orWhere(function($queryes){
-                $queryes->where('status_aktif','TIDAK AKTIF')
-                ->where('tanggal_resign','>',date('Y-m-d'));
+                $queryes->where('status_aktif','TIDAK AKTIF');
             });
         })->get();
         return $employee;
