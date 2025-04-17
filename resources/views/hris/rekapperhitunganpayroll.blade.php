@@ -681,7 +681,7 @@
             $('#daterange1').val(daterange1);
         });
         $('#daterange-btn2').daterangepicker({
-            minDate: moment("2025-02-26"),
+            minDate: moment("2025-03-22"),
             ranges: {
                 'Hari ini': [moment(), moment()],
                 'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -1317,7 +1317,7 @@
                 let tmp = PriodeProses[0].value;
                 const date_range_2 = document.getElementById("daterange2").value;
                 let payrollPeriod = "";
-
+                console.log("selectedSkema", selectedSkema);
                 // Validasi berdasarkan skema payroll yang dipilih
                 if (selectedSkema === "MONTHLY_PAYROLL") {
                     payrollPeriod = tmp;
@@ -1394,7 +1394,6 @@
                                 $('#BtnProsesPayroll').addClass("btn-loading");
                                 $("#BtnProsesPayroll").html('Please wait...');
                                 $("#BtnProsesPayroll").attr("disabled", true);
-
                                 $.ajax({
                                     data: $('#form_proses_payroll').serialize(),
                                     url: '{{ route("hris.proses.payroll.rekap_early") }}',
