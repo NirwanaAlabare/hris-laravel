@@ -910,7 +910,7 @@ class ProsesPayrollController extends AdminBaseController
             }
         }
 
-        $priode='2025-02-26 s/d 2025-03-25';
+        $priode='2025-03-26 s/d 2025-04-25';
         $priode_early_closing = date('d-m-Y', strtotime($tanggal_awal)) . ' s/d ' . date('d-m-Y', strtotime($tanggal_akhir));
         $inEnrollId='';
         $inEnrollId1='';
