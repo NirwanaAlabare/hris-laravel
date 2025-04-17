@@ -29,8 +29,13 @@
         <ul class="slide-menu">
             <li><a href="{{route('bazzar.index')}}" class="slide-item"><span>Pengajuan Kupon</span></a></li>
     </ul>
+    <li class="slide">
+        <a class="side-menu__item"  data-toggle="slide" href="#"><i class="side-menu__icon fa fa-vcard"></i><span class="side-menu__label">Perizinan Karyawan</span><i class="angle fa fa-angle-right"></i></a>
+        <ul class="slide-menu">
+            <li><a href="{{route('cuti_karyawan.pengajuan_perizinan_admin')}}" class="slide-item"><span>Pengajuan Perizinan</span></a></li>
+    </ul>
     @php
-    if (($loggedAdmin->name == "HR") || ($loggedAdmin->name == "HRD")|| ($loggedAdmin->name == "GA") || ($loggedAdmin->email == 'mega@ptnag.com') || ($loggedAdmin->email == 'rudy@patnag.com') || ($loggedAdmin->email == 'fadli')) {
+    if (($loggedAdmin->name == "HR") || ($loggedAdmin->name == "HRD")|| ($loggedAdmin->name == "GA") || ($loggedAdmin->email == 'mega@ptnag.com') || ($loggedAdmin->email == 'rudy@ptnag.com') || ($loggedAdmin->email == 'fadli') ) {
         @endphp
     <li class="mt-4">
         <a class="btn btn-app w-100" style="background-color: #16a34a" data-toggle="tooltip" title="Export Rekap Overtime" href="{{ route('anggaran_makan.export_excel_overtime_recap2') }}"

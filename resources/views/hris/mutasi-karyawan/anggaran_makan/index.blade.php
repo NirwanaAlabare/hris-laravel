@@ -40,7 +40,7 @@
                         <i class="fa fa-plus"></i>
                         Baru
                     </button>
-                    @if (Auth::guard('admin')->user()->name == 'HR' || Auth::guard('admin')->user()->name =='IT' || Auth::guard('admin')->user()->email =='mega@ptnag.com' || Auth::guard('admin')->user()->email =='rudy@patnag.com' || Auth::guard('admin')->user()->email =='fadli' || Auth::guard('admin')->user()->email =='GA')
+                    @if (Auth::guard('admin')->user()->name == 'HR' || Auth::guard('admin')->user()->name =='IT' || Auth::guard('admin')->user()->email =='mega@ptnag.com' || Auth::guard('admin')->user()->email =='rudy@ptnag.com' || Auth::guard('admin')->user()->email =='fadli' || Auth::guard('admin')->user()->email =='GA')
                     <a onclick="export_excel_konsumsi()" class="btn btn-outline-success position-relative">
                         <i class="fa fa-file-excel"></i>
                         Estimasi Anggaran Makan
