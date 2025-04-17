@@ -880,7 +880,7 @@ class ProsesPayrollController extends AdminBaseController
         if(request()->periode_payrols){
             $periode_payroll=request()->periode_payrols;
         }else{
-            $periode_payroll = '2025-03';
+            $periode_payroll = '2025-04';
         }
         $bulan_sekarang1 = strtotime(date($periode_payroll));
         $tanggal_sekarang=date('Y-m-d');
