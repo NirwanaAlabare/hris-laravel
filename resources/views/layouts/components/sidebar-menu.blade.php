@@ -36,7 +36,7 @@
                     </ul>
                 </li>
                 @php
-                    if (($loggedAdmin->role_user == "admin") || ($loggedAdmin->role_user == "superadmin")|| ($loggedAdmin->role_user == "absensi")) {
+                    if (($loggedAdmin->role_user == "superadmin") || ($loggedAdmin->role_user == "absensi")) {
                 @endphp
                  <!--<li><a class="slide-item" href="{{route('hris.mdabsenhadir.proses')}}"><span> Proses Kehadiran</span></a></li>-->
                 <li><a class="slide-item" href="{{route('hris.rekapkehadirankaryawan.index')}}"><span> Laporan Kehadiran</span></a></li>
@@ -67,7 +67,7 @@
         </li>
 
         @php
-        if (($loggedAdmin->role_user == "admin") || ($loggedAdmin->role_user == "superadmin")|| ($loggedAdmin->role_user == "absensi")|| ($loggedAdmin->email=='alex.herdian@ptnag.com')) {
+        if ($loggedAdmin->role_user == "superadmin" || $loggedAdmin->email=='alex.herdian@ptnag.com') {
         @endphp
 
         <li class="slide">
@@ -110,7 +110,8 @@
         </li>
 
         @php
-        if (($loggedAdmin->role_user == "admin") || ($loggedAdmin->role_user == "superadmin")|| ($loggedAdmin->role_user == "absensi")) {
+        // if (($loggedAdmin->role_user == "admin") || ($loggedAdmin->role_user == "superadmin")|| ($loggedAdmin->role_user == "absensi")) {
+        if ($loggedAdmin->role_user == "superadmin" || $loggedAdmin->role_user == "absensi") {
         @endphp
 
         <li class="slide">
@@ -152,11 +153,11 @@
             <ul class="slide-menu">
                 <li><a class="slide-item" href="{{route('admin.admin.editprofile')}}"><span> Profile</span></a></li>
                 @php
-                    if (($loggedAdmin->role_user == "admin") || ($loggedAdmin->role_user == "superadmin")) {
-                @endphp
-                <li><a class="slide-item" href="{{route('admin.admin.index')}}"><span> Admin User</span></a></li>
-                @php
-                    }
+                if ($loggedAdmin->role_user == "superadmin") {
+                    @endphp
+                    <li><a class="slide-item" href="{{route('admin.admin.index')}}"><span> Admin User</span></a></li>
+                    @php
+                }
                 @endphp
             </ul>
 
