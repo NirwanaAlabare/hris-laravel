@@ -127,7 +127,7 @@
                             <div class="col">
                                 <a href="{{route('hris.mutasi-karyawan.dashboard')}}">
                                 <div class="card card-4">
-                                        <h3 class="text-theme">Mutasi Karyawan</h3>
+                                        <h3 class="text-theme">Administrasi</h3>
                                     </div>
                                 </a>
                             </div>

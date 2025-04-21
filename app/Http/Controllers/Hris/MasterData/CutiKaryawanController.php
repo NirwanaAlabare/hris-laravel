@@ -78,6 +78,34 @@ class CutiKaryawanController extends AdminBaseController
         ], $this->data);
     }
 
+
+    public function index_pengajuan_perizinan_admin(){
+        $tglskrg = date('Y-m-d');
+        $user = Auth::guard('admin')->user()->email;
+        $data_dept = DB::select("select
+        d.sub_dept_id isi,
+        concat(department_name,' - ', sub_dept_name) tampil
+        from department_all d
+        left join
+        (select sub_dept_id,count(employee_id) tot from employee_atribut where status_aktif = 'aktif' group by sub_dept_id) e on d.sub_dept_id = e.sub_dept_id
+        where site_nirwana_id = 'NAG'
+        and sub_dept_name not like 'line%'
+        and e.tot != '0'
+        group by d.sub_dept_id
+        order by department_name asc");
+
+        $refabsenijin = $this->ajax_getselectrefabsenijin();
+
+        $selectemployee = $this->ajax_getallemployeeatribut();
+
+        return view('hris/absen/cuti_karyawan/pengajuan_perizinan_admin', [
+            'page' => 'dashboard-mut-karyawan', "subPageGroup" => "proses-karyawan", "subPage" => "form-lembur-non-sewing",
+            "data_dept" => $data_dept, "user" => $user,
+            "selectemployee" => $selectemployee,
+            "refabsenijin" => $refabsenijin,
+        ], $this->data);
+    }
+
     private function ajax_getselectrefabsenijin()
     {
         $query =  RefAbsenIjin::selectRaw('kode_absen_ijin,
@@ -676,90 +704,57 @@ class CutiKaryawanController extends AdminBaseController
         return $query;
     }
 
-    public function export_form_pengajuan_cuti_pdf() {
-        $email = Auth::guard('admin')->user()->email;
-        $data = DB::select("WITH RECURSIVE periode AS (
-            SELECT
-                enroll_id,
-                employee_name,
-                department_name,
-                nik,
-                sub_dept_name,
-                join_date,
-                join_date AS start_date,
-                LEAST(DATE_ADD(join_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
-            FROM employee_atribut
-            UNION ALL
-            SELECT
-                enroll_id,
-                employee_name,
-                department_name,
-                nik,
-                sub_dept_name,
-                join_date,
-                end_date AS start_date,
-                LEAST(DATE_ADD(end_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
-            FROM periode
-            WHERE end_date < CURDATE()
-        ),
-        cuti_dipakai AS (
-            SELECT
-                enroll_id,
-                YEAR(tanggal_perizinan) AS periode_tahun,
-                COUNT(*) AS used_leave
-            FROM data_absen_perijinan
-            WHERE kode_absen_ijin = 'CT'
-            GROUP BY enroll_id, periode_tahun
-        ),
-        data_cuti AS (
-            SELECT
-                p.enroll_id,
-                p.employee_name,
-                p.department_name,
-                p.nik,
-                p.sub_dept_name,
-                p.join_date,
-                p.start_date,
-                p.end_date,
-                CONCAT(
-                    TIMESTAMPDIFF(YEAR, p.join_date, p.end_date), ' tahun ',
-                    TIMESTAMPDIFF(MONTH, p.join_date, p.end_date) % 12, ' bulan'
-                ) AS lama_bekerja,
-                CASE
-                    WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 0
-                    ELSE 1
-                END AS is_eligible,
-                COALESCE(c.used_leave, 0) AS used_leave,
-                CASE
-                    WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 0
-                    ELSE 12 - COALESCE(c.used_leave, 0)
-                END AS remaining_leave,
-                CASE
-                    WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 'Belum Berhak'
-                    WHEN (12 - COALESCE(c.used_leave, 0)) > 0 THEN 'Masih Memiliki Cuti'
-                    ELSE 'Cuti Habis'
-                END AS leave_status,
-                CASE
-                    WHEN EXISTS (
-                        SELECT 1 FROM periode p_next
-                        WHERE p_next.enroll_id = p.enroll_id
-                        AND p_next.start_date = p.end_date
-                        AND (12 - COALESCE(c.used_leave, 0)) > 0
-                    ) THEN 'TRUE'
-                    ELSE 'FALSE'
-                END AS cuti_hangus,
-                ROW_NUMBER() OVER (PARTITION BY p.enroll_id ORDER BY p.end_date DESC) AS rn
-            FROM periode p
-            LEFT JOIN cuti_dipakai c
-                ON p.enroll_id = c.enroll_id
-                AND YEAR(p.end_date) = c.periode_tahun
-        )
-        SELECT * FROM data_cuti WHERE rn = 1 AND enroll_id = '".request()->enroll_id."'
-        ORDER BY enroll_id;");
+    public function export_form_pengajuan_cuti_pdf(Request $request) {
+        $nomorForm = $request->input('nomor_form_perizinan');
 
-        $fileName='Form Pengajuan Cuti '.date('Y-m-d').' '.rand(10,1000000);
-        $pdf = PDF::loadView('hris.absen.cuti_karyawan.export-form-pengajuan-cuti-pdf',["data" => $data[0]])->setPaper('F4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
-        return $pdf;
+        $data = DataAbsenPerijinan::select('employee_atribut.employee_name', 'employee_atribut.department_name','employee_atribut.sub_dept_name', 'employee_atribut.nik', 'data_absen_perijinan.*')
+            ->leftJoin('employee_atribut', 'data_absen_perijinan.enroll_id', '=', 'employee_atribut.enroll_id')
+            ->where('data_absen_perijinan.nomor_form_perizinan', $nomorForm)
+            ->first();
+
+        if (!$data) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        $fileName = 'Form Pengajuan Cuti ' . date('Y-m-d') . ' ' . rand(10, 1000000);
+        $pdf = PDF::loadView('hris.absen.cuti_karyawan.export-form-pengajuan-cuti-pdf', [
+            'data' => $data
+        ])->setPaper('F4', 'portrait');
+
+        return $pdf->stream($fileName . '.pdf', ['Attachment' => false]);
+    }
+
+    public function export_form_pengajuan_izin_pdf(Request $request) {
+        $nomorForm = $request->input('nomor_form_perizinan');
+
+        $data = DataAbsenPerijinan::select('employee_atribut.employee_name', 'employee_atribut.department_name','employee_atribut.sub_dept_name', 'employee_atribut.nik', 'data_absen_perijinan.*')
+            ->leftJoin('employee_atribut', 'data_absen_perijinan.enroll_id', '=', 'employee_atribut.enroll_id')
+            ->where('data_absen_perijinan.nomor_form_perizinan', $nomorForm)
+            ->first();
+
+        if (!$data) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+
+        $fileName = 'Form Pengajuan Cuti ' . date('Y-m-d') . ' ' . rand(10, 1000000);
+        $pdf = PDF::loadView('hris.absen.cuti_karyawan.export-form-pengajuan-izin-pdf', [
+            'data' => $data
+        ])->setPaper('F4', 'portrait');
+
+        return $pdf->stream($fileName . '.pdf', ['Attachment' => false]);
+    }
+    public function get_data_perizinan(Request $request) {
+        $uuid = $request->input('uuid');
+
+        $data = DataAbsenPerijinan::select('employee_atribut.employee_name', 'employee_atribut.department_name','employee_atribut.sub_dept_name', 'employee_atribut.nik', 'data_absen_perijinan.*')
+            ->leftJoin('employee_atribut', 'data_absen_perijinan.enroll_id', '=', 'employee_atribut.enroll_id')
+            ->where('data_absen_perijinan.uuid', $uuid)
+            ->first();
+
+        if (!$data) {
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+        return $data;
     }
 
     public function export_pengajuan_permintaan_kas(Request $request)
@@ -2008,8 +2003,6 @@ class CutiKaryawanController extends AdminBaseController
         $excel->download($finename);
     }
 
-
-
     public function show_export_detail_cuti_karyawan(Request $request){
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '10240000000000000M');
@@ -2133,5 +2126,88 @@ class CutiKaryawanController extends AdminBaseController
         ob_end_clean();
         return $response;
     }
+
+    public function ajax_dataabsenperizinan(Request $request)
+    {
+        $email = Auth::guard('admin')->user()->email;
+        $status = $request->input('is_verifikasi');
+        $search = $request->input('search.value');
+
+        // Query dasar
+        $query = DataAbsenPerijinan::select('employee_atribut.employee_name', 'employee_atribut.nik', 'data_absen_perijinan.*')
+            ->leftJoin('employee_atribut', 'data_absen_perijinan.enroll_id', '=', 'employee_atribut.enroll_id')
+            ->where('data_absen_perijinan.operator', '=', $email)
+            ->where('data_absen_perijinan.is_verifikasi', '=', $status);
+
+        // Jika ada pencarian
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('data_absen_perijinan.uuid_master', 'LIKE', "%{$search}%")
+                  ->orWhere('data_absen_perijinan.tanggal_perizinan', 'LIKE', "%{$search}%")
+                  ->orWhere('data_absen_perijinan.nomor_form_perizinan', 'LIKE', "%{$search}%")
+                  ->orWhere('data_absen_perijinan.enroll_id', 'LIKE', "%{$search}%")
+                  ->orWhere('employee_atribut.nik', 'LIKE', "%{$search}%")
+                  ->orWhere('employee_atribut.employee_name', 'LIKE', "%{$search}%")
+                  ->orWhere('data_absen_perijinan.kode_absen_ijin', 'LIKE', "%{$search}%")
+                  ->orWhere('data_absen_perijinan.absen_alasan', 'LIKE', "%{$search}%");
+            });
+        }
+
+        // Mengatur pagination dan ordering
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $orderColumn = $request->input('order.0.column');
+        $orderDir = $request->input('order.0.dir');
+        $columns = [
+            'uuid', 'uuid_master', 'tanggal_perizinan', 'nomor_form_perizinan', 'enroll_id',
+            'nik', 'employee_name', 'created_at'
+        ];
+
+        $query->offset($start)
+              ->limit($limit)
+              ->orderBy($columns[$orderColumn], $orderDir);
+
+        // Mendapatkan data
+        $data = $query->get();
+
+        // Mendapatkan total data dan data yang difilter
+        $totalData = DataAbsenPerijinan::where('operator', $email)
+                                        ->where('is_verifikasi', $status)
+                                        ->count();
+
+        $totalFiltered = $totalData;
+
+        // Format hasil
+        $formattedData = $data->map(function ($q) {
+            return [
+                'uuid' => $q->uuid,
+                'uuid_master' => $q->uuid_master,
+                'tanggal_perizinan' => Carbon::parse($q->tanggal_perizinan)->format('d-m-Y'),
+                'nomor_form_perizinan' => $q->nomor_form_perizinan,
+                'enroll_id' => $q->enroll_id,
+                'nik' => $q->nik,
+                'employee_name' => $q->employee_name,
+                'kode_absen_ijin' => $q->kode_absen_ijin,
+                'absen_alasan' => $q->absen_alasan,
+                'tanggal_mulai_ijin' => Carbon::parse($q->tanggal_mulai_ijin)->format('d-m-Y'),
+                'tanggal_akhir_ijin' => Carbon::parse($q->tanggal_akhir_ijin)->format('d-m-Y'),
+                'time_mulai_ijin' => substr($q->time_mulai_ijin, 0, 5),
+                'time_akhir_ijin' => substr($q->time_akhir_ijin, 0, 5),
+                'total_time_ijin' => $q->total_time_ijin,
+                'operator' => $q->operator,
+                'created_at' => substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5),
+                'updated_at' => substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5),
+            ];
+        });
+
+        // Format response untuk DataTables
+        return response()->json([
+            "draw" => intval($request->input('draw')),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $formattedData
+        ]);
+    }
+
 
 }

@@ -127,7 +127,12 @@
                 @php
                     if ($loggedAdmin->role_user == "superadmin") {
                 @endphp
-                <li><a href="{{route('cuti_karyawan.index')}}" class="slide-item"><span> Cuti Karyawan</span></a></li>
+                <li class="sub-slide">
+                    <a href="#" data-toggle="sub-slide" class="sub-slide-item"><span class="sub-side-menu__label">Cuti</span><i class="sub-angle fa fa-angle-right"></i></a>
+                    <ul class="sub-slide-menu">
+                        <li><a class="sub-slide-item" href="{{route('cuti_karyawan.index')}}"><span>Cuti Tahunan</span></a></li>
+                    </ul>
+                </li>
                 <li><a href="{{route('admin.datakehadiraninoutedited.abseninout')}}" class="slide-item"><span> Absen IN/OUT</span></a></li>
                 @php
                     }

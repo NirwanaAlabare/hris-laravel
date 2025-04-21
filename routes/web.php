@@ -198,6 +198,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
 
     // CUTI KARYAWAN
     Route::get('/cuti_karyawan', ['as' => 'cuti_karyawan.index','uses' => 'MasterData\CutiKaryawanController@index']);
+    Route::get('/cuti_karyawan/pengajuan_perizinan_admin', ['as' => 'cuti_karyawan.pengajuan_perizinan_admin','uses' => 'MasterData\CutiKaryawanController@index_pengajuan_perizinan_admin']);
     Route::post('/cuti_karyawan/store', ['as' => 'cuti_karyawan.store','uses' => 'MasterData\CutiKaryawanController@store']);
     Route::get('/cuti_karyawan/show', ['as' => 'cuti_karyawan.show','uses' => 'MasterData\CutiKaryawanController@getData']);
     Route::post('/cuti_karyawan/show_export', ['as' => 'cuti_karyawan.show_export','uses' => 'MasterData\CutiKaryawanController@show_export']);
@@ -209,6 +210,11 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('/cuti_karyawan/export_pengajuan_permintaan_kas', ['as' => 'cuti_karyawan.export_pengajuan_permintaan_kas','uses' => 'MasterData\CutiKaryawanController@export_pengajuan_permintaan_kas']);
     Route::get('/cuti_karyawan/export_realisasi_permintaan_kas', ['as' => 'cuti_karyawan.export_realisasi_permintaan_kas','uses' => 'MasterData\CutiKaryawanController@export_realisasi_permintaan_kas']);
     Route::get('/cuti_karyawan/export_form_pengajuan_cuti_pdf', ['as' => 'cuti_karyawan.export_form_pengajuan_cuti_pdf','uses' => 'MasterData\CutiKaryawanController@export_form_pengajuan_cuti_pdf']);
+    Route::get('/cuti_karyawan/export_form_pengajuan_izin_pdf', ['as' => 'cuti_karyawan.export_form_pengajuan_izin_pdf','uses' => 'MasterData\CutiKaryawanController@export_form_pengajuan_izin_pdf']);
+
+    // PENGAJUAN IZIN
+    Route::post('cuti_karyawan/ajax_dataabsenperizinan',['as'=>'cuti_karyawan.dataabsenperijinan.ajax_dataabsenperizinan','uses'=>'MasterData\CutiKaryawanController@ajax_dataabsenperizinan']);
+    Route::post('cuti_karyawan/get_data_perizinan',['as'=>'cuti_karyawan.dataabsenperijinan.get_data_perizinan','uses'=>'MasterData\CutiKaryawanController@get_data_perizinan']);
 
     Route::get('hrd/export_pdf_sk_bni',['as'=>'hris.hrd.export_pdf_sk_bni','uses'=>'HRDController@export_pdf_sk_bni']);
     Route::post('hrd/export_pdf_print_sk',['as'=>'hris.hrd.export_pdf_print_sk','uses'=>'HRDController@export_pdf_print_sk']);
