@@ -968,9 +968,9 @@ h1 {
                                         <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.uuid}')" data-id="${row.uuid}" title="Edit">
                                             <i class="fa fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-sm mr-1 btn-danger" onclick="openModalEditPengajuan('${row.uuid}')" data-id="${row.uuid}" title="Edit">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
+                                       <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Edit">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
                                     `;
                                 }else{
                                     return ` <a href="${exportUrl}" target="_blank" class="btn btn-sm ${btnClass} mr-1" title="Print PDF Pengajuan">
