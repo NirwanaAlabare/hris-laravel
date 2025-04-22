@@ -68,7 +68,7 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:10px;" colspan="6"></td>
             </tr>
             <tr>
-                <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">Nik</td>
+                <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">NIP</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">:</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; text-transform: uppercase;">{{ $data->nik }}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
@@ -180,7 +180,7 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:10px;" colspan="6"></td>
             </tr>
             <tr>
-                <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top" colspan="6">Nama_________________________________NIK________________.</td>
+                <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top" colspan="6">Nama_________________________________NIP________________.</td>
             </tr>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:10px;" colspan="6"></td>

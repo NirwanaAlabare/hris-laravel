@@ -224,7 +224,7 @@ h1 {
                                                             <tr class="text-center">
                                                                 <th scope="col">Tanggal Perizinan</th>
                                                                 <th scope="col">Nomor Form Perizinan</th>
-                                                                <th scope="col">NIK</th>
+                                                                <th scope="col">NIP</th>
                                                                 <th scope="col">Nama Karyawan</th>
                                                                 <th scope="col">Kode Absen Ijin</th>
                                                                 <th scope="col">Alasan Absen</th>
@@ -245,7 +245,7 @@ h1 {
                                                             <tr class="text-center">
                                                                 <th scope="col">Tanggal Perizinan</th>
                                                                 <th scope="col">Nomor Form Perizinan</th>
-                                                                <th scope="col">NIK</th>
+                                                                <th scope="col">NIP</th>
                                                                 <th scope="col">Nama Karyawan</th>
                                                                 <th scope="col">Kode Absen Ijin</th>
                                                                 <th scope="col">Alasan Absen</th>
@@ -561,7 +561,7 @@ h1 {
                                 <p class="mb-0" id="nama_karyawan_modal" style="font-size: 16px;"></p>
                             </div>
                             <div class="d-flex mb-2">
-                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">NIK</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">NIP</p>
                                 <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
                                 <p class="mb-0" id="nik_karyawan_modal" style="font-size: 16px;"></p>
                             </div>

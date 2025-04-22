@@ -2131,7 +2131,8 @@ class CutiKaryawanController extends AdminBaseController
         // Query dasar
         $query = DataAbsenPerijinan::select('employee_atribut.employee_name', 'employee_atribut.nik', 'data_absen_perijinan.*')
             ->leftJoin('employee_atribut', 'data_absen_perijinan.enroll_id', '=', 'employee_atribut.enroll_id')
-            ->where('data_absen_perijinan.is_verifikasi_pengajuan_admin', '=', $status);
+            ->where('data_absen_perijinan.is_verifikasi_pengajuan_admin', '=', $status)
+            ->orderBy('data_absen_perijinan.tanggal_perizinan', 'desc');
 
 
         if (!in_array($email, ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli', 'HR', 'ersa@ptnag.com', 'kiki@ptnag.com', 'hrd'])) {
