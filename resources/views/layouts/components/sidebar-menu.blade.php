@@ -67,33 +67,42 @@
         </li>
 
         @php
-        if ($loggedAdmin->role_user == "superadmin" || $loggedAdmin->email=='alex.herdian@ptnag.com') {
+            $email = $loggedAdmin->email;
+            $isSuperadmin = $loggedAdmin->role_user == "superadmin";
+            $isAlex = $email == 'alex.herdian@ptnag.com';
+            $isReza = $email == 'reza';
+            $isFadli = $email == 'fadli';
+            $showPayrollMenu = $isSuperadmin || $isAlex || $isReza || $isFadli;
         @endphp
 
-        <li class="slide">
-            <a class="side-menu__item" data-toggle="slide" href="#">
-                <!-- <i class="side-menu__icon typcn typcn-th-large-outline"></i> -->
-                <i class="side-menu__icon fa fa-credit-card" aria-hidden="true"></i>
-                <span class="side-menu__label">Payroll</span><i class="angle fa fa-angle-right"></i></a>
-            <ul class="slide-menu">
-                <li><a class="slide-item" href="{{route('hris.gradingsalary.index')}}"><span> Grading Salary</span></a></li>
-                <li><a class="slide-item" href="{{route('hris.employeegrading.index')}}"><span> Salary Karyawan</span></a></li>
-                <li><a class="slide-item" href="{{route('hris.tunjangankaryawan.index')}}"><span> Tunjangan Karyawan</span></a></li>
-                <li><a class="slide-item" href="{{route('hris.rekapperhitunganpayroll.index')}}"><span> Laporan Payroll</span></a></li>
-                <li><a class="slide-item" href="{{route('hris.dataclosingpayroll.index')}}"><span> Closing Payroll</span></a></li>
-                @php
-                    if (($loggedAdmin->email == "reza") || ($loggedAdmin->email == "fadli")) {
-                    @endphp
-                        <li><a class="slide-item" href="{{route('hris.aktifitasperubahan.index')}}"><span> Aktifitas Perubahan</span></a></li>
-                    @php
-                    }
-                @endphp
-            </ul>
+        @if ($showPayrollMenu)
+            <li class="slide">
+                <a class="side-menu__item" data-toggle="slide" href="#">
+                    <i class="side-menu__icon fa fa-credit-card" aria-hidden="true"></i>
+                    <span class="side-menu__label">Payroll</span><i class="angle fa fa-angle-right"></i>
+                </a>
+                <ul class="slide-menu">
+                    @if (!$isReza)
+                        <li><a class="slide-item" href="{{ route('hris.gradingsalary.index') }}"><span> Grading Salary</span></a></li>
+                        <li><a class="slide-item" href="{{ route('hris.employeegrading.index') }}"><span> Salary Karyawan</span></a></li>
+                        <li><a class="slide-item" href="{{ route('hris.tunjangankaryawan.index') }}"><span> Tunjangan Karyawan</span></a></li>
+                    @endif
 
-        </li>
-        @php
-            }
-        @endphp
+                    @if ($showPayrollMenu)
+                        <li><a class="slide-item" href="{{ route('hris.rekapperhitunganpayroll.index') }}"><span> Laporan Payroll</span></a></li>
+                    @endif
+
+                    @if (!$isReza)
+                        <li><a class="slide-item" href="{{ route('hris.dataclosingpayroll.index') }}"><span> Closing Payroll</span></a></li>
+                    @endif
+
+                    @if ($isReza || $isFadli)
+                        <li><a class="slide-item" href="{{ route('hris.aktifitasperubahan.index') }}"><span> Aktifitas Perubahan</span></a></li>
+                    @endif
+                </ul>
+            </li>
+        @endif
+
 
         <li class="slide">
             <a class="side-menu__item" data-toggle="slide" href="#">
