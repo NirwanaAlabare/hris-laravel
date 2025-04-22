@@ -215,6 +215,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     // PENGAJUAN IZIN
     Route::post('cuti_karyawan/ajax_dataabsenperizinan',['as'=>'cuti_karyawan.dataabsenperijinan.ajax_dataabsenperizinan','uses'=>'MasterData\CutiKaryawanController@ajax_dataabsenperizinan']);
     Route::post('cuti_karyawan/get_data_perizinan',['as'=>'cuti_karyawan.dataabsenperijinan.get_data_perizinan','uses'=>'MasterData\CutiKaryawanController@get_data_perizinan']);
+    Route::post('cuti_karyawan/approve_hr_perizinan_menu',['as'=>'cuti_karyawan.dataabsenperijinan.approve_hr_perizinan_menu','uses'=>'MasterData\CutiKaryawanController@approve_hr_perizinan_menu']);
 
     Route::get('hrd/export_pdf_sk_bni',['as'=>'hris.hrd.export_pdf_sk_bni','uses'=>'HRDController@export_pdf_sk_bni']);
     Route::post('hrd/export_pdf_print_sk',['as'=>'hris.hrd.export_pdf_print_sk','uses'=>'HRDController@export_pdf_print_sk']);
