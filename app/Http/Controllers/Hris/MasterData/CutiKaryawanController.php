@@ -2168,14 +2168,14 @@ class CutiKaryawanController extends AdminBaseController
 
         // Mendapatkan total data dan data yang difilter
         $totalData = DataAbsenPerijinan::where('is_verifikasi_pengajuan_admin', $status)
-                                        ->count();
+                                        ->get();
 
         if (!in_array($email, ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli', 'HR', 'ersa@ptnag.com', 'kiki@ptnag.com', 'hrd'])) {
             $totalData->where('operator', $email);
         }
+        $total = $totalData->count();
 
-        $totalFiltered = $totalData;
-
+        $totalFiltered = $total;
         // Format hasil
         $formattedData = $data->map(function ($q) {
             return [
@@ -2202,7 +2202,7 @@ class CutiKaryawanController extends AdminBaseController
         // Format response untuk DataTables
         return response()->json([
             "draw" => intval($request->input('draw')),
-            "recordsTotal" => intval($totalData),
+            "recordsTotal" => intval($totalData->count()),
             "recordsFiltered" => intval($totalFiltered),
             "data" => $formattedData
         ]);
