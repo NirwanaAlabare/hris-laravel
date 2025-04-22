@@ -405,15 +405,7 @@ class CutiKaryawanController extends AdminBaseController
             })
             ->rawColumns(['is_eligible','actions'])
             ->make(true);
-               // return  '<div> <a class="btn btn-success btn-sm" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2">
-                //                         <i class="fa fa-file-excel-o" aria-hidden="true"></i>
-                //                     </a>
-                //             <a class="btn btn-danger btn-sm" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="export_form_pengajuan_cuti_'.$row->enroll_id.'">
-                //                 <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                //             </a>
-                //             <a style="text-align:center; color:white;" class="btn btn-danger btn-sm">
-                //             <i class="fa fa-trash"></i>
-                //             </a></div>';
+
     }
     public function show_by_id(Request $request)
     {
@@ -2136,8 +2128,12 @@ class CutiKaryawanController extends AdminBaseController
         // Query dasar
         $query = DataAbsenPerijinan::select('employee_atribut.employee_name', 'employee_atribut.nik', 'data_absen_perijinan.*')
             ->leftJoin('employee_atribut', 'data_absen_perijinan.enroll_id', '=', 'employee_atribut.enroll_id')
-            ->where('data_absen_perijinan.operator', '=', $email)
             ->where('data_absen_perijinan.is_verifikasi_pengajuan_admin', '=', $status);
+
+
+        if (!in_array($email, ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli', 'HR', 'ersa@ptnag.com', 'kiki@ptnag.com', 'hrd'])) {
+            $query->where('data_absen_perijinan.operator', $email);
+        }
 
         // Jika ada pencarian
         if (!empty($search)) {
@@ -2171,9 +2167,12 @@ class CutiKaryawanController extends AdminBaseController
         $data = $query->get();
 
         // Mendapatkan total data dan data yang difilter
-        $totalData = DataAbsenPerijinan::where('operator', $email)
-                                        ->where('is_verifikasi_pengajuan_admin', $status)
+        $totalData = DataAbsenPerijinan::where('is_verifikasi_pengajuan_admin', $status)
                                         ->count();
+
+        if (!in_array($email, ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli', 'HR', 'ersa@ptnag.com', 'kiki@ptnag.com', 'hrd'])) {
+            $totalData->where('operator', $email);
+        }
 
         $totalFiltered = $totalData;
 
