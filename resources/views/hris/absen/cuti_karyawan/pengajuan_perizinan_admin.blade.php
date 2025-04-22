@@ -926,7 +926,7 @@ h1 {
                 ajax: {
                     url: '{{ route('cuti_karyawan.dataabsenperijinan.ajax_dataabsenperizinan') }}',
                     type: "POST",
-                    data: { is_verifikasi_pengajuan_admin: 0 || null },  // Data untuk tab "Waiting"
+                    data: { is_verifikasi_pengajuan_admin: 0 },  // Data untuk tab "Waiting"
                 },
                 processing: true,
                 serverSide: true,

@@ -237,7 +237,8 @@ class DataAbsenPerijinanController extends AdminBaseController
             'tanggal_akhir_ijin' => $tanggal_akhir_ijin,
             'is_verifikasi'=>$is_verifikasi,
             'verifikasi_by'=>$verifikasi_by,
-            'operator' => $email
+            'operator' => $email,
+            'is_verifikasi_pengajuan_admin' => 0,
         ]);
 
         if ($query) {
@@ -369,7 +370,8 @@ class DataAbsenPerijinanController extends AdminBaseController
             'time_mulai_ijin' => $time_mulai_ijin,
             'time_akhir_ijin' => $time_akhir_ijin,
             'total_time_ijin' => $total_time_ijin,
-            'operator' => $email
+            'operator' => $email,
+            'is_verifikasi_pengajuan_admin' => 0,
         ]);
 
         if ($query) {
@@ -619,7 +621,8 @@ class DataAbsenPerijinanController extends AdminBaseController
                 'tanggal_akhir_ijin' => $tanggal_akhir_ijin,
                 'is_verifikasi'=>$is_verifikasi,
                 'verifikasi_by'=>$verifikasi_by,
-                'operator' => $email
+                'operator' => $email,
+                'is_verifikasi_pengajuan_admin' => 0,
             ]);
         } else {
             return 0;
@@ -775,6 +778,7 @@ class DataAbsenPerijinanController extends AdminBaseController
             'time_mulai_ijin' => $time_mulai_ijin,
             'time_akhir_ijin' => $time_akhir_ijin,
             'total_time_ijin' => $total_time_ijin,
+            'is_verifikasi_pengajuan_admin' => 0,
             'operator' => $email
         ]);
         if ($query) {
@@ -1043,6 +1047,7 @@ class DataAbsenPerijinanController extends AdminBaseController
                             'operator' => 'system_injek_lebaran',
                             'is_verifikasi'=>1,
                             'verifikasi_by'=>'system',
+                            'is_verifikasi_pengajuan_admin' => 0,
                         ];
                         $query = DataAbsenPerijinan::create($perijinan);
 
@@ -1218,7 +1223,8 @@ class DataAbsenPerijinanController extends AdminBaseController
                 'tanggal_akhir_ijin' => $tanggal_perizinan,
                 'is_verifikasi'=>$is_verifikasi,
                 'verifikasi_by'=>$verifikasi_by,
-                'operator' => $email
+                'operator' => $email,
+                'is_verifikasi_pengajuan_admin' => 0,
             ]);
             if($data[0][$i][4]=='DL') {
                 $query1 = MasterDataAbsenKehadiran::whereBetween('tanggal_berjalan', [$tanggal_perizinan, $tanggal_perizinan])
