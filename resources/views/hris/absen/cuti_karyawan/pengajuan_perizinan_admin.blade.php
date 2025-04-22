@@ -381,19 +381,15 @@ h1 {
                                                     </div>
                                                     <div class="col-md-12 pt-3">
                                                         <div class="row pb-2">
-                                                            <div class="col-md-4 pt-2">
-                                                                <div class="form-group">
-                                                                    <label class="form-label">Nomor Form Perizinan (for adding)</label>
-                                                                </div>
-                                                            </div>
+
                                                             <div class="col-md-7 pr-0">
                                                                 <div class="input-group">
-                                                                    <input readonly id="nomor_form_perizinan_izin" name="nomor_form_perizinan_izin" type="text" class="form-control">
+                                                                    <input readonly id="nomor_form_perizinan_izin" name="nomor_form_perizinan_izin" type="hidden" class="form-control">
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-1 pt-2">
+                                                            {{-- <div class="col-md-1 pt-2">
                                                                 <a href="#" id="btn-icon-refresh-izin"><i class="fa fa-refresh" aria-hidden="true" style="font-size: 13pt"></i></a>
-                                                            </div>
+                                                            </div> --}}
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
@@ -486,19 +482,13 @@ h1 {
 
                                                     <div class="col-md-12 pt-3">
                                                         <div class="row pb-2">
-                                                            <div class="col-md-4 pt-2">
-                                                                <div class="form-group">
-                                                                    <label class="form-label">Nomor Form Perizinan (for adding)</label>
-                                                                </div>
-                                                            </div>
+
                                                             <div class="col-md-7 pr-0">
                                                                 <div class="input-group">
-                                                                    <input readonly id="nomor_form_perizinan_iks" name="nomor_form_perizinan_iks" type="text" class="form-control">
+                                                                    <input readonly id="nomor_form_perizinan_iks" name="nomor_form_perizinan_iks" type="hidden" class="form-control">
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-1 pt-2">
-                                                                <a href="#" id="btn-icon-refresh-iks"><i class="fa fa-refresh" aria-hidden="true" style="font-size: 13pt"></i></a>
-                                                            </div>
+
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
@@ -555,62 +545,67 @@ h1 {
     </div>
 
 
-    {{-- MODAL DETAIL --}}
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-md modal-dialog-scrollable" style="max-width: 65%;">
+    {{-- MODAL APPROVE PENGAJUAN --}}
+    <div class="modal fade" id="ajax-modal-approve-pengajuan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-scrollable" style="max-width: 45%;">
             <div class="modal-content">
-                <div class="modal-header bg-primary">
-                    <p class="modal-title   " style="font-size: 18px; font-weight: bold;" id="exampleModalLabel"></p>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">x</button>
-                </div>
-                <div style="height: 80vh; overflow-y: auto; over-flow-x:none;">
+                <div style="height: auto; overflow-y: auto; overflow-x: auto;">
                     <div class="row p-5 d-flex justify-content-between">
+                        <input type="hidden" id="uuid_modal" value="" />
+                        <input type="hidden" id="uuid_master_modal" value="" />
+                        <input type="hidden" id="enroll_id_modal" value="" />
                         <div class="col">
                             <div class="d-flex mb-2">
-                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 14px;">Nama Karyawan</p>
-                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 14px;">:</p>
-                                <p class="mb-0" id="nama_karyawan_modal"></p>
-                                <input type="hidden" class="mb-0" id="enroll_id_karyawan_modal"/>
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Nama Karyawan</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
+                                <p class="mb-0" id="nama_karyawan_modal" style="font-size: 16px;"></p>
                             </div>
                             <div class="d-flex mb-2">
-                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 14px;">NIK</p>
-                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 14px;">:</p>
-                                <p class="mb-0" id="nik_karyawan_modal"></p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">NIK</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
+                                <p class="mb-0" id="nik_karyawan_modal" style="font-size: 16px;"></p>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Tanggal Perijinan</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
+                                <p class="mb-0" id="tanggal_perijinan_modal" style="font-size: 16px;"></p>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Kode Absen Ijin</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
+                                <p class="mb-0" id="kode_absen_ijin_modal" style="font-size: 16px;"></p>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Department</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
+                                <p class="mb-0" id="department_modal" style="font-size: 16px;"></p>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Bagian</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
+                                <p class="mb-0" id="bagian_modal" style="font-size: 16px;"></p>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Keterangan</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
+                                <p class="mb-0" id="keterangan_modal" style="font-size: 16px;"></p>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Nomor Form</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
+                                <p class="mb-0" id="nomor_form_perijinan_modal" style="font-size: 16px; text-decoration: underline; font-weight: bold"></p>
+                            </div>
+                            <div class="d-flex justify-content-center mb-2 mt-5 col-gap-3">
+                                <button type="button" id="btn-approve-pengajuan" class="btn btn-success w-25" style="margin-right: 10px;" data-toggle="tooltip" title="Approve"><i class="fa fa-check" aria-hidden="true"></i> Approve</button>
+                                <button type="button" id="btn-reject-pengajuan" class="btn btn-danger w-25" data-toggle="tooltip" title="Cancel"> Cancel</button>
                             </div>
                         </div>
-                        <div class="col">
-                            <div class="d-flex mb-2 justify-content-end">
-                                <button id="btn_export_cuti_by_user" class="btn btn-success w-25 text-white" data-toggle="tooltip" title="Preview by excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Download Rekap</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="px-5 pt-2">
-                        <div id="periodeTabs" class="nav nav-tabs mb-3" style="gap: 8px;" role="tablist">
-                            <!-- Button tabs akan di-generate via JavaScript -->
-                        </div>
-                    </div>
-                    <div class="table-responsive px-5">
-                        <table id="table_detail_cuti_karyawan" class="table table-striped table-sm w-100 table-hover">
-                            <thead class="table-primary">
-                                <tr>
-                                    <th>No</th>
-                                    <th>Tanggal Form</th>
-                                    <th>No Form</th>
-                                    <th>Tanggal Mulai</th>
-                                    <th>Tanggal Akhir</th>
-                                    <th>Kode Absen</th>
-                                    <th>Keterangan</th>
-                                </tr>
-                            </thead>
-                            <tbody id="cutiTableBody">
-                                <!-- Data akan dimasukkan via JavaScript -->
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 
 @endsection
 @section('footerjs')
@@ -746,7 +741,6 @@ h1 {
         });
 
         function openModalEditPengajuan(uuid) {
-            console.log('UUID:', uuid);  // Debugging
             $("#ajax-modal-tambah").modal('show');
             $('#title-modal-edit1').text('EDIT PERIZINAN KARYAWAN');
             $("#uuid_master").val(uuid);
@@ -831,6 +825,56 @@ h1 {
 
         }
 
+        function openModalApprovePengajuan(uuid) {
+            $("#ajax-modal-approve-pengajuan").modal('show');
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('cuti_karyawan.dataabsenperijinan.get_data_perizinan') }}",
+                data: {
+                    uuid: uuid
+                },
+                success: function(res) {
+                    var data = res;
+                    var tanggal_periz=data.tanggal_perizinan;
+                    var tanggal_mulai_ijin=null;
+                    var tanggal_akhir_ijin=null;
+                    var tanggal_mulai = data.tanggal_mulai_ijin;
+                    var tanggal_akhir = data.tanggal_akhir_ijin;
+                    var tanggal_perizinan=tanggal_periz.substr(8,2)+'-'+tanggal_periz.substr(5,2)+'-'+tanggal_periz.substr(0,4);
+                    if(tanggal_mulai!=null){
+                        tanggal_mulai_ijin=tanggal_mulai.substr(8,2)+'-'+tanggal_mulai.substr(5,2)+'-'+tanggal_mulai.substr(0,4);
+                    }
+                    if(tanggal_akhir!=null){
+                        tanggal_akhir_ijin=tanggal_akhir.substr(8,2)+'-'+tanggal_akhir.substr(5,2)+'-'+tanggal_akhir.substr(0,4);
+                    }
+
+                   // Format tanggal menggunakan Moment.js
+                    var createdAt = moment(data.created_at).format('D MMM YYYY H:mm');
+                    var updatedAt = moment(data.updated_at).format('D MMM YYYY H:mm');
+
+                 // Mengisi data dari response ke dalam form input
+                    $('#uuid_modal').val(data.uuid);
+                    $('#uuid_master_modal').val(data.uuid_master);
+                    $('#enroll_id_modal').val(data.enroll_id);
+
+                    $('#tanggal_perijinan_modal').text(tanggal_perizinan).prop('disabled', true);
+                    $('#department_modal').text(data.department_name).prop('disabled', true);
+                    $('#bagian_modal').text(data.sub_dept_name).prop('disabled', true);
+                    $('#nomor_form_perijinan_modal').text(data.nomor_form_perizinan);
+
+                    $('#keterangan_modal').text(data.absen_alasan);
+                    $('#kode_absen_ijin_modal').text(data.kode_absen_ijin);
+                    $('#nik_karyawan_modal').text(data.nik);
+                    $('#nama_karyawan_modal').text(data.employee_name);
+                }
+            });
+
+
+        }
+
+
+
 
         function setToNull() {
             $('#tanggal_perijinan').val(null).prop('disabled', false);  // Format tanggal dan disable
@@ -882,13 +926,17 @@ h1 {
                 ajax: {
                     url: '{{ route('cuti_karyawan.dataabsenperijinan.ajax_dataabsenperizinan') }}',
                     type: "POST",
-                    data: { is_verifikasi: 0 },  // Data untuk tab "Waiting"
+                    data: { is_verifikasi_pengajuan_admin: 0 || null },  // Data untuk tab "Waiting"
                 },
                 processing: true,
                 serverSide: true,
                 columns: [
                     { data: 'tanggal_perizinan' },
-                    { data: 'nomor_form_perizinan' },
+                    { data: 'nomor_form_perizinan',
+                        render: function (data, type, row) {
+                            return '<p>-</p>';
+                    }
+                    },
                     { data: 'nik' },
                     { data: 'employee_name' },
                     { data: 'kode_absen_ijin' },
@@ -899,29 +947,45 @@ h1 {
                         searchable: false,
                         className: "text-center",
                         render: function (data, type, row) {
-                                const formNo = encodeURIComponent(row.nomor_form_perizinan);
+                                const uuidNo = encodeURIComponent(row.uuid);
                                 let exportUrl;
                                 let btnClass;
 
                                 if (row.kode_absen_ijin === 'IKS') {
-                                    exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_izin_pdf?nomor_form_perizinan=${formNo}`;
+                                    exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_izin_pdf?uuid=${uuidNo}`;
                                     btnClass = 'btn-warning';
                                 } else {
-                                    exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_cuti_pdf?nomor_form_perizinan=${formNo}`;
+                                    exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_cuti_pdf?uuid=${uuidNo}`;
                                     btnClass = 'btn-danger';
                                 }
-
-                                return `
-                                    <a href="${exportUrl}" target="_blank" class="btn btn-sm ${btnClass} mr-1" title="Print PDF Pengajuan">
-                                        <i class="fa fa-file-pdf-o"></i>
-                                    </a>
-                                    <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.uuid}')" data-id="${row.uuid}" title="Edit">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Edit">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                `;
+                                if($('#username_who_access').val()=='HR' || $('#username_who_access').val()=='IT'|| $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='fadli'|| $('#username_who_access').val()=='rudy@ptnag.com' ){
+                                    return `
+                                        <button onclick="openModalApprovePengajuan('${row.uuid}')" data-id="${row.uuid}" target="_blank" class="btn btn-sm btn-success mr-1" title="Approve Pengajuan">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+                                        <a href="${exportUrl}" target="_blank" class="btn btn-sm ${btnClass} mr-1" title="Print PDF Pengajuan">
+                                            <i class="fa fa-file-pdf-o"></i>
+                                        </a>
+                                        <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.uuid}')" data-id="${row.uuid}" title="Edit">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Edit">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    `;
+                                }else{
+                                    return `
+                                        <a href="${exportUrl}" target="_blank" class="btn btn-sm ${btnClass} mr-1" title="Print PDF Pengajuan">
+                                            <i class="fa fa-file-pdf-o"></i>
+                                        </a>
+                                        <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.uuid}')" data-id="${row.uuid}" title="Edit">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Edit">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    `;
+                                }
                         }
                     }
                 ]
@@ -932,7 +996,7 @@ h1 {
                 ajax: {
                     url: '{{ route('cuti_karyawan.dataabsenperijinan.ajax_dataabsenperizinan') }}',
                     type: "POST",
-                    data: { is_verifikasi: 1 },  // Data untuk tab "Verifikasi"
+                    data: { is_verifikasi_pengajuan_admin: 1 },  // Data untuk tab "Verifikasi"
                 },
                 processing: true,
                 serverSide: true,
@@ -949,17 +1013,18 @@ h1 {
                         searchable: false,
                         className: "text-center",
                         render: function (data, type, row) {
-                                const formNo = encodeURIComponent(row.nomor_form_perizinan);
+                                const uuidNo = encodeURIComponent(row.uuid);
                                 let exportUrl;
                                 let btnClass;
 
                                 if (row.kode_absen_ijin === 'IKS') {
-                                    exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_izin_pdf?nomor_form_perizinan=${formNo}`;
+                                    exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_izin_pdf?uuid=${uuidNo}`;
                                     btnClass = 'btn-warning';
                                 } else {
-                                    exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_cuti_pdf?nomor_form_perizinan=${formNo}`;
+                                    exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_cuti_pdf?uuid=${uuidNo}`;
                                     btnClass = 'btn-danger';
                                 }
+
                                 if($('#username_who_access').val()=='HR' || $('#username_who_access').val()=='IT'|| $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='fadli'|| $('#username_who_access').val()=='rudy@ptnag.com' ){
                                     return `
                                         <a href="${exportUrl}" target="_blank" class="btn btn-sm ${btnClass} mr-1" title="Print PDF Pengajuan">
@@ -1104,22 +1169,74 @@ h1 {
 
             $(document).on('click', '.btn-lihat', function () {
                 let uuid = $(this).data('id');
-                console.log("Lihat:", uuid);
                 // Lakukan sesuatu, misal tampilkan modal detail
             });
 
             $(document).on('click', '.btn-edit', function () {
                 let uuid = $(this).data('id');
-                console.log("Edit:", uuid);
                 // Redirect atau tampilkan form edit
             });
 
             $(document).on('click', '.btn-delete', function () {
                 let uuid = $(this).data('id');
                 if (confirm("Yakin ingin menghapus?")) {
-                    console.log("Delete:", uuid);
                     // Kirim AJAX delete ke server
                 }
+            });
+
+            $('body').on('click', '#btn-approve-pengajuan', function (event) {
+                $('#ajax-modal-approve-pengajuan').modal('hide');
+                var uuid = $('#uuid_modal').val();
+                $.ajax({
+                    type:"POST",
+                    url: "{{route('cuti_karyawan.dataabsenperijinan.approve_hr_perizinan_menu')}}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    data: {
+                        uuid:uuid,
+                    },
+                    success: function(res){
+                        swal("", "approve perizinan berhasil", "success");
+                        $('#uuid_modal').val(null);
+                        $('#uuid_master_modal').val(null);
+                        $('#enroll_id_modal').val(null);
+
+                        $('#tanggal_perijinan_modal').text(null).prop('disabled', true);
+                        $('#department_modal').text(null).prop('disabled', true);
+                        $('#bagian_modal').text(null).prop('disabled', true);
+                        $('#nomor_form_perijinan_modal').text(null);
+
+                        $('#keterangan_modal').text(null);
+                        $('#kode_absen_ijin_modal').text(null);
+                        $('#nik_karyawan_modal').text(null);
+                        $('#nama_karyawan_modal').text(null);
+                        tableVerifikasi.ajax.reload();
+                        tableWaiting.ajax.reload();
+                    },
+                    error: function(res){
+                        swal("", "approve perizinan gagal", "error");
+                    }
+                });
+            })
+
+
+            $('body').on('click', '#btn-reject-pengajuan', function (event) {
+                $('#ajax-modal-approve-pengajuan').modal('hide');
+                $('#uuid_modal').val(null);
+                $('#uuid_master_modal').val(null);
+                $('#enroll_id_modal').val(null);
+
+                $('#tanggal_perijinan_modal').text(null).prop('disabled', true);
+                $('#department_modal').text(null).prop('disabled', true);
+                $('#bagian_modal').text(null).prop('disabled', true);
+                $('#nomor_form_perijinan_modal').text(null);
+
+                $('#keterangan_modal').text(null);
+                $('#kode_absen_ijin_modal').text(null);
+                $('#nik_karyawan_modal').text(null);
+                $('#nama_karyawan_modal').text(null);
+                tableVerifikasi.ajax.reload();
+                tableWaiting.ajax.reload();
             });
         });
     </script>
@@ -1188,18 +1305,7 @@ h1 {
 
             var tanggal = tanggal_perizinan;
 
-            console.log({
-                uuid:uuid,
-                tanggal_perizinan:tanggal_perizinan,
-                nomor_form_perizinan:nomor_form_perizinan,
-                enroll_id:enroll_id,
-                nik:nik,
-                employee_name:employee_name,
-                kode_absen_ijin:kode_absen_ijin,
-                absen_alasan:absen_alasan,
-                tanggal_mulai_ijin:tanggal_mulai_ijin,
-                tanggal_akhir_ijin:tanggal_akhir_ijin,
-            });
+
             // LAGI COBA TEST CLOSING PAYROLL
             $.ajax({
                 type:"POST",

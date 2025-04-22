@@ -705,11 +705,11 @@ class CutiKaryawanController extends AdminBaseController
     }
 
     public function export_form_pengajuan_cuti_pdf(Request $request) {
-        $nomorForm = $request->input('nomor_form_perizinan');
+        $uuid = $request->input('uuid');
 
         $data = DataAbsenPerijinan::select('employee_atribut.employee_name', 'employee_atribut.department_name','employee_atribut.sub_dept_name', 'employee_atribut.nik', 'data_absen_perijinan.*')
             ->leftJoin('employee_atribut', 'data_absen_perijinan.enroll_id', '=', 'employee_atribut.enroll_id')
-            ->where('data_absen_perijinan.nomor_form_perizinan', $nomorForm)
+            ->where('data_absen_perijinan.uuid', $uuid)
             ->first();
 
         if (!$data) {
@@ -725,11 +725,11 @@ class CutiKaryawanController extends AdminBaseController
     }
 
     public function export_form_pengajuan_izin_pdf(Request $request) {
-        $nomorForm = $request->input('nomor_form_perizinan');
+        $uuid = $request->input('uuid');
 
         $data = DataAbsenPerijinan::select('employee_atribut.employee_name', 'employee_atribut.department_name','employee_atribut.sub_dept_name', 'employee_atribut.nik', 'data_absen_perijinan.*')
             ->leftJoin('employee_atribut', 'data_absen_perijinan.enroll_id', '=', 'employee_atribut.enroll_id')
-            ->where('data_absen_perijinan.nomor_form_perizinan', $nomorForm)
+            ->where('data_absen_perijinan.uuid', $uuid)
             ->first();
 
         if (!$data) {
@@ -2130,14 +2130,14 @@ class CutiKaryawanController extends AdminBaseController
     public function ajax_dataabsenperizinan(Request $request)
     {
         $email = Auth::guard('admin')->user()->email;
-        $status = $request->input('is_verifikasi');
+        $status = $request->input('is_verifikasi_pengajuan_admin');
         $search = $request->input('search.value');
 
         // Query dasar
         $query = DataAbsenPerijinan::select('employee_atribut.employee_name', 'employee_atribut.nik', 'data_absen_perijinan.*')
             ->leftJoin('employee_atribut', 'data_absen_perijinan.enroll_id', '=', 'employee_atribut.enroll_id')
             ->where('data_absen_perijinan.operator', '=', $email)
-            ->where('data_absen_perijinan.is_verifikasi', '=', $status);
+            ->where('data_absen_perijinan.is_verifikasi_pengajuan_admin', '=', $status);
 
         // Jika ada pencarian
         if (!empty($search)) {
@@ -2172,7 +2172,7 @@ class CutiKaryawanController extends AdminBaseController
 
         // Mendapatkan total data dan data yang difilter
         $totalData = DataAbsenPerijinan::where('operator', $email)
-                                        ->where('is_verifikasi', $status)
+                                        ->where('is_verifikasi_pengajuan_admin', $status)
                                         ->count();
 
         $totalFiltered = $totalData;
@@ -2209,5 +2209,13 @@ class CutiKaryawanController extends AdminBaseController
         ]);
     }
 
+
+    public function approve_hr_perizinan_menu(Request $request)
+    {
+        $loggedAdmin = Auth::guard('admin')->user();
+        DataAbsenPerijinan::where('uuid',request()->uuid)->update([
+            'is_verifikasi_pengajuan_admin' => 1
+        ]);
+    }
 
 }

@@ -26,6 +26,7 @@ class DataAbsenPerijinan extends \Eloquent
         'updated_at',
         'deleted_at',
         'is_verifikasi',
+        'is_verifikasi_pengajuan_admin',
         'verifikasi_by',
     ];
     protected $guarded = [''];

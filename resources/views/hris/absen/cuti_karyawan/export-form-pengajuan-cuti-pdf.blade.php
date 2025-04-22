@@ -114,7 +114,7 @@
             <tr>
                 <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">Nomor Form</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top; text-transform: uppercase;"> {{ $data->is_verifikasi === 1 ? $data->nomor_form_perizinan : "-" }}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top; text-transform: uppercase;"> {{ $data->is_verifikasi_pengajuan_admin === 1 ? $data->nomor_form_perizinan : "-" }}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
