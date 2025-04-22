@@ -111,7 +111,7 @@
             <tr>
                 <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">Jenis Perijinan</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top; text-transform: uppercase;"> {{ $data->kode_absen_ijin }}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top; text-transform: uppercase;"> {{ $data->nama_absen_ijin }}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
@@ -133,7 +133,7 @@
             <tr>
                 <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">Mulai</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top; text-transform: uppercase;"> {{ $data->time_mulai_ijin  }}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top; text-transform: uppercase;"> {{ \Carbon\Carbon::parse($data->tanggal_perizinan)->translatedFormat('d F Y') }} {{ $data->time_mulai_ijin  }}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
@@ -144,7 +144,7 @@
             <tr>
                 <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">Sampai</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top; text-transform: uppercase;"> {{ $data->time_akhir_ijin }}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top; text-transform: uppercase;">{{ \Carbon\Carbon::parse($data->tanggal_perizinan)->translatedFormat('d F Y') }} {{ $data->time_akhir_ijin }}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
@@ -170,7 +170,7 @@
         <thead>
             <tr>
                 <td width="21%" style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; border-top:0px;" >Dibuat</td>
-                <td width="21%" style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; border-top:0px;">Diketahui</td>
+                <td width="21%" style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; border-top:0px;">Disetujui</td>
                 <td width="21%" style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; border-top:0px;">Disetujui</td>
                 <td width="21%" style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; border-top:0px;">Diketahui</td>
             </tr>
@@ -182,9 +182,9 @@
             </tr>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; text-transform: uppercase;">{{$data->employee_name}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; text-transform: uppercase;"></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; text-transform: uppercase;"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; text-transform: uppercase;">HR-GA</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; text-transform: uppercase;">Manager</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; text-transform: uppercase;">General Affair</td>
             </tr>
         </thead>
     </table>

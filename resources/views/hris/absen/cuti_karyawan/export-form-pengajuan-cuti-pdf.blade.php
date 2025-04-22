@@ -137,12 +137,25 @@
                       vertical-align: bottom;
                     ">
                   <span class="checkbox"><span style="position: absolute; top: -10; left: -2px;">✔</span></span>
-                  <span style="vertical-align: middle; margin-left: 6px;">{{$data->kode_absen_ijin}} <span>{{" "}}</span> ({{ $data->absen_alasan }})</span>
+                  <span style="vertical-align: middle; margin-left: 6px;">{{$data->nama_absen_ijin}} </span>
                 </td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
               </tr>
+
+            <tr>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top; height:9px;" colspan="6"></td>
+            </tr>
+              <tr>
+                <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">Keterengan</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top; text-transform: uppercase;"> {{ $data->absen_alasan}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top"></td>
+            </tr>
+
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;vertical-align:top; height:9px;" colspan="6"></td>
             </tr>
@@ -178,7 +191,7 @@
         <thead>
             <tr>
                 <td width="21%" style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; border-top:0px;" >Dibuat</td>
-                <td width="21%" style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; border-top:0px;">Diketahui</td>
+                <td width="21%" style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; border-top:0px;">Disetujui</td>
                 <td width="21%" style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; border-top:0px;">Disetujui</td>
                 <td width="21%" style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; border-top:0px;">Diketahui</td>
             </tr>
@@ -190,9 +203,9 @@
             </tr>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; text-transform: uppercase;">{{$data->employee_name}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; text-transform: uppercase;"></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; text-transform: uppercase;"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; text-transform: uppercase;">HR-GA</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; text-transform: uppercase;">Manager</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; text-transform: uppercase;">General Affair</td>
             </tr>
         </thead>
     </table>

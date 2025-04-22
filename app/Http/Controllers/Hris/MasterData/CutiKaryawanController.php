@@ -699,8 +699,9 @@ class CutiKaryawanController extends AdminBaseController
     public function export_form_pengajuan_cuti_pdf(Request $request) {
         $uuid = $request->input('uuid');
 
-        $data = DataAbsenPerijinan::select('employee_atribut.employee_name', 'employee_atribut.department_name','employee_atribut.sub_dept_name', 'employee_atribut.nik', 'data_absen_perijinan.*')
+        $data = DataAbsenPerijinan::select('employee_atribut.employee_name', 'employee_atribut.department_name','employee_atribut.sub_dept_name', 'employee_atribut.nik', 'data_absen_perijinan.*', 'ref_absen_ijin.nama_absen_ijin')
             ->leftJoin('employee_atribut', 'data_absen_perijinan.enroll_id', '=', 'employee_atribut.enroll_id')
+            ->leftJoin('ref_absen_ijin', 'data_absen_perijinan.kode_absen_ijin', '=', 'ref_absen_ijin.kode_absen_ijin')
             ->where('data_absen_perijinan.uuid', $uuid)
             ->first();
 
@@ -711,7 +712,7 @@ class CutiKaryawanController extends AdminBaseController
         $fileName = 'Form Pengajuan Cuti ' . date('Y-m-d') . ' ' . rand(10, 1000000);
         $pdf = PDF::loadView('hris.absen.cuti_karyawan.export-form-pengajuan-cuti-pdf', [
             'data' => $data
-        ])->setPaper('F4', 'portrait');
+        ])->setPaper('A4', 'portrait');
 
         return $pdf->stream($fileName . '.pdf', ['Attachment' => false]);
     }
@@ -719,10 +720,12 @@ class CutiKaryawanController extends AdminBaseController
     public function export_form_pengajuan_izin_pdf(Request $request) {
         $uuid = $request->input('uuid');
 
-        $data = DataAbsenPerijinan::select('employee_atribut.employee_name', 'employee_atribut.department_name','employee_atribut.sub_dept_name', 'employee_atribut.nik', 'data_absen_perijinan.*')
+        $data = DataAbsenPerijinan::select('employee_atribut.employee_name', 'employee_atribut.department_name','employee_atribut.sub_dept_name', 'employee_atribut.nik', 'data_absen_perijinan.*', 'ref_absen_ijin.nama_absen_ijin')
             ->leftJoin('employee_atribut', 'data_absen_perijinan.enroll_id', '=', 'employee_atribut.enroll_id')
+            ->leftJoin('ref_absen_ijin', 'data_absen_perijinan.kode_absen_ijin', '=', 'ref_absen_ijin.kode_absen_ijin')
             ->where('data_absen_perijinan.uuid', $uuid)
             ->first();
+
 
         if (!$data) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
@@ -731,7 +734,7 @@ class CutiKaryawanController extends AdminBaseController
         $fileName = 'Form Pengajuan Cuti ' . date('Y-m-d') . ' ' . rand(10, 1000000);
         $pdf = PDF::loadView('hris.absen.cuti_karyawan.export-form-pengajuan-izin-pdf', [
             'data' => $data
-        ])->setPaper('F4', 'portrait');
+        ])->setPaper('A4', 'portrait');
 
         return $pdf->stream($fileName . '.pdf', ['Attachment' => false]);
     }
