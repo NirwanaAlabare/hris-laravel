@@ -258,7 +258,7 @@ h1 {
                                         <label class="form-label">TGL BERLAKU : </label>
                                         <div class="input-group">
                                             {{-- <input  class="form-control create-control" id="tanggal_berlaku" name="tanggal_berlaku" type="date"> --}}
-                                            <input type="text" id="tanggal_berlaku" name="tanggal_berlaku" class="form-control create-control datepicker">
+                                            <input type="text" id="tanggal_berlaku" name="tanggal_berlaku" class="form-control create-control fc-datepicker">
 
                                         </div>
                                     </div>
@@ -267,7 +267,7 @@ h1 {
                                     <div class="form-group">
                                         <label class="form-label">TGL KADALUARSA : </label>
                                         <div class="input-group">
-                                            <input  class="form-control create-control datepicker" id="tanggal_kadaluarsa" name="tanggal_kadaluarsa" type="text">
+                                            <input  class="form-control create-control fc-datepicker" id="tanggal_kadaluarsa" name="tanggal_kadaluarsa" type="text">
                                         </div>
                                         <small class="error-message text-danger"></small>
                                     </div>
@@ -382,13 +382,13 @@ h1 {
 
                         <div class="form-group">
                             <label>Tanggal Berlaku</label>
-                            <input type="text" class="form-control datepicker" id="edit_tanggal_berlaku" name="tanggal_berlaku">
+                            <input type="text" class="form-control fc-datepicker" id="edit_tanggal_berlaku" name="tanggal_berlaku">
                             <small class="error-message text-danger"></small>
                         </div>
 
                         <div class="form-group">
                             <label>Tanggal Kadaluarsa</label>
-                            <input type="text" class="form-control datepicker" id="edit_tanggal_kadaluarsa" name="tanggal_kadaluarsa">
+                            <input type="text" class="form-control fc-datepicker" id="edit_tanggal_kadaluarsa" name="tanggal_kadaluarsa">
                             <small class="error-message text-danger"></small>
                         </div>
 
@@ -446,11 +446,23 @@ h1 {
     <script src="{{URL::asset('assets/js/timepicker.js') }}"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
+       <!-- Datepicker js -->
+       <script src="{{URL::asset('assets/plugins/spectrum-date-picker/spectrum.js')}}"></script>
+       <script src="{{URL::asset('assets/plugins/spectrum-date-picker/jquery-ui.js')}}"></script>
+       <script src="{{URL::asset('assets/plugins/input-mask/jquery.maskedinput.js')}}"></script>
+
     <style>
     .checkbox-xl .form-check-input {
         scale: 1.5;
     }
     </style>
+     <script>
+        $('.fc-datepicker').datepicker({
+           showOtherMonths: true,
+           selectOtherMonths: true,
+           dateFormat: 'dd-mm-yy'
+       });
+   </script>
     <script>
         $(document).on('select2:open', () => {
             document.querySelector('.select2-search__field').focus();
@@ -458,15 +470,6 @@ h1 {
 
         $('.select2').select2();
 
-    </script>
-    <script>
-        $(function() {
-            $("#tanggal_berlaku, #tanggal_kadaluarsa, #edit_tanggal_berlaku, #edit_tanggal_kadaluarsa").datepicker({
-                dateFormat: "dd-mm-yy", // Format tanggal dd-mm-yyyy
-                changeMonth: true,
-                changeYear: true
-            });
-        });
     </script>
 
     <script>
@@ -487,7 +490,11 @@ h1 {
                 $(".create-control").each(function () {
                     let input = $(this);
                     let value = input.val().trim();
+
                     let fieldName = input.attr("name");
+                    if(fieldName === "tanggal_berlaku" || fieldName === "tanggal_kadaluarsa") {
+                        value = value.substr(6, 4)+'-'+value.substr(3,2)+'-'+value.substr(0,2);
+                    }
                     if (value === "" && fieldName !== "keterangan") {
                         input.siblings(".error-message").text("Field ini wajib diisi!");
                         isValid = false;
@@ -523,11 +530,6 @@ h1 {
                                 msg: "<b>Success:</b> Data berhasil di simpan.",
                                 type: "success"
                             });
-                            // $("#form-dokumen")[0].reset();
-                            // $("#file-list").empty();
-
-                            // $("#ajax-modal-tambah").modal('hide');
-                            // $("#datatable").DataTable().ajax.reload();
                             setTimeout(function myFunction() {
                                 undo();
                             }, 2000);
@@ -650,11 +652,7 @@ h1 {
 
         $(document).on("click", ".edit-btn", function () {
             let id = $(this).data("id");
-            $("#edit_tanggal_berlaku, #edit_tanggal_kadaluarsa").datepicker({
-                dateFormat: "dd-mm-yy", // Format tanggal dd-mm-yyyy
-                changeMonth: true,
-                changeYear: true
-            });
+
             $.ajax({
                 url: '{{ route('dokumen_legal.get_edit_dokumen_legal', '') }}/' + id, // Route untuk mendapatkan data
                 type: "GET",
@@ -666,8 +664,8 @@ h1 {
                         $("#edit_jenis_dokumen").val(data.jenis_dokumen);
                         $("#edit_kode_dokumen").val(data.kode_dokumen);
                         $("#edit_nama_dokumen").val(data.nama_dokumen);
-                        $("#edit_tanggal_berlaku").val(formatTanggal(data.tanggal_berlaku));
-                        $("#edit_tanggal_kadaluarsa").val(formatTanggal(data.tanggal_kadaluarsa));
+                        $("#edit_tanggal_berlaku").val(data.tanggal_berlaku.substr(8,2)+'-'+data.tanggal_berlaku.substr(5,2)+'-'+data.tanggal_berlaku.substr(0,4));
+                        $("#edit_tanggal_kadaluarsa").val(data.tanggal_kadaluarsa.substr(8,2)+'-'+data.tanggal_kadaluarsa.substr(5,2)+'-'+data.tanggal_kadaluarsa.substr(0,4));
                         $("#edit_penanggung_jawab").val(data.penanggung_jawab);
                         $("#edit_penanggung_jawab_email").val(data.penanggung_jawab_email);
                         $("#edit_revisi_ke").val(data.revisi_ke);
@@ -755,21 +753,20 @@ h1 {
             let jenisDokumen = $("#edit_jenis_dokumen").val().trim();
             let kodeDokumen = $("#edit_kode_dokumen").val().trim();
             let namaDokumen = $("#edit_nama_dokumen").val().trim();
-            let tanggalBerlaku = $("#edit_tanggal_berlaku").val().trim();
-            let tanggalKadaluarsa = $("#edit_tanggal_kadaluarsa").val().trim();
             let penanggungJawab = $("#edit_penanggung_jawab").val().trim();
             let penanggungJawabEmail = $("#edit_penanggung_jawab_email").val().trim();
             let revisiKe = $("#edit_revisi_ke").val().trim();
             let dokumenFile = $("#edit-file-upload")[0].files[0]; // Ambil file jika ada
 
-            console.log(['jenisDokumen',jenisDokumen]);
-            console.log(['kodeDokumen',kodeDokumen]);
-            console.log(['namaDokumen',namaDokumen]);
-            console.log(['tanggalBerlaku',tanggalBerlaku]);
-            console.log(['tanggalKadaluarsa',tanggalKadaluarsa]);
-            console.log(['penanggungJawab',penanggungJawab]);
-            console.log(['revisiKe',revisiKe]);
-            console.log(['dokumenFile',dokumenFile]);
+            let rawTanggalBerlaku = $("#edit_tanggal_berlaku").val().trim();
+            let rawTanggalKadaluarsa = $("#edit_tanggal_kadaluarsa").val().trim();
+
+            let tanggalBerlaku = rawTanggalBerlaku ? rawTanggalBerlaku.substr(6, 4) + '-' + rawTanggalBerlaku.substr(3, 2) + '-' + rawTanggalBerlaku.substr(0, 2) : "";
+            let tanggalKadaluarsa = rawTanggalKadaluarsa ? rawTanggalKadaluarsa.substr(6, 4) + '-' + rawTanggalKadaluarsa.substr(3, 2) + '-' + rawTanggalKadaluarsa.substr(0, 2) : "";
+
+            // Setelah validasi dan sebelum AJAX:
+            formData.set("tanggal_berlaku", tanggalBerlaku);
+            formData.set("tanggal_kadaluarsa", tanggalKadaluarsa);
 
             // Reset error messages
             $(".error-message").text("");
