@@ -809,7 +809,7 @@ h1 {
             if (dokumenFile) {
                 let allowedExtensions = ["pdf", "doc", "docx", "xls", "xlsx", "jpg", "png"];
                 let fileExtension = dokumenFile.name.split(".").pop().toLowerCase();
-                let maxSize = 10 * 1024 * 1024; // 10MB
+                let maxSize = 50 * 1024 * 1024; // 10MB
 
 
                 if (!allowedExtensions.includes(fileExtension)) {
@@ -818,7 +818,7 @@ h1 {
                 }
 
                 if (dokumenFile.size > maxSize) {
-                    $("#edit-file-upload").siblings(".error-message").text("Ukuran file maksimal 10MB!");
+                    $("#edit-file-upload").siblings(".error-message").text("Ukuran file maksimal 50MB!");
                     isValid = false;
                 }
             }
