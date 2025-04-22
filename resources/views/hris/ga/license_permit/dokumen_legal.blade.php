@@ -818,7 +818,7 @@ h1 {
                 }
 
                 if (dokumenFile.size > maxSize) {
-                    $("#edit-file-upload").siblings(".error-message").text("Ukuran file maksimal 2MB!");
+                    $("#edit-file-upload").siblings(".error-message").text("Ukuran file maksimal 10MB!");
                     isValid = false;
                 }
             }
