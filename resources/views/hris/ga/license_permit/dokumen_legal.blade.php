@@ -809,7 +809,8 @@ h1 {
             if (dokumenFile) {
                 let allowedExtensions = ["pdf", "doc", "docx", "xls", "xlsx", "jpg", "png"];
                 let fileExtension = dokumenFile.name.split(".").pop().toLowerCase();
-                let maxSize = 2 * 1024 * 1024; // 2MB
+                let maxSize = 10 * 1024 * 1024; // 10MB
+
 
                 if (!allowedExtensions.includes(fileExtension)) {
                     $("#edit-file-upload").siblings(".error-message").text("Format file tidak valid! (pdf, doc, docx, xls, xlsx, jpg, png)");
