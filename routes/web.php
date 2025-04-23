@@ -12,6 +12,7 @@
 */
 
 use App\Events\TestEvent;
+use Illuminate\Support\Facades\Storage;
 Route::get('/base64', function(){
     $image = public_path('installer/img/pattern.png');;
     $img = \Image::make($image);
@@ -47,12 +48,15 @@ Route::group(['middleware' => ['auth.employees'],'namespace' => 'Front'], functi
     Route::resource('dashboard','DashboardController');
 });
 
+
 # Admin Login
 Route::group(['namespace' => 'Admin'], function()
 {
     Route::get('/',['as'=>'admin.getlogin','uses'=>'AdminLoginController@index']);
     Route::get('logout',['as'=>'admin.logout','uses'=> 'AdminLoginController@logout']);
     Route::post('login',['as'=>'admin.login','uses'=> 'AdminLoginController@ajaxAdminLogin']);
+
+
 });
 Route::group(['middleware' => [ 'lock'], 'prefix' => 'hris','namespace' => 'Hris'], function()
 {
@@ -71,6 +75,16 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('hrd/export_sp_kehadiran_karyawan',['as'=>'hris.hrd.export_sp_kehadiran_karyawan','uses'=>'HRDController@export_sp_kehadiran_karyawan']);
     Route::get('hrd/export_pdf_sk_kerja',['as'=>'hris.hrd.export_pdf_sk_kerja','uses'=>'HRDController@export_pdf_sk_kerja']);
     Route::get('hrd/export_pdf_paklaring',['as'=>'hris.hrd.export_pdf_paklaring','uses'=>'HRDController@export_pdf_paklaring']);
+
+    Route::get('hrd/download-foto/{filename}', function ($filename) {
+        $filePath = 'app/public/images/' . $filename; // NOTE: ini tidak ideal, solusi sementara
+
+        if (!Storage::disk('public')->exists($filePath)) {
+            return response()->json(['error' => 'File not found.'], 404);
+        }
+
+        return Storage::disk('public')->download($filePath);
+    });
 
 
     // MUTASI KARYAWAN

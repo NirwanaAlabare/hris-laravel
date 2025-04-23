@@ -1144,21 +1144,25 @@
     </script>
     <script type="text/javascript">
 
-        $('#btndownloadFoto').click(function(e){
-            let enroll_id=$('#enroll_id').val();
-            let employee_name=$('#employee_name').val();
-            let poto_profil=enroll_id+' '+employee_name+'.png';
-             // Buat URL lengkap ke file gambar
-            let imageUrl = '{{ asset("/storage/app/public/images") }}/' + poto_profil;
+$('#btndownloadFoto').click(function(e){
+        e.preventDefault();
 
-            // Buat elemen <a> untuk download
-            let link = document.createElement('a');
-            link.href = imageUrl;
-            link.download = poto_profil; // Nama file saat diunduh
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        });
+        let nik = $('#nik').val();
+        let employee_name = $('#employee_name').val();
+        let poto_profil = nik + ' ' + employee_name + '.png';
+
+        // Encode nama file
+        let encodedFilename = encodeURIComponent(poto_profil);
+
+        // URL untuk route download
+        let downloadUrl = '{{ url('hris/hrd/download-foto') }}/' + encodedFilename;
+
+        // Redirect untuk memulai download
+        window.location.href = downloadUrl;
+    });
+
+
+
 
         $('#btndownloadid').click(function(e){
             if($('#enroll_id').val()==''){
@@ -1994,8 +1998,8 @@
                 $('#created_at').val(data['created_at']);
                 $('#updated_at').val(data['updated_at']);
                 let poto_profil=data['nik']+' '+data['employee_name']+'.png';
-                $('#profile_photo').empty().append('<img src="{{asset("/storage/app/public/images")}}'+'/'+poto_profil+'" height="120px">');
-                $('#image_preview').empty().append('<img src="{{asset("/storage/app/public/images")}}'+'/'+poto_profil+'" alt="" class="user mt-3">');
+                $('#profile_photo').empty().append('<img src="http://10.10.5.111/hris/public/storage/app/public/images'+'/'+poto_profil+'" height="120px">');
+                $('#image_preview').empty().append('<img src="http://10.10.5.111/hris/public/storage/app/public/images'+'/'+poto_profil+'" alt="" class="user mt-3">');
              });
 
         });
