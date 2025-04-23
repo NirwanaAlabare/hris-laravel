@@ -627,7 +627,7 @@ h1 {
                                 <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
                                 <div class="flex-grow-1">
                                     <!-- Textarea -->
-                                    <textarea class="form-control mb-1" id="keterangan_reject_modal" name="keterangan_reject_modal" rows="2" placeholder="Keterangan Reject"></textarea>
+                                    <textarea class="form-control mb-1" id="keterangan_reject_modal" name="keterangan_reject_modal" rows="2" placeholder="Catatan Reject"></textarea>
                                     <!-- Error message -->
                                     <div id="keterangan_error" class="text-danger" style="font-size: 14px; display: none;">Catatan wajib diisi</div>
                                 </div>
