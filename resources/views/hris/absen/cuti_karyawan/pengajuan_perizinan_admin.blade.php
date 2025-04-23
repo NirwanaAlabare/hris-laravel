@@ -214,6 +214,7 @@ h1 {
                                         <ul class="tab_list">
                                             <li class="text-sm" id="tab-waiting">Menunggu Verifikasi</li>
                                             <li class="text-sm" id="tab-verifikasi">Verifikasi</li>
+                                            <li class="text-sm" id="tab-reject">Reject</li>
                                         </ul>
                                         <div class="content_wrapper">
                                             <!-- Tab Waiting -->
@@ -226,7 +227,7 @@ h1 {
                                                                 <th scope="col">Nomor Form Perizinan</th>
                                                                 <th scope="col">NIP</th>
                                                                 <th scope="col">Nama Karyawan</th>
-                                                                <th scope="col">Kode Absen Ijin</th>
+                                                                <th scope="col">Nama Absen Ijin</th>
                                                                 <th scope="col">Alasan Absen</th>
                                                                 <th scope="col">Aksi</th>
                                                             </tr>
@@ -247,9 +248,29 @@ h1 {
                                                                 <th scope="col">Nomor Form Perizinan</th>
                                                                 <th scope="col">NIP</th>
                                                                 <th scope="col">Nama Karyawan</th>
-                                                                <th scope="col">Kode Absen Ijin</th>
+                                                                <th scope="col">Nama Absen Ijin</th>
                                                                 <th scope="col">Alasan Absen</th>
                                                                 <th scope="col">Aksi</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <!-- Tab Reject -->
+                                            <div class="tab_content" id="tab-content-reject">
+                                                <div class="table-responsive">
+                                                    <table id="datatable-ajax-crud-reject" class="table table-sm table-striped table-hover table-bordered w-100">
+                                                        <thead>
+                                                            <tr class="text-center">
+                                                                <th scope="col">Tanggal Perizinan</th>
+                                                                <th scope="col">Nomor Form Perizinan</th>
+                                                                <th scope="col">NIP</th>
+                                                                <th scope="col">Nama Karyawan</th>
+                                                                <th scope="col">Nama Absen Ijin</th>
+                                                                <th scope="col">Alasan Absen</th>
+                                                                <th scope="col">Keterangan Reject</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -549,6 +570,12 @@ h1 {
     <div class="modal fade" id="ajax-modal-approve-pengajuan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm modal-dialog-scrollable" style="max-width: 45%;">
             <div class="modal-content">
+                <div class="modal-header bg-primary p-2">
+                    <h4 class="modal-title pl-2 font-weight-bold" id="title-modal-list">Approve / Reject Pengajuan Ijin</h4>
+                    <button type="button" id="btn-close-modal-approve-pengajuan" class="close text-white ml-1"  aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
+                        <i class="fa fa-remove"></i>
+                    </button>
+                </div>
                 <div style="height: auto; overflow-y: auto; overflow-x: auto;">
                     <div class="row p-5 d-flex justify-content-between">
                         <input type="hidden" id="uuid_modal" value="" />
@@ -595,9 +622,19 @@ h1 {
                                 <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
                                 <p class="mb-0" id="nomor_form_perijinan_modal" style="font-size: 16px; text-decoration: underline; font-weight: bold"></p>
                             </div>
+                            <div class="d-flex mb-2">
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Catatan Reject</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
+                                <div class="flex-grow-1">
+                                    <!-- Textarea -->
+                                    <textarea class="form-control mb-1" id="keterangan_reject_modal" name="keterangan_reject_modal" rows="2" placeholder="Keterangan Reject"></textarea>
+                                    <!-- Error message -->
+                                    <div id="keterangan_error" class="text-danger" style="font-size: 14px; display: none;">Catatan wajib diisi</div>
+                                </div>
+                            </div>
                             <div class="d-flex justify-content-center mb-2 mt-5 col-gap-3">
                                 <button type="button" id="btn-approve-pengajuan" class="btn btn-success w-25" style="margin-right: 10px;" data-toggle="tooltip" title="Approve"><i class="fa fa-check" aria-hidden="true"></i> Approve</button>
-                                <button type="button" id="btn-reject-pengajuan" class="btn btn-danger w-25" data-toggle="tooltip" title="Cancel"> Cancel</button>
+                                <button type="button" id="btn-reject-pengajuan" class="btn btn-danger w-25" data-toggle="tooltip" title="Cancel"><i class="fa fa-times-rectangle" aria-hidden="true"></i> Reject</button>
                             </div>
                         </div>
                     </div>
@@ -605,6 +642,9 @@ h1 {
             </div>
         </div>
     </div>
+
+
+
 
 
 @endsection
@@ -873,9 +913,6 @@ h1 {
 
         }
 
-
-
-
         function setToNull() {
             $('#tanggal_perijinan').val(null).prop('disabled', false);  // Format tanggal dan disable
             $('#diajukanOlehID').val(null).trigger('change').prop('disabled', false);  // Pilih karyawan dan disable
@@ -939,7 +976,7 @@ h1 {
                     },
                     { data: 'nik' },
                     { data: 'employee_name' },
-                    { data: 'kode_absen_ijin' },
+                    { data: 'nama_absen_ijin' },
                     { data: 'absen_alasan' },
                     {
                         data: null,
@@ -1005,7 +1042,7 @@ h1 {
                     { data: 'nomor_form_perizinan', width: '18%' },
                     { data: 'nik', width: '10%' },
                     { data: 'employee_name', width: '20%' },
-                    { data: 'kode_absen_ijin', width: '10%' },
+                    { data: 'nama_absen_ijin', width: '10%' },
                     { data: 'absen_alasan', width: '20%' },
                     {
                         data: null,
@@ -1042,6 +1079,38 @@ h1 {
                                             <i class="fa fa-file-pdf-o"></i>
                                         </a>`;
                                 }
+                        }
+                    }
+                ]
+            });
+
+            // Table untuk Reject (is_verifikasi == 2)
+            var tableReject = $('#datatable-ajax-crud-reject').DataTable({
+                ajax: {
+                    url: '{{ route('cuti_karyawan.dataabsenperijinan.ajax_dataabsenperizinan') }}',
+                    type: "POST",
+                    data: { is_verifikasi_pengajuan_admin: 2 },  // Data untuk tab "Verifikasi"
+                },
+                processing: true,
+                serverSide: true,
+                columns: [
+                    { data: 'tanggal_perizinan', width: '6%' },
+                    { data: 'nomor_form_perizinan',
+                        render: function (data, type, row) {
+                            return '<p>-</p>';
+                    }
+                    },
+                    { data: 'nik', width: '10%' },
+                    { data: 'employee_name', width: '20%' },
+                    { data: 'nama_absen_ijin', width: '10%' },
+                    { data: 'absen_alasan', width: '20%' },
+                    {
+                        data: 'keterangan_reject',
+                        orderable: false,
+                        searchable: false,
+                        className: "text-center",
+                        render: function (data, type, row) {
+                            return `<p>${data ?? '-'}</p>`;
                         }
                     }
                 ]
@@ -1164,6 +1233,8 @@ h1 {
                     tableVerifikasi.ajax.reload();
                 } else if (target === "#tab-content-waiting") {
                     tableWaiting.ajax.reload();
+                } else if (target === "#tab-content-reject") {
+                    tableReject.ajax.reload();
                 }
             });
 
@@ -1212,6 +1283,7 @@ h1 {
                         $('#nama_karyawan_modal').text(null);
                         tableVerifikasi.ajax.reload();
                         tableWaiting.ajax.reload();
+                        tableReject.ajax.reload();
                     },
                     error: function(res){
                         swal("", "approve perizinan gagal", "error");
@@ -1221,6 +1293,60 @@ h1 {
 
 
             $('body').on('click', '#btn-reject-pengajuan', function (event) {
+                var keterangan = $('#keterangan_reject_modal').val().trim();
+
+                if (keterangan === '') {
+                    $('#keterangan_reject_modal').addClass('is-invalid');
+                    $('#keterangan_error').show();
+                    return;
+                } else {
+                    $('#keterangan_reject_modal').removeClass('is-invalid');
+                    $('#keterangan_error').hide();
+                }
+
+                $('#ajax-modal-approve-pengajuan').modal('hide');
+                var uuid = $('#uuid_modal').val();
+                $.ajax({
+                    type:"POST",
+                    url: "{{route('cuti_karyawan.dataabsenperijinan.reject_hr_perizinan_menu')}}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        uuid: uuid,
+                        keterangan: keterangan
+                    },
+                    success: function(res){
+                        swal("", "Reject perizinan berhasil", "success");
+                        $('#uuid_modal').val(null);
+                        $('#uuid_master_modal').val(null);
+                        $('#enroll_id_modal').val(null);
+
+                        $('#tanggal_perijinan_modal').text(null).prop('disabled', true);
+                        $('#department_modal').text(null).prop('disabled', true);
+                        $('#bagian_modal').text(null).prop('disabled', true);
+                        $('#nomor_form_perijinan_modal').text(null);
+
+                        $('#keterangan_modal').text(null);
+                        $('#kode_absen_ijin_modal').text(null);
+                        $('#nik_karyawan_modal').text(null);
+                        $('#nama_karyawan_modal').text(null);
+                        $('#keterangan_reject_modal').val('').removeClass('is-invalid');
+                        $('#keterangan_reject_modal').val(null);
+                        $('#keterangan_error').hide();
+
+                        tableVerifikasi.ajax.reload();
+                        tableWaiting.ajax.reload();
+                        tableReject.ajax.reload();
+                    },
+                    error: function(res){
+                        swal("", "Reject perizinan gagal", "error");
+                    }
+                });
+            });
+
+
+            $('body').on('click', '#btn-close-modal-approve-pengajuan', function (event) {
                 $('#ajax-modal-approve-pengajuan').modal('hide');
                 $('#uuid_modal').val(null);
                 $('#uuid_master_modal').val(null);
@@ -1232,12 +1358,16 @@ h1 {
                 $('#nomor_form_perijinan_modal').text(null);
 
                 $('#keterangan_modal').text(null);
+                $('#keterangan_reject_modal').val(null).removeClass('is-invalid');
                 $('#kode_absen_ijin_modal').text(null);
                 $('#nik_karyawan_modal').text(null);
                 $('#nama_karyawan_modal').text(null);
                 tableVerifikasi.ajax.reload();
                 tableWaiting.ajax.reload();
+                tableReject.ajax.reload();
             });
+
+
         });
     </script>
 

@@ -33,7 +33,7 @@
                 <td width="100px" style="vertical-align: middle; text-align: center;border: 1px solid;" colspan="2" rowspan="4">
                     <img height="60" src="{{ public_path('assets/images/brand/nirwana logo.jpg') }}" alt="">
                 </td>
-                <td style="vertical-align: middle; font-size: 12pt; text-align: center; font-weight: 800;border: 1px solid;" colspan="8" rowspan="4">FORM PERMOHONAN CUTI</td>
+                <td style="vertical-align: middle; font-size: 12pt; text-align: center; font-weight: 800;border: 1px solid;" colspan="8" rowspan="4">FORM PERMOHONAN PERIZINAN</td>
                 <td colspan="2" class="border-left" style="border: 1px solid; font-size: 9pt;">Kode Dokumen</td>
                 <td colspan="3" class="border-right" style="border: 1px solid; font-size: 9pt;">: F.16.HR.NAG.P-04.F-01.01</td>
             </tr>

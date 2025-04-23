@@ -27,6 +27,8 @@ class DataAbsenPerijinan extends \Eloquent
         'deleted_at',
         'is_verifikasi',
         'is_verifikasi_pengajuan_admin',
+        'diajukan_oleh',
+        'keterangan_reject',
         'verifikasi_by',
     ];
     protected $guarded = [''];
@@ -56,7 +58,10 @@ class DataAbsenPerijinan extends \Eloquent
         'operator',
         'created_at',
         'updated_at',
-        'deleted_at'
+        'deleted_at',
+        'is_verifikasi_pengajuan_admin',
+        'diajukan_oleh',
+        'keterangan_reject',
     ];
 
     protected $appends = [];

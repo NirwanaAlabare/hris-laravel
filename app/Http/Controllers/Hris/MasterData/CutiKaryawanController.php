@@ -2129,16 +2129,15 @@ class CutiKaryawanController extends AdminBaseController
         $search = $request->input('search.value');
 
         // Query dasar
-        $query = DataAbsenPerijinan::select('employee_atribut.employee_name', 'employee_atribut.nik', 'data_absen_perijinan.*')
+        $query = DataAbsenPerijinan::select('employee_atribut.employee_name', 'employee_atribut.nik', 'data_absen_perijinan.*','ref_absen_ijin.nama_absen_ijin')
             ->leftJoin('employee_atribut', 'data_absen_perijinan.enroll_id', '=', 'employee_atribut.enroll_id')
+            ->leftJoin('ref_absen_ijin', 'data_absen_perijinan.kode_absen_ijin', '=', 'ref_absen_ijin.kode_absen_ijin')
             ->where('data_absen_perijinan.is_verifikasi_pengajuan_admin', '=', $status)
             ->orderBy('data_absen_perijinan.tanggal_perizinan', 'desc');
 
-
         if (!in_array($email, ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli', 'HR', 'ersa@ptnag.com', 'kiki@ptnag.com', 'hrd'])) {
-            $query->where('data_absen_perijinan.operator', $email);
+            $query->where('data_absen_perijinan.diajukan_oleh', $email);
         }
-
         // Jika ada pencarian
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {
@@ -2148,8 +2147,9 @@ class CutiKaryawanController extends AdminBaseController
                   ->orWhere('data_absen_perijinan.enroll_id', 'LIKE', "%{$search}%")
                   ->orWhere('employee_atribut.nik', 'LIKE', "%{$search}%")
                   ->orWhere('employee_atribut.employee_name', 'LIKE', "%{$search}%")
-                  ->orWhere('data_absen_perijinan.kode_absen_ijin', 'LIKE', "%{$search}%")
-                  ->orWhere('data_absen_perijinan.absen_alasan', 'LIKE', "%{$search}%");
+                  ->orWhere('data_absen_perijinan.nama_absen_ijin', 'LIKE', "%{$search}%")
+                  ->orWhere('data_absen_perijinan.absen_alasan', 'LIKE', "%{$search}%")
+                  ->orWhere('data_absen_perijinan.keterangan_reject', 'LIKE', "%{$search}%");
             });
         }
 
@@ -2169,13 +2169,11 @@ class CutiKaryawanController extends AdminBaseController
 
         // Mendapatkan data
         $data = $query->get();
-
         // Mendapatkan total data dan data yang difilter
-        $totalData = DataAbsenPerijinan::where('is_verifikasi_pengajuan_admin', $status)
-                                        ->get();
+        $totalData = DataAbsenPerijinan::where('is_verifikasi_pengajuan_admin', $status);
 
         if (!in_array($email, ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli', 'HR', 'ersa@ptnag.com', 'kiki@ptnag.com', 'hrd'])) {
-            $totalData->where('operator', $email);
+            $totalData->where('diajukan_oleh', $email);
         }
         $total = $totalData->count();
 
@@ -2191,6 +2189,7 @@ class CutiKaryawanController extends AdminBaseController
                 'nik' => $q->nik,
                 'employee_name' => $q->employee_name,
                 'kode_absen_ijin' => $q->kode_absen_ijin,
+                'nama_absen_ijin' => $q->nama_absen_ijin,
                 'absen_alasan' => $q->absen_alasan,
                 'tanggal_mulai_ijin' => Carbon::parse($q->tanggal_mulai_ijin)->format('d-m-Y'),
                 'tanggal_akhir_ijin' => Carbon::parse($q->tanggal_akhir_ijin)->format('d-m-Y'),
@@ -2198,6 +2197,7 @@ class CutiKaryawanController extends AdminBaseController
                 'time_akhir_ijin' => substr($q->time_akhir_ijin, 0, 5),
                 'total_time_ijin' => $q->total_time_ijin,
                 'operator' => $q->operator,
+                'keterangan_reject' => $q->keterangan_reject,
                 'created_at' => substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5),
                 'updated_at' => substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5),
             ];
@@ -2218,6 +2218,14 @@ class CutiKaryawanController extends AdminBaseController
         $loggedAdmin = Auth::guard('admin')->user();
         DataAbsenPerijinan::where('uuid',request()->uuid)->update([
             'is_verifikasi_pengajuan_admin' => 1
+        ]);
+    }
+    public function reject_hr_perizinan_menu(Request $request)
+    {
+        $loggedAdmin = Auth::guard('admin')->user();
+        DataAbsenPerijinan::where('uuid',request()->uuid)->update([
+            'is_verifikasi_pengajuan_admin' => 2,
+            'keterangan_reject' => $request->keterangan,
         ]);
     }
 
