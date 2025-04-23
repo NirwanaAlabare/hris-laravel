@@ -445,7 +445,7 @@
                                                     </div>
                                                     <div class="form-group text-center">
                                                         <a href="#" id="btnupload" class="btn btn-primary mt-3 p-1 text-sm" data-placement="bottom" data-original-title="Upload Foto"><i class="fa fa-upload mr-1"></i>Upload</a>
-                                                        <a href="#" id="btndownload" class="btn btn-secondary mt-3 p-1 text-sm" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Download Foto"><i class="fa fa-download mr-1"></i>Download</a>
+                                                        <a href="#" id="btndownloadFoto" class="btn btn-secondary mt-3 p-1 text-sm" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Download Foto"><i class="fa fa-download mr-1"></i>Download</a>
                                                         <a href="#" id="btndownloadid" class="btn btn-danger mt-3 p-1 text-sm" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a>
                                                     </div>
                                                 </div>
@@ -1127,12 +1127,39 @@
     </style>
     <script>
         $(document).ready(function() {
+            // $('#nomor_rekening_bank').on('input', function() {
+            //     $('#nama_bank').val('');
+            // });
             $('#nomor_rekening_bank').on('input', function() {
+            const currentVal = $(this).val();
+
+            if (initialNomorRekening && currentVal !== initialNomorRekening) {
+                // Jika ada perubahan dan nilai awal bukan null/kosong, reset nama_bank
                 $('#nama_bank').val('');
-            });
+            }
         });
+        });
+
+
     </script>
     <script type="text/javascript">
+
+        $('#btndownloadFoto').click(function(e){
+            let enroll_id=$('#enroll_id').val();
+            let employee_name=$('#employee_name').val();
+            let poto_profil=enroll_id+' '+employee_name+'.png';
+             // Buat URL lengkap ke file gambar
+            let imageUrl = '{{ asset("/storage/app/public/images") }}/' + poto_profil;
+
+            // Buat elemen <a> untuk download
+            let link = document.createElement('a');
+            link.href = imageUrl;
+            link.download = poto_profil; // Nama file saat diunduh
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
         $('#btndownloadid').click(function(e){
             if($('#enroll_id').val()==''){
                 alert('Pilih karyawan terlebih dahulu!');
@@ -1846,6 +1873,8 @@
 
                 var data = row.data();
 
+                let initialNomorRekening = null;
+
                 $("#datatable-ajax-crud tbody tr").removeClass('bg-cyan');
                 $(this).addClass('bg-cyan');
 
@@ -1869,6 +1898,7 @@
                 $('#pendidikan_terakhir').val(data['pendidikan_terakhir']);
                 $('#jurusan_pendidikan').val(data['jurusan_pendidikan']);
                 $("#nama_bank").val(data['nama_bank']).trigger("change");
+                initialNomorRekening = data['nomor_rekening_bank'];
                 $('#nomor_rekening_bank').val(data['nomor_rekening_bank']);
                 $('#ibu_kandung').val(data['ibu_kandung']);
                 $('#propinsi').val(data['propinsi']);
