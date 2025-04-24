@@ -2147,7 +2147,7 @@ class CutiKaryawanController extends AdminBaseController
                   ->orWhere('data_absen_perijinan.enroll_id', 'LIKE', "%{$search}%")
                   ->orWhere('employee_atribut.nik', 'LIKE', "%{$search}%")
                   ->orWhere('employee_atribut.employee_name', 'LIKE', "%{$search}%")
-                  ->orWhere('data_absen_perijinan.nama_absen_ijin', 'LIKE', "%{$search}%")
+                  ->orWhere('ref_absen_ijin.nama_absen_ijin', 'LIKE', "%{$search}%")
                   ->orWhere('data_absen_perijinan.absen_alasan', 'LIKE', "%{$search}%")
                   ->orWhere('data_absen_perijinan.keterangan_reject', 'LIKE', "%{$search}%");
             });
