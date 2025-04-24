@@ -616,9 +616,14 @@ h1 {
                                 <p class="mb-0" id="nik_karyawan_modal" style="font-size: 16px;"></p>
                             </div>
                             <div class="d-flex mb-2">
-                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Tanggal Perijinan</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Tanggal Pengajuan</p>
                                 <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
                                 <p class="mb-0" id="tanggal_perijinan_modal" style="font-size: 16px;"></p>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Tanggal Perijinan</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
+                                <p class="mb-0" id="tanggal_mulai_sampai_modal" style="font-size: 16px;"></p>
                             </div>
                             <div class="d-flex mb-2">
                                 <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Kode Absen Ijin</p>
@@ -922,37 +927,46 @@ h1 {
                 },
                 success: function(res) {
                     var data = res;
+                    console.log(data.employee_name);
                     var tanggal_periz=data.tanggal_perizinan;
                     var tanggal_mulai_ijin=null;
                     var tanggal_akhir_ijin=null;
                     var tanggal_mulai = data.tanggal_mulai_ijin;
                     var tanggal_akhir = data.tanggal_akhir_ijin;
                     var tanggal_perizinan=tanggal_periz.substr(8,2)+'-'+tanggal_periz.substr(5,2)+'-'+tanggal_periz.substr(0,4);
-                    if(tanggal_mulai!=null){
-                        tanggal_mulai_ijin=tanggal_mulai.substr(8,2)+'-'+tanggal_mulai.substr(5,2)+'-'+tanggal_mulai.substr(0,4);
-                    }
-                    if(tanggal_akhir!=null){
-                        tanggal_akhir_ijin=tanggal_akhir.substr(8,2)+'-'+tanggal_akhir.substr(5,2)+'-'+tanggal_akhir.substr(0,4);
-                    }
-
                    // Format tanggal menggunakan Moment.js
                     var createdAt = moment(data.created_at).format('D MMM YYYY H:mm');
                     var updatedAt = moment(data.updated_at).format('D MMM YYYY H:mm');
+                    var tanggal_mulai_ijin = moment(tanggal_mulai).format('D MMM YYYY');
+                    var tanggal_akhir_ijin = moment(tanggal_akhir).format('D MMM YYYY');
 
                  // Mengisi data dari response ke dalam form input
                     $('#uuid_modal').val(data.uuid);
                     $('#uuid_master_modal').val(data.uuid_master);
                     $('#enroll_id_modal').val(data.enroll_id);
 
-                    $('#tanggal_perijinan_modal').text(tanggal_perizinan).prop('disabled', true);
+                    $('#tanggal_perijinan_modal').text(moment(tanggal_periz).format('D MMM YYYY')).prop('disabled', true);
+                    $('#tanggal_mulai_sampai_modal').text(tanggal_mulai_ijin + ' - ' + tanggal_akhir_ijin).prop('disabled', true);
                     $('#department_modal').text(data.department_name).prop('disabled', true);
                     $('#bagian_modal').text(data.sub_dept_name).prop('disabled', true);
                     $('#nomor_form_perijinan_modal').text(data.nomor_form_perizinan);
 
                     $('#keterangan_modal').text(data.absen_alasan);
-                    $('#kode_absen_ijin_modal').text(data.kode_absen_ijin);
+
+
                     $('#nik_karyawan_modal').text(data.nik);
                     $('#nama_karyawan_modal').text(data.employee_name);
+                    let value = data.nama_absen_ijin ?? data.kode_absen_ijin;
+                    let nama_ijin;
+                    if (value === 'PC') {
+                        nama_ijin = 'PULANG CEPAT';
+                    } else if (value === 'DT') {
+                        nama_ijin = 'DATANG TERLAMBAT';
+                    } else {
+                        nama_ijin = value || '-';
+                    }
+                    $('#kode_absen_ijin_modal').text(nama_ijin);
+
                 }
             });
 
