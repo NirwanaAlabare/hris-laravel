@@ -945,7 +945,7 @@ class ProsesPayrollController extends AdminBaseController
         $tanggal_awal_baru = date('m/d/Y', strtotime($tanggal_awal));
         $tanggal_akhir_baru = date('m/d/Y', strtotime($tanggal_akhir));
         // $periode_payroll2 = $tanggal_awal_baru . ' - ' . $tanggal_akhir_baru;// menggunakan -
-        $periode_payroll2 = '02/26/2025 - 03/25/2025';
+        $periode_payroll2 = '03/26/2025 - 04/25/2025';
         //update tanggal resign variable
         list($year, $month) = explode('-', $periode_payroll);
 
