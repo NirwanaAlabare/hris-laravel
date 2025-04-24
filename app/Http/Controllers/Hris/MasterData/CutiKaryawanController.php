@@ -111,8 +111,9 @@ class CutiKaryawanController extends AdminBaseController
         $query =  RefAbsenIjin::selectRaw('kode_absen_ijin,
                                            concat(kode_absen_ijin," - "
                                                   ,nama_absen_ijin) kode_nama_absen_ijin')
-                                 ->orderby('nama_absen_ijin', 'asc')
-                                 ->get();
+                                ->whereNotIn('kode_absen_ijin', ['CH', 'CBD', 'PP', 'CB'])
+                                ->orderby('nama_absen_ijin', 'asc')
+                                ->get();
 
         return $query;
 
