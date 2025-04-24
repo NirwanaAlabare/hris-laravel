@@ -1571,8 +1571,8 @@ h1 {
                                         success: function(res){
                                             if(res == 0){
                                                 notif({
-                                                    msg: "<b>Warning:</b> Karyawan telah masuk pada tanggal tersebut.",
-                                                    type: "warning"
+                                                    msg: "<b>Warning:</b> Karyawan telah masuk pada tanggal tersebut/Tidak ada jadwal.",
+                                                    type: "error"
                                                 });
                                                 $("#btn-save-izin").prop("disabled", false);
                                                 $("#btn-save-iks").prop("disabled", false);
