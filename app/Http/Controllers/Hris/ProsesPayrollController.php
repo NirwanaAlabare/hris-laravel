@@ -887,7 +887,7 @@ class ProsesPayrollController extends AdminBaseController
         $bulan_sebelum = strtotime("-1 month", $bulan_sekarang1);
         $bulan_sekarang=date('Y-m-', $bulan_sekarang1);
         $bulan_sebelum=date('Y-m-', $bulan_sebelum);
-        $tanggal_awal=$bulan_sebelum.'26';
+        $tanggal_awal=$bulan_sebelum.'22';
 
         $tanggal_akhir=$bulan_sekarang.'25';
         if ($request->has('daterange2')) {
