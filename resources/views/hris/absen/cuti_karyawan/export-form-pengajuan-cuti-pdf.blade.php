@@ -162,10 +162,10 @@
             <tr>
                 <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top" colspan="6">
                     Cuti tersebut dilakukan mulai dari <span style="width: 50px !important;"></span>
-                    <b><u>{{ \Carbon\Carbon::parse($data->tanggal_mulai_izin)->translatedFormat('d F Y') }}</u></b> <span style="width: 50px !important;"></span>
+                    <b><u>{{ \Carbon\Carbon::parse($data->tanggal_mulai_ijin)->translatedFormat('d F Y') }}</u></b> <span style="width: 50px !important;"></span>
                     sampai dengan
                     <span style="width: 50px !important;"></span>
-                    <b><u>{{ \Carbon\Carbon::parse($data->tanggal_akhir_izin)->translatedFormat('d F Y') }}</u></b>
+                    <b><u>{{ \Carbon\Carbon::parse($data->tanggal_akhir_ijin)->translatedFormat('d F Y') }}</u></b>
                     <span style="width: 50px !important;"></span>
                 </td>
 
