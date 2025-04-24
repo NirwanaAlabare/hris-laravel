@@ -2264,7 +2264,6 @@ class CutiKaryawanController extends AdminBaseController
         $email = Auth::guard('admin')->user()->email;
         $status = $request->input('is_verifikasi_pengajuan_admin');
         $search = $request->input('search.value');
-
         // Query pertama
         $query1 = DB::table('data_absen_perijinan')
             ->select(
@@ -2294,13 +2293,10 @@ class CutiKaryawanController extends AdminBaseController
         // Filter email untuk kedua query
         if (!in_array($email, ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli', 'HR', 'ersa@ptnag.com', 'kiki@ptnag.com', 'hrd'])) {
             $query1->where(function($q) use ($email) {
-                $q->where('data_absen_perijinan.diajukan_oleh', $email)
-                  ->orWhereNull('data_absen_perijinan.diajukan_oleh');
+                $q->where('data_absen_perijinan.diajukan_oleh', $email);
             });
-
             $query2->where(function($q) use ($email) {
-                $q->where('data_absen_perijinan_dtpc.diajukan_oleh', $email)
-                  ->orWhereNull('data_absen_perijinan_dtpc.diajukan_oleh');
+                $q->where('data_absen_perijinan_dtpc.diajukan_oleh', $email);
             });
         }
 
