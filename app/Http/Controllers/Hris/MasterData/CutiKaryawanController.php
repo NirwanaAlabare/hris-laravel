@@ -18,6 +18,7 @@ use App\Models\RefAbsenIjin;
 use App\Models\EntertainPengajuanTamu;
 use App\Models\EntertainPengajuanPendamping;
 use App\Models\EntertainPengajuanKeterangan;
+use App\Models\DataAbsenPerijinanDTPC;
 use App\Models\DataAbsenPerijinan;
 use App\Models\PengajuanDokumenLegal;
 use App\Models\DepartmentAll;
@@ -697,6 +698,112 @@ class CutiKaryawanController extends AdminBaseController
         return $query;
     }
 
+
+    public function cek_dtpc(Request $request)
+    {
+
+        $tanggal_perizinan = $request->tanggal_perizinan;
+        $enroll_id = $request->enroll_id;
+
+        $query =  DataAbsenPerijinanDTPC::whereRaw('
+                                    tanggal_perizinan = "'. $tanggal_perizinan . '"
+                                    and enroll_id = "'. $enroll_id . '"
+                                 ')
+                                 ->count();
+
+        return $query;
+
+    }
+
+    public function update_dtpc_menu(Request $request)
+    {
+        $loggedAdmin = Auth::guard('admin')->user();
+        $email = $loggedAdmin->email;
+        info('START UPDATE IZIN');
+        info('Update Permohonan Perizinan by ' . $email);
+        info('Nomor Form Perizinan : ' . request()->nomor_form_perizinan);
+
+        $absen = DataAbsenPerijinanDTPC::where('uuid', request()->uuid)
+        ->where('is_verifikasi_pengajuan_admin', 0)
+        ->first();
+
+        if ($absen) {
+            DataAbsenPerijinanDTPC::where('uuid',request()->uuid)->update([
+                'kode_absen_ijin' => request()->kode_absen_ijin,
+                'absen_alasan' => request()->absen_alasan,
+                'tanggal_mulai_ijin' => request()->tanggal_mulai_ijin,
+                'tanggal_akhir_ijin' => request()->tanggal_akhir_ijin,
+                'time_mulai_ijin' => request()->time_mulai_ijin,
+                'time_akhir_ijin' => request()->time_akhir_ijin,
+                'total_time_ijin' => request()->total_time_ijin,
+                'operator' => $email
+            ]);
+        }
+        else {
+            return response()->json(['message' => 'Pengajuan sudah diverifikasi atau tidak ditemukan.'], 400);
+        }
+    }
+
+    public function create_dtpc_menu(Request $request)
+    {
+
+        $loggedAdmin = Auth::guard('admin')->user();
+        $email = $loggedAdmin->email;
+
+        $uuid_master = $request->uuid;
+        $tanggal_perizinan = $request->tanggal_perizinan;
+        $nomor_form_perizinan = $request->nomor_form_perizinan;
+        $enroll_id = $request->enroll_id;
+        $nik = $request->nik;
+        $employee_name = $request->employee_name;
+        $kode_absen_ijin = $request->kode_absen_ijin;
+        $absen_alasan = $request->absen_alasan;
+        $tanggal_mulai_ijin = $request->tanggal_mulai_ijin;
+        $tanggal_akhir_ijin = $request->tanggal_akhir_ijin;
+        $time_mulai_ijin = $request->time_mulai_ijin;
+        $time_akhir_ijin = $request->time_akhir_ijin;
+        $total_time_ijin = $request->total_time_ijin;
+        $query = false;
+
+        $nomor_form_perizinan = 'DTPC/HR/' . substr($tanggal_perizinan, 2, 2) . substr($tanggal_perizinan, 5, 2) . '/';
+
+        $getlastnomorform =  DataAbsenPerijinanDTPC::selectRaw('nomor_form_perizinan')
+                                            ->whereRaw('nomor_form_perizinan like "' . $nomor_form_perizinan . '%"')
+                                            ->groupby('nomor_form_perizinan')
+                                            ->orderby('nomor_form_perizinan', 'desc')
+                                            ->first();
+
+        if($getlastnomorform == "") {
+            $nomor = "0000";
+        } else {
+            $nomor = $getlastnomorform->nomor_form_perizinan;
+        }
+
+        $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
+        $nomor_form_perizinan =  $nomor_form_perizinan . $nomorform;
+
+        $query = DataAbsenPerijinanDTPC::create([
+            'uuid' => Str::uuid(),
+            'uuid_master' => $uuid_master,
+            'tanggal_perizinan' => $tanggal_perizinan,
+            'nomor_form_perizinan' => $nomor_form_perizinan,
+            'enroll_id' => $enroll_id,
+            'kode_absen_ijin' => $kode_absen_ijin,
+            'absen_alasan' => $absen_alasan,
+            'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
+            'tanggal_akhir_ijin' => $tanggal_akhir_ijin,
+            'time_mulai_ijin' => $time_mulai_ijin,
+            'time_akhir_ijin' => $time_akhir_ijin,
+            'total_time_ijin' => $total_time_ijin,
+            'is_verifikasi_pengajuan_admin' => 0,
+            'operator' => $email,
+            'diajukan_oleh' => $email
+        ]);
+
+        return $query;
+    }
+
+
     public function export_form_pengajuan_cuti_pdf(Request $request) {
         $uuid = $request->input('uuid');
 
@@ -705,6 +812,13 @@ class CutiKaryawanController extends AdminBaseController
             ->leftJoin('ref_absen_ijin', 'data_absen_perijinan.kode_absen_ijin', '=', 'ref_absen_ijin.kode_absen_ijin')
             ->where('data_absen_perijinan.uuid', $uuid)
             ->first();
+        if (!$data) {
+        $data = DataAbsenPerijinanDTPC::select('employee_atribut.employee_name', 'employee_atribut.department_name','employee_atribut.sub_dept_name', 'employee_atribut.nik', 'data_absen_perijinan_dtpc.*', 'ref_absen_ijin.nama_absen_ijin')
+            ->leftJoin('employee_atribut', 'data_absen_perijinan_dtpc.enroll_id', '=', 'employee_atribut.enroll_id')
+            ->leftJoin('ref_absen_ijin', 'data_absen_perijinan_dtpc.kode_absen_ijin', '=', 'ref_absen_ijin.kode_absen_ijin')
+            ->where('data_absen_perijinan_dtpc.uuid', $uuid)
+            ->first();
+        }
 
         if (!$data) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
@@ -726,7 +840,13 @@ class CutiKaryawanController extends AdminBaseController
             ->leftJoin('ref_absen_ijin', 'data_absen_perijinan.kode_absen_ijin', '=', 'ref_absen_ijin.kode_absen_ijin')
             ->where('data_absen_perijinan.uuid', $uuid)
             ->first();
-
+        if (!$data) {
+            $data = DataAbsenPerijinanDTPC::select('employee_atribut.employee_name', 'employee_atribut.department_name','employee_atribut.sub_dept_name', 'employee_atribut.nik', 'data_absen_perijinan_dtpc.*', 'ref_absen_ijin.nama_absen_ijin')
+                ->leftJoin('employee_atribut', 'data_absen_perijinan_dtpc.enroll_id', '=', 'employee_atribut.enroll_id')
+                ->leftJoin('ref_absen_ijin', 'data_absen_perijinan_dtpc.kode_absen_ijin', '=', 'ref_absen_ijin.kode_absen_ijin')
+                ->where('data_absen_perijinan_dtpc.uuid', $uuid)
+                ->first();
+        }
 
         if (!$data) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
@@ -746,6 +866,19 @@ class CutiKaryawanController extends AdminBaseController
             ->leftJoin('employee_atribut', 'data_absen_perijinan.enroll_id', '=', 'employee_atribut.enroll_id')
             ->where('data_absen_perijinan.uuid', $uuid)
             ->first();
+
+        if (!$data) {
+            $data = DataAbsenPerijinanDTPC::select(
+                    'employee_atribut.employee_name',
+                    'employee_atribut.department_name',
+                    'employee_atribut.sub_dept_name',
+                    'employee_atribut.nik',
+                    'data_absen_perijinan_dtpc.*'
+                )
+                ->leftJoin('employee_atribut', 'data_absen_perijinan_dtpc.enroll_id', '=', 'employee_atribut.enroll_id')
+                ->where('data_absen_perijinan_dtpc.uuid', $uuid)
+                ->first();
+        }
 
         if (!$data) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
@@ -2129,105 +2262,213 @@ class CutiKaryawanController extends AdminBaseController
         $status = $request->input('is_verifikasi_pengajuan_admin');
         $search = $request->input('search.value');
 
-        // Query dasar
-        $query = DataAbsenPerijinan::select('employee_atribut.employee_name', 'employee_atribut.nik', 'data_absen_perijinan.*','ref_absen_ijin.nama_absen_ijin')
+        // Query pertama
+        $query1 = DB::table('data_absen_perijinan')
+            ->select(
+                'employee_atribut.employee_name',
+                'employee_atribut.nik',
+                'data_absen_perijinan.*',
+                'ref_absen_ijin.nama_absen_ijin',
+                DB::raw("'regular' as source_type") // Tambahkan identifier
+            )
             ->leftJoin('employee_atribut', 'data_absen_perijinan.enroll_id', '=', 'employee_atribut.enroll_id')
             ->leftJoin('ref_absen_ijin', 'data_absen_perijinan.kode_absen_ijin', '=', 'ref_absen_ijin.kode_absen_ijin')
-            ->where('data_absen_perijinan.is_verifikasi_pengajuan_admin', '=', $status)
-            ->orderBy('data_absen_perijinan.tanggal_perizinan', 'desc');
+            ->where('data_absen_perijinan.is_verifikasi_pengajuan_admin', $status);
 
+        // Query kedua
+        $query2 = DB::table('data_absen_perijinan_dtpc')
+            ->select(
+                'employee_atribut.employee_name',
+                'employee_atribut.nik',
+                'data_absen_perijinan_dtpc.*',
+                'ref_absen_ijin.nama_absen_ijin',
+                DB::raw("'dtpc' as source_type") // Tambahkan identifier
+            )
+            ->leftJoin('employee_atribut', 'data_absen_perijinan_dtpc.enroll_id', '=', 'employee_atribut.enroll_id')
+            ->leftJoin('ref_absen_ijin', 'data_absen_perijinan_dtpc.kode_absen_ijin', '=', 'ref_absen_ijin.kode_absen_ijin')
+            ->where('data_absen_perijinan_dtpc.is_verifikasi_pengajuan_admin', $status);
+
+        // Filter email untuk kedua query
         if (!in_array($email, ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli', 'HR', 'ersa@ptnag.com', 'kiki@ptnag.com', 'hrd'])) {
-            $query->where('data_absen_perijinan.diajukan_oleh', $email);
-        }
-        // Jika ada pencarian
-        if (!empty($search)) {
-            $query->where(function ($q) use ($search) {
-                $q->where('data_absen_perijinan.uuid_master', 'LIKE', "%{$search}%")
-                  ->orWhere('data_absen_perijinan.tanggal_perizinan', 'LIKE', "%{$search}%")
-                  ->orWhere('data_absen_perijinan.nomor_form_perizinan', 'LIKE', "%{$search}%")
-                  ->orWhere('data_absen_perijinan.enroll_id', 'LIKE', "%{$search}%")
-                  ->orWhere('employee_atribut.nik', 'LIKE', "%{$search}%")
-                  ->orWhere('employee_atribut.employee_name', 'LIKE', "%{$search}%")
-                  ->orWhere('ref_absen_ijin.nama_absen_ijin', 'LIKE', "%{$search}%")
-                  ->orWhere('data_absen_perijinan.absen_alasan', 'LIKE', "%{$search}%")
-                  ->orWhere('data_absen_perijinan.keterangan_reject', 'LIKE', "%{$search}%");
+            $query1->where(function($q) use ($email) {
+                $q->where('data_absen_perijinan.diajukan_oleh', $email)
+                  ->orWhereNull('data_absen_perijinan.diajukan_oleh');
+            });
+
+            $query2->where(function($q) use ($email) {
+                $q->where('data_absen_perijinan_dtpc.diajukan_oleh', $email)
+                  ->orWhereNull('data_absen_perijinan_dtpc.diajukan_oleh');
             });
         }
 
-        // Mengatur pagination dan ordering
-        $limit = $request->input('length');
-        $start = $request->input('start');
-        $orderColumn = $request->input('order.0.column');
-        $orderDir = $request->input('order.0.dir');
+        // Kolom untuk sorting
         $columns = [
             'uuid', 'uuid_master', 'tanggal_perizinan', 'nomor_form_perizinan', 'enroll_id',
             'nik', 'employee_name', 'created_at'
         ];
 
-        $query->offset($start)
-              ->limit($limit)
-              ->orderBy($columns[$orderColumn], $orderDir);
+        $orderColumn = $request->input('order.0.column', 2); // Default sort by tanggal_perizinan
+        $orderDir = $request->input('order.0.dir', 'desc');
+        $start = $request->input('start', 0);
+        $limit = $request->input('length', 10);
 
-        // Mendapatkan data
-        $data = $query->get();
-        // Mendapatkan total data dan data yang difilter
-        $totalData = DataAbsenPerijinan::where('is_verifikasi_pengajuan_admin', $status);
+        $query1Sql = $query1->toSql();
+        $query2Sql = $query2->toSql();
 
-        if (!in_array($email, ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli', 'HR', 'ersa@ptnag.com', 'kiki@ptnag.com', 'hrd'])) {
-            $totalData->where('diajukan_oleh', $email);
+        $query1Bindings = $query1->getBindings();
+        $query2Bindings = $query2->getBindings();
+
+        $rawSql = $query1Sql . ' union all ' . $query2Sql;
+
+        $combinedQuery = DB::table(DB::raw("({$rawSql}) as sub"))
+            ->addBinding($query1Bindings)
+            ->addBinding($query2Bindings)
+            ->orderBy('sub.created_at', 'desc');
+
+
+        // Hitung total records sebelum filter pencarian
+        $totalRecords = DB::table(DB::raw("({$combinedQuery->toSql()}) as sub"))
+            ->mergeBindings($combinedQuery)
+            ->count();
+        // Terapkan pencarian jika ada
+        if (!empty($search)) {
+            $combinedQuery->where(function($q) use ($search) {
+                $q->where('uuid_master', 'LIKE', "%{$search}%")
+                  ->orWhere('tanggal_perizinan', 'LIKE', "%{$search}%")
+                  ->orWhere('nomor_form_perizinan', 'LIKE', "%{$search}%")
+                  ->orWhere('enroll_id', 'LIKE', "%{$search}%")
+                  ->orWhere('nik', 'LIKE', "%{$search}%")
+                  ->orWhere('employee_name', 'LIKE', "%{$search}%")
+                  ->orWhere('nama_absen_ijin', 'LIKE', "%{$search}%")
+                  ->orWhere('absen_alasan', 'LIKE', "%{$search}%")
+                  ->orWhere('keterangan_reject', 'LIKE', "%{$search}%");
+            });
         }
-        $total = $totalData->count();
 
-        $totalFiltered = $total;
-        // Format hasil
-        $formattedData = $data->map(function ($q) {
-            return [
-                'uuid' => $q->uuid,
-                'uuid_master' => $q->uuid_master,
-                'tanggal_perizinan' => Carbon::parse($q->tanggal_perizinan)->format('d-m-Y'),
-                'nomor_form_perizinan' => $q->nomor_form_perizinan,
-                'enroll_id' => $q->enroll_id,
-                'nik' => $q->nik,
-                'employee_name' => $q->employee_name,
-                'kode_absen_ijin' => $q->kode_absen_ijin,
-                'nama_absen_ijin' => $q->nama_absen_ijin,
-                'absen_alasan' => $q->absen_alasan,
-                'tanggal_mulai_ijin' => Carbon::parse($q->tanggal_mulai_ijin)->format('d-m-Y'),
-                'tanggal_akhir_ijin' => Carbon::parse($q->tanggal_akhir_ijin)->format('d-m-Y'),
-                'time_mulai_ijin' => substr($q->time_mulai_ijin, 0, 5),
-                'time_akhir_ijin' => substr($q->time_akhir_ijin, 0, 5),
-                'total_time_ijin' => $q->total_time_ijin,
-                'operator' => $q->operator,
-                'keterangan_reject' => $q->keterangan_reject,
-                'created_at' => substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5),
-                'updated_at' => substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5),
-            ];
-        });
+        // Hitung total filtered records
+        $filteredRecords = $combinedQuery->count();
+
+        // Ambil data akhir
+        $data = $combinedQuery
+            ->orderBy($columns[$orderColumn], $orderDir)
+            ->offset($start)
+            ->limit($limit)
+            ->get();
 
         // Format response untuk DataTables
         return response()->json([
-            "draw" => intval($request->input('draw')),
-            "recordsTotal" => intval($totalData->count()),
-            "recordsFiltered" => intval($totalFiltered),
-            "data" => $formattedData
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $filteredRecords,
+            'data' => $data
         ]);
     }
 
 
     public function approve_hr_perizinan_menu(Request $request)
     {
+        $uuid = $request->uuid;
         $loggedAdmin = Auth::guard('admin')->user();
-        DataAbsenPerijinan::where('uuid',request()->uuid)->update([
-            'is_verifikasi_pengajuan_admin' => 1
-        ]);
+
+        $updated = DataAbsenPerijinan::where('uuid', $uuid)
+            ->update(['is_verifikasi_pengajuan_admin' => 1]);
+
+        if (!$updated) {
+            DataAbsenPerijinanDTPC::where('uuid', $uuid)
+                ->update(['is_verifikasi_pengajuan_admin' => 1]);
+        }
+
+        return response()->json(['message' => 'Pengajuan berhasil disetujui']);
     }
+
+
     public function reject_hr_perizinan_menu(Request $request)
     {
+        $uuid = $request->uuid;
         $loggedAdmin = Auth::guard('admin')->user();
-        DataAbsenPerijinan::where('uuid',request()->uuid)->update([
-            'is_verifikasi_pengajuan_admin' => 2,
-            'keterangan_reject' => $request->keterangan,
-        ]);
+
+        $updated = DataAbsenPerijinan::where('uuid', $uuid)
+            ->update([
+                'is_verifikasi_pengajuan_admin' => 2,
+                'keterangan_reject' => $request->keterangan,
+            ]);
+
+        if (!$updated) {
+            DataAbsenPerijinanDTPC::where('uuid', $uuid)
+                ->update([
+                    'is_verifikasi_pengajuan_admin' => 2,
+                    'keterangan_reject' => $request->keterangan,
+                ]);
+        }
+
+        return response()->json(['message' => 'Pengajuan berhasil ditolak']);
     }
+
+    public function destroy(Request $request)
+    {
+        $loggedAdmin = Auth::guard('admin')->user();
+        $email = $loggedAdmin->email;
+        info('START DELETE PERIZINAN');
+        info('Delete Perizinan by ' . $email);
+
+        $tanggal_perizinan = $request->tanggal_perizinan;
+        $nomor_form_perizinan = $request->nomor_form_perizinan;
+        $enroll_id = $request->enroll_id;
+        info('Tanggal Perizinan : ' . $tanggal_perizinan);
+        info('Nomor Form Perizinan : ' . $nomor_form_perizinan);
+        info('Nomor Absen : ' . $enroll_id);
+
+        $query = DataAbsenPerijinan::whereRaw('
+                        nomor_form_perizinan = "'. $nomor_form_perizinan . '"
+                        and enroll_id = "'. $enroll_id . '"
+                    ')
+                    ->delete();
+
+        if($query) {
+            info('Data di table data_absen_perijinan berhasil di hapus');
+            $query = MasterDataAbsenKehadiran::whereRaw('
+                nomor_absen_ijin = "' . $nomor_form_perizinan . '"
+                and enroll_id = "' . $enroll_id . '"
+            ')
+            ->update([
+                'nomor_absen_ijin' => null,
+                'status_absen' =>'M',
+                'operator' => 'system',
+                'updated_absen_ijin' => null,
+                'deleted_at' => now()
+            ]);
+
+            if ($query) {
+                info('Data di table master_data_absen_kehadiran BERHASIL di hapus');
+            } else {
+                info('Data di table master_data_absen_kehadiran GAGAL di hapus');
+            }
+        }
+        return $query;
+    }
+    public function destroy_dtpc(Request $request)
+    {
+        $loggedAdmin = Auth::guard('admin')->user();
+        $email = $loggedAdmin->email;
+        info('START DELETE PERIZINAN');
+        info('Delete Perizinan by ' . $email);
+
+        $tanggal_perizinan = $request->tanggal_perizinan;
+        $nomor_form_perizinan = $request->nomor_form_perizinan;
+        $enroll_id = $request->enroll_id;
+        info('Tanggal Perizinan : ' . $tanggal_perizinan);
+        info('Nomor Form Perizinan : ' . $nomor_form_perizinan);
+        info('Nomor Absen : ' . $enroll_id);
+
+        $query = DataAbsenPerijinanDTPC::whereRaw('
+                        nomor_form_perizinan = "'. $nomor_form_perizinan . '"
+                        and enroll_id = "'. $enroll_id . '"
+                    ')
+                    ->delete();
+
+
+        return $query;
+    }
+
 
 }

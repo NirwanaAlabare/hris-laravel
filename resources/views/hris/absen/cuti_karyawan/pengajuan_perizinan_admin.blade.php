@@ -173,7 +173,7 @@ h1 {
     <div class="page-header shadow pr-2 m-0 pt-0 pb-0 pl-2">
         <ol class="breadcrumb breadcrumb-arrow m-0 p-0">
             <li><a href="{{route('entertaint_tamu.index')}}">Administrasi</a></li>
-            <li class="active"><span>Pengajuan Perizinan</span></li>
+            <li class="active"><span>Pengajuan Perizinan & Cuti Karyawan</span></li>
             <input type="hidden" value="{{$user}}" id="username_who_access">
         </ol>
         <div class="ml-auto">
@@ -193,7 +193,7 @@ h1 {
         <div class="col-md-12">
             <div class="card card-primary card-outline tab-content">
                     <div class="card-header bg-primary p-3">
-                        <div class="card-title">Pengajuan Perizinan</div>
+                        <div class="card-title">Pengajuan Perizinan & Cuti Karyawan</div>
                     </div>
                         <div class="mt-4 ml-4 mr-5 mb-0">
                             <div class="row">
@@ -223,8 +223,8 @@ h1 {
                                                     <table id="datatable-ajax-crud-waiting" class="table table-sm table-striped table-hover table-bordered w-100">
                                                         <thead>
                                                             <tr class="text-center">
-                                                                <th scope="col">Tanggal Perizinan</th>
-                                                                <th scope="col">Nomor Form Perizinan</th>
+                                                                <th scope="col">Tanggal Pengajuan</th>
+                                                                <th scope="col">Nomor Form Perijinan</th>
                                                                 <th scope="col">NIP</th>
                                                                 <th scope="col">Nama Karyawan</th>
                                                                 <th scope="col">Nama Absen Ijin</th>
@@ -244,8 +244,8 @@ h1 {
                                                     <table id="datatable-ajax-crud-verifikasi" class="table table-sm table-striped table-hover table-bordered w-100">
                                                         <thead>
                                                             <tr class="text-center">
-                                                                <th scope="col">Tanggal Perizinan</th>
-                                                                <th scope="col">Nomor Form Perizinan</th>
+                                                                <th scope="col">Tanggal Pengajuan</th>
+                                                                <th scope="col">Nomor Form Perijinan</th>
                                                                 <th scope="col">NIP</th>
                                                                 <th scope="col">Nama Karyawan</th>
                                                                 <th scope="col">Nama Absen Ijin</th>
@@ -264,8 +264,8 @@ h1 {
                                                     <table id="datatable-ajax-crud-reject" class="table table-sm table-striped table-hover table-bordered w-100">
                                                         <thead>
                                                             <tr class="text-center">
-                                                                <th scope="col">Tanggal Perizinan</th>
-                                                                <th scope="col">Nomor Form Perizinan</th>
+                                                                <th scope="col">Tanggal Pengajuan</th>
+                                                                <th scope="col">Nomor Form Perijinan</th>
                                                                 <th scope="col">NIP</th>
                                                                 <th scope="col">Nama Karyawan</th>
                                                                 <th scope="col">Nama Absen Ijin</th>
@@ -296,7 +296,7 @@ h1 {
                 <div class="col-md-12">
                     <div class="modal-content">
                         <div class="modal-header bg-primary p-2">
-                            <h4 class="modal-title pl-2 font-weight-bold" id="title-modal-edit1">Buat Pengajuan Perizinan</h4>
+                            <h4 class="modal-title pl-2 font-weight-bold" id="title-modal-edit1">Buat Pengajuan Perizinan & Cuti Karyawan</h4>
                         </div>
                         <div class="modal-body">
                             <input id="uuid" type="hidden">
@@ -306,7 +306,7 @@ h1 {
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">TANGGAL PENGAJUAN : </label>
-                                        <input readonly id="tanggal_perijinan" name="tanggal_perijinan" type="text" class="form-control fc-datepicker" placeholder="Tanggal Perizinan" maxlength="50" size="50">
+                                        <input readonly disabled id="tanggal_perijinan" name="tanggal_perijinan" type="text" class="form-control fc-datepicker" placeholder="Tanggal Perizinan" maxlength="50" size="50">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -352,7 +352,7 @@ h1 {
                                     <div class="tab_wrapper first_tab">
                                         <ul class="tab_list">
                                             <li class="text-sm" id="tab-izin">Perizinan</li>
-                                            <li class="text-sm" id="tab-iks">Izin Keluar Sementara (IKS)</li>
+                                            <li class="text-sm" id="tab-iks">Izin (IKS , DT , PC)</li>
                                         </ul>
                                         <div class="content_wrapper">
                                             <div class="tab_content active">
@@ -445,6 +445,45 @@ h1 {
                                             </div>
                                             <div class="tab_content">
                                                 <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Jenis Perizinan</label>
+                                                            <select id="kode_absen_ijin_iks" class="form-control" data-placeholder="-- Pilih Jenis Perijinan --">
+                                                                <option value="IKS">IKS - IJIN KELUAR SEMENTARA</option>
+                                                                <option value="DT">DT - IJIN DATANG TERLAMBAT</option>
+                                                                <option value="PC">PC - IJIN PULANG CEPAT</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div id="form_tanggal_ijin" class="row px-4">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Tanggal Mulai Izin</label>
+                                                                <div class="input-group">
+                                                                    <div class="input-group-prepend">
+                                                                        <div class="input-group-text">
+                                                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                                                        </div>
+                                                                    </div>
+                                                                    <input id="tanggal_mulai_ijin_iks" name="tanggal_mulai_ijin_iks" type="text" class="form-control fc-datepicker" placeholder="Tanggal Mulai Izin" maxlength="50" size="50">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Tanggal Akhir Izin</label>
+                                                                <div class="input-group">
+                                                                    <div class="input-group-prepend">
+                                                                        <div class="input-group-text">
+                                                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                                                        </div>
+                                                                    </div>
+                                                                    <input id="tanggal_akhir_ijin_iks" name="tanggal_akhir_ijin_iks" type="text" class="form-control fc-datepicker" placeholder="Tanggal Akhir Izin" maxlength="50" size="50">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label class="form-label">Jam Mulai Izin</label>
@@ -482,22 +521,6 @@ h1 {
                                                                 </div><!-- input-group-prepend -->
                                                                 <input id="total_time_ijin" name="total_time_ijin" class="form-control" placeholder="0" type="text" maxlength="3" size="3">
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <label class="form-label">Jenis Perizinan</label>
-                                                            <select id="kode_absen_ijin_iks" class="form-control" data-placeholder="-- Pilih Jenis Perijinan --">
-                                                                @foreach ($refabsenijin as $r_refabsenijin)
-                                                                    @php
-                                                                        if ($r_refabsenijin->kode_absen_ijin == 'IKS') {
-                                                                    @endphp
-                                                                        <option value="{{$r_refabsenijin->kode_absen_ijin}}">{{$r_refabsenijin->kode_nama_absen_ijin}}</option>
-                                                                    @php
-                                                                        }
-                                                                    @endphp
-                                                                @endforeach
-                                                            </select>
                                                         </div>
                                                     </div>
 
@@ -697,6 +720,26 @@ h1 {
         });
     </script>
 
+<script>
+    $(document).ready(function () {
+        function toggleTanggalForm() {
+            const selected = $('#kode_absen_ijin_iks').val();
+            if (selected === 'IKS') {
+                $('#form_tanggal_ijin').hide();
+            } else {
+                $('#form_tanggal_ijin').show();
+            }
+        }
+
+        // Inisialisasi saat halaman dimuat
+        toggleTanggalForm();
+
+        // Event listener saat opsi berubah
+        $('#kode_absen_ijin_iks').on('change', toggleTanggalForm);
+    });
+</script>
+
+
     <script>
         $('body').on('click', '#btn-icon-refresh-izin', function(event){
             var tanggal_periz = $('#tanggal_perijinan').val();
@@ -791,6 +834,7 @@ h1 {
                     uuid: uuid
                 },
                 success: function(res) {
+                    console.log(res);
                     var data = res;
                     var tanggal_periz=data.tanggal_perizinan;
                     var tanggal_mulai_ijin=null;
@@ -824,7 +868,7 @@ h1 {
                     $('#enroll_id').val(data.enroll_id);
                     $('#nik').val(data.nik);
                     $('#employee_name').val(data.employee_name);
-                    if (data.kode_absen_ijin == "IKS") {
+                    if (data.kode_absen_ijin == 'PC' || data.kode_absen_ijin == 'DT' || data.kode_absen_ijin == 'IKS') {
                         $("#kode_absen_ijin_iks").val(data.kode_absen_ijin).trigger("change");
                         $('#absen_alasan_iks').val(data.absen_alasan);
                         $('#time_mulai_ijin').val(data.time_mulai_ijin);
@@ -832,6 +876,8 @@ h1 {
                         $('#total_time_ijin').val(data.total_time_ijin);
                         $('#created_at_iks').text(createdAt);
                         $('#updated_at_iks').text(updatedAt);
+                        $('#tanggal_mulai_ijin_iks').val(tanggal_mulai_ijin);
+                        $('#tanggal_akhir_ijin_iks').val(tanggal_akhir_ijin);
                         $('#nomor_form_perizinan_iks').val(data.nomor_form_perizinan);
 
                         $("#kode_absen_ijin").val(null).trigger("change");
@@ -976,7 +1022,21 @@ h1 {
                     },
                     { data: 'nik' },
                     { data: 'employee_name' },
-                    { data: 'nama_absen_ijin' },
+                    {data: 'nama_absen_ijin',
+                        width: '10%',
+                        render: function (data, type, row) {
+                            // Gunakan nama_absen_ijin jika tidak null, kalau null pakai kode_absen_ijin
+                            let value = data ?? row.kode_absen_ijin;
+
+                            if (value === 'PC') {
+                                return 'PULANG CEPAT';
+                            } else if (value === 'DT') {
+                                return 'DATANG TERLAMBAT';
+                            } else {
+                                return value || '-'; // fallback jika masih null atau kosong
+                            }
+                        }
+                    },
                     { data: 'absen_alasan' },
                     {
                         data: null,
@@ -988,7 +1048,7 @@ h1 {
                                 let exportUrl;
                                 let btnClass;
 
-                                if (row.kode_absen_ijin === 'IKS') {
+                                if (row.kode_absen_ijin === 'IKS' || row.kode_absen_ijin === 'PC' || row.kode_absen_ijin === 'DT') {
                                     exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_izin_pdf?uuid=${uuidNo}`;
                                     btnClass = 'btn-warning';
                                 } else {
@@ -1006,7 +1066,7 @@ h1 {
                                         <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.uuid}')" data-id="${row.uuid}" title="Edit">
                                             <i class="fa fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Edit">
+                                        <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-kode-absen="${row.kode_absen_ijin}" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Edit">
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     `;
@@ -1018,7 +1078,7 @@ h1 {
                                         <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.uuid}')" data-id="${row.uuid}" title="Edit">
                                             <i class="fa fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Edit">
+                                        <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-kode-absen="${row.kode_absen_ijin}" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Edit">
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     `;
@@ -1042,7 +1102,21 @@ h1 {
                     { data: 'nomor_form_perizinan', width: '18%' },
                     { data: 'nik', width: '10%' },
                     { data: 'employee_name', width: '20%' },
-                    { data: 'nama_absen_ijin', width: '10%' },
+                    { data: 'nama_absen_ijin',
+                        width: '10%',
+                        render: function (data, type, row) {
+                            // Gunakan nama_absen_ijin jika tidak null, kalau null pakai kode_absen_ijin
+                            let value = data ?? row.kode_absen_ijin;
+
+                            if (value === 'PC') {
+                                return 'PULANG CEPAT';
+                            } else if (value === 'DT') {
+                                return 'DATANG TERLAMBAT';
+                            } else {
+                                return value || '-'; // fallback jika masih null atau kosong
+                            }
+                        }
+                    },
                     { data: 'absen_alasan', width: '20%' },
                     {
                         data: null,
@@ -1054,7 +1128,7 @@ h1 {
                                 let exportUrl;
                                 let btnClass;
 
-                                if (row.kode_absen_ijin === 'IKS') {
+                                if (row.kode_absen_ijin === 'IKS' || row.kode_absen_ijin === 'PC' || row.kode_absen_ijin === 'DT') {
                                     exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_izin_pdf?uuid=${uuidNo}`;
                                     btnClass = 'btn-warning';
                                 } else {
@@ -1070,7 +1144,7 @@ h1 {
                                         <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.uuid}')" data-id="${row.uuid}" title="Edit">
                                             <i class="fa fa-edit"></i>
                                         </button>
-                                       <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Edit">
+                                       <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-kode-absen="${row.kode_absen_ijin}" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Edit">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                     `;
@@ -1102,7 +1176,22 @@ h1 {
                     },
                     { data: 'nik', width: '10%' },
                     { data: 'employee_name', width: '20%' },
-                    { data: 'nama_absen_ijin', width: '10%' },
+                    {
+                        data: 'nama_absen_ijin',
+                        width: '10%',
+                        render: function (data, type, row) {
+                            // Gunakan nama_absen_ijin jika tidak null, kalau null pakai kode_absen_ijin
+                            let value = data ?? row.kode_absen_ijin;
+
+                            if (value === 'PC') {
+                                return 'PULANG CEPAT';
+                            } else if (value === 'DT') {
+                                return 'DATANG TERLAMBAT';
+                            } else {
+                                return value || '-'; // fallback jika masih null atau kosong
+                            }
+                        }
+                    },
                     { data: 'absen_alasan', width: '20%' },
                     {
                         data: 'keterangan_reject',
@@ -1118,107 +1207,160 @@ h1 {
 
 
             $('body').on('click', '#btn-remove', function (event) {
-            var nomor_form_perizinan = $(this).data('nomor-form-perizinan');
-            var enroll_id = $(this).data('enroll_id');
-            var tanggal_periz = $(this).data('tanggal_perizinan');
+                var nomor_form_perizinan = $(this).data('nomor-form-perizinan');
+                var enroll_id = $(this).data('enroll_id');
+                var tanggal_periz = $(this).data('tanggal_perizinan');
+                var kode_absen_ijin = $(this).data('kode-absen');
 
-            // Convert format dari dd-mm-yyyy ke yyyy-mm-dd jika perlu
-            var tanggal_perizinan = tanggal_periz.substr(6, 4) + '-' + tanggal_periz.substr(3, 2) + '-' + tanggal_periz.substr(0, 2);
-            var tanggal = tanggal_perizinan;
+                // Convert format dari dd-mm-yyyy ke yyyy-mm-dd jika perlu
+                var tanggal_perizinan = tanggal_periz.substr(6, 4) + '-' + tanggal_periz.substr(3, 2) + '-' + tanggal_periz.substr(0, 2);
+                var tanggal = tanggal_perizinan;
 
+                if(kode_absen_ijin == 'PC' || kode_absen_ijin == 'DT'){
+                    message = "Anda Yakin Ingin Menghapus Perijinan ini !!!";
+                    type = "warning";
+                    swal({
+                        title: message,
+                        type: type,
+                        showCancelButton: true,
+                        confirmButtonText: 'Saya Yakin',
+                        cancelButtonText: 'Tutup'
+                    },function(isConfirm){
+                        if(isConfirm) {
+                            $("#form1 :input").prop("disabled", true);
+                            $("#btn-save-izin").prop("disabled", true);
+                            $("#btn-save-iks").prop("disabled", true);
+                            $("#btn-cancel-izin").prop("disabled", true);
+                            $("#btn-cancel-iks").prop("disabled", true);
+                            $('#progress-show-1').show();
+                            $('#progress-hide-1').hide();
 
-                $.ajax({
-                    type:"POST",
-                    url: "{{route('hris.dataclosingpayroll.ajax_getclosing')}}",
-                    dataType: 'json',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    data: {
-                        tanggal:tanggal,
-                    },
-                    dataType: 'json',
-                    success: function(res){
-
-                        if(res["ada"]) {
-                            notif({
-                                type: res["status"],
-                                msg: res["message"],
-                                position: "center",
-                                width: 800,
-                                height: 120,
-                                opacity: 0.6,
-                                autohide: false
-                            });
-                        } else {
-                            if (!nomor_form_perizinan) {
-                                notif({
-                                    msg: "<b>Warning:</b> Anda belum memilih data perizinan.",
-                                    type: "warning"
-                                });
-                                return false;
-                            }
-
-                            message = "Anda Yakin Ingin Menghapus Nomor Form : " + nomor_form_perizinan + " !!!";
-                            type = "warning";
-                            swal({
-                                title: message,
-                                type: type,
-                                showCancelButton: true,
-                                confirmButtonText: 'Saya Yakin',
-                                cancelButtonText: 'Tutup'
-                            },function(isConfirm){
-                                if(isConfirm) {
-
-                                    $("#form1 :input").prop("disabled", true);
-                                    $("#btn-save-izin").prop("disabled", true);
-                                    $("#btn-save-iks").prop("disabled", true);
-                                    $("#btn-cancel-izin").prop("disabled", true);
-                                    $("#btn-cancel-iks").prop("disabled", true);
-                                    $('#progress-show-1').show();
-                                    $('#progress-hide-1').hide();
-
-                                    $.ajax({
-                                        type:"POST",
-                                        url: "{{route('hris.dataabsenperijinan.destroy')}}",
-                                        dataType: 'json',
-                                        headers: {
-                                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                                        data: {
-                                            tanggal_perizinan:tanggal_perizinan,
-                                            nomor_form_perizinan:nomor_form_perizinan,
-                                            enroll_id:enroll_id,
-                                        },
-                                        dataType: 'json',
-                                        success: function(res){
-                                            notif({
-                                                msg: "<b>Info:</b> Data berhasil di hapus.",
-                                                type: "info"
-                                            });
-                                        },
-                                        error: function(res){
-                                            notif({
-                                                msg: "<b>Error:</b> Oops data gagal di hapus.",
-                                                type: "error"
-                                            });
-                                        }
+                            $.ajax({
+                                type:"POST",
+                                url: "{{route('cuti_karyawan.dataabsenperijinan.destroy_dtpc')}}",
+                                dataType: 'json',
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                                data: {
+                                    tanggal_perizinan:tanggal_perizinan,
+                                    nomor_form_perizinan:nomor_form_perizinan,
+                                    enroll_id:enroll_id,
+                                },
+                                dataType: 'json',
+                                success: function(res){
+                                    notif({
+                                        msg: "<b>Info:</b> Data berhasil di hapus.",
+                                        type: "info"
                                     });
-
-                                    $('#progress-show-1').hide();
-                                    $('#progress-hide-1').show();
-                                    $("#datatable-ajax-crud").DataTable().ajax.reload();
-
-                                } else {
-                                    // else everythings
+                                },
+                                error: function(res){
+                                    notif({
+                                        msg: "<b>Error:</b> Oops data gagal di hapus.",
+                                        type: "error"
+                                    });
                                 }
                             });
+
+                            $('#progress-show-1').hide();
+                            $('#progress-hide-1').show();
+                            $("#datatable-ajax-crud").DataTable().ajax.reload();
+
+                        } else {
+                            // else everythings
                         }
+                    });
+                }else{
+                    $.ajax({
+                        type:"POST",
+                        url: "{{route('hris.dataclosingpayroll.ajax_getclosing')}}",
+                        dataType: 'json',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        data: {
+                            tanggal:tanggal,
+                        },
+                        dataType: 'json',
+                        success: function(res){
 
-                    },
-                    error: function(res){
+                            if(res["ada"]) {
+                                notif({
+                                    type: res["status"],
+                                    msg: res["message"],
+                                    position: "center",
+                                    width: 800,
+                                    height: 120,
+                                    opacity: 0.6,
+                                    autohide: false
+                                });
+                            } else {
+                                if (!nomor_form_perizinan) {
+                                    notif({
+                                        msg: "<b>Warning:</b> Anda belum memilih data perizinan.",
+                                        type: "warning"
+                                    });
+                                    return false;
+                                }
 
-                    }
-                });
+                                message = "Anda Yakin Ingin Menghapus Nomor Form : " + nomor_form_perizinan + " !!!";
+                                type = "warning";
+                                swal({
+                                    title: message,
+                                    type: type,
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Saya Yakin',
+                                    cancelButtonText: 'Tutup'
+                                },function(isConfirm){
+                                    if(isConfirm) {
+                                        $("#form1 :input").prop("disabled", true);
+                                        $("#btn-save-izin").prop("disabled", true);
+                                        $("#btn-save-iks").prop("disabled", true);
+                                        $("#btn-cancel-izin").prop("disabled", true);
+                                        $("#btn-cancel-iks").prop("disabled", true);
+                                        $('#progress-show-1').show();
+                                        $('#progress-hide-1').hide();
 
+                                        $.ajax({
+                                            type:"POST",
+                                            url: "{{route('cuti_karyawan.dataabsenperijinan.destroy')}}",
+                                            dataType: 'json',
+                                            headers: {
+                                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                                            data: {
+                                                tanggal_perizinan:tanggal_perizinan,
+                                                nomor_form_perizinan:nomor_form_perizinan,
+                                                enroll_id:enroll_id,
+                                            },
+                                            dataType: 'json',
+                                            success: function(res){
+                                                notif({
+                                                    msg: "<b>Info:</b> Data berhasil di hapus.",
+                                                    type: "info"
+                                                });
+                                            },
+                                            error: function(res){
+                                                notif({
+                                                    msg: "<b>Error:</b> Oops data gagal di hapus.",
+                                                    type: "error"
+                                                });
+                                            }
+                                        });
+
+                                        $('#progress-show-1').hide();
+                                        $('#progress-hide-1').show();
+                                        $("#datatable-ajax-crud").DataTable().ajax.reload();
+
+                                    } else {
+                                        // else everythings
+                                    }
+                                });
+                            }
+
+                        },
+                        error: function(res){
+
+                        }
+                    });
+                }
                 setTimeout(function myFunction() {
                     location.reload();
                 }, 3000);
@@ -1648,6 +1790,11 @@ h1 {
             var time_mulai_ijin = $('#time_mulai_ijin').val();
             var time_akhir_ijin = $('#time_akhir_ijin').val();
             var total_time_ijin = $('#total_time_ijin').val();
+            var tanggal_mulai = $('#tanggal_mulai_ijin_iks').val();
+            var tanggal_mulai_ijin=tanggal_mulai.substr(6, 4)+'-'+tanggal_mulai.substr(3,2)+'-'+tanggal_mulai.substr(0,2);
+            var tanggal_akhir = $('#tanggal_akhir_ijin_iks').val();
+            var tanggal_akhir_ijin=tanggal_akhir.substr(6, 4)+'-'+tanggal_akhir.substr(3,2)+'-'+tanggal_akhir.substr(0,2);
+
 
             if (!enroll_id) {
                 notif({
@@ -1696,151 +1843,283 @@ h1 {
                 });
                 return false;
             }
+            if(kode_absen_ijin!='IKS'){
+                if (!tanggal_mulai_ijin) {
+                notif({
+                    msg: "<b>Warning:</b> Anda belum menginput Tanggal Mulai Izin.",
+                    type: "warning"
+                });
+                return false;
+                }
+
+                if (!tanggal_akhir_ijin) {
+                    notif({
+                        msg: "<b>Warning:</b> Anda belum menginput Tanggal Akhir Izin.",
+                        type: "warning"
+                    });
+                    return false;
+                }
+            }
 
             var tanggal = tanggal_perizinan;
+            if(kode_absen_ijin=='IKS'){
+                // LAGI COBA TEST CLOSING PAYROLL
+                $.ajax({
+                    type:"POST",
+                    url: "{{route('hris.dataclosingpayroll.ajax_getclosing')}}",
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    data: {
+                        tanggal:tanggal,
+                    },
+                    dataType: 'json',
+                    success: function(res){
 
-            // LAGI COBA TEST CLOSING PAYROLL
-            $.ajax({
-                type:"POST",
-                url: "{{route('hris.dataclosingpayroll.ajax_getclosing')}}",
-                dataType: 'json',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                data: {
-                    tanggal:tanggal,
-                },
-                dataType: 'json',
-                success: function(res){
+                        if(res["ada"]) {
+                            notif({
+                                type: res["status"],
+                                msg: res["message"],
+                                position: "center",
+                                width: 800,
+                                height: 120,
+                                opacity: 0.6,
+                                autohide: false
+                            });
+                        } else {
 
-                    if(res["ada"]) {
-                        notif({
-                            type: res["status"],
-                            msg: res["message"],
-                            position: "center",
-                            width: 800,
-                            height: 120,
-                            opacity: 0.6,
-                            autohide: false
-                        });
-                    } else {
+                            $('#btn-save-izin').addClass("btn-loading");
+                            $("#btn-save-izin").html('Please wait...');
+                            $("#btn-save-izin").attr("disabled", true);
+                            $('#progress-show-1').show();
+                            $('#progress-hide-1').hide();
 
-                        $('#btn-save-izin').addClass("btn-loading");
-                        $("#btn-save-izin").html('Please wait...');
-                        $("#btn-save-izin").attr("disabled", true);
-                        $('#progress-show-1').show();
-                        $('#progress-hide-1').hide();
+                            $.ajax({
+                                type:"POST",
+                                url: "{{route('hris.dataabsenperijinan.cekiks')}}",
+                                dataType: 'json',
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                                data: {
+                                    tanggal_perizinan:tanggal_perizinan,
+                                    enroll_id:enroll_id,
+                                },
+                                dataType: 'json',
+                                success: function(res){
 
-                        $.ajax({
-                            type:"POST",
-                            url: "{{route('hris.dataabsenperijinan.cekiks')}}",
-                            dataType: 'json',
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                            data: {
-                                tanggal_perizinan:tanggal_perizinan,
-                                enroll_id:enroll_id,
-                            },
-                            dataType: 'json',
-                            success: function(res){
-
-                                if (res > 0) {
-                                    $.ajax({
-                                        type:"POST",
-                                        url: "{{route('hris.dataabsenperijinan.update_iks_menu')}}",
-                                        headers: {
-                                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                                        data: {
-                                            uuid:uuid,
-                                            tanggal_perizinan:tanggal_perizinan,
-                                            nomor_form_perizinan:nomor_form_perizinan,
-                                            enroll_id:enroll_id,
-                                            nik:nik,
-                                            employee_name:employee_name,
-                                            kode_absen_ijin:kode_absen_ijin,
-                                            absen_alasan:absen_alasan,
-                                            time_mulai_ijin:time_mulai_ijin,
-                                            time_akhir_ijin:time_akhir_ijin,
-                                            total_time_ijin:total_time_ijin,
-                                        },
-                                        success: function(res){
-                                            notif({
-                                                msg: "<b>Info:</b> Data berhasil di simpan.",
-                                                type: "success"
-                                            });
-                                        },
-                                        error: function(res){
-                                            notif({
-                                                msg: "<b>Error:</b> Oops data gagal di simpan.",
-                                                type: "error"
-                                            });
-                                        }
-                                    });
-                                } else {
-                                    $.ajax({
-                                        type:"POST",
-                                        url: "{{route('hris.dataabsenperijinan.create_iks_menu')}}",
-                                        dataType: 'json',
-                                        headers: {
-                                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                                        data: {
-                                            uuid:uuid,
-                                            tanggal_perizinan:tanggal_perizinan,
-                                            nomor_form_perizinan:nomor_form_perizinan,
-                                            enroll_id:enroll_id,
-                                            nik:nik,
-                                            employee_name:employee_name,
-                                            kode_absen_ijin:kode_absen_ijin,
-                                            absen_alasan:absen_alasan,
-                                            time_mulai_ijin:time_mulai_ijin,
-                                            time_akhir_ijin:time_akhir_ijin,
-                                            total_time_ijin:total_time_ijin,
-                                        },
-                                        dataType: 'json',
-                                        success: function(res){
-                                            notif({
-                                                msg: "<b>Info:</b> Data berhasil di simpan.",
-                                                type: "info"
-                                            });
-                                        },
-                                        error: function(res){
-                                            notif({
-                                                msg: "<b>Error:</b> Oops data gagal di simpan.",
-                                                type: "error"
-                                            });
-                                        }
+                                    if (res > 0) {
+                                        $.ajax({
+                                            type:"POST",
+                                            url: "{{route('hris.dataabsenperijinan.update_iks_menu')}}",
+                                            headers: {
+                                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                                            data: {
+                                                uuid:uuid,
+                                                tanggal_perizinan:tanggal_perizinan,
+                                                nomor_form_perizinan:nomor_form_perizinan,
+                                                enroll_id:enroll_id,
+                                                nik:nik,
+                                                employee_name:employee_name,
+                                                kode_absen_ijin:kode_absen_ijin,
+                                                absen_alasan:absen_alasan,
+                                                time_mulai_ijin:time_mulai_ijin,
+                                                time_akhir_ijin:time_akhir_ijin,
+                                                total_time_ijin:total_time_ijin,
+                                            },
+                                            success: function(res){
+                                                notif({
+                                                    msg: "<b>Info:</b> Data berhasil di simpan.",
+                                                    type: "success"
+                                                });
+                                            },
+                                            error: function(res){
+                                                notif({
+                                                    msg: "<b>Error:</b> Oops data gagal di simpan.",
+                                                    type: "error"
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        $.ajax({
+                                            type:"POST",
+                                            url: "{{route('hris.dataabsenperijinan.create_iks_menu')}}",
+                                            dataType: 'json',
+                                            headers: {
+                                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                                            data: {
+                                                uuid:uuid,
+                                                tanggal_perizinan:tanggal_perizinan,
+                                                nomor_form_perizinan:nomor_form_perizinan,
+                                                enroll_id:enroll_id,
+                                                nik:nik,
+                                                employee_name:employee_name,
+                                                kode_absen_ijin:kode_absen_ijin,
+                                                absen_alasan:absen_alasan,
+                                                time_mulai_ijin:time_mulai_ijin,
+                                                time_akhir_ijin:time_akhir_ijin,
+                                                total_time_ijin:total_time_ijin,
+                                            },
+                                            dataType: 'json',
+                                            success: function(res){
+                                                notif({
+                                                    msg: "<b>Info:</b> Data berhasil di simpan.",
+                                                    type: "info"
+                                                });
+                                            },
+                                            error: function(res){
+                                                notif({
+                                                    msg: "<b>Error:</b> Oops data gagal di simpan.",
+                                                    type: "error"
+                                                });
+                                            }
+                                        });
+                                    }
+                                },
+                                error: function(res){
+                                    notif({
+                                        msg: "<b>Error:</b> Oops Cek Data Perizinan GAGAL.",
+                                        type: "error"
                                     });
                                 }
-                            },
-                            error: function(res){
-                                notif({
-                                    msg: "<b>Error:</b> Oops Cek Data Perizinan GAGAL.",
-                                    type: "error"
-                                });
-                            }
-                        });
+                            });
 
-                        $('#progress-show-1').hide();
-                        $('#progress-hide-1').show();
-                        $('#btn-save-izin').removeClass("btn-loading");
-                        $("#btn-save-izin").html('<span><i class="fa fa-save"></i></span> Save');
-                        $("#form1 :input").prop("disabled", true);
-                        $("#btn-save-izin").prop("disabled", true);
-                        $("#btn-save-iks").prop("disabled", true);
-                        $("#btn-cancel-izin").prop("disabled", true);
-                        $("#btn-cancel-iks").prop("disabled", true);
+                            $('#progress-show-1').hide();
+                            $('#progress-hide-1').show();
+                            $('#btn-save-izin').removeClass("btn-loading");
+                            $("#btn-save-izin").html('<span><i class="fa fa-save"></i></span> Save');
+                            $("#form1 :input").prop("disabled", true);
+                            $("#btn-save-izin").prop("disabled", true);
+                            $("#btn-save-iks").prop("disabled", true);
+                            $("#btn-cancel-izin").prop("disabled", true);
+                            $("#btn-cancel-iks").prop("disabled", true);
 
-                        setTimeout(function myFunction() {
-                            location.reload();
-                        }, 3000);
+                            setTimeout(function myFunction() {
+                                location.reload();
+                            }, 3000);
+
+                        }
+
+                    },
+                    error: function(res){
 
                     }
+                });
+            } else {
 
-                },
-                error: function(res){
+                $('#btn-save-izin').addClass("btn-loading");
+                $("#btn-save-izin").html('Please wait...');
+                $("#btn-save-izin").attr("disabled", true);
+                $('#progress-show-1').show();
+                $('#progress-hide-1').hide();
 
-                }
-            });
+                $.ajax({
+                    type:"POST",
+                    url: "{{route('cuti_karyawan.dataabsenperijinan.cek_dtpc')}}",
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    data: {
+                        tanggal_perizinan:tanggal_perizinan,
+                        enroll_id:enroll_id,
+                    },
+                    dataType: 'json',
+                    success: function(res){
+                        console.log(res);
 
+                        if (res > 0) {
+                            $.ajax({
+                                type:"POST",
+                                url: "{{route('cuti_karyawan.dataabsenperijinan.update_dtpc_menu')}}",
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                                data: {
+                                    uuid:uuid,
+                                    tanggal_perizinan:tanggal_perizinan,
+                                    nomor_form_perizinan:nomor_form_perizinan,
+                                    enroll_id:enroll_id,
+                                    nik:nik,
+                                    employee_name:employee_name,
+                                    kode_absen_ijin:kode_absen_ijin,
+                                    absen_alasan:absen_alasan,
+                                    time_mulai_ijin:time_mulai_ijin,
+                                    time_akhir_ijin:time_akhir_ijin,
+                                    total_time_ijin:total_time_ijin,
+                                    tanggal_mulai_ijin:tanggal_mulai_ijin,
+                                    tanggal_akhir_ijin:tanggal_akhir_ijin,
+                                },
+                                success: function(res){
+                                    notif({
+                                        msg: "<b>Info:</b> Data berhasil di simpan.",
+                                        type: "success"
+                                    });
+                                },
+                                error: function(res){
+                                    notif({
+                                        msg: "<b>Error:</b> Oops data gagal di simpan.",
+                                        type: "error"
+                                    });
+                                }
+                            });
+                        } else {
+                            $.ajax({
+                                type:"POST",
+                                url: "{{route('cuti_karyawan.dataabsenperijinan.create_dtpc_menu')}}",
+                                dataType: 'json',
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                                data: {
+                                    uuid:uuid,
+                                    tanggal_perizinan:tanggal_perizinan,
+                                    nomor_form_perizinan:nomor_form_perizinan,
+                                    enroll_id:enroll_id,
+                                    nik:nik,
+                                    employee_name:employee_name,
+                                    kode_absen_ijin:kode_absen_ijin,
+                                    absen_alasan:absen_alasan,
+                                    time_mulai_ijin:time_mulai_ijin,
+                                    time_akhir_ijin:time_akhir_ijin,
+                                    total_time_ijin:total_time_ijin,
+                                    tanggal_mulai_ijin:tanggal_mulai_ijin,
+                                    tanggal_akhir_ijin:tanggal_akhir_ijin,
+                                },
+                                dataType: 'json',
+                                success: function(res){
+                                    notif({
+                                        msg: "<b>Info:</b> Data berhasil di simpan.",
+                                        type: "info"
+                                    });
+                                },
+                                error: function(res){
+                                    notif({
+                                        msg: "<b>Error:</b> Oops data gagal di simpan.",
+                                        type: "error"
+                                    });
+                                }
+                            });
+                        }
+                    },
+                    error: function(res){
+                        notif({
+                            msg: "<b>Error:</b> Oops Cek Data Perizinan GAGAL.",
+                            type: "error"
+                        });
+                    }
+                });
+
+                $('#progress-show-1').hide();
+                $('#progress-hide-1').show();
+                $('#btn-save-izin').removeClass("btn-loading");
+                $("#btn-save-izin").html('<span><i class="fa fa-save"></i></span> Save');
+                $("#form1 :input").prop("disabled", true);
+                $("#btn-save-izin").prop("disabled", true);
+                $("#btn-save-iks").prop("disabled", true);
+                $("#btn-cancel-izin").prop("disabled", true);
+                $("#btn-cancel-iks").prop("disabled", true);
+
+                setTimeout(function myFunction() {
+                    location.reload();
+                }, 3000);
+            }
         });
 
     </script>
@@ -1848,7 +2127,7 @@ h1 {
     <script>
         function openModalBuatPengajuan() {
             $("#ajax-modal-tambah").modal('show');
-            $('#title-modal-edit1').text('PENGAJUAN PERIZINAN KARYAWAN');
+            $('#title-modal-edit1').text('PENGAJUAN PERIZINAN & CUTI KARYAWAN');
             var today = new Date();
             var dd = String(today.getDate()).padStart(2, '0');
             var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!

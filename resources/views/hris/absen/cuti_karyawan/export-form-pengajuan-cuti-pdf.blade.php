@@ -33,7 +33,7 @@
                 <td width="100px" style="vertical-align: middle; text-align: center;border: 1px solid;" colspan="2" rowspan="4">
                     <img height="60" src="{{ public_path('assets/images/brand/nirwana logo.jpg') }}" alt="">
                 </td>
-                <td style="vertical-align: middle; font-size: 12pt; text-align: center; font-weight: 800;border: 1px solid;" colspan="8" rowspan="4">FORM PERMOHONAN PERIZINAN</td>
+                <td style="vertical-align: middle; font-size: 12pt; text-align: center; font-weight: 800;border: 1px solid;" colspan="8" rowspan="4">FORM PERMOHONAN {{ strpos(strtolower($data->nama_absen_ijin), 'cuti') !== false ? 'CUTI' : 'PERIJINAN' }}</td>
                 <td colspan="2" class="border-left" style="border: 1px solid; font-size: 9pt;">Kode Dokumen</td>
                 <td colspan="3" class="border-right" style="border: 1px solid; font-size: 9pt;">: F.16.HR.NAG.P-04.F-01.01</td>
             </tr>
@@ -123,7 +123,7 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:10px;" colspan="6"></td>
             </tr>
             <tr>
-                <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top" colspan="6">Dengan ini bermaksud untuk mengajukan ijin :</td>
+                <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top" colspan="6">Dengan ini bermaksud untuk mengajukan {{ strpos(strtolower($data->nama_absen_ijin), 'cuti') !== false ? 'CUTI' : 'IJIN' }} :</td>
             </tr>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:10px;" colspan="6"></td>
@@ -161,7 +161,7 @@
             </tr>
             <tr>
                 <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top" colspan="6">
-                    Cuti tersebut dilakukan mulai dari <span style="width: 50px !important;"></span>
+                    {{ strpos(strtolower($data->nama_absen_ijin), 'cuti') !== false ? 'CUTI' : 'IJIN' }} tersebut dilakukan mulai dari <span style="width: 50px !important;"></span>
                     <b><u>{{ \Carbon\Carbon::parse($data->tanggal_mulai_ijin)->translatedFormat('d F Y') }}</u></b> <span style="width: 50px !important;"></span>
                     sampai dengan
                     <span style="width: 50px !important;"></span>
@@ -174,7 +174,7 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:10px;" colspan="6"></td>
             </tr>
             <tr>
-                <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top" colspan="6">Selama pelaksanaan Cuti tersebut maka seluruh pekerjaan akan ditangani oleh sdr/I :</td>
+                <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top" colspan="6">Selama pelaksanaan {{ strpos(strtolower($data->nama_absen_ijin), 'cuti') !== false ? 'CUTI' : 'IJIN' }} tersebut maka seluruh pekerjaan akan ditangani oleh sdr/I :</td>
             </tr>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:10px;" colspan="6"></td>
