@@ -1028,11 +1028,15 @@ h1 {
                 processing: true,
                 serverSide: true,
                 columns: [
-                    { data: 'tanggal_perizinan' },
+                    { data: 'tanggal_perizinan',
+                      render: function(data, type, row) {
+                            return moment(data).format('DD-MM-YYYY');  // Formatkan tanggal ke dmy
+                        }
+                    },
                     { data: 'nomor_form_perizinan',
                         render: function (data, type, row) {
                             return '<p>-</p>';
-                    }
+                        }
                     },
                     { data: 'nik' },
                     { data: 'employee_name' },
@@ -1112,7 +1116,12 @@ h1 {
                 processing: true,
                 serverSide: true,
                 columns: [
-                    { data: 'tanggal_perizinan', width: '6%' },
+                    { data: 'tanggal_perizinan',
+                    width: '6%',
+                      render: function(data, type, row) {
+                            return moment(data).format('DD-MM-YYYY');  // Formatkan tanggal ke dmy
+                        }
+                    },
                     { data: 'nomor_form_perizinan', width: '18%' },
                     { data: 'nik', width: '10%' },
                     { data: 'employee_name', width: '20%' },
@@ -1182,7 +1191,12 @@ h1 {
                 processing: true,
                 serverSide: true,
                 columns: [
-                    { data: 'tanggal_perizinan', width: '6%' },
+                    { data: 'tanggal_perizinan',
+                    width: '6%',
+                      render: function(data, type, row) {
+                            return moment(data).format('DD-MM-YYYY');  // Formatkan tanggal ke dmy
+                        }
+                    },
                     { data: 'nomor_form_perizinan',
                         render: function (data, type, row) {
                             return '<p>-</p>';
