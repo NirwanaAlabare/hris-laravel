@@ -2380,6 +2380,29 @@ class CutiKaryawanController extends AdminBaseController
         return response()->json(['message' => 'Pengajuan berhasil disetujui']);
     }
 
+    public function approve_perijinan_all(Request $request)
+    {
+        $uuids = $request->perijinanChecked;
+        $loggedAdmin = Auth::guard('admin')->user();
+
+        // Update di tabel pertama
+        $updatedPerijinan = DataAbsenPerijinan::whereIn('uuid', $uuids)
+            ->update(['is_verifikasi_pengajuan_admin' => 1]);
+
+        // Update di tabel kedua
+        $updatedPerijinanDTPC = DataAbsenPerijinanDTPC::whereIn('uuid', $uuids)
+            ->update(['is_verifikasi_pengajuan_admin' => 1]);
+
+        // Hitung total update
+        $totalUpdated = $updatedPerijinan + $updatedPerijinanDTPC;
+
+        if ($totalUpdated > 0) {
+            return response()->json(['message' => 'Pengajuan berhasil disetujui']);
+        } else {
+            return response()->json(['message' => 'Tidak ada data yang diperbarui'], 404);
+        }
+    }
+
 
     public function reject_hr_perizinan_menu(Request $request)
     {

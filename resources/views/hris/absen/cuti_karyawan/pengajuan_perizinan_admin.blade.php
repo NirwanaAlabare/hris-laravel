@@ -198,7 +198,10 @@ h1 {
                         <div class="mt-4 ml-4 mr-5 mb-0">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div clasl="" style="display: flex; justify-content: flex-end; align-items: center; gap: 10px;">
+                                    <div clasl="" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                                            <div class="mt-5 p-0">
+                                                <button class="btn btn-primary pb-0 py-1" data-target="#print_sk_checked"  id="print_sk_button" style="visibility: hidden"><span class="fa fa-check"></span> Approve</button>
+                                            </div>
                                         <div class="mt-5 p-0">
                                             <button class="btn btn-primary w-100" onclick="openModalBuatPengajuan()"  data-toggle="tooltip" title="Cari Data" id="recap_labor_cost_2"><i class="fa fa-plus" aria-hidden="true"></i> Buat Pengajuan</button>
                                         </div>
@@ -223,6 +226,7 @@ h1 {
                                                     <table id="datatable-ajax-crud-waiting" class="table table-sm table-striped table-hover table-bordered w-100">
                                                         <thead>
                                                             <tr class="text-center">
+                                                                <th scope="col" width="3%" class="text-center" id="th-checkbox-container">
                                                                 <th scope="col">Tanggal Pengajuan</th>
                                                                 <th scope="col">Nomor Form Perijinan</th>
                                                                 <th scope="col">NIP</th>
@@ -672,6 +676,89 @@ h1 {
     </div>
 
 
+    {{-- MODAL APPROVE PENGAJUAN CHECKBOX--}}
+    <div class="modal fade" id="ajax-modal-approve-pengajuan-checkbox" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-scrollable" style="max-width: 45%;">
+            <div class="modal-content">
+                <div class="modal-header bg-primary p-2">
+                    <h4 class="modal-title pl-2 font-weight-bold" id="title-modal-list">Approve / Reject Pengajuan Ijin</h4>
+                    <button type="button" id="btn-close-modal-approve-pengajuan-checkbox" class="close text-white ml-1"  aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
+                        <i class="fa fa-remove"></i>
+                    </button>
+                </div>
+                <div style="height: auto; overflow-y: auto; overflow-x: auto;">
+                    <div class="row p-5 d-flex justify-content-between">
+                        <input type="hidden" id="uuid_modal" value="" />
+                        <input type="hidden" id="uuid_master_modal" value="" />
+                        <input type="hidden" id="enroll_id_modal" value="" />
+                        <div class="col">
+                            <div class="d-flex mb-2">
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Nama Karyawan</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
+                                <p class="mb-0" id="nama_karyawan_modal" style="font-size: 16px;"></p>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">NIP</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
+                                <p class="mb-0" id="nik_karyawan_modal" style="font-size: 16px;"></p>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Tanggal Pengajuan</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
+                                <p class="mb-0" id="tanggal_perijinan_modal" style="font-size: 16px;"></p>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Tanggal Perijinan</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
+                                <p class="mb-0" id="tanggal_mulai_sampai_modal" style="font-size: 16px;"></p>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Kode Absen Ijin</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
+                                <p class="mb-0" id="kode_absen_ijin_modal" style="font-size: 16px;"></p>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Department</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
+                                <p class="mb-0" id="department_modal" style="font-size: 16px;"></p>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Bagian</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
+                                <p class="mb-0" id="bagian_modal" style="font-size: 16px;"></p>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Keterangan</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
+                                <p class="mb-0" id="keterangan_modal" style="font-size: 16px;"></p>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Nomor Form</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
+                                <p class="mb-0" id="nomor_form_perijinan_modal" style="font-size: 16px; text-decoration: underline; font-weight: bold"></p>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Catatan Reject</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
+                                <div class="flex-grow-1">
+                                    <!-- Textarea -->
+                                    <textarea class="form-control mb-1" id="keterangan_reject_modal" name="keterangan_reject_modal" rows="2" placeholder="Catatan Reject"></textarea>
+                                    <!-- Error message -->
+                                    <div id="keterangan_error" class="text-danger" style="font-size: 14px; display: none;">Catatan wajib diisi</div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center mb-2 mt-5 col-gap-3">
+                                <button type="button" id="btn-approve-pengajuan" class="btn btn-success w-25" style="margin-right: 10px;" data-toggle="tooltip" title="Approve"><i class="fa fa-check" aria-hidden="true"></i> Approve</button>
+                                <button type="button" id="btn-reject-pengajuan" class="btn btn-danger w-25" data-toggle="tooltip" title="Cancel"><i class="fa fa-times-rectangle" aria-hidden="true"></i> Reject</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
 
 
@@ -702,14 +789,11 @@ h1 {
     <script src="{{URL::asset('assets/plugins/time-picker/jquery.timepicker.js')}}"></script>
     <script src="{{URL::asset('assets/plugins/time-picker/toggles.min.js')}}"></script>
 
-      <!---Tabs js-->
-      <script src="{{URL::asset('assets/plugins/tabs/jquery.multipurpose_tabcontent.js')}}"></script>
-      <script src="{{URL::asset('assets/plugins/tabs/tabs.js')}}"></script>
+    <!---Tabs js-->
+    <script src="{{URL::asset('assets/plugins/tabs/jquery.multipurpose_tabcontent.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/tabs/tabs.js')}}"></script>
 
-      <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-
-
-
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
 
     <style>
         .checkbox-xl .form-check-input {
@@ -839,7 +923,6 @@ h1 {
                     uuid: uuid
                 },
                 success: function(res) {
-                    console.log(res);
                     var data = res;
                     var tanggal_periz=data.tanggal_perizinan;
                     var tanggal_mulai_ijin=null;
@@ -927,7 +1010,6 @@ h1 {
                 },
                 success: function(res) {
                     var data = res;
-                    console.log(data.employee_name);
                     var tanggal_periz=data.tanggal_perizinan;
                     var tanggal_mulai_ijin=null;
                     var tanggal_akhir_ijin=null;
@@ -1007,8 +1089,66 @@ h1 {
             $('#ajax-modal-tambah').modal('hide');
         }
 
-        $(document).ready(function() {
+        function actionCheckAllEmployee(element) {
+            if (element.checked) {
+                $('#datatable-ajax-crud-waiting tbody input.form-check-input').each(function() {
+                    var uuid = $(this).val();
 
+                    if (!perijinanChecked.includes(uuid)) {
+                        perijinanChecked.push(uuid);
+                    }
+
+                    $(this).prop('checked', true);
+                    document.getElementById("print_sk_button").style.visibility = "visible";
+                });
+
+            } else {
+                $('#datatable-ajax-crud-waiting tbody input.form-check-input').each(function() {
+                    var uuid = $(this).val();
+
+                    perijinanChecked = perijinanChecked.filter(item => item !== uuid);
+
+                    $(this).prop('checked', false);
+                });
+
+                if (perijinanChecked.length === 0) {
+                    document.getElementById("print_sk_button").style.visibility = "hidden";
+                }
+            }
+        }
+
+        function actionThisEmployeeCheck(element) {
+                if (element.checked) {
+                    if(!perijinanChecked.find((value) => value == element.value)) {
+                        perijinanChecked.push(element.value);
+                    }
+                } else {
+                    if(perijinanChecked.find((value) => value == element.value)) {
+                        const index = perijinanChecked.indexOf(element.value);
+                        if (index > -1) { // only splice array when item is found
+                            perijinanChecked.splice(index, 1); // 2nd parameter means remove one item only
+                        }
+                    }
+                }
+                if(perijinanChecked.length>0){
+                    document.getElementById("print_sk_button").style.visibility = "visible";
+                }else{
+                    document.getElementById("print_sk_button").style.visibility = "hidden";
+                }
+        }
+
+        const allowedUsers = ['ersa@ptnag.com', 'IT', 'mega@ptnag.com', 'fadli', 'rudy@ptnag.com', 'hrd'];
+        const currentUser = $('#username_who_access').val();
+
+        if (allowedUsers.includes(currentUser)) {
+            $('#th-checkbox-container').html(`
+                <input type="checkbox" id="checkAllEmployee" onchange="actionCheckAllEmployee(this)">
+            `);
+        }
+
+        var perijinanChecked = [];
+        var currentPageCheck = 0;
+        $(document).ready(function() {
             var start = moment().subtract(29, 'days');
             var end = moment();
             var htmlDateRange = '<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>'
@@ -1019,6 +1159,102 @@ h1 {
             $('#daterange1').val(daterange1);
             $('#daterange2').val(daterange1);
 
+            const allowedUsers = ['ersa@ptnag.com', 'IT', 'mega@ptnag.com', 'fadli', 'rudy@ptnag.com', 'hrd'];
+            const currentUser = $('#username_who_access').val();
+            const columnsConfig = [];
+
+            // Kolom checkbox hanya untuk user tertentu
+            if (allowedUsers.includes(currentUser)) {
+                columnsConfig.push({
+                    data: 'uuid',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return `
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="${data}" id="checked_uuid_${row.uuid}" onchange="actionThisEmployeeCheck(this)">
+                            </div>
+                        `;
+                    }
+                });
+            }
+
+            // Kolom lainnya
+            columnsConfig.push(
+                {
+                    data: 'tanggal_perizinan',
+                    render: function (data) {
+                        return moment(data).format('DD-MM-YYYY');
+                    }
+                },
+                {
+                    data: 'nomor_form_perizinan',
+                    render: function () {
+                        return '<p>-</p>';
+                    }
+                },
+                { data: 'nik' },
+                { data: 'employee_name' },
+                {
+                    data: 'nama_absen_ijin',
+                    width: '10%',
+                    render: function (data, type, row) {
+                        const value = data ?? row.kode_absen_ijin;
+                        if (value === 'PC') return 'PULANG CEPAT';
+                        if (value === 'DT') return 'DATANG TERLAMBAT';
+                        return value || '-';
+                    }
+                },
+                { data: 'absen_alasan' },
+                {
+                    data: null,
+                    orderable: false,
+                    searchable: false,
+                    className: "text-center",
+                    render: function (data, type, row) {
+                        const uuidNo = encodeURIComponent(row.uuid);
+                        let exportUrl = '';
+                        let btnClass = '';
+
+                        if (['IKS', 'PC', 'DT'].includes(row.kode_absen_ijin)) {
+                            exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_izin_pdf?uuid=${uuidNo}`;
+                            btnClass = 'btn-warning';
+                        } else {
+                            exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_cuti_pdf?uuid=${uuidNo}`;
+                            btnClass = 'btn-danger';
+                        }
+
+                        let html = '';
+
+                        if (allowedUsers.includes(currentUser)) {
+                            html += `
+                                <button onclick="openModalApprovePengajuan('${row.uuid}')" class="btn btn-sm btn-success mr-1" title="Approve Pengajuan">
+                                    <i class="fa fa-check"></i>
+                                </button>
+                            `;
+                        }
+
+                        html += `
+                            <a href="${exportUrl}" target="_blank" class="btn btn-sm ${btnClass} mr-1" title="Print PDF Pengajuan">
+                                <i class="fa fa-file-pdf-o"></i>
+                            </a>
+                            <button class="btn btn-sm btn-primary mr-1" onclick="openModalEditPengajuan('${row.uuid}')" title="Edit">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger mr-1" id="btn-remove"
+                                data-kode-absen="${row.kode_absen_ijin}"
+                                data-nomor-form-perizinan="${row.nomor_form_perizinan}"
+                                data-enroll_id="${row.enroll_id}"
+                                data-tanggal_perizinan="${row.tanggal_perizinan}"
+                                title="Hapus">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        `;
+
+                        return html;
+                    }
+                }
+            );
+
             var tableWaiting = $('#datatable-ajax-crud-waiting').DataTable({
                 ajax: {
                     url: '{{ route('cuti_karyawan.dataabsenperijinan.ajax_dataabsenperizinan') }}',
@@ -1027,83 +1263,46 @@ h1 {
                 },
                 processing: true,
                 serverSide: true,
-                columns: [
-                    { data: 'tanggal_perizinan',
-                      render: function(data, type, row) {
-                            return moment(data).format('DD-MM-YYYY');  // Formatkan tanggal ke dmy
-                        }
-                    },
-                    { data: 'nomor_form_perizinan',
-                        render: function (data, type, row) {
-                            return '<p>-</p>';
-                        }
-                    },
-                    { data: 'nik' },
-                    { data: 'employee_name' },
-                    {data: 'nama_absen_ijin',
-                        width: '10%',
-                        render: function (data, type, row) {
-                            // Gunakan nama_absen_ijin jika tidak null, kalau null pakai kode_absen_ijin
-                            let value = data ?? row.kode_absen_ijin;
+                columns: columnsConfig,
+                columnDefs: [
+                {
+                    'targets': [0],
+                    render: function (data, type, row) {
+                    const allowedUsers = ['ersa@ptnag.com', 'IT', 'mega@ptnag.com', 'fadli', 'rudy@ptnag.com', 'hrd'];
+                    const currentUser = $('#username_who_access').val();
 
-                            if (value === 'PC') {
-                                return 'PULANG CEPAT';
-                            } else if (value === 'DT') {
-                                return 'DATANG TERLAMBAT';
-                            } else {
-                                return value || '-'; // fallback jika masih null atau kosong
-                            }
-                        }
-                    },
-                    { data: 'absen_alasan' },
-                    {
-                        data: null,
-                        orderable: false,
-                        searchable: false,
-                        className: "text-center",
-                        render: function (data, type, row) {
-                                const uuidNo = encodeURIComponent(row.uuid);
-                                let exportUrl;
-                                let btnClass;
-
-                                if (row.kode_absen_ijin === 'IKS' || row.kode_absen_ijin === 'PC' || row.kode_absen_ijin === 'DT') {
-                                    exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_izin_pdf?uuid=${uuidNo}`;
-                                    btnClass = 'btn-warning';
-                                } else {
-                                    exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_cuti_pdf?uuid=${uuidNo}`;
-                                    btnClass = 'btn-danger';
-                                }
-                                if($('#username_who_access').val()=='HR' || $('#username_who_access').val()=='IT'|| $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='fadli'|| $('#username_who_access').val()=='rudy@ptnag.com' || $('#username_who_access').val()=='hrd' ){
-                                    return `
-                                        <button onclick="openModalApprovePengajuan('${row.uuid}')" data-id="${row.uuid}" target="_blank" class="btn btn-sm btn-success mr-1" title="Approve Pengajuan">
-                                            <i class="fa fa-check"></i>
-                                        </button>
-                                        <a href="${exportUrl}" target="_blank" class="btn btn-sm ${btnClass} mr-1" title="Print PDF Pengajuan">
-                                            <i class="fa fa-file-pdf-o"></i>
-                                        </a>
-                                        <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.uuid}')" data-id="${row.uuid}" title="Edit">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-kode-absen="${row.kode_absen_ijin}" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Edit">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    `;
-                                }else{
-                                    return `
-                                        <a href="${exportUrl}" target="_blank" class="btn btn-sm ${btnClass} mr-1" title="Print PDF Pengajuan">
-                                            <i class="fa fa-file-pdf-o"></i>
-                                        </a>
-                                        <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.uuid}')" data-id="${row.uuid}" title="Edit">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-kode-absen="${row.kode_absen_ijin}" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Edit">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    `;
-                                }
-                        }
+                    if (allowedUsers.includes(currentUser)) {
+                        return `
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="${data}" id="checked_uuid_${row.uuid}" onchange="actionThisEmployeeCheck(this)">
+                            </div>
+                        `;
+                    } else {
+                        return '';
                     }
-                ]
+                }
+
+                }
+                ],
+                rowCallback: function(row, data, dataIndex){
+                    let currentEnrollId = data['uuid'];
+
+                    perijinanChecked.forEach((item, index, array) => {
+                        if(item==currentEnrollId){
+                            currentPageCheck++;
+                            $(row).find('input[id="checked_uuid_'+item+'"]').prop('checked', true);
+                        }
+                    });
+                },
+                drawCallback: function (settings) {
+                    if (currentPageCheck == 0) {
+                        $('#checkAllEmployee').prop("checked", false);
+                    } else {
+                        $('#checkAllEmployee').prop("checked", true);
+                    }
+
+                    currentPageCheck = 0;
+                }
             });
 
             // Table untuk Verifikasi (is_verifikasi == 1)
@@ -1159,7 +1358,7 @@ h1 {
                                     btnClass = 'btn-danger';
                                 }
 
-                                if($('#username_who_access').val()=='HR' || $('#username_who_access').val()=='IT'|| $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='fadli'|| $('#username_who_access').val()=='rudy@ptnag.com'|| $('#username_who_access').val()=='hrd' ){
+                                if($('#username_who_access').val()=='ersa@ptnag.com' || $('#username_who_access').val()=='IT'|| $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='fadli'|| $('#username_who_access').val()=='rudy@ptnag.com'|| $('#username_who_access').val()=='hrd' ){
                                     return `
                                         <a href="${exportUrl}" target="_blank" class="btn btn-sm ${btnClass} mr-1" title="Print PDF Pengajuan">
                                             <i class="fa fa-file-pdf-o"></i>
@@ -1232,6 +1431,72 @@ h1 {
                     }
                 ]
             });
+
+
+
+            $('#print_sk_button').on('click',function(){
+                message = "Anda Yakin Ingin Approve Perijinan ini !!!";
+                type = "warning";
+                swal({
+                    title: message,
+                    type: type,
+                    showCancelButton: true,
+                    confirmButtonText: 'Saya Yakin',
+                    cancelButtonText: 'Tutup'
+                },function(isConfirm    ){
+                    if(isConfirm) {
+                        $('#progress-show-1').show();
+                        $('#progress-hide-1').hide();
+
+                        $.ajax({
+                            type:"POST",
+                            url: "{{route('cuti_karyawan.dataabsenperijinan.approve_perijinan_all')}}",
+                            dataType: 'json',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                            data: {
+                                perijinanChecked:perijinanChecked
+                            },
+                            dataType: 'json',
+                            success: function(res){
+                                notif({
+                                    msg: "<b>Info:</b> Data berhasil di hapus.",
+                                    type: "info"
+                                });
+                                  // ✅ Sembunyikan tombol print
+                                $('#print_sk_button').css('visibility', 'hidden');
+
+                                // ✅ Kosongkan array UUID
+                                perijinanChecked = [];
+
+                                // ✅ Uncheck checkbox master
+                                $('#checkAllEmployee').prop('checked', false);
+
+                                // ✅ Reload semua tabel
+                                tableVerifikasi.ajax.reload();
+                                tableWaiting.ajax.reload();
+                                tableReject.ajax.reload();
+
+                                // ✅ Reset progress
+                                $('#progress-show-1').hide();
+                                $('#progress-hide-1').show();
+                            },
+                            error: function(res){
+                                notif({
+                                    msg: "<b>Error:</b> Oops data gagal di hapus.",
+                                    type: "error"
+                                });
+                            }
+                        });
+
+                    } else {
+                        tableVerifikasi.ajax.reload();
+                        tableWaiting.ajax.reload();
+                        tableReject.ajax.reload();
+                    }
+                });
+            });
+
 
 
             $('body').on('click', '#btn-remove', function (event) {
@@ -2052,8 +2317,6 @@ h1 {
                     },
                     dataType: 'json',
                     success: function(res){
-                        console.log(res);
-
                         if (res > 0) {
                             $.ajax({
                                 type:"POST",

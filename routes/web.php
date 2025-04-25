@@ -236,6 +236,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('cuti_karyawan/create_dtpc_menu',['as'=>'cuti_karyawan.dataabsenperijinan.create_dtpc_menu','uses'=>'MasterData\CutiKaryawanController@create_dtpc_menu']);
     Route::post('cuti_karyawan/destroy',['as'=>'cuti_karyawan.dataabsenperijinan.destroy','uses'=>'MasterData\CutiKaryawanController@destroy']);
     Route::post('cuti_karyawan/destroy_dtpc',['as'=>'cuti_karyawan.dataabsenperijinan.destroy_dtpc','uses'=>'MasterData\CutiKaryawanController@destroy_dtpc']);
+    Route::post('cuti_karyawan/approve_perijinan_all',['as'=>'cuti_karyawan.dataabsenperijinan.approve_perijinan_all','uses'=>'MasterData\CutiKaryawanController@approve_perijinan_all']);
 
     Route::get('hrd/export_pdf_sk_bni',['as'=>'hris.hrd.export_pdf_sk_bni','uses'=>'HRDController@export_pdf_sk_bni']);
     Route::post('hrd/export_pdf_print_sk',['as'=>'hris.hrd.export_pdf_print_sk','uses'=>'HRDController@export_pdf_print_sk']);
