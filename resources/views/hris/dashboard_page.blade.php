@@ -114,7 +114,7 @@
                                 </div>
                                 @endif
                             @endif
-                            @if ($type!='mutasi_karyawan' || ($type=='mutasi_karyawan' && $enroll_id!=null) || $email=='GA' || $role=='admin')
+                            @if ($type!='mutasi_karyawan' || ($type=='mutasi_karyawan' && $enroll_id!=null) || $email=='GA' || $role=='admin'|| $role=='absensi')
                             <div class="col">
                                 <a href="{{route('hris.ga.form_pengajuan_transportasi')}}" >
                                     <div class="card card-3">
@@ -123,7 +123,7 @@
                                 </a>
                             </div>
                             @endif
-                            @if($type=='mutasi_karyawan' || $role=='superadmin' || $role=='admin')
+                            @if($type=='mutasi_karyawan' || $role=='superadmin' || $role=='admin' || $role=='absensi')
                             <div class="col">
                                 <a href="{{route('hris.mutasi-karyawan.dashboard')}}">
                                 <div class="card card-4">
