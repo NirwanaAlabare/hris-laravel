@@ -893,7 +893,7 @@
                                 <td width='70px'>"+data[key].no+"</td>\
                                 <td width='110px'>"+data[key].nik+"</td>\
                                 <td width='58px'>"+data[key].enroll_id+"</td>\
-                                <td width='100px'>"+data[key].tanggal_berjalan+"</td>\
+                                <td width='100px'>"+moment(data[key].tanggal_berjalan).format('DD-MM-YYYY')+"</td>\
                                 <td width='250px'>"+data[key].employee_name+"</td>\
                                 <td width='113px'>"+data[key].kerja_libur+"</td>\
                                 <td align='center' width='122px'>"+data[key].jadwal_masuk_kerja+"</td>\
