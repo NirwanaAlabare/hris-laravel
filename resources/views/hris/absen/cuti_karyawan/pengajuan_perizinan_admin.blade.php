@@ -1219,7 +1219,7 @@ h1 {
                                     exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_cuti_pdf?uuid=${uuidNo}`;
                                     btnClass = 'btn-danger';
                                 }
-                                if($('#username_who_access').val()=='HR' || $('#username_who_access').val()=='IT'|| $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='fadli'|| $('#username_who_access').val()=='rudy@ptnag.com' || $('#username_who_access').val()=='hrd' ){
+                                if($('#username_who_access').val()=='ersa@ptnag.com' || $('#username_who_access').val()=='IT'|| $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='fadli'|| $('#username_who_access').val()=='rudy@ptnag.com' || $('#username_who_access').val()=='hrd' ){
                                     return `
                                         <button onclick="openModalApprovePengajuan('${row.uuid}')" data-id="${row.uuid}" target="_blank" class="btn btn-sm btn-success mr-1" title="Approve Pengajuan">
                                             <i class="fa fa-check"></i>
@@ -1336,7 +1336,7 @@ h1 {
                                     btnClass = 'btn-danger';
                                 }
 
-                                if($('#username_who_access').val()=='HR' || $('#username_who_access').val()=='IT'|| $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='fadli'|| $('#username_who_access').val()=='rudy@ptnag.com'|| $('#username_who_access').val()=='hrd' ){
+                                if($('#username_who_access').val()=='ersa@ptnag.com' || $('#username_who_access').val()=='IT'|| $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='fadli'|| $('#username_who_access').val()=='rudy@ptnag.com'|| $('#username_who_access').val()=='hrd' ){
                                     return `
                                         <a href="${exportUrl}" target="_blank" class="btn btn-sm ${btnClass} mr-1" title="Print PDF Pengajuan">
                                             <i class="fa fa-file-pdf-o"></i>
