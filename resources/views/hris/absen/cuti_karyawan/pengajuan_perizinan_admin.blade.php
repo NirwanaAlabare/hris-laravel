@@ -628,7 +628,7 @@ h1 {
                                 <p class="mb-0" id="tanggal_perijinan_modal" style="font-size: 16px;"></p>
                             </div>
                             <div class="d-flex mb-2">
-                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Tanggal Perijinan</p>
+                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;" id="label_tanggal_mulai_sampai_modal"></p>
                                 <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
                                 <p class="mb-0" id="tanggal_mulai_sampai_modal" style="font-size: 16px;"></p>
                             </div>
@@ -677,90 +677,6 @@ h1 {
             </div>
         </div>
     </div>
-
-
-    {{-- MODAL APPROVE PENGAJUAN CHECKBOX--}}
-    <div class="modal fade" id="ajax-modal-approve-pengajuan-checkbox" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-sm modal-dialog-scrollable" style="max-width: 45%;">
-            <div class="modal-content">
-                <div class="modal-header bg-primary p-2">
-                    <h4 class="modal-title pl-2 font-weight-bold" id="title-modal-list">Approve / Reject Pengajuan Ijin</h4>
-                    <button type="button" id="btn-close-modal-approve-pengajuan-checkbox" class="close text-white ml-1"  aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
-                        <i class="fa fa-remove"></i>
-                    </button>
-                </div>
-                <div style="height: auto; overflow-y: auto; overflow-x: auto;">
-                    <div class="row p-5 d-flex justify-content-between">
-                        <input type="hidden" id="uuid_modal" value="" />
-                        <input type="hidden" id="uuid_master_modal" value="" />
-                        <input type="hidden" id="enroll_id_modal" value="" />
-                        <div class="col">
-                            <div class="d-flex mb-2">
-                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Nama Karyawan</p>
-                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
-                                <p class="mb-0" id="nama_karyawan_modal" style="font-size: 16px;"></p>
-                            </div>
-                            <div class="d-flex mb-2">
-                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">NIP</p>
-                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
-                                <p class="mb-0" id="nik_karyawan_modal" style="font-size: 16px;"></p>
-                            </div>
-                            <div class="d-flex mb-2">
-                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Tanggal Pengajuan</p>
-                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
-                                <p class="mb-0" id="tanggal_perijinan_modal" style="font-size: 16px;"></p>
-                            </div>
-                            <div class="d-flex mb-2">
-                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Tanggal Perijinan</p>
-                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
-                                <p class="mb-0" id="tanggal_mulai_sampai_modal" style="font-size: 16px;"></p>
-                            </div>
-                            <div class="d-flex mb-2">
-                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Kode Absen Ijin</p>
-                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
-                                <p class="mb-0" id="kode_absen_ijin_modal" style="font-size: 16px;"></p>
-                            </div>
-                            <div class="d-flex mb-2">
-                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Department</p>
-                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
-                                <p class="mb-0" id="department_modal" style="font-size: 16px;"></p>
-                            </div>
-                            <div class="d-flex mb-2">
-                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Bagian</p>
-                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
-                                <p class="mb-0" id="bagian_modal" style="font-size: 16px;"></p>
-                            </div>
-                            <div class="d-flex mb-2">
-                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Keterangan</p>
-                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
-                                <p class="mb-0" id="keterangan_modal" style="font-size: 16px;"></p>
-                            </div>
-                            <div class="d-flex mb-2">
-                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Nomor Form</p>
-                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
-                                <p class="mb-0" id="nomor_form_perijinan_modal" style="font-size: 16px; text-decoration: underline; font-weight: bold"></p>
-                            </div>
-                            <div class="d-flex mb-2">
-                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Catatan Reject</p>
-                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 16px;">:</p>
-                                <div class="flex-grow-1">
-                                    <!-- Textarea -->
-                                    <textarea class="form-control mb-1" id="keterangan_reject_modal" name="keterangan_reject_modal" rows="2" placeholder="Catatan Reject"></textarea>
-                                    <!-- Error message -->
-                                    <div id="keterangan_error" class="text-danger" style="font-size: 14px; display: none;">Catatan wajib diisi</div>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-center mb-2 mt-5 col-gap-3">
-                                <button type="button" id="btn-approve-pengajuan" class="btn btn-success w-25" style="margin-right: 10px;" data-toggle="tooltip" title="Approve"><i class="fa fa-check" aria-hidden="true"></i> Approve</button>
-                                <button type="button" id="btn-reject-pengajuan" class="btn btn-danger w-25" data-toggle="tooltip" title="Cancel"><i class="fa fa-times-rectangle" aria-hidden="true"></i> Reject</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
 
 
 
@@ -1029,9 +945,14 @@ h1 {
                     $('#uuid_modal').val(data.uuid);
                     $('#uuid_master_modal').val(data.uuid_master);
                     $('#enroll_id_modal').val(data.enroll_id);
-
+                    if(data.kode_absen_ijin == 'IKS'){
+                        $('#label_tanggal_mulai_sampai_modal').text('Waktu Perijinan');
+                        $('#tanggal_mulai_sampai_modal').text(data.time_mulai_ijin + ' - ' + data.time_akhir_ijin).prop('disabled', true);
+                    }else{
+                        $('#label_tanggal_mulai_sampai_modal').text('Tanggal Perijinan');
+                        $('#tanggal_mulai_sampai_modal').text(tanggal_mulai_ijin + ' - ' + tanggal_akhir_ijin).prop('disabled', true);
+                    }
                     $('#tanggal_perijinan_modal').text(moment(tanggal_periz).format('D MMM YYYY')).prop('disabled', true);
-                    $('#tanggal_mulai_sampai_modal').text(tanggal_mulai_ijin + ' - ' + tanggal_akhir_ijin).prop('disabled', true);
                     $('#department_modal').text(data.department_name).prop('disabled', true);
                     $('#bagian_modal').text(data.sub_dept_name).prop('disabled', true);
                     $('#nomor_form_perijinan_modal').text(data.nomor_form_perizinan);
