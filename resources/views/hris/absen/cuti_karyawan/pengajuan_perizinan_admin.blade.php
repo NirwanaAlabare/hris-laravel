@@ -226,7 +226,10 @@ h1 {
                                                     <table id="datatable-ajax-crud-waiting" class="table table-sm table-striped table-hover table-bordered w-100">
                                                         <thead>
                                                             <tr class="text-center">
-                                                                <th scope="col" width="3%" class="text-center" id="th-checkbox-container">
+                                                                <th scope="col" width="3%">
+                                                                    <input type="checkbox" id="checkAllEmployee" onchange="actionCheckAllEmployee(this)">
+                                                                </th>
+
                                                                 <th scope="col">Tanggal Pengajuan</th>
                                                                 <th scope="col">Nomor Form Perijinan</th>
                                                                 <th scope="col">NIP</th>
@@ -1090,16 +1093,20 @@ h1 {
         }
 
         function actionCheckAllEmployee(element) {
+            const allowedUsers = ['ersa@ptnag.com', 'IT', 'mega@ptnag.com', 'fadli', 'rudy@ptnag.com', 'hrd'];
+            const currentUser = $('#username_who_access').val();
             if (element.checked) {
                 $('#datatable-ajax-crud-waiting tbody input.form-check-input').each(function() {
-                    var uuid = $(this).val();
+                    if (allowedUsers.includes(currentUser)) {
+                        var uuid = $(this).val();
 
-                    if (!perijinanChecked.includes(uuid)) {
-                        perijinanChecked.push(uuid);
+                        if (!perijinanChecked.includes(uuid)) {
+                            perijinanChecked.push(uuid);
+                        }
+
+                        $(this).prop('checked', true);
+                        document.getElementById("print_sk_button").style.visibility = "visible";
                     }
-
-                    $(this).prop('checked', true);
-                    document.getElementById("print_sk_button").style.visibility = "visible";
                 });
 
             } else {
@@ -1118,6 +1125,8 @@ h1 {
         }
 
         function actionThisEmployeeCheck(element) {
+            const allowedUsers = ['ersa@ptnag.com', 'IT', 'mega@ptnag.com', 'fadli', 'rudy@ptnag.com', 'hrd'];
+            const currentUser = $('#username_who_access').val();
                 if (element.checked) {
                     if(!perijinanChecked.find((value) => value == element.value)) {
                         perijinanChecked.push(element.value);
@@ -1131,19 +1140,12 @@ h1 {
                     }
                 }
                 if(perijinanChecked.length>0){
-                    document.getElementById("print_sk_button").style.visibility = "visible";
+                    if (allowedUsers.includes(currentUser)) {
+                        document.getElementById("print_sk_button").style.visibility = "visible";
+                    }
                 }else{
                     document.getElementById("print_sk_button").style.visibility = "hidden";
                 }
-        }
-
-        const allowedUsers = ['ersa@ptnag.com', 'IT', 'mega@ptnag.com', 'fadli', 'rudy@ptnag.com', 'hrd'];
-        const currentUser = $('#username_who_access').val();
-
-        if (allowedUsers.includes(currentUser)) {
-            $('#th-checkbox-container').html(`
-                <input type="checkbox" id="checkAllEmployee" onchange="actionCheckAllEmployee(this)">
-            `);
         }
 
         var perijinanChecked = [];
@@ -1159,102 +1161,6 @@ h1 {
             $('#daterange1').val(daterange1);
             $('#daterange2').val(daterange1);
 
-            const allowedUsers = ['ersa@ptnag.com', 'IT', 'mega@ptnag.com', 'fadli', 'rudy@ptnag.com', 'hrd'];
-            const currentUser = $('#username_who_access').val();
-            const columnsConfig = [];
-
-            // Kolom checkbox hanya untuk user tertentu
-            if (allowedUsers.includes(currentUser)) {
-                columnsConfig.push({
-                    data: 'uuid',
-                    orderable: false,
-                    render: function (data, type, row) {
-                        return `
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="${data}" id="checked_uuid_${row.uuid}" onchange="actionThisEmployeeCheck(this)">
-                            </div>
-                        `;
-                    }
-                });
-            }
-
-            // Kolom lainnya
-            columnsConfig.push(
-                {
-                    data: 'tanggal_perizinan',
-                    render: function (data) {
-                        return moment(data).format('DD-MM-YYYY');
-                    }
-                },
-                {
-                    data: 'nomor_form_perizinan',
-                    render: function () {
-                        return '<p>-</p>';
-                    }
-                },
-                { data: 'nik' },
-                { data: 'employee_name' },
-                {
-                    data: 'nama_absen_ijin',
-                    width: '10%',
-                    render: function (data, type, row) {
-                        const value = data ?? row.kode_absen_ijin;
-                        if (value === 'PC') return 'PULANG CEPAT';
-                        if (value === 'DT') return 'DATANG TERLAMBAT';
-                        return value || '-';
-                    }
-                },
-                { data: 'absen_alasan' },
-                {
-                    data: null,
-                    orderable: false,
-                    searchable: false,
-                    className: "text-center",
-                    render: function (data, type, row) {
-                        const uuidNo = encodeURIComponent(row.uuid);
-                        let exportUrl = '';
-                        let btnClass = '';
-
-                        if (['IKS', 'PC', 'DT'].includes(row.kode_absen_ijin)) {
-                            exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_izin_pdf?uuid=${uuidNo}`;
-                            btnClass = 'btn-warning';
-                        } else {
-                            exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_cuti_pdf?uuid=${uuidNo}`;
-                            btnClass = 'btn-danger';
-                        }
-
-                        let html = '';
-
-                        if (allowedUsers.includes(currentUser)) {
-                            html += `
-                                <button onclick="openModalApprovePengajuan('${row.uuid}')" class="btn btn-sm btn-success mr-1" title="Approve Pengajuan">
-                                    <i class="fa fa-check"></i>
-                                </button>
-                            `;
-                        }
-
-                        html += `
-                            <a href="${exportUrl}" target="_blank" class="btn btn-sm ${btnClass} mr-1" title="Print PDF Pengajuan">
-                                <i class="fa fa-file-pdf-o"></i>
-                            </a>
-                            <button class="btn btn-sm btn-primary mr-1" onclick="openModalEditPengajuan('${row.uuid}')" title="Edit">
-                                <i class="fa fa-edit"></i>
-                            </button>
-                            <button class="btn btn-sm btn-danger mr-1" id="btn-remove"
-                                data-kode-absen="${row.kode_absen_ijin}"
-                                data-nomor-form-perizinan="${row.nomor_form_perizinan}"
-                                data-enroll_id="${row.enroll_id}"
-                                data-tanggal_perizinan="${row.tanggal_perizinan}"
-                                title="Hapus">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        `;
-
-                        return html;
-                    }
-                }
-            );
-
             var tableWaiting = $('#datatable-ajax-crud-waiting').DataTable({
                 ajax: {
                     url: '{{ route('cuti_karyawan.dataabsenperijinan.ajax_dataabsenperizinan') }}',
@@ -1263,25 +1169,97 @@ h1 {
                 },
                 processing: true,
                 serverSide: true,
-                columns: columnsConfig,
+                columns: [
+                    {
+                        data: 'uuid',
+                        orderable: false
+                    },
+                    { data: 'tanggal_perizinan',
+                      render: function(data, type, row) {
+                            return moment(data).format('DD-MM-YYYY');  // Formatkan tanggal ke dmy
+                        }
+                    },
+                    { data: 'nomor_form_perizinan',
+                        render: function (data, type, row) {
+                            return '<p>-</p>';
+                        }
+                    },
+                    { data: 'nik' },
+                    { data: 'employee_name' },
+                    {data: 'nama_absen_ijin',
+                        width: '10%',
+                        render: function (data, type, row) {
+                            // Gunakan nama_absen_ijin jika tidak null, kalau null pakai kode_absen_ijin
+                            let value = data ?? row.kode_absen_ijin;
+
+                            if (value === 'PC') {
+                                return 'PULANG CEPAT';
+                            } else if (value === 'DT') {
+                                return 'DATANG TERLAMBAT';
+                            } else {
+                                return value || '-'; // fallback jika masih null atau kosong
+                            }
+                        }
+                    },
+                    { data: 'absen_alasan' },
+                    {
+                        data: null,
+                        orderable: false,
+                        searchable: false,
+                        className: "text-center",
+                        render: function (data, type, row) {
+                                const uuidNo = encodeURIComponent(row.uuid);
+                                let exportUrl;
+                                let btnClass;
+
+                                if (row.kode_absen_ijin === 'IKS' || row.kode_absen_ijin === 'PC' || row.kode_absen_ijin === 'DT') {
+                                    exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_izin_pdf?uuid=${uuidNo}`;
+                                    btnClass = 'btn-warning';
+                                } else {
+                                    exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_cuti_pdf?uuid=${uuidNo}`;
+                                    btnClass = 'btn-danger';
+                                }
+                                if($('#username_who_access').val()=='HR' || $('#username_who_access').val()=='IT'|| $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='fadli'|| $('#username_who_access').val()=='rudy@ptnag.com' || $('#username_who_access').val()=='hrd' ){
+                                    return `
+                                        <button onclick="openModalApprovePengajuan('${row.uuid}')" data-id="${row.uuid}" target="_blank" class="btn btn-sm btn-success mr-1" title="Approve Pengajuan">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+                                        <a href="${exportUrl}" target="_blank" class="btn btn-sm ${btnClass} mr-1" title="Print PDF Pengajuan">
+                                            <i class="fa fa-file-pdf-o"></i>
+                                        </a>
+                                        <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.uuid}')" data-id="${row.uuid}" title="Edit">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-kode-absen="${row.kode_absen_ijin}" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Edit">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    `;
+                                }else{
+                                    return `
+                                        <a href="${exportUrl}" target="_blank" class="btn btn-sm ${btnClass} mr-1" title="Print PDF Pengajuan">
+                                            <i class="fa fa-file-pdf-o"></i>
+                                        </a>
+                                        <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.uuid}')" data-id="${row.uuid}" title="Edit">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-kode-absen="${row.kode_absen_ijin}" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Edit">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    `;
+                                }
+                        }
+                    }
+                ],
                 columnDefs: [
                 {
                     'targets': [0],
-                    render: function (data, type, row) {
-                    const allowedUsers = ['ersa@ptnag.com', 'IT', 'mega@ptnag.com', 'fadli', 'rudy@ptnag.com', 'hrd'];
-                    const currentUser = $('#username_who_access').val();
-
-                    if (allowedUsers.includes(currentUser)) {
+                    'render' : function (data,type, row) {
                         return `
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="${data}" id="checked_uuid_${row.uuid}" onchange="actionThisEmployeeCheck(this)">
+                                <input class="form-check-input" type="checkbox" style='width: 20px; height: 20px;' value="`+data+`" style='width: 20px; height: 20px;' id="checked_uuid_` + row.uuid + `" onchange="actionThisEmployeeCheck(this)" >
                             </div>
-                        `;
-                    } else {
-                        return '';
+                        `
                     }
-                }
-
                 }
                 ],
                 rowCallback: function(row, data, dataIndex){
@@ -1358,7 +1336,7 @@ h1 {
                                     btnClass = 'btn-danger';
                                 }
 
-                                if($('#username_who_access').val()=='ersa@ptnag.com' || $('#username_who_access').val()=='IT'|| $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='fadli'|| $('#username_who_access').val()=='rudy@ptnag.com'|| $('#username_who_access').val()=='hrd' ){
+                                if($('#username_who_access').val()=='HR' || $('#username_who_access').val()=='IT'|| $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='fadli'|| $('#username_who_access').val()=='rudy@ptnag.com'|| $('#username_who_access').val()=='hrd' ){
                                     return `
                                         <a href="${exportUrl}" target="_blank" class="btn btn-sm ${btnClass} mr-1" title="Print PDF Pengajuan">
                                             <i class="fa fa-file-pdf-o"></i>
