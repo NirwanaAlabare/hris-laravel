@@ -948,7 +948,10 @@ h1 {
                     if(data.kode_absen_ijin == 'IKS'){
                         $('#label_tanggal_mulai_sampai_modal').text('Waktu Perijinan');
                         $('#tanggal_mulai_sampai_modal').text(data.time_mulai_ijin + ' - ' + data.time_akhir_ijin).prop('disabled', true);
-                    }else{
+                    } else if(data.kode_absen_ijin == 'DT' || data.kode_absen_ijin == 'PC'){
+                        $('#label_tanggal_mulai_sampai_modal').text('Waktu Perijinan');
+                        $('#tanggal_mulai_sampai_modal').text(tanggal_mulai_ijin + ' ' + data.time_mulai_ijin + ' - ' + tanggal_akhir_ijin + ' ' + data.time_akhir_ijin).prop('disabled', true);
+                    } else{
                         $('#label_tanggal_mulai_sampai_modal').text('Tanggal Perijinan');
                         $('#tanggal_mulai_sampai_modal').text(tanggal_mulai_ijin + ' - ' + tanggal_akhir_ijin).prop('disabled', true);
                     }
