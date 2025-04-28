@@ -573,7 +573,7 @@
                         var department_name = $("#department_name").val();
                         var sub_dept_id = $("#sub_dept_id").val();
                         var sub_dept_name = $("#sub_dept_name").val();
-                        var jumlah_rp_potongan = $("#jumlah_rp_potongan").val();
+                        var jumlah_rp_potongan = $("#jumlah_rp_potongan").val().replace(/[^\d]/g, '');
                         var periode_tanggal_koreksi = $("#periode_tanggal_koreksi").val();
                         var jenis_potongan = $("#jenis_potongan").val();
                         var keterangan = $("#keterangan").val();
