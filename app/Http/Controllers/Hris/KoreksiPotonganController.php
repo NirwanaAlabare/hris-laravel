@@ -372,7 +372,7 @@ class KoreksiPotonganController extends AdminBaseController
                             'jenis_potongan'=>$value['jenis_potongan'],
 
                         ];
-                        DataKoreksiPotongan::where('enroll_id',$value['enroll_id'])->where('periode_tanggal_koreksi',$value['periode_tanggal_koreksi'])->update($data_update);
+                        DataKoreksiPotongan::where('enroll_id',$value['enroll_id'])->where('periode_tanggal_koreksi',$value['periode_tanggal_koreksi'])->where('jenis_potongan',$value['jenis_potongan'])->update($data_update);
                     }
                     else{
                         $data_insert=[
