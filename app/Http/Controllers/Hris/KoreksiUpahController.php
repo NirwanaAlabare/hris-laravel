@@ -546,7 +546,7 @@ class KoreksiUpahController extends AdminBaseController
                             'jenis_koreksi' => $value['jenis_koreksi'],
 
                         ];
-                        DataKoreksiUpah::where('enroll_id',$value['enroll_id'])->where('periode_tanggal_koreksi',$value['periode_tanggal_koreksi'])->update($data_update);
+                        DataKoreksiUpah::where('enroll_id',$value['enroll_id'])->where('periode_tanggal_koreksi',$value['periode_tanggal_koreksi'])->where('jenis_koreksi',$value['jenis_koreksi'])->update($data_update);
                     }
                     else{
                         $data_insert=[
