@@ -57,17 +57,16 @@ Route::prefix('payroll')->group(function() {
 
 
 });
-Route::prefix('estimasi')->group(function() {
+Route::prefix('estimasi')->middleware(['auth.admin', 'lock', 'role:superadmin,hrd,absensi'])->group(function() {
     Route::get('index', 'EstimasiPayrollController@index')->name("hris.estimasinilaipayroll.index");
     Route::post('ajax_exportexcel', 'EstimasiPayrollController@ajax_exportexcel')->name("hris.estimasinilaipayroll.export");
-
 });
 
-Route::prefix('daily_labor')->group(function() {
+Route::prefix('daily_labor')->middleware(['auth.admin', 'lock', 'role:superadmin,hrd,absensi'])->group(function() {
     Route::get('index', 'DailyLaborController@index')->name("hris.nilaipayrollperhari.index");
 });
 
-Route::prefix('junal')->group(function() {
+Route::prefix('junal')->middleware(['auth.admin', 'lock', 'role:superadmin,hrd,absensi'])->group(function() {
     Route::get('index', 'JurnalController@index')->name("hris.jurnal.index");
     Route::post('ajax_exportexcel', 'JurnalController@ajax_exportexcel')->name("hris.jurnal.export");
 

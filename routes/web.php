@@ -64,10 +64,53 @@ Route::group(['middleware' => [ 'lock'], 'prefix' => 'hris','namespace' => 'Hris
     // Route::get('identity/export_pdf_sk_kerja',['as'=>'hris.hrd.export_pdf_sk_kerja','uses'=>'HRDController@export_pdf_sk_kerja']);
     // Route::get('identity/export_pdf_paklaring',['as'=>'hris.hrd.export_pdf_paklaring','uses'=>'HRDController@export_pdf_paklaring']);
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// SEDANG DALAM PERBAIKAN PRIVATE ROUTE
+
+// DASHBOARD MENU UTAMA
 Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namespace' => 'Hris'], function()
 {
-    Route::get('dashboard/index',['as'=>'hris.dashboard.index','uses'=>'DashboardController@index']);
     Route::get('dashboard',['as'=>'hris.dashboard.tes','uses'=>'DashboardController@tes']);
+});
+
+
+// PAYROLL & ATTANDANCE
+Route::group(['middleware' => ['auth.admin', 'lock','role:superadmin,hrd,absensi,admin'], 'prefix' => 'hris','namespace' => 'Hris'], function()
+{
+    Route::get('dashboard/index',['as'=>'hris.dashboard.index','uses'=>'DashboardController@index']);
+    Route::get('gradingsalary/index',['as'=>'hris.gradingsalary.index','uses'=>'GradingSalaryController@index']);
+    Route::get('employeegrading/index',['as'=>'hris.employeegrading.index','uses'=>'EmployeeGradingController@index']);
+    Route::get('tunjangankaryawan/index',['as'=>'hris.tunjangankaryawan.index','uses'=>'TunjanganKaryawanController@index']);
+    Route::get('rekapperhitungandtpc/index',['as'=>'hris.rekapperhitungandtpc.index','uses'=>'RekapPerhitunganDtpcController@index']);
+    Route::get('rekapperhitunganiks/index',['as'=>'hris.rekapperhitunganiks.index','uses'=>'RekapPerhitunganIksController@index']);
+    Route::get('rekapperhitunganpayroll/index',['as'=>'hris.rekapperhitunganpayroll.index','uses'=>'RekapPerhitunganPayrollController@index']);
+    Route::get('dataclosingpayroll/index',['as'=>'hris.dataclosingpayroll.index','uses'=>'DataClosingPayrollController@index']);
+    Route::get('aktifitasperubahan/index',['as'=>'hris.aktifitasperubahan.index','uses'=>'AktifitasPerubahan@index']);
+    Route::get('employeeatr/index',['as'=>'hris.employeeatr.index','uses'=>'EmployeeAtrController@index']);
+
+});
+
+
+Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namespace' => 'Hris'], function()
+{
     Route::get('hrd/index',['as'=>'hris.hrd.index','uses'=>'HRDController@index']);
     Route::get('hrd/kontrak_kerja',['as'=>'hris.hrd.kontrak_kerja','uses'=>'HRDController@kontrak_kerja']);
     Route::get('hrd/layoff_termination',['as'=>'hris.hrd.layoff_termination','uses'=>'HRDController@layoff_termination']);
@@ -442,7 +485,6 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('departmentall/get_dept_name',['as'=>'hris.departmentall.get_dept_name','uses'=>'DepartmentAllController@get_dept_name']);
 
     // EMPLOYEE ATTRIBUTE
-    Route::get('employeeatr/index',['as'=>'hris.employeeatr.index','uses'=>'EmployeeAtrController@index']);
     Route::post('employeeatr/ajax_getemployeeatr/',['as'=>'hris.employeeatr.ajax_getemployeeatr','uses'=> 'EmployeeAtrController@ajax_getemployeeatr']);
     Route::post('employeeatr/ajax_getemployeeatr2/',['as'=>'hris.employeeatr.ajax_getemployeeatr2','uses'=> 'EmployeeAtrController@ajax_getemployeeatr2']);
     Route::post('employeeatr/ajax_getemployeeatr3/',['as'=>'hris.employeeatr.ajax_getemployeeatr3','uses'=> 'EmployeeAtrController@ajax_getemployeeatr3']);
@@ -574,18 +616,19 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('bpjssetting/replace',['as'=>'hris.bpjssetting.replace','uses'=>'BpjsSettingController@replace']);
     Route::post('bpjssetting/destroy',['as'=>'hris.bpjssetting.destroy','uses'=>'BpjsSettingController@destroy']);
 
-    Route::get('gradingsalary/index',['as'=>'hris.gradingsalary.index','uses'=>'GradingSalaryController@index']);
+
     Route::post('gradingsalary/ajax_data',['as'=>'hris.gradingsalary.ajax_data','uses'=>'GradingSalaryController@ajax_data']);
     Route::post('gradingsalary/replace',['as'=>'hris.gradingsalary.replace','uses'=>'GradingSalaryController@replace']);
     Route::post('gradingsalary/destroy',['as'=>'hris.gradingsalary.destroy','uses'=>'GradingSalaryController@destroy']);
 
-    Route::get('employeegrading/index',['as'=>'hris.employeegrading.index','uses'=>'EmployeeGradingController@index']);
+
+
+
     Route::post('employeegrading/ajax_data',['as'=>'hris.employeegrading.ajax_data','uses'=>'EmployeeGradingController@ajax_data']);
     Route::post('employeegrading/replace',['as'=>'hris.employeegrading.replace','uses'=>'EmployeeGradingController@replace']);
     Route::post('employeegrading/destroy',['as'=>'hris.employeegrading.destroy','uses'=>'EmployeeGradingController@destroy']);
     Route::post('employeegrading/update_grading',['as'=>'hris.employeegrading.update_grading','uses'=>'EmployeeGradingController@update_grading']);
 
-    Route::get('tunjangankaryawan/index',['as'=>'hris.tunjangankaryawan.index','uses'=>'TunjanganKaryawanController@index']);
     Route::post('tunjangankaryawan/ajax_data',['as'=>'hris.tunjangankaryawan.ajax_data','uses'=>'TunjanganKaryawanController@ajax_data']);
     Route::post('tunjangankaryawan/ajax_getemployee',['as'=>'hris.tunjangankaryawan.ajax_getemployee','uses'=>'TunjanganKaryawanController@ajax_getemployee']);
     Route::post('tunjangankaryawan/ajax_getnamatunjangan',['as'=>'hris.tunjangankaryawan.ajax_getnamatunjangan','uses'=>'TunjanganKaryawanController@ajax_getnamatunjangan']);
@@ -593,21 +636,20 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('tunjangankaryawan/destroy',['as'=>'hris.tunjangankaryawan.destroy','uses'=>'TunjanganKaryawanController@destroy']);
     Route::post('tunjangankaryawan/edit',['as'=>'hris.tunjangankaryawan.edit','uses'=>'TunjanganKaryawanController@edit']);
 
-    Route::get('rekapperhitungandtpc/index',['as'=>'hris.rekapperhitungandtpc.index','uses'=>'RekapPerhitunganDtpcController@index']);
     Route::post('rekapperhitungandtpc/ajax_rekap',['as'=>'hris.rekapperhitungandtpc.ajax_rekap','uses'=>'RekapPerhitunganDtpcController@ajax_rekap']);
     Route::post('rekapperhitungandtpc/ajax_exportexcel/',['as'=>'hris.rekapperhitungandtpc.ajax_exportexcel','uses'=> 'RekapPerhitunganDtpcController@ajax_exportexcel']);
 
-    Route::get('rekapperhitunganiks/index',['as'=>'hris.rekapperhitunganiks.index','uses'=>'RekapPerhitunganIksController@index']);
+
     Route::post('rekapperhitunganiks/ajax_rekap',['as'=>'hris.rekapperhitunganiks.ajax_rekap','uses'=>'RekapPerhitunganIksController@ajax_rekap']);
     Route::post('rekapperhitunganiks/ajax_exportexcel/',['as'=>'hris.rekapperhitunganiks.ajax_exportexcel','uses'=> 'RekapPerhitunganIksController@ajax_exportexcel']);
 
-    Route::get('rekapperhitunganpayroll/index',['as'=>'hris.rekapperhitunganpayroll.index','uses'=>'RekapPerhitunganPayrollController@index']);
+
     Route::post('rekapperhitunganpayroll/ajax_exportexcel/',['as'=>'hris.rekapperhitunganpayroll.ajax_exportexcel','uses'=> 'RekapPerhitunganPayrollController@ajax_exportexcel']);
 
     Route::get('rekapperhitunganpayrollcutoff/index',['as'=>'hris.rekapperhitunganpayrollcutoff.index','uses'=>'RekapPerhitunganPayrollCutOffController@index']);
     Route::post('rekapperhitunganpayrollcutoff/ajax_exportexcel/',['as'=>'hris.rekapperhitunganpayrollcutoff.ajax_exportexcel','uses'=> 'RekapPerhitunganPayrollCutOffController@ajax_exportexcel']);
     Route::post('rekapperhitunganpayrollcutoff/ajax_prosescutoff/',['as'=>'hris.rekapperhitunganpayrollcutoff.ajax_prosescutoff','uses'=> 'RekapPerhitunganPayrollCutOffController@ajax_prosescutoff']);
-    Route::get('rekapperhitunganpayroll/index',['as'=>'hris.rekapperhitunganpayroll.index','uses'=>'RekapPerhitunganPayrollController@index']);
+
     Route::get('rekapperhitunganpayroll/export_excel_transfer',['as'=>'hris.rekapperhitunganpayroll.export_excel_transfer','uses'=>'ProsesPayrollController@export_excel_transfer']);
     Route::post('rekapperhitunganpayroll/ajax_data/',['as'=>'hris.rekapperhitunganpayroll.ajax_data','uses'=> 'RekapPerhitunganPayrollController@ajax_data']);
     Route::post('rekapperhitunganpayroll/get_payroll_department/',['as'=>'hris.rekapperhitunganpayroll.get_payroll_department','uses'=> 'RekapPerhitunganPayrollController@get_payroll_department']);
@@ -621,7 +663,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('rekapperhitunganpayroll/recap_labor_cost_2',['as'=>'hris.rekapperhitunganpayroll.recap_labor_cost_2','uses'=> 'RekapPerhitunganPayrollController@recap_labor_cost_2']);
 
 
-    Route::get('dataclosingpayroll/index',['as'=>'hris.dataclosingpayroll.index','uses'=>'DataClosingPayrollController@index']);
+
     Route::post('dataclosingpayroll/ajax_data',['as'=>'hris.dataclosingpayroll.ajax_data','uses'=>'DataClosingPayrollController@ajax_data']);
     Route::post('dataclosingpayroll/ajax_getclosing/',['as'=>'hris.dataclosingpayroll.ajax_getclosing','uses'=> 'DataClosingPayrollController@ajax_getclosing']);
     Route::post('dataclosingpayroll/ajax_getclosing_datahadir/',['as'=>'hris.dataclosingpayroll.ajax_getclosing_datahadir','uses'=> 'DataClosingPayrollController@ajax_getclosing_datahadir']);
@@ -633,7 +675,6 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('daily_labor/get_last_update_labor_cost/',['as'=>'hris.daily_labor.get_last_update_labor_cost','uses'=> 'DailyLaborController@get_last_update_labor_cost']);
 
 
-    Route::get('aktifitasperubahan/index',['as'=>'hris.aktifitasperubahan.index','uses'=>'AktifitasPerubahan@index']);
     Route::post('aktifitasperubahan/ajax_data/',['as'=>'hris.aktifitasperubahan.ajax_data','uses'=> 'AktifitasPerubahan@ajax_data']);
 
     include "routechunks/new.php";
