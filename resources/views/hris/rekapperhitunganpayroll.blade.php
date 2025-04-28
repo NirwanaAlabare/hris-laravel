@@ -123,7 +123,8 @@
                                             <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
                                         </div>
                                     </div>
-                                    <input id="" min="{{$minMonth }}" name="periode_payrols" id="periode" type="month" class="form-control PriodeProses" required>
+                                    {{-- <input id="" min="{{$minMonth}}" name="periode_payrols" id="periode" type="month" class="form-control PriodeProses" required> --}}
+                                    <input id="" min="2025-04" name="periode_payrols" id="periode" type="month" class="form-control PriodeProses" required>
                                 </div>
                             </div>
                         </div>
