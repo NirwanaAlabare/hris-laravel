@@ -379,7 +379,6 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
             $total_upah_thp_rupiah_employee='0';
             $total_upah_thp_rupiah_pecahan='0';
         }
-
         return [
             $kosong,
             $enroll_id,
@@ -397,7 +396,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
             $kategori_karyawan,
             $aktif_karyawan,
             $nama_bank,
-            $nomor_rekening_bank,
+            trim($nomor_rekening_bank),
             $jenis_kelamin,
             // $ptkp,
             $st,
