@@ -209,6 +209,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         return 'A7';
     }
 
+
     public function map($Data): array
     {
         $enroll_id = $Data->enroll_id;
@@ -308,8 +309,26 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         if($Data->nomor_rekening_bank == 0|| $Data->nomor_rekening_bank == 'TRANSFER' ){ $nomor_rekening_bank = '-';} else { $nomor_rekening_bank = $Data->nomor_rekening_bank; }
         if($Data->npwp == 0){ $npwp = '-';} else { $npwp = $Data->npwp; }
 
-        $total_upah_thp_rupiah_pembulatan= ceil($total_upah_thp_rupiah / 100) * 100;
-        $pembulatan=$total_upah_thp_rupiah_pembulatan-$total_upah_thp_rupiah;
+        // $total_upah_thp_rupiah_pembulatan= ceil($total_upah_thp_rupiah / 100) * 100;
+        // $pembulatan=$total_upah_thp_rupiah_pembulatan-$total_upah_thp_rupiah;
+
+
+        $tunai = strtoupper($nama_bank) === 'TUNAI'; // pastikan kapital
+
+        // Hitung nilai sebelum pembulatan (upah neto - potongan)
+        $nilai_bersih = $Data->upah_neto_rupiah - $Data->jumlah_potongan_rupiah;
+
+        if ($tunai) {
+            // Jika tunai, pembulatan ke atas kelipatan 500
+            $total_upah_thp_rupiah_pembulatan = ceil($nilai_bersih / 500) * 500;
+        } else {
+            // Jika non-tunai, pembulatan ke atas kelipatan 100 (ROUNDUP -2)
+            $total_upah_thp_rupiah_pembulatan = ceil($nilai_bersih / 100) * 100;
+        }
+
+        // Hitung nilai pembulatan
+        $pembulatan = $total_upah_thp_rupiah_pembulatan - $nilai_bersih;
+
         $upah_per_jam=$upah_per_bulan/173;
         $periode_kehadiran = $Data->periode_early ?? $Data->periode_kehadiran;
 
