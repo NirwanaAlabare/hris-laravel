@@ -322,6 +322,11 @@ class KoreksiUpahController extends AdminBaseController
         $keterangan = $request->keterangan;
         $jenis_koreksi = $request->jenis_koreksi;
 
+
+        $tanggal_awal = explode(' - ', $periode_tanggal_koreksi)[0];
+
+        $format_tanggal = \Carbon\Carbon::createFromFormat('m/d/Y', $tanggal_awal)->format('Y-m-d');
+
          $findDT = DataKoreksiUpah::where('enroll_id',$request->enroll_id)->where('periode_tanggal_koreksi',$request->periode_tanggal_koreksi)
             ->where('jenis_koreksi',$request->jenis_koreksi)->count();
             if($findDT > 0) {
@@ -330,7 +335,7 @@ class KoreksiUpahController extends AdminBaseController
             $query = DataKoreksiUpah::create([
                 'uuid' => Str::uuid(),
                 'kode_koreksi_upah' => $kode_koreksi_upah,
-                'tanggal_koreksi' => $tanggal_koreksi,
+                'tanggal_koreksi' => $format_tanggal,
                 'enroll_id' => $enroll_id,
                 'jumlah_rp_potongan' => $jumlah_rp_potongan,
                 'periode_tanggal_koreksi' => $periode_tanggal_koreksi,
@@ -501,6 +506,9 @@ class KoreksiUpahController extends AdminBaseController
                         $tgl_awal = ($tgl_awal - 25569) * 86400;
                         $tgl_priode_awal=date('m/d/Y', $tgl_awal);
 
+                        $tgl_koreksi = date('Y-m-d', $tgl_awal);
+                        $tgl_koreksi_plus1 = date('Y-m-d', strtotime('+1 day', $tgl_awal));
+
                         $tgl_akhir =$row[5];
                         $tgl_akhir = ($tgl_akhir - 25569) * 86400;
                         $tgl_akhir = 25569 + ($tgl_akhir / 86400);
@@ -510,7 +518,7 @@ class KoreksiUpahController extends AdminBaseController
 
                         $data_import[]=[
                             'kode_koreksi_upah'=>date('Y').date('m').date('i').date('s').$nik,
-                            'tanggal_koreksi'=>date('Y-m-d'),
+                            'tanggal_koreksi'=> $tgl_koreksi,
                             'enroll_id'=>$row[0],
                             'nik'=>$employee->nik??null,
                             'employee_name'=>$employee->employee_name??null,
