@@ -535,7 +535,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                     $datePeriode = explode("-", $this->periode_payroll);
                     $tanggal = strtoupper(date("F", mktime(0, 0, 0, $datePeriode[1], 10))) . ' ' . $datePeriode[0];
                 }
-                $sheet->setCellValue('A3', 'Periode  : ' . $this->last_process_history->last_periode);
+                $sheet->setCellValue('A3', 'Periode  : ' . $tanggal);
                 $sheet->getDelegate()->getStyle('A1')->getFont()->setSize(14);
                 $sheet->mergeCells('A1:D1');
                 $sheet->mergeCells('A2:D2');
