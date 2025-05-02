@@ -750,7 +750,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         }
         if(request()->status_staff){
             $status_staff = request()->status_staff;
-            $inStatusStaff=' AND  (b.status_staff = "'.$status_staff.'" OR emp_hist.status_staff="'.$status_staff.'")';
+            $inStatusStaff=' AND  (b.status_staff = "'.$status_staff.'")';
             $staffnonstaff=$status_staff;
         }
         return Excel::download(new RecapDailyLaborCostExport($tanggal_awal,$tanggal_akhir,$staffnonstaff,$inEnrollId,$inStatusStaff), 'Laporan_Penerimaan FG_Stok.xlsx');
