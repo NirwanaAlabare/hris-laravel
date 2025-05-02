@@ -20,8 +20,8 @@ class KontrakKerjaImportToDatabase implements ToModel, WithStartRow, WithCalcula
         return 4;
     }
     public function model(array $row){
-        $status=EmployeeAtribut::where('enroll_id',$row[2])->get();
-        $enroll_id=$row[2];
+        $status=EmployeeAtribut::where('enroll_id',$row[3])->get();
+        $enroll_id=$row[3];
         $employee_contract=DB::select("select*from employee_contract where enroll_id = '$enroll_id'");
         $timestamp = Carbon::now();
         if($employee_contract){

@@ -22,10 +22,11 @@ class KontrakKerjaImport implements ToModel, WithStartRow, WithCalculatedFormula
     }
     public function model(array $row)
     {
-        $nik=EmployeeAtribut::where('enroll_id',$row[2])->pluck('nik');
-        $employee_name=EmployeeAtribut::where('enroll_id',$row[2])->pluck('employee_name');
-        $department=EmployeeAtribut::where('enroll_id',$row[2])->pluck('department_name');
-        $bagian=EmployeeAtribut::where('enroll_id',$row[2])->pluck('sub_dept_name');
+        $nik=EmployeeAtribut::where('enroll_id',$row[3])->pluck('nik');
+        $employee_name=EmployeeAtribut::where('enroll_id',$row[3])->pluck('employee_name');
+        $department=EmployeeAtribut::where('enroll_id',$row[3])->pluck('department_name');
+        $bagian=EmployeeAtribut::where('enroll_id',$row[3])->pluck('sub_dept_name');
+
         for($j=15;$j<=106;$j+=2){
             if($row[$j]==null||$row[$j]=='-'||preg_match("/[a-z]/i", $row[$j])||strpos($row[$j], ' ') !== false){
                 continue;
