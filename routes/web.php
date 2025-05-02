@@ -44,7 +44,6 @@ Route::group(['middleware' => ['auth.employees'],'namespace' => 'Front'], functi
 
     Route::post('leave_store',['as'=>'front.leave_store','uses'=>'DashboardController@leave_store']);
 
-
     Route::resource('dashboard','DashboardController');
 });
 
@@ -73,6 +72,9 @@ Route::group(['middleware' => [ 'lock'], 'prefix' => 'hris','namespace' => 'Hris
 
 
 
+Route::fallback(function () {
+    return response()->view('errors.403', [], 404);
+});
 
 
 
@@ -704,6 +706,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'admin','names
     Route::get('/notifications',['as'=>'admin.admin.get_notifications','uses'=>'AdminController@get_notifications']);
 
     Route::post('/notifications/mark-as-read/{id}',['as'=>'admin.admin.markAsRead','uses'=>'AdminController@markAsRead']);
+    Route::post('/notifications/mark-as-delete/{id}',['as'=>'admin.admin.markAsDelete','uses'=>'AdminController@markAsDelete']);
 
     Route::get('datakehadiraninoutedited/abseninout/',['as'=>'admin.datakehadiraninoutedited.abseninout','uses'=> 'DataKehadiranInOutEditedController@abseninout']);
     Route::post('datakehadiraninoutedited/ajax_abseninout/',['as'=>'admin.datakehadiraninoutedited.ajax_abseninout','uses'=> 'DataKehadiranInOutEditedController@ajax_abseninout']);

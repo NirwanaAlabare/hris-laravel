@@ -94,6 +94,13 @@
                                 <div class="col-3 pr-0">
                                     <input type="text" id="searchIbuKandung" name="searchIbuKandung" class="form-control" style="background-color:white" placeholder="Masukkan Nama Ibu Kandung">
                                 </div>
+                                <div class="col-2 pt-1">
+                                </div>
+                                <div class="col-2 pt-1">
+                                </div>
+                                <div class="col-2 pt-1">
+                                    <button  id="btn-hapus-filter" class="btn btn-primary">Hapus Filter <i class="fa fa-close" aria-hidden="true"></i> </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -399,6 +406,35 @@
             });
         }
     }
+
+    $(document).ready(function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const enrollIds = urlParams.get('enroll_ids');
+
+    if (enrollIds) {
+        // Kalau ada enroll_ids, tampilkan tombol
+        $('#btn-hapus-filter').show();
+    } else {
+        // Kalau tidak ada, sembunyikan tombol
+        $('#btn-hapus-filter').hide();
+    }
+
+    $('#btn-hapus-filter').on('click', function() {
+        urlParams.delete("enroll_ids");
+
+        // Update URL tanpa reload halaman
+        const newUrl = window.location.pathname + '?' + urlParams.toString();
+        window.history.replaceState({}, '', newUrl);
+
+        // Reload datatable biar filter enroll_ids hilang
+        $('#datatable').DataTable().ajax.reload();
+
+        // Sembunyikan tombol setelah dihapus
+        $('#btn-hapus-filter').hide();
+    });
+});
+
+
     $('#contractImportButton').on('click',function(){
         $("#contractImportButton").addClass("btn-loading");
         $("#contractImportButton").html('Loading...');
@@ -438,6 +474,8 @@
             }
         });
     });
+
+
     $(function(){
         'use strict';
 
@@ -523,7 +561,18 @@
         ajax: {
             url: '{{ route('hris.hrd.get_employee_contract') }}',
             data: function(d) {
-                d.enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+                const urlParams = new URLSearchParams(window.location.search);
+                const enrollIdsFromUrl = urlParams.get('enroll_ids');
+
+                if (enrollIdsFromUrl) {
+                    d.enroll_ids = enrollIdsFromUrl.split(','); // ubah ke array
+                } else {
+                    // kalau tidak ada enroll_ids di URL, kirim data biasa
+                    d.enroll_ids = $("select[name='selectEmployeeID[]']").map(function() {
+                        return $(this).val();
+                    }).get();
+                }
+                // d.enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
                 d.ibu_kandung = $('#searchIbuKandung').val();
                 d.no_ktp = $('#searchNoKTP').val();
                 d.status_kontrak = $('#status_kontrak').val();
@@ -648,6 +697,7 @@
     });
     function actionThisEmployeeCheck(element) {
         if (element.checked) {
+            console.log('element.value',element.value);
             if(!checkedEmployeeArr.find((value) => value == element.value)) {
                 checkedEmployeeArr.push(element.value);
             }
