@@ -406,8 +406,8 @@ class HRDController extends AdminBaseController
             $search_variable=request()->search_variable;
             $inSearchVariable = 'AND (z.enroll_id = "'.$search_variable.'" or z.nik LIKE "'.$search_variable.'%" or z.employee_name LIKE "%'.$search_variable.'%" or z.tempat_lahir LIKE "%'.$search_variable.'%" or z.nomor_tlpn LIKE "'.$search_variable.'%" or z.agama LIKE "'.$search_variable.'%" or z.status_kawin LIKE "'.$search_variable.'%" or z.nomor_kk LIKE "'.$search_variable.'%" or z.pendidikan_terakhir LIKE "'.$search_variable.'%" or z.jurusan_pendidikan LIKE "'.$search_variable.'%" or z.alamat_rumah LIKE "%'.$search_variable.'%" or z.department_name LIKE "%'.$search_variable.'%" or z.sub_dept_name LIKE "%'.$search_variable.'%" or z.status_aktif LIKE "'.$search_variable.'%" or z.ibu_kandung LIKE "%'.$search_variable.'%" or z.nomor_ktp LIKE "'.$search_variable.'%")';
         }
-        if(request()->enroll_id){
-            $enroll_id = request()->enroll_id;
+        if(request()->enroll_ids){
+            $enroll_id = request()->enroll_ids;
             $enroll_id_string = implode(',', $enroll_id);
             $inEnrollId='AND z.enroll_id in ('.$enroll_id_string.')';
         }
@@ -443,6 +443,7 @@ class HRDController extends AdminBaseController
         return DataTables::of($data_input)->toJson();
     }
     public function get_employee_contract2(){
+
         $enroll_id=request()->id;
         $contracts=DB::select("select*from employee_contract where enroll_id='$enroll_id' order by contract_end");
         return $contracts;
