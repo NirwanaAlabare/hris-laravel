@@ -409,7 +409,7 @@
 
     $(document).ready(function() {
     const urlParams = new URLSearchParams(window.location.search);
-    const enrollIds = urlParams.get('enroll_ids');
+    const enrollIds = urlParams.get('notification_id');
 
     if (enrollIds) {
         // Kalau ada enroll_ids, tampilkan tombol
@@ -420,7 +420,7 @@
     }
 
     $('#btn-hapus-filter').on('click', function() {
-        urlParams.delete("enroll_ids");
+        urlParams.delete("notification_id");
 
         // Update URL tanpa reload halaman
         const newUrl = window.location.pathname + '?' + urlParams.toString();
@@ -562,13 +562,13 @@
             url: '{{ route('hris.hrd.get_employee_contract') }}',
             data: function(d) {
                 const urlParams = new URLSearchParams(window.location.search);
-                const enrollIdsFromUrl = urlParams.get('enroll_ids');
+                const notificationIdFromUrl = urlParams.get('notification_id');
 
-                if (enrollIdsFromUrl) {
-                    d.enroll_ids = enrollIdsFromUrl.split(','); // ubah ke array
+                if (notificationIdFromUrl) {
+                    d.notification_id = notificationIdFromUrl.split(','); // ubah ke array
                 } else {
-                    // kalau tidak ada enroll_ids di URL, kirim data biasa
-                    d.enroll_ids = $("select[name='selectEmployeeID[]']").map(function() {
+                    // kalau tidak ada notification_id di URL, kirim data biasa
+                    d.notification_id = $("select[name='selectEmployeeID[]']").map(function() {
                         return $(this).val();
                     }).get();
                 }
@@ -841,7 +841,10 @@
                             <div class='col-2 py-1 border border-left-0 border-body'>Kontrak ke -"+(i+1)+"</div>\
                             <div class='col-3 py-1 border border-body'>"+start.toLocaleDateString("id-ID", options)+"</div>\
                             <div class='col-3 py-1 border border-body'>"+end.toLocaleDateString("id-ID", options)+"</div>\
-                            <div class='col-4 py-1 border border-body'><a href='#' class='btn btn-sm btn-danger py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='printContract("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Print&nbsp;&nbsp;</a></div>\
+                            <div class='col-4 py-1 border border-body'>\
+                                <a href='#' class='btn btn-sm btn-danger py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='printContract("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Print&nbsp;&nbsp;</a>\
+                                <a href='#' class='btn btn-sm btn-danger py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='printContract("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Print&nbsp;&nbsp;</a>\
+                            </div>\
                         </div>");
                     }
                 }

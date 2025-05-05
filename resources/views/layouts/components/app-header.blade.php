@@ -499,7 +499,7 @@ button.theme-switcher{
 
                             let cardHtml = `
                             <div class="container-notif">
-                                <div class="notification-card ${cardClass}" data-id="${notification.id}" data-href="${notification.href_menu}?enroll_ids=${notification.enroll_ids.join(',')}">
+                                <div class="notification-card ${cardClass}" data-id="${notification.id}" data-href="${notification.href_menu}?notification_id=${notification.id}">
                                     <div class="card-header">
                                         <div>
                                             <div class="source">
