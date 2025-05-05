@@ -92,8 +92,7 @@
                 <div class="" style="background-color: #FFF">
                     <div class="card-body p-0">
                         <div class="row">
-                            @if ($type!='mutasi_karyawan')
-                                @if($role=='superadmin' || $role=='absensi' || $role=='admin'|| $role=='payroll')
+                            @if ($modul=='all' || $modul=='attendance_payroll' || $email == 'alex.herdian@ptnag.com' || $email == 'willy@ptnag.com' || $email == 'reza')
                                 <div class="col" style="background-color: #FFF">
                                     <a href="{{route('hris.dashboard.index')}}" >
                                     <div class="card card-1">
@@ -101,10 +100,8 @@
                                             </div>
                                     </a>
                                 </div>
-                                @endif
                             @endif
-                            @if ($type!='mutasi_karyawan')
-                                @if($role=='superadmin' || $role=='absensi' || $role=='admin')
+                            @if ($modul=='all')
                                 <div class="col">
                                     <a href="{{route('hris.hrd.index')}}">
                                     <div class="card card-2">
@@ -112,9 +109,8 @@
                                         </div>
                                     </a>
                                 </div>
-                                @endif
                             @endif
-                            @if ($type!='mutasi_karyawan' || ($type=='mutasi_karyawan' && $enroll_id!=null) || $email=='GA' || $role=='admin'|| $role=='absensi')
+                            @if ($modul=='general_affair, administrasi' || $modul=='all')
                             <div class="col">
                                 <a href="{{route('hris.ga.form_pengajuan_transportasi')}}" >
                                     <div class="card card-3">
@@ -123,7 +119,7 @@
                                 </a>
                             </div>
                             @endif
-                            @if($type=='mutasi_karyawan' || $role=='superadmin' || $role=='admin' || $role=='absensi')
+                            @if ($modul=='general_affair, administrasi' || $modul=='all')
                             <div class="col">
                                 <a href="{{route('hris.mutasi-karyawan.dashboard')}}">
                                 <div class="card card-4">

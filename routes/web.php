@@ -110,10 +110,22 @@ Route::group(['middleware' => ['auth.admin', 'lock','role:superadmin,hrd,absensi
 
 });
 
+// KEPERSONALIAAN / PENILAIAN KINERJA
+
+Route::group(['middleware' => ['auth.admin', 'lock','role:superadmin'], 'prefix' => 'hris','namespace' => 'Hris'], function()
+{
+    Route::get('hrd/index',['as'=>'hris.hrd.index','uses'=>'HRDController@index']);
+    Route::get('admin/index',['as'=>'admin.admin.index','uses'=>'AdminController@index']);
+
+
+});
+Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namespace' => 'Hris'], function()
+{
+    Route::get('penilaian_kinerja/index',['as'=>'hris.penilaian_kinerja.index','uses'=>'PenilaianKinerjaController@index']);
+});
 
 Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namespace' => 'Hris'], function()
 {
-    Route::get('hrd/index',['as'=>'hris.hrd.index','uses'=>'HRDController@index']);
     Route::get('hrd/kontrak_kerja',['as'=>'hris.hrd.kontrak_kerja','uses'=>'HRDController@kontrak_kerja']);
     Route::get('hrd/layoff_termination',['as'=>'hris.hrd.layoff_termination','uses'=>'HRDController@layoff_termination']);
     Route::get('hrd/sp_hadir',['as'=>'hris.hrd.sp_hadir','uses'=>'HRDController@sp_hadir']);
@@ -691,7 +703,6 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'admin','names
     Route::resource('dashboard', 'AdminDashboardController',['as' => 'admin']);
 
     //   Admin user Routing
-    Route::get('admin/index',['as'=>'admin.admin.index','uses'=>'AdminController@index']);
     Route::post('admin/ajaxAdmin/',['as'=>'admin.admin.ajaxAdmin','uses'=> 'AdminController@ajaxAdmin']);
     Route::post('admin/show_data/',['as'=>'admin.admin.show_data','uses'=> 'AdminController@show_data']);
     Route::post('admin/edit_data/',['as'=>'admin.admin.edit_data','uses'=> 'AdminController@edit_data']);

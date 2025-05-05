@@ -38,7 +38,8 @@ class DashboardController extends AdminBaseController
         $type=$loggedAdmin->type;
         $email=$loggedAdmin->email;
         $enroll_id=$loggedAdmin->enroll_id;
-        return View::make('hris/dashboard_page',compact('role','type','email','enroll_id'), $this->data);
+        $modul=$loggedAdmin->modul;
+        return View::make('hris/dashboard_page',compact('role','type','email','enroll_id','modul'), $this->data);
     }
 
 }
