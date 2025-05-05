@@ -126,14 +126,16 @@ class exportExcelKontrak implements FromView, WithColumnWidths, WithColumnFormat
             'CZ' => NumberFormat::FORMAT_DATE_XLSX15,
             'DA' => NumberFormat::FORMAT_DATE_XLSX15,
             'DB' => NumberFormat::FORMAT_DATE_XLSX15,
-            'DC' => NumberFormat::FORMAT_DATE_XLSX15
+            'DC' => NumberFormat::FORMAT_DATE_XLSX15,
+            'DE' => NumberFormat::FORMAT_DATE_XLSX15,
+            'DF' => NumberFormat::FORMAT_DATE_XLSX15,
         ];
     }
     public function columnWidths(): array
     {
         return [
             'A' => 7,
-            'B' => 1,
+            'B' => 7,
             'C' => 7,
             'D' => 10,
             'E' => 30,
@@ -239,6 +241,9 @@ class exportExcelKontrak implements FromView, WithColumnWidths, WithColumnFormat
             'DA' => 15,
             'DB' => 15,
             'DC' => 15,
+            'DE' => 15,
+            'DF' => 15,
+            'DG' => 7,
         ];
     }
     public function registerEvents() : array
@@ -247,17 +252,14 @@ class exportExcelKontrak implements FromView, WithColumnWidths, WithColumnFormat
             AfterSheet::class => function(AfterSheet $event) {
                 $default_font_style = [
                     'font' => [
-                        'name' => 'Arial Nova',
-                        'bold' => true,
-                        'color' => [
-                            'rgb' => '2a2d8c'
-                        ],
+                        'name' => 'Calibri',
+                        'italic' => true,
                         'size' => 12
                     ],
                 ];
                 $header_style = [
                     'font' => [
-                        'name' => 'Arial Nova',
+                        'name' => 'Calibri',
                         'bold' => true,
                         'size' => 8
                     ],
@@ -269,15 +271,15 @@ class exportExcelKontrak implements FromView, WithColumnWidths, WithColumnFormat
                 ];
                 $text_style = [
                     'font' => [
-                        'name' => 'Arial Nova',
+                        'name' => 'Calibri',
                         'size' => 8
                     ],
                 ];
                 $sheet = $event->sheet;
                 $sheet->getDelegate()->getStyle('A1')->applyFromArray($default_font_style);
-                $sheet->getDelegate()->getStyle('A2:DC2')->applyFromArray($header_style);
-                $sheet->getDelegate()->getStyle('M3:DC3')->applyFromArray($header_style);
-                $sheet->getDelegate()->getStyle('A4:DC6000')->applyFromArray($text_style);
+                $sheet->getDelegate()->getStyle('A2:DG2')->applyFromArray($header_style);
+                $sheet->getDelegate()->getStyle('M3:DG3')->applyFromArray($header_style);
+                $sheet->getDelegate()->getStyle('A4:DG6000')->applyFromArray($text_style);
             }
         ];
     }
