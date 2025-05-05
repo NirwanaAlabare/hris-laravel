@@ -68,7 +68,7 @@ class AdminController extends AdminBaseController
                     'sender_email' => 'system',
                     'receiver_email' => $receiverEmail,
                     'type' => 'KONTRAK',
-                    'href_menu' => route('hris.hrd.kontrak_kerja'),
+                    'href_menu' => 'http://10.10.5.111/hris/public/index.php/hris/hrd/kontrak_kerja',
                     'message' => 'Ada ' . count($newEnrollIds) . ' karyawan baru yang kontraknya akan berakhir.',
                     'enroll_ids' => $newEnrollIds,
                     'is_read' => false,
@@ -111,7 +111,7 @@ class AdminController extends AdminBaseController
                         'sender_email' => 'system',
                         'receiver_email' => $receiverEmail,
                         'type' => 'KONTRAK',
-                        'href_menu' => route('hris.hrd.kontrak_kerja'),
+                        'href_menu' => 'http://10.10.5.111/hris/public/index.php/hris/hrd/kontrak_kerja',
                         'message' => 'Kontrak karyawan ' . $staff->employee_name . ' akan berakhir pada ' . Carbon\Carbon::parse($staff->contract_end)->translatedFormat('d F Y') . '.',
                         'enroll_ids' => [$staff->enroll_id], // Tetap array
                         'is_read' => false,
