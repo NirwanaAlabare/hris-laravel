@@ -115,8 +115,6 @@ Route::group(['middleware' => ['auth.admin', 'lock','role:superadmin,hrd,absensi
 Route::group(['middleware' => ['auth.admin', 'lock','role:superadmin'], 'prefix' => 'hris','namespace' => 'Hris'], function()
 {
     Route::get('hrd/index',['as'=>'hris.hrd.index','uses'=>'HRDController@index']);
-    Route::get('admin/index',['as'=>'admin.admin.index','uses'=>'AdminController@index']);
-
 
 });
 Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namespace' => 'Hris'], function()
@@ -701,6 +699,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'admin','names
     //	Dashboard Routing
     //Route::resource('dashboard', 'AdminDashboardController');
     Route::resource('dashboard', 'AdminDashboardController',['as' => 'admin']);
+    Route::get('admin/index',['as'=>'admin.admin.index','uses'=>'AdminController@index']);
 
     //   Admin user Routing
     Route::post('admin/ajaxAdmin/',['as'=>'admin.admin.ajaxAdmin','uses'=> 'AdminController@ajaxAdmin']);
