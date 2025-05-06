@@ -171,7 +171,7 @@
         chart.zoomOutButton.set("forceHidden", true);
 
         var xRenderer = am5xy.AxisRendererX.new(root, {
-            minGridDistance: 30,
+            minGridDistance: 1,
             minorGridEnabled: true
         });
         xRenderer.labels.template.setAll({
