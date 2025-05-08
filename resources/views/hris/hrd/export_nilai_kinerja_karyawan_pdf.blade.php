@@ -436,7 +436,7 @@ function formatNama($name) {
                         </tr>
                         <tr>
                             <td colspan="3" style="height:17px; line-height:1; text-align: center; font-weight: bold;">Total Pengurangan</td>
-                            <td style="height:17px; line-height:1;  border-left: none;">{{$data_penilaian && $data_penilaian->total_pengurangan}}</td>
+                            <td style="height:17px; line-height:1;  border-left: none;">{{$data_penilaian ? $data_penilaian->total_pengurangan : ''}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -481,19 +481,19 @@ function formatNama($name) {
                         </tr>
                         <tr>
                             <td style="height:18px; line-height:2; width:50%;height:17px; line-height:1; border-right: 0px solid #000;">Penilaian Kinerja</td>
-                            <td style="height:18px; line-height:2; width:50%;height:17px; line-height:1">{{$data_penilaian && $data_penilaian->nilai_kinerja}}</td>
+                            <td style="height:18px; line-height:2; width:50%;height:17px; line-height:1">{{$data_penilaian ? $data_penilaian->nilai_kinerja : ''}}</td>
                         </tr>
                         <tr>
                             <td style="height:18px; line-height:2; width:50%;height:17px; line-height:1; border-right: 0px solid #000;">Penilaian Kompeten</td>
-                            <td style="height:18px; line-height:2; width:50%;height:17px; line-height:1">{{$data_penilaian && $data_penilaian->rata_rata_kompetensi}}</td>
+                            <td style="height:18px; line-height:2; width:50%;height:17px; line-height:1">{{$data_penilaian ? $data_penilaian->rata_rata_kompetensi : ''}}</td>
                         </tr>
                         <tr>
                             <td style="height:18px; line-height:2; width:50%;height:17px; line-height:1; border-right: 0px solid #000;">Penilaian Kedisiplinan</td>
-                            <td style="height:18px; line-height:2; width:50%;height:17px; line-height:1">{{$data_penilaian && $data_penilaian->total_pengurangan}}</td>
+                            <td style="height:18px; line-height:2; width:50%;height:17px; line-height:1">{{$data_penilaian ? $data_penilaian->total_pengurangan : ''}}</td>
                         </tr>
                         <tr>
                             <td style="height:18px; line-height:2; width:50%;height:17px; line-height:1; border-right: 0px solid #000;">Nilai Akhir</td>
-                            <td style="height:18px; line-height:2; width:50%;height:17px; line-height:1">{{$data_penilaian && $data_penilaian->nilai_akhir}}</td>
+                            <td style="height:18px; line-height:2; width:50%;height:17px; line-height:1">{{$data_penilaian ? $data_penilaian->nilai_akhir : ''}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -566,7 +566,7 @@ function formatNama($name) {
             </tr>
             <tr>
                 <td style="height:20px; border-top:none; line-height:2;">
-                    {{ $data_penilaian && $data_penilaian->penilai }}
+                    {{ $data_penilaian ? $data_penilaian->penilai : '' }}
                 </td>
                 <td style="border-left: none; height:20px; border-top:none; line-height:2;">
                 </td>

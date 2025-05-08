@@ -34,12 +34,6 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         $this->pageTitle = 'Dashboard';
     }
 
-    public function index(){
-        $selectEmployee =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')->groupby('enroll_id')->orderby('employee_name', 'asc')->get();
-        $selectNoKTP = EmployeeAtribut::selectRaw('nomor_ktp')->groupby('nomor_ktp')->orderby('nomor_ktp', 'asc')->get();
-        return View::make('hris/hrd/penilaian_kinerja_staff',compact('selectEmployee','selectNoKTP'), $this->data);
-    }
-
 
     public function get_employee_contract_staff(){
         $loggedAdmin = Auth::guard('admin')->user();
@@ -120,38 +114,80 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         $data=DB::select("select a.status_staff,a.enroll_id,a.nik,a.employee_name,a.status_jabatan,a.sub_dept_name,a.department_name,a.status_kontrak_tetap,a.status_aktif,a.join_date,a.tanggal_resign,a.nomor_ktp,a.tempat_lahir,a.alamat_rumah,a.tanggal_lahir,a.no_surat,b.contract,b.contract_end,c.max_contract,c.max_contract_end from employee_atribut a left join employee_contract b on a.enroll_id=b.enroll_id left join (select enroll_id,max(contract) max_contract,max(contract_end) max_contract_end from employee_contract group by enroll_id)c on a.enroll_id=c.enroll_id where a.enroll_id=".$enroll_id." group by a.enroll_id");
 
         $data_penilaian = PenilaianKinerja::where('enroll_id', $enroll_id)->where('tgl_awal_kontrak',$contract)->where('tgl_akhir_kontrak', $contract_end)->first();
-        if($data_penilaian){
-            $kejadian = [
-                'sp3_kali' => $data_penilaian->sp3_kali,
-                'sp2_kali' => $data_penilaian->sp2_kali,
-                'sp1_kali' => $data_penilaian->sp1_kali,
-                'kecelakaan_kali' => $data_penilaian->kecelakaan_kali,
-                'mangkir_kali' => $data_penilaian->mangkir_kali,
-                'ijin_kali' => $data_penilaian->ijin_kali,
-            ];
 
-            $total = [
-                'sp3_kali' => $data_penilaian->sp3_kali * 6,
-                'sp2_kali' => $data_penilaian->sp2_kali * 4,
-                'sp1_kali' => $data_penilaian->sp1_kali * 2,
-                'kecelakaan_kali' => $data_penilaian->kecelakaan_kali * 2,
-                'mangkir_kali' => $data_penilaian->mangkir_kali * 1,
-                'ijin_kali' => $data_penilaian->ijin_kali * 0.5,
-            ];
+        $start_date = Carbon::parse($contract);
+        $end_date = Carbon::parse($contract_end)->subDays(30);
 
-            $total_pengurangan = array_sum($total);
+        $jumlah_mangkir = MasterDataAbsenKehadiran::where('enroll_id', $enroll_id)
+            ->whereBetween('tanggal_berjalan', [$start_date, $end_date])
+            ->where('status_absen', 'M')
+            ->count();
+        $jumlah_ijin = MasterDataAbsenKehadiran::where('enroll_id', $enroll_id)
+            ->whereBetween('tanggal_berjalan', [$start_date, $end_date])
+            ->where('status_absen', 'I')
+            ->count();
+        // if($data_penilaian){
+        //     $kejadian = [
+        //         'sp3_kali' => $data_penilaian->sp3_kali,
+        //         'sp2_kali' => $data_penilaian->sp2_kali,
+        //         'sp1_kali' => $data_penilaian->sp1_kali,
+        //         'kecelakaan_kali' => $data_penilaian->kecelakaan_kali,
+        //         'mangkir_kali' => $data_penilaian->mangkir_kali,
+        //         'ijin_kali' => $data_penilaian->ijin_kali,
+        //     ];
 
-            // Lalu gabungkan ke dalam data_penilaian
-            $data_penilaian->kejadian = $kejadian;
-            $data_penilaian->total = $total;
-            $data_penilaian->total_pengurangan = $total_pengurangan;
+        //     $total = [
+        //         'sp3_kali' => $data_penilaian->sp3_kali * 6,
+        //         'sp2_kali' => $data_penilaian->sp2_kali * 4,
+        //         'sp1_kali' => $data_penilaian->sp1_kali * 2,
+        //         'kecelakaan_kali' => $data_penilaian->kecelakaan_kali * 2,
+        //         'mangkir_kali' => $data_penilaian->mangkir_kali * 1,
+        //         'ijin_kali' => $data_penilaian->ijin_kali * 0.5,
+        //     ];
+
+        //     $total_pengurangan = array_sum($total);
+
+        //     // Lalu gabungkan ke dalam data_penilaian
+        //     $data_penilaian->kejadian = $kejadian;
+        //     $data_penilaian->total = $total;
+        //     $data_penilaian->total_pengurangan = $total_pengurangan;
+        // }
+
+        if (!$data_penilaian) {
+            $data_penilaian = new \stdClass();
         }
+        // Default kejadian dan total, bisa juga digunakan saat data_penilaian tidak ada
+        $kejadian = [
+            'sp3_kali' => $data_penilaian->sp3_kali ?? 0,
+            'sp2_kali' => $data_penilaian->sp2_kali ?? 0,
+            'sp1_kali' => $data_penilaian->sp1_kali ?? 0,
+            'kecelakaan_kali' => $data_penilaian->kecelakaan_kali ?? 0,
+            'mangkir_kali' => $jumlah_mangkir,
+            'ijin_kali' => $jumlah_ijin,
+        ];
+
+        $total = [
+            'sp3_kali' => $kejadian['sp3_kali'] * 6,
+            'sp2_kali' => $kejadian['sp2_kali'] * 4,
+            'sp1_kali' => $kejadian['sp1_kali'] * 2,
+            'kecelakaan_kali' => $kejadian['kecelakaan_kali'] * 2,
+            'mangkir_kali' => $kejadian['mangkir_kali'] * 1,
+            'ijin_kali' => $kejadian['ijin_kali'] * 0.5,
+        ];
+        $total_pengurangan = array_sum($total);
+
+        // Masukkan ke objek
+        $data_penilaian->kejadian = $kejadian;
+        $data_penilaian->total = $total;
+        $data_penilaian->total_pengurangan = $total_pengurangan;
 
         return response()->json([
             'status' => 'success',
             'msg' => 'Data berhasil ditambahkan',
             'data' => $data,
             'data_penilaian' => $data_penilaian,
+            'jumlah_mangkir' => $jumlah_mangkir,
+            'jumlah_ijin' => $jumlah_ijin,
         ]);
     }
     public function store_penilaian_kinerja_staff(Request $request){

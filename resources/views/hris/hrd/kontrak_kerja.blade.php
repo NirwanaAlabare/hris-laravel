@@ -1547,96 +1547,90 @@ $(document).ready(function() {
                 $('#awal_kontrak_text_val').val(contract);
                 $('#akhir_kontrak_text_val').val(contract_end);
                 $('#periode_penilaian_text_val').val(contract+'/'+contract_end);
-                console.log('data_penilaian', data_penilaian);
-                if(data_penilaian == null){
-                    resetPenilaianKinerja();
-                }else{
-                        $('#penilaian_kinerja_id').val(data_penilaian.id);
+                    $('#penilaian_kinerja_id').val(data_penilaian.id);
 
-                        $('#uraian_tugas_1').val(data_penilaian.uraian_tugas_1);
-                        $('#target_pencapaian_1').val(data_penilaian.target_pencapaian_1);
-                        $('#uraian_tugas_2').val(data_penilaian.uraian_tugas_2);
-                        $('#target_pencapaian_2').val(data_penilaian.target_pencapaian_2);
-                        $('#uraian_tugas_3').val(data_penilaian.uraian_tugas_3);
-                        $('#target_pencapaian_3').val(data_penilaian.target_pencapaian_3);
-                        $('#uraian_tugas_4').val(data_penilaian.uraian_tugas_4);
-                        $('#target_pencapaian_4').val(data_penilaian.target_pencapaian_4);
-                        $('#uraian_tugas_5').val(data_penilaian.uraian_tugas_5);
-                        $('#target_pencapaian_5').val(data_penilaian.target_pencapaian_5);
+                    $('#uraian_tugas_1').val(data_penilaian.uraian_tugas_1);
+                    $('#target_pencapaian_1').val(data_penilaian.target_pencapaian_1);
+                    $('#uraian_tugas_2').val(data_penilaian.uraian_tugas_2);
+                    $('#target_pencapaian_2').val(data_penilaian.target_pencapaian_2);
+                    $('#uraian_tugas_3').val(data_penilaian.uraian_tugas_3);
+                    $('#target_pencapaian_3').val(data_penilaian.target_pencapaian_3);
+                    $('#uraian_tugas_4').val(data_penilaian.uraian_tugas_4);
+                    $('#target_pencapaian_4').val(data_penilaian.target_pencapaian_4);
+                    $('#uraian_tugas_5').val(data_penilaian.uraian_tugas_5);
+                    $('#target_pencapaian_5').val(data_penilaian.target_pencapaian_5);
 
-                        $('input[name="nilai_kinerja"]').each(function() {
-                        if ($(this).val() == data_penilaian.nilai_kinerja) {
-                            $(this).prop('checked', true); // Check the radio button with the matching value
-                        } else {
-                            $(this).prop('checked', false); // Uncheck other radio buttons
-                        }
+                    $('input[name="nilai_kinerja"]').each(function() {
+                    if ($(this).val() == data_penilaian.nilai_kinerja) {
+                        $(this).prop('checked', true); // Check the radio button with the matching value
+                    } else {
+                        $(this).prop('checked', false); // Uncheck other radio buttons
+                    }
 
-                        const kompetensiFields = [
-                            "tanggung_jawab_tugas",
-                            "inisiatif_kerjasama",
-                            "akurasi_pekerjaan",
-                            "kemauan_kegigihan",
-                            "penyampaian_informasi",
-                            "attitude_sikap_kerja"
-                        ];
+                    const kompetensiFields = [
+                        "tanggung_jawab_tugas",
+                        "inisiatif_kerjasama",
+                        "akurasi_pekerjaan",
+                        "kemauan_kegigihan",
+                        "penyampaian_informasi",
+                        "attitude_sikap_kerja"
+                    ];
 
-                        kompetensiFields.forEach(function(field) {
-                            $('input[name="kompetensi[' + field + ']"]').each(function () {
-                                if ($(this).val() == data_penilaian[field]) {
-                                    $(this).prop('checked', true);
-                                } else {
-                                    $(this).prop('checked', false);
-                                }
-                            });
+                    kompetensiFields.forEach(function(field) {
+                        $('input[name="kompetensi[' + field + ']"]').each(function () {
+                            if ($(this).val() == data_penilaian[field]) {
+                                $(this).prop('checked', true);
+                            } else {
+                                $(this).prop('checked', false);
+                            }
                         });
-                        if (data_penilaian.rekomendasi_perpanjang_kontrak == 1) {
-                            $('#rekomendasi_perpanjang_kontrak').prop('checked', true);
-                        } else {
-                            $('#rekomendasi_perpanjang_kontrak').prop('checked', false);
-                        }
-
-                        // Set jumlah bulan perpanjangan
-                        $('input[name="perpanjang_bulan"]').val(data_penilaian.perpanjang_bulan || '');
-
-                                        // Rekomendasi: PHK
-                        $('#rekomendasi_phk').prop('checked', data_penilaian.rekomendasi_phk == 1);
-
-                        // Rekomendasi: Demosi
-                        $('#rekomendasi_demosi').prop('checked', data_penilaian.rekomendasi_demosi == 1);
-
-                        // Rekomendasi: Promosi
-                        $('#rekomendasi_promosi').prop('checked', data_penilaian.rekomendasi_promosi == 1);
-
-                        // Rekomendasi: Training
-                        $('#rekomendasi_training').prop('checked', data_penilaian.rekomendasi_training == 1);
-                        $('input[name="judul_training"]').val(data_penilaian.judul_training || '');
-
-
-                        $('#penilaian_kinerja').val(data_penilaian.nilai_kinerja || '');
-                        $('#penilaian_kompeten').val(data_penilaian.rata_rata_kompetensi || '');
-                        $('#penilaian_kedisiplinan').val(data_penilaian.total_pengurangan || '');
-                        $('#penilaian_akhir').val(data_penilaian.nilai_akhir || '');
-                        $('#penilai').val(data_penilaian.penilai || '');
-                        $('input[name="rekomendasi"][value="' + data_penilaian.rekomendasi_tindak_lanjut + '"]').prop('checked', true);
-
-
-
-                        if (data_penilaian.kejadian) {
-                                Object.entries(data_penilaian.kejadian).forEach(([key, val]) => {
-                                    $('input[name="kejadian[' + key + ']"]').val(val);
-                                });
-                            }
-
-                            if (data_penilaian.total) {
-                                Object.entries(data_penilaian.total).forEach(([key, val]) => {
-                                    $('input[name="total[' + key + ']"]').val(val);
-                                });
-                            }
-
-                            $('input[name="total_pengurangan"]').val(data_penilaian.total_pengurangan);
-
                     });
-                }
+                    if (data_penilaian.rekomendasi_perpanjang_kontrak == 1) {
+                        $('#rekomendasi_perpanjang_kontrak').prop('checked', true);
+                    } else {
+                        $('#rekomendasi_perpanjang_kontrak').prop('checked', false);
+                    }
+
+                    // Set jumlah bulan perpanjangan
+                    $('input[name="perpanjang_bulan"]').val(data_penilaian.perpanjang_bulan || '');
+
+                                    // Rekomendasi: PHK
+                    $('#rekomendasi_phk').prop('checked', data_penilaian.rekomendasi_phk == 1);
+
+                    // Rekomendasi: Demosi
+                    $('#rekomendasi_demosi').prop('checked', data_penilaian.rekomendasi_demosi == 1);
+
+                    // Rekomendasi: Promosi
+                    $('#rekomendasi_promosi').prop('checked', data_penilaian.rekomendasi_promosi == 1);
+
+                    // Rekomendasi: Training
+                    $('#rekomendasi_training').prop('checked', data_penilaian.rekomendasi_training == 1);
+                    $('input[name="judul_training"]').val(data_penilaian.judul_training || '');
+
+
+                    $('#penilaian_kinerja').val(data_penilaian.nilai_kinerja || '');
+                    $('#penilaian_kompeten').val(data_penilaian.rata_rata_kompetensi || '');
+                    $('#penilaian_kedisiplinan').val(data_penilaian.total_pengurangan || '');
+                    $('#penilaian_akhir').val(data_penilaian.nilai_akhir || '');
+                    $('#penilai').val(data_penilaian.penilai || '');
+                    $('input[name="rekomendasi"][value="' + data_penilaian.rekomendasi_tindak_lanjut + '"]').prop('checked', true);
+
+
+
+                    if (data_penilaian.kejadian) {
+                            Object.entries(data_penilaian.kejadian).forEach(([key, val]) => {
+                                $('input[name="kejadian[' + key + ']"]').val(val);
+                            });
+                        }
+                    if (data_penilaian.total) {
+                        Object.entries(data_penilaian.total).forEach(([key, val]) => {
+                            $('input[name="total[' + key + ']"]').val(val);
+                        });
+                    }
+
+                    $('input[name="total_pengurangan"]').val(data_penilaian.total_pengurangan);
+
+                });
 
             }
         });
