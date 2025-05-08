@@ -704,7 +704,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
 });
 
 // Admin Panel After Login
-Route::group(['middleware' => ['auth.admin', 'lock', 'role:all'], 'prefix' => 'admin','namespace' => 'Admin'], function()
+Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'admin','namespace' => 'Admin'], function()
 {
 
     //	Dashboard Routing
