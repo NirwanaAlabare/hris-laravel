@@ -92,7 +92,7 @@
                 <div class="" style="background-color: #FFF">
                     <div class="card-body p-0">
                         <div class="row">
-                            @if ($modul=='all' || $modul=='attendance_payroll' || $email == 'alex.herdian@ptnag.com' || $email == 'willy@ptnag.com' || $email == 'reza')
+                            @if ($modul=='all' || $modul=='attendance_payroll' || $email == 'alex.herdian@ptnag.com' || $email == 'willy@ptnag.com' || $email == 'reza' || $modul == 'attendance_payroll, general_affair, administrasi')
                                 <div class="col" style="background-color: #FFF">
                                     <a href="{{route('hris.dashboard.index')}}" >
                                     <div class="card card-1">
@@ -110,7 +110,7 @@
                                     </a>
                                 </div>
                             @endif
-                            @if ($modul=='general_affair, administrasi' || $modul=='all')
+                            @if ($modul=='general_affair, administrasi' || $modul=='all' || $modul == 'attendance_payroll, general_affair, administrasi')
                             <div class="col">
                                 <a href="{{route('hris.ga.form_pengajuan_transportasi')}}" >
                                     <div class="card card-3">
@@ -119,7 +119,7 @@
                                 </a>
                             </div>
                             @endif
-                            @if ($modul=='general_affair, administrasi' || $modul=='all')
+                            @if ($modul=='general_affair, administrasi' || $modul=='all' || $modul == 'attendance_payroll, general_affair, administrasi')
                             <div class="col">
                                 <a href="{{route('hris.mutasi-karyawan.dashboard')}}">
                                 <div class="card card-4">
