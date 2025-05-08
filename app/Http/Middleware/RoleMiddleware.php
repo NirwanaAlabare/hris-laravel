@@ -15,7 +15,7 @@ class RoleMiddleware
             return redirect()->route('login');
         }
 
-        if (!in_array($user->role_user, $roles)) {
+        if (!in_array($user->modul, $roles)) {
             abort(403, 'Unauthorized access.');
         }
 

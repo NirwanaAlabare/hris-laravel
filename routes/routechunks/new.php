@@ -18,7 +18,7 @@ Route::prefix('employeeatr')->group(function() {
     Route::post('import-grading', 'EmployeeAtrController@import_grading')->name("hris.employeeatr.import.grading");
 });
 
-Route::prefix('dataabsenperijinan')->group(function() {
+Route::prefix('dataabsenperijinan')->middleware(['auth.admin', 'lock', 'role:all,attendance_payroll'])->group(function() {
     Route::get('data-perijinan-verifikasi','DataAbsenPerijinanController@perijinan_verifikasi')->name("hris.dataabsenperijinan.verifikasi");
     Route::post('data-perijinan-get','DataAbsenPerijinanController@perijinan_verifikasi_get')->name("hris.dataabsenperijinan.get");
     Route::post('perijinan-verifikasi','DataAbsenPerijinanController@perijinan_verifikasi_store')->name("hris.verifikasiperijinan.store");
@@ -57,16 +57,16 @@ Route::prefix('payroll')->group(function() {
 
 
 });
-Route::prefix('estimasi')->middleware(['auth.admin', 'lock', 'role:superadmin,hrd,absensi'])->group(function() {
+Route::prefix('estimasi')->middleware(['auth.admin', 'lock', 'role:all,attendance_payroll'])->group(function() {
     Route::get('index', 'EstimasiPayrollController@index')->name("hris.estimasinilaipayroll.index");
     Route::post('ajax_exportexcel', 'EstimasiPayrollController@ajax_exportexcel')->name("hris.estimasinilaipayroll.export");
 });
 
-Route::prefix('daily_labor')->middleware(['auth.admin', 'lock', 'role:superadmin,hrd,absensi'])->group(function() {
+Route::prefix('daily_labor')->middleware(['auth.admin', 'lock', 'role:all,attendance_payroll'])->group(function() {
     Route::get('index', 'DailyLaborController@index')->name("hris.nilaipayrollperhari.index");
 });
 
-Route::prefix('junal')->middleware(['auth.admin', 'lock', 'role:superadmin,hrd,absensi'])->group(function() {
+Route::prefix('junal')->middleware(['auth.admin', 'lock', 'role:all,attendance_payroll'])->group(function() {
     Route::get('index', 'JurnalController@index')->name("hris.jurnal.index");
     Route::post('ajax_exportexcel', 'JurnalController@ajax_exportexcel')->name("hris.jurnal.export");
 
