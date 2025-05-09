@@ -74,7 +74,7 @@
                                     <select class="form-control" id="status_aktif">
                                         <option value="">Pilih Status Aktif</option>
                                         <option value="AKTIF">Aktif</option>
-                                        <option value="TIDAK AKTIF">Kontrak Berakhir</option>
+                                        <option value="TIDAK AKTIF">PKS Selesai</option>
                                     </select>
                                 </div>
                             </div>
@@ -96,8 +96,8 @@
                                 <div class="col-3 pr-0">
                                     <select class="form-control" id="status_kontrak">
                                         <option value="">Pilih Status Kontrak</option>
-                                        <option value="One Day">Habis kontrak dalam 1 Hari</option>
-                                        <option value="Thirty Day">Habis kontrak dalam 30 Hari</option>
+                                        <option value="One Day">PKS -1 Hari</option>
+                                        <option value="Thirty Day">PKS -30 Hari</option>
                                         <option value="Not yet extended">Perpanjangan belum diproses</option>
                                         <option value="Unfilled">Status kontrak belum diinput</option>
                                     </select>
