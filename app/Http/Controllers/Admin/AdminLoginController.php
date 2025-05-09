@@ -37,9 +37,16 @@ class AdminLoginController extends AdminBaseController
 
         if (Auth::guard('admin')->check()) {
             $loggedAdmin = Auth::guard('admin')->user();
+            $role=$loggedAdmin->role_user;
+            $type=$loggedAdmin->type;
+            $email=$loggedAdmin->email;
+            $enroll_id=$loggedAdmin->enroll_id;
+            $modul=$loggedAdmin->modul;
             session(['loggedAdmin' => $loggedAdmin]);
+            return View::make('hris/dashboard_page',compact('role','type','email','enroll_id','modul'), $this->data);
             // return Redirect::route('admin.admin.editprofile');
-            return View::make('dashboard_master', $this->data);
+            // return View::make('dashboard_master', $this->data);
+            // return View::make('hris/dashboard_page', $this->data);
         }
 
         return View::make('admin/login', $this->data);
