@@ -140,9 +140,9 @@
                                 <td>
                                     <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" style="font-size:11pt" onclick="export_excel_kontrak()" id="btn_export_excel_kontrak"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Kontrak Kerja</button>
                                 </td>
-                                {{-- <td>
-                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" data-target="#import_kontrak" data-toggle="modal" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Import Nilai Kinerja Staff</button>
-                                </td> --}}
+                                <td>
+                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" data-target="#import_nilai_kinerja_staff" data-toggle="modal" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Import Nilai Kinerja Staff</button>
+                                </td>
                                 <td>
                                     <button class="btn btn-danger" id="print_kontrak_kerja" style="visibility: hidden"><span class="fa fa-file-pdf-o"></span> Print Checked Employee</button>
                                 </td>
@@ -240,6 +240,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="extendContractModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width: 70%;" role="document">
         <div class="modal-content">
@@ -683,6 +684,86 @@
     </div>
 </div>
 
+<div class="modal fade" id="import_nilai_kinerja_staff" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 80%;" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary p-2">
+                <label class="form-label">IMPORT NILAI KINERJA STAFF</label>
+                <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
+                    <i class="fa fa-remove"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <input class="form-control" ref="excel_file_nilai_staff" name="excel_file_nilai_staff" id="excel_file_nilai_staff" type="file" accept=".xlsx, .xls, .csv" required>
+                    </div>
+                </div>
+                <div class="row pt-2 justify-content-center">
+                    <div class="col-12">
+                        <div style="overflow: auto; max-height: 300px;">
+                            <table class="table table-bordered" style="min-width: 1200px; table-layout: fixed;">
+                                <colgroup>
+                                    <col style="width: 100px;"> <!-- NIP -->
+                                    <col style="width: 160px;"> <!-- Nama -->
+                                    <col style="width: 180px;"> <!-- Department -->
+                                    <col style="width: 150px;"> <!-- Awal -->
+                                    <col style="width: 150px;"> <!-- Akhir -->
+                                    <col style="width: 150px;"> <!-- Penilaian -->
+                                    <col style="width: 100px;">
+                                    <col style="width: 100px;">
+                                    <col style="width: 100px;">
+                                    <col style="width: 100px;">
+                                    <col style="width: 100px;">
+                                    <col style="width: 100px;">
+                                    <col style="width: 100px;">
+                                    <col style="width: 100px;">
+                                    <col style="width: 100px;"> <!-- Nilai Akhir -->
+                                  </colgroup>
+                                  <thead class="bg-primary text-white">
+                                    <tr>
+                                        <th>NIP</th>
+                                        <th>NAMA KARYAWAN</th>
+                                        <th>DEPARTMENT</th>
+                                        <th>AWAL</th>
+                                        <th>AKHIR</th>
+                                        <th>PENILAIAN KINERJA</th>
+                                        <th>TANGGUNG JAWAB</th>
+                                        <th>INISIATIF & KERJASAMA</th>
+                                        <th>AKURASI</th>
+                                        <th>KEMAUAN & KEGIGIHAN</th>
+                                        <th>PENYAMPAIAN INFORMASI</th>
+                                        <th>SIKAP KERJA</th>
+                                        <th>RATA-RATA</th>
+                                        <th>PENGURANG</th>
+                                        <th>NILAI AKHIR</th>
+                                      </tr>
+                                </thead>
+                                <tbody id="tabel_nilai_kinerja_staff">
+                                </tbody>
+                            </table>
+                          </div>
+
+                    </div>
+                    <div class="col-12 text-center">
+                        <div id="loading_kontrak_kerja">
+                        </div>
+                    </div>
+                </div>
+                <div class="row pt-0 pb-3 pr-3">
+                    <div class="col-2"></div>
+                    <div class="col-8 text-center pt-2">
+                        <button type="button" class="btn btn-success py-1" id="nilaiKinerjaImportButton" style="visibility: hidden"><i class="fa fa-upload" aria-hidden="true"></i> IMPORT</button>
+                    </div>
+                    <div class="col-2 pl-8 pt-1" id="keterangan_staff" style="visibility: hidden">
+                        <label class="mb-0" style="font-size:10pt">Pastikan Nilai Akhir sudah hasil perhitungan.</label><br>
+                        <label style="font-size:10pt">Perhitungan absen (M,I) akan dihitung oleh sistem.</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection
 @section('footerjs')
@@ -696,124 +777,290 @@
 <script src="{{URL::asset('assets/js/iziToast.min.js')}}"></script>
 <script src="{{URL::asset('assets/js/script.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <style>
     #head_kontrak_kerja, #tabel_kontrak_kerja { display: block; }
-
     #tabel_kontrak_kerja {
         height: 1px;
         overflow-y: auto;    /* Trigger vertical scroll    */
-        overflow-x: hidden;
+        overflow-x: auto;
         font-size: 9pt; /* Hide the horizontal scroll */
+    }
+    #tabel_nilai_kinerja_staff {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    }
+    #tabel_nilai_kinerja_staff th,
+    #tabel_nilai_kinerja_staff td {
+    text-align: center;
+    vertical-align: middle;
+    white-space: normal;
+    word-wrap: break-word;
+    padding: 8px;
+    border: 1px solid #ddd;
+    font-size: 13px;
     }
 </style>
 
 <script>
-$(document).ready(function() {
-    $('#penilaianForm').submit(function(e) {
-        e.preventDefault();
+    $(document).ready(function() {
+        $('#penilaianForm').submit(function(e) {
+            e.preventDefault();
 
-        const nilaiKinerja = $('input[name="nilai_kinerja"]:checked').val();
+            const nilaiKinerja = $('input[name="nilai_kinerja"]:checked').val();
 
-        if (!nilaiKinerja) {
-            iziToast.warning({
-                title: 'Peringatan',
-                message: 'Mohon pilih salah satu nilai penilaian kinerja.',
-            });
-            return;
-        }
-
-        const kompetensiFields = [
-            "tanggung_jawab_tugas",
-            "inisiatif_kerjasama",
-            "akurasi_pekerjaan",
-            "kemauan_kegigihan",
-            "penyampaian_informasi",
-            "attitude_sikap_kerja"
-        ];
-
-        let kompetensiValid = true;
-
-        kompetensiFields.forEach(field => {
-            if (!$(`input[name="kompetensi[${field}]"]:checked`).val()) {
-                kompetensiValid = false;
+            if (!nilaiKinerja) {
+                iziToast.warning({
+                    title: 'Peringatan',
+                    message: 'Mohon pilih salah satu nilai penilaian kinerja.',
+                });
+                return;
             }
+
+            const kompetensiFields = [
+                "tanggung_jawab_tugas",
+                "inisiatif_kerjasama",
+                "akurasi_pekerjaan",
+                "kemauan_kegigihan",
+                "penyampaian_informasi",
+                "attitude_sikap_kerja"
+            ];
+
+            let kompetensiValid = true;
+
+            kompetensiFields.forEach(field => {
+                if (!$(`input[name="kompetensi[${field}]"]:checked`).val()) {
+                    kompetensiValid = false;
+                }
+            });
+
+            if (!kompetensiValid) {
+                iziToast.warning({
+                    title: 'Peringatan',
+                    message: 'Mohon isi semua nilai kompetensi terlebih dahulu.',
+                });
+                return;
+            }
+
+
+
+            const rekomendasi = $('input[name="rekomendasi"]:checked').val();
+            const bulan = $('#perpanjang_bulan').val().trim();
+
+            if (!rekomendasi) {
+                iziToast.warning({
+                    title: 'Peringatan',
+                    message: 'Mohon pilih salah satu rekomendasi tindak lanjut.',
+                });
+                return;
+            }
+
+            if (rekomendasi === 'perpanjang' && bulan === '') {
+                iziToast.warning({
+                    title: 'Peringatan',
+                    message: 'Mohon isi jumlah bulan perpanjangan kontrak.',
+                });
+                $('#perpanjang_bulan').focus();
+                return; // Hentikan proses submit
+            }
+
+            var formData = $(this).serialize();
+            var penilaian_kinerja_id = $('input[name="penilaian_kinerja_id"]').val()
+
+            var url = penilaian_kinerja_id
+                    ? '{{ route("hris.penilaian_kinerja_staff.update_penilaian_kinerja_staff", ":id") }}'.replace(':id', penilaian_kinerja_id)
+                    : '{{ route("hris.penilaian_kinerja_staff.store_penilaian_kinerja_staff") }}';
+
+            var type = penilaian_kinerja_id ? 'PUT' : 'POST';
+            $('#btn-simpan-penilaian').attr('disabled', true);
+            $('#btn-simpan-penilaian').html('<i class="fa fa-spinner fa-spin"></i> Loading...');
+            $('#btn-simpan-penilaian').css('background-color', '#ccc');
+            $('#btn-simpan-penilaian').css('border-color', '#ccc');
+            $('#btn-simpan-penilaian').css('color', '#000');
+            $('#btn-simpan-penilaian').css('cursor', 'not-allowed');
+            $.ajax({
+                url: url,
+                type: type,
+                data: formData,
+                success: function(response) {
+                    iziToast.success({
+                        title: 'Berhasil!',
+                        message: response.msg,
+                    });
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                },
+                error: function(xhr, status, error) {
+                    iziToast.error({
+                        title: 'Error!',
+                        message: 'Ada masalah dalam pengiriman data.',
+                    });
+                    $('#btn-simpan-penilaian').attr('disabled', false);
+                    $('#btn-simpan-penilaian').html('Simpan');
+                    $('#btn-simpan-penilaian').css('background-color', '#28a745');
+                    $('#btn-simpan-penilaian').css('border-color', '#28a745');
+                    $('#btn-simpan-penilaian').css('color', '#fff');
+                    $('#btn-simpan-penilaian').css('cursor', 'pointer');
+                }
+            });
         });
+    });
 
-        if (!kompetensiValid) {
-            iziToast.warning({
-                title: 'Peringatan',
-                message: 'Mohon isi semua nilai kompetensi terlebih dahulu.',
-            });
-            return;
+    $('#excel_file_nilai_staff').change(function() {
+        fill_the_table_nilai_kinerja_staff();
+    });
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
-
-
-
-        const rekomendasi = $('input[name="rekomendasi"]:checked').val();
-        const bulan = $('#perpanjang_bulan').val().trim();
-
-        if (!rekomendasi) {
-            iziToast.warning({
-                title: 'Peringatan',
-                message: 'Mohon pilih salah satu rekomendasi tindak lanjut.',
+    });
+    function fill_the_table_nilai_kinerja_staff(){
+        $('#loading_kontrak_kerja').addClass("spinner-border");
+        $('#tabel_nilai_kinerja_staff').empty();
+        var formData = new FormData();
+        var excelFile=document.getElementById("excel_file_nilai_staff");
+        var myFile=excelFile.files[0];
+        formData.append("excel_file",myFile);
+        if(typeof myFile=='undefined'){
+            notif({
+                msg: "<b>Error:</b> Pilih File terlebih dahulu!",
+                type: "error"
             });
-            return;
-        }
+            document.getElementById('tabel_nilai_kinerja_staff').style.height='1px';
+            document.getElementById('nilaiKinerjaImportButton').style.visibility='hidden';
+            document.getElementById('keterangan_staff').style.visibility='hidden';
+            $('#loading_kontrak_kerja').removeClass("spinner-border");
+        }else{
+            $.ajax({
+                type: 'POST',
+                url: '{{route('hris.penilaian_kinerja_staff.import_penilaian_kinerja_staff')}}',
+                contentType: false,
+                processData: false,
+                data: formData,
+                success:function(data){
+                    $('#loading_kontrak_kerja').removeClass("spinner-border");
+                    document.getElementById('tabel_nilai_kinerja_staff').style.height='400px';
+                    document.getElementById('nilaiKinerjaImportButton').style.visibility='visible';
+                    document.getElementById('keterangan_staff').style.visibility='visible';
+                    no=2;
+                    jQuery.each(data, function(key,value){
+                        contract = new Date(value.contract).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"});
+                        contract_end = new Date(value.contract_end).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"});
+                        if(key!=0){
+                            if(value.nik==data[key-1].nik[0]){
+                                $('#tabel_nilai_kinerja_staff').append("<tr>\
+                                    <td></td>\
+                                    <td></td>\
+                                    <td></td>\
+                                    <td>"+contract+"</td>\
+                                    <td>"+contract_end+"</td>\
+                                    <td></td>\
+                                    <td></td>\
+                                    <td></td>\
+                                    <td></td>\
+                                    <td></td>\
+                                    <td></td>\
+                                    <td></td>\
+                                    <td></td>\
+                                    <td></td>\
+                                    <td></td>\
+                                </tr>");
+                            }else{
+                                no=2;
+                                $('#tabel_nilai_kinerja_staff').append("<tr>\
+                                    <td>"+value.nik+"</td>\
+                                    <td>"+value.employee_name+"</td>\
+                                    <td>"+value.department+"</td>\
+                                    <td>"+contract+"</td>\
+                                    <td>"+contract_end+"</td>\
+                                    <td>"+value.penilaian_kinerja+"</td>\
+                                    <td>"+value.tanggung_jawab_tugas+"</td>\
+                                    <td>"+value.inisiatif_kerja_sama+"</td>\
+                                    <td>"+value.akurasi_pekerjaan+"</td>\
+                                    <td>"+value.kemauan_kegigihan+"</td>\
+                                    <td>"+value.penyampaian_informasi+"</td>\
+                                    <td>"+value.atitude_sikap_kerja+"</td>\
+                                    <td>"+value.rata_rata_kompetensi.toFixed(2)+"</td>\
+                                    <td>"+value.pengurang+"</td>\
+                                    <td>"+value.nilai_akhir.toFixed(2)+"</td>\
+                                </tr>");
+                            }
+                        }else{
+                            $('#tabel_nilai_kinerja_staff').append("<tr>\
+                                <td>"+value.nik+"</td>\
+                                <td>"+value.employee_name+"</td>\
+                                <td>"+value.department+"</td>\
+                                <td>"+contract+"</td>\
+                                <td>"+contract_end+"</td>\
+                                <td>"+value.penilaian_kinerja+"</td>\
+                                <td>"+value.tanggung_jawab_tugas+"</td>\
+                                <td>"+value.inisiatif_kerja_sama+"</td>\
+                                <td>"+value.akurasi_pekerjaan+"</td>\
+                                <td>"+value.kemauan_kegigihan+"</td>\
+                                <td>"+value.penyampaian_informasi+"</td>\
+                                <td>"+value.atitude_sikap_kerja+"</td>\
+                                <td>"+value.rata_rata_kompetensi.toFixed(2)+"</td>\
+                                <td>"+value.pengurang+"</td>\
+                                <td>"+value.nilai_akhir.toFixed(2)+"</td>\
+                            </tr>");
+                        }
+                    });
 
-        if (rekomendasi === 'perpanjang' && bulan === '') {
-            iziToast.warning({
-                title: 'Peringatan',
-                message: 'Mohon isi jumlah bulan perpanjangan kontrak.',
+                },
+                error: function(res){
+                    swal("", "IMPORT KONTRAK KERJA GAGAL!", "error")
+                    document.getElementById('tabel_nilai_kinerja_staff').style.height='1px';
+                    document.getElementById('nilaiKinerjaImportButton').style.visibility='hidden';
+                    document.getElementById('keterangan_staff').style.visibility='hidden';
+                    $('#loading_kontrak_kerja').removeClass("spinner-border");
+                }
             });
-            $('#perpanjang_bulan').focus();
-            return; // Hentikan proses submit
         }
+    }
 
-        var formData = $(this).serialize();
-        var penilaian_kinerja_id = $('input[name="penilaian_kinerja_id"]').val()
-
-        var url = penilaian_kinerja_id
-                  ? '{{ route("hris.penilaian_kinerja_staff.update_penilaian_kinerja_staff", ":id") }}'.replace(':id', penilaian_kinerja_id)
-                  : '{{ route("hris.penilaian_kinerja_staff.store_penilaian_kinerja_staff") }}';
-
-        var type = penilaian_kinerja_id ? 'PUT' : 'POST';
-        $('#btn-simpan-penilaian').attr('disabled', true);
-        $('#btn-simpan-penilaian').html('<i class="fa fa-spinner fa-spin"></i> Loading...');
-        $('#btn-simpan-penilaian').css('background-color', '#ccc');
-        $('#btn-simpan-penilaian').css('border-color', '#ccc');
-        $('#btn-simpan-penilaian').css('color', '#000');
-        $('#btn-simpan-penilaian').css('cursor', 'not-allowed');
+    $('#nilaiKinerjaImportButton').on('click',function(){
+        $("#nilaiKinerjaImportButton").addClass("btn-loading");
+        $("#nilaiKinerjaImportButton").html('Loading...');
+        $("#nilaiKinerjaImportButton").attr("disabled", true);
+        var formData = new FormData();
+        var excelFile=document.getElementById("excel_file_nilai_staff");
+        var myFile=excelFile.files[0];
+        formData.append("excel_file",myFile);
         $.ajax({
-            url: url,
-            type: type,
+            type: 'POST',
+            url: '{{route('hris.penilaian_kinerja_staff.import_penilaian_kinerja_staff_to_database')}}',
+            contentType: false,
+            processData: false,
             data: formData,
-            success: function(response) {
-                iziToast.success({
-                    title: 'Berhasil!',
-                    message: response.msg,
+            success:function(data){
+                $('#tabel_kontrak_kerja').empty();
+                document.getElementById('nilaiKinerjaImportButton').style.visibility='hidden';
+                document.getElementById('tabel_kontrak_kerja').style.height='1px';
+                $("#nilaiKinerjaImportButton").removeClass("btn-loading");
+                $("#nilaiKinerjaImportButton").html('<i class="fa fa-upload"></i> IMPORT');
+                $("#nilaiKinerjaImportButton").attr("disabled", false);
+                $('#excel_file_nilai_staff').val('');
+                $("#import_kontrak").modal('hide');
+                swal({
+                    title: "Kontrak Kerja",
+                    text: "Kontrak kerja berhasil di import",
+                    icon: "success",
+                    button : false,
                 });
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
+                datatable.ajax.reload();
             },
-            error: function(xhr, status, error) {
-                iziToast.error({
-                    title: 'Error!',
-                    message: 'Ada masalah dalam pengiriman data.',
-                });
-                $('#btn-simpan-penilaian').attr('disabled', false);
-                $('#btn-simpan-penilaian').html('Simpan');
-                $('#btn-simpan-penilaian').css('background-color', '#28a745');
-                $('#btn-simpan-penilaian').css('border-color', '#28a745');
-                $('#btn-simpan-penilaian').css('color', '#fff');
-                $('#btn-simpan-penilaian').css('cursor', 'pointer');
+            error: function(res){
+                swal("", "IMPORT KONTRAK KERJA GAGAL!", "error")
+                $("#nilaiKinerjaImportButton").removeClass("btn-loading");
+                $("#nilaiKinerjaImportButton").html('<i class="fa fa-upload"></i> IMPORT');
+                $("#nilaiKinerjaImportButton").attr("disabled", false);
             }
         });
     });
-});
 
 </script>
-
 
 <script>
     document.querySelectorAll('.penilaian-radio').forEach(function(radio) {
@@ -826,7 +1073,6 @@ $(document).ready(function() {
         });
     });
 </script>
-
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -1829,4 +2075,5 @@ $(document).ready(function() {
         return roman;
     }
 </script>
+
 @endsection
