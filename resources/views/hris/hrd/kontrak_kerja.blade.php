@@ -1353,7 +1353,7 @@
                         return $(this).val();
                     }).get();
                 }
-                // d.enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+                d.enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
                 d.ibu_kandung = $('#searchIbuKandung').val();
                 d.no_ktp = $('#searchNoKTP').val();
                 d.status_kontrak = $('#status_kontrak').val();

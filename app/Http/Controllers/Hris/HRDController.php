@@ -405,13 +405,15 @@ class HRDController extends AdminBaseController
             if (is_array($enroll_ids_array)) {
                 // Ubah array menjadi string "5684,8085,8086,..."
                 $enroll_id_string = implode(',', $enroll_ids_array);
-
                 // Masukkan ke dalam klausa SQL
                 $inEnrollId = 'AND z.enroll_id IN (' . $enroll_id_string . ')';
-            } else {
-                // Tangani jika format data tidak valid
-                $inEnrollId = '';
             }
+        }
+        if(request()->enroll_id){
+            $enroll_id_array = request()->enroll_id;
+            // Escaping tiap item untuk mencegah SQL Injection (opsional jika pakai query builder)
+            $enroll_id_string = implode(',', array_map('intval', $enroll_id_array));
+            $inEnrollId = 'AND z.enroll_id IN (' . $enroll_id_string . ')';
         }
         if(request()->ibu_kandung){
             $ibu_kandung_string=request()->ibu_kandung;
@@ -425,6 +427,7 @@ class HRDController extends AdminBaseController
             $status_staff_string=request()->status_staff;
             $inStatusStaff='AND z.status_staff LIKE "'.$status_staff_string.'%"';
         }
+        // dd($status_kontrak);
         $inStatusKontrak='';
         if($status_kontrak=='Active'){
             $inStatusKontrak='AND y.contract_end >= curdate()';
@@ -434,9 +437,10 @@ class HRDController extends AdminBaseController
             $inStatusKontrak='AND y.contract_end = curdate()';
         }else if($status_kontrak=='Thirty Day'){
             $thirty_day_more = date('Y-m-d',strtotime('+30 days',strtotime(date("Y-m-d")))) . PHP_EOL;
-            $inStatusKontrak='AND y.contract_end = "'.$thirty_day_more.'"';
+            $inStatusKontrak='AND y.contract_end >= "'.$thirty_day_more.'"';
         }else if($status_kontrak=='Not yet extended'){
-            $inStatusKontrak='AND y.contract_end < curdate() AND z.status_aktif ="AKTIF"';
+            $inStatusKontrak='AND y.contract_end < curdate() OR y.contract_end is null';
+            // $inStatusKontrak='AND y.contract_end < curdate() OR z.status_aktif ="AKTIF"';
         }else if($status_kontrak=='Unfilled'){
             $inStatusKontrak='AND y.contract_end is null';
         }
