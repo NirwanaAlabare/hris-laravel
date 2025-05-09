@@ -948,46 +948,6 @@
                     jQuery.each(data, function(key,value){
                         contract = new Date(value.contract).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"});
                         contract_end = new Date(value.contract_end).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"});
-                        if(key!=0){
-                            if(value.nik==data[key-1].nik[0]){
-                                $('#tabel_nilai_kinerja_staff').append("<tr>\
-                                    <td></td>\
-                                    <td></td>\
-                                    <td></td>\
-                                    <td>"+contract+"</td>\
-                                    <td>"+contract_end+"</td>\
-                                    <td></td>\
-                                    <td></td>\
-                                    <td></td>\
-                                    <td></td>\
-                                    <td></td>\
-                                    <td></td>\
-                                    <td></td>\
-                                    <td></td>\
-                                    <td></td>\
-                                    <td></td>\
-                                </tr>");
-                            }else{
-                                no=2;
-                                $('#tabel_nilai_kinerja_staff').append("<tr>\
-                                    <td>"+value.nik+"</td>\
-                                    <td>"+value.employee_name+"</td>\
-                                    <td>"+value.department+"</td>\
-                                    <td>"+contract+"</td>\
-                                    <td>"+contract_end+"</td>\
-                                    <td>"+value.penilaian_kinerja+"</td>\
-                                    <td>"+value.tanggung_jawab_tugas+"</td>\
-                                    <td>"+value.inisiatif_kerja_sama+"</td>\
-                                    <td>"+value.akurasi_pekerjaan+"</td>\
-                                    <td>"+value.kemauan_kegigihan+"</td>\
-                                    <td>"+value.penyampaian_informasi+"</td>\
-                                    <td>"+value.atitude_sikap_kerja+"</td>\
-                                    <td>"+value.rata_rata_kompetensi.toFixed(2)+"</td>\
-                                    <td>"+value.pengurang+"</td>\
-                                    <td>"+value.nilai_akhir.toFixed(2)+"</td>\
-                                </tr>");
-                            }
-                        }else{
                             $('#tabel_nilai_kinerja_staff').append("<tr>\
                                 <td>"+value.nik+"</td>\
                                 <td>"+value.employee_name+"</td>\
@@ -1005,7 +965,6 @@
                                 <td>"+value.pengurang+"</td>\
                                 <td>"+value.nilai_akhir.toFixed(2)+"</td>\
                             </tr>");
-                        }
                     });
 
                 },
@@ -1042,14 +1001,13 @@
                 $("#nilaiKinerjaImportButton").html('<i class="fa fa-upload"></i> IMPORT');
                 $("#nilaiKinerjaImportButton").attr("disabled", false);
                 $('#excel_file_nilai_staff').val('');
-                $("#import_kontrak").modal('hide');
-                swal({
-                    title: "Kontrak Kerja",
-                    text: "Kontrak kerja berhasil di import",
-                    icon: "success",
-                    button : false,
-                });
-                datatable.ajax.reload();
+                $("#import_nilai_kinerja_staff").modal('hide');
+                iziToast.success({
+                            message: 'Niliai kinerja berhasil di import',
+                            position: 'center',
+                            timeout:1300,
+                        });
+                setTimeout(function(){ window.location.reload(); }, 1300);
             },
             error: function(res){
                 swal("", "IMPORT KONTRAK KERJA GAGAL!", "error")
