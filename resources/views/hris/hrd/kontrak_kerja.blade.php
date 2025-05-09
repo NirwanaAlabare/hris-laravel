@@ -98,8 +98,8 @@
                                         <option value="">Pilih Status Kontrak</option>
                                         <option value="One Day">PKS -1 Hari</option>
                                         <option value="Thirty Day">PKS -30 Hari</option>
-                                        <option value="Not yet extended">Perpanjangan belum diproses</option>
-                                        <option value="Unfilled">Status kontrak belum diinput</option>
+                                        <option value="Not yet extended">PKS Belum Diperpanjang</option>
+                                        {{-- <option value="Unfilled">Status kontrak belum diinput</option> --}}
                                     </select>
                                 </div>
                             </div>
