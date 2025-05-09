@@ -729,22 +729,22 @@ h1 {
     </script>
 
 <script>
-    $(document).ready(function () {
-        function toggleTanggalForm() {
-            const selected = $('#kode_absen_ijin_iks').val();
-            if (selected === 'IKS') {
-                $('#form_tanggal_ijin').hide();
-            } else {
-                $('#form_tanggal_ijin').show();
-            }
-        }
+    // $(document).ready(function () {
+    //     function toggleTanggalForm() {
+    //         const selected = $('#kode_absen_ijin_iks').val();
+    //         if (selected === 'IKS') {
+    //             $('#form_tanggal_ijin').hide();
+    //         } else {
+    //             $('#form_tanggal_ijin').show();
+    //         }
+    //     }
 
-        // Inisialisasi saat halaman dimuat
-        toggleTanggalForm();
+    //     // Inisialisasi saat halaman dimuat
+    //     toggleTanggalForm();
 
-        // Event listener saat opsi berubah
-        $('#kode_absen_ijin_iks').on('change', toggleTanggalForm);
-    });
+    //     // Event listener saat opsi berubah
+    //     $('#kode_absen_ijin_iks').on('change', toggleTanggalForm);
+    // });
 </script>
 
 
@@ -2038,22 +2038,20 @@ h1 {
                 });
                 return false;
             }
-            if(kode_absen_ijin!='IKS'){
-                if (!tanggal_mulai_ijin) {
+            if (!tanggal_mulai_ijin) {
                 notif({
                     msg: "<b>Warning:</b> Anda belum menginput Tanggal Mulai Izin.",
                     type: "warning"
                 });
                 return false;
-                }
+            }
 
-                if (!tanggal_akhir_ijin) {
-                    notif({
-                        msg: "<b>Warning:</b> Anda belum menginput Tanggal Akhir Izin.",
-                        type: "warning"
-                    });
-                    return false;
-                }
+            if (!tanggal_akhir_ijin) {
+                notif({
+                    msg: "<b>Warning:</b> Anda belum menginput Tanggal Akhir Izin.",
+                    type: "warning"
+                });
+                return false;
             }
 
             var tanggal = tanggal_perizinan;
@@ -2110,7 +2108,7 @@ h1 {
                                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                                             data: {
                                                 uuid:uuid,
-                                                tanggal_perizinan:tanggal_perizinan,
+                                                tanggal_perizinan:null,
                                                 nomor_form_perizinan:nomor_form_perizinan,
                                                 enroll_id:enroll_id,
                                                 nik:nik,
@@ -2120,6 +2118,8 @@ h1 {
                                                 time_mulai_ijin:time_mulai_ijin,
                                                 time_akhir_ijin:time_akhir_ijin,
                                                 total_time_ijin:total_time_ijin,
+                                                tanggal_mulai_ijin:tanggal_mulai_ijin,
+                                                tanggal_akhir_ijin:tanggal_akhir_ijin,
                                             },
                                             success: function(res){
                                                 notif({
@@ -2143,7 +2143,7 @@ h1 {
                                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                                             data: {
                                                 uuid:uuid,
-                                                tanggal_perizinan:tanggal_perizinan,
+                                                tanggal_perizinan:null,
                                                 nomor_form_perizinan:nomor_form_perizinan,
                                                 enroll_id:enroll_id,
                                                 nik:nik,
@@ -2153,6 +2153,8 @@ h1 {
                                                 time_mulai_ijin:time_mulai_ijin,
                                                 time_akhir_ijin:time_akhir_ijin,
                                                 total_time_ijin:total_time_ijin,
+                                                tanggal_mulai_ijin:tanggal_mulai_ijin,
+                                                tanggal_akhir_ijin:tanggal_akhir_ijin,
                                             },
                                             dataType: 'json',
                                             success: function(res){

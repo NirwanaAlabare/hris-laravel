@@ -719,6 +719,8 @@ class DataAbsenPerijinanController extends AdminBaseController
     {
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
+        $tanggal_mulai_ijin = request()->tanggal_mulai_ijin;
+        $tanggal_perizinan = request()->tanggal_perizinan == null ? $tanggal_mulai_ijin : request()->tanggal_perizinan;
         info('START UPDATE IZIN');
         info('Update Permohonan Perizinan by ' . $email);
         info('Nomor Form Perizinan : ' . request()->nomor_form_perizinan);
@@ -742,10 +744,11 @@ class DataAbsenPerijinanController extends AdminBaseController
                 'time_mulai_ijin' => request()->time_mulai_ijin,
                 'time_akhir_ijin' => request()->time_akhir_ijin,
                 'total_time_ijin' => request()->total_time_ijin,
+                'tanggal_perizinan' => $tanggal_perizinan,
                 'operator' => $email
             ]);
             MasterDataAbsenKehadiran::whereRaw('
-            tanggal_berjalan = "' . request()->tanggal_perizinan . '"
+            tanggal_berjalan = "' . $tanggal_perizinan . '"
             and enroll_id = "' . request()->enroll_id . '"
             ')->where('status_absen','!=','LN')->update([
                 'nomor_absen_ijin' => request()->nomor_form_perizinan,
@@ -768,7 +771,8 @@ class DataAbsenPerijinanController extends AdminBaseController
         info('Tambah Permohonan IKS by ' . $email);
 
         $uuid_master = $request->uuid;
-        $tanggal_perizinan = $request->tanggal_perizinan;
+        $tanggal_mulai_ijin = $request->tanggal_mulai_ijin;
+        $tanggal_perizinan = $request->tanggal_perizinan == null ? $tanggal_mulai_ijin : $request->tanggal_perizinan;
         $nomor_form_perizinan = $request->nomor_form_perizinan;
         $enroll_id = $request->enroll_id;
         $nik = $request->nik;
