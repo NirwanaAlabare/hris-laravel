@@ -21,6 +21,9 @@ class PenilaianKinerjaStaffImportToDatabase implements ToModel, WithStartRow, Wi
         return 4;
     }
     public function model(array $row){
+        if (empty($row[0]) || empty($row[4])) {
+            return; // Lewati baris ini
+        }
         $enroll_id=$row[0];
         $contract_start=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[14])->format('Y-m-d');
         $contract_end=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[15])->format('Y-m-d');
@@ -71,7 +74,6 @@ class PenilaianKinerjaStaffImportToDatabase implements ToModel, WithStartRow, Wi
         //         throw new \Exception("Kolom index ke-$index kosong. Tidak bisa insert penilaian.");
         //     }
         // }
-
         DB::insert("insert into penilaian_kinerja (id, enroll_id, tgl_awal_kontrak, tgl_akhir_kontrak, nilai_kinerja,tanggung_jawab_tugas,inisiatif_kerjasama,akurasi_pekerjaan,kemauan_kegigihan,penyampaian_informasi,attitude_sikap_kerja,rata_rata_kompetensi,total_pengurangan,nilai_akhir, created_at, updated_at) VALUES ('','$enroll_id','$contract_start','$contract_end','$row[4]','$row[5]','$row[6]','$row[7]','$row[8]','$row[9]','$row[10]','$row[11]','$total_pengurangan','$penilaian_akhir','$timestamp','$timestamp')");
     }
 }
