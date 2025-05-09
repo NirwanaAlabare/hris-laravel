@@ -569,10 +569,13 @@ function formatNama($name) {
                     {{ $data_penilaian ? $data_penilaian->penilai : '' }}
                 </td>
                 <td style="border-left: none; height:20px; border-top:none; line-height:2;">
+                    Chief / Manager
                 </td>
                 <td style="border-left: none; height:20px; border-top:none; line-height:2;">
+                    HRD
                 </td>
                 <td style="border-left: none; border-right: none; height:20px; border-top:none; line-height:2;">
+                    General Manager
                 </td>
             </tr>
         </table>
