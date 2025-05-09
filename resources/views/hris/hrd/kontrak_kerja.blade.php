@@ -140,6 +140,9 @@
                                 <td>
                                     <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" style="font-size:11pt" onclick="export_excel_kontrak()" id="btn_export_excel_kontrak"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Kontrak Kerja</button>
                                 </td>
+                                {{-- <td>
+                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" data-target="#import_kontrak" data-toggle="modal" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Import Nilai Kinerja Staff</button>
+                                </td> --}}
                                 <td>
                                     <button class="btn btn-danger" id="print_kontrak_kerja" style="visibility: hidden"><span class="fa fa-file-pdf-o"></span> Print Checked Employee</button>
                                 </td>
@@ -238,7 +241,7 @@
     </div>
 </div>
 <div class="modal fade" id="extendContractModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 54%;" role="document">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 70%;" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary p-2">
                 <label class="form-label">WORKING CONTRACT</label>
