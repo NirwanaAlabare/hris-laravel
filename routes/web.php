@@ -158,6 +158,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('hrd/export_pdf_paklaring',['as'=>'hris.hrd.export_pdf_paklaring','uses'=>'HRDController@export_pdf_paklaring']);
 
     Route::get('hrd/export_penilaian_kinerja_staff_pdf', ['as' => 'hris.hrd.export_penilaian_kinerja_staff_pdf','uses' => 'PenilaianKinerjaStaffController@export_penilaian_kinerja_staff_pdf']);
+    Route::get('hrd/download_excel_penilaian_kinerja_nonstaff',['as'=>'hris.hrd.download_excel_penilaian_kinerja_nonstaff','uses'=>'PenilaianKinerjaStaffController@download_excel_penilaian_kinerja_nonstaff']);
 
     Route::get('hrd/download-foto/{filename}', function ($filename) {
         $filePath = 'app/public/images/' . $filename; // NOTE: ini tidak ideal, solusi sementara
