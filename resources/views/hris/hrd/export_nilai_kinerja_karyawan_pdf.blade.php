@@ -449,7 +449,7 @@ function formatNama($name) {
                             <td class="m-0 p-0" colspan="2" style="border: 1px solid #000; border-bottom: 0px solid #000; height: 90px;">
                                 <div style="line-height: 0; padding-left: 5px; text-align: left; display: flex; align-items: center; padding-top: 5px;">
                                     <p class="margin0" style="font-weight: 800; font-size: 6pt;"><input class="form-check-input" type="radio" name="rekomendasi" value="perpanjang" id="rekomendasi_perpanjang_kontrak" style="width: 10px; height: 10px;"></p>
-                                    <p class="margin0" style="font-weight: 800; font-size: 6pt;">Perpanjangan Kontrak {{ $data_penilaian && ($data_penilaian->perpanjang_bulan ? $data_penilaian->perpanjang_bulan : '___________')}} Bulan</p>
+                                    <p class="margin0" style="font-weight: 800; font-size: 6pt;">Perpanjangan Kontrak {{ $data_penilaian ? $data_penilaian->perpanjang_bulan : '___________'}} Bulan</p>
                                 </div>
                                 <div style="line-height: 0; padding-left: 5px; text-align: left; display: flex; align-items: center; padding-top: 2px;">
                                     <p class="margin0" style="font-weight: 800; font-size: 6pt;"><input class="form-check-input" type="radio" name="rekomendasi" value="phk" id="rekomendasi_phk" style="width: 10px; height: 10px;"></p>
