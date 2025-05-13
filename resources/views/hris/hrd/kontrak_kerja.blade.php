@@ -204,20 +204,20 @@
                 </div>
                 <div class="row pt-2 justify-content-center">
                     <div class="col-12">
-                        <table class="table table-bordered" style="overflow:auto;height:300px;">
+                        <table class="table table-bordered" style="min-width: 600px; table-layout: fixed;">
                             <thead id="head_kontrak_kerja">
                                 <tr>
-                                    <td width="100px">NIK</td>
-                                    <td width="200px">Nama Karyawan</td>
-                                    <td width="200px">Department</td>
-                                    <td width="100px">Kontrak</td>
-                                    <td width="150px">Awal</td>
-                                    <td width="150px">Akhir</td>
+                                    <td width="200px">NIK</td>
+                                    <td width="300px">Nama Karyawan</td>
+                                    <td width="300px">Department</td>
+                                    <td width="250px">Awal</td>
+                                    <td width="250px">Akhir</td>
                                 </tr>
                             </thead>
                             <tbody id="tabel_kontrak_kerja">
                             </tbody>
                         </table>
+
                     </div>
                     <div class="col-12 text-center">
                         <div id="loading_kontrak_kerja">
@@ -967,7 +967,10 @@
 
                 },
                 error: function(res){
-                    swal("", "IMPORT KONTRAK KERJA GAGAL!", "error")
+                    iziToast.error({
+                        title: 'Error!',
+                        message: 'IMPORT KONTRAK KERJA GAGAL!',
+                    });
                     document.getElementById('tabel_nilai_kinerja_staff').style.height='1px';
                     document.getElementById('nilaiKinerjaImportButton').style.visibility='hidden';
                     document.getElementById('keterangan_staff').style.visibility='hidden';
@@ -1008,7 +1011,10 @@
                 setTimeout(function(){ window.location.reload(); }, 1300);
             },
             error: function(res){
-                swal("", "IMPORT KONTRAK KERJA GAGAL!", "error")
+                iziToast.error({
+                        title: 'Error!',
+                        message: 'IMPORT KONTRAK KERJA GAGAL!',
+                    });
                 $("#nilaiKinerjaImportButton").removeClass("btn-loading");
                 $("#nilaiKinerjaImportButton").html('<i class="fa fa-upload"></i> IMPORT');
                 $("#nilaiKinerjaImportButton").attr("disabled", false);
@@ -1145,32 +1151,29 @@
                         if(key!=0){
                             if(value.nik==data[key-1].nik[0]){
                                 $('#tabel_kontrak_kerja').append("<tr>\
-                                    <td width='100px'></td>\
                                     <td width='200px'></td>\
-                                    <td width='200px'></td>\
-                                    <td width='100px'>Kontrak ke "+(no++)+"</td>\
-                                    <td width='150px'>"+contract+"</td>\
-                                    <td width='150px'>"+contract_end+"</td>\
+                                    <td width='300px'></td>\
+                                    <td width='300px'></td>\
+                                    <td width='250px'>"+contract+"</td>\
+                                    <td width='250px'>"+contract_end+"</td>\
                                 </tr>");
                             }else{
                                 no=2;
                                 $('#tabel_kontrak_kerja').append("<tr>\
-                                    <td width='100px'>"+value.nik+"</td>\
-                                    <td width='200px'>"+value.employee_name+"</td>\
-                                    <td width='200px'>"+value.department+"</td>\
-                                    <td width='100px'>Kontrak ke 1</td>\
-                                    <td width='150px'>"+contract+"</td>\
-                                    <td width='150px'>"+contract_end+"</td>\
+                                    <td width='200px'>"+value.nik+"</td>\
+                                    <td width='300px'>"+value.employee_name+"</td>\
+                                    <td width='300px'>"+value.department+"</td>\
+                                    <td width='250px'>"+contract+"</td>\
+                                    <td width='250px'>"+contract_end+"</td>\
                                 </tr>");
                             }
                         }else{
                             $('#tabel_kontrak_kerja').append("<tr>\
-                                <td width='100px'>"+value.nik+"</td>\
-                                <td width='200px'>"+value.employee_name+"</td>\
-                                <td width='200px'>"+value.department+"</td>\
-                                <td width='100px'>Kontrak ke 1</td>\
-                                <td width='150px'>"+contract+"</td>\
-                                <td width='150px'>"+contract_end+"</td>\
+                                <td width='200px'>"+value.nik+"</td>\
+                                <td width='300px'>"+value.employee_name+"</td>\
+                                <td width='300px'>"+value.department+"</td>\
+                                <td width='250px'>"+contract+"</td>\
+                                <td width='250px'>"+contract_end+"</td>\
                             </tr>");
                         }
                     });
@@ -1239,13 +1242,12 @@
                 $("#contractImportButton").attr("disabled", false);
                 $('#excel_file_kontrak').val('');
                 $("#import_kontrak").modal('hide');
-                swal({
-                    title: "Kontrak Kerja",
-                    text: "Kontrak kerja berhasil di import",
-                    icon: "success",
-                    button : false,
-                });
-                datatable.ajax.reload();
+                iziToast.success({
+                            message: 'Kontrak kerja berhasil di import',
+                            position: 'center',
+                            timeout:1300,
+                        });
+                setTimeout(function(){ window.location.reload(); }, 1300);
             },
             error: function(res){
                 swal("", "IMPORT KONTRAK KERJA GAGAL!", "error")
