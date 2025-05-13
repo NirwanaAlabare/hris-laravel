@@ -22,8 +22,8 @@ use App\Exports\exportExcelKontrak;
 use App\Models\DasarPotBPJS;
 use App\Models\EntertainPengajuanTamu;
 use App\Models\DepartmentAll;
-use DateTime;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Http;
 
 class PenilaianKinerjaStaffController extends AdminBaseController
 {
@@ -32,6 +32,51 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         parent::__construct();
         $this->dashboardActive = 'active';
         $this->pageTitle = 'Dashboard';
+    }
+
+    private function adjustDate($inputDate)
+    {
+        $originalDate = Carbon::parse($inputDate);
+        $date = $originalDate->copy();
+        $holidays = $this->getHolidays($date->year);
+
+        $wasAdjusted = false;
+
+        // 1. Jika Sabtu/Minggu → mundur ke Jumat
+        if ($date->isSaturday() || $date->isSunday()) {
+            $date = $date->previous(Carbon::FRIDAY);
+            $wasAdjusted = true;
+        }
+
+        // 2. Jika termasuk hari libur, terus mundur
+        while (in_array($date->toDateString(), $holidays)) {
+            $date->subDay();
+            $wasAdjusted = true;
+        }
+
+        // 3. Jika Senin setelah penyesuaian, mundur ke Jumat sebelumnya
+        if ($date->isMonday()) {
+            $date = $date->previous(Carbon::FRIDAY);
+            $wasAdjusted = true;
+        }
+
+        // 4. Jika tidak ada penyesuaian dan hari bukan Jumat, tambahkan 1 hari
+        if (! $wasAdjusted && !$date->isFriday()) {
+            $date->addDay();
+        }
+
+        return $date->toDateString();
+    }
+
+
+
+    private function getHolidays($year)
+    {
+        $response = Http::get("https://api-harilibur.vercel.app/api?year={$year}");
+        if ($response->successful()) {
+            return collect($response->json())->pluck('holiday_date')->toArray();
+        }
+        return [];
     }
 
 
@@ -191,7 +236,6 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         ]);
     }
     public function store_penilaian_kinerja_staff(Request $request){
-        // dd($request->all());
         try {
             $kejadian = [
                 'sp3_kali' => $request->kejadian['sp3_kali'] ?? null,
@@ -233,6 +277,9 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             // $nilai_rata2 = ($nilai_kinerja + $total_kompetensi) / 6;
             $nilai_rata2 = $total_kompetensi / 6;
             $penilaian_akhir = ($nilai_rata2 + $nilai_kinerja) - $total_pengurangan;
+
+            // $timestamp = Carbon::now();
+            // DB::insert("insert into employee_contract (id, enroll_id, contract, contract_end, created_at, updated_at) VALUES ('','$request->enroll_id_input_2_val','$contract','$contract_end','$timestamp','$timestamp')");
 
             $penilaian_kinerja = PenilaianKinerja::create([
                 'enroll_id' => $request->enroll_id_input_2_val,
@@ -281,6 +328,29 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                 'total_kompetensi' => $total_kompetensi,
                 'penilai' => $request->penilai,
             ]);
+
+            if($request->rekomendasi == 'perpanjang'){
+                $timestamp = Carbon::now();
+
+                // Mengubah adjustedDate dan contract_end_data dengan logika yang sama
+                $adjustedDate = $this->adjustDate($request->akhir_kontrak_text_val);
+
+                // Mengubah string tanggal kembali ke objek Carbon untuk adjustedDate
+                $adjustedDateCarbon = Carbon::parse($adjustedDate);
+
+                // Menambahkan bulan pada adjustedDateCarbon
+                $contract_end_data = $adjustedDateCarbon->addMonth($request->perpanjang_bulan);
+
+                // Sesuaikan juga contract_end_data dengan adjustDate() (untuk tanggal akhir kontrak)
+                $adjustedContractEndDate = $this->adjustDate($contract_end_data->toDateString());
+
+                // Mengubah adjustedContractEndDate menjadi objek Carbon untuk penambahan bulan berikutnya
+                $adjustedContractEndCarbon = Carbon::parse($adjustedContractEndDate);
+
+                DB::insert("insert into employee_contract (id, enroll_id, contract, contract_end, created_at, updated_at)
+                            VALUES ('', '$request->enroll_id_input_2_val', '$adjustedDate', '$adjustedContractEndCarbon', '$timestamp', '$timestamp')");
+            }
+
             return response()->json([
                 'status' => 'success',
                 'msg' => 'Data berhasil ditambahkan',
@@ -292,6 +362,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             ]);
         }
     }
+
 
     public function update_penilaian_kinerja_staff(Request $request, $id)
     {
@@ -339,7 +410,6 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             // $nilai_rata2 = ($nilai_kinerja + $total_kompetensi) / 6;
             $nilai_rata2 = $total_kompetensi / 6;
             $penilaian_akhir = ($nilai_rata2 + $nilai_kinerja) - $total_pengurangan;
-
 
             $penilaian_kinerja->update([
                 'enroll_id' => $request->enroll_id_input_2_val,
@@ -391,6 +461,27 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                 'total_kompetensi' => $total_kompetensi,
                 'penilai' => $request->penilai,
             ]);
+            if($request->rekomendasi == 'perpanjang'){
+                $timestamp = Carbon::now();
+
+                // Mengubah adjustedDate dan contract_end_data dengan logika yang sama
+                $adjustedDate = $this->adjustDate($request->akhir_kontrak_text_val);
+
+                // Mengubah string tanggal kembali ke objek Carbon untuk adjustedDate
+                $adjustedDateCarbon = Carbon::parse($adjustedDate);
+
+                // Menambahkan bulan pada adjustedDateCarbon
+                $contract_end_data = $adjustedDateCarbon->addMonth($request->perpanjang_bulan);
+
+                // Sesuaikan juga contract_end_data dengan adjustDate() (untuk tanggal akhir kontrak)
+                $adjustedContractEndDate = $this->adjustDate($contract_end_data->toDateString());
+
+                // Mengubah adjustedContractEndDate menjadi objek Carbon untuk penambahan bulan berikutnya
+                $adjustedContractEndCarbon = Carbon::parse($adjustedContractEndDate);
+
+                DB::insert("insert into employee_contract (id, enroll_id, contract, contract_end, created_at, updated_at)
+                            VALUES ('', '$request->enroll_id_input_2_val', '$adjustedDate', '$adjustedContractEndCarbon', '$timestamp', '$timestamp')");
+            }
 
             return response()->json([
                 'status' => 'success',

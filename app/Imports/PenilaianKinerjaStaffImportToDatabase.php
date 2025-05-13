@@ -68,12 +68,6 @@ class PenilaianKinerjaStaffImportToDatabase implements ToModel, WithStartRow, Wi
         if($penilaian_kinerja){
             DB::delete("delete from penilaian_kinerja where enroll_id = '$enroll_id' AND tgl_awal_kontrak = '$contract_start' AND tgl_akhir_kontrak = '$contract_end'");
         }
-        // $requiredIndexes = [4,5,6,7,8,9,10,11];
-        // foreach ($requiredIndexes as $index) {
-        //     if (!isset($row[$index]) || $row[$index] === '') {
-        //         throw new \Exception("Kolom index ke-$index kosong. Tidak bisa insert penilaian.");
-        //     }
-        // }
         DB::insert("insert into penilaian_kinerja (id, enroll_id, tgl_awal_kontrak, tgl_akhir_kontrak, nilai_kinerja,tanggung_jawab_tugas,inisiatif_kerjasama,akurasi_pekerjaan,kemauan_kegigihan,penyampaian_informasi,attitude_sikap_kerja,rata_rata_kompetensi,total_pengurangan,nilai_akhir, created_at, updated_at) VALUES ('','$enroll_id','$contract_start','$contract_end','$row[4]','$row[5]','$row[6]','$row[7]','$row[8]','$row[9]','$row[10]','$row[11]','$total_pengurangan','$penilaian_akhir','$timestamp','$timestamp')");
     }
 }
