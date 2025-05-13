@@ -55,7 +55,7 @@
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7pt;text-align:justify;padding-top:8px">
                     Perjanjian ini adalah antara :<br>
-                    <b>MEGA FITRIANA HARYONO</b> dalam hal ini bertindak atas <b>HR & GA DEPARTMENT  PT. NIRWANA ALABARE GARMENT</b>, sebuah perusahaan berbentuk badan hukum perseroan terbatas yang melakukan kegiatan usaha industri pembuatan pakaian jadi, didirikan berdasarkan Akta Pendirian nomor 68.- dan telah mendapatkan pengesahan dari Menteri Hukum dan Hak Asasi Manusia Republik Indonesia nomor AHU-2465410.AH.01.01 Tahun 2015 dalam hal ini disebut <b>PIHAK PERTAMA</b>. 
+                    <b>MEGA FITRIANA HARYONO</b> dalam hal ini bertindak atas <b>HR & GA DEPARTMENT  PT. NIRWANA ALABARE GARMENT</b>, sebuah perusahaan berbentuk badan hukum perseroan terbatas yang melakukan kegiatan usaha industri pembuatan pakaian jadi, didirikan berdasarkan Akta Pendirian nomor 68.- dan telah mendapatkan pengesahan dari Menteri Hukum dan Hak Asasi Manusia Republik Indonesia nomor AHU-2465410.AH.01.01 Tahun 2015 dalam hal ini disebut <b>PIHAK PERTAMA</b>.
                 </td>
             </tr>
         </thead>
@@ -88,7 +88,7 @@
         <tr>
             <td style="font-family:Arial, Helvetica, sans-serif;font-size:7pt;text-align:justify;padding-top:8px">
                 Dalam hal ini bertindak atas nama diri sendiri, dan selanjutnya disebut <b>PIHAK KEDUA</b>.<br>
-                Pada hari <b>{{Carbon\Carbon::parse($value->contract)->translatedFormat('l')}}</b> Tanggal <b>{{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}</b> bertempat di PT. Nirwana Alabare Garment Kedua belah pihak sepakat untuk mengadakan Perjanjian Kerja Waktu Tertentu dengan ketentuan-ketentuan sebagai berikut:</b>. 
+                Pada hari <b>{{Carbon\Carbon::parse($value->contract)->translatedFormat('l')}}</b> Tanggal <b>{{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}</b> bertempat di PT. Nirwana Alabare Garment Kedua belah pihak sepakat untuk mengadakan Perjanjian Kerja Waktu Tertentu dengan ketentuan-ketentuan sebagai berikut:</b>.
             </td>
         </tr>
         <tr>
@@ -99,7 +99,7 @@
                     <li>Perusahaan dapat dan berhak mengubah serta memindahkan bagian, Jabatan, tempat, dan lokasi kerja karyawan baik diluar kota maupun antar perusahaan di Nirwana Group sesuai dengan kebutuhan.</li>
                     <li>Perjanjian Kerja untuk waktu/pekerjaan tertentu ini diadakan karena tersedianya pekerjaan yang menpurut sifat atau jenis, atau yang kegiatannya akan selesai dalam waktu tertentu atau bersifat tidak tetap.</li>
                     <li>Waktu dan Jam kerja di Perusahaan 5 (lima) hari kerja dalam seminggu, dengan ketentuan 8 (delapan) jam sehari dan/atau 40 (empat puluh) jam seminggu serta hari Sabtu dan Minggu merupakan hari libur/istirahat mingguan.</li>
-                    <li>Pihak Pertama akan membayar Upah/Gaji pokok kepada Pihak Kedua sebesar <b>Rp. {{number_format($umk, 2, ',', '.');}}</b> <i><b>(Tiga Juta Lima Ratus Dua Puluh Tujuh Ribu Sembilan Ratus Enam Puluh Tujuh Rupiah)</b></i>, yang perhitungannya dipengaruhi oleh penilaian tingkat kemampuan, kehadiran, serta jenis pekerjaan yang dilakukan. Pembayaran upah / gaji akan dilaksanakan pada tanggal 1 (satu) setiap bulannya.</li>
+                    <li>Pihak Pertama akan membayar Upah/Gaji pokok kepada Pihak Kedua sebesar <b>Rp. {{number_format($umk, 2, ',', '.');}}</b> <i><b>(Tiga Juta Tujuh Ratus Lima Puluh Tujuh Ribu Dua Ratus Delapan Puluh Lima Rupiah)</b></i>, yang perhitungannya dipengaruhi oleh penilaian tingkat kemampuan, kehadiran, serta jenis pekerjaan yang dilakukan. Pembayaran upah / gaji akan dilaksanakan pada tanggal 1 (satu) setiap bulannya.</li>
                     <li>Pihak Pertama berhak melakukan perubahan sistem pengupahan dengan metode pengupahan berdasarkan satuan hasil atau pengupahan dengan sistem per jam sesuai dengan kondisi dan situasi perusahaan.</li>
                     <li>Pihak Pertama memberikan kompensasi PKWT kepada Pihak Kedua dengan besaran, metode dan waktu yang akan diatir dalam prosedur yang berlaku.</li>
                     <li>Pihak Kedua wajib mematuhi Peraturan Perusahaan yang berlaku dan menjaga ketertiban, kedisiplinan, produktivitas kerja, kerjasama dan kebersihan di lingkungan kerjanya serta merawat peralatan kerja, mesin produksi, dan barang inventaris yang menjadi tanggung jawabnya.</li>
@@ -117,7 +117,7 @@
         </tr>
         <tr>
             <td style="font-family:Arial, Helvetica, sans-serif;font-size:7pt;text-align:justify;padding-top:8px">
-                Demikian Perjanjian Kerja ini dibuat oleh kedua belah pihak dalam keadaan sehat jasmani dan rohani tanpa ada tekanan atau paksaan dari manapun. 
+                Demikian Perjanjian Kerja ini dibuat oleh kedua belah pihak dalam keadaan sehat jasmani dan rohani tanpa ada tekanan atau paksaan dari manapun.
             </td>
         </tr>
     </table>
@@ -272,7 +272,7 @@
                     <li><b>PIHAK KEDUA</b> besedia melaksanakan tugas dan tanggung jawabnya yang diberikan Pimpinan/atasannya dengan sebaik-baiknya serta bersedia mengikuti dan patuh terhadap ketentuan-ketentuan dan prosedur yang berlaku didalamnya.</li>
                     <li><b>PIHAK KEDUA</b> wajib mematuhi Peraturan Perusahaan yang berlaku dan menjaga ketertiban, kedisiplinan, produktivitas kerja, kerjasama dan kebersihan di lingkungan kerjanya serta merawat peralatan kerja, fasilitas perusahaan, dan barang inventaris yang menjadi tanggung jawabnya.</li>
                     <li><b>PIHAK PERTAMA</b> dapat dan berhak mengubah serta memindahkan bagian, Jabatan, tempat, dan lokasi kerja karyawan baik diluar kota maupun antar perusahaan di Nirwana Group sesuai dengan kebutuhan dan kecakapan yang dimilikinya.</li>
-                    <li><b>PIHAK KEDUA</b> akan mendapatkan upah pokok sebesar <b>Rp. {{number_format($umk, 2, ',', '.');}}</b> <i><b>(Tiga Juta Lima Ratus Dua Puluh Tujuh Ribu Sembilan Ratus Enam Puluh Tujuh Rupiah)</b></i> /bulan atau Upah Minimun yang ditentukan oleh peraturan yang berlaku, atau kesepakatan yang telah dilakukan dan dibayarkan setiap tanggal 1 (satu) pada setiap bulannya, kemudian dihitung berdasarkan pada kehadiran dan pekerjaan yang dilakukan.</li>
+                    <li><b>PIHAK KEDUA</b> akan mendapatkan upah pokok sebesar <b>Rp. {{number_format($umk, 2, ',', '.');}}</b> <i><b>(Tiga Juta Tujuh Ratus Lima Puluh Tujuh Ribu Dua Ratus Delapan Puluh Lima Rupiah)</b></i> /bulan atau Upah Minimun yang ditentukan oleh peraturan yang berlaku, atau kesepakatan yang telah dilakukan dan dibayarkan setiap tanggal 1 (satu) pada setiap bulannya, kemudian dihitung berdasarkan pada kehadiran dan pekerjaan yang dilakukan.</li>
                     <li><b>PIHAK KEDUA</b> akan dianggap mengundurkan diri atas permintaan sendiri bilamana 5 (lima) hari tidak masuk kerja tanpa ada pemberitahuan yang sesuai.</li>
                     <li><b>PIHAK PERTAMA</b> berhak untuk mengakhiri hubungan kerja jika <b>PIHAK KEDUA</b>
                         <ul style="padding-left:14px;list-style-type:square;">
