@@ -21,6 +21,7 @@ use App\Models\MasterDataAbsenKehadiran;
 use App\Exports\exportExcelKontrak;
 use App\Models\DasarPotBPJS;
 use App\Models\EntertainPengajuanTamu;
+use App\Exports\ExcelPenilaianKinerjaNonstaff;
 use App\Models\DepartmentAll;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Http;
@@ -577,5 +578,174 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         ini_set("max_execution_time", 0);
         ini_set("max_input_time", 0);
         Excel::import(new PenilaianKinerjaStaffImportToDatabase, request()->file('excel_file'));
+    }
+
+    public function download_excel_penilaian_kinerja_nonstaff(){
+        $loggedAdmin = Auth::guard('admin')->user();
+        $loggedEmail = $loggedAdmin->email;
+        $email = ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli'];
+
+        $inSearchVariable='';
+        $inNoKTP='';
+        $inEnrollId='';
+        $inIbuKandung='';
+        $inStatusAktif='';
+        $inStatusKontrak='';
+        if (request("search_variable")) {
+            $search_variable=request()->search_variable;
+            $inSearchVariable = 'AND (a.enroll_id = "'.$search_variable.'" or a.nik LIKE "'.$search_variable.'%" or a.employee_name LIKE "%'.$search_variable.'%" or a.tempat_lahir LIKE "%'.$search_variable.'%" or a.nomor_tlpn LIKE "'.$search_variable.'%" or a.agama LIKE "'.$search_variable.'%" or a.status_kawin LIKE "'.$search_variable.'%" or a.nomor_kk LIKE "'.$search_variable.'%" or a.pendidikan_terakhir LIKE "'.$search_variable.'%" or a.jurusan_pendidikan LIKE "'.$search_variable.'%" or a.alamat_rumah LIKE "%'.$search_variable.'%" or a.department_name LIKE "%'.$search_variable.'%" or a.sub_dept_name LIKE "%'.$search_variable.'%" or a.status_aktif LIKE "'.$search_variable.'%" or a.ibu_kandung LIKE "%'.$search_variable.'%" or a.nomor_ktp LIKE "'.$search_variable.'%")';
+        }
+        if(request()->no_ktp){
+            $no_ktp_string=request()->no_ktp;
+            $inNoKTP='AND a.nomor_ktp LIKE "'.$no_ktp_string.'%"';
+        }
+        if(request()->enroll_id){
+            $enroll_id=request()->enroll_id;
+            $enroll_id_string=implode(',', $enroll_id);
+            $inEnrollId='AND a.enroll_id in ('.$enroll_id_string.')';
+        }
+        if(request()->ibu_kandung){
+            $ibu_kandung_string=request()->ibu_kandung;
+            $inIbuKandung='AND a.ibu_kandung LIKE "%'.$ibu_kandung_string.'%"';
+        }
+        $inStatusAktif='AND a.status_aktif = "AKTIF"';
+        if(request()->status_kontrak){
+            $status_kontrak=request()->status_kontrak;
+            if($status_kontrak=='Active'){
+                $inStatusKontrak='AND c.max_contract_end >= curdate()';
+            }else if($status_kontrak=='Nonactive'){
+                $inStatusKontrak='AND c.max_contract_end < curdate()';
+            }else if($status_kontrak=='One Day'){
+                $inStatusKontrak='AND c.max_contract_end = curdate()';
+            }else if($status_kontrak=='Thirty Day'){
+                $thirty_day_more = date('Y-m-d',strtotime('+30 days',strtotime(date("Y-m-d")))) . PHP_EOL;
+                $inStatusKontrak='AND c.max_contract_end = "'.$thirty_day_more.'"';
+            }else if($status_kontrak=='Not yet extended'){
+                $inStatusKontrak='AND c.max_contract_end < curdate() AND a.status_aktif ="AKTIF"';
+            }else if($status_kontrak=='Unfilled'){
+                $inStatusKontrak='AND b.contract_end is null';
+            }
+        }
+
+        $inDepartment_name='';
+        if(request("department_name")){
+            $department=request("department_name");
+            $inDepartment_name = ' AND z.department_name = "'.$department.'"';
+        }
+
+        $today = date('Y-m-d');
+        $currentMonth = date('m');
+        $currentYear = date('Y');
+        $inStatusKontrak = "AND MONTH(y.contract_end) = $currentMonth AND YEAR(y.contract_end) = $currentYear";
+
+
+        $inStatusAktif='AND z.status_aktif = "aktif" AND z.status_staff = "NON STAFF"';
+
+        $data_kontrak_non_staff = DB::select("select z.enroll_id,z.nik,z.employee_name,z.join_date,z.department_name,z.sub_dept_name,z.status_aktif,z.tanggal_resign,z.ibu_kandung,z.nomor_ktp,z.status_staff,y.id,y.contract  AS contract_last,y.contract_end  AS contract_end_last,y.contract_end,y.contract from (select a.enroll_id,a.id,e.contract,e.contract_end from (select enroll_id,max(contract) contract,max(contract_end) contract_end from employee_contract group by enroll_id)e inner join (select id,enroll_id,contract,contract_end from employee_contract)a on e.enroll_id=a.enroll_id and e.contract_end=a.contract_end)y right join (select enroll_id,nik,employee_name,join_date,tanggal_resign,tempat_lahir,nomor_tlpn,agama,status_kawin,nomor_kk,pendidikan_terakhir,jurusan_pendidikan,alamat_rumah,department_name,sub_dept_name,status_aktif,ibu_kandung,nomor_ktp,status_staff from employee_atribut)z on y.enroll_id=z.enroll_id  where z.enroll_id is not null ".$inStatusKontrak." ".$inStatusAktif." ".$inDepartment_name." group by enroll_id order by enroll_id");
+
+        // Pisahkan data menjadi dua kelompok
+        $kurang_dari_30_hari = [];
+        $lebih_dari_30_hari = [];
+        $data = [];
+
+        foreach ($data_kontrak_non_staff as $item) {
+            $selisih_hari = (strtotime($item->contract_end) - strtotime($item->contract)) / (60 * 60 * 24) + 1;
+
+            if ($selisih_hari <= 30) {
+                // Hitung tanggal 15 hari sebelum contract_end
+                $item->tanggal_pengurang = date('Y-m-d', strtotime($item->contract_end . ' -15 days'));
+                $jumlah_sakit = DB::select("select count(*) as jumlah_sakit from master_data_absen_kehadiran where enroll_id = ? and status_absen = 'S' and tanggal_berjalan <= ?", [$item->enroll_id, $item->tanggal_pengurang]);
+                $jumlah_mangkir = DB::select("select count(*) as jumlah_mangkir from master_data_absen_kehadiran where enroll_id = ? and status_absen = 'M' and tanggal_berjalan <= ?", [$item->enroll_id, $item->tanggal_pengurang]);
+                $jumlah_ijin = DB::select("select count(*) as jumlah_ijin from master_data_absen_kehadiran where enroll_id = ? and status_absen = 'I' and tanggal_berjalan <= ?", [$item->enroll_id, $item->tanggal_pengurang]);
+
+                $item->jumlah_sakit = $jumlah_sakit[0]->jumlah_sakit;
+                $item->jumlah_mangkir = $jumlah_mangkir[0]->jumlah_mangkir;
+                $item->jumlah_ijin = $jumlah_ijin[0]->jumlah_ijin;
+                $data[] = $item;
+            } else {
+                $item->tanggal_pengurang = date('Y-m-d', strtotime($item->contract_end . ' -30 days'));
+                $jumlah_sakit = DB::select("select count(*) as jumlah_sakit from master_data_absen_kehadiran where enroll_id = ? and status_absen = 'S' and tanggal_berjalan <= ?", [$item->enroll_id, $item->tanggal_pengurang]);
+                $jumlah_mangkir = DB::select("select count(*) as jumlah_mangkir from master_data_absen_kehadiran where enroll_id = ? and status_absen = 'M' and tanggal_berjalan <= ?", [$item->enroll_id, $item->tanggal_pengurang]);
+                $jumlah_ijin = DB::select("select count(*) as jumlah_ijin from master_data_absen_kehadiran where enroll_id = ? and status_absen = 'I' and tanggal_berjalan <= ?", [$item->enroll_id, $item->tanggal_pengurang]);
+
+                $item->jumlah_sakit = $jumlah_sakit[0]->jumlah_sakit;
+                $item->jumlah_mangkir = $jumlah_mangkir[0]->jumlah_mangkir;
+                $item->jumlah_ijin = $jumlah_ijin[0]->jumlah_ijin;
+                $data[] = $item;
+            }
+        }
+
+        // dd([
+        //     'Kurang dari 30 hari' => $kurang_dari_30_hari,
+        //     'Lebih dari 30 hari' => $lebih_dari_30_hari,
+        // ]);
+
+
+        // $query = DB::select("
+        //         SELECT
+        //             a.status_staff,
+        //             a.enroll_id,
+        //             a.nik,
+        //             a.employee_name,
+        //             a.department_id,
+        //             a.status_jabatan,
+        //             a.sub_dept_name,
+        //             a.department_name,
+        //             a.status_kontrak_tetap,
+        //             a.status_aktif,
+        //             a.join_date,
+        //             a.tanggal_resign,
+        //             a.nomor_ktp,
+        //             b.contract,
+        //             b.contract_end,
+        //             c.max_contract_end,
+        //             d.contract AS contract_last,
+        //             d.contract_end AS contract_end_last,
+        //             mda.total_mangkir,
+        //             mda.total_izin,
+        //             mda.total_sakit
+        //         FROM employee_atribut a
+        //         LEFT JOIN employee_contract b
+        //             ON a.enroll_id = b.enroll_id
+        //         LEFT JOIN (
+        //             SELECT enroll_id, MAX(contract_end) AS max_contract_end
+        //             FROM employee_contract
+        //             GROUP BY enroll_id
+        //         ) c ON a.enroll_id = c.enroll_id
+        //         LEFT JOIN (
+        //             SELECT enroll_id, contract, contract_end
+        //             FROM employee_contract ec
+        //             WHERE (ec.enroll_id, ec.contract_end) IN (
+        //                 SELECT enroll_id, MAX(contract_end)
+        //                 FROM employee_contract
+        //                 GROUP BY enroll_id
+        //             )
+        //         ) d ON a.enroll_id = d.enroll_id
+        //       LEFT JOIN (
+        //             SELECT
+        //                 enroll_id,
+        //                 tanggal_berjalan,
+        //                 SUM(CASE WHEN status_absen = 'M' THEN 1 ELSE 0 END) AS total_mangkir,
+        //                 SUM(CASE WHEN status_absen = 'I' THEN 1 ELSE 0 END) AS total_izin,
+        //                 SUM(CASE WHEN status_absen = 'S' THEN 1 ELSE 0 END) AS total_sakit
+        //             FROM master_data_absen_kehadiran
+        //             WHERE status_absen IN ('M','I','S')
+        //             GROUP BY enroll_id
+        //         ) mda ON a.enroll_id = mda.enroll_id
+        //         AND mda.tanggal_berjalan BETWEEN d.contract AND d.contract_end
+        //         WHERE a.enroll_id IS NOT NULL
+        //             $inSearchVariable
+        //             $inEnrollId
+        //             $inNoKTP
+        //             $inIbuKandung
+        //             $inStatusAktif
+        //             $inStatusKontrak
+        //             $inDepartment_name
+        //              AND a.status_staff = 'NON STAFF'
+        //         ORDER BY a.enroll_id, b.contract_end
+        // ");
+        // dd($query);
+
+        return Excel::download(new ExcelPenilaianKinerjaNonstaff($data), 'Form Penilaian Kinerja Non Staff.xlsx');
     }
 }

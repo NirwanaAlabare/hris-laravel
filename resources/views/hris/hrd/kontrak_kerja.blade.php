@@ -123,6 +123,19 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="row pb-2">
+                                <div class="col-2 pt-1">
+                                    <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Department</label>
+                                </div>
+                                <div class="col-3 pr-0">
+                                    <select id="selectDepartment" name="selectDepartment" class="form-control" id="status_aktif">
+                                        <option value="">Pilih Department</option>
+                                        @foreach ($department as $r_dept)
+                                        <option value="{{$r_dept->department_name}}">{{$r_dept->department_name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -140,6 +153,9 @@
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" data-target="#import_nilai_kinerja_staff" data-toggle="modal" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Import Nilai Kinerja Staff</button>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" onclick="export_excel_format_penilaian_nonstaff()" id="export_excel_format_penilaian_nonstaff" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Format Penilaian Non Staff</button>
                                 </td>
                                 <td>
                                     <button class="btn btn-danger" id="print_kontrak_kerja" style="visibility: hidden"><span class="fa fa-file-pdf-o"></span> Print Checked Employee</button>
@@ -1021,6 +1037,63 @@
             }
         });
     });
+
+    function export_excel_format_penilaian_nonstaff(){
+        $("#export_excel_format_penilaian_nonstaff").addClass("btn-loading");
+        $("#export_excel_format_penilaian_nonstaff").html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loading...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+        $("#export_excel_format_penilaian_nonstaff").attr("disabled", true);
+        let search_variable=$('#search_variable').val();
+        var department_id = $('#selectDepartment').val();
+        console.log(department_id);
+
+        let no_ktp = document.getElementById("searchNoKTP").value;
+        let enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+        let ibu_kandung = document.getElementById("searchIbuKandung").value;
+        let status_aktif = document.getElementById("status_aktif").value;
+        let status_kontrak = document.getElementById("status_kontrak").value;
+        var today=new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+        var hour = today.getHours();
+        var minutes = today.getMinutes();
+        var seconds = today.getSeconds();
+        today_date = yyyy + '-' + mm + '-' + dd + ' '+ hour +'.'+minutes+'.'+seconds;
+        $.ajax({
+            type: "get",
+            url: '{{ route('hris.hrd.download_excel_penilaian_kinerja_nonstaff') }}',
+            data: {
+                search_variable: search_variable,
+                no_ktp: no_ktp,
+                enroll_id: enroll_id,
+                ibu_kandung: ibu_kandung,
+                status_aktif: status_aktif,
+                status_kontrak: status_kontrak,
+                department_name: department_id,
+            },
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function(response) {
+                {
+                    $('#export_excel_format_penilaian_nonstaff').removeClass("btn-loading");
+                    $("#export_excel_format_penilaian_nonstaff").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Download Ref Penilaian Kerja');
+                    $("#export_excel_format_penilaian_nonstaff").attr("disabled", false);
+                    var blob = new Blob([response]);
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "Format Penilaian Kinerja Non Staff "+today_date+" "+Math.ceil(Math.random()*1000000)+".xlsx";
+                    link.click();
+                }
+            },
+            error: function(res){
+                swal("", "Export kontrak kerja gagal", "error");
+                $('#export_excel_format_penilaian_nonstaff').removeClass("btn-loading");
+                $("#export_excel_format_penilaian_nonstaff").attr("disabled", false);
+                $("#export_excel_format_penilaian_nonstaff").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Download Ref Penilaian Kerja');
+            }
+        });
+    }
 
 </script>
 
