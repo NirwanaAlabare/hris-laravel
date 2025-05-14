@@ -334,6 +334,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('hrd/print_pdf_kontrak',['as'=>'hris.hrd.print_pdf_kontrak','uses'=>'HRDController@print_pdf_kontrak']);
     Route::get('hrd/print_all_pdf_kontrak',['as'=>'hris.hrd.print_all_pdf_kontrak','uses'=>'HRDController@print_all_pdf_kontrak']);
     Route::get('hrd/print_pdf_kontrak_2',['as'=>'hris.hrd.print_pdf_kontrak_2','uses'=>'HRDController@print_pdf_kontrak_2']);
+    Route::get('hrd/print_pdf_kompensasi_pkwt',['as'=>'hris.hrd.print_pdf_kompensasi_pkwt','uses'=>'HRDController@print_pdf_kompensasi_pkwt']);
     Route::post('hrd/ajax_getemployeeidbyfilter',['as'=>'hris.hrd.ajax_getemployeeidbyfilter','uses'=>'HRDController@ajax_getemployeeidbyfilter']);
 
     Route::get('ga/form_pengajuan_transportasi',['as'=>'hris.ga.form_pengajuan_transportasi','uses'=>'GAController@form_pengajuan_transportasi']);
