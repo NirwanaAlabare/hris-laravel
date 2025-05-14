@@ -95,7 +95,7 @@
             <td>
                 <ol style="font-family:Arial, Helvetica, sans-serif;font-size:7pt;text-align:justify;padding-left:20px">
                     <li>Pihak Pertama menerima Pihak Kedua sebagai Karyawan dengan masa kontrak dimulai sejak tanggal <b>{{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}</b> sampai dengan <b>{{Carbon\Carbon::parse($value->contract_end)->translatedFormat('d F Y')}}</b>.</li>
-                    <li>Pihak Pertama mempekerjakan Pihak Kedua sebagai  di bagian . Dan Pihak Kedua besedia melaksanakan tugas dan tanggung jawabnya yang diberikan Pimpinan/atasannya dengan sebaik-baiknya serta bersedia mengikuti dan patuh terhadap ketentuan-ketentuan dan prosedur yang berlaku didalamnya.</li>
+                    <li>Pihak Pertama mempekerjakan Pihak Kedua sebagai  di bagian {{$value->department_name}}. Dan Pihak Kedua besedia melaksanakan tugas dan tanggung jawabnya yang diberikan Pimpinan/atasannya dengan sebaik-baiknya serta bersedia mengikuti dan patuh terhadap ketentuan-ketentuan dan prosedur yang berlaku didalamnya.</li>
                     <li>Perusahaan dapat dan berhak mengubah serta memindahkan bagian, Jabatan, tempat, dan lokasi kerja karyawan baik diluar kota maupun antar perusahaan di Nirwana Group sesuai dengan kebutuhan.</li>
                     <li>Perjanjian Kerja untuk waktu/pekerjaan tertentu ini diadakan karena tersedianya pekerjaan yang menpurut sifat atau jenis, atau yang kegiatannya akan selesai dalam waktu tertentu atau bersifat tidak tetap.</li>
                     <li>Waktu dan Jam kerja di Perusahaan 5 (lima) hari kerja dalam seminggu, dengan ketentuan 8 (delapan) jam sehari dan/atau 40 (empat puluh) jam seminggu serta hari Sabtu dan Minggu merupakan hari libur/istirahat mingguan.</li>
@@ -124,7 +124,7 @@
     <table width="527" style="line-height: 8px;padding-top:8px">
         <thead>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7pt">Solokan Jeruk,</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7pt">Solokan Jeruk, {{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}</td>
             </tr>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7pt;font-weight:bold" width="45%"><b>PIHAK PERTAMA,</b></td>
@@ -148,7 +148,9 @@
         <thead>
             <tr>
                 <td style="border-bottom:1px solid black;height:24px" width="93%"></td>
-                <td rowspan="2"><img src="data:image/png;base64,{{\DNS2D::getBarcodePNG(''.$value->enroll_id, 'QRCODE',)}}" alt="barcode" style="width: 42px; height: 42px;background-color:white" /></td>
+                <td rowspan="2">
+                    <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($no_form) . '&type=SK_KERJA', 'QRCODE') }}" alt="barcode" style="width: 60px; height: 60px;background-color:white" />
+                </td>
             </tr>
             <tr>
                 <td style="height:24px"></td>
@@ -296,7 +298,7 @@
             <tr>
                 <td width='20px'></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold"></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold;"><b>Solokan Jeruk, <u>{{Carbon\Carbon::parse(date('Y-m-d'))->translatedFormat('d F Y')}}</u></b></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold;"><b>Solokan Jeruk, <u>{{Carbon\Carbon::parse(date($value->contract))->translatedFormat('d F Y')}}</u></b></td>
             </tr>
             <tr>
                 <td></td>
@@ -324,7 +326,9 @@
         <thead>
             <tr>
                 <td style="border-bottom:1px solid black;height:24px" width="93%"></td>
-                <td rowspan="2"><img src="data:image/png;base64,{{\DNS2D::getBarcodePNG(''.$value->enroll_id, 'QRCODE',)}}" alt="barcode" style="width: 42px; height: 42px;background-color:white" /></td>
+                <td rowspan="2">
+                    <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($no_form) . '&type=SK_KERJA', 'QRCODE') }}" alt="barcode" style="width: 60px; height: 60px;background-color:white" />
+                </td>
             </tr>
             <tr>
                 <td style="height:24px"></td>
