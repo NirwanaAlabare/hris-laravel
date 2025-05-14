@@ -135,6 +135,17 @@
                                         @endforeach
                                     </select>
                                 </div>
+                                <div class="col-1 pt-1">
+                                </div>
+                                <div class="col-2 pt-1">
+                                    <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Tanggal Masuk</label>
+                                </div>
+                                <div class="col-3 pr-0">
+                                    <div class="">
+                                        <input type="hidden" id="daterange1" name="daterange1">
+                                        <a class="nav-link card-title py-2 pl-3" style="border: 1px solid #d8d4dc" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -818,7 +829,34 @@
 </style>
 
 <script>
+    $('#daterange-btn1').daterangepicker({
+        ranges: {
+            'Hari ini': [moment(), moment()],
+            'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            '7 Hari Kemarin': [moment().subtract(6, 'days'), moment()],
+            '30 Hari Kemarin': [moment().subtract(29, 'days'), moment()],
+            'Bulan Sekarang': [moment().startOf('month'), moment().endOf('month')],
+            'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        startDate: moment().subtract(29, 'days'),
+        endDate: moment()
+    }, function(start, end) {
+        $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>');
+        var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
+        $('#daterange1').val(daterange1);
+        $('#datatable').DataTable().ajax.reload();
+    });
+    $("#daterange1").on("change input", function() {
+        $('#datatable').DataTable().ajax.reload();
+        });
+
     $(document).ready(function() {
+        var start = moment();
+            var end = moment();
+            var htmlDateRange = '<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>'
+            $('#daterange-btn1').html(htmlDateRange);
+            var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
+            $('#daterange1').val(daterange1);
         $('#penilaianForm').submit(function(e) {
             e.preventDefault();
 
@@ -1435,6 +1473,7 @@
                 d.status_aktif = $('#status_aktif').val();
                 d.status_staff = $('#status_staff').val();
                 d.search_variable = $('#search_variable').val();
+                d.contract = $('#daterange1').val();
             },
         },
         columns: [
