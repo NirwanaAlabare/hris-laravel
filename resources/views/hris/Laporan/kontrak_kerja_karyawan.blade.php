@@ -95,7 +95,7 @@
             <td>
                 <ol style="font-family:Arial, Helvetica, sans-serif;font-size:7pt;text-align:justify;padding-left:20px">
                     <li>Pihak Pertama menerima Pihak Kedua sebagai Karyawan dengan masa kontrak dimulai sejak tanggal <b>{{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}</b> sampai dengan <b>{{Carbon\Carbon::parse($value->contract_end)->translatedFormat('d F Y')}}</b>.</li>
-                    <li>Pihak Pertama mempekerjakan Pihak Kedua sebagai  di bagian {{$value->department_name}}. Dan Pihak Kedua besedia melaksanakan tugas dan tanggung jawabnya yang diberikan Pimpinan/atasannya dengan sebaik-baiknya serta bersedia mengikuti dan patuh terhadap ketentuan-ketentuan dan prosedur yang berlaku didalamnya.</li>
+                    <li>Pihak Pertama mempekerjakan Pihak Kedua sebagai <bold>OPERATOR</bold> di bagian {{$value->department_name}}. Dan Pihak Kedua besedia melaksanakan tugas dan tanggung jawabnya yang diberikan Pimpinan/atasannya dengan sebaik-baiknya serta bersedia mengikuti dan patuh terhadap ketentuan-ketentuan dan prosedur yang berlaku didalamnya.</li>
                     <li>Perusahaan dapat dan berhak mengubah serta memindahkan bagian, Jabatan, tempat, dan lokasi kerja karyawan baik diluar kota maupun antar perusahaan di Nirwana Group sesuai dengan kebutuhan.</li>
                     <li>Perjanjian Kerja untuk waktu/pekerjaan tertentu ini diadakan karena tersedianya pekerjaan yang menpurut sifat atau jenis, atau yang kegiatannya akan selesai dalam waktu tertentu atau bersifat tidak tetap.</li>
                     <li>Waktu dan Jam kerja di Perusahaan 5 (lima) hari kerja dalam seminggu, dengan ketentuan 8 (delapan) jam sehari dan/atau 40 (empat puluh) jam seminggu serta hari Sabtu dan Minggu merupakan hari libur/istirahat mingguan.</li>
@@ -144,7 +144,7 @@
             </tr>
         </thead>
     </table>
-    <table width="562" style="padding-top: 100px">
+    <table width="562" style="padding-top: 50px">
         <thead>
             <tr>
                 <td style="border-bottom:1px solid black;height:24px" width="88%"></td>
