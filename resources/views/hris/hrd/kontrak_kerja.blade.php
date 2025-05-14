@@ -1084,13 +1084,16 @@
         });
     });
 
+    $('#selectDepartment').on('change',function(){
+        datatable.ajax.reload();
+    });
+
     function export_excel_format_penilaian_nonstaff(){
         $("#export_excel_format_penilaian_nonstaff").addClass("btn-loading");
         $("#export_excel_format_penilaian_nonstaff").html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loading...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
         $("#export_excel_format_penilaian_nonstaff").attr("disabled", true);
         let search_variable=$('#search_variable').val();
         var department_id = $('#selectDepartment').val();
-        console.log(department_id);
 
         let no_ktp = document.getElementById("searchNoKTP").value;
         let enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
@@ -1482,6 +1485,7 @@
                 d.status_staff = $('#status_staff').val();
                 d.search_variable = $('#search_variable').val();
                 d.contract = $('#daterange1').val();
+                d.department_name = $('#selectDepartment').val();
             },
         },
         columns: [
