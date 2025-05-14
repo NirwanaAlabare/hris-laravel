@@ -619,13 +619,77 @@ class HRDController extends AdminBaseController
         $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan_2',["no_form"=>$no_form,"contract2"=>$contract,"contract_end2"=>$contract_end,"data" => $data,"umk"=>$umk])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
         return $pdf;
     }
-    public function print_all_pdf_kontrak(){
+
+    public function hitungBulanKontrak(string $awal, string $akhir): int {
+        $start = new DateTime($awal);
+        $end = new DateTime($akhir);
+
+        // Jika tanggal akhir lebih kecil dari tanggal mulai, langsung return 0
+        if ($end < $start) {
+            return 0;
+        }
+
+        // Tambahkan 1 hari ke tanggal akhir untuk memastikan periode mencakup hari terakhir
+        $end->modify('+1 day');
+
+        $jumlah_bulan = 0;
+        while ($start < $end) {
+            $next = (clone $start)->modify('+1 month');
+            if ($next > $end) {
+                break;
+            }
+            $jumlah_bulan++;
+            $start = $next;
+        }
+
+        return $jumlah_bulan;
+    }
+
+
+
+    public function print_pdf_kompensasi_pkwt(){
         $enroll_id=request()->enroll_id;
         $no_form=request()->no_form;
+        $contract=request()->contract;
+        $contract_end=request()->contract_end;
+        $data=DB::select("select a.status_staff,a.enroll_id,a.nik,a.employee_name,a.status_jabatan,a.sub_dept_name,a.department_name,a.status_kontrak_tetap,a.status_aktif,a.join_date,a.tanggal_resign,a.nomor_ktp,a.tempat_lahir,a.alamat_rumah,a.tanggal_lahir,a.no_surat,b.contract,b.contract_end,c.max_contract,c.max_contract_end from employee_atribut a left join employee_contract b on a.enroll_id=b.enroll_id left join (select enroll_id,max(contract) max_contract,max(contract_end) max_contract_end from employee_contract group by enroll_id)c on a.enroll_id=c.enroll_id where a.enroll_id=".$enroll_id." and b.contract='$contract' and b.contract_end='$contract_end' group by a.enroll_id");
+        $umk=DasarPotBPJS::orderBy('created_at','desc')->limit(1)->first()->dasar_pot_bpjs_rupiah;
+        $data = $data[0];
+        $tanggal_masuk = $data->join_date;
+        $tanggal_awal = $data->contract_end;
+        $selisih_tahun = date_diff(date_create($tanggal_masuk), date_create($tanggal_awal))->y;
+        if ($selisih_tahun < 1) {
+            $tunjangan = 0;
+        } elseif ($selisih_tahun < 3) {
+            $tunjangan = 2500;
+        } elseif ($selisih_tahun < 6) {
+            $tunjangan = 5000;
+        }elseif ($selisih_tahun < 9) {
+            $tunjangan = 7500;
+        }elseif ($selisih_tahun < 12) {
+            $tunjangan = 10000;
+        }else{
+            $tunjangan = 12500;
+        }
+
+        $total_penghasilan_bulanan = $umk + $tunjangan;
+        $bulan_masuk = new DateTime($data->contract);
+        $bulan_akhir = new DateTime($data->contract_end);
+
+        $jumlah_bulan = $this->hitungBulanKontrak($data->contract, $data->contract_end);
+        $total_kompensasi = $total_penghasilan_bulanan * ($jumlah_bulan / 12);
+
+
+        $fileName='Kompensasi PKWT '.$data->employee_name.'('.request()->enroll_id.') '.$contract_end.' '.date('His');
+        $pdf = PDF::loadView('hris.laporan.pdf_kompensasi_pkwt',["no_form"=>$no_form,"contract2"=>$contract,"contract_end2"=>$contract_end,"data" => $data,"umk"=>$umk, "tunjangan"=>$tunjangan, "total_kompensasi"=>$total_kompensasi, "jumlah_bulan"=>$jumlah_bulan])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+        return $pdf;
+    }
+    public function print_all_pdf_kontrak(){
+        $enroll_id=request()->enroll_id;
         $data=DB::select("select a.status_staff,a.enroll_id,a.nik,a.employee_name,a.status_jabatan,a.sub_dept_name,a.department_name,a.status_kontrak_tetap,a.status_aktif,a.join_date,a.tanggal_resign,a.nomor_ktp,a.tempat_lahir,a.alamat_rumah,a.tanggal_lahir,a.no_surat,b.contract,b.contract_end,c.max_contract,c.max_contract_end from employee_atribut a left join employee_contract b on a.enroll_id=b.enroll_id left join (select enroll_id,max(contract) max_contract,max(contract_end) max_contract_end from employee_contract)c on a.enroll_id=c.enroll_id where a.enroll_id in (".$enroll_id.")");
         $umk=DasarPotBPJS::orderBy('created_at','desc')->limit(1)->first()->dasar_pot_bpjs_rupiah;
         $fileName='Kontrak Kerja '.$data[0]->employee_name.'('.request()->enroll_id.') '.$data[0]->max_contract_end.' '.date('His');
-        $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan',["no_form"=>$no_form,"data" => $data,"umk"=>$umk])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+        $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan',["data" => $data,"umk"=>$umk])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
         return $pdf;
     }
     public function ajax_getemployeeidbyfilter(){

@@ -1754,6 +1754,7 @@
                                 <a href='#' class='btn btn-sm btn-danger py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='printContract("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Print&nbsp;&nbsp;</a>\
                                 <a href='#' class='btn btn-sm btn-primary py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='exportPenilaian("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Penilaian&nbsp;&nbsp;</a>\
                                 <a href='#' class='btn btn-sm btn-warning py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='editPenilaianKinerja("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-edit' style='font-size:9pt'></span> Nilai&nbsp;&nbsp;</a>\
+                                <a href='#' class='btn btn-sm btn-info py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='print_pdf_kompensasi_pkwt("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> PKWT&nbsp;&nbsp;</a>\
                             </div>\
                         </div>");
                     }
@@ -2125,6 +2126,16 @@
         var contract_end2=contract_end;
         var no_form='HRD-NAG/PKWT'+'/'+integerToRoman(month_now+1)+'/'+year_now;
         var url = 'print_pdf_kontrak_2?enroll_id='+enroll_id+'&no_form='+no_form+'&contract='+contract2+'&contract_end='+contract_end2;
+        window.open(url, '_blank');
+    }
+    function print_pdf_kompensasi_pkwt(enroll_id,contract,contract_end){
+        var today=new Date();
+        var month_now=today.getMonth();
+        var year_now=today.getFullYear();
+        var contract2=contract;
+        var contract_end2=contract_end;
+        var no_form='HRD-NAG/PKWT'+'/'+integerToRoman(month_now+1)+'/'+year_now;
+        var url = 'print_pdf_kompensasi_pkwt?enroll_id='+enroll_id+'&contract='+contract2+'&contract_end='+contract_end2;
         window.open(url, '_blank');
     }
     function integerToRoman(num) {
