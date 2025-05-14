@@ -691,10 +691,11 @@ class HRDController extends AdminBaseController
     }
     public function print_all_pdf_kontrak(){
         $enroll_id=request()->enroll_id;
+        $no_form=request()->no_form;
         $data=DB::select("select a.status_staff,a.enroll_id,a.nik,a.employee_name,a.status_jabatan,a.sub_dept_name,a.department_name,a.status_kontrak_tetap,a.status_aktif,a.join_date,a.tanggal_resign,a.nomor_ktp,a.tempat_lahir,a.alamat_rumah,a.tanggal_lahir,a.no_surat,b.contract,b.contract_end,c.max_contract,c.max_contract_end from employee_atribut a left join employee_contract b on a.enroll_id=b.enroll_id left join (select enroll_id,max(contract) max_contract,max(contract_end) max_contract_end from employee_contract)c on a.enroll_id=c.enroll_id where a.enroll_id in (".$enroll_id.")");
         $umk=DasarPotBPJS::orderBy('created_at','desc')->limit(1)->first()->dasar_pot_bpjs_rupiah;
         $fileName='Kontrak Kerja '.$data[0]->employee_name.'('.request()->enroll_id.') '.$data[0]->max_contract_end.' '.date('His');
-        $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan',["data" => $data,"umk"=>$umk])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+        $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan',["data" => $data,"umk"=>$umk, "no_form"=>$no_form])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
         return $pdf;
     }
     public function ajax_getemployeeidbyfilter(){
