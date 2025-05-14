@@ -140,11 +140,15 @@
                                 <div class="col-2 pt-1">
                                     <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Tanggal Masuk</label>
                                 </div>
-                                <div class="col-3 pr-0">
-                                    <div class="">
+                                <div class="col-3 pr-0 d-flex align-items-center">
                                         <input type="hidden" id="daterange1" name="daterange1">
                                         <a class="nav-link card-title py-2 pl-3" style="border: 1px solid #d8d4dc" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
-                                    </div>
+                                        <button type="button"
+                                                class="btn btn-outline-danger w-25 py-1 ml-2"
+                                                onclick="clearDateRange1()"
+                                                title="Clear tanggal">
+                                            Clear
+                                        </button>
                                 </div>
                             </div>
                         </div>
@@ -846,17 +850,21 @@
         $('#daterange1').val(daterange1);
         $('#datatable').DataTable().ajax.reload();
     });
-    $("#daterange1").on("change input", function() {
-        $('#datatable').DataTable().ajax.reload();
-        });
+
+    function clearDateRange1() {
+        $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i></span><i class="fa fa-angle-down ml-1"></i>');
+        $('#daterange1').val('');
+        $('#daterange-btn1').data('daterangepicker').setStartDate(moment());
+        $('#daterange-btn1').data('daterangepicker').setEndDate(moment());
+        $('#datatable').DataTable().ajax.reload(); // kalau kamu ingin reload juga saat clear
+    }
+
 
     $(document).ready(function() {
-        var start = moment();
-            var end = moment();
-            var htmlDateRange = '<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>'
-            $('#daterange-btn1').html(htmlDateRange);
-            var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
-            $('#daterange1').val(daterange1);
+        $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i></span><i class="fa fa-angle-down ml-1"></i>');
+        $('#daterange1').val('');
+        $('#daterange-btn1').data('daterangepicker').setStartDate(moment());
+        $('#daterange-btn1').data('daterangepicker').setEndDate(moment());
         $('#penilaianForm').submit(function(e) {
             e.preventDefault();
 
