@@ -591,6 +591,10 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         $inIbuKandung='';
         $inStatusAktif='';
         $inStatusKontrak='';
+        $inStatusKontrakRange='';
+
+
+
         if (request("search_variable")) {
             $search_variable=request()->search_variable;
             $inSearchVariable = 'AND (a.enroll_id = "'.$search_variable.'" or a.nik LIKE "'.$search_variable.'%" or a.employee_name LIKE "%'.$search_variable.'%" or a.tempat_lahir LIKE "%'.$search_variable.'%" or a.nomor_tlpn LIKE "'.$search_variable.'%" or a.agama LIKE "'.$search_variable.'%" or a.status_kawin LIKE "'.$search_variable.'%" or a.nomor_kk LIKE "'.$search_variable.'%" or a.pendidikan_terakhir LIKE "'.$search_variable.'%" or a.jurusan_pendidikan LIKE "'.$search_variable.'%" or a.alamat_rumah LIKE "%'.$search_variable.'%" or a.department_name LIKE "%'.$search_variable.'%" or a.sub_dept_name LIKE "%'.$search_variable.'%" or a.status_aktif LIKE "'.$search_variable.'%" or a.ibu_kandung LIKE "%'.$search_variable.'%" or a.nomor_ktp LIKE "'.$search_variable.'%")';
@@ -602,7 +606,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         if(request()->enroll_id){
             $enroll_id=request()->enroll_id;
             $enroll_id_string=implode(',', $enroll_id);
-            $inEnrollId='AND a.enroll_id in ('.$enroll_id_string.')';
+            $inEnrollId='AND z.enroll_id in ('.$enroll_id_string.')';
         }
         if(request()->ibu_kandung){
             $ibu_kandung_string=request()->ibu_kandung;
@@ -636,12 +640,20 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         $today = date('Y-m-d');
         $currentMonth = date('m');
         $currentYear = date('Y');
-        $inStatusKontrak = "AND MONTH(y.contract_end) = $currentMonth AND YEAR(y.contract_end) = $currentYear";
 
+        if (request()->date_range) {
+            $daterange1 = explode(" s/d ", request()->date_range);
+            $tanggalSampai = date('Y-m-d', strtotime($daterange1[1])); // ambil tanggal akhir
+            $bulanAkhir = date('m', strtotime($tanggalSampai));         // ambil bulan dari tanggal akhir
+            $tahunAkhir = date('Y', strtotime($tanggalSampai));         // ambil tahun dari tanggal akhir
+            $inStatusKontrakRange = "AND MONTH(y.contract_end) = $bulanAkhir AND YEAR(y.contract_end) = $tahunAkhir";
+        } else {
+            $inStatusKontrakRange = "AND MONTH(y.contract_end) = $currentMonth AND YEAR(y.contract_end) = $currentYear";
+        }
 
         $inStatusAktif='AND z.status_aktif = "aktif" AND z.status_staff = "NON STAFF"';
 
-        $data_kontrak_non_staff = DB::select("select z.enroll_id,z.nik,z.employee_name,z.join_date,z.department_name,z.sub_dept_name,z.status_aktif,z.tanggal_resign,z.ibu_kandung,z.nomor_ktp,z.status_staff,y.id,y.contract  AS contract_last,y.contract_end  AS contract_end_last,y.contract_end,y.contract from (select a.enroll_id,a.id,e.contract,e.contract_end from (select enroll_id,max(contract) contract,max(contract_end) contract_end from employee_contract group by enroll_id)e inner join (select id,enroll_id,contract,contract_end from employee_contract)a on e.enroll_id=a.enroll_id and e.contract_end=a.contract_end)y right join (select enroll_id,nik,employee_name,join_date,tanggal_resign,tempat_lahir,nomor_tlpn,agama,status_kawin,nomor_kk,pendidikan_terakhir,jurusan_pendidikan,alamat_rumah,department_name,sub_dept_name,status_aktif,ibu_kandung,nomor_ktp,status_staff from employee_atribut)z on y.enroll_id=z.enroll_id  where z.enroll_id is not null ".$inStatusKontrak." ".$inStatusAktif." ".$inDepartment_name." group by enroll_id order by enroll_id");
+        $data_kontrak_non_staff = DB::select("select z.enroll_id,z.nik,z.employee_name,z.join_date,z.department_name,z.sub_dept_name,z.status_aktif,z.tanggal_resign,z.ibu_kandung,z.nomor_ktp,z.status_staff,y.id,y.contract  AS contract_last,y.contract_end  AS contract_end_last,y.contract_end,y.contract from (select a.enroll_id,a.id,e.contract,e.contract_end from (select enroll_id,max(contract) contract,max(contract_end) contract_end from employee_contract group by enroll_id)e inner join (select id,enroll_id,contract,contract_end from employee_contract)a on e.enroll_id=a.enroll_id and e.contract_end=a.contract_end)y right join (select enroll_id,nik,employee_name,join_date,tanggal_resign,tempat_lahir,nomor_tlpn,agama,status_kawin,nomor_kk,pendidikan_terakhir,jurusan_pendidikan,alamat_rumah,department_name,sub_dept_name,status_aktif,ibu_kandung,nomor_ktp,status_staff from employee_atribut)z on y.enroll_id=z.enroll_id  where z.enroll_id is not null ".$inStatusKontrak." ".$inStatusAktif." ".$inDepartment_name." ".$inStatusKontrakRange." ".$inEnrollId." group by enroll_id order by enroll_id");
 
         // Pisahkan data menjadi dua kelompok
         $kurang_dari_30_hari = [];
@@ -650,8 +662,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
 
         foreach ($data_kontrak_non_staff as $item) {
             $selisih_hari = (strtotime($item->contract_end) - strtotime($item->contract)) / (60 * 60 * 24) + 1;
-
-            if ($selisih_hari <= 30) {
+            if ($selisih_hari <= 32) {
                 // Hitung tanggal 15 hari sebelum contract_end
                 $item->tanggal_pengurang = date('Y-m-d', strtotime($item->contract_end . ' -15 days'));
                 $jumlah_sakit = DB::select("select count(*) as jumlah_sakit from master_data_absen_kehadiran where enroll_id = ? and status_absen = 'S' and tanggal_berjalan <= ?", [$item->enroll_id, $item->tanggal_pengurang]);

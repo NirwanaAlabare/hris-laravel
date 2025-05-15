@@ -1120,6 +1120,7 @@
                 status_aktif: status_aktif,
                 status_kontrak: status_kontrak,
                 department_name: department_id,
+                date_range: $('#daterange1').val(),
             },
             xhrFields: {
                 responseType: 'blob'
