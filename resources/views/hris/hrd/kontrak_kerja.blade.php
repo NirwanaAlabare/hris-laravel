@@ -192,7 +192,7 @@
                     <div class="col">
                         <div class="table-responsive">
                             <table id="datatable" class="table table-bordered table-sm w-100 table-hover text-nowrap">
-                                <thead class="table-info">
+                                <thead class="bg-primary text-white">
                                     <tr style='text-align:center;'>
                                         <th rowspan="2" style="vertical-align: middle">
                                             <input type="checkbox" id="checkAllEmployee" onchange="actionCheckAllEmployee(this)">
@@ -1465,7 +1465,7 @@
         paging: true,
         searching: true,
         destroy: true,
-        scrollX: true,
+        scrollX: false,
         ajax: {
             url: '{{ route('hris.hrd.get_employee_contract') }}',
             data: function(d) {
