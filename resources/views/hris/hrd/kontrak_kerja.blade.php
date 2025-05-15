@@ -236,13 +236,20 @@
                 <div class="row pt-2 justify-content-center">
                     <div class="col-12">
                         <table class="table table-bordered" style="min-width: 600px; table-layout: fixed;">
-                            <thead id="head_kontrak_kerja">
+                            <colgroup>
+                                <col style="width: 100px;"> <!-- NIP -->
+                                <col style="width: 160px;"> <!-- Nama -->
+                                <col style="width: 180px;"> <!-- Department -->
+                                <col style="width: 150px;"> <!-- Awal -->
+                                <col style="width: 150px;"> <!-- Akhir -->
+                            </colgroup>
+                            <thead class="bg-primary text-white">
                                 <tr>
-                                    <td width="200px">NIK</td>
-                                    <td width="300px">Nama Karyawan</td>
-                                    <td width="300px">Department</td>
-                                    <td width="250px">Awal</td>
-                                    <td width="250px">Akhir</td>
+                                    <td>NIK</td>
+                                    <td>Nama Karyawan</td>
+                                    <td>Department</td>
+                                    <td>Awal</td>
+                                    <td>Akhir</td>
                                 </tr>
                             </thead>
                             <tbody id="tabel_kontrak_kerja">
@@ -808,13 +815,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
-    #head_kontrak_kerja, #tabel_kontrak_kerja { display: block; }
-    #tabel_kontrak_kerja {
-        height: 1px;
-        overflow-y: auto;    /* Trigger vertical scroll    */
-        overflow-x: auto;
-        font-size: 9pt; /* Hide the horizontal scroll */
-    }
+
     #tabel_nilai_kinerja_staff {
     table-layout: fixed;
     width: 100%;
@@ -1265,6 +1266,7 @@
                 processData: false,
                 data: formData,
                 success:function(data){
+                    document.getElementById('tabel_kontrak_kerja').style.height='40px';
                     $('#loading_kontrak_kerja').removeClass("spinner-border");
                     no=2;
                     jQuery.each(data, function(key,value){
@@ -1273,33 +1275,33 @@
                         if(key!=0){
                             if(value.nik==data[key-1].nik[0]){
                                 $('#tabel_kontrak_kerja').append("<tr>\
-                                    <td width='200px'></td>\
-                                    <td width='300px'></td>\
-                                    <td width='300px'></td>\
-                                    <td width='250px'>"+contract+"</td>\
-                                    <td width='250px'>"+contract_end+"</td>\
+                                    <td></td>\
+                                    <td></td>\
+                                    <td></td>\
+                                    <td>"+contract+"</td>\
+                                    <td>"+contract_end+"</td>\
                                 </tr>");
                             }else{
                                 no=2;
                                 $('#tabel_kontrak_kerja').append("<tr>\
-                                    <td width='200px'>"+value.nik+"</td>\
-                                    <td width='300px'>"+value.employee_name+"</td>\
-                                    <td width='300px'>"+value.department+"</td>\
-                                    <td width='250px'>"+contract+"</td>\
-                                    <td width='250px'>"+contract_end+"</td>\
+                                    <td>"+value.nik+"</td>\
+                                    <td>"+value.employee_name+"</td>\
+                                    <td>"+value.department+"</td>\
+                                    <td>"+contract+"</td>\
+                                    <td>"+contract_end+"</td>\
                                 </tr>");
                             }
                         }else{
                             $('#tabel_kontrak_kerja').append("<tr>\
-                                <td width='200px'>"+value.nik+"</td>\
-                                <td width='300px'>"+value.employee_name+"</td>\
-                                <td width='300px'>"+value.department+"</td>\
-                                <td width='250px'>"+contract+"</td>\
-                                <td width='250px'>"+contract_end+"</td>\
+                                <td>"+value.nik+"</td>\
+                                <td>"+value.employee_name+"</td>\
+                                <td>"+value.department+"</td>\
+                                <td>"+contract+"</td>\
+                                <td>"+contract_end+"</td>\
                             </tr>");
                         }
                     });
-                    document.getElementById('tabel_kontrak_kerja').style.height='300px';
+                    document.getElementById('tabel_kontrak_kerja').style.height='50px';
                     document.getElementById('contractImportButton').style.visibility='visible';
                 },
                 error: function(res){
