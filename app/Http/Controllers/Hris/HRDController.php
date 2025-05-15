@@ -776,7 +776,7 @@ class HRDController extends AdminBaseController
         $umk=DasarPotBPJS::orderBy('created_at','desc')->limit(1)->first()->dasar_pot_bpjs_rupiah;
         $data = $data[0];
         $tanggal_masuk = $data->join_date;
-        $tanggal_awal = $data->contract_end;
+        $tanggal_awal = $data->tanggal_resign ? $data->tanggal_resign : $data->contract_end;
         $selisih_tahun = date_diff(date_create($tanggal_masuk), date_create($tanggal_awal))->y;
         if ($selisih_tahun < 1) {
             $tunjangan = 0;
@@ -793,15 +793,12 @@ class HRDController extends AdminBaseController
         }
 
         $total_penghasilan_bulanan = $umk + $tunjangan;
-        $bulan_masuk = new DateTime($data->contract);
-        $bulan_akhir = new DateTime($data->contract_end);
-
-        $jumlah_bulan = $this->hitungBulanKontrak($data->contract, $data->contract_end);
+        $jumlah_bulan = $this->hitungBulanKontrak($data->contract, $data->tanggal_resign ? $data->tanggal_resign : $data->contract_end);
         $total_kompensasi = $total_penghasilan_bulanan * ($jumlah_bulan / 12);
 
 
         $fileName='Kompensasi PKWT '.$data->employee_name.'('.request()->enroll_id.') '.$contract_end.' '.date('His');
-        $pdf = PDF::loadView('hris.laporan.pdf_kompensasi_pkwt',["no_form"=>$no_form,"contract2"=>$contract,"contract_end2"=>$contract_end,"data" => $data,"umk"=>$umk, "tunjangan"=>$tunjangan, "total_kompensasi"=>$total_kompensasi, "jumlah_bulan"=>$jumlah_bulan])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+        $pdf = PDF::loadView('hris.laporan.pdf_kompensasi_pkwt',["no_form"=>$no_form,"contract2"=>$contract,"contract_end2"=>$data->tanggal_resign ? $data->tanggal_resign : $data->contract_end,"data" => $data,"umk"=>$umk, "tunjangan"=>$tunjangan, "total_kompensasi"=>$total_kompensasi, "jumlah_bulan"=>$jumlah_bulan])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
         return $pdf;
     }
     public function print_all_pdf_kontrak(){

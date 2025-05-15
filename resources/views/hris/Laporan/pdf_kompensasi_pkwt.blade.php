@@ -58,7 +58,7 @@
             </tr>
             <tr>
                 <td align="left">Akhir Kontrak</td>
-                <td align="right">{{Carbon\Carbon::parse($data->contract_end)->translatedFormat('d F Y')}}</td>
+                <td align="right">{{Carbon\Carbon::parse($contract_end2)->translatedFormat('d F Y')}}</td>
             </tr>
             <tr>
                 <td></td>
@@ -96,7 +96,7 @@
             </tr>
             <tr>
                 <td>Tanggal diterima :</td>
-                <td align="right">{{Carbon\Carbon::parse($data->contract_end)->translatedFormat('d F Y')}}</td>
+                <td align="right">{{Carbon\Carbon::parse($contract_end2)->translatedFormat('d F Y')}}</td>
             </tr>
             <tr>
                 <td>Tanda Tangan</td>
