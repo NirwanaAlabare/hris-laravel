@@ -5,6 +5,8 @@
 <link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
 <link href="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.css')}}" rel="stylesheet" />
 <link href="{{URL::asset('assets/plugins/sweet-alert/sweetalert.css')}}" rel="stylesheet" />
+<link href="{{URL::asset('assets/plugins/spectrum-date-picker/spectrum.css')}}" rel="stylesheet" />
+
 <link rel="stylesheet" href="{{ URL::asset('assets/css/iziToast.min.css') }}">
 
 
@@ -286,8 +288,8 @@
                     <i class="fa fa-remove"></i>
                 </button>
             </div>
-            <div class="modal-body px-3">
-                <div class='row px-3' style="overflow-y: scroll">
+            <div class="modal-body px-3" style="overflow-y: scroll;height:500px">
+                <div class='row px-3'>
                     <div class='col-2 pt-2 pb-1 text-center border border-body' style='font-weight:bold'>Status</div>
                     <div class='col-3 pt-2 pb-1 text-center border border-body' style='font-weight:bold'>Kontrak Awal</div>
                     <div class='col-3 pt-2 pb-1 text-center border border-body' style='font-weight:bold'>Akhir</div>
@@ -295,7 +297,7 @@
                 </div>
                 <div id="working_contract_extend">
                 </div>
-                <div id="working_contract_active" style="overflow-y: scroll;height:500px">
+                <div id="working_contract_active">
                 </div>
             </div>
             <div class="modal-footer bg-primary">
@@ -814,6 +816,11 @@
 <script src="{{URL::asset('assets/js/script.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+ <!-- Datepicker js -->
+ <script src="{{URL::asset('assets/plugins/spectrum-date-picker/spectrum.js')}}"></script>
+ <script src="{{URL::asset('assets/plugins/spectrum-date-picker/jquery-ui.js')}}"></script>
+ <script src="{{URL::asset('assets/plugins/input-mask/jquery.maskedinput.js')}}"></script>
+
 <style>
 
     #tabel_nilai_kinerja_staff {
@@ -832,6 +839,14 @@
     font-size: 13px;
     }
 </style>
+
+{{-- <script>
+    $('.fc-datepicker').datepicker({
+       showOtherMonths: true,
+       selectOtherMonths: true,
+       dateFormat: 'dd-mm-yy'
+   });
+</script> --}}
 
 <script>
     $('#daterange-btn1').daterangepicker({
@@ -1710,6 +1725,7 @@
                 id: enroll_id,
             },
             success: function(res) {
+                console.log(res);
                 var this_day=new Date();
                 this_day.setHours(0, 0, 0, 0);
                 for(var i=res.length-1;i>=0;i--){
@@ -1987,6 +2003,7 @@
                 id: enroll_id,
             },
             success: function(res) {
+
                 var last_date=new Date(res[res.length-1]['contract_end']);
                 last_date.setDate(last_date.getDate()+1);
                 var dd = String(last_date.getDate()).padStart(2, '0');
@@ -2000,9 +2017,14 @@
                 $('#working_contract_extend').append("<div class='row px-3'>\
                     <div class='col-2 pt-2 pb-1 border border-body bg-warning text-dark' style='font-weight:bold'>New Contract</div>\
                     <div class='col-3 pt-2 pb-1 border border-body text-dark'><input type='hidden' class='form-control form-control-sm' id='new_start_contract' value="+today+">"+start.toLocaleDateString("id-ID", options)+"</div>\
-                    <div class='col-3 py-1 border border-body text-dark'><input type='date' class='form-control form-control-sm' id='new_end_contract'><h6 id='warning_fill2' style='display:none;margin-bottom:0;color:red'>please fill this</h6><h6 id='warning_date2' style='display:none;margin-bottom:0;color:red'>too small</h6></div>\
+                    <div class='col-3 py-1 border border-body text-dark'><input type='text' class='form-control form-control-sm fc-datepicker'  maxlength='50' placeholder='dd-mm-yyyy' size='50' id='new_end_contract'><h6 id='warning_fill2' style='display:none;margin-bottom:0;color:red'>please fill this</h6><h6 id='warning_date2' style='display:none;margin-bottom:0;color:red'>Tidak boleh kurang dari awal kontrak</h6></div>\
                     <div class='col-4 py-1 border border-body text-dark'><a href='#' class='btn btn-sm btn-warning text-dark py-0 px-2 border border-body' style='font-weight:bold;font-size:9pt;font-family:Arial' id='cancelExtendButton' style='visibility:visible' onclick='cancelExtend()'><i class='fa fa-times-circle' style='font-size:9pt'></i> Cancel</a> <a href='#' class='btn btn-sm btn-warning text-dark border border-body py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' id='saveExtendButton' style='visibility:visible' onclick='newExtend("+res[0]['enroll_id']+")'><i class='fa fa-arrow-circle-down' style='font-size:9pt'></i> Save</a></div>\
                 </div>");
+                $('.fc-datepicker').datepicker({
+                    showOtherMonths: true,
+                    selectOtherMonths: true,
+                    dateFormat: 'dd-mm-yy'
+                });
             }
         });
     }
@@ -2058,6 +2080,7 @@
     }
     function newExtend(enroll_id){
         var last_contract=($('#new_end_contract').val());
+        var last_contract=last_contract.substr(6, 4)+'-'+last_contract.substr(3,2)+'-'+last_contract.substr(0,2);
         if(last_contract==''){
             document.getElementById('new_end_contract').style.border='1px solid red';
             document.getElementById('new_end_contract').style.textDecorationColor='red';
@@ -2067,7 +2090,7 @@
             document.getElementById('new_end_contract').style.textDecorationColor='';
             document.getElementById('warning_fill2').style.display='none';
             var start_contract=new Date($('#new_start_contract').val());
-            var end_contract=new Date($('#new_end_contract').val());
+            var end_contract=new Date(last_contract);
             if(start_contract>end_contract){
                 document.getElementById('new_end_contract').style.border='1px solid red';
                 document.getElementById('new_end_contract').style.textDecorationColor='red';
@@ -2082,7 +2105,7 @@
                     data: {
                         id: enroll_id,
                         contract:$('#new_start_contract').val(),
-                        end_contract:$('#new_end_contract').val(),
+                        end_contract:last_contract,
                     },
                     success: function(res) {
                         iziToast.success({

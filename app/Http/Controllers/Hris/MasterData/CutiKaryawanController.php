@@ -395,7 +395,7 @@ class CutiKaryawanController extends AdminBaseController
                 $badgeClass = $isEligible ? 'badge-success' : 'badge-danger';
                 $text = $isEligible ? '12' : '0';
 
-                return '<span class="badge ' . $badgeClass . '">' . $text . '</span>';
+                return '<span class="badge ' . $badgeClass . '" style="font-size: 14px; color: #fff;">' . $text . '</span>';
             })
             ->addColumn('actions', function ($row) {
 
