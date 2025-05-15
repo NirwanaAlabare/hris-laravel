@@ -457,22 +457,137 @@ class HRDController extends AdminBaseController
             $daterange1 = explode(" s/d ", request()->contract);
             $tanggalMulai = date('Y-m-d', strtotime($daterange1[0]));
             $tanggalSampai = date('Y-m-d', strtotime($daterange1[1]));
-            $inDateRangeContract='AND y.contract_end >= "'.$tanggalMulai.'" AND y.contract_end <= "'.$tanggalSampai.'"';
+            $inDateRangeContract = 'AND (
+                CASE
+                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                    ELSE y.contract_end
+                END
+            ) >= "'.$tanggalMulai.'"
+            AND (
+                CASE
+                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                    ELSE y.contract_end
+                END
+            ) <= "'.$tanggalSampai.'"';
         }
+
         $inDepartment_name='';
         if(request("department_name")){
             $department=request("department_name");
             $inDepartment_name = ' AND z.department_name = "'.$department.'"';
         }
-        $data_input = DB::select("select z.enroll_id,z.nik,z.employee_name,z.department_name,z.sub_dept_name,z.status_aktif,z.status_staff,z.tanggal_resign,z.ibu_kandung,z.nomor_ktp,y.id,y.contract,y.contract_end from (select a.enroll_id,a.id,e.contract,e.contract_end from (select enroll_id,max(contract) contract,max(contract_end) contract_end from employee_contract group by enroll_id)e inner join (select id,enroll_id,contract,contract_end from employee_contract)a on e.enroll_id=a.enroll_id and e.contract_end=a.contract_end)y right join (select enroll_id,nik,employee_name,tanggal_resign,tempat_lahir,nomor_tlpn,agama,status_kawin,nomor_kk,pendidikan_terakhir,jurusan_pendidikan,alamat_rumah,department_name,sub_dept_name,status_aktif,status_staff,ibu_kandung,nomor_ktp from employee_atribut)z on y.enroll_id=z.enroll_id where z.enroll_id is not null ".$inSearchVariable." ".$inIbuKandung." ".$inNoKTP." ".$inStatusKontrak." ".$inStatusAktif." ".$inEnrollId." ".$inStatusStaff." ".$inDateRangeContract." ".$inDepartment_name." GROUP BY enroll_id  order by enroll_id");
-        return DataTables::of($data_input)->toJson();
+
+        $inContractAfterResign = 'AND z.tanggal_resign IS NOT NULL AND y.contract > z.tanggal_resign';
+
+        $data_input = DB::select("
+        SELECT
+            z.enroll_id,
+            z.nik,
+            z.employee_name,
+            z.department_name,
+            z.sub_dept_name,
+            z.status_aktif,
+            z.status_staff,
+            z.tanggal_resign,
+            z.ibu_kandung,
+            z.nomor_ktp,
+            y.id,
+            y.contract,
+            -- logika untuk mengganti contract_end dengan tanggal_resign jika ada
+            CASE
+                WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                ELSE y.contract_end
+            END AS contract_end
+        FROM (
+            SELECT
+                a.enroll_id,
+                a.id,
+                e.contract,
+                e.contract_end
+            FROM (
+                SELECT
+                    enroll_id,
+                    MAX(contract) AS contract,
+                    MAX(contract_end) AS contract_end
+                FROM employee_contract
+                GROUP BY enroll_id
+            ) e
+            INNER JOIN (
+                SELECT
+                    id,
+                    enroll_id,
+                    contract,
+                    contract_end
+                FROM employee_contract
+            ) a ON e.enroll_id = a.enroll_id AND e.contract_end = a.contract_end
+        ) y
+        RIGHT JOIN (
+            SELECT
+                enroll_id,
+                nik,
+                employee_name,
+                tanggal_resign,
+                tempat_lahir,
+                nomor_tlpn,
+                agama,
+                status_kawin,
+                nomor_kk,
+                pendidikan_terakhir,
+                jurusan_pendidikan,
+                alamat_rumah,
+                department_name,
+                sub_dept_name,
+                status_aktif,
+                status_staff,
+                ibu_kandung,
+                nomor_ktp
+            FROM employee_atribut
+        ) z ON y.enroll_id = z.enroll_id
+        WHERE z.enroll_id IS NOT NULL
+            $inSearchVariable
+            $inIbuKandung
+            $inNoKTP
+            $inStatusKontrak
+            $inStatusAktif
+            $inEnrollId
+            $inStatusStaff
+            $inDateRangeContract
+            $inDepartment_name
+        GROUP BY z.enroll_id
+        ORDER BY z.enroll_id
+    ");
+
+    // dd($data_input);
+    return DataTables::of($data_input)->toJson();
+
     }
     public function get_employee_contract2(){
 
-        $enroll_id=request()->id;
-        $contracts=DB::select("select*from employee_contract where enroll_id='$enroll_id' order by contract_end");
+        $enroll_id = request()->id;
+
+        $contracts = DB::select("
+            SELECT
+                ec.*,
+                CASE
+                    WHEN z.tanggal_resign IS NOT NULL
+                         AND z.tanggal_resign BETWEEN ec.contract AND ec.contract_end
+                    THEN z.tanggal_resign
+                    ELSE NULL
+                END AS tanggal_resign
+            FROM employee_contract ec
+            RIGHT JOIN (
+                SELECT
+                    enroll_id,
+                    tanggal_resign
+                FROM employee_atribut
+            ) z ON ec.enroll_id = z.enroll_id
+            WHERE ec.enroll_id = '$enroll_id'
+            ORDER BY ec.contract_end
+        ");
+
         return $contracts;
     }
+
     public function update_employee_contract(){
         $enroll_id=request()->id;
         $id=request()->last_id;
