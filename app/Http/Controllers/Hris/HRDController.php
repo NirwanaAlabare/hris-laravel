@@ -772,7 +772,51 @@ class HRDController extends AdminBaseController
         $no_form=request()->no_form;
         $contract=request()->contract;
         $contract_end=request()->contract_end;
-        $data=DB::select("select a.status_staff,a.enroll_id,a.nik,a.employee_name,a.status_jabatan,a.sub_dept_name,a.department_name,a.status_kontrak_tetap,a.status_aktif,a.join_date,a.tanggal_resign,a.nomor_ktp,a.tempat_lahir,a.alamat_rumah,a.tanggal_lahir,a.no_surat,b.contract,b.contract_end,c.max_contract,c.max_contract_end from employee_atribut a left join employee_contract b on a.enroll_id=b.enroll_id left join (select enroll_id,max(contract) max_contract,max(contract_end) max_contract_end from employee_contract group by enroll_id)c on a.enroll_id=c.enroll_id where a.enroll_id=".$enroll_id." and b.contract='$contract' and b.contract_end='$contract_end' group by a.enroll_id");
+        $data = DB::select("
+        SELECT
+            a.status_staff,
+            a.enroll_id,
+            a.nik,
+            a.employee_name,
+            a.status_jabatan,
+            a.sub_dept_name,
+            a.department_name,
+            a.status_kontrak_tetap,
+            a.status_aktif,
+            a.join_date,
+            -- tampilkan tanggal resign hanya jika berada dalam rentang kontrak
+            CASE
+                WHEN a.tanggal_resign IS NOT NULL
+                    AND a.tanggal_resign BETWEEN b.contract AND b.contract_end
+                THEN a.tanggal_resign
+                ELSE NULL
+            END AS tanggal_resign,
+            a.nomor_ktp,
+            a.tempat_lahir,
+            a.alamat_rumah,
+            a.tanggal_lahir,
+            a.no_surat,
+            b.contract,
+            b.contract_end,
+            c.max_contract,
+            c.max_contract_end
+        FROM employee_atribut a
+        LEFT JOIN employee_contract b ON a.enroll_id = b.enroll_id
+        LEFT JOIN (
+            SELECT
+                enroll_id,
+                MAX(contract) AS max_contract,
+                MAX(contract_end) AS max_contract_end
+            FROM employee_contract
+            GROUP BY enroll_id
+        ) c ON a.enroll_id = c.enroll_id
+        WHERE
+            a.enroll_id = $enroll_id
+            AND b.contract = '$contract'
+            AND b.contract_end = '$contract_end'
+        GROUP BY a.enroll_id
+    ");
+
         $umk=DasarPotBPJS::orderBy('created_at','desc')->limit(1)->first()->dasar_pot_bpjs_rupiah;
         $data = $data[0];
         $tanggal_masuk = $data->join_date;
