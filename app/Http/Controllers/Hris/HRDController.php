@@ -457,7 +457,7 @@ class HRDController extends AdminBaseController
             $daterange1 = explode(" s/d ", request()->contract);
             $tanggalMulai = date('Y-m-d', strtotime($daterange1[0]));
             $tanggalSampai = date('Y-m-d', strtotime($daterange1[1]));
-            $inDateRangeContract='AND y.contract >= "'.$tanggalMulai.'" AND y.contract <= "'.$tanggalSampai.'"';
+            $inDateRangeContract='AND y.contract_end >= "'.$tanggalMulai.'" AND y.contract_end <= "'.$tanggalSampai.'"';
         }
         $inDepartment_name='';
         if(request("department_name")){
