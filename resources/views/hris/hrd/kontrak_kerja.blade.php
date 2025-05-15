@@ -840,13 +840,6 @@
     }
 </style>
 
-{{-- <script>
-    $('.fc-datepicker').datepicker({
-       showOtherMonths: true,
-       selectOtherMonths: true,
-       dateFormat: 'dd-mm-yy'
-   });
-</script> --}}
 
 <script>
     $('#daterange-btn1').daterangepicker({
@@ -1712,6 +1705,12 @@
     function dataTableReload() {
         datatable.ajax.reload();
     }
+    function renderDateTimeCalendar(data) {
+    const parts = data.split('-');
+    return `${parts[2]}-${parts[1]}-${parts[0]}`; // YYYY-MM-DD
+}
+
+
     function getDetail(enroll_id){
         $('#working_contract_active').empty();
         $('#working_contract_extend').empty();
@@ -1728,60 +1727,315 @@
                 console.log(res);
                 var this_day=new Date();
                 this_day.setHours(0, 0, 0, 0);
+
                 for(var i=res.length-1;i>=0;i--){
                     var options = { weekday: 'long',  year: 'numeric', month: 'long', day: 'numeric' };
                     var start=new Date(res[i]['contract']);
                     var end=new Date(res[i]['tanggal_resign'] ? res[i]['tanggal_resign'] :res[i]['contract_end']);
                     end.setHours(0, 0, 0, 0);
-
+                    const formattedStart = renderDateTimeCalendar(res[i]['contract']);
+                    const formattedEnd = renderDateTimeCalendar(res[i]['contract_end']);
                     if(i==res.length-1){
                         if(res.length===1){
                             if(this_day.getTime()>end.getTime()){
                                 $('#working_contract_active').append("<div class='row px-3'>\
                                     <div class='col-2 pt-2 pb-1 border border-body border-left-0 bg-danger text-dark' style='font-weight:bold'>Nonactive Contract</div>\
-                                    <div class='col-3 pt-2 pb-1 border border-body text-dark'>"+start.toLocaleDateString("id-ID", options)+"<input type='hidden' class='form-control form-control-sm' id='start_contract' value="+res[i]['contract']+"></div>\
-                                    <div class='col-3 py-1 border border-body text-dark' style='font-weight:bold'>"+end.toLocaleDateString("id-ID", options)+"<input type='hidden' class='form-control form-control-sm' id='last_contract_end' value="+res[i]['contract_end']+" style='display:block'><h6 id='warning_fill' style='display:none;margin-bottom:0;color:red'>please fill this</h6><h6 id='warning_date' style='display:none;margin-bottom:0;color:red'>too small</h6><input type='hidden' value="+res[i]['id']+" id='last_id'><label class='py-1 mb-0' id='last_label_end' style='display:none'>"+end.toLocaleDateString("id-ID", options)+"</label></div>\
-                                    <div class='col-4 py-1 border border-body text-dark'><a href='#' class='btn btn-sm btn-primary py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='extendContract("+res[i]['enroll_id']+");' id='extendButton' style='visibility:visible'><span class='fa fa-arrow-up' style='font-size:9pt'></span> Extend</a><a href='#' class='btn btn-sm btn-danger py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='printContract("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Print&nbsp;&nbsp;</a>\ <a href='#' class='btn ml-1 btn-sm btn-primary py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='exportPenilaian("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Penilaian&nbsp;&nbsp;</a>\<a href='#' class='btn btn-sm btn-warning py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='editPenilaianKinerja("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-edit' style='font-size:9pt'></span> Nilai&nbsp;&nbsp;</a>\<a href='#' class='btn btn-sm btn-danger py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial;display:none' onClick='deleteContract("+res[i]['id']+","+res[i]['enroll_id']+");' id='deleteButton' style='visibility:visible'><span class='fa fa-trash' style='font-size:9pt'></span></a>\<a href='#' class='btn btn-sm btn-info py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='print_pdf_kompensasi_pkwt("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> PKWT&nbsp;&nbsp;</a>\</div>\
+                                    <div class='col-3 py-1 border border-body'>\
+                                        <input type='text' class='form-control form-control-sm fc-datepicker' id='start_contract-"+res[i]['id']+"' value='" + formattedStart + "' style='display:none'>\
+                                        <label class='py-1 mb-0' id='start_label_start-"+res[i]['id']+"'>"+start.toLocaleDateString("id-ID", options)+"</label>\
+                                    </div>\
+                                    <div class='col-3 py-1 border border-body text-dark' style='font-weight:bold'>\
+                                        <input type='text' class='form-control form-control-sm' id='last_contract_end-"+res[i]['id']+"' value='" + formattedEnd + "' style='display:none'>\
+                                        <h6 id='warning_fill-"+res[i]['id']+"' style='display:none;margin-bottom:0;color:red'>please fill this</h6>\
+                                        <h6 id='warning_date-"+res[i]['id']+"' style='display:none;margin-bottom:0;color:red'>too small</h6>\
+                                        <input type='hidden' value="+res[i]['id']+" id='last_id-"+res[i]['id']+"'>\
+                                        <label class='py-1 mb-0' id='last_label_end-"+res[i]['id']+"'>"+end.toLocaleDateString("id-ID", options)+"</label>\
+                                    </div>\
+                                    < class='col-4 py-1 border border-body text-dark'>\
+                                        <a href='#' class='btn btn-sm btn-success py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' id='editButtonEdit-"+res[i].id+"' onClick='editContract(" + res[i]['enroll_id'] + "," +"\"" + res[i]['contract'] + "\"," +"\"" + res[i]['contract_end'] + "\"," +"\"" + res[i]['id'] + "\"" +");'>&nbsp;<span class='fa fa-edit' style='font-size:9pt'></span></a>\
+                                        <a href='#' class='btn btn-sm btn-warning text-dark py-0 px-2 border border-body' style='font-weight:bold;font-size:9pt;font-family:Arial; display:none;' id='cancelButtonEdit-"+res[i].id+"'  onClick='cancelEditContract("+res[i]['id']+");'><i class='fa fa-times-circle' style='font-size:9pt'></i> Cancel</a>\
+                                        <a href='#' class='btn btn-sm btn-warning text-dark border border-body py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial; display:none;' id='saveButtonEdit-"+res[i].id+"' onClick='saveEditContract("+res[i]['id']+");'><i class='fa fa-arrow-circle-down' style='font-size:9pt'></i> Save</a>\
+                                        <a href='#' class='btn btn-sm btn-primary py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='extendContract(" + res[i]['enroll_id'] + "," + res[i]['id'] + ")' id='extendButton-"+res[i].id+"' style='visibility:visible'><span class='fa fa-arrow-up' style='font-size:9pt'></span> Extend</a>\
+                                        <a href='#' class='btn btn-sm btn-danger py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' id='printButton-"+res[i].id+"' onClick='printContract("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Print&nbsp;&nbsp;</a>\
+                                        <a href='#' class='btn ml-1 btn-sm btn-primary py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' id='penilaianButton-"+res[i].id+"' onClick='exportPenilaian("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Penilaian&nbsp;&nbsp;</a>\
+                                        <a href='#' class='btn btn-sm btn-warning py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' id='nilaiButton-"+res[i].id+"' onClick='editPenilaianKinerja("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-edit' style='font-size:9pt'></span> Nilai&nbsp;&nbsp;</a>\
+                                        <a href='#' class='btn btn-sm btn-danger py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial;display:none' onClick='deleteContract("+res[i]['id']+","+res[i]['enroll_id']+");' id='deleteButton-"+res[i].id+"' style='visibility:visible'><span class='fa fa-trash' style='font-size:9pt'></span></a>\
+                                        <a href='#' class='btn btn-sm btn-info py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' id='pkwtButton-"+res[i].id+"' onClick='print_pdf_kompensasi_pkwt("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> PKWT&nbsp;&nbsp;</a>\
+                                    </div>\
                                 </div>");
                             }else{
                                 $('#working_contract_active').append("<div class='row px-3'>\
                                     <div class='col-2 pt-2 pb-1 border border-body border-left-0 text-dark'>Active Contract</div>\
-                                    <div class='col-3 pt-2 pb-1 border border-body text-dark'>"+start.toLocaleDateString("id-ID", options)+"<input type='hidden' class='form-control form-control-sm' id='start_contract' value="+res[i]['contract']+"></div>\
-                                    <div class='col-3 py-1 border border-body text-dark'>"+end.toLocaleDateString("id-ID", options)+"<input type='hidden' class='form-control form-control-sm' id='last_contract_end' value="+res[i]['contract_end']+" style='display:block'><h6 id='warning_fill' style='display:none;margin-bottom:0;color:red'>please fill this</h6><h6 id='warning_date' style='display:none;margin-bottom:0;color:red'>too small</h6><input type='hidden' value="+res[i]['id']+" id='last_id'><label class='py-1 mb-0' id='last_label_end' style='display:none'>"+end.toLocaleDateString("id-ID", options)+"</label></div>\
-                                    <div class='col-4 py-1 border border-body text-dark'><a href='#' class='btn btn-sm btn-primary py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='extendContract("+res[i]['enroll_id']+");' id='extendButton' style='visibility:visible'><span class='fa fa-arrow-up' style='font-size:9pt'></span> Extend</a><a href='#' class='btn btn-sm btn-danger py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='printContract("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Print&nbsp;&nbsp;</a>\ <a href='#' class='btn ml-1 btn-sm btn-primary py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='exportPenilaian("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Penilaian&nbsp;&nbsp;</a>\<a href='#' class='btn btn-sm btn-warning py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='editPenilaianKinerja("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-edit' style='font-size:9pt'></span> Nilai&nbsp;&nbsp;</a>\<a href='#' class='btn btn-sm btn-danger py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial;display:none' onClick='deleteContract("+res[i]['id']+","+res[i]['enroll_id']+");' id='deleteButton' style='visibility:visible'><span class='fa fa-trash' style='font-size:9pt'></span></a>\<a href='#' class='btn btn-sm btn-info py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='print_pdf_kompensasi_pkwt("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> PKWT&nbsp;&nbsp;</a>\</div>\
+                                    <div class='col-3 py-1 border border-body'>\
+                                        <input type='text' class='form-control form-control-sm fc-datepicker' id='start_contract-"+res[i]['id']+"' value='" + formattedStart + "' style='display:none'>\
+                                        <label class='py-1 mb-0' id='start_label_start-"+res[i]['id']+"'>"+start.toLocaleDateString("id-ID", options)+"</label>\
+                                    </div>\
+                                    <div class='col-3 py-1 border border-body text-dark'>\
+                                        <input type='text' class='form-control form-control-sm' id='last_contract_end-"+res[i]['id']+"' value='" + formattedEnd + "' style='display:none'><h6 id='warning_fill-"+res[i]['id']+"' style='display:none;margin-bottom:0;color:red'>please fill this</h6><h6 id='warning_date-"+res[i]['id']+"' style='display:none;margin-bottom:0;color:red'>too small</h6><input type='hidden' value="+res[i]['id']+" id='last_id-"+res[i]['id']+"'>\
+                                        <label class='py-1 mb-0' id='last_label_end-"+res[i]['id']+"'>"+end.toLocaleDateString("id-ID", options)+"</label>\
+                                    </div>\
+                                    <div class='col-4 py-1 border border-body text-dark'>\
+                                        <a href='#' class='btn btn-sm btn-success py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' id='editButtonEdit-"+res[i].id+"' onClick='editContract(" + res[i]['enroll_id'] + "," +"\"" + res[i]['contract'] + "\"," +"\"" + res[i]['contract_end'] + "\"," +"\"" + res[i]['id'] + "\"" +");'>&nbsp;<span class='fa fa-edit' style='font-size:9pt'></span></a>\
+                                         <a href='#' class='btn btn-sm btn-warning text-dark py-0 px-2 border border-body' style='font-weight:bold;font-size:9pt;font-family:Arial; display:none;' id='cancelButtonEdit-"+res[i].id+"' onClick='cancelEditContract("+res[i]['id']+");'><i class='fa fa-times-circle' style='font-size:9pt'></i> Cancel</a>\
+                                        <a href='#' class='btn btn-sm btn-warning text-dark border border-body py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial; display:none;' id='saveButtonEdit-"+res[i].id+"' onClick='saveEditContract("+res[i]['id']+");'><i class='fa fa-arrow-circle-down' style='font-size:9pt'></i> Save</a>\
+                                        <a href='#' class='btn btn-sm btn-primary py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='extendContract(" + res[i]['enroll_id'] + "," + res[i]['id'] + ")' id='extendButton-"+res[i].id+"' style='visibility:visible'><span class='fa fa-arrow-up' style='font-size:9pt'></span> Extend</a>\
+                                        <a href='#' class='btn btn-sm btn-danger py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' id='printButton-"+res[i].id+"' onClick='printContract("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Print&nbsp;&nbsp;</a>\
+                                        <a href='#' class='btn ml-1 btn-sm btn-primary py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' id='penilaianButton-"+res[i].id+"' onClick='exportPenilaian("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Penilaian&nbsp;&nbsp;</a>\
+                                        <a href='#' class='btn btn-sm btn-warning py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' id='nilaiButton-"+res[i].id+"' onClick='editPenilaianKinerja("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-edit' style='font-size:9pt'></span> Nilai&nbsp;&nbsp;</a>\
+                                        <a href='#' class='btn btn-sm btn-danger py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial;display:none' onClick='deleteContract("+res[i]['id']+","+res[i]['enroll_id']+");' id='deleteButton-"+res[i].id+"' style='visibility:visible'><span class='fa fa-trash' style='font-size:9pt'></span></a>\
+                                        <a href='#' class='btn btn-sm btn-info py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' id='pkwtButton-"+res[i].id+"' onClick='print_pdf_kompensasi_pkwt("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> PKWT&nbsp;&nbsp;</a>\
+                                    </div>\
                                 </div>");
                             }
                         }else{
                             if(this_day.getTime()>end.getTime()){
                                 $('#working_contract_active').append("<div class='row px-3'>\
                                     <div class='col-2 pt-2 pb-1 border border-body border-left-0 bg-danger text-dark' style='font-weight:bold'>Nonactive Contract</div>\
-                                    <div class='col-3 pt-2 pb-1 border border-body text-dark'>"+start.toLocaleDateString("id-ID", options)+"<input type='hidden' class='form-control form-control-sm' id='start_contract' value="+res[i]['contract']+"></div>\
-                                    <div class='col-3 py-1 border border-body text-dark' style='font-weight:bold'>"+end.toLocaleDateString("id-ID", options)+"<input type='hidden' class='form-control form-control-sm' id='last_contract_end' value="+res[i]['contract_end']+" style='display:block'><h6 id='warning_fill' style='display:none;margin-bottom:0;color:red'>please fill this</h6><h6 id='warning_date' style='display:none;margin-bottom:0;color:red'>too small</h6><input type='hidden' value="+res[i]['id']+" id='last_id'><label class='py-1 mb-0' id='last_label_end' style='display:none'>"+end.toLocaleDateString("id-ID", options)+"</label></div>\
-                                    <div class='col-4 py-1 border border-body text-dark'><a href='#' class='btn btn-sm btn-primary py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='extendContract("+res[i]['enroll_id']+");' id='extendButton' style='visibility:visible'><span class='fa fa-arrow-up' style='font-size:9pt'></span> Extend</a><a href='#' class='btn btn-sm btn-danger py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='printContract("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Print&nbsp;&nbsp;</a>\  <a href='#' class='btn ml-1 btn-sm btn-primary py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='exportPenilaian("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Penilaian&nbsp;&nbsp;</a>\<a href='#' class='btn btn-sm btn-warning py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='editPenilaianKinerja("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-edit' style='font-size:9pt'></span> Nilai&nbsp;&nbsp;</a>\<a href='#' class='btn btn-sm btn-danger py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='deleteContract("+res[i]['id']+","+res[i]['enroll_id']+");' id='deleteButton' style='visibility:visible'><span class='fa fa-trash' style='font-size:9pt'></span></a>\<a href='#' class='btn btn-sm btn-info py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='print_pdf_kompensasi_pkwt("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> PKWT&nbsp;&nbsp;</a>\</div>\
+                                    <div class='col-3 py-1 border border-body'>\
+                                        <input type='text' class='form-control form-control-sm fc-datepicker' id='start_contract-"+res[i]['id']+"' value='" + formattedStart + "' style='display:none'>\
+                                        <label class='py-1 mb-0' id='start_label_start-"+res[i]['id']+"'>"+start.toLocaleDateString("id-ID", options)+"</label>\
+                                    </div>\
+                                    <div class='col-3 py-1 border border-body text-dark' style='font-weight:bold'>\
+                                        <input type='text' class='form-control form-control-sm fc-datepicker' id='last_contract_end-"+res[i]['id']+"' value='" + formattedEnd + "' style='display:none'>\
+                                        <h6 id='warning_fill-"+res[i]['id']+"' style='display:none;margin-bottom:0;color:red'>please fill this</h6><h6 id='warning_date-"+res[i]['id']+"' style='display:none;margin-bottom:0;color:red'>too small</h6>\
+                                        <input type='hidden' value="+res[i]['id']+" id='last_id-"+res[i]['id']+"'>\
+                                        <label class='py-1 mb-0' id='last_label_end-"+res[i]['id']+"'>"+end.toLocaleDateString("id-ID", options)+"</label>\
+                                    </div>\
+                                    <div class='col-4 py-1 border border-body text-dark'>\
+                                        <a href='#' class='btn btn-sm btn-success py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' id='editButtonEdit-"+res[i].id+"' onClick='editContract(" + res[i]['enroll_id'] + "," +"\"" + res[i]['contract'] + "\"," +"\"" + res[i]['contract_end'] + "\"," +"\"" + res[i]['id'] + "\"" +");'>&nbsp;<span class='fa fa-edit' style='font-size:9pt'></span></a>\
+                                         <a href='#' class='btn btn-sm btn-warning text-dark py-0 px-2 border border-body' style='font-weight:bold;font-size:9pt;font-family:Arial; display:none;' id='cancelButtonEdit-"+res[i].id+"' onClick='cancelEditContract("+res[i]['id']+");'><i class='fa fa-times-circle' style='font-size:9pt'></i> Cancel</a>\
+                                        <a href='#' class='btn btn-sm btn-warning text-dark border border-body py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial; display:none;' id='saveButtonEdit-"+res[i].id+"' onClick='saveEditContract("+res[i]['id']+");'><i class='fa fa-arrow-circle-down' style='font-size:9pt'></i> Save</a>\
+                                        <a href='#' class='btn btn-sm btn-primary py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='extendContract(" + res[i]['enroll_id'] + "," + res[i]['id'] + ")' id='extendButton-"+res[i].id+"' style='visibility:visible'><span class='fa fa-arrow-up' style='font-size:9pt'></span> Extend</a>\
+                                        <a href='#' class='btn btn-sm btn-danger py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' id='printButton-"+res[i].id+"' onClick='printContract("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Print&nbsp;&nbsp;</a>\
+                                        <a href='#' class='btn ml-1 btn-sm btn-primary py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' id='penilaianButton-"+res[i].id+"' onClick='exportPenilaian("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Penilaian&nbsp;&nbsp;</a>\
+                                        <a href='#' class='btn btn-sm btn-warning py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' id='nilaiButton-"+res[i].id+"' onClick='editPenilaianKinerja("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-edit' style='font-size:9pt'></span> Nilai&nbsp;&nbsp;</a>\
+                                        <a href='#' class='btn btn-sm btn-danger py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='deleteContract("+res[i]['id']+","+res[i]['enroll_id']+");' id='deleteButton-"+res[i].id+"' style='visibility:visible'><span class='fa fa-trash' style='font-size:9pt'></span></a>\
+                                        <a href='#' class='btn btn-sm btn-info py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' id='pkwtButton-"+res[i].id+"' onClick='print_pdf_kompensasi_pkwt("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> PKWT&nbsp;&nbsp;</a>\
+                                    </div>\
                                 </div>");
                             }else{
                                 $('#working_contract_active').append("<div class='row px-3'>\
                                     <div class='col-2 pt-2 pb-1 border border-body border-left-0 text-dark'>Active Contract</div>\
-                                    <div class='col-3 pt-2 pb-1 border border-body text-dark'>"+start.toLocaleDateString("id-ID", options)+"<input type='hidden' class='form-control form-control-sm' id='start_contract' value="+res[i]['contract']+"></div>\
-                                    <div class='col-3 py-1 border border-body text-dark'>"+end.toLocaleDateString("id-ID", options)+"<input type='hidden' class='form-control form-control-sm' id='last_contract_end' value="+res[i]['contract_end']+" style='display:block'><h6 id='warning_fill' style='display:none;margin-bottom:0;color:red'>please fill this</h6><h6 id='warning_date' style='display:none;margin-bottom:0;color:red'>too small</h6><input type='hidden' value="+res[i]['id']+" id='last_id'><label class='py-1 mb-0' id='last_label_end' style='display:none'>"+end.toLocaleDateString("id-ID", options)+"</label></div>\
-                                    <div class='col-4 py-1 border border-body text-dark'><a href='#' class='btn btn-sm btn-primary py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='extendContract("+res[i]['enroll_id']+");' id='extendButton' style='visibility:visible'><span class='fa fa-arrow-up' style='font-size:9pt'></span> Extend</a><a href='#' class='btn btn-sm btn-danger py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='printContract("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Print&nbsp;&nbsp;</a>\ <a href='#' class='btn ml-1 btn-sm btn-primary py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='exportPenilaian("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Penilaian&nbsp;&nbsp;</a>\<a href='#' class='btn btn-sm btn-warning py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='editPenilaianKinerja("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-edit' style='font-size:9pt'></span> Nilai&nbsp;&nbsp;</a>\ <a href='#' class='btn btn-sm btn-danger py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='deleteContract("+res[i]['id']+","+res[i]['enroll_id']+");' id='deleteButton' style='visibility:visible'><span class='fa fa-trash' style='font-size:9pt'></span></a>\<a href='#' class='btn btn-sm btn-info py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='print_pdf_kompensasi_pkwt("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> PKWT&nbsp;&nbsp;</a>\</div>\
+                                    <div class='col-3 py-1 border border-body'>\
+                                        <input type='text' class='form-control form-control-sm fc-datepicker' id='start_contract-"+res[i]['id']+"' value='" + formattedStart + "' style='display:none'>\
+                                        <label class='py-1 mb-0' id='start_label_start-"+res[i]['id']+"'>"+start.toLocaleDateString("id-ID", options)+"</label>\
+                                    </div>\
+                                    <div class='col-3 py-1 border border-body text-dark'>\
+                                        <input type='text' class='form-control form-control-sm fc-datepicker' id='last_contract_end-"+res[i]['id']+"' value='" + formattedEnd + "' style='display:none'><h6 id='warning_fill-"+res[i]['id']+"' style='display:none;margin-bottom:0;color:red'>please fill this</h6><h6 id='warning_date-"+res[i]['id']+"' style='display:none;margin-bottom:0;color:red'>too small</h6><input type='hidden' value="+res[i]['id']+" id='last_id-"+res[i]['id']+"'>\
+                                        <label class='py-1 mb-0' id='last_label_end-"+res[i]['id']+"'>"+end.toLocaleDateString("id-ID", options)+"</label>\
+                                    </div>\
+                                    <div class='col-4 py-1 border border-body text-dark'>\
+                                        <a href='#' class='btn btn-sm btn-success py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' id='editButtonEdit-"+res[i].id+"'  onClick='editContract(" + res[i]['enroll_id'] + "," +"\"" + res[i]['contract'] + "\"," +"\"" + res[i]['contract_end'] + "\"," +"\"" + res[i]['id'] + "\"" +");'>&nbsp;<span class='fa fa-edit' style='font-size:9pt'></span></a>\
+                                         <a href='#' class='btn btn-sm btn-warning text-dark py-0 px-2 border border-body' style='font-weight:bold;font-size:9pt;font-family:Arial; display:none;' id='cancelButtonEdit-"+res[i].id+"'  onClick='cancelEditContract("+res[i]['id']+");'><i class='fa fa-times-circle' style='font-size:9pt'></i> Cancel</a>\
+                                        <a href='#' class='btn btn-sm btn-warning text-dark border border-body py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial; display:none;' id='saveButtonEdit-"+res[i].id+"' onClick='saveEditContract("+res[i]['id']+");'><i class='fa fa-arrow-circle-down' style='font-size:9pt'></i> Save</a>\
+                                        <a href='#' class='btn btn-sm btn-primary py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='extendContract(" + res[i]['enroll_id'] + "," + res[i]['id'] + ")' id='extendButton-"+res[i].id+"' style='visibility:visible'><span class='fa fa-arrow-up' style='font-size:9pt'></span> Extend</a>\
+                                        <a href='#' class='btn btn-sm btn-danger py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' id='printButton-"+res[i].id+"' onClick='printContract("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Print&nbsp;&nbsp;</a>\
+                                        <a href='#' class='btn ml-1 btn-sm btn-primary py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' id='penilaianButton-"+res[i].id+"' onClick='exportPenilaian("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Penilaian&nbsp;&nbsp;</a>\
+                                        <a href='#' class='btn btn-sm btn-warning py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' id='nilaiButton-"+res[i].id+"' onClick='editPenilaianKinerja("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-edit' style='font-size:9pt'></span> Nilai&nbsp;&nbsp;</a>\
+                                        <a href='#' class='btn btn-sm btn-danger py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='deleteContract("+res[i]['id']+","+res[i]['enroll_id']+");' id='deleteButton-"+res[i].id+"' style='visibility:visible'><span class='fa fa-trash' style='font-size:9pt'></span></a>\
+                                        <a href='#' class='btn btn-sm btn-info py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' id='pkwtButton-"+res[i].id+"' onClick='print_pdf_kompensasi_pkwt("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> PKWT&nbsp;&nbsp;</a>\
+                                    </div>\
                                 </div>");
                             }
                         }
                     }else{
                         $('#working_contract_active').append("<div class='row px-3'>\
                             <div class='col-2 py-1 border border-left-0 border-body'>Kontrak ke -"+(i+1)+"</div>\
-                            <div class='col-3 py-1 border border-body'>"+start.toLocaleDateString("id-ID", options)+"</div>\
-                            <div class='col-3 py-1 border border-body'>"+end.toLocaleDateString("id-ID", options)+"</div>\
+                            <div class='col-3 py-1 border border-body'>\
+                                <input type='text' class='form-control form-control-sm fc-datepicker' id='start_contract-"+res[i]['id']+"' value='" + formattedStart + "' style='display:none'>\
+                                <label class='py-1 mb-0' id='start_label_start-"+res[i]['id']+"'>"+start.toLocaleDateString("id-ID", options)+"</label>\
+                            </div>\
+                            <div class='col-3 py-1 border border-body'>\
+                                <input type='text' class='form-control form-control-sm fc-datepicker' id='last_contract_end-"+res[i]['id']+"' value='" + formattedEnd + "' style='display:none'>\
+                                <label class='py-1 mb-0' id='last_label_end-"+res[i]['id']+"'>"+end.toLocaleDateString("id-ID", options)+"</label></div>\
                             <div class='col-4 py-1 border border-body'>\
-                                <a href='#' class='btn btn-sm btn-danger py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='printContract("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Print&nbsp;&nbsp;</a>\
-                                <a href='#' class='btn btn-sm btn-primary py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='exportPenilaian("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Penilaian&nbsp;&nbsp;</a>\
-                                <a href='#' class='btn btn-sm btn-warning py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='editPenilaianKinerja("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-edit' style='font-size:9pt'></span> Nilai&nbsp;&nbsp;</a>\
-                                <a href='#' class='btn btn-sm btn-info py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='print_pdf_kompensasi_pkwt("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> PKWT&nbsp;&nbsp;</a>\
+                                <a href='#' class='btn btn-sm btn-success py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' id='editButtonEdit-"+res[i].id+"' onClick='editContract(" + res[i]['enroll_id'] + "," +"\"" + res[i]['contract'] + "\"," +"\"" + res[i]['contract_end'] + "\"," +"\"" + res[i]['id'] + "\"" +");'>&nbsp;<span class='fa fa-edit' style='font-size:9pt'></span></a>\
+                                 <a href='#' class='btn btn-sm btn-warning text-dark py-0 px-2 border border-body' style='font-weight:bold;font-size:9pt;font-family:Arial; display:none;' id='cancelButtonEdit-"+res[i].id+"'  onClick='cancelEditContract("+res[i]['id']+");'><i class='fa fa-times-circle' style='font-size:9pt'></i> Cancel</a>\
+                                        <a href='#' class='btn btn-sm btn-warning text-dark border border-body py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial; display:none;' id='saveButtonEdit-"+res[i].id+"' onClick='saveEditContract("+res[i]['id']+");'><i class='fa fa-arrow-circle-down' style='font-size:9pt'></i> Save</a>\
+                                <a href='#' class='btn btn-sm btn-danger py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' id='printButton-"+res[i].id+"' onClick='printContract("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Print&nbsp;&nbsp;</a>\
+                                <a href='#' class='btn btn-sm btn-primary py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' id='penilaianButton-"+res[i].id+"' onClick='exportPenilaian("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Penilaian&nbsp;&nbsp;</a>\
+                                <a href='#' class='btn btn-sm btn-warning py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' id='nilaiButton-"+res[i].id+"' onClick='editPenilaianKinerja("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-edit' style='font-size:9pt'></span> Nilai&nbsp;&nbsp;</a>\
+                                <a href='#' class='btn btn-sm btn-info py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' id='pkwtButton-"+res[i].id+"' onClick='print_pdf_kompensasi_pkwt("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> PKWT&nbsp;&nbsp;</a>\
                             </div>\
                         </div>");
                     }
                 }
+            }
+        });
+    }
+    let currentlyEditingId = null;
+
+    function editContract(enroll_id, kontrak_awal, kontrak_akhir, contractId) {
+        // Jika sedang mengedit baris lain, kembalikan tampilannya
+        if (currentlyEditingId !== null && currentlyEditingId !== contractId) {
+            // Show kembali tombol-tombol
+            $('#extendButton-' + currentlyEditingId).css('visibility', 'visible');
+            $('#nilaiButton-' + currentlyEditingId).css('visibility', 'visible');
+            $('#deleteButton-' + currentlyEditingId).css('visibility', 'visible');
+            $('#printButton-' + currentlyEditingId).css('visibility', 'visible');
+            $('#pkwtButton-' + currentlyEditingId).css('visibility', 'visible');
+            $('#penilaianButton-' + currentlyEditingId).css('visibility', 'visible');
+            $('#editButtonEdit-' + currentlyEditingId).css('visibility', 'visible');
+
+            // Sembunyikan tombol Cancel & Save
+            $('#cancelButtonEdit-' + currentlyEditingId).hide();
+            $('#saveButtonEdit-' + currentlyEditingId).hide();
+
+            // Kembalikan input date jadi hide
+            $('#last_contract_end-' + currentlyEditingId).hide();
+            $('#last_label_end-' + currentlyEditingId).show();
+
+            $('#start_contract-' + currentlyEditingId).hide();
+            $('#start_label_start-' + currentlyEditingId).show();
+        }
+
+        // Simpan ID yang sedang diedit sekarang
+        currentlyEditingId = contractId;
+
+        // Lanjut ke proses edit baris baru
+        $('#extendButton-' + contractId).css('visibility', 'hidden');
+        $('#nilaiButton-' + contractId).css('visibility', 'hidden');
+        $('#deleteButton-' + contractId).css('visibility', 'hidden');
+        $('#printButton-' + contractId).css('visibility', 'hidden');
+        $('#pkwtButton-' + contractId).css('visibility', 'hidden');
+        $('#penilaianButton-' + contractId).css('visibility', 'hidden');
+        $('#editButtonEdit-' + contractId).css('visibility', 'hidden');
+
+        $('#cancelButtonEdit-' + contractId).show();
+        $('#saveButtonEdit-' + contractId).show();
+
+        $('#last_contract_end-' + contractId).show();
+        $('#last_label_end-' + contractId).hide();
+
+        $('#start_contract-' + contractId).show();
+        $('#start_label_start-' + contractId).hide();
+
+        // Re-init datepicker
+        $('.fc-datepicker').datepicker({
+            showOtherMonths: true,
+            selectOtherMonths: true,
+            dateFormat: 'dd-mm-yy'
+        });
+    }
+
+
+    function cancelEditContract(contractId){
+        const rowSelector = '#extendButton-' + contractId;
+        $(rowSelector).css('visibility', 'visible');
+
+        const rowSelector2 = '#nilaiButton-' + contractId;
+        $(rowSelector2).css('visibility', 'visible');
+
+        const rowSelector3 = '#deleteButton-' + contractId;
+        $(rowSelector3).css('visibility', 'visible');
+
+        const rowSelector4 = '#printButton-' + contractId;
+        $(rowSelector4).css('visibility', 'visible');
+
+        const rowSelector5 = '#pkwtButton-' + contractId;
+        $(rowSelector5).css('visibility', 'visible');
+
+        const rowSelector6 = '#penilaianButton-' + contractId;
+        $(rowSelector6).css('visibility', 'visible');
+
+        const rowSelector7 = '#cancelButtonEdit-' + contractId;
+
+        const rowSelector8 = '#saveButtonEdit-' + contractId;
+        $(rowSelector7).hide();
+        $(rowSelector8).hide();
+
+        const rowSelector9 = '#editButtonEdit-' + contractId;
+        $(rowSelector9).css('visibility', 'visible');
+
+
+        const last_contract_end = '#last_contract_end-' + contractId;
+        $(last_contract_end).hide();
+
+        const last_label_end = '#last_label_end-' + contractId;
+        $(last_label_end).show();
+        const start_contract = '#start_contract-' + contractId;
+        $(start_contract).hide();
+
+        const start_label_start = '#start_label_start-' + contractId;
+        $(start_label_start).show();
+    }
+
+
+
+    function saveEditContract(contractId){
+        const lastContractSelector = '#last_contract_end-' + contractId;
+        const startContractSelector = '#start_contract-' + contractId;
+        const warningFillSelector = '#warning_fill-' + contractId;
+        const warningDateSelector = '#warning_date-' + contractId;
+        const lastIdSelector = '#last_id-' + contractId;
+
+        var last_contract = $(lastContractSelector).val();
+        var start_contract = $(startContractSelector).val();
+
+        var last_contract=last_contract.substr(6, 4)+'-'+last_contract.substr(3,2)+'-'+last_contract.substr(0,2);
+        var start_contract=start_contract.substr(6, 4)+'-'+start_contract.substr(3,2)+'-'+start_contract.substr(0,2);
+
+        if (last_contract === '') {
+            $(lastContractSelector).css('border', '1px solid red');
+            $(warningFillSelector).show();
+            return;
+        } else {
+            $(lastContractSelector).css('border', '');
+            $(warningFillSelector).hide();
+        }
+
+        const startDate = new Date(start_contract);
+        const endDate = new Date(last_contract);
+
+        if (startDate > endDate) {
+            $(lastContractSelector).css('border', '1px solid red');
+            $(warningDateSelector).show();
+            return;
+        } else {
+            $(lastContractSelector).css('border', '');
+            $(warningDateSelector).hide();
+        }
+
+        // Ambil enroll_id dan last_id dengan benar
+        const last_id = $(lastIdSelector).val(); // pastikan ID-nya benar
+
+        $.ajax({
+            type: "post",
+            url: '{{ route('hris.hrd.update_employee_contract') }}',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                start_contract: start_contract,
+                last_date: last_contract,
+                last_id: contractId,
+            },
+            success: function(res) {
+                iziToast.success({
+                    message: 'update kontrak berhasil',
+                    position: 'center',
+                    timeout: 1300,
+                });
+
+                // Kembalikan tampilan ke mode normal
+                const buttonIds = [
+                    'extendButton', 'nilaiButton', 'deleteButton',
+                    'printButton', 'pkwtButton', 'penilaianButton', 'editButtonEdit'
+                ];
+                buttonIds.forEach(id => $('#'+id+'-'+contractId).css('visibility', 'visible'));
+
+                $('#cancelButtonEdit-' + contractId).hide();
+                $('#saveButtonEdit-' + contractId).hide();
+
+                $(lastContractSelector).hide();
+                $('#last_label_end-' + contractId).text(last_contract).show();
+
+                $(startContractSelector).hide();
+                $('#start_label_start-' + contractId).text(start_contract).show();
+
+                // reload table & update detail
+                getDetail(res);
+                datatable.ajax.reload();
             }
         });
     }
@@ -1987,12 +2241,26 @@
         });
     }
 
-    function extendContract(enroll_id){
-        document.getElementById("extendButton").style.visibility="hidden";
 
-        document.getElementById("deleteButton").style.visibility="hidden";
-        document.getElementById("last_contract_end").style.display="none";
-        document.getElementById("last_label_end").style.display="none";
+    function extendContract(enroll_id,contractId){
+        const rowSelector = '#extendButton-' + contractId;
+        $(rowSelector).css('visibility', 'hidden');
+
+        const rowSelector2 = '#nilaiButton-' + contractId;
+        $(rowSelector2).css('visibility', 'hidden');
+
+        const rowSelector3 = '#deleteButton-' + contractId;
+        $(rowSelector3).css('visibility', 'hidden');
+
+        const rowSelector4 = '#printButton-' + contractId;
+        $(rowSelector4).css('visibility', 'hidden');
+
+        const rowSelector5 = '#pkwtButton-' + contractId;
+        $(rowSelector5).css('visibility', 'hidden');
+
+        const rowSelector6 = '#penilaianButton-' + contractId;
+        $(rowSelector6).css('visibility', 'hidden');
+
         $.ajax({
             type: "post",
             url: '{{ route('hris.hrd.get_employee_contract2') }}',
@@ -2018,7 +2286,7 @@
                     <div class='col-2 pt-2 pb-1 border border-body bg-warning text-dark' style='font-weight:bold'>New Contract</div>\
                     <div class='col-3 pt-2 pb-1 border border-body text-dark'><input type='hidden' class='form-control form-control-sm' id='new_start_contract' value="+today+">"+start.toLocaleDateString("id-ID", options)+"</div>\
                     <div class='col-3 py-1 border border-body text-dark'><input type='text' class='form-control form-control-sm fc-datepicker'  maxlength='50' placeholder='dd-mm-yyyy' size='50' id='new_end_contract'><h6 id='warning_fill2' style='display:none;margin-bottom:0;color:red'>please fill this</h6><h6 id='warning_date2' style='display:none;margin-bottom:0;color:red'>Tidak boleh kurang dari awal kontrak</h6></div>\
-                    <div class='col-4 py-1 border border-body text-dark'><a href='#' class='btn btn-sm btn-warning text-dark py-0 px-2 border border-body' style='font-weight:bold;font-size:9pt;font-family:Arial' id='cancelExtendButton' style='visibility:visible' onclick='cancelExtend()'><i class='fa fa-times-circle' style='font-size:9pt'></i> Cancel</a> <a href='#' class='btn btn-sm btn-warning text-dark border border-body py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' id='saveExtendButton' style='visibility:visible' onclick='newExtend("+res[0]['enroll_id']+")'><i class='fa fa-arrow-circle-down' style='font-size:9pt'></i> Save</a></div>\
+                    <div class='col-4 py-1 border border-body text-dark'><a href='#' class='btn btn-sm btn-warning text-dark py-0 px-2 border border-body' style='font-weight:bold;font-size:9pt;font-family:Arial' id='cancelExtendButton' style='visibility:visible' onclick='cancelExtend("+contractId+")'><i class='fa fa-times-circle' style='font-size:9pt'></i> Cancel</a> <a href='#' class='btn btn-sm btn-warning text-dark border border-body py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' id='saveExtendButton' style='visibility:visible' onclick='newExtend("+res[0]['enroll_id']+")'><i class='fa fa-arrow-circle-down' style='font-size:9pt'></i> Save</a></div>\
                 </div>");
                 $('.fc-datepicker').datepicker({
                     showOtherMonths: true,
@@ -2028,56 +2296,29 @@
             }
         });
     }
-    function cancelExtend(){
+    function cancelExtend(contractId){
         document.getElementById('cancelExtendButton').style.visibility='hidden';
-        document.getElementById('extendButton').style.visibility='visible';
-        document.getElementById("deleteButton").style.visibility="visible";
-
-        document.getElementById("last_contract_end").style.display="block";
-        document.getElementById("last_label_end").style.display="none";
         $('#working_contract_extend').empty();
+
+        const rowSelector = '#extendButton-' + contractId;
+        $(rowSelector).css('visibility', 'visible');
+
+        const rowSelector2 = '#nilaiButton-' + contractId;
+        $(rowSelector2).css('visibility', 'visible');
+
+        const rowSelector3 = '#deleteButton-' + contractId;
+        $(rowSelector3).css('visibility', 'visible');
+
+        const rowSelector4 = '#printButton-' + contractId;
+        $(rowSelector4).css('visibility', 'visible');
+
+        const rowSelector5 = '#pkwtButton-' + contractId;
+        $(rowSelector5).css('visibility', 'visible');
+
+        const rowSelector6 = '#penilaianButton-' + contractId;
+        $(rowSelector6).css('visibility', 'visible');
     }
-    function updateContract(enroll_id){
-        var last_contract=($('#last_contract_end').val());
-        if(last_contract==''){
-            document.getElementById('last_contract_end').style.border='1px solid red';
-            document.getElementById('last_contract_end').style.textDecorationColor='red';
-            document.getElementById('warning_fill').style.display='block';
-        }else{
-            document.getElementById('last_contract_end').style.border='';
-            document.getElementById('last_contract_end').style.textDecorationColor='';
-            document.getElementById('warning_fill').style.display='none';
-            var start_contract=new Date($('#start_contract').val());
-            var end_contract=new Date($('#last_contract_end').val());
-            if(start_contract>end_contract){
-                document.getElementById('last_contract_end').style.border='1px solid red';
-                document.getElementById('last_contract_end').style.textDecorationColor='red';
-                document.getElementById('warning_date').style.display='block';
-            }else{
-                $.ajax({
-                    type: "post",
-                    url: '{{ route('hris.hrd.update_employee_contract') }}',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: {
-                        id: enroll_id,
-                        last_date:$('#last_contract_end').val(),
-                        last_id:$('#last_id').val(),
-                    },
-                    success: function(res) {
-                        iziToast.success({
-                            message: 'update kontrak berhasil',
-                            position: 'center',
-                            timeout:1300,
-                        });
-                        getDetail(res);
-                        datatable.ajax.reload();
-                    }
-                });
-            }
-        }
-    }
+
     function newExtend(enroll_id){
         var last_contract=($('#new_end_contract').val());
         var last_contract=last_contract.substr(6, 4)+'-'+last_contract.substr(3,2)+'-'+last_contract.substr(0,2);

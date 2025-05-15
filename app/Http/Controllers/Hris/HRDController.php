@@ -589,11 +589,15 @@ class HRDController extends AdminBaseController
     }
 
     public function update_employee_contract(){
-        $enroll_id=request()->id;
         $id=request()->last_id;
+        $start_contract=request()->start_contract;
         $last_date=request()->last_date;
-        DB::update("update employee_contract set contract_end='$last_date' where id = '$id'");
-        return $enroll_id;
+        DB::update("UPDATE employee_contract
+        SET contract = ?, contract_end = ?
+        WHERE id = ?", [$start_contract, $last_date, $id]);
+
+        $updatedData = DB::table('employee_contract')->where('id', $id)->first();
+        return $updatedData->enroll_id;
     }
     public function new_employee_contract(){
         $timestamp = Carbon::now();
