@@ -46,7 +46,7 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt" align="center"><b><u>SURAT PERJANJIAN KERJA WAKTU TERTENTU</u></b></td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt" align="center"><b>No.{{$value->no_surat}}/{{$no_form}}</b></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt" align="center"><b>No.{{$value->enroll_id}}/{{$no_form}}</b></td>
             </tr>
         </thead>
     </table>
@@ -94,22 +94,22 @@
         <tr>
             <td>
                 <ol style="font-family:Arial, Helvetica, sans-serif;font-size:7pt;text-align:justify;padding-left:20px">
-                    <li>Pihak Pertama menerima Pihak Kedua sebagai Karyawan dengan masa kontrak dimulai sejak tanggal <b>{{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}</b> sampai dengan <b>{{Carbon\Carbon::parse($value->contract_end)->translatedFormat('d F Y')}}</b>.</li>
-                    <li>Pihak Pertama mempekerjakan Pihak Kedua sebagai <b>OPERATOR</b> di bagian <b>{{$value->department_name}}</b>. Dan Pihak Kedua besedia melaksanakan tugas dan tanggung jawabnya yang diberikan Pimpinan/atasannya dengan sebaik-baiknya serta bersedia mengikuti dan patuh terhadap ketentuan-ketentuan dan prosedur yang berlaku didalamnya.</li>
+                    <li><b>PIHAK PERTAMA</b> menerima <b>PIHAK KEDUA</b> sebagai Karyawan dengan masa kontrak dimulai sejak tanggal <b>{{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}</b> sampai dengan <b>{{Carbon\Carbon::parse($value->contract_end)->translatedFormat('d F Y')}}</b>.</li>
+                    <li><b>PIHAK PERTAMA</b> mempekerjakan <b>PIHAK KEDUA</b> sebagai <b>OPERATOR</b> di bagian <b>{{$value->department_name}}</b>. Dan <b>PIHAK KEDUA</b> besedia melaksanakan tugas dan tanggung jawabnya yang diberikan Pimpinan/atasannya dengan sebaik-baiknya serta bersedia mengikuti dan patuh terhadap ketentuan-ketentuan dan prosedur yang berlaku didalamnya.</li>
                     <li>Perusahaan dapat dan berhak mengubah serta memindahkan bagian, Jabatan, tempat, dan lokasi kerja karyawan baik diluar kota maupun antar perusahaan di Nirwana Group sesuai dengan kebutuhan.</li>
                     <li>Perjanjian Kerja untuk waktu/pekerjaan tertentu ini diadakan karena tersedianya pekerjaan yang menpurut sifat atau jenis, atau yang kegiatannya akan selesai dalam waktu tertentu atau bersifat tidak tetap.</li>
                     <li>Waktu dan Jam kerja di Perusahaan 5 (lima) hari kerja dalam seminggu, dengan ketentuan 8 (delapan) jam sehari dan/atau 40 (empat puluh) jam seminggu serta hari Sabtu dan Minggu merupakan hari libur/istirahat mingguan.</li>
-                    <li>Pihak Pertama akan membayar Upah/Gaji pokok kepada Pihak Kedua sebesar <b>Rp. {{number_format($umk, 2, ',', '.');}}</b> <i><b>(Tiga Juta Tujuh Ratus Lima Puluh Tujuh Ribu Dua Ratus Delapan Puluh Lima Rupiah)</b></i>, yang perhitungannya dipengaruhi oleh penilaian tingkat kemampuan, kehadiran, serta jenis pekerjaan yang dilakukan. Pembayaran upah / gaji akan dilaksanakan pada tanggal 1 (satu) setiap bulannya.</li>
-                    <li>Pihak Pertama berhak melakukan perubahan sistem pengupahan dengan metode pengupahan berdasarkan satuan hasil atau pengupahan dengan sistem per jam sesuai dengan kondisi dan situasi perusahaan.</li>
-                    <li>Pihak Pertama memberikan kompensasi PKWT kepada Pihak Kedua dengan besaran, metode dan waktu yang akan diatir dalam prosedur yang berlaku.</li>
-                    <li>Pihak Kedua wajib mematuhi Peraturan Perusahaan yang berlaku dan menjaga ketertiban, kedisiplinan, produktivitas kerja, kerjasama dan kebersihan di lingkungan kerjanya serta merawat peralatan kerja, mesin produksi, dan barang inventaris yang menjadi tanggung jawabnya.</li>
-                    <li>Pihak Kedua wajib memberitahukan melalui telepon, lisan atau tertulis jika berhalangan hadir dan memberikan alasan dengan jelas kepada pimpinan/atasannya, dan <u>bila mana 5 (lima) hari tidak masuk kerja</u> tanpa ada alasan yang sah dan tidak dapat dipertanggungjawabkan, serta sudah mendapatkan 2 Kali panggilan dari HRD maka dianggap mengundurkan diri atas permintaan sendiri.</li>
-                    <li>Pihak Pertama berhak untuk mengakhiri hubungan kerja sebelum berakhirnya tanggal perjanjian kerja dengan teknis pelaksanaan yang diatur dalam peraturan perusahaan dan atau prosedur yang berlaku.</li>
-                    <li>Apabila Pihak Kedua akan mengakhiri Perjanjian Kerja Waktu Tertentu dan/atau sebelum berakhirnya masa Perjanjian Kerja yang disepakati dengan Pihak Pertama, maka Pihak Kedua wajib memberitahukan kepada Pihak Pertama selambat-lambatnya 2 (dua) minggu sebelumnya.</li>
-                    <li>Perjanjian kerja ini dapat diperpanjang apabila Pihak Pertama memerlukan Pihak Kedua karena suatu pekerjaan yang belum selesai, dan Pihak Pertama akan memberitahukan kepada Pihak Kedua selambat-lambatnya 7 (tujuh) hari sebelum berakhirnya masa berlakunya Perjanjian Kerja ini untuk diperpanjang, dan perpanjangan tersebut atas kepentingan kedua belah pihak.</li>
+                    <li><b>PIHAK PERTAMA</b> akan membayar Upah/Gaji pokok kepada <b>PIHAK KEDUA</b> sebesar <b>Rp. {{number_format($umk, 2, ',', '.');}}</b> <i><b>(Tiga Juta Tujuh Ratus Lima Puluh Tujuh Ribu Dua Ratus Delapan Puluh Lima Rupiah)</b></i>, yang perhitungannya dipengaruhi oleh penilaian tingkat kemampuan, kehadiran, serta jenis pekerjaan yang dilakukan. Pembayaran upah / gaji akan dilaksanakan pada tanggal 1 (satu) setiap bulannya.</li>
+                    <li><b>PIHAK PERTAMA</b> berhak melakukan perubahan sistem pengupahan dengan metode pengupahan berdasarkan satuan hasil atau pengupahan dengan sistem per jam sesuai dengan kondisi dan situasi perusahaan.</li>
+                    <li><b>PIHAK PERTAMA</b> memberikan kompensasi PKWT kepada <b>PIHAK KEDUA</b> dengan besaran, metode dan waktu yang akan diatir dalam prosedur yang berlaku.</li>
+                    <li><b>PIHAK KEDUA</b> wajib mematuhi Peraturan Perusahaan yang berlaku dan menjaga ketertiban, kedisiplinan, produktivitas kerja, kerjasama dan kebersihan di lingkungan kerjanya serta merawat peralatan kerja, mesin produksi, dan barang inventaris yang menjadi tanggung jawabnya.</li>
+                    <li><b>PIHAK KEDUA</b> wajib memberitahukan melalui telepon, lisan atau tertulis jika berhalangan hadir dan memberikan alasan dengan jelas kepada pimpinan/atasannya, dan <u>bila mana 5 (lima) hari tidak masuk kerja</u> tanpa ada alasan yang sah dan tidak dapat dipertanggungjawabkan, serta sudah mendapatkan 2 Kali panggilan dari HRD maka dianggap mengundurkan diri atas permintaan sendiri.</li>
+                    <li><b>PIHAK PERTAMA</b> berhak untuk mengakhiri hubungan kerja sebelum berakhirnya tanggal perjanjian kerja dengan teknis pelaksanaan yang diatur dalam peraturan perusahaan dan atau prosedur yang berlaku.</li>
+                    <li>Apabila <b>PIHAK KEDUA</b> akan mengakhiri Perjanjian Kerja Waktu Tertentu dan/atau sebelum berakhirnya masa Perjanjian Kerja yang disepakati dengan <b>PIHAK PERTAMA</b>, maka <b>PIHAK KEDUA</b> wajib memberitahukan kepada <b>PIHAK PERTAMA</b> selambat-lambatnya 2 (dua) minggu sebelumnya.</li>
+                    <li>Perjanjian kerja ini dapat diperpanjang apabila <b>PIHAK PERTAMA</b> memerlukan <b>PIHAK KEDUA</b> karena suatu pekerjaan yang belum selesai, dan <b>PIHAK PERTAMA</b> akan memberitahukan kepada <b>PIHAK KEDUA</b> selambat-lambatnya 7 (tujuh) hari sebelum berakhirnya masa berlakunya Perjanjian Kerja ini untuk diperpanjang, dan perpanjangan tersebut atas kepentingan kedua belah pihak.</li>
                     <li>Perjanjian Kerja ini dapat berubah sesuai dengan situasi dan kondisi Perusahaan dan atas kesepakatan kedua belah pihak atau lembaga kerja sama bipartit.</li>
                     <li>Hal-hal yang belum tercantum dalam perjanjian ini, mengenai syarat-syarat kerja, hak dan kewajiban dalam hubungan kerja diatur dalam Peraturan Perusahaan dan atau prosedur yang berlaku.</li>
-                    <li>Perjanjian Kerja ini mulai berlaku sejak ditandatangani oleh kedua belah pihak sampai dengan berakhirnya masa Perjanjian Kerja, atau karena meninggalnya Pihak Kedua.</li>
+                    <li>Perjanjian Kerja ini mulai berlaku sejak ditandatangani oleh kedua belah pihak sampai dengan berakhirnya masa Perjanjian Kerja, atau karena meninggalnya <b>PIHAK KEDUA</b>.</li>
                     <li>Apabila terdapat perselisihan antara kedua belah pihak, maka kedua belah pihak setuju untuk menyelesaikannya secara musyawarah untuk mencapai mufakat melalui lembaga kerja sama bipartit.</li>
                     <li>Dalam melakukan Perjanjian kerja ini kedua belah pihak dalam keadaan sadar, tidak mendapatkan paksaan dari pihak manapun serta tidak sedang menjalani/diberikan masa hukuman.</li>
                 </ol>
@@ -144,7 +144,7 @@
             </tr>
         </thead>
     </table>
-    <table width="562" style="padding-top: 50px">
+    <table width="562" style="position: absolute; bottom: 80px;">
         <thead>
             <tr>
                 <td style="border-bottom:1px solid black;height:24px" width="88%"></td>
@@ -194,7 +194,7 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7.5pt;padding-top:5px" align="center"><b><u>SURAT PERJANJIAN KERJA WAKTU TERTENTU</u></b></td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7.5pt" align="center">No.{{$value->no_surat}}/{{$no_form}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7.5pt" align="center">No.{{$value->enroll_id}}/{{$no_form}}</td>
             </tr>
         </thead>
     </table>
@@ -284,7 +284,7 @@
                             <li>Menjadi terdakwa atau didakwa dengan pidana tertentu atau diragukan kemampuan di masa depan untuk melaksanakan tugas-tugasnya.</li>
                         </ul>
                     </li>
-                    <li>Apabila <b>PIHAK KEDUA</b> akan mengakhiri Perjanjian Kerja Waktu Tertentu dan/atau sebelum berakhirnya masa Perjanjian Kerja yang disepakati dengan PIHAK PERTAMA, maka Pihak Kedua wajib memberitahukan kepada PIHAK PERTAMA selambat-lambatnya 30 Hari sebelumnya.</li>
+                    <li>Apabila <b>PIHAK KEDUA</b> akan mengakhiri Perjanjian Kerja Waktu Tertentu dan/atau sebelum berakhirnya masa Perjanjian Kerja yang disepakati dengan <b>PIHAK PERTAMA</b>, maka <b>PIHAK KEDUA</b> wajib memberitahukan kepada <b>PIHAK PERTAMA</b> selambat-lambatnya 30 Hari sebelumnya.</li>
                     <li><b>PIHAK PERTAMA</b> mengetahui dan menyetujui bahwa seluruh materi informasi yang bersifat non-publik, termasuk namun tidak terbatas pada informasi yang berhubungan dengan pendapatan, volume bisnis, metode bisnis, sistem, rencana-rencana, akun-akun, ketentuan dalam Perjanjian ini, dan hal lain yang bersifat rahasia atau informasi hak milik yang bernilai komersil yang dimiliki oleh Perusahaan (<b>“Informasi Rahasia”</b>) akan tetap dirahasiakan dan tidak akan diungkapkan atau diberikan kepada pihak ketiga manapun tanpa persetujuan tertulis dari <b>PIHAK PERTAMA.</b><br>Ketentuan dalam pasal ini akan terus berlaku meskipun setelah putus dan/atau berakhirnya Perjanjian ini, tanpa batasan waktu.</li>
                     <li><b>PIHAK KEDUA</b> dengan ini mengakui dan menyetujui bahwa seluruh merk dagang, nama dagang, logo, hak cipta dan hak milik lainnya, termasuk namun tidak terbatas pada penciptaan, paten, rahasia dagang, penemuan, teknik, proses, alat, penyempurnaan, know-how, perbaikan, sistem, kurikulum, perubahan yang terkandung, gambar, tulisan, susunan desain, model, hasil karya seni, hasil pekerjaan pengarang dan benda berwujud dan benda tidak berwujud lainnya (<b>“Hak Kekayaan Intelektual”</b>) yang dibuat dalam hubungannya dalam Perjanjian ini baik terdaftar maupun tidak, kan tetap dan merupakan hak milik eksklusif dari Perusahaan (atau pemilik yang sesuai) adalah pemilik dari seluruh hak, title, dan kepentingan atas Hak Kekayaan Intelektual baik yang berada dalam wilayahnya atau di tempat lain di seluruh dunia. Karyawati menjamin dan setuju untuk tidak mengambil tindakan apapun yang mungkin merugikan atau mempengaruhi validas dari Hak Kekayaan Intelektual atau kepemilikan Perusahaan (atau pemilik yang sesuai) atau lisensi daripadanya dan akan berhenti menggunakan Hak Kekayaan Intelektual setelah putusnya Perjanjian ini.</li>
                     <li>Perjanjian ini diatur dan ditafsirkan berdasarkan hukum Republik Indonesia. Masing-masing Pihak setuju bahwa segala sengketa yang muncul sehubungan dengan Perjanjian ini akan diselesaikan secara musyawarah. Jika penyelesaian secara musyawarah tidak dapat dicapai oleh Para Pihak, maka Para Pihak setuju bahwa segala tindakan atau proses yang muncul atau yang berhubungan dengan Perjanjian ini akan diserahkan dan menjadi kewenangan yurisdiksi Pengadilan Indonesia.</li>
@@ -322,7 +322,7 @@
             </tr>
         </thead>
     </table>
-    <table width="562">
+    <table width="562" style="position: absolute; bottom: 80px;">
         <thead>
             <tr>
                 <td style="border-bottom:1px solid black;height:24px" width="88%"></td>
@@ -331,7 +331,7 @@
                 </td>
             </tr>
             <tr>
-                <td style="height:24px"></td>
+                <td style="height:1px"></td>
             </tr>
         </thead>
     </table>

@@ -46,7 +46,7 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt" align="center"><b><u>SURAT PERJANJIAN KERJA WAKTU TERTENTU</u></b></td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt" align="center"><b>No.{{$value->no_surat}}/{{$no_form}}</b></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt" align="center"><b>No.{{$value->enroll_id}}/{{$no_form}}</b></td>
             </tr>
         </thead>
     </table>
@@ -194,7 +194,7 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7.5pt;padding-top:5px" align="center"><b><u>SURAT PERJANJIAN KERJA WAKTU TERTENTU</u></b></td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7.5pt" align="center">No.{{$value->no_surat}}/{{$no_form}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7.5pt" align="center">No.{{$value->enroll_id}}/{{$no_form}}</td>
             </tr>
         </thead>
     </table>
@@ -268,8 +268,8 @@
         <tr>
             <td>
                 <ol style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;padding-left:20px;margin-top:0px;margin-bottom:0px">
-                    <li><b>PIHAK  PERTAMA</b> menerima <b>PIHAK  KEDUA</b> sebagai  Karyawan dimulai sejak Tanggal <b>{{Carbon\Carbon::parse($contract2)->translatedFormat('d F Y')}}</b> sampai dengan tanggal <b>{{Carbon\Carbon::parse($contract_end2)->translatedFormat('d F Y')}}</b>.</li>
-                    <li><b>PIHAK  PERTAMA</b> mempekerjakan <b>PIHAK  KEDUA</b> sebagai <b>{{$value->status_staff}}</b> di bagian <b>{{$value->department_name}}</b>, dan memiliki kedudukan sebagai karyawan dengan golongan jabatan tertentu, bertanggung jawab sebagai pemikir, perencana, pelaksana dan atau pengendali atau dalam hal ini disebut staff.</li>
+                    <li><b>PIHAK PERTAMA</b> menerima <b>PIHAK KEDUA</b> sebagai Karyawan dimulai sejak Tanggal <b>{{Carbon\Carbon::parse($contract2)->translatedFormat('d F Y')}}</b> sampai dengan tanggal <b>{{Carbon\Carbon::parse($contract_end2)->translatedFormat('d F Y')}}</b>.</li>
+                    <li><b>PIHAK PERTAMA</b> mempekerjakan <b>PIHAK KEDUA</b> sebagai <b>{{$value->status_staff}}</b> di bagian <b>{{$value->department_name}}</b>, dan memiliki kedudukan sebagai karyawan dengan golongan jabatan tertentu, bertanggung jawab sebagai pemikir, perencana, pelaksana dan atau pengendali atau dalam hal ini disebut staff.</li>
                     <li><b>PIHAK KEDUA</b> menyatakan bersedia mengikuti jadwal kerja yang telah ditentukan yaitu Senin s/d Jumat pukul <b>07:00 s/d 16:00</b>, atau ditentukan lain oleh <b>PIHAK PERTAMA</b>.</li>
                     <li><b>PIHAK KEDUA</b> besedia melaksanakan tugas dan tanggung jawabnya yang diberikan Pimpinan/atasannya dengan sebaik-baiknya serta bersedia mengikuti dan patuh terhadap ketentuan-ketentuan dan prosedur yang berlaku didalamnya.</li>
                     <li><b>PIHAK KEDUA</b> wajib mematuhi Peraturan Perusahaan yang berlaku dan menjaga ketertiban, kedisiplinan, produktivitas kerja, kerjasama dan kebersihan di lingkungan kerjanya serta merawat peralatan kerja, fasilitas perusahaan, dan barang inventaris yang menjadi tanggung jawabnya.</li>
@@ -284,7 +284,7 @@
                             <li>Menjadi terdakwa atau didakwa dengan pidana tertentu atau diragukan kemampuan di masa depan untuk melaksanakan tugas-tugasnya.</li>
                         </ul>
                     </li>
-                    <li>Apabila <b>PIHAK KEDUA</b> akan mengakhiri Perjanjian Kerja Waktu Tertentu dan/atau sebelum berakhirnya masa Perjanjian Kerja yang disepakati dengan PIHAK PERTAMA, maka Pihak Kedua wajib memberitahukan kepada PIHAK PERTAMA selambat-lambatnya 30 Hari sebelumnya.</li>
+                    <li>Apabila <b>PIHAK KEDUA</b> akan mengakhiri Perjanjian Kerja Waktu Tertentu dan/atau sebelum berakhirnya masa Perjanjian Kerja yang disepakati dengan <b>PIHAK PERTAMA</b>, maka <b>PIHAK KEDUA</b> wajib memberitahukan kepada <b>PIHAK PERTAMA</b> selambat-lambatnya 30 Hari sebelumnya.</li>
                     <li><b>PIHAK PERTAMA</b> mengetahui dan menyetujui bahwa seluruh materi informasi yang bersifat non-publik, termasuk namun tidak terbatas pada informasi yang berhubungan dengan pendapatan, volume bisnis, metode bisnis, sistem, rencana-rencana, akun-akun, ketentuan dalam Perjanjian ini, dan hal lain yang bersifat rahasia atau informasi hak milik yang bernilai komersil yang dimiliki oleh Perusahaan (<b>“Informasi Rahasia”</b>) akan tetap dirahasiakan dan tidak akan diungkapkan atau diberikan kepada pihak ketiga manapun tanpa persetujuan tertulis dari <b>PIHAK PERTAMA.</b><br>Ketentuan dalam pasal ini akan terus berlaku meskipun setelah putus dan/atau berakhirnya Perjanjian ini, tanpa batasan waktu.</li>
                     <li><b>PIHAK KEDUA</b> dengan ini mengakui dan menyetujui bahwa seluruh merk dagang, nama dagang, logo, hak cipta dan hak milik lainnya, termasuk namun tidak terbatas pada penciptaan, paten, rahasia dagang, penemuan, teknik, proses, alat, penyempurnaan, know-how, perbaikan, sistem, kurikulum, perubahan yang terkandung, gambar, tulisan, susunan desain, model, hasil karya seni, hasil pekerjaan pengarang dan benda berwujud dan benda tidak berwujud lainnya (<b>“Hak Kekayaan Intelektual”</b>) yang dibuat dalam hubungannya dalam Perjanjian ini baik terdaftar maupun tidak, kan tetap dan merupakan hak milik eksklusif dari Perusahaan (atau pemilik yang sesuai) adalah pemilik dari seluruh hak, title, dan kepentingan atas Hak Kekayaan Intelektual baik yang berada dalam wilayahnya atau di tempat lain di seluruh dunia. Karyawati menjamin dan setuju untuk tidak mengambil tindakan apapun yang mungkin merugikan atau mempengaruhi validas dari Hak Kekayaan Intelektual atau kepemilikan Perusahaan (atau pemilik yang sesuai) atau lisensi daripadanya dan akan berhenti menggunakan Hak Kekayaan Intelektual setelah putusnya Perjanjian ini.</li>
                     <li>Perjanjian ini diatur dan ditafsirkan berdasarkan hukum Republik Indonesia. Masing-masing Pihak setuju bahwa segala sengketa yang muncul sehubungan dengan Perjanjian ini akan diselesaikan secara musyawarah. Jika penyelesaian secara musyawarah tidak dapat dicapai oleh Para Pihak, maka Para Pihak setuju bahwa segala tindakan atau proses yang muncul atau yang berhubungan dengan Perjanjian ini akan diserahkan dan menjadi kewenangan yurisdiksi Pengadilan Indonesia.</li>
