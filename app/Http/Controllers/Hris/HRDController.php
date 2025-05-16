@@ -941,7 +941,31 @@ class HRDController extends AdminBaseController
                 $inStatusKontrak='AND b.contract_end is null';
             }
         }
-        $query= DB::select("select a.enroll_id from employee_atribut a left join employee_contract b on a.enroll_id=b.enroll_id left join (select enroll_id,max(contract_end) max_contract_end from employee_contract group by enroll_id)c on a.enroll_id=c.enroll_id where a.enroll_id is not null ".$inSearchVariable." ".$inEnrollId." ".$inNoKTP." ".$inIbuKandung." ".$inStatusAktif." ".$inStatusKontrak." ".$inStatusStaff." group by a.enroll_id");
+        $inDateRangeContract='';
+        if(request()->date_range){
+            $daterange1 = explode(" s/d ", request()->date_range);
+            $tanggalMulai = date('Y-m-d', strtotime($daterange1[0]));
+            $tanggalSampai = date('Y-m-d', strtotime($daterange1[1]));
+            $inDateRangeContract = 'AND (
+                CASE
+                    WHEN a.tanggal_resign IS NOT NULL THEN a.tanggal_resign
+                    ELSE b.contract_end
+                END
+            ) >= "'.$tanggalMulai.'"
+            AND (
+                CASE
+                    WHEN a.tanggal_resign IS NOT NULL THEN a.tanggal_resign
+                    ELSE b.contract_end
+                END
+            ) <= "'.$tanggalSampai.'"';
+        }
+
+        $inDepartment_name='';
+        if(request("department_name")){
+            $department=request("department_name");
+            $inDepartment_name = ' AND a.department_name = "'.$department.'"';
+        }
+        $query= DB::select("select a.enroll_id, a.tanggal_resign, a.department_name from employee_atribut a left join employee_contract b on a.enroll_id=b.enroll_id left join (select enroll_id,max(contract_end) max_contract_end from employee_contract group by enroll_id)c on a.enroll_id=c.enroll_id where a.enroll_id is not null ".$inSearchVariable." ".$inEnrollId." ".$inNoKTP." ".$inIbuKandung." ".$inStatusAktif." ".$inStatusKontrak." ".$inStatusStaff." ".$inDateRangeContract." ".$inDepartment_name." group by a.enroll_id");
         $enroll_id_array=array_column($query,'enroll_id');
         return $enroll_id_array;
     }
