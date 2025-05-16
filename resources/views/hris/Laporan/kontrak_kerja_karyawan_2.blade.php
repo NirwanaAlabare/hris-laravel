@@ -145,16 +145,19 @@
         </thead>
     </table>
 
-    <table width="562" style="padding-top: 50px">
+    <table width="562" style="padding-top: 20px">
         <thead>
             <tr>
-                <td style="border-bottom:1px solid black;height:24px;font-family:Arial, Helvetica, sans-serif;font-size:7pt;font-weight:bold;color:rgb(2, 2, 99);" width="88%"><b><u>{{$value->employee_name}}</u></b></td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top;" width="88%"><u>{{$value->employee_name}}</u></td>
+            </tr>
+            <tr>
+                <td style="height:30px;" width="88%"></td>
+            </tr>
+            <tr>
+                <td style="border-bottom:1px solid black;" width="88%"></td>
                 <td rowspan="2">
                     <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($no_form) . '&type=SK_KERJA', 'QRCODE') }}" alt="barcode" style="width: 60px; height: 60px;background-color:white" />
                 </td>
-            </tr>
-            <tr>
-                <td style="height:24px"></td>
             </tr>
         </thead>
     </table>
@@ -323,16 +326,19 @@
             </tr>
         </thead>
     </table>
-    <table width="562">
+    <table width="562" style="padding-top: 20px">
         <thead>
             <tr>
-                <td style="border-bottom:1px solid black;height:24px;font-family:Arial, Helvetica, sans-serif;font-size:7pt;font-weight:bold;color:rgb(2, 2, 99);" width="88%"><b><u>{{$value->employee_name}}</u></b></td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top;" width="88%"><u>{{$value->employee_name}}</u></td>
+            </tr>
+            <tr>
+                <td style="height:30px;" width="88%"></td>
+            </tr>
+            <tr>
+                <td style="border-bottom:1px solid black;" width="88%"></td>
                 <td rowspan="2">
                     <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($no_form) . '&type=SK_KERJA', 'QRCODE') }}" alt="barcode" style="width: 60px; height: 60px;background-color:white" />
                 </td>
-            </tr>
-            <tr>
-                <td style="height:24px"></td>
             </tr>
         </thead>
     </table>
