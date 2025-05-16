@@ -144,17 +144,10 @@
             </tr>
         </thead>
     </table>
-    <table width="562" style="position: absolute; bottom: 65px;">
-        <thead>
-            <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold;"><b>{{$value->employee_name}}</b></td>
-            </tr>
-        </thead>
-    </table>
     <table width="562" style="position: absolute; bottom: 80px;">
         <thead>
             <tr>
-                <td style="border-bottom:1px solid black;height:24px" width="88%"></td>
+                <td style="border-bottom:1px solid black;height:24px;font-family:Arial, Helvetica, sans-serif;font-size:7pt;font-weight:bold;" width="88%"><b>{{$value->employee_name}}</b></td>
                 <td rowspan="2">
                     <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($no_form) . '&type=SK_KERJA', 'QRCODE') }}" alt="barcode" style="width: 60px; height: 60px;background-color:white" />
                 </td>
@@ -329,17 +322,11 @@
             </tr>
         </thead>
     </table>
-    <table width="562" style="position: absolute; bottom: 65px; left: 24px">
-        <thead>
-            <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold;"><b>{{$value->employee_name}}</b></td>
-            </tr>
-        </thead>
-    </table>
+
     <table width="562" style="position: absolute; bottom: 80px;">
         <thead>
             <tr>
-                <td style="border-bottom:1px solid black;height:24px" width="88%"></td>
+                <td style="border-bottom:1px solid black;height:24px;font-family:Arial, Helvetica, sans-serif;font-size:7pt;font-weight:bold;" width="88%"><b>{{$value->employee_name}}</b></td>
                 <td rowspan="2">
                     <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($no_form) . '&type=SK_KERJA', 'QRCODE') }}" alt="barcode" style="width: 60px; height: 60px;background-color:white" />
                 </td>
