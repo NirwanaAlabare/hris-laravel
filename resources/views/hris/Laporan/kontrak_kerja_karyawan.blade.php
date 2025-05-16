@@ -144,6 +144,13 @@
             </tr>
         </thead>
     </table>
+    <table width="562" style="position: absolute; bottom: 65px;">
+        <thead>
+            <tr>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold;"><b>{{$value->employee_name}}</b></td>
+            </tr>
+        </thead>
+    </table>
     <table width="562" style="position: absolute; bottom: 80px;">
         <thead>
             <tr>
@@ -319,6 +326,13 @@
                 <td></td>
                 <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top">Rangkap Perjanjian (PKWT) ini<br> Sudah di terima oleh karyawan. <br>Pada Tanggal : {{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}</td>
                 <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top">Terdaftar di<br>Suku Dinas Tenaga Kerja dan Transmigrasi<br>Administrasi Kabupaten Bandung<br>Tanggal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}<br>Nomor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</td>
+            </tr>
+        </thead>
+    </table>
+    <table width="562" style="position: absolute; bottom: 65px; left: 24px">
+        <thead>
+            <tr>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold;"><b>{{$value->employee_name}}</b></td>
             </tr>
         </thead>
     </table>
