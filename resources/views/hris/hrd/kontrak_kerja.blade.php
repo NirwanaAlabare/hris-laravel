@@ -1634,15 +1634,55 @@
             document.getElementById("print_kontrak_kerja").style.visibility = "hidden";
         }
     }
-    $('#print_kontrak_kerja').on('click',function(){
-        var enroll_id=checkedEmployeeArr;
-        var today=new Date();
-        var month_now=today.getMonth();
-        var year_now=today.getFullYear();
-        var no_form='HRD-NAG/PKWT'+'/'+integerToRoman(month_now+1)+'/'+year_now;
-        var url = 'print_all_pdf_kontrak?enroll_id='+enroll_id+'&no_form='+no_form;
-        window.open(url, '_blank');
+    // $('#print_kontrak_kerja').on('click',function(){
+    //     var enroll_id=checkedEmployeeArr;
+    //     var today=new Date();
+    //     var month_now=today.getMonth();
+    //     var year_now=today.getFullYear();
+    //     var no_form='HRD-NAG/PKWT'+'/'+integerToRoman(month_now+1)+'/'+year_now;
+    //     var url = 'print_all_pdf_kontrak?enroll_id='+enroll_id+'&no_form='+no_form;
+    //     window.open(url, '_blank');
+    // });
+
+    $('#print_kontrak_kerja').on('click', function () {
+        var enroll_id = checkedEmployeeArr; // array enroll ID
+        var today = new Date();
+        var month_now = today.getMonth();
+        var year_now = today.getFullYear();
+        var no_form = 'HRD-NAG/PKWT' + '/' + integerToRoman(month_now + 1) + '/' + year_now;
+        // Buat form secara dinamis
+        var form = $('<form>', {
+            action: 'print_all_pdf_kontrak', // endpoint tanpa query string
+            method: 'POST',
+            target: '_blank' // ini yang akan buka tab baru
+        });
+
+        // Tambahkan input enroll_id[] satu per satu
+        enroll_id.forEach(function(id) {
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'enroll_id[]',
+                value: id
+            }).appendTo(form);
+        });
+
+        // Tambahkan no_form
+        $('<input>').attr({
+            type: 'hidden',
+            name: 'no_form',
+            value: no_form
+        }).appendTo(form);
+
+        $('<input>').attr({
+            type: 'hidden',
+            name: '_token',
+            value: $('meta[name="csrf-token"]').attr('content')
+        }).appendTo(form);
+
+        // Submit dan buka tab baru
+        form.appendTo('body').submit().remove();
     });
+
     function actionCheckAllEmployee(element) {
         var enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
         var ibu_kandung = $('#searchIbuKandung').val();

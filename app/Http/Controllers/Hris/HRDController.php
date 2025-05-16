@@ -850,14 +850,47 @@ class HRDController extends AdminBaseController
         return $pdf;
     }
     public function print_all_pdf_kontrak(){
-        $enroll_id=request()->enroll_id;
-        $no_form=request()->no_form;
-        $data=DB::select("select a.status_staff,a.enroll_id,a.nik,a.employee_name,a.status_jabatan,a.sub_dept_name,a.department_name,a.status_kontrak_tetap,a.status_aktif,a.join_date,a.tanggal_resign,a.nomor_ktp,a.tempat_lahir,a.alamat_rumah,a.tanggal_lahir,a.no_surat,b.contract,b.contract_end,c.max_contract,c.max_contract_end from employee_atribut a left join employee_contract b on a.enroll_id=b.enroll_id left join (select enroll_id,max(contract) max_contract,max(contract_end) max_contract_end from employee_contract)c on a.enroll_id=c.enroll_id where a.enroll_id in (".$enroll_id.")");
-        $umk=DasarPotBPJS::orderBy('created_at','desc')->limit(1)->first()->dasar_pot_bpjs_rupiah;
-        $fileName='Kontrak Kerja '.$data[0]->employee_name.'('.request()->enroll_id.') '.$data[0]->max_contract_end.' '.date('His');
-        $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan',["data" => $data,"umk"=>$umk, "no_form"=>$no_form])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+        $enroll_id = request()->enroll_id;
+        $no_form = request()->no_form;
+
+        // Ambil semua kontrak untuk semua enroll_id
+        $data = DB::table('employee_atribut as a')
+            ->leftJoin('employee_contract as b', 'a.enroll_id', '=', 'b.enroll_id')
+            ->select(
+                'a.status_staff','a.enroll_id','a.nik','a.employee_name','a.status_jabatan',
+                'a.sub_dept_name','a.department_name','a.status_kontrak_tetap','a.status_aktif',
+                'a.join_date','a.tanggal_resign','a.nomor_ktp','a.tempat_lahir','a.alamat_rumah',
+                'a.tanggal_lahir','a.no_surat','b.contract','b.contract_end'
+            )
+            ->whereIn('a.enroll_id', $enroll_id)
+            ->get();
+
+        // Ambil kontrak terakhir per enroll_id
+        $latest_per_employee = $data->groupBy('enroll_id')->map(function ($contracts) {
+            return $contracts->sortByDesc('contract_end')->first();
+        })->values();
+
+        // Gandakan setiap data sebanyak 2x
+        $data_final = collect();
+        foreach ($latest_per_employee as $item) {
+            $data_final->push($item);
+            $data_final->push($item); // push dua kali
+        }
+
+        // UMK dan PDF
+        $umk = DasarPotBPJS::orderBy('created_at','desc')->first()->dasar_pot_bpjs_rupiah;
+        $fileName = 'Kontrak Kerja All ' . date('His');
+
+        $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan', [
+            "data" => $data_final,
+            "umk" => $umk,
+            "no_form" => $no_form
+        ])->setPaper('A4', 'portrait')->stream($fileName . '.pdf');
+
         return $pdf;
     }
+
+
     public function ajax_getemployeeidbyfilter(){
         $inSearchVariable='';
         $inNoKTP='';
