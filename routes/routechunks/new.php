@@ -18,7 +18,7 @@ Route::prefix('employeeatr')->group(function() {
     Route::post('import-grading', 'EmployeeAtrController@import_grading')->name("hris.employeeatr.import.grading");
 });
 
-Route::prefix('dataabsenperijinan')->middleware(['auth.admin', 'lock', 'role:all,attendance_payroll'])->group(function() {
+Route::prefix('dataabsenperijinan')->middleware(['auth.admin', 'lock', 'role:all,attendance_payroll,attendance_payroll_general_affair_administrasi'])->group(function() {
     Route::get('data-perijinan-verifikasi','DataAbsenPerijinanController@perijinan_verifikasi')->name("hris.dataabsenperijinan.verifikasi");
     Route::post('data-perijinan-get','DataAbsenPerijinanController@perijinan_verifikasi_get')->name("hris.dataabsenperijinan.get");
     Route::post('perijinan-verifikasi','DataAbsenPerijinanController@perijinan_verifikasi_store')->name("hris.verifikasiperijinan.store");
