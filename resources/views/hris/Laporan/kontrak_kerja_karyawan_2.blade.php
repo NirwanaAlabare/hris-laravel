@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Document</title>
     <style>
-        @page { margin: 20px 45px 0px 45px; }
+        @page { margin: 10px 45px 0px 45px; }
     </style>
 </head>
 
@@ -326,13 +326,10 @@
             </tr>
         </thead>
     </table>
-    <table width="562" style="padding-top: 20px">
+    <table width="562" style="position: absolute; bottom: 90px;">
         <thead>
             <tr>
-                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top;" width="88%"><u>{{$value->employee_name}}</u></td>
-            </tr>
-            <tr>
-                <td style="height:30px;" width="88%"></td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top; padding-left:25px; padding-top:5px" width="88%"><u>{{$value->employee_name}}</u></td>
             </tr>
             <tr>
                 <td style="border-bottom:1px solid black;" width="88%"></td>
