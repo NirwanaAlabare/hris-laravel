@@ -896,6 +896,6 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         });
 
         $pdf = PDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_all',['data'=>$data]);
-        return $pdf->stream('laporan-pegawai.pdf');
+        return $pdf->stream('form-nilai-kinerja.pdf');
     }
 }
