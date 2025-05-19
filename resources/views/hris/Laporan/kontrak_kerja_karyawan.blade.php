@@ -216,12 +216,12 @@
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="20%">Nama</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="1%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;font-weight:bold;vertical-align:top">RUDY ARISTIAN FAJAR</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;font-weight:bold;vertical-align:top">{{$value->status_jabatan == 'MANAGER' ? "ROBERTUS BOBBY TANGNGA" : "RUDY ARISTIAN FAJAR"}}</td>
             </tr>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top">Jabatan</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="1%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;font-weight:bold;vertical-align:top">HR & GA DEPARTMENT</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;font-weight:bold;vertical-align:top">{{$value->status_jabatan == 'MANAGER' ? "GENERAL MANAGER" : "HR & GA DEPARTMENT"}}</td>
             </tr>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top">Alamat</td>
@@ -316,7 +316,7 @@
             </tr>
             <tr>
                 <td></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold;padding-top:60px"><b><u>RUDY ARISTIAN FAJAR</u></b></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold;padding-top:60px"><b><u>{{$value->status_jabatan == 'MANAGER' ? "ROBERTUS BOBBY TANGNGA" : "RUDY ARISTIAN FAJAR"}}</u></b></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold;padding-top:60px"><b><u>{{$value->employee_name}}</u></b></td>
             </tr>
             <tr>
