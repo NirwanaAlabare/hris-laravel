@@ -851,6 +851,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             ) z ON y.enroll_id = z.enroll_id
             WHERE z.enroll_id IS NOT NULL
                 $inDateRangeContract
+            AND z.status_aktif = 'AKTIF'
             GROUP BY z.enroll_id
             ORDER BY z.enroll_id
         "));
