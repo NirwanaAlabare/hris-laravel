@@ -175,6 +175,9 @@
                                     <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" onclick="export_excel_format_penilaian_nonstaff()" id="export_excel_format_penilaian_nonstaff" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Format Penilaian Non Staff</button>
                                 </td>
                                 <td>
+                                    <button type="button" class="btn btn-app btn-primary mr-0 ml-1 mt-0 mb-0" style="visibility: hidden" id="print_form_penilaian" style="font-size:11pt"><i class="fa fa-file-pdf-o" style="font-size:11pt"></i> Print Form Penilaian (PDF)</button>
+                                </td>
+                                <td>
                                     <button class="btn btn-danger" id="print_kontrak_kerja" style="visibility: hidden"><span class="fa fa-file-pdf-o"></span> Print Checked Employee</button>
                                 </td>
                             </tr>
@@ -857,6 +860,7 @@
         $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>');
         var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
         $('#daterange1').val(daterange1);
+        document.getElementById("print_form_penilaian").style.visibility = "visible";
         $('#datatable').DataTable().ajax.reload();
     });
 
@@ -865,6 +869,7 @@
         $('#daterange1').val('');
         $('#daterange-btn1').data('daterangepicker').setStartDate(moment());
         $('#daterange-btn1').data('daterangepicker').setEndDate(moment());
+        document.getElementById("print_form_penilaian").style.visibility = "hidden";
         $('#datatable').DataTable().ajax.reload(); // kalau kamu ingin reload juga saat clear
     }
 
@@ -1634,15 +1639,7 @@
             document.getElementById("print_kontrak_kerja").style.visibility = "hidden";
         }
     }
-    // $('#print_kontrak_kerja').on('click',function(){
-    //     var enroll_id=checkedEmployeeArr;
-    //     var today=new Date();
-    //     var month_now=today.getMonth();
-    //     var year_now=today.getFullYear();
-    //     var no_form='HRD-NAG/PKWT'+'/'+integerToRoman(month_now+1)+'/'+year_now;
-    //     var url = 'print_all_pdf_kontrak?enroll_id='+enroll_id+'&no_form='+no_form;
-    //     window.open(url, '_blank');
-    // });
+
 
     $('#print_kontrak_kerja').on('click', function () {
         var enroll_id = checkedEmployeeArr; // array enroll ID
@@ -1682,6 +1679,30 @@
         // Submit dan buka tab baru
         form.appendTo('body').submit().remove();
     });
+    $('#print_form_penilaian').on('click', function () {
+        // Buat form secara dinamis
+        var form = $('<form>', {
+            action: 'print_selected_form_penilaian', // endpoint tanpa query string
+            method: 'POST',
+            target: '_blank' // ini yang akan buka tab baru
+        });
+
+        // Tambahkan no_form
+        $('<input>').attr({
+            type: 'hidden',
+            name: 'date_range',
+            value: $('#daterange1').val()
+        }).appendTo(form);
+
+        $('<input>').attr({
+            type: 'hidden',
+            name: '_token',
+            value: $('meta[name="csrf-token"]').attr('content')
+        }).appendTo(form);
+
+        // Submit dan buka tab baru
+        form.appendTo('body').submit().remove();
+    });
 
     function actionCheckAllEmployee(element) {
         var enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
@@ -1704,6 +1725,8 @@
                     status_aktif: status_aktif,
                     status_staff: status_staff,
                     search_variable: search_variable,
+                    date_range: $('#daterange1').val(),
+                    department_name: $('#selectDepartment').val(),
                 },
                 dataType: 'json',
                 headers: {
@@ -2435,6 +2458,7 @@
         var url = 'print_pdf_kontrak?enroll_id='+enroll_id+'&no_form='+no_form;
         window.open(url, '_blank');
     }
+
     function printContract(enroll_id,contract,contract_end){
         var today=new Date();
         var month_now=today.getMonth();

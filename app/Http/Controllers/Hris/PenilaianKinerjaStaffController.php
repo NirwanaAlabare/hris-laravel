@@ -5,7 +5,7 @@ use App\Http\Controllers\AdminBaseController;
 use Illuminate\Support\Facades\View;
 use DB;
 use Illuminate\Support\Facades\Auth;
-use Barryvdh\DomPDF\Facade\Pdf;
+// use Barryvdh\DomPDF\Facade\Pdf;
 use Dompdf\Dompdf;
 use Carbon\Carbon;
 use Dompdf\Options;
@@ -25,6 +25,8 @@ use App\Exports\ExcelPenilaianKinerjaNonstaff;
 use App\Models\DepartmentAll;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Http;
+use PDF;
+
 
 class PenilaianKinerjaStaffController extends AdminBaseController
 {
@@ -538,6 +540,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         $data_karyawan = EmployeeAtribut::where('enroll_id', $enroll_id)->first();
 
         $data_penilaian = PenilaianKinerja::where('enroll_id', $enroll_id)->where('tgl_awal_kontrak',$contract)->where('tgl_akhir_kontrak', $contract_end)->first();
+
         if($data_penilaian){
             $kejadian = [
                 'sp3_kali' => $data_penilaian->sp3_kali,
@@ -564,7 +567,10 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             $data_penilaian->total = $total;
             $data_penilaian->total_pengurangan = $total_pengurangan;
         }
-        return view('hris/hrd/export_nilai_kinerja_karyawan_pdf', compact('data_penilaian','data_karyawan'));
+        $pdf = PDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_custom',['data_penilaian'=>$data_penilaian,'data_karyawan'=>$data_karyawan,'contract'=>$contract,'contract_end'=>$contract_end]);
+        return $pdf->stream('laporan-pegawai.pdf');
+
+        // return view('hris/hrd/export_nilai_kinerja_karyawan_pdf', compact('data_penilaian','data_karyawan'));
     }
 
     public function import_penilaian_kinerja_staff(){
@@ -758,5 +764,137 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         // dd($query);
 
         return Excel::download(new ExcelPenilaianKinerjaNonstaff($data), 'Form Penilaian Kinerja Non Staff.xlsx');
+    }
+
+    public function print_selected_form_penilaian(){
+        $inDateRangeContract='';
+        $data_penilaian = collect(); // Default kosong
+
+        if(request()->date_range){
+            $daterange1 = explode(" s/d ", request()->date_range);
+            $tanggalMulai = date('Y-m-d', strtotime($daterange1[0]));
+            $tanggalSampai = date('Y-m-d', strtotime($daterange1[1]));
+            $inDateRangeContract = 'AND (
+                CASE
+                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                    ELSE y.contract_end
+                END
+            ) >= "'.$tanggalMulai.'"
+            AND (
+                CASE
+                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                    ELSE y.contract_end
+                END
+            ) <= "'.$tanggalSampai.'"';
+
+            // Ambil semua data penilaian sesuai tanggal
+            $data_penilaian = PenilaianKinerja::where('tgl_awal_kontrak', $tanggalMulai)
+                ->where('tgl_akhir_kontrak', $tanggalSampai)
+                ->get()
+                ->keyBy('enroll_id'); // Group berdasarkan enroll_id supaya lebih mudah digabung nanti
+        }
+
+        // Jalankan raw SQL
+        $data_karyawan = collect(DB::select("
+            SELECT
+                z.*,
+                y.contract,
+                CASE
+                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                    ELSE y.contract_end
+                END AS contract_end
+            FROM (
+                SELECT
+                    a.enroll_id,
+                    a.id,
+                    e.contract,
+                    e.contract_end
+                FROM (
+                    SELECT
+                        enroll_id,
+                        MAX(contract) AS contract,
+                        MAX(contract_end) AS contract_end
+                    FROM employee_contract
+                    GROUP BY enroll_id
+                ) e
+                INNER JOIN (
+                    SELECT
+                        id,
+                        enroll_id,
+                        contract,
+                        contract_end
+                    FROM employee_contract
+                ) a ON e.enroll_id = a.enroll_id AND e.contract_end = a.contract_end
+            ) y
+            RIGHT JOIN (
+                SELECT
+                    enroll_id,
+                    nik,
+                    employee_name,
+                    tanggal_resign,
+                    tempat_lahir,
+                    nomor_tlpn,
+                    agama,
+                    status_kawin,
+                    status_jabatan,
+                    pendidikan_terakhir,
+                    jurusan_pendidikan,
+                    alamat_rumah,
+                    department_name,
+                    sub_dept_name,
+                    status_aktif,
+                    status_staff,
+                    ibu_kandung,
+                    nomor_ktp,
+                    join_date
+                FROM employee_atribut
+            ) z ON y.enroll_id = z.enroll_id
+            WHERE z.enroll_id IS NOT NULL
+                $inDateRangeContract
+            GROUP BY z.enroll_id
+            ORDER BY z.enroll_id
+        "));
+
+        // Gabungkan data_penilaian ke masing-masing data_karyawan berdasarkan enroll_id
+        $data = $data_karyawan->map(function ($karyawan) use ($data_penilaian) {
+            $enroll_id = $karyawan->enroll_id;
+
+            if ($data_penilaian->has($enroll_id)) {
+                $penilaian = $data_penilaian->get($enroll_id);
+
+                $kejadian = [
+                    'sp3_kali' => $penilaian->sp3_kali,
+                    'sp2_kali' => $penilaian->sp2_kali,
+                    'sp1_kali' => $penilaian->sp1_kali,
+                    'kecelakaan_kali' => $penilaian->kecelakaan_kali,
+                    'mangkir_kali' => $penilaian->mangkir_kali,
+                    'ijin_kali' => $penilaian->ijin_kali,
+                ];
+
+                $total = [
+                    'sp3_kali' => $penilaian->sp3_kali * 6,
+                    'sp2_kali' => $penilaian->sp2_kali * 4,
+                    'sp1_kali' => $penilaian->sp1_kali * 2,
+                    'kecelakaan_kali' => $penilaian->kecelakaan_kali * 2,
+                    'mangkir_kali' => $penilaian->mangkir_kali * 1,
+                    'ijin_kali' => $penilaian->ijin_kali * 0.5,
+                ];
+
+                $total_pengurangan = array_sum($total);
+
+                $karyawan->penilaian = [
+                    'kejadian' => $kejadian,
+                    'total' => $total,
+                    'total_pengurangan' => $total_pengurangan,
+                ];
+            } else {
+                $karyawan->penilaian = null;
+            }
+
+            return $karyawan;
+        });
+
+        $pdf = PDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_all',['data'=>$data]);
+        return $pdf->stream('laporan-pegawai.pdf');
     }
 }

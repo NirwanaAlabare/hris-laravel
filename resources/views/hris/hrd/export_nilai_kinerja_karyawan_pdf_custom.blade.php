@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Document</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif; /* Menggunakan font yang umum */
+            font-size: 10px;
+        }
+        table {
+            border-collapse: collapse;
+        }
+        .penilaian-radio {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 13px;
+        height: 13px;
+        border: 2px solid #555;
+        border-radius: 50%;
+        position: relative;
+        }
+
+        .penilaian-radio:checked::before {
+        content: "";
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        width: 7px;
+        height: 7px;
+        background-color: #555;
+        border-radius: 50%;
+        }
+
+        .penilaian_radio_rekomendasi {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 9px;
+        height: 9px;
+        border: 2px solid #555;
+        border-radius: 50%;
+        position: relative;
+        vertical-align: bottom; /* 👈 penting */
+        margin-right: 6px;
+        }
+
+        .penilaian_radio_rekomendasi:checked::before {
+        content: "";
+        position: absolute;
+        top: -1px;
+        left: -1px;
+        width: 7px;
+        height: 7px;
+        background-color: #555;
+        border-radius: 50%;
+        }
+
+    .container {
+      position: relative;
+      width: 900px;
+      height: 500px;
+      border: 1px solid #000;
+    }
+    .custom-table {
+    border-collapse: collapse;
+    }
+
+.custom-table th,
+.custom-table td {
+  border: 1px solid black;
+  padding: 6px 8px;
+  text-align: center;
+}
+
+    .discipline {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 580px;
+    }
+    .discipline th:first-child,
+    .discipline td:first-child {
+      text-align: left;
+    }
+    .discipline caption {
+      caption-side: top;
+      text-align: left;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+    .score {
+      position: absolute;
+      top: 0;
+      right: 9px;
+      width: 270px;
+    }
+    .score table {
+      width: 100%;
+    }
+    .score td {
+      text-align: left;
+    }
+    .score td:last-child {
+      text-align: center;
+    }
+    .known {
+      position: absolute;
+      top: 180px;
+      right: 8px;
+      width: 270px;
+      height: 80px;
+      border: 1px solid black;
+      text-align: center;
+    }
+    .known p {
+      margin-top: 40px;
+    }
+    .recommendation {
+      position: absolute;
+      bottom: 158px;
+      left: 0;
+      width: 50%;
+      border-right: 1px solid black;
+      border-bottom: 1px solid black;
+      padding-left:9px;
+    }
+
+    .recommendation label {
+        display: block;
+        align-items: center;
+        margin: 4px 0;
+        }
+
+        @page { margin: 20px 20px 40px 20px; }
+    </style>
+</head>
+
+<body style="border: 1px solid;">
+    <table width="100%">
+        <thead>
+            <tr>
+                <td width="100px" style="vertical-align: middle; text-align: center;border-bottom: 1px solid;" colspan="2" rowspan="4">
+                    <img height="60" src="{{ public_path('assets/images/brand/nirwana logo.jpg') }}" alt="">
+                </td>
+                <td style="vertical-align: middle; font-size: 12pt; text-align: center; font-weight: 800;border-bottom: 1px solid; border-left: 1px solid;" colspan="8" rowspan="4">FORMULIR PENILAIAN KINERJA
+                    KARYAWAN</td>
+                <td colspan="2" class="border-left" style="border-left: 1px solid; font-size: 7.5pt; height: 18px;">Kode Dokumen</td>
+                <td colspan="3" class="border-right" style="border-left: 1px solid; font-size: 7.5pt;">: F.16.HR.NAG.P-03.F-01.01</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="border-left" style="border: 1px solid; font-size: 7.5pt; height: 18px;">Revisi</td>
+                <td colspan="3" class="border-right" style="border: 1px solid; font-size: 7.5pt;">: 1</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="border-left" style="border: 1px solid; font-size: 7.5pt; height: 18px;">Tanggal Revisi</td>
+                <td colspan="3" class="border-right" style="border: 1px solid; font-size: 7.5pt;">: </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="border-left" style="border: 1px solid;border-bottom: 1px solid; font-size: 7.5pt; height: 18px;">Tanggal Efektif</td>
+                <td colspan="3" class="border-right" style="border: 1px solid; border-bottom: 1px solid; font-size: 7.5pt;">: </td>
+            </tr>
+        </thead>
+    </table>
+    <table width="100%" style="border-bottom:1px solid black; border-top:0px; letter-spacing: 1px;">
+        <thead>
+            <tr>
+                <td style="height:2px;" colspan="6"></td>
+            </tr>
+            <tr>
+                <td style="padding-left: 10px;font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="20%">ID / NIK</td>
+                <td style="font-size:8pt;vertical-align:top;text-align:left;" width="2%">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">{{ $data_karyawan->nik }}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="2%">Bagian</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="2%">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">{{ $data_karyawan->sub_dept_name }}</td>
+            </tr>
+            <tr>
+                <td style="height:2px;" colspan="6"></td>
+            </tr>
+            <tr>
+                <td style="padding-left: 10px;font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="20%">Nama</td>
+                <td style="font-size:8pt;vertical-align:top;text-align:left;" width="2%">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">{{ $data_karyawan->employee_name }}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="2%">Jabatan</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="2%">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">{{ $data_karyawan->status_jabatan }}</td>
+            </tr>
+            <tr>
+                <td style="height:2px;" colspan="6"></td>
+            </tr>
+            <tr>
+                <td style="padding-left: 10px;font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="20%">Department</td>
+                <td style="font-size:8pt;vertical-align:top;text-align:left;" width="2%">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">{{ $data_karyawan->department_name }}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="10%">Dievaluasi Oleh</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="2%">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%"></td>
+            </tr>
+            <tr>
+                <td style="height:2px;" colspan="6"></td>
+            </tr>
+            <tr>
+                <td style="padding-left: 10px;font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="20%">Tanggal Masuk Kerja</td>
+                <td style="font-size:8pt;vertical-align:top;text-align:left;" width="2%">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">{{ \Carbon\Carbon::parse($data_karyawan->join_date)->translatedFormat('d F Y') }}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="10%">Periode Penilaian</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="2%">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%"> @if($data_penilaian && $data_penilaian->tgl_awal_kontrak && $data_penilaian->tgl_akhir_kontrak)
+                        {{ \Carbon\Carbon::parse($data_penilaian->tgl_awal_kontrak)->translatedFormat('d F Y') }} -
+                        {{ \Carbon\Carbon::parse($data_penilaian->tgl_akhir_kontrak)->translatedFormat('d F Y') }}
+                @else
+                {{ \Carbon\Carbon::parse($contract)->translatedFormat('d F Y') }} -
+                {{ \Carbon\Carbon::parse($contract_end)->translatedFormat('d F Y') }}
+                @endif</td>
+            </tr>
+            <tr>
+            <tr>
+                <td style="height:2px;" colspan="6"></td>
+            </tr>
+            <tr>
+                <td style="padding-left: 10px;font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;">Status Karyawan</td>
+                <td style="font-size:8pt;vertical-align:top">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;">{{$data_karyawan->status_aktif}}</td>
+                <td style="font-size:8pt;vertical-align:top"></td>
+                <td style="font-size:8pt;vertical-align:top"></td>
+                <td style="font-size:8pt;vertical-align:top"></td>
+            </tr>
+            <tr>
+                <td style="height:2px;" colspan="6"></td>
+            </tr>
+            <tr>
+                <td style="height:2px;" colspan="6"></td>
+            </tr>
+            <tr>
+                <td style="padding-left: 10px;font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left; font-weight:bold">A. Penilaian Kinerja</td>
+                <td style="font-size:8pt;vertical-align:top"></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;"></td>
+                <td style="font-size:8pt;vertical-align:top"></td>
+                <td style="font-size:8pt;vertical-align:top"></td>
+                <td style="font-size:8pt;vertical-align:top"></td>
+            </tr>
+        </thead>
+    </table>
+    <table style="width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 7.5pt;">
+        <thead>
+          <tr>
+            <th style=" padding: 5px; text-align: center; width: 69%;">
+              Uraian Tugas & Tanggung Jawaban
+            </th>
+            <th style=" padding: 5px; text-align: center; width: 25%;">
+              Target Pencapaian Kerja
+            </th>
+          </tr>
+        </thead>
+        <tbody style="font-family: sans-serif; font-size: 7.5pt;">
+          <tr>
+            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px;">{{$data_penilaian ? $data_penilaian->uraian_tugas_1 : ''}}</td>
+            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;">{{$data_penilaian ? $data_penilaian->target_pencapaian_1 : ''}}</td>
+          </tr>
+          <tr>
+            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px;">{{$data_penilaian ? $data_penilaian->uraian_tugas_2 : ''}}</td>
+            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;">{{$data_penilaian ? $data_penilaian->target_pencapaian_2 : ''}}</td>
+          </tr>
+          <tr>
+            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px;">{{$data_penilaian ? $data_penilaian->uraian_tugas_3 : ''}}</td>
+            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;">{{$data_penilaian ? $data_penilaian->target_pencapaian_3 : ''}}</td>
+          </tr>
+          <tr>
+            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px;">{{$data_penilaian ? $data_penilaian->uraian_tugas_4 : ''}}</td>
+            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;">{{$data_penilaian ? $data_penilaian->target_pencapaian_4 : ''}}</td>
+          </tr>
+          <tr>
+            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px; border-bottom: 1px solid #000;">{{$data_penilaian ? $data_penilaian->uraian_tugas_5 : ''}}</td>
+            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;  border-bottom: 1px solid #000;">{{$data_penilaian ? $data_penilaian->target_pencapaian_5 : ''}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: center; font-family: sans-serif; font-size: 7.5pt; font-weight: bold;">
+        <tr>
+            <td rowspan="2" style="width: 25%; font-weight: 800; vertical-align: middle; font-size:7.5pt; border-right: 1px solid #000; border-bottom: 1px solid #000;">
+                    Penilaian Kinerja
+            </td>
+            <td colspan="2" style="width: 20%; border-right: 1px solid #000; height:35px;">
+                <div style="font-weight: 800; font-size:7.5pt;">
+                    Kinerja dibawah standar, tidak efisien dan efektif, tidak konsisten
+                </div>
+            </td>
+            <td style="width: 10%; border-right: 1px solid #000;">
+                <div style="font-weight: 800; font-size:7.5pt;">
+                    Kinerja memenuhi standar,<br>efektif dan efisien
+                </div>
+            </td>
+            <td colspan="2" style="width: 20%;">
+                <div style="font-weight: 800; font-size:7.5pt;">
+                    Kinerja diatas standar, selalu mencari solusi dari setiap masalah
+                </div>
+            </td>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #000; background-color: #f8d7da; padding: 5px;">
+            10<br>
+            <input type="radio" name="nilai_kinerja" value="10" class="penilaian-radio" {{ $data_penilaian && $data_penilaian->nilai_kinerja == 10 ? 'checked' : '' }}>
+          </td>
+          <td style="border: 1px solid #000; background-color: #ffe5b4; padding: 5px;">
+            20<br>
+            <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="20" class="penilaian-radio" {{ $data_penilaian && $data_penilaian->nilai_kinerja == 20 ? 'checked' : '' }}>
+          </td>
+          <td style="border: 1px solid #000; background-color: #fff3cd; padding: 5px;">
+            30<br>
+            <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="30" class="penilaian-radio" {{ $data_penilaian && $data_penilaian->nilai_kinerja == 30 ? 'checked' : '' }}>
+          </td>
+          <td style="border: 1px solid #000; background-color: #d4edda; padding: 5px;">
+            40<br>
+            <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="40" class="penilaian-radio" {{ $data_penilaian && $data_penilaian->nilai_kinerja == 40 ? 'checked' : '' }}>
+          </td>
+          <td style="border: 1px solid #000; background-color: #c3e6cb; padding: 5px;">
+            50<br>
+            <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="50" class="penilaian-radio" {{ $data_penilaian && $data_penilaian->nilai_kinerja == 50 ? 'checked' : '' }}>
+          </td>
+        </tr>
+      </table>
+
+    <table width="100%" style="border-bottom:1px solid black; border-top:0px;">
+        <thead>
+            <tr>
+                <td style="padding-left: 10px; padding-top:3px; font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left; font-weight:bold; height:16px" colspan="6">B. Penilaian Kompetensi</td>
+            </tr>
+        </thead>
+    </table>
+    <table style="width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 7.5pt;">
+        <thead>
+          <tr>
+                <th rowspan="2" style="border-right: 1px solid black; padding: 8px; text-align: left; width:33.5%; vertical-align: middle; text-align: center;">Kompetensi</th>
+                <th style="border-bottom: 1px solid #000; border-right: 1px solid #000; width:13.5%;">
+                    Sangat di bawah Standard
+                </th>
+                <th style="border-bottom: 1px solid #000; border-right: 1px solid #000; width:13.5%;">
+                    Dibawah Standard
+                </th>
+                <th style="border-bottom: 1px solid #000; border-right: 1px solid #000; width:13.5%;">
+                    Standard
+                </th>
+                <th style="border-bottom: 1px solid #000; border-right: 1px solid #000; width:13.5%;">
+                    Diatas Standard
+                </th>
+                <th style="border-bottom: 1px solid #000; width:13.5%;">
+                    Sangat Diatas Standard
+                </th>
+          </tr>
+          <tr>
+            <th style="border: 1px solid black; height:20px; background-color: #f8d7da;">10</th>
+            <th style="border: 1px solid black; height:20px; background-color: #ffe5b4;">20</th>
+            <th style="border: 1px solid black; height:20px; background-color: #fff3cd;">30</th>
+            <th style="border: 1px solid black; height:20px; background-color: #d4edda;">40</th>
+            <th style="border: 1px solid black; height:20px; background-color: #c3e6cb;">50</th>
+          </tr>
+        </thead>
+        <tbody>
+        @php
+            $kompetensiList = [
+                "tanggung_jawab_tugas" => "Tanggung jawab terhadap tugas yang diberikan",
+                "inisiatif_kerjasama" => "Inisiatif dan Kerjasama",
+                "akurasi_pekerjaan" => "Akurasi dalam pekerjaan",
+                "kemauan_kegigihan" => "Kemauan dan Kegigihan dalam mencapai tujuan",
+                "penyampaian_informasi" => "Penyampaian dan Penerimaan informasi",
+                "attitude_sikap_kerja" => "Attitude / Sikap Kerja"
+            ];
+        @endphp
+
+        @foreach ($kompetensiList as $index => $kompetensi)
+
+        <tr>
+            <td class="text-start"
+                style="line-height: 1.2; padding: 6px; black;border: 1px solid black; border-left:none;">
+                {{ $kompetensi }}
+            </td>
+
+            @foreach ([10, 20, 30, 40, 50] as $nilai)
+                <td style="text-align: center; border: 1px solid black;">
+                    <input type="radio" class="penilaian-radio" name="kompetensi[{{ $index }}]" value="{{ $nilai }}" {{ isset($data_penilaian[$index]) && $data_penilaian[$index] == $nilai ? 'checked' : '' }}
+                    >
+                </td>
+            @endforeach
+        </tr>
+        @endforeach
+          {{-- <tr>
+            <td style="border-top: 1px solid black; padding: 6px;">Tanggung jawab terhadap tugas yang diberikan</td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row1" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row1" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row1" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row1" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row1" class="penilaian-radio"></td>
+          </tr>
+          <tr>
+            <td style="border-top: 1px solid black; padding: 6px;">Inisiatif dan Kerjasama</td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row2" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row2" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row2" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row2" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row2" class="penilaian-radio"></td>
+          </tr>
+          <tr>
+            <td style="border-top: 1px solid black; padding: 6px;">Akurasi dalam pekerjaan</td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row3" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row3" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row3" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row3" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row3" class="penilaian-radio"></td>
+          </tr>
+          <tr>
+            <td style="border-top: 1px solid black; padding: 6px;">Kemauan dan Kegigihan dalam mencapai tujuan</td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row4" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row4" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row4" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row4" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row4" class="penilaian-radio"></td>
+          </tr>
+          <tr>
+            <td style="border-top: 1px solid black; padding: 6px;">Penyampaian dan Penerimaan informasi</td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row5" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row5" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row5" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row5" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row5" class="penilaian-radio"></td>
+          </tr>
+          <tr>
+            <td style="border-top: 1px solid black; border-bottom: 1px solid black; padding: 6px;">Attitude / Sikap Kerja</td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row6" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row6" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row6" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row6" class="penilaian-radio"></td>
+            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row6" class="penilaian-radio"></td>
+          </tr> --}}
+        </tbody>
+    </table>
+    <table width="100%" style="border-bottom:1px solid black; border-top:0px;">
+        <thead>
+            <tr>
+                <td style="padding-right: 10px; padding-top:3px; font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:right; font-weight:bold; height:16px" colspan="6">Nilai : Total dari semua nilai dibagi 6</td>
+            </tr>
+        </thead>
+    </table>
+    <div class="container custom-table" style="border:none;">
+        <!-- Penilaian Kedisiplinan -->
+        <table class="discipline">
+          <caption style="padding-left: 10px; padding-top:3px;">C. Penilaian Kedisiplinan (Diisi Oleh Bagian HRD)</caption>
+          <thead>
+            <tr>
+              <th style="border-left:none;">Kategori Pengurangan</th>
+              <th style="border-left:none;">Pengurangan</th>
+              <th style="border-left:none;">Akumulasi Kejadian</th>
+              <th style="border-left:none;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+                <td style="border-left:none;">Surat Peringatan 3</td>
+                <td style="border-left: none;">6</td>
+                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->kejadian['sp3_kali'] : ''}}</td>
+                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->total['sp3_kali'] : ''}}</td>
+            </tr>
+            <tr>
+                <td style="border-left:none;">Surat Peringatan 2</td>
+                <td style="border-left: none;">4</td>
+                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->kejadian['sp2_kali'] : ''}}</td>
+                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->total['sp2_kali'] : ''}}</td>
+            </tr>
+            <tr>
+                <td style="border-left:none;">Surat Peringatan 1</td>
+                <td style="border-left: none;">2</td>
+                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->kejadian['sp1_kali'] : ''}}</td>
+                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->total['sp1_kali'] : ''}}</td>
+            </tr>
+            <tr>
+                <td style="border-left:none;">Kecelakaan Kerja Karena Kelalaian</td>
+                <td style="border-left: none;">2</td>
+                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->kejadian['kecelakaan_kali'] : ''}}</td>
+                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->total['kecelakaan_kali'] : ''}}</td>
+            </tr>
+            <tr>
+                <td style="border-left:none;">Mangkir</td>
+                <td style="border-left: none;">1</td>
+                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->kejadian['mangkir_kali'] : ''}}</td>
+                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->total['mangkir_kali'] : ''}}</td>
+            </tr>
+            <tr>
+                <td style="border-left:none;">Ijin</td>
+                <td style="border-left: none;">0.5</td>
+                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->kejadian['ijin_kali'] : ''}}</td>
+                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->total['ijin_kali'] : ''}}</td>
+            </tr>
+            <tr>
+                <td colspan="3" style="text-align: center; font-weight: bold; border-left:none;">Total Pengurangan</td>
+                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->total_pengurangan : ''}}</td>
+            </tr>
+            {{-- <tr>
+                <td style="border-left:none;">Surat Peringatan 3</td>
+                <td>6</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            <tr><td style="border-left:none;">Surat Peringatan 2</td><td>4</td><td>0</td><td>0</td></tr>
+            <tr><td style="border-left:none;">Surat Peringatan 1</td><td>2</td><td>0</td><td>0</td></tr>
+            <tr><td style="border-left:none;">Kecelakaan Kerja Karena Kelalaian</td><td>2</td><td>0</td><td>0</td></tr>
+            <tr><td style="border-left:none;">Mangkir</td><td>1</td><td>0</td><td>0</td></tr>
+            <tr><td style="border-left:none;">Ijin</td><td>0.5</td><td>0</td><td>0</td></tr>
+            <tr><td colspan="3" style="text-align: right; font-weight: bold; border-left:none;">Total Pengurangan</td><td>0</td></tr> --}}
+          </tbody>
+        </table>
+
+        <!-- Nilai Akhir -->
+        <div class="score" style="padding-top: 20px; padding-right: 0px;">
+          <table>
+            <tr>
+                <td colspan="2" style="border: 1px solid #000; border-bottom: 0px solid #000; border-right: 0px solid #000; text-align: center; height:17px; line-height:1">Nilai Akhir</td>
+            </tr>
+            <tr><td style="width:50%">Penilaian Kinerja</td><td>{{$data_penilaian ? $data_penilaian->nilai_kinerja : ''}}</td></tr>
+            <tr><td>Penilaian Kompeten</td><td>{{$data_penilaian ? $data_penilaian->rata_rata_kompetensi : ''}}</td></tr>
+            <tr><td>Penilaian Kedisiplinan</td><td>{{$data_penilaian ? $data_penilaian->total_pengurangan : ''}}</td></tr>
+            <tr><td style="font-weight: bold;">Nilai Akhir</td><td style="font-weight: bold;">{{$data_penilaian ? $data_penilaian->nilai_akhir : ''}}</td></tr>
+          </table>
+        </div>
+
+        <!-- Diketahui -->
+
+        <table class="table table-bordered m-0 p-0 known" style="border-right: none;">
+            <tbody>
+                <tr>
+                    <td colspan="2" style=" border-bottom:none; text-align: center; height:13px; line-height:1;border-right: none;">Diketahui</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border-bottom:none; height: 60px;border-right:none;"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style=" text-align: center; height:25px; line-height:1;border-right:none;">{{$data_karyawan->employee_name}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Rekomendasi -->
+        <div class="recommendation">
+          <strong>D. Rekomendasi Tindak Lanjut</strong>
+          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $data_penilaian ? $data_penilaian->rekomendasi_tindak_lanjut == 'perpanjang' ? 'checked' : '' : ''}} name="rekomendasi" value="perpanjang" id="rekomendasi_perpanjang_kontrak"> Perpanjangan Kontrak {{ $data_penilaian ? $data_penilaian->perpanjang_bulan : '___________'}} Bulan</label>
+          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $data_penilaian ? $data_penilaian->rekomendasi_tindak_lanjut == 'phk' ? 'checked' : '' : ''}} name="rekomendasi" value="phk" id="rekomendasi_phk"> Tidak Perpanjang Kontrak / PHK</label>
+          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $data_penilaian ? $data_penilaian->rekomendasi_tindak_lanjut == 'demosi' ? 'checked' : '' : ''}} name="rekomendasi" value="demosi" id="rekomendasi_demosi"> Demosi</label>
+          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $data_penilaian ? $data_penilaian->rekomendasi_tindak_lanjut == 'promosi' ? 'checked' : '' : ''}} name="rekomendasi" value="promosi" id="rekomendasi_promosi"> Promosi</label>
+          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $data_penilaian ? $data_penilaian->rekomendasi_tindak_lanjut == 'training' ? 'checked' : '' : ''}} name="rekomendasi" value="training" id="rekomendasi_training"> Training / Pengembangan, Sebutkan Judul / Tujuan {{$data_penilaian && ($data_penilaian->judul_training ? $data_penilaian->judul_training : '...........................................')}}</label>
+        </div>
+    </div>
+    <table width="98.2%" style="position: absolute; bottom: 8px;left: 8px;">
+        <thead>
+            <tr>
+                <td width="25%" style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align: center; height:20px; padding-top:8px;" >Penilai</td>
+                <td width="25%" style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align: center; height:20px; padding-top:8px;" >Diketahui</td>
+                <td width="25%" style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align: center; height:20px; padding-top:8px;">Diketahui</td>
+                <td width="25%" style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black;text-align: center; height:20px; padding-top:8px;border-right:none">Disetujui</td>
+            </tr>
+            <tr>
+                <td style="height: 85px;border:1px solid black;border-right:none;"></td>
+                <td style="height: 85px;border:1px solid black;"></td>
+                <td style="border:1px solid black;"></td>
+                <td style="border:1px solid black;border-right:none;"></td>
+            </tr>
+            <tr>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black; text-align: center; height:25px; line-height:1; padding-top:10px;"> {{ $data_penilaian ? $data_penilaian->penilai : '' }}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black; text-align: center; height:25px; line-height:1; padding-top:10px;">Chief / Manager</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black; text-align: center; height:25px; line-height:1; padding-top:10px;">HRD</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black; text-align: center; height:25px; line-height:1; padding-top:10px;">General Affair</td>
+            </tr>
+        </thead>
+    </table>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+             const nilaiKinerja = "{{ $data_penilaian && $data_penilaian->nilai_kinerja ? $data_penilaian->nilai_kinerja : 0 }}";
+             const data_penilaian = {!! json_encode($data_penilaian ?? []) !!};
+
+
+             $('input[name="nilai_kinerja"]').each(function () {
+                 if ($(this).val() === nilaiKinerja) {
+                     $(this).prop('checked', true);
+                 }
+             });
+
+             const radio = $('input[name="rekomendasi"][value="' + data_penilaian.rekomendasi_tindak_lanjut + '"]');
+             radio.prop('checked', true);
+
+
+             const kompetensiFields = [
+                     "tanggung_jawab_tugas",
+                     "inisiatif_kerjasama",
+                     "akurasi_pekerjaan",
+                     "kemauan_kegigihan",
+                     "penyampaian_informasi",
+                     "attitude_sikap_kerja"
+                 ];
+                 kompetensiFields.forEach(function(field) {
+                     $('input[name="kompetensi[' + field + ']"]').each(function () {
+                         if ($(this).val() == data_penilaian[field]) {
+                             $(this).prop('checked', true);
+                         } else {
+                             $(this).prop('checked', false);
+                         }
+                     });
+                 });
+                 if (data_penilaian.kejadian) {
+                     Object.entries(data_penilaian.kejadian).forEach(([key, val]) => {
+                         $('p[name="kejadian[' + key + ']"]').text(val);
+                     });
+                 }
+                 if (data_penilaian.total) {
+                     Object.entries(data_penilaian.total).forEach(([key, val]) => {
+                         $('p[name="total[' + key + ']"]').text(val);
+                     });
+                 }
+         });
+     </script>
+</body>
+</html>

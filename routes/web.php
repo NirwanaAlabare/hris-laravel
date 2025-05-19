@@ -333,6 +333,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('hrd/export_excel_kontrak',['as'=>'hris.hrd.export_excel_kontrak','uses'=>'HRDController@export_excel_kontrak']);
     Route::get('hrd/print_pdf_kontrak',['as'=>'hris.hrd.print_pdf_kontrak','uses'=>'HRDController@print_pdf_kontrak']);
     Route::post('hrd/print_all_pdf_kontrak',['as'=>'hris.hrd.print_all_pdf_kontrak','uses'=>'HRDController@print_all_pdf_kontrak']);
+    Route::post('hrd/print_selected_form_penilaian',['as'=>'hris.hrd.print_selected_form_penilaian','uses'=>'PenilaianKinerjaStaffController@print_selected_form_penilaian']);
     Route::get('hrd/print_pdf_kontrak_2',['as'=>'hris.hrd.print_pdf_kontrak_2','uses'=>'HRDController@print_pdf_kontrak_2']);
     Route::get('hrd/print_pdf_kompensasi_pkwt',['as'=>'hris.hrd.print_pdf_kompensasi_pkwt','uses'=>'HRDController@print_pdf_kompensasi_pkwt']);
     Route::post('hrd/ajax_getemployeeidbyfilter',['as'=>'hris.hrd.ajax_getemployeeidbyfilter','uses'=>'HRDController@ajax_getemployeeidbyfilter']);
