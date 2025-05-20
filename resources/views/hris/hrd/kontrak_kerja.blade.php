@@ -175,7 +175,7 @@
                                     <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" onclick="export_excel_format_penilaian_nonstaff()" id="export_excel_format_penilaian_nonstaff" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Format Penilaian Non Staff</button>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-app btn-primary mr-0 ml-1 mt-0 mb-0" style="visibility: hidden" id="print_form_penilaian" style="font-size:11pt"><i class="fa fa-file-pdf-o" style="font-size:11pt"></i> Print Form Penilaian (PDF)</button>
+                                    <button type="button" class="btn btn-primary mr-0 ml-1 mt-0 mb-0" style="visibility: hidden" id="print_form_penilaian" style="font-size:11pt"><i class="fa fa-file-pdf-o" style="font-size:11pt"></i> Print Form Penilaian (PDF)</button>
                                 </td>
                                 <td>
                                     <button class="btn btn-danger" id="print_kontrak_kerja" style="visibility: hidden"><span class="fa fa-file-pdf-o"></span> Print Checked Employee</button>
