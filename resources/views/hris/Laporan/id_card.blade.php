@@ -8,12 +8,15 @@
             </tr><tr>
         @endif
         <td>
+            @php
+                $poto_profil = $value->nik . ' ' . $value->employee_name . '.png';
+            @endphp
             <div class="parent">
                 <img class="image1" src="{{ public_path('assets/images/brand/group.png') }}" width="204">
                 @if (file_exists (public_path ('/storage/app/public/images/'.$value->nik.' '.$value->employee_name.'.png')))
-                <img class="image2" src="{{ public_path('storage/app/public/images/'.$value->nik.' '.$value->employee_name.'.png') }}" width="130"/>
+                    <img class="image2" src="http://10.10.5.111/hris/public/storage/app/public/images/{{ $poto_profil }}" width="130"/>
                 @else
-                <img class="image2" src="{{ public_path('storage/app/public/images/'.$value->nik.' '.$value->employee_name.'.jpg') }}" width="130"/>
+                    <img class="image2" src="http://10.10.5.111/hris/public/storage/app/public/images/{{ $poto_profil }}" width="130"/>
                 @endif
                 <img class="image3" src="{{ public_path('assets/images/brand/foreground-test.png') }}" width="203">
                     <h6 class="text1">{{$value->nik}}</h6>
@@ -25,7 +28,7 @@
 
                                 if (count($nameParts) > 2) {
                                     $formattedName = $nameParts[0] . ' ' . $nameParts[1];
-        
+
                                     for ($i = 2; $i < count($nameParts); $i++) {
                                         $formattedName .= ' ' . substr($nameParts[$i], 0, 1) . '.';
                                     }
@@ -53,22 +56,22 @@
     }
     .image1 {
         position: relative;
-        top: 80;
+        top: 0px;
         left: 5;
     }
     .image2 {
         position: absolute;
-        bottom: 469px;
+        bottom: 65px;
         left: 8px;
     }
     .image3 {
         position: absolute;
-        top: 401px;
-        left: 7px;
+        top: 425px;
+        left: 6px;
     }
     .text1 {
         position: absolute;
-        top: 460px;
+        top: 485px;
         left: 152px;
         font-weight: bold;
         font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
@@ -76,17 +79,17 @@
     }
     .text2 {
         position: absolute;
-        width: 100px; 
+        width: 100px;
         text-align: right;
-        top: 499px;
-        left: 108px;
+        top: 525px;
+        left: 100px;
         font-weight: bold;
         font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
         font-size: 7pt;
         color: white;
         white-space: normal;
-        overflow-wrap: break-word; 
-        word-wrap: break-word; 
+        overflow-wrap: break-word;
+        word-wrap: break-word;
     }
 
 </style>
