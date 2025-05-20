@@ -72,8 +72,6 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         return $date->toDateString();
     }
 
-
-
     private function getHolidays($year)
     {
         $response = Http::get("https://api-harilibur.vercel.app/api?year={$year}");
@@ -82,7 +80,6 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         }
         return [];
     }
-
 
     public function get_employee_contract_staff(){
         $loggedAdmin = Auth::guard('admin')->user();
@@ -570,8 +567,6 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         }
         $pdf = SnappyPDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_custom',['data_penilaian'=>$data_penilaian,'data_karyawan'=>$data_karyawan,'contract'=>$contract,'contract_end'=>$contract_end]);
         return $pdf->stream('laporan-pegawai.pdf');
-
-        // return view('hris/hrd/export_nilai_kinerja_karyawan_pdf', compact('data_penilaian','data_karyawan'));
     }
 
     public function import_penilaian_kinerja_staff(){
