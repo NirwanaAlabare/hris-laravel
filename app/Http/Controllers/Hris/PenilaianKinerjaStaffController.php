@@ -26,6 +26,7 @@ use App\Models\DepartmentAll;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Http;
 use PDF;
+use SnappyPDF;
 
 
 class PenilaianKinerjaStaffController extends AdminBaseController
@@ -567,7 +568,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             $data_penilaian->total = $total;
             $data_penilaian->total_pengurangan = $total_pengurangan;
         }
-        $pdf = PDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_custom',['data_penilaian'=>$data_penilaian,'data_karyawan'=>$data_karyawan,'contract'=>$contract,'contract_end'=>$contract_end]);
+        $pdf = SnappyPDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_custom',['data_penilaian'=>$data_penilaian,'data_karyawan'=>$data_karyawan,'contract'=>$contract,'contract_end'=>$contract_end]);
         return $pdf->stream('laporan-pegawai.pdf');
 
         // return view('hris/hrd/export_nilai_kinerja_karyawan_pdf', compact('data_penilaian','data_karyawan'));
@@ -767,9 +768,10 @@ class PenilaianKinerjaStaffController extends AdminBaseController
     }
 
     public function print_selected_form_penilaian(){
+        $enroll_id = request()->enroll_id;
         $inDateRangeContract='';
+        $inEnrollIds='';
         $data_penilaian = collect(); // Default kosong
-
         if(request()->date_range){
             $daterange1 = explode(" s/d ", request()->date_range);
             $tanggalMulai = date('Y-m-d', strtotime($daterange1[0]));
@@ -792,6 +794,11 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                 ->where('tgl_akhir_kontrak', $tanggalSampai)
                 ->get()
                 ->keyBy('enroll_id'); // Group berdasarkan enroll_id supaya lebih mudah digabung nanti
+        }
+        if ($enrollIds = request()->enroll_id) {
+            // Pastikan ini array dan aman digunakan
+            $escapedIds = implode(',', array_map('intval', $enrollIds)); // sanitize ID to integer
+            $inEnrollIds = "AND z.enroll_id IN ($escapedIds)";
         }
 
         // Jalankan raw SQL
@@ -851,6 +858,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             ) z ON y.enroll_id = z.enroll_id
             WHERE z.enroll_id IS NOT NULL
                 $inDateRangeContract
+                $inEnrollIds
             AND z.status_aktif = 'AKTIF'
             GROUP BY z.enroll_id
             ORDER BY z.enroll_id

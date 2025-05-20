@@ -1680,11 +1680,21 @@
         form.appendTo('body').submit().remove();
     });
     $('#print_form_penilaian').on('click', function () {
+
+        var enroll_id = checkedEmployeeArr;
         // Buat form secara dinamis
         var form = $('<form>', {
             action: 'print_selected_form_penilaian', // endpoint tanpa query string
             method: 'POST',
             target: '_blank' // ini yang akan buka tab baru
+        });
+
+        enroll_id.forEach(function(id) {
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'enroll_id[]',
+                value: id
+            }).appendTo(form);
         });
 
         // Tambahkan no_form
