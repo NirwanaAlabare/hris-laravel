@@ -71,11 +71,12 @@
     }
     .text1 {
         position: absolute;
-        top: 485px;
+        top: 490px;
         left: 152px;
-        font-weight: bold;
-        font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-        font-size: 7pt;
+        font-weight: 600;
+        font-family:Arial, Helvetica, sans-serif;
+        font-size: 7.5px;
+        letter-spacing: 1px;
     }
     .text2 {
         position: absolute;
@@ -83,13 +84,10 @@
         text-align: right;
         top: 525px;
         left: 100px;
-        font-weight: bold;
-        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-        font-size: 7pt;
+        font-size: 7.5px;
+        font-family:Arial, Helvetica, sans-serif;
+        font-weight:600;
         color: white;
-        white-space: normal;
-        overflow-wrap: break-word;
-        word-wrap: break-word;
     }
 
 </style>
