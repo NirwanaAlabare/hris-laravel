@@ -3610,97 +3610,89 @@ class MdAbsenHadirController extends AdminBaseController
 
     public function ajax_getdashkehadiran()
     {
-        $query =  DB::select(DB::raw("
+    $query = DB::select(DB::raw("
         SELECT
-            a.tanggal_berjalan tanggal_hari_ini,
-            a.kode_hari,
-            a.nama_hari,
-            FORMAT(IFNULL(count(a.absen_masuk_kerja), 0), 0) jumlah_karyawan_masuk,
-            count(a.absen_masuk_kerja) jumlah_karyawan_masuk_number,
-            count(b.enroll_id) total_karyawan_number,
-            FORMAT(IFNULL(count(b.enroll_id), 0), 0) total_karyawan_aktif,
-            FORMAT(IFNULL(ROUND((count(a.absen_masuk_kerja) / count(b.enroll_id)) * 100, 2), 0), 2) persentase_kehadiran,
-            FORMAT(IFNULL(100 - ROUND((count(a.absen_masuk_kerja) / count(b.enroll_id)) * 100, 2), 0), 2) persentase_ketidakhadiran,
-            SUM(c.jumlah_staff) jumlah_staff_number,
-            SUM(d.jumlah_nonstaff) jumlah_nonstaff_number,
-            FORMAT(IFNULL(SUM(c.jumlah_staff), 0), 0) jumlah_staff,
-            FORMAT(IFNULL(SUM(d.jumlah_nonstaff), 0), 0) jumlah_nonstaff,
-            FORMAT(IFNULL(SUM(e.absen_tl), 0), 0) absen_tl_hari_kemarin,
-            FORMAT(IFNULL(SUM(f.absen_m_weekly), 0), 0) absen_m_weekly,
-            FORMAT(IFNULL(SUM(g.absen_m_hari_ini), 0), 0) absen_m_hari_ini
-        FROM
-            master_data_absen_kehadiran a,
-            employee_atribut b
-            LEFT JOIN (
-                SELECT
-                    enroll_id,
-                    COUNT(enroll_id) jumlah_staff
-                FROM
-                    employee_atribut
-                WHERE
-                    (tanggal_resign is NULL OR tanggal_resign <> '0000-00-00' OR enroll_id is not null)
-                    AND status_staff = 'STAFF'
-                GROUP BY
-                    enroll_id
-            ) c ON (b.enroll_id = c.enroll_id)
-            LEFT JOIN (
-                SELECT
-                    enroll_id,
-                    COUNT(enroll_id) jumlah_nonstaff
-                FROM
-                    employee_atribut
-                WHERE
-                    (tanggal_resign is NULL OR tanggal_resign <> '0000-00-00' OR enroll_id is not null)
-                    AND status_staff = 'NON STAFF'
-                GROUP BY
-                    enroll_id
-            ) d ON (b.enroll_id = d.enroll_id)
-            LEFT JOIN (
-                SELECT
-                    enroll_id,
-                    COUNT(status_absen) absen_tl
-                FROM
-                    master_data_absen_kehadiran
-                WHERE
-                    status_absen = 'TL'
-                    AND tanggal_berjalan = SUBSTR(DATE_SUB(NOW(), INTERVAL 1 DAY), 1, 10)
-                GROUP BY
-                    enroll_id
-            ) e ON (b.enroll_id = e.enroll_id)
-            LEFT JOIN (
-                SELECT
-                    enroll_id,
-                    COUNT(status_absen) absen_m_weekly
-                FROM
-                    master_data_absen_kehadiran
-                WHERE
-                    status_absen = 'M'
-                    AND tanggal_berjalan BETWEEN SUBSTR(DATE_SUB(NOW(), INTERVAL 1 WEEK), 1, 10) AND SUBSTR(NOW(), 1,10)
-                GROUP BY
-                    enroll_id
-            ) f ON (b.enroll_id = f.enroll_id)
-            LEFT JOIN (
-                SELECT
-                    enroll_id,
-                    COUNT(status_absen) absen_m_hari_ini
-                FROM
-                    master_data_absen_kehadiran
-                WHERE
-                    status_absen = 'M'
-                    AND tanggal_berjalan = SUBSTR(NOW(), 1,10)
-                GROUP BY
-                    enroll_id
-            ) g ON (b.enroll_id = g.enroll_id)
-        WHERE
-            a.tanggal_berjalan = SUBSTR(NOW(), 1, 10)
-            and a.enroll_id = b.enroll_id
-            AND (a.absen_masuk_kerja is not null OR b.tanggal_resign is NULL OR b.tanggal_resign <> '0000-00-00' OR b.enroll_id is not null)
-        GROUP BY
-            a.tanggal_berjalan,
-            a.kode_hari,
-            a.nama_hari
-        "));
+        CURRENT_DATE() AS tanggal_hari_ini,
+        DAYOFWEEK(CURRENT_DATE()) AS kode_hari,
+        DAYNAME(CURRENT_DATE()) AS nama_hari,
 
+        FORMAT(COUNT(DISTINCT IF(a.absen_masuk_kerja IS NOT NULL, b.enroll_id, NULL)), 0) AS jumlah_karyawan_masuk,
+        COUNT(DISTINCT IF(a.absen_masuk_kerja IS NOT NULL, b.enroll_id, NULL)) AS jumlah_karyawan_masuk_number,
+
+        COUNT(DISTINCT b.enroll_id) AS total_karyawan_number,
+        FORMAT(COUNT(DISTINCT b.enroll_id), 0) AS total_karyawan_aktif,
+
+        FORMAT(
+            IFNULL(
+                ROUND(
+                    (COUNT(DISTINCT IF(a.absen_masuk_kerja IS NOT NULL, b.enroll_id, NULL)) / COUNT(DISTINCT b.enroll_id)) * 100,
+                    2
+                ),
+            0), 2
+        ) AS persentase_kehadiran,
+
+        FORMAT(
+            IFNULL(
+                100 - ROUND(
+                    (COUNT(DISTINCT IF(a.absen_masuk_kerja IS NOT NULL, b.enroll_id, NULL)) / COUNT(DISTINCT b.enroll_id)) * 100,
+                    2
+                ),
+            0), 2
+        ) AS persentase_ketidakhadiran,
+
+        SUM(c.jumlah_staff) AS jumlah_staff_number,
+        SUM(d.jumlah_nonstaff) AS jumlah_nonstaff_number,
+        FORMAT(IFNULL(SUM(c.jumlah_staff), 0), 0) AS jumlah_staff,
+        FORMAT(IFNULL(SUM(d.jumlah_nonstaff), 0), 0) AS jumlah_nonstaff,
+
+        FORMAT(IFNULL(SUM(e.absen_tl), 0), 0) AS absen_tl_hari_kemarin,
+        FORMAT(IFNULL(SUM(f.absen_m_weekly), 0), 0) AS absen_m_weekly,
+        FORMAT(IFNULL(SUM(g.absen_m_hari_ini), 0), 0) AS absen_m_hari_ini
+
+    FROM master_data_absen_kehadiran a
+    JOIN employee_atribut b
+        ON a.enroll_id = b.enroll_id AND b.status_aktif = 'AKTIF'
+
+    LEFT JOIN (
+        SELECT enroll_id, COUNT(*) AS jumlah_staff
+        FROM employee_atribut
+        WHERE status_staff = 'STAFF' AND status_aktif = 'AKTIF'
+        GROUP BY enroll_id
+    ) c ON b.enroll_id = c.enroll_id
+
+    LEFT JOIN (
+        SELECT enroll_id, COUNT(*) AS jumlah_nonstaff
+        FROM employee_atribut
+        WHERE status_staff = 'NON STAFF' AND status_aktif = 'AKTIF'
+        GROUP BY enroll_id
+    ) d ON b.enroll_id = d.enroll_id
+
+    LEFT JOIN (
+        SELECT enroll_id, COUNT(*) AS absen_tl
+        FROM master_data_absen_kehadiran
+        WHERE status_absen = 'TL' AND tanggal_berjalan = CURRENT_DATE() - INTERVAL 1 DAY
+        GROUP BY enroll_id
+    ) e ON b.enroll_id = e.enroll_id
+
+    LEFT JOIN (
+        SELECT enroll_id, COUNT(*) AS absen_m_weekly
+        FROM master_data_absen_kehadiran
+        WHERE status_absen = 'M'
+        AND tanggal_berjalan BETWEEN CURRENT_DATE() - INTERVAL 7 DAY AND CURRENT_DATE()
+        GROUP BY enroll_id
+    ) f ON b.enroll_id = f.enroll_id
+
+    LEFT JOIN (
+        SELECT enroll_id, COUNT(*) AS absen_m_hari_ini
+        FROM master_data_absen_kehadiran
+        WHERE status_absen = 'M' AND tanggal_berjalan = CURRENT_DATE()
+        GROUP BY enroll_id
+    ) g ON b.enroll_id = g.enroll_id
+
+    WHERE a.tanggal_berjalan = CURRENT_DATE()
+    AND (a.absen_masuk_kerja IS NOT NULL OR b.tanggal_resign IS NULL OR b.tanggal_resign <> '0000-00-00')
+    GROUP BY CURRENT_DATE(), DAYOFWEEK(CURRENT_DATE()), DAYNAME(CURRENT_DATE());
+    "));
         return $query;
     }
 
