@@ -941,6 +941,7 @@ class MdAbsenHadirController extends AdminBaseController
             }
 
             $data = array();
+            // dd($query);
             if(!empty($query))
             {
                 foreach ($query as $q)
@@ -2270,7 +2271,7 @@ class MdAbsenHadirController extends AdminBaseController
                     $status_staff=$v->employee_atribut->status_staff;
                     $durasi_kerja=date_diff(date_create($jadwal_in),date_create($jadwal_out));
                     $durasi_kerja_menit=$durasi_kerja->i +($durasi_kerja->h*60);
-
+                    dd($jadwal_in);
                     $DT = date_diff(date_create($jadwal_in),date_create($absen_in));
                     $PC = date_diff(date_create($jadwal_out),date_create($absen_out));
                     if($v->tanggal_berjalan==$today){
@@ -2414,6 +2415,7 @@ class MdAbsenHadirController extends AdminBaseController
                                 }
                                 $total_DT = $total_DT < 480 ? $total_DT : 480;
                             }
+
                         }else{
                             $total_DT=0;
                         }
@@ -2475,11 +2477,13 @@ class MdAbsenHadirController extends AdminBaseController
                     }else{
                         if( $jadwal_in!=null && $absen_in!=null && $absen_in>$jadwal_in && ($v->status_absen==null || $v->status_absen=='IKS')){
                             $total_DT1 = $DT->i +($DT->h*60);
+                            dd($DT);
                             if($status_staff=='STAFF'){
                                 if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
                                     if($jadwal_in=='07:00:00'){
                                         if($absen_in >'13:00:00'){
                                             $total_DT=$total_DT1-60;
+
                                         }
                                         else if($absen_in>'07:00:00' && $absen_in<'07:11:00'){
                                             $total_DT=0;
@@ -2488,6 +2492,7 @@ class MdAbsenHadirController extends AdminBaseController
                                             $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
                                             $selisih_menit = round($selisih_menit / 60);
                                             $total_DT=$total_DT1-$selisih_menit;
+
                                         }
                                         else {
                                             $total_DT=$total_DT1;
@@ -2503,11 +2508,13 @@ class MdAbsenHadirController extends AdminBaseController
                                             $selisih_menit = strtotime($absen_in) - strtotime('12:00:00');
                                             $selisih_menit = round($selisih_menit / 60);
                                             $total_DT=$total_DT1-$selisih_menit;
+
                                         }
                                         else {
                                             $total_DT=$total_DT1;
                                         }
                                     }
+
                                 }else if($jadwal_in=='05:30:00'){
                                     if($absen_in >'10:30:00'){
                                         $total_DT=$total_DT1-60;
@@ -2616,6 +2623,7 @@ class MdAbsenHadirController extends AdminBaseController
                         }else{
                             $total_DT=0;
                         }
+
                         if($absen_out<$jadwal_in && $absen_out<$absen_in){
                             $total_PC=0;
                         }else if( $jadwal_out !=null && $absen_out !=null && $absen_out<$jadwal_out && ($v->status_absen==null || $v->status_absen=="IKS")){
@@ -2671,6 +2679,7 @@ class MdAbsenHadirController extends AdminBaseController
                         }else{
                             $total_PC=0;
                         }
+
                     }
                     $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
                     if( $absen_in!=null && $absen_out !=null){
@@ -2679,7 +2688,6 @@ class MdAbsenHadirController extends AdminBaseController
                     else{
                         $jumlah_absen_menit_kerja=0;
                     }
-
                     $jumlah_menit_absen_dtpc=$total_DT+$total_PC;
                     $data_update=[
                         'jumlah_menit_absen_dtpc'=>$jumlah_menit_absen_dtpc,
@@ -3608,9 +3616,13 @@ class MdAbsenHadirController extends AdminBaseController
             a.kode_hari,
             a.nama_hari,
             FORMAT(IFNULL(count(a.absen_masuk_kerja), 0), 0) jumlah_karyawan_masuk,
+            count(a.absen_masuk_kerja) jumlah_karyawan_masuk_number,
+            count(b.enroll_id) total_karyawan_number,
             FORMAT(IFNULL(count(b.enroll_id), 0), 0) total_karyawan_aktif,
             FORMAT(IFNULL(ROUND((count(a.absen_masuk_kerja) / count(b.enroll_id)) * 100, 2), 0), 2) persentase_kehadiran,
             FORMAT(IFNULL(100 - ROUND((count(a.absen_masuk_kerja) / count(b.enroll_id)) * 100, 2), 0), 2) persentase_ketidakhadiran,
+            SUM(c.jumlah_staff) jumlah_staff_number,
+            SUM(d.jumlah_nonstaff) jumlah_nonstaff_number,
             FORMAT(IFNULL(SUM(c.jumlah_staff), 0), 0) jumlah_staff,
             FORMAT(IFNULL(SUM(d.jumlah_nonstaff), 0), 0) jumlah_nonstaff,
             FORMAT(IFNULL(SUM(e.absen_tl), 0), 0) absen_tl_hari_kemarin,
@@ -3695,7 +3707,7 @@ class MdAbsenHadirController extends AdminBaseController
     public function ajax_getTanggalKehadiranSekarang()
     {
         setlocale(LC_ALL, 'id-ID', 'id_ID');
-        $tanggalKehadiranSekarang = 'TERAKHIR DI UPDATE PADA HARI ' . strtoupper(strftime("%A", strtotime(date("Y-m-d H:i:s")))) . ', <span><i class="fa fa-calendar"></i></span> TANGGAL ' . strtoupper(strftime("%d %b %Y", strtotime(date("Y-m-d H:i:s")))) . ' PUKUL ' . strtoupper(strftime("%H:%M", strtotime(date("H:i:s"))));
+        $tanggalKehadiranSekarang = '<span><i class="fa fa-calendar"></i></span> TERAKHIR DIUPDATE : ' . strtoupper(strftime("%A", strtotime(date("Y-m-d H:i:s")))) . ', ' . strtoupper(strftime("%d %b %Y", strtotime(date("Y-m-d H:i:s")))) . ' PUKUL ' . strtoupper(strftime("%H:%M", strtotime(date("H:i:s"))));
 
         echo json_encode($tanggalKehadiranSekarang);
     }
