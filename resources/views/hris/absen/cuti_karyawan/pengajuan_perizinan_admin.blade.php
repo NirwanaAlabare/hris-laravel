@@ -309,6 +309,7 @@ h1 {
                             <input id="uuid" type="hidden">
                             <input id="uuid_master" type="hidden">
                             <input id="enroll_id" type="hidden">
+                            <input id="didelegasikan_enroll_id" type="hidden">
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
@@ -407,8 +408,28 @@ h1 {
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-12 pt-3">
-                                                        <div class="row pb-2">
+                                                    <div id="form_delegasi" class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Selama saya cuti seluruh pekerjaan akan ditangani oleh : </label>
+                                                            <select id="didelegasikanID" name="didelegasikanID" style='width: 100%;' data-placeholder="Pilih karyawan" class="form-control create-control select2 select2-show-search EmployeeID">
+                                                                <option value="">-- Pilih Karyawan --</option>
+                                                                @foreach ($selectemployee as $r_empl)
+                                                                    <option
+                                                                        value="{{$r_empl->enroll_id}}"
+                                                                        data-department_name="{{$r_empl->department_name}}"
+                                                                        data-sub_dept_name="{{$r_empl->sub_dept_name}}"
+                                                                        data-department_data_id="{{$r_empl->department_id}}"
+                                                                        data-sub_dept_data_id="{{$r_empl->sub_dept_id}}"
+                                                                    >
+                                                                        {{$r_empl->select_employee}}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                            <small class="error-message text-danger"></small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="row">
 
                                                             <div class="col-md-7 pr-0">
                                                                 <div class="input-group">
@@ -729,22 +750,23 @@ h1 {
     </script>
 
 <script>
-    // $(document).ready(function () {
-    //     function toggleTanggalForm() {
-    //         const selected = $('#kode_absen_ijin_iks').val();
-    //         if (selected === 'IKS') {
-    //             $('#form_tanggal_ijin').hide();
-    //         } else {
-    //             $('#form_tanggal_ijin').show();
-    //         }
-    //     }
+    $(document).ready(function () {
+        function toggleTanggalForm() {
+            const selected = $('#kode_absen_ijin').val();
+            console.log("selected", selected);
+            if (selected && selected !== 'DL' && selected !== 'I' && selected !== 'S') {
+                $('#form_delegasi').show();
+            } else {
+                $('#form_delegasi').hide();
+            }
+        }
 
-    //     // Inisialisasi saat halaman dimuat
-    //     toggleTanggalForm();
+        // Inisialisasi saat halaman dimuat
+        toggleTanggalForm();
 
-    //     // Event listener saat opsi berubah
-    //     $('#kode_absen_ijin_iks').on('change', toggleTanggalForm);
-    // });
+        // Event listener saat opsi berubah
+        $('#kode_absen_ijin').on('change', toggleTanggalForm);
+    });
 </script>
 
 
@@ -830,6 +852,12 @@ h1 {
                 document.getElementById('sub_dept_id').value = subDeptID;
             }
         });
+        $("#didelegasikanID").select2().on("select2:select", function() {
+            var selectedOption = $('#didelegasikanID').find(':selected');
+            if(selectedOption.val()){
+                document.getElementById('didelegasikan_enroll_id').value = selectedOption.val();
+            }
+        });
 
         function openModalEditPengajuan(uuid) {
             $("#ajax-modal-tambah").modal('show');
@@ -863,6 +891,7 @@ h1 {
                  // Mengisi data dari response ke dalam form input
                     $('#tanggal_perijinan').val(tanggal_perizinan).prop('disabled', true);  // Format tanggal dan disable
                     $('#diajukanOlehID').val(data.enroll_id).trigger('change').prop('disabled', true);  // Pilih karyawan dan disable
+                    $('#didelegasikanID').val(data.didelegasikan_enroll_id).trigger('change').prop('disabled', false);  // Pilih karyawan dan disable
                     $('#department').val(data.department_name).prop('disabled', true);  // Masukkan nama department dan disable
                     $('#department_id').val(data.department_id).prop('disabled', true);  // Masukkan ID department dan disable
                     $('#bagian').val(data.sub_dept_name).prop('disabled', true);  // Masukkan nama bagian/sub-department dan disable
@@ -985,6 +1014,7 @@ h1 {
         function setToNull() {
             $('#tanggal_perijinan').val(null).prop('disabled', false);  // Format tanggal dan disable
             $('#diajukanOlehID').val(null).trigger('change').prop('disabled', false);  // Pilih karyawan dan disable
+            $('#didelegasikanID').val(null).trigger('change').prop('disabled', false);  // Pilih karyawan dan disable
             $('#department').val(null).prop('disabled', false);  // Masukkan nama department dan disable
             $('#department_id').val(null).prop('disabled', false);  // Masukkan ID department dan disable
             $('#bagian').val(null).prop('disabled', false);  // Masukkan nama bagian/sub-department dan disable
@@ -1143,7 +1173,7 @@ h1 {
                                     exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_cuti_pdf?uuid=${uuidNo}`;
                                     btnClass = 'btn-danger';
                                 }
-                                if($('#username_who_access').val()=='ersa@ptnag.com' || $('#username_who_access').val()=='IT'|| $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='fadli'|| $('#username_who_access').val()=='rudy@ptnag.com' || $('#username_who_access').val()=='hrd' ){
+                                if($('#username_who_access').val()=='ersa@ptnag.com' || $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='fadli'|| $('#username_who_access').val()=='rudy@ptnag.com' || $('#username_who_access').val()=='hrd' ){
                                     return `
                                         <button onclick="openModalApprovePengajuan('${row.uuid}')" data-id="${row.uuid}" target="_blank" class="btn btn-sm btn-success mr-1" title="Approve Pengajuan">
                                             <i class="fa fa-check"></i>
@@ -1712,6 +1742,7 @@ h1 {
         $('body').on('click', '#btn-save-izin', function (event) {
             var uuid = $('#uuid').val();
             var uuid_master = $('#uuid_master').val();
+            var didelegasikan_enroll_id = $('#didelegasikan_enroll_id').val();
             var tanggal_periz = $('#tanggal_perijinan').val();
             var tanggal_perizinan=tanggal_periz.substr(6, 4)+'-'+tanggal_periz.substr(3,2)+'-'+tanggal_periz.substr(0,2);
             var tanggal_mulai = $('#tanggal_mulai_ijin').val();
@@ -1725,11 +1756,11 @@ h1 {
             var kode_absen_ijin = $('#kode_absen_ijin').val();
             var absen_alasan = $('#absen_alasan_izin').val();
 
-            $('#btn-save-izin').addClass("btn-loading");
-            $("#btn-save-izin").html('Please wait...');
-            $("#btn-save-izin").attr("disabled", true);
-            $('#progress-show-1').show();
-            $('#progress-hide-1').hide();
+
+
+            console.log("kode_absen_ijin", kode_absen_ijin);
+            console.log("didelegasikan_enroll_id", didelegasikan_enroll_id);
+
             if (!enroll_id) {
                 notif({
                     msg: "<b>Warning:</b> Anda belum memilih data karyawan.",
@@ -1770,8 +1801,24 @@ h1 {
                 return false;
             }
 
-            var tanggal = tanggal_perizinan;
+            if (kode_absen_ijin !== "DL" && kode_absen_ijin !== "I" && kode_absen_ijin !== "S") {
+            if (!didelegasikan_enroll_id) {
+                notif({
+                    msg: "<b>Warning:</b> Anda belum memilih karyawan untuk didelegasikan.",
+                    type: "warning"
+                });
+                return false;
+            }
+        }
 
+
+
+            var tanggal = tanggal_perizinan;
+            $('#btn-save-izin').addClass("btn-loading");
+            $("#btn-save-izin").html('Please wait...');
+            $("#btn-save-izin").attr("disabled", true);
+            $('#progress-show-1').show();
+            $('#progress-hide-1').hide();
 
             // LAGI COBA TEST CLOSING PAYROLL
             $.ajax({
@@ -1848,6 +1895,7 @@ h1 {
                                             absen_alasan:absen_alasan,
                                             tanggal_mulai_ijin:tanggal_mulai_ijin,
                                             tanggal_akhir_ijin:tanggal_akhir_ijin,
+                                            didelegasikan_enroll_id:didelegasikan_enroll_id,
                                         },
                                         success: function(res){
                                             $('#progress-show-1').hide();
@@ -1865,6 +1913,7 @@ h1 {
                                             swal("", "update perizinan berhasil", "success");
                                             $('#nomor_form_perizinan').val('');
                                             $('#enroll_id').val('');
+                                            $('#didelegasikan_enroll_id').val('');
                                             $('#nik').val('');
                                             $('#employee_name').val('');
                                             $('#tanggal_mulai_ijin').val('');
@@ -1903,6 +1952,7 @@ h1 {
                                             absen_alasan:absen_alasan,
                                             tanggal_mulai_ijin:tanggal_mulai_ijin,
                                             tanggal_akhir_ijin:tanggal_akhir_ijin,
+                                            didelegasikan_enroll_id:didelegasikan_enroll_id,
                                         },
                                         dataType: 'json',
                                         success: function(res){
@@ -1936,6 +1986,7 @@ h1 {
                                                 swal("", "create perizinan berhasil", "success");
                                                 $('#nomor_form_perizinan').val('');
                                                 $('#enroll_id').val('');
+                                                $('#didelegasikan_enroll_id').val('');
                                                 $('#nik').val('');
                                                 $('#employee_name').val('');
                                                 $('#tanggal_mulai_ijin').val('');

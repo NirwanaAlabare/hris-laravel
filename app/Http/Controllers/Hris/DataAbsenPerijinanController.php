@@ -411,6 +411,7 @@ class DataAbsenPerijinanController extends AdminBaseController
     {
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
+        $didelegasikan_enroll_id = $request->didelegasikan_enroll_id;
         info('START UPDATE IZIN');
         info('Update Permohonan Perizinan by ' . $email);
         info('Nomor Form Perizinan : ' . request()->nomor_form_perizinan);
@@ -432,7 +433,8 @@ class DataAbsenPerijinanController extends AdminBaseController
                 'absen_alasan' => request()->absen_alasan,
                 'tanggal_mulai_ijin' => request()->tanggal_mulai_ijin,
                 'tanggal_akhir_ijin' => request()->tanggal_akhir_ijin,
-                'operator' => $email
+                'operator' => $email,
+                'didelegasikan_enroll_id' => $didelegasikan_enroll_id,
             ]);
             if(request()->kode_absen_ijin=='DL')
             {
@@ -570,6 +572,7 @@ class DataAbsenPerijinanController extends AdminBaseController
         $uuid_master = $request->uuid;
         $tanggal_perizinan = $request->tanggal_perizinan;
         $enroll_id = $request->enroll_id;
+        $didelegasikan_enroll_id = $request->didelegasikan_enroll_id;
         $nik = $request->nik;
         $employee_name = $request->employee_name;
         $kode_absen_ijin = $request->kode_absen_ijin;
@@ -633,6 +636,7 @@ class DataAbsenPerijinanController extends AdminBaseController
                 'tanggal_perizinan' => $tanggal_perizinan,
                 'nomor_form_perizinan' => $nomor_form_perizinan,
                 'enroll_id' => $enroll_id,
+                'didelegasikan_enroll_id' => $didelegasikan_enroll_id,
                 'kode_absen_ijin' => $kode_absen_ijin,
                 'absen_alasan' => $absen_alasan,
                 'tanggal_mulai_ijin' => $tanggal_mulai_ijin,

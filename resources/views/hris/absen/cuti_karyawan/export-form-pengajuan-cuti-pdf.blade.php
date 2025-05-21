@@ -47,7 +47,7 @@
             </tr>
             <tr>
                 <td colspan="2" class="border-left" style="border: 1px solid;border-bottom: 1px solid; font-size: 9pt;">Tanggal Efektif</td>
-                <td colspan="3" class="border-right" style="border: 1px solid; border-bottom: 1px solid; font-size: 9pt;">: </td>
+                <td colspan="3" class="border-right" style="border: 1px solid; border-bottom: 1px solid; font-size: 9pt;">: 30 Oktober 2016 </td>
             </tr>
         </thead>
     </table>
@@ -180,7 +180,7 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:10px;" colspan="6"></td>
             </tr>
             <tr>
-                <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top" colspan="6">Nama_________________________________NIP________________.</td>
+                <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top" colspan="6">Nama <u>{{$data->didelegasikan_employee_name ? $data->didelegasikan_employee_name : '________________'}}</u> NIP <u>{{$data->didelegasikan_nik ? $data->didelegasikan_nik : '________________'}}</u>.</td>
             </tr>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:10px;" colspan="6"></td>
