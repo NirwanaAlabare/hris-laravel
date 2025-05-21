@@ -45,7 +45,7 @@
 
 
     .container-app {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
       padding: 2rem 1rem;
     }
@@ -88,6 +88,18 @@
       color: var(--primary);
     }
 
+    .date-badge-card {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--blue);
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius-lg);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: white;
+      margin-bottom: 10px;
+      margin-top: 6px;
+    }
     .date-badge {
       display: inline-flex;
       align-items: center;
@@ -271,13 +283,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.8rem;
     }
 
     .count-value {
-      font-size: 2.25rem;
+      font-size: 1.5rem;
       font-weight: 700;
       color: var(--color-blue);
+      line-height: 1;
     }
 
     .count-label {
@@ -294,6 +307,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-top: 40px;
     }
 
     .progress-container {
@@ -342,7 +356,55 @@
       /* width: 91.1%; */
     }
 
+    .progress-indicator.staff-gs {
+      background-color: var(--primary);
+      /* width: 8.9%; */
+    }
+
+    .progress-indicator.non-staff-gs {
+      background-color: var(--primary);
+      /* width: 91.1%; */
+    }
+    .progress-indicator.staff-nagd {
+      background-color: var(--primary);
+      /* width: 8.9%; */
+    }
+
+    .progress-indicator.non-staff-nagd {
+      background-color: var(--primary);
+      /* width: 91.1%; */
+    }
+    .progress-indicator.staff-nak {
+      background-color: var(--primary);
+      /* width: 8.9%; */
+    }
+
+    .progress-indicator.non-staff-nak {
+      background-color: var(--primary);
+      /* width: 91.1%; */
+    }
+    .progress-indicator.staff-sa {
+      background-color: var(--primary);
+      /* width: 8.9%; */
+    }
+
+    .progress-indicator.non-staff-sa {
+      background-color: var(--primary);
+      /* width: 91.1%; */
+    }
+
     /* Attendance Stats */
+    .jml-karyawan-card {
+      align-items: center;
+      background-color: var(--color-gray-50);
+      border-radius: var(--radius-lg);
+      margin: 0.7rem;
+      border: 1px solid var(--color-gray-200);
+    }
+
+    .jml-karyawan-card:last-child {
+      margin-bottom: 0;
+    }
     .stat-card {
       display: flex;
       justify-content: space-between;
@@ -448,109 +510,7 @@
     </div>
 </div>
 <!-- End page-header -->
-{{--
-<div class="row">
-    <div class="col-lg-12 col-md-12">
-        <div class="card shadow bg-light">
-            <div class="card-header-app custom-header pb-0 text-dark">
-                <div>
-                    <h3 class="card-title">MONITORING ABSENSI KARYAWAN</h3>
-                    <h6 id="tanggal_kehadiran_sekarang" class="card-subtitle"></h6>
-                </div>
-            </div>
-            <div class="card-body pl-4 pt-3 pb-0 pr-3 text-center">
-                <div class="row">
-                    <div class="col-lg-4 col-md-12">
-                        <div class="card">
-                            <div class="card-body p-0">
-                                <div id="morrisBar9" class="chartsh chart-dropshadow text-sm mt-1 mb-1"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-5 col-lg-6 col-md-12 col-sm-12">
-                        <div class="card card-counter bg-gradient-primary">
-                            <div class="card-header-app pb-0 text-center">
-                                <div>
-                                    <h6 class="card-title text-center text-sm">KARYAWAN (JUMLAH, STAFF / NON STAFF)</h6>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-4">
-                                        <i class="si si-people mt-1 mb-0 text-white-transparent"></i>
-                                    </div>
-                                    <div class="col-8 text-center">
-                                        <div class="mt-0 mb-0 text-white">
-                                            <h2 id="total_karyawan_aktif" class="mb-0"></h2>
-                                            <p class="text-white mt-0 mb-0">JUMLAH KARYAWAN<br>AKTIF</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr class="bg-white" style="height: 2px;">
-                                <div class="row">
-                                    <div class="col-6 text-center">
-                                        <div class="mt-0 mb-0 text-white">
-                                            <h2 id="jumlah_staff" class="mb-0"></h2>
-                                            <p class="text-white mt-0 mb-0">STAFF</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 text-center">
-                                        <div class="mt-0 mb-0 text-white">
-                                            <h2 id="jumlah_nonstaff" class="mb-0"></h2>
-                                            <p class="text-white mt-0 mb-0">NON STAFF</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div><!-- col end -->
-                    <div class="col-sm-12 col-md-6 col-lg-3">
-                        <div class="card bg-gradient-primary mb-2">
-                            <div class="card-body pt-3 pb-3">
-                                <div class="d-flex no-block align-items-center">
-                                    <div>
-                                        <h6 class="text-white">Hari Kemarin</h6>
-                                        <h2 id="absen_tl_hari_kemarin" class="text-white m-0"></h2>
-                                    </div>
-                                    <div class="ml-auto">
-                                        <span class="text-white display-6"><i class="si si-people mt-1 mb-0 text-white-transparent"></i> TL</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card bg-gradient-primary mb-2">
-                            <div class="card-body pt-3 pb-3">
-                                <div class="d-flex no-block align-items-center">
-                                    <div>
-                                        <h6 class="text-white">Hari Ini</h6>
-                                        <h2 id="absen_m_hari_ini" class="text-white m-0"></h2>
-                                    </div>
-                                    <div class="ml-auto">
-                                        <span class="text-white display-6"><i class="si si-people mt-1 mb-0 text-white-transparent"></i> M</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card bg-gradient-primary mb-2">
-                            <div class="card-body pt-4 pb-3">
-                                <div class="d-flex no-block align-items-center">
-                                    <div>
-                                        <h6 class="text-white">Minggu Kemarin</h6>
-                                        <h2 id="absen_m_weekly" class="text-white m-0"></h2>
-                                    </div>
-                                    <div class="ml-auto">
-                                        <span class="text-white display-6"><i class="si si-people mt-1 mb-0 text-white-transparent"></i> M</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div><!-- col end -->
-                </div>
-                <!-- row end -->
-            </div>
-        </div>
-    </div>
-</div> --}}
+
 <div class="container-app">
     <header>
       <div class="header-content">
@@ -592,41 +552,46 @@
       </div>
 
       <!-- Employee Card -->
-      <div class="card-app">
+      <div class="card-app ">
         <div class="card-header-app sky">
           <div class="card-title">Karyawan</div>
           <div class="card-description">Jumlah staff dan non-staff</div>
         </div>
-        <div class="card-content-app">
-          <div class="employee-count">
-            <div>
-              <div class="count-value" id="total_karyawan_aktif"></div>
-              <div class="count-label">Jumlah Karyawan Aktif</div>
+        <div class="jml-karyawan-card" style="margin: 1.5rem;">
+            <div class="px-4 py-2" >
+            <div class="employee-count">
+                <div>
+                    <div class="date-badge-card">
+                        <div style="">Nirwana Alabare Garment</div>
+                    </div>
+                    <div class="count-value" id="total_karyawan_aktif"></div>
+                    <div class="count-label">Jumlah Karyawan Aktif</div>
+                </div>
+                <div class="count-icon">
+                    <i class="fa fa-users fa-lg"></i>
+                </div>
             </div>
-            <div class="count-icon">
-              <i class="fa fa-users fa-lg"></i>
-            </div>
-          </div>
 
-          <div class="progress-container">
-            <div class="progress-header">
-              <div class="progress-label">Staff</div>
-              <div class="progress-value" id="jumlah_staff"></div>
+            <div class="progress-container">
+                <div class="progress-header">
+                <div class="progress-label">Staff</div>
+                <div class="progress-value" id="jumlah_staff"></div>
+                </div>
+                <div class="progress-bar gray">
+                <div class="progress-indicator staff"></div>
+                </div>
             </div>
-            <div class="progress-bar gray">
-              <div class="progress-indicator staff"></div>
-            </div>
-          </div>
 
-          <div class="progress-container">
-            <div class="progress-header">
-              <div class="progress-label">Non Staff</div>
-              <div class="progress-value" id="jumlah_nonstaff"></div>
+            <div class="progress-container">
+                <div class="progress-header">
+                <div class="progress-label">Non Staff</div>
+                <div class="progress-value" id="jumlah_nonstaff"></div>
+                </div>
+                <div class="progress-bar gray">
+                <div class="progress-indicator non-staff"></div>
+                </div>
             </div>
-            <div class="progress-bar gray">
-              <div class="progress-indicator non-staff"></div>
             </div>
-          </div>
         </div>
       </div>
 
@@ -678,7 +643,162 @@
         </div>
       </div>
     </div>
-  </div>
+    <div class="row mt-3">
+    <div class="col-md-3 gap-0 m-0 p-0">
+        <div class="jml-karyawan-card">
+            <div class="px-4 py-2" >
+                <div class="employee-count">
+                    <div>
+                        <div class="date-badge-card">
+                        <div style="">Gunajaya Santosa</div>
+                        </div>
+                        <div class="count-value" id="total_karyawan_aktif_gs"></div>
+                        <div class="count-label">Jumlah Karyawan Aktif</div>
+                    </div>
+                    <div class="count-icon">
+                        <i class="fa fa-users fa-lg"></i>
+                    </div>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-header">
+                    <div class="progress-label">Staff</div>
+                    <div class="progress-value" id="jumlah_staff_gs"></div>
+                    </div>
+                    <div class="progress-bar gray">
+                    <div class="progress-indicator staff-gs"></div>
+                    </div>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-header">
+                    <div class="progress-label">Non Staff</div>
+                    <div class="progress-value" id="jumlah_nonstaff_gs"></div>
+                    </div>
+                    <div class="progress-bar gray">
+                    <div class="progress-indicator non-staff-gs"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 gap-0 m-0 p-0">
+        <div class="jml-karyawan-card">
+            <div class="px-4 py-2" >
+            <div class="employee-count">
+                <div>
+                    <div class="date-badge-card">
+                    <div style="">Nirwana Alabare Garment - Dago</div>
+                    </div>
+                    <div class="count-value" id="total_karyawan_aktif_nagd"></div>
+                    <div class="count-label">Jumlah Karyawan Aktif</div>
+                </div>
+                <div class="count-icon">
+                    <i class="fa fa-users fa-lg"></i>
+                </div>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-header">
+                <div class="progress-label">Staff</div>
+                <div class="progress-value" id="jumlah_staff_nagd"></div>
+                </div>
+                <div class="progress-bar gray">
+                <div class="progress-indicator staff-nagd"></div>
+                </div>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-header">
+                <div class="progress-label">Non Staff</div>
+                <div class="progress-value" id="jumlah_nonstaff_nagd"></div>
+                </div>
+                <div class="progress-bar gray">
+                <div class="progress-indicator non-staff-nagd"></div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 gap-0 m-0 p-0">
+        <div class="jml-karyawan-card">
+            <div class="px-4 py-2" >
+            <div class="employee-count">
+                <div>
+                    <div class="date-badge-card">
+                    <div style="">Nirwana Alabare Knitting</div>
+                    </div>
+                    <div class="count-value" id="total_karyawan_aktif_nak"></div>
+                    <div class="count-label">Jumlah Karyawan Aktif</div>
+                </div>
+                <div class="count-icon">
+                    <i class="fa fa-users fa-lg"></i>
+                </div>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-header">
+                <div class="progress-label">Staff</div>
+                <div class="progress-value" id="jumlah_staff_nak"></div>
+                </div>
+                <div class="progress-bar gray">
+                <div class="progress-indicator staff-nak"></div>
+                </div>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-header">
+                <div class="progress-label">Non Staff</div>
+                <div class="progress-value" id="jumlah_nonstaff_nak"></div>
+                </div>
+                <div class="progress-bar gray">
+                <div class="progress-indicator non-staff-nak"></div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 gap-0 m-0 p-0">
+        <div class="jml-karyawan-card">
+            <div class="px-4 py-2" >
+            <div class="employee-count">
+                <div>
+                    <div class="date-badge-card">
+                    <div style="">Soljer Abadi</div>
+                    </div>
+                    <div class="count-value" id="total_karyawan_aktif_sa"></div>
+                    <div class="count-label">Jumlah Karyawan Aktif</div>
+                </div>
+                <div class="count-icon">
+                    <i class="fa fa-users fa-lg"></i>
+                </div>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-header">
+                <div class="progress-label">Staff</div>
+                <div class="progress-value" id="jumlah_staff_sa"></div>
+                </div>
+                <div class="progress-bar gray">
+                <div class="progress-indicator staff-sa"></div>
+                </div>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-header">
+                <div class="progress-label">Non Staff</div>
+                <div class="progress-value" id="jumlah_nonstaff_sa"></div>
+                </div>
+                <div class="progress-bar gray">
+                <div class="progress-indicator non-staff-sa"></div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
 <!-- row end -->
 
 @endsection
@@ -814,7 +934,9 @@ var root = am5.Root.new("chartdiv");
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             dataType: 'json',
-            success: function(res){
+            success: function(data){
+                const data_factory = data.data_factory;
+                const res = data.data;
                 var primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
 
                 series.children.push(am5.Label.new(root, {
@@ -841,12 +963,119 @@ var root = am5.Root.new("chartdiv");
                 $('#jumlah_karyawan_masuk').html(res[0]['jumlah_karyawan_masuk']);
                 $('#jumlah_karyawan_tidak_masuk').html(res[0]['total_karyawan_number'] - res[0]['jumlah_karyawan_masuk_number']);
                 $('#total_karyawan_aktif').html(res[0]['total_karyawan_aktif']);
-                $('#jumlah_staff').html(res[0]['jumlah_staff']);
-                $('#jumlah_nonstaff').html(res[0]['jumlah_nonstaff']);
 
                 $('#absen_tl_hari_kemarin').html(res[0]['absen_tl_hari_kemarin']);
                 $('#absen_m_hari_ini').html(res[0]['absen_m_hari_ini']);
                 $('#absen_m_weekly').html(res[0]['absen_m_weekly']);
+
+                // GUNAJAYA SANTOSA
+                $('#total_karyawan_aktif_gs').html(data_factory.GS ? (data_factory.GS.non_staff + data_factory.GS.staff) : 0);
+
+                $('#total_karyawan_aktif_nagd').html(data_factory.NAGD ? (data_factory.NAGD.non_staff + data_factory.NAGD.staff) : 0);
+                $('#jumlah_staff_nagd').html(data_factory.NAGD ?  data_factory.NAGD.staff : 0);
+                $('#jumlah_nonstaff_nagd').html(data_factory.NAGD ? data_factory.NAGD.non_staff : 0);
+
+                $('#total_karyawan_aktif_nak').html(data_factory.NAK ? (data_factory.NAK.non_staff + data_factory.NAK.staff) : 0);
+                $('#jumlah_staff_nak').html(data_factory.NAK ?  data_factory.NAK.staff : 0);
+                $('#jumlah_nonstaff_nak').html(data_factory.NAK ? data_factory.NAK.non_staff : 0);
+
+                $('#total_karyawan_aktif_sa').html(data_factory.SA ? (data_factory.SA.non_staff + data_factory.SA.staff) : 0);
+                $('#jumlah_staff_sa').html(data_factory.SA ?  data_factory.SA.staff : 0);
+                $('#jumlah_nonstaff_sa').html(data_factory.SA ? data_factory.SA.non_staff : 0);
+
+                var jumlahStaffGS = parseInt(data_factory?.GS?.staff) || 0;
+                var jumlahNonStaffGS = parseInt(data_factory?.GS?.non_staff) || 0;
+                var totalKaryawanGS = jumlahStaffGS + jumlahNonStaffGS;
+
+                if (totalKaryawanGS > 0) {
+                    var staffPercentage = (jumlahStaffGS / totalKaryawanGS) * 100;
+                    var nonStaffPercentage = (jumlahNonStaffGS / totalKaryawanGS) * 100;
+
+                    $('#jumlah_staff_gs').html(jumlahStaffGS + ' (' + staffPercentage.toFixed(1) + '%)');
+                    $('#jumlah_nonstaff_gs').html(jumlahNonStaffGS + ' (' + nonStaffPercentage.toFixed(1) + '%)');
+                    $('.progress-indicator.staff-gs').css('width', staffPercentage + '%');
+                    $('.progress-indicator.non-staff-gs').css('width', nonStaffPercentage + '%');
+                } else {
+                    var staffPercentage = (jumlahStaffGS / totalKaryawanGS) * 100;
+                    var nonStaffPercentage = (jumlahNonStaffGS / totalKaryawanGS) * 100;
+
+                    $('#jumlah_staff_gs').html(jumlahStaffGS + ' (0%)');
+                    $('#jumlah_nonstaff_gs').html(jumlahNonStaffGS + ' (0%)');
+                    // Jika total = 0, atur jadi 0% semua
+                    $('.progress-indicator.staff-gs').css('width', '0%');
+                    $('.progress-indicator.non-staff-gs').css('width', '0%');
+                }
+
+
+                var jumlahStaffNAGD = parseInt(data_factory?.NAGD?.staff) || 0;
+                var jumlahNonStaffNAGD = parseInt(data_factory?.NAGD?.non_staff) || 0;
+                var totalKaryawanNAGD = jumlahStaffNAGD + jumlahNonStaffNAGD;
+
+                if (totalKaryawanNAGD > 0) {
+                    var staffPercentage = (jumlahStaffNAGD / totalKaryawanNAGD) * 100;
+                    var nonStaffPercentage = (jumlahNonStaffNAGD / totalKaryawanNAGD) * 100;
+
+                    $('#jumlah_staff_nagd').html(jumlahStaffNAGD + ' (' + staffPercentage.toFixed(1) + '%)');
+                    $('#jumlah_nonstaff_nagd').html(jumlahNonStaffNAGD + ' (' + nonStaffPercentage.toFixed(1) + '%)');
+                    $('.progress-indicator.staff-nagd').css('width', staffPercentage + '%');
+                    $('.progress-indicator.non-staff-nagd').css('width', nonStaffPercentage + '%');
+                } else {
+                    var staffPercentage = (jumlahStaffNAGD / totalKaryawanNAGD) * 100;
+                    var nonStaffPercentage = (jumlahNonStaffNAGD / totalKaryawanNAGD) * 100;
+
+                    $('#jumlah_staff_nagd').html(jumlahStaffNAGD + ' (0%)');
+                    $('#jumlah_nonstaff_nagd').html(jumlahNonStaffNAGD + ' (0%)');
+                    // Jika total = 0, atur jadi 0% semua
+                    $('.progress-indicator.staff-nagd').css('width', '0%');
+                    $('.progress-indicator.non-staff-nagd').css('width', '0%');
+                }
+
+
+                var jumlahStaffNAK = parseInt(data_factory?.NAK?.staff) || 0;
+                var jumlahNonStaffNAK = parseInt(data_factory?.NAK?.non_staff) || 0;
+                var totalKaryawanNAK = jumlahStaffNAK + jumlahNonStaffNAK;
+
+                if (totalKaryawanNAK > 0) {
+                    var staffPercentage = (jumlahStaffNAK / totalKaryawanNAK) * 100;
+                    var nonStaffPercentage = (jumlahNonStaffNAK / totalKaryawanNAK) * 100;
+
+                    $('#jumlah_staff_nak').html(jumlahStaffNAK + ' (' + staffPercentage.toFixed(1) + '%)');
+                    $('#jumlah_nonstaff_nak').html(jumlahNonStaffNAK + ' (' + nonStaffPercentage.toFixed(1) + '%)');
+                    $('.progress-indicator.staff-nak').css('width', staffPercentage + '%');
+                    $('.progress-indicator.non-staff-nak').css('width', nonStaffPercentage + '%');
+                } else {
+                    var staffPercentage = (jumlahStaffNAK / totalKaryawanNAK) * 100;
+                    var nonStaffPercentage = (jumlahNonStaffNAK / totalKaryawanNAK) * 100;
+
+                    $('#jumlah_staff_nak').html(jumlahStaffNAK + ' (0%)');
+                    $('#jumlah_nonstaff_nak').html(jumlahNonStaffNAK + ' (0%)');
+                    // Jika total = 0, atur jadi 0% semua
+                    $('.progress-indicator.staff-nak').css('width', '0%');
+                    $('.progress-indicator.non-staff-nak').css('width', '0%');
+                }
+
+                var jumlahStaffSA = parseInt(data_factory?.SA?.staff) || 0;
+                var jumlahNonStaffSA = parseInt(data_factory?.SA?.non_staff) || 0;
+                var totalKaryawanSA = jumlahStaffSA + jumlahNonStaffSA;
+
+                if (totalKaryawanSA > 0) {
+                    var staffPercentage = (jumlahStaffSA / totalKaryawanSA) * 100;
+                    var nonStaffPercentage = (jumlahNonStaffSA / totalKaryawanSA) * 100;
+
+                    $('#jumlah_staff_sa').html(jumlahStaffSA + ' (' + staffPercentage.toFixed(1) + '%)');
+                    $('#jumlah_nonstaff_sa').html(jumlahNonStaffSA + ' (' + nonStaffPercentage.toFixed(1) + '%)');
+                    $('.progress-indicator.staff-sa').css('width', staffPercentage + '%');
+                    $('.progress-indicator.non-staff-sa').css('width', nonStaffPercentage + '%');
+                } else {
+                    var staffPercentage = (jumlahStaffSA / totalKaryawanSA) * 100;
+                    var nonStaffPercentage = (jumlahNonStaffSA / totalKaryawanSA) * 100;
+
+                    $('#jumlah_staff_sa').html(jumlahStaffSA + ' (0%)');
+                    $('#jumlah_nonstaff_sa').html(jumlahNonStaffSA + ' (0%)');
+                    // Jika total = 0, atur jadi 0% semua
+                    $('.progress-indicator.staff-sa').css('width', '0%');
+                    $('.progress-indicator.non-staff-sa').css('width', '0%');
+                }
 
 
                 // Ambil nilai dari response

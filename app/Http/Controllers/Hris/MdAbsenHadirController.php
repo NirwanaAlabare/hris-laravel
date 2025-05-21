@@ -3610,91 +3610,127 @@ class MdAbsenHadirController extends AdminBaseController
 
     public function ajax_getdashkehadiran()
     {
-    $query = DB::select(DB::raw("
-        SELECT
-        CURRENT_DATE() AS tanggal_hari_ini,
-        DAYOFWEEK(CURRENT_DATE()) AS kode_hari,
-        DAYNAME(CURRENT_DATE()) AS nama_hari,
+        $query = DB::select(DB::raw("
+            SELECT
+            CURRENT_DATE() AS tanggal_hari_ini,
+            DAYOFWEEK(CURRENT_DATE()) AS kode_hari,
+            DAYNAME(CURRENT_DATE()) AS nama_hari,
 
-        FORMAT(COUNT(DISTINCT IF(a.absen_masuk_kerja IS NOT NULL, b.enroll_id, NULL)), 0) AS jumlah_karyawan_masuk,
-        COUNT(DISTINCT IF(a.absen_masuk_kerja IS NOT NULL, b.enroll_id, NULL)) AS jumlah_karyawan_masuk_number,
+            FORMAT(COUNT(DISTINCT IF(a.absen_masuk_kerja IS NOT NULL, b.enroll_id, NULL)), 0) AS jumlah_karyawan_masuk,
+            COUNT(DISTINCT IF(a.absen_masuk_kerja IS NOT NULL, b.enroll_id, NULL)) AS jumlah_karyawan_masuk_number,
 
-        COUNT(DISTINCT b.enroll_id) AS total_karyawan_number,
-        FORMAT(COUNT(DISTINCT b.enroll_id), 0) AS total_karyawan_aktif,
+            COUNT(DISTINCT b.enroll_id) AS total_karyawan_number,
+            FORMAT(COUNT(DISTINCT b.enroll_id), 0) AS total_karyawan_aktif,
 
-        FORMAT(
-            IFNULL(
-                ROUND(
-                    (COUNT(DISTINCT IF(a.absen_masuk_kerja IS NOT NULL, b.enroll_id, NULL)) / COUNT(DISTINCT b.enroll_id)) * 100,
-                    2
-                ),
-            0), 2
-        ) AS persentase_kehadiran,
+            FORMAT(
+                IFNULL(
+                    ROUND(
+                        (COUNT(DISTINCT IF(a.absen_masuk_kerja IS NOT NULL, b.enroll_id, NULL)) / COUNT(DISTINCT b.enroll_id)) * 100,
+                        2
+                    ),
+                0), 2
+            ) AS persentase_kehadiran,
 
-        FORMAT(
-            IFNULL(
-                100 - ROUND(
-                    (COUNT(DISTINCT IF(a.absen_masuk_kerja IS NOT NULL, b.enroll_id, NULL)) / COUNT(DISTINCT b.enroll_id)) * 100,
-                    2
-                ),
-            0), 2
-        ) AS persentase_ketidakhadiran,
+            FORMAT(
+                IFNULL(
+                    100 - ROUND(
+                        (COUNT(DISTINCT IF(a.absen_masuk_kerja IS NOT NULL, b.enroll_id, NULL)) / COUNT(DISTINCT b.enroll_id)) * 100,
+                        2
+                    ),
+                0), 2
+            ) AS persentase_ketidakhadiran,
 
-        SUM(c.jumlah_staff) AS jumlah_staff_number,
-        SUM(d.jumlah_nonstaff) AS jumlah_nonstaff_number,
-        FORMAT(IFNULL(SUM(c.jumlah_staff), 0), 0) AS jumlah_staff,
-        FORMAT(IFNULL(SUM(d.jumlah_nonstaff), 0), 0) AS jumlah_nonstaff,
+            SUM(c.jumlah_staff) AS jumlah_staff_number,
+            SUM(d.jumlah_nonstaff) AS jumlah_nonstaff_number,
+            FORMAT(IFNULL(SUM(c.jumlah_staff), 0), 0) AS jumlah_staff,
+            FORMAT(IFNULL(SUM(d.jumlah_nonstaff), 0), 0) AS jumlah_nonstaff,
 
-        FORMAT(IFNULL(SUM(e.absen_tl), 0), 0) AS absen_tl_hari_kemarin,
-        FORMAT(IFNULL(SUM(f.absen_m_weekly), 0), 0) AS absen_m_weekly,
-        FORMAT(IFNULL(SUM(g.absen_m_hari_ini), 0), 0) AS absen_m_hari_ini
+            FORMAT(IFNULL(SUM(e.absen_tl), 0), 0) AS absen_tl_hari_kemarin,
+            FORMAT(IFNULL(SUM(f.absen_m_weekly), 0), 0) AS absen_m_weekly,
+            FORMAT(IFNULL(SUM(g.absen_m_hari_ini), 0), 0) AS absen_m_hari_ini
 
-    FROM master_data_absen_kehadiran a
-    JOIN employee_atribut b
-        ON a.enroll_id = b.enroll_id AND b.status_aktif = 'AKTIF'
+            FROM master_data_absen_kehadiran a
+            JOIN employee_atribut b
+                ON a.enroll_id = b.enroll_id AND b.status_aktif = 'AKTIF'
 
-    LEFT JOIN (
-        SELECT enroll_id, COUNT(*) AS jumlah_staff
-        FROM employee_atribut
-        WHERE status_staff = 'STAFF' AND status_aktif = 'AKTIF'
-        GROUP BY enroll_id
-    ) c ON b.enroll_id = c.enroll_id
+            LEFT JOIN (
+                SELECT enroll_id, COUNT(*) AS jumlah_staff
+                FROM employee_atribut
+                WHERE status_staff = 'STAFF' AND status_aktif = 'AKTIF'
+                GROUP BY enroll_id
+            ) c ON b.enroll_id = c.enroll_id
 
-    LEFT JOIN (
-        SELECT enroll_id, COUNT(*) AS jumlah_nonstaff
-        FROM employee_atribut
-        WHERE status_staff = 'NON STAFF' AND status_aktif = 'AKTIF'
-        GROUP BY enroll_id
-    ) d ON b.enroll_id = d.enroll_id
+            LEFT JOIN (
+                SELECT enroll_id, COUNT(*) AS jumlah_nonstaff
+                FROM employee_atribut
+                WHERE status_staff = 'NON STAFF' AND status_aktif = 'AKTIF'
+                GROUP BY enroll_id
+            ) d ON b.enroll_id = d.enroll_id
 
-    LEFT JOIN (
-        SELECT enroll_id, COUNT(*) AS absen_tl
-        FROM master_data_absen_kehadiran
-        WHERE status_absen = 'TL' AND tanggal_berjalan = CURRENT_DATE() - INTERVAL 1 DAY
-        GROUP BY enroll_id
-    ) e ON b.enroll_id = e.enroll_id
+            LEFT JOIN (
+                SELECT enroll_id, COUNT(*) AS absen_tl
+                FROM master_data_absen_kehadiran
+                WHERE status_absen = 'TL' AND tanggal_berjalan = CURRENT_DATE() - INTERVAL 1 DAY
+                GROUP BY enroll_id
+            ) e ON b.enroll_id = e.enroll_id
 
-    LEFT JOIN (
-        SELECT enroll_id, COUNT(*) AS absen_m_weekly
-        FROM master_data_absen_kehadiran
-        WHERE status_absen = 'M'
-        AND tanggal_berjalan BETWEEN CURRENT_DATE() - INTERVAL 7 DAY AND CURRENT_DATE()
-        GROUP BY enroll_id
-    ) f ON b.enroll_id = f.enroll_id
+            LEFT JOIN (
+                SELECT enroll_id, COUNT(*) AS absen_m_weekly
+                FROM master_data_absen_kehadiran
+                WHERE status_absen = 'M'
+                AND tanggal_berjalan BETWEEN CURRENT_DATE() - INTERVAL 7 DAY AND CURRENT_DATE()
+                GROUP BY enroll_id
+            ) f ON b.enroll_id = f.enroll_id
 
-    LEFT JOIN (
-        SELECT enroll_id, COUNT(*) AS absen_m_hari_ini
-        FROM master_data_absen_kehadiran
-        WHERE status_absen = 'M' AND tanggal_berjalan = CURRENT_DATE()
-        GROUP BY enroll_id
-    ) g ON b.enroll_id = g.enroll_id
+            LEFT JOIN (
+                SELECT enroll_id, COUNT(*) AS absen_m_hari_ini
+                FROM master_data_absen_kehadiran
+                WHERE status_absen = 'M' AND tanggal_berjalan = CURRENT_DATE()
+                GROUP BY enroll_id
+            ) g ON b.enroll_id = g.enroll_id
 
-    WHERE a.tanggal_berjalan = CURRENT_DATE()
-    AND (a.absen_masuk_kerja IS NOT NULL OR b.tanggal_resign IS NULL OR b.tanggal_resign <> '0000-00-00')
-    GROUP BY CURRENT_DATE(), DAYOFWEEK(CURRENT_DATE()), DAYNAME(CURRENT_DATE());
-    "));
-        return $query;
+            WHERE a.tanggal_berjalan = CURRENT_DATE()
+            AND (a.absen_masuk_kerja IS NOT NULL OR b.tanggal_resign IS NULL OR b.tanggal_resign <> '0000-00-00')
+            GROUP BY CURRENT_DATE(), DAYOFWEEK(CURRENT_DATE()), DAYNAME(CURRENT_DATE());
+        "));
+        $data_factory = $this->ajax_getdashkehadiran_by_factory();
+        return ['data' => $query,
+            'data_factory' => $data_factory];
     }
+
+   public function ajax_getdashkehadiran_by_factory()
+    {
+        $results = DB::select(DB::raw("
+            SELECT
+                site_nirwana_id,
+                status_staff,
+                COUNT(enroll_id) as total
+            FROM employee_atribut
+            WHERE status_aktif = 'AKTIF'
+            AND site_nirwana_id IN ('NAK', 'GS', 'SA', 'NAGD')
+            GROUP BY site_nirwana_id, status_staff
+        "));
+        // Ubah hasil query menjadi struktur array terorganisir per site
+        $structured = [];
+
+        foreach ($results as $row) {
+            $site = $row->site_nirwana_id;
+            $status = strtolower(str_replace(' ', '_', trim($row->status_staff)));
+
+
+            if (!isset($structured[$site])) {
+                $structured[$site] = [
+                    'staff' => 0,
+                    'non_staff' => 0
+                ];
+            }
+
+            $structured[$site][$status] = (int) $row->total;
+        }
+
+        return $structured;
+    }
+
 
     public function ajax_getTanggalKehadiranSekarang()
     {
