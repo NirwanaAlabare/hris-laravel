@@ -703,7 +703,15 @@
 <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
 <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
 <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+<script>
+    // Format tanggal ke "DD MMMM YYYY" dalam bahasa Indonesia
+    const today = new Date();
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    const formattedDate = today.toLocaleDateString('id-ID', options);
 
+    // Set tanggal ke elemen span
+    document.querySelector('.date-badge span').textContent = formattedDate;
+  </script>
 <script>
 
 var series;
