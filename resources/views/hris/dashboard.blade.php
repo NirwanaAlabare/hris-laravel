@@ -44,7 +44,7 @@
 
 
 
-    .container {
+    .container-app {
       max-width: 1200px;
       margin: 0 auto;
       padding: 2rem 1rem;
@@ -121,14 +121,14 @@
       }
     }
 
-    .card {
+    .card-app {
       background-color: var(--color-white);
       border-radius: var(--radius-lg);
       overflow: hidden;
       box-shadow: var(--shadow-lg);
     }
 
-    .card-header {
+    .card-header-app {
         padding: 1.25rem 1.5rem 0.5rem;
         display: flex;
         flex-direction: column;
@@ -136,15 +136,15 @@
         justify-content: flex-start; /* agar item mulai dari atas */
         align-items: flex-start;   /* agar item rata kiri */
     }
-    .card-header.emerald {
+    .card-header-app.emerald {
       background-color: var(--color-emerald-light);
     }
 
-    .card-header.sky {
+    .card-header-app.sky {
       background-color: var(--color-primary-light);
     }
 
-    .card-header.amber {
+    .card-header-app.amber {
       background-color: var(--color-amber-light);
     }
     .card-title, .card-description {
@@ -166,7 +166,7 @@
       text-align: left;
     }
 
-    .card-content {
+    .card-content-app {
       padding: 1.5rem;
     }
 
@@ -452,7 +452,7 @@
 <div class="row">
     <div class="col-lg-12 col-md-12">
         <div class="card shadow bg-light">
-            <div class="card-header custom-header pb-0 text-dark">
+            <div class="card-header-app custom-header pb-0 text-dark">
                 <div>
                     <h3 class="card-title">MONITORING ABSENSI KARYAWAN</h3>
                     <h6 id="tanggal_kehadiran_sekarang" class="card-subtitle"></h6>
@@ -469,7 +469,7 @@
                     </div>
                     <div class="col-xl-5 col-lg-6 col-md-12 col-sm-12">
                         <div class="card card-counter bg-gradient-primary">
-                            <div class="card-header pb-0 text-center">
+                            <div class="card-header-app pb-0 text-center">
                                 <div>
                                     <h6 class="card-title text-center text-sm">KARYAWAN (JUMLAH, STAFF / NON STAFF)</h6>
                                 </div>
@@ -551,7 +551,7 @@
         </div>
     </div>
 </div> --}}
-<div class="container">
+<div class="container-app">
     <header>
       <div class="header-content">
         <div>
@@ -569,12 +569,12 @@
 
     <div class="dashboard-grid">
       <!-- Attendance Card -->
-      <div class="card">
-        <div class="card-header emerald">
+      <div class="card-app">
+        <div class="card-header-app emerald">
           <div class="card-title">Tingkat Kehadiran</div>
           <div class="card-description">Persentase kehadiran karyawan</div>
         </div>
-        <div class="card-content">
+        <div class="card-content-app">
           <div class="attendance-chart">
             <div id="chartdiv"></div>
             <div class="attendance-stats">
@@ -592,12 +592,12 @@
       </div>
 
       <!-- Employee Card -->
-      <div class="card">
-        <div class="card-header sky">
+      <div class="card-app">
+        <div class="card-header-app sky">
           <div class="card-title">Karyawan</div>
           <div class="card-description">Jumlah staff dan non-staff</div>
         </div>
-        <div class="card-content">
+        <div class="card-content-app">
           <div class="employee-count">
             <div>
               <div class="count-value" id="total_karyawan_aktif"></div>
@@ -631,12 +631,12 @@
       </div>
 
       <!-- Statistics Card -->
-      <div class="card">
-        <div class="card-header amber">
+      <div class="card-app">
+        <div class="card-header-app amber">
           <div class="card-title">Statistik Kehadiran</div>
           <div class="card-description">Perbandingan periode waktu</div>
         </div>
-        <div class="card-content">
+        <div class="card-content-app">
           <div class="stat-card">
             <div class="stat-info">
               <div class="stat-icon today-icon">
