@@ -119,21 +119,21 @@
     }
     .recommendation {
       position: absolute;
-      bottom: 158px;
+      bottom: 155px;
       left: 0;
-      width: 50%;
+      width: 48.5%;
       border-right: 1px solid black;
-      border-bottom: 1px solid black;
       padding-left:9px;
+      height: 117px;
     }
 
     .recommendation label {
         display: block;
         align-items: center;
         margin: 4px 0;
-        }
+    }
 
-        @page { margin: 20px 20px 40px 20px; }
+    @page { margin: 20px 20px 40px 20px; }
     </style>
 </head>
 
@@ -205,13 +205,11 @@
                 <td style="padding-left: 10px;font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="20%">Tanggal Masuk Kerja</td>
                 <td style="font-size:8pt;vertical-align:top;text-align:left;" width="2%">:</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">{{ \Carbon\Carbon::parse($data_karyawan->join_date)->translatedFormat('d F Y') }}</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="10%">Periode Penilaian</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="13%">Perpanjangan PKS</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="2%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%"> @if($data_penilaian && $data_penilaian->tgl_awal_kontrak && $data_penilaian->tgl_akhir_kontrak)
-                        {{ \Carbon\Carbon::parse($data_penilaian->tgl_awal_kontrak)->translatedFormat('d F Y') }} -
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%"> @if($data_penilaian && $data_penilaian->tgl_akhir_kontrak)
                         {{ \Carbon\Carbon::parse($data_penilaian->tgl_akhir_kontrak)->translatedFormat('d F Y') }}
                 @else
-                {{ \Carbon\Carbon::parse($contract)->translatedFormat('d F Y') }} -
                 {{ \Carbon\Carbon::parse($contract_end)->translatedFormat('d F Y') }}
                 @endif</td>
             </tr>
@@ -534,13 +532,14 @@
                     <td colspan="2" style="border-bottom:none; height: 60px;border-right:none;"></td>
                 </tr>
                 <tr>
-                    <td colspan="2" style=" text-align: center; height:25px; line-height:1;border-right:none;">{{$data_karyawan->employee_name}}</td>
+                    <td colspan="2" style="text-align: center; height:25px; line-height:1;border-right:none; letter-spacing: 1px;">{{$data_karyawan->employee_name}}</td>
                 </tr>
             </tbody>
         </table>
 
         <!-- Rekomendasi -->
         <div class="recommendation">
+            <div style="height: 3px;"></div>
           <strong>D. Rekomendasi Tindak Lanjut</strong>
           <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $data_penilaian ? $data_penilaian->rekomendasi_tindak_lanjut == 'perpanjang' ? 'checked' : '' : ''}} name="rekomendasi" value="perpanjang" id="rekomendasi_perpanjang_kontrak"> Perpanjangan Kontrak {{ $data_penilaian ? $data_penilaian->perpanjang_bulan : '___________'}} Bulan</label>
           <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $data_penilaian ? $data_penilaian->rekomendasi_tindak_lanjut == 'phk' ? 'checked' : '' : ''}} name="rekomendasi" value="phk" id="rekomendasi_phk"> Tidak Perpanjang Kontrak / PHK</label>

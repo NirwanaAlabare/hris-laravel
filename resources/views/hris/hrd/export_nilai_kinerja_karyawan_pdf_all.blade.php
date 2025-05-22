@@ -111,7 +111,7 @@
     .known {
       position: absolute;
       top: 180px;
-      right: 0px;
+      right: -1px;
       width: 270px;
       height: 80px;
       border: 1px solid black;
@@ -122,21 +122,22 @@
     }
     .recommendation {
       position: absolute;
-      bottom: 158px;
+      bottom: 155px;
       left: 0;
-      width: 50%;
+      width: 48.9%;
       border-right: 1px solid black;
       border-bottom: 1px solid black;
       padding-left:9px;
+      height: 115px;
     }
 
     .recommendation label {
         display: block;
         align-items: center;
         margin: 4px 0;
-        }
+    }
 
-        @page { margin: 20px 20px 40px 20px; }
+    @page { margin: 20px 20px 40px 20px; }
     </style>
 </head>
 @foreach ($data as $key=>$value)
@@ -529,7 +530,7 @@
                     <td colspan="2" style="border-bottom:none; height: 60px;border-right:none;"></td>
                 </tr>
                 <tr>
-                    <td colspan="2" style=" text-align: center; height:25px; line-height:1;border-right:none;">{{$value->employee_name}}</td>
+                    <td colspan="2" style=" text-align: center; height:25px; line-height:1;border-right:none; letter-spacing: 1px;">{{$value->employee_name}}</td>
                 </tr>
             </tbody>
         </table>
@@ -537,12 +538,13 @@
         </div>
         <!-- Rekomendasi -->
         <div class="recommendation" style="border-left:1px solid;">
-          <strong>D. Rekomendasi Tindak Lanjut</strong>
+            <div style="height: 3px;"></div>
+          <div ><strong>D. Rekomendasi Tindak Lanjut</strong></div>
           <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $value->penilaian ? $value->penilaian->rekomendasi_tindak_lanjut == 'perpanjang' ? 'checked' : '' : ''}} name="rekomendasi" value="perpanjang" id="rekomendasi_perpanjang_kontrak"> Perpanjangan Kontrak {{ $value->penilaian ? $value->penilaian->perpanjang_bulan : '___________'}} Bulan</label>
           <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $value->penilaian ? $value->penilaian->rekomendasi_tindak_lanjut == 'phk' ? 'checked' : '' : ''}} name="rekomendasi" value="phk" id="rekomendasi_phk"> Tidak Perpanjang Kontrak / PHK</label>
           <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $value->penilaian ? $value->penilaian->rekomendasi_tindak_lanjut == 'demosi' ? 'checked' : '' : ''}} name="rekomendasi" value="demosi" id="rekomendasi_demosi"> Demosi</label>
           <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $value->penilaian ? $value->penilaian->rekomendasi_tindak_lanjut == 'promosi' ? 'checked' : '' : ''}} name="rekomendasi" value="promosi" id="rekomendasi_promosi"> Promosi</label>
-          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $value->penilaian ? $value->penilaian->rekomendasi_tindak_lanjut == 'training' ? 'checked' : '' : ''}} name="rekomendasi" value="training" id="rekomendasi_training"> Training / Pengembangan, Sebutkan Judul / Tujuan {{$value->penilaian && ($value->penilaian->judul_training ? $value->penilaian->judul_training : '...........................................')}}</label>
+          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $value->penilaian ? $value->penilaian->rekomendasi_tindak_lanjut == 'training' ? 'checked' : '' : ''}} name="rekomendasi" value="training" id="rekomendasi_training"> Training / Pengembangan, Sebutkan Judul / Tujuan {{$value->penilaian ? $value->penilaian->judul_training : '___________'}}</label>
         </div>
         <table width="100%" style="position: absolute; bottom: -20px;">
             <thead>
