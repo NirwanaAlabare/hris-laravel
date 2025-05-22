@@ -82,6 +82,7 @@ class DataAbsenPerijinanController extends AdminBaseController
             {
                 $query =  DataAbsenPerijinan::
                                     selectRaw('employee_atribut.employee_name,employee_atribut.nik, data_absen_perijinan.*')
+                                    ->where('data_absen_perijinan.is_verifikasi_pengajuan_admin', '=', 1)
                                     ->offset($start)
                                     ->limit($limit)
                                     ->orderBy($order,$dir)
@@ -97,6 +98,7 @@ class DataAbsenPerijinanController extends AdminBaseController
                 selectRaw('employee_atribut.employee_name, data_absen_perijinan.*')
                 ->leftJoin('employee_atribut', 'data_absen_perijinan.enroll_id', '=', 'employee_atribut.enroll_id')
                 ->where('data_absen_perijinan.uuid_master', 'LIKE', "%{$search}%")
+                ->where('data_absen_perijinan.is_verifikasi_pengajuan_admin', '=', 1)
                 ->orWhere('data_absen_perijinan.tanggal_perizinan', 'LIKE', "%{$search}%")
                 ->orWhere('data_absen_perijinan.nomor_form_perizinan', 'LIKE', "%{$search}%")
                 ->orWhere('data_absen_perijinan.enroll_id', 'LIKE', "%{$search}%")
@@ -112,6 +114,7 @@ class DataAbsenPerijinanController extends AdminBaseController
             $totalData = DataAbsenPerijinan::
                 leftJoin('employee_atribut', 'data_absen_perijinan.enroll_id', '=', 'employee_atribut.enroll_id')
                 ->where('data_absen_perijinan.uuid_master', 'LIKE', "%{$search}%")
+                ->where('data_absen_perijinan.is_verifikasi_pengajuan_admin', '=', 1)
                 ->orWhere('data_absen_perijinan.tanggal_perizinan', 'LIKE', "%{$search}%")
                 ->orWhere('data_absen_perijinan.nomor_form_perizinan', 'LIKE', "%{$search}%")
                 ->orWhere('data_absen_perijinan.enroll_id', 'LIKE', "%{$search}%")
@@ -373,7 +376,7 @@ class DataAbsenPerijinanController extends AdminBaseController
             'total_time_ijin' => $total_time_ijin,
             'operator' => $email,
             'diajukan_oleh' => $email,
-            'is_verifikasi_pengajuan_admin' => 0,
+            'is_verifikasi_pengajuan_admin' => 1,
         ]);
 
         if ($query) {
@@ -645,7 +648,7 @@ class DataAbsenPerijinanController extends AdminBaseController
                 'verifikasi_by'=>$verifikasi_by,
                 'operator' => $email,
                 'diajukan_oleh' => $email,
-                'is_verifikasi_pengajuan_admin' => 0,
+                'is_verifikasi_pengajuan_admin' => 1,
             ]);
         } else {
             return 0;
