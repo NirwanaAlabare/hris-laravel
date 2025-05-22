@@ -199,9 +199,9 @@ h1 {
                             <div class="row">
                                 <div class="col-md-12">
                                     <div clasl="" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-                                            <div class="mt-5 p-0">
+                                            {{-- <div class="mt-5 p-0">
                                                 <button class="btn btn-primary pb-0 py-1" data-target="#print_sk_checked"  id="print_sk_button" style="visibility: hidden"><span class="fa fa-check"></span> Approve</button>
-                                            </div>
+                                            </div> --}}
                                         <div class="mt-5 p-0">
                                             <button class="btn btn-primary w-100" onclick="openModalBuatPengajuan()"  data-toggle="tooltip" title="Cari Data" id="recap_labor_cost_2"><i class="fa fa-plus" aria-hidden="true"></i> Buat Pengajuan</button>
                                         </div>
@@ -632,6 +632,7 @@ h1 {
                         <input type="hidden" id="uuid_modal" value="" />
                         <input type="hidden" id="uuid_master_modal" value="" />
                         <input type="hidden" id="enroll_id_modal" value="" />
+                        <input type="hidden" id="kode_absen_ijin_modal_approve" value="" />
                         <div class="col">
                             <div class="d-flex mb-2">
                                 <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 16px;">Nama Karyawan</p>
@@ -749,25 +750,25 @@ h1 {
         });
     </script>
 
-<script>
-    $(document).ready(function () {
-        function toggleTanggalForm() {
-            const selected = $('#kode_absen_ijin').val();
-            console.log("selected", selected);
-            if (selected && selected !== 'DL' && selected !== 'I' && selected !== 'S') {
-                $('#form_delegasi').show();
-            } else {
-                $('#form_delegasi').hide();
+    <script>
+        $(document).ready(function () {
+            function toggleTanggalForm() {
+                const selected = $('#kode_absen_ijin').val();
+                console.log("selected", selected);
+                if (selected && selected !== 'DL' && selected !== 'I' && selected !== 'S') {
+                    $('#form_delegasi').show();
+                } else {
+                    $('#form_delegasi').hide();
+                }
             }
-        }
 
-        // Inisialisasi saat halaman dimuat
-        toggleTanggalForm();
+            // Inisialisasi saat halaman dimuat
+            toggleTanggalForm();
 
-        // Event listener saat opsi berubah
-        $('#kode_absen_ijin').on('change', toggleTanggalForm);
-    });
-</script>
+            // Event listener saat opsi berubah
+            $('#kode_absen_ijin').on('change', toggleTanggalForm);
+        });
+    </script>
 
 
     <script>
@@ -899,6 +900,7 @@ h1 {
 
                     $('#uuid').val(data.uuid);
                     $('#uuid_master').val(data.uuid_master);
+                    $('#didelegasikan_enroll_id').val(data.didelegasikan_enroll_id);
 
                     $('#nomor_form_perizinan').val(data.nomor_form_perizinan);
                     $('#enroll_id').val(data.enroll_id);
@@ -974,6 +976,7 @@ h1 {
                     $('#uuid_modal').val(data.uuid);
                     $('#uuid_master_modal').val(data.uuid_master);
                     $('#enroll_id_modal').val(data.enroll_id);
+                    $('#kode_absen_ijin_modal_approve').val(data.kode_absen_ijin);
                     if(data.kode_absen_ijin == 'IKS'){
                         $('#label_tanggal_mulai_sampai_modal').text('Waktu Perijinan');
                         $('#tanggal_mulai_sampai_modal').text(data.time_mulai_ijin + ' - ' + data.time_akhir_ijin).prop('disabled', true);
@@ -1003,7 +1006,7 @@ h1 {
                     } else {
                         nama_ijin = value || '-';
                     }
-                    $('#kode_absen_ijin_modal').text(nama_ijin);
+                    $('#kode_absen_ijin_modal').text("-");
 
                 }
             });
@@ -1623,11 +1626,16 @@ h1 {
             });
 
             $('body').on('click', '#btn-approve-pengajuan', function (event) {
-                $('#ajax-modal-approve-pengajuan').modal('hide');
+                var kode_absen_ijin = $('#kode_absen_ijin_modal_approve').val();
                 var uuid = $('#uuid_modal').val();
+                let url = "{{route('cuti_karyawan.dataabsenperijinan.approve_hr_perizinan_menu')}}";
+                $('#ajax-modal-approve-pengajuan').modal('hide');
+                if(kode_absen_ijin == 'IKS'){
+                    url = "{{route('cuti_karyawan.dataabsenperijinan.approve_iks')}}";
+                }
                 $.ajax({
                     type:"POST",
-                    url: "{{route('cuti_karyawan.dataabsenperijinan.approve_hr_perizinan_menu')}}",
+                    url: url,
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     data: {
@@ -1687,6 +1695,7 @@ h1 {
                         swal("", "Reject perizinan berhasil", "success");
                         $('#uuid_modal').val(null);
                         $('#uuid_master_modal').val(null);
+                        $('#kode_absen_ijin_modal_approve').val(null);
                         $('#enroll_id_modal').val(null);
 
                         $('#tanggal_perijinan_modal').text(null).prop('disabled', true);
@@ -1717,6 +1726,7 @@ h1 {
                 $('#ajax-modal-approve-pengajuan').modal('hide');
                 $('#uuid_modal').val(null);
                 $('#uuid_master_modal').val(null);
+                $('#kode_absen_ijin_modal_approve').val(null);
                 $('#enroll_id_modal').val(null);
 
                 $('#tanggal_perijinan_modal').text(null).prop('disabled', true);
@@ -1755,8 +1765,6 @@ h1 {
             var employee_name = $('#employee_name').val();
             var kode_absen_ijin = $('#kode_absen_ijin').val();
             var absen_alasan = $('#absen_alasan_izin').val();
-
-
 
             console.log("kode_absen_ijin", kode_absen_ijin);
             console.log("didelegasikan_enroll_id", didelegasikan_enroll_id);
@@ -1802,14 +1810,14 @@ h1 {
             }
 
             if (kode_absen_ijin !== "DL" && kode_absen_ijin !== "I" && kode_absen_ijin !== "S") {
-            if (!didelegasikan_enroll_id) {
-                notif({
-                    msg: "<b>Warning:</b> Anda belum memilih karyawan untuk didelegasikan.",
-                    type: "warning"
-                });
-                return false;
+                if (!didelegasikan_enroll_id) {
+                    notif({
+                        msg: "<b>Warning:</b> Anda belum memilih karyawan untuk didelegasikan.",
+                        type: "warning"
+                    });
+                    return false;
+                }
             }
-        }
 
 
 
@@ -1880,7 +1888,7 @@ h1 {
                                     var nomor_form_res=res[0].nomor_form_perizinan;
                                     $.ajax({
                                         type:"POST",
-                                        url: "{{route('hris.dataabsenperijinan.update_perizinan_menu')}}",
+                                        url: "{{route('cuti_karyawan.update_perizinan_menu_admin')}}",
                                         headers: {
                                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                                         data: {
@@ -1937,7 +1945,7 @@ h1 {
                                 } else {
                                     $.ajax({
                                         type:"POST",
-                                        url: "{{route('hris.dataabsenperijinan.create_perizinan_menu')}}",
+                                        url: "{{route('cuti_karyawan.create_perizinan_menu_admin')}}",
                                         dataType: 'json',
                                         headers: {
                                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -2154,7 +2162,7 @@ h1 {
                                     if (res > 0) {
                                         $.ajax({
                                             type:"POST",
-                                            url: "{{route('hris.dataabsenperijinan.update_iks_menu')}}",
+                                            url: "{{route('cuti_karyawan.update_iks_menu_admin')}}",
                                             headers: {
                                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                                             data: {
@@ -2188,7 +2196,7 @@ h1 {
                                     } else {
                                         $.ajax({
                                             type:"POST",
-                                            url: "{{route('hris.dataabsenperijinan.create_iks_menu')}}",
+                                            url: "{{route('cuti_karyawan.create_iks_menu_admin')}}",
                                             dataType: 'json',
                                             headers: {
                                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -2385,6 +2393,7 @@ h1 {
             $('#tanggal_mulai_ijin').val(today);
             $('#tanggal_akhir_ijin').val(today);
             $("#uuid_master").val(null);
+            $("#didelegasikan_enroll_id").val(null);
         }
         function searchData() {
             var selectEmployeeID = $('#selectEmployeeID').val();

@@ -301,6 +301,10 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('/cuti_karyawan/show_export', ['as' => 'cuti_karyawan.show_export','uses' => 'MasterData\CutiKaryawanController@show_export']);
     Route::post('/cuti_karyawan/show_export_detail_cuti_karyawan', ['as' => 'cuti_karyawan.show_export_detail_cuti_karyawan','uses' => 'MasterData\CutiKaryawanController@show_export_detail_cuti_karyawan']);
     Route::get('/cuti_karyawan/show_by_id', ['as' => 'cuti_karyawan.show_by_id','uses' => 'MasterData\CutiKaryawanController@show_by_id']);
+    Route::post('/cuti_karyawan/update_perizinan_menu_admin', ['as' => 'cuti_karyawan.update_perizinan_menu_admin','uses' => 'MasterData\CutiKaryawanController@update_perizinan_menu_admin']);
+    Route::post('/cuti_karyawan/create_perizinan_menu_admin', ['as' => 'cuti_karyawan.create_perizinan_menu_admin','uses' => 'MasterData\CutiKaryawanController@create_perizinan_menu_admin']);
+    Route::post('/cuti_karyawan/create_iks_menu_admin', ['as' => 'cuti_karyawan.create_iks_menu_admin','uses' => 'MasterData\CutiKaryawanController@create_iks_menu_admin']);
+    Route::post('/cuti_karyawan/update_iks_menu_admin', ['as' => 'cuti_karyawan.update_iks_menu_admin','uses' => 'MasterData\CutiKaryawanController@update_iks_menu_admin']);
     Route::get('/cuti_karyawan/showing_list_year_period', ['as' => 'cuti_karyawan.showing_list_year_period','uses' => 'MasterData\CutiKaryawanController@showing_list_year_period']);
     Route::post('/cuti_karyawan/show_export_by_join_date', ['as' => 'cuti_karyawan.show_export_by_join_date','uses' => 'MasterData\CutiKaryawanController@show_export_by_join_date']);
     Route::post('/cuti_karyawan/show_export_by_user', ['as' => 'cuti_karyawan.show_export_by_user','uses' => 'MasterData\CutiKaryawanController@show_export_by_user']);
@@ -313,6 +317,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('cuti_karyawan/ajax_dataabsenperizinan',['as'=>'cuti_karyawan.dataabsenperijinan.ajax_dataabsenperizinan','uses'=>'MasterData\CutiKaryawanController@ajax_dataabsenperizinan']);
     Route::post('cuti_karyawan/get_data_perizinan',['as'=>'cuti_karyawan.dataabsenperijinan.get_data_perizinan','uses'=>'MasterData\CutiKaryawanController@get_data_perizinan']);
     Route::post('cuti_karyawan/approve_hr_perizinan_menu',['as'=>'cuti_karyawan.dataabsenperijinan.approve_hr_perizinan_menu','uses'=>'MasterData\CutiKaryawanController@approve_hr_perizinan_menu']);
+    Route::post('cuti_karyawan/approve_iks',['as'=>'cuti_karyawan.dataabsenperijinan.approve_iks','uses'=>'MasterData\CutiKaryawanController@approve_iks']);
     Route::post('cuti_karyawan/reject_hr_perizinan_menu',['as'=>'cuti_karyawan.dataabsenperijinan.reject_hr_perizinan_menu','uses'=>'MasterData\CutiKaryawanController@reject_hr_perizinan_menu']);
     Route::post('cuti_karyawan/cek_dtpc',['as'=>'cuti_karyawan.dataabsenperijinan.cek_dtpc','uses'=>'MasterData\CutiKaryawanController@cek_dtpc']);
     Route::post('cuti_karyawan/update_dtpc_menu',['as'=>'cuti_karyawan.dataabsenperijinan.update_dtpc_menu','uses'=>'MasterData\CutiKaryawanController@update_dtpc_menu']);
