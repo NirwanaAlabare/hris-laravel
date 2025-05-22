@@ -1006,7 +1006,7 @@ h1 {
                     } else {
                         nama_ijin = value || '-';
                     }
-                    $('#kode_absen_ijin_modal').text("-");
+                    $('#kode_absen_ijin_modal').text(nama_ijin);
 
                 }
             });
