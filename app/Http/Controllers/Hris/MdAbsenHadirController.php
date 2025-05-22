@@ -2271,7 +2271,6 @@ class MdAbsenHadirController extends AdminBaseController
                     $status_staff=$v->employee_atribut->status_staff;
                     $durasi_kerja=date_diff(date_create($jadwal_in),date_create($jadwal_out));
                     $durasi_kerja_menit=$durasi_kerja->i +($durasi_kerja->h*60);
-                    dd($jadwal_in);
                     $DT = date_diff(date_create($jadwal_in),date_create($absen_in));
                     $PC = date_diff(date_create($jadwal_out),date_create($absen_out));
                     if($v->tanggal_berjalan==$today){
@@ -2477,7 +2476,6 @@ class MdAbsenHadirController extends AdminBaseController
                     }else{
                         if( $jadwal_in!=null && $absen_in!=null && $absen_in>$jadwal_in && ($v->status_absen==null || $v->status_absen=='IKS')){
                             $total_DT1 = $DT->i +($DT->h*60);
-                            dd($DT);
                             if($status_staff=='STAFF'){
                                 if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
                                     if($jadwal_in=='07:00:00'){
