@@ -545,7 +545,7 @@
           <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $data_penilaian ? $data_penilaian->rekomendasi_tindak_lanjut == 'phk' ? 'checked' : '' : ''}} name="rekomendasi" value="phk" id="rekomendasi_phk"> Tidak Perpanjang Kontrak / PHK</label>
           <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $data_penilaian ? $data_penilaian->rekomendasi_tindak_lanjut == 'demosi' ? 'checked' : '' : ''}} name="rekomendasi" value="demosi" id="rekomendasi_demosi"> Demosi</label>
           <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $data_penilaian ? $data_penilaian->rekomendasi_tindak_lanjut == 'promosi' ? 'checked' : '' : ''}} name="rekomendasi" value="promosi" id="rekomendasi_promosi"> Promosi</label>
-          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $data_penilaian ? $data_penilaian->rekomendasi_tindak_lanjut == 'training' ? 'checked' : '' : ''}} name="rekomendasi" value="training" id="rekomendasi_training"> Training / Pengembangan, Sebutkan Judul / Tujuan {{$data_penilaian && ($data_penilaian->judul_training ? $data_penilaian->judul_training : '...........................................')}}</label>
+          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $data_penilaian ? $data_penilaian->rekomendasi_tindak_lanjut == 'training' ? 'checked' : '' : ''}} name="rekomendasi" value="training" id="rekomendasi_training"> Training / Pengembangan, Sebutkan Judul / Tujuan {{$data_penilaian ? $data_penilaian->judul_training : '___________'}}</label>
         </div>
     </div>
     <table width="98.2%" style="position: absolute; bottom: 8px;left: 8px;">
