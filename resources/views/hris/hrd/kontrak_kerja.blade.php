@@ -99,7 +99,8 @@
                                     <select class="form-control" id="status_kontrak">
                                         <option value="">Pilih Status Kontrak</option>
                                         <option value="One Day">PKS -1 Hari</option>
-                                        <option value="Thirty Day">PKS -30 Hari</option>
+                                        <option value="Thirty Day">PKS - 30 Hari</option>
+                                        <option value="Sixty Day">PKS > 60 Hari</option>
                                         <option value="Not yet extended">PKS Belum Diperpanjang</option>
                                         {{-- <option value="Unfilled">Status kontrak belum diinput</option> --}}
                                     </select>

@@ -137,7 +137,14 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         }else if($status_kontrak=='One Day'){
             $inStatusKontrak='AND y.contract_end = curdate()';
         }else if($status_kontrak=='Thirty Day'){
-            $thirty_day_more = date('Y-m-d',strtotime('+30 days',strtotime(date("Y-m-d")))) . PHP_EOL;
+            // $thirty_day_more = date('Y-m-d',strtotime('+30 days',strtotime(date("Y-m-d")))) . PHP_EOL;
+            // $inStatusKontrak='AND y.contract_end = "'.$thirty_day_more.'"';
+            $today = date('Y-m-d');
+            $thirty_days_later = date('Y-m-d', strtotime('+30 days'));
+            $inStatusKontrak = 'AND y.contract_end BETWEEN "'.$today.'" AND "'.$thirty_days_later.'"';
+
+        }else if($status_kontrak=='Sixty Day'){
+            $thirty_day_more = date('Y-m-d',strtotime('+60 days',strtotime(date("Y-m-d")))) . PHP_EOL;
             $inStatusKontrak='AND y.contract_end = "'.$thirty_day_more.'"';
         }else if($status_kontrak=='Not yet extended'){
             $inStatusKontrak='AND y.contract_end < curdate() AND z.status_aktif ="AKTIF"';
@@ -624,7 +631,14 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             }else if($status_kontrak=='One Day'){
                 $inStatusKontrak='AND c.max_contract_end = curdate()';
             }else if($status_kontrak=='Thirty Day'){
-                $thirty_day_more = date('Y-m-d',strtotime('+30 days',strtotime(date("Y-m-d")))) . PHP_EOL;
+                // $thirty_day_more = date('Y-m-d',strtotime('+30 days',strtotime(date("Y-m-d")))) . PHP_EOL;
+                // $inStatusKontrak='AND c.max_contract_end = "'.$thirty_day_more.'"';
+
+            $today = date('Y-m-d');
+            $thirty_days_later = date('Y-m-d', strtotime('+30 days'));
+            $inStatusKontrak = 'AND c.max_contract_end BETWEEN "'.$today.'" AND "'.$thirty_days_later.'"';
+            }else if($status_kontrak=='Sixty Day'){
+                $thirty_day_more = date('Y-m-d',strtotime('+60 days',strtotime(date("Y-m-d")))) . PHP_EOL;
                 $inStatusKontrak='AND c.max_contract_end = "'.$thirty_day_more.'"';
             }else if($status_kontrak=='Not yet extended'){
                 $inStatusKontrak='AND c.max_contract_end < curdate() AND a.status_aktif ="AKTIF"';
