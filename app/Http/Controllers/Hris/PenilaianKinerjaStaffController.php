@@ -26,7 +26,6 @@ use App\Models\DepartmentAll;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Http;
 use PDF;
-use SnappyPDF;
 
 
 class PenilaianKinerjaStaffController extends AdminBaseController
@@ -572,7 +571,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             $data_penilaian->total = $total;
             $data_penilaian->total_pengurangan = $total_pengurangan;
         }
-        $pdf = SnappyPDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_custom',['data_penilaian'=>$data_penilaian,'data_karyawan'=>$data_karyawan,'contract'=>$contract,'contract_end'=>$contract_end]);
+        $pdf = PDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_custom',['data_penilaian'=>$data_penilaian,'data_karyawan'=>$data_karyawan,'contract'=>$contract,'contract_end'=>$contract_end]);
         return $pdf->stream('laporan-pegawai.pdf');
     }
 
