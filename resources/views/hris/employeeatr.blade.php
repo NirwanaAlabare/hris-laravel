@@ -1125,7 +1125,7 @@
             font-size: 9pt; /* Hide the horizontal scroll */
         }
     </style>
-    <script>
+    {{-- <script>
         $(document).ready(function() {
             // $('#nomor_rekening_bank').on('input', function() {
             //     $('#nama_bank').val('');
@@ -1141,10 +1141,19 @@
         });
 
 
-    </script>
+    </script> --}}
     <script type="text/javascript">
+    let initialNomorRekening = null;
+    $('#nomor_rekening_bank').on('input', function() {
+        const currentVal = $(this).val();
 
-$('#btndownloadFoto').click(function(e){
+        if (initialNomorRekening && currentVal !== initialNomorRekening) {
+            // Jika ada perubahan dan nilai awal bukan null/kosong, reset nama_bank
+            $('#nama_bank').val('');
+        }
+    });
+
+    $('#btndownloadFoto').click(function(e){
         e.preventDefault();
 
         let nik = $('#nik').val();
@@ -1164,269 +1173,269 @@ $('#btndownloadFoto').click(function(e){
 
 
 
-        $('#btndownloadid').click(function(e){
-            if($('#enroll_id').val()==''){
-                alert('Pilih karyawan terlebih dahulu!');
-            }else{
-                var enroll_id=$('#enroll_id').val();
-                var url = 'export_pdf_id_card?enroll_id='+enroll_id;
-                window.open(url, '_blank');
-            }
-        });
-        $('#btndownloadiddept').click(function(e){
-                var department=$('#selectDepartment').val();
-                var sub_department=$('#pilih_department').val();
-                var url = 'export_pdf_id_card_department?department='+department+'&sub_department='+sub_department;
-                window.open(url, '_blank');
-        });
-        $('#btnselectemployee').click(function(e){
-            $("#selected_employees").empty();
-            document.getElementById('selected_employees').style.height='1px';
-            document.getElementById('row_employee').style.height='67px';
-            $.ajax({
-                type:"POST",
-                url: "{{route('hris.employeeatr.select_employee')}}",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                data: {
-                    department:$('#selectDepartment').val(),
-                    sub_department:$('#pilih_department').val(),
-                },
-                success: function(data){
-                    jQuery.each(data, function(key,value){
-                        $('#selected_employees').append("<tr>\
-                                <td width='10px' style='padding-top:4px;padding-bottom:8px'><div class='form-check'><input class='form-check-input' type='checkbox' style='width: 20px;height:20px' value='"+data[key].enroll_id+"'id='employee' name='employee'></td>\
-                                <td width='68px'>"+data[key].enroll_id+"</td>\
-                                <td width='120px'>"+data[key].nik+"</td>\
-                                <td width='200px'>"+data[key].employee_name+"</td>\
-                                <td width='150px'>"+data[key].jenis_kelamin+"</td>\
-                                <td width='150px'>"+data[key].status_jabatan+"</td>\
-                                <td width='200px'>"+data[key].department_name+"</td>\
-                                <td width='200px'>"+data[key].sub_dept_name+"</td>\
-                                <td width='120px'>"+data[key].status_aktif+"</td>\
-                                </label>\
-                            </tr>\
-                        ");
-                    });
-                    document.getElementById('row_employee').style.height='570px';
-                    document.getElementById('selected_employees').style.height='500px';
-                }
-            });
-        });
-        function toggle(source) {
-            checkboxes = document.getElementsByName('employee');
-            for(var i=0, n=checkboxes.length;i<n;i++) {
-                checkboxes[i].checked = source.checked;
-            }
-        }
-        $('#btndownloadselectedids').click(function(e){
-            // const array_employee=[];
-            // $("input:checkbox[name=employee]:checked").each(function(){
-            //     array_employee.push($(this).val());
-            // });
-            var url = 'export_pdf_id_card_employee?employee='+checkedEmployeeArr;
-            // var url = 'export_pdf_id_card_employee?employee='+array_employee;
-            window.open(url, '_blank');
-        });
-        $('#selectDepartment').on('change',function(e){
-            $("#checkAllEmployee").prop("checked", false);
-            $("#checkAllEmployee").trigger("change");
-
-            testing();
-            $("#pilih_department").empty();
-            $("#pilih_department").val('');
-            $.ajax({
-                type:"POST",
-                url: "{{route('hris.departmentall.getSelectSubDept')}}",
-                dataType: 'json',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                data: {
-                    department_id:$('#selectDepartment').val(),
-                    sub_dept_id:$('#pilih_department').val(),
-                },
-                dataType: 'json',
-                success: function(resA){
-                    if(resA){
-                        $("#pilih_department").append(new Option('Filter Sub Department', ''));
-                        for(i=0;i<resA.length;i++) {
-                            $("#pilih_department").append(new Option(resA[i].sub_dept_name, resA[i].sub_dept_id));
-                        }
-                    }
-                }
-            });
-            $("#pilih_department").empty();
-            $("#pilih_department").val('');
-        });
-        $('#pilih_department').on('change',function(e){
-            testing();
-            $("#checkAllEmployee").prop("checked", false);
-            $("#checkAllEmployee").trigger("change");
-        });
-        $('#btnupload').click(function(e){
-            let enroll_id=$('#enroll_id').val();
-            $('#upload_image').attr('disabled',true);
-            if(enroll_id==''){
-                alert('Pilih karyawan terlebih dahulu!');
-            }else{
-                $('#choose_photo').val('');
-                $('#uploadFoto').modal('show');
-            }
-        });
-        $('#choose_photo').change(function(e){
-            $('#image_preview').empty();
-            var fileInput = document.getElementById('choose_photo');
-            var filePath = fileInput.value;
-            var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
-            if(!allowedExtensions.exec(filePath)){
-                alert('Please upload file having extensions .jpeg/.jpg/.png/.gif only.');
-                fileInput.value = '';
-                $('#image_preview').append('<img src="{{URL::asset('assets/images/brand/foto orang.png')}}" alt="" class="user mt-3">');
-                $('#upload_image').attr('disabled',true);
-                return false;
-            }else{
-                //Image preview
-                if (fileInput.files && fileInput.files[0]) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        document.getElementById('image_preview').innerHTML = '<img src="'+e.target.result+' " width=255px/>';
-                    };
-                    reader.readAsDataURL(fileInput.files[0]);
-                    $('#upload_image').attr('disabled',false);
-                }
-            }
-        });
-
-        $(document).on("click","#upload_image",function(e){
-            e.preventDefault();
-            var formData = new FormData();
+    $('#btndownloadid').click(function(e){
+        if($('#enroll_id').val()==''){
+            alert('Pilih karyawan terlebih dahulu!');
+        }else{
             var enroll_id=$('#enroll_id').val();
-            let _token = $('meta[name="csrf-token"]').attr('content');
-            var photo = $('#choose_photo').prop('files')[0];
-            formData.append('enroll_id', enroll_id);
-            formData.append('photo', photo);
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                type:"POST",
-                url: "{{route('hris.employeeatr.store_photo')}}",
-                contentType: 'multipart/form-data',
-                cache: false,
-                contentType: false,
-                processData: false,
-                data: formData,
-                success: function(res){
-                    swal("", "Profile photo update success", "success");
-                    $('#uploadFoto').modal('hide');
-                    $('#choose_photo').val('');
-                    $('#image_preview').empty().append('<img src="{{URL::asset('assets/images/brand/foto orang.png')}}" alt="" class="user mt-3">');
-                }
-            });
-        });
-        $('#upload_image').click(function($query){
-            let enroll_id=$('#enroll_id').val();
-
-        });
-        function fill_the_table(){
-            $('#loading_karyawan').addClass("spinner-border");
-            $('#tabel_karyawan').empty();
-            var formData = new FormData();
-            var excelFile=document.getElementById("excel_filess");
-            var myFile=excelFile.files[0];
-            var error_handle = $("input[name='error_handle']:checked").val();
-            formData.append("excel_file",myFile);
-            formData.append("error_handle",error_handle);
-            document.getElementById('row_tabler').style.height='67px';
-            document.getElementById('tabel_karyawan').style.height='1px';
-            document.getElementById('employeeImportButton').style.visibility='hidden';
-            if(typeof myFile=='undefined'){
-                notif({
-                    msg: "<b>Error:</b> Pilih File terlebih dahulu!",
-                    type: "error"
+            var url = 'export_pdf_id_card?enroll_id='+enroll_id;
+            window.open(url, '_blank');
+        }
+    });
+    $('#btndownloadiddept').click(function(e){
+            var department=$('#selectDepartment').val();
+            var sub_department=$('#pilih_department').val();
+            var url = 'export_pdf_id_card_department?department='+department+'&sub_department='+sub_department;
+            window.open(url, '_blank');
+    });
+    $('#btnselectemployee').click(function(e){
+        $("#selected_employees").empty();
+        document.getElementById('selected_employees').style.height='1px';
+        document.getElementById('row_employee').style.height='67px';
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.employeeatr.select_employee')}}",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            data: {
+                department:$('#selectDepartment').val(),
+                sub_department:$('#pilih_department').val(),
+            },
+            success: function(data){
+                jQuery.each(data, function(key,value){
+                    $('#selected_employees').append("<tr>\
+                            <td width='10px' style='padding-top:4px;padding-bottom:8px'><div class='form-check'><input class='form-check-input' type='checkbox' style='width: 20px;height:20px' value='"+data[key].enroll_id+"'id='employee' name='employee'></td>\
+                            <td width='68px'>"+data[key].enroll_id+"</td>\
+                            <td width='120px'>"+data[key].nik+"</td>\
+                            <td width='200px'>"+data[key].employee_name+"</td>\
+                            <td width='150px'>"+data[key].jenis_kelamin+"</td>\
+                            <td width='150px'>"+data[key].status_jabatan+"</td>\
+                            <td width='200px'>"+data[key].department_name+"</td>\
+                            <td width='200px'>"+data[key].sub_dept_name+"</td>\
+                            <td width='120px'>"+data[key].status_aktif+"</td>\
+                            </label>\
+                        </tr>\
+                    ");
                 });
-                document.getElementById('tabel_karyawan').style.height='1px';
-                document.getElementById('row_error_handle').style.visibility='hidden';
-                document.getElementById('employeeImportButton').style.visibility='hidden';
-                $('#loading_karyawan').removeClass("spinner-border");
-                document.getElementById('row_tabler').style.height='67px';
-            }else{
-                $.ajax({
-                    type: 'POST',
-                    url: '{{route('hris.employeeatr.import_employees')}}',
-                    contentType: false,
-                    processData: false,
-                    data: formData,
-                    success:function(data){
-                        var count=0;
-                        var count2=0;
-                        jQuery.each(data, function(key,value){
-                            count2++;
-                            $('#tabel_karyawan').append("<tr style='background-color:"+data[key].status_department+"'>\
-                                <td width='68px'>"+data[key].enroll_id+"</td>\
-                                <td width='120px'>"+data[key].nik+"</td>\
-                                <td width='250px'>"+data[key].nama_karyawan+"</td>\
-                                <td width='150px'>"+data[key].jenis_kelamin+"</td>\
-                                <td width='150px'>"+data[key].jabatan+"</td>\
-                                <td width='200px'>"+data[key].department+"</td>\
-                                <td width='200px'>"+data[key].bagian+"</td>\
-                                <td width='120px'>"+data[key].status_aktif+"</td>\
-                            </tr>");
-                            if(data[key].status_department!='red'){
-                                count++;
-                            }
-                        });
-                        $('#length_karyawan').text(count2);
-                        $('#correct_data').text(count);
-                        document.getElementById('tabel_karyawan').style.height='330px';
-                        document.getElementById('employeeImportButton').style.visibility='visible';
-                        document.getElementById('row_error_handle').style.visibility='visible';
-                        $('#loading_karyawan').removeClass("spinner-border");
-                        document.getElementById('row_tabler').style.height='400px';
+                document.getElementById('row_employee').style.height='570px';
+                document.getElementById('selected_employees').style.height='500px';
+            }
+        });
+    });
+    function toggle(source) {
+        checkboxes = document.getElementsByName('employee');
+        for(var i=0, n=checkboxes.length;i<n;i++) {
+            checkboxes[i].checked = source.checked;
+        }
+    }
+    $('#btndownloadselectedids').click(function(e){
+        // const array_employee=[];
+        // $("input:checkbox[name=employee]:checked").each(function(){
+        //     array_employee.push($(this).val());
+        // });
+        var url = 'export_pdf_id_card_employee?employee='+checkedEmployeeArr;
+        // var url = 'export_pdf_id_card_employee?employee='+array_employee;
+        window.open(url, '_blank');
+    });
+    $('#selectDepartment').on('change',function(e){
+        $("#checkAllEmployee").prop("checked", false);
+        $("#checkAllEmployee").trigger("change");
+
+        testing();
+        $("#pilih_department").empty();
+        $("#pilih_department").val('');
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.departmentall.getSelectSubDept')}}",
+            dataType: 'json',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            data: {
+                department_id:$('#selectDepartment').val(),
+                sub_dept_id:$('#pilih_department').val(),
+            },
+            dataType: 'json',
+            success: function(resA){
+                if(resA){
+                    $("#pilih_department").append(new Option('Filter Sub Department', ''));
+                    for(i=0;i<resA.length;i++) {
+                        $("#pilih_department").append(new Option(resA[i].sub_dept_name, resA[i].sub_dept_id));
                     }
-                })
+                }
+            }
+        });
+        $("#pilih_department").empty();
+        $("#pilih_department").val('');
+    });
+    $('#pilih_department').on('change',function(e){
+        testing();
+        $("#checkAllEmployee").prop("checked", false);
+        $("#checkAllEmployee").trigger("change");
+    });
+    $('#btnupload').click(function(e){
+        let enroll_id=$('#enroll_id').val();
+        $('#upload_image').attr('disabled',true);
+        if(enroll_id==''){
+            alert('Pilih karyawan terlebih dahulu!');
+        }else{
+            $('#choose_photo').val('');
+            $('#uploadFoto').modal('show');
+        }
+    });
+    $('#choose_photo').change(function(e){
+        $('#image_preview').empty();
+        var fileInput = document.getElementById('choose_photo');
+        var filePath = fileInput.value;
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+        if(!allowedExtensions.exec(filePath)){
+            alert('Please upload file having extensions .jpeg/.jpg/.png/.gif only.');
+            fileInput.value = '';
+            $('#image_preview').append('<img src="{{URL::asset('assets/images/brand/foto orang.png')}}" alt="" class="user mt-3">');
+            $('#upload_image').attr('disabled',true);
+            return false;
+        }else{
+            //Image preview
+            if (fileInput.files && fileInput.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('image_preview').innerHTML = '<img src="'+e.target.result+' " width=255px/>';
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+                $('#upload_image').attr('disabled',false);
             }
         }
-        $('#excel_filess').change(function() {
-            fill_the_table();
+    });
+
+    $(document).on("click","#upload_image",function(e){
+        e.preventDefault();
+        var formData = new FormData();
+        var enroll_id=$('#enroll_id').val();
+        let _token = $('meta[name="csrf-token"]').attr('content');
+        var photo = $('#choose_photo').prop('files')[0];
+        formData.append('enroll_id', enroll_id);
+        formData.append('photo', photo);
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
         });
-        $('#employeeImportButton').click(function(){
-            var formData = new FormData();
-            var excelFile=document.getElementById("excel_filess");
-            var myFile=excelFile.files[0];
-            formData.append("excel_file",myFile);
-            $('#employeeImportButton').addClass("btn-loading");
-            $("#employeeImportButton").html('Please wait...');
-            $("#employeeImportButton").attr("disabled", true);
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.employeeatr.store_photo')}}",
+            contentType: 'multipart/form-data',
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: formData,
+            success: function(res){
+                swal("", "Profile photo update success", "success");
+                $('#uploadFoto').modal('hide');
+                $('#choose_photo').val('');
+                $('#image_preview').empty().append('<img src="{{URL::asset('assets/images/brand/foto orang.png')}}" alt="" class="user mt-3">');
+            }
+        });
+    });
+    $('#upload_image').click(function($query){
+        let enroll_id=$('#enroll_id').val();
+
+    });
+    function fill_the_table(){
+        $('#loading_karyawan').addClass("spinner-border");
+        $('#tabel_karyawan').empty();
+        var formData = new FormData();
+        var excelFile=document.getElementById("excel_filess");
+        var myFile=excelFile.files[0];
+        var error_handle = $("input[name='error_handle']:checked").val();
+        formData.append("excel_file",myFile);
+        formData.append("error_handle",error_handle);
+        document.getElementById('row_tabler').style.height='67px';
+        document.getElementById('tabel_karyawan').style.height='1px';
+        document.getElementById('employeeImportButton').style.visibility='hidden';
+        if(typeof myFile=='undefined'){
+            notif({
+                msg: "<b>Error:</b> Pilih File terlebih dahulu!",
+                type: "error"
+            });
+            document.getElementById('tabel_karyawan').style.height='1px';
+            document.getElementById('row_error_handle').style.visibility='hidden';
+            document.getElementById('employeeImportButton').style.visibility='hidden';
+            $('#loading_karyawan').removeClass("spinner-border");
+            document.getElementById('row_tabler').style.height='67px';
+        }else{
             $.ajax({
                 type: 'POST',
-                url: '{{route('hris.employeeatr.import_employee_to_database')}}',
+                url: '{{route('hris.employeeatr.import_employees')}}',
                 contentType: false,
                 processData: false,
                 data: formData,
                 success:function(data){
-                    $('#employeeImportButton').removeClass("btn-loading");
-                    $("#employeeImportButton").html('<i class="fa fa-upload" aria-hidden="true"></i> IMPORT');
-                    $("#employeeImportButton").attr("disabled", false);
-                    swal("", "IMPORT KARYAWAN BERHASIL!", "success");
-                    $('#import_employees').modal('hide');
-                    $('#excel_filess').val('');
-                    document.getElementById('tabel_karyawan').style.height='1px';
-                    document.getElementById('row_error_handle').style.visibility='hidden';
-                    document.getElementById('employeeImportButton').style.visibility='hidden';
-                    document.getElementById('row_tabler').style.height='67px';
-                },
-                error: function(res){
-                    swal("", "IMPORT KARYAWAN GAGAL!", "error")
-                    $('#employeeImportButton').removeClass("btn-loading");
-                    $("#employeeImportButton").html('<i class="fa fa-upload" aria-hidden="true"></i> IMPORT');
-                    $("#employeeImportButton").attr("disabled", false);
+                    var count=0;
+                    var count2=0;
+                    jQuery.each(data, function(key,value){
+                        count2++;
+                        $('#tabel_karyawan').append("<tr style='background-color:"+data[key].status_department+"'>\
+                            <td width='68px'>"+data[key].enroll_id+"</td>\
+                            <td width='120px'>"+data[key].nik+"</td>\
+                            <td width='250px'>"+data[key].nama_karyawan+"</td>\
+                            <td width='150px'>"+data[key].jenis_kelamin+"</td>\
+                            <td width='150px'>"+data[key].jabatan+"</td>\
+                            <td width='200px'>"+data[key].department+"</td>\
+                            <td width='200px'>"+data[key].bagian+"</td>\
+                            <td width='120px'>"+data[key].status_aktif+"</td>\
+                        </tr>");
+                        if(data[key].status_department!='red'){
+                            count++;
+                        }
+                    });
+                    $('#length_karyawan').text(count2);
+                    $('#correct_data').text(count);
+                    document.getElementById('tabel_karyawan').style.height='330px';
+                    document.getElementById('employeeImportButton').style.visibility='visible';
+                    document.getElementById('row_error_handle').style.visibility='visible';
+                    $('#loading_karyawan').removeClass("spinner-border");
+                    document.getElementById('row_tabler').style.height='400px';
                 }
-            });
+            })
+        }
+    }
+    $('#excel_filess').change(function() {
+        fill_the_table();
+    });
+    $('#employeeImportButton').click(function(){
+        var formData = new FormData();
+        var excelFile=document.getElementById("excel_filess");
+        var myFile=excelFile.files[0];
+        formData.append("excel_file",myFile);
+        $('#employeeImportButton').addClass("btn-loading");
+        $("#employeeImportButton").html('Please wait...');
+        $("#employeeImportButton").attr("disabled", true);
+        $.ajax({
+            type: 'POST',
+            url: '{{route('hris.employeeatr.import_employee_to_database')}}',
+            contentType: false,
+            processData: false,
+            data: formData,
+            success:function(data){
+                $('#employeeImportButton').removeClass("btn-loading");
+                $("#employeeImportButton").html('<i class="fa fa-upload" aria-hidden="true"></i> IMPORT');
+                $("#employeeImportButton").attr("disabled", false);
+                swal("", "IMPORT KARYAWAN BERHASIL!", "success");
+                $('#import_employees').modal('hide');
+                $('#excel_filess').val('');
+                document.getElementById('tabel_karyawan').style.height='1px';
+                document.getElementById('row_error_handle').style.visibility='hidden';
+                document.getElementById('employeeImportButton').style.visibility='hidden';
+                document.getElementById('row_tabler').style.height='67px';
+            },
+            error: function(res){
+                swal("", "IMPORT KARYAWAN GAGAL!", "error")
+                $('#employeeImportButton').removeClass("btn-loading");
+                $("#employeeImportButton").html('<i class="fa fa-upload" aria-hidden="true"></i> IMPORT');
+                $("#employeeImportButton").attr("disabled", false);
+            }
         });
-    </script>
+    });
+</script>
 
     <script type="text/javascript">
 
@@ -1877,14 +1886,12 @@ $('#btndownloadFoto').click(function(e){
 
                 var data = row.data();
 
-                let initialNomorRekening = null;
 
                 $("#datatable-ajax-crud tbody tr").removeClass('bg-cyan');
                 $(this).addClass('bg-cyan');
 
                 //var data = $("#datatable-ajax-crud").DataTable().row(this).data();
                 //alert(data['employee_name']);
-
                 $('#employee_name').val(data['employee_name']);
                 $("#jenis_kelamin").val(data['jenis_kelamin']).trigger("change");
                 $('#tempat_lahir').val(data['tempat_lahir']);
