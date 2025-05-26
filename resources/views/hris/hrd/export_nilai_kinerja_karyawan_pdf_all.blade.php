@@ -562,7 +562,7 @@
                     <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black; text-align: center; height:25px; line-height:1; padding-top:10px;"> {{ $value->penilaian ? $value->penilaian->penilai : '' }}</td>
                     <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black; text-align: center; height:25px; line-height:1; padding-top:10px;">Chief / Manager</td>
                     <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black; text-align: center; height:25px; line-height:1; padding-top:10px;">HRD</td>
-                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black; text-align: center; height:25px; line-height:1; padding-top:10px;">General Affair</td>
+                    <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black; text-align: center; height:25px; line-height:1; padding-top:10px;">General Manager</td>
                 </tr>
             </thead>
         </table>
