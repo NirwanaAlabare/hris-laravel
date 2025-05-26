@@ -159,11 +159,11 @@
             </tr>
             <tr>
                 <td colspan="2" class="border-left" style="border: 1px solid; font-size: 7.5pt; height: 18px;">Tanggal Revisi</td>
-                <td colspan="3" class="border-right" style="border: 1px solid; font-size: 7.5pt;">: </td>
+                <td colspan="3" class="border-right" style="border: 1px solid; font-size: 7.5pt;">: 14 Desember 2023</td>
             </tr>
             <tr>
-                <td colspan="2" class="border-left" style="border: 1px solid;border-bottom: 1px solid; font-size: 7.5pt; height: 18px;">Tanggal Efektif</td>
-                <td colspan="3" class="border-right" style="border: 1px solid; border-bottom: 1px solid; font-size: 7.5pt;">: </td>
+                <td colspan="2" class="border-left" style="border: 1px solid;border-bottom: 1px solid; font-size: 7.5pt; height: 18px;">Tanggal Berlaku</td>
+                <td colspan="3" class="border-right" style="border: 1px solid; border-bottom: 1px solid; font-size: 7.5pt;">: 18 Desember 2023</td>
             </tr>
         </thead>
     </table>
