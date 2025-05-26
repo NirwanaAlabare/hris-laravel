@@ -870,7 +870,10 @@
         $('#daterange1').val('');
         $('#daterange-btn1').data('daterangepicker').setStartDate(moment());
         $('#daterange-btn1').data('daterangepicker').setEndDate(moment());
-        document.getElementById("print_form_penilaian").style.visibility = "hidden";
+        let status_kontrak = document.getElementById("status_kontrak").value;
+        if(!status_kontrak) {
+            document.getElementById("print_form_penilaian").style.visibility = "hidden";
+        }
         $('#datatable').DataTable().ajax.reload(); // kalau kamu ingin reload juga saat clear
     }
 
@@ -1767,7 +1770,14 @@
     $('#searchNoKTP').on('keyup',function(){
         datatable.ajax.reload();
     });
-    $('#status_kontrak').on('change',function(){
+    $('#status_kontrak').on('change',function(e){
+        let status = e.target.value;
+        let date_range = $('#daterange1').val();
+        if(status || date_range){
+            document.getElementById("print_form_penilaian").style.visibility = "visible";
+        }else{
+            document.getElementById("print_form_penilaian").style.visibility = "hidden";
+        }
         datatable.ajax.reload();
     });
     $('#status_aktif').on('change',function(){
