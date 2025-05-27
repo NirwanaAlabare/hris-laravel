@@ -976,22 +976,9 @@
                             autohide: false
                         });
                     } else {
-
                         var TglMulaiIzin = new Date(tanggal_mulai);
                         var TglAkhirIzin = new Date(tanggal_akhir);
                         var TglPerizinan = new Date(tanggal_periz);
-
-                        // if (TglMulaiIzin.getDate() != TglPerizinan.getDate()) {
-                        //     notif({
-                        //         msg: "<b>Warning:</b> Tanggal Mulai Izin tidak sesuai.",
-                        //         type: "warning"
-                        //     });
-
-                        //     $('#tanggal_mulai_ijin').val(tanggal_periz);
-                        //     $('#tanggal_akhir_ijin').val(tanggal_periz);
-
-                        //     return false;
-                        // }
 
                         if (TglAkhirIzin.getDate() < TglMulaiIzin.getDate()) {
                             notif({
@@ -1019,7 +1006,9 @@
                             },
                             dataType: 'json',
                             success: function(res){
-                                if (res.length > 0) {
+                                console.log("res", res);
+                                console.log("uuid", uuid);
+                                if (res.length > 0 && res[0].nomor_form_perizinan) {
                                     var uuid_res=res[0].uuid;
                                     var nomor_form_res=res[0].nomor_form_perizinan;
                                     $.ajax({
@@ -1076,6 +1065,25 @@
                                             swal("", "update perizinan gagal", "error");
                                         }
                                     });
+                                } else if(res.length > 0 && !res[0].nomor_form_perizinan){
+                                    if (uuid == '') {
+                                        notif({
+                                            msg: `<b>Info:</b> Perijinan pada tanggal tersebut sudah diajukan oleh ${res[0].operator}, dan memerlukan Approval.`,
+                                            type: "info",
+                                            position: "center",
+                                            width: 800,
+                                        });
+                                        $('#progress-show-1').hide();
+                                        $('#progress-hide-1').show();
+                                        $('#btn-save-izin').removeClass("btn-loading");
+                                        $("#btn-save-izin").html('<span><i class="fa fa-save"></i></span> Save');
+                                        $("#form1 :input").prop("disabled", false);
+                                        $("#btn-save-izin").prop("disabled", false);
+                                        $("#btn-save-iks").prop("disabled", false);
+                                        $("#btn-cancel-izin").prop("disabled", false);
+                                        $("#btn-cancel-iks").prop("disabled", false);
+                                        return false;
+                                    }
                                 } else {
                                     $.ajax({
                                         type:"POST",

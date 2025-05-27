@@ -1840,7 +1840,6 @@ h1 {
                 },
                 dataType: 'json',
                 success: function(resA){
-
                     if(resA["ada"]) {
                         notif({
                             type: resA["status"],
@@ -1868,8 +1867,6 @@ h1 {
 
                             return false;
                         }
-
-
                         $.ajax({
                             type:"POST",
                             url: "{{route('hris.dataabsenperijinan.cekperizinan')}}",
@@ -1883,7 +1880,7 @@ h1 {
                             },
                             dataType: 'json',
                             success: function(res){
-                                if (res.length > 0) {
+                                if (res.length > 0 && res[0].nomor_form_perizinan && res[0].is_verifikasi_pengajuan_admin == 0) {
                                     var uuid_res=res[0].uuid;
                                     var nomor_form_res=res[0].nomor_form_perizinan;
                                     $.ajax({
@@ -1942,8 +1939,27 @@ h1 {
                                             swal("", "update perizinan gagal", "error");
                                         }
                                     });
-                                } else {
-                                    $.ajax({
+                                } else if(res.length > 0 && !res[0].nomor_form_perizinan){
+                                    if (uuid == '') {
+                                        notif({
+                                            msg: `<b>Info:</b> Perijinan pada tanggal tersebut sudah dibuat oleh ${res[0].operator}, menunggu Approval.`,
+                                            type: "info",
+                                            position: "center",
+                                            width: 800,
+                                        });
+                                        $('#progress-show-1').hide();
+                                        $('#progress-hide-1').show();
+                                        $('#btn-save-izin').removeClass("btn-loading");
+                                        $("#btn-save-izin").html('<span><i class="fa fa-save"></i></span> Save');
+                                        $("#form1 :input").prop("disabled", false);
+                                        $("#btn-save-izin").prop("disabled", false);
+                                        $("#btn-save-iks").prop("disabled", false);
+                                        $("#btn-cancel-izin").prop("disabled", false);
+                                        $("#btn-cancel-iks").prop("disabled", false);
+                                        return false;
+                                    }
+                                } else if(res.length  == 0 ){
+                                $.ajax({
                                         type:"POST",
                                         url: "{{route('cuti_karyawan.create_perizinan_menu_admin')}}",
                                         dataType: 'json',
@@ -2018,9 +2034,9 @@ h1 {
                         });
                     }
 
-                    setTimeout(function myFunction() {
-                            location.reload();
-                    }, 3000);
+                    // setTimeout(function myFunction() {
+                    //         location.reload();
+                    // }, 3000);
 
                 },
                 error: function(resA){

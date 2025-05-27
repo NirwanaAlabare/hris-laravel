@@ -2073,82 +2073,100 @@ class CutiKaryawanController extends AdminBaseController
 
         $data = DataAbsenPerijinan::where('uuid', $uuid)->first();
 
-        if ($data) {
-            $nomor_form_perizinan = '';
-            switch ($data->kode_absen_ijin){
-               case 'DL':
-                   $nomor_form_perizinan = 'FPI/HR/' . substr($data->tanggal_perizinan, 2, 2) . substr($data->tanggal_perizinan, 5, 2) . '/';
-                   break;
-               case 'I':
-                   $nomor_form_perizinan = 'FPI/HR/' . substr($data->tanggal_perizinan, 2, 2) . substr($data->tanggal_perizinan, 5, 2) . '/';
-                   break;
-               case 'S':
-                   $nomor_form_perizinan = 'FPI/HR/' . substr($data->tanggal_perizinan, 2, 2) . substr($data->tanggal_perizinan, 5, 2) . '/';
-                   break;
-               default:
-                   if ($data->kode_absen_ijin <> 'M') {
-                       $nomor_form_perizinan = 'FPC/HR/' . substr($data->tanggal_perizinan, 2, 2) . substr($data->tanggal_perizinan, 5, 2) . '/';
-                   } else {
-                       $nomor_form_perizinan = 'TIDAK DI KENALI';
-                   }
-                   break;
-           }
-            $query=DB::select('select nomor_form_perizinan,CAST(substring(nomor_form_perizinan,13) AS int) as nomor_form from data_absen_perijinan where nomor_form_perizinan LIKE "'.$nomor_form_perizinan.'%" order by nomor_form desc limit 1');
+       if ($data) {
+            // Cek apakah nomor_form_perizinan sudah ada
+            if (empty($data->nomor_form_perizinan)) {
+                $nomor_form_perizinan = '';
+                switch ($data->kode_absen_ijin) {
+                    case 'DL':
+                    case 'I':
+                    case 'S':
+                        $nomor_form_perizinan = 'FPI/HR/' . substr($data->tanggal_perizinan, 2, 2) . substr($data->tanggal_perizinan, 5, 2) . '/';
+                        break;
+                    default:
+                        if ($data->kode_absen_ijin !== 'M') {
+                            $nomor_form_perizinan = 'FPC/HR/' . substr($data->tanggal_perizinan, 2, 2) . substr($data->tanggal_perizinan, 5, 2) . '/';
+                        } else {
+                            $nomor_form_perizinan = 'TIDAK DI KENALI';
+                        }
+                        break;
+                }
 
-           if($query == "" || !$query) {
-               $nomor = "0000";
-               $nomor_form_perizinan =  $nomor_form_perizinan . $nomor;
-           } else {
-               $nomor = $query[0]->nomor_form_perizinan;
-               if(strlen($query[0]->nomor_form)<5){
-                   $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
-               }else{
-                   $nomorform = str_pad(substr($nomor, -5) + 1,4,"0",STR_PAD_LEFT);
-               }
-               $nomor_form_perizinan =  $nomor_form_perizinan . $nomorform;
-           }
-           $data->nomor_form_perizinan = $nomor_form_perizinan;
+                $query = DB::select('SELECT nomor_form_perizinan, CAST(SUBSTRING(nomor_form_perizinan, 13) AS INT) AS nomor_form
+                                    FROM data_absen_perijinan
+                                    WHERE nomor_form_perizinan LIKE "' . $nomor_form_perizinan . '%"
+                                    ORDER BY nomor_form DESC LIMIT 1');
+
+                if (empty($query)) {
+                    $nomor = "0000";
+                    $nomor_form_perizinan .= $nomor;
+                } else {
+                    $nomor = $query[0]->nomor_form_perizinan;
+                    if (strlen($query[0]->nomor_form) < 5) {
+                        $nomorform = str_pad(substr($nomor, -4) + 1, 4, "0", STR_PAD_LEFT);
+                    } else {
+                        $nomorform = str_pad(substr($nomor, -5) + 1, 4, "0", STR_PAD_LEFT);
+                    }
+                    $nomor_form_perizinan .= $nomorform;
+                }
+
+                $data->nomor_form_perizinan = $nomor_form_perizinan;
+            }
+
+            // Lakukan update hanya untuk is_verifikasi_pengajuan_admin dan nomor_form_perizinan jika masih kosong
             DataAbsenPerijinan::where('uuid', $uuid)
-                ->update(['is_verifikasi_pengajuan_admin' => 1, 'nomor_form_perizinan' => $nomor_form_perizinan]);
+                ->update([
+                    'is_verifikasi_pengajuan_admin' => 1,
+                    'nomor_form_perizinan' => $data->nomor_form_perizinan
+                ]);
         } else {
             $data = DataAbsenPerijinanDTPC::where('uuid', $uuid)->first();
             if ($data) {
-                $nomor_form_perizinan = '';
-                 switch ($data->kode_absen_ijin){
-                   case 'DL':
-                       $nomor_form_perizinan = 'FPI/HR/' . substr($data->tanggal_perizinan, 2, 2) . substr($data->tanggal_perizinan, 5, 2) . '/';
-                       break;
-                   case 'I':
-                       $nomor_form_perizinan = 'FPI/HR/' . substr($data->tanggal_perizinan, 2, 2) . substr($data->tanggal_perizinan, 5, 2) . '/';
-                       break;
-                   case 'S':
-                       $nomor_form_perizinan = 'FPI/HR/' . substr($data->tanggal_perizinan, 2, 2) . substr($data->tanggal_perizinan, 5, 2) . '/';
-                       break;
-                   default:
-                       if ($data->kode_absen_ijin <> 'M') {
-                           $nomor_form_perizinan = 'FPC/HR/' . substr($data->tanggal_perizinan, 2, 2) . substr($data->tanggal_perizinan, 5, 2) . '/';
-                       } else {
-                           $nomor_form_perizinan = 'TIDAK DI KENALI';
-                       }
-                       break;
-               }
-                $query=DB::select('select nomor_form_perizinan,CAST(substring(nomor_form_perizinan,13) AS int) as nomor_form from data_absen_perijinan where nomor_form_perizinan LIKE "'.$nomor_form_perizinan.'%" order by nomor_form desc limit 1');
-
-                if($query == "" || !$query) {
-                    $nomor = "0000";
-                    $nomor_form_perizinan =  $nomor_form_perizinan . $nomor;
-                } else {
-                    $nomor = $query[0]->nomor_form_perizinan;
-                    if(strlen($query[0]->nomor_form)<5){
-                        $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
-                    }else{
-                        $nomorform = str_pad(substr($nomor, -5) + 1,4,"0",STR_PAD_LEFT);
+                // Cek apakah nomor_form_perizinan sudah ada
+                if (empty($data->nomor_form_perizinan)) {
+                    $nomor_form_perizinan = '';
+                    switch ($data->kode_absen_ijin) {
+                        case 'DL':
+                        case 'I':
+                        case 'S':
+                            $nomor_form_perizinan = 'FPI/HR/' . substr($data->tanggal_perizinan, 2, 2) . substr($data->tanggal_perizinan, 5, 2) . '/';
+                            break;
+                        default:
+                            if ($data->kode_absen_ijin !== 'M') {
+                                $nomor_form_perizinan = 'FPC/HR/' . substr($data->tanggal_perizinan, 2, 2) . substr($data->tanggal_perizinan, 5, 2) . '/';
+                            } else {
+                                $nomor_form_perizinan = 'TIDAK DI KENALI';
+                            }
+                            break;
                     }
-                    $nomor_form_perizinan =  $nomor_form_perizinan . $nomorform;
+
+                    $query = DB::select('SELECT nomor_form_perizinan, CAST(SUBSTRING(nomor_form_perizinan, 13) AS INT) AS nomor_form
+                                        FROM data_absen_perijinan
+                                        WHERE nomor_form_perizinan LIKE "' . $nomor_form_perizinan . '%"
+                                        ORDER BY nomor_form DESC LIMIT 1');
+
+                    if (empty($query)) {
+                        $nomor = "0000";
+                        $nomor_form_perizinan .= $nomor;
+                    } else {
+                        $nomor = $query[0]->nomor_form_perizinan;
+                        if (strlen($query[0]->nomor_form) < 5) {
+                            $nomorform = str_pad(substr($nomor, -4) + 1, 4, "0", STR_PAD_LEFT);
+                        } else {
+                            $nomorform = str_pad(substr($nomor, -5) + 1, 4, "0", STR_PAD_LEFT);
+                        }
+                        $nomor_form_perizinan .= $nomorform;
+                    }
+
+                    $data->nomor_form_perizinan = $nomor_form_perizinan;
                 }
-                $data->nomor_form_perizinan = $nomor_form_perizinan;
+
+                // Tetap update is_verifikasi_pengajuan_admin, dan hanya update nomor_form_perizinan jika belum ada
                 DataAbsenPerijinanDTPC::where('uuid', $uuid)
-                    ->update(['is_verifikasi_pengajuan_admin' => 1,'nomor_form_perizinan' => $nomor_form_perizinan]);
+                    ->update([
+                        'is_verifikasi_pengajuan_admin' => 1,
+                        'nomor_form_perizinan' => $data->nomor_form_perizinan
+                    ]);
             }
         }
 
@@ -2226,61 +2244,76 @@ class CutiKaryawanController extends AdminBaseController
 
         $data = DataAbsenPerijinan::where('uuid', $uuid)->first();
 
-        if ($data) {
-            $nomor_form_perizinan = 'IKS/HR/' . substr($data->tanggal_perizinan, 2, 2) . substr($data->tanggal_perizinan, 5, 2) . '/';
-
-            $getlastnomorform =  DataAbsenPerijinan::selectRaw('nomor_form_perizinan')
-                                                ->whereRaw('nomor_form_perizinan like "' . $nomor_form_perizinan . '%"')
-                                                ->groupby('nomor_form_perizinan')
-                                                ->orderby('nomor_form_perizinan', 'desc')
-                                                ->first();
-
-            if ($getlastnomorform) {
-                info('Get the latest nomor form permohonan IKS from database : ' . $getlastnomorform);
-            } else {
-                info('FAILED to Get the latest nomor form permohonan IKS from database');
-            }
-
-            if($getlastnomorform == "") {
-                $nomor = "0000";
-            } else {
-                $nomor = $getlastnomorform->nomor_form_perizinan;
-            }
-
-            $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
-            $nomor_form_perizinan =  $nomor_form_perizinan . $nomorform;
-            $data->nomor_form_perizinan = $nomor_form_perizinan;
-            DataAbsenPerijinan::where('uuid', $uuid)
-                ->update(['is_verifikasi_pengajuan_admin' => 1, 'nomor_form_perizinan' => $nomor_form_perizinan]);
-        } else {
-            $data = DataAbsenPerijinanDTPC::where('uuid', $uuid)->first();
-
-            if ($data) {
+       if ($data) {
+            // Cek apakah nomor_form_perizinan sudah ada
+            if (empty($data->nomor_form_perizinan)) {
                 $nomor_form_perizinan = 'IKS/HR/' . substr($data->tanggal_perizinan, 2, 2) . substr($data->tanggal_perizinan, 5, 2) . '/';
 
-                $getlastnomorform =  DataAbsenPerijinan::selectRaw('nomor_form_perizinan')
-                                                    ->whereRaw('nomor_form_perizinan like "' . $nomor_form_perizinan . '%"')
-                                                    ->groupby('nomor_form_perizinan')
-                                                    ->orderby('nomor_form_perizinan', 'desc')
-                                                    ->first();
+                $getlastnomorform = DataAbsenPerizinan::selectRaw('nomor_form_perizinan')
+                    ->whereRaw('nomor_form_perizinan like "' . $nomor_form_perizinan . '%"')
+                    ->groupBy('nomor_form_perizinan')
+                    ->orderBy('nomor_form_perizinan', 'desc')
+                    ->first();
 
                 if ($getlastnomorform) {
-                    info('Get the latest nomor form permohonan IKS from database : ' . $getlastnomorform);
+                    info('Get the latest nomor form permohonan IKS from database : ' . $getlastnomorform->nomor_form_perizinan);
                 } else {
                     info('FAILED to Get the latest nomor form permohonan IKS from database');
                 }
 
-                if($getlastnomorform == "") {
+                if (empty($getlastnomorform)) {
                     $nomor = "0000";
                 } else {
                     $nomor = $getlastnomorform->nomor_form_perizinan;
                 }
 
-                $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
-                $nomor_form_perizinan =  $nomor_form_perizinan . $nomorform;
+                $nomorform = str_pad(substr($nomor, -4) + 1, 4, "0", STR_PAD_LEFT);
+                $nomor_form_perizinan = $nomor_form_perizinan . $nomorform;
                 $data->nomor_form_perizinan = $nomor_form_perizinan;
+            }
+
+            // Update hanya jika is_verifikasi_pengajuan_admin, nomor_form_perizinan tidak akan berubah jika sudah ada
+            DataAbsenPerizinan::where('uuid', $uuid)
+                ->update([
+                    'is_verifikasi_pengajuan_admin' => 1,
+                    'nomor_form_perizinan' => $data->nomor_form_perizinan
+                ]);
+        } else {
+            $data = DataAbsenPerijinanDTPC::where('uuid', $uuid)->first();
+
+           if ($data) {
+                if (empty($data->nomor_form_perizinan)) {
+                    $nomor_form_perizinan = 'IKS/HR/' . substr($data->tanggal_perizinan, 2, 2) . substr($data->tanggal_perizinan, 5, 2) . '/';
+
+                    $getlastnomorform = DataAbsenPerijinanDTPC::selectRaw('nomor_form_perizinan')
+                        ->whereRaw('nomor_form_perizinan like "' . $nomor_form_perizinan . '%"')
+                        ->groupBy('nomor_form_perizinan')
+                        ->orderBy('nomor_form_perizinan', 'desc')
+                        ->first();
+
+                    if ($getlastnomorform) {
+                        info('Get the latest nomor form permohonan IKS DTPC from database : ' . $getlastnomorform->nomor_form_perizinan);
+                    } else {
+                        info('FAILED to Get the latest nomor form permohonan IKS DTPC from database');
+                    }
+
+                    if (empty($getlastnomorform)) {
+                        $nomor = "0000";
+                    } else {
+                        $nomor = $getlastnomorform->nomor_form_perizinan;
+                    }
+
+                    $nomorform = str_pad(substr($nomor, -4) + 1, 4, "0", STR_PAD_LEFT);
+                    $nomor_form_perizinan = $nomor_form_perizinan . $nomorform;
+                    $data->nomor_form_perizinan = $nomor_form_perizinan;
+                }
+
+                // Update tetap dilakukan untuk verifikasi, tetapi nomor form tidak akan berubah jika sudah ada
                 DataAbsenPerijinanDTPC::where('uuid', $uuid)
-                    ->update(['is_verifikasi_pengajuan_admin' => 1, 'nomor_form_perizinan' => $nomor_form_perizinan]);
+                    ->update([
+                        'is_verifikasi_pengajuan_admin' => 1,
+                        'nomor_form_perizinan' => $data->nomor_form_perizinan
+                    ]);
             }
         }
 
@@ -2432,6 +2465,7 @@ class CutiKaryawanController extends AdminBaseController
 
         if (in_array($email, $allowedEmails)) {
             $absen = DataAbsenPerijinan::where('uuid', request()->uuid)->first();
+            // dd($request->all());
             $this->update_perizinan_menu_for_hr($request);
         } else {
             // Harus cek is_verifikasi = 0
@@ -2586,17 +2620,17 @@ class CutiKaryawanController extends AdminBaseController
                     'status_absen'=>'TL',
                     'operator'=>$email,
                 ]);
-                MasterDataAbsenKehadiran::whereNotBetween('tanggal_berjalan', [request()->tanggal_mulai_ijin, request()->tanggal_akhir_ijin])
-                ->where('enroll_id', request()->enroll_id)
-                ->where(function ($query3) {
-                    $query3->whereNotIn('kode_hari', [6, 5])
-                            ->orWhereNotNull('mulai_jam_kerja');
-                })->where('status_absen','!=','LN')
-                ->where('nomor_absen_ijin',request()->nomor_form_perizinan)->where('absen_masuk_kerja',null)->where('absen_pulang_kerja',null)->update([
-                    'nomor_absen_ijin'=>null,
-                    'status_absen'=>'M',
-                    'operator'=>$email,
-                ]);
+                // MasterDataAbsenKehadiran::whereNotBetween('tanggal_berjalan', [request()->tanggal_mulai_ijin, request()->tanggal_akhir_ijin])
+                // ->where('enroll_id', request()->enroll_id)
+                // ->where(function ($query3) {
+                //     $query3->whereNotIn('kode_hari', [6, 5])
+                //             ->orWhereNotNull('mulai_jam_kerja');
+                // })->where('status_absen','!=','LN')
+                // ->where('nomor_absen_ijin',request()->nomor_form_perizinan)->where('absen_masuk_kerja',null)->where('absen_pulang_kerja',null)->update([
+                //     'nomor_absen_ijin'=>null,
+                //     'status_absen'=>'M',
+                //     'operator'=>$email,
+                // ]);
             }
         } else {
             return response()->json(['message' => 'Pengajuan sudah diverifikasi atau tidak ditemukan.'], 400);

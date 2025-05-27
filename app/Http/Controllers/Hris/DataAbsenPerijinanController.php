@@ -423,10 +423,7 @@ class DataAbsenPerijinanController extends AdminBaseController
         if (in_array($email, $allowedEmails)) {
             $absen = DataAbsenPerijinan::where('uuid', request()->uuid)->first();
         } else {
-            // Harus cek is_verifikasi = 0
-            $absen = DataAbsenPerijinan::where('uuid', request()->uuid)
-                ->where('is_verifikasi_pengajuan_admin', 0)
-                ->first();
+            return response()->json(['message' => 'Anda tidak memiliki izin untuk mengupdate data ini.'], 403);
         }
 
         if ($absen) {
