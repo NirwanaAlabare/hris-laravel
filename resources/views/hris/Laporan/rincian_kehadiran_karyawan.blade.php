@@ -7,12 +7,12 @@
 @else
 <div>
 @endif
-	<table>
+	<table style="font-family: Arial, Helvetica, sans-serif;letter-spacing: 1px; width: 920px; margin: 0 auto;">
 		<tr>
 			<td style="font-weight: bold">PT. NIRWANA ALABARE GARMENT</td>
 		</tr>
 		<tr>
-			<td style="font-size: 10pt">Laporan Rinci Kehadiran Karyawan</td>
+			<td style="font-size: 10pt;font-family: Arial, Helvetica, sans-serif; letter-spacing: 1px;">Laporan Rinci Kehadiran Karyawan</td>
 		</tr>
 		<tr>
 			<td style="height: 10px"></td>
@@ -21,13 +21,13 @@
 			<td width="520" style="border-bottom: 1px solid black;font-size: 10pt">{{$tanggal_awal_absen}} - {{$tanggal_akhir_absen}}</td>
 		</tr>
 	</table>
-	<table class="textkecil">
+	<table class="textkecil" style="font-size: 10pt;font-family: Arial, Helvetica, sans-serif; letter-spacing: 1px; width: 920px; margin: 0 auto;">
 		<tr>
 			<td style="height: 10px"></td>
 		</tr>
 		<tr>
 			<td width="90">NIP</td>
-			<td width="160">: {{$value->nik}}</td>
+			<td width="90">: {{$value->nik}}</td>
 			<td width="90">JABATAN</td>
 			<td>: {{$value->status_jabatan}}</td>
 		</tr>
@@ -41,23 +41,23 @@
 			<td style="height: 10px"></td>
 		</tr>
 	</table>
-	<table border="1" class="textkecilbanget">
+	<table border="1" class="textkecilbanget" style="font-size: 10pt;font-family: Arial, Helvetica, sans-serif; letter-spacing: 1px; width: 100%; margin: 0 auto;">
 		<tr>
-			<td width="74">&nbsp;Tanggal</td>
-			<td width="34">&nbsp;Hari</td>
-			<td width="56">&nbsp;Keterangan</td>
-			<td width="45">&nbsp;Jam masuk</td>
-			<td width="45">&nbsp;Jam keluar</td>
-			<td width="17">&nbsp;DT</td>
-			<td width="17">&nbsp;PC</td>
-			<td width="38">&nbsp;Lembur 1</td>
-			<td width="38">&nbsp;Lembur 2</td>
-			<td width="38">&nbsp;Lembur 3</td>
-			<td width="38">&nbsp;Lembur 4</td>
-			<td width="55">&nbsp;Total Lembur</td>
+			<td height="30" width="120">&nbsp;Tanggal</td>
+			<td width="90">&nbsp;Hari</td>
+			<td >&nbsp;Keterangan</td>
+			<td >&nbsp;Jam masuk</td>
+			<td >&nbsp;Jam keluar</td>
+			<td >&nbsp;DT</td>
+			<td >&nbsp;PC</td>
+			<td >&nbsp;Lembur 1</td>
+			<td >&nbsp;Lembur 2</td>
+			<td >&nbsp;Lembur 3</td>
+			<td >&nbsp;Lembur 4</td>
+			<td >&nbsp;Total Lembur</td>
 		</tr>
 		@foreach ($value->absensi as $val)
-		<?php 
+		<?php
 		$tanggal_berjalan=Carbon\Carbon::parse($val->tanggal_berjalan)->translatedFormat('d F Y');
 		$absen_masuk=substr($val->absen_masuk_kerja,0,5);
 		$absen_pulang=substr($val->absen_pulang_kerja,0,5);
@@ -91,7 +91,7 @@
 		}
 		?>
 		<tr>
-			<td>&nbsp;{{$tanggal_berjalan}}</td>
+			<td height="30">&nbsp;{{$tanggal_berjalan}}</td>
 			<td>&nbsp;{{$val->nama_hari}}</td>
 			<td>&nbsp;{{$val->status_absen}}</td>
 			<td align="center">{{$absen_masuk}}</td>
@@ -106,7 +106,7 @@
 		</tr>
 		@endforeach
 		<tr>
-			<td colspan="5" style="background-color:#fffc04;font-weight:bold">GRAND TOTAL</td>
+			<td colspan="5" height="30" style="background-color:#fffc04;font-weight:bold">GRAND TOTAL</td>
 			<td style="background-color:#fffc04;font-weight:bold;text-align:center">@if($jumlah_menit[$key]['total_menit_absen_dt']==0) - @else {{$jumlah_menit[$key]['total_menit_absen_dt']}} @endif</td>
 			<td style="background-color:#fffc04;font-weight:bold;text-align:center">@if($jumlah_menit[$key]['total_menit_absen_pc']==0) - @else {{$jumlah_menit[$key]['total_menit_absen_pc']}} @endif</td>
 			<td style="background-color:#fffc04;font-weight:bold;text-align:center">@if($jumlah_menit[$key]['total_menit_lembur_1']==0) - @else {{$jumlah_menit[$key]['total_menit_lembur_1']}} @endif</td>
@@ -121,7 +121,7 @@
 			<td style="height: 10px"></td>
 		</tr>
 	</table>
-	<table class="textkecil">
+	<table class="textkecil" style="font-size: 10pt;font-family: Arial, Helvetica, sans-serif; letter-spacing: 1px;">
 		<tr>
 			<td width="120">Hari kerja</td>
 			<td>{{$jumlah_absen[$key]['hari_kerja']}}</td>
@@ -134,13 +134,15 @@
 </div>
 @endforeach
 <style>
+
 	.textkecil{
-		font-size: 9pt;
+		font-size: 10pt;
 		font-weight: bold;
 	}
 	.textkecilbanget{
 		font-size: 9pt;
       	border-collapse: collapse;
+        border: 1px solid rgb(173, 173, 173);
 	}
 	.wrapper-page {
 		page-break-after: always;
