@@ -61,6 +61,17 @@
             text-align: center;
         }
 
+            table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid black;
+            vertical-align: top;
+            font-size: 9px;
+        }
+
         @page { margin: 20px 20px 40px 20px; }
     </style>
 </head>
@@ -94,9 +105,9 @@
                 {{-- {{ date('d-M-Y', strtotime($from)) }} - {{ date('d-M-Y', strtotime($to)) }} --}}
                 {{ Carbon\Carbon::parse($tgl_lembur)->translatedFormat('l, d F Y') }}
             </td>
-            <td colspan='6' class="borderless"></td>
+            <td colspan='5' class="borderless"></td>
             <td colspan='2' class="borderless">Nomor Form</td>
-            <td colspan='3' class="border-right">: {{ $no_form }}</td>
+            <td colspan='4' class="border-right">: {{ $no_form }}</td>
         </tr>
         <tr>
             <td colspan='2' class="border-left">BAGIAN</td>
@@ -196,10 +207,10 @@
                     <td style="background-color: {{ $style }}">&nbsp;</td>
                 </tr>
             @endif
-            @if (($no - 1) % 26 == 0 && count($data)>26)
-            <tr style="page-break-before:always">
-            </tr>
-            @endif
+            {{-- @if (($no - 1) % 26 == 0 && count($data)>26)
+                <tr style="page-break-before:always">
+                </tr>
+            @endif --}}
         @endforeach
         </tbody>
         <tfoot>
