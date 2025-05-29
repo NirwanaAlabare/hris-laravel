@@ -1993,7 +1993,7 @@ class CutiKaryawanController extends AdminBaseController
             ->where('data_absen_perijinan_dtpc.is_verifikasi_pengajuan_admin', $status);
 
         // Filter email untuk kedua query
-        if (!in_array($email, ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli', 'HR', 'ersa@ptnag.com', 'kiki@ptnag.com', 'hrd'])) {
+        if (!in_array($email, ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli', 'HR', 'ersa@ptnag.com', 'kiki@ptnag.com', 'hrd','indri@nag.nirwanaindonesia.com'])) {
             $query1->where(function($q) use ($email) {
                 $q->where('data_absen_perijinan.diajukan_oleh', $email);
             });
@@ -2461,7 +2461,7 @@ class CutiKaryawanController extends AdminBaseController
         info('Update Permohonan Perizinan by ' . $email);
         info('Nomor Form Perizinan : ' . request()->nomor_form_perizinan);
 
-        $allowedEmails = ['fadli', 'mega@ptnag.com', 'hrd', 'ersa@ptnag.com', 'rudy@ptnag.com'];
+        $allowedEmails = ['fadli', 'mega@ptnag.com', 'hrd', 'ersa@ptnag.com', 'rudy@ptnag.com','indri@nag.nirwanaindonesia.com'];
 
         if (in_array($email, $allowedEmails)) {
             $absen = DataAbsenPerijinan::where('uuid', request()->uuid)->first();
@@ -2498,7 +2498,7 @@ class CutiKaryawanController extends AdminBaseController
         info('Update Permohonan Perizinan by ' . $email);
         info('Nomor Form Perizinan : ' . request()->nomor_form_perizinan);
 
-        $allowedEmails = ['fadli', 'mega@ptnag.com', 'hrd', 'ersa@ptnag.com', 'rudy@ptnag.com',];
+        $allowedEmails = ['fadli', 'mega@ptnag.com', 'hrd', 'ersa@ptnag.com', 'rudy@ptnag.com','indri@nag.nirwanaindonesia.com'];
 
         $absen = DataAbsenPerijinan::where('uuid', request()->uuid)->first();
 
@@ -2741,7 +2741,7 @@ class CutiKaryawanController extends AdminBaseController
         info('Update Permohonan Perizinan by ' . $email);
         info('Nomor Form Perizinan : ' . request()->nomor_form_perizinan);
 
-        $allowedEmails = ['fadli', 'mega@ptnag.com', 'hrd', 'ersa@ptnag.com', 'rudy@ptnag.com',];
+        $allowedEmails = ['fadli', 'mega@ptnag.com', 'hrd', 'ersa@ptnag.com', 'rudy@ptnag.com','indri@nag.nirwanaindonesia.com'];
 
         if (in_array($email, $allowedEmails)) {
             $absen = DataAbsenPerijinan::where('uuid', request()->uuid)->first();

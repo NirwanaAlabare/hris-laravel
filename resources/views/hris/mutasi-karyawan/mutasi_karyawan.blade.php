@@ -507,7 +507,7 @@
                         targets: [8],
                         render: (data, type, row, meta) => {
                             if(row.enroll_id!=null){
-                                if($('#username_who_access').val()=='HR' || $('#username_who_access').val()=='IT'|| $('#username_who_access').val()=='Mega Fitriana Haryono'|| $('#username_who_access').val()=='fadli'|| $('#username_who_access').val()=='rudy' ){
+                                if($('#username_who_access').val()=='HR' || $('#username_who_access').val()=='IT'|| $('#username_who_access').val()=='Mega Fitriana Haryono'|| $('#username_who_access').val()=='fadli'|| $('#username_who_access').val()=='Rudy Aristian Fajar'|| $('#username_who_access').val()=='Ersa Regina Nugraha' ){
                                     return `<a href='#' onclick="hapus_confirm(` + row.enroll_id + `)"><i class='fa fa-trash text-danger'></i></a>&nbsp<a href='#' id='hapus_mutasi_`+row.enroll_id+`' style='visibility:hidden;color:white;background-color:red' onclick='hapus_mutasi(`+row.id+`)'>Hapus&nbsp</a><a href='#' id='cancel_hapus_`+row.enroll_id+`' style='visibility:hidden;color:white;background-color:grey' onclick='cancel_hapus(`+row.enroll_id+`)'>&nbsp;Batal&nbsp;</a>`;
                                 }else{
                                     return '';
