@@ -224,7 +224,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         list($year, $month) = explode('-', $bulan_priode);
         list($year_before, $month_before) = explode('-', $bulan_sebelum);
         // $departement=DepartmentAll::where('site_nirwana_id','NAG')->groupBy('department_id')->get();
-        $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG', 'NAGD'])
+        $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG', 'NAGD', 'NAK'])
                         ->groupBy('department_id')
                         ->get();
         $data=[];
@@ -446,7 +446,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
 
         $data_potongan = $this->potongan($periode_payroll);
         // $departement=DepartmentAll::where('site_nirwana_id','NAG')->groupBy('department_id')->get();
-        $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG', 'NAGD'])
+        $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG', 'NAGD', 'NAK'])
                         ->groupBy('department_id')
                         ->get();
         list($year_before, $month_before) = explode('-', $bulan_sebelum);
@@ -1812,6 +1812,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $bpjs_ks=0;
             $bpjs_tk_company=0;
             $bpjs_ks_company=0;
+            // dd($value->employee_atribut->employee_bpjs->toArray());
             if(count($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran))>0){
                 $bpjs_tk=($value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jkm_neto_rupiah
                 +$value->employee_atribut->employee_bpjs->where('periode_kehadiran',$periode_kehadiran)->first()->bpjs_tk_jkk_neto_rupiah
