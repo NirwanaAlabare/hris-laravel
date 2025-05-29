@@ -811,7 +811,6 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         $inDateRangeContract='';
         $inEnrollIds='';
         $data_penilaian = collect();
-
         if(request()->status_kontrak){
             $status_kontrak=request()->status_kontrak;
              if($status_kontrak=='One Day'){
@@ -935,6 +934,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             WHERE z.enroll_id IS NOT NULL
                 $inDateRangeContract
                 $inEnrollIds
+                $inStatusKontrak
             AND z.status_aktif = 'AKTIF'
             GROUP BY z.enroll_id
             ORDER BY z.enroll_id
