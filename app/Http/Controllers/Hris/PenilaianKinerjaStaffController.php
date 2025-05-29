@@ -638,39 +638,40 @@ class PenilaianKinerjaStaffController extends AdminBaseController
 
         $inStatusKontrak='';
         $status_kontrak = request()->status_kontrak;
-
-        if($status_kontrak=='One Day'){
-            $inStatusKontrak='AND (
-                CASE
-                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
-                    ELSE y.contract_end
-                END
-            ) = curdate()';
-        }else if($status_kontrak=='Nine Day'){
-            $nine_days_later = date('Y-m-d', strtotime('+9 days'));
-            $inStatusKontrak='AND (
-                CASE
-                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
-                    ELSE y.contract_end
-                END
-            ) = "'.$nine_days_later.'"';
-        }else if($status_kontrak=='Thirty Day'){
-            $today = date('Y-m-d');
-            $thirty_days_later = date('Y-m-d', strtotime('+30 days'));
-            $inStatusKontrak = 'AND (
-                CASE
-                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
-                    ELSE y.contract_end
-                END
-            ) = "'.$thirty_days_later.'"';
-        }else if($status_kontrak=='Sixty Day'){
-            $thirty_day_more = date('Y-m-d',strtotime('+60 days',strtotime(date("Y-m-d")))) . PHP_EOL;
-            $inStatusKontrak='AND (
-                CASE
-                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
-                    ELSE y.contract_end
-                END
-            ) >= "'.$thirty_day_more.'"';
+        if($status_kontrak){
+            if($status_kontrak=='One Day'){
+                $inStatusKontrak='AND (
+                    CASE
+                        WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                        ELSE y.contract_end
+                    END
+                ) = curdate()';
+            }else if($status_kontrak=='Nine Day'){
+                $nine_days_later = date('Y-m-d', strtotime('+9 days'));
+                $inStatusKontrak='AND (
+                    CASE
+                        WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                        ELSE y.contract_end
+                    END
+                ) = "'.$nine_days_later.'"';
+            }else if($status_kontrak=='Thirty Day'){
+                $today = date('Y-m-d');
+                $thirty_days_later = date('Y-m-d', strtotime('+30 days'));
+                $inStatusKontrak = 'AND (
+                    CASE
+                        WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                        ELSE y.contract_end
+                    END
+                ) = "'.$thirty_days_later.'"';
+            }else if($status_kontrak=='Sixty Day'){
+                $thirty_day_more = date('Y-m-d',strtotime('+60 days',strtotime(date("Y-m-d")))) . PHP_EOL;
+                $inStatusKontrak='AND (
+                    CASE
+                        WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                        ELSE y.contract_end
+                    END
+                ) >= "'.$thirty_day_more.'"';
+            }
         }
 
         if (request()->date_range) {
@@ -809,7 +810,44 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         $enroll_id = request()->enroll_id;
         $inDateRangeContract='';
         $inEnrollIds='';
-        $data_penilaian = collect(); // Default kosong
+        $data_penilaian = collect();
+
+        if(request()->status_kontrak){
+            $status_kontrak=request()->status_kontrak;
+             if($status_kontrak=='One Day'){
+                $inStatusKontrak='AND (
+                    CASE
+                        WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                        ELSE y.contract_end
+                    END
+                ) = curdate()';
+            }else if($status_kontrak=='Nine Day'){
+                $nine_days_later = date('Y-m-d', strtotime('+9 days'));
+                $inStatusKontrak='AND (
+                    CASE
+                        WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                        ELSE y.contract_end
+                    END
+                ) = "'.$nine_days_later.'"';
+            }else if($status_kontrak=='Thirty Day'){
+                $today = date('Y-m-d');
+                $thirty_days_later = date('Y-m-d', strtotime('+30 days'));
+                $inStatusKontrak = 'AND (
+                    CASE
+                        WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                        ELSE y.contract_end
+                    END
+                ) = "'.$thirty_days_later.'"';
+            }else if($status_kontrak=='Sixty Day'){
+                $thirty_day_more = date('Y-m-d',strtotime('+60 days',strtotime(date("Y-m-d")))) . PHP_EOL;
+                $inStatusKontrak='AND (
+                    CASE
+                        WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                        ELSE y.contract_end
+                    END
+                ) >= "'.$thirty_day_more.'"';
+            }
+        }
         if(request()->date_range){
             $daterange1 = explode(" s/d ", request()->date_range);
             $tanggalMulai = date('Y-m-d', strtotime($daterange1[0]));

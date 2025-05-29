@@ -1713,6 +1713,13 @@
             value: $('#daterange1').val()
         }).appendTo(form);
 
+        // Tambahkan status_kontrak
+        $('<input>').attr({
+            type: 'hidden',
+            name: 'status_kontrak',
+            value: $('#status_kontrak').val()
+        }).appendTo(form);
+
         $('<input>').attr({
             type: 'hidden',
             name: '_token',
