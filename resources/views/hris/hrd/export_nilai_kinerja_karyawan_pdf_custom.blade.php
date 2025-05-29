@@ -277,7 +277,7 @@
       </table>
       <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: center; font-family: sans-serif; font-size: 7.5pt; font-weight: bold;">
         <tr>
-            <td rowspan="2" style="width: 25%; font-weight: 800; vertical-align: middle; font-size:7.5pt; border-right: 1px solid #000; border-bottom: 1px solid #000;">
+            <td rowspan="2" style="width: 25.5%; font-weight: 800; vertical-align: middle; font-size:7.5pt; border-right: 1px solid #000; border-bottom: 1px solid #000;">
                     Penilaian Kinerja
             </td>
             <td colspan="2" style="width: 20%; border-right: 1px solid #000; height:35px;">
