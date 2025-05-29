@@ -22,9 +22,9 @@ class BiayaMakanKaryawanEstimasiData implements FromView, WithTitle, WithColumnF
     public function __construct($dateFrom)
     {
         $this->dateFrom = $dateFrom ? $dateFrom : date('Y-m-d');
-        $this->dataLembur = DB::select("select substr(tanggal,1,7) periode,tanggal,d.department_name department,'STAFF' staff_non_staff,staff jumlah_karyawan,10000 harga,10000*staff jumlah,keterangan shift from estimasi_anggaran_makan inner join (select*from department_all where site_nirwana_id='NAG' and status='AKTIF' group by department_id) d on estimasi_anggaran_makan.dept=d.department_id where tanggal='$dateFrom'
+        $this->dataLembur = DB::select("select substr(tanggal,1,7) periode,tanggal,d.department_name department,'STAFF' staff_non_staff,staff jumlah_karyawan,10000 harga,10000*staff jumlah,keterangan shift from estimasi_anggaran_makan inner join (select*from department_all where site_nirwana_id IN ('NAG','NAK','NAGD') and status='AKTIF' group by department_id) d on estimasi_anggaran_makan.dept=d.department_id where tanggal='$dateFrom'
         UNION
-        select substr(tanggal,1,7) periode,tanggal,d.department_name department,'NON STAFF' staff_non_staff,non_staff jumlah_karyawan,80000 harga,80000*non_staff jumlah,keterangan shift from estimasi_anggaran_makan inner join (select*from department_all where site_nirwana_id='NAG' and status='AKTIF' group by department_id) d on estimasi_anggaran_makan.dept=d.department_id where tanggal='$dateFrom'
+        select substr(tanggal,1,7) periode,tanggal,d.department_name department,'NON STAFF' staff_non_staff,non_staff jumlah_karyawan,80000 harga,80000*non_staff jumlah,keterangan shift from estimasi_anggaran_makan inner join (select*from department_all where site_nirwana_id IN ('NAG','NAK','NAGD') and status='AKTIF' group by department_id) d on estimasi_anggaran_makan.dept=d.department_id where tanggal='$dateFrom'
         order by shift, department");
     }
     public function title(): string

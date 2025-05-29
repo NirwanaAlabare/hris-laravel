@@ -68,7 +68,7 @@ class ExportInsentifSewing_All implements FromView, WithEvents, ShouldAutoSize, 
         ) k on a.no_form = k.no_form
         inner join employee_atribut e on b.enroll_id = e.enroll_id
 	    inner join (select * from master_data_absen_kehadiran where tanggal_berjalan >= '$this->from' and tanggal_berjalan <= '$this->to') m on b.enroll_id = m.enroll_id and a.tgl_lembur = m.tanggal_berjalan
-        inner join (select * from department_all where status='AKTIF' and site_nirwana_id='NAG')d on a.line=d.sub_dept_name
+        inner join (select * from department_all where status='AKTIF' and site_nirwana_id IN ('NAG','NAK','NAGD'))d on a.line=d.sub_dept_name
         where b.uuid_koreksi_upah!=''
         order by tgl_lembur asc,line asc, employee_name asc
         ");
