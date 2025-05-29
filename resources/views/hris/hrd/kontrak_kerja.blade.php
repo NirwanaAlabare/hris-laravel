@@ -98,11 +98,11 @@
                                 <div class="col-3 pr-0">
                                     <select class="form-control" id="status_kontrak">
                                         <option value="">Pilih Status Kontrak</option>
-                                        <option value="One Day">PKS -1 Hari</option>
+                                        <option value="One Day">PKS - 1 Hari</option>
+                                        <option value="Nine Day">PKS - 9 Hari</option>
                                         <option value="Thirty Day">PKS - 30 Hari</option>
                                         <option value="Sixty Day">PKS > 60 Hari</option>
                                         <option value="Not yet extended">PKS Belum Diperpanjang</option>
-                                        {{-- <option value="Unfilled">Status kontrak belum diinput</option> --}}
                                     </select>
                                 </div>
                             </div>
@@ -862,6 +862,7 @@
         var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
         $('#daterange1').val(daterange1);
         document.getElementById("print_form_penilaian").style.visibility = "visible";
+        $('#status_kontrak').val("");
         $('#datatable').DataTable().ajax.reload();
     });
 
@@ -874,7 +875,11 @@
         if(!status_kontrak) {
             document.getElementById("print_form_penilaian").style.visibility = "hidden";
         }
-        $('#datatable').DataTable().ajax.reload(); // kalau kamu ingin reload juga saat clear
+        if($('#daterange1').val()){
+            $('#status_kontrak').val("");
+        }
+        $('#datatable').DataTable().ajax.reload();
+
     }
 
 
@@ -1777,6 +1782,12 @@
             document.getElementById("print_form_penilaian").style.visibility = "visible";
         }else{
             document.getElementById("print_form_penilaian").style.visibility = "hidden";
+        }
+        if(status && date_range){
+            $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i></span><i class="fa fa-angle-down ml-1"></i>');
+            $('#daterange1').val('');
+            $('#daterange-btn1').data('daterangepicker').setStartDate(moment());
+            $('#daterange-btn1').data('daterangepicker').setEndDate(moment());
         }
         datatable.ajax.reload();
     });
