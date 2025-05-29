@@ -1939,8 +1939,24 @@ h1 {
                                             swal("", "update perizinan gagal", "error");
                                         }
                                     });
-                                } else if(res.length > 0 && !res[0].nomor_form_perizinan){
-                                    if (uuid == '') {
+                                } else if(res.length > 0 && res[0].nomor_form_perizinan && res[0].is_verifikasi_pengajuan_admin == 1){
+                                        notif({
+                                            msg: `<b>Info:</b> Perijinan sudah dibuat oleh ${res[0].operator}.`,
+                                            type: "info",
+                                            position: "center",
+                                            width: 800,
+                                        });
+                                        $('#progress-show-1').hide();
+                                        $('#progress-hide-1').show();
+                                        $('#btn-save-izin').removeClass("btn-loading");
+                                        $("#btn-save-izin").html('<span><i class="fa fa-save"></i></span> Save');
+                                        $("#form1 :input").prop("disabled", false);
+                                        $("#btn-save-izin").prop("disabled", false);
+                                        $("#btn-save-iks").prop("disabled", false);
+                                        $("#btn-cancel-izin").prop("disabled", false);
+                                        $("#btn-cancel-iks").prop("disabled", false);
+                                        return false;
+                                }else if(res.length > 0 && !res[0].nomor_form_perizinan){
                                         notif({
                                             msg: `<b>Info:</b> Perijinan pada tanggal tersebut sudah dibuat oleh ${res[0].operator}, menunggu Approval.`,
                                             type: "info",
@@ -1957,7 +1973,6 @@ h1 {
                                         $("#btn-cancel-izin").prop("disabled", false);
                                         $("#btn-cancel-iks").prop("disabled", false);
                                         return false;
-                                    }
                                 } else if(res.length  == 0 ){
                                 $.ajax({
                                         type:"POST",
