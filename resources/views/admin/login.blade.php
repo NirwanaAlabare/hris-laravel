@@ -25,7 +25,10 @@
                                             </div>
                                             <div class="input-group mb-3">
 												<span class="input-group-addon bg-white"><i class="fa fa-user"></i></span>
-												<input type="text" class="form-control" type="email" autocomplete="off"  placeholder="Email" name="email">
+												<input list="emailSuggestions" type="text" class="form-control" type="email" autocomplete="off"  placeholder="Email" name="email" id="emailInput">
+                                                    <datalist id="emailSuggestions">
+                                                     <!-- akan diisi oleh JavaScript -->
+                                                    </datalist>
 											</div>
 											<div class="input-group mb-4">
 												<span class="input-group-addon bg-white"><i class="fa fa-unlock-alt"></i></span>
@@ -64,34 +67,28 @@
 {!!  HTML::script("assets/admin/layout/scripts/demo.js")  !!}
 {!! HTML::script('assets/global/plugins/froiden-helper/helper.js') !!}
 
-<!-- END PAGE LEVEL SCRIPTS -->
 
 <script>
 
-    jQuery(document).ready(function () {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
+    const emailInput = document.getElementById('emailInput');
+    const dataList = document.getElementById('emailSuggestions');
+
+    // Ambil email yang tersimpan dari localStorage
+    let savedEmails = JSON.parse(localStorage.getItem('savedEmails')) || [];
+
+    // Tampilkan ke datalist
+    function populateEmailSuggestions() {
+        dataList.innerHTML = '';
+        savedEmails.forEach(email => {
+            const option = document.createElement('option');
+            option.value = email;
+            dataList.appendChild(option);
         });
-        Metronic.init(); // init metronic core components
+    }
 
-{{--          // init background slide images
-        $.backstretch([
-                "{{ URL::asset('assets/admin/pages/media/bg/1.jpg') }}",
-                "{{ URL::asset('assets/admin/pages/media/bg/2.jpg') }}",
-                "{{ URL::asset('assets/admin/pages/media/bg/3.jpg') }}",
-                "{{ URL::asset('assets/admin/pages/media/bg/4.jpg') }}"
-            ], {
-                fade: 1000,
-                duration: 8000
-            }
-        );
-  --}}    });
-</script>
+    populateEmailSuggestions();
 
 
-<script>
     function login() {
         $.easyAjax({
             type: 'POST',
@@ -102,6 +99,12 @@
             success: function (response) {
                 if (response.status == "success") {
                     $('#login-form')[0].reset();
+                    const email = emailInput.value.trim();
+                   if (email && !savedEmails.includes(email)) {
+                       savedEmails.unshift(email); // Tambahkan di awal
+                       savedEmails = savedEmails.slice(0, 5); // Simpan max 5 terakhir
+                       localStorage.setItem('savedEmails', JSON.stringify(savedEmails));
+                   }
                 }
             }
         });
