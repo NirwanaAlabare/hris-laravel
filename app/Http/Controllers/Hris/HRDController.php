@@ -432,27 +432,58 @@ class HRDController extends AdminBaseController
         }
         // dd($status_kontrak);
         $inStatusKontrak='';
-        if($status_kontrak=='Active'){
-            $inStatusKontrak='AND y.contract_end >= curdate()';
-        }else if($status_kontrak=='Nonactive'){
-            $inStatusKontrak='AND y.contract_end < curdate()';
-        }else if($status_kontrak=='One Day'){
-            $inStatusKontrak='AND y.contract_end = curdate()';
+        $today = date('Y-m-d');
+
+        if($status_kontrak=='One Day'){
+            $one_days_later = date('Y-m-d', strtotime('+1 days'));
+            $inStatusKontrak= 'AND (
+                CASE
+                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                    ELSE y.contract_end
+                END
+            ) >= "'.$today.'"
+            AND (
+                CASE
+                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                    ELSE y.contract_end
+                END
+            ) <= "'.$one_days_later.'"';
         }else if($status_kontrak=='Nine Day'){
             $nine_days_later = date('Y-m-d', strtotime('+9 days'));
-            $inStatusKontrak='AND y.contract_end = "'.$nine_days_later.'"';
+             $inStatusKontrak= 'AND (
+                CASE
+                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                    ELSE y.contract_end
+                END
+            ) >= "'.$today.'"
+            AND (
+                CASE
+                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                    ELSE y.contract_end
+                END
+            ) <= "'.$nine_days_later.'"';
         }else if($status_kontrak=='Thirty Day'){
-            $today = date('Y-m-d');
             $thirty_days_later = date('Y-m-d', strtotime('+30 days'));
-            $inStatusKontrak = 'AND y.contract_end BETWEEN "'.$today.'" AND "'.$thirty_days_later.'"';
+            $inStatusKontrak= 'AND (
+                CASE
+                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                    ELSE y.contract_end
+                END
+            ) >= "'.$today.'"
+            AND (
+                CASE
+                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                    ELSE y.contract_end
+                END
+            ) <= "'.$thirty_days_later.'"';
         }else if($status_kontrak=='Sixty Day'){
             $thirty_day_more = date('Y-m-d',strtotime('+60 days',strtotime(date("Y-m-d")))) . PHP_EOL;
-            $inStatusKontrak='AND y.contract_end >= "'.$thirty_day_more.'"';
-        }else if($status_kontrak=='Not yet extended'){
-            $inStatusKontrak='AND y.contract_end < curdate() OR y.contract_end is null';
-            // $inStatusKontrak='AND y.contract_end < curdate() OR z.status_aktif ="AKTIF"';
-        }else if($status_kontrak=='Unfilled'){
-            $inStatusKontrak='AND y.contract_end is null';
+            $inStatusKontrak= 'AND (
+                CASE
+                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                    ELSE y.contract_end
+                END
+            ) >= "'.$thirty_days_later.'"';
         }
         $inStatusAktif='';
         if(request()->status_aktif){
@@ -664,27 +695,20 @@ class HRDController extends AdminBaseController
             $inStatusAktif='AND a.status_staff = "'.$status_staff.'"';
         }
         if(request()->status_kontrak){
+            $today = date('Y-m-d');
             $status_kontrak=request()->status_kontrak;
-            if($status_kontrak=='Active'){
-                $inStatusKontrak='AND c.max_contract_end >= curdate()';
-            }else if($status_kontrak=='Nonactive'){
-                $inStatusKontrak='AND c.max_contract_end < curdate()';
-            }else if($status_kontrak=='One Day'){
-                $inStatusKontrak='AND c.max_contract_end = curdate()';
+            if($status_kontrak=='One Day'){
+                $one_days_later = date('Y-m-d', strtotime('+1 days'));
+                $inStatusKontrak='AND c.max_contract_end BETWEEN "'.$today.'" AND "'.$one_days_later.'"';
             }else if($status_kontrak=='Nine Day'){
                 $nine_days_later = date('Y-m-d', strtotime('+9 days'));
-                $inStatusKontrak='AND c.max_contract_end = "'.$nine_days_later.'"';
+                $inStatusKontrak='AND c.max_contract_end BETWEEN "'.$today.'" AND "'.$nine_days_later.'"';
             }else if($status_kontrak=='Thirty Day'){
-                $today = date('Y-m-d');
                 $thirty_days_later = date('Y-m-d', strtotime('+30 days'));
                 $inStatusKontrak = 'AND c.max_contract_end BETWEEN "'.$today.'" AND "'.$thirty_days_later.'"';
             }else if($status_kontrak=='Sixty Day'){
                 $thirty_day_more = date('Y-m-d',strtotime('+60 days',strtotime(date("Y-m-d")))) . PHP_EOL;
-                $inStatusKontrak='AND c.max_contract_end = "'.$thirty_day_more.'"';
-            }else if($status_kontrak=='Not yet extended'){
-                $inStatusKontrak='AND c.max_contract_end < curdate() AND a.status_aktif ="AKTIF"';
-            }else if($status_kontrak=='Unfilled'){
-                $inStatusKontrak='AND b.contract_end is null';
+                $inStatusKontrak='AND c.max_contract_end >= "'.$thirty_day_more.'"';
             }
         }
         // $query= DB::select("select a.status_staff,a.enroll_id,a.nik,a.employee_name,a.status_jabatan,a.sub_dept_name,a.department_name,a.status_kontrak_tetap,a.status_aktif,a.join_date,a.tanggal_resign,a.nomor_ktp,b.contract,b.contract_end,c.max_contract_end from employee_atribut a left join employee_contract b on a.enroll_id=b.enroll_id left join (select enroll_id,max(contract_end) max_contract_end from employee_contract group by enroll_id)c on a.enroll_id=c.enroll_id where a.enroll_id is not null ".$inSearchVariable." ".$inEnrollId." ".$inNoKTP." ".$inIbuKandung." ".$inStatusAktif." ".$inStatusKontrak." order by enroll_id,contract_end");
@@ -1067,28 +1091,21 @@ $final = $employee->map(function ($item, $key) use ($contract, $absen) {
             $status_staff=request()->status_staff;
             $inStatusStaff='AND a.status_staff = "'.$status_staff.'"';
         }
+        $today = date('Y-m-d');
         if(request()->status_kontrak){
             $status_kontrak=request()->status_kontrak;
-            if($status_kontrak=='Active'){
-                $inStatusKontrak='AND c.max_contract_end >= curdate()';
-            }else if($status_kontrak=='Nonactive'){
-                $inStatusKontrak='AND c.max_contract_end < curdate()';
-            }else if($status_kontrak=='One Day'){
-                $inStatusKontrak='AND c.max_contract_end = curdate()';
+           if($status_kontrak=='One Day'){
+                $one_days_later = date('Y-m-d', strtotime('+1 days'));
+                $inStatusKontrak='AND c.max_contract_end BETWEEN "'.$today.'" AND "'.$one_days_later.'"';
             }else if($status_kontrak=='Nine Day'){
                 $nine_days_later = date('Y-m-d', strtotime('+9 days'));
-                $inStatusKontrak='AND c.max_contract_end = "'.$nine_days_later.'"';
+                $inStatusKontrak='AND c.max_contract_end BETWEEN "'.$today.'" AND "'.$nine_days_later.'"';
             }else if($status_kontrak=='Thirty Day'){
-                $today = date('Y-m-d');
                 $thirty_days_later = date('Y-m-d', strtotime('+30 days'));
                 $inStatusKontrak = 'AND c.max_contract_end BETWEEN "'.$today.'" AND "'.$thirty_days_later.'"';
             }else if($status_kontrak=='Sixty Day'){
                 $thirty_day_more = date('Y-m-d',strtotime('+60 days',strtotime(date("Y-m-d")))) . PHP_EOL;
-                $inStatusKontrak='AND c.max_contract_end = "'.$thirty_day_more.'"';
-            }else if($status_kontrak=='Not yet extended'){
-                $inStatusKontrak='AND c.max_contract_end < curdate() AND a.status_aktif ="AKTIF"';
-            }else if($status_kontrak=='Unfilled'){
-                $inStatusKontrak='AND b.contract_end is null';
+                $inStatusKontrak='AND c.max_contract_end >= "'.$thirty_day_more.'"';
             }
         }
         $inDateRangeContract='';
