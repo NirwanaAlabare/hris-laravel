@@ -110,7 +110,7 @@
                             <span class="input-group-append">
                                 <button class="btn btn-primary btn-app" type="button" id="btn-get-employee"><i class="fa fa-upload"></i> Karyawan</button>
                             </span>
-                        </div>                    
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -122,7 +122,7 @@
                             <span class="input-group-append">
                                 <button class="btn btn-primary btn-app" type="button" id="btn-get-subdept"><i class="fa fa-upload"></i> Bagian</button>
                             </span>
-                        </div>                    
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -136,14 +136,9 @@
         <div class="card-footer bg-primary m-0 p-1">
             <div class="text-white">
                 <button type="submit" id="btn-examimport" class="btn btn-app btn-orange mr-0 mt-0 mb-0" data-toggle="tooltip" title="Format File Excel"><i class="fa fa-file-excel-o"></i> Format Import</button>
-                <!-- @if($loggedAdmin->email=='mega@ptnag.com' || $loggedAdmin->email=='rudy@ptnag.com' || $loggedAdmin->email=='rifqi@ptnag.com' || $loggedAdmin->email=='ersa@ptnag.com') -->
-                <!-- <button type="button" class="btn btn-app btn-success mr-0 mt-0 mb-0" data-target="#import_data_lembur" data-toggle="modal"><i class="fa fa-file-excel-o"></i> Import</button>
-                @else
-                <button type="submit" id="btn-import" class="btn btn-app btn-warning mr-0 mt-0 mb-0" data-toggle="tooltip" title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import</button>
-                @endif -->
                 <button type="button" class="btn btn-app btn-success mr-0 mt-0 mb-0" data-target="#import_data_lembur" data-toggle="modal"><i class="fa fa-file-excel-o"></i> Import</button>
-                @if($loggedAdmin->email=='mega@ptnag.com' || $loggedAdmin->email=='rifqi')
-                <button type="button" class="btn btn-app btn-success mr-0 mt-0 mb-0" data-target="#import_data_lembur_from_nds" data-toggle="modal"><i class="fa fa-database"></i> Import From NDS</button>
+                @if($loggedAdmin->email=='mega@ptnag.com' || $loggedAdmin->email=='indri@nag.nirwanaindonesia.com' || $loggedAdmin->email == 'fadli' || $loggedAdmin->email == 'rudy@ptnag.com')
+                <button type="button" class="btn btn-app btn-success mr-0 mt-0 mb-0" data-target="#import_data_lembur_from_nds" data-toggle="modal"><i class="fa fa-database"></i> Import HRIS</button>
                 @endif
                 <a href="javascript:void(0)" id="btn-paste" class="btn btn-app btn-secondary mr-0 mt-0 mb-0" data-toggle="tooltip" title="Tempel Data"><i class="fa fa-paste"></i> Tempel</a>
             </div>
@@ -572,7 +567,7 @@
     <!-- Sweet alert js-->
     <script src="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.js')}}"></script>
     <script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
-    
+
     <style>
         #head_karyawan, #tabel_data_lembur, #head_overtime_from_nds, #tabel_overtime_from_nds { display: block; }
 
@@ -590,7 +585,7 @@
         }
     </style>
     <script type="text/javascript">
-        
+
         $('body').on('change', '#tanggal_lembur_nds', function () {
             var tanggal_lembur = $('#tanggal_lembur_nds').val();
             $("#selectNoForm").empty();
@@ -858,7 +853,7 @@
         //$(function(id) {
         function datetimerangepicker(id) {
             //id = 'waktu_jam_lembur';
-            
+
             $('input[id="' + id + '"]').daterangepicker({
                 timePicker: true,
                 timePickerIncrement: 1,
@@ -1058,14 +1053,14 @@
                 var d = bits[2] + '-' + bits[1] + '-' + bits[0];
             }
             return d;
-        }        
-        
+        }
+
         $(document).ready(function() {
             $("#loadingProcess").hide();
             $("#data-lembur").hide();
             var defaultDateJamLembur = defaultDate(tanggalSekarang()) + ' 17:00 - ' + defaultDate(tanggalSekarang()) + ' 18:00';
             $("#waktu_jam_lembur").val(defaultDateJamLembur);
-            
+
             $("#jumlah_jam_lembur").val('1');
             $("#jumlah_jam_istirahat").val('0');
             document.getElementById('btn-icon-refresh2').style.visibility='hidden';
@@ -1282,20 +1277,20 @@
         });
 
         $('body').on('click', '#btn-get-employee', function (event) {
-            $("#ajax-modal-pilih1").modal('show');    
+            $("#ajax-modal-pilih1").modal('show');
             $('#datatable-ajax-modal').DataTable().clear();
             $('#datatable-ajax-modal').DataTable().destroy();
             $('#datatable-ajax-modal').empty();
-            
+
             getemployee();
         });
 
         $('body').on('click', '#btn-get-subdept', function (event) {
-            $("#ajax-modal-pilih2").modal('show');    
+            $("#ajax-modal-pilih2").modal('show');
             $('#datatable-ajax-modal2').DataTable().clear();
             $('#datatable-ajax-modal2').DataTable().destroy();
             $('#datatable-ajax-modal2').empty();
-            
+
             getsubdept();
         });
 
@@ -1369,7 +1364,7 @@
                 "createdRow": function (row, data, dataIndex) {
                     if (data['status_aktif'] == "TIDAK AKTIF") {
                             $(row).css('background', 'red');
-                    }                    
+                    }
                 }
             });
 
@@ -1385,8 +1380,8 @@
                 $(this).addClass('bg-cyan');
 
 
-             });      
-             
+             });
+
             $('#datatable-ajax-modal tbody').on('dblclick', 'tr', function () {
                 var tr = $(this).closest('tr');
                 var row = table1.row(tr);
@@ -1405,9 +1400,9 @@
                 });
 
                 $("#selectEmp").find("option[value='" + data['enroll_id'] +"'").attr("selected","selected");
-                
-            });      
-             
+
+            });
+
         }
 
         function getsubdept() {
@@ -1466,8 +1461,8 @@
                 $(this).addClass('bg-cyan');
 
 
-             });      
-             
+             });
+
             $('#datatable-ajax-modal2 tbody').on('dblclick', 'tr', function () {
                 var tr = $(this).closest('tr');
                 var row = table1.row(tr);
@@ -1486,9 +1481,9 @@
                 });
 
                 $("#selectSub").find("option[value='" + data['sub_dept_id'] +"'").attr("selected","selected");
-                
-            });      
-             
+
+            });
+
         }
 
         function count(str, find) {
@@ -1498,7 +1493,7 @@
         $('body').on('click', '#btn-pilih', function (event) {
             var selectEmp = $('#selectEmp').val();
             var selectEmployee = $('#selectEmployee').val(selectEmp);
-            
+
             $('#jumlahEmp').val('Jumlah Karyawan : ' + selectEmp.length);
 
             $('#selectSubDept').val('');
@@ -1508,7 +1503,7 @@
         $('body').on('click', '#btn-pilih2', function (event) {
             var selectSub = $('#selectSub').val();
             var selectSubDept = $('#selectSubDept').val(selectSub);
-            
+
             $('#jumlahSubDept').val('Jumlah Bagian : ' + selectSub.length);
 
             $('#selectEmployee').val('');
@@ -1521,7 +1516,7 @@
             var mulailembur = waktulembur.split(' - ');
             var tgl = mulailembur[0].split(' ');
             var tanggal = defaultDate(tgl[0]);
-                        
+
             $.ajax({
                 type:"POST",
                 url: "{{route('hris.dataclosingpayroll.ajax_getclosing')}}",
@@ -1544,7 +1539,7 @@
                             opacity: 0.6,
                             autohide: false
                         });
-                    } else {            
+                    } else {
                         var waktu_lembur = $('#waktu_jam_lembur').val();
 
                         var splitWaktuLembur = waktu_lembur.split(" - ");
@@ -1605,9 +1600,9 @@
 
                 },
                 error: function(res){
-                                
+
                 }
-            });           
+            });
 
         });
 
@@ -1616,7 +1611,7 @@
     <script>
     // $("#smartwizard123").on("leaveStep", function(e, anchorObject, stepNumber, stepDirection, stepPosition) {
         function jamlemburistirahat_edit(mulaijamlembur, akhirjamlembur, mulai_jam_lembur, akhir_jam_lembur, jumlah_jam_lembur, jumlah_jam_istirahat) {
-           
+
             var dt1Split = mulaijamlembur.split(" ");
             var dt2Split = akhirjamlembur.split(" ");
 
@@ -1933,7 +1928,7 @@
             });
         }
 
-        $('#selectAllData').click(function() {            
+        $('#selectAllData').click(function() {
             var isChecked = $(this).prop("checked");
             $('#table-ajax-edit-lembur tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
         });
@@ -1957,7 +1952,7 @@
 
 
 
-        $('#btn-remove').click(function() {            
+        $('#btn-remove').click(function() {
             var notFirstRow = true;
             var isHeaderChecked = $("#selectAllData").prop("checked");
             $("#table-ajax-edit-lembur input[type=checkbox]:checked").each(function () {
@@ -1965,13 +1960,13 @@
                 {
                     notFirstRow = false;
                 } else {
-                    $(this).parents("tr").remove();                    
-                }                
+                    $(this).parents("tr").remove();
+                }
             });
-           
+
         });
 
-        $('#btn-simpan').click(function() {            
+        $('#btn-simpan').click(function() {
 
             var html_table_data = "";
             var arrayHtml = [];
@@ -2024,7 +2019,7 @@
                         swal({
                             title: 'DATA SUDAH ADA:',
                             text: message,
-                            icon: 'info', 
+                            icon: 'info',
                         });
                     }else{
                         notif({
@@ -2033,7 +2028,7 @@
                         });
                         setTimeout(function myFunction() {
                             $(location).prop("href", "{{route('hris.datalembur.index')}}")
-                        }, 3000); 
+                        }, 3000);
                     }
                 },
                 error: function(res){
