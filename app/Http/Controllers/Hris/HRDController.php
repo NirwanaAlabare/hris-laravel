@@ -807,7 +807,7 @@ class HRDController extends AdminBaseController
                         GROUP BY enroll_id
                     )
                     ) mda ON a.enroll_id = mda.enroll_id
-                    WHERE  a.enroll_id=".$enroll_id."");
+                    WHERE  a.enroll_id=".$enroll_id." ORDER BY a.enroll_id, b.contract_end DESC");
         $umk=DasarPotBPJS::orderBy('created_at','desc')->limit(1)->first()->dasar_pot_bpjs_rupiah;
         $fileName='Kontrak Kerja '.$data[0]->employee_name.'('.request()->enroll_id.') '.$data[0]->max_contract_end.' '.date('His');
         $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan',["no_form"=>$no_form,"data" => $data,"umk"=>$umk])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
@@ -827,7 +827,7 @@ class HRDController extends AdminBaseController
                         FROM master_data_absen_kehadiran
                         GROUP BY enroll_id
                     )
-                    ) mda ON a.enroll_id = mda.enroll_id where a.enroll_id=".$enroll_id." group by a.enroll_id");
+                    ) mda ON a.enroll_id = mda.enroll_id where a.enroll_id=".$enroll_id." group by a.enroll_id order by a.enroll_id, b.contract_end desc");
         $umk=DasarPotBPJS::orderBy('created_at','desc')->limit(1)->first()->dasar_pot_bpjs_rupiah;
         $fileName='Kontrak Kerja '.$data[0]->employee_name.'('.request()->enroll_id.') '.$contract_end.' '.date('His');
         $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan_2',["no_form"=>$no_form,"contract2"=>$contract,"contract_end2"=>$contract_end,"data" => $data,"umk"=>$umk])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
