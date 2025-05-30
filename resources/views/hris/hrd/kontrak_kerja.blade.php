@@ -2160,13 +2160,12 @@
         $('#closeExtendModal').click(function () {
             $('#extendContractModal').modal('hide');
             resetPenilaianKinerja();
-            resetPenilaianKinerja();
         });
         // Tombol tutup modal penilaian
         $(document).on('click', '#btn-close-modal', function () {
             $('#penilaianKinerjaModal').modal('hide');
             resetPenilaianKinerja();
-            resetPenilaianKinerja();
+             $('#extendContractModal').modal('show');
         });
     });
 
@@ -2489,6 +2488,7 @@
                     timeout:1300,
                 });
                 getDetail(res);
+                datatable.ajax.reload();
             }
         });
     }
