@@ -137,7 +137,7 @@
             <div class="text-white">
                 <button type="submit" id="btn-examimport" class="btn btn-app btn-orange mr-0 mt-0 mb-0" data-toggle="tooltip" title="Format File Excel"><i class="fa fa-file-excel-o"></i> Format Import</button>
                 <button type="button" class="btn btn-app btn-success mr-0 mt-0 mb-0" data-target="#import_data_lembur" data-toggle="modal"><i class="fa fa-file-excel-o"></i> Import</button>
-                @if($loggedAdmin->email=='mega@ptnag.com' || $loggedAdmin->email=='indri@nag.nirwanaindonesia.com' || $loggedAdmin->email == 'fadli' || $loggedAdmin->email == 'rudy@ptnag.com')
+                @if($loggedAdmin->email=='mega@ptnag.com' || $loggedAdmin->email=='indri@nag.nirwanaindonesia.com' || $loggedAdmin->email=='ersa@ptnag.com' || $loggedAdmin->email == 'fadli' || $loggedAdmin->email == 'rudy@ptnag.com')
                 <button type="button" class="btn btn-app btn-success mr-0 mt-0 mb-0" data-target="#import_data_lembur_from_nds" data-toggle="modal"><i class="fa fa-database"></i> Import HRIS</button>
                 @endif
                 <a href="javascript:void(0)" id="btn-paste" class="btn btn-app btn-secondary mr-0 mt-0 mb-0" data-toggle="tooltip" title="Tempel Data"><i class="fa fa-paste"></i> Tempel</a>
