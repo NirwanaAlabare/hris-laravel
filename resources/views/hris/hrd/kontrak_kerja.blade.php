@@ -93,11 +93,11 @@
                                 </div>
                                 <div class="col-1"></div>
                                 <div class="col-2 pt-1">
-                                    <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Status Kontrak</label>
+                                    <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Status PKS</label>
                                 </div>
                                 <div class="col-3 pr-0">
                                     <select class="form-control" id="status_kontrak">
-                                        <option value="">Pilih Status Kontrak</option>
+                                        <option value="">Pilih Status PKS</option>
                                         <option value="One Day">PKS - 1 Hari</option>
                                         <option value="Nine Day">PKS - 9 Hari</option>
                                         <option value="Thirty Day">PKS - 30 Hari</option>
