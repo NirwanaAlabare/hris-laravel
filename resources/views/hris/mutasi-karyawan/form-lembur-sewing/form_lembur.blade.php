@@ -154,8 +154,8 @@
                         <input type="hidden" id="tgl-awal" name="tgl-awal">
                         <input type="hidden" id="tgl-akhir" name="tgl-akhir">
                         <input type="hidden" id="daterange1" name="daterange1" oninput="dataTableReload()" onchange="dataTableReload()" value="{{ date('Y-m-d') }}">
-                        <label class="form-label"><small><b>Tanggal Form</b></small></label>
-                        <a class="nav-link card-title py-3 pl-3" style="border: 1px solid #d8d4dc" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
+                        <label class="form-label ml-3"><small><b>Tanggal Form</b></small></label>
+                        <a class="nav-link card-title ml-3 py-3 pl-3" style="border: 1px solid #d8d4dc" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
                     </div>
                 </div>
                 <div class="col-3">
