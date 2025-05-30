@@ -362,6 +362,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             // }
 
              if ($request->rekomendasi == 'perpanjang') {
+                $timestamp = Carbon::now();
                 $akhirKontrak = Carbon::parse($request->akhir_kontrak_text_val);
                 $adjustedDate = $akhirKontrak->copy()->addDay();
                 $adjustedContractEndCarbon = $adjustedDate->copy()->addMonths($request->perpanjang_bulan)->subDay(); // 2025-05-20
@@ -522,6 +523,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             //     }
             // }
             if ($request->rekomendasi == 'perpanjang') {
+                $timestamp = Carbon::now();
                 $akhirKontrak = Carbon::parse($request->akhir_kontrak_text_val);
                 $adjustedDate = $akhirKontrak->copy()->addDay();
                 $adjustedContractEndCarbon = $adjustedDate->copy()->addMonths($request->perpanjang_bulan)->subDay(); // 2025-05-20
