@@ -47,7 +47,7 @@ class FormLemburNonSewingController extends AdminBaseController
                 $additionalQuery .= 'AND a.no_form in ('.$noFormString.')';
             }
 
-            if($user=='HR' || $user=='IT' || $user_email == 'mega@ptnag.com' || $user_email == 'rudy@ptnag.com' || $user_email == 'fadli'){
+            if($user=='HR' || $user=='IT' || $user_email == 'mega@ptnag.com' || $user_email == 'rudy@ptnag.com' || $user_email == 'fadli' || $user_email == 'indri@nag.nirwanaindonesia.com' || $user_email == 'ersa@ptnag.com'){
                 $data_input = DB::select("
                 select
                 a.id,

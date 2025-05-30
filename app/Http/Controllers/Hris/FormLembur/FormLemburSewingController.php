@@ -45,7 +45,7 @@ class FormLemburSewingController extends AdminBaseController
                 $noFormString = "'" . implode("', '", $forms) ."'";
                 $additionalQuery .= 'AND a.no_form in ('.$noFormString.')';
             }
-            if($user=='HR' || $user=='IT' || $user=='sophia' || $user=='Shopie' || $user=='sewing' || $dept=='FINANCE,ACCOUNTING&TAX' || $user_email == 'mega@ptnag.com' || $user_email == 'rudy@ptnag.com' || $user_email == 'fadli'){
+            if($user=='HR' || $user=='IT' || $user_email == 'mega@ptnag.com' || $user_email == 'rudy@ptnag.com' || $user_email == 'fadli' || $user_email == 'indri@nag.nirwanaindonesia.com' || $user_email == 'ersa@ptnag.com'){
                 $data_input = DB::select("
                 SELECT
                 a.id,
@@ -233,30 +233,6 @@ class FormLemburSewingController extends AdminBaseController
         ) f  on a.enroll_id = f.enroll_id
         where a.enroll_id is not null and b.enroll_id is null and c.enroll_id is null and f.enroll_id is null and a.enroll_id = '$qr'
         ");
-
-        // SELECT m.enroll_id, nm_karyawan,m.nik, b.status_jabatan, c.enroll_id cek_stat, d.enroll_id cek_stat_tmp FROM
-        // (
-        // select max(id) id from mut_karyawan_input a
-        // where tgl_pindah = '$tgl_filter' and line != '$line'
-        // group by nik
-        // ) a
-        // inner join mut_karyawan_input m on a.id = m.id
-        // left join (
-        //     select enroll_id, nik, employee_id, employee_name, status_jabatan, absen_masuk_kerja,
-        //     absen_masuk_kerja_real, absen_pulang_kerja, absen_pulang_kerja_real
-        //     from master_data_absen_kehadiran where tanggal_berjalan = '$tgl_filter'
-        // ) b on m.enroll_id = b.enroll_id
-        //             left join
-        //             (
-        //             select enroll_id from mut_karyawan_input_form_lembur a
-        //             inner join mut_karyawan_input_form_lembur_det b on a.no_form = b.no_form
-        //             where a.tgl_lembur = '$tgl_lembur' and a.tgl_filter = '$tgl_filter'
-        //             ) c on b.enroll_id = c.enroll_id
-        //             left join
-        //             (
-        //             select * from mut_karyawan_input_form_lembur_tmp_det
-        //             ) d on b.enroll_id = d.enroll_id
-        //             where c.enroll_id is null and d.enroll_id is null and m.enroll_id = '$qr'
 
         $enroll = $sql_temp[0]->enroll_id;
         return [

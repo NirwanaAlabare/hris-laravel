@@ -666,9 +666,6 @@
             var dates = daterange.split(" s/d ");
             var from = dates[0];
             var to = dates[1] ? dates[1] : from;
-
-            console.log('Updated from:', from);
-            console.log('Updated to:', to);
             datatable.ajax.reload();
         }
 
