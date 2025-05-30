@@ -387,6 +387,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             return response()->json([
                 'status' => 'success',
                 'msg' => 'Data berhasil ditambahkan',
+                'enroll_id' => $request->enroll_id_input_2_val,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -550,6 +551,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             return response()->json([
                 'status' => 'success',
                 'msg' => 'Data berhasil diperbarui',
+                'enroll_id' => $request->enroll_id_input_2_val,
             ]);
         } catch (\Exception $e) {
             return response()->json([

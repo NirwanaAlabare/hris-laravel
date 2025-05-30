@@ -287,7 +287,7 @@
     <div class="modal-dialog modal-dialog-centered" style="max-width: 90%;" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary p-2">
-                <label class="form-label">WORKING CONTRACT</label>
+                <label class="form-label" id="titleExtendModal">WORKING CONTRACT</label>
                 <button type="button" id="closeExtendModal" class="close text-white ml-1">
                     <i class="fa fa-remove"></i>
                 </button>
@@ -971,9 +971,10 @@
                         title: 'Berhasil!',
                         message: response.msg,
                     });
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1000);
+                    getDetail(response.enroll_id)
+                    $('#extendContractModal').modal('show');
+                    datatable.ajax.reload();
+                    $('#penilaianKinerjaModal').modal('hide');
                 },
                 error: function(xhr, status, error) {
                     iziToast.error({
@@ -1586,7 +1587,7 @@
                 render: (data, type, row, meta) => {
                     return `
                         <div class='d-flex gap-1'>
-                            <a onclick="openExtendModal('` + row.enroll_id + `')">
+                            <a onclick="openExtendModal('` + row.enroll_id + `', '` + row.employee_name + `');">
                                 <i class='fa fa-pencil-square-o' style='color:black;background-color:orange;font-size:14pt;border:1px solid #838584;padding:2pt;cursor:pointer'></i>
                             </a>
                             <a onclick="print_pdf('` + row.enroll_id + `');">
@@ -2144,9 +2145,10 @@
     }
 
 
-    function openExtendModal(enroll_id) {
+    function openExtendModal(enroll_id, name) {
         getDetail(enroll_id); // ambil data seperti sebelumnya
         $('#extendContractModal').modal('show');
+        $('#titleExtendModal').text(enroll_id + ' - ' + name);
     }
 
 
