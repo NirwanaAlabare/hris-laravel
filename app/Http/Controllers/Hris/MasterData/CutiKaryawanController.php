@@ -2687,7 +2687,6 @@ class CutiKaryawanController extends AdminBaseController
         }
 
         $query=DB::select('select nomor_form_perizinan,CAST(substring(nomor_form_perizinan,13) AS int) as nomor_form from data_absen_perijinan where nomor_form_perizinan LIKE "'.$nomor_form_perizinan.'%" order by nomor_form desc limit 1');
-
         if($query == "" || !$query) {
             $nomor = "0000";
             $nomor_form_perizinan =  $nomor_form_perizinan . $nomor;
@@ -2706,12 +2705,12 @@ class CutiKaryawanController extends AdminBaseController
                     $query3->whereNotIn('kode_hari', [6, 5])
                         ->orWhereNotNull('mulai_jam_kerja');
                     })->whereNotIn('status_absen',['LN','LP'])->get();
+        // dd($cek_data->toArray());
         if($cek_data->count() > 0) {
             $query = DataAbsenPerijinan::create([
                 'uuid' => Str::uuid(),
                 'uuid_master' => $uuid_master,
                 'tanggal_perizinan' => $tanggal_perizinan,
-                // 'nomor_form_perizinan' => $nomor_form_perizinan,
                 'enroll_id' => $enroll_id,
                 'didelegasikan_enroll_id' => $didelegasikan_enroll_id,
                 'kode_absen_ijin' => $kode_absen_ijin,
@@ -2753,7 +2752,6 @@ class CutiKaryawanController extends AdminBaseController
                 ->first();
         }
 
-
         if ($absen) {
             DataAbsenPerijinan::where('uuid',request()->uuid)->update([
                 'kode_absen_ijin' => request()->kode_absen_ijin,
@@ -2762,6 +2760,8 @@ class CutiKaryawanController extends AdminBaseController
                 'time_akhir_ijin' => request()->time_akhir_ijin,
                 'total_time_ijin' => request()->total_time_ijin,
                 'tanggal_perizinan' => $tanggal_perizinan,
+                'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
+                'tanggal_akhir_ijin' => request()->tanggal_akhir_ijin,
                 'operator' => $email
             ]);
         } else {
@@ -2795,6 +2795,8 @@ class CutiKaryawanController extends AdminBaseController
             'uuid_master' => $uuid_master,
             'tanggal_perizinan' => $tanggal_perizinan,
             // 'nomor_form_perizinan' => $nomor_form_perizinan,
+            'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
+            'tanggal_akhir_ijin' => $request->tanggal_akhir_ijin,
             'enroll_id' => $enroll_id,
             'kode_absen_ijin' => $kode_absen_ijin,
             'absen_alasan' => $absen_alasan,

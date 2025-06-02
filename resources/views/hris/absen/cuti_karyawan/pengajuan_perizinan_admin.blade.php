@@ -2051,9 +2051,9 @@ h1 {
                         });
                     }
 
-                    setTimeout(function myFunction() {
-                            location.reload();
-                    }, 3000);
+                    // setTimeout(function myFunction() {
+                    //         location.reload();
+                    // }, 3000);
 
                 },
                 error: function(resA){
