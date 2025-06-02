@@ -1480,6 +1480,9 @@ h1 {
                                         msg: "<b>Info:</b> Data berhasil di hapus.",
                                         type: "info"
                                     });
+                                     setTimeout(function myFunction() {
+                                                    location.reload();
+                                                }, 3000);
                                 },
                                 error: function(res){
                                     notif({
@@ -1529,7 +1532,7 @@ h1 {
                                 //     return false;
                                 // }
 
-                                message = "Anda Yakin Ingin Menghapus Nomor Form : " + nomor_form_perizinan + " !!!";
+                                message = "Anda Yakin Ingin Menghapus Nomor Form : " + (nomor_form_perizinan ? nomor_form_perizinan : "-") + " !!!";
                                 type = "warning";
                                 swal({
                                     title: message,
@@ -1564,6 +1567,9 @@ h1 {
                                                     msg: "<b>Info:</b> Data berhasil di hapus.",
                                                     type: "info"
                                                 });
+                                                setTimeout(function myFunction() {
+                                                    location.reload();
+                                                }, 3000);
                                             },
                                             error: function(res){
                                                 notif({
@@ -1589,9 +1595,7 @@ h1 {
                         }
                     });
                 }
-                setTimeout(function myFunction() {
-                    location.reload();
-                }, 3000);
+
 
             });
 
