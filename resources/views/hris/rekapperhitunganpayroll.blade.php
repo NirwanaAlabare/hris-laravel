@@ -149,7 +149,7 @@
                                 </select>
                             </div>
                         </div>
-                        @if($loggedAdmin->role_user=='superadmin' || $loggedAdmin->email=='firmansyah@nirwanaindonesia.com' || $loggedAdmin->email=='willy@ptnag.com'  || $loggedAdmin->email=='alex.herdian@ptnag.com')
+                        @if($loggedAdmin->email=='mega@ptnag.com'  || $loggedAdmin->email=='rudy@ptnag.com' || $loggedAdmin->email=='fadli' || $loggedAdmin->email == 'ersa@ptnag.com' || $loggedAdmin->email=='willy@ptnag.com'  || $loggedAdmin->email=='alex.herdian@ptnag.com')
                         <div class="row text-white pt-4">
                             <div class="col-12">
                                 <a id="BtnProsesPayroll2" class="btn btn-app btn-sm btn-primary text-white BtnProsesPayroll2"><span><i class="fa fa-download"></i></span>PROSES REKAP LEMBUR</a>
@@ -211,13 +211,14 @@
                             <a class="nav-link card-title py-2 pl-3" style="border: 1px solid #d8d4dc" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
                         </div>
                     </div>
-                    @if($loggedAdmin->role_user=='superadmin' || $loggedAdmin->email=='firmansyah@nirwanaindonesia.com' || $loggedAdmin->email=='willy@ptnag.com'  || $loggedAdmin->email=='alex.herdian@ptnag.com'  || $loggedAdmin->email=='reza'  || $loggedAdmin->email=='fadli')
                     <div class="row pt-2 text-white">
                         <div class="col-auto">
-                            @if($loggedAdmin->role_user=='superadmin')
+                            @if($loggedAdmin->email=='mega@ptnag.com'  || $loggedAdmin->email=='rudy@ptnag.com' || $loggedAdmin->email=='fadli' || $loggedAdmin->email == 'ersa@ptnag.com')
                                 <button id="BtnProsesPayroll4" type="button" class="btn btn-app btn-primary text-white"><span><i class="fa fa-download"></i></span> PROSES PAYROLL HARIAN</button>
                             @endif
-                                <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2"><i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST</a>
+                            @if($loggedAdmin->role_user=='superadmin')
+                            <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="recap_labor_cost_2"><i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST</a>
+                            @endif
                         </div>
                     </div>
                     <div class="row pt-1">
@@ -227,7 +228,6 @@
                             <span class="fa fa-refresh" onclick="get_last_update_labor()" style="cursor: pointer;color:rgb(0, 0, 206)"></span>
                         </div>
                     </div>
-                    @endif
                 </div>
             </div>
         </div><!-- col end -->
@@ -366,11 +366,6 @@
                         <a onclick="export_excel_summary_department();" class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> SUMMARY DEPARTMENT</a>
                     </div>
                 </div>
-                {{-- <div class="col-auto pl-0">
-                    <div class="input-group-append">
-                        <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip" title="Export Data ke File Transfer Excel" id="export_excel_daily_labor"><i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST</a>
-                    </div>
-                </div> --}}
                 @endif
                 {!! Form::close() !!}
             </div>

@@ -3,7 +3,7 @@
 <aside class="app-sidebar toggle-sidebar shadow">
     <ul class="side-menu toggle-menu">
           @php
-        if ($loggedAdmin->role_user == "superadmin" || $loggedAdmin->role_user == "absensi") {
+        if ($loggedAdmin->role_user == "absensi" || ($loggedAdmin->email != "reza" && $loggedAdmin->role_user == "superadmin")) {
         @endphp
         <li class="slide">
             <a class="side-menu__item"  data-toggle="slide" href="#">
@@ -52,7 +52,7 @@
         }
         @endphp
         @php
-        if ($loggedAdmin->role_user == "superadmin" || $loggedAdmin->role_user == "absensi") {
+        if ($loggedAdmin->role_user == "absensi" || ($loggedAdmin->email != "reza" && $loggedAdmin->role_user == "superadmin")) {
         @endphp
         <li class="slide">
             <a class="side-menu__item" data-toggle="slide" href="#">
@@ -106,15 +106,15 @@
                         <li><a class="slide-item" href="{{ route('hris.dataclosingpayroll.index') }}"><span> Closing Payroll</span></a></li>
                     @endif
 
-                    @if ($isReza || $isFadli)
+                    {{-- @if ($isReza || $isFadli)
                         <li><a class="slide-item" href="{{ route('hris.aktifitasperubahan.index') }}"><span> Aktifitas Perubahan</span></a></li>
-                    @endif
+                    @endif --}}
                 </ul>
             </li>
         @endif
 
         @php
-        if ($loggedAdmin->role_user == "superadmin" || $loggedAdmin->role_user == "absensi") {
+        if ($loggedAdmin->role_user == "absensi" || ($loggedAdmin->email != "reza" && $loggedAdmin->role_user == "superadmin")) {
         @endphp
         <li class="slide">
             <a class="side-menu__item" data-toggle="slide" href="#">
@@ -134,7 +134,7 @@
         @endphp
 
         @php
-        if ($loggedAdmin->role_user == "superadmin" || $loggedAdmin->role_user == "absensi") {
+        if ($loggedAdmin->role_user == "absensi" || ($loggedAdmin->email != "reza" && $loggedAdmin->role_user == "superadmin")) {
         @endphp
 
         <li class="slide">
