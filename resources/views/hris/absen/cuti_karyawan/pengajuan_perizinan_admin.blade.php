@@ -1521,13 +1521,13 @@ h1 {
                                     autohide: false
                                 });
                             } else {
-                                if (!nomor_form_perizinan) {
-                                    notif({
-                                        msg: "<b>Warning:</b> Anda belum memilih data perizinan.",
-                                        type: "warning"
-                                    });
-                                    return false;
-                                }
+                                // if (!nomor_form_perizinan) {
+                                //     notif({
+                                //         msg: "<b>Warning:</b> Anda belum memilih data perizinan.",
+                                //         type: "warning"
+                                //     });
+                                //     return false;
+                                // }
 
                                 message = "Anda Yakin Ingin Menghapus Nomor Form : " + nomor_form_perizinan + " !!!";
                                 type = "warning";
@@ -1880,7 +1880,7 @@ h1 {
                             },
                             dataType: 'json',
                             success: function(res){
-                                if (res.length > 0 && res[0].nomor_form_perizinan && res[0].is_verifikasi_pengajuan_admin == 0) {
+                                if (res.length > 0) {
                                     var uuid_res=res[0].uuid;
                                     var nomor_form_res=res[0].nomor_form_perizinan;
                                     $.ajax({
