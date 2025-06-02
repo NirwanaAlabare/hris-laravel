@@ -101,7 +101,7 @@
                                     </a>
                                 </div>
                             @endif
-                            @if ($modul=='all' && $email == 'mega@ptnag.com' && $email == 'ersa@ptnag.com' && $email == 'pujiprana@nag.nirwanaindonesia.com' && $email == 'indri@nag.nirwanaindonesia.com' && $email == 'rudy@ptnag.com' && $email == 'fadli'  && $email == 'ronald@ptnag.com' && $email == 'hadiyoso@nag.nirwanaindonesia.com' && $email == 'bobby')
+                            @if ($modul=='all' && ( $email == 'mega@ptnag.com' || $email == 'ersa@ptnag.com' || $email == 'pujiprana@nag.nirwanaindonesia.com' || $email == 'indri@nag.nirwanaindonesia.com' || $email == 'rudy@ptnag.com' || $email == 'fadli'  || $email == 'ronald@ptnag.com' || $email == 'hadiyoso@nag.nirwanaindonesia.com' || $email == 'bobby'))
                                 <div class="col">
                                     <a href="{{route('hris.hrd.index')}}">
                                     <div class="card card-2">
