@@ -615,31 +615,7 @@
                             D. Rekomendasi Tindak Lanjut
                         </div>
                     </div>
-                    {{-- <div class="mt-3 ml-2">
-                        <div class="form-check d-flex align-items-center gap-2">
-                            <input class="form-check-input mt-0" type="checkbox" name="rekomendasi_perpanjang_kontrak" value="1" id="rekomendasi_perpanjang_kontrak">
-                            <label class="form-check-label mb-0" for="rekomendasi_perpanjang_kontrak">Perpanjang Kontrak</label>
-                            <input type="text" class="form-control form-control-sm ml-3" style="width: 100px;" name="perpanjang_bulan" placeholder="Bulan">
-                        </div>
 
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="rekomendasi_phk" value="1" id="rekomendasi_phk">
-                            <label class="form-check-label" for="rekomendasi_phk">Tidak Perpanjang Kontrak / PHK</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="rekomendasi_demosi" value="1" id="rekomendasi_demosi">
-                            <label class="form-check-label" for="rekomendasi_demosi">Demosi</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="rekomendasi_promosi" value="1" id="rekomendasi_promosi">
-                            <label class="form-check-label" for="rekomendasi_promosi">Promosi</label>
-                        </div>
-                        <div class="form-check  d-flex align-items-center gap-2">
-                            <input class="form-check-input mt-0" type="checkbox" name="rekomendasi_training" value="1" id="rekomendasi_training">
-                            <label class="form-check-label w-auto mr-3 mb-0" for="rekomendasi_training">Training / Pengembangan</label>
-                            <input type="text" class="form-control form-control-sm w-50" name="judul_training" placeholder="Sebutkan Judul / Tujuan">
-                        </div>
-                    </div> --}}
                     <div class="mt-3 ml-2">
                         <div class="form-check d-flex align-items-center gap-2">
                             <input class="form-check-input mt-0" type="radio" name="rekomendasi" value="perpanjang" id="rekomendasi_perpanjang_kontrak">
@@ -973,6 +949,12 @@
                         title: 'Berhasil!',
                         message: response.msg,
                     });
+                     $('#btn-simpan-penilaian').attr('disabled', false);
+                    $('#btn-simpan-penilaian').html('Simpan');
+                    $('#btn-simpan-penilaian').css('background-color', '#28a745');
+                    $('#btn-simpan-penilaian').css('border-color', '#28a745');
+                    $('#btn-simpan-penilaian').css('color', '#fff');
+                    $('#btn-simpan-penilaian').css('cursor', 'pointer');
                     getDetail(response.enroll_id)
                     $('#extendContractModal').modal('show');
                     datatable.ajax.reload();
