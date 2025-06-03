@@ -224,12 +224,12 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="import_kontrak" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="import_kontrak" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered" style="max-width: 60%;" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary p-2">
                 <label class="form-label">IMPORT KONTRAK KERJA</label>
-                <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
+                <button type="button" id="btn-close-modal-import" class="close text-white ml-1">
                     <i class="fa fa-remove"></i>
                 </button>
             </div>
@@ -272,6 +272,8 @@
                     <div class="col-2"></div>
                     <div class="col-8 text-center pt-2">
                         <button type="button" id="contractImportButton" class="btn btn-success py-1" style="visibility: hidden"><i class="fa fa-upload" aria-hidden="true"></i> IMPORT</button>
+                        <button type="button" id="contractImportDownloadButton" class="btn btn-danger py-1" style="visibility: hidden"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Print PKS</button>
+                        <input type="hidden" id="enroll_ids_imported" name="enroll_ids_imported">
                     </div>
                     <div class="col-2 pl-8 pt-1" id="keterangan" style="visibility: hidden">
                         <label class="mb-0" style="font-size:10pt">L : Waktu Lembur</label><br>
@@ -1367,6 +1369,17 @@
     });
 
 
+    $('#btn-close-modal-import').on('click',function(){
+        $('#excel_file_kontrak').val('');
+        $('#tabel_kontrak_kerja').empty();
+        document.getElementById('tabel_kontrak_kerja').style.height='1px';
+        document.getElementById('contractImportDownloadButton').style.visibility='hidden';
+        $("#import_kontrak").modal('hide');
+        $(".modal-backdrop").remove();
+        $("body").removeClass("modal-open");
+        datatable.ajax.reload();
+    });
+
     $('#contractImportButton').on('click',function(){
         $("#contractImportButton").addClass("btn-loading");
         $("#contractImportButton").html('Loading...');
@@ -1382,20 +1395,25 @@
             processData: false,
             data: formData,
             success:function(data){
-                $('#tabel_kontrak_kerja').empty();
+                console.log(data);
+                $('#enroll_ids_imported').val(data.enroll_ids.join(','));
+                // $('#tabel_kontrak_kerja').empty();
+                // document.getElementById('tabel_kontrak_kerja').style.height='1px';
+                document.getElementById('contractImportDownloadButton').style.visibility='visible';
                 document.getElementById('contractImportButton').style.visibility='hidden';
-                document.getElementById('tabel_kontrak_kerja').style.height='1px';
                 $("#contractImportButton").removeClass("btn-loading");
                 $("#contractImportButton").html('<i class="fa fa-upload"></i> IMPORT');
                 $("#contractImportButton").attr("disabled", false);
                 $('#excel_file_kontrak').val('');
-                $("#import_kontrak").modal('hide');
+                // $("#import_kontrak").modal('hide');
+                // $(".modal-backdrop").remove();
+                // $("body").removeClass("modal-open");
                 iziToast.success({
                             message: 'Kontrak kerja berhasil di import',
                             position: 'center',
                             timeout:1300,
                         });
-                setTimeout(function(){ window.location.reload(); }, 1300);
+                contractImportDownloadButton(data.enroll_ids);
             },
             error: function(res){
                 swal("", "IMPORT KONTRAK KERJA GAGAL!", "error")
@@ -1406,6 +1424,83 @@
         });
     });
 
+    $('#contractImportDownloadButton').on('click',function(){
+        var enroll_id = $('#enroll_ids_imported').val().split(','); // array enroll ID
+        var today = new Date();
+        var month_now = today.getMonth();
+        var year_now = today.getFullYear();
+        var no_form = 'HRD-NAG/PKWT' + '/' + integerToRoman(month_now + 1) + '/' + year_now;
+        // Buat form secara dinamis
+        var form = $('<form>', {
+            action: 'print_all_pdf_kontrak', // endpoint tanpa query string
+            method: 'POST',
+            target: '_blank' // ini yang akan buka tab baru
+        });
+
+        // Tambahkan input enroll_id[] satu per satu
+        enroll_id.forEach(function(id) {
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'enroll_id[]',
+                value: id
+            }).appendTo(form);
+        });
+
+        // Tambahkan no_form
+        $('<input>').attr({
+            type: 'hidden',
+            name: 'no_form',
+            value: no_form
+        }).appendTo(form);
+
+        $('<input>').attr({
+            type: 'hidden',
+            name: '_token',
+            value: $('meta[name="csrf-token"]').attr('content')
+        }).appendTo(form);
+
+        // Submit dan buka tab baru
+        form.appendTo('body').submit().remove();
+    });
+
+    function contractImportDownloadButton(data_arr) {
+        var enroll_id = data_arr; // array enroll ID
+        var today = new Date();
+        var month_now = today.getMonth();
+        var year_now = today.getFullYear();
+        var no_form = 'HRD-NAG/PKWT' + '/' + integerToRoman(month_now + 1) + '/' + year_now;
+        // Buat form secara dinamis
+        var form = $('<form>', {
+            action: 'print_all_pdf_kontrak', // endpoint tanpa query string
+            method: 'POST',
+            target: '_blank' // ini yang akan buka tab baru
+        });
+
+        // Tambahkan input enroll_id[] satu per satu
+        enroll_id.forEach(function(id) {
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'enroll_id[]',
+                value: id
+            }).appendTo(form);
+        });
+
+        // Tambahkan no_form
+        $('<input>').attr({
+            type: 'hidden',
+            name: 'no_form',
+            value: no_form
+        }).appendTo(form);
+
+        $('<input>').attr({
+            type: 'hidden',
+            name: '_token',
+            value: $('meta[name="csrf-token"]').attr('content')
+        }).appendTo(form);
+
+        // Submit dan buka tab baru
+        form.appendTo('body').submit().remove();
+    };
 
     $(function(){
         'use strict';
@@ -1479,6 +1574,7 @@
             minimumResultsForSearch: Infinity // disabling search
         });
     });
+
     var currentPageCheck = 0;
     var checkedEmployeeArr = [];
     let datatable = $("#datatable").DataTable({
@@ -1689,6 +1785,7 @@
         // Submit dan buka tab baru
         form.appendTo('body').submit().remove();
     });
+
     $('#print_form_penilaian').on('click', function () {
 
         var enroll_id = checkedEmployeeArr;

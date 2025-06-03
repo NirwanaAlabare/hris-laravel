@@ -655,11 +655,17 @@ class HRDController extends AdminBaseController
         Excel::import($import, request()->file('excel_file'));
         return $import->getRowCount();
     }
-    public function import_kontrak_kerja_to_database(){
-        // khawatir terjadi penumpukan
+    public function import_kontrak_kerja_to_database(Request $request){
         ini_set("max_execution_time", 0);
         ini_set("max_input_time", 0);
-        Excel::import(new KontrakKerjaImportToDatabase, request()->file('excel_file'));
+        // Excel::import(new KontrakKerjaImportToDatabase, request()->file('excel_file'));
+        $import = new KontrakKerjaImportToDatabase;
+        Excel::import($import, $request->file('excel_file'));
+
+        return response()->json([
+            'success' => true,
+            'enroll_ids' => $import->importedEnrollIds,
+        ]);
     }
     public function export_excel_kontrak(){
         $inSearchVariable='';
