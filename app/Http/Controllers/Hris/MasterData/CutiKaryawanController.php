@@ -2392,41 +2392,47 @@ class CutiKaryawanController extends AdminBaseController
         $email = $loggedAdmin->email;
         info('START DELETE PERIZINAN');
         info('Delete Perizinan by ' . $email);
-
         $tanggal_perizinan = $request->tanggal_perizinan;
         $nomor_form_perizinan = $request->nomor_form_perizinan;
         $enroll_id = $request->enroll_id;
         info('Tanggal Perizinan : ' . $tanggal_perizinan);
         info('Nomor Form Perizinan : ' . $nomor_form_perizinan);
         info('Nomor Absen : ' . $enroll_id);
-
-        $query = DataAbsenPerijinan::whereRaw('
-                        nomor_form_perizinan = "'. $nomor_form_perizinan . '"
-                        and enroll_id = "'. $enroll_id . '"
-                    ')
-                    ->delete();
-
-        if($query) {
-            info('Data di table data_absen_perijinan berhasil di hapus');
-            $query = MasterDataAbsenKehadiran::whereRaw('
-                nomor_absen_ijin = "' . $nomor_form_perizinan . '"
-                and enroll_id = "' . $enroll_id . '"
+        if($nomor_form_perizinan){
+            $query = DataAbsenPerijinan::whereRaw('
+            nomor_form_perizinan = "'. $nomor_form_perizinan . '"
+            and enroll_id = "'. $enroll_id . '"
             ')
-            ->update([
-                'nomor_absen_ijin' => null,
-                'status_absen' =>'M',
-                'operator' => 'system',
-                'updated_absen_ijin' => null,
-                'deleted_at' => now()
-            ]);
+            ->delete();
+            if($query) {
+                info('Data di table data_absen_perijinan berhasil di hapus');
+                $query = MasterDataAbsenKehadiran::whereRaw('
+                    nomor_absen_ijin = "' . $nomor_form_perizinan . '"
+                    and enroll_id = "' . $enroll_id . '"
+                ')
+                ->update([
+                    'nomor_absen_ijin' => null,
+                    'status_absen' =>'M',
+                    'operator' => 'system',
+                    'updated_absen_ijin' => null,
+                    'deleted_at' => now()
+                ]);
 
-            if ($query) {
-                info('Data di table master_data_absen_kehadiran BERHASIL di hapus');
-            } else {
-                info('Data di table master_data_absen_kehadiran GAGAL di hapus');
+                if ($query) {
+                    info('Data di table master_data_absen_kehadiran BERHASIL di hapus');
+                } else {
+                    info('Data di table master_data_absen_kehadiran GAGAL di hapus');
+                }
+                return true;
             }
+        }else{
+            DataAbsenPerijinan::whereRaw('
+                tanggal_perizinan = "'. $tanggal_perizinan . '"
+                and enroll_id = "'. $enroll_id . '"
+            ')
+            ->delete();
+            return true;
         }
-        return $query;
     }
     public function destroy_dtpc(Request $request)
     {
@@ -2441,12 +2447,19 @@ class CutiKaryawanController extends AdminBaseController
         info('Tanggal Perizinan : ' . $tanggal_perizinan);
         info('Nomor Form Perizinan : ' . $nomor_form_perizinan);
         info('Nomor Absen : ' . $enroll_id);
-
-        $query = DataAbsenPerijinanDTPC::whereRaw('
-                        nomor_form_perizinan = "'. $nomor_form_perizinan . '"
-                        and enroll_id = "'. $enroll_id . '"
-                    ')
-                    ->delete();
+        if($nomor_form_perizinan){
+            $query = DataAbsenPerijinanDTPC::whereRaw('
+                            nomor_form_perizinan = "'. $nomor_form_perizinan . '"
+                            and enroll_id = "'. $enroll_id . '"
+                        ')
+                        ->delete();
+        }else{
+            $query = DataAbsenPerijinanDTPC::whereRaw('
+                            tanggal_perizinan = "'. $tanggal_perizinan . '"
+                            and enroll_id = "'. $enroll_id . '"
+                        ')
+                        ->delete();
+        }
 
 
         return $query;

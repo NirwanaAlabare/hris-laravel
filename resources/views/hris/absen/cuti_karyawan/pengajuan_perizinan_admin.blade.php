@@ -1443,7 +1443,9 @@ h1 {
                 // Convert format dari dd-mm-yyyy ke yyyy-mm-dd jika perlu
                 var tanggal_perizinan = tanggal_periz.substr(6, 4) + '-' + tanggal_periz.substr(3, 2) + '-' + tanggal_periz.substr(0, 2);
                 var tanggal = tanggal_perizinan;
-
+                // console.log("tanggal_perizinan",tanggal_perizinan);
+                // console.log("tanggal",tanggal);
+                // console.log("tanggal_periz",tanggal_periz);
                 if(kode_absen_ijin == 'PC' || kode_absen_ijin == 'DT'){
                     message = "Anda Yakin Ingin Menghapus Perijinan ini !!!";
                     type = "warning";
@@ -1470,7 +1472,7 @@ h1 {
                                 headers: {
                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                                 data: {
-                                    tanggal_perizinan:tanggal_perizinan,
+                                    tanggal_perizinan:tanggal_periz,
                                     nomor_form_perizinan:nomor_form_perizinan,
                                     enroll_id:enroll_id,
                                 },
@@ -1524,14 +1526,6 @@ h1 {
                                     autohide: false
                                 });
                             } else {
-                                // if (!nomor_form_perizinan) {
-                                //     notif({
-                                //         msg: "<b>Warning:</b> Anda belum memilih data perizinan.",
-                                //         type: "warning"
-                                //     });
-                                //     return false;
-                                // }
-
                                 message = "Anda Yakin Ingin Menghapus Nomor Form : " + (nomor_form_perizinan ? nomor_form_perizinan : "-") + " !!!";
                                 type = "warning";
                                 swal({
@@ -1557,7 +1551,7 @@ h1 {
                                             headers: {
                                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                                             data: {
-                                                tanggal_perizinan:tanggal_perizinan,
+                                                tanggal_perizinan:tanggal_periz,
                                                 nomor_form_perizinan:nomor_form_perizinan,
                                                 enroll_id:enroll_id,
                                             },
