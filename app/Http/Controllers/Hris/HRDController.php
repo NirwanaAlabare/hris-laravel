@@ -949,88 +949,52 @@ class HRDController extends AdminBaseController
         $enroll_id = request()->enroll_id;
         $no_form = request()->no_form;
 
-        // Ambil semua kontrak untuk semua enroll_id
-        // $data = DB::table('employee_atribut as a')
-        //     ->leftJoin('employee_contract as b', 'a.enroll_id', '=', 'b.enroll_id')
-        //     ->select(
-        //         'a.status_staff','a.enroll_id','a.nik','a.employee_name','a.status_jabatan',
-        //         'a.sub_dept_name','a.department_name','a.status_kontrak_tetap','a.status_aktif',
-        //         'a.join_date','a.tanggal_resign','a.nomor_ktp','a.tempat_lahir','a.alamat_rumah',
-        //         'a.tanggal_lahir','a.no_surat','b.contract','b.contract_end'
-        //     )
-        //     ->whereIn('a.enroll_id', $enroll_id)
-        //     ->get();
-
-        // $data = DB::table('employee_atribut as a')
-        //         ->leftJoin('employee_contract as b', 'a.enroll_id', '=', 'b.enroll_id')
-        //         ->leftJoinSub(
-        //             DB::table('master_data_absen_kehadiran')
-        //                 ->select('mulai_jam_kerja', 'akhir_jam_kerja', 'tanggal_berjalan', 'enroll_id')
-        //                 ->whereIn(DB::raw('(enroll_id, tanggal_berjalan)'), function($query) {
-        //                     $query->select(DB::raw('enroll_id, MAX(tanggal_berjalan)'))
-        //                         ->from('master_data_absen_kehadiran')
-        //                         ->groupBy('enroll_id');
-        //                 }),
-        //             'mda',
-        //             function ($join) {
-        //                 $join->on('a.enroll_id', '=', 'mda.enroll_id');
-        //             }
-        //         )
-        //         ->select(
-        //             'a.status_staff','a.enroll_id','a.nik','a.employee_name','a.status_jabatan',
-        //             'a.sub_dept_name','a.department_name','a.status_kontrak_tetap','a.status_aktif',
-        //             'a.join_date','a.tanggal_resign','a.nomor_ktp','a.tempat_lahir','a.alamat_rumah',
-        //             'a.tanggal_lahir','a.no_surat','b.contract','b.contract_end',
-        //             'mda.mulai_jam_kerja','mda.akhir_jam_kerja','mda.tanggal_berjalan'
-        //         )
-        //         ->whereIn('a.enroll_id', $enroll_id)
-        //         ->get();
-
      // 1. Ambil data karyawan dan kontrak
        $employee = DB::table('employee_atribut as a')
-    ->select(
-        'a.status_staff','a.enroll_id','a.nik','a.employee_name','a.status_jabatan',
-        'a.sub_dept_name','a.department_name','a.status_kontrak_tetap','a.status_aktif',
-        'a.join_date','a.tanggal_resign','a.nomor_ktp','a.tempat_lahir','a.alamat_rumah',
-        'a.tanggal_lahir','a.no_surat'
-    )
-    ->whereIn('a.enroll_id', $enroll_id)
-    ->get()
-    ->keyBy('enroll_id');
+        ->select(
+            'a.status_staff','a.enroll_id','a.nik','a.employee_name','a.status_jabatan',
+            'a.sub_dept_name','a.department_name','a.status_kontrak_tetap','a.status_aktif',
+            'a.join_date','a.tanggal_resign','a.nomor_ktp','a.tempat_lahir','a.alamat_rumah',
+            'a.tanggal_lahir','a.no_surat'
+        )
+        ->whereIn('a.enroll_id', $enroll_id)
+        ->orderBy('a.sub_dept_name','ASC')
+        ->get()
+        ->keyBy('enroll_id');
 
 
         // 2. Ambil absen terakhir per enroll_id
       $contract = DB::table('employee_contract as ec1')
-    ->select('ec1.enroll_id', 'ec1.contract', 'ec1.contract_end')
-    ->join(DB::raw('(
-        SELECT enroll_id, MAX(contract_end) as latest_contract_end
-        FROM employee_contract
-        GROUP BY enroll_id
-    ) as latest'), function($join) {
-        $join->on('ec1.enroll_id', '=', 'latest.enroll_id');
-        $join->on('ec1.contract_end', '=', 'latest.latest_contract_end');
-    })
-    ->whereIn('ec1.enroll_id', $enroll_id)
-    ->get()
-    ->keyBy('enroll_id');
-$absen = DB::table('master_data_absen_kehadiran as m1')
-    ->select('m1.enroll_id', 'm1.mulai_jam_kerja', 'm1.akhir_jam_kerja', 'm1.tanggal_berjalan')
-    ->join(DB::raw('(SELECT enroll_id, MAX(tanggal_berjalan) as latest_date
-                    FROM master_data_absen_kehadiran
-                    GROUP BY enroll_id) as m2'), function($join) {
-        $join->on('m1.enroll_id', '=', 'm2.enroll_id');
-        $join->on('m1.tanggal_berjalan', '=', 'm2.latest_date');
-    })
-    ->whereIn('m1.enroll_id', $enroll_id)
-    ->get()
-    ->keyBy('enroll_id');
-$final = $employee->map(function ($item, $key) use ($contract, $absen) {
-    $item->contract = $contract[$key]->contract ?? null;
-    $item->contract_end = $contract[$key]->contract_end ?? null;
+        ->select('ec1.enroll_id', 'ec1.contract', 'ec1.contract_end')
+        ->join(DB::raw('(
+            SELECT enroll_id, MAX(contract_end) as latest_contract_end
+            FROM employee_contract
+            GROUP BY enroll_id
+        ) as latest'), function($join) {
+            $join->on('ec1.enroll_id', '=', 'latest.enroll_id');
+            $join->on('ec1.contract_end', '=', 'latest.latest_contract_end');
+        })
+        ->whereIn('ec1.enroll_id', $enroll_id)
+        ->get()
+        ->keyBy('enroll_id');
+      $absen = DB::table('master_data_absen_kehadiran as m1')
+        ->select('m1.enroll_id', 'm1.mulai_jam_kerja', 'm1.akhir_jam_kerja', 'm1.tanggal_berjalan')
+        ->join(DB::raw('(SELECT enroll_id, MAX(tanggal_berjalan) as latest_date
+                        FROM master_data_absen_kehadiran
+                        GROUP BY enroll_id) as m2'), function($join) {
+            $join->on('m1.enroll_id', '=', 'm2.enroll_id');
+            $join->on('m1.tanggal_berjalan', '=', 'm2.latest_date');
+        })
+        ->whereIn('m1.enroll_id', $enroll_id)
+        ->get()
+        ->keyBy('enroll_id');
+        $final = $employee->map(function ($item, $key) use ($contract, $absen) {
+        $item->contract = $contract[$key]->contract ?? null;
+        $item->contract_end = $contract[$key]->contract_end ?? null;
 
-    $item->mulai_jam_kerja = $absen[$key]->mulai_jam_kerja ?? null;
-    $item->akhir_jam_kerja = $absen[$key]->akhir_jam_kerja ?? null;
-    $item->tanggal_berjalan = $absen[$key]->tanggal_berjalan ?? null;
+        $item->mulai_jam_kerja = $absen[$key]->mulai_jam_kerja ?? null;
+        $item->akhir_jam_kerja = $absen[$key]->akhir_jam_kerja ?? null;
+        $item->tanggal_berjalan = $absen[$key]->tanggal_berjalan ?? null;
 
     return $item;
 })->values();
