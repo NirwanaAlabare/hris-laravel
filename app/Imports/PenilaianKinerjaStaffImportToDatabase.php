@@ -30,7 +30,7 @@ class PenilaianKinerjaStaffImportToDatabase implements ToModel, WithStartRow, Wi
         $timestamp = Carbon::now();
 
         $start_date = Carbon::parse($contract_start);
-        $end_date = Carbon::parse($contract_end)->subDays(30);
+        $end_date = Carbon::parse($contract_end)->subDays(14);
 
         $jumlah_mangkir = MasterDataAbsenKehadiran::where('enroll_id', $enroll_id)
         ->whereBetween('tanggal_berjalan', [$start_date, $end_date])
