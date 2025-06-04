@@ -161,36 +161,15 @@
             <div class="card-body px-6 pt-2 pb-5">
                 <div class="row pb-2">
                     <div class="col-10">
-                        <table>
-                            <tr>
-                                <td>
-                                    <button type="button" class="btn btn-app btn-success mr-0 mt-0 mb-0" data-target="#import_kontrak" data-toggle="modal" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Import Kontrak Kerja</button>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" style="font-size:11pt" onclick="export_excel_kontrak()" id="btn_export_excel_kontrak"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Kontrak Kerja</button>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" data-target="#import_nilai_kinerja_staff" data-toggle="modal" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Import Nilai Kinerja Staff</button>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" onclick="export_excel_format_penilaian_nonstaff()" id="export_excel_format_penilaian_nonstaff" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Format Penilaian Non Staff</button>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" onclick="export_rekap_penilaian()" id="export_rekap_penilaian" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Rekap Penilaian</button>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" onclick="adjustment_sallary()" id="adjustment_sallary" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Format Adjustment Sallary</button>
-                                </td>
-                                <td>
-                                   <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" data-target="#import_adjustment_sallary" data-toggle="modal" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Import Adjustment Sallary</button>
-                               </td>
-                                <td>
-                                    <button type="button" class="btn btn-primary mr-0 ml-1 mt-0 mb-0" style="visibility: hidden" id="print_form_penilaian" style="font-size:11pt"><i class="fa fa-file-pdf-o" style="font-size:11pt"></i>Form Penilaian (PDF)</button>
-                                </td>
-                                <td>
-                                    <button class="btn btn-danger" id="print_kontrak_kerja" style="visibility: hidden"><span class="fa fa-file-pdf-o"></span> Print Checked Employee</button>
-                                </td>
-                            </tr>
+                                    <button type="button" class="btn btn-app btn-success mr-0 mt-2 mb-0" data-target="#import_kontrak" data-toggle="modal" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Import Kontrak Kerja</button>
+                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-2 mb-0" style="font-size:11pt" onclick="export_excel_kontrak()" id="btn_export_excel_kontrak"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Kontrak Kerja</button>
+                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-2 mb-0" data-target="#import_nilai_kinerja_staff" data-toggle="modal" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Import Nilai Kinerja Staff</button>
+                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-2 mb-0" onclick="export_excel_format_penilaian_nonstaff()" id="export_excel_format_penilaian_nonstaff" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Format Penilaian Non Staff</button>
+                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-2 mb-0" onclick="export_rekap_penilaian()" id="export_rekap_penilaian" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Rekap Penilaian</button>
+                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-2 mb-0" onclick="adjustment_sallary()" id="adjustment_sallary" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Format Adjustment Sallary</button>
+                                   <button type="button" class="btn btn-app btn-success mr-0 mt-2 ml-1 mb-0" data-target="#import_adjustment_sallary" data-toggle="modal" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Import Adjustment Sallary</button>
+                                   <button type="button" class="btn btn-primary mr-0 ml-0 mt-2 mb-0" style="visibility: hidden" id="print_form_penilaian" style="font-size:11pt"><i class="fa fa-file-pdf-o" style="font-size:11pt"></i>Form Penilaian (PDF)</button>
+                                    <button class="btn btn-danger  mt-2 ml-0" id="print_kontrak_kerja" style="visibility: hidden"><span class="fa fa-file-pdf-o"></span> Print Checked Employee</button>
                         </table>
                     </div>
                     <div class="col-2">
