@@ -259,6 +259,11 @@
     <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}"></script>
     <script>
           $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
                // Ambil tanggal hari ini
             let today = new Date();
             let formattedDate = today.getDate().toString().padStart(2, '0') + '/' +
@@ -557,6 +562,8 @@
                         allowOutsideClick: false
                     });
                     $('#deleteEstimationModal').modal('hide');
+                    $(".modal-backdrop").remove();
+                    $("body").removeClass("modal-open");
                     dataTableReload();
                 }
             });
@@ -585,6 +592,8 @@
                         allowOutsideClick: false
                     });
                     $('#newEstimationModal').modal('hide');
+                    $(".modal-backdrop").remove();
+                    $("body").removeClass("modal-open");
                     dataTableReload();
                     $('#keterangan').val('');
                     $('#bagian').val('');
@@ -650,6 +659,8 @@
                         showConfirmButton: true,
                         allowOutsideClick: false
                     });
+                    $(".modal-backdrop").remove();
+                    $("body").removeClass("modal-open");
                     $('#editEstimationModal').modal('hide');
                     dataTableReload();
                     $('#edit_id').val('');
