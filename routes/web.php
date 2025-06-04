@@ -159,6 +159,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
 
     Route::get('hrd/export_penilaian_kinerja_staff_pdf', ['as' => 'hris.hrd.export_penilaian_kinerja_staff_pdf','uses' => 'PenilaianKinerjaStaffController@export_penilaian_kinerja_staff_pdf']);
     Route::get('hrd/download_excel_penilaian_kinerja_nonstaff',['as'=>'hris.hrd.download_excel_penilaian_kinerja_nonstaff','uses'=>'PenilaianKinerjaStaffController@download_excel_penilaian_kinerja_nonstaff']);
+    Route::get('hrd/download_excel_rencana_adjustment_grade',['as'=>'hris.hrd.download_excel_rencana_adjustment_grade','uses'=>'PenilaianKinerjaStaffController@download_excel_rencana_adjustment_grade']);
+    Route::get('hrd/download-excel-rekap-penilaian',['as'=>'hris.hrd.download_excel_rekap_penilaian','uses'=>'PenilaianKinerjaStaffController@download_excel_rekap_penilaian']);
 
     Route::get('hrd/download-foto/{filename}', function ($filename) {
         $filePath = 'app/public/images/' . $filename; // NOTE: ini tidak ideal, solusi sementara
@@ -312,6 +314,10 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('/cuti_karyawan/export_realisasi_permintaan_kas', ['as' => 'cuti_karyawan.export_realisasi_permintaan_kas','uses' => 'MasterData\CutiKaryawanController@export_realisasi_permintaan_kas']);
     Route::get('/cuti_karyawan/export_form_pengajuan_cuti_pdf', ['as' => 'cuti_karyawan.export_form_pengajuan_cuti_pdf','uses' => 'MasterData\CutiKaryawanController@export_form_pengajuan_cuti_pdf']);
     Route::get('/cuti_karyawan/export_form_pengajuan_izin_pdf', ['as' => 'cuti_karyawan.export_form_pengajuan_izin_pdf','uses' => 'MasterData\CutiKaryawanController@export_form_pengajuan_izin_pdf']);
+
+
+    // PERMINTAAN TENAGA KERJA
+    Route::get('/permintaan_tenaga_kerja/index', ['as' => 'permintaan_tenaga_kerja.permintaan_tenaga_kerja','uses' => 'Administrasi\PermintaanTenagaKerjaController@index']);
 
     // PENGAJUAN IZIN
     Route::post('cuti_karyawan/ajax_dataabsenperizinan',['as'=>'cuti_karyawan.dataabsenperijinan.ajax_dataabsenperizinan','uses'=>'MasterData\CutiKaryawanController@ajax_dataabsenperizinan']);
@@ -552,7 +558,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('employeeatr/store_photo/',['as'=>'hris.employeeatr.store_photo','uses'=> 'EmployeeAtrController@store_photo']);
     Route::post('employeeatr/get_photo/',['as'=>'hris.employeeatr.get_photo','uses'=>'EmployeeAtrController@get_photo']);
     Route::post('employeeatr/select_employee/',['as'=>'hris.employeeatr.select_employee','uses'=>'EmployeeAtrController@select_employee']);
-    Route::post('employeeatr/store_photo/',['as'=>'hris.employeeatr.store_photo','uses'=> 'EmployeeAtrController@store_photo']);
+    Route::post('employeeatr/change_photo_profile/',['as'=>'hris.employeeatr.change_photo_profile','uses'=> 'EmployeeAtrController@change_photo_profile']);
     Route::post('employeeatr/get_employee/',['as'=>'hris.employeeatr.get_employee','uses'=>'EmployeeAtrController@get_employee']);
     Route::post('employeeatr/already_print/',['as'=>'hris.employeeatr.already_print','uses'=> 'EmployeeAtrController@already_print']);
     Route::post('employeeatr/not_yet_printed/',['as'=>'hris.employeeatr.not_yet_printed','uses'=> 'EmployeeAtrController@not_yet_printed']);

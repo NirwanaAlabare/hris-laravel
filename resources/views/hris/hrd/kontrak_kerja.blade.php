@@ -176,6 +176,12 @@
                                     <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" onclick="export_excel_format_penilaian_nonstaff()" id="export_excel_format_penilaian_nonstaff" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Format Penilaian Non Staff</button>
                                 </td>
                                 <td>
+                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" onclick="export_rekap_penilaian()" id="export_rekap_penilaian" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Rekap Penilaian</button>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" onclick="adjustment_sallary()" id="adjustment_sallary" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Format Adjustment Sallary</button>
+                                </td>
+                                <td>
                                     <button type="button" class="btn btn-primary mr-0 ml-1 mt-0 mb-0" style="visibility: hidden" id="print_form_penilaian" style="font-size:11pt"><i class="fa fa-file-pdf-o" style="font-size:11pt"></i> Print Form Penilaian (PDF)</button>
                                 </td>
                                 <td>
@@ -1149,6 +1155,119 @@
                 $('#export_excel_format_penilaian_nonstaff').removeClass("btn-loading");
                 $("#export_excel_format_penilaian_nonstaff").attr("disabled", false);
                 $("#export_excel_format_penilaian_nonstaff").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Download Ref Penilaian Kerja');
+            }
+        });
+    }
+    function adjustment_sallary(){
+        $("#adjustment_sallary").addClass("btn-loading");
+        $("#adjustment_sallary").html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loading...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+        $("#adjustment_sallary").attr("disabled", true);
+        let search_variable=$('#search_variable').val();
+        var department_id = $('#selectDepartment').val();
+
+        let no_ktp = document.getElementById("searchNoKTP").value;
+        let enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+        let ibu_kandung = document.getElementById("searchIbuKandung").value;
+        let status_aktif = document.getElementById("status_aktif").value;
+        let status_kontrak = document.getElementById("status_kontrak").value;
+        var today=new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+        var hour = today.getHours();
+        var minutes = today.getMinutes();
+        var seconds = today.getSeconds();
+        today_date = yyyy + '-' + mm + '-' + dd + ' '+ hour +'.'+minutes+'.'+seconds;
+        $.ajax({
+            type: "get",
+            url: '{{ route('hris.hrd.download_excel_rencana_adjustment_grade') }}',
+            data: {
+                search_variable: search_variable,
+                no_ktp: no_ktp,
+                enroll_id: enroll_id,
+                ibu_kandung: ibu_kandung,
+                status_aktif: status_aktif,
+                status_kontrak: status_kontrak,
+                department_name: department_id,
+                date_range: $('#daterange1').val(),
+            },
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function(response) {
+                {
+                    $('#adjustment_sallary').removeClass("btn-loading");
+                    $("#adjustment_sallary").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Format Adjustment Sallary');
+                    $("#adjustment_sallary").attr("disabled", false);
+                    var blob = new Blob([response]);
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "Format Penilaian Kinerja Non Staff "+today_date+" "+Math.ceil(Math.random()*1000000)+".xlsx";
+                    link.click();
+                }
+            },
+            error: function(res){
+                swal("", "Export kontrak kerja gagal", "error");
+                $('#adjustment_sallary').removeClass("btn-loading");
+                $("#adjustment_sallary").attr("disabled", false);
+                $("#adjustment_sallary").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Format Adjustment Sallary');
+            }
+        });
+    }
+    function export_rekap_penilaian(){
+        $("#export_rekap_penilaian").addClass("btn-loading");
+        $("#export_rekap_penilaian").html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loading...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+        $("#export_rekap_penilaian").attr("disabled", true);
+        let search_variable=$('#search_variable').val();
+        var department_id = $('#selectDepartment').val();
+        let status_staff = document.getElementById("status_staff").value;
+        let no_ktp = document.getElementById("searchNoKTP").value;
+        let enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+        let ibu_kandung = document.getElementById("searchIbuKandung").value;
+        let status_aktif = document.getElementById("status_aktif").value;
+        let status_kontrak = document.getElementById("status_kontrak").value;
+        var today=new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+        var hour = today.getHours();
+        var minutes = today.getMinutes();
+        var seconds = today.getSeconds();
+        today_date = yyyy + '-' + mm + '-' + dd + ' '+ hour +'.'+minutes+'.'+seconds;
+        $.ajax({
+            type: "get",
+            url: '{{ route('hris.hrd.download_excel_rekap_penilaian') }}',
+            data: {
+                search_variable: search_variable,
+                no_ktp: no_ktp,
+                enroll_id: enroll_id,
+                ibu_kandung: ibu_kandung,
+                status_aktif: status_aktif,
+                status_staff: status_staff,
+                status_kontrak: status_kontrak,
+                department_name: department_id,
+                date_range: $('#daterange1').val(),
+            },
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function(response) {
+                {
+                    $('#export_rekap_penilaian').removeClass("btn-loading");
+                    $("#export_rekap_penilaian").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Download Ref Penilaian Kerja');
+                    $("#export_rekap_penilaian").attr("disabled", false);
+                    var blob = new Blob([response]);
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "Format Penilaian Kinerja Non Staff "+today_date+" "+Math.ceil(Math.random()*1000000)+".xlsx";
+                    link.click();
+                }
+            },
+            error: function(res){
+                swal("", "Export kontrak kerja gagal", "error");
+                $('#export_rekap_penilaian').removeClass("btn-loading");
+                $("#export_rekap_penilaian").attr("disabled", false);
+                $("#export_rekap_penilaian").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Download Ref Penilaian Kerja');
             }
         });
     }

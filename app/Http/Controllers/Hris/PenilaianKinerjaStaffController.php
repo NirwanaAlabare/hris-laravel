@@ -19,6 +19,8 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\MasterDataAbsenKehadiran;
 use App\Exports\exportExcelKontrak;
+use App\Exports\ExcelRekapPenilaianKinerja;
+use App\Exports\ExcelRencanaAdjustmentSallary;
 use App\Models\DasarPotBPJS;
 use App\Models\EntertainPengajuanTamu;
 use App\Exports\ExcelPenilaianKinerjaNonstaff;
@@ -57,13 +59,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             $wasAdjusted = true;
         }
 
-        // 3. Jika Senin setelah penyesuaian, mundur ke Jumat sebelumnya
-        // if ($date->isMonday()) {
-        //     $date = $date->previous(Carbon::FRIDAY);
-        //     $wasAdjusted = true;
-        // }
 
-        // 4. Jika tidak ada penyesuaian dan hari bukan Jumat, tambahkan 1 hari
         if (! $wasAdjusted && !$date->isFriday()) {
             $date->addDay();
         }
@@ -167,7 +163,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         $data_penilaian = PenilaianKinerja::where('enroll_id', $enroll_id)->where('tgl_awal_kontrak',$contract)->where('tgl_akhir_kontrak', $contract_end)->first();
 
         $start_date = Carbon::parse($contract);
-        $end_date = Carbon::parse($contract_end)->subDays(30);
+        $end_date = Carbon::parse($contract_end)->subDays(14);
 
         $jumlah_mangkir = MasterDataAbsenKehadiran::where('enroll_id', $enroll_id)
             ->whereBetween('tanggal_berjalan', [$start_date, $end_date])
@@ -177,32 +173,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             ->whereBetween('tanggal_berjalan', [$start_date, $end_date])
             ->where('status_absen', 'I')
             ->count();
-        // if($data_penilaian){
-        //     $kejadian = [
-        //         'sp3_kali' => $data_penilaian->sp3_kali,
-        //         'sp2_kali' => $data_penilaian->sp2_kali,
-        //         'sp1_kali' => $data_penilaian->sp1_kali,
-        //         'kecelakaan_kali' => $data_penilaian->kecelakaan_kali,
-        //         'mangkir_kali' => $data_penilaian->mangkir_kali,
-        //         'ijin_kali' => $data_penilaian->ijin_kali,
-        //     ];
 
-        //     $total = [
-        //         'sp3_kali' => $data_penilaian->sp3_kali * 6,
-        //         'sp2_kali' => $data_penilaian->sp2_kali * 4,
-        //         'sp1_kali' => $data_penilaian->sp1_kali * 2,
-        //         'kecelakaan_kali' => $data_penilaian->kecelakaan_kali * 2,
-        //         'mangkir_kali' => $data_penilaian->mangkir_kali * 1,
-        //         'ijin_kali' => $data_penilaian->ijin_kali * 0.5,
-        //     ];
-
-        //     $total_pengurangan = array_sum($total);
-
-        //     // Lalu gabungkan ke dalam data_penilaian
-        //     $data_penilaian->kejadian = $kejadian;
-        //     $data_penilaian->total = $total;
-        //     $data_penilaian->total_pengurangan = $total_pengurangan;
-        // }
 
         if (!$data_penilaian) {
             $data_penilaian = new \stdClass();
@@ -334,32 +305,6 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                 'total_kompetensi' => $total_kompetensi,
                 'penilai' => $request->penilai,
             ]);
-
-            // if ($request->rekomendasi == 'perpanjang') {
-            //     $timestamp = Carbon::now();
-            //     $adjustedDate = $this->adjustDate($request->akhir_kontrak_text_val);
-            //     $adjustedDateCarbon = Carbon::parse($adjustedDate);
-
-            //     $contract_end_data = $adjustedDateCarbon->addMonth($request->perpanjang_bulan);
-            //     $adjustedContractEndDate = $this->adjustDate($contract_end_data->toDateString());
-            //     $adjustedContractEndCarbon = Carbon::parse($adjustedContractEndDate);
-            //     // dd($adjustedContractEndCarbon);
-            //     $exists = DB::table('employee_contract')
-            //         ->where('enroll_id', $request->enroll_id_input_2_val)
-            //         ->where('contract', $adjustedDate)
-            //         ->where('contract_end', $adjustedContractEndCarbon)
-            //         ->exists();
-
-            //     if (!$exists) {
-            //         DB::table('employee_contract')->insert([
-            //             'enroll_id'   => $request->enroll_id_input_2_val,
-            //             'contract'    => $adjustedDate,
-            //             'contract_end'=> $adjustedContractEndCarbon,
-            //             'created_at'  => $timestamp,
-            //             'updated_at'  => $timestamp
-            //         ]);
-            //     }
-            // }
 
              if ($request->rekomendasi == 'perpanjang') {
                 $timestamp = Carbon::now();
@@ -496,33 +441,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                 'penilai' => $request->penilai,
             ]);
 
-            // if ($request->rekomendasi == 'perpanjang') {
-            //     $timestamp = Carbon::now();
 
-            //     $adjustedDate = $this->adjustDate($request->akhir_kontrak_text_val);
-            //     $adjustedDateCarbon = Carbon::parse($adjustedDate);
-
-            //     $contract_end_data = $adjustedDateCarbon->addMonth($request->perpanjang_bulan);
-            //     $adjustedContractEndDate = $this->adjustDate($contract_end_data->toDateString());
-            //     $adjustedContractEndCarbon = Carbon::parse($adjustedContractEndDate);
-            //     dd($request->akhir_kontrak_text_val, $request->perpanjang_bulan,$adjustedDate,$contract_end_data->toDateString());
-
-            //     $exists = DB::table('employee_contract')
-            //         ->where('enroll_id', $request->enroll_id_input_2_val)
-            //         ->where('contract', $adjustedDate)
-            //         ->where('contract_end', $adjustedContractEndCarbon)
-            //         ->exists();
-
-            //     if (!$exists) {
-            //         DB::table('employee_contract')->insert([
-            //             'enroll_id'   => $request->enroll_id_input_2_val,
-            //             'contract'    => $adjustedDate,
-            //             'contract_end'=> $adjustedContractEndCarbon,
-            //             'created_at'  => $timestamp,
-            //             'updated_at'  => $timestamp
-            //         ]);
-            //     }
-            // }
             if ($request->rekomendasi == 'perpanjang') {
                 $timestamp = Carbon::now();
                 $akhirKontrak = Carbon::parse($request->akhir_kontrak_text_val);
@@ -794,13 +713,13 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             $inStatusAktif
         GROUP BY z.enroll_id
         ORDER BY z.enroll_id
-    ");
+     ");
 
         // Pisahkan data menjadi dua kelompok
         $data = [];
 
         foreach ($data_kontrak_non_staff as $item) {
-            $item->tanggal_pengurang = date('Y-m-d', strtotime($item->contract_end . ' -15 days'));
+            $item->tanggal_pengurang = date('Y-m-d', strtotime($item->contract_end . ' -14 days'));
             $jumlah_ijin = DB::select("select count(*) as jumlah_ijin from master_data_absen_kehadiran where enroll_id = ? and status_absen = 'I' and tanggal_berjalan BETWEEN ? AND ?", [$item->enroll_id, $item->contract, $item->tanggal_pengurang]);
             $jumlah_sakit = DB::select("select count(*) as jumlah_sakit from master_data_absen_kehadiran where enroll_id = ? and status_absen = 'S' and tanggal_berjalan BETWEEN ? AND ?", [$item->enroll_id, $item->contract, $item->tanggal_pengurang]);
             $jumlah_mangkir = DB::select("select count(*) as jumlah_mangkir from master_data_absen_kehadiran where enroll_id = ? and status_absen = 'M' and tanggal_berjalan BETWEEN ? AND ?", [$item->enroll_id, $item->contract, $item->tanggal_pengurang]);
@@ -811,6 +730,416 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             $data[] = $item;
         }
         return Excel::download(new ExcelPenilaianKinerjaNonstaff($data), 'Form Penilaian Kinerja Non Staff.xlsx');
+    }
+    public function download_excel_rencana_adjustment_grade(){
+        $loggedAdmin = Auth::guard('admin')->user();
+        $loggedEmail = $loggedAdmin->email;
+        $email = ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli'];
+
+        $inEnrollId='';
+        $inStatusAktif='';
+        $inStatusKontrak='';
+        $inStatusKontrakRange='';
+        $inDepartment_name='';
+
+        if(request()->enroll_id){
+            $enroll_id=request()->enroll_id;
+            $enroll_id_string=implode(',', $enroll_id);
+            $inEnrollId='AND z.enroll_id in ('.$enroll_id_string.')';
+        }
+
+        if(request("department_name")){
+            $department=request("department_name");
+            $inDepartment_name = ' AND z.department_name = "'.$department.'"';
+        }
+
+        $today = date('Y-m-d');
+        $currentMonth = date('m');
+        $currentYear = date('Y');
+
+
+        $inStatusKontrak='';
+        $status_kontrak = request()->status_kontrak;
+
+        if($status_kontrak){
+            if($status_kontrak=='One Day'){
+                $one_days_later = date('Y-m-d', strtotime('+1 days'));
+                $inStatusKontrak='AND (
+                        CASE
+                            WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                            ELSE y.contract_end
+                        END
+                    ) >= "'.$today.'"
+                    AND (
+                        CASE
+                            WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                            ELSE y.contract_end
+                        END
+                    ) <= "'.$one_days_later.'"';
+            }else if($status_kontrak=='Nine Day'){
+                $nine_days_later = date('Y-m-d', strtotime('+9 days'));
+                $inStatusKontrak= 'AND (
+                        CASE
+                            WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                            ELSE y.contract_end
+                        END
+                    ) >= "'.$today.'"
+                    AND (
+                        CASE
+                            WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                            ELSE y.contract_end
+                        END
+                    ) <= "'.$nine_days_later.'"';
+            }else if($status_kontrak=='Thirty Day'){
+                $thirty_days_later = date('Y-m-d', strtotime('+30 days'));
+                $inStatusKontrak = 'AND (
+                        CASE
+                            WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                            ELSE y.contract_end
+                        END
+                    ) >= "'.$today.'"
+                    AND (
+                        CASE
+                            WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                            ELSE y.contract_end
+                        END
+                    ) <= "'.$thirty_days_later.'"';
+            }else if($status_kontrak=='Sixty Day'){
+                $thirty_day_more = date('Y-m-d',strtotime('+60 days',strtotime(date("Y-m-d")))) . PHP_EOL;
+                $inStatusKontrak='AND (
+                    CASE
+                        WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                        ELSE y.contract_end
+                    END
+                ) >= "'.$thirty_day_more.'"';
+            }
+        }
+
+        if (request()->date_range) {
+            $daterange1 = explode(" s/d ", request()->date_range);
+            $tanggalMulai = date('Y-m-d', strtotime($daterange1[0]));
+            $tanggalSampai = date('Y-m-d', strtotime($daterange1[1]));
+            $bulanAkhir = date('m', strtotime($tanggalSampai));
+            $tahunAkhir = date('Y', strtotime($tanggalSampai));
+            $inStatusKontrakRange = 'AND (
+                CASE
+                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                    ELSE y.contract_end
+                END
+            ) >= "'.$tanggalMulai.'"
+            AND (
+                CASE
+                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                    ELSE y.contract_end
+                END
+            ) <= "'.$tanggalSampai.'"';
+        }
+        $inStatusAktif='AND z.status_aktif = "aktif" AND z.status_staff = "NON STAFF"';
+
+       $data_kontrak_non_staff = DB::select("
+        SELECT
+            z.enroll_id,
+            z.nik,
+            z.employee_name,
+            z.department_name,
+            z.sub_dept_name,
+            z.status_aktif,
+            z.status_staff,
+            z.kode_grade,
+            z.tanggal_resign,
+            z.status_jabatan,
+            z.join_date,
+            z.ibu_kandung,
+            z.nomor_ktp,
+            y.id,
+            y.contract,
+            y.contract AS contract_last,
+            y.contract_end  AS contract_end_last,
+            -- logika untuk mengganti contract_end dengan tanggal_resign jika ada
+            CASE
+                WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                ELSE y.contract_end
+            END AS contract_end
+        FROM (
+            SELECT
+                a.enroll_id,
+                a.id,
+                e.contract,
+                e.contract_end
+            FROM (
+                SELECT
+                    enroll_id,
+                    MAX(contract) AS contract,
+                    MAX(contract_end) AS contract_end
+                FROM employee_contract
+                GROUP BY enroll_id
+            ) e
+            INNER JOIN (
+                SELECT
+                    id,
+                    enroll_id,
+                    contract,
+                    contract_end
+                FROM employee_contract
+            ) a ON e.enroll_id = a.enroll_id AND e.contract_end = a.contract_end
+        ) y
+        RIGHT JOIN (
+            SELECT
+                enroll_id,
+                nik,
+                employee_name,
+                tanggal_resign,
+                tempat_lahir,
+                nomor_tlpn,
+                agama,
+                status_kawin,
+                join_date,
+                nomor_kk,
+                pendidikan_terakhir,
+                jurusan_pendidikan,
+                alamat_rumah,
+                department_name,
+                sub_dept_name,
+                status_aktif,
+                status_staff,
+                status_jabatan,
+                kode_grade,
+                ibu_kandung,
+                nomor_ktp
+            FROM employee_atribut
+        ) z ON y.enroll_id = z.enroll_id
+        WHERE z.enroll_id IS NOT NULL
+            $inStatusKontrakRange
+            $inDepartment_name
+            $inEnrollId
+            $inStatusKontrak
+            $inStatusAktif
+        GROUP BY z.enroll_id
+        ORDER BY z.enroll_id
+     ");
+
+        // Pisahkan data menjadi dua kelompok
+        $data = [];
+
+        foreach ($data_kontrak_non_staff as $item) {
+            $item->tanggal_pengurang = date('Y-m-d', strtotime($item->contract_end . ' -14 days'));
+            $jumlah_ijin = DB::select("select count(*) as jumlah_ijin from master_data_absen_kehadiran where enroll_id = ? and status_absen = 'I' and tanggal_berjalan BETWEEN ? AND ?", [$item->enroll_id, $item->contract, $item->tanggal_pengurang]);
+            $jumlah_sakit = DB::select("select count(*) as jumlah_sakit from master_data_absen_kehadiran where enroll_id = ? and status_absen = 'S' and tanggal_berjalan BETWEEN ? AND ?", [$item->enroll_id, $item->contract, $item->tanggal_pengurang]);
+            $jumlah_mangkir = DB::select("select count(*) as jumlah_mangkir from master_data_absen_kehadiran where enroll_id = ? and status_absen = 'M' and tanggal_berjalan BETWEEN ? AND ?", [$item->enroll_id, $item->contract, $item->tanggal_pengurang]);
+
+            $item->jumlah_sakit = $jumlah_sakit[0]->jumlah_sakit;
+            $item->jumlah_mangkir = $jumlah_mangkir[0]->jumlah_mangkir;
+            $item->jumlah_ijin = $jumlah_ijin[0]->jumlah_ijin;
+            $data[] = $item;
+        }
+        return Excel::download(new ExcelRencanaAdjustmentSallary($data), 'Form Rencana Adjustment Sallary.xlsx');
+    }
+
+    public function download_excel_rekap_penilaian(){
+        $loggedAdmin = Auth::guard('admin')->user();
+        $loggedEmail = $loggedAdmin->email;
+        $email = ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli'];
+        $inEnrollId='';
+        $inStatusAktif='';
+        $inStatusStaff='AND z.status_staff = "STAFF"';
+        $inStatusKontrak='';
+        $inStatusKontrakRange='';
+        $inDepartment_name='';
+
+        if(request()->enroll_id){
+            $enroll_id=request()->enroll_id;
+            $enroll_id_string=implode(',', $enroll_id);
+            $inEnrollId='AND z.enroll_id in ('.$enroll_id_string.')';
+        }
+
+        if(request("department_name")){
+            $department=request("department_name");
+            $inDepartment_name = ' AND z.department_name = "'.$department.'"';
+        }
+        if(request("statuf_staff")){
+            $statuf_staff=request("statuf_staff");
+            $inStatusStaff = ' AND z.status_staff = "'.$department.'"';
+        }
+
+        $today = date('Y-m-d');
+        $currentMonth = date('m');
+        $currentYear = date('Y');
+
+
+        $inStatusKontrak='';
+        $status_kontrak = request()->status_kontrak;
+
+        if($status_kontrak){
+            if($status_kontrak=='One Day'){
+                $one_days_later = date('Y-m-d', strtotime('+1 days'));
+                $inStatusKontrak='AND (
+                        CASE
+                            WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                            ELSE y.contract_end
+                        END
+                    ) >= "'.$today.'"
+                    AND (
+                        CASE
+                            WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                            ELSE y.contract_end
+                        END
+                    ) <= "'.$one_days_later.'"';
+            }else if($status_kontrak=='Nine Day'){
+                $nine_days_later = date('Y-m-d', strtotime('+9 days'));
+                $inStatusKontrak= 'AND (
+                        CASE
+                            WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                            ELSE y.contract_end
+                        END
+                    ) >= "'.$today.'"
+                    AND (
+                        CASE
+                            WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                            ELSE y.contract_end
+                        END
+                    ) <= "'.$nine_days_later.'"';
+            }else if($status_kontrak=='Thirty Day'){
+                $thirty_days_later = date('Y-m-d', strtotime('+30 days'));
+                $inStatusKontrak = 'AND (
+                        CASE
+                            WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                            ELSE y.contract_end
+                        END
+                    ) >= "'.$today.'"
+                    AND (
+                        CASE
+                            WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                            ELSE y.contract_end
+                        END
+                    ) <= "'.$thirty_days_later.'"';
+            }else if($status_kontrak=='Sixty Day'){
+                $thirty_day_more = date('Y-m-d',strtotime('+60 days',strtotime(date("Y-m-d")))) . PHP_EOL;
+                $inStatusKontrak='AND (
+                    CASE
+                        WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                        ELSE y.contract_end
+                    END
+                ) >= "'.$thirty_day_more.'"';
+            }
+        }
+
+        if (request()->date_range) {
+            $daterange1 = explode(" s/d ", request()->date_range);
+            $tanggalMulai = date('Y-m-d', strtotime($daterange1[0]));
+            $tanggalSampai = date('Y-m-d', strtotime($daterange1[1]));
+            $bulanAkhir = date('m', strtotime($tanggalSampai));
+            $tahunAkhir = date('Y', strtotime($tanggalSampai));
+            $inStatusKontrakRange = 'AND (
+                CASE
+                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                    ELSE y.contract_end
+                END
+            ) >= "'.$tanggalMulai.'"
+            AND (
+                CASE
+                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                    ELSE y.contract_end
+                END
+            ) <= "'.$tanggalSampai.'"';
+        }
+        $inStatusAktif='AND z.status_aktif = "aktif"';
+
+       $data_kontrak_non_staff = DB::select("
+            SELECT
+                z.enroll_id,
+                z.nik,
+                z.employee_name,
+                z.status_jabatan,
+                z.department_name,
+                z.sub_dept_name,
+                z.status_aktif,
+                z.status_staff,
+                z.tanggal_resign,
+                z.join_date,
+                z.ibu_kandung,
+                z.nomor_ktp,
+                y.id,
+                y.contract,
+                y.contract AS contract_last,
+                y.contract_end  AS contract_end_last,
+                -- logika untuk mengganti contract_end dengan tanggal_resign jika ada
+                CASE
+                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                    ELSE y.contract_end
+                END AS contract_end
+            FROM (
+                SELECT
+                    a.enroll_id,
+                    a.id,
+                    e.contract,
+                    e.contract_end
+                FROM (
+                    SELECT
+                        enroll_id,
+                        MAX(contract) AS contract,
+                        MAX(contract_end) AS contract_end
+                    FROM employee_contract
+                    GROUP BY enroll_id
+                ) e
+                INNER JOIN (
+                    SELECT
+                        id,
+                        enroll_id,
+                        contract,
+                        contract_end
+                    FROM employee_contract
+                ) a ON e.enroll_id = a.enroll_id AND e.contract_end = a.contract_end
+            ) y
+            RIGHT JOIN (
+                SELECT
+                    enroll_id,
+                    nik,
+                    employee_name,
+                    tanggal_resign,
+                    tempat_lahir,
+                    status_jabatan,
+                    nomor_tlpn,
+                    agama,
+                    status_kawin,
+                    join_date,
+                    nomor_kk,
+                    pendidikan_terakhir,
+                    jurusan_pendidikan,
+                    alamat_rumah,
+                    department_name,
+                    sub_dept_name,
+                    status_aktif,
+                    status_staff,
+                    ibu_kandung,
+                    nomor_ktp
+                FROM employee_atribut
+            ) z ON y.enroll_id = z.enroll_id
+            WHERE z.enroll_id IS NOT NULL
+                $inStatusKontrakRange
+                $inDepartment_name
+                $inEnrollId
+                $inStatusStaff
+                $inStatusKontrak
+                $inStatusAktif
+            GROUP BY z.enroll_id
+            ORDER BY z.enroll_id
+        ");
+
+        $data = [];
+
+        foreach ($data_kontrak_non_staff as $item) {
+            // Ambil data penilaian kinerja sesuai kriteria
+            $penilaian = PenilaianKinerja::where('enroll_id', $item->enroll_id)
+                ->where('tgl_awal_kontrak', $item->contract_last)
+                ->where('tgl_akhir_kontrak', $item->contract_end_last)
+                ->first();
+
+            // Gabungkan data penilaian ke data utama
+            $item->penilaian_kinerja = $penilaian;
+
+            $data[] = $item;
+        }
+        return Excel::download(new ExcelRekapPenilaianKinerja($data), 'Rekap Penilaian Kinerja.xlsx');
     }
 
     public function print_selected_form_penilaian(){
