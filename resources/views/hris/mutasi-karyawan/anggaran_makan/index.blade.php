@@ -40,7 +40,7 @@
                         <i class="fa fa-plus"></i>
                         Baru
                     </button>
-                    @if (Auth::guard('admin')->user()->name == 'HR' || Auth::guard('admin')->user()->name =='IT' || Auth::guard('admin')->user()->email =='mega@ptnag.com' || Auth::guard('admin')->user()->email =='rudy@ptnag.com' || Auth::guard('admin')->user()->email =='fadli' || Auth::guard('admin')->user()->email =='GA')
+                    @if (Auth::guard('admin')->user()->email == 'indri@nag.nirwanaindonesia.com' || Auth::guard('admin')->user()->email =='ersa@ptnag.com' || Auth::guard('admin')->user()->email =='mega@ptnag.com' || Auth::guard('admin')->user()->email =='rudy@ptnag.com' || Auth::guard('admin')->user()->email =='fadli' || Auth::guard('admin')->user()->email =='GA')
                     <a onclick="export_excel_konsumsi()" class="btn btn-outline-success position-relative">
                         <i class="fa fa-file-excel"></i>
                         Estimasi Anggaran Makan
@@ -272,7 +272,7 @@
 
             // Set nilai ke input
             $('#tgl-awal-display').val(formattedDate);
-            if(logged_user!='HR' && logged_user!='GA' && logged_user!='IT' && logged_user!='rudy' && logged_user!='Mega Fitriana Haryono' && logged_user!='fadli'){
+            if(logged_user!='INDRI FEBRIANTY' && logged_user!='GA' && logged_user!='Ersa Regina Nugraha' && logged_user!='rudy' && logged_user!='Mega Fitriana Haryono' && logged_user!='fadli'){
                 if(stringSelectDate<stringCurrentDate){
                     $('#btn_new').attr('disabled','disabled');
                 }else if(stringCurrentDate==stringSelectDate){
