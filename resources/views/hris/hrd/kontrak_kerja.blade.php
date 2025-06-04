@@ -182,6 +182,9 @@
                                     <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" onclick="adjustment_sallary()" id="adjustment_sallary" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Format Adjustment Sallary</button>
                                 </td>
                                 <td>
+                                   <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" data-target="#import_adjustment_sallary" data-toggle="modal" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Import Adjustment Sallary</button>
+                               </td>
+                                <td>
                                     <button type="button" class="btn btn-primary mr-0 ml-1 mt-0 mb-0" style="visibility: hidden" id="print_form_penilaian" style="font-size:11pt"><i class="fa fa-file-pdf-o" style="font-size:11pt"></i>Form Penilaian (PDF)</button>
                                 </td>
                                 <td>
@@ -791,6 +794,83 @@
     </div>
 </div>
 
+<div class="modal fade" id="import_adjustment_sallary" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 80%;" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary p-2">
+                <label class="form-label">IMPORT ADJUSMENT SALLARY</label>
+                <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
+                    <i class="fa fa-remove"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <input class="form-control" ref="excel_file_rencana_adjustment_sallary" name="excel_file_rencana_adjustment_sallary" id="excel_file_rencana_adjustment_sallary" type="file" accept=".xlsx, .xls, .csv" required>
+                    </div>
+                </div>
+                <div class="row pt-2 justify-content-center">
+                    <div class="col-12">
+                       <div style="max-height: 400px; overflow-y: auto;">
+                            <table class="table table-bordered" style="width: max-content;">
+                                <colgroup>
+                                    <col style="width: 100px;">
+                                    <col style="width: 160px;">
+                                    <col style="width: 180px;">
+                                    <col style="width: 150px;">
+                                    <col style="width: 150px;">
+                                    <col style="width: 150px;">
+                                    <col style="width: 100px;">
+                                    <col style="width: 100px;">
+                                    <col style="width: 100px;">
+                                    <col style="width: 100px;">
+                                    <col style="width: 100px;">
+                                    <col style="width: 100px;">
+                                    <col style="width: 100px;">
+                                    <col style="width: 100px;">
+                                    <col style="width: 100px;">
+                                </colgroup>
+                                <thead class="bg-primary text-white" style="position: sticky; top: 0; z-index: 10;">
+                                    <tr>
+                                        <th>NIP</th>
+                                        <th>NAMA KARYAWAN</th>
+                                        <th>DEPARTMENT</th>
+                                        <th>AWAL</th>
+                                        <th>AKHIR</th>
+                                        <th>PENILAIAN KINERJA</th>
+                                        <th>TANGGUNG JAWAB</th>
+                                        <th>INISIATIF & KERJASAMA</th>
+                                        <th>AKURASI</th>
+                                        <th>KEMAUAN & KEGIGIHAN</th>
+                                        <th>PENYAMPAIAN INFORMASI</th>
+                                        <th>SIKAP KERJA</th>
+                                        <th>NILAI AKHIR</th>
+                                        <th>GRADE SEBELUMNYA</th>
+                                        <th>ADJUSMENT GRADE</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabel_adjustment_sallary">
+                                    <!-- Data rows di sini -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-12 text-center">
+                        <div id="loading_kontrak_kerja">
+                        </div>
+                    </div>
+                </div>
+                <div class="row pt-0 pb-3 pr-3">
+                    <div class="col-2"></div>
+                    <div class="col-8 text-center pt-2">
+                        <button type="button" class="btn btn-success py-1" id="importRencanaAdjsutSallary" style="visibility: hidden"><i class="fa fa-upload" aria-hidden="true"></i> IMPORT</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 @section('footerjs')
 <script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.js') }}"></script>
@@ -818,6 +898,21 @@
     }
     #tabel_nilai_kinerja_staff th,
     #tabel_nilai_kinerja_staff td {
+    text-align: center;
+    vertical-align: middle;
+    white-space: normal;
+    word-wrap: break-word;
+    padding: 8px;
+    border: 1px solid #ddd;
+    font-size: 13px;
+    }
+    #tabel_adjustment_sallary {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    }
+    #tabel_adjustment_sallary th,
+    #tabel_adjustment_sallary td {
     text-align: center;
     vertical-align: middle;
     white-space: normal;
@@ -985,6 +1080,9 @@
     $('#excel_file_nilai_staff').change(function() {
         fill_the_table_nilai_kinerja_staff();
     });
+    $('#excel_file_rencana_adjustment_sallary').change(function() {
+        fill_the_table_rencana_adjustment_sallary();
+    });
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1056,6 +1154,69 @@
         }
     }
 
+    function fill_the_table_rencana_adjustment_sallary(){
+        $('#loading_kontrak_kerja').addClass("spinner-border");
+        $('#tabel_adjustment_sallary').empty();
+        var formData = new FormData();
+        var excelFile=document.getElementById("excel_file_rencana_adjustment_sallary");
+        var myFile=excelFile.files[0];
+        formData.append("excel_file",myFile);
+        if(typeof myFile=='undefined'){
+            notif({
+                msg: "<b>Error:</b> Pilih File terlebih dahulu!",
+                type: "error"
+            });
+            document.getElementById('tabel_adjustment_sallary').style.height='1px';
+            document.getElementById('importRencanaAdjsutSallary').style.visibility='hidden';
+            $('#loading_kontrak_kerja').removeClass("spinner-border");
+        }else{
+            $.ajax({
+                type: 'POST',
+                url: '{{route('hris.penilaian_kinerja_staff.import_rencana_adjustment_sallary')}}',
+                contentType: false,
+                processData: false,
+                data: formData,
+                success:function(data){
+                    $('#loading_kontrak_kerja').removeClass("spinner-border");
+                    document.getElementById('tabel_adjustment_sallary').style.height='400px';
+                    document.getElementById('importRencanaAdjsutSallary').style.visibility='visible';
+                    no=2;
+                    jQuery.each(data, function(key,value){
+                        contract = new Date(value.contract).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"});
+                        contract_end = new Date(value.contract_end).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"});
+                            $('#tabel_adjustment_sallary').append("<tr>\
+                                <td>"+value.nik+"</td>\
+                                <td>"+value.employee_name+"</td>\
+                                <td>"+value.department+"</td>\
+                                <td>"+contract+"</td>\
+                                <td>"+contract_end+"</td>\
+                                <td>"+value.penilaian_kinerja+"</td>\
+                                <td>"+value.tanggung_jawab_tugas+"</td>\
+                                <td>"+value.inisiatif_kerja_sama+"</td>\
+                                <td>"+value.akurasi_pekerjaan+"</td>\
+                                <td>"+value.kemauan_kegigihan+"</td>\
+                                <td>"+value.penyampaian_informasi+"</td>\
+                                <td>"+value.atitude_sikap_kerja+"</td>\
+                                <td>"+value.nilai_akhir.toFixed(2)+"</td>\
+                                <td>"+value.grade_sebelumnya+"</td>\
+                                <td>"+value.adjustment_grade+"</td>\
+                            </tr>");
+                    });
+
+                },
+                error: function(res){
+                    iziToast.error({
+                        title: 'Error!',
+                        message: 'IMPORT ADJUSTMEN SALLARY KERJA GAGAL!',
+                    });
+                    document.getElementById('tabel_adjustment_sallary').style.height='1px';
+                    document.getElementById('importRencanaAdjsutSallary').style.visibility='hidden';
+                    $('#loading_kontrak_kerja').removeClass("spinner-border");
+                }
+            });
+        }
+    }
+
     $('#nilaiKinerjaImportButton').on('click',function(){
         $("#nilaiKinerjaImportButton").addClass("btn-loading");
         $("#nilaiKinerjaImportButton").html('Loading...');
@@ -1094,6 +1255,48 @@
                 $("#nilaiKinerjaImportButton").removeClass("btn-loading");
                 $("#nilaiKinerjaImportButton").html('<i class="fa fa-upload"></i> IMPORT');
                 $("#nilaiKinerjaImportButton").attr("disabled", false);
+            }
+        });
+    });
+
+    $('#importRencanaAdjsutSallary').on('click',function(){
+        $("#importRencanaAdjsutSallary").addClass("btn-loading");
+        $("#importRencanaAdjsutSallary").html('Loading...');
+        $("#importRencanaAdjsutSallary").attr("disabled", true);
+        var formData = new FormData();
+        var excelFile=document.getElementById("excel_file_rencana_adjustment_sallary");
+        var myFile=excelFile.files[0];
+        formData.append("excel_file",myFile);
+        $.ajax({
+            type: 'POST',
+            url: '{{route('hris.penilaian_kinerja_staff.import_rencana_adjustment_sallary_to_database')}}',
+            contentType: false,
+            processData: false,
+            data: formData,
+            success:function(data){
+                $('#tabel_nilai_kinerja_staff').empty();
+                document.getElementById('importRencanaAdjsutSallary').style.visibility='hidden';
+                document.getElementById('tabel_nilai_kinerja_staff').style.height='1px';
+                $("#importRencanaAdjsutSallary").removeClass("btn-loading");
+                $("#importRencanaAdjsutSallary").html('<i class="fa fa-upload"></i> IMPORT');
+                $("#importRencanaAdjsutSallary").attr("disabled", false);
+                $('#excel_file_rencana_adjustment_sallary').val('');
+                $("#import_nilai_kinerja_staff").modal('hide');
+                iziToast.success({
+                            message: 'Niliai kinerja berhasil di import',
+                            position: 'center',
+                            timeout:1300,
+                        });
+                setTimeout(function(){ window.location.reload(); }, 1300);
+            },
+            error: function(res){
+                iziToast.error({
+                        title: 'Error!',
+                        message: 'IMPORT KONTRAK KERJA GAGAL!',
+                    });
+                $("#importRencanaAdjsutSallary").removeClass("btn-loading");
+                $("#importRencanaAdjsutSallary").html('<i class="fa fa-upload"></i> IMPORT');
+                $("#importRencanaAdjsutSallary").attr("disabled", false);
             }
         });
     });
@@ -1202,7 +1405,7 @@
                     var blob = new Blob([response]);
                     var link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
-                    link.download = "Format Penilaian Kinerja Non Staff "+today_date+" "+Math.ceil(Math.random()*1000000)+".xlsx";
+                    link.download = "Format Adjustment Sallary "+today_date+" "+Math.ceil(Math.random()*1000000)+".xlsx";
                     link.click();
                 }
             },

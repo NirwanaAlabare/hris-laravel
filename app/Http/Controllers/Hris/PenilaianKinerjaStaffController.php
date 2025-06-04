@@ -14,7 +14,9 @@ use App\Models\EmployeeAtribut;
 use App\Models\PenilaianKinerja;
 use App\Models\VoucherBazzar;
 use App\Imports\PenilaianKinerjaStaffImport;
+use App\Imports\RencanaAdjusmentSallaryImport;
 use App\Imports\PenilaianKinerjaStaffImportToDatabase;
+use App\Imports\RencanaAdjustmentSallaryImportToDatabase;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\MasterDataAbsenKehadiran;
@@ -524,12 +526,24 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         Excel::import($import, request()->file('excel_file'));
         return $import->getRowCount();
     }
+    public function import_rencana_adjustment_sallary(){
+        $import = new RencanaAdjusmentSallaryImport;
+        Excel::import($import, request()->file('excel_file'));
+        return $import->getRowCount();
+    }
 
     public function import_penilaian_kinerja_staff_to_database(){
         // khawatir terjadi penumpukan
         ini_set("max_execution_time", 0);
         ini_set("max_input_time", 0);
+        dd(request()->file('excel_file'));
         Excel::import(new PenilaianKinerjaStaffImportToDatabase, request()->file('excel_file'));
+    }
+    public function import_rencana_adjustment_sallary_to_database(){
+        // khawatir terjadi penumpukan
+        ini_set("max_execution_time", 0);
+        ini_set("max_input_time", 0);
+        Excel::import(new RencanaAdjustmentSallaryImportToDatabase, request()->file('excel_file'));
     }
 
     public function download_excel_penilaian_kinerja_nonstaff(){

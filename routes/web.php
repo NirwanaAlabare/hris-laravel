@@ -145,7 +145,9 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('penilaian_kinerja_staff/store_penilaian_kinerja_staff',['as'=>'hris.penilaian_kinerja_staff.store_penilaian_kinerja_staff','uses'=>'PenilaianKinerjaStaffController@store_penilaian_kinerja_staff']);
     Route::put('penilaian_kinerja_staff/update_penilaian_kinerja_staff/{id}',['as'=>'hris.penilaian_kinerja_staff.update_penilaian_kinerja_staff','uses'=>'PenilaianKinerjaStaffController@update_penilaian_kinerja_staff']);
     Route::post('penilaian_kinerja_staff/import_penilaian_kinerja_staff',['as'=>'hris.penilaian_kinerja_staff.import_penilaian_kinerja_staff','uses'=>'PenilaianKinerjaStaffController@import_penilaian_kinerja_staff']);
+    Route::post('penilaian_kinerja_staff/import_rencana_adjustment_sallary',['as'=>'hris.penilaian_kinerja_staff.import_rencana_adjustment_sallary','uses'=>'PenilaianKinerjaStaffController@import_rencana_adjustment_sallary']);
     Route::post('penilaian_kinerja_staff/import_penilaian_kinerja_staff_to_database',['as'=>'hris.penilaian_kinerja_staff.import_penilaian_kinerja_staff_to_database','uses'=>'PenilaianKinerjaStaffController@import_penilaian_kinerja_staff_to_database']);
+    Route::post('penilaian_kinerja_staff/import_rencana_adjustment_sallary_to_database',['as'=>'hris.penilaian_kinerja_staff.import_rencana_adjustment_sallary_to_database','uses'=>'PenilaianKinerjaStaffController@import_rencana_adjustment_sallary_to_database']);
 });
 
 

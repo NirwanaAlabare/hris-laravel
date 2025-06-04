@@ -11,26 +11,23 @@ use App\Models\MasterDataAbsenKehadiran;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use Carbon\Carbon;
 
-class PenilaianKinerjaStaffImportToDatabase implements ToModel, WithStartRow, WithCalculatedFormulas
+class RencanaAdjustmentSallaryImportToDatabase implements ToModel, WithStartRow, WithCalculatedFormulas
 {
     /**
     * @param Collection $collection
     */
     public function startRow(): int
     {
-        return 4;
+        return 6;
     }
     public function model(array $row){
-        if (empty($row[0]) || empty($row[4])) {
-            return; // Lewati baris ini
-        }
         $enroll_id=$row[0];
-        $contract_start=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[14])->format('Y-m-d');
-        $contract_end=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[15])->format('Y-m-d');
         $timestamp = Carbon::now();
+        $contract_start=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[3])->format('Y-m-d');
+        $data_contract = DB::select("select * from employee_contract where enroll_id='$enroll_id' and contract='$contract_start' order by id desc limit 1");
 
         $start_date = Carbon::parse($contract_start);
-        $end_date = Carbon::parse($contract_end)->subDays(30);
+        $end_date = Carbon::parse($data_contract[0]->contract_end)->subDays(14);
 
         $jumlah_mangkir = MasterDataAbsenKehadiran::where('enroll_id', $enroll_id)
         ->whereBetween('tanggal_berjalan', [$start_date, $end_date])
@@ -60,14 +57,20 @@ class PenilaianKinerjaStaffImportToDatabase implements ToModel, WithStartRow, Wi
         ];
         $total_pengurangan = array_sum($total);
 
-        $nilai_kinerja = $row[4];
-        $nilai_rata2 = $row[11];
+        $nilai_kinerja = $row[9];
+        $total_kompetensi = ($row[10] + $row[11] + $row[12] + $row[13] + $row[14] + $row[15]);
+        $nilai_rata2 = $total_kompetensi / 6;
         $penilaian_akhir = ($nilai_rata2 + $nilai_kinerja) - $total_pengurangan;
 
-        $penilaian_kinerja=DB::select("select*from penilaian_kinerja where enroll_id = '$enroll_id' AND tgl_awal_kontrak = '$contract_start' AND tgl_akhir_kontrak = '$contract_end'");
+        $contract_last = $data_contract[0]->contract_end;
+        $penilaian_kinerja=DB::select("select*from penilaian_kinerja where enroll_id = '$enroll_id' AND tgl_awal_kontrak = '$contract_start' AND tgl_akhir_kontrak = '$contract_last'");
         if($penilaian_kinerja){
-            DB::delete("delete from penilaian_kinerja where enroll_id = '$enroll_id' AND tgl_awal_kontrak = '$contract_start' AND tgl_akhir_kontrak = '$contract_end'");
+            DB::delete("delete from penilaian_kinerja where enroll_id = '$enroll_id' AND tgl_awal_kontrak = '$contract_start' AND tgl_akhir_kontrak = '$contract_last'");
         }
-        DB::insert("insert into penilaian_kinerja (id, enroll_id, tgl_awal_kontrak, tgl_akhir_kontrak, nilai_kinerja,tanggung_jawab_tugas,inisiatif_kerjasama,akurasi_pekerjaan,kemauan_kegigihan,penyampaian_informasi,attitude_sikap_kerja,rata_rata_kompetensi,total_pengurangan,nilai_akhir, created_at, updated_at) VALUES ('','$enroll_id','$contract_start','$contract_end','$row[4]','$row[5]','$row[6]','$row[7]','$row[8]','$row[9]','$row[10]','$row[11]','$total_pengurangan','$penilaian_akhir','$timestamp','$timestamp')");
+        $kode_grade = $row[18];
+        EmployeeAtribut::where('enroll_id', $enroll_id)->update([
+            'kode_grade' => strtoupper($kode_grade),
+        ]);
+        DB::insert("insert into penilaian_kinerja (id, enroll_id, tgl_awal_kontrak, tgl_akhir_kontrak, nilai_kinerja,tanggung_jawab_tugas,inisiatif_kerjasama,akurasi_pekerjaan,kemauan_kegigihan,penyampaian_informasi,attitude_sikap_kerja,rata_rata_kompetensi,total_pengurangan,nilai_akhir, created_at, updated_at) VALUES ('','$enroll_id','$contract_start','$contract_last','$row[9]','$row[10]','$row[11]','$row[12]','$row[13]','$row[14]','$row[15]','$nilai_rata2','$total_pengurangan','$penilaian_akhir','$timestamp','$timestamp')");
     }
 }
