@@ -68,7 +68,7 @@
     <script src="{{URL::asset('assets/plugins/notify-growl/js/jquery.growl.js')}}"></script>
     <script src="{{URL::asset('assets/plugins/notify-growl/js/notifIt.js')}}"></script>
 
-    <script>
+    {{-- <script>
         var keepAliveTimeout = 60000 * 10;
 
         function keepSessionAlive()
@@ -104,7 +104,7 @@
 
         keepSessionAlive();
 
-    </script>
+    </script> --}}
 
 </body>
 

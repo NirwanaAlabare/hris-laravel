@@ -68,7 +68,7 @@
     <script src="{{URL::asset('assets/plugins/notify-growl/js/jquery.growl.js')}}"></script>
     <script src="{{URL::asset('assets/plugins/notify-growl/js/notifIt.js')}}"></script>
 
-    <script>
+    {{-- <script>
         // CSRF token for ajax
         $.ajaxSetup({
             headers: {
@@ -110,7 +110,7 @@
 
         keepSessionAlive();
 
-    </script>
+    </script> --}}
 
 </body>
 
