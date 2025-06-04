@@ -92,7 +92,7 @@ class ExcelRencanaAdjustmentSallary implements FromView, WithColumnWidths, WithC
                 $sheet = $event->sheet;
                 $sheet->getDelegate()->getStyle('A1')->applyFromArray($default_font_style);
                 $sheet->getDelegate()->getStyle('A2')->applyFromArray($default_font_style);
-                $sheet->getDelegate()->getStyle('A4:R4')->applyFromArray($header_style);
+                $sheet->getDelegate()->getStyle('A4:S4')->applyFromArray($header_style);
             }
         ];
     }
