@@ -75,7 +75,7 @@
                         <div class="mb-3">
                             <label class="form-label label-input"><small><b>Scan QR</b></small></label>
                             <div class="input-group">
-                                @if ($username == 'hrd' || $username == 'IT' || $username == 'Mega Fitriana Haryono' || $username == 'fadli' || $username == 'rudy' || $username == 'Ersa Regina Nugraha')
+                                @if ($username == 'hrd' || $username == 'IT' || $username == 'Gaga' || $username == 'fadli' || $username == 'rudy' || $username == 'Ersa Regina Nugraha')
                                 <input type="text" class="form-control form-control-sm border-input" name="txtenroll_id"
                                     id="txtenroll_id" autocomplete="off" enterkeyhint="go"
                                     onkeyup="if (event.keyCode == 13)
