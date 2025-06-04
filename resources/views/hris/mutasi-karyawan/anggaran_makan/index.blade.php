@@ -437,7 +437,7 @@
                 {
                     targets: [6],
                     render: (data, type, row, meta) => {
-                        if(logged_user!='HR' && logged_user!='GA' && logged_user!='IT' && logged_user!='rudy' && logged_user!='Gaga' && logged_user!='fadli'){
+                        if(logged_user!='HR' && logged_user!='GA' && logged_user!='IT' && logged_user!='rudy' && logged_user!='Gaga' && logged_user!='fadli' && logged_user!='Ersa Regina Nugraha'){
                             if(stringSelectDate<stringCurrentDate){
                                 return `
                                 <button class='btn btn-warning btn-sm' disabled onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#editEstimationModal">
@@ -482,7 +482,7 @@
                                     <i class='fa fa-trash'></i>
                                 </button>`
                         }
-                        if((currentdate.getHours()>13 || selected_tanggal<currentdate)&&(logged_user!='HR' && logged_user!='GA' && logged_user!='IT' && logged_user!='rudy' && logged_user!='Gaga' && logged_user!='fadli')){
+                        if((currentdate.getHours()>13 || selected_tanggal<currentdate)&&(logged_user!='HR' && logged_user!='GA' && logged_user!='IT' && logged_user!='rudy' && logged_user!='Gaga' && logged_user!='fadli' && logged_user!='Ersa Regina Nugraha')){
                             return `
                                 <button class='btn btn-warning btn-sm' disabled onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#editEstimationModal">
                                     <i class='fa fa-edit'></i>
@@ -507,7 +507,7 @@
             var selected_tanggals=$('#tgl-awal-display').val();
             var select_tanggal=new Date(selected_tanggals.substr(6,4)+'-'+selected_tanggals.substr(3,2)+'-'+selected_tanggals.substr(0,2));
             var stringSelectedDate=select_tanggal.getDate()+' '+select_tanggal.toLocaleString('default', { month: 'long' })+' '+select_tanggal.getFullYear();
-            if(logged_user!='HR' && logged_user!='GA' && logged_user!='IT' && logged_user!='rudy' && logged_user!='Gaga' && logged_user!='fadli'){
+            if(logged_user!='HR' && logged_user!='GA' && logged_user!='IT' && logged_user!='rudy' && logged_user!='Gaga' && logged_user!='fadli' && logged_user!='Ersa Regina Nugraha'){
                 if(stringSelectedDate<stringCurrentDate){
                     $('#btn_new').attr('disabled','disabled');
                 }else if(stringSelectedDate==stringCurrentDate){
