@@ -27,7 +27,7 @@
                 <td rowspan="1" style="border:1px solid black">B</td>
                 <td rowspan="1" style="border:1px solid black">H</td>
                 <td rowspan="1" style="border:1px solid black">Penilaian Kinerja</td>
-                <td rowspan="1" style="border:1px solid black; height: 50px">Tanggung jawab terhadap tugas dan tanggung jawab yang di berikan</td>
+                <td rowspan="1" style="border:1px solid black; height: 100px">Tanggung jawab terhadap tugas dan tanggung jawab yang di berikan</td>
                 <td rowspan="1" style="border:1px solid black">Inisiatif dan Kerjasama</td>
                 <td rowspan="1" style="border:1px solid black">Akurasi dalam pekerjaan</td>
                 <td rowspan="1" style="border:1px solid black">Kemauan dan kegigihan dalm mencapai Tujuan</td>

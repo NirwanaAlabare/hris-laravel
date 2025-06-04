@@ -56,7 +56,7 @@ class ExcelRekapPenilaianKinerja implements FromView, WithColumnWidths, WithColu
             'K' => 5,
             'L' => 5,
             'M' => 12,
-            'N' => 12,
+            'N' => 16,
             'O' => 12,
             'P' => 12,
             'Q' => 12,

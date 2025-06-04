@@ -173,16 +173,16 @@
                                     <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" data-target="#import_nilai_kinerja_staff" data-toggle="modal" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Import Nilai Kinerja Staff</button>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" onclick="export_excel_format_penilaian_nonstaff()" id="export_excel_format_penilaian_nonstaff" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Format Penilaian Non Staff</button>
+                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" onclick="export_excel_format_penilaian_nonstaff()" id="export_excel_format_penilaian_nonstaff" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Format Penilaian Non Staff</button>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" onclick="export_rekap_penilaian()" id="export_rekap_penilaian" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Rekap Penilaian</button>
+                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" onclick="export_rekap_penilaian()" id="export_rekap_penilaian" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Rekap Penilaian</button>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" onclick="adjustment_sallary()" id="adjustment_sallary" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Format Adjustment Sallary</button>
+                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-0 mb-0" onclick="adjustment_sallary()" id="adjustment_sallary" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Format Adjustment Sallary</button>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-primary mr-0 ml-1 mt-0 mb-0" style="visibility: hidden" id="print_form_penilaian" style="font-size:11pt"><i class="fa fa-file-pdf-o" style="font-size:11pt"></i> Print Form Penilaian (PDF)</button>
+                                    <button type="button" class="btn btn-primary mr-0 ml-1 mt-0 mb-0" style="visibility: hidden" id="print_form_penilaian" style="font-size:11pt"><i class="fa fa-file-pdf-o" style="font-size:11pt"></i>Form Penilaian (PDF)</button>
                                 </td>
                                 <td>
                                     <button class="btn btn-danger" id="print_kontrak_kerja" style="visibility: hidden"><span class="fa fa-file-pdf-o"></span> Print Checked Employee</button>
@@ -1197,7 +1197,7 @@
             success: function(response) {
                 {
                     $('#adjustment_sallary').removeClass("btn-loading");
-                    $("#adjustment_sallary").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Format Adjustment Sallary');
+                    $("#adjustment_sallary").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Format Adjustment Sallary');
                     $("#adjustment_sallary").attr("disabled", false);
                     var blob = new Blob([response]);
                     var link = document.createElement('a');
@@ -1210,7 +1210,7 @@
                 swal("", "Export kontrak kerja gagal", "error");
                 $('#adjustment_sallary').removeClass("btn-loading");
                 $("#adjustment_sallary").attr("disabled", false);
-                $("#adjustment_sallary").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Format Adjustment Sallary');
+                $("#adjustment_sallary").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Format Adjustment Sallary');
             }
         });
     }
@@ -1254,12 +1254,12 @@
             success: function(response) {
                 {
                     $('#export_rekap_penilaian').removeClass("btn-loading");
-                    $("#export_rekap_penilaian").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Download Ref Penilaian Kerja');
+                    $("#export_rekap_penilaian").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Rekap Penilaian');
                     $("#export_rekap_penilaian").attr("disabled", false);
                     var blob = new Blob([response]);
                     var link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
-                    link.download = "Format Penilaian Kinerja Non Staff "+today_date+" "+Math.ceil(Math.random()*1000000)+".xlsx";
+                    link.download = "Rekap Penilaian Kinerja "+today_date+" "+Math.ceil(Math.random()*1000000)+".xlsx";
                     link.click();
                 }
             },
@@ -1267,7 +1267,7 @@
                 swal("", "Export kontrak kerja gagal", "error");
                 $('#export_rekap_penilaian').removeClass("btn-loading");
                 $("#export_rekap_penilaian").attr("disabled", false);
-                $("#export_rekap_penilaian").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Download Ref Penilaian Kerja');
+                $("#export_rekap_penilaian").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Rekap Penilaian');
             }
         });
     }
