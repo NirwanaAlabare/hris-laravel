@@ -154,8 +154,8 @@ class HRDController extends AdminBaseController
 
         foreach ($result as $key => $value) {
             $firstResult[] =  [
-                'mulai' => $value[0]->tanggal_mulai,
-                'selesai' => $value[count($value) - 1]->tanggal_selesai,
+                'mulai' => Carbon::parse($value[0]->tanggal_mulai)->translatedFormat('d F Y'),
+                'selesai' => Carbon::parse($value[count($value) - 1]->tanggal_selesai)->translatedFormat('d F Y'),
                 'jumlah_hari_mangkir' => $value[0]->jumlah_hari_mangkir,
                 'enroll_id' => $value[0]->enroll_id,
                 'employee_name' => $value[0]->employee_name,

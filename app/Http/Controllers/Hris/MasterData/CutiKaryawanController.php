@@ -2249,7 +2249,7 @@ class CutiKaryawanController extends AdminBaseController
             if (empty($data->nomor_form_perizinan)) {
                 $nomor_form_perizinan = 'IKS/HR/' . substr($data->tanggal_perizinan, 2, 2) . substr($data->tanggal_perizinan, 5, 2) . '/';
 
-                $getlastnomorform = DataAbsenPerizinan::selectRaw('nomor_form_perizinan')
+                $getlastnomorform = DataAbsenPerijinan::selectRaw('nomor_form_perizinan')
                     ->whereRaw('nomor_form_perizinan like "' . $nomor_form_perizinan . '%"')
                     ->groupBy('nomor_form_perizinan')
                     ->orderBy('nomor_form_perizinan', 'desc')
@@ -2273,7 +2273,7 @@ class CutiKaryawanController extends AdminBaseController
             }
 
             // Update hanya jika is_verifikasi_pengajuan_admin, nomor_form_perizinan tidak akan berubah jika sudah ada
-            DataAbsenPerizinan::where('uuid', $uuid)
+            DataAbsenPerijinan::where('uuid', $uuid)
                 ->update([
                     'is_verifikasi_pengajuan_admin' => 1,
                     'nomor_form_perizinan' => $data->nomor_form_perizinan

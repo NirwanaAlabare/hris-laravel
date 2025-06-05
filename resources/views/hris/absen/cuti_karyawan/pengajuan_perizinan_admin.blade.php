@@ -888,7 +888,8 @@ h1 {
                    // Format tanggal menggunakan Moment.js
                     var createdAt = moment(data.created_at).format('D MMM YYYY H:mm');
                     var updatedAt = moment(data.updated_at).format('D MMM YYYY H:mm');
-
+                    console.log('data', data);
+                    console.log('tanggal_mulai_ijin', tanggal_mulai_ijin);
                  // Mengisi data dari response ke dalam form input
                     $('#tanggal_perijinan').val(tanggal_perizinan).prop('disabled', true);  // Format tanggal dan disable
                     $('#diajukanOlehID').val(data.enroll_id).trigger('change').prop('disabled', true);  // Pilih karyawan dan disable
@@ -2049,9 +2050,9 @@ h1 {
                         });
                     }
 
-                    // setTimeout(function myFunction() {
-                    //         location.reload();
-                    // }, 3000);
+                    setTimeout(function myFunction() {
+                            location.reload();
+                    }, 3000);
 
                 },
                 error: function(resA){
