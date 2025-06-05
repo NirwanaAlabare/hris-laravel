@@ -325,6 +325,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                         'enroll_id'   => $request->enroll_id_input_2_val,
                         'contract'    => $adjustedDate,
                         'contract_end'=> $adjustedContractEndCarbon,
+                        'jumlah_bulan'=> $request->perpanjang_bulan,
                         'created_at'  => $timestamp,
                         'updated_at'  => $timestamp
                     ]);
@@ -461,6 +462,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                         'enroll_id'   => $request->enroll_id_input_2_val,
                         'contract'    => $adjustedDate,
                         'contract_end'=> $adjustedContractEndCarbon,
+                        'jumlah_bulan'=> $request->perpanjang_bulan,
                         'created_at'  => $timestamp,
                         'updated_at'  => $timestamp
                     ]);
