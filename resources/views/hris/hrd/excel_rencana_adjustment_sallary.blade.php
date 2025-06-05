@@ -62,7 +62,7 @@
                     <td style="border:1px solid black">{{ $first->enroll_id }}</td>
                     <td style="border:1px solid black">{{ $first->employee_name }}</td>
                     <td style="border:1px solid black">{{ $first->sub_dept_name }}</td>
-                    <td style="border:1px solid black">{{ \Carbon\Carbon::parse($first->contract_last)->translatedFormat('d F Y') }}</td>
+                    <td style="border:1px solid black">{{  \PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($first->contract_last)}}</td>
                     <td style="border:1px solid black">{{ \Carbon\Carbon::parse($first->contract)->translatedFormat('d F Y') }} - {{ \Carbon\Carbon::parse($first->tanggal_pengurang)->translatedFormat('d F Y') }}</td>
                     {{-- Masa Kerja --}}
                     <td style="border:1px solid black">{{ $first->jumlah_ijin }}</td>
