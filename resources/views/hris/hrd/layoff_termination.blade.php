@@ -68,7 +68,7 @@
                                         <th rowspan="2" width="3%" style="vertical-align: middle;font-weight:bold">Id</th>
                                         <th rowspan="2" width="14%" style="vertical-align: middle;font-weight:bold">Employee Name</th>
                                         <th rowspan="2" width="14%" style="vertical-align: middle;font-weight:bold">Department</th>
-                                        <th colspan="2" width="14%" style="vertical-align: middle;font-weight:bold">Mangkir</th>
+                                        <th colspan="2" width="20%" style="vertical-align: middle;font-weight:bold">Mangkir</th>
                                         <th rowspan="2" width="3%" style="vertical-align: middle;font-weight:bold;border:1px solid rgb(195, 195, 195)">Jumlah (Hari)</th>
                                         <th rowspan="2" width="5%" style="vertical-align: middle;font-weight:bold;border:1px solid rgb(195, 195, 195)"><span class="fa fa-cog"></span></th>
                                     </tr>
