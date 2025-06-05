@@ -67,7 +67,7 @@ class HRDController extends AdminBaseController
             FROM master_data_absen_kehadiran mda
             JOIN employee_atribut AS ea ON mda.enroll_id = ea.enroll_id
             WHERE mda.status_absen = 'M' ".$inSearchVariable." ".$inEnrollId."
-            AND mda.tanggal_berjalan >= '2024-01-01'
+            AND mda.tanggal_berjalan between '2024-01-01' and '".$date."'
         "));
 
 
