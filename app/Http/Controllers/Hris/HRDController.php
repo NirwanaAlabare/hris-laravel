@@ -899,12 +899,14 @@ class HRDController extends AdminBaseController
             b.contract,
             b.contract_end,
             c.max_contract,
-            c.max_contract_end
+            c.max_contract_end,
+            c.jumlah_bulan
         FROM employee_atribut a
         LEFT JOIN employee_contract b ON a.enroll_id = b.enroll_id
         LEFT JOIN (
             SELECT
                 enroll_id,
+                jumlah_bulan,
                 MAX(contract) AS max_contract,
                 MAX(contract_end) AS max_contract_end
             FROM employee_contract
@@ -916,8 +918,10 @@ class HRDController extends AdminBaseController
             AND b.contract_end = '$contract_end'
         GROUP BY a.enroll_id
     ");
-
-        $umk=DasarPotBPJS::orderBy('created_at','desc')->limit(1)->first()->dasar_pot_bpjs_rupiah;
+        $last_umk=DasarPotBPJS::orderBy('created_at','desc')->limit(1)->first()->dasar_pot_bpjs_rupiah;
+        $tahun_umk = date('Y', strtotime($contract));
+        $tahun_umk = 'UMK '.$tahun_umk;
+        $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $tahun_umk)->first()->dasar_pot_bpjs_rupiah ?? $last_umk;
         $data = $data[0];
         $tanggal_masuk = $data->join_date;
         $tanggal_awal = $data->tanggal_resign ? $data->tanggal_resign : $data->contract_end;
@@ -937,7 +941,7 @@ class HRDController extends AdminBaseController
         }
 
         $total_penghasilan_bulanan = $umk + $tunjangan;
-        $jumlah_bulan = $this->hitungBulanKontrak($data->contract, $data->tanggal_resign ? $data->tanggal_resign : $data->contract_end);
+        $jumlah_bulan = $data->jumlah_bulan ?? $this->hitungBulanKontrak($data->contract, $data->tanggal_resign ? $data->tanggal_resign : $data->contract_end);
         $total_kompensasi = $total_penghasilan_bulanan * ($jumlah_bulan / 12);
 
 
