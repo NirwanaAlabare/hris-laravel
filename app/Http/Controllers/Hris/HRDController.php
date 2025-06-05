@@ -918,10 +918,10 @@ class HRDController extends AdminBaseController
             AND b.contract_end = '$contract_end'
         GROUP BY a.enroll_id
     ");
-        $last_umk=DasarPotBPJS::orderBy('created_at','desc')->limit(1)->first()->dasar_pot_bpjs_rupiah;
-        $tahun_umk = date('Y', strtotime($contract));
+        // $last_umk=DasarPotBPJS::orderBy('created_at','desc')->limit(1)->first()->dasar_pot_bpjs_rupiah;
+        $tahun_umk = date('Y', strtotime($contract_end));
         $tahun_umk = 'UMK '.$tahun_umk;
-        $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $tahun_umk)->first()->dasar_pot_bpjs_rupiah ?? $last_umk;
+        $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $tahun_umk)->first()->dasar_pot_bpjs_rupiah;
         $data = $data[0];
         $tanggal_masuk = $data->join_date;
         $tanggal_awal = $data->tanggal_resign ? $data->tanggal_resign : $data->contract_end;
