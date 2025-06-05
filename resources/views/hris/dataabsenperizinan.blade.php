@@ -416,6 +416,48 @@
                                         </div>
                                     </div>
                                     <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="form-label">Jenis Perizinan</label>
+                                                <select id="kode_absen_ijin_iks" class="form-control" data-placeholder="-- Pilih Jenis Perijinan --">
+                                                    @foreach ($refabsenijin as $r_refabsenijin)
+                                                        @php
+                                                            if ($r_refabsenijin->kode_absen_ijin == 'IKS') {
+                                                        @endphp
+                                                            <option value="{{$r_refabsenijin->kode_absen_ijin}}">{{$r_refabsenijin->kode_nama_absen_ijin}}</option>
+                                                        @php
+                                                            }
+                                                        @endphp
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Tanggal Mulai Izin</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">
+                                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                                        </div>
+                                                    </div>
+                                                     <input id="tanggal_mulai_ijin_iks" name="tanggal_mulai_ijin_iks" type="text" class="form-control fc-datepicker" placeholder="Tanggal Mulai Izin" maxlength="50" size="50">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Tanggal Akhir Izin</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">
+                                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                                        </div>
+                                                    </div>
+                                                     <input id="tanggal_akhir_ijin_iks" name="tanggal_akhir_ijin_iks" type="text" class="form-control fc-datepicker" placeholder="Tanggal Akhir Izin" maxlength="50" size="50">
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Jam Mulai Izin</label>
@@ -453,22 +495,6 @@
                                                     </div><!-- input-group-prepend -->
                                                     <input id="total_time_ijin" name="total_time_ijin" class="form-control" placeholder="0" type="text" maxlength="3" size="3">
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label class="form-label">Jenis Perizinan</label>
-                                                <select id="kode_absen_ijin_iks" class="form-control" data-placeholder="-- Pilih Jenis Perijinan --">
-                                                    @foreach ($refabsenijin as $r_refabsenijin)
-                                                        @php
-                                                            if ($r_refabsenijin->kode_absen_ijin == 'IKS') {
-                                                        @endphp
-                                                            <option value="{{$r_refabsenijin->kode_absen_ijin}}">{{$r_refabsenijin->kode_nama_absen_ijin}}</option>
-                                                        @php
-                                                            }
-                                                        @endphp
-                                                    @endforeach
-                                                </select>
                                             </div>
                                         </div>
                                         <div class="col-md-12">
@@ -1179,6 +1205,11 @@
             var time_mulai_ijin = $('#time_mulai_ijin').val();
             var time_akhir_ijin = $('#time_akhir_ijin').val();
             var total_time_ijin = $('#total_time_ijin').val();
+            let tanggal_mulai_ijin_iks = $('#tanggal_mulai_ijin_iks').val();
+            let tanggal_akhir_ijin_iks = $('#tanggal_akhir_ijin_iks').val();
+
+             tanggal_mulai_ijin_iks=tanggal_mulai_ijin_iks.substr(6, 4)+'-'+tanggal_mulai_ijin_iks.substr(3,2)+'-'+tanggal_mulai_ijin_iks.substr(0,2);
+             tanggal_akhir_ijin_iks=tanggal_akhir_ijin_iks.substr(6, 4)+'-'+tanggal_akhir_ijin_iks.substr(3,2)+'-'+tanggal_akhir_ijin_iks.substr(0,2);
 
             if (!enroll_id) {
                 notif({
@@ -1223,6 +1254,20 @@
             if (!total_time_ijin) {
                 notif({
                     msg: "<b>Warning:</b> Anda belum menginput Total Jam Izin.",
+                    type: "warning"
+                });
+                return false;
+            }
+            if (!tanggal_mulai_ijin_iks) {
+                notif({
+                    msg: "<b>Warning:</b> Anda belum memilih tanggal mulai.",
+                    type: "warning"
+                });
+                return false;
+            }
+            if (!tanggal_akhir_ijin_iks) {
+                notif({
+                    msg: "<b>Warning:</b> Anda belum memilih tanggal akhir.",
                     type: "warning"
                 });
                 return false;
@@ -1292,6 +1337,8 @@
                                             time_mulai_ijin:time_mulai_ijin,
                                             time_akhir_ijin:time_akhir_ijin,
                                             total_time_ijin:total_time_ijin,
+                                            tanggal_mulai_ijin:tanggal_mulai_ijin_iks,
+                                            tanggal_akhir_ijin:tanggal_akhir_ijin_iks,
                                         },
                                         success: function(res){
                                             notif({
@@ -1325,6 +1372,8 @@
                                             time_mulai_ijin:time_mulai_ijin,
                                             time_akhir_ijin:time_akhir_ijin,
                                             total_time_ijin:total_time_ijin,
+                                            tanggal_mulai_ijin:tanggal_mulai_ijin_iks,
+                                            tanggal_akhir_ijin:tanggal_akhir_ijin_iks,
                                         },
                                         dataType: 'json',
                                         success: function(res){
@@ -1629,6 +1678,8 @@
                 if (data['kode_absen_ijin'] == "IKS") {
                     $("#kode_absen_ijin_iks").val(data['kode_absen_ijin']).trigger("change");
                     $('#absen_alasan_iks').val(data['absen_alasan']);
+                    $('#tanggal_mulai_ijin_iks').val(tanggal_mulai_ijin);
+                    $('#tanggal_akhir_ijin_iks').val(tanggal_akhir_ijin);
                     $('#time_mulai_ijin').val(data['time_mulai_ijin']);
                     $('#time_akhir_ijin').val(data['time_akhir_ijin']);
                     $('#total_time_ijin').val(data['total_time_ijin']);

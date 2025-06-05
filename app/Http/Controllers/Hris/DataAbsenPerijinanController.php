@@ -742,6 +742,8 @@ class DataAbsenPerijinanController extends AdminBaseController
             DataAbsenPerijinan::where('uuid',request()->uuid)->update([
                 'kode_absen_ijin' => request()->kode_absen_ijin,
                 'absen_alasan' => request()->absen_alasan,
+                'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
+                'tanggal_akhir_ijin' => request()->tanggal_akhir_ijin,
                 'time_mulai_ijin' => request()->time_mulai_ijin,
                 'time_akhir_ijin' => request()->time_akhir_ijin,
                 'total_time_ijin' => request()->total_time_ijin,
@@ -822,7 +824,9 @@ class DataAbsenPerijinanController extends AdminBaseController
             'total_time_ijin' => $total_time_ijin,
             'is_verifikasi_pengajuan_admin' => 0,
             'operator' => $email,
-            'diajukan_oleh' => $email
+            'diajukan_oleh' => $email,
+            'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
+            'tanggal_akhir_ijin' => request()->tanggal_akhir_ijin,
         ]);
         if ($query) {
             info('Insert data nomor [' . $nomor_form_perizinan . '] on table data_absen_perijinan is SUCCESS.');
