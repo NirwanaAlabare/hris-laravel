@@ -236,6 +236,7 @@
                                 <col style="width: 180px;"> <!-- Department -->
                                 <col style="width: 150px;"> <!-- Awal -->
                                 <col style="width: 150px;"> <!-- Akhir -->
+                                <col style="width: 100px;"> <!-- Akhir -->
                             </colgroup>
                             <thead class="bg-primary text-white">
                                 <tr>
@@ -244,6 +245,7 @@
                                     <td>Department</td>
                                     <td>Awal</td>
                                     <td>Akhir</td>
+                                    <td>Jumlah Bulan</td>
                                 </tr>
                             </thead>
                             <tbody id="tabel_kontrak_kerja">
@@ -1589,6 +1591,7 @@
                                     <td></td>\
                                     <td>"+contract+"</td>\
                                     <td>"+contract_end+"</td>\
+                                    <td>"+value.jumlah_bulan+"</td>\
                                 </tr>");
                             }else{
                                 no=2;
@@ -1598,6 +1601,7 @@
                                     <td>"+value.department+"</td>\
                                     <td>"+contract+"</td>\
                                     <td>"+contract_end+"</td>\
+                                    <td>"+value.jumlah_bulan+"</td>\
                                 </tr>");
                             }
                         }else{
@@ -1607,6 +1611,7 @@
                                 <td>"+value.department+"</td>\
                                 <td>"+contract+"</td>\
                                 <td>"+contract_end+"</td>\
+                                <td>"+value.jumlah_bulan+"</td>\
                             </tr>");
                         }
                     });
