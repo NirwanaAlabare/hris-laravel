@@ -941,7 +941,7 @@ class HRDController extends AdminBaseController
         }
 
         $total_penghasilan_bulanan = $umk + $tunjangan;
-        $jumlah_bulan = $data->jumlah_bulan ?? $this->hitungBulanKontrak($data->contract, $data->tanggal_resign ? $data->tanggal_resign : $data->contract_end);
+        $jumlah_bulan = $data->jumlah_bulan ?? 0;
         $total_kompensasi = $total_penghasilan_bulanan * ($jumlah_bulan / 12);
 
 
