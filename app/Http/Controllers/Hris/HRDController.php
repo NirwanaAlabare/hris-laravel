@@ -71,6 +71,7 @@ class HRDController extends AdminBaseController
             JOIN employee_atribut ea ON mda.enroll_id = ea.enroll_id
             WHERE mda.tanggal_berjalan BETWEEN '$startDate' AND '$endDate'
             AND ea.status_aktif = 'Aktif'
+            ".$inSearchVariable." ".$inEnrollId."
             ORDER BY mda.enroll_id, mda.tanggal_berjalan DESC
         "));
         $absenPerOrang = [];
