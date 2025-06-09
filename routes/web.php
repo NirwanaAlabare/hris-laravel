@@ -155,7 +155,9 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
 Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namespace' => 'Hris'], function()
 {
     Route::get('hrd/sp_hadir',['as'=>'hris.hrd.sp_hadir','uses'=>'HRDController@sp_hadir']);
+    Route::get('hrd/sp_hadir_adjustment',['as'=>'hris.hrd.sp_hadir_adjustment','uses'=>'HRDController@sp_hadir_adjustment']);
     Route::get('hrd/export_sp_kehadiran_karyawan',['as'=>'hris.hrd.export_sp_kehadiran_karyawan','uses'=>'HRDController@export_sp_kehadiran_karyawan']);
+    Route::get('hrd/export_sp_kehadiran_karyawan_adjustment',['as'=>'hris.hrd.export_sp_kehadiran_karyawan_adjustment','uses'=>'HRDController@export_sp_kehadiran_karyawan_adjustment']);
     Route::get('hrd/export_pdf_sk_kerja',['as'=>'hris.hrd.export_pdf_sk_kerja','uses'=>'HRDController@export_pdf_sk_kerja']);
     Route::get('hrd/export_pdf_paklaring',['as'=>'hris.hrd.export_pdf_paklaring','uses'=>'HRDController@export_pdf_paklaring']);
 
@@ -320,6 +322,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
 
     // PERMINTAAN TENAGA KERJA
     Route::get('/permintaan_tenaga_kerja/index', ['as' => 'permintaan_tenaga_kerja.permintaan_tenaga_kerja','uses' => 'Administrasi\PermintaanTenagaKerjaController@index']);
+    Route::post('/permintaan_tenaga_kerja/ajax_data_permintaan_tk', ['as' => 'permintaan_tenaga_kerja.ajax_data_permintaan_tk','uses' => 'Administrasi\PermintaanTenagaKerjaController@ajax_data_permintaan_tk']);
+    Route::post('/permintaan_tenaga_kerja/create_permintaan_tk', ['as' => 'permintaan_tenaga_kerja.create_permintaan_tk','uses' => 'Administrasi\PermintaanTenagaKerjaController@create_permintaan_tk']);
 
     // PENGAJUAN IZIN
     Route::post('cuti_karyawan/ajax_dataabsenperizinan',['as'=>'cuti_karyawan.dataabsenperijinan.ajax_dataabsenperizinan','uses'=>'MasterData\CutiKaryawanController@ajax_dataabsenperizinan']);
@@ -524,6 +528,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('departmentall/show_data/',['as'=>'hris.departmentall.show_data','uses'=> 'DepartmentAllController@show_data']);
     Route::post('departmentall/edit_data/',['as'=>'hris.departmentall.edit_data','uses'=> 'DepartmentAllController@edit_data']);
     Route::post('departmentall/getSelectSubDept/',['as'=>'hris.departmentall.getSelectSubDept','uses'=> 'DepartmentAllController@getSelectSubDept']);
+    Route::post('departmentall/getDepartmentName/',['as'=>'hris.departmentall.getDepartmentName','uses'=> 'DepartmentAllController@getDepartmentName']);
     Route::post('departmentall/getSelectSubDeptIn/',['as'=>'hris.departmentall.getSelectSubDeptIn','uses'=> 'DepartmentAllController@getSelectSubDeptIn']);
     Route::post('departmentall/getSelectDeptId/',['as'=>'hris.departmentall.getSelectDeptId','uses'=> 'DepartmentAllController@getSelectDeptId']);
     Route::post('departmentall/getJumlahKaryawan/',['as'=>'hris.departmentall.getJumlahKaryawan','uses'=> 'DepartmentAllController@getJumlahKaryawan']);

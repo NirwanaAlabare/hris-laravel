@@ -176,7 +176,7 @@
                     <tr>
                         <td width="100px">Perihal</td>
                         <td>:</td>
-                        <td>Surat Panggilan Ke-II</td>
+                        <td>Surat Panggilan Ke-{{$data['kategori']}}</td>
                     </tr>
                 </table>
 

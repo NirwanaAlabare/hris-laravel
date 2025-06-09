@@ -43,6 +43,182 @@ class HRDController extends AdminBaseController
         return View::make('hris/hrd/layoff_termination',compact('selectEmployee','selectNoKTP'), $this->data);
     }
 
+    public function sp_hadir_adjustment(){
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '10240000000000000M');
+
+        $inSearchVariable='';
+        $inEnrollId='';
+        if (request("search_variable")) {
+            $search_variable=request()->search_variable;
+            $inSearchVariable = 'AND (ea.enroll_id = "'.$search_variable.'" or ea.nik LIKE "'.$search_variable.'%" or ea.employee_name LIKE "%'.$search_variable.'%" or ea.tempat_lahir LIKE "%'.$search_variable.'%" or ea.nomor_tlpn LIKE "'.$search_variable.'%" or ea.agama LIKE "'.$search_variable.'%" or ea.status_kawin LIKE "'.$search_variable.'%" or ea.nomor_kk LIKE "'.$search_variable.'%" or ea.pendidikan_terakhir LIKE "'.$search_variable.'%" or ea.jurusan_pendidikan LIKE "'.$search_variable.'%" or ea.alamat_rumah LIKE "%'.$search_variable.'%" or ea.department_name LIKE "%'.$search_variable.'%" or ea.sub_dept_name LIKE "%'.$search_variable.'%" or ea.status_aktif LIKE "'.$search_variable.'%" or ea.ibu_kandung LIKE "%'.$search_variable.'%" or ea.nomor_ktp LIKE "'.$search_variable.'%")';
+        }
+        if(request()->enroll_id){
+            $enroll_id = request()->enroll_id;
+            $enroll_id_string = implode(',', $enroll_id);
+            $inEnrollId='AND ea.enroll_id in ('.$enroll_id_string.')';
+        }
+
+        $today = Carbon::today();
+        $maxDaysToCheck = 30; // maksimal cek 30 hari ke belakang
+        $startDate = $today->copy()->subDays($maxDaysToCheck)->toDateString();
+        $endDate = $today->toDateString();
+
+        // Ambil semua data karyawan aktif dengan status absen (M dan lainnya) dalam rentang tanggal tersebut
+        $data = DB::select(DB::raw("
+            SELECT mda.tanggal_berjalan, mda.enroll_id, ea.employee_name, mda.status_absen, ea.department_name, mda.kode_hari
+            FROM master_data_absen_kehadiran mda
+            JOIN employee_atribut ea ON mda.enroll_id = ea.enroll_id
+            WHERE mda.tanggal_berjalan BETWEEN '$startDate' AND '$endDate'
+            AND ea.status_aktif = 'Aktif'
+            ORDER BY mda.enroll_id, mda.tanggal_berjalan DESC
+        "));
+        $absenPerOrang = [];
+        foreach ($data as $row) {
+            $absenPerOrang[$row->enroll_id][] = [
+                'tanggal' => $row->tanggal_berjalan,
+                'status' => $row->status_absen,
+                'nama' => $row->employee_name,
+                'department_name' => $row->department_name,
+                'kode_hari' => $row->kode_hari,
+            ];
+        }
+        $hasil = [];
+
+        foreach ($absenPerOrang as $enroll_id => $absens) {
+            $streak = 0;
+            $tanggal_akhir = null;
+            $tanggal_mulai = null;
+            $nama = $absens[0]['nama'] ?? '-';
+            foreach ($absens as $absen) {
+                if ($absen['tanggal'] > $endDate) continue;
+
+                if ($absen['status'] === 'M') {
+                    $streak++;
+                    if (!$tanggal_akhir) {
+                        $tanggal_akhir = $absen['tanggal'];
+                    }
+                    $tanggal_mulai = $absen['tanggal'];
+                } elseif (in_array($absen['kode_hari'], [5, 6]) || $absen['status'] !== 'M') {
+                    // Jika Sabtu/Minggu, abaikan, lanjutkan
+                    continue;
+                } else {
+                    // Status hadir di hari kerja, hentikan streak
+                    break;
+                }
+            }
+
+            if ($streak > 1 && $tanggal_akhir === $today->toDateString()) {
+                $kategori = match (true) {
+                    $streak >= 5 => 'SP-3',
+                    $streak >= 3 => 'SP-2',
+                    default => 'SP-1',
+                };
+
+                $hasil[] = [
+                    'enroll_id' => $enroll_id,
+                    'employee_name' => $nama,
+                    'jumlah_hari_mangkir' => $streak,
+                    'mulai' => Carbon::parse($tanggal_mulai)->translatedFormat('d F Y'),
+                    'selesai' => Carbon::parse($tanggal_akhir)->translatedFormat('d F Y'),
+                    'kategori' => $kategori,
+                    'department_name' => $absens[0]['department_name'] ?? '-',
+                ];
+            }
+        }
+        return DataTables::of($hasil)->toJson();
+    }
+
+    public function export_sp_kehadiran_karyawan_adjustment(){
+        $enroll_id=request()->enroll_id;
+        $no_form='3872/HRD-NAC/EXT/XII/2024';
+        $reason=request()->reason;
+        $fileName=request()->enroll_id.'_'.date('His');
+        $date_now = Carbon::parse(date('Y-m-d'))->translatedFormat('d F Y');
+
+        $date = date('Y-m-d');
+
+        $today = Carbon::today();
+        $maxDaysToCheck = 30; // maksimal cek 30 hari ke belakang
+        $startDate = $today->copy()->subDays($maxDaysToCheck)->toDateString();
+        $endDate = $today->toDateString();
+
+        // Ambil semua data karyawan aktif dengan status absen (M dan lainnya) dalam rentang tanggal tersebut
+        $data = DB::select(DB::raw("
+            SELECT mda.tanggal_berjalan, mda.enroll_id, ea.employee_name, mda.status_absen, ea.department_name, ea.nik, ea.status_jabatan, ea.alamat_rumah, mda.kode_hari
+            FROM master_data_absen_kehadiran mda
+            JOIN employee_atribut ea ON mda.enroll_id = ea.enroll_id
+            WHERE mda.tanggal_berjalan BETWEEN '$startDate' AND '$endDate'
+            AND ea.status_aktif = 'Aktif'
+            AND mda.enroll_id = '$enroll_id'
+            ORDER BY mda.enroll_id, mda.tanggal_berjalan DESC
+        "));
+
+        $absenPerOrang = [];
+        foreach ($data as $row) {
+            $absenPerOrang[$row->enroll_id][] = [
+                'tanggal' => $row->tanggal_berjalan,
+                'status' => $row->status_absen,
+                'kode_hari' => $row->kode_hari,
+                'nama' => $row->employee_name,
+                'department_name' => $row->department_name,
+                'nik' => $row->nik,
+                'status_jabatan' => $row->status_jabatan,
+                'alamat_rumah' => $row->alamat_rumah
+            ];
+        }
+
+        $hasil = [];
+
+        foreach ($absenPerOrang as $enroll_id => $absens) {
+            $streak = 0;
+            $tanggal_akhir = null;
+            $tanggal_mulai = null;
+            $nama = $absens[0]['nama'] ?? '-';
+
+            foreach ($absens as $absen) {
+                if ($absen['tanggal'] > $endDate) continue;
+
+                if ($absen['status'] === 'M') {
+                    $streak++;
+                    if (!$tanggal_akhir) {
+                        $tanggal_akhir = $absen['tanggal'];
+                    }
+                    $tanggal_mulai = $absen['tanggal'];
+                } elseif (in_array($absen['kode_hari'], [5, 6]) || $absen['status'] !== 'M') {
+                    // Jika Sabtu/Minggu, abaikan, lanjutkan
+                    continue;
+                } else {
+                    // Status hadir di hari kerja, hentikan streak
+                    break;
+                }
+            }
+            if ($streak > 1 && $tanggal_akhir === $today->toDateString()) {
+                $kategori = match (true) {
+                    $streak >= 5 => 'III',
+                    $streak >= 3 => 'II',
+                    default => 'I',
+                };
+
+                $hasil[] = [
+                    'enroll_id' => $enroll_id,
+                    'employee_name' => $nama,
+                    'jumlah_hari_mangkir' => $streak,
+                    'mulai' => Carbon::parse($tanggal_mulai)->translatedFormat('d F Y'),
+                    'selesai' => Carbon::parse($tanggal_akhir)->translatedFormat('d F Y'),
+                    'kategori' => $kategori,
+                    'department_name' => $absens[0]['department_name'] ?? '-',
+                    'nik' => $absens[0]['nik'] ?? '-',
+                    'status_jabatan' => $absens[0]['status_jabatan'] ?? '-',
+                    'alamat_rumah' => $absens[0]['alamat_rumah'] ?? '-',
+                ];
+            }
+        }
+
+        $pdf = PDF::loadView('hris.sp_kehadiran_karyawan',["data" => $hasil[0],"no_form"=>$no_form])->setPaper('letter', 'fotrait')->stream($fileName.'.pdf');
+        return $pdf;
+    }
+
     public function sp_hadir(){
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '10240000000000000M');

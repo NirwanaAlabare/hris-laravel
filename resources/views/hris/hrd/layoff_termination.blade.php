@@ -216,7 +216,7 @@
         destroy: true,
         scrollX: false,
         ajax: {
-            url: '{{ route('hris.hrd.sp_hadir') }}',
+            url: '{{ route('hris.hrd.sp_hadir_adjustment') }}',
             dataType: 'json',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -285,12 +285,23 @@
             {
                 targets: [6],
                 render: (data, type, row, meta) => {
+                    let warnaBtn = 'btn-info'; // default
+
+                    if (row.kategori === 'SP-2') {
+                        warnaBtn = 'btn-warning';
+                    } else if (row.kategori === 'SP-3') {
+                        warnaBtn = 'btn-danger';
+                    }
                     return `
                      <div class="row">
                         <div class="col text-center">
-                            <button class='btn btn-danger' style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt' data-target="#user-form-modal" data-toggle="modal" onclick="export_sp_kerja(` + row.enroll_id + `)">
-                                            SP KERJA
-                            </button>
+                           <button class='btn ${warnaBtn}'
+                                style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt'
+                                data-target="#user-form-modal"
+                                data-toggle="modal"
+                                onclick="export_sp_kerja('${row.enroll_id}')">
+                            ${row.kategori}
+                        </button>
                         </div>
                     </div>
                     `
@@ -330,7 +341,7 @@
     }
 
     function export_sp_kerja(enroll_id){
-        var url = 'export_sp_kehadiran_karyawan?enroll_id='+enroll_id;
+        var url = 'export_sp_kehadiran_karyawan_adjustment?enroll_id='+enroll_id;
         window.open(url, '_blank');
     }
 
