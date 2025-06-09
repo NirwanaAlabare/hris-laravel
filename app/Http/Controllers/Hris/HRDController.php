@@ -61,16 +61,15 @@ class HRDController extends AdminBaseController
         }
 
         $today = Carbon::today();
-        $maxDaysToCheck = 30; // maksimal cek 30 hari ke belakang
+        $maxDaysToCheck = 30;
         $startDate = $today->copy()->subDays($maxDaysToCheck)->toDateString();
         $endDate = $today->toDateString();
 
-        // Ambil semua data karyawan aktif dengan status absen (M dan lainnya) dalam rentang tanggal tersebut
         $data = DB::select(DB::raw("
             SELECT mda.tanggal_berjalan, mda.enroll_id, ea.employee_name, mda.status_absen, ea.department_name, mda.kode_hari
             FROM master_data_absen_kehadiran mda
             JOIN employee_atribut ea ON mda.enroll_id = ea.enroll_id
-            WHERE mda.tanggal_berjalan BETWEEN '$startDate' AND '$endDate'
+            WHERE mda.tanggal_berjalan <= '$endDate'
             AND ea.status_aktif = 'Aktif'
             ".$inSearchVariable." ".$inEnrollId."
             ORDER BY mda.enroll_id, mda.tanggal_berjalan DESC
@@ -92,23 +91,44 @@ class HRDController extends AdminBaseController
             $tanggal_akhir = null;
             $tanggal_mulai = null;
             $nama = $absens[0]['nama'] ?? '-';
+            // foreach ($absens as $absen) {
+            //     if ($absen['tanggal'] > $endDate) continue;
+
+            //     if ($absen['status'] === 'M') {
+            //         $streak++;
+            //         if (!$tanggal_akhir) {
+            //             $tanggal_akhir = $absen['tanggal'];
+            //         }
+            //         $tanggal_mulai = $absen['tanggal'];
+            //     } elseif (in_array($absen['kode_hari'], [5, 6]) || $absen['status'] !== 'M') {
+            //         // Jika Sabtu/Minggu, abaikan, lanjutkan
+            //         continue;
+            //     } else {
+            //         // Status hadir di hari kerja, hentikan streak
+            //         break;
+            //     }
+            // }
             foreach ($absens as $absen) {
                 if ($absen['tanggal'] > $endDate) continue;
 
-                if ($absen['status'] === 'M') {
+                $isWeekend = in_array($absen['kode_hari'], [5, 6]);
+                $isMangkir = $absen['status'] === 'M';
+                $isTidakHadirLainnya = in_array($absen['status'], ['CG','CM','CN','CT','DL','I','IG','IKS','IM','KA','KM','KR','L','LN','LP','NA','R','S','TL']);
+                $isHadir = !$isMangkir && !$isWeekend && !$isTidakHadirLainnya;
+
+                if ($isMangkir) {
                     $streak++;
                     if (!$tanggal_akhir) {
                         $tanggal_akhir = $absen['tanggal'];
                     }
                     $tanggal_mulai = $absen['tanggal'];
-                } elseif (in_array($absen['kode_hari'], [5, 6]) || $absen['status'] !== 'M') {
-                    // Jika Sabtu/Minggu, abaikan, lanjutkan
-                    continue;
-                } else {
-                    // Status hadir di hari kerja, hentikan streak
+                } elseif ($isHadir) {
+                    // Jika hadir di hari kerja, hentikan perhitungan
                     break;
                 }
+                // selain itu (LP, I, dll atau sabtu/minggu) dilewati
             }
+
 
             if ($streak > 1 && $tanggal_akhir === $today->toDateString()) {
                 $kategori = match (true) {
@@ -151,7 +171,7 @@ class HRDController extends AdminBaseController
             SELECT mda.tanggal_berjalan, mda.enroll_id, ea.employee_name, mda.status_absen, ea.department_name, ea.nik, ea.status_jabatan, ea.alamat_rumah, mda.kode_hari
             FROM master_data_absen_kehadiran mda
             JOIN employee_atribut ea ON mda.enroll_id = ea.enroll_id
-            WHERE mda.tanggal_berjalan BETWEEN '$startDate' AND '$endDate'
+            WHERE mda.tanggal_berjalan <= '$endDate'
             AND ea.status_aktif = 'Aktif'
             AND mda.enroll_id = '$enroll_id'
             ORDER BY mda.enroll_id, mda.tanggal_berjalan DESC
@@ -182,19 +202,22 @@ class HRDController extends AdminBaseController
             foreach ($absens as $absen) {
                 if ($absen['tanggal'] > $endDate) continue;
 
-                if ($absen['status'] === 'M') {
+                $isWeekend = in_array($absen['kode_hari'], [5, 6]);
+                $isMangkir = $absen['status'] === 'M';
+                $isTidakHadirLainnya = in_array($absen['status'], ['CG','CM','CN','CT','DL','I','IG','IKS','IM','KA','KM','KR','L','LN','LP','NA','R','S','TL']);
+                $isHadir = !$isMangkir && !$isWeekend && !$isTidakHadirLainnya;
+
+                if ($isMangkir) {
                     $streak++;
                     if (!$tanggal_akhir) {
                         $tanggal_akhir = $absen['tanggal'];
                     }
                     $tanggal_mulai = $absen['tanggal'];
-                } elseif (in_array($absen['kode_hari'], [5, 6]) || $absen['status'] !== 'M') {
-                    // Jika Sabtu/Minggu, abaikan, lanjutkan
-                    continue;
-                } else {
-                    // Status hadir di hari kerja, hentikan streak
+                } elseif ($isHadir) {
+                    // Jika hadir di hari kerja, hentikan perhitungan
                     break;
                 }
+                // selain itu (LP, I, dll atau sabtu/minggu) dilewati
             }
             if ($streak > 1 && $tanggal_akhir === $today->toDateString()) {
                 $kategori = match (true) {
@@ -250,7 +273,7 @@ class HRDController extends AdminBaseController
             SELECT mda.tanggal_berjalan, mda.enroll_id, ea.employee_name, mda.status_absen, ea.department_name, ea.nik, ea.status_jabatan, ea.alamat_rumah, mda.kode_hari, ea.status_staff, ea.sub_dept_name
             FROM master_data_absen_kehadiran mda
             JOIN employee_atribut ea ON mda.enroll_id = ea.enroll_id
-            WHERE mda.tanggal_berjalan BETWEEN '$startDate' AND '$endDate'
+            WHERE mda.tanggal_berjalan <= '$endDate'
             AND ea.status_aktif = 'Aktif'
             ".$inEnrollId."
             ORDER BY mda.enroll_id, mda.tanggal_berjalan DESC
@@ -276,22 +299,26 @@ class HRDController extends AdminBaseController
             $tanggal_akhir = null;
             $tanggal_mulai = null;
             $nama = $absens[0]['nama'] ?? '-';
+
             foreach ($absens as $absen) {
                 if ($absen['tanggal'] > $endDate) continue;
 
-                if ($absen['status'] === 'M') {
+                $isWeekend = in_array($absen['kode_hari'], [5, 6]);
+                $isMangkir = $absen['status'] === 'M';
+                $isTidakHadirLainnya = in_array($absen['status'], ['CG','CM','CN','CT','DL','I','IG','IKS','IM','KA','KM','KR','L','LN','LP','NA','R','S','TL']);
+                $isHadir = !$isMangkir && !$isWeekend && !$isTidakHadirLainnya;
+
+                if ($isMangkir) {
                     $streak++;
                     if (!$tanggal_akhir) {
                         $tanggal_akhir = $absen['tanggal'];
                     }
                     $tanggal_mulai = $absen['tanggal'];
-                } elseif (in_array($absen['kode_hari'], [5, 6]) || $absen['status'] !== 'M') {
-                    // Jika Sabtu/Minggu, abaikan, lanjutkan
-                    continue;
-                } else {
-                    // Status hadir di hari kerja, hentikan streak
+                } elseif ($isHadir) {
+                    // Jika hadir di hari kerja, hentikan perhitungan
                     break;
                 }
+                // selain itu (LP, I, dll atau sabtu/minggu) dilewati
             }
 
             if ($streak > 1 && $tanggal_akhir === $today->toDateString()) {
