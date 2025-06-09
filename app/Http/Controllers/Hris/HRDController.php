@@ -18,6 +18,7 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Models\MasterDataAbsenKehadiran;
 use App\Models\DepartmentAll;
 use App\Exports\exportExcelKontrak;
+use App\Exports\exportExcelHadirLayoff;
 use App\Models\DasarPotBPJS;
 use DateTime;
 use Maatwebsite\Excel\Facades\Excel;
@@ -130,6 +131,7 @@ class HRDController extends AdminBaseController
         return DataTables::of($hasil)->toJson();
     }
 
+
     public function export_sp_kehadiran_karyawan_adjustment(){
         $enroll_id=request()->enroll_id;
         $no_form='3872/HRD-NAC/EXT/XII/2024';
@@ -218,6 +220,104 @@ class HRDController extends AdminBaseController
 
         $pdf = PDF::loadView('hris.sp_kehadiran_karyawan',["data" => $hasil[0],"no_form"=>$no_form])->setPaper('letter', 'fotrait')->stream($fileName.'.pdf');
         return $pdf;
+    }
+
+    public function export_rekap_hadir_layoff(){
+        $inSearchVariable='';
+        $inNoKTP='';
+        $inEnrollId='';
+        $inIbuKandung='';
+        $inStatusAktif='';
+        $inStatusStaff='';
+        $inStatusKontrak='';
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '10240000000000000M');
+
+        $inEnrollId='';
+        if(request()->enroll_id){
+            $enroll_id = request()->enroll_id;
+            $enroll_id_string = implode(',', $enroll_id);
+            $inEnrollId='AND ea.enroll_id in ('.$enroll_id_string.')';
+        }
+
+        $today = Carbon::today();
+        $maxDaysToCheck = 30; // maksimal cek 30 hari ke belakang
+        $startDate = $today->copy()->subDays($maxDaysToCheck)->toDateString();
+        $endDate = $today->toDateString();
+
+        // Ambil semua data karyawan aktif dengan status absen (M dan lainnya) dalam rentang tanggal tersebut
+        $data = DB::select(DB::raw("
+            SELECT mda.tanggal_berjalan, mda.enroll_id, ea.employee_name, mda.status_absen, ea.department_name, ea.nik, ea.status_jabatan, ea.alamat_rumah, mda.kode_hari, ea.status_staff, ea.sub_dept_name
+            FROM master_data_absen_kehadiran mda
+            JOIN employee_atribut ea ON mda.enroll_id = ea.enroll_id
+            WHERE mda.tanggal_berjalan BETWEEN '$startDate' AND '$endDate'
+            AND ea.status_aktif = 'Aktif'
+            ".$inEnrollId."
+            ORDER BY mda.enroll_id, mda.tanggal_berjalan DESC
+        "));
+        $absenPerOrang = [];
+        foreach ($data as $row) {
+            $absenPerOrang[$row->enroll_id][] = [
+                'tanggal' => $row->tanggal_berjalan,
+                'status' => $row->status_absen,
+                'nama' => $row->employee_name,
+                'department_name' => $row->department_name,
+                'kode_hari' => $row->kode_hari,
+                'nik' => $row->nik,
+                'status_jabatan' => $row->status_jabatan,
+                'alamat_rumah' => $row->alamat_rumah,
+                'status_staff' => $row->status_staff,
+                'sub_dept_name' => $row->sub_dept_name
+            ];
+        }
+        $hasil = [];
+        foreach ($absenPerOrang as $enroll_id => $absens) {
+            $streak = 0;
+            $tanggal_akhir = null;
+            $tanggal_mulai = null;
+            $nama = $absens[0]['nama'] ?? '-';
+            foreach ($absens as $absen) {
+                if ($absen['tanggal'] > $endDate) continue;
+
+                if ($absen['status'] === 'M') {
+                    $streak++;
+                    if (!$tanggal_akhir) {
+                        $tanggal_akhir = $absen['tanggal'];
+                    }
+                    $tanggal_mulai = $absen['tanggal'];
+                } elseif (in_array($absen['kode_hari'], [5, 6]) || $absen['status'] !== 'M') {
+                    // Jika Sabtu/Minggu, abaikan, lanjutkan
+                    continue;
+                } else {
+                    // Status hadir di hari kerja, hentikan streak
+                    break;
+                }
+            }
+
+            if ($streak > 1 && $tanggal_akhir === $today->toDateString()) {
+                $kategori = match (true) {
+                    $streak >= 5 => 'SP-3',
+                    $streak >= 3 => 'SP-2',
+                    default => 'SP-1',
+                };
+
+                $hasil[] = [
+                    'enroll_id' => $enroll_id,
+                    'employee_name' => $nama,
+                    'jumlah_hari_mangkir' => $streak,
+                    'mulai' => Carbon::parse($tanggal_mulai)->translatedFormat('d F Y'),
+                    'selesai' => Carbon::parse($tanggal_akhir)->translatedFormat('d F Y'),
+                    'kategori' => $kategori,
+                    'department_name' => $absens[0]['department_name'] ?? '-',
+                    'nik' => $absens[0]['nik'] ?? '-',
+                    'status_jabatan' => $absens[0]['status_jabatan'] ?? '-',
+                    'alamat_rumah' => $absens[0]['alamat_rumah'] ?? '-',
+                    'status_staff' => $absens[0]['status_staff'] ?? '-',
+                    'sub_dept_name' => $absens[0]['sub_dept_name'] ?? '-'
+                ];
+            }
+        }
+        return Excel::download(new exportExcelHadirLayoff($hasil), 'Rekap hadir layoff.xlsx');
     }
 
     public function sp_hadir(){

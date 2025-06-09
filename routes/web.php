@@ -158,6 +158,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('hrd/sp_hadir_adjustment',['as'=>'hris.hrd.sp_hadir_adjustment','uses'=>'HRDController@sp_hadir_adjustment']);
     Route::get('hrd/export_sp_kehadiran_karyawan',['as'=>'hris.hrd.export_sp_kehadiran_karyawan','uses'=>'HRDController@export_sp_kehadiran_karyawan']);
     Route::get('hrd/export_sp_kehadiran_karyawan_adjustment',['as'=>'hris.hrd.export_sp_kehadiran_karyawan_adjustment','uses'=>'HRDController@export_sp_kehadiran_karyawan_adjustment']);
+    Route::get('hrd/export_rekap_hadir_layoff',['as'=>'hris.hrd.export_rekap_hadir_layoff','uses'=>'HRDController@export_rekap_hadir_layoff']);
     Route::get('hrd/export_pdf_sk_kerja',['as'=>'hris.hrd.export_pdf_sk_kerja','uses'=>'HRDController@export_pdf_sk_kerja']);
     Route::get('hrd/export_pdf_paklaring',['as'=>'hris.hrd.export_pdf_paklaring','uses'=>'HRDController@export_pdf_paklaring']);
 

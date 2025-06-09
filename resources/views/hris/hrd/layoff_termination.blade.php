@@ -52,7 +52,12 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-1"></div>
+                                <div class="col-5"></div>
+                                <div class="col-2">
+                                    <button class="btn btn-success btn-app" id="btn_export_excel_layoff_currday" onclick="export_excel()">
+                                        <i class="fa fa-file-pdf-o"></i> Rekap Excel
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -345,6 +350,48 @@
         window.open(url, '_blank');
     }
 
+    function export_excel(){
+        $("#btn_export_excel_layoff_currday").addClass("btn-loading");
+        $("#btn_export_excel_layoff_currday").html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loading...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+        $("#btn_export_excel_layoff_currday").attr("disabled", true);
+        let enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+        var today=new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+        var hour = today.getHours();
+        var minutes = today.getMinutes();
+        var seconds = today.getSeconds();
+        today_date = yyyy + '-' + mm + '-' + dd + ' '+ hour +'.'+minutes+'.'+seconds;
+        $.ajax({
+            type: "get",
+            url: '{{ route('hris.hrd.export_rekap_hadir_layoff') }}',
+            data: {
+                enroll_id: enroll_id,
+            },
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function(response) {
+                {
+                    $('#btn_export_excel_layoff_currday').removeClass("btn-loading");
+                    $("#btn_export_excel_layoff_currday").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Rekap Excel');
+                    $("#btn_export_excel_layoff_currday").attr("disabled", false);
+                    var blob = new Blob([response]);
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "Rekap Layoff "+today_date+" "+Math.ceil(Math.random()*1000000)+".xlsx";
+                    link.click();
+                }
+            },
+            error: function(res){
+                swal("", "Export Rekap Layoff gagal", "error");
+                $('#btn_export_excel_layoff_currday').removeClass("btn-loading");
+                $("#btn_export_excel_layoff_currday").attr("disabled", false);
+                $("#btn_export_excel_layoff_currday").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Rekap Excel');
+            }
+        });
+    }
 
 </script>
 @endsection
