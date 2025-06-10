@@ -1422,10 +1422,6 @@ class HRDController extends AdminBaseController
             $ibu_kandung_string=request()->ibu_kandung;
             $inIbuKandung='AND a.ibu_kandung LIKE "%'.$ibu_kandung_string.'%"';
         }
-        if(request()->status_aktif){
-            $status_aktif=request()->status_aktif;
-            $inStatusAktif='AND a.status_aktif = "'.$status_aktif.'"';
-        }
         if(request()->status_staff){
             $status_staff=request()->status_staff;
             $inStatusStaff='AND a.status_staff = "'.$status_staff.'"';
