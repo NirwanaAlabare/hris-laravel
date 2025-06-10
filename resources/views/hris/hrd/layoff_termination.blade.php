@@ -363,6 +363,13 @@
                                 onclick="handelTandaiSpKerja('${row.enroll_id} ','${row.kategori}')" title="Tandai Telah Diberikan SP Kerja">
                                 <i class="fa fa-check" style="font-size:11pt"></i>
                                 </button>`;
+                    }else{
+                         btn_check = `<a class='btn btn-outline-default text-default cursor-default'
+                                id="btn_cancel_tandai_sp_kerja"
+                                style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt'
+                                title="Tandai Telah Diberikan SP Kerja" onclick="handelCancelTandaiSpKerja('${row.enroll_id}')">
+                                <i class="fa fa-minus-square-o" style="font-size:11pt"></i>
+                                </a>`;
                     }
                     return `
                      <div class="row">
@@ -446,6 +453,35 @@
                 $('#btn_tandai_sp_kerja').removeClass("btn-loading");
                 $("#btn_tandai_sp_kerja").attr("disabled", false);
                 $("#btn_tandai_sp_kerja").html('<i class="fa fa-check" style="font-size:11pt"></i>');
+            }
+        });
+    }
+    function handelCancelTandaiSpKerja(enroll_id){
+        $("#btn_cancel_tandai_sp_kerja").addClass("btn-loading");
+        $("#btn_cancel_tandai_sp_kerja").attr("disabled", true);
+         $("#datatable-loading-overlay").fadeIn();
+        $.ajax({
+            type: "post",
+            url: '{{ route('hris.hrd.tandai_sp_kerja') }}',
+            data: {
+                enroll_id: enroll_id,
+                status: null
+            },
+            success: function(response) {
+                {
+                    datatable.ajax.reload();
+                    swal("", "Tandai telah dibatalkan", "success");
+                    $('#btn_cancel_tandai_sp_kerja').removeClass("btn-loading");
+                    $("#btn_cancel_tandai_sp_kerja").html('<i class="fa fa-minus-square-o" style="font-size:11pt"></i>');
+                    $("#btn_cancel_tandai_sp_kerja").attr("disabled", false);
+                }
+            },
+            error: function(res){
+                datatable.ajax.reload();
+                swal("", "Tandai telah dipanggil", "error");
+                $('#btn_cancel_tandai_sp_kerja').removeClass("btn-loading");
+                $("#btn_cancel_tandai_sp_kerja").attr("disabled", false);
+                $("#btn_cancel_tandai_sp_kerja").html('<i class="fa fa-minus-square-o" style="font-size:11pt"></i>');
             }
         });
     }

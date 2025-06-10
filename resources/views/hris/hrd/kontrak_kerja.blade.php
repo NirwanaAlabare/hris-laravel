@@ -906,16 +906,7 @@
 
 
 <script>
-     $(document).ready(function() {
-            var start = moment().subtract(29, 'days');
-            var end = moment();
-            var htmlDateRange = '<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>'
-            var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
-            var dateUpdateKehadiran = end.format("DD-MM-YYYY");
 
-            $('#daterange-btn1').html(htmlDateRange);
-            $('#daterange1').val(daterange1);
-        });
     $('#daterange-btn1').daterangepicker({
         ranges: {
             'Hari ini': [moment(), moment()],
