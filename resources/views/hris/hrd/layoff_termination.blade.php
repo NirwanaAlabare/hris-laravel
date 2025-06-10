@@ -45,14 +45,33 @@
                                 <div class="col-2 pt-1">
                                     <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nama Karyawan</label>
                                 </div>
-                                <div class="col-3 pr-0">
+                                <div class="col-2 pr-0">
                                     <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID">
                                         @foreach ($selectEmployee as $r_empl)
                                             <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-5"></div>
+                                <div class="col-1 pt-1"></div>
+                                   <div class="col-1 pt-1">
+                                    <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Periode</label>
+                                </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group m-0">
+                                            <select id="periode_payroll" name="periode_payroll" class="form-control">
+                                                <option  value="">Pilih Periode</option>
+                                                @foreach ($periode_payroll as $r_periode_payroll)
+                                                    <option  value="{{$r_periode_payroll->periode_payroll}}">
+                                                    @php
+                                                        setlocale(LC_ALL, 'id-ID', 'id_ID');
+                                                        $datePeriode = explode("-", $r_periode_payroll->periode_payroll);
+                                                        echo strtoupper(date("F", mktime(0, 0, 0, $datePeriode[1], 10))) . ' ' . $datePeriode[0];
+                                                    @endphp
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                </div>
                                 <div class="col-2">
                                     <button class="btn btn-success btn-app" id="btn_export_excel_layoff_currday" onclick="export_excel()">
                                         <i class="fa fa-file-pdf-o"></i> Rekap Excel
@@ -228,6 +247,7 @@
             },
                 data: function(d) {
                 d.enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+                d.periode_payroll =  $("select[name='periode_payroll']").val();
                 d.search_variable = $('#search_variable').val();
             },
         },
@@ -291,22 +311,28 @@
                 targets: [6],
                 render: (data, type, row, meta) => {
                     let warnaBtn = 'btn-info'; // default
-
+                    let btn_check = '';
                     if (row.kategori === 'SP-2') {
                         warnaBtn = 'btn-warning';
                     } else if (row.kategori === 'SP-3') {
                         warnaBtn = 'btn-danger';
+                    }
+                    if(row.kategori != row.sp_kerja){
+                        btn_check = `<button class='btn btn-primary' id="btn_tandai_sp_kerja"
+                                style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt'
+                                onclick="handelTandaiSpKerja('${row.enroll_id} ','${row.kategori}')" title="Tandai Telah Diberikan SP Kerja">
+                                <i class="fa fa-check" style="font-size:11pt"></i>
+                                </button>`;
                     }
                     return `
                      <div class="row">
                         <div class="col text-center">
                            <button class='btn ${warnaBtn}'
                                 style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt'
-                                data-target="#user-form-modal"
-                                data-toggle="modal"
                                 onclick="export_sp_kerja('${row.enroll_id}')">
-                            ${row.kategori}
-                        </button>
+                                ${row.kategori}
+                            </button>
+                            ${btn_check}
                         </div>
                     </div>
                     `
@@ -327,6 +353,10 @@
     });
 
     $('#selectEmployeeID').on('change',function(){
+        datatable.ajax.reload();
+    });
+    $('#periode_payroll').on('change',function(){
+        // console.log('periode_payroll', $(this).val());
         datatable.ajax.reload();
     });
     $('#searchIbuKandung').on('keyup',function(){
@@ -350,11 +380,42 @@
         window.open(url, '_blank');
     }
 
+    function handelTandaiSpKerja(enroll_id,status){
+        $("#btn_tandai_sp_kerja").addClass("btn-loading");
+        $("#btn_tandai_sp_kerja").html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loading...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+        $("#btn_tandai_sp_kerja").attr("disabled", true);
+        $.ajax({
+            type: "post",
+            url: '{{ route('hris.hrd.tandai_sp_kerja') }}',
+            data: {
+                enroll_id: enroll_id,
+                status: status
+            },
+            success: function(response) {
+                {
+                    swal("", "Tandai telah dipanggil", "success");
+                    $('#btn_tandai_sp_kerja').removeClass("btn-loading");
+                    $("#btn_tandai_sp_kerja").html('<i class="fa fa-check" style="font-size:11pt"></i>');
+                    $("#btn_tandai_sp_kerja").attr("disabled", false);
+                    datatable.ajax.reload();
+                }
+            },
+            error: function(res){
+                swal("", "Tandai telah dipanggil", "error");
+                $('#btn_tandai_sp_kerja').removeClass("btn-loading");
+                $("#btn_tandai_sp_kerja").attr("disabled", false);
+                $("#btn_tandai_sp_kerja").html('<i class="fa fa-check" style="font-size:11pt"></i>');
+                datatable.ajax.reload();
+            }
+        });
+    }
+
     function export_excel(){
         $("#btn_export_excel_layoff_currday").addClass("btn-loading");
         $("#btn_export_excel_layoff_currday").html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loading...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
         $("#btn_export_excel_layoff_currday").attr("disabled", true);
         let enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+        let periode_payroll = $("select[name='periode_payroll']").val();
         var today=new Date();
         var dd = String(today.getDate()).padStart(2, '0');
         var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -368,6 +429,7 @@
             url: '{{ route('hris.hrd.export_rekap_hadir_layoff') }}',
             data: {
                 enroll_id: enroll_id,
+                periode_payroll: periode_payroll,
             },
             xhrFields: {
                 responseType: 'blob'

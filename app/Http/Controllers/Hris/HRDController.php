@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Dompdf\Options;
 use Dompdf\FontMetrics;
 use App\Models\EmployeeAtribut;
+use App\Models\RekapPerhitunganPayroll;
 use App\Models\VoucherBazzar;
 use App\Imports\KontrakKerjaImport;
 use App\Imports\KontrakKerjaImportToDatabase;
@@ -39,17 +40,45 @@ class HRDController extends AdminBaseController
     }
 
     public function layoff_termination(){
+        $periode_payroll = $this->ajax_getperiodepayroll();
         $selectEmployee =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')->groupby('enroll_id')->orderby('employee_name', 'asc')->get();
         $selectNoKTP = EmployeeAtribut::selectRaw('nomor_ktp')->groupby('nomor_ktp')->orderby('nomor_ktp', 'asc')->get();
-        return View::make('hris/hrd/layoff_termination',compact('selectEmployee','selectNoKTP'), $this->data);
+        return View::make('hris/hrd/layoff_termination',compact('selectEmployee','selectNoKTP','periode_payroll'), $this->data);
+    }
+
+    public function ajax_getperiodepayroll()
+    {
+        $query =  RekapPerhitunganPayroll::selectRaw('CONCAT(periode_tahun_payroll,"-",periode_bulan_payroll) periode_payroll')
+                        ->groupby('periode_payroll')
+                        ->orderby('periode_payroll', 'desc')
+                        ->get();
+        return $query;
+
+    }
+
+    public function tandai_sp_kerja(Request $request)
+    {
+        $enroll_id = $request->enroll_id;
+        $status = $request->status;
+
+        // Update the 'sudah_diprint' field for the specified enroll_id
+        EmployeeAtribut::where('enroll_id', $enroll_id)->update(['sp_kerja' => $status]);
+
+        return response()->json(['success' => true, 'message' => 'Status updated successfully']);
     }
 
     public function sp_hadir_adjustment(){
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '10240000000000000M');
 
+        $today = \Carbon\Carbon::today();
+        $maxDaysToCheck = 30;
+        $startDate = $today->copy()->subDays($maxDaysToCheck)->toDateString();
+        $endDate = $today->toDateString();
         $inSearchVariable='';
         $inEnrollId='';
+        $inPeriodePayroll="";
+
         if (request("search_variable")) {
             $search_variable=request()->search_variable;
             $inSearchVariable = 'AND (ea.enroll_id = "'.$search_variable.'" or ea.nik LIKE "'.$search_variable.'%" or ea.employee_name LIKE "%'.$search_variable.'%" or ea.tempat_lahir LIKE "%'.$search_variable.'%" or ea.nomor_tlpn LIKE "'.$search_variable.'%" or ea.agama LIKE "'.$search_variable.'%" or ea.status_kawin LIKE "'.$search_variable.'%" or ea.nomor_kk LIKE "'.$search_variable.'%" or ea.pendidikan_terakhir LIKE "'.$search_variable.'%" or ea.jurusan_pendidikan LIKE "'.$search_variable.'%" or ea.alamat_rumah LIKE "%'.$search_variable.'%" or ea.department_name LIKE "%'.$search_variable.'%" or ea.sub_dept_name LIKE "%'.$search_variable.'%" or ea.status_aktif LIKE "'.$search_variable.'%" or ea.ibu_kandung LIKE "%'.$search_variable.'%" or ea.nomor_ktp LIKE "'.$search_variable.'%")';
@@ -59,19 +88,31 @@ class HRDController extends AdminBaseController
             $enroll_id_string = implode(',', $enroll_id);
             $inEnrollId='AND ea.enroll_id in ('.$enroll_id_string.')';
         }
+        if(request("periode_payroll")) {
+            $periode_payroll = request()->periode_payroll; // format: Y-m (contoh: 2025-06)
+            $date = \Carbon\Carbon::createFromFormat('Y-m', $periode_payroll);
 
-        $today = Carbon::today();
-        $maxDaysToCheck = 30;
-        $startDate = $today->copy()->subDays($maxDaysToCheck)->toDateString();
-        $endDate = $today->toDateString();
+            $startDate = $date->copy()->subMonth()->day(26);
+
+            // Cek apakah bulan yang dipilih adalah bulan saat ini
+            if ($date->isSameMonth(now())) {
+                $endDateDay = now(); // Gunakan hari ini
+            } else {
+                $endDateDay = $date->copy()->day(25); // Gunakan tanggal 25
+            }
+
+            $inPeriodePayroll = 'AND mda.tanggal_berjalan between "'.$startDate.'" and "'.$endDateDay.'"';
+        }else{
+            $inPeriodePayroll="AND mda.tanggal_berjalan <= '$endDate'";
+        }
+
 
         $data = DB::select(DB::raw("
-            SELECT mda.tanggal_berjalan, mda.enroll_id, ea.employee_name, mda.status_absen, ea.department_name, mda.kode_hari
+            SELECT mda.tanggal_berjalan, mda.enroll_id, ea.employee_name, mda.status_absen, ea.department_name, mda.kode_hari, ea.sp_kerja
             FROM master_data_absen_kehadiran mda
             JOIN employee_atribut ea ON mda.enroll_id = ea.enroll_id
-            WHERE mda.tanggal_berjalan <= '$endDate'
-            AND ea.status_aktif = 'Aktif'
-            ".$inSearchVariable." ".$inEnrollId."
+            WHERE ea.status_aktif = 'Aktif'
+            ".$inPeriodePayroll." ".$inSearchVariable." ".$inEnrollId."
             ORDER BY mda.enroll_id, mda.tanggal_berjalan DESC
         "));
         $absenPerOrang = [];
@@ -82,6 +123,7 @@ class HRDController extends AdminBaseController
                 'nama' => $row->employee_name,
                 'department_name' => $row->department_name,
                 'kode_hari' => $row->kode_hari,
+                'sp_kerja' => $row->sp_kerja,
             ];
         }
         $hasil = [];
@@ -91,25 +133,8 @@ class HRDController extends AdminBaseController
             $tanggal_akhir = null;
             $tanggal_mulai = null;
             $nama = $absens[0]['nama'] ?? '-';
-            // foreach ($absens as $absen) {
-            //     if ($absen['tanggal'] > $endDate) continue;
-
-            //     if ($absen['status'] === 'M') {
-            //         $streak++;
-            //         if (!$tanggal_akhir) {
-            //             $tanggal_akhir = $absen['tanggal'];
-            //         }
-            //         $tanggal_mulai = $absen['tanggal'];
-            //     } elseif (in_array($absen['kode_hari'], [5, 6]) || $absen['status'] !== 'M') {
-            //         // Jika Sabtu/Minggu, abaikan, lanjutkan
-            //         continue;
-            //     } else {
-            //         // Status hadir di hari kerja, hentikan streak
-            //         break;
-            //     }
-            // }
             foreach ($absens as $absen) {
-                if ($absen['tanggal'] > $endDate) continue;
+                // if ($absen['tanggal'] > $endDate) continue;
 
                 $isWeekend = in_array($absen['kode_hari'], [5, 6]);
                 $isMangkir = $absen['status'] === 'M';
@@ -129,23 +154,44 @@ class HRDController extends AdminBaseController
                 // selain itu (LP, I, dll atau sabtu/minggu) dilewati
             }
 
+            if(request("periode_payroll")){
+                if ($streak > 1) {
+                    $kategori = match (true) {
+                        $streak >= 5 => 'SP-3',
+                        $streak >= 3 => 'SP-2',
+                        default => 'SP-1',
+                    };
 
-            if ($streak > 1 && $tanggal_akhir === $today->toDateString()) {
-                $kategori = match (true) {
-                    $streak >= 5 => 'SP-3',
-                    $streak >= 3 => 'SP-2',
-                    default => 'SP-1',
-                };
+                    $hasil[] = [
+                        'enroll_id' => $enroll_id,
+                        'employee_name' => $nama,
+                        'jumlah_hari_mangkir' => $streak,
+                        'mulai' => Carbon::parse($tanggal_mulai)->translatedFormat('d F Y'),
+                        'selesai' => Carbon::parse($tanggal_akhir)->translatedFormat('d F Y'),
+                        'kategori' => $kategori,
+                        'department_name' => $absens[0]['department_name'] ?? '-',
+                        'sp_kerja' => $absens[0]['sp_kerja'] ?? '-',
+                    ];
+                }
+            } else{
+                 if ($streak > 1 && $tanggal_akhir === $today->toDateString()) {
+                    $kategori = match (true) {
+                        $streak >= 5 => 'SP-3',
+                        $streak >= 3 => 'SP-2',
+                        default => 'SP-1',
+                    };
 
-                $hasil[] = [
-                    'enroll_id' => $enroll_id,
-                    'employee_name' => $nama,
-                    'jumlah_hari_mangkir' => $streak,
-                    'mulai' => Carbon::parse($tanggal_mulai)->translatedFormat('d F Y'),
-                    'selesai' => Carbon::parse($tanggal_akhir)->translatedFormat('d F Y'),
-                    'kategori' => $kategori,
-                    'department_name' => $absens[0]['department_name'] ?? '-',
-                ];
+                    $hasil[] = [
+                        'enroll_id' => $enroll_id,
+                        'employee_name' => $nama,
+                        'jumlah_hari_mangkir' => $streak,
+                        'mulai' => Carbon::parse($tanggal_mulai)->translatedFormat('d F Y'),
+                        'selesai' => Carbon::parse($tanggal_akhir)->translatedFormat('d F Y'),
+                        'kategori' => $kategori,
+                        'department_name' => $absens[0]['department_name'] ?? '-',
+                        'sp_kerja' => $absens[0]['sp_kerja'] ?? '-',
+                    ];
+                }
             }
         }
         return DataTables::of($hasil)->toJson();
@@ -200,8 +246,6 @@ class HRDController extends AdminBaseController
             $nama = $absens[0]['nama'] ?? '-';
 
             foreach ($absens as $absen) {
-                if ($absen['tanggal'] > $endDate) continue;
-
                 $isWeekend = in_array($absen['kode_hari'], [5, 6]);
                 $isMangkir = $absen['status'] === 'M';
                 $isTidakHadirLainnya = in_array($absen['status'], ['CG','CM','CN','CT','DL','I','IG','IKS','IM','KA','KM','KR','L','LN','LP','NA','R','S','TL']);
@@ -214,12 +258,10 @@ class HRDController extends AdminBaseController
                     }
                     $tanggal_mulai = $absen['tanggal'];
                 } elseif ($isHadir) {
-                    // Jika hadir di hari kerja, hentikan perhitungan
                     break;
                 }
-                // selain itu (LP, I, dll atau sabtu/minggu) dilewati
             }
-            if ($streak > 1 && $tanggal_akhir === $today->toDateString()) {
+            if ($streak > 1) {
                 $kategori = match (true) {
                     $streak >= 5 => 'III',
                     $streak >= 3 => 'II',
@@ -240,21 +282,22 @@ class HRDController extends AdminBaseController
                 ];
             }
         }
-
         $pdf = PDF::loadView('hris.sp_kehadiran_karyawan',["data" => $hasil[0],"no_form"=>$no_form])->setPaper('letter', 'fotrait')->stream($fileName.'.pdf');
         return $pdf;
     }
 
     public function export_rekap_hadir_layoff(){
-        $inSearchVariable='';
-        $inNoKTP='';
-        $inEnrollId='';
-        $inIbuKandung='';
-        $inStatusAktif='';
-        $inStatusStaff='';
-        $inStatusKontrak='';
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '10240000000000000M');
+
+        $today = \Carbon\Carbon::today();
+        $maxDaysToCheck = 30;
+        $startDate = $today->copy()->subDays($maxDaysToCheck)->toDateString();
+        $endDate = $today->toDateString();
+
+        $inEnrollId='';
+        $inSearchVariable='';
+        $inPeriodePayroll="";
 
         $inEnrollId='';
         if(request()->enroll_id){
@@ -262,19 +305,31 @@ class HRDController extends AdminBaseController
             $enroll_id_string = implode(',', $enroll_id);
             $inEnrollId='AND ea.enroll_id in ('.$enroll_id_string.')';
         }
+       if(request("periode_payroll")) {
+            $periode_payroll = request()->periode_payroll; // format: Y-m (contoh: 2025-06)
+            $date = \Carbon\Carbon::createFromFormat('Y-m', $periode_payroll);
 
-        $today = Carbon::today();
-        $maxDaysToCheck = 30; // maksimal cek 30 hari ke belakang
-        $startDate = $today->copy()->subDays($maxDaysToCheck)->toDateString();
-        $endDate = $today->toDateString();
+            $startDate = $date->copy()->subMonth()->day(26);
+
+            // Cek apakah bulan yang dipilih adalah bulan saat ini
+            if ($date->isSameMonth(now())) {
+                $endDateDay = now(); // Gunakan hari ini
+            } else {
+                $endDateDay = $date->copy()->day(25); // Gunakan tanggal 25
+            }
+
+            $inPeriodePayroll = 'AND mda.tanggal_berjalan between "'.$startDate.'" and "'.$endDateDay.'"';
+        }else{
+            $inPeriodePayroll="AND mda.tanggal_berjalan <= '$endDate'";
+        }
 
         // Ambil semua data karyawan aktif dengan status absen (M dan lainnya) dalam rentang tanggal tersebut
         $data = DB::select(DB::raw("
             SELECT mda.tanggal_berjalan, mda.enroll_id, ea.employee_name, mda.status_absen, ea.department_name, ea.nik, ea.status_jabatan, ea.alamat_rumah, mda.kode_hari, ea.status_staff, ea.sub_dept_name
             FROM master_data_absen_kehadiran mda
             JOIN employee_atribut ea ON mda.enroll_id = ea.enroll_id
-            WHERE mda.tanggal_berjalan <= '$endDate'
-            AND ea.status_aktif = 'Aktif'
+            WHERE ea.status_aktif = 'Aktif'
+            ".$inPeriodePayroll."
             ".$inEnrollId."
             ORDER BY mda.enroll_id, mda.tanggal_berjalan DESC
         "));
@@ -315,34 +370,56 @@ class HRDController extends AdminBaseController
                     }
                     $tanggal_mulai = $absen['tanggal'];
                 } elseif ($isHadir) {
-                    // Jika hadir di hari kerja, hentikan perhitungan
                     break;
                 }
-                // selain itu (LP, I, dll atau sabtu/minggu) dilewati
             }
+             if(request("periode_payroll")){
+                if ($streak > 1) {
+                    $kategori = match (true) {
+                        $streak >= 5 => 'SP-3',
+                        $streak >= 3 => 'SP-2',
+                        default => 'SP-1',
+                    };
 
-            if ($streak > 1 && $tanggal_akhir === $today->toDateString()) {
-                $kategori = match (true) {
-                    $streak >= 5 => 'SP-3',
-                    $streak >= 3 => 'SP-2',
-                    default => 'SP-1',
-                };
+                    $hasil[] = [
+                        'enroll_id' => $enroll_id,
+                        'employee_name' => $nama,
+                        'jumlah_hari_mangkir' => $streak,
+                        'mulai' => Carbon::parse($tanggal_mulai)->translatedFormat('d F Y'),
+                        'selesai' => Carbon::parse($tanggal_akhir)->translatedFormat('d F Y'),
+                        'kategori' => $kategori,
+                        'department_name' => $absens[0]['department_name'] ?? '-',
+                        'nik' => $absens[0]['nik'] ?? '-',
+                        'status_jabatan' => $absens[0]['status_jabatan'] ?? '-',
+                        'alamat_rumah' => $absens[0]['alamat_rumah'] ?? '-',
+                        'status_staff' => $absens[0]['status_staff'] ?? '-',
+                        'sub_dept_name' => $absens[0]['sub_dept_name'] ?? '-'
+                    ];
+                }
+             } else {
+                if ($streak > 1 && $tanggal_akhir === $today->toDateString()) {
+                    $kategori = match (true) {
+                        $streak >= 5 => 'SP-3',
+                        $streak >= 3 => 'SP-2',
+                        default => 'SP-1',
+                    };
 
-                $hasil[] = [
-                    'enroll_id' => $enroll_id,
-                    'employee_name' => $nama,
-                    'jumlah_hari_mangkir' => $streak,
-                    'mulai' => Carbon::parse($tanggal_mulai)->translatedFormat('d F Y'),
-                    'selesai' => Carbon::parse($tanggal_akhir)->translatedFormat('d F Y'),
-                    'kategori' => $kategori,
-                    'department_name' => $absens[0]['department_name'] ?? '-',
-                    'nik' => $absens[0]['nik'] ?? '-',
-                    'status_jabatan' => $absens[0]['status_jabatan'] ?? '-',
-                    'alamat_rumah' => $absens[0]['alamat_rumah'] ?? '-',
-                    'status_staff' => $absens[0]['status_staff'] ?? '-',
-                    'sub_dept_name' => $absens[0]['sub_dept_name'] ?? '-'
-                ];
-            }
+                    $hasil[] = [
+                        'enroll_id' => $enroll_id,
+                        'employee_name' => $nama,
+                        'jumlah_hari_mangkir' => $streak,
+                        'mulai' => Carbon::parse($tanggal_mulai)->translatedFormat('d F Y'),
+                        'selesai' => Carbon::parse($tanggal_akhir)->translatedFormat('d F Y'),
+                        'kategori' => $kategori,
+                        'department_name' => $absens[0]['department_name'] ?? '-',
+                        'nik' => $absens[0]['nik'] ?? '-',
+                        'status_jabatan' => $absens[0]['status_jabatan'] ?? '-',
+                        'alamat_rumah' => $absens[0]['alamat_rumah'] ?? '-',
+                        'status_staff' => $absens[0]['status_staff'] ?? '-',
+                        'sub_dept_name' => $absens[0]['sub_dept_name'] ?? '-'
+                    ];
+                }
+             }
         }
         return Excel::download(new exportExcelHadirLayoff($hasil), 'Rekap hadir layoff.xlsx');
     }

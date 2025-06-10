@@ -95,7 +95,8 @@ class EmployeeAtribut extends \Eloquent
         'allowance',
         'pola_kerja',
         'premi',
-        'sudah_diprint'
+        'sudah_diprint',
+        'sp_kerja'
     ];
     protected $guarded = ['employee_id'];
 

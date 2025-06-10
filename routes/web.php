@@ -155,6 +155,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
 Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namespace' => 'Hris'], function()
 {
     Route::get('hrd/sp_hadir',['as'=>'hris.hrd.sp_hadir','uses'=>'HRDController@sp_hadir']);
+    Route::post('hrd/tandai_sp_kerja',['as'=>'hris.hrd.tandai_sp_kerja','uses'=>'HRDController@tandai_sp_kerja']);
     Route::get('hrd/sp_hadir_adjustment',['as'=>'hris.hrd.sp_hadir_adjustment','uses'=>'HRDController@sp_hadir_adjustment']);
     Route::get('hrd/export_sp_kehadiran_karyawan',['as'=>'hris.hrd.export_sp_kehadiran_karyawan','uses'=>'HRDController@export_sp_kehadiran_karyawan']);
     Route::get('hrd/export_sp_kehadiran_karyawan_adjustment',['as'=>'hris.hrd.export_sp_kehadiran_karyawan_adjustment','uses'=>'HRDController@export_sp_kehadiran_karyawan_adjustment']);
