@@ -78,6 +78,7 @@ class HRDController extends AdminBaseController
         $inSearchVariable='';
         $inEnrollId='';
         $inPeriodePayroll="";
+        $date="";
 
         if (request("search_variable")) {
             $search_variable=request()->search_variable;
@@ -102,10 +103,7 @@ class HRDController extends AdminBaseController
             }
 
             $inPeriodePayroll = 'AND mda.tanggal_berjalan between "'.$startDate.'" and "'.$endDateDay.'"';
-        }else{
-            $inPeriodePayroll="AND mda.tanggal_berjalan <= '$endDate'";
         }
-
 
         $data = DB::select(DB::raw("
             SELECT mda.tanggal_berjalan, mda.enroll_id, ea.employee_name, mda.status_absen, ea.department_name, mda.kode_hari, ea.sp_kerja
@@ -154,8 +152,8 @@ class HRDController extends AdminBaseController
                 // selain itu (LP, I, dll atau sabtu/minggu) dilewati
             }
 
-            if(request("periode_payroll")){
-                if ($streak > 1) {
+            if($date->isSameMonth(now())){
+                if ($streak > 1 && $tanggal_akhir === $today->toDateString()) {
                     $kategori = match (true) {
                         $streak >= 5 => 'SP-3',
                         $streak >= 3 => 'SP-2',
@@ -174,7 +172,7 @@ class HRDController extends AdminBaseController
                     ];
                 }
             } else{
-                 if ($streak > 1 && $tanggal_akhir === $today->toDateString()) {
+                 if ($streak > 1) {
                     $kategori = match (true) {
                         $streak >= 5 => 'SP-3',
                         $streak >= 3 => 'SP-2',
@@ -294,7 +292,7 @@ class HRDController extends AdminBaseController
         $maxDaysToCheck = 30;
         $startDate = $today->copy()->subDays($maxDaysToCheck)->toDateString();
         $endDate = $today->toDateString();
-
+        $date="";
         $inEnrollId='';
         $inSearchVariable='';
         $inPeriodePayroll="";
@@ -373,8 +371,8 @@ class HRDController extends AdminBaseController
                     break;
                 }
             }
-             if(request("periode_payroll")){
-                if ($streak > 1) {
+             if($date->isSameMonth(now())){
+                if ($streak > 1 && $tanggal_akhir === $today->toDateString()) {
                     $kategori = match (true) {
                         $streak >= 5 => 'SP-3',
                         $streak >= 3 => 'SP-2',
@@ -397,7 +395,7 @@ class HRDController extends AdminBaseController
                     ];
                 }
              } else {
-                if ($streak > 1 && $tanggal_akhir === $today->toDateString()) {
+                if ($streak > 1) {
                     $kategori = match (true) {
                         $streak >= 5 => 'SP-3',
                         $streak >= 3 => 'SP-2',

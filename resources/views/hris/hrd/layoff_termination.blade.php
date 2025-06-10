@@ -96,7 +96,6 @@
                                     <div class="col-md-3">
                                         <div class="form-group m-0">
                                             <select id="periode_payroll" name="periode_payroll" class="form-control">
-                                                <option  value="">Pilih Periode</option>
                                                 @foreach ($periode_payroll as $r_periode_payroll)
                                                     <option  value="{{$r_periode_payroll->periode_payroll}}">
                                                     @php
