@@ -108,14 +108,6 @@
                             </div>
                             <div class="row pb-2">
                                 <div class="col-2 pt-1">
-                                    <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Nama Ibu Kandung</label>
-                                </div>
-                                <div class="col-3 pr-0">
-                                    <input type="text" id="searchIbuKandung" name="searchIbuKandung" class="form-control" style="background-color:white" placeholder="Masukkan Nama Ibu Kandung">
-                                </div>
-                                <div class="col-1 pt-1">
-                                </div>
-                                <div class="col-2 pt-1">
                                     <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Status Staff</label>
                                 </div>
                                 <div class="col-3 pr-0">
@@ -125,19 +117,7 @@
                                         <option value="NON STAFF">Non Staff</option>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="row pb-2">
-                                <div class="col-2 pt-1">
-                                    <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Department</label>
-                                </div>
-                                <div class="col-3 pr-0">
-                                    <select id="selectDepartment" name="selectDepartment" class="form-control" id="status_aktif">
-                                        <option value="">Pilih Department</option>
-                                        @foreach ($department as $r_dept)
-                                        <option value="{{$r_dept->department_name}}">{{$r_dept->department_name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+
                                 <div class="col-1 pt-1">
                                 </div>
                                 <div class="col-2 pt-1">
@@ -153,6 +133,21 @@
                                             Clear
                                         </button>
                                 </div>
+
+                            </div>
+                            <div class="row pb-2">
+                                <div class="col-2 pt-1">
+                                    <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Department</label>
+                                </div>
+                                <div class="col-3 pr-0">
+                                    <select id="selectDepartment" name="selectDepartment" class="form-control" id="status_aktif">
+                                        <option value="">Pilih Department</option>
+                                        @foreach ($department as $r_dept)
+                                        <option value="{{$r_dept->department_name}}">{{$r_dept->department_name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
                             </div>
                         </div>
                     </div>
