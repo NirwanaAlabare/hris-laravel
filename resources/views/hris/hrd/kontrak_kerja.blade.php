@@ -906,6 +906,16 @@
 
 
 <script>
+     $(document).ready(function() {
+            var start = moment().subtract(29, 'days');
+            var end = moment();
+            var htmlDateRange = '<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>'
+            var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
+            var dateUpdateKehadiran = end.format("DD-MM-YYYY");
+
+            $('#daterange-btn1').html(htmlDateRange);
+            $('#daterange1').val(daterange1);
+        });
     $('#daterange-btn1').daterangepicker({
         ranges: {
             'Hari ini': [moment(), moment()],
@@ -918,14 +928,23 @@
         startDate: moment().subtract(29, 'days'),
         endDate: moment()
     }, function(start, end) {
-        $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>');
-        var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
-        $('#daterange1').val(daterange1);
-        document.getElementById("print_form_penilaian").style.visibility = "visible";
-        $('#status_kontrak').val("");
-        $('#datatable').DataTable().ajax.reload();
-    });
+       updateRange(start, end);
+});
 
+$('#daterange-btn1').on('apply.daterangepicker', function(ev, picker) {
+    updateRange(picker.startDate, picker.endDate);
+});
+
+function updateRange(start, end) {
+    console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+    $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>');
+    var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
+    $('#daterange1').val(daterange1);
+
+    document.getElementById("print_form_penilaian").style.visibility = "visible";
+    $('#status_kontrak').val("");
+    $('#datatable').DataTable().ajax.reload();
+}
     function clearDateRange1() {
         $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i></span><i class="fa fa-angle-down ml-1"></i>');
         $('#daterange1').val('');

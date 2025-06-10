@@ -219,7 +219,7 @@
                     $jumlahHariMangkir = $formatter->format($data['jumlah_hari_mangkir']);
                 @endphp
                 <p style="margin-top:20px">Dengan ini kami beritahukan bahwa Sdra/i telah melakukan pelanggaran tata tertib yang ada di PT. Nirwana Alabare Garment yaitu tidak masuk
-                kerja dengan TANPA KETERANGAN berturut-turut selama <b>{{$data['jumlah_hari_mangkir']}}</b> ({{ ucfirst($jumlahHariMangkir) }}) hari pada tanggal <b>{{Carbon\Carbon::parse($data['mulai'])->translatedFormat('d F')}}</b> hingga <b>{{Carbon\Carbon::parse($data['selesai'])->translatedFormat('d F Y')}}</b></p>
+                kerja dengan TANPA KETERANGAN berturut-turut selama <b>{{$data['jumlah_hari_mangkir']}}</b> ({{ ucfirst($jumlahHariMangkir) }}) hari pada tanggal <b>{{$data['mulai']}}</b> hingga <b>{{$data['selesai']}}</b></p>
                 <p style="margin-top:20px">Maka dengan ini kami memanggil Sdra/i untuk hadir dan kembali bekerja dengan membawa bukti alasan pelanggaran absensi tersebut.
                     Demikian surat panggilan ini kami kirimkan, atas kerjasamanya kami ucapkan terima kasih.
                 </p>
@@ -302,7 +302,7 @@
                         <td style="font-size:10px;">{{$data['alamat_rumah']}}</td>
                     </tr>
                 </table>
-                <p style="margin-top:10px">Tidak masuk kerja dengan TANPA KETERANGAN berturut-turut selama <b>{{$data['jumlah_hari_mangkir']}}</b> ({{ ucfirst($jumlahHariMangkir) }}) hari pada tanggal <b>{{Carbon\Carbon::parse($data['mulai'])->translatedFormat('d F')}}</b> hingga <b>{{Carbon\Carbon::parse($data['selesai'])->translatedFormat('d F Y')}}</b> .</p>
+                <p style="margin-top:10px">Tidak masuk kerja dengan TANPA KETERANGAN berturut-turut selama <b>{{$data['jumlah_hari_mangkir']}}</b> ({{ ucfirst($jumlahHariMangkir) }}) hari pada tanggal <b>{{$data['mulai']}}</b> hingga <b>{{$data['selesai']}}</b> .</p>
                 <p style="margin-top:10px">Diterima pada tanggal :</p>
                 <p>Diterima Oleh :</p>
                 <p>Hubungan dengan nama diatas :</p>
