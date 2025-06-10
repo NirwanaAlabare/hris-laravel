@@ -367,7 +367,7 @@
                          btn_check = `<a class='btn btn-outline-default text-default cursor-default'
                                 id="btn_cancel_tandai_sp_kerja"
                                 style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt'
-                                title="Tandai Telah Diberikan SP Kerja" onclick="handelCancelTandaiSpKerja('${row.enroll_id}')">
+                                title="Batalkan Telah Diberikan SP Kerja" onclick="handelCancelTandaiSpKerja('${row.enroll_id}')">
                                 <i class="fa fa-minus-square-o" style="font-size:11pt"></i>
                                 </a>`;
                     }
