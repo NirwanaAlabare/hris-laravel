@@ -90,7 +90,7 @@ class RekapKehadiranKaryawanController extends AdminBaseController
             $inSearchData='AND enroll_id = "'.$searchData.'"';
         }
 
-        $x=MasterDataAbsenKehadiran::selectRaw('*')->whereRaw('tanggal_berjalan >= "' . $tanggal_awal . '" and tanggal_berjalan <= "' . $tanggal_akhir.'"'.$inStatusStaff.''.$inSearchData.'')->get()->groupby('enroll_id');
+        $x=MasterDataAbsenKehadiran::selectRaw('*')->whereRaw('tanggal_berjalan >= "' . $tanggal_awal . '" and tanggal_berjalan <= "' . $tanggal_akhir.'"'.$inSearchData.'')->get()->groupby('enroll_id');
 
         foreach ($x as $key => $value) {
             $IBY_employe=$value->wherein('status_absen', $IBY)->count();
