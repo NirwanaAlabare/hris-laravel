@@ -46,7 +46,7 @@
                 @endphp
 
                 <div class="text-white">
-                    @if($loggedAdmin->email=='mega@ptnag.com' || $loggedAdmin->email=='rudy@ptnag.com' || $loggedAdmin->email=='rifqi' || $loggedAdmin->email=='fadli')
+                    @if($loggedAdmin->email=='mega@ptnag.com' || $loggedAdmin->email=='rudy@ptnag.com' || $loggedAdmin->email=='ersa@ptnag.com' || $loggedAdmin->email=='fadli')
                     <button type="button" class="btn btn-icon btn-success text-white p-2 mr-1"  data-target="#import_employees" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Karyawan</button>
                     @endif
                     <a href="{{route('hris.employeeatr.format')}}" id="btn-examimport" class="btn btn-icon btn-orange text-white p-2 mr-1" data-toggle="tooltip" title="" data-original-title="Format File Excel"><i class="fa fa-file-excel-o mr-1"></i>Format File </a>
