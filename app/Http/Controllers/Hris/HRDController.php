@@ -78,7 +78,7 @@ class HRDController extends AdminBaseController
         $inSearchVariable='';
         $inEnrollId='';
         $inPeriodePayroll="";
-        $date="";
+        $tanggalSampai=$endDate;
 
         if (request("search_variable")) {
             $search_variable=request()->search_variable;
@@ -90,21 +90,16 @@ class HRDController extends AdminBaseController
             $inEnrollId='AND ea.enroll_id in ('.$enroll_id_string.')';
         }
         if(request("periode_payroll")) {
-            $periode_payroll = request()->periode_payroll; // format: Y-m (contoh: 2025-06)
-            $date = \Carbon\Carbon::createFromFormat('Y-m', $periode_payroll);
-
+            $daterange1 = explode(" s/d ", request()->periode_payroll);
+            $tanggalMulai = date('Y-m-d', strtotime($daterange1[0]));
+            $tanggalSampai = date('Y-m-d', strtotime($daterange1[1]));
+            $inPeriodePayroll = 'AND mda.tanggal_berjalan between "'.$tanggalMulai.'" and "'.$tanggalSampai.'"';
+        }else{
+            $date = \Carbon\Carbon::createFromFormat('Y-m-d', $endDate);
             $startDate = $date->copy()->subMonth()->day(26);
-
-            // Cek apakah bulan yang dipilih adalah bulan saat ini
-            if ($date->isSameMonth(now())) {
-                $endDateDay = now(); // Gunakan hari ini
-            } else {
-                $endDateDay = $date->copy()->day(25); // Gunakan tanggal 25
-            }
-
+            $endDateDay = now();
             $inPeriodePayroll = 'AND mda.tanggal_berjalan between "'.$startDate.'" and "'.$endDateDay.'"';
         }
-
         $data = DB::select(DB::raw("
             SELECT mda.tanggal_berjalan, mda.enroll_id, ea.employee_name, mda.status_absen, ea.department_name, mda.kode_hari, ea.sp_kerja
             FROM master_data_absen_kehadiran mda
@@ -132,8 +127,6 @@ class HRDController extends AdminBaseController
             $tanggal_mulai = null;
             $nama = $absens[0]['nama'] ?? '-';
             foreach ($absens as $absen) {
-                // if ($absen['tanggal'] > $endDate) continue;
-
                 $isWeekend = in_array($absen['kode_hari'], [5, 6]);
                 $isMangkir = $absen['status'] === 'M';
                 $isTidakHadirLainnya = in_array($absen['status'], ['CG','CM','CN','CT','DL','I','IG','IKS','IM','KA','KM','KR','L','LN','LP','NA','R','S','TL']);
@@ -146,13 +139,11 @@ class HRDController extends AdminBaseController
                     }
                     $tanggal_mulai = $absen['tanggal'];
                 } elseif ($isHadir) {
-                    // Jika hadir di hari kerja, hentikan perhitungan
                     break;
                 }
-                // selain itu (LP, I, dll atau sabtu/minggu) dilewati
             }
 
-            if($date->isSameMonth(now())){
+            if($tanggalSampai == $today->toDateString()){
                 if ($streak > 1 && $tanggal_akhir === $today->toDateString()) {
                     $kategori = match (true) {
                         $streak >= 5 => 'SP-3',
@@ -296,6 +287,7 @@ class HRDController extends AdminBaseController
         $inEnrollId='';
         $inSearchVariable='';
         $inPeriodePayroll="";
+        $tanggalSampai=$endDate;
 
         $inEnrollId='';
         if(request()->enroll_id){
@@ -304,21 +296,15 @@ class HRDController extends AdminBaseController
             $inEnrollId='AND ea.enroll_id in ('.$enroll_id_string.')';
         }
        if(request("periode_payroll")) {
-            $periode_payroll = request()->periode_payroll; // format: Y-m (contoh: 2025-06)
-            $date = \Carbon\Carbon::createFromFormat('Y-m', $periode_payroll);
-
-            $startDate = $date->copy()->subMonth()->day(26);
-
-            // Cek apakah bulan yang dipilih adalah bulan saat ini
-            if ($date->isSameMonth(now())) {
-                $endDateDay = now(); // Gunakan hari ini
-            } else {
-                $endDateDay = $date->copy()->day(25); // Gunakan tanggal 25
-            }
-
-            $inPeriodePayroll = 'AND mda.tanggal_berjalan between "'.$startDate.'" and "'.$endDateDay.'"';
+            $daterange1 = explode(" s/d ", request()->periode_payroll);
+            $tanggalMulai = date('Y-m-d', strtotime($daterange1[0]));
+            $tanggalSampai = date('Y-m-d', strtotime($daterange1[1]));
+            $inPeriodePayroll = 'AND mda.tanggal_berjalan between "'.$tanggalMulai.'" and "'.$tanggalSampai.'"';
         }else{
-            $inPeriodePayroll="AND mda.tanggal_berjalan <= '$endDate'";
+            $date = \Carbon\Carbon::createFromFormat('Y-m-d', $endDate);
+            $startDate = $date->copy()->subMonth()->day(26);
+            $endDateDay = now();
+            $inPeriodePayroll = 'AND mda.tanggal_berjalan between "'.$startDate.'" and "'.$endDateDay.'"';
         }
 
         // Ambil semua data karyawan aktif dengan status absen (M dan lainnya) dalam rentang tanggal tersebut
@@ -371,7 +357,7 @@ class HRDController extends AdminBaseController
                     break;
                 }
             }
-             if($date->isSameMonth(now())){
+              if($tanggalSampai == $today->toDateString()){
                 if ($streak > 1 && $tanggal_akhir === $today->toDateString()) {
                     $kategori = match (true) {
                         $streak >= 5 => 'SP-3',

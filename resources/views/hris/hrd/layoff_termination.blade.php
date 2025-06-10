@@ -6,6 +6,7 @@
 <link href="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.css')}}" rel="stylesheet" />
 <link href="{{URL::asset('assets/plugins/sweet-alert/sweetalert.css')}}" rel="stylesheet" />
 <link rel="stylesheet" href="{{ URL::asset('assets/css/iziToast.min.css') }}">
+<link href="{{URL::asset('assets/plugins/spectrum-date-picker/spectrum.css')}}" rel="stylesheet" />
 <style>
 .loading-overlay {
     position: relative;
@@ -95,17 +96,8 @@
                                 </div>
                                     <div class="col-md-3">
                                         <div class="form-group m-0">
-                                            <select id="periode_payroll" name="periode_payroll" class="form-control">
-                                                @foreach ($periode_payroll as $r_periode_payroll)
-                                                    <option  value="{{$r_periode_payroll->periode_payroll}}">
-                                                    @php
-                                                        setlocale(LC_ALL, 'id-ID', 'id_ID');
-                                                        $datePeriode = explode("-", $r_periode_payroll->periode_payroll);
-                                                        echo strtoupper(date("F", mktime(0, 0, 0, $datePeriode[1], 10))) . ' ' . $datePeriode[0];
-                                                    @endphp
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                            <input type="hidden" id="daterange1" name="daterange1">
+                                            <a class="nav-link card-title py-2 pl-3" style="border: 1px solid #d8d4dc" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
                                         </div>
                                 </div>
                                 <div class="col-2">
@@ -159,6 +151,10 @@
 <script src="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.js')}}"></script>
 <script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
 <script src="{{URL::asset('assets/js/iziToast.min.js')}}"></script>
+ <!-- Datepicker js -->
+ <script src="{{URL::asset('assets/plugins/spectrum-date-picker/spectrum.js')}}"></script>
+ <script src="{{URL::asset('assets/plugins/spectrum-date-picker/jquery-ui.js')}}"></script>
+ <script src="{{URL::asset('assets/plugins/input-mask/jquery.maskedinput.js')}}"></script>
 <style>
     #datatable {
     table-layout: fixed;
@@ -166,30 +162,57 @@
 
 </style>
 <script type="text/javascript">
-       $(document).ready(function() {
+
+    $(document).ready(function() {
+        const start = moment().subtract(29, 'days');
+        const end = moment();
+
+        // Set nilai awal
+        updateRange(start, end);
+        function updateRange(start, end) {
+            $('#daterange-btn1').html(
+                '<span><i class="fa fa-calendar"></i> ' +
+                start.format("D MMM YYYY").toUpperCase() +
+                ' s/d ' +
+                end.format("D MMM YYYY").toUpperCase() +
+                '</span><i class="fa fa-angle-down ml-1"></i>'
+            );
+
+            const daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
+            $('#daterange1').val(daterange1);
+        }
+
+        // Inisialisasi dan isi daterange1 terlebih dahulu
+        $('#daterange-btn1').daterangepicker({
+            ranges: {
+                'Hari ini': [moment(), moment()],
+                'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                '7 Hari Kemarin': [moment().subtract(6, 'days'), moment()],
+                '30 Hari Kemarin': [moment().subtract(29, 'days'), moment()],
+                'Bulan Sekarang': [moment().startOf('month'), moment().endOf('month')],
+                'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            startDate: start,
+            endDate: end,
+            maxDate: moment()
+        }, function (start, end) {
+            updateRange(start, end);
+            datatable.ajax.reload(); // reload setelah user pilih tanggal
+        });
+
+    });
+</script>
+<script type="text/javascript">
+
+    $(document).ready(function() {
         let datatableFilter = document.getElementById("datatable_filter");
         datatableFilter.innerHTML = `<span> Search : </span><input type="text" class="form-control form-control-sm" id="search_variable" onkeyup="dataTableReload()">`;
     });
 
-    $('.data_range').daterangepicker({
-        ranges: {
-            'Hari ini': [moment(), moment()],
-            'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            '7 Hari Kemarin': [moment().subtract(6, 'days'), moment()],
-            '30 Hari Kemarin': [moment().subtract(29, 'days'), moment()],
-            'Bulan Sekarang': [moment().startOf('month'), moment().endOf('month')],
-            'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        },
-        startDate: moment().subtract(29, 'days'),
-        endDate: moment()
-        // startDate: moment().startOf('month'),
-        // endDate: moment().endOf('month')
-        }, function(start, end) {
-            $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
-    })
     $('#excel_file_kontrak').change(function() {
         fill_the_table();
     });
+
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -270,6 +293,8 @@
     });
     var currentPageCheck = 0;
     var checkedEmployeeArr = [];
+    console.log("daterange1: ", $('#daterange1').val());
+
     let datatable = $("#datatable").DataTable({
         ordering: true,
         processing: true,
@@ -286,7 +311,7 @@
             },
                 data: function(d) {
                 d.enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
-                d.periode_payroll =  $("select[name='periode_payroll']").val();
+                d.periode_payroll =  $('#daterange1').val();
                 d.search_variable = $('#search_variable').val();
             },
         },
@@ -402,7 +427,6 @@
         datatable.ajax.reload();
     });
     $('#periode_payroll').on('change',function(){
-        // console.log('periode_payroll', $(this).val());
         datatable.ajax.reload();
     });
     $('#searchIbuKandung').on('keyup',function(){
@@ -495,7 +519,7 @@
         $("#btn_export_excel_layoff_currday").html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loading...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
         $("#btn_export_excel_layoff_currday").attr("disabled", true);
         let enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
-        let periode_payroll = $("select[name='periode_payroll']").val();
+        let periode_payroll = $('#daterange1').val();
         var today=new Date();
         var dd = String(today.getDate()).padStart(2, '0');
         var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
