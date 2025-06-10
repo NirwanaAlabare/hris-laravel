@@ -6,6 +6,43 @@
 <link href="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.css')}}" rel="stylesheet" />
 <link href="{{URL::asset('assets/plugins/sweet-alert/sweetalert.css')}}" rel="stylesheet" />
 <link rel="stylesheet" href="{{ URL::asset('assets/css/iziToast.min.css') }}">
+<style>
+.loading-overlay {
+    position: relative;
+}
+.loading-overlay::after {
+    content: "Loading...";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.7);
+    padding: 20px;
+    border-radius: 8px;
+    z-index: 10;
+    font-weight: bold;
+}
+
+</style>
+<style>
+#datatable-loading-overlay {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(255,255,255,0.6);
+    width: 100%;
+    height: 100%;
+    z-index: 99;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+</style>
 
 @stop
 @section('mainarea')
@@ -85,7 +122,9 @@
             <div class="card-body px-6 pt-2 pb-5">
                 <div class="row">
                     <div class="col">
-                        <div class="table-responsive">
+                        <div class="table-responsive" id="datatable-wrapper">
+                            <div style="position: relative;">
+                            <div id="datatable-loading-overlay">Loading...</div>
                             <table id="datatable" class="table table-bordered table-sm w-100 table-hover text-nowrap">
                                 <thead class="table-info">
                                     <tr style='text-align:center;'>
@@ -102,6 +141,7 @@
                                     </tr>
                                 </thead>
                             </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -382,8 +422,8 @@
 
     function handelTandaiSpKerja(enroll_id,status){
         $("#btn_tandai_sp_kerja").addClass("btn-loading");
-        $("#btn_tandai_sp_kerja").html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loading...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
         $("#btn_tandai_sp_kerja").attr("disabled", true);
+         $("#datatable-loading-overlay").fadeIn();
         $.ajax({
             type: "post",
             url: '{{ route('hris.hrd.tandai_sp_kerja') }}',
@@ -393,22 +433,27 @@
             },
             success: function(response) {
                 {
+                    datatable.ajax.reload();
                     swal("", "Tandai telah dipanggil", "success");
                     $('#btn_tandai_sp_kerja').removeClass("btn-loading");
                     $("#btn_tandai_sp_kerja").html('<i class="fa fa-check" style="font-size:11pt"></i>');
                     $("#btn_tandai_sp_kerja").attr("disabled", false);
-                    datatable.ajax.reload();
                 }
             },
             error: function(res){
+                datatable.ajax.reload();
                 swal("", "Tandai telah dipanggil", "error");
                 $('#btn_tandai_sp_kerja').removeClass("btn-loading");
                 $("#btn_tandai_sp_kerja").attr("disabled", false);
                 $("#btn_tandai_sp_kerja").html('<i class="fa fa-check" style="font-size:11pt"></i>');
-                datatable.ajax.reload();
             }
         });
     }
+
+    datatable.on('xhr.dt', function () {
+        $("#datatable-loading-overlay").fadeOut();
+    });
+
 
     function export_excel(){
         $("#btn_export_excel_layoff_currday").addClass("btn-loading");
