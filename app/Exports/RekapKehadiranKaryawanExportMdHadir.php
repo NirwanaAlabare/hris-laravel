@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 use Auth;
 
@@ -68,6 +69,13 @@ class RekapKehadiranKaryawanExportMdHadir implements FromQuery, WithMapping, Sho
             'master_data_absen_kehadiran.*',
             'employee_atribut.employee_name',
             'employee_atribut.nik',
+            'employee_atribut.status_aktif',
+            'employee_atribut.join_date',
+            'employee_atribut.status_staff',
+            'employee_atribut.status_jabatan',
+            'employee_atribut.sub_dept_name',
+            'employee_atribut.department_name',
+            'employee_atribut.tanggal_resign',
         ])
         ->leftJoin('employee_atribut', 'master_data_absen_kehadiran.enroll_id', '=', 'employee_atribut.enroll_id')
         ->whereBetween('master_data_absen_kehadiran.tanggal_berjalan', [$tanggal_awal, $tanggal_akhir])->groupBy('employee_atribut.enroll_id');
@@ -101,7 +109,7 @@ class RekapKehadiranKaryawanExportMdHadir implements FromQuery, WithMapping, Sho
 
     public function startCell(): string
     {
-        return 'A6';
+        return 'A7';
     }
 
     public function map($value): array
@@ -119,6 +127,11 @@ class RekapKehadiranKaryawanExportMdHadir implements FromQuery, WithMapping, Sho
         $sub_dept_name = $value->sub_dept_name;
         $status_aktif = $value->status_aktif;
         $status_staff = $value->status_staff;
+        $join_date = $value->join_date;
+        $status_jabatan = $value->status_jabatan;
+        $sub_dept_name = $value->sub_dept_name;
+        $department_name = $value->department_name;
+        $resign_date = $value->tanggal_resign;
 
 
         $IBY_employe=$value->where('enroll_id', $enroll_id)->whereBetween('tanggal_berjalan', [$this->tanggal_awal, $this->tanggal_akhir])->wherein('status_absen', $IBY)->count();
@@ -207,12 +220,56 @@ class RekapKehadiranKaryawanExportMdHadir implements FromQuery, WithMapping, Sho
         $kehadiran_mangkir=$kehadiran_m-$kehadiran_tl;
 
         $kosong='';
-            return [
-            $enroll_id,
-            $nik,
-            $employee_name,
-            $kosong,
 
+        $row = [
+                $value->enroll_id,
+                $value->nik,
+                $value->employee_name,
+                $value->status_aktif,
+                $value->join_date ? Carbon::parse($value->join_date)->translatedFormat('d F Y') : '',
+                $value->resign_date ? Carbon::parse($value->resign_date)->translatedFormat('d F Y') : '',
+                $value->status_staff,
+                $value->status_jabatan,
+                $value->sub_dept_name,
+                $value->department_name,
+        ];
+
+
+        $startDate = Carbon::parse($this->tanggal_awal);
+        $endDate = Carbon::parse($this->tanggal_akhir);
+
+        $absenPerTanggal = $value ?? collect();
+
+        while ($startDate->lte($endDate)) {
+            $tanggal = $startDate->format('Y-m-d');
+            $absenHariIni = $absenPerTanggal->where('enroll_id', $enroll_id)->firstWhere('tanggal_berjalan', $tanggal);
+            $statusAbsen = '';
+
+            if ($absenHariIni) {
+                $jumlahDT = (int) $absenHariIni->jumlah_menit_absen_dt;
+                $jumlahPC = (int) $absenHariIni->jumlah_menit_absen_pc;
+
+                if ($jumlahDT > 0 && $jumlahPC > 0) {
+                    $statusAbsen = 'DTPC';
+                } elseif ($jumlahDT > 0) {
+                    $statusAbsen = 'DT';
+                } elseif ($jumlahPC > 0) {
+                    $statusAbsen = 'PC';
+                } elseif ($absenHariIni->status_absen) {
+                    $statusAbsen = $absenHariIni->status_absen;
+                }
+            }
+
+            $kodeHari = $absenHariIni->kode_hari;
+            if ($kodeHari == 5 || $kodeHari == 6) {
+                $statusAbsen = 'L';
+            }
+            $row[] = $statusAbsen;
+
+            $startDate->addDay();
+        }
+        $row = array_merge($row, [
+            $kosong,
             $kehadiran_dl,
             $kehadiran_dt,
             $kehadiran_pc,
@@ -242,7 +299,42 @@ class RekapKehadiranKaryawanExportMdHadir implements FromQuery, WithMapping, Sho
             $kehadiran_ok,
             $kehadiran_r,
             $kehadiran_s,
-        ];
+        ]);
+
+        return $row;
+
+        //     return [
+            // $kosong,
+            // $kehadiran_dl,
+            // $kehadiran_dt,
+            // $kehadiran_pc,
+            // $kehadiran_dtpc,
+            // $kehadiran_cb,
+            // $kehadiran_cbd,
+            // $kehadiran_cg,
+            // $kehadiran_ch,
+            // $kehadiran_cm,
+            // $kehadiran_cn,
+            // $kehadiran_ct,
+            // $kehadiran_ig,
+            // $kehadiran_im,
+            // $kehadiran_ka,
+            // $kehadiran_km,
+            // $kehadiran_kr,
+            // $kehadiran_na,
+            // $kehadiran_pp,
+            // $kehadiran_i,
+            // $kehadiran_lby,
+            // $kehadiran_lp,
+            // $kehadiran_lsm,
+            // $kehadiran_l,
+            // $kehadiran_mangkir,
+            // $kehadiran_tl,
+            // $kehadiran_iks,
+            // $kehadiran_ok,
+            // $kehadiran_r,
+            // $kehadiran_s,
+        // ];
 
 
     }
@@ -252,12 +344,6 @@ class RekapKehadiranKaryawanExportMdHadir implements FromQuery, WithMapping, Sho
         return 'REKAPKEHADIRANKARYAWAN';
     }
 
-    public function columnWidths(): array
-    {
-        return [
-            'C' => 75, // Kolom C lebarnya 25
-        ];
-    }
 
     public function registerEvents() : array
     {
@@ -274,71 +360,158 @@ class RekapKehadiranKaryawanExportMdHadir implements FromQuery, WithMapping, Sho
                 $sheet->mergeCells('A1:D1');
                 $sheet->mergeCells('A2:D2');
                 $sheet->mergeCells('A3:D3');
-                $sheet->getRowDimension(5)->setRowHeight(30);
                 $sheet->getStyle('A5:AG5')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 $sheet->getStyle('A5:AG5')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
                 // (opsional) bungkus teks jika panjang
                 $sheet->getStyle('A5:AG5')->getAlignment()->setWrapText(true);
-                $sheet->getStyle('A5:C5')->applyFromArray([
+                $sheet->getStyle('A5:J6')->applyFromArray([
                     'fill' => [
-                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                        'color' => ['rgb' => 'FEFB00'], // Biru muda
+                        'fillType' => Fill::FILL_SOLID,
+                        'color' => ['rgb' => 'FEFB00'], // Kuning
                     ],
                     'borders' => [
-                    'allBorders' => [
-                        'borderStyle' => Border::BORDER_THIN,
-                        'color' => ['rgb' => '000000'], // hitam
+                        'allBorders' => [
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => ['rgb' => '000000'], // Hitam
+                        ],
                     ],
-                ],
+                    'alignment' => [
+                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                        'wrapText' => true,
+                    ],
                 ]);
-                $sheet->getStyle('E5:AG5')->applyFromArray([
-                    'fill' => [
-                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                        'color' => ['rgb' => 'FFCCFF'], // Biru muda
-                    ],
-                    'borders' => [
-                    'allBorders' => [
-                        'borderStyle' => Border::BORDER_THIN,
-                        'color' => ['rgb' => '000000'], // hitam
-                    ],
-                ],
-                ]);
+
                 $sheet->getColumnDimension('C')->setAutoSize(false); // penting
                 $sheet->getColumnDimension('C')->setWidth(25);
                 $sheet->setCellValue('A5', 'ID');
+                $sheet->mergeCells('A5:A6');
+
                 $sheet->setCellValue('B5', 'NIK');
+                $sheet->mergeCells('B5:B6');
+
                 $sheet->setCellValue('C5', 'Nama Karyawan');
-                $sheet->setCellValue('D5', '');
-                $sheet->setCellValue('E5', 'Summary DL');
-                $sheet->setCellValue('F5', 'DT');
-                $sheet->setCellValue('G5', 'PC');
-                $sheet->setCellValue('H5', 'DTPC');
-                $sheet->setCellValue('I5', 'CB');
-                $sheet->setCellValue('J5', 'CBD');
-                $sheet->setCellValue('K5', 'CG');
-                $sheet->setCellValue('L5', 'CH');
-                $sheet->setCellValue('M5', 'CM');
-                $sheet->setCellValue('N5', 'CN');
-                $sheet->setCellValue('O5', 'CT');
-                $sheet->setCellValue('P5', 'IG');
-                $sheet->setCellValue('Q5', 'IM');
-                $sheet->setCellValue('R5', 'KA');
-                $sheet->setCellValue('S5', 'KM');
-                $sheet->setCellValue('T5', 'KR');
-                $sheet->setCellValue('U5', 'NA');
-                $sheet->setCellValue('V5', 'PP');
-                $sheet->setCellValue('W5', 'I');
-                $sheet->setCellValue('X5', 'LN');
-                $sheet->setCellValue('Y5', 'LP');
-                $sheet->setCellValue('Z5', 'LSM');
-                $sheet->setCellValue('AA5', 'L');
-                $sheet->setCellValue('AB5', 'M');
-                $sheet->setCellValue('AC5', 'TL');
-                $sheet->setCellValue('AD5', 'IKS');
-                $sheet->setCellValue('AE5', 'OK');
-                $sheet->setCellValue('AF5', 'R');
-                $sheet->setCellValue('AG5', 'S');
+                $sheet->mergeCells('C5:C6');
+
+                $sheet->setCellValue('D5', 'AKTIF/NON AKTIF');
+                $sheet->mergeCells('D5:D6');
+
+                $sheet->setCellValue('E5', 'JOIN DATE');
+                $sheet->mergeCells('E5:E6');
+
+                $sheet->setCellValue('F5', 'RESIGN DATE');
+                $sheet->mergeCells('F5:F6');
+
+                $sheet->setCellValue('G5', 'STAFF/NON STAFF');
+                $sheet->mergeCells('G5:G6');
+
+                $sheet->setCellValue('H5', 'JABATAN');
+                $sheet->mergeCells('H5:H6');
+
+                $sheet->setCellValue('I5', 'BAGIAN');
+                $sheet->mergeCells('I5:I6');
+
+                $sheet->setCellValue('J5', 'DEPARTMENT');
+                $sheet->mergeCells('J5:J6');
+
+                $currentDate = Carbon::parse($this->tanggal_awal);
+                $endDate = Carbon::parse($this->tanggal_akhir);
+                $colIndex = 11; // K
+
+                while ($currentDate->lte($endDate)) {
+                    $colLetter = Coordinate::stringFromColumnIndex($colIndex);
+                    $sheet->getColumnDimension($colLetter)->setAutoSize(false);
+                    $sheet->getColumnDimension($colLetter)->setWidth(15);
+                    $sheet->setCellValue("{$colLetter}5", strtoupper($currentDate->locale('id')->dayName));
+                    $sheet->setCellValue("{$colLetter}6", $currentDate->translatedFormat('d-M-Y'));
+
+                    $sheet->getStyle("{$colLetter}5:{$colLetter}6")->applyFromArray([
+                        'fill' => [
+                            'fillType' => Fill::FILL_SOLID,
+                            'color' => ['rgb' => 'FEFB00'],
+                        ],
+                        'borders' => [
+                            'allBorders' => [
+                                'borderStyle' => Border::BORDER_THIN,
+                                'color' => ['rgb' => '000000'],
+                            ],
+                        ],
+                        'alignment' => [
+                            'horizontal' => Alignment::HORIZONTAL_CENTER,
+                            'vertical' => Alignment::VERTICAL_CENTER,
+                            'wrapText' => true,
+                        ],
+                    ]);
+
+                    $colIndex++;
+                    $currentDate->addDay();
+                }
+
+                // 2. Tambahkan kolom absen rekap setelah tanggal dinamis
+                $rekapLabels = [
+                   ' ', 'Summary DL', 'DT', 'PC', 'DTPC', 'CB', 'CBD', 'CG', 'CH', 'CM', 'CN', 'CT',
+                    'IG', 'IM', 'KA', 'KM', 'KR', 'NA', 'PP', 'I', 'LN', 'LP', 'LSM', 'L', 'M', 'TL', 'IKS', 'OK', 'R', 'S',
+                ];
+
+                foreach ($rekapLabels as $label) {
+                    $colLetter = Coordinate::stringFromColumnIndex($colIndex);
+
+                    // Merge baris 5-6
+                    $sheet->mergeCells("{$colLetter}5:{$colLetter}6");
+                    $sheet->setCellValue("{$colLetter}5", $label);
+                    $backgroundColor = trim($label) === '' ? 'FFFFFF' : 'FFCCFF';
+                    $sheet->getStyle("{$colLetter}5:{$colLetter}6")->applyFromArray([
+                        'fill' => [
+                            'fillType' => Fill::FILL_SOLID,
+                            'color' => ['rgb' => $backgroundColor],
+                        ],
+                        'borders' => [
+                            'allBorders' => [
+                                'borderStyle' => Border::BORDER_THIN,
+                                'color' => ['rgb' => '000000'],
+                            ],
+                        ],
+                        'alignment' => [
+                            'horizontal' => Alignment::HORIZONTAL_CENTER,
+                            'vertical' => Alignment::VERTICAL_CENTER,
+                            'wrapText' => true,
+                        ],
+                    ]);
+
+                    $colIndex++;
+                }
+
+                // $sheet->setCellValue('D5', '');
+                // $sheet->setCellValue('E5', 'Summary DL');
+                // $sheet->setCellValue('F5', 'DT');
+                // $sheet->setCellValue('G5', 'PC');
+                // $sheet->setCellValue('H5', 'DTPC');
+                // $sheet->setCellValue('I5', 'CB');
+                // $sheet->setCellValue('J5', 'CBD');
+                // $sheet->setCellValue('K5', 'CG');
+                // $sheet->setCellValue('L5', 'CH');
+                // $sheet->setCellValue('M5', 'CM');
+                // $sheet->setCellValue('N5', 'CN');
+                // $sheet->setCellValue('O5', 'CT');
+                // $sheet->setCellValue('P5', 'IG');
+                // $sheet->setCellValue('Q5', 'IM');
+                // $sheet->setCellValue('R5', 'KA');
+                // $sheet->setCellValue('S5', 'KM');
+                // $sheet->setCellValue('T5', 'KR');
+                // $sheet->setCellValue('U5', 'NA');
+                // $sheet->setCellValue('V5', 'PP');
+                // $sheet->setCellValue('W5', 'I');
+                // $sheet->setCellValue('X5', 'LN');
+                // $sheet->setCellValue('Y5', 'LP');
+                // $sheet->setCellValue('Z5', 'LSM');
+                // $sheet->setCellValue('AA5', 'L');
+                // $sheet->setCellValue('AB5', 'M');
+                // $sheet->setCellValue('AC5', 'TL');
+                // $sheet->setCellValue('AD5', 'IKS');
+                // $sheet->setCellValue('AE5', 'OK');
+                // $sheet->setCellValue('AF5', 'R');
+                // $sheet->setCellValue('AG5', 'S');
             },
         ];
     }
