@@ -258,12 +258,12 @@ class RekapKehadiranKaryawanExportMdHadir implements FromQuery, WithMapping, Sho
                 } elseif ($absenHariIni->status_absen) {
                     $statusAbsen = $absenHariIni->status_absen;
                 }
+                $kodeHari = $absenHariIni->kode_hari;
+                if ($kodeHari == 5 || $kodeHari == 6) {
+                    $statusAbsen = 'L';
+                }
             }
 
-            $kodeHari = $absenHariIni->kode_hari;
-            if ($kodeHari == 5 || $kodeHari == 6) {
-                $statusAbsen = 'L';
-            }
             $row[] = $statusAbsen;
 
             $startDate->addDay();
