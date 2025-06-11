@@ -243,6 +243,7 @@
                         <a id="btn-caridata" class="btn btn-app btn-primary mr-0 mt-0 mb-0 text-white" data-toggle="tooltip" title="Cari Data"><i class="ion-search"></i> CARI</a>
                         <a id="btn-exportpdf" class="btn btn-app mr-0 mt-0 mb-0 text-white" style="background-color: #e73a3a" data-toggle="tooltip" title="Preview by pdf"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> View PDF</a>
                         <a id="btn-view_excel" class="btn btn-success btn-app mr-0 mt-0 mb-0 text-white" data-toggle="tooltip" title="Preview by excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> View Excel</a>
+                        <a id="btn-rekapkehadiran" class="btn btn-success btn-app mr-0 mt-0 mb-0 text-white" data-toggle="tooltip" title="Preview by excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Rekap Kehadiran</a>
                     </div>
                 </div>
 
@@ -816,6 +817,55 @@
                 }
             });
         })
+
+        $('#btn-rekapkehadiran').click(function(e){
+            var employee = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+            var department = $('#selectDepartment').val();
+            var section = $('#selectBagian').val();
+            var status_staff = $('#status_staff').val();
+            var siteNirwana = $('#siteNirwana').val();
+            var tanggal_awal=$('#daterange1').val();
+            var factory=$('#siteNirwana').val();
+            $('#btn-rekapkehadiran').addClass("btn-loading");
+            $("#btn-rekapkehadiran").html('Please wait...');
+            $("#btn-rekapkehadiran").attr("disabled", true);
+            $.ajax({
+                type: 'POST',
+                url: '{{route('hris.mdabsenhadir.rekap_kehadiran')}}',
+                data: {
+                    employee:employee,
+                    department:department,
+                    section:section,
+                    status_staff:status_staff,
+                    siteNirwana:siteNirwana,
+                    tanggal_awal:tanggal_awal,
+                    factory:factory
+                },
+                xhrFields: { responseType : 'blob' },
+                success:function(data){
+                    var blob = new Blob([data]);
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    let file_name = tanggal_awal.substring(17, 19)+tanggal_awal.substring(20,22)+' REKAP KEHADIRAN '+Math.ceil(Math.random()*1000000);
+                    if(employee.length===1){
+                        let file_name = tanggal_awal.substring(17, 19)+tanggal_awal.substring(20,22)+' '+employee+' '+' REKAP KEHADIRAN '+Math.ceil(Math.random()*1000000);
+                    }
+                    link.download = file_name+".xlsx";
+                    link.click();
+                    swal("", "Export detail kehadiran berhasil", "success");
+                    $('#btn-rekapkehadiran').removeClass("btn-loading");
+                    $("#btn-rekapkehadiran").attr("disabled", false);
+                    $("#btn-rekapkehadiran").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> Rekap Kehadiran');
+                },
+                error: function(res){
+                    swal("", "Export detail kehadiran gagal", "error");
+                    $('#btn-rekapkehadiran').removeClass("btn-loading");
+                    $("#btn-rekapkehadiran").attr("disabled", false);
+                    $("#btn-rekapkehadiran").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> Rekap Kehadiran');
+                }
+            });
+        })
+
         $('#presenceImportButton').click(function(e){
             $('#presenceImportButton').addClass("btn-loading");
             $("#presenceImportButton").html('Please wait...');

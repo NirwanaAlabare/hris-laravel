@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use Datatables;
 use App\Exports\DepartmentAllExport;
+use App\Exports\RekapKehadiranKaryawanExportMdHadir;
 use App\Exports\rincianKehadiranKaryawan;
 use App\Exports\MasterDataAbsenKehadiranExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -228,6 +229,45 @@ class MdAbsenHadirController extends AdminBaseController
         $response= Excel::download(new rincianKehadiranKaryawan($tanggal_awal_absen,$tanggal_akhir_absen,$employee,$jumlah_menit,$jumlah_absen), $fileName, \Maatwebsite\Excel\Excel::XLSX);
         ob_end_clean();
         return $response;
+    }
+    public function rekap_kehadiran(){
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '10240000000000000M');
+        $tanggal = request()->tanggal_awal;
+        $tanggal_array=explode(" s/d ",$tanggal);
+        $tanggal_awal = $tanggal_array[0];
+        $tanggal_akhir = $tanggal_array[1];
+        $selectedEnrollId=request()->employee;
+        $selectedFactory=request()->factory;
+        $inEnrollId='';
+        if($selectedEnrollId){
+            $enroll_id = implode(", ", $selectedEnrollId);
+            $allEnroll_id= '('.$enroll_id.')';
+            $inEnrollId = 'master_data_absen_kehadiran.enroll_id IN '.$allEnroll_id.'';
+        }
+        $selectedDepartment=request()->department;
+        $inDepartment='';
+        if($selectedDepartment){
+            $inDepartment = 'employee_atribut.department_name = "'.$selectedDepartment.'"';
+        }
+        $selectedSection=request()->section;
+        $inSection='';
+        if($selectedSection){
+            $inSection = 'employee_atribut.sub_dept_name = "'.$selectedSection.'"';
+        }
+        $selectedStatusStaff=request()->status_staff;
+        $inStatusStaff='';
+        if($selectedStatusStaff){
+            $inStatusStaff = 'employee_atribut.status_staff = "'.$selectedStatusStaff.'"';
+        }
+        $selectedFactory=request()->factory;
+        $inFactory='';
+        if($selectedFactory){
+            $inFactory = 'employee_atribut.site_nirwana_id = "'.$selectedFactory.'"';
+        }
+
+        $fileName = 'RekapKehadiranKaryawan_' . time() . '.xlsx';
+        return (new RekapKehadiranKaryawanExportMdHadir)->exportParams($tanggal_awal, $tanggal_akhir, $inEnrollId, $inDepartment, $inSection, $inStatusStaff, $inFactory)->download($fileName);
     }
 
     public function import_datahadir(Request $request){
