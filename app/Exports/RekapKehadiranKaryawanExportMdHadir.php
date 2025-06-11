@@ -129,7 +129,7 @@ class RekapKehadiranKaryawanExportMdHadir implements FromQuery, WithMapping, Sho
         $dt_employe=$value->where('enroll_id', $enroll_id)->whereBetween('tanggal_berjalan', [$this->tanggal_awal, $this->tanggal_akhir])->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','0')->where('status_absen',null)->count();
         $pc_employe=$value->where('enroll_id', $enroll_id)->whereBetween('tanggal_berjalan', [$this->tanggal_awal, $this->tanggal_akhir])->where('jumlah_menit_absen_pc','>','0')->where('jumlah_menit_absen_dt','0')->where('status_absen',null)->count();
 
-        $dtpc_employe=$value->where('enroll_id', $enroll_id)->whereBetween('tanggal_berjalan', [$this->tanggal_awal, $this->tanggal_akhir])->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','>','0')->where('status_absen',null)->count();
+        $dtpc_employe=$dt_employe+$pc_employe;
 
         $absen_M=$value->where('enroll_id', $enroll_id)->whereBetween('tanggal_berjalan', [$this->tanggal_awal, $this->tanggal_akhir])->where('status_absen','M')->count();
         $absen_R=$value->where('enroll_id', $enroll_id)->whereBetween('tanggal_berjalan', [$this->tanggal_awal, $this->tanggal_akhir])->where('status_absen','R')->count();
