@@ -227,7 +227,7 @@ class RekapKehadiranKaryawanExportMdHadir implements FromQuery, WithMapping, Sho
                 $value->employee_name,
                 $value->status_aktif,
                 $value->join_date ? Carbon::parse($value->join_date)->translatedFormat('d F Y') : '',
-                $value->resign_date ? Carbon::parse($value->resign_date)->translatedFormat('d F Y') : '',
+                $value->tanggal_resign ? Carbon::parse($value->tanggal_resign)->translatedFormat('d F Y') : '',
                 $value->status_staff,
                 $value->status_jabatan,
                 $value->sub_dept_name,
