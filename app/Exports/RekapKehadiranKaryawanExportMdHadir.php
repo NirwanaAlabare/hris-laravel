@@ -139,7 +139,7 @@ class RekapKehadiranKaryawanExportMdHadir implements FromQuery, WithMapping, Sho
         $ITB_employe=$value->where('enroll_id', $enroll_id)->whereBetween('tanggal_berjalan', [$this->tanggal_awal, $this->tanggal_akhir])->wherein('status_absen', $ITB)->count();
         $lsm_employe=$value->where('enroll_id', $enroll_id)->whereBetween('tanggal_berjalan', [$this->tanggal_awal, $this->tanggal_akhir])->wherein('kode_hari', ['5','6'])->count();
 
-        $dt_employe=$value->where('enroll_id', $enroll_id)->whereBetween('tanggal_berjalan', [$this->tanggal_awal, $this->tanggal_akhir])->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','0')->where('status_absen',null)->count();
+        $dt_employe=$value->where('enroll_id', $enroll_id)->whereBetween('tanggal_berjalan', [$this->tanggal_awal, $this->tanggal_akhir])->where('jumlah_menit_absen_dt','>','0')->where('jumlah_menit_absen_pc','0')->count();
         $pc_employe=$value->where('enroll_id', $enroll_id)->whereBetween('tanggal_berjalan', [$this->tanggal_awal, $this->tanggal_akhir])->where('jumlah_menit_absen_pc','>','0')->where('jumlah_menit_absen_dt','0')->where('status_absen',null)->count();
 
         $dtpc_employe=$dt_employe+$pc_employe;
@@ -259,7 +259,7 @@ class RekapKehadiranKaryawanExportMdHadir implements FromQuery, WithMapping, Sho
                     $statusAbsen = $absenHariIni->status_absen;
                 }
                 $kodeHari = $absenHariIni->kode_hari;
-                if (!$statusAbsen && $kodeHari == 5 || $kodeHari == 6) {
+                if ($kodeHari == 5 || $kodeHari == 6) {
                     $statusAbsen = 'LSM';
                 }
             }
