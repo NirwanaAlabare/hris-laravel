@@ -327,7 +327,7 @@
         </thead>
     </table>
 
-    <table width="562" style="position: absolute; bottom: 90px;">
+    <table width="562" style="position: absolute; bottom: 110px;">
         <thead>
             <tr>
                 <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top; padding-left:25px; padding-top:5px" width="88%"><u>{{$value->employee_name}}</u></td>
@@ -335,7 +335,8 @@
             <tr>
                 <td style="border-bottom:1px solid black;" width="88%"></td>
                 <td rowspan="2">
-                    <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($no_form) . '&type=SK_KERJA', 'QRCODE') }}" alt="barcode" style="width: 60px; height: 60px;background-color:white" />
+                    <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($no_form) . '&type=SK_KERJA', 'QRCODE') }}" alt="barcode"
+                    style="width: 60px; height: 60px;background-color:white;" />
                 </td>
             </tr>
         </thead>
