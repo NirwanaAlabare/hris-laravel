@@ -1082,7 +1082,7 @@ class HRDController extends AdminBaseController
                 $inStatusKontrak='AND c.max_contract_end >= "'.$thirty_day_more.'"';
             }
         }
-        // $query= DB::select("select a.status_staff,a.enroll_id,a.nik,a.employee_name,a.status_jabatan,a.sub_dept_name,a.department_name,a.status_kontrak_tetap,a.status_aktif,a.join_date,a.tanggal_resign,a.nomor_ktp,b.contract,b.contract_end,c.max_contract_end from employee_atribut a left join employee_contract b on a.enroll_id=b.enroll_id left join (select enroll_id,max(contract_end) max_contract_end from employee_contract group by enroll_id)c on a.enroll_id=c.enroll_id where a.enroll_id is not null ".$inSearchVariable." ".$inEnrollId." ".$inNoKTP." ".$inIbuKandung." ".$inStatusAktif." ".$inStatusKontrak." order by enroll_id,contract_end");
+
         $query = DB::select("
                 SELECT
                     a.status_staff,
@@ -1135,7 +1135,7 @@ class HRDController extends AdminBaseController
     public function print_pdf_kontrak(){
         $enroll_id=request()->enroll_id;
         $no_form=request()->no_form;
-        // $data=DB::select("select a.status_staff,a.enroll_id,a.nik,a.employee_name,a.status_jabatan,a.sub_dept_name,a.department_name,a.status_kontrak_tetap,a.status_aktif,a.join_date,a.tanggal_resign,a.nomor_ktp,a.tempat_lahir,a.alamat_rumah,a.tanggal_lahir,a.no_surat,b.contract,b.contract_end,c.max_contract,c.max_contract_end from employee_atribut a left join employee_contract b on a.enroll_id=b.enroll_id left join (select enroll_id,max(contract) max_contract,max(contract_end) max_contract_end from employee_contract)c on a.enroll_id=c.enroll_id where a.enroll_id=".$enroll_id."");
+
         $data=DB::select("
                     SELECT
                     a.status_staff,

@@ -1300,7 +1300,6 @@ function updateRange(start, end) {
 
         let no_ktp = document.getElementById("searchNoKTP").value;
         let enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
-        let ibu_kandung = document.getElementById("searchIbuKandung").value;
         let status_aktif = document.getElementById("status_aktif").value;
         let status_kontrak = document.getElementById("status_kontrak").value;
         var today=new Date();
@@ -1318,7 +1317,6 @@ function updateRange(start, end) {
                 search_variable: search_variable,
                 no_ktp: no_ktp,
                 enroll_id: enroll_id,
-                ibu_kandung: ibu_kandung,
                 status_aktif: status_aktif,
                 status_kontrak: status_kontrak,
                 department_name: department_id,
@@ -1356,7 +1354,6 @@ function updateRange(start, end) {
 
         let no_ktp = document.getElementById("searchNoKTP").value;
         let enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
-        let ibu_kandung = document.getElementById("searchIbuKandung").value;
         let status_aktif = document.getElementById("status_aktif").value;
         let status_kontrak = document.getElementById("status_kontrak").value;
         var today=new Date();
@@ -1374,7 +1371,6 @@ function updateRange(start, end) {
                 search_variable: search_variable,
                 no_ktp: no_ktp,
                 enroll_id: enroll_id,
-                ibu_kandung: ibu_kandung,
                 status_aktif: status_aktif,
                 status_kontrak: status_kontrak,
                 department_name: department_id,
@@ -1412,7 +1408,6 @@ function updateRange(start, end) {
         let status_staff = document.getElementById("status_staff").value;
         let no_ktp = document.getElementById("searchNoKTP").value;
         let enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
-        let ibu_kandung = document.getElementById("searchIbuKandung").value;
         let status_aktif = document.getElementById("status_aktif").value;
         let status_kontrak = document.getElementById("status_kontrak").value;
         var today=new Date();
@@ -1430,7 +1425,6 @@ function updateRange(start, end) {
                 search_variable: search_variable,
                 no_ktp: no_ktp,
                 enroll_id: enroll_id,
-                ibu_kandung: ibu_kandung,
                 status_aktif: status_aktif,
                 status_staff: status_staff,
                 status_kontrak: status_kontrak,
@@ -1487,7 +1481,6 @@ function updateRange(start, end) {
         let search_variable=$('#search_variable').val();
         let no_ktp = document.getElementById("searchNoKTP").value;
         let enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
-        let ibu_kandung = document.getElementById("searchIbuKandung").value;
         let status_aktif = document.getElementById("status_aktif").value;
         let status_staff = document.getElementById("status_staff").value;
         let status_kontrak = document.getElementById("status_kontrak").value;
@@ -1506,7 +1499,6 @@ function updateRange(start, end) {
                 search_variable: search_variable,
                 no_ktp: no_ktp,
                 enroll_id: enroll_id,
-                ibu_kandung: ibu_kandung,
                 status_aktif: status_aktif,
                 status_staff: status_staff,
                 status_kontrak: status_kontrak
@@ -1893,7 +1885,6 @@ function updateRange(start, end) {
                     }).get();
                 }
                 d.enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
-                d.ibu_kandung = $('#searchIbuKandung').val();
                 d.no_ktp = $('#searchNoKTP').val();
                 d.status_kontrak = $('#status_kontrak').val();
                 d.status_aktif = $('#status_aktif').val();
@@ -2123,7 +2114,6 @@ function updateRange(start, end) {
 
     function actionCheckAllEmployee(element) {
         var enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
-        var ibu_kandung = $('#searchIbuKandung').val();
         var no_ktp = $('#searchNoKTP').val();
         var status_kontrak = $('#status_kontrak').val();
         var status_aktif = $('#status_aktif').val();
@@ -2136,7 +2126,6 @@ function updateRange(start, end) {
                 dataType: 'json',
                 data: {
                     enroll_id: enroll_id,
-                    ibu_kandung: ibu_kandung,
                     no_ktp: no_ktp,
                     status_kontrak: status_kontrak,
                     status_aktif: status_aktif,
@@ -2167,9 +2156,7 @@ function updateRange(start, end) {
     $('#selectEmployeeID').on('change',function(){
         datatable.ajax.reload();
     });
-    $('#searchIbuKandung').on('keyup',function(){
-        datatable.ajax.reload();
-    });
+
     $('#searchNoKTP').on('keyup',function(){
         datatable.ajax.reload();
     });
