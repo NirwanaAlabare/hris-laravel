@@ -56,7 +56,7 @@
             <td colspan="6" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top" align="center"><b><u>SURAT KETERANGAN KERJA</u></b></td>
         </tr>
         <tr>
-            <td colspan="6" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top" align="center"><b>{{$no_form}}</b></td>
+            <td colspan="6" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top" align="center"><b>NO. {{$no_surat ? $no_surat.'/' : $value->no_surat.'/'}}{{$no_form}}</b></td>
         </tr>
         <tr>
             <td colspan="6" style="height: 10"></td>

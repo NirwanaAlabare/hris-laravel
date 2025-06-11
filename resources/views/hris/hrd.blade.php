@@ -552,7 +552,7 @@
                 currentPageCheck = 0;
             }
         });
-        
+
         table1.draw();
     });
     $('#print_sk_button').on('click',function(){
@@ -667,7 +667,7 @@
                     if ((data['sudah_diprint'] == 1)) {
 
                         $(row).css('background', '#bfbdbd');
-                    } 
+                    }
                 },
             order: [
                 [0, 'asc']
@@ -711,7 +711,7 @@
                         checkedEmployeeArr = res;
 
                         $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
-                        
+
                         document.getElementById("print_sk_button").style.visibility = "visible";
                     }
                 }
@@ -963,28 +963,15 @@
                 var month_now=today.getMonth();
                 var year_now=today.getFullYear();
                 var reason='';
-                // if(data[0].tanggal_resign==null){
-                    no_form='HRD/NAG-REF'+'/'+integerToRoman(month_now+1)+'/'+year_now;
-                    reason='Alasan Pembuatan';
-                // }else{
-                //     var tanggal_masuk = new Date(data[0].join_date);
-                //     var tanggal_resign2 = new Date(data[0].tanggal_resign);
-                //     var selisih_tahun = diff_years(tanggal_resign2, tanggal_masuk);
-                //     if(selisih_tahun<1){
-                //         no_form='HRD/NAG-REF'+'/'+integerToRoman(month_now+1)+'/'+year_now;
-                //         reason='Alasan Pembuatan';
-                //     }else{
-                //         no_form='HRD/NAG/PK'+'/'+integerToRoman(month_now+1)+'/'+year_now;
-                //         reason='Sebab Resign';
-                //     }
-                // }
+                no_form='HRD/NAG-REF'+'/'+integerToRoman(month_now+1)+'/'+year_now;
+                reason='Alasan Pembuatan';
                 $('#no_form_must_be_2').text(no_form);
                 $('#no_form_input_next_2').val(no_form);
                 $('#reason_text_2').text(reason);
             }
         });
     }
-    function diff_years(dt2, dt1) 
+    function diff_years(dt2, dt1)
     {
         // Calculate the difference in milliseconds between the two dates
         var diff = (dt2.getTime() - dt1.getTime()) / 1000;
@@ -1020,16 +1007,18 @@
     }
     function export_sk(){
         var enroll_id=$('#enroll_id_input').val();
-        var no_form='NO. '+$('#no_form_input').val()+'/'+$('#no_form_input_next').val();
+        var no_form=$('#no_form_input_next').val();
+        var no_surat=$('#no_form_input').val();
         var reason=$('#reason_3_input').val();
-        var url = 'export_pdf_sk_kerja?enroll_id='+enroll_id+'&no_form='+no_form+'&reason='+reason;
+        var url = 'export_pdf_sk_kerja?enroll_id='+enroll_id+'&no_form='+no_form+'&reason='+reason+'&no_surat='+no_surat;
         window.open(url, '_blank');
     }
     function export_paklaring(){
         var enroll_id=$('#enroll_id_input').val();
-        var no_form='NO. '+$('#no_form_input').val()+'/'+$('#no_form_input_next').val();
+        var no_form=$('#no_form_input_next').val();
+        var no_surat=$('#no_form_input').val();
         var reason=$('#reason_3_input').val();
-        var url = 'export_pdf_paklaring?enroll_id='+enroll_id+'&no_form='+no_form+'&reason='+reason;
+        var url = 'export_pdf_paklaring?enroll_id='+enroll_id+'&no_form='+no_form+'&reason='+reason+'&no_surat='+no_surat;
         window.open(url, '_blank');
     }
     function export_sk_bni(){

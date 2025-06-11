@@ -1,3 +1,7 @@
+
+@php
+    use Illuminate\Support\Str;
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 
@@ -71,7 +75,7 @@
             <td colspan="6" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top" align="center"><b><u>SURAT KETERANGAN KERJA</u></b></td>
         </tr>
         <tr>
-            <td colspan="6" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top" align="center"><b>NO. {{$value['no_surat']}}/HRD/NAG-REF/{{$no_form}}</b></td>
+            <td colspan="6" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top" align="center"><b>NO. {{$value['no_surat']}}/HRD/NAG-REF/{{$no_form}}{{ $value['catatan'] ? ('/' . Str::substr($value['catatan'], 0, 3)) : '' }}</b></td>
         </tr>
         <tr>
             <td colspan="6" style="height: 10"></td>
@@ -219,7 +223,7 @@
                 <td colspan="5" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top;font-size:14pt" align="center"><b><u>CERTIFICATE OF EMPLOYMENT</u></b></td>
             </tr>
             <tr>
-                <td colspan="5" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top;font-size:14pt" align="center"><b>NO. {{$value['no_surat']}}/HRD/NAG-PK/{{$no_form}}</b></td>
+                <td colspan="5" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top;font-size:14pt" align="center"><b>NO. {{$value['no_surat']}}/HRD/NAG-PK/{{$no_form}}{{ $value['catatan'] ? ('/' . Str::substr($value['catatan'], 0, 3)) : '' }}</b></td>
             </tr>
             <tr>
                 <td colspan="5" style="height: 13"></td>

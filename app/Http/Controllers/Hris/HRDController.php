@@ -549,10 +549,10 @@ class HRDController extends AdminBaseController
                     'sub_dept_name'=>EmployeeAtribut::where('enroll_id',$key)->first()->sub_dept_name,
                     'site_nirwana_name'=>EmployeeAtribut::where('enroll_id',$key)->first()->site_nirwana_name,
                     'alamat_rumah'=>EmployeeAtribut::where('enroll_id',$key)->first()->alamat_rumah,
-                    'no_surat'=>EmployeeAtribut::where('enroll_id',$key)->first()->nomor_surat,
                     'sebab_resign'=>EmployeeAtribut::where('enroll_id',$key)->first()->sebab_resign,
                     'tipe_surat'=>$value,
                     'no_surat'=>EmployeeAtribut::where('enroll_id',$key)->first()->no_surat,
+                    'catatan'=>EmployeeAtribut::where('enroll_id',$key)->first()->catatan,
                 ];
             }
         }
@@ -569,10 +569,11 @@ class HRDController extends AdminBaseController
     public function export_pdf_sk_kerja(){
         $enroll_id=request()->enroll_id;
         $no_form=request()->no_form;
+        $no_surat=request()->no_surat;
         $reason=request()->reason;
         $data=DB::select("select*from employee_atribut where enroll_id='$enroll_id'");
         $fileName=request()->enroll_id.'_'.date('His');
-        $pdf = PDF::loadView('hris.laporan.sk_kerja_karyawan',["data" => $data,"no_form"=>$no_form,"reason"=>$reason])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+        $pdf = PDF::loadView('hris.laporan.sk_kerja_karyawan',["data" => $data,"no_form"=>$no_form,"reason"=>$reason,"no_surat"=>$no_surat])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
         return $pdf;
 
     }
@@ -709,11 +710,12 @@ class HRDController extends AdminBaseController
     public function export_pdf_paklaring(){
         $enroll_id=request()->enroll_id;
         $no_form=request()->no_form;
+        $no_surat=request()->no_surat;
         $reason=request()->reason;
         $data=DB::select("select*from employee_atribut where enroll_id='$enroll_id'");
         if($data[0]->tanggal_resign==null){
             $fileName=request()->enroll_id.'_'.date('His');
-            $pdf = PDF::loadView('hris.laporan.sk_kerja_karyawan_lebih_1_tahun',["data" => $data,"no_form"=>$no_form,"reason"=>$reason])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+            $pdf = PDF::loadView('hris.laporan.sk_kerja_karyawan_lebih_1_tahun',["data" => $data,"no_form"=>$no_form,"reason"=>$reason,"no_surat"=>$no_surat])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
             return $pdf;
         }else{
             $tanggal_masuk = $data[0]->join_date;
@@ -721,11 +723,11 @@ class HRDController extends AdminBaseController
             $selisih_tahun = date_diff(date_create($tanggal_masuk), date_create($tanggal_resign))->y;
             if($selisih_tahun<1){
                 $fileName=request()->enroll_id.'_'.date('His');
-                $pdf = PDF::loadView('hris.laporan.sk_kerja_karyawan_lebih_1_tahun',["data" => $data,"no_form"=>$no_form,"reason"=>$reason])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+                $pdf = PDF::loadView('hris.laporan.sk_kerja_karyawan_lebih_1_tahun',["data" => $data,"no_form"=>$no_form,"reason"=>$reason,"no_surat"=>$no_surat])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
                 return $pdf;
             }else{
                 $fileName=request()->enroll_id.'_'.date('His');
-                $pdf = PDF::loadView('hris.laporan.sk_kerja_karyawan_lebih_1_tahun',["data" => $data,"no_form"=>$no_form,"reason"=>$reason])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+                $pdf = PDF::loadView('hris.laporan.sk_kerja_karyawan_lebih_1_tahun',["data" => $data,"no_form"=>$no_form,"reason"=>$reason,"no_surat"=>$no_surat])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
                 return $pdf;
             }
         }
@@ -1033,6 +1035,8 @@ class HRDController extends AdminBaseController
         ]);
     }
     public function export_excel_kontrak(){
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '10240000000000000M');
         $inSearchVariable='';
         $inNoKTP='';
         $inEnrollId='';
