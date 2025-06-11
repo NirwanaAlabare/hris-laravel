@@ -188,7 +188,7 @@ class RekapKehadiranKaryawanExportMdHadir implements FromQuery, WithMapping, Sho
         $kehadiran_dt= $dt_employe;
         $kehadiran_pc= $pc_employe;
         $kehadiran_dtpc=$dtpc_employe;
-        $kehadiran_m=$absen_M+$absen_TL;
+        $kehadiran_m=$absen_M;
         $kehadiran_r=$absen_R;
         $kehadiran_ok=$absen_ok;
         $total_kehadiran= $total_kehadiran;
@@ -259,8 +259,8 @@ class RekapKehadiranKaryawanExportMdHadir implements FromQuery, WithMapping, Sho
                     $statusAbsen = $absenHariIni->status_absen;
                 }
                 $kodeHari = $absenHariIni->kode_hari;
-                if ($kodeHari == 5 || $kodeHari == 6) {
-                    $statusAbsen = 'L';
+                if (!$statusAbsen && $kodeHari == 5 || $kodeHari == 6) {
+                    $statusAbsen = 'LSM';
                 }
             }
 
@@ -293,7 +293,7 @@ class RekapKehadiranKaryawanExportMdHadir implements FromQuery, WithMapping, Sho
             $kehadiran_lp,
             $kehadiran_lsm,
             $kehadiran_l,
-            $kehadiran_mangkir,
+            $kehadiran_m,
             $kehadiran_tl,
             $kehadiran_iks,
             $kehadiran_ok,
