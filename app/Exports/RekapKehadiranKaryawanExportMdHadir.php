@@ -302,41 +302,6 @@ class RekapKehadiranKaryawanExportMdHadir implements FromQuery, WithMapping, Sho
         ]);
 
         return $row;
-
-        //     return [
-            // $kosong,
-            // $kehadiran_dl,
-            // $kehadiran_dt,
-            // $kehadiran_pc,
-            // $kehadiran_dtpc,
-            // $kehadiran_cb,
-            // $kehadiran_cbd,
-            // $kehadiran_cg,
-            // $kehadiran_ch,
-            // $kehadiran_cm,
-            // $kehadiran_cn,
-            // $kehadiran_ct,
-            // $kehadiran_ig,
-            // $kehadiran_im,
-            // $kehadiran_ka,
-            // $kehadiran_km,
-            // $kehadiran_kr,
-            // $kehadiran_na,
-            // $kehadiran_pp,
-            // $kehadiran_i,
-            // $kehadiran_lby,
-            // $kehadiran_lp,
-            // $kehadiran_lsm,
-            // $kehadiran_l,
-            // $kehadiran_mangkir,
-            // $kehadiran_tl,
-            // $kehadiran_iks,
-            // $kehadiran_ok,
-            // $kehadiran_r,
-            // $kehadiran_s,
-        // ];
-
-
     }
 
     public function title(): string
@@ -481,37 +446,6 @@ class RekapKehadiranKaryawanExportMdHadir implements FromQuery, WithMapping, Sho
 
                     $colIndex++;
                 }
-
-                // $sheet->setCellValue('D5', '');
-                // $sheet->setCellValue('E5', 'Summary DL');
-                // $sheet->setCellValue('F5', 'DT');
-                // $sheet->setCellValue('G5', 'PC');
-                // $sheet->setCellValue('H5', 'DTPC');
-                // $sheet->setCellValue('I5', 'CB');
-                // $sheet->setCellValue('J5', 'CBD');
-                // $sheet->setCellValue('K5', 'CG');
-                // $sheet->setCellValue('L5', 'CH');
-                // $sheet->setCellValue('M5', 'CM');
-                // $sheet->setCellValue('N5', 'CN');
-                // $sheet->setCellValue('O5', 'CT');
-                // $sheet->setCellValue('P5', 'IG');
-                // $sheet->setCellValue('Q5', 'IM');
-                // $sheet->setCellValue('R5', 'KA');
-                // $sheet->setCellValue('S5', 'KM');
-                // $sheet->setCellValue('T5', 'KR');
-                // $sheet->setCellValue('U5', 'NA');
-                // $sheet->setCellValue('V5', 'PP');
-                // $sheet->setCellValue('W5', 'I');
-                // $sheet->setCellValue('X5', 'LN');
-                // $sheet->setCellValue('Y5', 'LP');
-                // $sheet->setCellValue('Z5', 'LSM');
-                // $sheet->setCellValue('AA5', 'L');
-                // $sheet->setCellValue('AB5', 'M');
-                // $sheet->setCellValue('AC5', 'TL');
-                // $sheet->setCellValue('AD5', 'IKS');
-                // $sheet->setCellValue('AE5', 'OK');
-                // $sheet->setCellValue('AF5', 'R');
-                // $sheet->setCellValue('AG5', 'S');
             },
         ];
     }

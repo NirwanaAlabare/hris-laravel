@@ -279,7 +279,7 @@ class exportExcelKontrak implements FromView, WithColumnWidths, WithColumnFormat
                 $sheet->getDelegate()->getStyle('A1')->applyFromArray($default_font_style);
                 $sheet->getDelegate()->getStyle('A2:DG2')->applyFromArray($header_style);
                 $sheet->getDelegate()->getStyle('M3:DG3')->applyFromArray($header_style);
-                $sheet->getDelegate()->getStyle('A4:DG6000')->applyFromArray($text_style);
+                $sheet->getDelegate()->getStyle('A4:DG10000')->applyFromArray($text_style);
             }
         ];
     }

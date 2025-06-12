@@ -4,176 +4,52 @@
     </head>
     <body>
         <table border="1">
+        @php
+            $grouped = collect($query)->groupBy('enroll_id');
+
+            $maxContracts = $grouped->map(function ($contracts) {
+                return $contracts->count();
+            })->max();
+        @endphp
             <tr>
                 <td colspan="6">Rekap Kontrak Kerja Karyawan</td>
             </tr>
             <tr>
-                <td rowspan="2" style="border:1px solid black">Aktif/Tidak Aktif</td>
-                <td rowspan="2" style="border:1px solid black">Staff / Non Staff</td>
-                <td rowspan="2" style="border:1px solid black"></td>
-                <td rowspan="2" style="border:1px solid black">NO ID</td>
-                <td rowspan="2" style="border:1px solid black">NIP</td>
-                <td rowspan="2" style="border:1px solid black">Nama</td>
-                <td rowspan="2" style="border:1px solid black">Jabatan</td>
-                <td rowspan="2" style="border:1px solid black">Bagian</td>
-                <td rowspan="2" style="border:1px solid black">Department</td>
-                <td rowspan="2" style="border:1px solid black">Status</td>
-                <td rowspan="2" style="border:1px solid black">Join Date</td>
-                <td rowspan="2" style="border:1px solid black">Tanggal Resign</td>
+            <td rowspan="2" style="border:1px solid black">Aktif/Tidak Aktif</td>
+            <td rowspan="2" style="border:1px solid black">Staff / Non Staff</td>
+            <td rowspan="2" style="border:1px solid black"></td>
+            <td rowspan="2" style="border:1px solid black">NO ID</td>
+            <td rowspan="2" style="border:1px solid black">NIP</td>
+            <td rowspan="2" style="border:1px solid black">Nama</td>
+            <td rowspan="2" style="border:1px solid black">Jabatan</td>
+            <td rowspan="2" style="border:1px solid black">Bagian</td>
+            <td rowspan="2" style="border:1px solid black">Department</td>
+            <td rowspan="2" style="border:1px solid black">Status</td>
+            <td rowspan="2" style="border:1px solid black">Join Date</td>
+            <td rowspan="2" style="border:1px solid black">Tanggal Resign</td>
+            <td colspan="3" style="border:1px solid black">Masa Kerja</td>
 
-                <td colspan="3" style="border:1px solid black">Masa Kerja</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 1</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 2</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 3</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 4</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 5</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 6</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 7</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 8</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 9</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 10</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 11</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 12</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 13</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 14</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 15</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 16</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 17</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 18</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 19</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 20</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 21</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 22</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 23</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 24</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 25</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 26</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 27</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 28</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 29</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 30</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 31</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 32</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 33</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 34</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 35</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 36</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 37</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 38</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 39</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 40</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 41</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 42</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 43</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 44</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 45</td>
-                <td colspan="2" style="border:1px solid black">Kontrak 46</td>
-                <td rowspan="2" style="border:1px solid black"></td>
-                <td colspan="2" style="border:1px solid black">Tanggal Terakhir Kontrak</td>
-                <td rowspan="2" style="border:1px solid black">Periode</td>
-            </tr>
-            <tr>
-                <td style="border:1px solid black">THN</td>
-                <td style="border:1px solid black">BLN</td>
-                <td style="border:1px solid black">HR</td>
+            @for ($i = 1; $i <= $maxContracts; $i++)
+                <td colspan="2" style="border:1px solid black">Kontrak {{ $i }}</td>
+            @endfor
+
+            <td rowspan="2" style="border:1px solid black"></td>
+            <td colspan="2" style="border:1px solid black">Tanggal Terakhir Kontrak</td>
+            <td rowspan="2" style="border:1px solid black">Periode</td>
+        </tr>
+        <tr>
+            <td style="border:1px solid black">THN</td>
+            <td style="border:1px solid black">BLN</td>
+            <td style="border:1px solid black">HR</td>
+
+            @for ($i = 1; $i <= $maxContracts; $i++)
                 <td style="border:1px solid black">Start</td>
                 <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
-                <td style="border:1px solid black">Awal Kontrak</td>
-                <td style="border:1px solid black">Akhir Kontrak</td>
-            </tr>
-            @php
-            $grouped = collect($query)->groupBy('enroll_id');
-        @endphp
+            @endfor
+
+            <td style="border:1px solid black">Awal Kontrak</td>
+            <td style="border:1px solid black">Akhir Kontrak</td>
+        </tr>
 
         @foreach ($grouped as $enrollId => $contracts)
             @php
@@ -222,7 +98,7 @@
                 @endforeach
 
                 {{-- Jika kurang dari 46 kontrak, tambahkan kolom kosong --}}
-                @for ($i = $contracts->count(); $i < 46; $i++)
+                @for ($i = $contracts->count(); $i < $maxContracts; $i++)
                     <td style="border:1px solid black"></td>
                     <td style="border:1px solid black"></td>
                 @endfor
