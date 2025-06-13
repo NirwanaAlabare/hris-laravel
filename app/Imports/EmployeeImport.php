@@ -63,40 +63,40 @@ class EmployeeImport implements ToModel, WithStartRow, WithCalculatedFormulas
         }else{
             $tanggal_lahir=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[18])->format('Y-m-d');
         }
-        if($row[44]=='' || $row[44]=='-'){
+        if($row[48]=='' || $row[48]=='-'){
             $tanggal_bpjs_tk=null;
         }else{
-            $tanggal_bpjs_tk=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[44])->format('Y-m-d');
+            $tanggal_bpjs_tk=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[48])->format('Y-m-d');
         }
-        if($row[47]=='' || $row[47]=='-'){
+        if($row[51]=='' || $row[51]=='-'){
             $tanggal_bpjs_ks=null;
         }else{
-            $tanggal_bpjs_ks=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[47])->format('Y-m-d');
+            $tanggal_bpjs_ks=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[51])->format('Y-m-d');
         }
-        if($row[54]=='' || $row[54]=='-'){
+        if($row[58]=='' || $row[58]=='-'){
             $tanggal_vaccine1=null;
         }else{
-            $tanggal_vaccine1=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[54])->format('Y-m-d');
+            $tanggal_vaccine1=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[58])->format('Y-m-d');
         }
-        if($row[56]=='' || $row[56]=='-'){
+        if($row[60]=='' || $row[60]=='-'){
             $tanggal_vaccine2=null;
         }else{
-            $tanggal_vaccine2=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[56])->format('Y-m-d');
+            $tanggal_vaccine2=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[60])->format('Y-m-d');
         }
-        if($row[62]=='' || $row[62]=='-'){
+        if($row[66]=='' || $row[66]=='-'){
             $tanggal_expire_sim=null;
         }else{
-            $tanggal_expire_sim=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[62])->format('Y-m-d');
+            $tanggal_expire_sim=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[66])->format('Y-m-d');
         }
-        if($row[64]=='' || $row[64]=='-'){
+        if($row[68]=='' || $row[68]=='-'){
             $tanggal_mulai_kontrak=null;
         }else{
-            $tanggal_mulai_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[64])->format('Y-m-d');
+            $tanggal_mulai_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[68])->format('Y-m-d');
         }
-        if($row[65]=='' || $row[65]=='-'){
+        if($row[69]=='' || $row[69]=='-'){
             $tanggal_akhir_kontrak=null;
         }else{
-            $tanggal_akhir_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[65])->format('Y-m-d');
+            $tanggal_akhir_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[69])->format('Y-m-d');
         }
         $enroll_id=$row[1];
         $kontrak_awal=DB::select("select max(contract) contract from employee_contract where enroll_id='$enroll_id'")[0]->contract;
@@ -111,11 +111,11 @@ class EmployeeImport implements ToModel, WithStartRow, WithCalculatedFormulas
             }
         }
 
-        $kode_grade=$row[40];
-        if($row[40]==''){
+        $kode_grade=$row[44];
+        if($row[44]==''){
             $kode_grade='G';
         }
-        
+
         $dataArray=[
             'employee_id'=>time().$row[1],
             'hamlet'=>$status_department,
@@ -155,42 +155,51 @@ class EmployeeImport implements ToModel, WithStartRow, WithCalculatedFormulas
             'jurusan_pendidikan'=>$row[30],
             'nama_bank'=>$row[31],
             'nomor_rekening_bank'=>$row[32],
-            'alamat_rumah'=>$row[33],
-            'propinsi'=>$row[34],
-            'kota_kab'=>$row[35],
-            'kecamatan'=>$row[36],
-            'kelurahan_desa'=>$row[37],
-            'alamat_sementara'=>$row[38],
-            'tunjangan'=>$row[39],
+            'alamat_jalan'=>$row[33],
+            'rt'=>$row[34],
+            'rw'=>$row[35],
+            'kode_pos'=>$row[40],
+            'alamat_rumah'=>$row[41],
+            'propinsi'=>$row[39],
+            'kota_kab'=>$row[38],
+            'kecamatan'=>$row[37],
+            'kelurahan_desa'=>$row[36],
+
+            'alamat_sementara'=>$row[42],
+            'tunjangan'=>$row[34],
             'kode_grade'=>$kode_grade,
-            'referensi'=>$row[41],
-            'employee_name_atasan'=>$row[42],
-            'status_aktif_bpjs_tk'=>$row[43],
+
+
+            'referensi'=>$row[45],
+
+            'employee_name_atasan'=>$row[46],
+
+            'status_aktif_bpjs_tk'=>$row[47],
             'tanggal_bpjs_ketenagakerjaan'=>$tanggal_bpjs_tk,
-            'nomor_bpjs_ketenagakerjaan'=>$row[45],
-            'status_aktif_bpjs_ks'=>$row[46],
+            'nomor_bpjs_ketenagakerjaan'=>$row[49],
+            'status_aktif_bpjs_ks'=>$row[50],
             'tanggal_bpjs_kesehatan'=>$tanggal_bpjs_ks,
-            'nomor_bpjs_kesehatan'=>$row[48],
-            'pengalaman_bekerja'=>$row[49],
-            'nama_kerabat'=>$row[50],
-            'nomor_tlpn_kerabat'=>$row[51],
-            'hubungan_kerabat'=>$row[52],
-            'alamat_kerabat'=>$row[53],
+            'nomor_bpjs_kesehatan'=>$row[52],
+            'pengalaman_bekerja'=>$row[53],
+            'nama_kerabat'=>$row[54],
+            'nomor_tlpn_kerabat'=>$row[55],
+            'hubungan_kerabat'=>$row[56],
+            'alamat_kerabat'=>$row[57],
             'tanggal_vaccine1'=>$tanggal_vaccine1,
-            'nama_vaksin1'=>$row[55],
+            'nama_vaksin1'=>$row[59],
             'tanggal_vaccine2'=>$tanggal_vaccine2,
-            'nama_vaksin2'=>$row[57],
+            'nama_vaksin2'=>$row[61],
             // 'tanggal_vaccine3'=>$tanggal_vaccine3,
-            'nama_vaksin3'=>$row[59],
-            'golongan_sim'=>$row[60],
-            'nomor_sim'=>$row[61],
+            'nama_vaksin3'=>$row[63],
+            'golongan_sim'=>$row[64],
+            'nomor_sim'=>$row[65],
             'tanggal_expire_sim'=>$tanggal_expire_sim,
-            'catatan'=>$row[63],
+            'catatan'=>$row[67],
             'tanggal_mulai_kontrak'=>$tanggal_mulai_kontrak,
             'tanggal_akhir_kontrak'=>$tanggal_akhir_kontrak,
-            'catatan_kontrak'=>$row[66],
-            'no_surat'=>$row[67],
-            'sebab_resign'=>$row[68]
+            'catatan_kontrak'=>$row[70],
+            'no_surat'=>$row[71],
+            'sebab_resign'=>$row[72]
         ];
         if($dataArray['enroll_id']=='' || $dataArray['hamlet']=='red'){
 
@@ -281,7 +290,7 @@ class EmployeeImport implements ToModel, WithStartRow, WithCalculatedFormulas
                 'no_surat'=> $dataArray['no_surat'],
                 'tanggal_mulai_kontrak' => $dataArray['tanggal_mulai_kontrak'],
                 'tanggal_akhir_kontrak' => $dataArray['tanggal_akhir_kontrak'],
-                'catatan_kontrak' => $dataArray['catatan_kontrak']
+                'catatan_kontrak' => $dataArray['catatan_kontrak'],
             ]);
         }else if($dataArray['hamlet']=='white'){
             EmployeeAtribut::where('enroll_id',$dataArray['enroll_id'])->update($dataArray);
@@ -371,7 +380,7 @@ class EmployeeImport implements ToModel, WithStartRow, WithCalculatedFormulas
                     'no_surat'=> $dataArray['no_surat'],
                     'tanggal_mulai_kontrak' => $dataArray['tanggal_mulai_kontrak'],
                     'tanggal_akhir_kontrak' => $dataArray['tanggal_akhir_kontrak'],
-                    'catatan_kontrak' => $dataArray['catatan_kontrak']
+                    'catatan_kontrak' => $dataArray['catatan_kontrak'],
                 ]);
             }else{
                 EmployeeAtributHistory::create([
@@ -445,7 +454,7 @@ class EmployeeImport implements ToModel, WithStartRow, WithCalculatedFormulas
                     'no_surat'=> $dataArray['no_surat'],
                     'tanggal_mulai_kontrak' => $dataArray['tanggal_mulai_kontrak'],
                     'tanggal_akhir_kontrak' => $dataArray['tanggal_akhir_kontrak'],
-                    'catatan_kontrak' => $dataArray['catatan_kontrak']
+                    'catatan_kontrak' => $dataArray['catatan_kontrak'],
                 ]);
             }
         }
