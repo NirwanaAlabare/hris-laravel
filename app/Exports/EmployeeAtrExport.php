@@ -127,7 +127,11 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
                 employee_atribut.tanggal_akhir_kontrak,
                 employee_atribut.catatan_kontrak,
                 employee_atribut.created_at,
-                employee_atribut.updated_at
+                employee_atribut.updated_at,
+                employee_atribut.kode_pos,
+                employee_atribut.rt,
+                employee_atribut.rw,
+                employee_atribut.alamat_jalan
                 ')
                 ->groupBy('employee_atribut.enroll_id')
                 ->orderByRaw('CAST(employee_atribut.enroll_id AS SIGNED) ASC')
@@ -136,7 +140,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
 
         return $q;
     }
-    
+
     public function startCell(): string
     {
         return 'A6';
@@ -157,44 +161,44 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
             $join_datef=date('d-m-Y', strtotime($Data->join_date));
         }else{
             $join_datef=$Data->join_date;
-        } 
+        }
 
         if($Data->tanggal_resign!=null){
             $tanggal_resignf=date('d-m-Y', strtotime($Data->tanggal_resign));
         }else{
             $tanggal_resignf=$Data->tanggal_resign;
-        } 
+        }
 
         if($Data->tanggal_bpjs_ketenagakerjaan!=null){
             $tanggal_bpjs_ketenagakerjaanf=date('d-m-Y', strtotime($Data->tanggal_bpjs_ketenagakerjaan));
         }else{
             $tanggal_bpjs_ketenagakerjaanf=$Data->tanggal_bpjs_ketenagakerjaan;
-        } 
+        }
 
         if($Data->tanggal_bpjs_kesehatan!=null){
             $tanggal_bpjs_kesehatanf=date('d-m-Y', strtotime($Data->tanggal_bpjs_kesehatan));
         }else{
             $tanggal_bpjs_kesehatanf=$Data->tanggal_bpjs_kesehatan;
-        } 
+        }
 
         if($Data->tanggal_vaccine1!=null){
             $tanggal_vaccine1f=date('d-m-Y', strtotime($Data->tanggal_vaccine1));
         }else{
             $tanggal_vaccine1f=$Data->tanggal_vaccine1;
-        } 
+        }
 
         if($Data->tanggal_vaccine2!=null){
             $tanggal_vaccine2f=date('d-m-Y', strtotime($Data->tanggal_vaccine2));
         }else{
             $tanggal_vaccine2f=$Data->tanggal_vaccine2;
-        } 
-        
+        }
+
         if($Data->tanggal_vaccine3!=null){
             $tanggal_vaccine3f=date('d-m-Y', strtotime($Data->tanggal_vaccine3));
         }else{
             $tanggal_vaccine3f=$Data->tanggal_vaccine3;
-        } 
-        
+        }
+
         if($Data->tanggal_expire_sim!=null){
             $tanggal_expire_simf=date('d-m-Y', strtotime($Data->tanggal_expire_sim));
         }else{
@@ -218,7 +222,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
                 $tanggal_akhir_kontrakf=$Data->tanggal_akhir_kontrak;
             }
         }
-        
+
 
         $employee_id = $Data->employee_id;
         $employee_name = $Data->employee_name;
@@ -298,6 +302,11 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
         $direct_indirect=$Data->direct_indirect;
         $sewing_nonsewing=$Data->sewing_nonsewing;
 
+        $alamat_jalan=$Data->alamat_jalan;
+        $rt=$Data->rt;
+        $rw=$Data->rw;
+        $kode_pos=$Data->kode_pos;
+
         return [
             (string)$employee_id,
             $enroll_id,
@@ -332,11 +341,15 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
             $jurusan_pendidikan,
             $nama_bank,
             (string)$nomor_rekening_bank,
-            $alamat_rumah,
-            $propinsi,
-            $kota_kab,
-            $kecamatan,
+            $alamat_jalan,
+            $rt,
+            $rw,
             $kelurahan_desa,
+            $kecamatan,
+            $kota_kab,
+            $propinsi,
+            $kode_pos,
+            $alamat_rumah,
             $alamat_sementara,
             $tunjangan,
             $kode_grade,
@@ -385,20 +398,21 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
 
             'AB' => NumberFormat::FORMAT_TEXT,
             'AG' => NumberFormat::FORMAT_TEXT,
-            'AS' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AT' => NumberFormat::FORMAT_TEXT,
-            'AV' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AW' => NumberFormat::FORMAT_TEXT,
-            'AZ' => NumberFormat::FORMAT_TEXT,
+            'AS' => NumberFormat::FORMAT_TEXT,
+            'AW' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AX' => NumberFormat::FORMAT_TEXT,
+            'AZ' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'BA' => NumberFormat::FORMAT_TEXT,
+            'BD' => NumberFormat::FORMAT_TEXT,
 
-            'BC' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'BE' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'BG' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'BI' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'BK' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'BJ' => NumberFormat::FORMAT_TEXT,
 
-            'BM' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'BN' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'BQ' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'BR' => NumberFormat::FORMAT_DATE_DDMMYYYY,
 
 
 
@@ -442,15 +456,15 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
             'AE' => 40,
             'AF' => 12,
             'AG' => 18,
-            'AH' => 109,
-            'AI' => 17,
-            'AJ' => 21,
-            'AK' => 19,
+            'AH' => 40,
+            'AI' => 12,
+            'AJ' => 12,
+            'AK' => 21,
             'AL' => 21,
-            'AM' => 40,
-            'AN' => 16,
+            'AM' => 21,
+            'AN' => 21,
             'AO' => 12,
-            'AP' => 25,
+            'AP' => 109,
             'AQ' => 33,
             'AR' => 13,
             'AS' => 16,
@@ -472,14 +486,18 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
             'BI' => 15,
             'BJ' => 19,
             'BK' => 19,
-            'BL' => 84,
+            'BL' => 19,
             'BM' => 25,
             'BN' => 25,
             'BO' => 34,
             'BP' => 18,
             'BQ' => 18,
             'BR' => 18,
-            'BS' => 18
+            'BS' => 18,
+            'BT' => 18,
+            'BU' => 18,
+            'BV' => 18,
+            'BW' => 18,
         ];
     }
     public function bindValue(Cell $cell, $value)
@@ -514,27 +532,28 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
 
             return true;
         }
-        if ($cell->getColumn() == 'AT') {
+        if ($cell->getColumn() == 'AX') {
             $cell->setValueExplicit($value, DataType::TYPE_STRING);
 
             return true;
         }
-        if ($cell->getColumn() == 'AW') {
+
+        if ($cell->getColumn() == 'BC') {
             $cell->setValueExplicit($value, DataType::TYPE_STRING);
 
             return true;
         }
-        if ($cell->getColumn() == 'AZ') {
+        if ($cell->getColumn() == 'BC') {
             $cell->setValueExplicit($value, DataType::TYPE_STRING);
 
             return true;
         }
-        if ($cell->getColumn() == 'BJ') {
+        if ($cell->getColumn() == 'BN') {
             $cell->setValueExplicit($value, DataType::TYPE_STRING);
 
             return true;
         }
-        if ($cell->getColumn() == 'BP') {
+        if ($cell->getColumn() == 'BT') {
             $cell->setValueExplicit($value, DataType::TYPE_STRING);
 
             return true;
@@ -596,44 +615,48 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
                 $sheet->setCellValue('AE5', 'JURUSAN PENDIDIKAN TERAKHIR');
                 $sheet->setCellValue('AF5', 'NAMA BANK');
                 $sheet->setCellValue('AG5', 'NOMOR REKENING');
-                $sheet->setCellValue('AH5', 'ALAMAT RUMAH');
-                $sheet->setCellValue('AI5', 'PROPINSI');
-                $sheet->setCellValue('AJ5', 'KOTA / KAB');
-                $sheet->setCellValue('AK5', 'KECAMATAN');
-                $sheet->setCellValue('AL5', 'KELURAHAN / DESA');
-                $sheet->setCellValue('AM5', 'ALAMAT SEMENTARA');
-                $sheet->setCellValue('AN5', 'TUNJANGAN');
-                $sheet->setCellValue('AO5', 'KODE GRADE');
-                $sheet->setCellValue('AP5', 'REFERENSI');
-                $sheet->setCellValue('AQ5', 'NAMA ATASAN');
-                $sheet->setCellValue('AR5', 'STATUS AKTIF BPJS TK');
-                $sheet->setCellValue('AS5', 'TANGGAL BPJS TK');
-                $sheet->setCellValue('AT5', 'NOMOR BPJS TK');
-                $sheet->setCellValue('AU5', 'STATUS AKTIF BPJS KS');
-                $sheet->setCellValue('AV5', 'TANGGAL BPJS KS');
-                $sheet->setCellValue('AW5', 'NOMOR BPJS KS');
-                $sheet->setCellValue('AX5', 'PENGALAMAN KERJA');
-                $sheet->setCellValue('AY5', 'NAMA KERABAT');
-                $sheet->setCellValue('AZ5', 'NOMOR TLPN KERABAT');
-                $sheet->setCellValue('BA5', 'HUBUNGAN KERABAT');
-                $sheet->setCellValue('BB5', 'ALAMAT KERABAT');
-                $sheet->setCellValue('BC5', 'TANGGAL VAKSIN 1');
-                $sheet->setCellValue('BD5', 'NAMA VAKSIN 1');
-                $sheet->setCellValue('BE5', 'TANGGAL VAKSIN 2');
-                $sheet->setCellValue('BF5', 'NAMA VAKSIN 2');
-                $sheet->setCellValue('BG5', 'TANGGAL VAKSIN 3');
-                $sheet->setCellValue('BH5', 'NAMA VAKSIN 3');
-                $sheet->setCellValue('BI5', 'GOLONGAN SIM');
-                $sheet->setCellValue('BJ5', 'NOMOR SIM');
-                $sheet->setCellValue('BK5', 'TANGGAL EXPIRE SIM');
-                $sheet->setCellValue('BL5', 'CATATAN');
-                $sheet->setCellValue('BM5', 'TANGGAL MULAI KONTRAK');
-                $sheet->setCellValue('BN5', 'TANGGAL AKHIR KONTRAK');
-                $sheet->setCellValue('BO5', 'CATATAN KONTRAK');
-                $sheet->setCellValue('BP5', 'NO. SURAT');
-                $sheet->setCellValue('BQ5', 'SEBAB RESIGN');
-                $sheet->setCellValue('BR5', 'TERAKHIR DI BUAT');
-                $sheet->setCellValue('BS5', 'TERAKHIR DI UBAH');
+                $sheet->setCellValue('AH5', 'ALAMAT JALAN');
+                $sheet->setCellValue('AI5', 'RT');
+                $sheet->setCellValue('AJ5', 'RW');
+                $sheet->setCellValue('AK5', 'KELURAHAN / DESA');
+                $sheet->setCellValue('AL5', 'KECAMATAN');
+                $sheet->setCellValue('AM5', 'KOTA / KAB');
+                $sheet->setCellValue('AN5', 'PROPINSI');
+                $sheet->setCellValue('AO5', 'KODE POS');
+                $sheet->setCellValue('AP5', 'ALAMAT RUMAH');
+                $sheet->setCellValue('AQ5', 'ALAMAT SEMENTARA');
+                $sheet->setCellValue('AR5', 'TUNJANGAN');
+                $sheet->setCellValue('AS5', 'KODE GRADE');
+                $sheet->setCellValue('AT5', 'REFERENSI');
+                $sheet->setCellValue('AU5', 'NAMA ATASAN');
+                $sheet->setCellValue('AV5', 'STATUS AKTIF BPJS TK');
+                $sheet->setCellValue('AW5', 'TANGGAL BPJS TK');
+                $sheet->setCellValue('AX5', 'NOMOR BPJS TK');
+                $sheet->setCellValue('AY5', 'STATUS AKTIF BPJS KS');
+                $sheet->setCellValue('AZ5', 'TANGGAL BPJS KS');
+                $sheet->setCellValue('BA5', 'NOMOR BPJS KS');
+                $sheet->setCellValue('BB5', 'PENGALAMAN KERJA');
+                $sheet->setCellValue('BC5', 'NAMA KERABAT');
+                $sheet->setCellValue('BD5', 'NOMOR TLPN KERABAT');
+                $sheet->setCellValue('BE5', 'HUBUNGAN KERABAT');
+                $sheet->setCellValue('BF5', 'ALAMAT KERABAT');
+                $sheet->setCellValue('BG5', 'TANGGAL VAKSIN 1');
+                $sheet->setCellValue('BH5', 'NAMA VAKSIN 1');
+                $sheet->setCellValue('BI5', 'TANGGAL VAKSIN 2');
+                $sheet->setCellValue('BJ5', 'NAMA VAKSIN 2');
+                $sheet->setCellValue('BK5', 'TANGGAL VAKSIN 3');
+                $sheet->setCellValue('BL5', 'NAMA VAKSIN 3');
+                $sheet->setCellValue('BM5', 'GOLONGAN SIM');
+                $sheet->setCellValue('BN5', 'NOMOR SIM');
+                $sheet->setCellValue('BO5', 'TANGGAL EXPIRE SIM');
+                $sheet->setCellValue('BP5', 'CATATAN');
+                $sheet->setCellValue('BQ5', 'TANGGAL MULAI KONTRAK');
+                $sheet->setCellValue('BR5', 'TANGGAL AKHIR KONTRAK');
+                $sheet->setCellValue('BS5', 'CATATAN KONTRAK');
+                $sheet->setCellValue('BT5', 'NO. SURAT');
+                $sheet->setCellValue('BU5', 'SEBAB RESIGN');
+                $sheet->setCellValue('BV5', 'TERAKHIR DI BUAT');
+                $sheet->setCellValue('BW5', 'TERAKHIR DI UBAH');
 
             },
         ];

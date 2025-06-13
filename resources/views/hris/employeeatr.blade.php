@@ -585,20 +585,37 @@
                                             <td><input type="text" class="form-control" id="ibu_kandung"></td>
                                         </tr>
                                         <tr>
-                                            <th>Propinsi</th>
-                                            <th colspan=2>Kab/Kota</th>
+                                            <th colspan="2">Alamat (Nama Jalan)</th>
+                                            <th>RT / RW</th>
                                         </tr>
                                         <tr>
-                                            <td><input type="text" class="form-control" id="propinsi"></td>
-                                            <td colspan=2><input type="text" class="form-control" id="kota_kab"></td>
+                                            <td colspan="2">
+                                                <input type="text" class="form-control" id="alamat_jalan">
+                                            </td>
+                                            <td>
+                                                <div style="display: flex; gap: 5px;">
+                                                    <input type="text" class="form-control" id="rt" placeholder="RT" style="width: 50%;">
+                                                    <input type="text" class="form-control" id="rw" placeholder="RW" style="width: 50%;">
+                                                </div>
+                                            </td>
                                         </tr>
-                                        <tr>
+                                         <tr>
+                                            <th>Kelurahan/Desa</th>
                                             <th>Kecamatan</th>
-                                            <th colspan=2>Kelurahan/Desa</th>
+                                            <th>Kab/Kota</th>
                                         </tr>
                                         <tr>
+                                            <td><input type="text" class="form-control" id="kelurahan_desa"></td>
                                             <td><input type="text" class="form-control" id="kecamatan"></td>
-                                            <td colspan=2><input type="text" class="form-control" id="kelurahan_desa"></td>
+                                            <td><input type="text" class="form-control" id="kota_kab"></td>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="2">Propinsi</th>
+                                            <th >Kode Pos</th>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2"><input type="text" class="form-control" id="propinsi"></td>
+                                            <td><input type="text" class="form-control" id="kode_pos"></td>
                                         </tr>
                                         <tr>
                                             <th colspan=3>Alamat (KTP)</th>
@@ -1125,23 +1142,36 @@
             font-size: 9pt; /* Hide the horizontal scroll */
         }
     </style>
-    {{-- <script>
-        $(document).ready(function() {
-            // $('#nomor_rekening_bank').on('input', function() {
-            //     $('#nama_bank').val('');
-            // });
-            $('#nomor_rekening_bank').on('input', function() {
-            const currentVal = $(this).val();
 
-            if (initialNomorRekening && currentVal !== initialNomorRekening) {
-                // Jika ada perubahan dan nilai awal bukan null/kosong, reset nama_bank
-                $('#nama_bank').val('');
-            }
-        });
-        });
+    <script>
+    function updateAlamatRumah() {
+        let jalan = $('#alamat_jalan').val();
+        let rt = $('#rt').val();
+        let rw = $('#rw').val();
+        let kodePos = $('#kode_pos').val();
+        let propinsi = $('#propinsi').val();
+        let kota = $('#kota_kab').val();
+        let kecamatan = $('#kecamatan').val();
+        let kelurahan = $('#kelurahan_desa').val();
 
+        let alamat = '';
 
-    </script> --}}
+        if (jalan) alamat += jalan;
+        if (rt || rw) alamat += (alamat ? ', ' : '') + 'RT ' + rt + '/RW ' + rw;
+        if (kelurahan) alamat += (alamat ? ', ' : '') + 'Kel. ' + kelurahan;
+        if (kecamatan) alamat += (alamat ? ', ' : '') + 'Kec. ' + kecamatan;
+        if (kota) alamat += (alamat ? ', ' : '') + kota;
+        if (propinsi) alamat += (alamat ? ', ' : '') + propinsi;
+        if (kodePos) alamat += (alamat ? ', ' : '') + 'Kode Pos ' + kodePos;
+
+        $('#alamat_rumah').val(alamat);
+    }
+
+    $(document).ready(function() {
+        $('#alamat_jalan, #rt, #rw, #kode_pos, #propinsi, #kota_kab, #kecamatan, #kelurahan_desa').on('input', updateAlamatRumah);
+    });
+</script>
+
     <script type="text/javascript">
     let initialNomorRekening = null;
     $('#nomor_rekening_bank').on('input', function() {
@@ -1621,6 +1651,12 @@
             $("#btn-cancel").prop("disabled", false);
             $('#btn-save').html('<i class="fa fa-save"></i> Save');
             $('#alamat_rumah').val('');
+
+            $('#alamat_jalan').val('');
+            $('#rt').val('');
+            $('#rw').val('');
+            $('#kode_pos').val('');
+
             $('#alamat_sementara').val('');
             $('#pengalaman_bekerja').val('');
             $('#alamat_kerabat').val('');
@@ -1648,6 +1684,10 @@
         $('body').on('click', '#btn-reset', function (event) {
             $("#form1").trigger('reset');
             $('#alamat_rumah').val('');
+            $('#alamat_jalan').val('');
+            $('#rt').val('');
+            $('#rw').val('');
+            $('#kode_pos').val('');
             $('#alamat_sementara').val('');
             $('#pengalaman_bekerja').val('');
             $('#alamat_kerabat').val('');
@@ -1980,6 +2020,11 @@
                 tanggal_akhir_kontrak = defaultDate(data['tanggal_akhir_kontrak']);
                 $('#tanggal_mulai_kontrak').val(tanggal_mulai_kontrak);
                 $('#tanggal_akhir_kontrak').val(tanggal_akhir_kontrak);
+
+                $('#alamat_jalan').val(data['alamat_jalan']);
+                $('#rt').val(data['rt']);
+                $('#rw').val(data['rw']);
+                $('#kode_pos').val(data['kode_pos']);
                 // if(data['kontrak_awal']!=null){
                 //     tanggal_mulai_kontrak = defaultDate(data['kontrak_awal']);
                 //     $('#tanggal_mulai_kontrak_string').val(tanggal_mulai_kontrak);
@@ -2300,6 +2345,56 @@
             var status_aktif = $('#status_aktif').val();
             var status_staff = $('#status_staff').val();
 
+            var alamat_jalan = $('#alamat_jalan').val();
+            var rt = $('#rt').val();
+            var rw = $('#rw').val();
+            var kode_pos = $('#kode_pos').val();
+
+            if(!alamat_jalan)
+            {
+                notif({
+                    msg: "<b>Error:</b> Oops Alamat Jalan belum di isi.",
+                    type: "error"
+                });
+
+                $("#alamat_jalan").addClass('border-danger');
+
+                return false;
+            }
+            if(!rt)
+            {
+                notif({
+                    msg: "<b>Error:</b> Oops RT belum di isi.",
+                    type: "error"
+                });
+
+                $("#rt").addClass('border-danger');
+
+                return false;
+            }
+            if(!rw)
+            {
+                notif({
+                    msg: "<b>Error:</b> Oops RW belum di isi.",
+                    type: "error"
+                });
+
+                $("#rw").addClass('border-danger');
+
+                return false;
+            }
+            if(!kode_pos)
+            {
+                notif({
+                    msg: "<b>Error:</b> Oops Kode Pos belum di isi.",
+                    type: "error"
+                });
+
+                $("#kode_pos").addClass('border-danger');
+
+                return false;
+            }
+
             if(!employee_name)
             {
                 notif({
@@ -2599,6 +2694,10 @@
                                 tanggal_mulai_kontrak:tanggal_mulai_kontrak,
                                 tanggal_akhir_kontrak:tanggal_akhir_kontrak,
                                 catatan_kontrak:$('#catatan_kontrak').val(),
+                                alamat_jalan:alamat_jalan,
+                                rt:rt,
+                                rw:rw,
+                                kode_pos:kode_pos,
                             };
 
 
@@ -2779,6 +2878,10 @@
                     tanggal_mulai_kontrak:tanggal_mulai_kontrak,
                     tanggal_akhir_kontrak:tanggal_akhir_kontrak,
                     catatan_kontrak:$('#catatan_kontrak').val(),
+                    alamat_jalan:alamat_jalan,
+                    rt:rt,
+                    rw:rw,
+                    kode_pos:kode_pos,
                 };
 
                 if (is_periksaenroll_id == 1) {

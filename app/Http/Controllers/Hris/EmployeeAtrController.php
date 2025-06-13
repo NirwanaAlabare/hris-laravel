@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminBaseController;
 use App\Models\MasterDataAbsenKehadiran;
 use App\Models\EmployeeAtribut;
 use App\Models\DepartmentAll;
+use App\Models\Admin;
 use App\Models\WorkTimeTable;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
@@ -32,6 +33,7 @@ use App\Models\DataKehadiranInOutEdited;
 use App\Models\LogDataGagalAbsen;
 use Carbon\Carbon;
 use PDF;
+use Illuminate\Support\Facades\Storage;
 /**
  * Class MdAbsenHadirController
  * @package App\Http\Controllers\Hris
@@ -128,6 +130,35 @@ class EmployeeAtrController extends AdminBaseController
         ]);
         return request()->enroll_id;
     }
+
+  public function change_photo_profile(Request $request)
+{
+    $request->validate([
+        'photo' => 'required|image|mimes:jpeg,png,jpg|max:2048'
+    ]);
+
+    $admin = Auth::guard('admin')->user();
+
+    $image = $request->file('photo');
+
+    $filename = $admin->nik . '_' . Str::random(5) . '.' . $image->getClientOriginalExtension();
+
+    // Simpan file ke storage/app/public/images/profile
+    $path = $image->storeAs('public/images/profile', $filename); // path internal, bukan URL
+
+    // Simpan nama file ke database (opsional)
+    $admin->path_foto = $filename;
+    $admin->save();
+
+    // Buat full URL yang bisa diakses di browser
+    $publicUrl = asset(Storage::url($path)); // menghasilkan /storage/images/profile/namafile.jpg
+
+    return response()->json([
+        'message' => 'Upload berhasil',
+        'photo_url' => $publicUrl
+    ]);
+}
+
     private function ajax_getselectdivisi()
     {
         $query =  DepartmentAll::selectRaw('site_nirwana_id, site_nirwana_name')
@@ -398,12 +429,15 @@ class EmployeeAtrController extends AdminBaseController
                 $nestedData['kontrak_akhir']=$q->contract_end;
                 $nestedData['created_at'] = substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5);
                 $nestedData['updated_at'] = substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5);
+                $nestedData['alamat_jalan'] = $q->alamat_jalan;
+                $nestedData['rt'] = $q->rt;
+                $nestedData['rw'] = $q->rw;
+                $nestedData['kode_pos'] = $q->kode_pos;
 
                 $data[] = $nestedData;
 
             }
         }
-
         $json_data = array(
             "draw"            => intval($request->input('draw')),
             "recordsTotal"    => intval($totalData),
@@ -616,6 +650,10 @@ class EmployeeAtrController extends AdminBaseController
                 $nestedData['sudah_diprint'] = $q->sudah_diprint;
                 $nestedData['created_at'] = substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5);
                 $nestedData['updated_at'] = substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5);
+                $nestedData['alamat_jalan'] = $q->alamat_jalan;
+                $nestedData['rt'] = $q->rt;
+                $nestedData['rw'] = $q->rw;
+                $nestedData['kode_pos'] = $q->kode_pos;
 
                 $data[] = $nestedData;
 
@@ -814,6 +852,10 @@ class EmployeeAtrController extends AdminBaseController
                 $nestedData['sudah_diprint'] = $q->sudah_diprint;
                 $nestedData['created_at'] = substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5);
                 $nestedData['updated_at'] = substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5);
+                $nestedData['alamat_jalan'] = $q->alamat_jalan;
+                $nestedData['rt'] = $q->rt;
+                $nestedData['rw'] = $q->rw;
+                $nestedData['kode_pos'] = $q->kode_pos;
 
                 $data[] = $nestedData;
 
@@ -1184,6 +1226,10 @@ class EmployeeAtrController extends AdminBaseController
                 $nestedData['alamat_kerabat'] = $q->alamat_kerabat;
                 $nestedData['hubungan_kerabat'] = $q->hubungan_kerabat;
                 $nestedData['pengalaman_bekerja'] = $q->pengalaman_bekerja;
+                $nestedData['alamat_jalan'] = $q->alamat_jalan;
+                $nestedData['rt'] = $q->rt;
+                $nestedData['rw'] = $q->rw;
+                $nestedData['kode_pos'] = $q->kode_pos;
 
                 $data[] = $nestedData;
 
@@ -1277,6 +1323,11 @@ class EmployeeAtrController extends AdminBaseController
         $tanggal_mulai_kontrak = $request->tanggal_mulai_kontrak;
         $tanggal_akhir_kontrak = $request->tanggal_akhir_kontrak;
         $catatan_kontrak = strtoupper($request->catatan_kontrak);
+
+        $alamat_jalan = $request->alamat_jalan;
+        $rt = $request->rt;
+        $rw = $request->rw;
+        $kode_pos = $request->kode_pos;
 
         $timestamp = Carbon::now();
         $site_nirwana_name =  DepartmentAll::select('site_nirwana_name')
@@ -1393,7 +1444,11 @@ class EmployeeAtrController extends AdminBaseController
                 'operator' => $operator,
                 'tanggal_mulai_kontrak' => $tanggal_mulai_kontrak,
                 'tanggal_akhir_kontrak' => $tanggal_akhir_kontrak,
-                'catatan_kontrak' => $catatan_kontrak
+                'catatan_kontrak' => $catatan_kontrak,
+                'alamat_jalan' => $alamat_jalan,
+                'rt' => $rt,
+                'rw' => $rw,
+                'kode_pos' => $kode_pos
             ]);
 
 
@@ -1604,7 +1659,11 @@ class EmployeeAtrController extends AdminBaseController
                 'operator' => $operator,
                 'tanggal_mulai_kontrak' => $tanggal_mulai_kontrak,
                 'tanggal_akhir_kontrak' => $tanggal_akhir_kontrak,
-                'catatan_kontrak' => $catatan_kontrak
+                'catatan_kontrak' => $catatan_kontrak,
+                'alamat_jalan' => $alamat_jalan,
+                'rt' => $rt,
+                'rw' => $rw,
+                'kode_pos' => $kode_pos
             ]);
 
             info('Karyawan dengan nama ' . $employee_name . ' dari departemen '. $sub_dept_name->sub_dept_name .' telah di tambah oleh '.$operator);

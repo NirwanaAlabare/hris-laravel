@@ -96,7 +96,10 @@ class EmployeeAtribut extends \Eloquent
         'pola_kerja',
         'premi',
         'sudah_diprint',
-        'sp_kerja'
+        'sp_kerja',
+        'alamat_jalan',
+        'rt',
+        'rw',
     ];
     protected $guarded = ['employee_id'];
 
@@ -196,7 +199,11 @@ class EmployeeAtribut extends \Eloquent
         'allowance',
         'pola_kerja',
         'premi',
-        'sudah_diprint'
+        'sudah_diprint',
+        'sp_kerja',
+        'alamat_jalan',
+        'rt',
+        'rw',
     ];
 
     protected $appends = [];

@@ -292,12 +292,16 @@ class EmployeeAtrController extends AdminBaseController
                 $nestedData['catatan_kontrak'] = $q->catatan_kontrak;
                 $nestedData['created_at'] = substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5);
                 $nestedData['updated_at'] = substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5);
+                $nestedData['alamat_jalan'] = $q->alamat_jalan;
+                $nestedData['rt'] = $q->rt;
+                $nestedData['rw'] = $q->rw;
+                $nestedData['kode_pos'] = $q->kode_pos;
+
 
                 $data[] = $nestedData;
 
             }
         }
-
         $json_data = array(
             "draw"            => intval($request->input('draw')),
             "recordsTotal"    => intval($totalData),
@@ -463,7 +467,10 @@ class EmployeeAtrController extends AdminBaseController
                 $nestedData['alamat_kerabat'] = $q->alamat_kerabat;
                 $nestedData['hubungan_kerabat'] = $q->hubungan_kerabat;
                 $nestedData['pengalaman_bekerja'] = $q->pengalaman_bekerja;
-
+                $nestedData['alamat_jalan'] = $q->alamat_jalan;
+                $nestedData['rt'] = $q->rt;
+                $nestedData['rw'] = $q->rw;
+                $nestedData['kode_pos'] = $q->kode_pos;
                 $data[] = $nestedData;
 
             }
@@ -555,6 +562,11 @@ class EmployeeAtrController extends AdminBaseController
         $tanggal_mulai_kontrak = $request->tanggal_mulai_kontrak;
         $tanggal_akhir_kontrak = $request->tanggal_akhir_kontrak;
         $catatan_kontrak = strtoupper($request->catatan_kontrak);
+
+        $alamat_jalan = $request->alamat_jalan;
+        $rt = $request->rt;
+        $rw = $request->rw;
+        $kode_pos = $request->kode_pos;
 
         $site_nirwana_name_new = '';
         $department_name_new = '';
@@ -659,7 +671,11 @@ class EmployeeAtrController extends AdminBaseController
                 'operator' => $operator,
                 'tanggal_mulai_kontrak' => $tanggal_mulai_kontrak,
                 'tanggal_akhir_kontrak' => $tanggal_akhir_kontrak,
-                'catatan_kontrak' => $catatan_kontrak
+                'catatan_kontrak' => $catatan_kontrak,
+                'alamat_jalan' => $alamat_jalan,
+                'rt' => $rt,
+                'rw' => $rw,
+                'kode_pos' => $kode_pos,
             ]);
         } else {
 
@@ -741,7 +757,11 @@ class EmployeeAtrController extends AdminBaseController
                 'operator' => $operator,
                 'tanggal_mulai_kontrak' => $tanggal_mulai_kontrak,
                 'tanggal_akhir_kontrak' => $tanggal_akhir_kontrak,
-                'catatan_kontrak' => $catatan_kontrak
+                'catatan_kontrak' => $catatan_kontrak,
+                'alamat_jalan' => $alamat_jalan,
+                'rt' => $rt,
+                'rw' => $rw,
+                'kode_pos' => $kode_pos,
             ]);
 
         }
