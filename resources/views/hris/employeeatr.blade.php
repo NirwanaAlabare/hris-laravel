@@ -1162,7 +1162,7 @@
         if (kecamatan) alamat += (alamat ? ', ' : '') + 'Kec. ' + kecamatan;
         if (kota) alamat += (alamat ? ', ' : '') + kota;
         if (propinsi) alamat += (alamat ? ', ' : '') + propinsi;
-        if (kodePos) alamat += (alamat ? ', ' : '') + 'Kode Pos ' + kodePos;
+        if (kodePos) alamat += (alamat ? ', ' : '') + kodePos;
 
         $('#alamat_rumah').val(alamat);
     }
@@ -2383,17 +2383,17 @@
 
                 return false;
             }
-            if(!kode_pos)
-            {
-                notif({
-                    msg: "<b>Error:</b> Oops Kode Pos belum di isi.",
-                    type: "error"
-                });
+            // if(!kode_pos)
+            // {
+            //     notif({
+            //         msg: "<b>Error:</b> Oops Kode Pos belum di isi.",
+            //         type: "error"
+            //     });
 
-                $("#kode_pos").addClass('border-danger');
+            //     $("#kode_pos").addClass('border-danger');
 
-                return false;
-            }
+            //     return false;
+            // }
 
             if(!employee_name)
             {
