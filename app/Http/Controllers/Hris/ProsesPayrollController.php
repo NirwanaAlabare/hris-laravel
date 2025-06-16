@@ -1162,7 +1162,7 @@ class ProsesPayrollController extends AdminBaseController
                 $total_jam_lembur_finis=$total_jam_lembur-$value->jumlah_jam_istirahat_lembur;
                 $total_jam_lembur_finis=min($value->jumlah_jam_lembur,$total_jam_lembur_finis);
                 if(($value->capai_target != null || $value->capai_target != '') && $value->jumlah_jam_lembur <= '1.0'){
-                    $total_jam_lembur_finis=1;
+                    $total_jam_lembur_finis=$value->capai_target;
                 }
                 if($value->kode_hari==5 || $value->kode_hari==6 || $value->status_absen=='LN' || $value->mulai_jam_kerja==null || $value->akhir_jam_kerja==null){
                     $kerjalibur='LIBUR';
@@ -2228,7 +2228,7 @@ class ProsesPayrollController extends AdminBaseController
                 $total_jam_lembur_finis=$total_jam_lembur-$value->jumlah_jam_istirahat_lembur;
                 $total_jam_lembur_finis=min($value->jumlah_jam_lembur,$total_jam_lembur_finis);
                 if(($value->capai_target != null || $value->capai_target != '') && $value->jumlah_jam_lembur <= '1.0'){
-                    $total_jam_lembur_finis=1;
+                    $total_jam_lembur_finis=$value->capai_target;
                 }
                 if($value->kode_hari==5 || $value->kode_hari==6 || $value->status_absen=='LN' || $value->mulai_jam_kerja==null || $value->akhir_jam_kerja==null){
                     $kerjalibur='LIBUR';
@@ -3214,7 +3214,7 @@ class ProsesPayrollController extends AdminBaseController
                 $total_jam_lembur_finis=$total_jam_lembur-$value->jumlah_jam_istirahat_lembur;
                 $total_jam_lembur_finis=min($value->jumlah_jam_lembur,$total_jam_lembur_finis);
                 if(($value->capai_target != null || $value->capai_target != '') && $value->jumlah_jam_lembur <= '1.0'){
-                    $total_jam_lembur_finis=1;
+                    $total_jam_lembur_finis=$value->capai_target;
                 }
                 if($value->kode_hari==5 || $value->kode_hari==6 || $value->status_absen=='LN' || $value->mulai_jam_kerja==null || $value->akhir_jam_kerja==null){
                     $kerjalibur='LIBUR';
@@ -4187,7 +4187,7 @@ class ProsesPayrollController extends AdminBaseController
                     $total_jam_lembur_finis=$total_jam_lembur-$value->jumlah_jam_istirahat_lembur;
                     $total_jam_lembur_finis=min($value->jumlah_jam_lembur,$total_jam_lembur_finis);
                     if(($value->capai_target != null || $value->capai_target != '') && $value->jumlah_jam_lembur <= '1.0'){
-                        $total_jam_lembur_finis=1;
+                        $total_jam_lembur_finis=$value->capai_target;
                     }
                     if($value->kode_hari==5 || $value->kode_hari==6 || $value->status_absen=='LN' || $value->mulai_jam_kerja==null || $value->akhir_jam_kerja==null){
                         $kerjalibur='LIBUR';
@@ -5626,7 +5626,7 @@ class ProsesPayrollController extends AdminBaseController
                 $total_jam_lembur_finis=$total_jam_lembur-$value->jumlah_jam_istirahat_lembur;
                 $total_jam_lembur_finis=min($value->jumlah_jam_lembur,$total_jam_lembur_finis);
                 if(($value->capai_target != null || $value->capai_target != '') && $value->jumlah_jam_lembur <= '1.0'){
-                    $total_jam_lembur_finis=1;
+                    $total_jam_lembur_finis=$value->capai_target;
                 }
                 if($value->kode_hari==5 || $value->kode_hari==6 || $value->status_absen=='LN' || $value->mulai_jam_kerja==null || $value->akhir_jam_kerja==null){
                     $kerjalibur='LIBUR';
@@ -5743,7 +5743,7 @@ class ProsesPayrollController extends AdminBaseController
                 $total_jam_lembur_finis=$total_jam_lembur-$value->jumlah_jam_istirahat_lembur;
                 $total_jam_lembur_finis=min($value->jumlah_jam_lembur,$total_jam_lembur_finis);
                 if(($value->capai_target != null || $value->capai_target != '') && $value->jumlah_jam_lembur <= '1.0'){
-                    $total_jam_lembur_finis=1;
+                    $total_jam_lembur_finis=$value->capai_target;
                 }
                 if($value->kode_hari==5 || $value->kode_hari==6 || $value->status_absen=='LN' || $value->mulai_jam_kerja==null || $value->akhir_jam_kerja==null){
                     $kerjalibur='LIBUR';
@@ -6010,7 +6010,7 @@ class ProsesPayrollController extends AdminBaseController
                 $total_jam_lembur_finis=$total_jam_lembur-$value2['jumlah_jam_istirahat_form'];
                 $total_jam_lembur_finis=min($value2['jumlah_jam_lembur_form'],$total_jam_lembur_finis);
                 if(($value->capai_target != null || $value->capai_target != '') && $value->jumlah_jam_lembur <= '1.0'){
-                    $total_jam_lembur_finis=1;
+                    $total_jam_lembur_finis=$value->capai_target;
                 }
                 if($value2['kode_hari']==5 || $value2['kode_hari']==6 || $value2['status_absen']=='LN' || ($value2['mulai_jam_kerja']==null && $value2['akhir_jam_kerja']==null)){
                     $kerjalibur='LIBUR';
@@ -6278,7 +6278,7 @@ class ProsesPayrollController extends AdminBaseController
                 $total_jam_lembur_finis=$total_jam_lembur-$value2['jumlah_jam_istirahat_form'];
                 $total_jam_lembur_finis=min($value2['jumlah_jam_lembur_form'],$total_jam_lembur_finis);
                 if(($value->capai_target != null || $value->capai_target != '') && $value->jumlah_jam_lembur <= '1.0'){
-                    $total_jam_lembur_finis=1;
+                    $total_jam_lembur_finis=$value->capai_target;
                 }
                 if($value2['kode_hari']==5 || $value2['kode_hari']==6 || $value2['status_absen']=='LN' || ($value2['mulai_jam_kerja']==null && $value2['akhir_jam_kerja']==null)){
                     $kerjalibur='LIBUR';
