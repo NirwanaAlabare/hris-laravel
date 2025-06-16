@@ -1335,7 +1335,6 @@ class HRDController extends AdminBaseController
             AND b.contract_end = '$contract_end'
         GROUP BY a.enroll_id
     ");
-        // $last_umk=DasarPotBPJS::orderBy('created_at','desc')->limit(1)->first()->dasar_pot_bpjs_rupiah;
         $tahun_umk = date('Y', strtotime($contract_end));
         $tahun_umk = 'UMK '.$tahun_umk;
         $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $tahun_umk)->first()->dasar_pot_bpjs_rupiah ?? 0;
@@ -1357,8 +1356,13 @@ class HRDController extends AdminBaseController
             $tunjangan = 12500;
         }
 
+        $bulan_masuk = new DateTime($data->contract);
+        $bulan_akhir = new DateTime($data->contract_end);
+
+        $jumlah_bulan_manual = $this->hitungBulanKontrak($data->contract, $data->contract_end);
+
         $total_penghasilan_bulanan = $umk + $tunjangan;
-        $jumlah_bulan = $data->jumlah_bulan ?? 0;
+        $jumlah_bulan = $data->jumlah_bulan ?? $jumlah_bulan_manual;
         $total_kompensasi = $total_penghasilan_bulanan * ($jumlah_bulan / 12);
 
 
