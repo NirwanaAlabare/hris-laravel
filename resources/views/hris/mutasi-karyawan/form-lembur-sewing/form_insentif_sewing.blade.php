@@ -183,7 +183,7 @@
                 <td class="borderless"></td>
             </tr>
             <tr>
-                <td width="25%" class="borderless" align="center">Dijukan</td>
+                <td width="25%" class="borderless" align="center">Diajukan</td>
                 <td width="25%" class="borderless" align="center">Diketahui</td>
                 <td width="25%" class="borderless" align="center" >Diketahui</td>
                 <td width="25%" class="borderless" align="center">Disetujui</td>
