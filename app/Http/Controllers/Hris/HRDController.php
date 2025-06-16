@@ -1317,24 +1317,31 @@ class HRDController extends AdminBaseController
             b.contract_end,
             c.max_contract,
             c.max_contract_end,
-            c.jumlah_bulan
+            b.jumlah_bulan,
+            c.created_at
         FROM employee_atribut a
         LEFT JOIN employee_contract b ON a.enroll_id = b.enroll_id
         LEFT JOIN (
-            SELECT
-                enroll_id,
-                jumlah_bulan,
-                MAX(contract) AS max_contract,
-                MAX(contract_end) AS max_contract_end
-            FROM employee_contract
-            GROUP BY enroll_id
-        ) c ON a.enroll_id = c.enroll_id
+    SELECT
+        ec1.enroll_id,
+        ec1.jumlah_bulan,
+        ec1.created_at,
+        ec1.contract AS max_contract,
+        ec1.contract_end AS max_contract_end
+    FROM employee_contract ec1
+    INNER JOIN (
+        SELECT enroll_id, MAX(contract) AS max_contract
+        FROM employee_contract
+        GROUP BY enroll_id
+    ) ec2 ON ec1.enroll_id = ec2.enroll_id AND ec1.contract = ec2.max_contract
+) c ON a.enroll_id = c.enroll_id
         WHERE
             a.enroll_id = $enroll_id
             AND b.contract = '$contract'
             AND b.contract_end = '$contract_end'
         GROUP BY a.enroll_id
     ");
+
         $tahun_umk = date('Y', strtotime($contract_end));
         $tahun_umk = 'UMK '.$tahun_umk;
         $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $tahun_umk)->first()->dasar_pot_bpjs_rupiah ?? 0;
@@ -1364,7 +1371,6 @@ class HRDController extends AdminBaseController
         $total_penghasilan_bulanan = $umk + $tunjangan;
         $jumlah_bulan = $data->jumlah_bulan ?? $jumlah_bulan_manual;
         $total_kompensasi = $total_penghasilan_bulanan * ($jumlah_bulan / 12);
-
 
         $fileName='Kompensasi PKWT '.$data->employee_name.'('.request()->enroll_id.') '.$contract_end.' '.date('His');
         $pdf = PDF::loadView('hris.laporan.pdf_kompensasi_pkwt',["no_form"=>$no_form,"contract2"=>$contract,"contract_end2"=>$data->tanggal_resign ? $data->tanggal_resign : $data->contract_end,"data" => $data,"umk"=>$umk, "tunjangan"=>$tunjangan, "total_kompensasi"=>$total_kompensasi, "jumlah_bulan"=>$jumlah_bulan])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
