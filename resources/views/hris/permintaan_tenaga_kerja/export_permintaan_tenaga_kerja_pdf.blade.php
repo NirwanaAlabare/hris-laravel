@@ -777,10 +777,10 @@
             </tr>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; text-transform: uppercase;">{{$value->employee_name}}</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center;">Chief/Dept. Head/Manager</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center;">HR-GA</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center;">General Mgr Produksi</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center;">General Mgr Factory</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center;"></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center;"></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center;"></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center;"></td>
             </tr>
         </thead>
 </table>
