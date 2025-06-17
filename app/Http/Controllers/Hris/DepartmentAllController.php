@@ -88,19 +88,19 @@ class DepartmentAllController extends AdminBaseController
     }
 
 
-    public function getDepartmentName($id)
+    public function getDepartmentName(Request $request)
     {
-        $query =  DepartmentAll::where('department_id','=',$id)
-                                 ->groupby('sub_dept_id')
-                                 ->first();
-        return $query["department_name"];
+        $query =  DepartmentAll::where('department_id','=',$request->id)
+                                 ->groupby('sub_dept_name')
+                                 ->get();
+        return $query;
 
     }
 
     public function getSelectSubDept(Request $request)
     {
         $department_id = $request->department_id;
-        
+
         $query =  DepartmentAll::where('department_name','=',$department_id)
                     ->groupBy('sub_dept_name')
                     ->orderBy('sub_dept_name','asc')
@@ -112,7 +112,7 @@ class DepartmentAllController extends AdminBaseController
     public function getSelectSubDeptIn(){
         $site_nirwana_id = request()->site_nirwana_id;
         $department_id = request()->department_id;
-        
+
         $query =  DepartmentAll::where('site_nirwana_id','=',$site_nirwana_id)->where('department_id',request()->department_id)->get();
 
         return $query;
@@ -120,7 +120,7 @@ class DepartmentAllController extends AdminBaseController
     public function getSelectDeptId(Request $request)
     {
         $site_nirwana_id = $request->site_nirwana_id;
-        
+
         $query =  DepartmentAll::where('site_nirwana_id','=',$site_nirwana_id)
                     ->groupBy('department_name')
                     ->orderBy('department_name','asc')
@@ -132,8 +132,8 @@ class DepartmentAllController extends AdminBaseController
     public function getJumlahKaryawan(Request $request)
     {
         $sub_dept_id = $request->sub_dept_id;
-        
-        
+
+
         $query =  EmployeeAtribut::where('sub_dept_id','=',$sub_dept_id)->count();
 
         return $query;
