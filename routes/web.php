@@ -324,8 +324,15 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
 
     // PERMINTAAN TENAGA KERJA
     Route::get('/permintaan_tenaga_kerja/index', ['as' => 'permintaan_tenaga_kerja.permintaan_tenaga_kerja','uses' => 'Administrasi\PermintaanTenagaKerjaController@index']);
+    Route::get('/permintaan_tenaga_kerja/print_pengajuan_tk_pdf/{id}', ['as' => 'permintaan_tenaga_kerja.print_pengajuan_tk_pdf','uses' => 'Administrasi\PermintaanTenagaKerjaController@print_pengajuan_tk_pdf']);
     Route::post('/permintaan_tenaga_kerja/ajax_data_permintaan_tk', ['as' => 'permintaan_tenaga_kerja.ajax_data_permintaan_tk','uses' => 'Administrasi\PermintaanTenagaKerjaController@ajax_data_permintaan_tk']);
     Route::post('/permintaan_tenaga_kerja/create_permintaan_tk', ['as' => 'permintaan_tenaga_kerja.create_permintaan_tk','uses' => 'Administrasi\PermintaanTenagaKerjaController@create_permintaan_tk']);
+    Route::post('/permintaan_tenaga_kerja/update_permintaan_tk', ['as' => 'permintaan_tenaga_kerja.update_permintaan_tk','uses' => 'Administrasi\PermintaanTenagaKerjaController@update_permintaan_tk']);
+    Route::post('/permintaan_tenaga_kerja/get_detail_permintaan_tk', ['as' => 'permintaan_tenaga_kerja.get_detail_permintaan_tk','uses' => 'Administrasi\PermintaanTenagaKerjaController@get_detail_permintaan_tk']);
+    Route::post('/permintaan_tenaga_kerja/approve_permintaan_tk', ['as' => 'permintaan_tenaga_kerja.approve_permintaan_tk','uses' => 'Administrasi\PermintaanTenagaKerjaController@approve_permintaan_tk']);
+    Route::post('/permintaan_tenaga_kerja/reject_permintaan_tk', ['as' => 'permintaan_tenaga_kerja.reject_permintaan_tk','uses' => 'Administrasi\PermintaanTenagaKerjaController@reject_permintaan_tk']);
+    Route::post('/permintaan_tenaga_kerja/delete_permintaan_tk', ['as' => 'permintaan_tenaga_kerja.delete_permintaan_tk','uses' => 'Administrasi\PermintaanTenagaKerjaController@delete_permintaan_tk']);
+
 
     // PENGAJUAN IZIN
     Route::post('cuti_karyawan/ajax_dataabsenperizinan',['as'=>'cuti_karyawan.dataabsenperijinan.ajax_dataabsenperizinan','uses'=>'MasterData\CutiKaryawanController@ajax_dataabsenperizinan']);

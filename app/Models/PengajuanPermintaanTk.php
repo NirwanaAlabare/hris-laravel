@@ -21,13 +21,17 @@ class PengajuanPermintaanTk extends Model
     'jumlah_kebutuhan',
     'rencana_jabatan',
     'rencana_jurusan',
+    'pengalaman_kerja',
     'waktu_pengalaman',
     'besaran_gaji',
     'fasilitas',
     'jangka_waktu_kontrak',
     'keterangan_tambahan',
     'uraian_tugas',
-    'is_verifikasi_pengajuan_tk',
+    'created_by',
+    'verifikator_by',
+    'status_pengajuan',
+    'pend_minimal',
 ];
 
     protected $casts = [
