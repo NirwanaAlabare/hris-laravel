@@ -200,8 +200,8 @@ class PermintaanTenagaKerjaController extends AdminBaseController
             LEFT JOIN department_all as department_all2
             ON pengajuan_permintaan_tk.bagian_kode = department_all2.sub_dept_id
             WHERE pengajuan_permintaan_tk.id = ?
+            LIMIT 1
         ", [$pengajuan_id]);
-        // dd($data);
         $pdf = PDF::loadview('hris/permintaan_tenaga_kerja/export_permintaan_tenaga_kerja_pdf',['data'=>$data]);
         return $pdf->stream('form-nilai-kinerja.pdf');
     }
