@@ -686,7 +686,7 @@
                         :
                     </td>
                     <td style="width: 60%; text-align: left;">
-                        {{$value->besaran_gaji}}
+                        {{ 'Rp ' . number_format($value->besaran_gaji, 0, ',', '.') }}
                     </td>
                 </tr>
             </table>
