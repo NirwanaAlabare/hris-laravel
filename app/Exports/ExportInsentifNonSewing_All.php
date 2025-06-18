@@ -34,36 +34,46 @@ class ExportInsentifNonSewing_All implements FromView, WithEvents, ShouldAutoSiz
     public function view(): View
 
     {
-        $data = DB::select("
-        select
-        tgl_lembur,
-        dept,
-        DATE_FORMAT(tgl_lembur, '%d-%m-%Y') tgl_lembur_fix,
-        a.no_form,
-        a.ket,
-        b.enroll_id,
-        e.nik,
-        e.employee_name,
-        e.status_jabatan,
-        b.uuid_koreksi_upah as insentif,
-        a.dept as bagian,
-        d.department_name as department,
-        date_FORMAT(jam_lembur_awal_rencana,'%H:%i')jam_lembur_awal_rencana,
-        date_FORMAT(jam_lembur_akhir_rencana,'%H:%i')jam_lembur_akhir_rencana,
-        b.status,
-        date_FORMAT(SEC_TO_TIME(jam_lembur_istirahat*60),'%H:%i') istirahat,
-        date_FORMAT(SEC_TO_TIME((((TIMESTAMPDIFF(MINUTE,jam_lembur_awal_rencana,jam_lembur_akhir_rencana)) - jam_lembur_istirahat) * 60)),'%H:%i') total_jam,
-		date_FORMAT(m.absen_masuk_kerja,'%H:%i')absen_masuk_kerja,
-	    date_FORMAT(m.absen_pulang_kerja,'%H:%i')absen_pulang_kerja,
-		date_format(timediff(m.absen_pulang_kerja,m.absen_masuk_kerja),'%H:%i') realisasi_lembur
-        from (select * from mut_karyawan_input_non_sewing_form_lembur where tgl_lembur >= '$this->from' and tgl_lembur <= '$this->to') a
-        inner join mut_karyawan_input_non_sewing_form_lembur_det b on a.no_form = b.no_form
-        inner join employee_atribut e on b.enroll_id = e.enroll_id
-	    inner join (select * from master_data_absen_kehadiran where tanggal_berjalan >= '$this->from' and tanggal_berjalan <= '$this->to') m on b.enroll_id = m.enroll_id and a.tgl_lembur = m.tanggal_berjalan
-        inner join (select * from department_all where status='AKTIF' and site_nirwana_id IN ('NAG','NAK','NAGD')) d on a.dept=d.sub_dept_name
-        where b.uuid_koreksi_upah!=''
-        order by tgl_lembur asc,dept asc, employee_name asc
-        ");
+       $data = DB::select("
+        SELECT DISTINCT
+            DATE_FORMAT(a.tgl_lembur, '%d-%m-%Y') AS tgl_lembur_fix,
+            b.enroll_id,
+            e.nik,
+            e.employee_name,
+            d.department_name AS department,
+            b.uuid_koreksi_upah AS insentif,
+            'Insentif' AS keterangan,
+            a.no_form,
+            a.ket,
+            a.dept AS bagian,
+            DATE_FORMAT(a.tgl_lembur, '%Y-%m-%d') AS tgl_lembur,
+            DATE_FORMAT(jam_lembur_awal_rencana, '%H:%i') AS jam_lembur_awal_rencana,
+            DATE_FORMAT(jam_lembur_akhir_rencana, '%H:%i') AS jam_lembur_akhir_rencana,
+            b.status,
+            DATE_FORMAT(SEC_TO_TIME(jam_lembur_istirahat * 60), '%H:%i') AS istirahat,
+            DATE_FORMAT(SEC_TO_TIME((
+                (TIMESTAMPDIFF(MINUTE, jam_lembur_awal_rencana, jam_lembur_akhir_rencana) - jam_lembur_istirahat) * 60
+            )), '%H:%i') AS total_jam,
+            DATE_FORMAT(m.absen_masuk_kerja, '%H:%i') AS absen_masuk_kerja,
+            DATE_FORMAT(m.absen_pulang_kerja, '%H:%i') AS absen_pulang_kerja,
+            DATE_FORMAT(TIMEDIFF(m.absen_pulang_kerja, m.absen_masuk_kerja), '%H:%i') AS realisasi_lembur
+        FROM mut_karyawan_input_non_sewing_form_lembur a
+        INNER JOIN mut_karyawan_input_non_sewing_form_lembur_det b
+            ON a.no_form = b.no_form
+        INNER JOIN employee_atribut e
+            ON b.enroll_id = e.enroll_id
+        INNER JOIN master_data_absen_kehadiran m
+            ON b.enroll_id = m.enroll_id AND a.tgl_lembur = m.tanggal_berjalan
+        INNER JOIN department_all d
+            ON a.dept = d.sub_dept_name
+        WHERE a.tgl_lembur BETWEEN '$this->from' AND '$this->to'
+            AND m.tanggal_berjalan BETWEEN '$this->from' AND '$this->to'
+            AND d.status = 'AKTIF'
+            AND d.site_nirwana_id IN ('NAG','NAK','NAGD')
+            AND b.uuid_koreksi_upah != ''
+        ORDER BY a.tgl_lembur ASC, a.dept ASC, e.employee_name ASC
+    ");
+
 
 
         $this->rowCount = count($data) + 4;
