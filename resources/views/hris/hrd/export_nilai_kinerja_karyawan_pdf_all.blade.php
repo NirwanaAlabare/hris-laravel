@@ -387,54 +387,6 @@
             @endforeach
         </tr>
         @endforeach
-          {{-- <tr>
-            <td style="border-top: 1px solid black; padding: 6px;">Tanggung jawab terhadap tugas yang diberikan</td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row1" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row1" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row1" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row1" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row1" class="penilaian-radio"></td>
-          </tr>
-          <tr>
-            <td style="border-top: 1px solid black; padding: 6px;">Inisiatif dan Kerjasama</td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row2" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row2" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row2" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row2" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row2" class="penilaian-radio"></td>
-          </tr>
-          <tr>
-            <td style="border-top: 1px solid black; padding: 6px;">Akurasi dalam pekerjaan</td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row3" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row3" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row3" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row3" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row3" class="penilaian-radio"></td>
-          </tr>
-          <tr>
-            <td style="border-top: 1px solid black; padding: 6px;">Kemauan dan Kegigihan dalam mencapai tujuan</td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row4" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row4" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row4" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row4" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row4" class="penilaian-radio"></td>
-          </tr>
-          <tr>
-            <td style="border-top: 1px solid black; padding: 6px;">Penyampaian dan Penerimaan informasi</td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row5" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row5" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row5" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row5" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row5" class="penilaian-radio"></td>
-          </tr>
-          <tr>
-            <td style="border-top: 1px solid black; border-bottom: 1px solid black; padding: 6px;">Attitude / Sikap Kerja</td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row6" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row6" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row6" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row6" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row6" class="penilaian-radio"></td>
-          </tr> --}}
         </tbody>
     </table>
     <table width="100%" style="border-bottom:1px solid black; border-top:0px; border-left: 1px solid; border-right: 1px solid;">
@@ -538,12 +490,12 @@
         <div class="recommendation" style="border-left:1px solid;">
             <div style="height: 3px;"></div>
           <div ><strong>D. Rekomendasi Tindak Lanjut</strong></div>
-          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $value->penilaian ? $value->penilaian->rekomendasi_tindak_lanjut == 'perpanjang' ? 'checked' : '' : ''}} name="rekomendasi" value="perpanjang" id="rekomendasi_perpanjang_kontrak"> Perpanjangan Kontrak {{ $value->penilaian ? $value->penilaian->perpanjang_bulan : '___________'}} Bulan</label>
-          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $value->penilaian ? $value->penilaian->rekomendasi_tindak_lanjut == 'phk' ? 'checked' : '' : ''}} name="rekomendasi" value="phk" id="rekomendasi_phk"> Tidak Perpanjang Kontrak / PHK</label>
-          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $value->penilaian ? $value->penilaian->rekomendasi_tindak_lanjut == 'demosi' ? 'checked' : '' : ''}} name="rekomendasi" value="demosi" id="rekomendasi_demosi"> Demosi</label>
-          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $value->penilaian ? $value->penilaian->rekomendasi_tindak_lanjut == 'promosi' ? 'checked' : '' : ''}} name="rekomendasi" value="promosi" id="rekomendasi_promosi"> Promosi</label>
-          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $value->penilaian ? $value->penilaian->rekomendasi_tindak_lanjut == 'training' ? 'checked' : '' : ''}} name="rekomendasi" value="training" id="rekomendasi_training"> Training / Pengembangan, Sebutkan Judul / Tujuan {{$value->penilaian ? $value->penilaian->judul_training : '___________'}}</label>
-        </div>
+          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $value->penilaian ? $value->rekomendasi_perpanjang_kontrak == 'perpanjang' ? 'checked' : '' : ''}} name="rekomendasi_perpanjang_kontrak" value="perpanjang" id="rekomendasi_perpanjang_kontrak"> Perpanjangan Kontrak {{ $value->penilaian ? $value->perpanjang_bulan : '___________'}} Bulan</label>
+          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $value->penilaian ? $value->rekomendasi_phk == 'phk' ? 'checked' : '' : ''}} name="rekomendasi_phk" value="phk" id="rekomendasi_phk"> Tidak Perpanjang Kontrak / PHK</label>
+          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $value->penilaian ? $value->rekomendasi_demosi == 'demosi' ? 'checked' : '' : ''}} name="rekomendasi_demosi" value="demosi" id="rekomendasi_demosi"> Demosi</label>
+          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $value->penilaian ? $value->rekomendasi_promosi == 'promosi' ? 'checked' : '' : ''}} name="rekomendasi_promosi" value="promosi" id="rekomendasi_promosi"> Promosi</label>
+          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $value->penilaian ? $value->rekomendasi_training == 'training' ? 'checked' : '' : ''}} name="rekomendasi_training" value="training" id="rekomendasi_training"> Training / Pengembangan, Sebutkan Judul / Tujuan {{$value->penilaian ? $value->judul_training : '___________'}}</label>
+         </div>
         <table width="100%" style="position: absolute; bottom: -20px;">
             <thead>
                 <tr>

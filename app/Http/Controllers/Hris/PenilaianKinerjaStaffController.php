@@ -253,12 +253,8 @@ class PenilaianKinerjaStaffController extends AdminBaseController
 
             // Hitung nilai akhir
             $nilai_kinerja = floatval($request->nilai_kinerja);
-            // $nilai_rata2 = ($nilai_kinerja + $total_kompetensi) / 6;
             $nilai_rata2 = $total_kompetensi / 6;
             $penilaian_akhir = ($nilai_rata2 + $nilai_kinerja) - $total_pengurangan;
-
-            // $timestamp = Carbon::now();
-            // DB::insert("insert into employee_contract (id, enroll_id, contract, contract_end, created_at, updated_at) VALUES ('','$request->enroll_id_input_2_val','$contract','$contract_end','$timestamp','$timestamp')");
 
             $penilaian_kinerja = PenilaianKinerja::create([
                 'enroll_id' => $request->enroll_id_input_2_val,
@@ -292,14 +288,13 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                 'ijin_kali' => $request->kejadian['ijin_kali'] ?? null,
                 'total_pengurangan' => $total_pengurangan,
 
-                'rekomendasi_tindak_lanjut' => $request->rekomendasi,
-                'perpanjang_bulan' => $request->rekomendasi == 'perpanjang' ? $request->perpanjang_bulan : null,
-                'judul_training' => $request->rekomendasi == 'training' ? $request->judul_training : null,
-                'rekomendasi_training' => null,
-                'rekomendasi_perpanjang_kontrak' => null,
-                'rekomendasi_phk' => null,
-                'rekomendasi_demosi' => null,
-                'rekomendasi_promosi' => null,
+                'perpanjang_bulan' => $request->rekomendasi_perpanjang_kontrak ? $request->perpanjang_bulan : null,
+                'judul_training' => $request->rekomendasi_training ? $request->judul_training : null,
+                'rekomendasi_training' => $request->rekomendasi_training,
+                'rekomendasi_perpanjang_kontrak' => $request->rekomendasi_perpanjang_kontrak,
+                'rekomendasi_phk' => $request->rekomendasi_phk,
+                'rekomendasi_demosi' => $request->rekomendasi_demosi,
+                'rekomendasi_promosi' => $request->rekomendasi_promosi,
 
 
                 'rata_rata_kompetensi' => $nilai_rata2,
@@ -308,7 +303,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                 'penilai' => $request->penilai,
             ]);
 
-             if ($request->rekomendasi == 'perpanjang') {
+             if ($request->rekomendasi_perpanjang_kontrak == 'perpanjang') {
                 $timestamp = Carbon::now();
                 $akhirKontrak = Carbon::parse($request->akhir_kontrak_text_val);
                 $adjustedDate = $akhirKontrak->copy()->addDay();
@@ -428,15 +423,13 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                 'total_pengurangan' => $total_pengurangan,
 
                 // Rekomendasi dan data lainnya
-                'rekomendasi_tindak_lanjut' => $request->rekomendasi,
-                'perpanjang_bulan' => $request->rekomendasi == 'perpanjang' ? $request->perpanjang_bulan : null,
-                'judul_training' => $request->rekomendasi == 'training' ? $request->judul_training : null,
-
-                'rekomendasi_perpanjang_kontrak' => null,
-                'rekomendasi_phk' => null,
-                'rekomendasi_demosi' => null,
-                'rekomendasi_promosi' => null,
-                'rekomendasi_training' => null,
+                'perpanjang_bulan' => $request->rekomendasi_perpanjang_kontrak ? $request->perpanjang_bulan : null,
+                'judul_training' => $request->rekomendasi_training ? $request->judul_training : null,
+                'rekomendasi_training' => $request->rekomendasi_training,
+                'rekomendasi_perpanjang_kontrak' => $request->rekomendasi_perpanjang_kontrak,
+                'rekomendasi_phk' => $request->rekomendasi_phk,
+                'rekomendasi_demosi' => $request->rekomendasi_demosi,
+                'rekomendasi_promosi' => $request->rekomendasi_promosi,
 
                 'rata_rata_kompetensi' => $nilai_rata2,
                 'nilai_akhir' => $penilaian_akhir,
@@ -445,7 +438,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             ]);
 
 
-            if ($request->rekomendasi == 'perpanjang') {
+            if ($request->rekomendasi_perpanjang_kontrak == 'perpanjang') {
                 $timestamp = Carbon::now();
                 $akhirKontrak = Carbon::parse($request->akhir_kontrak_text_val);
                 $adjustedDate = $akhirKontrak->copy()->addDay();
@@ -1350,7 +1343,6 @@ class PenilaianKinerjaStaffController extends AdminBaseController
 
             return $karyawan;
         });
-
         $pdf = PDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_all',['data'=>$data]);
         return $pdf->stream('form-nilai-kinerja.pdf');
     }

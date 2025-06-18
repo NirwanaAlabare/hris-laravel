@@ -603,28 +603,28 @@
 
                     <div class="mt-3 ml-2">
                         <div class="form-check d-flex align-items-center gap-2">
-                            <input class="form-check-input mt-0" type="radio" name="rekomendasi" value="perpanjang" id="rekomendasi_perpanjang_kontrak">
+                            <input class="form-check-input mt-0" type="checkbox" name="rekomendasi_perpanjang_kontrak" value="perpanjang" id="rekomendasi_perpanjang_kontrak">
                             <label class="form-check-label mb-0" for="rekomendasi_perpanjang_kontrak">Perpanjang Kontrak</label>
                             <input type="text" class="form-control form-control-sm ml-3" style="width: 100px;" name="perpanjang_bulan"  id="perpanjang_bulan"  placeholder="Bulan">
                         </div>
 
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="rekomendasi" value="phk" id="rekomendasi_phk">
+                            <input class="form-check-input" type="checkbox" name="rekomendasi_phk" value="phk" id="rekomendasi_phk">
                             <label class="form-check-label" for="rekomendasi_phk">Tidak Perpanjang Kontrak / PHK</label>
                         </div>
 
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="rekomendasi" value="demosi" id="rekomendasi_demosi">
+                            <input class="form-check-input" type="checkbox" name="rekomendasi_demosi" value="demosi" id="rekomendasi_demosi">
                             <label class="form-check-label" for="rekomendasi_demosi">Demosi</label>
                         </div>
 
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="rekomendasi" value="promosi" id="rekomendasi_promosi">
+                            <input class="form-check-input" type="checkbox" name="rekomendasi_promosi" value="promosi" id="rekomendasi_promosi">
                             <label class="form-check-label" for="rekomendasi_promosi">Promosi</label>
                         </div>
 
                         <div class="form-check d-flex align-items-center gap-2">
-                            <input class="form-check-input mt-0" type="radio" name="rekomendasi" value="training" id="rekomendasi_training">
+                            <input class="form-check-input mt-0" type="checkbox" name="rekomendasi_training" value="training" id="rekomendasi_training">
                             <label class="form-check-label w-auto mr-3 mb-0" for="rekomendasi_training">Training / Pengembangan</label>
                             <input type="text" class="form-control form-control-sm w-50" name="judul_training" placeholder="Sebutkan Judul / Tujuan">
                         </div>
@@ -993,24 +993,17 @@ function updateRange(start, end) {
 
 
 
-            const rekomendasi = $('input[name="rekomendasi"]:checked').val();
+            const rekomendasi_perpanjang_kontrak = $('input[name="rekomendasi_perpanjang_kontrak"]:checked').val();
             const bulan = $('#perpanjang_bulan').val().trim();
 
-            if (!rekomendasi) {
-                iziToast.warning({
-                    title: 'Peringatan',
-                    message: 'Mohon pilih salah satu rekomendasi tindak lanjut.',
-                });
-                return;
-            }
 
-            if (rekomendasi === 'perpanjang' && bulan === '') {
+            if (rekomendasi_perpanjang_kontrak && bulan === '') {
                 iziToast.warning({
                     title: 'Peringatan',
                     message: 'Mohon isi jumlah bulan perpanjangan kontrak.',
                 });
                 $('#perpanjang_bulan').focus();
-                return; // Hentikan proses submit
+                return;
             }
 
             var formData = $(this).serialize();
@@ -2671,7 +2664,7 @@ function updateRange(start, end) {
                             }
                         });
                     });
-                    if (data_penilaian.rekomendasi_perpanjang_kontrak == 1) {
+                    if (data_penilaian.rekomendasi_perpanjang_kontrak) {
                         $('#rekomendasi_perpanjang_kontrak').prop('checked', true);
                     } else {
                         $('#rekomendasi_perpanjang_kontrak').prop('checked', false);
@@ -2681,16 +2674,16 @@ function updateRange(start, end) {
                     $('input[name="perpanjang_bulan"]').val(data_penilaian.perpanjang_bulan || '');
 
                                     // Rekomendasi: PHK
-                    $('#rekomendasi_phk').prop('checked', data_penilaian.rekomendasi_phk == 1);
+                    $('#rekomendasi_phk').prop('checked', data_penilaian.rekomendasi_phk);
 
                     // Rekomendasi: Demosi
-                    $('#rekomendasi_demosi').prop('checked', data_penilaian.rekomendasi_demosi == 1);
+                    $('#rekomendasi_demosi').prop('checked', data_penilaian.rekomendasi_demosi);
 
                     // Rekomendasi: Promosi
-                    $('#rekomendasi_promosi').prop('checked', data_penilaian.rekomendasi_promosi == 1);
+                    $('#rekomendasi_promosi').prop('checked', data_penilaian.rekomendasi_promosi);
 
                     // Rekomendasi: Training
-                    $('#rekomendasi_training').prop('checked', data_penilaian.rekomendasi_training == 1);
+                    $('#rekomendasi_training').prop('checked', data_penilaian.rekomendasi_training);
                     $('input[name="judul_training"]').val(data_penilaian.judul_training || '');
 
 
