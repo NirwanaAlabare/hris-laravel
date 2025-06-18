@@ -40,6 +40,7 @@ class ExportInsentifNonSewing_All implements FromView, WithEvents, ShouldAutoSiz
             b.enroll_id,
             e.nik,
             e.employee_name,
+            e.status_staff,
             d.department_name AS department,
             b.uuid_koreksi_upah AS insentif,
             'Insentif' AS keterangan,
