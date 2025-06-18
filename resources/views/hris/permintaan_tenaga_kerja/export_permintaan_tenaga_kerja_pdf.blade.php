@@ -812,23 +812,23 @@
                 <td style="vertical-align: middle; font-size: 8pt; border: 1px solid;  border-top: 1px solid; border-right: 1px solid; border-left: 1px solid; text-align: center; border-right: 1px solid; width:5%; height: 20px; font-weight: 800; width:25%;"> Status Permintaan</td>
                 <td style="vertical-align: middle; font-size: 8pt; border: none; width:3%;"></td>
                 <td style="vertical-align: middle; font-size: 14pt; border: 1px solid; width:4%; text-align: center;">
-                    @if(strtolower($value->status_pengajuan) == strtolower('done'))
+                    {{-- @if(strtolower($value->status_pengajuan_realisasi) == strtolower('done'))
                         ✔
-                    @endif
+                    @endif --}}
                 </td>
                 <td style="vertical-align: middle; font-size: 8pt; border: none; width:4%; padding-left:5px;">Done</td>
                 <td style="vertical-align: middle; font-size: 8pt; border: none; width:5%;"></td>
                 <td style="vertical-align: middle; font-size: 14pt; border: 1px solid; width:4%; text-align: center;">
-                      @if(strtolower($value->status_pengajuan) == strtolower('pending'))
+                      {{-- @if(strtolower($value->status_pengajuan_realisasi) == strtolower('pending'))
                         ✔
-                    @endif
+                    @endif --}}
                 </td>
                 <td style="vertical-align: middle; font-size: 8pt; border: none; width:4%; padding-left:5px;">Pending</td>
                 <td style="vertical-align: middle; font-size: 8pt; border: none; width:5%;"></td>
                 <td style="vertical-align: middle; font-size: 14pt; border: 1px solid; width:4%; text-align: center;">
-                      @if(strtolower($value->status_pengajuan) == strtolower('cancel'))
+                      {{-- @if(strtolower($value->status_pengajuan) == strtolower('cancel'))
                         ✔
-                    @endif
+                    @endif --}}
                 </td>
                 <td style="vertical-align: middle; font-size: 8pt; border: none; width:4%; padding-left:5px;">Cancel</td>
 
