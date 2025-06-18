@@ -919,9 +919,7 @@ class DataAbsenPerijinanController extends AdminBaseController
         $enroll_id = $request->enroll_id;
         $tanggal_mulai_ijin = $request->tanggal_mulai_ijin;
         $tanggal_akhir_ijin = $request->tanggal_akhir_ijin;
-        $query =  DataAbsenPerijinan::whereRaw('(
-                                    (tanggal_perizinan between "'. $tanggal_mulai_ijin . '" and "'. $tanggal_akhir_ijin . '") OR
-                                    (tanggal_mulai_ijin = "'.$tanggal_mulai_ijin.'" and tanggal_akhir_ijin = "'.$tanggal_akhir_ijin.'"))
+        $query =  DataAbsenPerijinan::whereRaw('tanggal_mulai_ijin = "'.$tanggal_mulai_ijin.'" and tanggal_akhir_ijin = "'.$tanggal_akhir_ijin.'"
                                     and enroll_id = "'. $enroll_id . '"
                                  ')
                                  ->get();

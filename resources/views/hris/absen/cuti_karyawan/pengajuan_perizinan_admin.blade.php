@@ -1765,8 +1765,6 @@ h1 {
             var kode_absen_ijin = $('#kode_absen_ijin').val();
             var absen_alasan = $('#absen_alasan_izin').val();
 
-            console.log("kode_absen_ijin", kode_absen_ijin);
-            console.log("didelegasikan_enroll_id", didelegasikan_enroll_id);
 
             if (!enroll_id) {
                 notif({
