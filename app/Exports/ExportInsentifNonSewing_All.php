@@ -118,7 +118,7 @@ class ExportInsentifNonSewing_All implements FromView, WithEvents, ShouldAutoSiz
     {
         return [
             'A' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'F' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+            'G' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
         ];
     }
 }
