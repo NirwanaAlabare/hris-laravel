@@ -153,7 +153,16 @@ class PermintaanTenagaKerjaController extends AdminBaseController
 
     public function create_permintaan_tk(Request $request){
         $logged_admin = Auth::guard('admin')->user();
+
+        $prefix = date('ym'); // hasilnya 2506 (misalnya Juni 2025)
+
+        // Hitung jumlah permintaan yang sudah ada untuk bulan dan tahun ini
+        $count = PengajuanPermintaanTk::whereRaw("DATE_FORMAT(created_at, '%y%m') = ?", [$prefix])->count();
+        $urut = str_pad($count + 1, 3, '0', STR_PAD_LEFT); // hasil: 001, 002, dst
+
+        $no_permintaan = $prefix . '-' . $urut;
          PengajuanPermintaanTk::create([
+            'no_permintaan' => $no_permintaan,
             'tanggal_pengajuan' => $request->tanggal_perizinan,
             'status_permintaan' => $request->status_permintaan,
             'diajukan_oleh_id' => $request->diajukanOlehID,

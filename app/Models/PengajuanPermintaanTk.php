@@ -12,6 +12,7 @@ class PengajuanPermintaanTk extends Model
     protected $table = 'pengajuan_permintaan_tk';
 
    protected $fillable = [
+    'no_permintaan',
     'tanggal_pengajuan',
     'status_permintaan',
     'diajukan_oleh_id',
