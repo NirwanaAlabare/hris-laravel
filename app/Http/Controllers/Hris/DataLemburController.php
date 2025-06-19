@@ -219,35 +219,35 @@ class DataLemburController extends AdminBaseController
         }
 
         $query = DB::select("
-                    SELECT
-                        CONCAT(
-                            dl.nomor_form_lembur,
-                            ' [ ',
-                            DATE_FORMAT(ma.tanggal_berjalan, '%d %b %Y'),
-                            ' ] => ',
-                            COUNT(ma.enroll_id),
-                            ' karyawan'
-                        ) AS tanggal_nomor_spl,
-                        dl.nomor_form_lembur,
-                        ma.tanggal_berjalan,
-                        dl.mulai_jam_lembur,
-                        dl.akhir_jam_lembur,
-                        dl.jumlah_jam_lembur,
-                        dl.catatan,
-                        dl.jumlah_jam_istirahat_lembur
-                    FROM
-                        data_lembur dl
-                    JOIN
-                        master_data_absen_kehadiran ma
-                        ON ma.uuid = dl.uuid_master
-                    WHERE
-                        ma.tanggal_berjalan BETWEEN '{$awal_bulan}' AND '{$akhir_bulan}'
-                        {$inNomorSPL}
-                    GROUP BY
-                        dl.nomor_form_lembur, ma.tanggal_berjalan
-                    ORDER BY
-                        dl.nomor_form_lembur DESC;
-                ");
+            SELECT
+                CONCAT(
+                    dl.nomor_form_lembur,
+                    ' [ ',
+                    DATE_FORMAT(ma.tanggal_berjalan, '%d %b %Y'),
+                    ' ] => ',
+                    COUNT(ma.enroll_id),
+                    ' karyawan'
+                ) AS tanggal_nomor_spl,
+                dl.nomor_form_lembur,
+                ma.tanggal_berjalan,
+                dl.mulai_jam_lembur,
+                dl.akhir_jam_lembur,
+                dl.jumlah_jam_lembur,
+                dl.catatan,
+                dl.jumlah_jam_istirahat_lembur
+            FROM
+                data_lembur dl
+            JOIN
+                master_data_absen_kehadiran ma
+                ON ma.uuid = dl.uuid_master
+            WHERE
+                ma.tanggal_berjalan BETWEEN '{$awal_bulan}' AND '{$akhir_bulan}'
+                {$inNomorSPL}
+            GROUP BY
+                dl.nomor_form_lembur, ma.tanggal_berjalan
+            ORDER BY
+                dl.nomor_form_lembur DESC;
+        ");
         return $query;
 
     }
@@ -2780,7 +2780,7 @@ class DataLemburController extends AdminBaseController
         $nomor_form_lembur = DataLembur::select('nomor_form_lembur')->orderBy('created_at','desc')->limit(1)->pluck('nomor_form_lembur')[0];
         $last_nomor =substr($nomor_form_lembur,12);
         $ldate = date('Ym');
-        return 'SPL/HR/'.substr($ldate,2).'/'.sprintf("%04d", (int)$last_nomor+1);
+        return 'SPL/HR/'.substr($ldate,2).'/'.sprintf("%05d", (int)$last_nomor+1);
     }
 
     public function verifikasi_insentif_lembur()
