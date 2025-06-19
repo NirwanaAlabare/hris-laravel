@@ -160,7 +160,7 @@ class PermintaanTenagaKerjaController extends AdminBaseController
         $count = PengajuanPermintaanTk::whereRaw("DATE_FORMAT(created_at, '%y%m') = ?", [$prefix])->count();
         $urut = str_pad($count + 1, 3, '0', STR_PAD_LEFT); // hasil: 001, 002, dst
 
-        $no_permintaan = $prefix . '-' . $urut;
+        $no_permintaan = 'TK' . $prefix . '-' . $urut;
          PengajuanPermintaanTk::create([
             'no_permintaan' => $no_permintaan,
             'tanggal_pengajuan' => $request->tanggal_perizinan,
