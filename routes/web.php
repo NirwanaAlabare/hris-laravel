@@ -321,6 +321,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('/cuti_karyawan/export_form_pengajuan_cuti_pdf', ['as' => 'cuti_karyawan.export_form_pengajuan_cuti_pdf','uses' => 'MasterData\CutiKaryawanController@export_form_pengajuan_cuti_pdf']);
     Route::get('/cuti_karyawan/export_form_pengajuan_izin_pdf', ['as' => 'cuti_karyawan.export_form_pengajuan_izin_pdf','uses' => 'MasterData\CutiKaryawanController@export_form_pengajuan_izin_pdf']);
 
+    // PERMINTAAN TENAGA KERJA HR
+    Route::get('/permintaan_tenaga_kerja_hr/index', ['as' => 'permintaan_tenaga_kerja_hr.permintaan_tenaga_kerja_hr','uses' => 'Administrasi\PermintaanTenagaKerjaController@index_hr']);
 
     // PERMINTAAN TENAGA KERJA
     Route::get('/permintaan_tenaga_kerja/index', ['as' => 'permintaan_tenaga_kerja.permintaan_tenaga_kerja','uses' => 'Administrasi\PermintaanTenagaKerjaController@index']);

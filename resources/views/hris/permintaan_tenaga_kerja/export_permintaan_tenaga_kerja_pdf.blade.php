@@ -120,7 +120,7 @@
                             <tr>
                                 <td style="width: 2%;">:</td>
                                 <td style="width: 95%;">
-                                    {{Carbon\Carbon::parse($value->tanggal_perizinan)->translatedFormat('d F Y')}}
+                                    {{Carbon\Carbon::parse($value->tanggal_pengajuan)->translatedFormat('d F Y')}}
                                 </td>
                             </tr>
                         </table>

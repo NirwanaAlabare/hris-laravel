@@ -12,7 +12,7 @@ class PengajuanPermintaanTk extends Model
     protected $table = 'pengajuan_permintaan_tk';
 
    protected $fillable = [
-    'tanggal_perizinan',
+    'tanggal_pengajuan',
     'status_permintaan',
     'diajukan_oleh_id',
     'department_kode',
@@ -32,6 +32,7 @@ class PengajuanPermintaanTk extends Model
     'verifikator_by',
     'status_pengajuan',
     'pend_minimal',
+    'status_pengajuan_realisasi',
 ];
 
     protected $casts = [

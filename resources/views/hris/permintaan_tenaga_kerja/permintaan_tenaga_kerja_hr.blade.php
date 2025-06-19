@@ -1,4 +1,4 @@
-@extends('admin.adminlayouts.adminlayout-mut-karyawan')
+@extends('admin.adminlayouts.adminlayout3')
 
 @section('head')
     <link href="{{ URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
@@ -268,19 +268,6 @@ h1 {
                     <div class="card-header bg-primary p-3">
                         <div class="card-title">Permintaan Tenaga Kerja</div>
                     </div>
-                        <div class="mt-4 ml-4 mr-5 mb-0">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div clasl="" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-                                        <div class="mt-5 p-0">
-                                            <button class="btn btn-primary w-100" onclick="openModalBuatPengajuan()"  data-toggle="tooltip" title="Cari Data" id="recap_labor_cost_2"><i class="fa fa-plus" aria-hidden="true"></i> Buat Permintaan</button>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
                         <div class="m-0 p-0">
                             <div class="card-body m-0">
                                 <div class="panel panel-primary  px-3 py-2 pt-5">
@@ -945,7 +932,7 @@ h1 {
                                     </button>
                                     <button class="btn btn-success w-100" id="btn-approve-permintaan" data-toggle="tooltip" title="Simpan Data" style="margin-top: 10px; display: none;">
                                         <i class="fa fa-check" aria-hidden="true"></i>
-                                        Selesaikan Pengajuan
+                                        Approve FPTK
                                     </button>
                                     <button class="btn btn-danger w-100" id="btn-reject-permintaan" data-toggle="tooltip" title="Tolak Pengajuan" style="margin-top: 10px; display: none;">
                                         <i class="fa fa-check" aria-hidden="true"></i>
@@ -1287,7 +1274,7 @@ h1 {
                 processing: true,
                 serverSide: true,
                 columns: [
-                    { data: 'tanggal_perizinan',
+                    { data: 'tanggal_pengajuan',
                       render: function(data, type, row) {
                             return moment(data).format('ll');  // Formatkan tanggal ke dmy
                         }
@@ -1315,6 +1302,9 @@ h1 {
                                 let exportUrl;
                                 let btnClass;
                                     return `
+                                        <button class="btn btn-sm mr-1 btn-success" onclick="openModalApprovePengajuan('${row.id}')" data-id="${row.id}" title="Approve">
+                                            <i class="fa fa-check"></i>
+                                        </button>
                                         <button class="btn btn-sm mr-1 btn-danger" onclick="printPengajuanPDF('${row.id}')" data-id="${row.id}" title="Print">
                                             <i class="fa fa-file-pdf-o"></i>
                                         </button>
@@ -1340,7 +1330,7 @@ h1 {
                 processing: true,
                 serverSide: true,
                 columns: [
-                    { data: 'tanggal_perizinan',
+                    { data: 'tanggal_pengajuan',
                       render: function(data, type, row) {
                             return moment(data).format('ll');  // Formatkan tanggal ke dmy
                         }
@@ -1368,8 +1358,17 @@ h1 {
                                 let exportUrl;
                                 let btnClass;
                                     return `
+                                        <button class="btn btn-sm mr-1 btn-info" onclick="openModalEditPengajuan('${row.id}')" data-id="${row.id}" title="Realisasi">
+                                            <i class="fa fa-plus-square-o"></i>
+                                        </button>
                                         <button class="btn btn-sm mr-1 btn-danger" onclick="printPengajuanPDF('${row.id}')" data-id="${row.id}" title="Print">
                                             <i class="fa fa-file-pdf-o"></i>
+                                        </button>
+                                        <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.id}')" data-id="${row.id}" title="Edit">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-id_pengajuan="${row.id}" title="Hapus">
+                                            <i class="fa fa-trash"></i>
                                         </button>
                                     `;
                         }
@@ -1387,7 +1386,7 @@ h1 {
                 processing: true,
                 serverSide: true,
                 columns: [
-                    { data: 'tanggal_perizinan',
+                    { data: 'tanggal_pengajuan',
                       render: function(data, type, row) {
                             return moment(data).format('ll');  // Formatkan tanggal ke dmy
                         }

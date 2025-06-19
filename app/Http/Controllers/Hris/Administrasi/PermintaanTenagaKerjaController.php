@@ -87,6 +87,39 @@ class PermintaanTenagaKerjaController extends AdminBaseController
             "selectemployee" => $selectemployee,
         ], $this->data);
     }
+    public function index_hr()
+    {
+        $tglskrg = date('Y-m-d');
+        $user = Auth::guard('admin')->user()->email;
+        $data_dept = DB::select("select
+        d.sub_dept_id isi,
+        concat(department_name,' - ', sub_dept_name) tampil
+        from department_all d
+        left join
+        (select sub_dept_id,count(employee_id) tot from employee_atribut where status_aktif = 'aktif' group by sub_dept_id) e on d.sub_dept_id = e.sub_dept_id
+        where site_nirwana_id = 'NAG'
+        and sub_dept_name not like 'line%'
+        and e.tot != '0'
+        group by d.sub_dept_id
+        order by department_name asc");
+
+        $DepartmentAllModel =  DepartmentAll::groupBy('department_name')
+        ->orderBy('department_name','asc')
+        ->get();
+        $NirwananameAllModel =  DepartmentAll::groupBy('site_nirwana_name')
+        ->orderBy('site_nirwana_name','asc')
+        ->get();
+
+        $this->department =  $DepartmentAllModel;
+        $this->site =  $NirwananameAllModel;
+        $selectemployee = $this->ajax_getallemployeeatribut();
+
+         return view('hris/permintaan_tenaga_kerja/permintaan_tenaga_kerja_hr', [
+            'page' => 'dashboard-mut-karyawan', "subPageGroup" => "proses-karyawan", "subPage" => "form-lembur-non-sewing",
+            "data_dept" => $data_dept, "user" => $user,
+            "selectemployee" => $selectemployee,
+        ], $this->data);
+    }
 
     public function ajax_getallemployeeatribut()
     {
@@ -121,7 +154,7 @@ class PermintaanTenagaKerjaController extends AdminBaseController
     public function create_permintaan_tk(Request $request){
         $logged_admin = Auth::guard('admin')->user();
          PengajuanPermintaanTk::create([
-            'tanggal_perizinan' => $request->tanggal_perizinan,
+            'tanggal_pengajuan' => $request->tanggal_perizinan,
             'status_permintaan' => $request->status_permintaan,
             'diajukan_oleh_id' => $request->diajukanOlehID,
             'department_kode' => $request->selectDepartment,
@@ -138,7 +171,7 @@ class PermintaanTenagaKerjaController extends AdminBaseController
             'jangka_waktu_kontrak' => $request->jangka_waktu_kontrak,
             'keterangan_tambahan' => $request->keterangan_tambahan,
             'uraian_tugas' => array_filter($request->uraianTugas),
-            'status_pengajuan' => 'pending',
+            'status_pengajuan' => 'waiting_approval',
             'created_by' => $logged_admin->email,
         ]);
         return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil dibuat.']);
@@ -146,7 +179,7 @@ class PermintaanTenagaKerjaController extends AdminBaseController
 
     public function update_permintaan_tk(Request $request){
         PengajuanPermintaanTk::where('id', $request->id)->update([
-             'tanggal_perizinan' => $request->tanggal_perizinan,
+             'tanggal_pengajuan' => $request->tanggal_perizinan,
             'status_permintaan' => $request->status_permintaan,
             'diajukan_oleh_id' => $request->diajukanOlehID,
             'department_kode' => $request->selectDepartment,
@@ -170,14 +203,15 @@ class PermintaanTenagaKerjaController extends AdminBaseController
     public function approve_permintaan_tk(Request $request){
         $logged_admin = Auth::guard('admin')->user();
         PengajuanPermintaanTk::where('id', $request->id)->update([
-            'status_pengajuan' => 'done',
+            'status_pengajuan' => 'approved',
             'verifikator_by' => $logged_admin->email,
         ]);
         return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil di approve.']);
     }
     public function reject_permintaan_tk(Request $request){
+        $logged_admin = Auth::guard('admin')->user();
         PengajuanPermintaanTk::where('id', $request->id)->update([
-            'status_pengajuan' => 'batal',
+            'status_pengajuan' => 'cancel',
             'verifikator_by' => $logged_admin->email,
         ]);
         return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil ditolak.']);
@@ -227,7 +261,6 @@ class PermintaanTenagaKerjaController extends AdminBaseController
             ->leftJoin('department_all as department_all2', 'pengajuan_permintaan_tk.bagian_kode', '=', 'department_all2.sub_dept_id')
             ->where('pengajuan_permintaan_tk.status_pengajuan', $status)
             ->distinct();
-
         if (!in_array($email, ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli', 'ersa@ptnag.com','indri@nag.nirwanaindonesia.com','hadiyoso@nag.nirwanaindonesia.com','ronald@ptnag.com','bobby','pujiprana@nag.nirwanaindonesia.com'])) {
             $query ->where(function($q) use ($email) {
                 $q->where('pengajuan_permintaan_tk.created_by', $email);

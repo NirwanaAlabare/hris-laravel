@@ -12,6 +12,7 @@
                 <li><a href="{{route('hris.hrd.index')}}" class="slide-item"><span> Surat Keterangan Kerja</span></a></li>
                 <li><a href="{{route('hris.hrd.kontrak_kerja')}}" class="slide-item"><span> Kontrak Kerja</span></a></li>
                 <li><a href="{{route('hris.hrd.layoff_termination')}}" class="slide-item"><span> Layoff & Termination</span></a></li>
+                <li><a href="{{route('permintaan_tenaga_kerja_hr.permintaan_tenaga_kerja_hr')}}" class="slide-item"><span> Permintaan Tenaga Kerja</span></a></li>
             </ul>
         </li>
         @php
