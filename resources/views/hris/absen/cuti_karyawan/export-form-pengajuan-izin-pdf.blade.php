@@ -56,7 +56,7 @@
             <tr>
                 <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top;" width="17%">Nama</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top;" width="1%">:</td>
-            <td style="font-family: Arial, Helvetica, sans-serif; font-size: 8pt; vertical-align: top; text-transform: uppercase; line-height: normal;" width="100%">
+            <td style="font-family: Arial, Helvetica, sans-serif; font-size: 8pt; vertical-align: top; text-transform: uppercase; line-height: normal;" width="50%">
                 {{ $data->employee_name }}
                 <div style="border-bottom: 1px solid #000; width: 100%; margin-top: 0px;">
                     <span style="display: block; height: 1px;"></span>
@@ -121,10 +121,10 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:10px;" colspan="6"></td>
-            </tr>
-            <tr>
+            </tr> --}}
+            {{-- <tr>
                 <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">Jenis Perijinan</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">:</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; text-transform: uppercase;">   {{$data->nama_absen_ijin
@@ -137,7 +137,7 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
-            </tr>
+            </tr> --}}
 
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:10px;" colspan="6"></td>
@@ -187,7 +187,7 @@
     <table width="100%" style="border-left:1px solid black; border-top:0px; border-right:1px solid black; margin: none; padding:none;">
         <thead>
              <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:10px;" colspan="6"></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:5px;" colspan="6"></td>
             </tr>
              <tr>
                 <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; width:21.5%">Keterangan</td>
@@ -198,7 +198,7 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:10px;" colspan="6"></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:5px;" colspan="6"></td>
             </tr>
             @php
                 $tanggal = \Carbon\Carbon::parse($data->tanggal_mulai_ijin ?? $data->tanggal_perizinan);
