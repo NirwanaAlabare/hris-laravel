@@ -59,7 +59,7 @@
             <tr>
                 <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top;" width="17%">Nama</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top;" width="1%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; text-transform: uppercase;" width="42%">{{ $data->employee_name }}  <div style="border-bottom: 1px solid #000; width: 100%; margin-top: 0px;">
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; text-transform: uppercase;" width="50%">{{ $data->employee_name }}  <div style="border-bottom: 1px solid #000; width: 100%; margin-top: 0px;">
                     <span style="display: block; height: 1px;"></span>
                 </div></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top;" width="16%"></td>
