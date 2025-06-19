@@ -274,7 +274,7 @@ h1 {
                                     <div class="tab_wrapper first_tab">
                                         <ul class="tab_list">
                                             <li class="text-sm" id="tab-waiting">Pending</li>
-                                            <li class="text-sm" id="tab-verifikasi">Done</li>
+                                            <li class="text-sm" id="tab-verifikasi">Approved</li>
                                             <li class="text-sm" id="tab-reject">Cancel</li>
                                         </ul>
                                         <div class="content_wrapper">
@@ -1006,6 +1006,59 @@ h1 {
                                 </div>
                                  <div class="col-md-2">
                                     <div style="display: block; text-align: start; height: 25px;">
+                                            <span>Tanggal Kebutuhan</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                         <span>:</span>
+                                        <strong><span id="tgl_kebutuhan_text"></span></strong>
+                                    </div>
+                                </div>
+                                  <div class="col-md-12" style="margin-top: 5px; margin-bottom: 10px; padding-top: 5px; border-bottom: 1px solid #ccc; border-top: 1px solid #ccc;">
+                                    <h5 style="font-weight: bold;">Data Kebutuhan :</h5>
+                                </div>
+                                <div class="col-md-2">
+                                    <div style="display: block; text-align: start;  height: 25px;">
+                                            <span>Bagian</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                        <span>:</span>
+                                        <strong><span id="bagian_text"></span></strong>
+                                    </div>
+                                </div>
+                               <div class="col-md-2">
+
+                                </div>
+                                 <div class="col-md-2">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                            <span>Jabatan</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                         <span>:</span>
+                                        <strong><span id="jabatan_text"></span></strong>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                            <span>Department</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                        <span>:</span>
+                                        <strong><span id="department_text"></span></strong>
+                                    </div>
+                                </div>
+                                  <div class="col-md-2">
+
+                                </div>
+                                 <div class="col-md-2">
+                                    <div style="display: block; text-align: start; height: 25px;">
                                             <span>Jumlah Permintaan</span>
                                     </div>
                                 </div>
@@ -1015,80 +1068,16 @@ h1 {
                                         <strong><span id="jml_permintaan_text"></span></strong>
                                     </div>
                                 </div>
-                                <div class="col-md-2">
-                                    <div style="display: block; text-align: start;  height: 25px;">
-                                            <span>NIK</span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div style="display: block; text-align: start;  height: 25px;">
-                                        <span>:</span>
-                                        <strong><span id="create_employee_nik"></span></strong>
-                                    </div>
-                                </div>
-                                <div class="col-md-7">
 
-                                </div>
-                                <div class="col-md-2">
-                                    <div style="display: block; text-align: start;  height: 25px;">
-                                            <span>BAGIAN</span>
+                                 <div class="col-md-12 mt-3">
+                                    <div class="form-group">
+                                        <label class="form-label" style="font-weight: bold;">Pilih Jenis PK : </label>
+                                        <select id="selectJenisPK" name="selectJenisPK" class="form-control">
+                                            <option value="harian_lepas">Harian Lepas</option>
+                                            <option value="pkwt">PKWT</option>
+                                            <option value="pkwtt">PKWTT</option>
+                                        </select>
                                     </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div style="display: block; text-align: start; height: 25px;">
-                                        <span>:</span>
-                                        <strong><span id="create_employee_sub_dept"></span></strong>
-                                    </div>
-                                </div>
-                                <div class="col-md-7">
-
-                                </div>
-                                <div class="col-md-2">
-                                    <div style="display: block; text-align: start; height: 25px;">
-                                            <span>DEPARTMENT</span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div style="display: block; text-align: start; height: 25px;">
-                                        <span>:</span>
-                                        <strong><span id="create_employee_department"></span></strong>
-                                    </div>
-                                </div>
-                                <div class="col-md-7">
-
-                                </div>
-                                <div class="col-md-2">
-                                    <div style="display: block; text-align: start; height: 25px;">
-                                            <span>JABATAN</span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div style="display: block; text-align: start; height: 25px;">
-                                        <span>:</span>
-                                        <strong><span id="create_employee_jabatan"></span></strong>
-                                    </div>
-                                </div>
-                                <div class="col-md-7">
-
-                                </div>
-                                 <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; padding-top: 10px;">
-                                    <h5 style="font-weight: bold;">Untuk diberikan tindakan pendisiplinan dalam bentuk :</h5>
-                                </div>
-                                <div class="col-md-5">
-                                </div>
-                                  <div class="col-md-3">
-                                    <button class="btn btn-primary w-100" id="btn-update-permintaan" data-toggle="tooltip" title="Update Data" style="margin-top: 10px; display: none;">
-                                        <i class="fa fa-edit" aria-hidden="true"></i>
-                                        Update
-                                    </button>
-                                    <button class="btn btn-success w-100" id="btn-approve-permintaan" data-toggle="tooltip" title="Simpan Data" style="margin-top: 10px; display: none;">
-                                        <i class="fa fa-check" aria-hidden="true"></i>
-                                        Approve FPTK
-                                    </button>
-                                    <button class="btn btn-danger w-100" id="btn-reject-permintaan" data-toggle="tooltip" title="Tolak Pengajuan" style="margin-top: 10px; display: none;">
-                                        <i class="fa fa-check" aria-hidden="true"></i>
-                                        Tolak/Batalkan Pengajuan
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -1378,12 +1367,19 @@ h1 {
                 },
                 success: function(res) {
                    var data = res[0];
+                   console.log(data);
                     $('#id_modal_permintaan').val(data.id);
                     $('#enroll_id_approve').val(data.duajukan_oleh_id);
-                    $('#tanggal_pengajuan_text').text(data.tanggal_pengajuan);
+                    $('#tanggal_pengajuan_text').text(moment(data.tanggal_pengajuan).format('LL'));
+                    $('#tgl_kebutuhan_text').text(moment(data.tanggal_kebutuhan).format('LL'));
                     $('#no_permintaan_text').text(data.no_permintaan);
                     $('#diajukan_oleh_text').text(data.employee_name);
                     $('#jml_permintaan_text').text(data.jumlah_kebutuhan);
+                    $('#bagian_text').text(data.kode_bagian_name);
+                    $('#department_text').text(data.kode_dept_name);
+                    $('#jabatan_text').text(data.rencana_jabatan.toUpperCase());
+
+
                     $('input[name="status_permintaan"][value="' + data.status_permintaan + '"]').prop('checked', true);
                     $('#diajukanOlehIDModalApprove').val(data.diajukan_oleh_id).trigger('change');
                     $('#department_approve').val(data.department_name);

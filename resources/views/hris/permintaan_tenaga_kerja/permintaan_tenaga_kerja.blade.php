@@ -287,7 +287,7 @@ h1 {
                                     <div class="tab_wrapper first_tab">
                                         <ul class="tab_list">
                                             <li class="text-sm" id="tab-waiting">Pending</li>
-                                            <li class="text-sm" id="tab-verifikasi">Done</li>
+                                            <li class="text-sm" id="tab-verifikasi">Approved</li>
                                             <li class="text-sm" id="tab-reject">Cancel</li>
                                         </ul>
                                         <div class="content_wrapper">
