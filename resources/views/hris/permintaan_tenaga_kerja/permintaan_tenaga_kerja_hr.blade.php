@@ -964,267 +964,115 @@ h1 {
                             <input id="enroll_id_approve" type="hidden">
                             <input id="id_modal_permintaan" type="hidden">
                             <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Tanggal Pengajuan : </label>
-                                        <input readonly disabled id="tanggal_pengajuan_approve" name="tanggal_pengajuan_approve" type="text" class="form-control fc-datepicker" placeholder="Tanggal Perizinan" maxlength="50" size="50">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                </div>
-                                <div class="col-md-4">
-                                </div>
-                                <div class="col-md-12">
-                                      <div class="form-group">
-                                        <label class="form-label">Status Permintaan : </label>
-                                        <div class="radio-container" style="display: flex; gap: 0.5rem;">
-                                            <label class="radio-wrapper">
-                                                <input type="radio" name="status_permintaan" value="permintaan_baru" checked>
-                                                <span>Permintaan Baru</span>
-                                            </label>
-
-                                            <label class="radio-wrapper">
-                                                <input type="radio" name="status_permintaan" value="penggantian">
-                                                <span>Penggantian</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">Diajukan Oleh : </label>
-                                        <select id="diajukanOlehIDModalApprove" name="diajukanOlehIDModalApprove" style='width: 100%;' data-placeholder="Pilih karyawan" class="form-control create-control select2 select2-show-search EmployeeID">
-                                            <option value="">-- Pilih Karyawan --</option>
-                                            @foreach ($selectemployee as $r_empl)
-                                                <option
-                                                    value="{{$r_empl->enroll_id}}"
-                                                    data-department_name_pengajuan="{{$r_empl->department_name}}"
-                                                    data-sub_dept_name_pengajuan="{{$r_empl->sub_dept_name}}"
-                                                    data-department_data_id_pengajuan="{{$r_empl->department_id}}"
-                                                    data-sub_dept_data_id_pengajuan="{{$r_empl->sub_dept_id}}"
-                                                >
-                                                    {{$r_empl->select_employee}}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        <small class="error-message text-danger"></small>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">DEPARTMENT : </label>
-                                        <input type="text" readonly value="" class="form-control create-control" id="department_approve" name="department_approve">
-                                        <input type="hidden" readonly value="" class="form-control create-control" id="department_id_approve" name="department_id_approve">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">BAGIAN : </label>
-                                        <input type="text" readonly value="" class="form-control create-control" id="bagian_approve" name="bagian_approve">
-                                        <input type="hidden" readonly value="" class="form-control create-control" id="sub_dept_id_approve" name="sub_dept_id_approve">
-                                    </div>
-                                </div>
-                                <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px; padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
-                                    <h5 style="font-weight: bold;">Rencana Kebutuhan</h5>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label class="form-label">DEPARTMENT : </label>
-                                         <select id="selectDepartmentModalApprove" name="selectDepartmentModalApprove" class="form-control">
-                                            <option value="">-- PILIH DEPARTMENT --</option>
-                                            @foreach ($department as $r_department)
-                                                <option value="{{$r_department->department_id}}">{{$r_department->department_name}}</option>
-                                            @endforeach
-                                        </select>
+                                <div class="col-md-2">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                            <span>Tanggal Pengajuan</span>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label class="form-label">BAGIAN : </label>
-                                        <select id="selectBagianModalApprove" name="selectBagianModalApprove" class="form-control">
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label class="form-label">TANGGAL Kebutuhan : </label>
-                                         <input id="tanggal_kebutuhan_approve" name="tanggal_kebutuhan_approve" type="text" class="form-control fc-datepicker" placeholder="Tanggal Kebutuhan" maxlength="50" size="50">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label class="form-label">JUMLAH : </label>
-                                        <input type="number" value="0" class="form-control create-control" id="jumlah_kebutuhan_approve" name="jumlah_kebutuhan_approve">
-                                    </div>
-                                </div>
-                                <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
-                                    <h5 style="font-weight: bold;">Rencana Jabatan</h5>
-                                </div>
-                                <div class="col-md-12">
-                                     <div class="radio-container">
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="rencana_jabatan" value="manager" checked class="mr-2">
-                                            <span>Manager</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="rencana_jabatan" value="chief" class="mr-2">
-                                            <span>Chief</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="rencana_jabatan" value="spv" class="mr-2">
-                                            <span>SPV</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="rencana_jabatan" value="leader" class="mr-2">
-                                            <span>Leader</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="rencana_jabatan" value="staff" class="mr-2">
-                                            <span>Staff</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="rencana_jabatan" value="operator" class="mr-2">
-                                            <span>Operator</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                 <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px; padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
-                                    <h5 style="font-weight: bold;">Pendidikan Minimal & Jurusan</h5>
-                                </div>
-                                <div class="col-md-4">
-                                     <div class="radio-container">
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pend_minimal" value="sd" checked class="mr-2">
-                                            <span>Sekolah Dasar</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                     <div class="radio-container">
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pend_minimal" value="smp" class="mr-2">
-                                            <span>Sekolah Lanjutan Tingkat Pertama</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                     <div class="radio-container">
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pend_minimal" value="sma" class="mr-2">
-                                            <span>Sekolah Menengah Atas</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                     <div class="radio-container">
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pend_minimal" value="diploma_1" class="mr-2">
-                                            <span>Diploma 1</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pend_minimal" value="diploma_2" class="mr-2">
-                                            <span>Diploma 2</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pend_minimal" value="diploma_3" class="mr-2">
-                                            <span>Diploma 3</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                     <div class="radio-container">
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pend_minimal" value="strata_1" class="mr-2">
-                                            <span>Strata 1</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pend_minimal" value="strata_2" class="mr-2">
-                                            <span>Strata 2</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pend_minimal" value="strata_3" class="mr-2">
-                                            <span>Strata 3</span>
-                                        </label>
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                         <span>:</span>
+                                        <strong><span id="tanggal_pengajuan_text"></span></strong>
+                                        <input id="enroll_id_karyawan_bermasalah" type="hidden">
                                     </div>
                                 </div>
                                 <div class="col-md-2">
-                                     <div class="radio-container">
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pend_minimal" value="dll" class="mr-2">
-                                            <span>DLL</span>
-                                        </label>
+
+                                </div>
+                                 <div class="col-md-2">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                            <span>No Permintaan</span>
                                     </div>
                                 </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                       <label class="form-label">JURUSAN : </label>
-                                       <input type="text" class="form-control create-control" placeholder="Rencana Jurusan" id="rencana_jurusan_approve" name="rencana_jurusan_approve">
+                                <div class="col-md-3">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                         <span>:</span>
+                                        <strong><span id="no_permintaan_text"></span></strong>
                                     </div>
                                 </div>
-                                 <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
-                                    <h5 style="font-weight: bold;">Pengalaman Kerja</h5>
-                                </div>
-                                <div class="col-md-12">
-                                     <div class="radio-container">
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pengalaman_kerja" value="ya" checked class="mr-2">
-                                            <span>Ya</span>
-                                            <input type="number" class="w-75 form-control create-control pl-5 ml-5 mr-3" placeholder="Waktu Pengalaman" id="waktu_pengalaman_approve" name="waktu_pengalaman_approve">
-                                            <span>Tahun</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pengalaman_kerja" value="tidak" class="mr-2">
-                                            <span>Tidak</span>
-                                        </label>
+                                <div class="col-md-2">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                            <span>Diajukan Oleh</span>
                                     </div>
                                 </div>
-                                 <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
-                                    <h5 style="font-weight: bold;">Uraian Tugas Secara Umum</h5>
-                                </div>
-                                <div class="col-md-6">
-                                   @for($i = 0; $i < 5; $i++)
-                                        <div class="form-group">
-                                            <input type="text" class="form-control create-control" placeholder="{{ $i + 1 }}. Uraian Tugas" name="uraian_tugas_approve[]">
-                                        </div>
-                                    @endfor
-                                </div>
-                                <div class="col-md-6">
-                                     @for($i = 5; $i < 10; $i++)
-                                        <div class="form-group">
-                                            <input type="text" class="form-control create-control" placeholder="{{ $i + 1 }}. Uraian Tugas" name="uraian_tugas_approve[]">
-                                        </div>
-                                    @endfor
-                                </div>
-                                 <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
-                                    <h5 style="font-weight: bold;">Rencana Gaji & Fasilitas</h5>
-                                </div>
-                                  <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Golongan / Besaran Gaji : </label>
-                                       <input id="besaran_gaji_approve" name="besaran_gaji_approve" type="text" class="form-control" placeholder="0" maxlength="50" size="50">
+                                <div class="col-md-3">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                         <span>:</span>
+                                        <strong><span id="diajukan_oleh_text"></span></strong>
                                     </div>
                                 </div>
-                                  <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Fasilitas : </label>
-                                       <input type="text" class="form-control create-control" placeholder="Fasilitas" id="fasilitas_approve" name="fasilitas_approve">
+                                 <div class="col-md-2">
+
+                                </div>
+                                 <div class="col-md-2">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                            <span>Jumlah Permintaan</span>
                                     </div>
                                 </div>
-                                 <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
-                                    <h5 style="font-weight: bold;">Jangka Waktu Kontrak</h5>
-                                </div>
-                                  <div class="col-md-6">
-                                    <div class="form-group">
-                                       <input type="text" class="form-control create-control" placeholder="Jangak Waktu" id="jangka_waktu_kontrak_approve" name="jangka_waktu_kontrak_approve">
+                                <div class="col-md-3">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                         <span>:</span>
+                                        <strong><span id="jml_permintaan_text"></span></strong>
                                     </div>
                                 </div>
-                                 <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
-                                    <h5 style="font-weight: bold;">Keterangan Lainnya ( Jumlah, Keterampilan Tambahan, dll )</h5>
-                                </div>
-                                  <div class="col-md-12">
-                                    <div class="form-group">
-                                       <input type="text" class="form-control create-control" placeholder="Keterangan Tambahan" id="keterangan_tambahan_approve" name="keterangan_tambahan_approve">
+                                <div class="col-md-2">
+                                    <div style="display: block; text-align: start;  height: 25px;">
+                                            <span>NIK</span>
                                     </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div style="display: block; text-align: start;  height: 25px;">
+                                        <span>:</span>
+                                        <strong><span id="create_employee_nik"></span></strong>
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+
+                                </div>
+                                <div class="col-md-2">
+                                    <div style="display: block; text-align: start;  height: 25px;">
+                                            <span>BAGIAN</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                        <span>:</span>
+                                        <strong><span id="create_employee_sub_dept"></span></strong>
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+
+                                </div>
+                                <div class="col-md-2">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                            <span>DEPARTMENT</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                        <span>:</span>
+                                        <strong><span id="create_employee_department"></span></strong>
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+
+                                </div>
+                                <div class="col-md-2">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                            <span>JABATAN</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                        <span>:</span>
+                                        <strong><span id="create_employee_jabatan"></span></strong>
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+
+                                </div>
+                                 <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; padding-top: 10px;">
+                                    <h5 style="font-weight: bold;">Untuk diberikan tindakan pendisiplinan dalam bentuk :</h5>
                                 </div>
                                 <div class="col-md-5">
                                 </div>
@@ -1373,7 +1221,7 @@ h1 {
                 },
                 success: function(res) {
                    var data = res[0];
-                   var tanggal_perizinan=data.tanggal_perizinan.substr(8,2)+'-'+data.tanggal_perizinan.substr(5,2)+'-'+data.tanggal_perizinan.substr(0,4);
+                   var tanggal_perizinan=data.tanggal_pengajuan.substr(8,2)+'-'+data.tanggal_pengajuan.substr(5,2)+'-'+data.tanggal_pengajuan.substr(0,4);
                    var tanggal_kebutuhan=data.tanggal_kebutuhan.substr(8,2)+'-'+data.tanggal_kebutuhan.substr(5,2)+'-'+data.tanggal_kebutuhan.substr(0,4);
                     $('#id_modal_permintaan').val(data.id);
                     $('#enroll_id_approve').val(data.diajukan_oleh_id);
@@ -1475,7 +1323,7 @@ h1 {
                    console.log(data);
                     $('#id_modal_permintaan').val(data.id);
                     $('#enroll_id_approve').val(data.duajukan_oleh_id);
-                    $('#tanggal_pengajuan_approve').val(data.tanggal_perizinan);
+                    $('#tanggal_pengajuan_approve').val(data.tanggal_pengajuan);
                     $('input[name="status_permintaan"][value="' + data.status_permintaan + '"]').prop('checked', true);
                     $('#diajukanOlehIDModalApprove').val(data.diajukan_oleh_id).trigger('change');
                     $('#department_approve').val(data.department_name);
@@ -1530,10 +1378,12 @@ h1 {
                 },
                 success: function(res) {
                    var data = res[0];
-                   console.log(data);
                     $('#id_modal_permintaan').val(data.id);
                     $('#enroll_id_approve').val(data.duajukan_oleh_id);
-                    $('#tanggal_pengajuan_approve').val(data.tanggal_perizinan);
+                    $('#tanggal_pengajuan_text').text(data.tanggal_pengajuan);
+                    $('#no_permintaan_text').text(data.no_permintaan);
+                    $('#diajukan_oleh_text').text(data.employee_name);
+                    $('#jml_permintaan_text').text(data.jumlah_kebutuhan);
                     $('input[name="status_permintaan"][value="' + data.status_permintaan + '"]').prop('checked', true);
                     $('#diajukanOlehIDModalApprove').val(data.diajukan_oleh_id).trigger('change');
                     $('#department_approve').val(data.department_name);
