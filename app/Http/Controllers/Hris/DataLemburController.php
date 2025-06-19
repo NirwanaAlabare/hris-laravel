@@ -217,10 +217,40 @@ class DataLemburController extends AdminBaseController
         } else {
             $inNomorSPL = '';
         }
+        // $query = DB::select("
+        //     SELECT
+        //         CONCAT(
+        //             dl.nomor_form_lembur,
+        //             ' [ ',
+        //             DATE_FORMAT(ma.tanggal_berjalan, '%d %b %Y'),
+        //             ' ] => ',
+        //             COUNT(ma.enroll_id),
+        //             ' karyawan'
+        //         ) AS tanggal_nomor_spl,
+        //         dl.nomor_form_lembur,
+        //         ma.tanggal_berjalan,
+        //         dl.mulai_jam_lembur,
+        //         dl.akhir_jam_lembur,
+        //         dl.jumlah_jam_lembur,
+        //         dl.catatan,
+        //         dl.jumlah_jam_istirahat_lembur
+        //     FROM
+        //         data_lembur dl
+        //     JOIN
+        //         master_data_absen_kehadiran ma
+        //         ON ma.uuid = dl.uuid_master
+        //     WHERE
+        //         ma.tanggal_berjalan BETWEEN '{$awal_bulan}' AND '{$akhir_bulan}'
+        //         {$inNomorSPL}
+        //     GROUP BY
+        //         dl.nomor_form_lembur, ma.tanggal_berjalan
+        //     ORDER BY
+        //         dl.nomor_form_lembur DESC;
+        // ");
 
-        $query = DB::select("
+         $query = DB::select("
             SELECT
-                CONCAT(
+                  CONCAT(
                     dl.nomor_form_lembur,
                     ' [ ',
                     DATE_FORMAT(ma.tanggal_berjalan, '%d %b %Y'),
@@ -237,16 +267,16 @@ class DataLemburController extends AdminBaseController
                 dl.jumlah_jam_istirahat_lembur
             FROM
                 data_lembur dl
-            JOIN
-                master_data_absen_kehadiran ma
-                ON ma.uuid = dl.uuid_master
+            LEFT JOIN
+                master_data_absen_kehadiran ma ON ma.uuid = dl.uuid_master
             WHERE
                 ma.tanggal_berjalan BETWEEN '{$awal_bulan}' AND '{$akhir_bulan}'
                 {$inNomorSPL}
+                OR ma.tanggal_berjalan IS NULL -- untuk tangkap join gagal
             GROUP BY
                 dl.nomor_form_lembur, ma.tanggal_berjalan
             ORDER BY
-                dl.nomor_form_lembur DESC;
+                CAST(SUBSTRING_INDEX(dl.nomor_form_lembur, '/', -1) AS UNSIGNED) DESC
         ");
         return $query;
 
