@@ -1083,7 +1083,7 @@ h1 {
                 },
                 success: function(res) {
                    var data = res[0];
-                   var tanggal_perizinan=data.tanggal_perizinan.substr(8,2)+'-'+data.tanggal_perizinan.substr(5,2)+'-'+data.tanggal_perizinan.substr(0,4);
+                   var tanggal_perizinan=data.tanggal_pengajuan.substr(8,2)+'-'+data.tanggal_pengajuan.substr(5,2)+'-'+data.tanggal_pengajuan.substr(0,4);
                    var tanggal_kebutuhan=data.tanggal_kebutuhan.substr(8,2)+'-'+data.tanggal_kebutuhan.substr(5,2)+'-'+data.tanggal_kebutuhan.substr(0,4);
                     $('#id_modal_permintaan').val(data.id);
                     $('#enroll_id_approve').val(data.diajukan_oleh_id);
@@ -1185,7 +1185,7 @@ h1 {
                    console.log(data);
                     $('#id_modal_permintaan').val(data.id);
                     $('#enroll_id_approve').val(data.duajukan_oleh_id);
-                    $('#tanggal_pengajuan_approve').val(data.tanggal_perizinan);
+                    $('#tanggal_pengajuan_approve').val(data.tanggal_pengajuan);
                     $('input[name="status_permintaan"][value="' + data.status_permintaan + '"]').prop('checked', true);
                     $('#diajukanOlehIDModalApprove').val(data.diajukan_oleh_id).trigger('change');
                     $('#department_approve').val(data.department_name);
