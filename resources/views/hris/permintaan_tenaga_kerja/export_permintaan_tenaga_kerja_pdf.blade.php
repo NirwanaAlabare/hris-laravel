@@ -60,7 +60,7 @@
         <thead>
             <tr>
                 <td style="vertical-align: middle; font-size: 7.5pt;border-bottom: 1px solid; border-left: 1px solid; border-right: 1px solid; width:25%; padding-left:40px;">Nomor Permintaan</td>
-                <td style="vertical-align: middle; font-size: 7.5pt;border-bottom: 1px solid; border-right: 1px solid; padding-left:5px;"> </td>
+                <td style="vertical-align: middle; font-size: 7.5pt;border-bottom: 1px solid; border-right: 1px solid; padding-left:5px;">{{$value->no_permintaan}}</td>
             </tr>
         </thead>
     </table>
