@@ -27,7 +27,7 @@
 </head>
 
 <body>
-    <table width="100%">
+    <table width="93%" style="justify-content: center; margin: 0 auto;">
         <thead>
             <tr>
                 <td width="100px" style="vertical-align: middle; text-align: center;border: 1px solid;" colspan="2" rowspan="4">
@@ -51,7 +51,7 @@
             </tr>
         </thead>
     </table>
-    <table width="100%" style="border:1px solid black; border-top:0px;">
+    <table width="93%" style="border:1px solid black; border-top:0px; justify-content: center; margin: 0 auto;">
         <thead>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:10px;" colspan="6"></td>
@@ -59,7 +59,9 @@
             <tr>
                 <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top;" width="17%">Nama</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top;" width="1%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; text-transform: uppercase;" width="42%">{{ $data->employee_name }}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; text-transform: uppercase;" width="42%">{{ $data->employee_name }}  <div style="border-bottom: 1px solid #000; width: 100%; margin-top: 0px;">
+                    <span style="display: block; height: 1px;"></span>
+                </div></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top;" width="16%"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top;" width="1%"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top;"></td>
@@ -70,7 +72,9 @@
             <tr>
                 <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">NIP</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; text-transform: uppercase;">{{ $data->nik }}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; text-transform: uppercase;">{{ $data->nik }}  <div style="border-bottom: 1px solid #000; width: 100%; margin-top: 0px;">
+                    <span style="display: block; height: 1px;"></span>
+                </div></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
@@ -81,7 +85,9 @@
             <tr>
                 <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top;width:150px">Bagian</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; text-transform: uppercase;">{{ $data->sub_dept_name }}<</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; text-transform: uppercase;">{{ $data->sub_dept_name }}  <div style="border-bottom: 1px solid #000; width: 100%; margin-top: 0px;">
+                    <span style="display: block; height: 1px;"></span>
+                </div></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
@@ -92,7 +98,9 @@
             <tr>
                 <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">Department</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; text-transform: uppercase;">{{ $data->department_name }}<</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; text-transform: uppercase;">{{ $data->department_name }}  <div style="border-bottom: 1px solid #000; width: 100%; margin-top: 0px;">
+                    <span style="display: block; height: 1px;"></span>
+                </div></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
@@ -103,7 +111,9 @@
             <tr>
                 <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">Tanggal pengajuan</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; text-transform: uppercase;"> {{ \Carbon\Carbon::parse($data->tanggal_perizinan)->translatedFormat('d F Y') }}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; text-transform: uppercase;"> {{ \Carbon\Carbon::parse($data->tanggal_perizinan)->translatedFormat('d F Y') }}  <div style="border-bottom: 1px solid #000; width: 100%; margin-top: 0px;">
+                    <span style="display: block; height: 1px;"></span>
+                </div></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
@@ -187,7 +197,7 @@
             </tr>
         </thead>
     </table>
-    <table width="100%">
+    <table width="93%" style="justify-content: center; margin: 0 auto;">
         <thead>
             <tr>
                 <td width="21%" style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; border-top:0px;" >Dibuat</td>

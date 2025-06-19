@@ -24,7 +24,7 @@
 </head>
 
 <body>
-    <table width="100%">
+    <table width="93%" style="justify-content: center; margin: 0 auto;">
         <thead>
             <tr>
                 <td width="100px" style="vertical-align: middle; text-align: center;border: 1px solid;" colspan="2" rowspan="4">
@@ -48,7 +48,7 @@
             </tr>
         </thead>
     </table>
-    <table width="100%" style="border-left:1px solid black; border-top:0px; border-right:1px solid black;">
+    <table width="93%" style="border-left:1px solid black; border-top:0px; border-right:1px solid black; justify-content: center; margin: 0 auto;">
         <thead>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:10px;" colspan="6"></td>
@@ -145,9 +145,13 @@
         </thead>
     </table>
   @php
-    function checkboxRow($label, $kode, $data) {
-        $realKode = $data->kode_absen_ijin;
-        $isChecked = $realKode === $kode;
+    function checkboxRow($label, $kodeList, $data) {
+        $realKode = strtoupper($data->kode_absen_ijin ?? '');
+
+    // Pecah kode menjadi array, misal 'I,S' => ['I', 'S']
+        $kodeArray = array_map('trim', explode(',', strtoupper($kodeList)));
+
+        $isChecked = in_array($realKode, $kodeArray);
 
         $icon = $isChecked
             ? '<div style="width:15px; height:15px; border:1px solid #000; text-align:center;"><img src="' . public_path('assets/images/brand/check-mark-icon-5374.jpg') . '" style="width:12px; height:12px;" /></div>'
@@ -168,7 +172,7 @@
     }
 @endphp
 
-    <table style="width: 100%; border-left: 1px solid #000; border-right: 1px solid #000; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 8pt;">
+    <table width="93%" style="justify-content: center; margin: 0 auto; border-left: 1px solid #000; border-right: 1px solid #000; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 8pt;">
         <tr>
         <td style="width: 50%; vertical-align: top; padding-left: 20px;">
             {!! checkboxRow('Datang terlambat', 'DT', $data) !!}
@@ -177,14 +181,14 @@
         </td>
         <td style="width: 50%; vertical-align: top;">
              {!! checkboxRow('Dinas Luar', 'DL', $data) !!}
-            {!! checkboxRow('Tidak masuk kerja', 'TMK', $data) !!}
+            {!! checkboxRow('Tidak masuk kerja', 'I,S', $data) !!}
         </td>
         </tr>
     </table>
 
 
 
-    <table width="100%" style="border-left:1px solid black; border-top:0px; border-right:1px solid black; margin: none; padding:none;">
+    <table style="width: 93%; justify-content: center; margin: 0 auto; border-left:1px solid black; border-top:0px; border-right:1px solid black;">
         <thead>
              <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:5px;" colspan="6"></td>
@@ -243,7 +247,7 @@
             </tr>
             </thead>
     </table>
-    <table width="100%" style="border-top:1px solid black;">
+    <table width="93%" style="justify-content: center; margin: 0 auto;border-top:1px solid black;">
         <thead>
             <tr>
                 <td width="21%" style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; border-top:0px;" >Dibuat</td>

@@ -1170,7 +1170,7 @@ h1 {
                                 let exportUrl;
                                 let btnClass;
 
-                                if (row.kode_absen_ijin === 'IKS' || row.kode_absen_ijin === 'PC' || row.kode_absen_ijin === 'DT') {
+                                if (row.kode_absen_ijin === 'IKS' || row.kode_absen_ijin === 'PC' || row.kode_absen_ijin === 'DT'  || row.kode_absen_ijin === 'DL'  || row.kode_absen_ijin === 'S' || row.kode_absen_ijin === 'I') {
                                     exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_izin_pdf?uuid=${uuidNo}`;
                                     btnClass = 'btn-warning';
                                 } else {
@@ -1286,7 +1286,7 @@ h1 {
                                 let exportUrl;
                                 let btnClass;
 
-                                if (row.kode_absen_ijin === 'IKS' || row.kode_absen_ijin === 'PC' || row.kode_absen_ijin === 'DT') {
+                                if (row.kode_absen_ijin === 'IKS' || row.kode_absen_ijin === 'PC' || row.kode_absen_ijin === 'DT'  || row.kode_absen_ijin === 'DL'  || row.kode_absen_ijin === 'S' || row.kode_absen_ijin === 'I') {
                                     exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_izin_pdf?uuid=${uuidNo}`;
                                     btnClass = 'btn-warning';
                                 } else {
