@@ -339,6 +339,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('/permintaan_tenaga_kerja/simpan_no_fptk_karyawan', ['as' => 'permintaan_tenaga_kerja.simpan_no_fptk_karyawan','uses' => 'Administrasi\PermintaanTenagaKerjaController@simpan_no_fptk_karyawan']);
     Route::post('/permintaan_tenaga_kerja/simpan_selesai_no_fptk_karyawan', ['as' => 'permintaan_tenaga_kerja.simpan_selesai_no_fptk_karyawan','uses' => 'Administrasi\PermintaanTenagaKerjaController@simpan_selesai_no_fptk_karyawan']);
     Route::post('/permintaan_tenaga_kerja/set_to_pending_no_fptk_karyawan', ['as' => 'permintaan_tenaga_kerja.set_to_pending_no_fptk_karyawan','uses' => 'Administrasi\PermintaanTenagaKerjaController@set_to_pending_no_fptk_karyawan']);
+    Route::post('/permintaan_tenaga_kerja/move_to_pending_permintaan', ['as' => 'permintaan_tenaga_kerja.move_to_pending_permintaan','uses' => 'Administrasi\PermintaanTenagaKerjaController@move_to_pending_permintaan']);
 
 
 

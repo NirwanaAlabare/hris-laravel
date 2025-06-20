@@ -1744,6 +1744,9 @@ h1 {
                                         <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.id}')" data-id="${row.id}" title="Edit">
                                             <i class="fa fa-edit"></i>
                                         </button>
+                                        <button class="btn btn-sm mr-1 btn-warning" id="btn-move-to-pending" data-id_no_fptk="${row.no_permintaan}" title="Ubah ke Pending">
+                                            <i class="fa fa-minus-square-o"></i>
+                                        </button>
                                         <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-id_pengajuan="${row.id}" title="Hapus">
                                             <i class="fa fa-trash"></i>
                                         </button>
@@ -1985,6 +1988,42 @@ h1 {
                     }
                   }
                 );
+
+            });
+
+            $('body').on('click', '#btn-move-to-pending', function (event) {
+                var no_fptk = $(this).data('id_no_fptk');
+
+                $.ajax({
+                    url: '{{ route('permintaan_tenaga_kerja.move_to_pending_permintaan') }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        no_fptk: no_fptk
+                    },
+                    success: function (res) {
+                        if (res.success) {
+                            notif({
+                                msg: `<b>Info:</b> ${res.message}`,
+                                type: "success"
+                            });
+                            tableVerifikasi.ajax.reload();
+                            tableWaiting.ajax.reload();
+                            tableReject.ajax.reload();
+                        } else {
+                            notif({
+                                msg: `<b>Info:</b> ${res.message}`,
+                                type: "error"
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        notif({
+                            msg: `<b>Error:</b> ${error}`,
+                            type: "error"
+                        });
+                    }
+                });
 
             });
 

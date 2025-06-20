@@ -430,6 +430,16 @@ class PermintaanTenagaKerjaController extends AdminBaseController
             ->update(['status_pengajuan_realisasi' => 'pending', 'verifikator_by' => Auth::guard('admin')->user()->email]);
         return response()->json(['success' => true, 'message' => 'Data berhasil diperbarui.']);
     }
+    public function move_to_pending_permintaan(Request $request){
+        $no_fptk = $request->no_fptk;
+        if (!$no_fptk) {
+            return response()->json(['success' => false, 'message' => 'Data tidak valid.']);
+        }
+        DB::table('pengajuan_permintaan_tk')
+            ->where('no_permintaan', $no_fptk)
+            ->update(['status_pengajuan_realisasi' => null, 'verifikator_by' => Auth::guard('admin')->user()->email, 'status_pengajuan' => 'waiting_approval']);
+        return response()->json(['success' => true, 'message' => 'Data berhasil diperbarui.']);
+    }
 
 
     public function ajax_data_permintaan_tk(Request $request)
