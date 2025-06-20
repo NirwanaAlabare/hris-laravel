@@ -251,7 +251,11 @@ class PermintaanTenagaKerjaController extends AdminBaseController
         return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil ditolak.']);
     }
     public function delete_permintaan_tk(Request $request){
-        PengajuanPermintaanTk::where('id', $request->id_pengajuan)->delete();
+        $data_pengajuan = PengajuanPermintaanTk::find($request->id_pengajuan);
+        if($data_pengajuan){
+            EmployeeAtribut::where('no_fptk', $data_pengajuan->no_permintaan)->update(['no_fptk' => null]);
+            PengajuanPermintaanTk::where('id', $request->id_pengajuan)->delete();
+        }
         return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil dihapus.']);
     }
 
