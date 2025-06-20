@@ -100,6 +100,7 @@ class EmployeeAtribut extends \Eloquent
         'alamat_jalan',
         'rt',
         'rw',
+        'no_fptk',
     ];
     protected $guarded = ['employee_id'];
 
@@ -204,6 +205,7 @@ class EmployeeAtribut extends \Eloquent
         'alamat_jalan',
         'rt',
         'rw',
+        'no_fptk',
     ];
 
     protected $appends = [];

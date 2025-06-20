@@ -334,6 +334,12 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('/permintaan_tenaga_kerja/approve_permintaan_tk', ['as' => 'permintaan_tenaga_kerja.approve_permintaan_tk','uses' => 'Administrasi\PermintaanTenagaKerjaController@approve_permintaan_tk']);
     Route::post('/permintaan_tenaga_kerja/reject_permintaan_tk', ['as' => 'permintaan_tenaga_kerja.reject_permintaan_tk','uses' => 'Administrasi\PermintaanTenagaKerjaController@reject_permintaan_tk']);
     Route::post('/permintaan_tenaga_kerja/delete_permintaan_tk', ['as' => 'permintaan_tenaga_kerja.delete_permintaan_tk','uses' => 'Administrasi\PermintaanTenagaKerjaController@delete_permintaan_tk']);
+    Route::post('/permintaan_tenaga_kerja/get_employee_fptk', ['as' => 'permintaan_tenaga_kerja.get_employee_fptk','uses' => 'Administrasi\PermintaanTenagaKerjaController@get_employee_fptk']);
+
+    Route::post('/permintaan_tenaga_kerja/simpan_no_fptk_karyawan', ['as' => 'permintaan_tenaga_kerja.simpan_no_fptk_karyawan','uses' => 'Administrasi\PermintaanTenagaKerjaController@simpan_no_fptk_karyawan']);
+    Route::post('/permintaan_tenaga_kerja/simpan_selesai_no_fptk_karyawan', ['as' => 'permintaan_tenaga_kerja.simpan_selesai_no_fptk_karyawan','uses' => 'Administrasi\PermintaanTenagaKerjaController@simpan_selesai_no_fptk_karyawan']);
+    Route::post('/permintaan_tenaga_kerja/set_to_pending_no_fptk_karyawan', ['as' => 'permintaan_tenaga_kerja.set_to_pending_no_fptk_karyawan','uses' => 'Administrasi\PermintaanTenagaKerjaController@set_to_pending_no_fptk_karyawan']);
+
 
 
     // PENGAJUAN IZIN

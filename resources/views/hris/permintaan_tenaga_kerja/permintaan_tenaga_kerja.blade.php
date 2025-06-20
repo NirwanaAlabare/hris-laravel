@@ -297,6 +297,7 @@ h1 {
                                                     <table id="datatable-ajax-crud-waiting" class="table table-sm table-striped table-hover table-bordered w-100">
                                                         <thead>
                                                             <tr class="text-center">
+                                                                <th scope="col">No Permintaan</th>
                                                                 <th scope="col">Tanggal Pengajuan</th>
                                                                 <th scope="col">Diajukan</th>
                                                                 <th scope="col">Kebutuhan Department</th>
@@ -318,12 +319,15 @@ h1 {
                                                     <table id="datatable-ajax-crud-verifikasi" class="table table-sm table-striped table-hover table-bordered w-100">
                                                         <thead>
                                                             <tr class="text-center">
+                                                                <th scope="col">No Permintaan</th>
                                                                 <th scope="col">Tanggal Pengajuan</th>
                                                                 <th scope="col">Diajukan</th>
                                                                 <th scope="col">Kebutuhan Department</th>
                                                                 <th scope="col">Kebutuhan Bagian</th>
-                                                                <th scope="col">Jumlah Kebutuhan</th>
                                                                 <th scope="col">Tanggal Kebutuhan</th>
+                                                                <th scope="col">Jml Kebutuhan</th>
+                                                                <th scope="col">Realisasi</th>
+                                                                <th scope="col">Status</th>
                                                                 <th scope="col">Aksi</th>
                                                             </tr>
                                                         </thead>
@@ -338,6 +342,7 @@ h1 {
                                                     <table id="datatable-ajax-crud-reject" class="table table-sm table-striped table-hover table-bordered w-100">
                                                         <thead>
                                                             <tr class="text-center">
+                                                                <th scope="col">No Permintaan</th>
                                                                 <th scope="col">Tanggal Pengajuan</th>
                                                                 <th scope="col">Diajukan</th>
                                                                 <th scope="col">Kebutuhan Department</th>
@@ -1082,7 +1087,7 @@ h1 {
                     id: id
                 },
                 success: function(res) {
-                   var data = res[0];
+                    var data = res.permintaan;
                    var tanggal_perizinan=data.tanggal_pengajuan.substr(8,2)+'-'+data.tanggal_pengajuan.substr(5,2)+'-'+data.tanggal_pengajuan.substr(0,4);
                    var tanggal_kebutuhan=data.tanggal_kebutuhan.substr(8,2)+'-'+data.tanggal_kebutuhan.substr(5,2)+'-'+data.tanggal_kebutuhan.substr(0,4);
                     $('#id_modal_permintaan').val(data.id);
@@ -1181,7 +1186,7 @@ h1 {
                     id: id
                 },
                 success: function(res) {
-                   var data = res[0];
+                   var data = res.permintaan;
                    console.log(data);
                     $('#id_modal_permintaan').val(data.id);
                     $('#enroll_id_approve').val(data.duajukan_oleh_id);
@@ -1287,6 +1292,7 @@ h1 {
                 processing: true,
                 serverSide: true,
                 columns: [
+                    { data: 'no_permintaan' },
                     { data: 'tanggal_perizinan',
                       render: function(data, type, row) {
                             return moment(data).format('ll');  // Formatkan tanggal ke dmy
@@ -1340,6 +1346,7 @@ h1 {
                 processing: true,
                 serverSide: true,
                 columns: [
+                    { data: 'no_permintaan' },
                     { data: 'tanggal_perizinan',
                       render: function(data, type, row) {
                             return moment(data).format('ll');  // Formatkan tanggal ke dmy
@@ -1352,10 +1359,25 @@ h1 {
                     },
                     { data: 'department_name' },
                     { data: 'sub_dept_name' },
-                    { data: 'jumlah_kebutuhan' },
                     { data: 'tanggal_kebutuhan' ,
-                         render: function(data, type, row) {
-                            return moment(data).format('ll');  // Formatkan tanggal ke dmy
+                    render: function(data, type, row) {
+                        return moment(data).format('ll');  // Formatkan tanggal ke dmy
+                    }
+                    },
+                    { data: 'jumlah_kebutuhan',
+                        className: "text-center",
+                    },
+                    { data: 'jumlah_karyawan',
+                        className: "text-center",
+                        render: function (data, type, row) {
+                            var jumlah_karyawan = row.jumlah_karyawan;
+                            return `<p>${jumlah_karyawan}</p>`;
+                        }
+                     },
+                    { data: 'status_pengajuan_realisasi',
+                        className: "text-center",
+                        render: function (data, type, row) {
+                            return `<p style="text-transform: uppercase">${data}</p>`;
                         }
                     },
                     {
@@ -1387,6 +1409,7 @@ h1 {
                 processing: true,
                 serverSide: true,
                 columns: [
+                    { data: 'no_permintaan' },
                     { data: 'tanggal_perizinan',
                       render: function(data, type, row) {
                             return moment(data).format('ll');  // Formatkan tanggal ke dmy

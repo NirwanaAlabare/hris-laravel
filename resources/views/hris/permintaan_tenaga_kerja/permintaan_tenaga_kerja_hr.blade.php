@@ -284,6 +284,7 @@ h1 {
                                                     <table id="datatable-ajax-crud-waiting" class="table table-sm table-striped table-hover table-bordered w-100">
                                                         <thead>
                                                             <tr class="text-center">
+                                                                <th scope="col">No Permintaan</th>
                                                                 <th scope="col">Tanggal Pengajuan</th>
                                                                 <th scope="col">Diajukan</th>
                                                                 <th scope="col">Kebutuhan Department</th>
@@ -305,12 +306,15 @@ h1 {
                                                     <table id="datatable-ajax-crud-verifikasi" class="table table-sm table-striped table-hover table-bordered w-100">
                                                         <thead>
                                                             <tr class="text-center">
+                                                                <th scope="col">No Permintaan</th>
                                                                 <th scope="col">Tanggal Pengajuan</th>
                                                                 <th scope="col">Diajukan</th>
                                                                 <th scope="col">Kebutuhan Department</th>
                                                                 <th scope="col">Kebutuhan Bagian</th>
-                                                                <th scope="col">Jumlah Kebutuhan</th>
                                                                 <th scope="col">Tanggal Kebutuhan</th>
+                                                                <th scope="col">Jml Kebutuhan</th>
+                                                                <th scope="col">Realisasi</th>
+                                                                <th scope="col">Status</th>
                                                                 <th scope="col">Aksi</th>
                                                             </tr>
                                                         </thead>
@@ -325,6 +329,7 @@ h1 {
                                                     <table id="datatable-ajax-crud-reject" class="table table-sm table-striped table-hover table-bordered w-100">
                                                         <thead>
                                                             <tr class="text-center">
+                                                                <th scope="col">No Permintaan</th>
                                                                 <th scope="col">Tanggal Pengajuan</th>
                                                                 <th scope="col">Diajukan</th>
                                                                 <th scope="col">Kebutuhan Department</th>
@@ -961,8 +966,8 @@ h1 {
                              </div>
                         </div>
                         <div class="modal-body">
-                            <input id="enroll_id_approve" type="hidden">
-                            <input id="id_modal_permintaan" type="hidden">
+                            <input id="no_permintaan_pengajuan" type="hidden">
+                            <input id="jml_permintaan_val" type="hidden">
                             <div class="row">
                                 <div class="col-md-2">
                                     <div style="display: block; text-align: start; height: 25px;">
@@ -1015,7 +1020,7 @@ h1 {
                                         <strong><span id="tgl_kebutuhan_text"></span></strong>
                                     </div>
                                 </div>
-                                  <div class="col-md-12" style="margin-top: 5px; margin-bottom: 10px; padding-top: 5px; border-bottom: 1px solid #ccc; border-top: 1px solid #ccc;">
+                                <div class="col-md-12" style="margin-top: 5px; margin-bottom: 10px; padding-top: 5px; border-bottom: 1px solid #ccc; border-top: 1px solid #ccc;">
                                     <h5 style="font-weight: bold;">Data Kebutuhan :</h5>
                                 </div>
                                 <div class="col-md-2">
@@ -1034,13 +1039,14 @@ h1 {
                                 </div>
                                  <div class="col-md-2">
                                     <div style="display: block; text-align: start; height: 25px;">
-                                            <span>Jabatan</span>
+                                            <span>Jumlah Permintaan</span>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div style="display: block; text-align: start; height: 25px;">
-                                         <span>:</span>
-                                        <strong><span id="jabatan_text"></span></strong>
+                                        <span>:</span>
+                                        <strong><span id="jml_permintaan_text"></span></strong>
+
                                     </div>
                                 </div>
                                 <div class="col-md-2">
@@ -1059,17 +1065,43 @@ h1 {
                                 </div>
                                  <div class="col-md-2">
                                     <div style="display: block; text-align: start; height: 25px;">
-                                            <span>Jumlah Permintaan</span>
+                                            <span>Jumlah Realisasi</span>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div style="display: block; text-align: start; height: 25px;">
                                          <span>:</span>
-                                        <strong><span id="jml_permintaan_text"></span></strong>
+                                        <strong><span id="jml_realisasi_text"></span></strong>
+                                    </div>
+                                </div>
+                                 <div class="col-md-2">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                            <span>Jabatan</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                         <span>:</span>
+                                        <strong><span id="jabatan_text"></span></strong>
+                                    </div>
+                                </div>
+                                  <div class="col-md-2">
+
+                                </div>
+                                 <div class="col-md-2">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                            <span>Status Permintaan</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                         <span>:</span>
+                                        <strong><span id="status_permintaan_text"></span></strong>
                                     </div>
                                 </div>
 
-                                 <div class="col-md-12 mt-3">
+
+                                 {{-- <div class="col-md-12 mt-3">
                                     <div class="form-group">
                                         <label class="form-label" style="font-weight: bold;">Pilih Jenis PK : </label>
                                         <select id="selectJenisPK" name="selectJenisPK" class="form-control">
@@ -1078,6 +1110,41 @@ h1 {
                                             <option value="pkwtt">PKWTT</option>
                                         </select>
                                     </div>
+                                </div> --}}
+                                <div class="col-md-12 mt-5">
+                                    <div class="form-group">
+                                        <label class="form-label" style="font-weight: bold;">Masukan ID karyawan : </label>
+                                        <input name="karyawan_list" onkeydown="fillTheField(event)" type="text" id="karyawan_list" class="form-control py-1 px-1">
+
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                  <table class="table" id="tabel-karyawan">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Enroll ID</th>
+                                            <th>Nama</th>
+                                            <th>Jabatan</th>
+                                            <th>Departemen</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Isi dinamis dari AJAX -->
+                                    </tbody>
+                                </table>
+                                <div class="mt-3 justify-content-between" style="display: flex; gap: 10px; align-items: center; justify-content: space-between;">
+                                    <button class="btn btn-success" id="btn-simpan-selesai-karyawan">
+                                        <i class="fa fa-check"></i> Simpan & Selesai
+                                    </button>
+                                    <button class="btn btn-warning" id="btn-set-to-pending-karyawan">
+                                        <i class="fa fa-waiting"></i> Ubah ke pending
+                                    </button>
+                                    <button class="btn btn-primary" id="btn-simpan-karyawan">
+                                        <i class="fa fa-save"></i> Simpan
+                                    </button>
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -1166,6 +1233,85 @@ h1 {
             selectOtherMonths: true,
             dateFormat: 'dd-mm-yy'
         });
+    </script>
+    <script>
+      function fillTheField(event) {
+        if (event.keyCode == 13) {
+            event.preventDefault(); // mencegah form submit jika dalam form
+
+            var no_permintaan_pengajuan = $("#no_permintaan_pengajuan").val();
+            var enroll_id = $('#karyawan_list').val();
+            var jml_permintaan_val = $('#jml_permintaan_val').val();
+            $.ajax({
+                type: "POST",
+                url: '{{ route('permintaan_tenaga_kerja.get_employee_fptk') }}',
+                data: {
+                    no_permintaan_pengajuan: no_permintaan_pengajuan,
+                    enroll_id: enroll_id,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(res) {
+                    if (res.success) {
+                        $('#karyawan_list').css('border', '');
+                        let data = res.data;
+
+                        let existingRow = $("#tabel-karyawan tbody tr").filter(function () {
+                            return $(this).find("td:first").text() == data.enroll_id;
+                        });
+
+                     if (existingRow.length === 0) {
+                            let currentRowCount = $("#tabel-karyawan tbody tr").length;
+
+                            if (currentRowCount >= jml_permintaan_val) {
+                                notif({
+                                    msg: "<b>Info:</b> Jumlah karyawan tidak boleh lebih dari " + jml_permintaan_val,
+                                    type: "warning"
+                                });
+                                $('#karyawan_list').css('border', '1px solid #f79307');
+                                return;
+                            }
+
+                            let rowNumber = currentRowCount + 1;
+                            let newRow = `
+                                <tr data-enroll="${data.enroll_id}">
+                                    <td>${rowNumber}</td>
+                                    <td>${data.enroll_id}</td>
+                                    <td>${data.employee_name}</td>
+                                    <td>${data.sub_dept_name}</td>
+                                    <td>${data.department_name}</td>
+                                    <td><button class='btn btn-danger' onclick='removeRow(this)'><i class='fa fa-trash'></i></button></td>
+                                </tr>
+                            `;
+                            $("#tabel-karyawan tbody").append(newRow);
+                            $('#karyawan_list').val('').css('border', '');
+                        }
+
+                    } else {
+                        notif({
+                                msg: "<b>Info:</b> Karyawan dengan enroll ID tidak ditemukan",
+                                type: "error"
+                            });
+                            $('#karyawan_list').css('border', '1px solid red');
+
+                    }
+                },
+                error: function() {
+                    notif({
+                                msg: "<b>Error:</b> Terjadi kesalahan.",
+                                type: "error"
+                            });
+                }
+            });
+        }
+    }
+
+
+     function removeRow(button) {
+        // Cari elemen <tr> terdekat dari tombol yang diklik dan hapus
+        $(button).closest('tr').remove();
+        renumberRows();
+    }
+
     </script>
 
 
@@ -1308,7 +1454,7 @@ h1 {
                     id: id
                 },
                 success: function(res) {
-                   var data = res[0];
+                   var data = res.permintaan;
                    console.log(data);
                     $('#id_modal_permintaan').val(data.id);
                     $('#enroll_id_approve').val(data.duajukan_oleh_id);
@@ -1354,11 +1500,17 @@ h1 {
         }
 
         function openModalRealisasiPengajuan(id) {
-            $("#ajax-modal-realisasi-pengajuan").modal('show');
+            $('#ajax-modal-realisasi-pengajuan').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
             $("#btn-approve-permintaan").show();
             $("#btn-reject-permintaan").show();
             $("#btn-update-permintaan").hide();
             $("#title-modal-realisasi").text('Realisasi Pengajuan Tenaga Kerja');
+            $("#tabel-karyawan tbody").empty();
+            $('#karyawan_list').val('').css('border', '');
+            $('#karyawan_list').val('').css('background', '');
             $.ajax({
                 type: "POST",
                 url: "{{ route('permintaan_tenaga_kerja.get_detail_permintaan_tk') }}",
@@ -1366,8 +1518,8 @@ h1 {
                     id: id
                 },
                 success: function(res) {
-                   var data = res[0];
-                   console.log(data);
+                    var data = res.permintaan;
+                    var karyawanList = res.karyawan;
                     $('#id_modal_permintaan').val(data.id);
                     $('#enroll_id_approve').val(data.duajukan_oleh_id);
                     $('#tanggal_pengajuan_text').text(moment(data.tanggal_pengajuan).format('LL'));
@@ -1375,47 +1527,42 @@ h1 {
                     $('#no_permintaan_text').text(data.no_permintaan);
                     $('#diajukan_oleh_text').text(data.employee_name);
                     $('#jml_permintaan_text').text(data.jumlah_kebutuhan);
+                    $('#jml_realisasi_text').text(data.jumlah_karyawan);
+                    $('#status_permintaan_text').text(data.status_pengajuan_realisasi.toUpperCase());
                     $('#bagian_text').text(data.kode_bagian_name);
                     $('#department_text').text(data.kode_dept_name);
                     $('#jabatan_text').text(data.rencana_jabatan.toUpperCase());
 
+                    $('#no_permintaan_pengajuan').val(data.no_permintaan);
+                    $('#jml_permintaan_val').val(data.jumlah_kebutuhan);
 
-                    $('input[name="status_permintaan"][value="' + data.status_permintaan + '"]').prop('checked', true);
-                    $('#diajukanOlehIDModalApprove').val(data.diajukan_oleh_id).trigger('change');
-                    $('#department_approve').val(data.department_name);
-                    $('#department_id_approve').val(data.department_id);
-                    $('#bagian_approve').val(data.sub_dept_name);
-                    $('#sub_dept_id_approve').val(data.sub_dept_id);
-                    $('#selectDepartmentModalApprove').val(data.kode_dept_id).trigger('change');
+                   $("#tabel-karyawan tbody").empty();
 
-                // panggil AJAX baru untuk isi bagian dengan nilai dari database:
-                    loadSubBagian(data.kode_dept_id, data.kode_bagian_id, data.nama_bagian);
-                    $('#tanggal_kebutuhan_approve').val(data.tanggal_kebutuhan);
-                    $('#jumlah_kebutuhan_approve').val(data.jumlah_kebutuhan);
+                     var status = data.status_pengajuan_realisasi.toLowerCase();
 
-                    $('input[name="rencana_jabatan"][value="' + data.rencana_jabatan + '"]').prop('checked', true);
-                    $('input[name="pend_minimal"][value="' + data.pend_minimal + '"]').prop('checked', true);
-
-                    $('#rencana_jurusan_approve').val(data.rencana_jurusan);
-                    $('input[name="pengalaman_kerja"][value="' + data.pengalaman_kerja + '"]').prop('checked', true);
-                    $('#waktu_pengalaman_approve').val(data.waktu_pengalaman);
-                    $('#besaran_gaji_approve').val(data.besaran_gaji);
-                    $('#fasilitas_approve').val(data.fasilitas);
-                    $('#jangka_waktu_kontrak_approve').val(data.jangka_waktu_kontrak);
-                    $('#keterangan_tambahan_approve').val(data.keterangan_tambahan);
-
-                    let uraianTugasArray = [];
-
-                    try {
-                        uraianTugasArray = JSON.parse(data.uraian_tugas);
-                    } catch (e) {
-                        console.warn('Gagal parsing uraian_tugas:', e);
+                    if (status !== 'done') {
+                        $('#btn-simpan-selesai-karyawan').show();
+                        $('#btn-set-to-pending-karyawan').hide();
+                    } else {
+                        $('#btn-simpan-selesai-karyawan').hide();
+                        $('#btn-set-to-pending-karyawan').show();
                     }
 
-                    console.log('uraianTugasArray:', uraianTugasArray);
-                    $('input[name="uraian_tugas_approve[]"]').each(function (i) {
-                        $(this).val(uraianTugasArray[i] || '');
+                    // Masukkan semua karyawan yang terkait no_fptk ke tabel
+                    karyawanList.forEach((emp, index) => {
+                        let newRow = `
+                            <tr data-enroll="${data.enroll_id}">
+                                <td>${index + 1}</td>
+                                <td>${emp.enroll_id}</td>
+                                <td>${emp.employee_name}</td>
+                                <td>${emp.sub_dept_name}</td>
+                                <td>${emp.department_name}</td>
+                                <td><button class='btn btn-danger' onclick='removeRow(this)'><i class='fa fa-trash'></i></button></td>
+                            </tr>
+                        `;
+                        $("#tabel-karyawan tbody").append(newRow);
                     });
+
                 }
             });
         }
@@ -1455,6 +1602,12 @@ h1 {
             $('#ajax-modal-tambah').modal('hide');
         }
 
+        function renumberRows() {
+            $('#tabel-karyawan tbody tr').each(function(index) {
+                $(this).find('td:first').text(index + 1);
+            });
+        }
+
 
         var perijinanChecked = [];
         var currentPageCheck = 0;
@@ -1481,6 +1634,7 @@ h1 {
                 processing: true,
                 serverSide: true,
                 columns: [
+                    { data: 'no_permintaan' },
                     { data: 'tanggal_pengajuan',
                       render: function(data, type, row) {
                             return moment(data).format('ll');  // Formatkan tanggal ke dmy
@@ -1537,6 +1691,7 @@ h1 {
                 processing: true,
                 serverSide: true,
                 columns: [
+                    { data: 'no_permintaan' },
                     { data: 'tanggal_pengajuan',
                       render: function(data, type, row) {
                             return moment(data).format('ll');  // Formatkan tanggal ke dmy
@@ -1549,10 +1704,25 @@ h1 {
                     },
                     { data: 'department_name' },
                     { data: 'sub_dept_name' },
-                    { data: 'jumlah_kebutuhan' },
                     { data: 'tanggal_kebutuhan' ,
-                         render: function(data, type, row) {
-                            return moment(data).format('ll');  // Formatkan tanggal ke dmy
+                    render: function(data, type, row) {
+                        return moment(data).format('ll');  // Formatkan tanggal ke dmy
+                    }
+                    },
+                    { data: 'jumlah_kebutuhan',
+                        className: "text-center",
+                    },
+                    { data: 'jumlah_karyawan',
+                        className: "text-center",
+                        render: function (data, type, row) {
+                            var jumlah_karyawan = row.jumlah_karyawan;
+                            return `<p>${jumlah_karyawan}</p>`;
+                        }
+                     },
+                    { data: 'status_pengajuan_realisasi',
+                        className: "text-center",
+                        render: function (data, type, row) {
+                            return `<p style="text-transform: uppercase">${data}</p>`;
                         }
                     },
                     {
@@ -1593,6 +1763,7 @@ h1 {
                 processing: true,
                 serverSide: true,
                 columns: [
+                    { data: 'no_permintaan' },
                     { data: 'tanggal_pengajuan',
                       render: function(data, type, row) {
                             return moment(data).format('ll');  // Formatkan tanggal ke dmy
@@ -1628,6 +1799,148 @@ h1 {
                         }
                     }
                 ]
+            });
+
+
+            $('#btn-simpan-karyawan').on('click', function () {
+                    let dataKaryawan = [];
+                    var no_permintaan_pengajuan = $("#no_permintaan_pengajuan").val();
+                    $('#tabel-karyawan tbody tr').each(function () {
+                        let enroll_id = $(this).find('td:eq(1)').text().trim();
+
+                        dataKaryawan.push({
+                            enroll_id
+                        });
+                    });
+                    // Kirim ke backend pakai AJAX
+                   $.ajax({
+                        url: '{{ route('permintaan_tenaga_kerja.simpan_no_fptk_karyawan') }}',
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            no_fptk: no_permintaan_pengajuan,
+                            karyawan: dataKaryawan
+                        },
+                        success: function (res) {
+                            console.log(res);
+                            if (res.success) {
+                                notif({
+                                    msg: `<b>Info:</b> ${res.message}`,
+                                    type: "success"
+                                });
+                                tableVerifikasi.ajax.reload();
+                                tableWaiting.ajax.reload();
+                                tableReject.ajax.reload();
+                                closeModalRealisasiPengajuan();
+                            }else{
+                            if (res.data) {
+                                res.data.forEach(k => {
+                                    $(`#tabel-karyawan tbody tr[data-enroll="${k.enroll_id}"]`).css('background', '#fa7575');
+                                });
+                            }
+                            notif({
+                                msg: `<b>Error:</b> ${res.message}`,
+                                type: "error"
+                            });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            notif({
+                                msg: "<b>Error:</b> Terjadi kesalahan.",
+                                type: "error"
+                            });
+                        }
+                    });
+            });
+
+            $('#btn-simpan-selesai-karyawan').on('click', function () {
+                    let dataKaryawan = [];
+                    var no_permintaan_pengajuan = $("#no_permintaan_pengajuan").val();
+                    $('#tabel-karyawan tbody tr').each(function () {
+                        let enroll_id = $(this).find('td:eq(1)').text().trim();
+
+                        dataKaryawan.push({
+                            enroll_id
+                        });
+                    });
+                    // Kirim ke backend pakai AJAX
+                   $.ajax({
+                        url: '{{ route('permintaan_tenaga_kerja.simpan_selesai_no_fptk_karyawan') }}',
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            no_fptk: no_permintaan_pengajuan,
+                            karyawan: dataKaryawan
+                        },
+                        success: function (res) {
+                            console.log(res);
+                            if (res.success) {
+                                notif({
+                                    msg: `<b>Info:</b> ${res.message}`,
+                                    type: "success"
+                                });
+                                tableVerifikasi.ajax.reload();
+                                tableWaiting.ajax.reload();
+                                tableReject.ajax.reload();
+                                closeModalRealisasiPengajuan();
+                            }else{
+                            if (res.data) {
+                                res.data.forEach(k => {
+                                    $(`#tabel-karyawan tbody tr[data-enroll="${k.enroll_id}"]`).css('background', '#fa7575');
+                                });
+                            }
+                            notif({
+                                msg: `<b>Error:</b> ${res.message}`,
+                                type: "error"
+                            });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            notif({
+                                msg: "<b>Error:</b> Terjadi kesalahan.",
+                                type: "error"
+                            });
+                        }
+                    });
+            });
+            $('#btn-set-to-pending-karyawan').on('click', function () {
+                    let dataKaryawan = [];
+                    var no_permintaan_pengajuan = $("#no_permintaan_pengajuan").val();
+                    $('#tabel-karyawan tbody tr').each(function () {
+                        let enroll_id = $(this).find('td:eq(1)').text().trim();
+                        dataKaryawan.push({
+                            enroll_id
+                        });
+                    });
+                    // Kirim ke backend pakai AJAX
+                   $.ajax({
+                        url: '{{ route('permintaan_tenaga_kerja.set_to_pending_no_fptk_karyawan') }}',
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            no_fptk: no_permintaan_pengajuan,
+                            karyawan: dataKaryawan
+                        },
+                        success: function (res) {
+                            console.log(res);
+                            if (res.success) {
+                                notif({
+                                    msg: `<b>Info:</b> ${res.message}`,
+                                    type: "success"
+                                });
+                                tableVerifikasi.ajax.reload();
+                                tableWaiting.ajax.reload();
+                                tableReject.ajax.reload();
+                                closeModalRealisasiPengajuan();
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            notif({
+                                msg: "<b>Error:</b> Terjadi kesalahan.",
+                                type: "error"
+                            });
+                        }
+                    });
             });
 
             $('body').on('click', '#btn-remove', function (event) {
@@ -2040,7 +2353,28 @@ h1 {
 
         }
         function closeModalRealisasiPengajuan() {
-           $("#ajax-modal-realisasi-pengajuan").modal('hide');
+            $("#ajax-modal-realisasi-pengajuan").modal('hide');
+            $("#tabel-karyawan tbody").empty();
+            $('#karyawan_list').val('').css('border', '');
+            $('#karyawan_list').val('').css('background', '');
+
+            $('#id_modal_permintaan').val("");
+            $('#enroll_id_approve').val("");
+            $('#tanggal_pengajuan_text').text("");
+            $('#tgl_kebutuhan_text').text("");
+            $('#no_permintaan_text').text("");
+            $('#diajukan_oleh_text').text("");
+            $('#jml_permintaan_text').text("");
+            $('#jml_realisasi_text').text("");
+            $('#status_permintaan_text').text("");
+            $('#bagian_text').text("");
+            $('#department_text').text("");
+            $('#jabatan_text').text("");
+
+            $('#no_permintaan_pengajuan').val("");
+            $('#jml_permintaan_val').val("");
+
+            $("#tabel-karyawan tbody").empty();
 
         }
         function openModalBuatPengajuan() {
