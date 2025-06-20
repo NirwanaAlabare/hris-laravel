@@ -96,18 +96,33 @@ class DataLemburController extends AdminBaseController
         $kodelembur = "SPL/HR";
         $thnbln = date("ym");
 
-        $getlastnomorform =  DataLembur::select('nomor_form_lembur')
-                                            ->groupby('nomor_form_lembur')
-                                            ->orderby('nomor_form_lembur', 'desc')
-                                            ->first();
-        if($getlastnomorform == "") {
-            $nomor = "0000";
-        } else {
-            $nomor = $getlastnomorform->nomor_form_lembur;
-        }
+        // $getlastnomorform =  DataLembur::select('nomor_form_lembur')
+        //                                     ->groupby('nomor_form_lembur')
+        //                                     ->orderby('nomor_form_lembur', 'desc')
+        //                                     ->first();
+        // if($getlastnomorform == "") {
+        //     $nomor = "0000";
+        // } else {
+        //     $nomor = $getlastnomorform->nomor_form_lembur;
+        // }
 
-        $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
-        $nomor_form_lembur = $kodelembur . "/" . $thnbln . "/" . $nomorform;
+        // $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
+        // $nomor_form_lembur = $kodelembur . "/" . $thnbln . "/" . $nomorform;
+
+         $last_nomor = DataLembur::select('nomor_form_lembur')
+        ->orderByRaw("CAST(SUBSTRING_INDEX(nomor_form_lembur, '/', -1) AS UNSIGNED) DESC")
+        ->limit(1)
+        ->pluck('nomor_form_lembur')
+        ->first();
+
+        // Ambil angka terakhir setelah "/"
+        $last_angka = $last_nomor
+            ? (int) collect(explode('/', $last_nomor))->last()
+            : 0;
+
+        $ldate = date('Ym');
+
+        $nomor_form_lembur = 'SPL/HR/' . substr($ldate, 2) . '/' . sprintf("%05d", $last_angka + 1);
 
         $enroll_id=request()->enroll_id;
         $tanggal_lembur=request()->tanggal_lembur;
@@ -630,21 +645,37 @@ class DataLemburController extends AdminBaseController
         $kodelembur = "SPL/HR";
         $thnbln = date("ym");
 
-        $getlastnomorform =  DataLembur::select('nomor_form_lembur')
-                                            ->groupby('nomor_form_lembur')
-                                            ->orderby('nomor_form_lembur', 'desc')
-                                            ->first();
+        // $getlastnomorform =  DataLembur::select('nomor_form_lembur')
+        //                                     ->groupby('nomor_form_lembur')
+        //                                     ->orderby('nomor_form_lembur', 'desc')
+        //                                     ->first();
 
 
-        if($getlastnomorform == "") {
-            //info("Count : Kosong");
-            $nomor = "0000";
-         } else {
-            $nomor = $getlastnomorform->nomor_form_lembur;
-        }
+        // if($getlastnomorform == "") {
+        //     //info("Count : Kosong");
+        //     $nomor = "0000";
+        //  } else {
+        //     $nomor = $getlastnomorform->nomor_form_lembur;
+        // }
 
-        $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
-        $nomor_form_lembur = $kodelembur . "/" . $thnbln . "/" . $nomorform;
+        // $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
+        // $nomor_form_lembur = $kodelembur . "/" . $thnbln . "/" . $nomorform;
+
+
+        $last_nomor = DataLembur::select('nomor_form_lembur')
+        ->orderByRaw("CAST(SUBSTRING_INDEX(nomor_form_lembur, '/', -1) AS UNSIGNED) DESC")
+        ->limit(1)
+        ->pluck('nomor_form_lembur')
+        ->first();
+
+        // Ambil angka terakhir setelah "/"
+        $last_angka = $last_nomor
+            ? (int) collect(explode('/', $last_nomor))->last()
+            : 0;
+
+        $ldate = date('Ym');
+
+        $nomor_form_lembur = 'SPL/HR/' . substr($ldate, 2) . '/' . sprintf("%05d", $last_angka + 1);
         //info("Nomor Form Lembur : " . $nomor_form_lembur);
         foreach ($arrayHtml as $key => $value) {
 
@@ -1480,20 +1511,35 @@ class DataLemburController extends AdminBaseController
             $kodelembur = "SPL/HR";
             $thnbln = date("ym");
 
-            $getlastnomorform =  DataLembur::select('nomor_form_lembur')
-                                                ->groupby('nomor_form_lembur')
-                                                ->orderby('nomor_form_lembur', 'desc')
-                                                ->first();
+            // $getlastnomorform =  DataLembur::select('nomor_form_lembur')
+            //                                     ->groupby('nomor_form_lembur')
+            //                                     ->orderby('nomor_form_lembur', 'desc')
+            //                                     ->first();
 
-            if($getlastnomorform == "") {
-                //info("Count : Kosong");
-                $nomor = "0000";
-            } else {
-                $nomor = $getlastnomorform->nomor_form_lembur;
-            }
+            // if($getlastnomorform == "") {
+            //     //info("Count : Kosong");
+            //     $nomor = "0000";
+            // } else {
+            //     $nomor = $getlastnomorform->nomor_form_lembur;
+            // }
 
-            $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
-            $nomor_form_lembur = $kodelembur . "/" . $thnbln . "/" . $nomorform;
+            // $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
+            // $nomor_form_lembur = $kodelembur . "/" . $thnbln . "/" . $nomorform;
+
+            $last_nomor = DataLembur::select('nomor_form_lembur')
+            ->orderByRaw("CAST(SUBSTRING_INDEX(nomor_form_lembur, '/', -1) AS UNSIGNED) DESC")
+            ->limit(1)
+            ->pluck('nomor_form_lembur')
+            ->first();
+
+            // Ambil angka terakhir setelah "/"
+            $last_angka = $last_nomor
+                ? (int) collect(explode('/', $last_nomor))->last()
+                : 0;
+
+            $ldate = date('Ym');
+
+            $nomor_form_lembur = 'SPL/HR/' . substr($ldate, 2) . '/' . sprintf("%05d", $last_angka + 1);
 
             //info("Nomor Form Lembur : " . $nomor_form_lembur);
 
@@ -2439,18 +2485,34 @@ class DataLemburController extends AdminBaseController
             }
             $kodelembur = "SPL/HR";
             $thnbln = date("ym");
-            $getlastnomorform =  DataLembur::select('nomor_form_lembur')
-                                                    ->groupby('nomor_form_lembur')
-                                                    ->orderby('nomor_form_lembur', 'desc')
-                                                    ->first();
-            if($getlastnomorform == "") {
-                //info("Count : Kosong");
-                $nomor = "0000";
-            } else {
-                $nomor = $getlastnomorform->nomor_form_lembur;
-            }
-            $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
-            $nomor_form_lembur = $kodelembur . "/" . $thnbln . "/" . $nomorform;
+            // $getlastnomorform =  DataLembur::select('nomor_form_lembur')
+            //                                         ->groupby('nomor_form_lembur')
+            //                                         ->orderby('nomor_form_lembur', 'desc')
+            //                                         ->first();
+            // if($getlastnomorform == "") {
+            //     //info("Count : Kosong");
+            //     $nomor = "0000";
+            // } else {
+            //     $nomor = $getlastnomorform->nomor_form_lembur;
+            // }
+            // $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
+            // $nomor_form_lembur = $kodelembur . "/" . $thnbln . "/" . $nomorform;
+
+            $last_nomor = DataLembur::select('nomor_form_lembur')
+            ->orderByRaw("CAST(SUBSTRING_INDEX(nomor_form_lembur, '/', -1) AS UNSIGNED) DESC")
+            ->limit(1)
+            ->pluck('nomor_form_lembur')
+            ->first();
+
+            // Ambil angka terakhir setelah "/"
+            $last_angka = $last_nomor
+                ? (int) collect(explode('/', $last_nomor))->last()
+                : 0;
+
+            $ldate = date('Ym');
+
+            $nomor_form_lembur = 'SPL/HR/' . substr($ldate, 2) . '/' . sprintf("%05d", $last_angka + 1);
+
             $arrayOvertime=[];
             foreach($arrayEmployee as $key=>$value){
                 if(!in_array($value['enroll_id'],$employee)){
@@ -2624,18 +2686,34 @@ class DataLemburController extends AdminBaseController
 
         $kodelembur = "SPL/HR";
         $thnbln = date("ym");
-        $getlastnomorform =  DataLembur::select('nomor_form_lembur')
-                                                ->groupby('nomor_form_lembur')
-                                                ->orderby('nomor_form_lembur', 'desc')
-                                                ->first();
-        if($getlastnomorform == "") {
-            //info("Count : Kosong");
-            $nomor = "0000";
-        } else {
-            $nomor = $getlastnomorform->nomor_form_lembur;
-        }
-        $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
-        $nomor_form_lembur = $kodelembur . "/" . $thnbln . "/" . $nomorform;
+        // $getlastnomorform =  DataLembur::select('nomor_form_lembur')
+        //                                         ->groupby('nomor_form_lembur')
+        //                                         ->orderby('nomor_form_lembur', 'desc')
+        //                                         ->first();
+        // if($getlastnomorform == "") {
+        //     //info("Count : Kosong");
+        //     $nomor = "0000";
+        // } else {
+        //     $nomor = $getlastnomorform->nomor_form_lembur;
+        // }
+        // $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
+        // $nomor_form_lembur = $kodelembur . "/" . $thnbln . "/" . $nomorform;
+
+        $last_nomor = DataLembur::select('nomor_form_lembur')
+        ->orderByRaw("CAST(SUBSTRING_INDEX(nomor_form_lembur, '/', -1) AS UNSIGNED) DESC")
+        ->limit(1)
+        ->pluck('nomor_form_lembur')
+        ->first();
+
+        // Ambil angka terakhir setelah "/"
+        $last_angka = $last_nomor
+            ? (int) collect(explode('/', $last_nomor))->last()
+            : 0;
+
+        $ldate = date('Ym');
+
+        $nomor_form_lembur = 'SPL/HR/' . substr($ldate, 2) . '/' . sprintf("%05d", $last_angka + 1);
+
         $arrayOvertime=[];
         foreach($arrayEmployee as $key=>$value){
             if(!in_array($value['enroll_id'],$employee)){
