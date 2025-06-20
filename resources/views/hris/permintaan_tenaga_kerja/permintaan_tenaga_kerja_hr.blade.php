@@ -1355,7 +1355,7 @@ h1 {
                     id: id
                 },
                 success: function(res) {
-                   var data = res[0];
+                   var data = res.permintaan;
                    var tanggal_perizinan=data.tanggal_pengajuan.substr(8,2)+'-'+data.tanggal_pengajuan.substr(5,2)+'-'+data.tanggal_pengajuan.substr(0,4);
                    var tanggal_kebutuhan=data.tanggal_kebutuhan.substr(8,2)+'-'+data.tanggal_kebutuhan.substr(5,2)+'-'+data.tanggal_kebutuhan.substr(0,4);
                     $('#id_modal_permintaan').val(data.id);
