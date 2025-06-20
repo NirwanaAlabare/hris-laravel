@@ -217,40 +217,9 @@ class DataLemburController extends AdminBaseController
         } else {
             $inNomorSPL = '';
         }
-        // $query = DB::select("
-        //     SELECT
-        //         CONCAT(
-        //             dl.nomor_form_lembur,
-        //             ' [ ',
-        //             DATE_FORMAT(ma.tanggal_berjalan, '%d %b %Y'),
-        //             ' ] => ',
-        //             COUNT(ma.enroll_id),
-        //             ' karyawan'
-        //         ) AS tanggal_nomor_spl,
-        //         dl.nomor_form_lembur,
-        //         ma.tanggal_berjalan,
-        //         dl.mulai_jam_lembur,
-        //         dl.akhir_jam_lembur,
-        //         dl.jumlah_jam_lembur,
-        //         dl.catatan,
-        //         dl.jumlah_jam_istirahat_lembur
-        //     FROM
-        //         data_lembur dl
-        //     JOIN
-        //         master_data_absen_kehadiran ma
-        //         ON ma.uuid = dl.uuid_master
-        //     WHERE
-        //         ma.tanggal_berjalan BETWEEN '{$awal_bulan}' AND '{$akhir_bulan}'
-        //         {$inNomorSPL}
-        //     GROUP BY
-        //         dl.nomor_form_lembur, ma.tanggal_berjalan
-        //     ORDER BY
-        //         dl.nomor_form_lembur DESC;
-        // ");
-
-         $query = DB::select("
+        $query = DB::select("
             SELECT
-                  CONCAT(
+                CONCAT(
                     dl.nomor_form_lembur,
                     ' [ ',
                     DATE_FORMAT(ma.tanggal_berjalan, '%d %b %Y'),
@@ -267,18 +236,21 @@ class DataLemburController extends AdminBaseController
                 dl.jumlah_jam_istirahat_lembur
             FROM
                 data_lembur dl
-            LEFT JOIN
+            JOIN
                 master_data_absen_kehadiran ma ON ma.uuid = dl.uuid_master
             WHERE
                 ma.tanggal_berjalan BETWEEN '{$awal_bulan}' AND '{$akhir_bulan}'
                 {$inNomorSPL}
-                OR ma.tanggal_berjalan IS NULL -- untuk tangkap join gagal
             GROUP BY
                 dl.nomor_form_lembur, ma.tanggal_berjalan
-            ORDER BY
-                CAST(SUBSTRING_INDEX(dl.nomor_form_lembur, '/', -1) AS UNSIGNED) DESC
         ");
-        return $query;
+        $sorted = collect($query)->sortByDesc(function ($item) {
+            // Ambil angka SPL dari belakang (setelah slash terakhir)
+            preg_match('/\/(\d+)$/', $item->nomor_form_lembur, $match);
+            return isset($match[1]) ? (int)$match[1] : 0;
+        })->values();
+
+        return $sorted->take(1000);
 
     }
 
@@ -2266,19 +2238,34 @@ class DataLemburController extends AdminBaseController
         $kodelembur = "SPL/HR";
         $thnbln = date("ym");
 
-        $getlastnomorform =  DataLembur::select('nomor_form_lembur')
-                                        ->groupby('nomor_form_lembur')
-                                        ->orderby('nomor_form_lembur', 'desc')
-                                        ->first();
+        // $getlastnomorform =  DataLembur::select('nomor_form_lembur')
+        //                                 ->groupby('nomor_form_lembur')
+        //                                 ->orderby('nomor_form_lembur', 'desc')
+        //                                 ->first();
 
-        if($getlastnomorform == "") {
-            $nomor = "0000";
-        } else {
-            $nomor = $getlastnomorform->nomor_form_lembur;
-        }
+        // if($getlastnomorform == "") {
+        //     $nomor = "0000";
+        // } else {
+        //     $nomor = $getlastnomorform->nomor_form_lembur;
+        // }
 
-        $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
-        $nomor_form_lembur = $kodelembur . "/" . $thnbln . "/" . $nomorform;
+        // $nomorform = str_pad(substr($nomor, -4) + 1,4,"0",STR_PAD_LEFT);
+        // $nomor_form_lembur = $kodelembur . "/" . $thnbln . "/" . $nomorform;
+
+        $last_nomor = DataLembur::select('nomor_form_lembur')
+        ->orderByRaw("CAST(SUBSTRING_INDEX(nomor_form_lembur, '/', -1) AS UNSIGNED) DESC")
+        ->limit(1)
+        ->pluck('nomor_form_lembur')
+        ->first();
+
+        // Ambil angka terakhir setelah "/"
+        $last_angka = $last_nomor
+            ? (int) collect(explode('/', $last_nomor))->last()
+            : 0;
+
+        $ldate = date('Ym');
+
+        $nomor_form_lembur = 'SPL/HR/' . substr($ldate, 2) . '/' . sprintf("%05d", $last_angka + 1);
 
         $data_lembur=$request->arrayHtml;
         $spl=[];
@@ -2807,10 +2794,20 @@ class DataLemburController extends AdminBaseController
 
     public function get_last_nomor_form_lembur()
     {
-        $nomor_form_lembur = DataLembur::select('nomor_form_lembur')->orderBy('created_at','desc')->limit(1)->pluck('nomor_form_lembur')[0];
-        $last_nomor =substr($nomor_form_lembur,12);
+         $last_nomor = DataLembur::select('nomor_form_lembur')
+        ->orderByRaw("CAST(SUBSTRING_INDEX(nomor_form_lembur, '/', -1) AS UNSIGNED) DESC")
+        ->limit(1)
+        ->pluck('nomor_form_lembur')
+        ->first();
+
+        // Ambil angka terakhir setelah "/"
+        $last_angka = $last_nomor
+            ? (int) collect(explode('/', $last_nomor))->last()
+            : 0;
+
         $ldate = date('Ym');
-        return 'SPL/HR/'.substr($ldate,2).'/'.sprintf("%05d", (int)$last_nomor+1);
+
+        return 'SPL/HR/' . substr($ldate, 2) . '/' . sprintf("%05d", $last_angka + 1);
     }
 
     public function verifikasi_insentif_lembur()
