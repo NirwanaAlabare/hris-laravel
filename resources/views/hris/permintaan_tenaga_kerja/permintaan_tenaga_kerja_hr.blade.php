@@ -2029,7 +2029,7 @@ h1 {
                         id:id,
                     },
                     success: function(res){
-                        swal("", "Pengajuan berhasil diselesaikan", "success");
+                        swal("", "Pengajuan berhasil diapprove", "success");
                         tableVerifikasi.ajax.reload();
                         tableWaiting.ajax.reload();
                         tableReject.ajax.reload();
