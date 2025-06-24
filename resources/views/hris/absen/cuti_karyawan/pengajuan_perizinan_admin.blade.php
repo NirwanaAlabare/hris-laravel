@@ -310,6 +310,8 @@ h1 {
                             <input id="uuid_master" type="hidden">
                             <input id="enroll_id" type="hidden">
                             <input id="didelegasikan_enroll_id" type="hidden">
+                            <input id="tanggal_mulai_ijin_before" type="hidden">
+                            <input id="tanggal_akhir_ijin_before" type="hidden">
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
@@ -891,6 +893,9 @@ h1 {
                     console.log('data', data);
                     console.log('tanggal_mulai_ijin', tanggal_mulai_ijin);
                  // Mengisi data dari response ke dalam form input
+                    $('#tanggal_mulai_ijin_before').val(tanggal_mulai).prop('disabled', true);  // Format tanggal dan disable
+                    $('#tanggal_akhir_ijin_before').val(tanggal_akhir).prop('disabled', true);  // Format tanggal dan disable
+
                     $('#tanggal_perijinan').val(tanggal_perizinan).prop('disabled', true);  // Format tanggal dan disable
                     $('#diajukanOlehID').val(data.enroll_id).trigger('change').prop('disabled', true);  // Pilih karyawan dan disable
                     $('#didelegasikanID').val(data.didelegasikan_enroll_id).trigger('change').prop('disabled', false);  // Pilih karyawan dan disable
@@ -1023,6 +1028,9 @@ h1 {
             $('#department_id').val(null).prop('disabled', false);  // Masukkan ID department dan disable
             $('#bagian').val(null).prop('disabled', false);  // Masukkan nama bagian/sub-department dan disable
             $('#sub_dept_id').val(null).prop('disabled', false);  // Masukkan ID bagian/sub-department dan disable
+
+            $('#tanggal_mulai_ijin_before').val(null);
+            $('#tanggal_akhir_ijin_before').val(null);
 
             $('#uuid').val(null);
             $('#uuid_master').val(null);
@@ -1765,6 +1773,9 @@ h1 {
             var kode_absen_ijin = $('#kode_absen_ijin').val();
             var absen_alasan = $('#absen_alasan_izin').val();
 
+            var tanggal_mulai_ijin_before = $('#tanggal_mulai_ijin_before').val();
+            var tanggal_akhir_ijin_before = $('#tanggal_akhir_ijin_before').val();
+
 
             if (!enroll_id) {
                 notif({
@@ -1872,8 +1883,8 @@ h1 {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                             data: {
                                 enroll_id:enroll_id,
-                                tanggal_mulai_ijin:tanggal_mulai_ijin,
-                                tanggal_akhir_ijin:tanggal_akhir_ijin,
+                                tanggal_mulai_ijin:tanggal_mulai_ijin_before,
+                                tanggal_akhir_ijin:tanggal_akhir_ijin_before,
                             },
                             dataType: 'json',
                             success: function(res){
