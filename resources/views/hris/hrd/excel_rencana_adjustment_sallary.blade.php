@@ -44,17 +44,6 @@
             @foreach ($grouped as $enrollId => $contracts)
                 @php
                     $first = $contracts->first();
-                    $join_date = $first->join_date;
-                    $today = date('Y-m-d');
-                    $diff = abs(strtotime($today) - strtotime($join_date));
-                    $years = floor($diff / (365 * 60 * 60 * 24));
-                    $month = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
-                    $day = floor(($diff - $years * 365 * 60 * 60 * 24 - $month * 30 * 60 * 60 * 24) / (60 * 60 * 24));
-                    $periode = '';
-                    if (!empty($first->contract_end_last)) {
-                        $date = \Carbon\Carbon::parse($first->contract_end_last);
-                        $periode = $date->format('y') . $date->format('m'); // contoh: 25 + 04 = 2504
-                    }
                 @endphp
 
                 <tr>
@@ -62,7 +51,7 @@
                     <td style="border:1px solid black">{{ $first->enroll_id }}</td>
                     <td style="border:1px solid black">{{ $first->employee_name }}</td>
                     <td style="border:1px solid black">{{ $first->sub_dept_name }}</td>
-                    <td style="border:1px solid black">{{  \PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($first->contract)}}</td>
+                    <td style="border:1px solid black">{{  \PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($first->join_date)}}</td>
                     <td style="border:1px solid black">{{ \Carbon\Carbon::parse($first->tanggal_periode_awal)->translatedFormat('d F Y') }} - {{ \Carbon\Carbon::parse($first->tanggal_periode_akhir)->translatedFormat('d F Y') }}</td>
                     {{-- Masa Kerja --}}
                     <td style="border:1px solid black">{{ $first->jumlah_ijin }}</td>
