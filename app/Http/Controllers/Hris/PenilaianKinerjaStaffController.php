@@ -1105,6 +1105,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         $inEnrollIds='';
         $data_penilaian = collect();
         $today = date('Y-m-d');
+        $inStatusKontrak='';
 
         if(request()->status_kontrak){
             $status_kontrak=request()->status_kontrak;
