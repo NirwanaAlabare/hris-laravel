@@ -568,7 +568,6 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         $currentYear = date('Y');
 
 
-        $inStatusKontrak='';
         $status_kontrak = request()->status_kontrak;
 
         if($status_kontrak){
@@ -767,7 +766,6 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         $currentYear = date('Y');
 
 
-        $inStatusKontrak='';
         $status_kontrak = request()->status_kontrak;
 
         // if($status_kontrak){
@@ -923,7 +921,6 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         $currentYear = date('Y');
 
 
-        $inStatusKontrak='';
         $status_kontrak = request()->status_kontrak;
 
         if($status_kontrak){
