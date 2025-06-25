@@ -88,13 +88,25 @@ class EmployeeAtrController extends AdminBaseController
         $pdf = PDF::loadView('hris.Laporan.id_card_department',["employee" => $employee,"print_by"=>$print_by])->setPaper('letter', 'landscape')->stream('Id card karyawan department'.'.pdf',array('Attachment'=>0));
         return $pdf;
     }
+
     public function export_pdf_id_card_employee(){
-        $employees=explode(",",request()->employee);
         $print_by=request()->print_by;
+        $employees=explode(",",request()->employee);
         $employee=EmployeeAtribut::whereIn('enroll_id',$employees)->get();
-        $pdf = PDF::loadView('hris.Laporan.id_card_department',["employee" => $employee, "print_by"=>$print_by])->setPaper('letter', 'landscape')->stream('Id card karyawan department'.'.pdf',array('Attachment'=>0));
-        return $pdf;
+        $pdf = PDF::loadView('hris.Laporan.id_card_department', ["employee" => $employee,  "print_by"=>$print_by])
+        ->setPaper('letter', 'landscape')
+        ->setOptions([
+            'margin-top' => 0,
+            'margin-bottom' => 0,
+            'margin-left' => 0,
+            'margin-right' => 0,
+        ])
+        ->stream('Id card karyawan department.pdf', ['Attachment' => 0]);
+
+    return $pdf;
+
     }
+
     public function select_employee(){
         $inDepartment='';
         if(request()->department){
