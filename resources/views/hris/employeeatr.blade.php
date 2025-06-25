@@ -353,7 +353,7 @@
                     </div>
                     <div class="row pt-2">
                         <div class="col-4">
-                            <label class="form-label text-primary pt-1">Print</label>
+                            <label class="form-label text-primary pt-1">Opsi Print</label>
                         </div>
                         <div class="col-6">
                             <select class="form-control form-control-sm" id="print_by">
