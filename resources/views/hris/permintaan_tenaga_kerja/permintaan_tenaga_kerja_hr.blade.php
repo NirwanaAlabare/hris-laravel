@@ -726,208 +726,7 @@ h1 {
                                         <input type="hidden" readonly value="" class="form-control create-control" id="sub_dept_id_approve" name="sub_dept_id_approve">
                                     </div>
                                 </div>
-                                <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px; padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
-                                    <h5 style="font-weight: bold;">Rencana Kebutuhan</h5>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label class="form-label">DEPARTMENT : </label>
-                                         <select id="selectDepartmentModalApprove" name="selectDepartmentModalApprove" class="form-control">
-                                            <option value="">-- PILIH DEPARTMENT --</option>
-                                            @foreach ($department as $r_department)
-                                                <option value="{{$r_department->department_id}}">{{$r_department->department_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label class="form-label">BAGIAN : </label>
-                                        <select id="selectBagianModalApprove" name="selectBagianModalApprove" class="form-control">
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label class="form-label">TANGGAL Kebutuhan : </label>
-                                         <input id="tanggal_kebutuhan_approve" name="tanggal_kebutuhan_approve" type="text" class="form-control fc-datepicker" placeholder="Tanggal Kebutuhan" maxlength="50" size="50">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label class="form-label">JUMLAH : </label>
-                                        <input type="number" value="0" class="form-control create-control" id="jumlah_kebutuhan_approve" name="jumlah_kebutuhan_approve">
-                                    </div>
-                                </div>
-                                <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
-                                    <h5 style="font-weight: bold;">Rencana Jabatan</h5>
-                                </div>
-                                <div class="col-md-12">
-                                     <div class="radio-container">
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="rencana_jabatan" value="manager" checked class="mr-2">
-                                            <span>Manager</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="rencana_jabatan" value="chief" class="mr-2">
-                                            <span>Chief</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="rencana_jabatan" value="spv" class="mr-2">
-                                            <span>SPV</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="rencana_jabatan" value="leader" class="mr-2">
-                                            <span>Leader</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="rencana_jabatan" value="staff" class="mr-2">
-                                            <span>Staff</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="rencana_jabatan" value="operator" class="mr-2">
-                                            <span>Operator</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                 <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px; padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
-                                    <h5 style="font-weight: bold;">Pendidikan Minimal & Jurusan</h5>
-                                </div>
-                                <div class="col-md-4">
-                                     <div class="radio-container">
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pend_minimal" value="sd" checked class="mr-2">
-                                            <span>Sekolah Dasar</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                     <div class="radio-container">
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pend_minimal" value="smp" class="mr-2">
-                                            <span>Sekolah Lanjutan Tingkat Pertama</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                     <div class="radio-container">
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pend_minimal" value="sma" class="mr-2">
-                                            <span>Sekolah Menengah Atas</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                     <div class="radio-container">
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pend_minimal" value="diploma_1" class="mr-2">
-                                            <span>Diploma 1</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pend_minimal" value="diploma_2" class="mr-2">
-                                            <span>Diploma 2</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pend_minimal" value="diploma_3" class="mr-2">
-                                            <span>Diploma 3</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                     <div class="radio-container">
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pend_minimal" value="strata_1" class="mr-2">
-                                            <span>Strata 1</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pend_minimal" value="strata_2" class="mr-2">
-                                            <span>Strata 2</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pend_minimal" value="strata_3" class="mr-2">
-                                            <span>Strata 3</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                     <div class="radio-container">
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pend_minimal" value="dll" class="mr-2">
-                                            <span>DLL</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                       <label class="form-label">JURUSAN : </label>
-                                       <input type="text" class="form-control create-control" placeholder="Rencana Jurusan" id="rencana_jurusan_approve" name="rencana_jurusan_approve">
-                                    </div>
-                                </div>
-                                 <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
-                                    <h5 style="font-weight: bold;">Pengalaman Kerja</h5>
-                                </div>
-                                <div class="col-md-12">
-                                     <div class="radio-container">
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pengalaman_kerja" value="ya" checked class="mr-2">
-                                            <span>Ya</span>
-                                            <input type="number" class="w-75 form-control create-control pl-5 ml-5 mr-3" placeholder="Waktu Pengalaman" id="waktu_pengalaman_approve" name="waktu_pengalaman_approve">
-                                            <span>Tahun</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="pengalaman_kerja" value="tidak" class="mr-2">
-                                            <span>Tidak</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                 <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
-                                    <h5 style="font-weight: bold;">Uraian Tugas Secara Umum</h5>
-                                </div>
-                                <div class="col-md-6">
-                                   @for($i = 0; $i < 5; $i++)
-                                        <div class="form-group">
-                                            <input type="text" class="form-control create-control" placeholder="{{ $i + 1 }}. Uraian Tugas" name="uraian_tugas_approve[]">
-                                        </div>
-                                    @endfor
-                                </div>
-                                <div class="col-md-6">
-                                     @for($i = 5; $i < 10; $i++)
-                                        <div class="form-group">
-                                            <input type="text" class="form-control create-control" placeholder="{{ $i + 1 }}. Uraian Tugas" name="uraian_tugas_approve[]">
-                                        </div>
-                                    @endfor
-                                </div>
-                                 <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
-                                    <h5 style="font-weight: bold;">Rencana Gaji & Fasilitas</h5>
-                                </div>
-                                  <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Golongan / Besaran Gaji : </label>
-                                       <input id="besaran_gaji_approve" name="besaran_gaji_approve" type="text" class="form-control" placeholder="0" maxlength="50" size="50">
-                                    </div>
-                                </div>
-                                  <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label">Fasilitas : </label>
-                                       <input type="text" class="form-control create-control" placeholder="Fasilitas" id="fasilitas_approve" name="fasilitas_approve">
-                                    </div>
-                                </div>
-                                 <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
-                                    <h5 style="font-weight: bold;">Jangka Waktu Kontrak</h5>
-                                </div>
-                                  <div class="col-md-6">
-                                    <div class="form-group">
-                                       <input type="text" class="form-control create-control" placeholder="Jangak Waktu" id="jangka_waktu_kontrak_approve" name="jangka_waktu_kontrak_approve">
-                                    </div>
-                                </div>
-                                 <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
-                                    <h5 style="font-weight: bold;">Keterangan Lainnya ( Jumlah, Keterampilan Tambahan, dll )</h5>
-                                </div>
-                                  <div class="col-md-12">
-                                    <div class="form-group">
-                                       <input type="text" class="form-control create-control" placeholder="Keterangan Tambahan" id="keterangan_tambahan_approve" name="keterangan_tambahan_approve">
-                                    </div>
-                                </div>
+                                <div id="container-kualifikasi-update"></div>
                                 <div class="col-md-5">
                                 </div>
                                   <div class="col-md-3">
@@ -937,7 +736,7 @@ h1 {
                                     </button>
                                     <button class="btn btn-success w-100" id="btn-approve-permintaan" data-toggle="tooltip" title="Simpan Data" style="margin-top: 10px; display: none;">
                                         <i class="fa fa-check" aria-hidden="true"></i>
-                                        Approve FPTK
+                                        Selesaikan Pengajuan
                                     </button>
                                     <button class="btn btn-danger w-100" id="btn-reject-permintaan" data-toggle="tooltip" title="Tolak Pengajuan" style="margin-top: 10px; display: none;">
                                         <i class="fa fa-check" aria-hidden="true"></i>
@@ -1023,7 +822,7 @@ h1 {
                                 <div class="col-md-12" style="margin-top: 5px; margin-bottom: 10px; padding-top: 5px; border-bottom: 1px solid #ccc; border-top: 1px solid #ccc;">
                                     <h5 style="font-weight: bold;">Data Kebutuhan :</h5>
                                 </div>
-                                <div class="col-md-2">
+                                {{-- <div class="col-md-2">
                                     <div style="display: block; text-align: start;  height: 25px;">
                                             <span>Bagian</span>
                                     </div>
@@ -1099,41 +898,33 @@ h1 {
                                         <strong><span id="status_permintaan_text"></span></strong>
                                     </div>
                                 </div>
-
-
-                                 {{-- <div class="col-md-12 mt-3">
-                                    <div class="form-group">
-                                        <label class="form-label" style="font-weight: bold;">Pilih Jenis PK : </label>
-                                        <select id="selectJenisPK" name="selectJenisPK" class="form-control">
-                                            <option value="harian_lepas">Harian Lepas</option>
-                                            <option value="pkwt">PKWT</option>
-                                            <option value="pkwtt">PKWTT</option>
-                                        </select>
-                                    </div>
-                                </div> --}}
                                 <div class="col-md-12 mt-5">
                                     <div class="form-group">
                                         <label class="form-label" style="font-weight: bold;">Masukan ID karyawan : </label>
                                         <input name="karyawan_list" onkeydown="fillTheField(event)" type="text" id="karyawan_list" class="form-control py-1 px-1">
 
                                     </div>
+                                </div> --}}
+                                <div class="col-md-12 mt-3" id="list-kebutuhan-karyawan">
+                                    <!-- List kebutuhan muncul di sini -->
                                 </div>
-                                <div class="col-md-12">
-                                  <table class="table" id="tabel-karyawan">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Enroll ID</th>
-                                            <th>Nama</th>
-                                            <th>Jabatan</th>
-                                            <th>Departemen</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Isi dinamis dari AJAX -->
-                                    </tbody>
-                                </table>
+
+                                {{-- <div class="col-md-12">
+                                <table class="table" id="tabel-karyawan">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Enroll ID</th>
+                                                <th>Nama</th>
+                                                <th>Jabatan</th>
+                                                <th>Departemen</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Isi dinamis dari AJAX -->
+                                        </tbody>
+                                </table> --}}
                                 <div class="mt-3 justify-content-between" style="display: flex; gap: 10px; align-items: center; justify-content: space-between;">
                                     <button class="btn btn-success" id="btn-simpan-selesai-karyawan">
                                         <i class="fa fa-check"></i> Simpan & Selesai
@@ -1197,6 +988,110 @@ h1 {
     </style>
 
     <script>
+
+        function updateKualifikasi() {
+            $('.kualifikasi-item').each(function (index) {
+                $(this).find('.kualifikasi-header').removeClass('d-none');
+                $(this).find('.kualifikasi-title').text('Kualifikasi ' + (index + 1));
+
+                if (index === 0) {
+                    $(this).find('.btn-hapus-kualifikasi').addClass('d-none');
+                } else {
+                    $(this).find('.btn-hapus-kualifikasi').removeClass('d-none');
+                }
+            });
+        }
+
+        $(document).ready(function () {
+
+            // Sinkronisasi otomatis jika kualifikasi pertama berubah
+            $(document).on('change', '.kualifikasi-item:first select[name="selectDepartment"], .kualifikasi-item:first select[name="selectBagian"], .kualifikasi-item:first input[name="tanggal_kebutuhan[]"]', function () {
+
+                let firstDepartment = $('.kualifikasi-item').first().find('select[name="selectDepartment"]').val();
+                let firstBagian = $('.kualifikasi-item').first().find('select[name="selectBagian"]').val();
+                let firstTanggal = $('.kualifikasi-item').first().find('input[name="tanggal_kebutuhan[]"]').val();
+
+                $('.kualifikasi-item').not(':first').each(function () {
+                    $(this).find('select[name="selectDepartment"]').val(firstDepartment);
+                    $(this).find('select[name="selectBagian"]').val(firstBagian);
+                    $(this).find('input[name="tanggal_kebutuhan[]"]').val(firstTanggal);
+                });
+            });
+
+
+            $('#btn-tambah-permintaan').on('click', function () {
+                let firstItem = $('.kualifikasi-item').first();
+                let index = $('.kualifikasi-item').length;
+
+                let firstDepartment = $('.kualifikasi-item').first().find('select[name="selectDepartment"]').val();
+                let firstBagian = $('.kualifikasi-item').first().find('select[name="selectBagian"]').val();
+                let firstTanggal = $('.kualifikasi-item').first().find('input[name="tanggal_kebutuhan[]"]').val();
+
+                firstItem.find('select[name="selectDepartment"]').css('border', '');
+                firstItem.find('select[name="selectBagian"]').css('border', '');
+                firstItem.find('input[name="tanggal_kebutuhan[]"]').css('border', '');
+
+                if (!firstDepartment || !firstBagian || !firstTanggal) {
+
+                    if (!firstDepartment) {
+                        firstItem.find('select[name="selectDepartment"]').css('border', '1px solid red');
+                    }
+                    if (!firstBagian) {
+                        firstItem.find('select[name="selectBagian"]').css('border', '1px solid red');
+                    }
+                    if (!firstTanggal) {
+                        firstItem.find('input[name="tanggal_kebutuhan[]"]').css('border', '1px solid red');
+                    }
+
+                    swal("", "Harap isi Department, Bagian, dan Tanggal Kebutuhan terlebih dahulu!", "info");
+                    return; // Stop proses tambah kualifikasi
+                }
+
+                let newForm = firstItem.clone();
+
+                // Reset input
+                newForm.find('input, select, textarea').each(function () {
+                    if ($(this).attr('type') == 'radio' || $(this).attr('type') == 'checkbox') {
+                        $(this).prop('checked', false);
+                    } else {
+                        $(this).val('');
+                    }
+                });
+
+
+                newForm.find('select[name="selectDepartment"]').val(firstDepartment).prop('disabled', true);
+                newForm.find('select[name="selectBagian"]').val(firstBagian);
+                newForm.find('input[name="tanggal_kebutuhan[]"]').val(firstTanggal).prop('disabled', true);
+
+                newForm.find('input[name^="rencana_jabatan"]').attr('name', 'rencana_jabatan[' + index + ']');
+                newForm.find('input[name^="pend_minimal"]').attr('name', 'pend_minimal[' + index + ']');
+                newForm.find('input[name^="pengalaman_kerja"]').attr('name', 'pengalaman_kerja[' + index + ']');
+                newForm.find('input[name^="uraian_tugas"]').attr('name', 'uraian_tugas[' + index + '][]');
+
+                newForm.find('[id]').removeAttr('id');
+
+                $('#container-kualifikasi').append(newForm);
+                newForm.find('.fc-datepicker').removeClass('hasDatepicker').datepicker({
+                    showOtherMonths: true,
+                    selectOtherMonths: true,
+                    dateFormat: 'dd-mm-yy'
+                });
+
+                updateKualifikasi();
+            });
+
+            $(document).on('click', '.btn-hapus-kualifikasi', function () {
+                if ($('.kualifikasi-item').length > 1) {
+                    $(this).closest('.kualifikasi-item').remove();
+                    updateKualifikasi();
+                }
+            });
+
+            updateKualifikasi();
+        });
+    </script>
+
+    <script>
         $('body').on('change', '#selectDepartment', function () {
                 var department_id = $('#selectDepartment').val();
 
@@ -1225,6 +1120,35 @@ h1 {
                     });
                 }
         });
+
+          $('body').on('change', '.select-department-update', function () {
+                let department_id = $(this).val();
+                let parent = $(this).closest('.container-kualifikasi-update');
+                let bagianSelect = parent.find('.select-bagian-update');
+                bagianSelect.html('<option value="">Loading...</option>');
+                if(department_id){
+                    $.ajax({
+                        type:"POST",
+                        url: "{{route('hris.departmentall.getDepartmentName')}}",
+                        dataType: 'json',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        data: {
+                            id:department_id,
+                        },
+                        dataType: 'json',
+                        success: function(res){
+                            if(res){
+                            let html = '<option value="">--Pilih Bagian--</option>';
+                            res.forEach(bagian => {
+                                html += `<option value="${bagian.sub_dept_id}">${bagian.sub_dept_name}</option>`;
+                            });
+                            bagianSelect.html(html);
+                            }
+                        }
+                    });
+                }
+        });
     </script>
 
     <script>
@@ -1235,82 +1159,185 @@ h1 {
         });
     </script>
     <script>
-      function fillTheField(event) {
-        if (event.keyCode == 13) {
-            event.preventDefault(); // mencegah form submit jika dalam form
+    // function fillTheField(event) {
+    //     if (event.keyCode == 13) {
+    //         event.preventDefault(); // mencegah form submit jika dalam form
 
-            var no_permintaan_pengajuan = $("#no_permintaan_pengajuan").val();
-            var enroll_id = $('#karyawan_list').val();
-            var jml_permintaan_val = $('#jml_permintaan_val').val();
-            $.ajax({
-                type: "POST",
-                url: '{{ route('permintaan_tenaga_kerja.get_employee_fptk') }}',
-                data: {
-                    no_permintaan_pengajuan: no_permintaan_pengajuan,
-                    enroll_id: enroll_id,
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(res) {
-                    if (res.success) {
-                        $('#karyawan_list').css('border', '');
-                        let data = res.data;
+    //         var no_permintaan_pengajuan = $("#no_permintaan_pengajuan").val();
+    //         var enroll_id = $('#karyawan_list').val();
+    //         var jml_permintaan_val = $('#jml_permintaan_val').val();
+    //         $.ajax({
+    //             type: "POST",
+    //             url: '{{ route('permintaan_tenaga_kerja.get_employee_fptk') }}',
+    //             data: {
+    //                 no_permintaan_pengajuan: no_permintaan_pengajuan,
+    //                 enroll_id: enroll_id,
+    //                 _token: '{{ csrf_token() }}'
+    //             },
+    //             success: function(res) {
+    //                 if (res.success) {
+    //                     $('#karyawan_list').css('border', '');
+    //                     let data = res.data;
 
-                        let existingRow = $("#tabel-karyawan tbody tr").filter(function () {
-                            return $(this).find("td:first").text() == data.enroll_id;
-                        });
+    //                     let existingRow = $("#tabel-karyawan tbody tr").filter(function () {
+    //                         return $(this).find("td:first").text() == data.enroll_id;
+    //                     });
 
-                     if (existingRow.length === 0) {
-                            let currentRowCount = $("#tabel-karyawan tbody tr").length;
+    //                  if (existingRow.length === 0) {
+    //                         let currentRowCount = $("#tabel-karyawan tbody tr").length;
 
-                            if (currentRowCount >= jml_permintaan_val) {
-                                notif({
-                                    msg: "<b>Info:</b> Jumlah karyawan tidak boleh lebih dari " + jml_permintaan_val,
-                                    type: "warning"
-                                });
-                                $('#karyawan_list').css('border', '1px solid #f79307');
-                                return;
-                            }
+    //                         if (currentRowCount >= jml_permintaan_val) {
+    //                             notif({
+    //                                 msg: "<b>Info:</b> Jumlah karyawan tidak boleh lebih dari " + jml_permintaan_val,
+    //                                 type: "warning"
+    //                             });
+    //                             $('#karyawan_list').css('border', '1px solid #f79307');
+    //                             return;
+    //                         }
 
-                            let rowNumber = currentRowCount + 1;
-                            let newRow = `
-                                <tr data-enroll="${data.enroll_id}">
-                                    <td>${rowNumber}</td>
-                                    <td>${data.enroll_id}</td>
-                                    <td>${data.employee_name}</td>
-                                    <td>${data.sub_dept_name}</td>
-                                    <td>${data.department_name}</td>
-                                    <td><button class='btn btn-danger' onclick='removeRow(this)'><i class='fa fa-trash'></i></button></td>
-                                </tr>
-                            `;
-                            $("#tabel-karyawan tbody").append(newRow);
-                            $('#karyawan_list').val('').css('border', '');
+    //                         let rowNumber = currentRowCount + 1;
+    //                         let newRow = `
+    //                             <tr data-enroll="${data.enroll_id}">
+    //                                 <td>${rowNumber}</td>
+    //                                 <td>${data.enroll_id}</td>
+    //                                 <td>${data.employee_name}</td>
+    //                                 <td>${data.sub_dept_name}</td>
+    //                                 <td>${data.department_name}</td>
+    //                                 <td><button class='btn btn-danger' onclick='removeRow(this)'><i class='fa fa-trash'></i></button></td>
+    //                             </tr>
+    //                         `;
+    //                         $("#tabel-karyawan tbody").append(newRow);
+    //                         $('#karyawan_list').val('').css('border', '');
+    //                     }
+
+    //                 } else {
+    //                     notif({
+    //                             msg: "<b>Info:</b> Karyawan dengan enroll ID tidak ditemukan",
+    //                             type: "error"
+    //                         });
+    //                         $('#karyawan_list').css('border', '1px solid red');
+
+    //                 }
+    //             },
+    //             error: function() {
+    //                 notif({
+    //                             msg: "<b>Error:</b> Terjadi kesalahan.",
+    //                             type: "error"
+    //                         });
+    //             }
+    //         });
+    //     }
+    // }
+    let listEnrollId = [];
+    let listEnrollIdPerKualifikasi = {};
+
+
+    function fillTheField(event, kualifikasiId) {
+    if (event.keyCode == 13) {
+        event.preventDefault();
+         var enroll_id = $(`input[data-id='${kualifikasiId}']`).val();
+
+        // Inisialisasi list jika belum ada
+        if (!listEnrollIdPerKualifikasi[kualifikasiId]) {
+            listEnrollIdPerKualifikasi[kualifikasiId] = [];
+        }
+
+        if (listEnrollIdPerKualifikasi[kualifikasiId].includes(enroll_id)) {
+            notif({
+                msg: "<b>Info:</b> Karyawan sudah pernah diinput di kualifikasi ini",
+                type: "error"
+            });
+            $(`input[data-id='${kualifikasiId}']`).css('border', '1px solid red');
+            return;
+        }
+
+        var enroll_id = $(`input[data-id='${kualifikasiId}']`).val();
+        var jml_permintaan_val = $(`input[data-id='${kualifikasiId}']`).data('jumlah');
+        var no_permintaan_pengajuan = $("#no_permintaan_pengajuan").val();
+        // Cek global semua tabel apakah enroll_id sudah ada
+        var isExistGlobal = $(`table[id^='tabel-karyawan-'] tbody tr`).filter(function() {
+            return $(this).find('td:nth-child(2)').text() == enroll_id;
+        }).length > 0;
+
+        if (isExistGlobal) {
+            notif({
+                msg: "<b>Info:</b> Enroll ID sudah pernah diinput di kualifikasi lain",
+                type: "error"
+            });
+            $(`input[data-id='${kualifikasiId}']`).css('border', '1px solid red');
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: '{{ route('permintaan_tenaga_kerja.get_employee_fptk') }}',
+            data: {
+                no_permintaan_pengajuan: no_permintaan_pengajuan,
+                enroll_id: enroll_id,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(res) {
+                if (res.success) {
+                    let data = res.data;
+                    let tabel = $(`#tabel-karyawan-${kualifikasiId} tbody`);
+                    let existingRow = tabel.find(`tr[data-enroll='${data.enroll_id}']`);
+
+                    if (existingRow.length === 0) {
+                        let currentRowCount = tabel.find('tr').length;
+
+                        if (currentRowCount >= jml_permintaan_val) {
+                            notif({
+                                msg: "<b>Info:</b> Jumlah karyawan tidak boleh lebih dari " + jml_permintaan_val,
+                                type: "warning"
+                            });
+                            $(`input[data-id='${kualifikasiId}']`).css('border', '1px solid #f79307');
+                            return;
                         }
 
+                        let newRow = `
+                            <tr data-enroll="${data.enroll_id}">
+                                <td>${currentRowCount + 1}</td>
+                                <td>${data.enroll_id}</td>
+                                <td>${data.employee_name}</td>
+                                <td>${data.status_jabatan}</td>
+                                <td>${data.sub_dept_name}</td>
+                                <td>${data.department_name}</td>
+                                <td><button class='btn btn-danger' onclick='removeRow(this, ${kualifikasiId})'><i class='fa fa-trash'></i></button></td>
+                            </tr>
+                        `;
+                        tabel.append(newRow);
+                        $(`input[data-id='${kualifikasiId}']`).val('').css('border', '');
+                    }
                     } else {
                         notif({
-                                msg: "<b>Info:</b> Karyawan dengan enroll ID tidak ditemukan",
-                                type: "error"
-                            });
-                            $('#karyawan_list').css('border', '1px solid red');
-
+                            msg: "<b>Info:</b> Karyawan dengan enroll ID tidak ditemukan",
+                            type: "error"
+                        });
+                        $(`input[data-id='${kualifikasiId}']`).css('border', '1px solid red');
                     }
-                },
-                error: function() {
-                    notif({
-                                msg: "<b>Error:</b> Terjadi kesalahan.",
-                                type: "error"
-                            });
-                }
-            });
+            },
+            error: function() {
+                notif({
+                    msg: "<b>Error:</b> Terjadi kesalahan.",
+                    type: "error"
+                });
+            }
+        });
         }
     }
 
+    function removeRow(el) {
+        let enroll_id = $(el).closest('tr').data('enroll');
+        listEnrollId = listEnrollId.filter(id => id != enroll_id);
+        $(el).closest('tr').remove();
 
-     function removeRow(button) {
-        // Cari elemen <tr> terdekat dari tombol yang diklik dan hapus
-        $(button).closest('tr').remove();
-        renumberRows();
+        // Reorder nomor
+        $("#tabel-karyawan tbody tr").each(function (index) {
+            $(this).find('td:first').text(index + 1);
+        });
     }
+
+
 
     </script>
 
@@ -1355,9 +1382,8 @@ h1 {
                     id: id
                 },
                 success: function(res) {
-                   var data = res.permintaan;
-                   var tanggal_perizinan=data.tanggal_pengajuan.substr(8,2)+'-'+data.tanggal_pengajuan.substr(5,2)+'-'+data.tanggal_pengajuan.substr(0,4);
-                   var tanggal_kebutuhan=data.tanggal_kebutuhan.substr(8,2)+'-'+data.tanggal_kebutuhan.substr(5,2)+'-'+data.tanggal_kebutuhan.substr(0,4);
+                    var data = res.permintaan;
+                    var tanggal_perizinan=data.tanggal_pengajuan.substr(8,2)+'-'+data.tanggal_pengajuan.substr(5,2)+'-'+data.tanggal_pengajuan.substr(0,4);
                     $('#id_modal_permintaan').val(data.id);
                     $('#enroll_id_approve').val(data.diajukan_oleh_id);
                     $('#tanggal_pengajuan_approve').val(tanggal_perizinan);
@@ -1368,37 +1394,282 @@ h1 {
                     $('#bagian_approve').val(data.sub_dept_name);
                     $('#sub_dept_id_approve').val(data.sub_dept_id);
                     $('#selectDepartmentModalApprove').val(data.kode_dept_id).trigger('change');
+                    $('#container-kualifikasi-update').empty();
+                    console.log(res.kualifikasi);
 
-                // panggil AJAX baru untuk isi bagian dengan nilai dari database:
-                    loadSubBagian(data.kode_dept_id, data.kode_bagian_id, data.nama_bagian);
-                    $('#tanggal_kebutuhan_approve').val(tanggal_kebutuhan);
-                    $('#jumlah_kebutuhan_approve').val(data.jumlah_kebutuhan);
-
-                    $('input[name="rencana_jabatan"][value="' + data.rencana_jabatan + '"]').prop('checked', true);
-                    $('input[name="pend_minimal"][value="' + data.pend_minimal + '"]').prop('checked', true);
-
-                    $('#rencana_jurusan_approve').val(data.rencana_jurusan);
-                    $('input[name="pengalaman_kerja"][value="' + data.pengalaman_kerja + '"]').prop('checked', true);
-                    $('#waktu_pengalaman_approve').val(data.waktu_pengalaman);
-                    $('#besaran_gaji_approve').val(data.besaran_gaji);
-                    $('#fasilitas_approve').val(data.fasilitas);
-                    $('#jangka_waktu_kontrak_approve').val(data.jangka_waktu_kontrak);
-                    $('#keterangan_tambahan_approve').val(data.keterangan_tambahan);
-
-                    let uraianTugasArray = [];
-
-                    try {
-                        uraianTugasArray = JSON.parse(data.uraian_tugas);
-                    } catch (e) {
-                        console.warn('Gagal parsing uraian_tugas:', e);
-                    }
-
-                    console.log('uraianTugasArray:', uraianTugasArray);
-                    $('input[name="uraian_tugas_approve[]"]').each(function (i) {
-                        $(this).val(uraianTugasArray[i] || '');
+                    res.kualifikasi.forEach((item, index) => {
+                        addKualifikasiRowUpdate({
+                            id_kualifikasi: item.id,
+                            department_kode: item.department_kode,
+                            bagian_kode: item.bagian_kode,
+                            bagian_name: item.bagian_name,
+                            tanggal_kebutuhan: item.tanggal_kebutuhan.substr(8,2)+'-'+item.tanggal_kebutuhan.substr(5,2)+'-'+item.tanggal_kebutuhan.substr(0,4),
+                            jumlah_kebutuhan: item.jumlah_kebutuhan,
+                            rencana_jabatan: item.rencana_jabatan,
+                            pend_minimal: item.pend_minimal,
+                            rencana_jurusan: item.rencana_jurusan,
+                            pengalaman_kerja: item.pengalaman_kerja,
+                            waktu_pengalaman: item.waktu_pengalaman,
+                            uraian_tugas: item.uraian_tugas ? JSON.parse(item.uraian_tugas) : [],
+                            besaran_gaji: item.besaran_gaji,
+                            fasilitas: item.fasilitas,
+                            jangka_waktu_kontrak: item.jangka_waktu_kontrak,
+                            keterangan_tambahan: item.keterangan_tambahan
+                        }, index);
                     });
                 }
             });
+        }
+
+        function addKualifikasiRowUpdate(data = {}, index = 0) {
+            let container = document.getElementById('container-kualifikasi-update');
+            let html = `
+            <div class="row container-kualifikasi-update p-2 mb-2">
+                <div class="col-md-12">
+                    <div class="d-flex justify-content-between bg-primary" style="margin-top: 10px; margin-bottom: 10px; padding-top:5px; padding-bottom:5px; padding-left: 10px; padding-right: 10px; color: white;">
+                        <h5 class="font-weight-bold kualifikasi-title" style="padding-top: 10px;">Kualifikasi ${index + 1}</h5>
+                        <button type="button" onclick="this.closest('.row').remove()" class="btn btn-danger btn-sm">
+                            <i class="fa fa-trash"></i> Hapus
+                        </button>
+                        <input type="hidden" name="id_kualifikasi[${index}]" value="${data.id_kualifikasi || ''}">
+                    </div>
+                </div>
+                <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px; padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                    <h5 style="font-weight: bold;">Rencana Kebutuhan</h5>
+                </div>
+                <div class="col-md-3">
+                    <label>Department:</label>
+                    <select disabled class="form-control select-department-update" id="selectDepartmentModalApprove_${index}" name="selectDepartmentModalApprove[${index}]">
+                        <option value="">Pilih</option>
+                        @foreach ($department as $dept)
+                            <option value="{{ $dept->department_id }}" ${data.department_kode == '{{ $dept->department_id }}' ? 'selected' : ''}>{{ $dept->department_name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label>Bagian:</label>
+                    <select class="form-control select-bagian-update"  id="selectBagianModalApprove[${index}]" name="selectBagianModalApprove[${index}]" >
+                        <option value="">Pilih Bagian</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label>Tanggal Kebutuhan:</label>
+                    <input type="text" class="form-control tanggal-kebutuhan fc-datepicker" name="tanggal_kebutuhan[${index}]" value="${data.tanggal_kebutuhan || ''}">
+                </div>
+                <div class="col-md-3">
+                    <label>Jumlah:</label>
+                    <input type="number" class="form-control jumlah-kebutuhan" name="jumlah_kebutuhan[${index}]" value="${data.jumlah_kebutuhan || 0}">
+                </div>
+
+                <!-- Rencana Jabatan -->
+                <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                    <h5 style="font-weight: bold;">Rencana Jabatan</h5>
+                </div>
+                <div class="col-md-12">
+                   <div class="radio-container">
+                    ${['manager','chief','spv','leader','staff','operator'].map(jabatan => `
+                    <label class="radio-wrapper">
+                                <input type="radio" name="rencana_jabatan[${index}]" value="${jabatan}" ${data.rencana_jabatan == jabatan ? 'checked' : ''}>
+                                <span>
+                                ${jabatan.charAt(0).toUpperCase() + jabatan.slice(1)}
+                                </span>
+                    </label>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Pendidikan Minimal -->
+                 <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px; padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                    <h5 style="font-weight: bold;">Pendidikan Minimal & Jurusan</h5>
+                </div>
+                <div class="col-md-4">
+                    <div class="radio-container">
+                        ${['sd'].map(pend => `
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pend_minimal[${index}]" value="${pend}" ${data.pend_minimal == pend ? 'checked' : ''}>
+                            <span>Sekolah Dasar</span>
+                        </label>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="radio-container">
+                        ${['smp'].map(pend => `
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pend_minimal[${index}]" value="${pend}" ${data.pend_minimal == pend ? 'checked' : ''}>
+                            <span>Sekolah Lanjutan Pertama</span>
+                        </label>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="radio-container">
+                        ${['sma'].map(pend => `
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pend_minimal[${index}]" value="${pend}" ${data.pend_minimal == pend ? 'checked' : ''}>
+                            <span>Sekolah Menengah Atas</span>
+                        </label>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="radio-container">
+                         ${['diploma_1'].map(pend => `
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pend_minimal[${index}]" value="${pend}" ${data.pend_minimal == pend ? 'checked' : ''}>
+                            <span>Diploma 1</span>
+                        </label>
+                        `).join('')}
+                         ${['diploma_2'].map(pend => `
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pend_minimal[${index}]" value="${pend}" ${data.pend_minimal == pend ? 'checked' : ''}>
+                            <span>Diploma 2</span>
+                        </label>
+                        `).join('')}
+                         ${['diploma_3'].map(pend => `
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pend_minimal[${index}]" value="${pend}" ${data.pend_minimal == pend ? 'checked' : ''}>
+                            <span>Diploma 3</span>
+                        </label>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="radio-container">
+                         ${['strata_1'].map(pend => `
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pend_minimal[${index}]" value="${pend}" ${data.pend_minimal == pend ? 'checked' : ''}>
+                            <span>Strata 1</span>
+                        </label>
+                        `).join('')}
+                         ${['strata_2'].map(pend => `
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pend_minimal[${index}]" value="${pend}" ${data.pend_minimal == pend ? 'checked' : ''}>
+                            <span>Strata 2</span>
+                        </label>
+                        `).join('')}
+                         ${['strata_3'].map(pend => `
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pend_minimal[${index}]" value="${pend}" ${data.pend_minimal == pend ? 'checked' : ''}>
+                            <span>Strata 3</span>
+                        </label>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="radio-container">
+                         ${['dll'].map(pend => `
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pend_minimal[${index}]" value="${pend}" ${data.pend_minimal == pend ? 'checked' : ''}>
+                            <span>dll</span>
+                        </label>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Jurusan -->
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-label">JURUSAN : </label>
+                        <input type="text" class="form-control" name="rencana_jurusan[${index}]" placeholder="Rencana Jurusan" value="${data.rencana_jurusan || ''}">
+                    </div>
+                </div>
+
+                 <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                    <h5 style="font-weight: bold;">Pengalaman Kerja</h5>
+                </div>
+                 <div class="col-md-12">
+                    <div class="radio-container">
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pengalaman_kerja[${index}]" value="ya" ${data.pengalaman_kerja == 'ya' ? 'checked' : ''}>>
+                            <span>Ya</span>
+                            <input type="number" name="waktu_pengalaman[${index}]" value="${data.waktu_pengalaman || 0}" class="form-control" placeholder="Waktu Pengalaman">
+                            <span>Tahun</span>
+                        </label>
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pengalaman_kerja[${index}]" value="tidak" ${data.pengalaman_kerja == 'tidak' ? 'checked' : ''}>
+                            <span>Tidak</span>
+                        </label>
+                    </div>
+                </div>
+                <!-- Uraian Tugas -->
+                 <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                    <h5 style="font-weight: bold;">Uraian Tugas Secara Umum</h5>
+                </div>
+                <div class="col-md-6">
+                    ${[0,1,2,3,4].map((_, i) => `
+                    <div class="form-group">
+                                <input type="text" name="uraian_tugas[${index}][]" class="form-control" value="${(data.uraian_tugas || [])[_] || ''}" placeholder="${ _ + 1}. Uraian Tugas">
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="col-md-6">
+                    ${[5,6,7,8,9].map((_, i) => `
+                    <div class="form-group">
+                                <input type="text" name="uraian_tugas[${index}][]" class="form-control" value="${(data.uraian_tugas || [])[_] || ''}" placeholder="${ _ + 1 }. Uraian Tugas">
+                        </div>
+                    `).join('')}
+                </div>
+                <!-- Gaji & Fasilitas -->
+                <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                    <h5 style="font-weight: bold;">Rencana Gaji & Fasilitas</h5>
+                </div>
+                <div class="col-md-6">
+                     <div class="form-group">
+                        <label class="form-label">Golongan / Besaran Gaji : </label>
+                        <input type="text" name="besaran_gaji[${index}]" class="form-control" placeholder="0" value="${data.besaran_gaji || ''}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                     <div class="form-group">
+                        <label class="form-label">Fasilitas : </label>
+                        <input type="text" name="fasilitas[${index}]" class="form-control"  value="${data.fasilitas || ''}">
+                    </div>
+                </div>
+                <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                    <h5 style="font-weight: bold;">Jangka Waktu Kontrak</h5>
+                </div>
+                <div class="col-md-3">
+                     <div class="form-group">
+                        <input type="number" name="jangka_waktu[${index}]" class="form-control" placeholder="0" value="${data.jangka_waktu_kontrak || ''}">
+                    </div>
+                </div>
+                <div class="col-md-9">
+                     <div class="form-group">
+                        <span>Bulan</span>
+                    </div>
+                </div>
+                <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                    <h5 style="font-weight: bold;">Keterangan Lainnya ( Jumlah, Keterampilan Tambahan, dll )</h5>
+                </div>
+                <div class="col-md-12">
+                     <div class="form-group">
+                        <input type="text" name="keterangan_tambahan[${index}]" class="form-control" value="${(data.keterangan_tambahan ?? '') == 'null' ? '' : (data.keterangan_tambahan ?? '')}"/>
+                    </div>
+                </div>
+            </div>
+            `;
+
+            container.insertAdjacentHTML('beforeend', html);
+             $('.fc-datepicker').datepicker({
+                 showOtherMonths: true,
+                    selectOtherMonths: true,
+                    dateFormat: 'dd-mm-yy'
+            });
+            if (data.department_kode) {
+                $.ajax({
+                    url: "{{ route('hris.departmentall.getDepartmentName') }}",
+                    type: "POST",
+                    data: { id: data.department_kode },
+                    success: function(res) {
+                        let selectBagian = document.getElementById(`selectBagianModalApprove[${index}]`);
+                        res.forEach(item => {
+                            let selected = item.sub_dept_id == data.bagian_kode ? 'selected' : '';
+                            selectBagian.insertAdjacentHTML('beforeend', `<option value="${item.sub_dept_id}" ${selected}>${item.sub_dept_name}</option>`);
+                        });
+                    }
+                });
+            }
         }
 
         function loadSubBagian(department_id, selected_sub_dept_id = null, selected_sub_dept_name = null) {
@@ -1511,61 +1782,168 @@ h1 {
             $("#tabel-karyawan tbody").empty();
             $('#karyawan_list').val('').css('border', '');
             $('#karyawan_list').val('').css('background', '');
-            $.ajax({
-                type: "POST",
-                url: "{{ route('permintaan_tenaga_kerja.get_detail_permintaan_tk') }}",
-                data: {
-                    id: id
-                },
-                success: function(res) {
-                    var data = res.permintaan;
-                    var karyawanList = res.karyawan;
-                    $('#id_modal_permintaan').val(data.id);
-                    $('#enroll_id_approve').val(data.duajukan_oleh_id);
-                    $('#tanggal_pengajuan_text').text(moment(data.tanggal_pengajuan).format('LL'));
-                    $('#tgl_kebutuhan_text').text(moment(data.tanggal_kebutuhan).format('LL'));
-                    $('#no_permintaan_text').text(data.no_permintaan);
-                    $('#diajukan_oleh_text').text(data.employee_name);
-                    $('#jml_permintaan_text').text(data.jumlah_kebutuhan);
-                    $('#jml_realisasi_text').text(data.jumlah_karyawan);
-                    $('#status_permintaan_text').text(data.status_pengajuan_realisasi.toUpperCase());
-                    $('#bagian_text').text(data.kode_bagian_name);
-                    $('#department_text').text(data.kode_dept_name);
-                    $('#jabatan_text').text(data.rencana_jabatan.toUpperCase());
+           $.ajax({
+            type: "POST",
+            url: "{{ route('permintaan_tenaga_kerja.get_detail_permintaan_tk') }}",
+            data: { id: id },
+            success: function(res) {
 
-                    $('#no_permintaan_pengajuan').val(data.no_permintaan);
-                    $('#jml_permintaan_val').val(data.jumlah_kebutuhan);
+                var kualifikasi = res.kualifikasi;
+                var data = res.permintaan;
+                var karyawanList = res.karyawan;
 
-                   $("#tabel-karyawan tbody").empty();
+                // Header Info
+                $('#tanggal_pengajuan_text').text(moment(data.tanggal_pengajuan).format('LL'));
+                $('#tgl_kebutuhan_text').text(moment(data.tanggal_kebutuhan).format('LL'));
+                $('#diajukan_oleh_text').text(data.employee_name);
+                $('#no_permintaan_text').text(data.no_permintaan);
+                $('#no_permintaan_pengajuan').val(data.no_permintaan);
+                $('#id_modal_permintaan').val(data.id);
 
-                     var status = data.status_pengajuan_realisasi.toLowerCase();
+                // Render List Kualifikasi
+                var container = $('#list-kebutuhan-karyawan');
+                container.empty();
+                console.log('kualifikasi:', kualifikasi);
+                console.log('data:', data);
+                console.log('karyawanList:', karyawanList);
+                kualifikasi.forEach((item, index) => {
+                    let kualifikasiId = item.id;
 
-                    if (status !== 'done') {
-                        $('#btn-simpan-selesai-karyawan').show();
-                        $('#btn-set-to-pending-karyawan').hide();
-                    } else {
-                        $('#btn-simpan-selesai-karyawan').hide();
-                        $('#btn-set-to-pending-karyawan').show();
-                    }
+                    let html = `
+                        <div class="card mb-3 p-2" style="border: 1px solid #ccc;">
+                            <h6 style="font-weight:bold;">Kualifikasi ${index + 1} - ${item.rencana_jabatan.toUpperCase()}</h6>
+                            <div><strong>Bagian:</strong> ${item.bagian_name}</div>
+                            <div><strong>Jumlah Kebutuhan:</strong> ${item.jumlah_kebutuhan} Orang</div>
 
-                    // Masukkan semua karyawan yang terkait no_fptk ke tabel
+                            <div class="form-group mt-2">
+                                <label class="form-label" style="font-weight: bold;">Masukan ID karyawan:</label>
+                                <input
+                                    type="text"
+                                    class="form-control py-1 px-1 karyawan-input"
+                                    data-id="${item.id}"
+                                    data-jumlah="${item.jumlah_kebutuhan}"
+                                    onkeydown="fillTheField(event, ${item.id})">
+                            </div>
+
+                            <table class="table" id="tabel-karyawan-${item.id}">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Enroll ID</th>
+                                        <th>Nama</th>
+                                        <th>Jabatan</th>
+                                        <th>Bagian</th>
+                                        <th>Departemen</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    `;
+                    container.append(html);
+                    listEnrollIdPerKualifikasi[kualifikasiId] = [];
+                });
+                // Masukkan karyawan yang sudah terdaftar
                     karyawanList.forEach((emp, index) => {
+                        let kualifikasiId = emp.kualifikasi_id; // Pastikan dari backend ada field ini!
+
                         let newRow = `
-                            <tr data-enroll="${data.enroll_id}">
+                            <tr data-enroll="${emp.enroll_id}">
                                 <td>${index + 1}</td>
                                 <td>${emp.enroll_id}</td>
                                 <td>${emp.employee_name}</td>
                                 <td>${emp.sub_dept_name}</td>
+                                <td>${emp.bagian_name || ''}</td>
                                 <td>${emp.department_name}</td>
-                                <td><button class='btn btn-danger' onclick='removeRow(this)'><i class='fa fa-trash'></i></button></td>
+                                <td><button class='btn btn-danger' onclick='removeRow(this, ${kualifikasiId})'><i class='fa fa-trash'></i></button></td>
                             </tr>
                         `;
-                        $("#tabel-karyawan tbody").append(newRow);
+                        $(`#tabel-karyawan-${kualifikasiId} tbody`).append(newRow);
+
+                        let kualifikasiKey = String(kualifikasiId);
+
+                        if (!listEnrollIdPerKualifikasi[kualifikasiKey]) {
+                            listEnrollIdPerKualifikasi[kualifikasiKey] = [];
+                        }
+
+                        if (!listEnrollIdPerKualifikasi[kualifikasiKey].includes(emp.enroll_id)) {
+                            listEnrollIdPerKualifikasi[kualifikasiKey].push(emp.enroll_id);
+                        }
+
                     });
 
                 }
             });
         }
+
+        // function openModalRealisasiPengajuan(id) {
+        //     $('#ajax-modal-realisasi-pengajuan').modal({
+        //         backdrop: 'static',
+        //         keyboard: false
+        //     });
+        //     $("#btn-approve-permintaan").show();
+        //     $("#btn-reject-permintaan").show();
+        //     $("#btn-update-permintaan").hide();
+        //     $("#title-modal-realisasi").text('Realisasi Pengajuan Tenaga Kerja');
+        //     $("#tabel-karyawan tbody").empty();
+        //     $('#karyawan_list').val('').css('border', '');
+        //     $('#karyawan_list').val('').css('background', '');
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "{{ route('permintaan_tenaga_kerja.get_detail_permintaan_tk') }}",
+        //         data: {
+        //             id: id
+        //         },
+        //         success: function(res) {
+        //             var data = res.kualifikasi;
+        //             var karyawanList = res.karyawan;
+        //             $('#id_modal_permintaan').val(data.id);
+        //             $('#enroll_id_approve').val(data.duajukan_oleh_id);
+        //             $('#tanggal_pengajuan_text').text(moment(data.tanggal_pengajuan).format('LL'));
+        //             $('#tgl_kebutuhan_text').text(moment(data.tanggal_kebutuhan).format('LL'));
+        //             $('#no_permintaan_text').text(data.no_permintaan);
+        //             $('#diajukan_oleh_text').text(data.employee_name);
+        //             $('#jml_permintaan_text').text(data.jumlah_kebutuhan);
+        //             $('#jml_realisasi_text').text(data.jumlah_karyawan);
+        //             $('#status_permintaan_text').text(data.status_pengajuan_realisasi.toUpperCase());
+        //             $('#bagian_text').text(data.kode_bagian_name);
+        //             $('#department_text').text(data.kode_dept_name);
+        //             $('#jabatan_text').text(data.rencana_jabatan.toUpperCase());
+
+        //             $('#no_permintaan_pengajuan').val(data.no_permintaan);
+        //             $('#jml_permintaan_val').val(data.jumlah_kebutuhan);
+
+        //            $("#tabel-karyawan tbody").empty();
+
+        //              var status = data.status_pengajuan_realisasi.toLowerCase();
+
+        //             if (status !== 'done') {
+        //                 $('#btn-simpan-selesai-karyawan').show();
+        //                 $('#btn-set-to-pending-karyawan').hide();
+        //             } else {
+        //                 $('#btn-simpan-selesai-karyawan').hide();
+        //                 $('#btn-set-to-pending-karyawan').show();
+        //             }
+
+        //             // Masukkan semua karyawan yang terkait no_fptk ke tabel
+        //             karyawanList.forEach((emp, index) => {
+        //                 let newRow = `
+        //                     <tr data-enroll="${data.enroll_id}">
+        //                         <td>${index + 1}</td>
+        //                         <td>${emp.enroll_id}</td>
+        //                         <td>${emp.employee_name}</td>
+        //                         <td>${emp.sub_dept_name}</td>
+        //                         <td>${emp.department_name}</td>
+        //                         <td><button class='btn btn-danger' onclick='removeRow(this)'><i class='fa fa-trash'></i></button></td>
+        //                     </tr>
+        //                 `;
+        //                 $("#tabel-karyawan tbody").append(newRow);
+        //             });
+
+        //         }
+        //     });
+        // }
 
         function setToNull() {
             $('#tanggal_pengajuan').val(null).prop('disabled', false);  // Format tanggal dan disable
@@ -1804,108 +2182,139 @@ h1 {
                 ]
             });
 
-
             $('#btn-simpan-karyawan').on('click', function () {
-                    let dataKaryawan = [];
-                    var no_permintaan_pengajuan = $("#no_permintaan_pengajuan").val();
-                    $('#tabel-karyawan tbody tr').each(function () {
+                let dataKaryawan = [];
+                var no_permintaan_pengajuan = $("#no_permintaan_pengajuan").val();
+
+                // Loop semua tabel karyawan dari semua kualifikasi
+                $(`table[id^='tabel-karyawan-']`).each(function () {
+                    let kualifikasiId = $(this).attr('id').replace('tabel-karyawan-', '');
+
+                    $(this).find('tbody tr').each(function () {
                         let enroll_id = $(this).find('td:eq(1)').text().trim();
 
                         dataKaryawan.push({
-                            enroll_id
+                            enroll_id: enroll_id,
+                            kualifikasi_id: kualifikasiId
                         });
                     });
-                    // Kirim ke backend pakai AJAX
-                   $.ajax({
-                        url: '{{ route('permintaan_tenaga_kerja.simpan_no_fptk_karyawan') }}',
-                        method: 'POST',
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            no_fptk: no_permintaan_pengajuan,
-                            karyawan: dataKaryawan
-                        },
-                        success: function (res) {
-                            console.log(res);
-                            if (res.success) {
-                                notif({
-                                    msg: `<b>Info:</b> ${res.message}`,
-                                    type: "success"
-                                });
-                                tableVerifikasi.ajax.reload();
-                                tableWaiting.ajax.reload();
-                                tableReject.ajax.reload();
-                                closeModalRealisasiPengajuan();
-                            }else{
+                });
+
+                if (dataKaryawan.length === 0) {
+                    notif({
+                        msg: "<b>Info:</b> Silakan isi data karyawan terlebih dahulu.",
+                        type: "warning"
+                    });
+                    return;
+                }
+                console.log('Data Karyawan:', dataKaryawan);
+                $.ajax({
+                    url: '{{ route('permintaan_tenaga_kerja.simpan_no_fptk_karyawan') }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        no_fptk: no_permintaan_pengajuan,
+                        karyawan: dataKaryawan
+                    },
+                    success: function (res) {
+                        console.log(res);
+                        if (res.success) {
+                            notif({
+                                msg: `<b>Info:</b> ${res.message}`,
+                                type: "success"
+                            });
+                            tableVerifikasi.ajax.reload();
+                            tableWaiting.ajax.reload();
+                            tableReject.ajax.reload();
+                            closeModalRealisasiPengajuan();
+                        } else {
                             if (res.data) {
                                 res.data.forEach(k => {
-                                    $(`#tabel-karyawan tbody tr[data-enroll="${k.enroll_id}"]`).css('background', '#fa7575');
+                                    $(`table[id^='tabel-karyawan-'] tbody tr[data-enroll="${k.enroll_id}"]`).css('background', '#fa7575');
                                 });
                             }
                             notif({
                                 msg: `<b>Error:</b> ${res.message}`,
                                 type: "error"
                             });
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            notif({
-                                msg: "<b>Error:</b> Terjadi kesalahan.",
-                                type: "error"
-                            });
                         }
-                    });
+                    },
+                    error: function () {
+                        notif({
+                            msg: "<b>Error:</b> Terjadi kesalahan.",
+                            type: "error"
+                        });
+                    }
+                });
             });
 
             $('#btn-simpan-selesai-karyawan').on('click', function () {
-                    let dataKaryawan = [];
-                    var no_permintaan_pengajuan = $("#no_permintaan_pengajuan").val();
-                    $('#tabel-karyawan tbody tr').each(function () {
+                let dataKaryawan = [];
+                var no_permintaan_pengajuan = $("#no_permintaan_pengajuan").val();
+
+                // Loop semua tabel karyawan dari semua kualifikasi
+                $(`table[id^='tabel-karyawan-']`).each(function () {
+                    let kualifikasiId = $(this).attr('id').replace('tabel-karyawan-', '');
+
+                    $(this).find('tbody tr').each(function () {
                         let enroll_id = $(this).find('td:eq(1)').text().trim();
 
                         dataKaryawan.push({
-                            enroll_id
+                            enroll_id: enroll_id,
+                            kualifikasi_id: kualifikasiId
                         });
                     });
-                    // Kirim ke backend pakai AJAX
-                   $.ajax({
-                        url: '{{ route('permintaan_tenaga_kerja.simpan_selesai_no_fptk_karyawan') }}',
-                        method: 'POST',
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            no_fptk: no_permintaan_pengajuan,
-                            karyawan: dataKaryawan
-                        },
-                        success: function (res) {
-                            console.log(res);
-                            if (res.success) {
-                                notif({
-                                    msg: `<b>Info:</b> ${res.message}`,
-                                    type: "success"
-                                });
-                                tableVerifikasi.ajax.reload();
-                                tableWaiting.ajax.reload();
-                                tableReject.ajax.reload();
-                                closeModalRealisasiPengajuan();
-                            }else{
+                });
+
+                if (dataKaryawan.length === 0) {
+                    notif({
+                        msg: "<b>Info:</b> Silakan isi data karyawan terlebih dahulu.",
+                        type: "warning"
+                    });
+                    return;
+                }
+                console.log('Data Karyawan:', dataKaryawan);
+                $.ajax({
+                    url: '{{ route('permintaan_tenaga_kerja.simpan_selesai_no_fptk_karyawan') }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        no_fptk: no_permintaan_pengajuan,
+                        karyawan: dataKaryawan
+                    },
+                    success: function (res) {
+                        console.log(res);
+                        if (res.success) {
+                            notif({
+                                msg: `<b>Info:</b> ${res.message}`,
+                                type: "success"
+                            });
+                            tableVerifikasi.ajax.reload();
+                            tableWaiting.ajax.reload();
+                            tableReject.ajax.reload();
+                            closeModalRealisasiPengajuan();
+                        } else {
                             if (res.data) {
                                 res.data.forEach(k => {
-                                    $(`#tabel-karyawan tbody tr[data-enroll="${k.enroll_id}"]`).css('background', '#fa7575');
+                                    $(`table[id^='tabel-karyawan-'] tbody tr[data-enroll="${k.enroll_id}"]`).css('background', '#fa7575');
                                 });
                             }
                             notif({
                                 msg: `<b>Error:</b> ${res.message}`,
                                 type: "error"
                             });
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            notif({
-                                msg: "<b>Error:</b> Terjadi kesalahan.",
-                                type: "error"
-                            });
                         }
-                    });
+                    },
+                    error: function () {
+                        notif({
+                            msg: "<b>Error:</b> Terjadi kesalahan.",
+                            type: "error"
+                        });
+                    }
+                });
             });
+
+
             $('#btn-set-to-pending-karyawan').on('click', function () {
                     let dataKaryawan = [];
                     var no_permintaan_pengajuan = $("#no_permintaan_pengajuan").val();
@@ -2108,117 +2517,75 @@ h1 {
                 var tanggal_perizinan=tanggal_periz.substr(6, 4)+'-'+tanggal_periz.substr(3,2)+'-'+tanggal_periz.substr(0,2);
                 var status_permintaan = $('input[name="status_permintaan"]:checked').val();
                 var enroll_id = $('#enroll_id').val();
-                var selectDepartment = $('#selectDepartment').val();
-                var selectBagian = $('#selectBagian').val();
-                var jumlah_kebutuhan = $('#jumlah_kebutuhan').val();
-                var rencana_jabatan = $('input[name="rencana_jabatan"]:checked').val();
-                var pend_minimal = $('input[name="pend_minimal"]:checked').val();
-                var rencana_jurusan = $('#rencana_jurusan').val();
-                var pengalaman_kerja = $('#pengalaman_kerja').val();
-                var waktu_pengalaman = $('#waktu_pengalaman').val();
-                var besaran_gaji = $('#besaran_gaji').val();
-                var fasilitas = $('#fasilitas').val();
-                var jangka_waktu_kontrak = $('#jangka_waktu_kontrak').val();
-                var keterangan_tambahan = $('#keterangan_tambahan').val();
 
-                var tanggal_kebutuhan = $('#tanggal_kebutuhan').val();
-                var tanggal_kebutuhan=tanggal_kebutuhan.substr(6, 4)+'-'+tanggal_kebutuhan.substr(3,2)+'-'+tanggal_kebutuhan.substr(0,2);
+                 var kualifikasi = [];
+                let firstDepartment = $('.kualifikasi-item').first().find('select[name="selectDepartment"]').val();
+                let firstBagian = $('.kualifikasi-item').first().find('select[name="selectBagian"]').val();
+                let firstTanggal = $('.kualifikasi-item').first().find('input[name="tanggal_kebutuhan[]"]').val();
 
-                var uraianTugas = [];
+                $('.kualifikasi-item').each(function (index) {
+                    var parent = $(this);
 
-                $('input[name="uraian_tugas[]"]').each(function () {
-                    uraianTugas.push($(this).val());
+                    var selectDepartment = firstDepartment;
+                    var selectBagian = firstBagian;
+                    var tanggal_kebutuhan = firstTanggal;
+                    var tanggal_kebutuhan_fix = tanggal_kebutuhan.substr(6, 4) + '-' + tanggal_kebutuhan.substr(3, 2) + '-' + tanggal_kebutuhan.substr(0, 2);
+                    var jumlah_kebutuhan = parent.find('[name="jumlah_kebutuhan[]"]').val();
+                    var rencana_jabatan = parent.find('input[name="rencana_jabatan[' + index + ']"]:checked').val();
+                    var pend_minimal = parent.find('input[name="pend_minimal[' + index + ']"]:checked').val();
+                    var rencana_jurusan = parent.find('[name="rencana_jurusan[]"]').val();
+                    var pengalaman_kerja = parent.find('input[name="pengalaman_kerja[' + index + ']"]:checked').val();
+                    var waktu_pengalaman = parent.find('[name="waktu_pengalaman[]"]').val();
+                    var besaran_gaji = parent.find('[name="besaran_gaji[]"]').val();
+                    var fasilitas = parent.find('[name="fasilitas[]"]').val();
+                    var jangka_waktu_kontrak = parent.find('[name="jangka_waktu_kontrak[]"]').val();
+                    var keterangan_tambahan = parent.find('[name="keterangan_tambahan[]"]').val();
+
+                    var uraianTugas = [];
+                    parent.find('[name="uraian_tugas[' + index + '][]"]').each(function () {
+                        uraianTugas.push($(this).val());
+                    });
+
+                    kualifikasi.push({
+                        selectDepartment: selectDepartment,
+                        selectBagian: selectBagian,
+                        tanggal_kebutuhan: tanggal_kebutuhan_fix,
+                        jumlah_kebutuhan: jumlah_kebutuhan,
+                        rencana_jabatan: rencana_jabatan,
+                        pend_minimal: pend_minimal,
+                        rencana_jurusan: rencana_jurusan,
+                        pengalaman_kerja: pengalaman_kerja,
+                        waktu_pengalaman: waktu_pengalaman,
+                        besaran_gaji: besaran_gaji,
+                        fasilitas: fasilitas,
+                        jangka_waktu_kontrak: jangka_waktu_kontrak,
+                        keterangan_tambahan: keterangan_tambahan,
+                        uraianTugas: uraianTugas
+                    });
                 });
-                var besaran_gaji_bersih = besaran_gaji.replace(/[^\d]/g, '');
 
-                if(!enroll_id){
-                    swal("", "Harap isi pengajuan terlebih dahulu!", "info");
-                    return;
-                }
-                if(!selectDepartment){
-                    swal("", "Harap isi department rencana kebutuhan terlebih dahulu!", "info");
-                    return;
-                }
-                if(!selectBagian){
-                    swal("", "Harap isi bagian rencana kebutuhan terlebih dahulu!", "info");
-                    return;
-                }
-                if(!tanggal_kebutuhan){
-                    swal("", "Harap isi tanggal rencana kebutuhan terlebih dahulu!", "info");
-                    return;
-                }
-                if(!jumlah_kebutuhan){
-                    swal("", "Harap isi jumlah rencana kebutuhan terlebih dahulu!", "info");
-                    return;
-                }
-                if(pengalaman_kerja == 'ya' && !waktu_pengalaman){
-                    swal("", "Harap isi waktu pengalaman kerja terlebih dahulu!", "info");
-                    return;
-                }
-
-                $.ajax({
-                    type:"POST",
-                    url: "{{route('permintaan_tenaga_kerja.create_permintaan_tk')}}",
+               $.ajax({
+                    type: "POST",
+                    url: "{{ route('permintaan_tenaga_kerja.create_permintaan_tk') }}",
                     dataType: 'json',
                     headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    data: {
-                        tanggal_perizinan:tanggal_perizinan,
-                        status_permintaan:status_permintaan,
-                        diajukanOlehID:enroll_id,
-                        selectDepartment:selectDepartment,
-                        selectBagian:selectBagian,
-                        tanggal_kebutuhan:tanggal_kebutuhan,
-                        jumlah_kebutuhan:jumlah_kebutuhan,
-                        rencana_jabatan:rencana_jabatan,
-                        uraianTugas:uraianTugas,
-                        pend_minimal:pend_minimal,
-                        rencana_jurusan:rencana_jurusan,
-                        pengalaman_kerja:pengalaman_kerja,
-                        waktu_pengalaman:waktu_pengalaman,
-                        besaran_gaji:besaran_gaji_bersih,
-                        fasilitas:fasilitas,
-                        jangka_waktu_kontrak:jangka_waktu_kontrak,
-                        keterangan_tambahan:keterangan_tambahan
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    dataType: 'json',
-                    success: function(res){
-                        notif({
-                            msg: "<b>Info:</b> Data berhasil di simpan.",
-                            type: "info"
-                        });
+                    data: {
+                        tanggal_perizinan: tanggal_perizinan,
+                        status_permintaan: status_permintaan,
+                        diajukanOlehID: enroll_id,
+                        kualifikasi: kualifikasi
+                    },
+                    success: function (res) {
+                        notif({ msg: "<b>Info:</b> Data berhasil disimpan.", type: "info" });
                         tableVerifikasi.ajax.reload();
                         tableWaiting.ajax.reload();
                         tableReject.ajax.reload();
                         $("#ajax-modal-tambah").modal('hide');
-                        $('#tanggal_pengajuan').val('');
-                        $('input[name="status_permintaan"]').prop('checked', false);
-                        $('#enroll_id').val('');
-                        $('#diajukanOlehID').val('').trigger('change'); // jika pakai select2
-                        $('#selectDepartment').val('').trigger('change'); // jika pakai select2
-                        $('#selectBagian').val('').trigger('change');
-                        $('#jumlah_kebutuhan').val('');
-                        $('input[name="rencana_jabatan"]').prop('checked', false);
-                        $('input[name="pend_minimal"]').prop('checked', false);
-                        $('#rencana_jurusan').val('');
-                        $('#pengalaman_kerja').val('');
-                        $('#waktu_pengalaman').val('');
-                        $('#besaran_gaji').val('');
-                        $('#fasilitas').val('');
-                        $('#jangka_waktu_kontrak').val('');
-                        $('#keterangan_tambahan').val('');
-                        $('#tanggal_kebutuhan').val('');
-
-                        // Kosongkan semua input uraian tugas
-                        $('input[name="uraian_tugas[]"]').each(function () {
-                            $(this).val('');
-                        });
                     },
-                    error: function(res){
-                        notif({
-                            msg: "<b>Error:</b> Oops data gagal di simpan.",
-                            type: "error"
-                        });
+                    error: function () {
+                        notif({ msg: "<b>Error:</b> Oops data gagal disimpan.", type: "error" });
                         tableVerifikasi.ajax.reload();
                         tableWaiting.ajax.reload();
                         tableReject.ajax.reload();

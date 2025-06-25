@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Dompdf\Options;
 use Dompdf\FontMetrics;
 use App\Models\PengajuanPermintaanTk;
+use App\Models\SubPengajuanPermintaanTk;
 use App\Models\EmployeeAtribut;
 use App\Models\PengajuanBazzar;
 use App\Models\VoucherBazzar;
@@ -43,6 +44,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use App\Exports\RekapCutiKaryawanKaryawanAll;
 use \avadim\FastExcelLaravel\Excel as FastExcel;
+use App\Models\Notification;
 
 
 class PermintaanTenagaKerjaController extends AdminBaseController
@@ -132,104 +134,153 @@ class PermintaanTenagaKerjaController extends AdminBaseController
 
     }
 
-    public function get_detail_permintaan_tk(Request $request)
-    {
-        $id = $request->id;
-        $data = DB::select("
-            SELECT
-                pengajuan_permintaan_tk.*,
-                employee_atribut.employee_name,
-                employee_atribut.department_name,
-                employee_atribut.sub_dept_name,
-                employee_atribut.department_id,
-                employee_atribut.sub_dept_id,
-                employee_atribut.nik,
-                department_all.department_name AS kode_dept_name,
-                department_all.department_id AS kode_dept_id,
-                department_all2.sub_dept_name AS kode_bagian_name,
-                department_all2.sub_dept_id AS kode_bagian_id,
-                (
-                    SELECT COUNT(*)
-                    FROM employee_atribut
-                    WHERE employee_atribut.no_fptk = pengajuan_permintaan_tk.no_permintaan
-                ) AS jumlah_karyawan
-            FROM pengajuan_permintaan_tk
-            LEFT JOIN employee_atribut
-                ON pengajuan_permintaan_tk.diajukan_oleh_id = employee_atribut.enroll_id
-            LEFT JOIN department_all
-                ON pengajuan_permintaan_tk.department_kode = department_all.department_id
-            LEFT JOIN department_all AS department_all2
-                ON pengajuan_permintaan_tk.bagian_kode = department_all2.sub_dept_id
-            WHERE pengajuan_permintaan_tk.id = ?
-        ", [$id]);
-        $karyawan = DB::table('employee_atribut')
-        ->select('enroll_id', 'employee_name', 'department_name', 'sub_dept_name')
-        ->where('no_fptk', $data[0]->no_permintaan)
-        ->get();
+   public function get_detail_permintaan_tk(Request $request)
+{
+    $id = $request->id;
+
+    $data = DB::select("
+    SELECT
+            pengajuan_permintaan_tk.*,
+            employee_atribut.employee_name,
+            employee_atribut.department_name,
+            employee_atribut.sub_dept_name,
+            employee_atribut.department_id,
+            employee_atribut.sub_dept_id,
+            employee_atribut.nik,
+            (
+                SELECT COUNT(*)
+                FROM employee_atribut
+                WHERE employee_atribut.no_fptk = pengajuan_permintaan_tk.no_permintaan
+            ) AS jumlah_karyawan
+        FROM pengajuan_permintaan_tk
+        LEFT JOIN employee_atribut ON pengajuan_permintaan_tk.diajukan_oleh_id = employee_atribut.enroll_id
+        WHERE pengajuan_permintaan_tk.id = ?
+    ", [$id]);
+
+
+   $kualifikasi = DB::table('sub_pengajuan_permintaan_tk')
+    ->leftJoin('department_all', 'sub_pengajuan_permintaan_tk.department_kode', '=', 'department_all.department_id')
+    ->leftJoin('department_all as department_all2', 'sub_pengajuan_permintaan_tk.bagian_kode', '=', 'department_all2.sub_dept_id')
+    ->where('sub_pengajuan_permintaan_tk.no_permintaan_id', $data[0]->no_permintaan)
+    ->select(
+        'sub_pengajuan_permintaan_tk.*',
+        'department_all.department_name as department_name',
+        'department_all2.sub_dept_name as bagian_name'
+    )
+    ->distinct()
+    ->get();
+    // $karyawan = DB::table('employee_atribut')
+    //     ->where('no_fptk', $data[0]->no_permintaan)
+    //     ->select('enroll_id', 'employee_name', 'nik')
+    //     ->get();
+
+    $karyawan = DB::table('sub_pengajuan_permintaan_tk')
+    ->leftJoin('employee_atribut', 'sub_pengajuan_permintaan_tk.no_permintaan_id', '=', 'employee_atribut.no_fptk')
+    ->select(
+        'sub_pengajuan_permintaan_tk.id as kualifikasi_id',
+        'employee_atribut.enroll_id',
+        'employee_atribut.employee_name',
+        'employee_atribut.nik',
+        'employee_atribut.sub_dept_name',
+        'employee_atribut.department_name'
+    )
+    ->where('sub_pengajuan_permintaan_tk.no_permintaan_id', $data[0]->no_permintaan)
+    ->get();
+
 
 
     return response()->json([
         'permintaan' => $data[0],
         'karyawan' => $karyawan,
+        'kualifikasi' => $kualifikasi,
     ]);
+}
+
+
+
+   public function create_permintaan_tk(Request $request){
+    $logged_admin = Auth::guard('admin')->user();
+    $prefix = date('ym');
+    $last = PengajuanPermintaanTk::where('no_permintaan', 'LIKE', 'TK' . $prefix . '-%')
+    ->orderByDesc('no_permintaan')
+    ->first();
+
+    if ($last) {
+        $lastUrut = intval(substr($last->no_permintaan, -3)); // Ambil 3 digit terakhir
+        $urut = str_pad($lastUrut + 1, 3, '0', STR_PAD_LEFT);
+    } else {
+        $urut = '001';
     }
 
-
-    public function create_permintaan_tk(Request $request){
-        $logged_admin = Auth::guard('admin')->user();
-
-        $prefix = date('ym'); // hasilnya 2506 (misalnya Juni 2025)
-
-        // Hitung jumlah permintaan yang sudah ada untuk bulan dan tahun ini
-        $count = PengajuanPermintaanTk::whereRaw("DATE_FORMAT(created_at, '%y%m') = ?", [$prefix])->count();
-        $urut = str_pad($count + 1, 3, '0', STR_PAD_LEFT); // hasil: 001, 002, dst
-
-        $no_permintaan = 'TK' . $prefix . '-' . $urut;
-         PengajuanPermintaanTk::create([
-            'no_permintaan' => $no_permintaan,
-            'tanggal_pengajuan' => $request->tanggal_perizinan,
-            'status_permintaan' => $request->status_permintaan,
-            'diajukan_oleh_id' => $request->diajukanOlehID,
-            'department_kode' => $request->selectDepartment,
-            'bagian_kode' => $request->selectBagian,
-            'tanggal_kebutuhan' => $request->tanggal_kebutuhan,
-            'jumlah_kebutuhan' => $request->jumlah_kebutuhan,
-            'rencana_jabatan' => $request->rencana_jabatan,
-            'rencana_jurusan' => $request->rencana_jurusan,
-            'pend_minimal' => $request->pend_minimal,
-            'pengalaman_kerja' => $request->pengalaman_kerja,
-            'waktu_pengalaman' => $request->waktu_pengalaman,
-            'besaran_gaji' => $request->besaran_gaji,
-            'fasilitas' => $request->fasilitas,
-            'jangka_waktu_kontrak' => $request->jangka_waktu_kontrak,
-            'keterangan_tambahan' => $request->keterangan_tambahan,
-            'uraian_tugas' => array_filter($request->uraianTugas),
-            'status_pengajuan' => 'waiting_approval',
-            'created_by' => $logged_admin->email,
+    $no_permintaan = 'TK' . $prefix . '-' . $urut;
+    // Simpan ke table utama
+    $permintaan = PengajuanPermintaanTk::create([
+        'no_permintaan' => $no_permintaan,
+        'tanggal_pengajuan' => $request->tanggal_perizinan,
+        'status_permintaan' => $request->status_permintaan,
+        'diajukan_oleh_id' => $request->diajukanOlehID,
+        'status_pengajuan' => 'waiting_approval',
+        'created_by' => $logged_admin->email,
+    ]);
+    // Simpan ke sub table untuk setiap kualifikasi
+    foreach ($request->kualifikasi as $item) {
+        SubPengajuanPermintaanTk::create([
+            'no_permintaan_id'    => $no_permintaan,
+            'department_kode'     => $item['selectDepartment'],
+            'bagian_kode'         => $item['selectBagian'],
+            'tanggal_kebutuhan'   => $item['tanggal_kebutuhan'],
+            'jumlah_kebutuhan'    => $item['jumlah_kebutuhan'],
+            'rencana_jabatan'     => $item['rencana_jabatan'],
+            'rencana_jurusan'     => $item['rencana_jurusan'],
+            'pend_minimal'        => $item['pend_minimal'],
+            'pengalaman_kerja'    => $item['pengalaman_kerja'],
+            'waktu_pengalaman'    => $item['waktu_pengalaman'],
+            'besaran_gaji'        => $item['besaran_gaji'],
+            'fasilitas'           => $item['fasilitas'],
+            'jangka_waktu_kontrak'=> $item['jangka_waktu_kontrak'],
+            'keterangan_tambahan' => $item['keterangan_tambahan'],
+            'uraian_tugas'        => array_filter($item['uraianTugas']),
         ]);
-        return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil dibuat.']);
     }
+
+    $receiverEmails = ['fadli', 'mega@ptnag.com', 'ersa@ptnag.com', 'rudy@ptnag.com', 'hrd','hadiyoso@nag.nirwanaindonesia.com','ramon', 'ronald@ptnag.com', 'bobby', 'pujiprana@nag.nirwanaindonesia.com' ,'indri@nag.nirwanaindonesia.com'];
+    foreach ($receiverEmails as $receiverEmail) {
+        Notification::create([
+            'sender_email' => $logged_admin->email,
+            'receiver_email' => $receiverEmail,
+            'type' => 'FPTK',
+            'href_menu' => 'http://10.10.5.111/hris/public/index.php/hris/permintaan_tenaga_kerja_hr/index',
+            // 'href_menu' => 'http://localhost/hris/public/index.php/hris/permintaan_tenaga_kerja_hr/index',
+            'message' => 'FPTK ' . $no_permintaan . ' baru saja dibuat.',
+            'enroll_ids' => $no_permintaan,
+            'is_read' => false,
+            'is_delete' => false,
+            'status_staff' => 'FPTK',
+        ]);
+    }
+
+    return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil dibuat.']);
+}
 
     public function update_permintaan_tk(Request $request){
-        PengajuanPermintaanTk::where('id', $request->id)->update([
-             'tanggal_pengajuan' => $request->tanggal_perizinan,
-            'status_permintaan' => $request->status_permintaan,
-            'diajukan_oleh_id' => $request->diajukanOlehID,
-            'department_kode' => $request->selectDepartment,
-            'bagian_kode' => $request->selectBagian,
-            'tanggal_kebutuhan' => $request->tanggal_kebutuhan,
-            'jumlah_kebutuhan' => $request->jumlah_kebutuhan,
-            'rencana_jabatan' => $request->rencana_jabatan,
-            'pengalaman_kerja' => $request->pengalaman_kerja,
-            'waktu_pengalaman' => $request->waktu_pengalaman,
-            'rencana_jurusan' => $request->rencana_jurusan,
-            'pend_minimal' => $request->pend_minimal,
-            'besaran_gaji' => $request->besaran_gaji,
-            'fasilitas' => $request->fasilitas,
-            'jangka_waktu_kontrak' => $request->jangka_waktu_kontrak,
-            'keterangan_tambahan' => $request->keterangan_tambahan,
-            'uraian_tugas' => array_filter($request->uraianTugas),
-        ]);
+         foreach ($request->kualifikasi as $item) {
+            SubPengajuanPermintaanTk::where('id', $item['id_kualifikasi'])->update([
+                'department_kode'     => $item['selectDepartment'],
+                'bagian_kode'         => $item['selectBagian'],
+                'tanggal_kebutuhan'   => $item['tanggal_kebutuhan'],
+                'jumlah_kebutuhan'    => $item['jumlah_kebutuhan'],
+                'rencana_jabatan'     => $item['rencana_jabatan'],
+                'rencana_jurusan'     => $item['rencana_jurusan'],
+                'pend_minimal'        => $item['pend_minimal'],
+                'pengalaman_kerja'    => $item['pengalaman_kerja'],
+                'waktu_pengalaman'    => $item['waktu_pengalaman'],
+                'besaran_gaji'        => $item['besaran_gaji'],
+                'fasilitas'           => $item['fasilitas'],
+                'jangka_waktu_kontrak'=> $item['jangka_waktu_kontrak'],
+                'keterangan_tambahan' => $item['keterangan_tambahan'],
+                'uraian_tugas'        => array_filter($item['uraianTugas']),
+            ]);
+        }
         return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil diupdate.']);
     }
 
@@ -255,6 +306,7 @@ class PermintaanTenagaKerjaController extends AdminBaseController
         if($data_pengajuan){
             EmployeeAtribut::where('no_fptk', $data_pengajuan->no_permintaan)->update(['no_fptk' => null]);
             PengajuanPermintaanTk::where('id', $request->id_pengajuan)->delete();
+            SubPengajuanPermintaanTk::where('permintaan_tk_id', $request->no_permintaan)->delete();
         }
         return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil dihapus.']);
     }
@@ -263,18 +315,53 @@ class PermintaanTenagaKerjaController extends AdminBaseController
     {
         $pengajuan_id = $request->route('id');
         $data = DB::select("
-            SELECT pengajuan_permintaan_tk.*, employee_atribut.employee_name, employee_atribut.department_name, employee_atribut.sub_dept_name, employee_atribut.department_id, employee_atribut.sub_dept_id, employee_atribut.nik, department_all.department_name kode_dept_name, department_all.department_id kode_dept_id, department_all2.sub_dept_name kode_bagian_name, department_all2.sub_dept_id kode_bagian_id
+            SELECT
+                pengajuan_permintaan_tk.*,
+                employee_atribut.employee_name,
+                employee_atribut.department_name,
+                employee_atribut.sub_dept_name,
+                employee_atribut.department_id,
+                employee_atribut.sub_dept_id,
+                employee_atribut.nik,
+                (
+                    SELECT COUNT(*)
+                    FROM employee_atribut
+                    WHERE employee_atribut.no_fptk = pengajuan_permintaan_tk.no_permintaan
+                ) AS jumlah_karyawan
             FROM pengajuan_permintaan_tk
-            LEFT JOIN employee_atribut
-                ON pengajuan_permintaan_tk.diajukan_oleh_id = employee_atribut.enroll_id
-            LEFT JOIN department_all
-            ON pengajuan_permintaan_tk.department_kode = department_all.department_id
-            LEFT JOIN department_all as department_all2
-            ON pengajuan_permintaan_tk.bagian_kode = department_all2.sub_dept_id
+            LEFT JOIN employee_atribut ON pengajuan_permintaan_tk.diajukan_oleh_id = employee_atribut.enroll_id
             WHERE pengajuan_permintaan_tk.id = ?
-            LIMIT 1
         ", [$pengajuan_id]);
-        $pdf = PDF::loadview('hris/permintaan_tenaga_kerja/export_permintaan_tenaga_kerja_pdf',['data'=>$data]);
+
+        $kualifikasi = DB::table('sub_pengajuan_permintaan_tk')
+            ->leftJoin('department_all', 'sub_pengajuan_permintaan_tk.department_kode', '=', 'department_all.department_id')
+            ->leftJoin('department_all as department_all2', 'sub_pengajuan_permintaan_tk.bagian_kode', '=', 'department_all2.sub_dept_id')
+            ->where('sub_pengajuan_permintaan_tk.no_permintaan_id', $data[0]->no_permintaan)
+            ->select(
+                'sub_pengajuan_permintaan_tk.*',
+                'department_all.department_name as kode_dept_name',
+                'department_all2.sub_dept_name as kode_bagian_name'
+            )
+            ->distinct()
+            ->get();
+
+        foreach ($kualifikasi as $item) {
+            $item->department_name = $data[0]->department_name ?? null;
+            $item->diajukan_oleh = $data[0]->employee_name ?? null;
+            $item->jumlah_karyawan = $data[0]->jumlah_karyawan ?? 0;
+            $item->no_permintaan = $data[0]->no_permintaan ?? null;
+            $item->status_permintaan = $data[0]->status_permintaan ?? null;
+            $item->tanggal_pengajuan = $data[0]->tanggal_pengajuan ?? null;
+            $item->employee_name = $data[0]->employee_name ?? null;
+            $item->nik = $data[0]->nik ?? null;
+            $item->sub_dept_name = $data[0]->sub_dept_name ?? null;
+            $item->status_pengajuan_realisasi = $data[0]->status_pengajuan_realisasi ?? null;
+            $item->status_pengajuan = $data[0]->status_pengajuan ?? null;
+
+        }
+
+
+        $pdf = PDF::loadview('hris/permintaan_tenaga_kerja/export_permintaan_tenaga_kerja_pdf',['data'=>$kualifikasi]);
         return $pdf->stream('form-nilai-kinerja.pdf');
     }
     public function get_employee_fptk(Request $request)
@@ -305,7 +392,6 @@ class PermintaanTenagaKerjaController extends AdminBaseController
             return response()->json(['success' => true, 'message' => 'karyawan berhasil dihapus dari FPTK.']);
         }
         $enroll_ids_dikirim = collect($karyawan)->pluck('enroll_id')->toArray();
-
         DB::table('employee_atribut')
             ->where('no_fptk', $no_fptk)
             ->whereNotIn('enroll_id', $enroll_ids_dikirim)
@@ -350,10 +436,10 @@ class PermintaanTenagaKerjaController extends AdminBaseController
         $count_data = DB::table('employee_atribut')
                 ->where('no_fptk', $no_fptk)
                 ->count();
-        $jumlah_pengajuan = DB::table('pengajuan_permintaan_tk')
-                ->where('no_permintaan', $no_fptk)
-                ->first();
-        if($count_data == $jumlah_pengajuan->jumlah_kebutuhan){
+        $jumlah_pengajuan = DB::table('sub_pengajuan_permintaan_tk')
+        ->where('no_permintaan_id', $no_fptk)
+        ->sum('jumlah_kebutuhan');
+        if($count_data == $jumlah_pengajuan){
             DB::table('pengajuan_permintaan_tk')
                 ->where('no_permintaan', $no_fptk)
                 ->update(['status_pengajuan_realisasi' => 'done', 'verifikator_by' => Auth::guard('admin')->user()->email]);
@@ -364,7 +450,6 @@ class PermintaanTenagaKerjaController extends AdminBaseController
     {
         $karyawan = $request->karyawan;
         $no_fptk = $request->no_fptk;
-
         if (!$no_fptk) {
             return response()->json(['success' => false, 'message' => 'Data tidak valid.']);
         }
@@ -420,6 +505,7 @@ class PermintaanTenagaKerjaController extends AdminBaseController
         DB::table('pengajuan_permintaan_tk')
             ->where('no_permintaan', $no_fptk)
             ->update(['status_pengajuan_realisasi' => 'done', 'verifikator_by' => Auth::guard('admin')->user()->email]);
+
         return response()->json(['success' => true, 'message' => 'Data berhasil diperbarui.']);
     }
 
@@ -460,20 +546,40 @@ class PermintaanTenagaKerjaController extends AdminBaseController
                 'pengajuan_permintaan_tk.*',
                 'department_all.department_name',
                 'department_all2.sub_dept_name',
-                 DB::raw('(SELECT COUNT(*) FROM employee_atribut WHERE employee_atribut.no_fptk = pengajuan_permintaan_tk.no_permintaan) AS jumlah_karyawan')
+                DB::raw('(SELECT SUM(jumlah_kebutuhan) FROM sub_pengajuan_permintaan_tk WHERE sub_pengajuan_permintaan_tk.no_permintaan_id = pengajuan_permintaan_tk.no_permintaan) AS jumlah_kebutuhan'),
+                DB::raw('(SELECT department_kode FROM sub_pengajuan_permintaan_tk WHERE sub_pengajuan_permintaan_tk.no_permintaan_id = pengajuan_permintaan_tk.no_permintaan LIMIT 1) AS department_kode_sub'),
+                DB::raw('(SELECT bagian_kode FROM sub_pengajuan_permintaan_tk WHERE sub_pengajuan_permintaan_tk.no_permintaan_id = pengajuan_permintaan_tk.no_permintaan LIMIT 1) AS bagian_kode_sub'),
+                DB::raw('(SELECT COUNT(*) FROM employee_atribut WHERE employee_atribut.no_fptk = pengajuan_permintaan_tk.no_permintaan) AS jumlah_karyawan')
             )
             ->leftJoin('employee_atribut', 'pengajuan_permintaan_tk.diajukan_oleh_id', '=', 'employee_atribut.enroll_id')
-            ->leftJoin('department_all', 'pengajuan_permintaan_tk.department_kode', '=', 'department_all.department_id')
-            ->leftJoin('department_all as department_all2', 'pengajuan_permintaan_tk.bagian_kode', '=', 'department_all2.sub_dept_id')
+            ->leftJoin('department_all', function($join) {
+                $join->on(DB::raw('(SELECT department_kode FROM sub_pengajuan_permintaan_tk WHERE sub_pengajuan_permintaan_tk.no_permintaan_id = pengajuan_permintaan_tk.no_permintaan LIMIT 1)'), '=', 'department_all.department_id');
+            })
+            ->leftJoin('department_all as department_all2', function($join) {
+                $join->on(DB::raw('(SELECT bagian_kode FROM sub_pengajuan_permintaan_tk WHERE sub_pengajuan_permintaan_tk.no_permintaan_id = pengajuan_permintaan_tk.no_permintaan LIMIT 1)'), '=', 'department_all2.sub_dept_id');
+            })
             ->where('pengajuan_permintaan_tk.status_pengajuan', $status)
-            ->orderBy('pengajuan_permintaan_tk.created_at', 'asc')
-            ->distinct();
-        if (!in_array($email, ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli', 'ersa@ptnag.com','indri@nag.nirwanaindonesia.com','hadiyoso@nag.nirwanaindonesia.com','ronald@ptnag.com','bobby','pujiprana@nag.nirwanaindonesia.com'])) {
-            $query ->where(function($q) use ($email) {
-                $q->where('pengajuan_permintaan_tk.created_by', $email);
-            });
+            ->orderBy('pengajuan_permintaan_tk.created_at', 'asc')->distinct();
+
+
+        if (!in_array($email, [
+            'mega@ptnag.com',
+            'rudy@ptnag.com',
+            'fadli',
+            'ersa@ptnag.com',
+            'indri@nag.nirwanaindonesia.com',
+            'hadiyoso@nag.nirwanaindonesia.com',
+            'ronald@ptnag.com',
+            'bobby',
+            'pujiprana@nag.nirwanaindonesia.com'
+        ])) {
+            $query->where('pengajuan_permintaan_tk.created_by', $email);
         }
-        $data = $query ->get();
+
+        $data = $query->get();
+
+
+
         // Format response untuk DataTables
         return response()->json([
             'draw' => intval($request->input('draw')),

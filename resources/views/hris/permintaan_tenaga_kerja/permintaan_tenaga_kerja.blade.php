@@ -369,13 +369,13 @@ h1 {
 
 
     {{-- MODAL TAMBAH --}}
-    <div class="modal fade" id="ajax-modal-tambah"  role="dialog" data-backdrop="static" aria-hidden="true">
+    {{-- <div class="modal fade" id="ajax-modal-tambah"  role="dialog" data-backdrop="static" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document" style="max-width: 50%;">
             <div class="row">
                 <div class="col-md-12">
                     <div class="modal-content">
                         <div class="modal-header bg-primary p-2">
-                            <h4 class="modal-title pl-2 font-weight-bold" id="title-modal-edit1"></h4>
+                            <h4 class="modal-title pl-2 font-weight-bold" id="title-modal-create"></h4>
                              <div class="mt-0 p-0">
                                 <button onclick="closeModalBuatPengajuan()" class="btn btn-danger btn-sm w-100" data-toggle="tooltip" title="Tutup">x</button>
                              </div>
@@ -430,6 +430,7 @@ h1 {
                                         <small class="error-message text-danger"></small>
                                     </div>
                                 </div>
+
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">DEPARTMENT : </label>
@@ -442,6 +443,17 @@ h1 {
                                         <label class="form-label">BAGIAN : </label>
                                         <input type="text" readonly value="" class="form-control create-control" id="bagian" name="bagian">
                                         <input type="hidden" readonly value="" class="form-control create-control" id="sub_dept_id" name="sub_dept_id">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="container-kualifikasi">
+                                <div class="row kualifikasi-item">
+                                <div class="col-md-12 kualifikasi-header d-none">
+                                    <div class="d-flex justify-content-between bg-primary" style="margin-top: 10px; margin-bottom: 10px; padding-top:5px; padding-bottom:5px; padding-left: 10px; padding-right: 10px; color: white;">
+                                        <h5 class="font-weight-bold kualifikasi-title" style="padding-top: 10px;">Kualifikasi 1</h5>
+                                        <button type="button" class="btn btn-danger btn-sm btn-hapus-kualifikasi">
+                                            <i class="fa fa-trash"></i> Hapus
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px; padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
@@ -646,9 +658,332 @@ h1 {
                                        <input type="text" class="form-control create-control" placeholder="Keterangan Tambahan" id="keterangan_tambahan" name="keterangan_tambahan">
                                     </div>
                                 </div>
-                                <div class="col-md-9">
                                 </div>
-                                  <div class="col-md-3">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-success w-100" id="btn-tambah-permintaan" data-toggle="tooltip" title="Tambah Kualifikasi" style="margin-top: 10px;">
+                                        <i class="fa fa-user-plus" aria-hidden="true"></i>
+                                        Tambah Kualifikasi
+                                    </button>
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-primary w-100" id="btn-simpan-permintaan" data-toggle="tooltip" title="Simpan Data" style="margin-top: 10px;">
+                                        <i class="fa fa-save" aria-hidden="true"></i>
+                                        Simpan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> --}}
+
+    <div class="modal fade" id="ajax-modal-tambah"  role="dialog" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document" style="max-width: 50%;">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary p-2">
+                            <h4 class="modal-title pl-2 font-weight-bold" id="title-modal-create"></h4>
+                             <div class="mt-0 p-0">
+                                <button onclick="closeModalBuatPengajuan()" class="btn btn-danger btn-sm w-100" data-toggle="tooltip" title="Tutup">x</button>
+                             </div>
+                        </div>
+                        <div class="modal-body">
+                            <input id="uuid" type="hidden">
+                            <input id="enroll_id" type="hidden">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Tanggal Pengajuan : </label>
+                                        <input readonly disabled id="tanggal_pengajuan" name="tanggal_pengajuan" type="text" class="form-control fc-datepicker" placeholder="Tanggal Perizinan" maxlength="50" size="50">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                </div>
+                                <div class="col-md-4">
+                                </div>
+                                <div class="col-md-12">
+                                      <div class="form-group">
+                                        <label class="form-label">Status Permintaan : </label>
+                                        <div class="radio-container" style="display: flex; gap: 0.5rem;">
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="status_permintaan" value="permintaan_baru" checked>
+                                                <span>Permintaan Baru</span>
+                                            </label>
+
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="status_permintaan" value="penggantian">
+                                                <span>Penggantian</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Diajukan Oleh : </label>
+                                        <select id="diajukanOlehID" name="diajukanOlehID" style='width: 100%;' data-placeholder="Pilih karyawan" class="form-control create-control select2 select2-show-search EmployeeID">
+                                            <option value="">-- Pilih Karyawan --</option>
+                                            @foreach ($selectemployee as $r_empl)
+                                                <option
+                                                    value="{{$r_empl->enroll_id}}"
+                                                    data-department_name="{{$r_empl->department_name}}"
+                                                    data-sub_dept_name="{{$r_empl->sub_dept_name}}"
+                                                    data-department_data_id="{{$r_empl->department_id}}"
+                                                    data-sub_dept_data_id="{{$r_empl->sub_dept_id}}"
+                                                >
+                                                    {{$r_empl->select_employee}}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <small class="error-message text-danger"></small>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">DEPARTMENT : </label>
+                                        <input type="text" readonly value="" class="form-control create-control" id="department" name="department">
+                                        <input type="hidden" readonly value="" class="form-control create-control" id="department_id" name="department_id">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">BAGIAN : </label>
+                                        <input type="text" readonly value="" class="form-control create-control" id="bagian" name="bagian">
+                                        <input type="hidden" readonly value="" class="form-control create-control" id="sub_dept_id" name="sub_dept_id">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="container-kualifikasi">
+                                <div class="row kualifikasi-item">
+                                    <div class="col-md-12 kualifikasi-header d-none">
+                                        <div class="d-flex justify-content-between bg-primary" style="margin-top: 10px; margin-bottom: 10px; padding-top:5px; padding-bottom:5px; padding-left: 10px; padding-right: 10px; color: white;">
+                                            <h5 class="font-weight-bold kualifikasi-title" style="padding-top: 10px;">Kualifikasi 1</h5>
+                                            <button type="button" class="btn btn-danger btn-sm btn-hapus-kualifikasi">
+                                                <i class="fa fa-trash"></i> Hapus
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px; padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                                        <h5 style="font-weight: bold;">Rencana Kebutuhan</h5>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="form-label">DEPARTMENT : </label>
+                                            <select id="selectDepartment" name="selectDepartment" class="form-control">
+                                                <option value="">-- PILIH DEPARTMENT --</option>
+                                                @foreach ($department as $r_department)
+                                                    <option value="{{$r_department->department_id}}">{{$r_department->department_name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="form-label">BAGIAN : </label>
+                                            <select id="selectBagian" name="selectBagian" class="form-control">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="form-label">Tanggal Kebutuhan : </label>
+                                            <input name="tanggal_kebutuhan[]" type="text" class="form-control fc-datepicker" placeholder="Tanggal Kebutuhan">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="form-label">JUMLAH : </label>
+                                            <input type="number" name="jumlah_kebutuhan[]" class="form-control" value="0">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                                        <h5 style="font-weight: bold;">Rencana Jabatan</h5>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="radio-container">
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="rencana_jabatan[0]" value="manager" checked class="mr-2">
+                                                <span>Manager</span>
+                                            </label>
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="rencana_jabatan[0]" value="chief" class="mr-2">
+                                                <span>Chief</span>
+                                            </label>
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="rencana_jabatan[0]" value="spv" class="mr-2">
+                                                <span>SPV</span>
+                                            </label>
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="rencana_jabatan[0]" value="leader" class="mr-2">
+                                                <span>Leader</span>
+                                            </label>
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="rencana_jabatan[0]" value="staff" class="mr-2">
+                                                <span>Staff</span>
+                                            </label>
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="rencana_jabatan[0]" value="operator" class="mr-2">
+                                                <span>Operator</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px; padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                                        <h5 style="font-weight: bold;">Pendidikan Minimal & Jurusan</h5>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="radio-container">
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="pend_minimal[0]" value="sd" checked class="mr-2">
+                                                <span>Sekolah Dasar</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="radio-container">
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="pend_minimal[0]" value="smp" class="mr-2">
+                                                <span>Sekolah Lanjutan Tingkat Pertama</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="radio-container">
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="pend_minimal[0]" value="sma" class="mr-2">
+                                                <span>Sekolah Menengah Atas</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="radio-container">
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="pend_minimal[0]" value="diploma_1">
+                                                <span>Diploma 1</span>
+                                            </label>
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="pend_minimal[0]" value="diploma_2">
+                                                <span>Diploma 2</span>
+                                            </label>
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="pend_minimal[0]" value="diploma_3">
+                                                <span>Diploma 3</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="radio-container">
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="pend_minimal[0]" value="strata_1">
+                                                <span>Strata 1</span>
+                                            </label>
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="pend_minimal[0]" value="strata_2">
+                                                <span>Strata 2</span>
+                                            </label>
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="pend_minimal[0]" value="strata_3">
+                                                <span>Strata 3</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="radio-container">
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="pend_minimal[0]" value="dll">
+                                                <span>DLL</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                        <label class="form-label">JURUSAN : </label>
+                                        <input type="text" name="rencana_jurusan[]" class="form-control" placeholder="Rencana Jurusan">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                                        <h5 style="font-weight: bold;">Pengalaman Kerja</h5>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="radio-container">
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="pengalaman_kerja[0]" value="ya">
+                                                <span>Ya</span>
+                                                <input type="number" name="waktu_pengalaman[]" class="form-control" placeholder="Waktu Pengalaman">
+                                                <span>Tahun</span>
+                                            </label>
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="pengalaman_kerja[0]" value="tidak">
+                                                <span>Tidak</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                                        <h5 style="font-weight: bold;">Uraian Tugas Secara Umum</h5>
+                                    </div>
+                                    <div class="col-md-6">
+                                        @for($i = 0; $i < 5; $i++)
+                                            <div class="form-group">
+                                                 <input type="text" name="uraian_tugas[0][]" class="form-control" placeholder="{{ $i + 1 }}. Uraian Tugas">
+                                            </div>
+                                        @endfor
+                                    </div>
+                                    <div class="col-md-6">
+                                        @for($i = 5; $i < 10; $i++)
+                                            <div class="form-group">
+                                                <input type="text" name="uraian_tugas[0][]" class="form-control" placeholder="{{ $i + 1 }}. Uraian Tugas">
+                                            </div>
+                                        @endfor
+                                    </div>
+                                    <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                                        <h5 style="font-weight: bold;">Rencana Gaji & Fasilitas</h5>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Golongan / Besaran Gaji : </label>
+                                            <input type="text" name="besaran_gaji[]" class="form-control" placeholder="0">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label">Fasilitas : </label>
+                                            <input type="text" name="fasilitas[]" class="form-control" placeholder="Fasilitas">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                                        <h5 style="font-weight: bold;">Jangka Waktu Kontrak</h5>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <input type="text" name="jangka_waktu_kontrak[]" class="form-control" placeholder="Jangka Waktu">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                                        <h5 style="font-weight: bold;">Keterangan Lainnya ( Jumlah, Keterampilan Tambahan, dll )</h5>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <input type="text" name="keterangan_tambahan[]" class="form-control" placeholder="Keterangan Tambahan">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-success w-100" id="btn-tambah-permintaan" data-toggle="tooltip" title="Tambah Kualifikasi" style="margin-top: 10px;">
+                                        <i class="fa fa-user-plus" aria-hidden="true"></i>
+                                        Tambah Kualifikasi
+                                    </button>
+                                </div>
+                                <div class="col-md-3">
                                     <button class="btn btn-primary w-100" id="btn-simpan-permintaan" data-toggle="tooltip" title="Simpan Data" style="margin-top: 10px;">
                                         <i class="fa fa-save" aria-hidden="true"></i>
                                         Simpan
@@ -662,9 +997,8 @@ h1 {
         </div>
     </div>
 
-
     {{-- MODAL APPROVE PENGAJUAN --}}
-    <div class="modal fade" id="ajax-modal-approve-pengajuan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    {{-- <div class="modal fade" id="ajax-modal-approve-pengajuan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document" style="max-width: 50%;">
             <div class="row">
                 <div class="col-md-12">
@@ -762,7 +1096,7 @@ h1 {
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label class="form-label">TANGGAL Kebutuhan : </label>
+                                        <label class="form-label">Tanggal Kebutuhan : </label>
                                          <input id="tanggal_kebutuhan_approve" name="tanggal_kebutuhan_approve" type="text" class="form-control fc-datepicker" placeholder="Tanggal Kebutuhan" maxlength="50" size="50">
                                     </div>
                                 </div>
@@ -963,8 +1297,108 @@ h1 {
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
+
+    <div class="modal fade" id="ajax-modal-approve-pengajuan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document" style="max-width: 50%;">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary p-2">
+                            <h4 class="modal-title pl-2 font-weight-bold" id="title-modal-approve"></h4>
+                             <div class="mt-0 p-0">
+                                <button onclick="closeModalApprovePengajuan()" class="btn btn-danger btn-sm w-100" data-toggle="tooltip" title="Tutup">x</button>
+                             </div>
+                        </div>
+                        <div class="modal-body">
+                            <input id="enroll_id_approve" type="hidden">
+                            <input id="id_modal_permintaan" type="hidden">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Tanggal Pengajuan : </label>
+                                        <input readonly disabled id="tanggal_pengajuan_approve" name="tanggal_pengajuan_approve" type="text" class="form-control fc-datepicker" placeholder="Tanggal Perizinan" maxlength="50" size="50">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                </div>
+                                <div class="col-md-4">
+                                </div>
+                                <div class="col-md-12">
+                                      <div class="form-group">
+                                        <label class="form-label">Status Permintaan : </label>
+                                        <div class="radio-container" style="display: flex; gap: 0.5rem;">
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="status_permintaan" value="permintaan_baru" checked>
+                                                <span>Permintaan Baru</span>
+                                            </label>
+
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="status_permintaan" value="penggantian">
+                                                <span>Penggantian</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Diajukan Oleh : </label>
+                                        <select id="diajukanOlehIDModalApprove" name="diajukanOlehIDModalApprove" style='width: 100%;' data-placeholder="Pilih karyawan" class="form-control create-control select2 select2-show-search EmployeeID">
+                                            <option value="">-- Pilih Karyawan --</option>
+                                            @foreach ($selectemployee as $r_empl)
+                                                <option
+                                                    value="{{$r_empl->enroll_id}}"
+                                                    data-department_name_pengajuan="{{$r_empl->department_name}}"
+                                                    data-sub_dept_name_pengajuan="{{$r_empl->sub_dept_name}}"
+                                                    data-department_data_id_pengajuan="{{$r_empl->department_id}}"
+                                                    data-sub_dept_data_id_pengajuan="{{$r_empl->sub_dept_id}}"
+                                                >
+                                                    {{$r_empl->select_employee}}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <small class="error-message text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">DEPARTMENT : </label>
+                                        <input type="text" readonly value="" class="form-control create-control" id="department_approve" name="department_approve">
+                                        <input type="hidden" readonly value="" class="form-control create-control" id="department_id_approve" name="department_id_approve">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">BAGIAN : </label>
+                                        <input type="text" readonly value="" class="form-control create-control" id="bagian_approve" name="bagian_approve">
+                                        <input type="hidden" readonly value="" class="form-control create-control" id="sub_dept_id_approve" name="sub_dept_id_approve">
+                                    </div>
+                                </div>
+                                <div id="container-kualifikasi-update"></div>
+                                <div class="col-md-5">
+                                </div>
+                                  <div class="col-md-3">
+                                    <button class="btn btn-primary w-100" id="btn-update-permintaan" data-toggle="tooltip" title="Update Data" style="margin-top: 10px; display: none;">
+                                        <i class="fa fa-edit" aria-hidden="true"></i>
+                                        Update
+                                    </button>
+                                    <button class="btn btn-success w-100" id="btn-approve-permintaan" data-toggle="tooltip" title="Simpan Data" style="margin-top: 10px; display: none;">
+                                        <i class="fa fa-check" aria-hidden="true"></i>
+                                        Selesaikan Pengajuan
+                                    </button>
+                                    <button class="btn btn-danger w-100" id="btn-reject-permintaan" data-toggle="tooltip" title="Tolak Pengajuan" style="margin-top: 10px; display: none;">
+                                        <i class="fa fa-check" aria-hidden="true"></i>
+                                        Tolak/Batalkan Pengajuan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -1008,6 +1442,110 @@ h1 {
     </style>
 
     <script>
+
+        function updateKualifikasi() {
+            $('.kualifikasi-item').each(function (index) {
+                $(this).find('.kualifikasi-header').removeClass('d-none');
+                $(this).find('.kualifikasi-title').text('Kualifikasi ' + (index + 1));
+
+                if (index === 0) {
+                    $(this).find('.btn-hapus-kualifikasi').addClass('d-none');
+                } else {
+                    $(this).find('.btn-hapus-kualifikasi').removeClass('d-none');
+                }
+            });
+        }
+
+        $(document).ready(function () {
+
+            // Sinkronisasi otomatis jika kualifikasi pertama berubah
+            $(document).on('change', '.kualifikasi-item:first select[name="selectDepartment"], .kualifikasi-item:first select[name="selectBagian"], .kualifikasi-item:first input[name="tanggal_kebutuhan[]"]', function () {
+
+                let firstDepartment = $('.kualifikasi-item').first().find('select[name="selectDepartment"]').val();
+                let firstBagian = $('.kualifikasi-item').first().find('select[name="selectBagian"]').val();
+                let firstTanggal = $('.kualifikasi-item').first().find('input[name="tanggal_kebutuhan[]"]').val();
+
+                $('.kualifikasi-item').not(':first').each(function () {
+                    $(this).find('select[name="selectDepartment"]').val(firstDepartment);
+                    $(this).find('select[name="selectBagian"]').val(firstBagian);
+                    $(this).find('input[name="tanggal_kebutuhan[]"]').val(firstTanggal);
+                });
+            });
+
+
+            $('#btn-tambah-permintaan').on('click', function () {
+                let firstItem = $('.kualifikasi-item').first();
+                let index = $('.kualifikasi-item').length;
+
+                let firstDepartment = $('.kualifikasi-item').first().find('select[name="selectDepartment"]').val();
+                let firstBagian = $('.kualifikasi-item').first().find('select[name="selectBagian"]').val();
+                let firstTanggal = $('.kualifikasi-item').first().find('input[name="tanggal_kebutuhan[]"]').val();
+
+                firstItem.find('select[name="selectDepartment"]').css('border', '');
+                firstItem.find('select[name="selectBagian"]').css('border', '');
+                firstItem.find('input[name="tanggal_kebutuhan[]"]').css('border', '');
+
+                if (!firstDepartment || !firstBagian || !firstTanggal) {
+
+                    if (!firstDepartment) {
+                        firstItem.find('select[name="selectDepartment"]').css('border', '1px solid red');
+                    }
+                    if (!firstBagian) {
+                        firstItem.find('select[name="selectBagian"]').css('border', '1px solid red');
+                    }
+                    if (!firstTanggal) {
+                        firstItem.find('input[name="tanggal_kebutuhan[]"]').css('border', '1px solid red');
+                    }
+
+                    swal("", "Harap isi Department, Bagian, dan Tanggal Kebutuhan terlebih dahulu!", "info");
+                    return; // Stop proses tambah kualifikasi
+                }
+
+                let newForm = firstItem.clone();
+
+                // Reset input
+                newForm.find('input, select, textarea').each(function () {
+                    if ($(this).attr('type') == 'radio' || $(this).attr('type') == 'checkbox') {
+                        $(this).prop('checked', false);
+                    } else {
+                        $(this).val('');
+                    }
+                });
+
+
+                newForm.find('select[name="selectDepartment"]').val(firstDepartment).prop('disabled', true);
+                newForm.find('select[name="selectBagian"]').val(firstBagian);
+                newForm.find('input[name="tanggal_kebutuhan[]"]').val(firstTanggal).prop('disabled', true);
+
+                newForm.find('input[name^="rencana_jabatan"]').attr('name', 'rencana_jabatan[' + index + ']');
+                newForm.find('input[name^="pend_minimal"]').attr('name', 'pend_minimal[' + index + ']');
+                newForm.find('input[name^="pengalaman_kerja"]').attr('name', 'pengalaman_kerja[' + index + ']');
+                newForm.find('input[name^="uraian_tugas"]').attr('name', 'uraian_tugas[' + index + '][]');
+
+                newForm.find('[id]').removeAttr('id');
+
+                $('#container-kualifikasi').append(newForm);
+                newForm.find('.fc-datepicker').removeClass('hasDatepicker').datepicker({
+                    showOtherMonths: true,
+                    selectOtherMonths: true,
+                    dateFormat: 'dd-mm-yy'
+                });
+
+                updateKualifikasi();
+            });
+
+            $(document).on('click', '.btn-hapus-kualifikasi', function () {
+                if ($('.kualifikasi-item').length > 1) {
+                    $(this).closest('.kualifikasi-item').remove();
+                    updateKualifikasi();
+                }
+            });
+
+            updateKualifikasi();
+        });
+    </script>
+
+    <script>
         $('body').on('change', '#selectDepartment', function () {
                 var department_id = $('#selectDepartment').val();
 
@@ -1048,6 +1586,37 @@ h1 {
 
 
     <script>
+
+         $('body').on('change', '.select-department-update', function () {
+                let department_id = $(this).val();
+                let parent = $(this).closest('.container-kualifikasi-update');
+                let bagianSelect = parent.find('.select-bagian-update');
+                bagianSelect.html('<option value="">Loading...</option>');
+                if(department_id){
+                    $.ajax({
+                        type:"POST",
+                        url: "{{route('hris.departmentall.getDepartmentName')}}",
+                        dataType: 'json',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        data: {
+                            id:department_id,
+                        },
+                        dataType: 'json',
+                        success: function(res){
+                            if(res){
+                            let html = '<option value="">--Pilih Bagian--</option>';
+                            res.forEach(bagian => {
+                                html += `<option value="${bagian.sub_dept_id}">${bagian.sub_dept_name}</option>`;
+                            });
+                            bagianSelect.html(html);
+                            }
+                        }
+                    });
+                }
+        });
+
+
         $("#diajukanOlehID").select2().on("select2:select", function() {
             var selectedOption = $('#diajukanOlehID').find(':selected');
             var department = selectedOption.data('department_name');
@@ -1088,8 +1657,7 @@ h1 {
                 },
                 success: function(res) {
                     var data = res.permintaan;
-                   var tanggal_perizinan=data.tanggal_pengajuan.substr(8,2)+'-'+data.tanggal_pengajuan.substr(5,2)+'-'+data.tanggal_pengajuan.substr(0,4);
-                   var tanggal_kebutuhan=data.tanggal_kebutuhan.substr(8,2)+'-'+data.tanggal_kebutuhan.substr(5,2)+'-'+data.tanggal_kebutuhan.substr(0,4);
+                    var tanggal_perizinan=data.tanggal_pengajuan.substr(8,2)+'-'+data.tanggal_pengajuan.substr(5,2)+'-'+data.tanggal_pengajuan.substr(0,4);
                     $('#id_modal_permintaan').val(data.id);
                     $('#enroll_id_approve').val(data.diajukan_oleh_id);
                     $('#tanggal_pengajuan_approve').val(tanggal_perizinan);
@@ -1100,38 +1668,287 @@ h1 {
                     $('#bagian_approve').val(data.sub_dept_name);
                     $('#sub_dept_id_approve').val(data.sub_dept_id);
                     $('#selectDepartmentModalApprove').val(data.kode_dept_id).trigger('change');
+                    $('#container-kualifikasi-update').empty();
+                    console.log(res.kualifikasi);
 
-                // panggil AJAX baru untuk isi bagian dengan nilai dari database:
-                    loadSubBagian(data.kode_dept_id, data.kode_bagian_id, data.nama_bagian);
-                    $('#tanggal_kebutuhan_approve').val(tanggal_kebutuhan);
-                    $('#jumlah_kebutuhan_approve').val(data.jumlah_kebutuhan);
-
-                    $('input[name="rencana_jabatan"][value="' + data.rencana_jabatan + '"]').prop('checked', true);
-                    $('input[name="pend_minimal"][value="' + data.pend_minimal + '"]').prop('checked', true);
-
-                    $('#rencana_jurusan_approve').val(data.rencana_jurusan);
-                    $('input[name="pengalaman_kerja"][value="' + data.pengalaman_kerja + '"]').prop('checked', true);
-                    $('#waktu_pengalaman_approve').val(data.waktu_pengalaman);
-                    $('#besaran_gaji_approve').val(data.besaran_gaji);
-                    $('#fasilitas_approve').val(data.fasilitas);
-                    $('#jangka_waktu_kontrak_approve').val(data.jangka_waktu_kontrak);
-                    $('#keterangan_tambahan_approve').val(data.keterangan_tambahan);
-
-                    let uraianTugasArray = [];
-
-                    try {
-                        uraianTugasArray = JSON.parse(data.uraian_tugas);
-                    } catch (e) {
-                        console.warn('Gagal parsing uraian_tugas:', e);
-                    }
-
-                    console.log('uraianTugasArray:', uraianTugasArray);
-                    $('input[name="uraian_tugas_approve[]"]').each(function (i) {
-                        $(this).val(uraianTugasArray[i] || '');
+                    res.kualifikasi.forEach((item, index) => {
+                        addKualifikasiRowUpdate({
+                            id_kualifikasi: item.id,
+                            department_kode: item.department_kode,
+                            bagian_kode: item.bagian_kode,
+                            bagian_name: item.bagian_name,
+                            tanggal_kebutuhan: item.tanggal_kebutuhan.substr(8,2)+'-'+item.tanggal_kebutuhan.substr(5,2)+'-'+item.tanggal_kebutuhan.substr(0,4),
+                            jumlah_kebutuhan: item.jumlah_kebutuhan,
+                            rencana_jabatan: item.rencana_jabatan,
+                            pend_minimal: item.pend_minimal,
+                            rencana_jurusan: item.rencana_jurusan,
+                            pengalaman_kerja: item.pengalaman_kerja,
+                            waktu_pengalaman: item.waktu_pengalaman,
+                            uraian_tugas: item.uraian_tugas ? JSON.parse(item.uraian_tugas) : [],
+                            besaran_gaji: item.besaran_gaji,
+                            fasilitas: item.fasilitas,
+                            jangka_waktu_kontrak: item.jangka_waktu_kontrak,
+                            keterangan_tambahan: item.keterangan_tambahan
+                        }, index);
                     });
                 }
             });
         }
+
+
+
+
+        function addKualifikasiRowUpdate(data = {}, index = 0) {
+            let container = document.getElementById('container-kualifikasi-update');
+            let html = `
+            <div class="row container-kualifikasi-update p-2 mb-2">
+                <div class="col-md-12">
+                    <div class="d-flex justify-content-between bg-primary" style="margin-top: 10px; margin-bottom: 10px; padding-top:5px; padding-bottom:5px; padding-left: 10px; padding-right: 10px; color: white;">
+                        <h5 class="font-weight-bold kualifikasi-title" style="padding-top: 10px;">Kualifikasi ${index + 1}</h5>
+                        <button type="button" onclick="this.closest('.row').remove()" class="btn btn-danger btn-sm">
+                            <i class="fa fa-trash"></i> Hapus
+                        </button>
+                        <input type="hidden" name="id_kualifikasi[${index}]" value="${data.id_kualifikasi || ''}">
+                    </div>
+                </div>
+                <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px; padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                    <h5 style="font-weight: bold;">Rencana Kebutuhan</h5>
+                </div>
+                <div class="col-md-3">
+                    <label>Department:</label>
+                    <select disabled class="form-control select-department-update" id="selectDepartmentModalApprove_${index}" name="selectDepartmentModalApprove[${index}]">
+                        <option value="">Pilih</option>
+                        @foreach ($department as $dept)
+                            <option value="{{ $dept->department_id }}" ${data.department_kode == '{{ $dept->department_id }}' ? 'selected' : ''}>{{ $dept->department_name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label>Bagian:</label>
+                    <select class="form-control select-bagian-update"  id="selectBagianModalApprove[${index}]" name="selectBagianModalApprove[${index}]" >
+                        <option value="">Pilih Bagian</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label>Tanggal Kebutuhan:</label>
+                    <input type="text" class="form-control tanggal-kebutuhan fc-datepicker" name="tanggal_kebutuhan[${index}]" value="${data.tanggal_kebutuhan || ''}">
+                </div>
+                <div class="col-md-3">
+                    <label>Jumlah:</label>
+                    <input type="number" class="form-control jumlah-kebutuhan" name="jumlah_kebutuhan[${index}]" value="${data.jumlah_kebutuhan || 0}">
+                </div>
+
+                <!-- Rencana Jabatan -->
+                <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                    <h5 style="font-weight: bold;">Rencana Jabatan</h5>
+                </div>
+                <div class="col-md-12">
+                   <div class="radio-container">
+                    ${['manager','chief','spv','leader','staff','operator'].map(jabatan => `
+                    <label class="radio-wrapper">
+                                <input type="radio" name="rencana_jabatan[${index}]" value="${jabatan}" ${data.rencana_jabatan == jabatan ? 'checked' : ''}>
+                                <span>
+                                ${jabatan.charAt(0).toUpperCase() + jabatan.slice(1)}
+                                </span>
+                    </label>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Pendidikan Minimal -->
+                 <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px; padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                    <h5 style="font-weight: bold;">Pendidikan Minimal & Jurusan</h5>
+                </div>
+                <div class="col-md-4">
+                    <div class="radio-container">
+                        ${['sd'].map(pend => `
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pend_minimal[${index}]" value="${pend}" ${data.pend_minimal == pend ? 'checked' : ''}>
+                            <span>Sekolah Dasar</span>
+                        </label>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="radio-container">
+                        ${['smp'].map(pend => `
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pend_minimal[${index}]" value="${pend}" ${data.pend_minimal == pend ? 'checked' : ''}>
+                            <span>Sekolah Lanjutan Pertama</span>
+                        </label>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="radio-container">
+                        ${['sma'].map(pend => `
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pend_minimal[${index}]" value="${pend}" ${data.pend_minimal == pend ? 'checked' : ''}>
+                            <span>Sekolah Menengah Atas</span>
+                        </label>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="radio-container">
+                         ${['diploma_1'].map(pend => `
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pend_minimal[${index}]" value="${pend}" ${data.pend_minimal == pend ? 'checked' : ''}>
+                            <span>Diploma 1</span>
+                        </label>
+                        `).join('')}
+                         ${['diploma_2'].map(pend => `
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pend_minimal[${index}]" value="${pend}" ${data.pend_minimal == pend ? 'checked' : ''}>
+                            <span>Diploma 2</span>
+                        </label>
+                        `).join('')}
+                         ${['diploma_3'].map(pend => `
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pend_minimal[${index}]" value="${pend}" ${data.pend_minimal == pend ? 'checked' : ''}>
+                            <span>Diploma 3</span>
+                        </label>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="radio-container">
+                         ${['strata_1'].map(pend => `
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pend_minimal[${index}]" value="${pend}" ${data.pend_minimal == pend ? 'checked' : ''}>
+                            <span>Strata 1</span>
+                        </label>
+                        `).join('')}
+                         ${['strata_2'].map(pend => `
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pend_minimal[${index}]" value="${pend}" ${data.pend_minimal == pend ? 'checked' : ''}>
+                            <span>Strata 2</span>
+                        </label>
+                        `).join('')}
+                         ${['strata_3'].map(pend => `
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pend_minimal[${index}]" value="${pend}" ${data.pend_minimal == pend ? 'checked' : ''}>
+                            <span>Strata 3</span>
+                        </label>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="radio-container">
+                         ${['dll'].map(pend => `
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pend_minimal[${index}]" value="${pend}" ${data.pend_minimal == pend ? 'checked' : ''}>
+                            <span>dll</span>
+                        </label>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Jurusan -->
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-label">JURUSAN : </label>
+                        <input type="text" class="form-control" name="rencana_jurusan[${index}]" placeholder="Rencana Jurusan" value="${data.rencana_jurusan || ''}">
+                    </div>
+                </div>
+
+                 <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                    <h5 style="font-weight: bold;">Pengalaman Kerja</h5>
+                </div>
+                 <div class="col-md-12">
+                    <div class="radio-container">
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pengalaman_kerja[${index}]" value="ya" ${data.pengalaman_kerja == 'ya' ? 'checked' : ''}>>
+                            <span>Ya</span>
+                            <input type="number" name="waktu_pengalaman[${index}]" value="${data.waktu_pengalaman || 0}" class="form-control" placeholder="Waktu Pengalaman">
+                            <span>Tahun</span>
+                        </label>
+                        <label class="radio-wrapper">
+                            <input type="radio" name="pengalaman_kerja[${index}]" value="tidak" ${data.pengalaman_kerja == 'tidak' ? 'checked' : ''}>
+                            <span>Tidak</span>
+                        </label>
+                    </div>
+                </div>
+                <!-- Uraian Tugas -->
+                 <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                    <h5 style="font-weight: bold;">Uraian Tugas Secara Umum</h5>
+                </div>
+                <div class="col-md-6">
+                    ${[0,1,2,3,4].map((_, i) => `
+                    <div class="form-group">
+                                <input type="text" name="uraian_tugas[${index}][]" class="form-control" value="${(data.uraian_tugas || [])[_] || ''}" placeholder="${ _ + 1}. Uraian Tugas">
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="col-md-6">
+                    ${[5,6,7,8,9].map((_, i) => `
+                    <div class="form-group">
+                                <input type="text" name="uraian_tugas[${index}][]" class="form-control" value="${(data.uraian_tugas || [])[_] || ''}" placeholder="${ _ + 1 }. Uraian Tugas">
+                        </div>
+                    `).join('')}
+                </div>
+                <!-- Gaji & Fasilitas -->
+                <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                    <h5 style="font-weight: bold;">Rencana Gaji & Fasilitas</h5>
+                </div>
+                <div class="col-md-6">
+                     <div class="form-group">
+                        <label class="form-label">Golongan / Besaran Gaji : </label>
+                        <input type="text" name="besaran_gaji[${index}]" class="form-control" placeholder="0" value="${data.besaran_gaji || ''}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                     <div class="form-group">
+                        <label class="form-label">Fasilitas : </label>
+                        <input type="text" name="fasilitas[${index}]" class="form-control"  value="${data.fasilitas || ''}">
+                    </div>
+                </div>
+                <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                    <h5 style="font-weight: bold;">Jangka Waktu Kontrak</h5>
+                </div>
+                <div class="col-md-3">
+                     <div class="form-group">
+                        <input type="number" name="jangka_waktu[${index}]" class="form-control" placeholder="0" value="${data.jangka_waktu_kontrak || ''}">
+                    </div>
+                </div>
+                <div class="col-md-9">
+                     <div class="form-group">
+                        <span>Bulan</span>
+                    </div>
+                </div>
+                <div class="col-md-12" style="border-bottom: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px;  padding-top: 10px; border-top: 1px solid #ccc; background-color: #eef5fc;">
+                    <h5 style="font-weight: bold;">Keterangan Lainnya ( Jumlah, Keterampilan Tambahan, dll )</h5>
+                </div>
+                <div class="col-md-12">
+                     <div class="form-group">
+                        <input type="text" name="keterangan_tambahan[${index}]" class="form-control" value="${(data.keterangan_tambahan ?? '') == 'null' ? '' : (data.keterangan_tambahan ?? '')}"/>
+                    </div>
+                </div>
+            </div>
+            `;
+
+            container.insertAdjacentHTML('beforeend', html);
+             $('.fc-datepicker').datepicker({
+                 showOtherMonths: true,
+                    selectOtherMonths: true,
+                    dateFormat: 'dd-mm-yy'
+            });
+            if (data.department_kode) {
+                $.ajax({
+                    url: "{{ route('hris.departmentall.getDepartmentName') }}",
+                    type: "POST",
+                    data: { id: data.department_kode },
+                    success: function(res) {
+                        let selectBagian = document.getElementById(`selectBagianModalApprove[${index}]`);
+                        res.forEach(item => {
+                            let selected = item.sub_dept_id == data.bagian_kode ? 'selected' : '';
+                            selectBagian.insertAdjacentHTML('beforeend', `<option value="${item.sub_dept_id}" ${selected}>${item.sub_dept_name}</option>`);
+                        });
+                    }
+                });
+            }
+        }
+
 
         function loadSubBagian(department_id, selected_sub_dept_id = null, selected_sub_dept_name = null) {
             $("#selectBagianModalApprove").empty().append(new Option("-- PILIH BAGIAN --", ""));
@@ -1232,13 +2049,13 @@ h1 {
         }
 
         function setToNull() {
-            $('#tanggal_pengajuan').val(null).prop('disabled', false);  // Format tanggal dan disable
-            $('#diajukanOlehID').val(null).trigger('change').prop('disabled', false);  // Pilih karyawan dan disable
-            $('#didelegasikanID').val(null).trigger('change').prop('disabled', false);  // Pilih karyawan dan disable
-            $('#department').val(null).prop('disabled', false);  // Masukkan nama department dan disable
-            $('#department_id').val(null).prop('disabled', false);  // Masukkan ID department dan disable
-            $('#bagian').val(null).prop('disabled', false);  // Masukkan nama bagian/sub-department dan disable
-            $('#sub_dept_id').val(null).prop('disabled', false);  // Masukkan ID bagian/sub-department dan disable
+            $('#tanggal_pengajuan').val(null).prop('disabled', false);
+            $('#diajukanOlehID').val(null).trigger('change').prop('disabled', false);
+            $('#didelegasikanID').val(null).trigger('change').prop('disabled', false);
+            $('#department').val(null).prop('disabled', false);
+            $('#department_id').val(null).prop('disabled', false);
+            $('#bagian').val(null).prop('disabled', false);
+            $('#sub_dept_id').val(null).prop('disabled', false);
 
             $('#uuid').val(null);
             $('#uuid_master').val(null);
@@ -1265,6 +2082,41 @@ h1 {
             $('#nomor_form_perizinan_iks').val(null);
             $('#ajax-modal-tambah').modal('hide');
         }
+
+
+        function resetFormTambah() {
+            // Reset semua input, select, textarea dalam modal
+            $('#ajax-modal-tambah').find('input, select, textarea').each(function () {
+                const type = $(this).attr('type');
+                if (type === 'radio' || type === 'checkbox') {
+                    $(this).prop('checked', false);
+                } else {
+                    $(this).val('');
+                }
+
+                // Jika pakai select2
+                if ($(this).hasClass('select2-hidden-accessible')) {
+                    $(this).val(null).trigger('change');
+                }
+            });
+
+            // Kosongkan text biasa (misal label hasil generate)
+            $('#ajax-modal-tambah').find('span, p, div').each(function () {
+                if ($(this).hasClass('form-label-static')) {
+                    $(this).text('');
+                }
+            });
+
+            // Kalau ada tanggal pakai datepicker manual clear
+            $('#ajax-modal-tambah').find('.fc-datepicker').val('');
+
+            // Reset kualifikasi (kalau kamu pakai clone dynamic)
+            $('#container-kualifikasi').html('');
+            $('#btn-tambah-permintaan').trigger('click'); // Tambah kualifikasi pertama lagi
+
+            $('#ajax-modal-tambah').modal('hide');
+        }
+
 
 
         var perijinanChecked = [];
@@ -1570,120 +2422,83 @@ h1 {
 
             $('body').on('click', '#btn-simpan-permintaan', function (event) {
                 var tanggal_periz = $('#tanggal_pengajuan').val();
-                var tanggal_perizinan=tanggal_periz.substr(6, 4)+'-'+tanggal_periz.substr(3,2)+'-'+tanggal_periz.substr(0,2);
+                var tanggal_perizinan = tanggal_periz.substr(6, 4) + '-' + tanggal_periz.substr(3, 2) + '-' + tanggal_periz.substr(0, 2);
                 var status_permintaan = $('input[name="status_permintaan"]:checked').val();
                 var enroll_id = $('#enroll_id').val();
-                var selectDepartment = $('#selectDepartment').val();
-                var selectBagian = $('#selectBagian').val();
-                var jumlah_kebutuhan = $('#jumlah_kebutuhan').val();
-                var rencana_jabatan = $('input[name="rencana_jabatan"]:checked').val();
-                var pend_minimal = $('input[name="pend_minimal"]:checked').val();
-                var rencana_jurusan = $('#rencana_jurusan').val();
-                var pengalaman_kerja = $('#pengalaman_kerja').val();
-                var waktu_pengalaman = $('#waktu_pengalaman').val();
-                var besaran_gaji = $('#besaran_gaji').val();
-                var fasilitas = $('#fasilitas').val();
-                var jangka_waktu_kontrak = $('#jangka_waktu_kontrak').val();
-                var keterangan_tambahan = $('#keterangan_tambahan').val();
 
-                var tanggal_kebutuhan = $('#tanggal_kebutuhan').val();
-                var tanggal_kebutuhan=tanggal_kebutuhan.substr(6, 4)+'-'+tanggal_kebutuhan.substr(3,2)+'-'+tanggal_kebutuhan.substr(0,2);
+                var kualifikasi = [];
+                let firstDepartment = $('.kualifikasi-item').first().find('select[name="selectDepartment"]').val();
+                let firstBagian = $('.kualifikasi-item').first().find('select[name="selectBagian"]').val();
+                let firstTanggal = $('.kualifikasi-item').first().find('input[name="tanggal_kebutuhan[]"]').val();
 
-                var uraianTugas = [];
+                $('.kualifikasi-item').each(function (index) {
+                    var parent = $(this);
 
-                $('input[name="uraian_tugas[]"]').each(function () {
-                    uraianTugas.push($(this).val());
+                    var selectDepartment = firstDepartment;
+                    var selectBagian = firstBagian;
+                    var tanggal_kebutuhan = firstTanggal;
+                    var tanggal_kebutuhan_fix = tanggal_kebutuhan.substr(6, 4) + '-' + tanggal_kebutuhan.substr(3, 2) + '-' + tanggal_kebutuhan.substr(0, 2);
+                    var jumlah_kebutuhan = parent.find('[name="jumlah_kebutuhan[]"]').val();
+                    var rencana_jabatan = parent.find('input[name="rencana_jabatan[' + index + ']"]:checked').val();
+                    var pend_minimal = parent.find('input[name="pend_minimal[' + index + ']"]:checked').val();
+                    var rencana_jurusan = parent.find('[name="rencana_jurusan[]"]').val();
+                    var pengalaman_kerja = parent.find('input[name="pengalaman_kerja[' + index + ']"]:checked').val();
+                    var waktu_pengalaman = parent.find('[name="waktu_pengalaman[]"]').val();
+                    var besaran_gaji = parent.find('[name="besaran_gaji[]"]').val();
+                    var fasilitas = parent.find('[name="fasilitas[]"]').val();
+                    var jangka_waktu_kontrak = parent.find('[name="jangka_waktu_kontrak[]"]').val();
+                    var keterangan_tambahan = parent.find('[name="keterangan_tambahan[]"]').val();
+
+                    var uraianTugas = [];
+                    parent.find('[name="uraian_tugas[' + index + '][]"]').each(function () {
+                        uraianTugas.push($(this).val());
+                    });
+
+                    kualifikasi.push({
+                        selectDepartment: selectDepartment,
+                        selectBagian: selectBagian,
+                        tanggal_kebutuhan: tanggal_kebutuhan_fix,
+                        jumlah_kebutuhan: jumlah_kebutuhan,
+                        rencana_jabatan: rencana_jabatan,
+                        pend_minimal: pend_minimal,
+                        rencana_jurusan: rencana_jurusan,
+                        pengalaman_kerja: pengalaman_kerja,
+                        waktu_pengalaman: waktu_pengalaman,
+                        besaran_gaji: besaran_gaji,
+                        fasilitas: fasilitas,
+                        jangka_waktu_kontrak: jangka_waktu_kontrak,
+                        keterangan_tambahan: keterangan_tambahan,
+                        uraianTugas: uraianTugas
+                    });
                 });
-                var besaran_gaji_bersih = besaran_gaji.replace(/[^\d]/g, '');
 
-                if(!enroll_id){
+                if (!enroll_id) {
                     swal("", "Harap isi pengajuan terlebih dahulu!", "info");
-                    return;
-                }
-                if(!selectDepartment){
-                    swal("", "Harap isi department rencana kebutuhan terlebih dahulu!", "info");
-                    return;
-                }
-                if(!selectBagian){
-                    swal("", "Harap isi bagian rencana kebutuhan terlebih dahulu!", "info");
-                    return;
-                }
-                if(!tanggal_kebutuhan){
-                    swal("", "Harap isi tanggal rencana kebutuhan terlebih dahulu!", "info");
-                    return;
-                }
-                if(!jumlah_kebutuhan){
-                    swal("", "Harap isi jumlah rencana kebutuhan terlebih dahulu!", "info");
-                    return;
-                }
-                if(pengalaman_kerja == 'ya' && !waktu_pengalaman){
-                    swal("", "Harap isi waktu pengalaman kerja terlebih dahulu!", "info");
                     return;
                 }
 
                 $.ajax({
-                    type:"POST",
-                    url: "{{route('permintaan_tenaga_kerja.create_permintaan_tk')}}",
+                    type: "POST",
+                    url: "{{ route('permintaan_tenaga_kerja.create_permintaan_tk') }}",
                     dataType: 'json',
                     headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    data: {
-                        tanggal_perizinan:tanggal_perizinan,
-                        status_permintaan:status_permintaan,
-                        diajukanOlehID:enroll_id,
-                        selectDepartment:selectDepartment,
-                        selectBagian:selectBagian,
-                        tanggal_kebutuhan:tanggal_kebutuhan,
-                        jumlah_kebutuhan:jumlah_kebutuhan,
-                        rencana_jabatan:rencana_jabatan,
-                        uraianTugas:uraianTugas,
-                        pend_minimal:pend_minimal,
-                        rencana_jurusan:rencana_jurusan,
-                        pengalaman_kerja:pengalaman_kerja,
-                        waktu_pengalaman:waktu_pengalaman,
-                        besaran_gaji:besaran_gaji_bersih,
-                        fasilitas:fasilitas,
-                        jangka_waktu_kontrak:jangka_waktu_kontrak,
-                        keterangan_tambahan:keterangan_tambahan
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    dataType: 'json',
-                    success: function(res){
-                        notif({
-                            msg: "<b>Info:</b> Data berhasil di simpan.",
-                            type: "info"
-                        });
+                    data: {
+                        tanggal_perizinan: tanggal_perizinan,
+                        status_permintaan: status_permintaan,
+                        diajukanOlehID: enroll_id,
+                        kualifikasi: kualifikasi
+                    },
+                    success: function (res) {
+                        notif({ msg: "<b>Info:</b> Data berhasil disimpan.", type: "info" });
                         tableVerifikasi.ajax.reload();
                         tableWaiting.ajax.reload();
                         tableReject.ajax.reload();
                         $("#ajax-modal-tambah").modal('hide');
-                        $('#tanggal_pengajuan').val('');
-                        $('input[name="status_permintaan"]').prop('checked', false);
-                        $('#enroll_id').val('');
-                        $('#diajukanOlehID').val('').trigger('change'); // jika pakai select2
-                        $('#selectDepartment').val('').trigger('change'); // jika pakai select2
-                        $('#selectBagian').val('').trigger('change');
-                        $('#jumlah_kebutuhan').val('');
-                        $('input[name="rencana_jabatan"]').prop('checked', false);
-                        $('input[name="pend_minimal"]').prop('checked', false);
-                        $('#rencana_jurusan').val('');
-                        $('#pengalaman_kerja').val('');
-                        $('#waktu_pengalaman').val('');
-                        $('#besaran_gaji').val('');
-                        $('#fasilitas').val('');
-                        $('#jangka_waktu_kontrak').val('');
-                        $('#keterangan_tambahan').val('');
-                        $('#tanggal_kebutuhan').val('');
-
-                        // Kosongkan semua input uraian tugas
-                        $('input[name="uraian_tugas[]"]').each(function () {
-                            $(this).val('');
-                        });
                     },
-                    error: function(res){
-                        notif({
-                            msg: "<b>Error:</b> Oops data gagal di simpan.",
-                            type: "error"
-                        });
+                    error: function () {
+                        notif({ msg: "<b>Error:</b> Oops data gagal disimpan.", type: "error" });
                         tableVerifikasi.ajax.reload();
                         tableWaiting.ajax.reload();
                         tableReject.ajax.reload();
@@ -1691,107 +2506,200 @@ h1 {
                 });
             });
 
-            $('body').on('click', '#btn-update-permintaan', function (event) {
-                var id = $('#id_modal_permintaan').val();
-                var tanggal_periz = $('#tanggal_pengajuan_approve').val();
-                var tanggal_perizinan=tanggal_periz.substr(6, 4)+'-'+tanggal_periz.substr(3,2)+'-'+tanggal_periz.substr(0,2);
-                var status_permintaan = $('input[name="status_permintaan"]:checked').val();
-                var enroll_id = $('#enroll_id_approve').val();
-                var selectDepartment = $('#selectDepartmentModalApprove').val();
-                var selectBagian = $('#selectBagianModalApprove').val();
-                var jumlah_kebutuhan = $('#jumlah_kebutuhan_approve').val();
-                var rencana_jabatan = $('input[name="rencana_jabatan"]:checked').val();
-                var pend_minimal = $('input[name="pend_minimal"]:checked').val();
-                var rencana_jurusan = $('#rencana_jurusan_approve').val();
-                var pengalaman_kerja = $('input[name="pengalaman_kerja"]:checked').val();
-                var waktu_pengalaman = $('#waktu_pengalaman_approve').val();
-                var besaran_gaji = $('#besaran_gaji_approve').val();
-                var fasilitas = $('#fasilitas_approve').val();
-                var jangka_waktu_kontrak = $('#jangka_waktu_kontrak_approve').val();
-                var keterangan_tambahan = $('#keterangan_tambahan_approve').val();
+          $('body').on('click', '#btn-update-permintaan', function (event) {
+            var id = $('#id_modal_permintaan').val();
+            var tanggal_periz = $('#tanggal_pengajuan_approve').val();
+            var tanggal_perizinan = tanggal_periz.substr(6, 4) + '-' + tanggal_periz.substr(3, 2) + '-' + tanggal_periz.substr(0, 2);
+            var status_permintaan = $('input[name="status_permintaan"]:checked').val();
+            var enroll_id = $('#enroll_id_approve').val();
 
-                var tanggal_kebutuhan = $('#tanggal_kebutuhan_approve').val();
-                tanggal_kebutuhan=tanggal_kebutuhan.substr(6, 4)+'-'+tanggal_kebutuhan.substr(3,2)+'-'+tanggal_kebutuhan.substr(0,2);
+            var kualifikasi = [];
+
+
+            $('.container-kualifikasi-update').each(function (index) {
+                var parent = $(this);
+
+                var id_kualifikasi = parent.find('[name="id_kualifikasi[' + index + ']"]').val();
+                var selectDepartment = parent.find('select[name="selectDepartmentModalApprove[' + index + ']"]').val();
+                var selectBagian = parent.find('select[name="selectBagianModalApprove[' + index + ']"]').val();
+                var tanggal_kebutuhan = parent.find('input[name="tanggal_kebutuhan[' + index + ']"]').val();
+                var tanggal_kebutuhan_fix = tanggal_kebutuhan.substr(6, 4) + '-' + tanggal_kebutuhan.substr(3, 2) + '-' + tanggal_kebutuhan.substr(0, 2);
+                var jumlah_kebutuhan = parent.find('[name="jumlah_kebutuhan[' + index + ']"]').val();
+                var rencana_jabatan = parent.find('input[name="rencana_jabatan[' + index + ']"]:checked').val();
+                var pend_minimal = parent.find('input[name="pend_minimal[' + index + ']"]:checked').val();
+                var rencana_jurusan = parent.find('[name="rencana_jurusan[' + index + ']"]').val();
+                var pengalaman_kerja = parent.find('input[name="pengalaman_kerja[' + index + ']"]:checked').val();
+                var waktu_pengalaman = parent.find('[name="waktu_pengalaman[' + index + ']"]').val();
+                var besaran_gaji = parent.find('[name="besaran_gaji[' + index + ']"]').val();
+                var fasilitas = parent.find('[name="fasilitas[' + index + ']"]').val();
+                var jangka_waktu_kontrak = parent.find('[name="jangka_waktu[' + index + ']"]').val();
+                var keterangan_tambahan = parent.find('[name="keterangan_tambahan[' + index + ']"]').val();
 
                 var uraianTugas = [];
-                $('input[name="uraian_tugas_approve[]"]').each(function () {
+                parent.find('[name="uraian_tugas[' + index + '][]"]').each(function () {
                     uraianTugas.push($(this).val());
                 });
-                var besaran_gaji_bersih = besaran_gaji.replace(/[^\d]/g, '');
 
-                if(!enroll_id){
-                    swal("", "Harap isi pengajuan terlebih dahulu!", "info");
-                    return;
-                }
-                if(!selectDepartment){
-                    swal("", "Harap isi department rencana kebutuhan terlebih dahulu!", "info");
-                    return;
-                }
-                if(!selectBagian){
-                    swal("", "Harap isi bagian rencana kebutuhan terlebih dahulu!", "info");
-                    return;
-                }
-                if(!tanggal_kebutuhan){
-                    swal("", "Harap isi tanggal rencana kebutuhan terlebih dahulu!", "info");
-                    return;
-                }
-                if(!jumlah_kebutuhan){
-                    swal("", "Harap isi jumlah rencana kebutuhan terlebih dahulu!", "info");
-                    return;
-                }
-                if(pengalaman_kerja == 'ya' && !waktu_pengalaman){
-                    swal("", "Harap isi waktu pengalaman kerja terlebih dahulu!", "info");
-                    return;
-                }
-
-                $.ajax({
-                    type:"POST",
-                    url: "{{route('permintaan_tenaga_kerja.update_permintaan_tk')}}",
-                    dataType: 'json',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    data: {
-                        id:id,
-                        tanggal_perizinan:tanggal_perizinan,
-                        status_permintaan:status_permintaan,
-                        diajukanOlehID:enroll_id,
-                        selectDepartment:selectDepartment,
-                        selectBagian:selectBagian,
-                        tanggal_kebutuhan:tanggal_kebutuhan,
-                        jumlah_kebutuhan:jumlah_kebutuhan,
-                        rencana_jabatan:rencana_jabatan,
-                        uraianTugas:uraianTugas,
-                        rencana_jurusan:rencana_jurusan,
-                        pengalaman_kerja:pengalaman_kerja,
-                        pend_minimal:pend_minimal,
-                        waktu_pengalaman:waktu_pengalaman,
-                        besaran_gaji:besaran_gaji_bersih,
-                        fasilitas:fasilitas,
-                        jangka_waktu_kontrak:jangka_waktu_kontrak,
-                        keterangan_tambahan:keterangan_tambahan
-                    },
-                    dataType: 'json',
-                    success: function(res){
-                        notif({
-                            msg: "<b>Info:</b> Data berhasil di simpan.",
-                            type: "info"
-                        });
-                        tableVerifikasi.ajax.reload();
-                        tableWaiting.ajax.reload();
-                        tableReject.ajax.reload();
-                        $("#ajax-modal-approve-pengajuan").modal('hide');
-                    },
-                    error: function(res){
-                        notif({
-                            msg: "<b>Error:</b> Oops data gagal di simpan.",
-                            type: "error"
-                        });
-                        tableVerifikasi.ajax.reload();
-                        tableWaiting.ajax.reload();
-                        tableReject.ajax.reload();
-                    }
+                kualifikasi.push({
+                    id_kualifikasi: id_kualifikasi,
+                    selectDepartment: selectDepartment,
+                    selectBagian: selectBagian,
+                    tanggal_kebutuhan: tanggal_kebutuhan_fix,
+                    jumlah_kebutuhan: jumlah_kebutuhan,
+                    rencana_jabatan: rencana_jabatan,
+                    pend_minimal: pend_minimal,
+                    rencana_jurusan: rencana_jurusan,
+                    pengalaman_kerja: pengalaman_kerja,
+                    waktu_pengalaman: waktu_pengalaman,
+                    besaran_gaji: besaran_gaji,
+                    fasilitas: fasilitas,
+                    jangka_waktu_kontrak: jangka_waktu_kontrak,
+                    keterangan_tambahan: keterangan_tambahan,
+                    uraianTugas: uraianTugas
                 });
             });
+
+            console.log(kualifikasi);
+
+            $.ajax({
+                type:"POST",
+                url: "{{route('permintaan_tenaga_kerja.update_permintaan_tk')}}",
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                data: {
+                    id:id,
+                    tanggal_perizinan:tanggal_perizinan,
+                    status_permintaan:status_permintaan,
+                    diajukanOlehID:enroll_id,
+                    kualifikasi:kualifikasi
+                },
+                dataType: 'json',
+                success: function(res){
+                    notif({
+                        msg: "<b>Info:</b> Data berhasil di simpan.",
+                        type: "info"
+                    });
+                    tableVerifikasi.ajax.reload();
+                    tableWaiting.ajax.reload();
+                    tableReject.ajax.reload();
+                    $("#ajax-modal-approve-pengajuan").modal('hide');
+                },
+                error: function(res){
+                    notif({
+                        msg: "<b>Error:</b> Oops data gagal di simpan.",
+                        type: "error"
+                    });
+                    tableVerifikasi.ajax.reload();
+                    tableWaiting.ajax.reload();
+                    tableReject.ajax.reload();
+                }
+            });
+
+            // lanjut kirim ajax untuk update ke backend
+        });
+
+            // $('body').on('click', '#btn-update-permintaan', function (event) {
+            //     var id = $('#id_modal_permintaan').val();
+            //     var tanggal_periz = $('#tanggal_pengajuan_approve').val();
+            //     var tanggal_perizinan=tanggal_periz.substr(6, 4)+'-'+tanggal_periz.substr(3,2)+'-'+tanggal_periz.substr(0,2);
+            //     var status_permintaan = $('input[name="status_permintaan"]:checked').val();
+            //     var enroll_id = $('#enroll_id_approve').val();
+            //     var selectDepartment = $('#selectDepartmentModalApprove').val();
+            //     var selectBagian = $('#selectBagianModalApprove').val();
+            //     var jumlah_kebutuhan = $('#jumlah_kebutuhan_approve').val();
+            //     var rencana_jabatan = $('input[name="rencana_jabatan"]:checked').val();
+            //     var pend_minimal = $('input[name="pend_minimal"]:checked').val();
+            //     var rencana_jurusan = $('#rencana_jurusan_approve').val();
+            //     var pengalaman_kerja = $('input[name="pengalaman_kerja"]:checked').val();
+            //     var waktu_pengalaman = $('#waktu_pengalaman_approve').val();
+            //     var besaran_gaji = $('#besaran_gaji_approve').val();
+            //     var fasilitas = $('#fasilitas_approve').val();
+            //     var jangka_waktu_kontrak = $('#jangka_waktu_kontrak_approve').val();
+            //     var keterangan_tambahan = $('#keterangan_tambahan_approve').val();
+
+            //     var tanggal_kebutuhan = $('#tanggal_kebutuhan_approve').val();
+            //     tanggal_kebutuhan=tanggal_kebutuhan.substr(6, 4)+'-'+tanggal_kebutuhan.substr(3,2)+'-'+tanggal_kebutuhan.substr(0,2);
+
+            //     var uraianTugas = [];
+            //     $('input[name="uraian_tugas_approve[]"]').each(function () {
+            //         uraianTugas.push($(this).val());
+            //     });
+            //     var besaran_gaji_bersih = besaran_gaji.replace(/[^\d]/g, '');
+
+            //     if(!enroll_id){
+            //         swal("", "Harap isi pengajuan terlebih dahulu!", "info");
+            //         return;
+            //     }
+            //     if(!selectDepartment){
+            //         swal("", "Harap isi department rencana kebutuhan terlebih dahulu!", "info");
+            //         return;
+            //     }
+            //     if(!selectBagian){
+            //         swal("", "Harap isi bagian rencana kebutuhan terlebih dahulu!", "info");
+            //         return;
+            //     }
+            //     if(!tanggal_kebutuhan){
+            //         swal("", "Harap isi tanggal rencana kebutuhan terlebih dahulu!", "info");
+            //         return;
+            //     }
+            //     if(!jumlah_kebutuhan){
+            //         swal("", "Harap isi jumlah rencana kebutuhan terlebih dahulu!", "info");
+            //         return;
+            //     }
+            //     if(pengalaman_kerja == 'ya' && !waktu_pengalaman){
+            //         swal("", "Harap isi waktu pengalaman kerja terlebih dahulu!", "info");
+            //         return;
+            //     }
+
+            //     $.ajax({
+            //         type:"POST",
+            //         url: "{{route('permintaan_tenaga_kerja.update_permintaan_tk')}}",
+            //         dataType: 'json',
+            //         headers: {
+            //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            //         data: {
+            //             id:id,
+            //             tanggal_perizinan:tanggal_perizinan,
+            //             status_permintaan:status_permintaan,
+            //             diajukanOlehID:enroll_id,
+            //             selectDepartment:selectDepartment,
+            //             selectBagian:selectBagian,
+            //             tanggal_kebutuhan:tanggal_kebutuhan,
+            //             jumlah_kebutuhan:jumlah_kebutuhan,
+            //             rencana_jabatan:rencana_jabatan,
+            //             uraianTugas:uraianTugas,
+            //             rencana_jurusan:rencana_jurusan,
+            //             pengalaman_kerja:pengalaman_kerja,
+            //             pend_minimal:pend_minimal,
+            //             waktu_pengalaman:waktu_pengalaman,
+            //             besaran_gaji:besaran_gaji_bersih,
+            //             fasilitas:fasilitas,
+            //             jangka_waktu_kontrak:jangka_waktu_kontrak,
+            //             keterangan_tambahan:keterangan_tambahan
+            //         },
+            //         dataType: 'json',
+            //         success: function(res){
+            //             notif({
+            //                 msg: "<b>Info:</b> Data berhasil di simpan.",
+            //                 type: "info"
+            //             });
+            //             tableVerifikasi.ajax.reload();
+            //             tableWaiting.ajax.reload();
+            //             tableReject.ajax.reload();
+            //             $("#ajax-modal-approve-pengajuan").modal('hide');
+            //         },
+            //         error: function(res){
+            //             notif({
+            //                 msg: "<b>Error:</b> Oops data gagal di simpan.",
+            //                 type: "error"
+            //             });
+            //             tableVerifikasi.ajax.reload();
+            //             tableWaiting.ajax.reload();
+            //             tableReject.ajax.reload();
+            //         }
+            //     });
+            // });
 
         });
     </script>
@@ -1842,7 +2750,7 @@ h1 {
     <script>
         function closeModalBuatPengajuan() {
             $("#ajax-modal-tambah").modal('hide');
-            $('#title-modal-edit1').text('Buat Form Permintaan Tenaga Kerja');
+            $('#title-modal-create').text('Buat Form Permintaan Tenaga Kerja');
             $('#tanggal_pengajuan').val('');
             $('#tanggal_mulai_ijin').val('');
             $('#tanggal_akhir_ijin').val('');
@@ -1858,7 +2766,7 @@ h1 {
         }
         function openModalBuatPengajuan() {
             $("#ajax-modal-tambah").modal('show');
-            $('#title-modal-edit1').text('Buat Form Permintaan Tenaga Kerja');
+            $('#title-modal-create').text('Buat Form Permintaan Tenaga Kerja');
             var today = new Date();
             var dd = String(today.getDate()).padStart(2, '0');
             var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!

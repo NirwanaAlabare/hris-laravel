@@ -16,28 +16,10 @@ class PengajuanPermintaanTk extends Model
     'tanggal_pengajuan',
     'status_permintaan',
     'diajukan_oleh_id',
-    'department_kode',
-    'bagian_kode',
-    'tanggal_kebutuhan',
-    'jumlah_kebutuhan',
-    'rencana_jabatan',
-    'rencana_jurusan',
-    'pengalaman_kerja',
-    'waktu_pengalaman',
-    'besaran_gaji',
-    'fasilitas',
-    'jangka_waktu_kontrak',
-    'keterangan_tambahan',
-    'uraian_tugas',
     'created_by',
     'verifikator_by',
     'status_pengajuan',
-    'pend_minimal',
     'status_pengajuan_realisasi',
 ];
-
-    protected $casts = [
-        'uraian_tugas' => 'array',
-    ];
 
 }
