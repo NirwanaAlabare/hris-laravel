@@ -351,7 +351,18 @@
                             </select>
                         </div>
                     </div>
-                    <div class="row py-2 px-0">
+                    <div class="row pt-2">
+                        <div class="col-4">
+                            <label class="form-label text-primary pt-1">Print</label>
+                        </div>
+                        <div class="col-6">
+                            <select class="form-control form-control-sm" id="print_by">
+                                <option value="department">Department</option>
+                                <option value="bagian">Bagian</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row py-2 mt-3 px-0">
                         <div class="col-4">
                         </div>
                         <div class="col-6">
@@ -1207,15 +1218,17 @@
         if($('#enroll_id').val()==''){
             alert('Pilih karyawan terlebih dahulu!');
         }else{
+            var print_by = $("#print_by").val();
             var enroll_id=$('#enroll_id').val();
-            var url = 'export_pdf_id_card?enroll_id='+enroll_id;
+            var url = 'export_pdf_id_card?print_by='+print_by+'&enroll_id='+enroll_id;
             window.open(url, '_blank');
         }
     });
     $('#btndownloadiddept').click(function(e){
             var department=$('#selectDepartment').val();
+            var print_by = $("#print_by").val();
             var sub_department=$('#pilih_department').val();
-            var url = 'export_pdf_id_card_department?department='+department+'&sub_department='+sub_department;
+            var url = 'export_pdf_id_card_department?print_by='+print_by+'&department='+department+'&sub_department='+sub_department;
             window.open(url, '_blank');
     });
     $('#btnselectemployee').click(function(e){
@@ -1259,12 +1272,8 @@
         }
     }
     $('#btndownloadselectedids').click(function(e){
-        // const array_employee=[];
-        // $("input:checkbox[name=employee]:checked").each(function(){
-        //     array_employee.push($(this).val());
-        // });
-        var url = 'export_pdf_id_card_employee?employee='+checkedEmployeeArr;
-        // var url = 'export_pdf_id_card_employee?employee='+array_employee;
+        var print_by = $("#print_by").val();
+        var url = 'export_pdf_id_card_employee?print_by='+print_by+'&employee='+checkedEmployeeArr;
         window.open(url, '_blank');
     });
     $('#selectDepartment').on('change',function(e){

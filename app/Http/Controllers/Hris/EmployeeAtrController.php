@@ -59,17 +59,19 @@ class EmployeeAtrController extends AdminBaseController
         return View::make('hris/employeeatr', $this->data,compact('department','jabatan'));
     }
     public function export_pdf_id_card(){
+        $print_by=request()->print_by;
         $employee=EmployeeAtribut::where('enroll_id',request()->enroll_id)->where(function ($query){
             $query->where('status_aktif','AKTIF')
             ->orWhere(function($queryes){
                 $queryes->where('status_aktif','TIDAK AKTIF');
             });
         })->get();
-        $pdf = PDF::loadView('hris.Laporan.id_card',["employee" => $employee])->stream('Id card karyawan'.'.pdf',array('Attachment'=>0));
+        $pdf = PDF::loadView('hris.Laporan.id_card',["employee" => $employee,"print_by"=>$print_by])->stream('Id card karyawan'.'.pdf',array('Attachment'=>0));
         return $pdf;
     }
     public function export_pdf_id_card_department(){
         $inDepartment='';
+        $print_by=request()->print_by;
         if(request()->department){
             $inDepartment=' AND department_name = "'.request()->department.'"';
         }
@@ -83,13 +85,14 @@ class EmployeeAtrController extends AdminBaseController
                 $queryes->where('status_aktif','TIDAK AKTIF');
             });
         })->get();
-        $pdf = PDF::loadView('hris.Laporan.id_card_department',["employee" => $employee])->setPaper('letter', 'landscape')->stream('Id card karyawan department'.'.pdf',array('Attachment'=>0));
+        $pdf = PDF::loadView('hris.Laporan.id_card_department',["employee" => $employee,"print_by"=>$print_by])->setPaper('letter', 'landscape')->stream('Id card karyawan department'.'.pdf',array('Attachment'=>0));
         return $pdf;
     }
     public function export_pdf_id_card_employee(){
         $employees=explode(",",request()->employee);
+        $print_by=request()->print_by;
         $employee=EmployeeAtribut::whereIn('enroll_id',$employees)->get();
-        $pdf = PDF::loadView('hris.Laporan.id_card_department',["employee" => $employee])->setPaper('letter', 'landscape')->stream('Id card karyawan department'.'.pdf',array('Attachment'=>0));
+        $pdf = PDF::loadView('hris.Laporan.id_card_department',["employee" => $employee, "print_by"=>$print_by])->setPaper('letter', 'landscape')->stream('Id card karyawan department'.'.pdf',array('Attachment'=>0));
         return $pdf;
     }
     public function select_employee(){
