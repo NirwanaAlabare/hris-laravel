@@ -1724,12 +1724,12 @@ h1 {
                 data: {
                     id: id
                 },
-                success: function(res) {
-                   var data = res.permintaan;
-                   console.log(data);
+            success: function(res) {
+                    var data = res.permintaan;
+                    var tanggal_perizinan=data.tanggal_pengajuan.substr(8,2)+'-'+data.tanggal_pengajuan.substr(5,2)+'-'+data.tanggal_pengajuan.substr(0,4);
                     $('#id_modal_permintaan').val(data.id);
-                    $('#enroll_id_approve').val(data.duajukan_oleh_id);
-                    $('#tanggal_pengajuan_approve').val(data.tanggal_pengajuan);
+                    $('#enroll_id_approve').val(data.diajukan_oleh_id);
+                    $('#tanggal_pengajuan_approve').val(tanggal_perizinan);
                     $('input[name="status_permintaan"][value="' + data.status_permintaan + '"]').prop('checked', true);
                     $('#diajukanOlehIDModalApprove').val(data.diajukan_oleh_id).trigger('change');
                     $('#department_approve').val(data.department_name);
@@ -1737,34 +1737,28 @@ h1 {
                     $('#bagian_approve').val(data.sub_dept_name);
                     $('#sub_dept_id_approve').val(data.sub_dept_id);
                     $('#selectDepartmentModalApprove').val(data.kode_dept_id).trigger('change');
+                    $('#container-kualifikasi-update').empty();
+                    console.log(res.kualifikasi);
 
-                // panggil AJAX baru untuk isi bagian dengan nilai dari database:
-                    loadSubBagian(data.kode_dept_id, data.kode_bagian_id, data.nama_bagian);
-                    $('#tanggal_kebutuhan_approve').val(data.tanggal_kebutuhan);
-                    $('#jumlah_kebutuhan_approve').val(data.jumlah_kebutuhan);
-
-                    $('input[name="rencana_jabatan"][value="' + data.rencana_jabatan + '"]').prop('checked', true);
-                    $('input[name="pend_minimal"][value="' + data.pend_minimal + '"]').prop('checked', true);
-
-                    $('#rencana_jurusan_approve').val(data.rencana_jurusan);
-                    $('input[name="pengalaman_kerja"][value="' + data.pengalaman_kerja + '"]').prop('checked', true);
-                    $('#waktu_pengalaman_approve').val(data.waktu_pengalaman);
-                    $('#besaran_gaji_approve').val(data.besaran_gaji);
-                    $('#fasilitas_approve').val(data.fasilitas);
-                    $('#jangka_waktu_kontrak_approve').val(data.jangka_waktu_kontrak);
-                    $('#keterangan_tambahan_approve').val(data.keterangan_tambahan);
-
-                    let uraianTugasArray = [];
-
-                    try {
-                        uraianTugasArray = JSON.parse(data.uraian_tugas);
-                    } catch (e) {
-                        console.warn('Gagal parsing uraian_tugas:', e);
-                    }
-
-                    console.log('uraianTugasArray:', uraianTugasArray);
-                    $('input[name="uraian_tugas_approve[]"]').each(function (i) {
-                        $(this).val(uraianTugasArray[i] || '');
+                    res.kualifikasi.forEach((item, index) => {
+                        addKualifikasiRowUpdate({
+                            id_kualifikasi: item.id,
+                            department_kode: item.department_kode,
+                            bagian_kode: item.bagian_kode,
+                            bagian_name: item.bagian_name,
+                            tanggal_kebutuhan: item.tanggal_kebutuhan.substr(8,2)+'-'+item.tanggal_kebutuhan.substr(5,2)+'-'+item.tanggal_kebutuhan.substr(0,4),
+                            jumlah_kebutuhan: item.jumlah_kebutuhan,
+                            rencana_jabatan: item.rencana_jabatan,
+                            pend_minimal: item.pend_minimal,
+                            rencana_jurusan: item.rencana_jurusan,
+                            pengalaman_kerja: item.pengalaman_kerja,
+                            waktu_pengalaman: item.waktu_pengalaman,
+                            uraian_tugas: item.uraian_tugas ? JSON.parse(item.uraian_tugas) : [],
+                            besaran_gaji: item.besaran_gaji,
+                            fasilitas: item.fasilitas,
+                            jangka_waktu_kontrak: item.jangka_waktu_kontrak,
+                            keterangan_tambahan: item.keterangan_tambahan
+                        }, index);
                     });
                 }
             });
