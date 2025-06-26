@@ -5622,12 +5622,28 @@ class ProsesPayrollController extends AdminBaseController
                 }else{
                     $konveri_jam=1;
                 }
-                $total_jam_lembur=$value->selisih_jam+$konveri_jam;
-                $total_jam_lembur_finis=$total_jam_lembur-$value->jumlah_jam_istirahat_lembur;
-                $total_jam_lembur_finis=min($value->jumlah_jam_lembur,$total_jam_lembur_finis);
-                if(($value->capai_target != null || $value->capai_target != '') && $value->jumlah_jam_lembur <= '1.0'){
-                    $total_jam_lembur_finis=$value->capai_target;
+            //     $total_jam_lembur=$value->selisih_jam+$konveri_jam;
+            //     $total_jam_lembur_finis=$total_jam_lembur-$value->jumlah_jam_istirahat_lembur;
+            //     $total_jam_lembur_finis=min($value->jumlah_jam_lembur,$total_jam_lembur_finis);
+            //   if (empty($value->absen_masuk_kerja) || empty($value->absen_pulang_kerja)) {
+            //         $total_jam_lembur_finis = 0;
+            //     } else if(($value->capai_target != null || $value->capai_target != '') && $value->jumlah_jam_lembur <= '1.0'){
+            //         $total_jam_lembur_finis=$value->capai_target;
+            //     }
+
+                if (empty($value->absen_masuk_kerja) || empty($value->absen_pulang_kerja)) {
+                    $total_jam_lembur_finis = 0;
+                } else {
+                    $total_jam_lembur = $value->selisih_jam + $konveri_jam;
+                    $total_jam_lembur_finis = $total_jam_lembur - $value->jumlah_jam_istirahat_lembur;
+                    $total_jam_lembur_finis = min($value->jumlah_jam_lembur, $total_jam_lembur_finis);
+
+                    if (!empty($value->capai_target)) {
+                        $total_jam_lembur_finis = $value->capai_target;
+                    }
                 }
+
+
                 if($value->kode_hari==5 || $value->kode_hari==6 || $value->status_absen=='LN' || $value->mulai_jam_kerja==null || $value->akhir_jam_kerja==null){
                     $kerjalibur='LIBUR';
                     $l1=0;
@@ -5666,6 +5682,7 @@ class ProsesPayrollController extends AdminBaseController
                     $l3_rupiah=$l3*($value->salary_bulanan/173*1);
                     $l4_rupiah=$l4*($value->salary_bulanan/173*1);
                 }
+                // dd($total_jam_lembur_finis);
                 RekapPerhitunganLembur::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan',$value->tanggal_berjalan)->delete();
                 DB::table('rekap_perhitungan_lembur')->insert([
                     'uuid'=>Str::uuid('uuid'),
