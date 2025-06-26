@@ -1248,7 +1248,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                 $inStatusKontrak
             AND z.status_aktif = 'AKTIF'
             GROUP BY z.enroll_id
-            ORDER BY z.enroll_id
+            ORDER BY z.sub_dept_name ASC
         "));
 
         // Gabungkan data_penilaian ke masing-masing data_karyawan berdasarkan enroll_id
