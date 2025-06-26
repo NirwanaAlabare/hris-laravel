@@ -3701,11 +3701,16 @@ class ProsesPayrollController extends AdminBaseController
                     'upah_per_menit'=>$value->gaji_menit,
                     'potongan_kehadiran_rupiah'=>$value->potongan_kehadiran_rupiah,
                     'kehadiran_m_estimasi'=>$value->kehadiran_m_estimasi,
-                    'lembur_1'=>(int)$value->lembur_1,
-                    'lembur_2'=>(int)$value->lembur_2,
-                    'lembur_3'=>(int)$value->lembur_3,
-                    'lembur_4'=>(int)$value->lembur_4,
-                    'total_lembur_1234'=>(int)$value->total_lembur_1234,
+                    // 'lembur_1'=>(int)$value->lembur_1,
+                    'lembur_1'=>$value->lembur_1,
+                    // 'lembur_2'=>(int)$value->lembur_2,
+                    'lembur_2'=>$value->lembur_2,
+                    // 'lembur_3'=>(int)$value->lembur_3,
+                    'lembur_3'=>$value->lembur_3,
+                    // 'lembur_4'=>(int)$value->lembur_4,
+                    'lembur_4'=>$value->lembur_4,
+                    // 'total_lembur_1234'=>(int)$value->total_lembur_1234,
+                    'total_lembur_1234'=>$value->total_lembur_1234,
                     'lembur1_rupiah'=>(int)$value->lembur1_rupiah,
                     'lembur2_rupiah'=>(int)$value->lembur2_rupiah,
                     'lembur3_rupiah'=>(int)$value->lembur3_rupiah,
@@ -3752,7 +3757,6 @@ class ProsesPayrollController extends AdminBaseController
 
                 ];
             }
-
 
 
             $records_payroll=[];
