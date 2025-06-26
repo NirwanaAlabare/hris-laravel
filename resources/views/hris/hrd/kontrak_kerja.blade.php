@@ -2002,26 +2002,45 @@ function updateRange(start, end) {
             currentPageCheck = 0;
         }
     });
+    // function actionThisEmployeeCheck(element) {
+    //     if (element.checked) {
+    //         console.log('element.value',element.value);
+    //         if(!checkedEmployeeArr.find((value) => value == element.value)) {
+    //             checkedEmployeeArr.push(element.value);
+    //         }
+    //     } else {
+    //         if(checkedEmployeeArr.find((value) => value == element.value)) {
+    //             const index = checkedEmployeeArr.indexOf(element.value);
+    //             if (index > -1) { // only splice array when item is found
+    //                 checkedEmployeeArr.splice(index, 1); // 2nd parameter means remove one item only
+    //             }
+    //         }
+    //     }
+    //     if(checkedEmployeeArr.length>0){
+    //         document.getElementById("print_kontrak_kerja").style.visibility = "visible";
+    //     }else{
+    //         document.getElementById("print_kontrak_kerja").style.visibility = "hidden";
+    //     }
+    // }
+
     function actionThisEmployeeCheck(element) {
-        if (element.checked) {
-            console.log('element.value',element.value);
-            if(!checkedEmployeeArr.find((value) => value == element.value)) {
-                checkedEmployeeArr.push(element.value);
-            }
-        } else {
-            if(checkedEmployeeArr.find((value) => value == element.value)) {
-                const index = checkedEmployeeArr.indexOf(element.value);
-                if (index > -1) { // only splice array when item is found
-                    checkedEmployeeArr.splice(index, 1); // 2nd parameter means remove one item only
-                }
-            }
+    if (element.checked) {
+        if (!checkedEmployeeArr.includes(element.value)) {
+            checkedEmployeeArr.push(element.value);
         }
-        if(checkedEmployeeArr.length>0){
-            document.getElementById("print_kontrak_kerja").style.visibility = "visible";
-        }else{
-            document.getElementById("print_kontrak_kerja").style.visibility = "hidden";
-        }
+    } else {
+        checkedEmployeeArr = checkedEmployeeArr.filter(function(id) {
+            return id != element.value;
+        });
+        $("#checkAllEmployee").prop('checked', false);
     }
+
+    if (checkedEmployeeArr.length > 0) {
+        document.getElementById("print_kontrak_kerja").style.visibility = "visible";
+    } else {
+        document.getElementById("print_kontrak_kerja").style.visibility = "hidden";
+    }
+}
 
 
     $('#print_kontrak_kerja').on('click', function () {
@@ -2066,6 +2085,7 @@ function updateRange(start, end) {
     $('#print_form_penilaian').on('click', function () {
 
         var enroll_id = checkedEmployeeArr;
+        console.log('enroll_id', enroll_id);
         // Buat form secara dinamis
         var form = $('<form>', {
             action: 'print_selected_form_penilaian', // endpoint tanpa query string
@@ -2105,6 +2125,48 @@ function updateRange(start, end) {
         form.appendTo('body').submit().remove();
     });
 
+    // function actionCheckAllEmployee(element) {
+    //     var enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+    //     var no_ktp = $('#searchNoKTP').val();
+    //     var status_kontrak = $('#status_kontrak').val();
+    //     var status_aktif = $('#status_aktif').val();
+    //     var status_staff = $('#status_staff').val();
+    //     var search_variable = $('#search_variable').val();
+    //     console.log('element', element.checked);
+    //     if (element.checked) {
+    //         $.ajax({
+    //             type:"POST",
+    //             url: "{{route('hris.hrd.ajax_getemployeeidbyfilter')}}",
+    //             dataType: 'json',
+    //             data: {
+    //                 enroll_id: enroll_id,
+    //                 no_ktp: no_ktp,
+    //                 status_kontrak: status_kontrak,
+    //                 status_aktif: status_aktif,
+    //                 status_staff: status_staff,
+    //                 search_variable: search_variable,
+    //                 date_range: $('#daterange1').val(),
+    //                 department_name: $('#selectDepartment').val(),
+    //             },
+    //             dataType: 'json',
+    //             headers: {
+    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+    //             success: function(res){
+    //                 if(res){
+    //                     checkedEmployeeArr = res;
+
+    //                     $('#datatable').DataTable().ajax.reload(null, false);
+    //                     document.getElementById("print_kontrak_kerja").style.visibility = "visible";
+    //                 }
+    //             }
+    //         });
+    //     } else {
+    //         checkedEmployeeArr = [];
+    //         document.getElementById("print_kontrak_kerja").style.visibility = "hidden";
+    //         $('#datatable').DataTable().ajax.reload(null, false);
+    //     }
+    // }
+
     function actionCheckAllEmployee(element) {
         var enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
         var no_ktp = $('#searchNoKTP').val();
@@ -2112,11 +2174,11 @@ function updateRange(start, end) {
         var status_aktif = $('#status_aktif').val();
         var status_staff = $('#status_staff').val();
         var search_variable = $('#search_variable').val();
+
         if (element.checked) {
             $.ajax({
                 type:"POST",
-                url: "{{route('hris.hrd.ajax_getemployeeidbyfilter')}}",
-                dataType: 'json',
+                url: "{{ route('hris.hrd.ajax_getemployeeidbyfilter') }}",
                 data: {
                     enroll_id: enroll_id,
                     no_ktp: no_ktp,
@@ -2127,24 +2189,24 @@ function updateRange(start, end) {
                     date_range: $('#daterange1').val(),
                     department_name: $('#selectDepartment').val(),
                 },
-                dataType: 'json',
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 success: function(res){
                     if(res){
                         checkedEmployeeArr = res;
-
                         $('#datatable').DataTable().ajax.reload(null, false);
-                        document.getElementById("print_kontrak_kerja").style.visibility = "visible";
                     }
                 }
             });
         } else {
             checkedEmployeeArr = [];
-            document.getElementById("print_kontrak_kerja").style.visibility = "hidden";
             $('#datatable').DataTable().ajax.reload(null, false);
         }
+
+        document.getElementById("print_kontrak_kerja").style.visibility = element.checked ? "visible" : "hidden";
     }
+
 
     $('#selectEmployeeID').on('change',function(){
         datatable.ajax.reload();
