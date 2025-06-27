@@ -194,20 +194,22 @@ h1 {
             <div class="card card-primary card-outline tab-content">
                     <div class="card-header bg-primary p-3">
                         <div class="card-title">Pengajuan Perizinan & Cuti Karyawan</div>
+                        <input type="hidden" id="daterange1" name="daterange1">
                     </div>
                         <div class="mt-4 ml-4 mr-5 mb-0">
                             <div class="row">
-                                <div class="col-md-12">
-                                    <div clasl="" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-                                            {{-- <div class="mt-5 p-0">
-                                                <button class="btn btn-primary pb-0 py-1" data-target="#print_sk_checked"  id="print_sk_button" style="visibility: hidden"><span class="fa fa-check"></span> Approve</button>
-                                            </div> --}}
+                                <div class="col-md-6">
+                                    <div clasl="" style="display: flex; justify-content: start; align-items: center; gap: 10px;">
                                         <div class="mt-5 p-0">
                                             <button class="btn btn-primary w-100" onclick="openModalBuatPengajuan()"  data-toggle="tooltip" title="Cari Data" id="recap_labor_cost_2"><i class="fa fa-plus" aria-hidden="true"></i> Buat Pengajuan</button>
                                         </div>
+                                         <div class="mt-5 p-0 w-50">
+                                          <input type="" class="form-control" id="daterange-btn1" data-toggle="tooltip"
+                                            title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran">
+                                            </input>
+                                        </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                         <div class="m-0 p-0">
@@ -774,6 +776,40 @@ h1 {
 
 
     <script>
+
+         $(document).ready(function() {
+            var start = moment().subtract(29, 'days');
+            var end = moment();
+            var htmlDateRange = '<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>'
+            var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
+            var dateUpdateKehadiran = end.format("DD-MM-YYYY");
+
+            $('#daterange-btn1').html(htmlDateRange);
+            $('#daterange1').val(daterange1);
+
+
+            $("#data-absensi-karyawan").hide();
+            $("#selectBagian").append(new Option("-- PILIH BAGIAN --", ""));
+        });
+
+         $('#daterange-btn1').daterangepicker({
+            ranges: {
+                'Hari ini': [moment(), moment()],
+                'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                '7 Hari Kemarin': [moment().subtract(6, 'days'), moment()],
+                '30 Hari Kemarin': [moment().subtract(29, 'days'), moment()],
+                'Bulan Sekarang': [moment().startOf('month'), moment().endOf('month')],
+                'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            startDate: moment().subtract(29, 'days'),
+            endDate: moment()
+        }, function(start, end) {
+            $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>');
+            var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
+            $('#daterange1').val(daterange1);
+        })
+
+
         $('body').on('click', '#btn-icon-refresh-izin', function(event){
             var tanggal_periz = $('#tanggal_perijinan').val();
             var tanggal_perizinan=tanggal_periz.substr(6, 4)+'-'+tanggal_periz.substr(3,2)+'-'+tanggal_periz.substr(0,2);
@@ -1552,15 +1588,14 @@ h1 {
                                         $("#btn-cancel-iks").prop("disabled", true);
                                         $('#progress-show-1').show();
                                         $('#progress-hide-1').hide();
-
                                         $.ajax({
                                             type:"POST",
-                                            url: "{{route('cuti_karyawan.dataabsenperijinan.destroy')}}",
+                                            url: "{{route('hris.dataabsenperijinan.destroy')}}",
                                             dataType: 'json',
                                             headers: {
                                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                                             data: {
-                                                tanggal_perizinan:tanggal_periz,
+                                                tanggal_perizinan:tanggal_perizinan,
                                                 nomor_form_perizinan:nomor_form_perizinan,
                                                 enroll_id:enroll_id,
                                             },
@@ -1830,11 +1865,11 @@ h1 {
 
 
             var tanggal = tanggal_perizinan;
-            $('#btn-save-izin').addClass("btn-loading");
-            $("#btn-save-izin").html('Please wait...');
-            $("#btn-save-izin").attr("disabled", true);
-            $('#progress-show-1').show();
-            $('#progress-hide-1').hide();
+            // $('#btn-save-izin').addClass("btn-loading");
+            // $("#btn-save-izin").html('Please wait...');
+            // $("#btn-save-izin").attr("disabled", true);
+            // $('#progress-show-1').show();
+            // $('#progress-hide-1').hide();
 
             // LAGI COBA TEST CLOSING PAYROLL
             $.ajax({
@@ -2059,9 +2094,9 @@ h1 {
                         });
                     }
 
-                    setTimeout(function myFunction() {
-                            location.reload();
-                    }, 3000);
+                    // setTimeout(function myFunction() {
+                    //         location.reload();
+                    // }, 3000);
 
                 },
                 error: function(resA){
