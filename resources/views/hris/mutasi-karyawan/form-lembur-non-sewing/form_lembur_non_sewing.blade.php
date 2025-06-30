@@ -102,7 +102,7 @@ table.dataTable td {
                             </div>
                             <div class="row">
                                 <div class="col-md-12 table-responsive">
-                                    <table id="datatable-modal" class="table table-striped table-bordered table-sm w-100">
+                                    <table id="datatable-modal" class="table table-striped table-bordered w-100">
                                         <thead>
                                             <tr class="text-center">
                                                 <th rowspan="2" class="align-middle" >No</th>
@@ -115,7 +115,7 @@ table.dataTable td {
                                                 <th colspan="5" class="align-middle">Rencana Lembur</th>
                                                 <th rowspan="2" class="align-middle" style="padding-left: 2px;padding-right: 2px;color:rgb(255, 111, 0)"><i class="fa fa-utensils" aria-hidden="true"></i></th>
                                                 <th rowspan="2" class="align-middle" style="padding-left: 2px;padding-right: 2px;color:rgb(255, 196, 0)"><i class="fa fa-star" aria-hidden="true"></i></th>
-                                                <th rowspan="2" class="align-middle">Amount</th>
+                                                <th rowspan="2" class="align-middle" >Amount</th>
                                                 <th rowspan="2" class="align-middle">Act</th>
                                             </tr>
                                             <tr class="text-center">
@@ -700,7 +700,6 @@ table.dataTable td {
                 paging: false,
                 destroy: true,
                 scrollCollapse: true,
-                scrollY: '250px',
                 ajax: {
                     url: '{{ route('flns.getdatakaryawanspl_non_sewing') }}',
                     method: 'GET',
@@ -803,7 +802,7 @@ table.dataTable td {
                         render: (data, type, row, meta) => {
                             return `
                             <div class='d-flex gap-1 justify-content-center'>
-                            <input type="number" size='1' class="form-control form-control-sm" id="jam_lembur_istirahat_` +
+                            <input style="width: 50px; height:30px" type="number" size='1' class="form-control form-control-sm" id="jam_lembur_istirahat_` +
                                 row.enroll_id + `"
                             name="istirahat[` + row.enroll_id + `]"
                             value="` +
@@ -828,7 +827,7 @@ table.dataTable td {
                         width:170,
                         targets: [12],
                         render: (data, type, row, meta) => {
-                            return '<textarea id="keterangan-' + row.enroll_id + '" name="keterangan[' + row.enroll_id + ']" class="form-control form-control-sm" rows="2" cols="12">'+row.keterangan+'</textarea>';
+                            return '<textarea style="width: 100px; height:35px" id="keterangan-' + row.enroll_id + '" name="keterangan[' + row.enroll_id + ']" class="form-control form-control-sm">'+row.keterangan+'</textarea>';
                         }
                     },
                     {
@@ -895,7 +894,7 @@ table.dataTable td {
                                 return `
                                     <div class='d-flex gap-1 justify-content-center'>
                                         <div class="form-check pl-0">
-                                            <input class="form-control form-control-sm amount_input" type="number" style='font-size:9pt' name="amounts[` + row.enroll_id + `]" id="amount_` + row.enroll_id + `" value="` + row.uuid_koreksi_upah + `" onchange="input_amount(this,'` + row.enroll_id + `')" >\
+                                            <input style="width: 100px; height:35px" size="4" class="form-control form-control-sm amount_input" type="number" style='font-size:9pt' name="amounts[` + row.enroll_id + `]" id="amount_` + row.enroll_id + `" value="` + row.uuid_koreksi_upah + `" onchange="input_amount(this,'` + row.enroll_id + `')" >\
                                         </div>
                                     </div>
                                 `
@@ -903,7 +902,7 @@ table.dataTable td {
                                 return `
                                     <div class='d-flex gap-1 justify-content-center'>
                                         <div class="form-check pl-0">
-                                            <input class="form-control form-control-sm amount_input" type="number" style='font-size:9pt' name="amounts[` + row.enroll_id + `]" id="amount_` + row.enroll_id + `" value="` + row.uuid_koreksi_upah + `" onkeyup="input_amount(this,'` + row.enroll_id + `')" onchange="input_amount(this,'` + row.enroll_id + `')" disabled>
+                                            <input style="width: 100px; height:35px" size="4"  class="form-control form-control-sm amount_input" type="number" style='font-size:9pt' name="amounts[` + row.enroll_id + `]" id="amount_` + row.enroll_id + `" value="` + row.uuid_koreksi_upah + `" onkeyup="input_amount(this,'` + row.enroll_id + `')" onchange="input_amount(this,'` + row.enroll_id + `')" disabled>
                                         </div>
                                     </div>
                                 `

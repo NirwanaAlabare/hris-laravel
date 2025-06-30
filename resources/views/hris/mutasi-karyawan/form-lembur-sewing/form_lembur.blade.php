@@ -688,7 +688,6 @@
                 paging: false,
                 destroy: true,
                 scrollCollapse: true,
-                scrollY: '320px',
                 ajax: {
                     url: '{{ route('fls.getdatakaryawanspl') }}',
                     method: 'GET',
@@ -779,12 +778,12 @@
                         targets: [10],
                         render: (data, type, row, meta) => {
                             return `
-                            <div class='d-flex gap-1 justify-content-center'>
-                            <input type="number" size='1' class="form-control form-control-sm" id="jam_lembur_istirahat_`+row.enroll_id+`"
-                            name="jam_lembur_istirahat[` + row.enroll_id + `]" value="` +
-                                row.jam_lembur_istirahat + `"
-                                autocomplete="off" onchange="calculateTotalLembur('`+row.enroll_id+`')">
-                                </div>`
+                            <div  class='d-flex gap-1 justify-content-center'>
+                                <input type="number" style="width: 70px; height:35px" size='1' class="form-control form-control-sm" id="jam_lembur_istirahat_`+row.enroll_id+`"
+                                    name="jam_lembur_istirahat[` + row.enroll_id + `]" value="` +
+                                    row.jam_lembur_istirahat + `"
+                                    autocomplete="off" onchange="calculateTotalLembur('`+row.enroll_id+`')">
+                            </div>`
                         }
                     },
                     {
@@ -861,7 +860,7 @@
                                 return `
                                     <div class='d-flex gap-1 justify-content-center'>
                                         <div class="form-check pl-0">
-                                            <input class="form-control form-control-sm" type="number" style='font-size:9pt' name="amounts[` + row.enroll_id + `]" id="amount_` + row.enroll_id + `" value="` + row.uuid_koreksi_upah + `" >
+                                            <input style="width: 100px; height:35px" class="form-control form-control-sm" type="number" style='font-size:9pt' name="amounts[` + row.enroll_id + `]" id="amount_` + row.enroll_id + `" value="` + row.uuid_koreksi_upah + `" >
                                         </div>
                                     </div>
                                 `
@@ -869,7 +868,7 @@
                                 return `
                                     <div class='d-flex gap-1 justify-content-center'>
                                         <div class="form-check pl-0">
-                                            <input class="form-control form-control-sm" type="number" style='font-size:9pt' name="amounts[` + row.enroll_id + `]" id="amount_` + row.enroll_id + `" value="` + row.uuid_koreksi_upah + `" disabled>
+                                            <input style="width: 100px; height:35px" class="form-control form-control-sm" type="number" style='font-size:9pt' name="amounts[` + row.enroll_id + `]" id="amount_` + row.enroll_id + `" value="` + row.uuid_koreksi_upah + `" disabled>
                                         </div>
                                     </div>
                                 `
