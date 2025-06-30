@@ -81,67 +81,67 @@ class RecapLaborNonStaff implements WithTitle, FromView, WithColumnWidths
                 END
             END
         ELSE 0 END) absen_menit,
-        c.mulai_jam_kerja,c.status_absen,c.absen_masuk_kerja,c.absen_pulang_kerja,c.kode_hari,sum(a.bruto) bruto,sum(a.bpjs_tk_company) bpjs_tk,sum(a.bpjs_ks_company) bpjs_ks,sum(a.thr) thr from daily_labor_costs a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join master_data_absen_kehadiran c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan left join ref_absen_ijin absen_ijin on c.status_absen=absen_ijin.kode_absen_ijin where a.tanggal_berjalan>='".$this->tanggal_awal."' and a.tanggal_berjalan<='".$this->tanggal_akhir."' and b.status_staff='NON STAFF' group by a.tanggal_berjalan,sub_dept_id");
+        c.mulai_jam_kerja,c.status_absen,c.absen_masuk_kerja,c.absen_pulang_kerja,c.kode_hari,sum(a.bruto) bruto, sum(rpl.total_lembur_rupiah) total_lembur_rupiah,sum(a.bpjs_tk_company) bpjs_tk,sum(a.bpjs_ks_company) bpjs_ks,sum(a.thr) thr from daily_labor_costs a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join master_data_absen_kehadiran c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan left join rekap_perhitungan_lembur rpl on a.enroll_id=rpl.enroll_id and a.tanggal_berjalan=rpl.tanggal_berjalan left join ref_absen_ijin absen_ijin on c.status_absen=absen_ijin.kode_absen_ijin where a.tanggal_berjalan>='".$this->tanggal_awal."' and a.tanggal_berjalan<='".$this->tanggal_akhir."' and b.status_staff='NON STAFF' group by a.tanggal_berjalan,sub_dept_id");
         $query_2=DB::select("select tanggal_berjalan from daily_labor_costs where tanggal_berjalan>='".$this->tanggal_awal."' and tanggal_berjalan<='".$this->tanggal_akhir."' group by tanggal_berjalan order by tanggal_berjalan");
         $query_3=DB::select("select a.department_id,a.department_name,a.sub_dept_id,a.sub_dept_name, b_master_cc.group2 group_department from (SELECT * from department_all WHERE status = 'AKTIF' and site_nirwana_id IN
         ('NAG','NAK')) a LEFT JOIN b_master_cc ON a.sub_dept_id = b_master_cc.no_cc group by a.sub_dept_id order by a.department_id, a.sub_dept_name");
         $query_4=DB::select("select a.tanggal_berjalan,b.status_staff,b.department_id,b.department_name,b.sub_dept_id,b.sub_dept_name,a.group_department,COUNT(IF(CASE WHEN(absen_ijin.kode_ijin_payroll is null) THEN
-        CASE WHEN(c.mulai_jam_kerja is not null and c.akhir_jam_kerja is not null) THEN
-            CASE WHEN(c.absen_masuk_kerja is not null and c.absen_pulang_kerja is not null)THEN
-                CASE WHEN(c.jumlah_menit_absen_dt!=0 and c.jumlah_menit_absen_pc=0) THEN 'DT'
-                WHEN(c.jumlah_menit_absen_dt=0 and c.jumlah_menit_absen_pc!=0) THEN 'PC'
-                WHEN(c.jumlah_menit_absen_dt!=0 and c.jumlah_menit_absen_pc!=0) THEN 'DTPC'
-                ELSE 'OK'
-                END
-            WHEN(c.absen_masuk_kerja is not null and c.absen_pulang_kerja is not null and c.status_absen='R') THEN 'R'
-            WHEN(c.absen_masuk_kerja is not null and c.absen_pulang_kerja is null and c.status_absen!='R') THEN 'M'
-            WHEN(c.absen_masuk_kerja is null and c.absen_pulang_kerja is not null and c.status_absen!='R') THEN 'M'
-            WHEN(c.absen_masuk_kerja is not null and c.absen_pulang_kerja is null and c.status_absen='R') THEN 'R'
-            WHEN(c.absen_masuk_kerja is null and c.absen_pulang_kerja is null and c.status_absen!='R') THEN 'M'
-            WHEN(c.absen_masuk_kerja is null and c.absen_pulang_kerja is null and c.status_absen='R') THEN 'R'
-            END
-        ELSE
-            CASE WHEN(c.status_absen='LN') THEN 'LBY'
-            WHEN (c.status_absen='R') THEN 'R'
-            ELSE 'LSM'
-            END
-        END
-        WHEN(absen_ijin.kode_ijin_payroll='ITB') THEN
-            CASE WHEN(c.status_absen='M')THEN 'M'
-            WHEN(c.status_absen='IKS') THEN
+            CASE WHEN(c.mulai_jam_kerja is not null and c.akhir_jam_kerja is not null) THEN
                 CASE WHEN(c.absen_masuk_kerja is not null and c.absen_pulang_kerja is not null)THEN
                     CASE WHEN(c.jumlah_menit_absen_dt!=0 and c.jumlah_menit_absen_pc=0) THEN 'DT'
                     WHEN(c.jumlah_menit_absen_dt=0 and c.jumlah_menit_absen_pc!=0) THEN 'PC'
                     WHEN(c.jumlah_menit_absen_dt!=0 and c.jumlah_menit_absen_pc!=0) THEN 'DTPC'
                     ELSE 'OK'
                     END
-                ELSE 'OK'
-                END
-            WHEN(c.status_absen='LP') THEN 'LP'
-            WHEN(c.status_absen='S') THEN 'S'
-            ELSE 'ITB'
-            END
-        WHEN(absen_ijin.kode_ijin_payroll='IBY') THEN
-            CASE WHEN(c.status_absen='DL') THEN 'DL'
-            ELSE 'IBY'
-            END
-        ELSE absen_ijin.kode_ijin_payroll END in ('OK','DT','PC','DTPC','IBY','IKS'),1,null)  OR (c.mulai_jam_kerja is null and c.absen_masuk_kerja is not null and c.absen_pulang_kerja is not null)) man_power,
-        SUM(CASE WHEN(c.absen_masuk_kerja is not null and c.absen_pulang_kerja is not null) THEN
-            CASE WHEN(c.kode_hari not in (5,6))THEN
-                CASE WHEN(TIME_TO_SEC(c.absen_masuk_kerja)<TIME_TO_SEC(c.absen_pulang_kerja))THEN
-                    ((TIME_TO_SEC(c.absen_pulang_kerja)-TIME_TO_SEC(c.absen_masuk_kerja))/60)-60
-                WHEN(TIME_TO_SEC(c.absen_pulang_kerja)<TIME_TO_SEC(c.absen_masuk_kerja))THEN
-                    ((TIME_TO_SEC(c.absen_masuk_kerja)-TIME_TO_SEC(c.absen_pulang_kerja))/60)-60
+                WHEN(c.absen_masuk_kerja is not null and c.absen_pulang_kerja is not null and c.status_absen='R') THEN 'R'
+                WHEN(c.absen_masuk_kerja is not null and c.absen_pulang_kerja is null and c.status_absen!='R') THEN 'M'
+                WHEN(c.absen_masuk_kerja is null and c.absen_pulang_kerja is not null and c.status_absen!='R') THEN 'M'
+                WHEN(c.absen_masuk_kerja is not null and c.absen_pulang_kerja is null and c.status_absen='R') THEN 'R'
+                WHEN(c.absen_masuk_kerja is null and c.absen_pulang_kerja is null and c.status_absen!='R') THEN 'M'
+                WHEN(c.absen_masuk_kerja is null and c.absen_pulang_kerja is null and c.status_absen='R') THEN 'R'
                 END
             ELSE
-                CASE WHEN(TIME_TO_SEC(c.absen_masuk_kerja)<TIME_TO_SEC(c.absen_pulang_kerja))THEN
-                    ((TIME_TO_SEC(c.absen_pulang_kerja)-TIME_TO_SEC(c.absen_masuk_kerja))/60)-60
-                WHEN(TIME_TO_SEC(c.absen_pulang_kerja)<TIME_TO_SEC(c.absen_masuk_kerja))THEN
-                    ((TIME_TO_SEC(c.absen_masuk_kerja)-TIME_TO_SEC(c.absen_pulang_kerja))/60)-60
+                CASE WHEN(c.status_absen='LN') THEN 'LBY'
+                WHEN (c.status_absen='R') THEN 'R'
+                ELSE 'LSM'
                 END
             END
-        ELSE 0 END) absen_menit,
-        c.mulai_jam_kerja,c.status_absen,c.absen_masuk_kerja,c.absen_pulang_kerja,c.kode_hari,sum(a.bruto) bruto,sum(a.bpjs_tk_company) bpjs_tk,sum(a.bpjs_ks_company) bpjs_ks,sum(a.thr) thr from daily_labor_costs a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join master_data_absen_kehadiran c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan left join ref_absen_ijin absen_ijin on c.status_absen=absen_ijin.kode_absen_ijin where a.tanggal_berjalan>='".$this->tanggal_awal."' and a.tanggal_berjalan<='".$this->tanggal_akhir."' and b.status_staff='NON STAFF' group by a.tanggal_berjalan");
+            WHEN(absen_ijin.kode_ijin_payroll='ITB') THEN
+                CASE WHEN(c.status_absen='M')THEN 'M'
+                WHEN(c.status_absen='IKS') THEN
+                    CASE WHEN(c.absen_masuk_kerja is not null and c.absen_pulang_kerja is not null)THEN
+                        CASE WHEN(c.jumlah_menit_absen_dt!=0 and c.jumlah_menit_absen_pc=0) THEN 'DT'
+                        WHEN(c.jumlah_menit_absen_dt=0 and c.jumlah_menit_absen_pc!=0) THEN 'PC'
+                        WHEN(c.jumlah_menit_absen_dt!=0 and c.jumlah_menit_absen_pc!=0) THEN 'DTPC'
+                        ELSE 'OK'
+                        END
+                    ELSE 'OK'
+                    END
+                WHEN(c.status_absen='LP') THEN 'LP'
+                WHEN(c.status_absen='S') THEN 'S'
+                ELSE 'ITB'
+                END
+            WHEN(absen_ijin.kode_ijin_payroll='IBY') THEN
+                CASE WHEN(c.status_absen='DL') THEN 'DL'
+                ELSE 'IBY'
+                END
+            ELSE absen_ijin.kode_ijin_payroll END in ('OK','DT','PC','DTPC','IBY','IKS'),1,null)  OR (c.mulai_jam_kerja is null and c.absen_masuk_kerja is not null and c.absen_pulang_kerja is not null)) man_power,
+            SUM(CASE WHEN(c.absen_masuk_kerja is not null and c.absen_pulang_kerja is not null) THEN
+                CASE WHEN(c.kode_hari not in (5,6))THEN
+                    CASE WHEN(TIME_TO_SEC(c.absen_masuk_kerja)<TIME_TO_SEC(c.absen_pulang_kerja))THEN
+                        ((TIME_TO_SEC(c.absen_pulang_kerja)-TIME_TO_SEC(c.absen_masuk_kerja))/60)-60
+                    WHEN(TIME_TO_SEC(c.absen_pulang_kerja)<TIME_TO_SEC(c.absen_masuk_kerja))THEN
+                        ((TIME_TO_SEC(c.absen_masuk_kerja)-TIME_TO_SEC(c.absen_pulang_kerja))/60)-60
+                    END
+                ELSE
+                    CASE WHEN(TIME_TO_SEC(c.absen_masuk_kerja)<TIME_TO_SEC(c.absen_pulang_kerja))THEN
+                        ((TIME_TO_SEC(c.absen_pulang_kerja)-TIME_TO_SEC(c.absen_masuk_kerja))/60)-60
+                    WHEN(TIME_TO_SEC(c.absen_pulang_kerja)<TIME_TO_SEC(c.absen_masuk_kerja))THEN
+                        ((TIME_TO_SEC(c.absen_masuk_kerja)-TIME_TO_SEC(c.absen_pulang_kerja))/60)-60
+                    END
+                END
+            ELSE 0 END) absen_menit,
+            c.mulai_jam_kerja,c.status_absen,c.absen_masuk_kerja,c.absen_pulang_kerja,c.kode_hari,sum(a.bruto) bruto,sum(rpl.total_lembur_rupiah) total_lembur_rupiah,sum(a.bpjs_tk_company) bpjs_tk,sum(a.bpjs_ks_company) bpjs_ks,sum(a.thr) thr from daily_labor_costs a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join master_data_absen_kehadiran c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan left join rekap_perhitungan_lembur rpl on a.enroll_id=rpl.enroll_id and a.tanggal_berjalan=rpl.tanggal_berjalan left join ref_absen_ijin absen_ijin on c.status_absen=absen_ijin.kode_absen_ijin where a.tanggal_berjalan>='".$this->tanggal_awal."' and a.tanggal_berjalan<='".$this->tanggal_akhir."' and b.status_staff='NON STAFF' group by a.tanggal_berjalan");
         $dateRange=array_column($query_2,'tanggal_berjalan');
         $z=[];
         foreach($query as $valquery){
@@ -154,13 +154,15 @@ class RecapLaborNonStaff implements WithTitle, FromView, WithColumnWidths
                 'group_department'=>$valquery->group_department,
                 'man_power'=>$valquery->man_power,
                 'working_min'=>$valquery->absen_menit,
-                'bruto'=>$valquery->bruto,
+                'bruto'=>$valquery->bruto + $valquery->total_lembur_rupiah,
                 'bpjs_tk'=>$valquery->bpjs_tk,
                 'bpjs_ks'=>$valquery->bpjs_ks,
                 'thr'=>$valquery->thr,
-                'total'=>$valquery->bruto+$valquery->bpjs_tk+$valquery->bpjs_ks+$valquery->thr
+                'total'=>$valquery->bruto+$valquery->bpjs_tk+$valquery->bpjs_ks+$valquery->thr+$valquery->total_lembur_rupiah
             ];
         }
+        // dd($query);
+
         //daterange harus nya diambil dari query lalu di group by tanggal_berjalan
         $aa=[];
         foreach($query_4 as $valquery){
@@ -173,11 +175,11 @@ class RecapLaborNonStaff implements WithTitle, FromView, WithColumnWidths
                 'group_department'=>$valquery->group_department,
                 'man_power'=>$valquery->man_power,
                 'working_min'=>$valquery->absen_menit,
-                'bruto'=>$valquery->bruto,
+                'bruto'=>$valquery->bruto + $valquery->total_lembur_rupiah,
                 'bpjs_tk'=>$valquery->bpjs_tk,
                 'bpjs_ks'=>$valquery->bpjs_ks,
                 'thr'=>$valquery->thr,
-                'total'=>$valquery->bruto+$valquery->bpjs_tk+$valquery->bpjs_ks+$valquery->thr
+                'total'=>$valquery->bruto+$valquery->bpjs_tk+$valquery->bpjs_ks+$valquery->thr+ $valquery->total_lembur_rupiah
             ];
         }
         $x=[];
