@@ -203,11 +203,11 @@ h1 {
                                         <div class="mt-5 p-0">
                                             <button class="btn btn-primary w-100" onclick="openModalBuatPengajuan()"  data-toggle="tooltip" title="Cari Data" id="recap_labor_cost_2"><i class="fa fa-plus" aria-hidden="true"></i> Buat Pengajuan</button>
                                         </div>
-                                         <div class="mt-5 p-0 w-50">
+                                         {{-- <div class="mt-5 p-0 w-50">
                                           <input type="" class="form-control" id="daterange-btn1" data-toggle="tooltip"
                                             title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran">
                                             </input>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
                             </div>
