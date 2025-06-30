@@ -1486,7 +1486,7 @@ h1 {
                 var kode_absen_ijin = $(this).data('kode-absen');
 
                 // Convert format dari dd-mm-yyyy ke yyyy-mm-dd jika perlu
-                var tanggal_perizinan = tanggal_periz.substr(6, 4) + '-' + tanggal_periz.substr(3, 2) + '-' + tanggal_periz.substr(0, 2);
+                var tanggal_perizinan = tanggal_periz;
                 var tanggal = tanggal_perizinan;
                 // console.log("tanggal_perizinan",tanggal_perizinan);
                 // console.log("tanggal",tanggal);
@@ -1590,7 +1590,7 @@ h1 {
                                         $('#progress-hide-1').hide();
                                         $.ajax({
                                             type:"POST",
-                                            url: "{{route('hris.dataabsenperijinan.destroy')}}",
+                                            url: "{{route('cuti_karyawan.dataabsenperijinan.destroy')}}",
                                             dataType: 'json',
                                             headers: {
                                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },

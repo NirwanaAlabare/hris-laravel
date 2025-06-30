@@ -2434,6 +2434,7 @@ class CutiKaryawanController extends AdminBaseController
             return true;
         }
     }
+
     public function destroy_dtpc(Request $request)
     {
         $loggedAdmin = Auth::guard('admin')->user();
