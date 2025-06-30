@@ -1865,11 +1865,11 @@ h1 {
 
 
             var tanggal = tanggal_perizinan;
-            // $('#btn-save-izin').addClass("btn-loading");
-            // $("#btn-save-izin").html('Please wait...');
-            // $("#btn-save-izin").attr("disabled", true);
-            // $('#progress-show-1').show();
-            // $('#progress-hide-1').hide();
+            $('#btn-save-izin').addClass("btn-loading");
+            $("#btn-save-izin").html('Please wait...');
+            $("#btn-save-izin").attr("disabled", true);
+            $('#progress-show-1').show();
+            $('#progress-hide-1').hide();
 
             // LAGI COBA TEST CLOSING PAYROLL
             $.ajax({
@@ -2094,9 +2094,9 @@ h1 {
                         });
                     }
 
-                    // setTimeout(function myFunction() {
-                    //         location.reload();
-                    // }, 3000);
+                    setTimeout(function myFunction() {
+                            location.reload();
+                    }, 3000);
 
                 },
                 error: function(resA){
