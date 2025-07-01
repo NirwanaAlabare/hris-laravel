@@ -1193,8 +1193,8 @@ class ProsesPayrollController extends AdminBaseController
                 if(($value->kode_hari==6 && $value->mulai_jam_kerja == null) || $value->status_absen=='LN'){
                     $l1_rupiah=$l1*($value->salary_bulanan/173*1);
                     $l2_rupiah=$l2*($value->salary_bulanan/173*2);
-                    $l3_rupiah=$l3*($value->salary_bulanan/173*3);
-                    $l4_rupiah=$l4*($value->salary_bulanan/173*4);
+                    $l3_rupiah=$l3*($value->salary_bulanan/173*2);
+                    $l4_rupiah=$l4*($value->salary_bulanan/173*2);
                 }
                 else{
                     $l1_rupiah=$l1*($value->salary_bulanan/173*1);
@@ -2259,8 +2259,8 @@ class ProsesPayrollController extends AdminBaseController
                 if(($value->kode_hari==6 && $value->mulai_jam_kerja == null) || $value->status_absen=='LN'){
                     $l1_rupiah=$l1*($value->salary_bulanan/173*1);
                     $l2_rupiah=$l2*($value->salary_bulanan/173*2);
-                    $l3_rupiah=$l3*($value->salary_bulanan/173*3);
-                    $l4_rupiah=$l4*($value->salary_bulanan/173*4);
+                    $l3_rupiah=$l3*($value->salary_bulanan/173*2);
+                    $l4_rupiah=$l4*($value->salary_bulanan/173*2);
                 }
                 else{
                     $l1_rupiah=$l1*($value->salary_bulanan/173*1);
@@ -3257,8 +3257,8 @@ class ProsesPayrollController extends AdminBaseController
                 if(($value->kode_hari==6 && $value->mulai_jam_kerja == null) || $value->status_absen=='LN'){
                     $l1_rupiah=$l1*($value->salary_bulanan/173*1);
                     $l2_rupiah=$l2*($value->salary_bulanan/173*2);
-                    $l3_rupiah=$l3*($value->salary_bulanan/173*3);
-                    $l4_rupiah=$l4*($value->salary_bulanan/173*4);
+                    $l3_rupiah=$l3*($value->salary_bulanan/173*2);
+                    $l4_rupiah=$l4*($value->salary_bulanan/173*2);
                 }
                 else{
                     $l1_rupiah=$l1*($value->salary_bulanan/173*1);
@@ -3266,6 +3266,24 @@ class ProsesPayrollController extends AdminBaseController
                     $l3_rupiah=$l3*($value->salary_bulanan/173*1);
                     $l4_rupiah=$l4*($value->salary_bulanan/173*1);
                 }
+
+                //  if($value->kode_hari==6 && $value->mulai_jam_kerja == null){
+                //     $l1_rupiah=$l1*($value->salary_bulanan/173*1);
+                //     $l2_rupiah=$l2*($value->salary_bulanan/173*2);
+                //     $l3_rupiah=$l3*($value->salary_bulanan/173*2);
+                //     $l4_rupiah=$l4*($value->salary_bulanan/173*2);
+                // }else if($value->status_absen=='LN'){
+                //     $l1_rupiah=$l1*($value->salary_bulanan/173*1);
+                //     $l2_rupiah=$l2*($value->salary_bulanan/173*2);
+                //     $l3_rupiah=$l3*($value->salary_bulanan/173*3);
+                //     $l4_rupiah=$l4*($value->salary_bulanan/173*4);
+                // }else{
+                //     $l1_rupiah=$l1*($value->salary_bulanan/173*1);
+                //     $l2_rupiah=$l2*($value->salary_bulanan/173*1);
+                //     $l3_rupiah=$l3*($value->salary_bulanan/173*1);
+                //     $l4_rupiah=$l4*($value->salary_bulanan/173*1);
+                // }
+
                 RekapPerhitunganLembur::where('enroll_id',$value->enroll_id)->where('tanggal_berjalan',$value->tanggal_berjalan)->delete();
                 DB::table('rekap_perhitungan_lembur')->insert([
                     'uuid'=>Str::uuid('uuid'),
@@ -4235,8 +4253,8 @@ class ProsesPayrollController extends AdminBaseController
                     if(($value->kode_hari==6 && $value->mulai_jam_kerja == null) || $value->status_absen=='LN'){
                         $l1_rupiah=$l1*($value->salary_bulanan/173*1);
                         $l2_rupiah=$l2*($value->salary_bulanan/173*2);
-                        $l3_rupiah=$l3*($value->salary_bulanan/173*3);
-                        $l4_rupiah=$l4*($value->salary_bulanan/173*4);
+                        $l3_rupiah=$l3*($value->salary_bulanan/173*2);
+                        $l4_rupiah=$l4*($value->salary_bulanan/173*2);
                     }
                     else{
                         $l1_rupiah=$l1*($value->salary_bulanan/173*1);
@@ -5690,8 +5708,8 @@ class ProsesPayrollController extends AdminBaseController
                 if(($value->kode_hari==6 && $value->mulai_jam_kerja == null) || $value->status_absen=='LN'){
                     $l1_rupiah=$l1*($value->salary_bulanan/173*1);
                     $l2_rupiah=$l2*($value->salary_bulanan/173*2);
-                    $l3_rupiah=$l3*($value->salary_bulanan/173*3);
-                    $l4_rupiah=$l4*($value->salary_bulanan/173*4);
+                    $l3_rupiah=$l3*($value->salary_bulanan/173*2);
+                    $l4_rupiah=$l4*($value->salary_bulanan/173*2);
                 }
                 else{
                     $l1_rupiah=$l1*($value->salary_bulanan/173*1);
@@ -5808,8 +5826,8 @@ class ProsesPayrollController extends AdminBaseController
                 if(($value->kode_hari==6 && $value->mulai_jam_kerja == null) || $value->status_absen=='LN'){
                     $l1_rupiah=$l1*($value->salary_bulanan/173*1);
                     $l2_rupiah=$l2*($value->salary_bulanan/173*2);
-                    $l3_rupiah=$l3*($value->salary_bulanan/173*3);
-                    $l4_rupiah=$l4*($value->salary_bulanan/173*4);
+                    $l3_rupiah=$l3*($value->salary_bulanan/173*2);
+                    $l4_rupiah=$l4*($value->salary_bulanan/173*2);
 
 
                 }
