@@ -1221,11 +1221,17 @@ h1 {
                                     exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_cuti_pdf?uuid=${uuidNo}`;
                                     btnClass = 'btn-danger';
                                 }
+                                if(row.kode_absen_ijin === 'PC' || row.kode_absen_ijin === 'DT'){
+                                    button =``;
+                                }
                                 if($('#username_who_access').val()=='ersa@ptnag.com' || $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='fadli'|| $('#username_who_access').val()=='rudy@ptnag.com' || $('#username_who_access').val()=='hrd' || $('#username_who_access').val()=='indri@nag.nirwanaindonesia.com' ){
                                     return `
-                                        <button onclick="openModalApprovePengajuan('${row.uuid}')" data-id="${row.uuid}" target="_blank" class="btn btn-sm btn-success mr-1" title="Approve Pengajuan">
-                                            <i class="fa fa-check"></i>
-                                        </button>
+                                        ${row.kode_absen_ijin === 'PC' || row.kode_absen_ijin === 'DT'
+                                        ? ''
+                                        : `<button onclick="openModalApprovePengajuan('${row.uuid}')" data-id="${row.uuid}" target="_blank" class="btn btn-sm btn-success mr-1" title="Approve Pengajuan">
+                                                <i class="fa fa-check"></i>
+                                            </button>`
+                                        }
                                         <a href="${exportUrl}" target="_blank" class="btn btn-sm ${btnClass} mr-1" title="Print PDF Pengajuan">
                                             <i class="fa fa-file-pdf-o"></i>
                                         </a>
