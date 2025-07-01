@@ -3337,19 +3337,20 @@ class ProsesPayrollController extends AdminBaseController
                     ->leftJoin('data_absen_perijinan',function($leftjoin){
                         $leftjoin->on("master_data_absen_kehadiran.tanggal_berjalan","=","data_absen_perijinan.tanggal_perizinan")->on("master_data_absen_kehadiran.enroll_id","=","data_absen_perijinan.enroll_id");
                     })
-                    ->whereRaw('master_data_absen_kehadiran.tanggal_berjalan >= "'.$tanggal_awal.'" and master_data_absen_kehadiran.tanggal_berjalan <= "'.$tanggal_akhir.'" and data_absen_perijinan.total_time_ijin>0'.$MDAinEnrollId.'')
+                    ->whereRaw('master_data_absen_kehadiran.tanggal_berjalan >= "'.$tanggal_awal.'" and master_data_absen_kehadiran.tanggal_berjalan <= "'.$tanggal_akhir.'" and master_data_absen_kehadiran.status_absen = "IKS" and data_absen_perijinan.total_time_ijin>0 and data_absen_perijinan.is_verifikasi_pengajuan_admin=1'.$MDAinEnrollId.'')
                     ->get();
+            $data_iks=[];
             foreach ($iks as $key => $value){
                 if($value->kode_hari == 4){
                     $jam_mulai_istirahat='11:30';
                     $jam_selesai_istirahat='12:30';
                 }
                 else{
-                    if($value->mulai_jam_kerja = '06:00' AND $value->akhir_jam_kerja = '15:00'){
+                    if($value->mulai_jam_kerja == '06:00' && $value->akhir_jam_kerja == '15:00'){
                         $jam_mulai_istirahat='10:00';
                         $jam_selesai_istirahat='11:00';
                     }
-                    elseif($value->mulai_jam_kerja = '16:00' AND $value->akhir_jam_kerja = '23:00'){
+                    elseif($value->mulai_jam_kerja == '16:00' && $value->akhir_jam_kerja == '23:00'){
                         $jam_mulai_istirahat='18:00';
                         $jam_selesai_istirahat='19:00';
                     }
@@ -3382,13 +3383,13 @@ class ProsesPayrollController extends AdminBaseController
                     'gaji_menit'=> $salary->gaji_menit,
                     'potongan_iks_rupiah'=>$salary->gaji_menit*$value->total_time_ijin,
                 ];
-                $count=RekapPerhitunganIKS::where('tanggal_berjalan',$value->tanggal_berjalan)->where('periode_umk',$periode_umk)->where('enroll_id',$value->enroll_id)->count();
-                if($count){
-                    RekapPerhitunganIKS::where('tanggal_berjalan',$value->tanggal_berjalan)->where('periode_umk',$periode_umk)->where('enroll_id',$value->enroll_id)->update($data_iks);
-                }
-                else{
-                    RekapPerhitunganIKS::create($data_iks);
-                }
+
+                 RekapPerhitunganIKS::where('tanggal_berjalan', $value->tanggal_berjalan)
+                    ->where('periode_umk', $periode_umk)
+                    ->where('enroll_id', $value->enroll_id)
+                    ->delete();
+
+                RekapPerhitunganIKS::create($data_iks);
             }
 
             //rekap dtpc

@@ -1298,6 +1298,7 @@ class MdAbsenHadirController extends AdminBaseController
                 master_data_absen_kehadiran.absen_masuk_kerja,
                 master_data_absen_kehadiran.absen_pulang_kerja,
                 master_data_absen_kehadiran.jumlah_absen_menit_kerja,
+                c.is_verifikasi_pengajuan_admin as is_verifikasi_pengajuan_admin,
                 c.time_mulai_ijin as permits_dari_pukul,
                 c.time_akhir_ijin as permits_sampai_pukul,
                 c.total_time_ijin as total_menit_permits,
@@ -1660,6 +1661,18 @@ class MdAbsenHadirController extends AdminBaseController
                 }
             $total_lembur_12345=$Kehadiran->total_lembur_1234;
 
+            $status = $Kehadiran->status_absen;
+
+                if ($Kehadiran->jumlah_menit_absen_dt > 0 && $Kehadiran->jumlah_menit_absen_pc > 0) {
+                    $status = 'DTPC';
+                } elseif ($Kehadiran->jumlah_menit_absen_dt > 0) {
+                    $status = 'DT';
+                } elseif ($Kehadiran->jumlah_menit_absen_pc > 0) {
+                    $status = 'PC';
+                } else {
+                    $status = 'IKS';
+                }
+
             $data = [
                 Date::stringToExcel($Kehadiran->tanggal_berjalan),
                 $Kehadiran->nama_hari,
@@ -1678,13 +1691,13 @@ class MdAbsenHadirController extends AdminBaseController
                 substr($Kehadiran->absen_masuk_kerja, 0, 5),
                 substr($Kehadiran->absen_pulang_kerja, 0, 5),
                 $Kehadiran->jumlah_absen_menit_kerja,
-                substr($Kehadiran->permits_dari_pukul, 0, 5),
-                substr($Kehadiran->permits_sampai_pukul, 0, 5),
-                $Kehadiran->total_menit_permits,
+                $Kehadiran->status_absen == 'IKS' && $Kehadiran->is_verifikasi_pengajuan_admin == 1 ? substr($Kehadiran->permits_dari_pukul, 0, 5) : "",
+                $Kehadiran->status_absen == 'IKS' && $Kehadiran->is_verifikasi_pengajuan_admin == 1 ? substr($Kehadiran->permits_sampai_pukul, 0, 5) : "",
+                $Kehadiran->status_absen == 'IKS' && $Kehadiran->is_verifikasi_pengajuan_admin == 1 ? $Kehadiran->total_menit_permits : "",
                 $Kehadiran->jumlah_menit_absen_dt,
                 $Kehadiran->jumlah_menit_absen_pc,
                 $Kehadiran->jumlah_menit_absen_dtpc,
-                $Kehadiran->status_absen,
+                $status,
                 $kode_ijin_payroll,
                 $Kehadiran->absen_alasan,
                 "",
