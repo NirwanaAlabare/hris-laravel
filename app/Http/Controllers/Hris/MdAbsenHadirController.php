@@ -1662,7 +1662,7 @@ class MdAbsenHadirController extends AdminBaseController
             $total_lembur_12345=$Kehadiran->total_lembur_1234;
 
             $status = $Kehadiran->status_absen;
-
+            if($status == 'IKS'){
                 if ($Kehadiran->jumlah_menit_absen_dt > 0 && $Kehadiran->jumlah_menit_absen_pc > 0) {
                     $status = 'DTPC';
                 } elseif ($Kehadiran->jumlah_menit_absen_dt > 0) {
@@ -1672,6 +1672,7 @@ class MdAbsenHadirController extends AdminBaseController
                 } else {
                     $status = 'IKS';
                 }
+            }
 
             $data = [
                 Date::stringToExcel($Kehadiran->tanggal_berjalan),
