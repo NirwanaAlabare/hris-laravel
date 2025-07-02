@@ -134,7 +134,7 @@
         @endphp
 
         @php
-        if ($loggedAdmin->role_user == "absensi" || ($loggedAdmin->email != "reza" && $loggedAdmin->role_user == "superadmin")) {
+        if (($loggedAdmin->role_user == "absensi" && $loggedAdmin->email == "indri@nag.nirwanaindonesia.com" && $loggedAdmin->email == "pujiprana@nag.nirwanaindonesia.com") || ($loggedAdmin->email != "reza" && $loggedAdmin->role_user == "superadmin")) {
         @endphp
 
         <li class="slide">
