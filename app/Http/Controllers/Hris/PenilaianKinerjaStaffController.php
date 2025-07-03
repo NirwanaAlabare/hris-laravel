@@ -162,9 +162,17 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         $contract=request()->contract;
         $contract_end=request()->contract_end;
         $data=DB::select("select a.status_staff,a.enroll_id,a.nik,a.employee_name,a.status_jabatan,a.sub_dept_name,a.department_name,a.status_kontrak_tetap,a.status_aktif,a.join_date,a.tanggal_resign,a.nomor_ktp,a.tempat_lahir,a.alamat_rumah,a.tanggal_lahir,a.no_surat,b.contract,b.contract_end,c.max_contract,c.max_contract_end from employee_atribut a left join employee_contract b on a.enroll_id=b.enroll_id left join (select enroll_id,max(contract) max_contract,max(contract_end) max_contract_end from employee_contract group by enroll_id)c on a.enroll_id=c.enroll_id where a.enroll_id=".$enroll_id." group by a.enroll_id");
+        $today = Carbon::today()->format('Y-m-d');
 
         $data_penilaian = PenilaianKinerja::where('enroll_id', $enroll_id)->where('tgl_awal_kontrak',$contract)->where('tgl_akhir_kontrak', $contract_end)->first();
-        $surat_peringatan = SuratPeringatanKaryawan::where('enroll_id', $enroll_id)->where('tanggal_mulai','>=',$contract)->where('tanggal_sampai','<=', $contract_end)->get();
+        // $surat_peringatan = SuratPeringatanKaryawan::where('enroll_id', $enroll_id)->where('tanggal_mulai','>=',$contract)->where('tanggal_sampai','<=', $today)->get();
+       $surat_peringatan = SuratPeringatanKaryawan::where('enroll_id', $enroll_id)
+    ->where(function ($query) use ($contract, $contract_end) {
+        $query->where('tanggal_mulai', '<=', $contract_end)
+              ->where('tanggal_sampai', '>=', $contract);
+    })
+    ->get();
+
 
         $start_date = Carbon::parse($contract);
         $end_date = Carbon::parse($contract_end)->subDays(14);
