@@ -1,0 +1,351 @@
+<?php
+
+namespace App\Http\Controllers\Hris\Administrasi;
+use App\Http\Controllers\AdminBaseController;
+use Illuminate\Support\Facades\View;
+use DB;
+use PDF;
+use Dompdf\Dompdf;
+use App\Models\EmployeeAtributHistory;
+use App\Models\MutKaryawan;
+use Carbon\Carbon;
+use Dompdf\Options;
+use Dompdf\FontMetrics;
+use App\Models\PengajuanPermintaanTk;
+use App\Models\EmployeeAtribut;
+use App\Models\PengajuanBazzar;
+use App\Models\VoucherBazzar;
+use App\Models\RefAbsenIjin;
+use App\Models\EntertainPengajuanTamu;
+use App\Models\EntertainPengajuanPendamping;
+use App\Models\EntertainPengajuanKeterangan;
+use App\Models\DataAbsenPerijinanDTPC;
+use App\Models\SuratPeringatanKaryawan;
+use App\Models\PengajuanKedisiplinanKaryawan;
+use App\Models\PasalSuratPeringatan;
+use App\Models\DataAbsenPerijinan;
+use App\Models\PengajuanDokumenLegal;
+use App\Models\DepartmentAll;
+use App\Models\MasterDataAbsenKehadiran;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Barryvdh\Snappy\Facades\SnappyPdf;
+use Yajra\DataTables\Facades\DataTables;
+use DateTime;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Auth;
+use App\Exports\ExportLineSheet;
+use App\Exports\ExportPengajuanKas;
+use App\Exports\ExportPengajuanBazzar;
+use Illuminate\Support\Facades\Storage;
+use FilippoToso\PdfWatermarker\Facades\ImageWatermarker;
+use FilippoToso\PdfWatermarker\Support\Position;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Str;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use App\Exports\RekapCutiKaryawanKaryawanAll;
+use \avadim\FastExcelLaravel\Excel as FastExcel;
+
+
+class TindakanKedisiplinanController extends AdminBaseController
+{
+    public function __construct()
+    {
+        parent::__construct();
+        $this->dashboardActive = 'active';
+        $this->pageTitle = 'Dashboard';
+    }
+
+    public function index()
+    {
+        $tglskrg = date('Y-m-d');
+        $user = Auth::guard('admin')->user()->email;
+        $data_dept = DB::select("select
+        d.sub_dept_id isi,
+        concat(department_name,' - ', sub_dept_name) tampil
+        from department_all d
+        left join
+        (select sub_dept_id,count(employee_id) tot from employee_atribut where status_aktif = 'aktif' group by sub_dept_id) e on d.sub_dept_id = e.sub_dept_id
+        where site_nirwana_id = 'NAG'
+        and sub_dept_name not like 'line%'
+        and e.tot != '0'
+        group by d.sub_dept_id
+        order by department_name asc");
+
+        $DepartmentAllModel =  DepartmentAll::groupBy('department_name')
+        ->orderBy('department_name','asc')
+        ->get();
+        $NirwananameAllModel =  DepartmentAll::groupBy('site_nirwana_name')
+        ->orderBy('site_nirwana_name','asc')
+        ->get();
+
+        $this->department =  $DepartmentAllModel;
+        $this->site =  $NirwananameAllModel;
+        $selectemployee = $this->ajax_getallemployeeatribut();
+
+         return view('hris/tindakan-kedisiplinan/surat_peringatan', [
+            'page' => 'dashboard-mut-karyawan', "subPageGroup" => "proses-karyawan", "subPage" => "form-lembur-non-sewing",
+            "data_dept" => $data_dept, "user" => $user,
+            "selectemployee" => $selectemployee,
+        ], $this->data);
+    }
+    public function surat_peringatan_hr()
+    {
+        $tglskrg = date('Y-m-d');
+        $user = Auth::guard('admin')->user()->email;
+        $data_dept = DB::select("select
+        d.sub_dept_id isi,
+        concat(department_name,' - ', sub_dept_name) tampil
+        from department_all d
+        left join
+        (select sub_dept_id,count(employee_id) tot from employee_atribut where status_aktif = 'aktif' group by sub_dept_id) e on d.sub_dept_id = e.sub_dept_id
+        where site_nirwana_id = 'NAG'
+        and sub_dept_name not like 'line%'
+        and e.tot != '0'
+        group by d.sub_dept_id
+        order by department_name asc");
+
+        $DepartmentAllModel =  DepartmentAll::groupBy('department_name')
+        ->orderBy('department_name','asc')
+        ->get();
+        $NirwananameAllModel =  DepartmentAll::groupBy('site_nirwana_name')
+        ->orderBy('site_nirwana_name','asc')
+        ->get();
+
+        $this->department =  $DepartmentAllModel;
+        $this->site =  $NirwananameAllModel;
+        $selectemployee = $this->ajax_getallemployeeatribut();
+        $pasal_data = PasalSuratPeringatan::selectRaw('kode_pasal, sp, pasal, desc_surat_peringatan, deskripsi, concat("Pasal ",kode_pasal, " - ", pasal, ". " ,desc_surat_peringatan) pasal_select')
+                                    ->orderby('kode_pasal', 'asc')
+                                    ->get();
+         return view('hris/tindakan-kedisiplinan/surat_peringatan_hr', [
+            'page' => 'dashboard-mut-karyawan', "subPageGroup" => "proses-karyawan", "subPage" => "form-lembur-non-sewing",
+            "data_dept" => $data_dept, "user" => $user,
+            "selectemployee" => $selectemployee,
+            "pasal_data" => $pasal_data,
+        ], $this->data);
+    }
+
+    public function ajax_getallemployeeatribut()
+    {
+        $query =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, department_name, sub_dept_name,department_id,sub_dept_id,status_jabatan,
+                                           concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')
+                                    ->groupby('enroll_id')
+                                    ->orderby('employee_name', 'asc')
+                                    ->get();
+        return $query;
+
+    }
+
+    public function get_detail_tindakan_kedisiplinan(Request $request)
+    {
+        $id = $request->id;
+        $data = DB::select("SELECT pengajuan_kedisiplinan_karyawan.*, ea_1.department_name AS department_name_pengaju, ea_1.sub_dept_name AS bagian_name_pengaju, ea_2.department_name AS department_name_diajukan, ea_2.sub_dept_name AS bagian_name_diajukan, ea_2.employee_name, ea_2.nik, ea_2.status_jabatan FROM pengajuan_kedisiplinan_karyawan left join employee_atribut ea_1 on pengajuan_kedisiplinan_karyawan.enroll_id_diajukan_oleh = ea_1.enroll_id left join employee_atribut ea_2 on pengajuan_kedisiplinan_karyawan.enroll_id_karyawan_bermasalah = ea_2.enroll_id WHERE id = ?", [$id]);
+        return $data[0];
+    }
+
+    public function get_detail_surat_peringatan(Request $request)
+    {
+        $id = $request->id;
+        $data = DB::select("SELECT surat_peringatan_karyawan.*, ea.employee_name ,ea.nik, ea.sub_dept_name, ea.department_name, ea.status_jabatan from surat_peringatan_karyawan left join employee_atribut ea on surat_peringatan_karyawan.enroll_id = ea.enroll_id WHERE id = ?", [$id]);
+        return $data[0];
+    }
+
+
+    public function create_surat_peringatan(Request $request){
+        $logged_admin = Auth::guard('admin')->user();
+        SuratPeringatanKaryawan::create([
+            'enroll_id' => $request->enroll_id,
+            'kode_pasal' => $request->selectedKodePasal,
+            'surat_peringatan' => $request->tindakan_pendisiplinan,
+            'tanggal_mulai' => $request->tanggal_berlaku_mulai,
+            'tanggal_sampai' => $request->tanggal_berlaku_sampai,
+            'operator' => $logged_admin->email,
+            'alasan_pelanggaran' => $request->alasan_pelanggaran,
+            'no_form' => $request->no_form,
+        ]);
+        return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil dibuat.']);
+    }
+
+    public function update_surat_peringatan(Request $request){
+        $logged_admin = Auth::guard('admin')->user();
+        SuratPeringatanKaryawan::where('id', $request->id_pengajuan)->update([
+            'enroll_id' => $request->enroll_id,
+            'kode_pasal' => $request->selectedKodePasal,
+            'surat_peringatan' => $request->tindakan_pendisiplinan,
+            'tanggal_mulai' => $request->tanggal_berlaku_mulai,
+            'tanggal_sampai' => $request->tanggal_berlaku_sampai,
+            'operator' => $logged_admin->email,
+            'alasan_pelanggaran' => $request->alasan_pelanggaran,
+            'no_form' => $request->no_form,
+        ]);
+        return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil dibuat.']);
+    }
+
+    public function create_form_tindakan_kedisiplinan(Request $request){
+        $logged_admin = Auth::guard('admin')->user();
+         PengajuanKedisiplinanKaryawan::create([
+            'tanggal_pengajuan' => $request->tanggal_pengajuan,
+            'tindakan_pendisiplinan' => $request->tindakan_pendisiplinan,
+            'enroll_id_diajukan_oleh' => $request->enroll_id_diajukan_oleh,
+            'enroll_id_karyawan_bermasalah' => $request->enroll_id_karyawan_bermasalah,
+            'pelanggaran' => $request->pelanggaran,
+            'sumber_permasalahan' => $request->sumber_permasalahan,
+            'status_pengajuan' => 'diajukan',
+            'created_by' => $logged_admin->email,
+        ]);
+
+        return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil dibuat.']);
+    }
+
+    public function update_form_tindakan_kedisiplinan(Request $request){
+        $logged_admin = Auth::guard('admin')->user();
+          PengajuanKedisiplinanKaryawan::where('id', $request->id)->update([
+            'tanggal_pengajuan' => $request->tanggal_pengajuan,
+            'tindakan_pendisiplinan' => $request->tindakan_pendisiplinan,
+            'enroll_id_diajukan_oleh' => $request->enroll_id_diajukan_oleh,
+            'enroll_id_karyawan_bermasalah' => $request->enroll_id_karyawan_bermasalah,
+            'pelanggaran' => $request->pelanggaran,
+            'sumber_permasalahan' => $request->sumber_permasalahan,
+            'created_by' => $logged_admin->email,
+        ]);
+        return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil diupdate.']);
+    }
+
+    public function approve_pengajuan_kedisiplinan(Request $request){
+        $logged_admin = Auth::guard('admin')->user();
+        $data = PengajuanKedisiplinanKaryawan::where('id', $request->id)->get()->first();
+        $data->status_pengajuan = 'done';
+        $data->verifikator_by = $logged_admin->email;
+        $data->save();
+        return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil di approve.']);
+    }
+    public function reject_pengajuan_kedisiplinan(Request $request){
+        PengajuanKedisiplinanKaryawan::where('id', $request->id)->update([
+            'status_pengajuan' => 'batal',
+            'verifikator_by' => $logged_admin->email,
+        ]);
+        return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil ditolak.']);
+    }
+
+    public function delete_pengajuan_kedisiplinan(Request $request){
+        PengajuanKedisiplinanKaryawan::where('id', $request->id_pengajuan)->delete();
+        return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil dihapus.']);
+    }
+
+    public function delete_surat_peringatan(Request $request){
+        SuratPeringatanKaryawan::where('id', $request->id_pengajuan)->delete();
+        return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil dihapus.']);
+    }
+
+    public function print_pengajuan_sp_pdf(Request $request)
+    {
+        $pengajuan_id = $request->route('id');
+        $data = DB::select("
+            SELECT pengajuan_kedisiplinan_karyawan.*, employee_atribut.employee_name, employee_atribut.department_name, employee_atribut.sub_dept_name, employee_atribut.department_id, employee_atribut.sub_dept_id, employee_atribut.nik, employee_atribut.status_jabatan
+            FROM pengajuan_kedisiplinan_karyawan
+            LEFT JOIN employee_atribut
+                ON pengajuan_kedisiplinan_karyawan.enroll_id_karyawan_bermasalah = employee_atribut.enroll_id
+            WHERE pengajuan_kedisiplinan_karyawan.id = ?
+            LIMIT 1
+        ", [$pengajuan_id]);
+
+        $pdf = PDF::loadview('hris/tindakan-kedisiplinan/export_pengajuan_kedisiplinan_pdf',['data'=>$data]);
+        return $pdf->stream('form-nilai-kinerja.pdf');
+    }
+
+    public function print_sp_karyawan(Request $request)
+    {
+        $pengajuan_id = $request->route('id');
+        $data = DB::select("
+            SELECT surat_peringatan_karyawan.*, pasal_surat_peringatan.*,employee_atribut.employee_name, employee_atribut.department_name, employee_atribut.sub_dept_name, employee_atribut.department_id, employee_atribut.sub_dept_id, employee_atribut.nik, employee_atribut.status_jabatan
+            FROM surat_peringatan_karyawan
+            LEFT JOIN employee_atribut
+                ON surat_peringatan_karyawan.enroll_id = employee_atribut.enroll_id
+            LEFT JOIN pasal_surat_peringatan
+                ON surat_peringatan_karyawan.kode_pasal = pasal_surat_peringatan.kode_pasal
+            WHERE surat_peringatan_karyawan.id = ?
+            LIMIT 1
+        ", [$pengajuan_id]);
+        // dd($data);
+        $pdf = PDF::loadview('hris/tindakan-kedisiplinan/export_surat_peringatan_pdf',['data'=>$data]);
+        return $pdf->stream('form-nilai-kinerja.pdf');
+    }
+
+
+    public function ajax_data_pengajuan_sp(Request $request)
+    {
+        $email = Auth::guard('admin')->user()->email;
+        $status = $request->input('status_pengajuan');
+        $search = $request->input('search.value');
+
+        // Query pertama
+        $query  = DB::table('pengajuan_kedisiplinan_karyawan')
+            ->select(
+                'data_diajukan.employee_name AS data_diajukan_name',
+                'data_diajukan.nik AS data_diajukan_nik',
+                'data_diajukan.department_name AS data_diajukan_dept_name',
+                'data_diajukan.sub_dept_name AS data_diajukan_bagian_name',
+                'pengajuan_kedisiplinan_karyawan.*',
+                'data_karyawan_bermasalah.employee_name AS data_karyawan_bermasalah_name',
+                'data_karyawan_bermasalah.nik AS data_karyawan_bermasalah_nik',
+                'data_karyawan_bermasalah.department_name AS data_karyawan_bermasalah_dept_name',
+                'data_karyawan_bermasalah.sub_dept_name AS data_karyawan_bermasalah_bagian_name',
+                'data_karyawan_bermasalah.status_jabatan AS data_karyawan_bermasalah_status_jabatan',
+            )
+            ->leftJoin('employee_atribut AS data_diajukan', 'pengajuan_kedisiplinan_karyawan.enroll_id_diajukan_oleh', '=', 'data_diajukan.enroll_id')
+            ->leftJoin('employee_atribut AS data_karyawan_bermasalah', 'pengajuan_kedisiplinan_karyawan.enroll_id_karyawan_bermasalah', '=', 'data_karyawan_bermasalah.enroll_id')
+            ->where('pengajuan_kedisiplinan_karyawan.status_pengajuan', $status)
+            ->distinct();
+
+        if (!in_array($email, ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli', 'ersa@ptnag.com','indri@nag.nirwanaindonesia.com','hadiyoso@nag.nirwanaindonesia.com','ronald@ptnag.com','bobby','pujiprana@nag.nirwanaindonesia.com'])) {
+            $query ->where(function($q) use ($email) {
+                $q->where('pengajuan_kedisiplinan_karyawan.created_by', $email);
+            });
+        }
+        $data = $query ->get();
+        // Format response untuk DataTables
+        return response()->json([
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => count($data),
+            'recordsFiltered' => count($data),
+            'data' => $data
+        ]);
+    }
+    public function get_surat_peringatan(Request $request)
+    {
+        $email = Auth::guard('admin')->user()->email;
+        $search = $request->input('search.value');
+
+        // Query pertama
+        $query  = SuratPeringatanKaryawan::select(
+            'surat_peringatan_karyawan.*',
+            'employee_atribut.employee_name',
+            'employee_atribut.nik',
+            'employee_atribut.department_name',
+            'employee_atribut.sub_dept_name',
+            'employee_atribut.status_jabatan'
+        )
+        ->leftJoin('employee_atribut', 'surat_peringatan_karyawan.enroll_id', '=', 'employee_atribut.enroll_id')
+        ->where(function($q) use ($search) {
+            $q->where('employee_atribut.employee_name', 'like', '%' . $search . '%')
+              ->orWhere('employee_atribut.nik', 'like', '%' . $search . '%')
+              ->orWhere('surat_peringatan_karyawan.surat_peringatan', 'like', '%' . $search . '%')
+              ->orWhere('surat_peringatan_karyawan.tanggal_mulai', 'like', '%' . $search . '%')
+              ->orWhere('surat_peringatan_karyawan.tanggal_sampai', 'like', '%' . $search . '%');
+        });
+
+        $data = $query ->get();
+        // Format response untuk DataTables
+        return response()->json([
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => count($data),
+            'recordsFiltered' => count($data),
+            'data' => $data
+        ]);
+    }
+
+
+
+}

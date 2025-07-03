@@ -43,7 +43,12 @@
             <li><a href="{{route('permintaan_tenaga_kerja.permintaan_tenaga_kerja')}}" class="slide-item"><span>Permintaan Tenaga Kerja</span></a></li>
         </ul>
     </li>
-
+    <li class="slide">
+        <a class="side-menu__item"  data-toggle="slide" href="#"><i class="side-menu__icon fa fa-users"></i><span class="side-menu__label">Tindakan Kedisiplinan</span><i class="angle fa fa-angle-right"></i></a>
+        <ul class="slide-menu">
+            <li><a href="{{route('tindakan_kedisiplinan.tindakan_kedisiplinan')}}" class="slide-item"><span>Surat Peringatan</span></a></li>
+        </ul>
+    </li>
     @php
     if (($loggedAdmin->name == "HR") || ($loggedAdmin->name == "HRD")|| ($loggedAdmin->name == "GA") || ($loggedAdmin->email == 'mega@ptnag.com') || ($loggedAdmin->email == 'rudy@ptnag.com') || ($loggedAdmin->email == 'fadli') || ($loggedAdmin->email == 'indri@nag.nirwanaindonesia.com') || ($loggedAdmin->email == 'ersa@ptnag.com')) {
         @endphp

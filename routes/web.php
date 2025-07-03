@@ -341,6 +341,23 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('/permintaan_tenaga_kerja/set_to_pending_no_fptk_karyawan', ['as' => 'permintaan_tenaga_kerja.set_to_pending_no_fptk_karyawan','uses' => 'Administrasi\PermintaanTenagaKerjaController@set_to_pending_no_fptk_karyawan']);
     Route::post('/permintaan_tenaga_kerja/move_to_pending_permintaan', ['as' => 'permintaan_tenaga_kerja.move_to_pending_permintaan','uses' => 'Administrasi\PermintaanTenagaKerjaController@move_to_pending_permintaan']);
 
+      // TINDAKAN KEDISIPLINAN
+    Route::get('/tindakan_kedisiplinan/index', ['as' => 'tindakan_kedisiplinan.tindakan_kedisiplinan','uses' => 'Administrasi\TindakanKedisiplinanController@index']);
+    Route::post('/tindakan_kedisiplinan/get_surat_peringatan', ['as' => 'tindakan_kedisiplinan.get_surat_peringatan','uses' => 'Administrasi\TindakanKedisiplinanController@get_surat_peringatan']);
+    Route::get('/tindakan_kedisiplinan/surat_peringatan_hr', ['as' => 'tindakan_kedisiplinan.surat_peringatan_hr','uses' => 'Administrasi\TindakanKedisiplinanController@surat_peringatan_hr']);
+    Route::get('/tindakan_kedisiplinan/print_pengajuan_sp_pdf/{id}', ['as' => 'tindakan_kedisiplinan.print_pengajuan_sp_pdf','uses' => 'Administrasi\TindakanKedisiplinanController@print_pengajuan_sp_pdf']);
+    Route::get('/tindakan_kedisiplinan/print_sp_karyawan/{id}', ['as' => 'tindakan_kedisiplinan.print_sp_karyawan','uses' => 'Administrasi\TindakanKedisiplinanController@print_sp_karyawan']);
+    Route::post('/tindakan_kedisiplinan/get_detail_tindakan_kedisiplinan', ['as' => 'tindakan_kedisiplinan.get_detail_tindakan_kedisiplinan','uses' => 'Administrasi\TindakanKedisiplinanController@get_detail_tindakan_kedisiplinan']);
+    Route::post('/tindakan_kedisiplinan/ajax_data_pengajuan_sp', ['as' => 'tindakan_kedisiplinan.ajax_data_pengajuan_sp','uses' => 'Administrasi\TindakanKedisiplinanController@ajax_data_pengajuan_sp']);
+    Route::post('/tindakan_kedisiplinan/create_form_tindakan_kedisiplinan', ['as' => 'tindakan_kedisiplinan.create_form_tindakan_kedisiplinan','uses' => 'Administrasi\TindakanKedisiplinanController@create_form_tindakan_kedisiplinan']);
+    Route::post('/tindakan_kedisiplinan/update_form_tindakan_kedisiplinan', ['as' => 'tindakan_kedisiplinan.update_form_tindakan_kedisiplinan','uses' => 'Administrasi\TindakanKedisiplinanController@update_form_tindakan_kedisiplinan']);
+    Route::post('/tindakan_kedisiplinan/approve_pengajuan_kedisiplinan', ['as' => 'tindakan_kedisiplinan.approve_pengajuan_kedisiplinan','uses' => 'Administrasi\TindakanKedisiplinanController@approve_pengajuan_kedisiplinan']);
+    Route::post('/tindakan_kedisiplinan/reject_pengajuan_kedisiplinan', ['as' => 'tindakan_kedisiplinan.reject_pengajuan_kedisiplinan','uses' => 'Administrasi\TindakanKedisiplinanController@reject_pengajuan_kedisiplinan']);
+    Route::post('/tindakan_kedisiplinan/delete_pengajuan_kedisiplinan', ['as' => 'tindakan_kedisiplinan.delete_pengajuan_kedisiplinan','uses' => 'Administrasi\TindakanKedisiplinanController@delete_pengajuan_kedisiplinan']);
+    Route::post('/tindakan_kedisiplinan/create_surat_peringatan', ['as' => 'tindakan_kedisiplinan.create_surat_peringatan','uses' => 'Administrasi\TindakanKedisiplinanController@create_surat_peringatan']);
+    Route::post('/tindakan_kedisiplinan/get_detail_surat_peringatan', ['as' => 'tindakan_kedisiplinan.get_detail_surat_peringatan','uses' => 'Administrasi\TindakanKedisiplinanController@get_detail_surat_peringatan']);
+    Route::post('/tindakan_kedisiplinan/update_surat_peringatan', ['as' => 'tindakan_kedisiplinan.update_surat_peringatan','uses' => 'Administrasi\TindakanKedisiplinanController@update_surat_peringatan']);
+    Route::post('/tindakan_kedisiplinan/delete_surat_peringatan', ['as' => 'tindakan_kedisiplinan.delete_surat_peringatan','uses' => 'Administrasi\TindakanKedisiplinanController@delete_surat_peringatan']);
 
 
     // PENGAJUAN IZIN

@@ -12,6 +12,7 @@ use Dompdf\Options;
 use Dompdf\FontMetrics;
 use App\Models\EmployeeAtribut;
 use App\Models\PenilaianKinerja;
+use App\Models\SuratPeringatanKaryawan;
 use App\Models\VoucherBazzar;
 use App\Imports\PenilaianKinerjaStaffImport;
 use App\Imports\RencanaAdjusmentSallaryImport;
@@ -163,6 +164,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         $data=DB::select("select a.status_staff,a.enroll_id,a.nik,a.employee_name,a.status_jabatan,a.sub_dept_name,a.department_name,a.status_kontrak_tetap,a.status_aktif,a.join_date,a.tanggal_resign,a.nomor_ktp,a.tempat_lahir,a.alamat_rumah,a.tanggal_lahir,a.no_surat,b.contract,b.contract_end,c.max_contract,c.max_contract_end from employee_atribut a left join employee_contract b on a.enroll_id=b.enroll_id left join (select enroll_id,max(contract) max_contract,max(contract_end) max_contract_end from employee_contract group by enroll_id)c on a.enroll_id=c.enroll_id where a.enroll_id=".$enroll_id." group by a.enroll_id");
 
         $data_penilaian = PenilaianKinerja::where('enroll_id', $enroll_id)->where('tgl_awal_kontrak',$contract)->where('tgl_akhir_kontrak', $contract_end)->first();
+        $surat_peringatan = SuratPeringatanKaryawan::where('enroll_id', $enroll_id)->where('tanggal_mulai','>=',$contract)->where('tanggal_sampai','<=', $contract_end)->get();
 
         $start_date = Carbon::parse($contract);
         $end_date = Carbon::parse($contract_end)->subDays(14);
@@ -180,11 +182,23 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         if (!$data_penilaian) {
             $data_penilaian = new \stdClass();
         }
+        $sp_1 = 0;
+        $sp_2 = 0;
+        $sp_3 = 0;
+        foreach ($surat_peringatan as $sp) {
+            if( strtolower($sp->surat_peringatan) == 'sp_1') {
+                $sp_1++;
+            } elseif (strtolower($sp->surat_peringatan) == 'sp_2') {
+                $sp_2++;
+            } elseif (strtolower($sp->surat_peringatan) == 'sp_3') {
+                $sp_3++;
+            }
+        }
         // Default kejadian dan total, bisa juga digunakan saat data_penilaian tidak ada
         $kejadian = [
-            'sp3_kali' => $data_penilaian->sp3_kali ?? 0,
-            'sp2_kali' => $data_penilaian->sp2_kali ?? 0,
-            'sp1_kali' => $data_penilaian->sp1_kali ?? 0,
+            'sp3_kali' => $sp_3 ?? $data_penilaian->sp3_kali,
+            'sp2_kali' => $sp_2 ?? $data_penilaian->sp2_kali,
+            'sp1_kali' => $sp_1 ?? $data_penilaian->sp1_kali,
             'kecelakaan_kali' => $data_penilaian->kecelakaan_kali ?? 0,
             'mangkir_kali' => $jumlah_mangkir,
             'ijin_kali' => $jumlah_ijin,
