@@ -231,7 +231,7 @@
             <tr>
                 <td style="vertical-align: middle; font-size: 13pt;">
                     Karyawan tersebut telah melakukan pelanggaran Peraturan Perusahaan pasal {{substr($value->kode_pasal, 0,2)}} ayat {{substr($value->pasal, 2,2)}}. Peningkatan
-                    sanksi pelanggaran setelah mendapatkan teguran. “{{ str_replace('.', '', $value->desc_surat_peringatan) }}"{{ $value->alasan_pelanggaran ? ', yaitu '.$value->alasan_pelanggaran : '' }}
+                    sanksi pelanggaran setelah mendapatkan teguran. “{{ str_replace('.', '', $value->desc_surat_peringatan) }}"{{ $value->alasan_pelanggaran ? ', '.$value->alasan_pelanggaran : '' }}
                 </td>
             </tr>
         </thead>
@@ -310,8 +310,8 @@
             </tr>
            <tr>
             <td width="20%" style="font-family: Arial, Helvetica, sans-serif; font-size: 8pt; text-align: left; vertical-align: center;">
-                Rudy Aristian Fajar
-                <div style="width: 110px; border-bottom: 1px solid #000;"></div>
+                RUDY ARISTIAN FAJAR
+                <div style="width: 138px; border-bottom: 1px solid #000;"></div>
             </td>
             <td width="20%" style="font-family: Arial, Helvetica, sans-serif; text-align: center; vertical-align: center; color: white;">
                 A
@@ -352,8 +352,8 @@
             </tr>
            <tr>
             <td width="25%" style="font-family: Arial, Helvetica, sans-serif; font-size: 10pt; text-align: left; vertical-align: center;">
-                Rudy Aristian Fajar
-                <div style="width: 110px; border-bottom: 1px solid #000;"></div>
+                RUDY ARISTIAN FAJAR
+                <div style="width: 138px; border-bottom: 1px solid #000;"></div>
             </td>
             <td width="25%" style="font-family: Arial, Helvetica, sans-serif; text-align: center; vertical-align: center; color: white;">
                 A
@@ -389,8 +389,8 @@
             </tr>
            <tr>
             <td width="30%" style="font-family: Arial, Helvetica, sans-serif; font-size: 10pt; text-align: left; vertical-align: center;">
-                Rudy Aristian Fajar
-                <div style="width: 110px; border-bottom: 1px solid #000;"></div>
+                RUDY ARISTIAN FAJAR
+                <div style="width: 138px; border-bottom: 1px solid #000;"></div>
             </td>
             <td width="40%" style="font-family: Arial, Helvetica, sans-serif; text-align: center; vertical-align: center; color: white;">
                 A
@@ -421,8 +421,8 @@
             </tr>
            <tr>
             <td width="30%" style="font-family: Arial, Helvetica, sans-serif; font-size: 10pt; text-align: left; vertical-align: center;">
-                Rudy Aristian Fajar
-                <div style="width: 110px; border-bottom: 1px solid #000;"></div>
+                RUDY ARISTIAN FAJAR
+                <div style="width: 138px; border-bottom: 1px solid #000;"></div>
             </td>
             <td width="30%" style="font-family: Arial, Helvetica, sans-serif; text-align: center; vertical-align: center; color: white;">
                 A
