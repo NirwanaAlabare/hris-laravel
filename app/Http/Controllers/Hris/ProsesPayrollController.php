@@ -1871,7 +1871,7 @@ class ProsesPayrollController extends AdminBaseController
             }
 
             //rekap jurnal
-            $departement=DepartmentAll::where('site_nirwana_id','NAG')->get();
+            $departement=DepartmentAll::whereIn('site_nirwana_id',['NAG','NAK'])->get();
             $data_potongan = $this->potongan($periode_payroll);
             $data_koreksi = $this->koreksi($periode_payroll);
             foreach ($departement as $key => $value) {
