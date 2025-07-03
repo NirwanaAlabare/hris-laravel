@@ -166,7 +166,7 @@
                     <tr>
                         <td width="100px">Nomor</td>
                         <td>:</td>
-                        <td>3872/HRD-NAC/EXT/XII/2024</td>
+                        <td>{{$no_form}}</td>
                     </tr>
                     <tr>
                         <td width="100px">Lampiran</td>
@@ -271,7 +271,7 @@
                     <tr>
                         <td width="100px">Nomor</td>
                         <td>:</td>
-                        <td>3872/HRD-NAC/EXT/XII/2024</td>
+                        <td>{{$no_form}}</td>
                     </tr>
                 </table>
                 <p align="left" style="margin-top:10px;">Panggilan ke -, atas nama :</p>

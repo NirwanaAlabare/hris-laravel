@@ -188,8 +188,21 @@ class HRDController extends AdminBaseController
 
 
     public function export_sp_kehadiran_karyawan_adjustment(){
+
+        $bulan = now()->format('n'); // 1–12
+        $tahun = now()->format('Y');
+
+        // Array bulan romawi
+        $bulanRomawi = [
+        1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV',
+        5 => 'V', 6 => 'VI', 7 => 'VII', 8 => 'VIII',
+        9 => 'IX', 10 => 'X', 11 => 'XI', 12 => 'XII'
+        ];
+
+        // Format nomor form dinamis
+        $no_form = '3872/HRD-NAC/EXT/' . $bulanRomawi[$bulan] . '/' . $tahun;
+
         $enroll_id=request()->enroll_id;
-        $no_form='3872/HRD-NAC/EXT/XII/2024';
         $reason=request()->reason;
         $fileName=request()->enroll_id.'_'.date('His');
         $date_now = Carbon::parse(date('Y-m-d'))->translatedFormat('d F Y');
