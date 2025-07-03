@@ -293,6 +293,7 @@ h1 {
                                                     <table id="datatable-ajax-crud-waiting" class="table table-sm table-striped table-hover table-bordered w-100">
                                                         <thead>
                                                             <tr class="text-center">
+                                                                <th scope="col">Nik</th>
                                                                 <th scope="col">Nama</th>
                                                                 <th scope="col">Bagian</th>
                                                                 <th scope="col">Department</th>
@@ -1028,8 +1029,8 @@ h1 {
                 processing: true,
                 serverSide: true,
                 columns: [
-                    { data: 'employee_name'
-                    },
+                    { data: 'nik'},
+                    { data: 'employee_name'},
                     { data: 'sub_dept_name' },
                     { data: 'department_name' },
                     { data: 'surat_peringatan',
