@@ -1,3 +1,6 @@
+@php use Illuminate\Support\Str; @endphp
+
+
 @extends('admin.adminlayouts.adminlayout3')
 
 @section('head')
@@ -315,7 +318,7 @@ h1 {
 
     {{-- MODAL TAMBAH --}}
     <div class="modal fade" id="ajax-modal-tambah"  role="dialog" data-backdrop="static" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document" style="max-width: 50%;">
+        <div class="modal-dialog modal-md modal-dialog-scrollable" role="document" style="max-width: 50%;">
             <div class="row">
                 <div class="col-md-12">
                     <div class="modal-content">
@@ -451,13 +454,15 @@ h1 {
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <select id="pasalKaryawan" name="pasalKaryawan" style='width: 100%; font-weight: bold;' data-placeholder="Pilih Pasal" class="form-control create-control select2-show-search EmployeeID">
+                                        <select id="pasalKaryawan" name="pasalKaryawan" style='max-width: 30%; font-weight: bold;' data-placeholder="Pilih Pasal" class="form-control create-control select2-show-search EmployeeID">
                                             <option value="">-- Pilih Pasal --</option>
                                             @foreach ($pasal_data as $r_empl)
                                                 <option
                                                     value="{{$r_empl->kode_pasal}}"
                                                 >
-                                                    {{$r_empl->pasal_select}}
+                                                    {{-- {{$r_empl->pasal_select}} --}}
+                                                    {{ Str::limit($r_empl->pasal_select, 50) }}
+
                                                 </option>
                                             @endforeach
                                         </select>
@@ -665,7 +670,7 @@ h1 {
                                                 <option
                                                     value="{{$r_empl->kode_pasal}}"
                                                 >
-                                                    {{$r_empl->pasal_select}}
+                                                   {{ Str::limit($r_empl->pasal_select, 140) }}
                                                 </option>
                                             @endforeach
                                         </select>
