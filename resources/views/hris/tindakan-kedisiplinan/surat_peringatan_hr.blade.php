@@ -454,14 +454,13 @@ h1 {
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <select id="pasalKaryawan" name="pasalKaryawan" style='max-width: 30%; font-weight: bold;' data-placeholder="Pilih Pasal" class="form-control create-control select2-show-search EmployeeID">
+                                        <select id="pasalKaryawan" name="pasalKaryawan" style='width: 100%; font-weight: bold;' data-placeholder="Pilih Pasal" class="form-control create-control select2-show-search EmployeeID">
                                             <option value="">-- Pilih Pasal --</option>
                                             @foreach ($pasal_data as $r_empl)
                                                 <option
                                                     value="{{$r_empl->kode_pasal}}"
                                                 >
-                                                    {{-- {{$r_empl->pasal_select}} --}}
-                                                    {{ Str::limit($r_empl->pasal_select, 50) }}
+                                                    {{$r_empl->pasal_select}}
 
                                                 </option>
                                             @endforeach

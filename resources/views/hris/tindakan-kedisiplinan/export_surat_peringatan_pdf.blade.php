@@ -25,7 +25,7 @@
 </head>
 @foreach ($data as $key=>$value)
 <body>
-    <div style="width: 100%; height: 100%; position: relative;">
+    <div style="width: 100%; height: 1300px; position: relative; background-color: rgb(255, 255, 255)">
     <table class="purchase-order" width="100%" style="">
         <thead>
             <tr>
@@ -231,7 +231,7 @@
             <tr>
                 <td style="vertical-align: middle; font-size: 13pt;">
                     Karyawan tersebut telah melakukan pelanggaran Peraturan Perusahaan pasal {{substr($value->kode_pasal, 0,2)}} ayat {{substr($value->pasal, 2,2)}}. Peningkatan
-                    sanksi pelanggaran setelah mendapatkan teguran. “{{ str_replace('.', '', $value->desc_surat_peringatan) }}"{{ $value->alasan_pelanggaran ? ', '.$value->alasan_pelanggaran : '' }}
+                    sanksi pelanggaran setelah mendapatkan teguran. “{{ str_replace('.', '', $value->desc_surat_peringatan) }}"{{ $value->alasan_pelanggaran ? ', yaitu '.$value->alasan_pelanggaran : '' }}
                 </td>
             </tr>
         </thead>
@@ -441,13 +441,13 @@
         </thead>
     </table>
     @endif
-    <table width="100%" style="">
+    {{-- <table width="100%" style="">
         <thead>
             <tr>
-                <td style="height:230px;"></td>
+                <td style="height:100px;"></td>
             </tr>
         </thead>
-    </table>
+    </table> --}}
         <table width="27%" style="border: 2px solid #747474; position: absolute; left: 0; bottom: 10px;">
             <thead>
                 <tr>
@@ -616,7 +616,7 @@
   <table width="100%" style="">
         <thead>
             <tr>
-                <td width="100%" style=" height:210px;"></td>
+                <td width="100%" style=" height:240px;"></td>
             </tr>
         </thead>
     </table>
