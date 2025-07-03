@@ -486,11 +486,11 @@
         <div class="recommendation">
             <div style="height: 3px;"></div>
           <strong>D. Rekomendasi Tindak Lanjut</strong>
-          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $data_penilaian ? $data_penilaian->rekomendasi_perpanjang_kontrak == 'perpanjang' ? 'checked' : '' : ''}} name="rekomendasi_perpanjang_kontrak" value="perpanjang" id="rekomendasi_perpanjang_kontrak"> Perpanjangan Kontrak {{ $data_penilaian ? $data_penilaian->perpanjang_bulan : '___________'}} Bulan</label>
+          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $data_penilaian ? $data_penilaian->rekomendasi_perpanjang_kontrak == 'perpanjang' ? 'checked' : '' : ''}} name="rekomendasi_perpanjang_kontrak" value="perpanjang" id="rekomendasi_perpanjang_kontrak"> Perpanjangan Kontrak {{ $data_penilaian ? $data_penilaian->perpanjang_bulan == 0 ? '___________' : $data_penilaian->perpanjang_bulan : '___________'}} Bulan</label>
           <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $data_penilaian ? $data_penilaian->rekomendasi_phk == 'phk' ? 'checked' : '' : ''}} name="rekomendasi_phk" value="phk" id="rekomendasi_phk"> Tidak Perpanjang Kontrak / PHK</label>
           <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $data_penilaian ? $data_penilaian->rekomendasi_demosi == 'demosi' ? 'checked' : '' : ''}} name="rekomendasi_demosi" value="demosi" id="rekomendasi_demosi"> Demosi</label>
           <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $data_penilaian ? $data_penilaian->rekomendasi_promosi == 'promosi' ? 'checked' : '' : ''}} name="rekomendasi_promosi" value="promosi" id="rekomendasi_promosi"> Promosi</label>
-          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $data_penilaian ? $data_penilaian->rekomendasi_training == 'training' ? 'checked' : '' : ''}} name="rekomendasi_training" value="training" id="rekomendasi_training"> Training / Pengembangan, Sebutkan Judul / Tujuan {{$data_penilaian ? $data_penilaian->judul_training : '___________'}}</label>
+          <label><input type="radio" class="penilaian_radio_rekomendasi" {{ $data_penilaian ? $data_penilaian->rekomendasi_training == 'training' ? 'checked' : '' : ''}} name="rekomendasi_training" value="training" id="rekomendasi_training"> Training / Pengembangan, Sebutkan Judul / Tujuan {{$data_penilaian ? $data_penilaian->judul_training ? $data_penilaian->judul_training : '___________'  : '___________'}}</label>
         </div>
     </div>
     <table width="98.2%" style="position: absolute; bottom: 8px;left: 8px;">
