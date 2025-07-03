@@ -1041,12 +1041,12 @@ h1 {
                     { data: 'kode_pasal'},
                     { data: 'tanggal_mulai',
                       render: function(data, type, row) {
-                            return moment(data).format('ll');  // Formatkan tanggal ke dmy
+                            return moment(data).format('DD MMMM YYYY');
                             }
                     },
                     { data: 'tanggal_sampai',
                       render: function(data, type, row) {
-                            return moment(data).format('ll');  // Formatkan tanggal ke dmy
+                            return moment(data).format('DD MMMM YYYY');
                             }
                     },
                     {
