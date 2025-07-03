@@ -456,14 +456,14 @@ h1 {
                                     <div class="form-group">
                                         <select id="pasalKaryawan" name="pasalKaryawan" style='width: 100%; font-weight: bold;' data-placeholder="Pilih Pasal" class="form-control create-control select2-show-search EmployeeID">
                                             <option value="">-- Pilih Pasal --</option>
-                                            @foreach ($pasal_data as $r_empl)
+                                            {{-- @foreach ($pasal_data as $r_empl)
                                                 <option
                                                     value="{{$r_empl->kode_pasal}}"
                                                 >
                                                     {{$r_empl->pasal_select}}
 
                                                 </option>
-                                            @endforeach
+                                            @endforeach --}}
                                         </select>
                                         <small class="error-message text-danger"></small>
                                     </div>
@@ -665,13 +665,13 @@ h1 {
                                     <div class="form-group">
                                         <select required id="EditpasalKaryawan" name="EditpasalKaryawan" style='width: 100%; font-weight: bold;' data-placeholder="Pilih Pasal" class="form-control create-control select2-show-search EmployeeID">
                                             <option value="">-- Pilih Pasal --</option>
-                                            @foreach ($pasal_data as $r_empl)
+                                            {{-- @foreach ($pasal_data as $r_empl)
                                                 <option
                                                     value="{{$r_empl->kode_pasal}}"
                                                 >
                                                    {{ Str::limit($r_empl->pasal_select, 140) }}
                                                 </option>
-                                            @endforeach
+                                            @endforeach --}}
                                         </select>
                                         <small class="error-message text-danger"></small>
                                     </div>
@@ -777,9 +777,110 @@ h1 {
             dateFormat: 'dd-mm-yy'
         });
     </script>
+    <script>
+        const semuaPasal = @json($pasal_data);
+    </script>
+    <script>
+    $(document).ready(function () {
+        function tampilkanPasal(spFilter) {
+            // kosongkan dulu isi dropdown
+            const select = $('#pasalKaryawan');
+            select.empty().append('<option value="">-- Pilih Pasal --</option>');
+
+            // filter berdasarkan nilai sp (sp_1, sp_2, sp_3)
+            const hasilFilter = semuaPasal.filter(pasal => pasal.sp === spFilter?.replace('sp_',''));
+
+            // tambahkan ke select
+            hasilFilter.forEach(pasal => {
+                const potongText = pasal.pasal_select.length > 140
+                    ? pasal.pasal_select.substring(0, 137) + '...'
+                    : pasal.pasal_select;
+
+                select.append(`<option value="${pasal.kode_pasal}">${potongText}</option>`);
+            });
+
+            // refresh Select2 jika pakai
+            select.trigger('change.select2');
+        }
+
+        // saat halaman pertama kali load, isi sesuai radio terpilih
+        tampilkanPasal($('input[name="tindakan_pendisiplinan"]:checked').val());
+
+        // saat radio SP berubah
+        $('input[name="tindakan_pendisiplinan"]').on('change', function () {
+            const spVal = $(this).val();
+            tampilkanPasal(spVal);
+        });
+    });
+    $(document).ready(function () {
+        function tampilkanPasal(spFilter) {
+            // kosongkan dulu isi dropdown
+            const select = $('#EditpasalKaryawan');
+            select.empty().append('<option value="">-- Pilih Pasal --</option>');
+
+            // filter berdasarkan nilai sp (sp_1, sp_2, sp_3)
+            const hasilFilter = semuaPasal.filter(pasal => pasal.sp === spFilter?.replace('sp_',''));
+
+            // tambahkan ke select
+            hasilFilter.forEach(pasal => {
+                const potongText = pasal.pasal_select.length > 140
+                    ? pasal.pasal_select.substring(0, 137) + '...'
+                    : pasal.pasal_select;
+
+                select.append(`<option value="${pasal.kode_pasal}">${potongText}</option>`);
+            });
+
+            // refresh Select2 jika pakai
+            select.trigger('change.select2');
+        }
+
+        // saat halaman pertama kali load, isi sesuai radio terpilih
+        tampilkanPasal($('input[name="edit_tindakan_pendisiplinan"]:checked').val());
+
+        // saat radio SP berubah
+        $('input[name="edit_tindakan_pendisiplinan"]').on('change', function () {
+            const spVal = $(this).val();
+            tampilkanPasal(spVal);
+        });
+    });
+    </script>
 
 
     <script>
+
+        $(document).ready(function () {
+        function formatTanggal(tanggal) {
+            const dd = String(tanggal.getDate()).padStart(2, '0');
+            const mm = String(tanggal.getMonth() + 1).padStart(2, '0'); // Januari = 0
+            const yyyy = tanggal.getFullYear();
+            return `${dd}-${mm}-${yyyy}`;
+        }
+
+        function updateTanggalBerlaku() {
+            const today = new Date();
+            const startDate = formatTanggal(today);
+            const spValue = $('input[name="tindakan_pendisiplinan"]:checked').val();
+
+            let sampaiDate = new Date(today);
+            if (spValue === 'sp_3') {
+                sampaiDate.setMonth(sampaiDate.getMonth() + 6);
+            } else {
+                sampaiDate.setMonth(sampaiDate.getMonth() + 3);
+            }
+            const endDate = formatTanggal(sampaiDate);
+
+            $('#tanggal_berlaku_mulai').val(startDate);
+            $('#tanggal_berlaku_sampai').val(endDate);
+        }
+
+        // Set default saat halaman dimuat
+        updateTanggalBerlaku();
+
+        // Ubah tanggal saat SP 1, 2, atau 3 dipilih
+        $('input[name="tindakan_pendisiplinan"]').on('change', function () {
+            updateTanggalBerlaku();
+        });
+    });
 
 
          $("#karyawanBermasalahIDEdit").select2().on("select2:select", function() {
@@ -870,6 +971,11 @@ h1 {
                 $('#tanggal_berlaku_sampai').val('');
                 $('input[name="tindakan_pendisiplinan"]').prop('checked', false);
                 $('#enroll_id_karyawan_bermasalah').val('');
+                $('#create_employee_nik').text('');
+                $('#create_employee_name').text('');
+                $('#create_employee_sub_dept').text('');
+                $('#create_employee_department').text('');
+                $('#create_employee_jabatan').text('');
 
                 $('#no_form').val('');
                 $('#alasan_pelanggaran').val('');
