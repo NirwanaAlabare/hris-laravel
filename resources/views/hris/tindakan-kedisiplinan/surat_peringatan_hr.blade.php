@@ -764,7 +764,7 @@ h1 {
     <script src="{{URL::asset('assets/plugins/tabs/tabs.js')}}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/locale/id.min.js"></script>
     <style>
         .checkbox-xl .form-check-input {
             scale: 1.5;
@@ -1041,12 +1041,12 @@ h1 {
                     { data: 'kode_pasal'},
                     { data: 'tanggal_mulai',
                       render: function(data, type, row) {
-                            return moment(data).format('DD MMMM YYYY');
+                            return moment(data).locale('id').format('DD MMMM YYYY');
                             }
                     },
                     { data: 'tanggal_sampai',
                       render: function(data, type, row) {
-                            return moment(data).format('DD MMMM YYYY');
+                            return moment(data).locale('id').format('DD MMMM YYYY');
                             }
                     },
                     {
