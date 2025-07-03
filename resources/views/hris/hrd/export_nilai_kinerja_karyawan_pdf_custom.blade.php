@@ -207,11 +207,14 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">{{ \Carbon\Carbon::parse($data_karyawan->join_date)->translatedFormat('d F Y') }}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="13%">Periode Penilaian</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="2%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%"> @if($data_penilaian && $data_penilaian->tgl_akhir_kontrak)
-                       Perpanjangan PKS {{ \Carbon\Carbon::parse($data_penilaian->tgl_akhir_kontrak)->translatedFormat('d F Y') }}
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">
+                @if(isset($data_penilaian->tgl_akhir_kontrak) && $data_penilaian->tgl_akhir_kontrak)
+                    Perpanjangan PKS {{ \Carbon\Carbon::parse($data_penilaian->tgl_akhir_kontrak)->translatedFormat('d F Y') }}
                 @else
-                Perpanjangan PKS {{ \Carbon\Carbon::parse($contract_end)->translatedFormat('d F Y') }}
-                @endif</td>
+                    Perpanjangan PKS {{ \Carbon\Carbon::parse($contract_end)->translatedFormat('d F Y') }}
+                @endif
+
+                </td>
             </tr>
             <tr>
             <tr>
@@ -254,24 +257,24 @@
         </thead>
         <tbody style="font-family: sans-serif; font-size: 7.5pt;">
           <tr>
-            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px;">{{$data_penilaian ? $data_penilaian->uraian_tugas_1 : ''}}</td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;">{{$data_penilaian ? $data_penilaian->target_pencapaian_1 : ''}}</td>
+            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px;">{{ $data_penilaian->uraian_tugas_1 ?? '' }}</td>
+            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;">{{$data_penilaian->target_pencapaian_1 ?? ''}}</td>
           </tr>
           <tr>
-            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px;">{{$data_penilaian ? $data_penilaian->uraian_tugas_2 : ''}}</td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;">{{$data_penilaian ? $data_penilaian->target_pencapaian_2 : ''}}</td>
+            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px;">{{$data_penilaian->uraian_tugas_2 ?? ''}}</td>
+            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;">{{$data_penilaian->target_pencapaian_2 ?? ''}}</td>
           </tr>
           <tr>
-            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px;">{{$data_penilaian ? $data_penilaian->uraian_tugas_3 : ''}}</td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;">{{$data_penilaian ? $data_penilaian->target_pencapaian_3 : ''}}</td>
+            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px;">{{$data_penilaian->uraian_tugas_3 ?? ''}}</td>
+            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;">{{$data_penilaian->target_pencapaian_3 ?? ''}}</td>
           </tr>
           <tr>
-            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px;">{{$data_penilaian ? $data_penilaian->uraian_tugas_4 : ''}}</td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;">{{$data_penilaian ? $data_penilaian->target_pencapaian_4 : ''}}</td>
+            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px;">{{$data_penilaian->uraian_tugas_4 ?? ''}}</td>
+            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;">{{$data_penilaian->target_pencapaian_4 ?? ''}}</td>
           </tr>
           <tr>
-            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px; border-bottom: 1px solid #000;">{{$data_penilaian ? $data_penilaian->uraian_tugas_5 : ''}}</td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;  border-bottom: 1px solid #000;">{{$data_penilaian ? $data_penilaian->target_pencapaian_5 : ''}}</td>
+            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px; border-bottom: 1px solid #000;">{{$data_penilaian->uraian_tugas_5 ?? ''}}</td>
+            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;  border-bottom: 1px solid #000;">{{$data_penilaian->target_pencapaian_5 ?? ''}}</td>
           </tr>
         </tbody>
       </table>
@@ -299,23 +302,23 @@
         <tr>
           <td style="border: 1px solid #000; background-color: #f8d7da; padding: 5px;">
             10<br>
-            <input type="radio" name="nilai_kinerja" value="10" class="penilaian-radio" {{ $data_penilaian && $data_penilaian->nilai_kinerja == 10 ? 'checked' : '' }}>
+            <input type="radio" name="nilai_kinerja" value="10" class="penilaian-radio" {{ ($data_penilaian->nilai_kinerja ?? null) == 10 ? 'checked' : '' }}>
           </td>
           <td style="border: 1px solid #000; background-color: #ffe5b4; padding: 5px;">
             20<br>
-            <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="20" class="penilaian-radio" {{ $data_penilaian && $data_penilaian->nilai_kinerja == 20 ? 'checked' : '' }}>
+            <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="20" class="penilaian-radio" {{ ($data_penilaian->nilai_kinerja ?? null) == 20 ? 'checked' : '' }}>
           </td>
           <td style="border: 1px solid #000; background-color: #fff3cd; padding: 5px;">
             30<br>
-            <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="30" class="penilaian-radio" {{ $data_penilaian && $data_penilaian->nilai_kinerja == 30 ? 'checked' : '' }}>
+            <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="30" class="penilaian-radio" {{ ($data_penilaian->nilai_kinerja ?? null) == 30 ? 'checked' : '' }}>
           </td>
           <td style="border: 1px solid #000; background-color: #d4edda; padding: 5px;">
             40<br>
-            <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="40" class="penilaian-radio" {{ $data_penilaian && $data_penilaian->nilai_kinerja == 40 ? 'checked' : '' }}>
+            <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="40" class="penilaian-radio" {{ ($data_penilaian->nilai_kinerja ?? null) == 40 ? 'checked' : '' }}>
           </td>
           <td style="border: 1px solid #000; background-color: #c3e6cb; padding: 5px;">
             50<br>
-            <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="50" class="penilaian-radio" {{ $data_penilaian && $data_penilaian->nilai_kinerja == 50 ? 'checked' : '' }}>
+            <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="50" class="penilaian-radio" {{ ($data_penilaian->nilai_kinerja ?? null) == 50 ? 'checked' : '' }}>
           </td>
         </tr>
       </table>
@@ -368,69 +371,22 @@
         @endphp
 
         @foreach ($kompetensiList as $index => $kompetensi)
-
-        <tr>
-            <td class="text-start"
-                style="line-height: 1.2; padding: 6px; black;border: 1px solid black; border-left:none;">
-                {{ $kompetensi }}
-            </td>
-
-            @foreach ([10, 20, 30, 40, 50] as $nilai)
-                <td style="text-align: center; border: 1px solid black;">
-                    <input type="radio" class="penilaian-radio" name="kompetensi[{{ $index }}]" value="{{ $nilai }}" {{ isset($data_penilaian[$index]) && $data_penilaian[$index] == $nilai ? 'checked' : '' }}
-                    >
+            <tr>
+                <td class="text-start"
+                    style="line-height: 1.2; padding: 6px; black;border: 1px solid black; border-left:none;">
+                    {{ $kompetensi }}
                 </td>
-            @endforeach
-        </tr>
+
+                @foreach ([10, 20, 30, 40, 50] as $nilai)
+                    <td style="text-align: center; border: 1px solid black;">
+                        <input type="radio" class="penilaian-radio" name="kompetensi[{{ $index }}]"
+                            value="{{ $nilai }}"
+                            {{ ($data_penilaian->$index ?? null) == $nilai ? 'checked' : '' }}>
+                    </td>
+                @endforeach
+            </tr>
         @endforeach
-          {{-- <tr>
-            <td style="border-top: 1px solid black; padding: 6px;">Tanggung jawab terhadap tugas yang diberikan</td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row1" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row1" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row1" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row1" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row1" class="penilaian-radio"></td>
-          </tr>
-          <tr>
-            <td style="border-top: 1px solid black; padding: 6px;">Inisiatif dan Kerjasama</td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row2" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row2" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row2" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row2" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row2" class="penilaian-radio"></td>
-          </tr>
-          <tr>
-            <td style="border-top: 1px solid black; padding: 6px;">Akurasi dalam pekerjaan</td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row3" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row3" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row3" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row3" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row3" class="penilaian-radio"></td>
-          </tr>
-          <tr>
-            <td style="border-top: 1px solid black; padding: 6px;">Kemauan dan Kegigihan dalam mencapai tujuan</td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row4" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row4" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row4" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row4" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row4" class="penilaian-radio"></td>
-          </tr>
-          <tr>
-            <td style="border-top: 1px solid black; padding: 6px;">Penyampaian dan Penerimaan informasi</td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row5" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row5" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row5" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row5" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row5" class="penilaian-radio"></td>
-          </tr>
-          <tr>
-            <td style="border-top: 1px solid black; border-bottom: 1px solid black; padding: 6px;">Attitude / Sikap Kerja</td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row6" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row6" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row6" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row6" class="penilaian-radio"></td>
-            <td style="border: 1px solid black; text-align: center;"><input type="radio" name="row6" class="penilaian-radio"></td>
-          </tr> --}}
+
         </tbody>
     </table>
     <table width="100%" style="border-bottom:1px solid black; border-top:0px;">
@@ -456,55 +412,44 @@
             <tr>
                 <td style="border-left:none;">Surat Peringatan 3</td>
                 <td style="border-left: none;">6</td>
-                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->kejadian['sp3_kali'] : ''}}</td>
-                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->total['sp3_kali'] : ''}}</td>
+                <td style="border-left: none;">{{$data_penilaian->kejadian['sp3_kali'] ?? '' }}</td>
+                <td style="border-left: none;">{{$data_penilaian->total['sp3_kali'] ?? ''}}</td>
             </tr>
             <tr>
                 <td style="border-left:none;">Surat Peringatan 2</td>
                 <td style="border-left: none;">4</td>
-                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->kejadian['sp2_kali'] : ''}}</td>
-                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->total['sp2_kali'] : ''}}</td>
+                <td style="border-left: none;">{{$data_penilaian->kejadian['sp2_kali'] ?? ''}}</td>
+                <td style="border-left: none;">{{$data_penilaian->total['sp2_kali'] ?? ''}}</td>
             </tr>
             <tr>
                 <td style="border-left:none;">Surat Peringatan 1</td>
                 <td style="border-left: none;">2</td>
-                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->kejadian['sp1_kali'] : ''}}</td>
-                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->total['sp1_kali'] : ''}}</td>
+                <td style="border-left: none;">{{$data_penilaian->kejadian['sp1_kali'] ?? ''}}</td>
+                <td style="border-left: none;">{{$data_penilaian->total['sp1_kali'] ?? ''}}</td>
             </tr>
             <tr>
                 <td style="border-left:none;">Kecelakaan Kerja Karena Kelalaian</td>
                 <td style="border-left: none;">2</td>
-                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->kejadian['kecelakaan_kali'] : ''}}</td>
-                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->total['kecelakaan_kali'] : ''}}</td>
+                <td style="border-left: none;">{{$data_penilaian->kejadian['kecelakaan_kali'] ?? ''}}</td>
+                <td style="border-left: none;">{{$data_penilaian->total['kecelakaan_kali'] ?? ''}}</td>
             </tr>
             <tr>
                 <td style="border-left:none;">Mangkir</td>
                 <td style="border-left: none;">1</td>
-                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->kejadian['mangkir_kali'] : ''}}</td>
-                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->total['mangkir_kali'] : ''}}</td>
+                <td style="border-left: none;">{{$data_penilaian->kejadian['mangkir_kali'] ?? ''}}</td>
+                <td style="border-left: none;">{{$data_penilaian->total['mangkir_kali'] ?? ''}}</td>
             </tr>
             <tr>
                 <td style="border-left:none;">Ijin</td>
                 <td style="border-left: none;">0.5</td>
-                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->kejadian['ijin_kali'] : ''}}</td>
-                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->total['ijin_kali'] : ''}}</td>
+                <td style="border-left: none;">{{$data_penilaian->kejadian['ijin_kali'] ?? ''}}</td>
+                <td style="border-left: none;">{{$data_penilaian->total['ijin_kali'] ?? ''}}</td>
             </tr>
             <tr>
                 <td colspan="3" style="text-align: center; font-weight: bold; border-left:none;">Total Pengurangan</td>
-                <td style="border-left: none;">{{$data_penilaian ? $data_penilaian->total_pengurangan : ''}}</td>
+                <td style="border-left: none;">{{$data_penilaian->total_pengurangan ?? ''}}</td>
             </tr>
-            {{-- <tr>
-                <td style="border-left:none;">Surat Peringatan 3</td>
-                <td>6</td>
-                <td>0</td>
-                <td>0</td>
-            </tr>
-            <tr><td style="border-left:none;">Surat Peringatan 2</td><td>4</td><td>0</td><td>0</td></tr>
-            <tr><td style="border-left:none;">Surat Peringatan 1</td><td>2</td><td>0</td><td>0</td></tr>
-            <tr><td style="border-left:none;">Kecelakaan Kerja Karena Kelalaian</td><td>2</td><td>0</td><td>0</td></tr>
-            <tr><td style="border-left:none;">Mangkir</td><td>1</td><td>0</td><td>0</td></tr>
-            <tr><td style="border-left:none;">Ijin</td><td>0.5</td><td>0</td><td>0</td></tr>
-            <tr><td colspan="3" style="text-align: right; font-weight: bold; border-left:none;">Total Pengurangan</td><td>0</td></tr> --}}
+
           </tbody>
         </table>
 
@@ -514,10 +459,10 @@
             <tr>
                 <td colspan="2" style="border: 1px solid #000; border-bottom: 0px solid #000; border-right: 0px solid #000; text-align: center; height:17px; line-height:1">Nilai Akhir</td>
             </tr>
-            <tr><td style="width:50%">Penilaian Kinerja</td><td>{{$data_penilaian ? $data_penilaian->nilai_kinerja : ''}}</td></tr>
-            <tr><td>Penilaian Kompeten</td><td>{{$data_penilaian ? $data_penilaian->rata_rata_kompetensi : ''}}</td></tr>
-            <tr><td>Penilaian Kedisiplinan</td><td>{{$data_penilaian ? $data_penilaian->total_pengurangan : ''}}</td></tr>
-            <tr><td style="font-weight: bold;">Nilai Akhir</td><td style="font-weight: bold;">{{$data_penilaian ? $data_penilaian->nilai_akhir : ''}}</td></tr>
+            <tr><td style="width:50%">Penilaian Kinerja</td><td>{{$data_penilaian->nilai_kinerja ?? 0}}</td></tr>
+            <tr><td>Penilaian Kompeten</td><td>{{$data_penilaian->rata_rata_kompetensi ?? 0}}</td></tr>
+            <tr><td>Penilaian Kedisiplinan</td><td>{{$data_penilaian->total_pengurangan ?? 0}}</td></tr>
+            <tr><td style="font-weight: bold;">Nilai Akhir</td><td style="font-weight: bold;">{{$data_penilaian->nilai_akhir ?? 0}}</td></tr>
           </table>
         </div>
 
@@ -563,7 +508,7 @@
                 <td style="border:1px solid black;border-right:none;"></td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black; text-align: center; height:25px; line-height:1; padding-top:10px;"> {{ $data_penilaian ? $data_penilaian->penilai : '' }}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black; text-align: center; height:25px; line-height:1; padding-top:10px;"> {{ $data_penilaian->penilai ?? '' }}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black; text-align: center; height:25px; line-height:1; padding-top:10px;">Chief / Manager</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black; text-align: center; height:25px; line-height:1; padding-top:10px;">HRD</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:9pt;text-align:justify;vertical-align:top;border:1px solid black; text-align: center; height:25px; line-height:1; padding-top:10px;">General Manager</td>
@@ -573,7 +518,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-             const nilaiKinerja = "{{ $data_penilaian && $data_penilaian->nilai_kinerja ? $data_penilaian->nilai_kinerja : 0 }}";
+             const nilaiKinerja = "{{ $data_penilaian->nilai_kinerja ?? 0 }}";
              const data_penilaian = {!! json_encode($data_penilaian ?? []) !!};
 
 

@@ -167,11 +167,11 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         $data_penilaian = PenilaianKinerja::where('enroll_id', $enroll_id)->where('tgl_awal_kontrak',$contract)->where('tgl_akhir_kontrak', $contract_end)->first();
         // $surat_peringatan = SuratPeringatanKaryawan::where('enroll_id', $enroll_id)->where('tanggal_mulai','>=',$contract)->where('tanggal_sampai','<=', $today)->get();
        $surat_peringatan = SuratPeringatanKaryawan::where('enroll_id', $enroll_id)
-    ->where(function ($query) use ($contract, $contract_end) {
-        $query->where('tanggal_mulai', '<=', $contract_end)
-              ->where('tanggal_sampai', '>=', $contract);
-    })
-    ->get();
+        ->where(function ($query) use ($contract, $contract_end) {
+            $query->where('tanggal_mulai', '<=', $contract_end)
+                ->where('tanggal_sampai', '>=', $contract);
+        })
+        ->get();
 
 
         $start_date = Carbon::parse($contract);
@@ -507,6 +507,14 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         $data_karyawan = EmployeeAtribut::where('enroll_id', $enroll_id)->first();
 
         $data_penilaian = PenilaianKinerja::where('enroll_id', $enroll_id)->where('tgl_awal_kontrak',$contract)->where('tgl_akhir_kontrak', $contract_end)->first();
+        $surat_peringatan = SuratPeringatanKaryawan::where('enroll_id', $enroll_id)
+        ->where(function ($query) use ($contract, $contract_end) {
+            $query->where('tanggal_mulai', '<=', $contract_end)
+                ->where('tanggal_sampai', '>=', $contract);
+        })
+        ->get();
+
+
 
         if($data_penilaian){
             $kejadian = [
@@ -526,16 +534,70 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                 'mangkir_kali' => $data_penilaian->mangkir_kali * 1,
                 'ijin_kali' => $data_penilaian->ijin_kali * 0.5,
             ];
-
             $total_pengurangan = array_sum($total);
 
-            // Lalu gabungkan ke dalam data_penilaian
             $data_penilaian->kejadian = $kejadian;
             $data_penilaian->total = $total;
             $data_penilaian->total_pengurangan = $total_pengurangan;
         }
+        else{
+            $data_penilaian = new \stdClass();
+            $data_penilaian->rekomendasi_perpanjang_kontrak = null;
+            $data_penilaian->rekomendasi_phk = null;
+            $data_penilaian->rekomendasi_demosi = null;
+            $data_penilaian->rekomendasi_promosi = null;
+            $data_penilaian->rekomendasi_training = null;
+            $data_penilaian->perpanjang_bulan = null;
+            $data_penilaian->judul_training = null;
+
+            $sp1_kali = 0;
+            $sp2_kali = 0;
+            $sp3_kali = 0;
+
+            foreach ($surat_peringatan as $sp) {
+                if (strtolower($sp->surat_peringatan) === 'sp_1') {
+                    $sp1_kali++;
+                } elseif (strtolower($sp->surat_peringatan) === 'sp_2') {
+                    $sp2_kali++;
+                } elseif (strtolower($sp->surat_peringatan) === 'sp_3') {
+                    $sp3_kali++;
+                }
+            }
+
+            $data_penilaian->sp1_kali = $sp1_kali;
+            $data_penilaian->sp2_kali = $sp2_kali;
+            $data_penilaian->sp3_kali = $sp3_kali;
+            $data_penilaian->kecelakaan_kali = 0;
+            $data_penilaian->mangkir_kali = 0;
+            $data_penilaian->ijin_kali = 0;
+
+            $kejadian = [
+                'sp3_kali' => $sp3_kali,
+                'sp2_kali' => $sp2_kali,
+                'sp1_kali' => $sp1_kali,
+                'kecelakaan_kali' => 0,
+                'mangkir_kali' => 0,
+                'ijin_kali' => 0,
+            ];
+
+            $total = [
+                'sp3_kali' => $sp3_kali * 6,
+                'sp2_kali' => $sp2_kali * 4,
+                'sp1_kali' => $sp1_kali * 2,
+                'kecelakaan_kali' => 0,
+                'mangkir_kali' => 0,
+                'ijin_kali' => 0,
+            ];
+
+            $total_pengurangan = array_sum($total);
+
+            $data_penilaian->kejadian = $kejadian;
+            $data_penilaian->total = $total;
+            $data_penilaian->total_pengurangan = $total_pengurangan;
+        }
+
         $pdf = PDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_custom',['data_penilaian'=>$data_penilaian,'data_karyawan'=>$data_karyawan,'contract'=>$contract,'contract_end'=>$contract_end]);
-        return $pdf->stream('laporan-pegawai.pdf');
+        return $pdf->stream('laporan-kinerja.pdf');
     }
 
     public function import_penilaian_kinerja_staff(){
