@@ -1263,7 +1263,8 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             $data_penilaian = PenilaianKinerja::where('tgl_awal_kontrak', $tanggalMulai)
                 ->where('tgl_akhir_kontrak', $tanggalSampai)
                 ->get()
-                ->keyBy('enroll_id'); // Group berdasarkan enroll_id supaya lebih mudah digabung nanti
+                ->keyBy('enroll_id');
+
         }
         if ($enrollIds = request()->enroll_id) {
             // Pastikan ini array dan aman digunakan
@@ -1335,26 +1336,49 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             ORDER BY z.sub_dept_name ASC
         "));
 
+
         // Gabungkan data_penilaian ke masing-masing data_karyawan berdasarkan enroll_id
         $data = $data_karyawan->map(function ($karyawan) use ($data_penilaian) {
             $enroll_id = $karyawan->enroll_id;
+            $contract = $karyawan->contract;
+            $contract_end = $karyawan->contract_end;
+            $surat_peringatan = SuratPeringatanKaryawan::where('enroll_id', $enroll_id)
+            ->where(function ($query) use ($contract, $contract_end) {
+                $query->where('tanggal_mulai', '<=', $contract_end)
+                ->where('tanggal_sampai', '>=', $contract);
+            })
+            ->get();
 
             if ($data_penilaian->has($enroll_id)) {
                 $penilaian = $data_penilaian->get($enroll_id);
 
+                $sp1_kali = 0;
+                $sp2_kali = 0;
+                $sp3_kali = 0;
+
+                foreach ($surat_peringatan as $sp) {
+                    if (strtolower($sp->surat_peringatan) === 'sp_1') {
+                        $sp1_kali++;
+                    } elseif (strtolower($sp->surat_peringatan) === 'sp_2') {
+                        $sp2_kali++;
+                    } elseif (strtolower($sp->surat_peringatan) === 'sp_3') {
+                        $sp3_kali++;
+                    }
+                }
+
                 $kejadian = [
-                    'sp3_kali' => $penilaian->sp3_kali,
-                    'sp2_kali' => $penilaian->sp2_kali,
-                    'sp1_kali' => $penilaian->sp1_kali,
+                    'sp3_kali' => $sp3_kali,
+                    'sp2_kali' => $sp2_kali,
+                    'sp1_kali' => $sp1_kali,
                     'kecelakaan_kali' => $penilaian->kecelakaan_kali,
                     'mangkir_kali' => $penilaian->mangkir_kali,
                     'ijin_kali' => $penilaian->ijin_kali,
                 ];
 
                 $total = [
-                    'sp3_kali' => $penilaian->sp3_kali * 6,
-                    'sp2_kali' => $penilaian->sp2_kali * 4,
-                    'sp1_kali' => $penilaian->sp1_kali * 2,
+                    'sp3_kali' => $sp3_kali * 6,
+                    'sp2_kali' => $sp2_kali * 4,
+                    'sp1_kali' => $sp1_kali * 2,
                     'kecelakaan_kali' => $penilaian->kecelakaan_kali * 2,
                     'mangkir_kali' => $penilaian->mangkir_kali * 1,
                     'ijin_kali' => $penilaian->ijin_kali * 0.5,
@@ -1368,9 +1392,53 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                     'total_pengurangan' => $total_pengurangan,
                 ];
             } else {
-                $karyawan->penilaian = null;
-            }
+                $sp1_kali = 0;
+                $sp2_kali = 0;
+                $sp3_kali = 0;
 
+                foreach ($surat_peringatan as $sp) {
+                    if (strtolower($sp->surat_peringatan) === 'sp_1') {
+                        $sp1_kali++;
+                    } elseif (strtolower($sp->surat_peringatan) === 'sp_2') {
+                        $sp2_kali++;
+                    } elseif (strtolower($sp->surat_peringatan) === 'sp_3') {
+                        $sp3_kali++;
+                    }
+                }
+
+                $kejadian = [
+                    'sp3_kali' => $sp3_kali,
+                    'sp2_kali' => $sp2_kali,
+                    'sp1_kali' => $sp1_kali,
+                    'kecelakaan_kali' => 0,
+                    'mangkir_kali' => 0,
+                    'ijin_kali' => 0,
+                ];
+
+                $total = [
+                    'sp3_kali' => $sp3_kali * 6,
+                    'sp2_kali' => $sp2_kali * 4,
+                    'sp1_kali' => $sp1_kali * 2,
+                    'kecelakaan_kali' => 0 * 2,
+                    'mangkir_kali' => 0 * 1,
+                    'ijin_kali' => 0 * 0.5,
+                ];
+                $total_pengurangan = array_sum($total);
+
+                $karyawan->rekomendasi_perpanjang_kontrak = null;
+                $karyawan->rekomendasi_phk = null;
+                $karyawan->rekomendasi_demosi = null;
+                $karyawan->rekomendasi_promosi = null;
+                $karyawan->rekomendasi_training = null;
+                $karyawan->perpanjang_bulan = null;
+                $karyawan->judul_training = null;
+
+                $karyawan->penilaian = [
+                    'kejadian' => $kejadian,
+                    'total' => $total,
+                    'total_pengurangan' => $total_pengurangan,
+                ];
+            }
             return $karyawan;
         });
         $pdf = PDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_all',['data'=>$data]);
