@@ -453,7 +453,7 @@ h1 {
                                 <div class="col-md-12" style="margin-top: 10px; margin-bottom: 3px; padding-top: 10px;">
                                     <h6 style="font-weight: bold;">Dikarenakan Karyawan tersebut telah melakukan pelanggaran Peraturan Perusahaan pasal :</h6>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-11">
                                     <div class="form-group">
                                         <select id="pasalKaryawan" name="pasalKaryawan" style='width: 100%; font-weight: bold;' data-placeholder="Pilih Pasal" class="form-control create-control select2-show-search EmployeeID">
                                             <option value="">-- Pilih Pasal --</option>
@@ -468,6 +468,9 @@ h1 {
                                         </select>
                                         <small class="error-message text-danger"></small>
                                     </div>
+                                </div>
+                                  <div class="col-md-1">
+                                    <button onclick="copyPasal()" class="btn btn-primary w-100"><i class="fa fa-copy"></i></button>
                                 </div>
                                 <div class="col-md-12" style="margin-top: 1px; margin-bottom: 3px; padding-top: 10px;">
                                     <h6 style="font-weight: bold;">Dengan alasan :</h6>
@@ -662,20 +665,15 @@ h1 {
                                 <div class="col-md-12" style="margin-top: 10px; margin-bottom: 3px; padding-top: 10px;">
                                     <h6 style="font-weight: bold;">Dikarenakan Karyawan tersebut telah melakukan pelanggaran Peraturan Perusahaan pasal :</h6>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-11">
                                     <div class="form-group">
                                         <select required id="EditpasalKaryawan" name="EditpasalKaryawan" style='width: 100%; font-weight: bold;' data-placeholder="Pilih Pasal" class="form-control create-control select2-show-search EmployeeID">
                                             <option value="">-- Pilih Pasal --</option>
-                                            {{-- @foreach ($pasal_data as $r_empl)
-                                                <option
-                                                    value="{{$r_empl->kode_pasal}}"
-                                                >
-                                                   {{ Str::limit($r_empl->pasal_select, 140) }}
-                                                </option>
-                                            @endforeach --}}
                                         </select>
-                                        <small class="error-message text-danger"></small>
                                     </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <button onclick="copyEditPasal()" class="btn btn-primary w-100"><i class="fa fa-copy"></i></button>
                                 </div>
                                 <div class="col-md-12" style="margin-top: 1px; margin-bottom: 3px; padding-top: 10px;">
                                     <h6 style="font-weight: bold;">Dengan alasan :</h6>
@@ -797,7 +795,12 @@ h1 {
                     ? pasal.pasal_select.substring(0, 137) + '...'
                     : pasal.pasal_select;
 
-                select.append(`<option value="${pasal.kode_pasal}">${potongText}</option>`);
+                select.append(`
+                    <option value="${pasal.kode_pasal}" data-full-text="${pasal.pasal_select}">
+                        ${potongText}
+                    </option>
+                `);
+
             });
 
             // refresh Select2 jika pakai
@@ -828,7 +831,11 @@ h1 {
                     ? pasal.pasal_select.substring(0, 137) + '...'
                     : pasal.pasal_select;
 
-                select.append(`<option value="${pasal.kode_pasal}">${potongText}</option>`);
+                select.append(`
+                    <option value="${pasal.kode_pasal}" data-full-text="${pasal.pasal_select}">
+                        ${potongText}
+                    </option>
+                `);
             });
 
             // refresh Select2 jika pakai
@@ -848,6 +855,20 @@ h1 {
 
 
     <script>
+
+    function copyPasal() {
+        const pasalSelect = $('#pasalKaryawan');
+        const selectedOption = pasalSelect.find(':selected');
+        const pasalText = selectedOption.data('full-text'); // ambil dari data attribute
+        navigator.clipboard.writeText(pasalText);
+    }
+
+    function copyEditPasal() {
+        const pasalSelect = $('#EditpasalKaryawan');
+       const selectedOption = pasalSelect.find(':selected');
+        const pasalText = selectedOption.data('full-text'); // ambil dari data attribute
+        navigator.clipboard.writeText(pasalText);
+    }
 
         $(document).ready(function () {
         function formatTanggal(tanggal) {
