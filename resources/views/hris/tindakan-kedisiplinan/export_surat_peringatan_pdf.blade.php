@@ -25,7 +25,7 @@
 </head>
 @foreach ($data as $key=>$value)
 <body>
-    <div style="width: 100%; height: 1300px; position: relative; background-color: rgb(255, 255, 255)">
+    <div style="width: 100%; height: 1250px; position: relative; background-color: rgb(255, 255, 255)">
     <table class="purchase-order" width="100%" style="">
         <thead>
             <tr>
