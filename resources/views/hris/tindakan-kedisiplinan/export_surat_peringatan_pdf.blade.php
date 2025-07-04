@@ -81,13 +81,13 @@
             </tr>
         </thead>
     </table>
-    <table width="90%" style="">
+    <table width="100%" style="">
         <thead>
             <tr>
                 <td width="100%" style="justify-content: center; text-align: center; height:16px;"></td>
             </tr>
             <tr>
-                <td style="vertical-align: middle; font-size: 13pt;">
+                <td style="vertical-align: middle; font-size: 13pt; text-align: justify;">
                     Dengan memperhatikan peraturan perusahaan mengenai tindakan pendisiplinan karyawan
                     yang bekerja di PT. Nirwana Alabare Garment, maka dengan ini dipandang perlu diberikan
                     surat peringatan kepada karyawan / ti berikut :
@@ -226,12 +226,11 @@
             </tr>
         </thead>
     </table>
-    <table width="90%" style="">
+    <table width="100%" style="">
         <thead>
             <tr>
-                <td style="vertical-align: middle; font-size: 13pt;">
-                    Karyawan tersebut telah melakukan pelanggaran Peraturan Perusahaan pasal {{substr($value->kode_pasal, 0,2)}} ayat {{substr($value->pasal, 2,2)}}. Peningkatan
-                    sanksi pelanggaran setelah mendapatkan teguran. “{{ str_replace('.', '', $value->desc_surat_peringatan) }}"{{ $value->alasan_pelanggaran ? ', '.$value->alasan_pelanggaran : '' }}
+                <td style=" font-size: 13pt; text-align: justify;">
+                    Karyawan tersebut telah melakukan pelanggaran Peraturan Perusahaan pasal {{substr($value->kode_pasal, 0,2)}} ayat {{substr($value->pasal, 2,2)}}. “{{ str_replace('.', '', $value->desc_surat_peringatan) }}"{{ $value->alasan_pelanggaran ? ', '.$value->alasan_pelanggaran : '' }}
                 </td>
             </tr>
         </thead>
@@ -243,10 +242,10 @@
             </tr>
         </thead>
     </table>
-    <table width="90%" style="">
+    <table width="100%" style="">
         <thead>
             <tr>
-                <td style="vertical-align: middle; font-size: 13pt;">
+                <td style="font-size: 13pt;  text-align: justify;">
                    Sanksi yang diberikan kepada <b>{{$value->employee_name}}</b> berlaku mulai tanggal <b>{{Carbon\Carbon::parse($value->tanggal_mulai)->translatedFormat('d F Y')}}</b> sampai dengan <b>{{Carbon\Carbon::parse($value->tanggal_sampai)->translatedFormat('d F Y')}}</b>.
                 </td>
             </tr>
@@ -259,10 +258,10 @@
             </tr>
         </thead>
     </table>
-    <table width="90%" style="">
+    <table width="100%" style="">
         <thead>
             <tr>
-                <td style="vertical-align: middle; font-size: 13pt;">
+                <td style="vertical-align: middle; font-size: 13pt; text-align: justify;">
                     Perusahaan mengharapkan atas pelanggaran yang telah dilakukan agar dapat diperbaiki. Jika
                     Saudara masih melakukan pelanggaran yang sama atau pelanggaran lainnya selama masa
                     peringatan ini, maka kami akan memberikan sanksi berupa surat peringatan 2 atau surat
