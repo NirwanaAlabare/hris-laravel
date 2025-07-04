@@ -201,7 +201,6 @@
             </tr>
         </thead>
     </table>
-
    <table width="100%" style="">
     <thead>
         <tr>
@@ -472,7 +471,7 @@
         </table>
 </div>
     <div style="page-break-after: always;"></div>
-   <table class="purchase-order" width="100%" style="">
+    <table class="purchase-order" width="100%" style="">
         <thead>
             <tr>
                 <td width="100px" style="vertical-align: middle; text-align: center;" colspan="2" rowspan="4">
@@ -502,15 +501,15 @@
             </tr>
         </thead>
     </table>
-      <table width="100%" style="">
-        <thead>
-            <tr>
-                <td width="100%" style="justify-content: center; text-align: center; height:10px;"></td>
-            </tr>
-            <tr>
-                <td width="100%" style="justify-content: center; text-align: center;  font-size: 17pt;">TANGGAPAN KARYAWAN</td>
-            </tr>
-        </thead>
+    <table width="100%" style="">
+    <thead>
+        <tr>
+            <td width="100%" style="justify-content: center; text-align: center; height:10px;"></td>
+        </tr>
+        <tr>
+            <td width="100%" style="justify-content: center; text-align: center;  font-size: 17pt;">TANGGAPAN KARYAWAN</td>
+        </tr>
+    </thead>
     </table>
      <table width="100%" style="">
         <thead>
@@ -612,14 +611,14 @@
             </tr>
         </thead>
     </table>
-  <table width="100%" style="">
+    <table width="100%" style="">
         <thead>
             <tr>
                 <td width="100%" style=" height:240px;"></td>
             </tr>
         </thead>
     </table>
-       <table width="27%" style="border: 2px solid #747474;">
+    <table width="27%" style="border: 2px solid #747474;">
             <thead>
                 <tr>
                     <td style="vertical-align: middle; font-size: 10pt; width:18%; color: #494949;">No Doc</td>
@@ -632,7 +631,7 @@
                     <td style="vertical-align: middle; font-size: 10pt; width:50%; color: #494949;">2</td>
                 </tr>
             </thead>
-        </table>
+    </table>
 </body>
 @endforeach
 </html>
