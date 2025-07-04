@@ -200,7 +200,8 @@ class HRDController extends AdminBaseController
         ];
 
         // Format nomor form dinamis
-        $no_form = '3872/HRD-NAC/EXT/' . $bulanRomawi[$bulan] . '/' . $tahun;
+        $no_form_url=request()->no_form;
+        $no_form = $no_form_url.'/HRD-NAC/EXT/' . $bulanRomawi[$bulan] . '/' . $tahun;
 
         $enroll_id=request()->enroll_id;
         $reason=request()->reason;

@@ -141,6 +141,45 @@
     </div>
 </div>
 
+<div class="modal fade" id="ajax-modal-no-form-pengajuan" role="dialog" data-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document" style="max-width:30%;">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary p-2">
+                        <h4 class="modal-title pl-2 font-weight-bold">Nomor Form</h4>
+                        <div class="mt-0 p-0">
+                            <button onclick="closeModalNoForm()" class="btn btn-danger btn-sm w-100" data-toggle="tooltip" title="Tutup">x</button>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <input id="enroll_id_layoff" type="hidden">
+                        <div class="row">
+                            <div class="col-md-12" style="margin-top: 1px; margin-bottom: 3px; padding-top: 10px;">
+                                <h6 style="font-weight: bold;">No Form :</h6>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <input id="edit_no_form" required name="edit_no_form" class="form-control" rows="3" placeholder="Nomor Form" maxlength="500"></input>
+                                    <small class="error-message text-danger"></small>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                            </div>
+                                <div class="col-md-4">
+                                <button class="btn btn-primary w-100" id="btn-update-form" data-toggle="tooltip" title="Simpan & Print" style="margin-top: 10px;">
+                                    <i class="fa fa-save" aria-hidden="true"></i>
+                                    Simpan & Print
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 @section('footerjs')
 <script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.js') }}"></script>
@@ -203,6 +242,21 @@
     });
 </script>
 <script type="text/javascript">
+
+    $('body').on('click', '#btn-update-form', function (event) {
+        var edit_no_form = $('#edit_no_form').val();
+        export_sp_kerja($('#enroll_id_layoff').val(), edit_no_form);
+    });
+
+    function openModalNomorForm(id) {
+        $("#ajax-modal-no-form-pengajuan").modal('show');
+        $("#enroll_id_layoff").val(id);
+    }
+    function closeModalNoForm() {
+        $("#edit_no_form").val('');
+        $("#enroll_id_layoff").val('');
+        $("#ajax-modal-no-form-pengajuan").modal('hide');
+    }
 
     $(document).ready(function() {
         let datatableFilter = document.getElementById("datatable_filter");
@@ -293,7 +347,6 @@
     });
     var currentPageCheck = 0;
     var checkedEmployeeArr = [];
-    console.log("daterange1: ", $('#daterange1').val());
 
     let datatable = $("#datatable").DataTable({
         ordering: true,
@@ -400,7 +453,8 @@
                         <div class="col text-center">
                            <button class='btn ${warnaBtn}'
                                 style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt'
-                                onclick="export_sp_kerja('${row.enroll_id}')">
+                                onclick="openModalNomorForm('${row.enroll_id}')"
+                                >
                                 ${row.kategori}
                             </button>
                             ${btn_check}
@@ -446,7 +500,7 @@
     }
 
     function export_sp_kerja(enroll_id){
-        var url = 'export_sp_kehadiran_karyawan_adjustment?enroll_id='+enroll_id;
+        var url = 'export_sp_kehadiran_karyawan_adjustment?enroll_id='+enroll_id+ '&no_form=' + $('#edit_no_form').val();
         window.open(url, '_blank');
     }
 
@@ -479,6 +533,7 @@
             }
         });
     }
+
     function handelCancelTandaiSpKerja(enroll_id){
         $("#btn_cancel_tandai_sp_kerja").addClass("btn-loading");
         $("#btn_cancel_tandai_sp_kerja").attr("disabled", true);
