@@ -424,7 +424,7 @@ h1 {
                                     </div>
                                 </div>
                                 <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; padding-top: 10px; border-top: 1px solid #ccc;">
-                                    <h5 style="font-weight: bold;">Dengan ini mengajukan karyawan :</h5>
+                                    <h6 style="font-weight: bold;">Dengan ini mengajukan karyawan :</h6>
                                 </div>
 
                                 <div class="col-md-12">
@@ -521,11 +521,11 @@ h1 {
                                 <div class="col-md-7">
 
                                 </div>
-                                 <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; padding-top: 10px;">
+                                 {{-- <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; padding-top: 10px;">
                                     <h5 style="font-weight: bold;">Untuk diberikan tindakan pendisiplinan dalam bentuk :</h5>
-                                </div>
+                                </div> --}}
 
-                                <div class="col-md-12">
+                                {{-- <div class="col-md-12">
                                      <div class="radio-container">
                                         <label class="radio-wrapper">
                                             <input type="radio" name="tindakan_pendisiplinan" value="counseling" checked class="mr-2">
@@ -548,9 +548,9 @@ h1 {
                                             <span>PHK</span>
                                         </label>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; padding-top: 10px;">
-                                    <h5 style="font-weight: bold;">Dikarenakan telah melakukan pelanggaran/ kesalahan (Jelaskan pelanggaran/kesalahan yang dilakukan beserta akibatnya)</h5>
+                                    <h6 style="font-weight: bold;">Dikarenakan telah melakukan pelanggaran/ kesalahan (Jelaskan pelanggaran/kesalahan yang dilakukan beserta akibatnya)</h6>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -558,7 +558,7 @@ h1 {
                                     </div>
                                 </div>
                                 <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; padding-top: 10px;">
-                                    <h5 style="font-weight: bold;">Yang diakibatkan oleh (Tulis akar permasalahan)</h5>
+                                    <h6 style="font-weight: bold;">Yang diakibatkan oleh (Tulis akar permasalahan)</h6>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -742,10 +742,12 @@ h1 {
                                 <div class="col-md-7">
 
                                 </div>
+                                @if ($user === 'fadli' || $user === 'mega@ptnag.com' || $user === 'rudy@ptnag.com' || $user === 'ersa@ptnag.com' || $user === 'indri@nag.nirwanaindonesia.com' || $user === 'pujiprana@nag.nirwanaindonesia.com')
                                  <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; padding-top: 10px;">
                                     <h5 style="font-weight: bold;">Untuk diberikan tindakan pendisiplinan dalam bentuk :</h5>
                                 </div>
-
+                                @endif
+                                @if ($user === 'fadli' || $user === 'mega@ptnag.com' || $user === 'rudy@ptnag.com' || $user === 'ersa@ptnag.com' || $user === 'indri@nag.nirwanaindonesia.com' || $user === 'pujiprana@nag.nirwanaindonesia.com')
                                 <div class="col-md-12">
                                      <div class="radio-container">
                                         <label class="radio-wrapper">
@@ -770,6 +772,7 @@ h1 {
                                         </label>
                                     </div>
                                 </div>
+                                @endif
                                 <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; padding-top: 10px;">
                                     <h5 style="font-weight: bold;">Dikarenakan telah melakukan pelanggaran/ kesalahan (Jelaskan pelanggaran/kesalahan yang dilakukan beserta akibatnya)</h5>
                                 </div>
@@ -1162,7 +1165,7 @@ h1 {
                     { data: 'data_karyawan_bermasalah_dept_name' },
                     { data: 'tindakan_pendisiplinan',
                         render: function (data, type, row) {
-                            return renderTindakanName(data);
+                            return data ? renderTindakanName(data) : '-';
                         }
                     },
                     {
@@ -1355,7 +1358,7 @@ h1 {
 
             $('body').on('click', '#btn-approve-pengajuan', function (event) {
                 let id = $('#id_pengajuan_edit').val();
-                console.log("ID Pengajuan:", id);
+                var tindakan_pendisiplinan_edit = $('input[name="tindakan_pendisiplinan_edit"]:checked').val();
                 $.ajax({
                     type:"POST",
                     url: "{{route('tindakan_kedisiplinan.approve_pengajuan_kedisiplinan')}}",
@@ -1363,6 +1366,7 @@ h1 {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     data: {
                         id:id,
+                        tindakan_pendisiplinan_edit:tindakan_pendisiplinan_edit,
                     },
                     success: function(res){
                         swal("", "Pengajuan berhasil diselesaikan", "success");
@@ -1426,10 +1430,10 @@ h1 {
                     swal("", "Harap isi sumber masalah terlebih dahulu!", "info");
                     return;
                 }
-                if(!tindakan_pendisiplinan){
-                    swal("", "Harap isi tindakan kedisiplinan terlebih dahulu!", "info");
-                    return;
-                }
+                // if(!tindakan_pendisiplinan){
+                //     swal("", "Harap isi tindakan kedisiplinan terlebih dahulu!", "info");
+                //     return;
+                // }
 
 
                 $.ajax({
@@ -1496,7 +1500,7 @@ h1 {
                     swal("", "Harap isi karyawan bermasalah terlebih dahulu!", "info");
                     return;
                 }
-                if(!tindakan_pendisiplinan_edit){
+                if(!tindakan_pendisiplinan_edit && user_email === 'fadli' && user_email === 'mega@ptnag.com' && user_email === 'rudy@ptnag.com' && user_email === 'ersa@ptnag.com' && user_email === 'indri@nag.nirwanaindonesia.com' && user_email === 'pujiprana@nag.nirwanaindonesia.com'){
                     swal("", "Harap isi permasalahan terlebih dahulu!", "info");
                     return;
                 }

@@ -218,6 +218,7 @@ class TindakanKedisiplinanController extends AdminBaseController
         $logged_admin = Auth::guard('admin')->user();
         $data = PengajuanKedisiplinanKaryawan::where('id', $request->id)->get()->first();
         $data->status_pengajuan = 'done';
+        $data->tindakan_pendisiplinan = $request->tindakan_pendisiplinan_edit;
         $data->verifikator_by = $logged_admin->email;
         $data->save();
         return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil di approve.']);
