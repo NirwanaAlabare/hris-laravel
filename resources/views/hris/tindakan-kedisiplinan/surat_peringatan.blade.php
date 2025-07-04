@@ -892,6 +892,8 @@ h1 {
 
     <script>
 
+         var user_email = @json($user);
+
         $("#diajukanOlehIDEdit").select2().on("select2:select", function() {
             var selectedOption = $('#diajukanOlehIDEdit').find(':selected');
             var department = selectedOption.data('department_name_pengaju');
@@ -1140,7 +1142,7 @@ h1 {
                 ajax: {
                     url: '{{ route('tindakan_kedisiplinan.ajax_data_pengajuan_sp') }}',
                     type: "POST",
-                    data: { status_pengajuan: 'pending' },
+                    data: { status_pengajuan: 'diajukan' },
                     onSuccess: function(data) {
                         console.log("Data loaded successfully", data);
                     },
@@ -1172,10 +1174,14 @@ h1 {
                                 const uuidNo = encodeURIComponent(row.id);
                                 let exportUrl;
                                 let btnClass;
+                                const allowedEmails = ['mega@ptnag.com', 'fadli', 'rudy@ptnag.com','indri@nag.nirwanaindonesia.com','pujiprana@nag.nirwanaindonesia.com','ersa@ptnag.com','ronald@ptnag.com','bobby']; // daftarkan yang diizinkan
+                                const isAllowed = allowedEmails.includes(user_email);
                                     return `
-                                        <button class="btn btn-sm mr-1 btn-success" onclick="openModalApprovePengajuan('${row.id}')" data-id="${row.id}" title="Approve">
-                                            <i class="fa fa-check"></i>
-                                        </button>
+                                         ${isAllowed ? `
+                                            <button class="btn btn-sm mr-1 btn-success" onclick="openModalApprovePengajuan('${row.id}')" data-id="${row.id}" title="Approve">
+                                                <i class="fa fa-check"></i>
+                                            </button>
+                                        ` : ''}
                                         <button class="btn btn-sm mr-1 btn-danger" onclick="printPengajuanPDF('${row.id}')" data-id="${row.id}" title="Print">
                                             <i class="fa fa-file-pdf-o"></i>
                                         </button>
@@ -1225,16 +1231,20 @@ h1 {
                                 const uuidNo = encodeURIComponent(row.id);
                                 let exportUrl;
                                 let btnClass;
+                                const allowedEmails = ['mega@ptnag.com', 'fadli', 'rudy@ptnag.com','indri@nag.nirwanaindonesia.com','pujiprana@nag.nirwanaindonesia.com','ersa@ptnag.com','ronald@ptnag.com','bobby']; // daftarkan yang diizinkan
+                                const isAllowed = allowedEmails.includes(user_email);
                                     return `
                                         <button class="btn btn-sm mr-1 btn-danger" onclick="printPengajuanPDF('${row.id}')" data-id="${row.id}" title="Print">
                                             <i class="fa fa-file-pdf-o"></i>
                                         </button>
+                                        ${isAllowed ? `
                                         <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.id}')" data-id="${row.id}" title="Edit">
                                             <i class="fa fa-edit"></i>
                                         </button>
                                         <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-id_pengajuan="${row.id}" title="Hapus">
                                             <i class="fa fa-trash"></i>
                                         </button>
+                                        ` : ''}
                                     `;
                         }
                     }

@@ -300,11 +300,11 @@ class TindakanKedisiplinanController extends AdminBaseController
             ->distinct();
 
         if (!in_array($email, ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli', 'ersa@ptnag.com','indri@nag.nirwanaindonesia.com','hadiyoso@nag.nirwanaindonesia.com','ronald@ptnag.com','bobby','pujiprana@nag.nirwanaindonesia.com'])) {
-            $query ->where(function($q) use ($email) {
+            $query->where(function($q) use ($email) {
                 $q->where('pengajuan_kedisiplinan_karyawan.created_by', $email);
             });
         }
-        $data = $query ->get();
+        $data = $query->get();
         // Format response untuk DataTables
         return response()->json([
             'draw' => intval($request->input('draw')),
