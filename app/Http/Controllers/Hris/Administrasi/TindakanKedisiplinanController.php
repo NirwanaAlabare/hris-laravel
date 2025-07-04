@@ -117,8 +117,9 @@ class TindakanKedisiplinanController extends AdminBaseController
         $this->site =  $NirwananameAllModel;
         $selectemployee = $this->ajax_getallemployeeatribut();
         $pasal_data = PasalSuratPeringatan::selectRaw('kode_pasal, sp, pasal, desc_surat_peringatan, deskripsi, concat("Pasal ",kode_pasal, " - ", pasal, ". " ,desc_surat_peringatan) pasal_select')
-                                    ->orderby('kode_pasal', 'asc')
-                                    ->get();
+                    ->orderByRaw('CAST(SUBSTRING_INDEX(kode_pasal, "-", 1) AS UNSIGNED) ASC') // angka sebelum tanda '-'
+                    ->orderByRaw('CAST(SUBSTRING_INDEX(kode_pasal, "-", -1) AS UNSIGNED) ASC')
+                    ->get();
          return view('hris/tindakan-kedisiplinan/surat_peringatan_hr', [
             'page' => 'dashboard-mut-karyawan', "subPageGroup" => "proses-karyawan", "subPage" => "form-lembur-non-sewing",
             "data_dept" => $data_dept, "user" => $user,
