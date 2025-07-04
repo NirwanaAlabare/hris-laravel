@@ -279,7 +279,7 @@
     <table width="100%" style="">
         <thead>
             <tr>
-                <td style="vertical-align: middle; font-size: 12pt; width:25%;">Solokan Jeruk</td>
+                <td style="vertical-align: middle; font-size: 12pt; width:25%;">Bandung</td>
             </tr>
             <tr>
                 <td style="vertical-align: middle; font-size: 12pt; width:25%;">Diberikan Oleh</td>
