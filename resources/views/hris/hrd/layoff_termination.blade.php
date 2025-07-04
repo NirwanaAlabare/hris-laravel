@@ -245,6 +245,14 @@
 
     $('body').on('click', '#btn-update-form', function (event) {
         var edit_no_form = $('#edit_no_form').val();
+        if(edit_no_form === '') {
+            iziToast.error({
+                title: 'Error',
+                message: 'Nomor Form tidak boleh kosong',
+                position: 'topRight'
+            });
+            return;
+        }
         export_sp_kerja($('#enroll_id_layoff').val(), edit_no_form);
     });
 
