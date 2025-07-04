@@ -170,7 +170,7 @@
             </tr>
         </thead>
     </table>
-     <table width="100%" style="">
+    <table width="100%" style="">
         <thead>
           <tr>
                 <td style="vertical-align: middle; font-size: 13pt; width:1%;"></td>
@@ -307,33 +307,33 @@
                 <td style="height: 65px;"></td>
             </tr>
            <tr>
-            <td width="20%" style="font-family: Arial, Helvetica, sans-serif; font-size: 8pt; text-align: left; vertical-align: center;">
+            <td width="30%" style="font-family: Arial, Helvetica, sans-serif; font-size: 11pt; text-align: left; vertical-align: center;">
                 RUDY ARISTIAN FAJAR
-                <div style="width: 138px; border-bottom: 1px solid #000;"></div>
+                <div style="width: 190px; border-bottom: 1px solid #000;"></div>
             </td>
-            <td width="20%" style="font-family: Arial, Helvetica, sans-serif; text-align: center; vertical-align: center; color: white;">
+            <td width="17%" style="font-family: Arial, Helvetica, sans-serif; text-align: center; vertical-align: center; color: white;">
                 A
                 <div style="width: 100px; border-bottom: 1px solid #000; margin: 0 auto;"></div>
             </td>
-            <td width="20%" style="font-family: Arial, Helvetica, sans-serif; text-align: center; vertical-align: center; color: white;">
+            <td width="17%" style="font-family: Arial, Helvetica, sans-serif; text-align: center; vertical-align: center; color: white;">
                 A
                 <div style="width: 100px; border-bottom: 1px solid #000; margin: 0 auto;"></div>
             </td>
-            <td width="20%" style="font-family: Arial, Helvetica, sans-serif; text-align: center; vertical-align: center; color: white;">
+            <td width="17%" style="font-family: Arial, Helvetica, sans-serif; text-align: center; vertical-align: center; color: white;">
                 A
                 <div style="width: 100px; border-bottom: 1px solid #000; margin: 0 auto;"></div>
             </td>
-            <td width="20%" style="font-family: Arial, Helvetica, sans-serif; text-align: center; vertical-align: center;">
+            <td width="17%" style="font-family: Arial, Helvetica, sans-serif; text-align: center; vertical-align: center;font-size:10pt;">
                 {{ $value->employee_name }}
-                <div style="width: 100px; border-bottom: 1px solid #000; margin: 0 auto;"></div>
+                <div style="width: 150px; border-bottom: 1px solid #000; margin: 0 auto;"></div>
             </td>
         </tr>
               <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:center;text-align:left; height: 25px;">Manager HRGA-Compliance</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:center;text-align:center; height: 25px;">Leader</td>
-                <td style=" font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:center;text-align:center;">Chief</td>
-                <td style=" font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:center;text-align:center;">Manager</td>
-                <td style=" font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:center;text-align:center;">Karyawan</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:12pt;text-align:justify;vertical-align:center;text-align:left; height: 25px;">Manager HRGA-Compliance</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:12pt;text-align:justify;vertical-align:center;text-align:center; height: 25px;">Leader</td>
+                <td style=" font-family:Arial, Helvetica, sans-serif;font-size:12pt;text-align:justify;vertical-align:center;text-align:center;">Chief</td>
+                <td style=" font-family:Arial, Helvetica, sans-serif;font-size:12pt;text-align:justify;vertical-align:center;text-align:center;">Manager</td>
+                <td style=" font-family:Arial, Helvetica, sans-serif;font-size:12pt;text-align:justify;vertical-align:center;text-align:center;">Karyawan</td>
             </tr>
         </thead>
     </table>
@@ -386,7 +386,7 @@
                 <td style="height: 65px;"></td>
             </tr>
            <tr>
-            <td width="30%" style="font-family: Arial, Helvetica, sans-serif; font-size: 10pt; text-align: left; vertical-align: center;">
+            <td width="30%" style="font-family: Arial, Helvetica, sans-serif; font-size: 12pt; text-align: left; vertical-align: center;">
                 RUDY ARISTIAN FAJAR
                 <div style="width: 138px; border-bottom: 1px solid #000;"></div>
             </td>
@@ -400,9 +400,9 @@
             </td>
         </tr>
               <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:10pt;text-align:justify;vertical-align:center;text-align:left; height: 25px;">Manager HRGA-Compliance</td>
-                <td style=" font-family:Arial, Helvetica, sans-serif;font-size:10pt;text-align:justify;vertical-align:center;text-align:center;">Manager</td>
-                <td style=" font-family:Arial, Helvetica, sans-serif;font-size:10pt;text-align:justify;vertical-align:center;text-align:center;">Karyawan</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:12pt;text-align:justify;vertical-align:center;text-align:left; height: 25px;">Manager HRGA-Compliance</td>
+                <td style=" font-family:Arial, Helvetica, sans-serif;font-size:12pt;text-align:justify;vertical-align:center;text-align:center;">Manager</td>
+                <td style=" font-family:Arial, Helvetica, sans-serif;font-size:12pt;text-align:justify;vertical-align:center;text-align:center;">Karyawan</td>
             </tr>
         </thead>
     </table>
@@ -418,7 +418,7 @@
                 <td style="height: 65px;"></td>
             </tr>
            <tr>
-            <td width="30%" style="font-family: Arial, Helvetica, sans-serif; font-size: 10pt; text-align: left; vertical-align: center;">
+            <td width="30%" style="font-family: Arial, Helvetica, sans-serif; font-size: 12pt; text-align: left; vertical-align: center;">
                 RUDY ARISTIAN FAJAR
                 <div style="width: 138px; border-bottom: 1px solid #000;"></div>
             </td>
@@ -432,9 +432,9 @@
             </td>
         </tr>
               <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:10pt;text-align:justify;vertical-align:center;text-align:left; height: 25px;">Manager HRGA-Compliance</td>
-                <td style=" font-family:Arial, Helvetica, sans-serif;font-size:10pt;text-align:justify;vertical-align:center;text-align:center;">General Manager</td>
-                <td style=" font-family:Arial, Helvetica, sans-serif;font-size:10pt;text-align:justify;vertical-align:center;text-align:center;">Karyawan</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:12pt;text-align:justify;vertical-align:center;text-align:left; height: 25px;">Manager HRGA-Compliance</td>
+                <td style=" font-family:Arial, Helvetica, sans-serif;font-size:12pt;text-align:justify;vertical-align:center;text-align:center;">General Manager</td>
+                <td style=" font-family:Arial, Helvetica, sans-serif;font-size:12pt;text-align:justify;vertical-align:center;text-align:center;">Karyawan</td>
             </tr>
         </thead>
     </table>
