@@ -593,6 +593,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
 
             $data_penilaian->kejadian = $kejadian;
             $data_penilaian->total = $total;
+            $data_penilaian->nilai_akhir = $total_pengurangan;
             $data_penilaian->total_pengurangan = $total_pengurangan;
         }
 
@@ -1432,11 +1433,11 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                 $karyawan->rekomendasi_training = null;
                 $karyawan->perpanjang_bulan = null;
                 $karyawan->judul_training = null;
-
                 $karyawan->penilaian = [
                     'kejadian' => $kejadian,
                     'total' => $total,
                     'total_pengurangan' => $total_pengurangan,
+                    'nilai_akhir' => $total_pengurangan,
                 ];
             }
             return $karyawan;
