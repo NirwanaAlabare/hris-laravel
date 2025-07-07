@@ -597,8 +597,20 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             $data_penilaian->total_pengurangan = $total_pengurangan;
         }
 
+        $date = \Carbon\Carbon::now();
+        if(isset($data_penilaian->tgl_akhir_kontrak) && $data_penilaian->tgl_akhir_kontrak){
+            $date = \Carbon\Carbon::parse($data_penilaian->tgl_akhir_kontrak);
+        } else{
+            $date = \Carbon\Carbon::parse($contract_end);
+        }
+        $periode = $date->format('ym'); // format yymm
+        $judul_export = 'PA ' . $data_karyawan->employee_name . ' ' . $periode;
+
+
         $pdf = PDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_custom',['data_penilaian'=>$data_penilaian,'data_karyawan'=>$data_karyawan,'contract'=>$contract,'contract_end'=>$contract_end]);
-        return $pdf->stream('laporan-kinerja.pdf');
+        // return $pdf->stream('laporan-kinerja.pdf');
+        return $pdf->stream($judul_export . '.pdf');
+
     }
 
     public function import_penilaian_kinerja_staff(){
@@ -1443,6 +1455,6 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             return $karyawan;
         });
         $pdf = PDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_all',['data'=>$data]);
-        return $pdf->stream('form-nilai-kinerja.pdf');
+        return $pdf->stream('Performance Appraisal.pdf');
     }
 }

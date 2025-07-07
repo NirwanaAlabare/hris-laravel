@@ -142,22 +142,14 @@
 </head>
 @foreach ($data as $key=>$value)
 <body>
-    @php
-        $date = \Carbon\Carbon::now();
-        if(isset($value->penilaian->tgl_akhir_kontrak) && $value->penilaian->tgl_akhir_kontrak){
-            $date = \Carbon\Carbon::parse($value->penilaian->tgl_akhir_kontrak);
-        } else {
-            $date = \Carbon\Carbon::parse($value->contract_end);
-        }
-        $periode = $date->format('y') . $date->format('m');
-    @endphp
     <table width="100%" style="border-top: 1px solid; border-left: 1px solid;">
         <thead>
             <tr>
                 <td width="100px" style="vertical-align: middle; text-align: center;border-bottom: 1px solid;" colspan="2" rowspan="4">
                     <img height="60" src="{{ public_path('assets/images/brand/nirwana logo.jpg') }}" alt="">
                 </td>
-                <td style="vertical-align: middle; font-size: 12pt; text-align: center; font-weight: 800;border-bottom: 1px solid; border-left: 1px solid;" colspan="8" rowspan="4">PA {{ $value->employee_name }} {{$periode}}</td>
+                <td style="vertical-align: middle; font-size: 12pt; text-align: center; font-weight: 800;border-bottom: 1px solid; border-left: 1px solid;" colspan="8" rowspan="4">FORMULIR PENILAIAN KINERJA
+                    KARYAWAN</td>
                 <td colspan="2" class="border-left" style="border-left: 1px solid; font-size: 7.5pt; height: 18px;">Kode Dokumen</td>
                 <td colspan="3" class="border-right" style="border-left: 1px solid; font-size: 7.5pt; border-right: 1px solid;">: F.16.HR.NAG.P-03.F-01.01</td>
             </tr>
