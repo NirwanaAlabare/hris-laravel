@@ -1,3 +1,7 @@
+@php
+    use Maatwebsite\Excel\Excel;
+@endphp
+
 <!DOCTYPE html>
 <html lang="en" style="overflow:scroll;">
     <head>
@@ -30,7 +34,7 @@
             <td colspan="3" style="border:1px solid black">Masa Kerja</td>
 
             @for ($i = 1; $i <= $maxContracts; $i++)
-                <td colspan="2" style="border:1px solid black">Kontrak {{ $i }}</td>
+                <td colspan="2" style="border:1px solid black">PKS {{ $i }}</td>
             @endfor
 
             <td rowspan="2" style="border:1px solid black"></td>
@@ -60,11 +64,8 @@
                 $years = floor($diff / (365 * 60 * 60 * 24));
                 $month = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
                 $day = floor(($diff - $years * 365 * 60 * 60 * 24 - $month * 30 * 60 * 60 * 24) / (60 * 60 * 24));
-                $periode = '';
-                if (!empty($first->contract_end_last)) {
-                    $date = \Carbon\Carbon::parse($first->contract_end_last);
-                    $periode = $date->format('y') . $date->format('m'); // contoh: 25 + 04 = 2504
-                }
+                $date = \Carbon\Carbon::parse($first->contract_end_last);
+                $periode = $date->format('y') . $date->format('m');
             @endphp
 
             <tr>
@@ -115,7 +116,10 @@
                 </td>
 
                 {{-- Periode --}}
-                <td style="border:1px solid black">{{ $periode }}</td>
+              <td style="border:1px solid black">
+                ="{{ $periode }}"
+            </td>
+
             </tr>
         @endforeach
 

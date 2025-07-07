@@ -1101,53 +1101,6 @@ class HRDController extends AdminBaseController
             }
         }
 
-        // $query = DB::select("
-        //         SELECT
-        //             a.status_staff,
-        //             a.enroll_id,
-        //             a.nik,
-        //             a.employee_name,
-        //             a.status_jabatan,
-        //             a.sub_dept_name,
-        //             a.department_name,
-        //             a.status_kontrak_tetap,
-        //             a.status_aktif,
-        //             a.status_staff,
-        //             a.join_date,
-        //             a.tanggal_resign,
-        //             a.nomor_ktp,
-        //             b.contract,
-        //             b.contract_end,
-        //             c.max_contract_end,
-        //             d.contract AS contract_last,
-        //             d.contract_end AS contract_end_last
-        //         FROM employee_atribut a
-        //         LEFT JOIN employee_contract b
-        //             ON a.enroll_id = b.enroll_id
-        //         LEFT JOIN (
-        //             SELECT enroll_id, MAX(contract_end) AS max_contract_end
-        //             FROM employee_contract
-        //             GROUP BY enroll_id
-        //         ) c ON a.enroll_id = c.enroll_id
-        //         LEFT JOIN (
-        //             SELECT enroll_id, contract, contract_end
-        //             FROM employee_contract ec
-        //             WHERE (ec.enroll_id, ec.contract_end) IN (
-        //                 SELECT enroll_id, MAX(contract_end)
-        //                 FROM employee_contract
-        //                 GROUP BY enroll_id
-        //             )
-        //         ) d ON a.enroll_id = d.enroll_id
-        //         WHERE a.enroll_id IS NOT NULL
-        //             $inSearchVariable
-        //             $inEnrollId
-        //             $inNoKTP
-        //             $inIbuKandung
-        //             $inStatusAktif
-        //             $inStatusKontrak
-        //             $inStatusStaff
-        //         ORDER BY a.enroll_id, b.contract_end
-        //     ");
         $query = DB::select("
                 SELECT
                     a.status_staff,
