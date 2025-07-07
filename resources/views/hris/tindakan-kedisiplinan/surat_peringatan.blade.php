@@ -302,7 +302,6 @@ h1 {
                                                                 <th scope="col">Karyawan Yang Diajukan</th>
                                                                 <th scope="col">Bagian</th>
                                                                 <th scope="col">Department</th>
-                                                                <th scope="col">Tindakan</th>
                                                                 <th scope="col">Aksi</th>
                                                             </tr>
                                                         </thead>
@@ -319,11 +318,11 @@ h1 {
                                                         <thead>
                                                             <tr class="text-center">
                                                                 <th scope="col">Tanggal Pengajuan</th>
-                                                                <th scope="col">Diajukan</th>
-                                                                <th scope="col">Kebutuhan Department</th>
-                                                                <th scope="col">Kebutuhan Bagian</th>
-                                                                <th scope="col">Jumlah Kebutuhan</th>
-                                                                <th scope="col">Tanggal Kebutuhan</th>
+                                                                <th scope="col">Diajukan Oleh</th>
+                                                                <th scope="col">Karyawan Yang Diajukan</th>
+                                                                <th scope="col">Bagian</th>
+                                                                <th scope="col">Department</th>
+                                                                <th scope="col">Tindakan</th>
                                                                 <th scope="col">Aksi</th>
                                                             </tr>
                                                         </thead>
@@ -339,11 +338,10 @@ h1 {
                                                         <thead>
                                                             <tr class="text-center">
                                                                 <th scope="col">Tanggal Pengajuan</th>
-                                                                <th scope="col">Diajukan</th>
-                                                                <th scope="col">Kebutuhan Department</th>
-                                                                <th scope="col">Kebutuhan Bagian</th>
-                                                                <th scope="col">Jumlah Kebutuhan</th>
-                                                                <th scope="col">Tanggal Kebutuhan</th>
+                                                                <th scope="col">Diajukan Oleh</th>
+                                                                <th scope="col">Karyawan Yang Diajukan</th>
+                                                                <th scope="col">Bagian</th>
+                                                                <th scope="col">Department</th>
                                                                 <th scope="col">Aksi</th>
                                                             </tr>
                                                         </thead>
@@ -1163,11 +1161,6 @@ h1 {
                     { data: 'data_karyawan_bermasalah_name' },
                     { data: 'data_karyawan_bermasalah_bagian_name' },
                     { data: 'data_karyawan_bermasalah_dept_name' },
-                    { data: 'tindakan_pendisiplinan',
-                        render: function (data, type, row) {
-                            return data ? renderTindakanName(data) : '-';
-                        }
-                    },
                     {
                         data: null,
                         orderable: false,
@@ -1199,6 +1192,7 @@ h1 {
                     }
                 ],
             });
+
 
             // Table untuk Verifikasi (is_verifikasi == 1)
             var tableVerifikasi = $('#datatable-ajax-crud-verifikasi').DataTable({
@@ -1274,11 +1268,6 @@ h1 {
                     { data: 'data_karyawan_bermasalah_name' },
                     { data: 'data_karyawan_bermasalah_bagian_name' },
                     { data: 'data_karyawan_bermasalah_dept_name' },
-                    { data: 'tindakan_pendisiplinan',
-                        render: function (data, type, row) {
-                            return renderTindakanName(data);
-                        }
-                    },
                     {
                         data: null,
                         orderable: false,
