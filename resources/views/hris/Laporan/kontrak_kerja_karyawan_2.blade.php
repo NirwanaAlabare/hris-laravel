@@ -282,8 +282,7 @@
                         @if(in_array($value->department_name, $departemen_khusus))
                             07:30 s/d 16:30
                         @else
-                            {{ date('H:i', strtotime($value->mulai_jam_kerja)) }} s/d
-                            {{ date('H:i', strtotime($value->mulai_jam_kerja)) == '07:00' ? '16:00' : '16:30' }}
+                            07:00 s/d 16:00
                         @endif
                         {{-- {{ date('H:i', strtotime($value->mulai_jam_kerja)) }} s/d {{ date('H:i', strtotime($value->mulai_jam_kerja)) == '07:00' ? '16:00' : '16:30' }} --}}
                     </b>, atau ditentukan lain oleh <b>PIHAK PERTAMA</b>.</li>
