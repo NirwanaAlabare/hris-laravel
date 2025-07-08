@@ -243,17 +243,14 @@
     <table width="100%" style="">
         <thead>
             <tr>
-                <td style="vertical-align: middle; font-size: 11pt; width:25%;">Dikarenakan telah melakukan pelanggaran/ kesalahan </td>
-            </tr>
-            <tr>
-                <td style="vertical-align: middle; font-size: 11pt; width:25%;">(Jelaskan pelanggaran/kesalahan yang dilakukan beserta akibatnya)</td>
+                <td style="vertical-align: middle; font-size: 11pt; width:25%;">Dikarenakan telah melakukan pelanggaran/ kesalahan :</td>
             </tr>
         </thead>
     </table>
     <table width="100%" style="">
         <thead>
             <tr>
-                <td style="height:30px;"></td>
+                <td style="height:20px;"></td>
             </tr>
         </thead>
     </table>
@@ -268,14 +265,14 @@
     <table width="100%" style="">
         <thead>
             <tr>
-                <td style="vertical-align: middle; font-size: 11pt; width:25%;">Yang diakibatkan oleh (Tulis akar permasalahan)</td>
+                <td style="vertical-align: middle; font-size: 11pt; width:25%;">Akibat dari pelanggaran tersebut :</td>
             </tr>
         </thead>
     </table>
     <table width="100%" style="">
         <thead>
             <tr>
-                <td style="height:30px;"></td>
+                <td style="height:20px;"></td>
             </tr>
         </thead>
     </table>
@@ -284,6 +281,47 @@
             <tr>
                 <td style="vertical-align: middle; font-size: 11pt; width:25%;">{{$value->sumber_permasalahan}}<br>
                     <div style="border-bottom: 1px solid #000; width: 100%;">&nbsp;</div><br><br></td>
+            </tr>
+        </thead>
+    </table>
+    <table width="100%" style="">
+        <thead>
+            <tr>
+                <td style="vertical-align: middle; font-size: 11pt; width:25%;">Dengan faktor tersebut :</td>
+            </tr>
+        </thead>
+    </table>
+    <table width="100%" style="">
+        <thead>
+            <tr>
+                <td style="height:20px;"></td>
+            </tr>
+        </thead>
+    </table>
+    <table width="100%" border="0.5px" cellspacing="0" cellpadding="6" style="font-size: 10pt; border-collapse: collapse;">
+        <thead style="background-color: #f0f0f0;">
+            <tr>
+                <th style="width: 30%; text-align: center;">Faktor</th>
+                <th style="text-align: center;">Uraian</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($value->faktor_list as $faktor)
+                <tr>
+                    <td style="vertical-align: top;">{{ $faktor->faktor }}</td>
+                    <td style="vertical-align: top;">{{ $faktor->uraian }}</td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="2" style="text-align: center; padding: 10px;">Tidak ada faktor yang diisi.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+    <table width="100%" style="">
+        <thead>
+            <tr>
+                <td style="height:30px;"></td>
             </tr>
         </thead>
     </table>

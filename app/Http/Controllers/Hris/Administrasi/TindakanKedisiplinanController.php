@@ -22,6 +22,7 @@ use App\Models\EntertainPengajuanKeterangan;
 use App\Models\DataAbsenPerijinanDTPC;
 use App\Models\SuratPeringatanKaryawan;
 use App\Models\PengajuanKedisiplinanKaryawan;
+use App\Models\Notification;
 use App\Models\PasalSuratPeringatan;
 use App\Models\DataAbsenPerijinan;
 use App\Models\PengajuanDokumenLegal;
@@ -139,12 +140,53 @@ class TindakanKedisiplinanController extends AdminBaseController
 
     }
 
-    public function get_detail_tindakan_kedisiplinan(Request $request)
+   public function get_detail_tindakan_kedisiplinan(Request $request)
     {
         $id = $request->id;
-        $data = DB::select("SELECT pengajuan_kedisiplinan_karyawan.*, ea_1.department_name AS department_name_pengaju, ea_1.sub_dept_name AS bagian_name_pengaju, ea_2.department_name AS department_name_diajukan, ea_2.sub_dept_name AS bagian_name_diajukan, ea_2.employee_name, ea_2.nik, ea_2.status_jabatan FROM pengajuan_kedisiplinan_karyawan left join employee_atribut ea_1 on pengajuan_kedisiplinan_karyawan.enroll_id_diajukan_oleh = ea_1.enroll_id left join employee_atribut ea_2 on pengajuan_kedisiplinan_karyawan.enroll_id_karyawan_bermasalah = ea_2.enroll_id WHERE id = ?", [$id]);
-        return $data[0];
+
+        // Data utama pengajuan
+        $data = DB::selectOne("
+            SELECT
+                pengajuan_kedisiplinan_karyawan.*,
+                ea_1.department_name AS department_name_pengaju,
+                ea_1.sub_dept_name AS bagian_name_pengaju,
+                ea_2.department_name AS department_name_diajukan,
+                ea_2.sub_dept_name AS bagian_name_diajukan,
+                ea_2.employee_name,
+                ea_2.nik,
+                ea_2.status_jabatan
+            FROM pengajuan_kedisiplinan_karyawan
+            LEFT JOIN employee_atribut ea_1 ON pengajuan_kedisiplinan_karyawan.enroll_id_diajukan_oleh = ea_1.enroll_id
+            LEFT JOIN employee_atribut ea_2 ON pengajuan_kedisiplinan_karyawan.enroll_id_karyawan_bermasalah = ea_2.enroll_id
+            WHERE pengajuan_kedisiplinan_karyawan.id = ?
+        ", [$id]);
+
+        // Ambil daftar faktor dari tabel relasi
+        $faktorList = DB::table('pengajuan_kedisiplinan_faktor')
+            ->where('pengajuan_kedisiplinan_karyawan_id', $id)
+            ->select('faktor', 'uraian')
+            ->get();
+
+        // Gabungkan dan kirim response JSON
+        return response()->json([
+            'id' => $data->id,
+            'tanggal_pengajuan' => $data->tanggal_pengajuan,
+            'tindakan_pendisiplinan' => $data->tindakan_pendisiplinan,
+            'enroll_id_diajukan_oleh' => $data->enroll_id_diajukan_oleh,
+            'enroll_id_karyawan_bermasalah' => $data->enroll_id_karyawan_bermasalah,
+            'pelanggaran' => $data->pelanggaran,
+            'sumber_permasalahan' => $data->sumber_permasalahan,
+            'department_name_pengaju' => $data->department_name_pengaju,
+            'bagian_name_pengaju' => $data->bagian_name_pengaju,
+            'department_name_diajukan' => $data->department_name_diajukan,
+            'bagian_name_diajukan' => $data->bagian_name_diajukan,
+            'employee_name' => $data->employee_name,
+            'nik' => $data->nik,
+            'status_jabatan' => $data->status_jabatan,
+            'faktor_list' => $faktorList
+        ]);
     }
+
 
     public function get_detail_surat_peringatan(Request $request)
     {
@@ -186,7 +228,7 @@ class TindakanKedisiplinanController extends AdminBaseController
 
     public function create_form_tindakan_kedisiplinan(Request $request){
         $logged_admin = Auth::guard('admin')->user();
-         PengajuanKedisiplinanKaryawan::create([
+        $pengajuan = PengajuanKedisiplinanKaryawan::create([
             'tanggal_pengajuan' => $request->tanggal_pengajuan,
             'tindakan_pendisiplinan' => $request->tindakan_pendisiplinan,
             'enroll_id_diajukan_oleh' => $request->enroll_id_diajukan_oleh,
@@ -197,12 +239,36 @@ class TindakanKedisiplinanController extends AdminBaseController
             'created_by' => $logged_admin->email,
         ]);
 
+         foreach ($request->faktorList as $faktor) {
+                $pengajuan->faktor()->create([
+                    'faktor' => $faktor['faktor'],
+                    'uraian' => $faktor['uraian'],
+                ]);
+        }
+        $employee_data = EmployeeAtribut::where('enroll_id', $request->enroll_id_karyawan_bermasalah)->first();
+        $receiverEmails = ['fadli', 'mega@ptnag.com', 'ersa@ptnag.com', 'rudy@ptnag.com', 'indri@nag.nirwanaindonesia.com','pujiprana@nag.nirwanaindonesia.com','hadiyoso@nag.nirwanaindonesia.com','ramon'];
+        foreach ($receiverEmails as $receiverEmail) {
+            Notification::create([
+                'sender_email' => 'system',
+                'receiver_email' => $receiverEmail,
+                'type' => 'KEDISIPLINAN',
+                'href_menu' => 'http://10.10.5.111/hris/public/index.php/hris/tindakan_kedisiplinan/index',
+                'message' => 'Ada pengajuan tindakan kedisiplinan untuk ' . $employee_data->employee_name . ' (' . $employee_data->nik . ')',
+                'enroll_ids' => [$request->enroll_id_karyawan_bermasalah],
+                'is_read' => false,
+                'is_delete' => false,
+                'status_staff' => $employee_data->status_jabatan,
+            ]);
+        }
         return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil dibuat.']);
     }
 
-    public function update_form_tindakan_kedisiplinan(Request $request){
+    public function update_form_tindakan_kedisiplinan(Request $request)
+    {
         $logged_admin = Auth::guard('admin')->user();
-          PengajuanKedisiplinanKaryawan::where('id', $request->id)->update([
+
+        // Update data utama
+        PengajuanKedisiplinanKaryawan::where('id', $request->id)->update([
             'tanggal_pengajuan' => $request->tanggal_pengajuan,
             'tindakan_pendisiplinan' => $request->tindakan_pendisiplinan,
             'enroll_id_diajukan_oleh' => $request->enroll_id_diajukan_oleh,
@@ -211,8 +277,28 @@ class TindakanKedisiplinanController extends AdminBaseController
             'sumber_permasalahan' => $request->sumber_permasalahan,
             'created_by' => $logged_admin->email,
         ]);
-        return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil diupdate.']);
+
+        // Hapus data faktor lama (agar tidak dobel)
+        DB::table('pengajuan_kedisiplinan_faktor')
+            ->where('pengajuan_kedisiplinan_karyawan_id', $request->id)
+            ->delete();
+
+        // Simpan ulang faktor yang dikirim dari form
+        if ($request->has('faktorList')) {
+            foreach ($request->faktorList as $faktor) {
+                DB::table('pengajuan_kedisiplinan_faktor')->insert([
+                    'pengajuan_kedisiplinan_karyawan_id' => $request->id,
+                    'faktor' => $faktor['faktor'],
+                    'uraian' => $faktor['uraian'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        return response()->json(['message' => 'Pengajuan tindakan kedisiplinan berhasil diupdate.']);
     }
+
 
     public function approve_pengajuan_kedisiplinan(Request $request){
         $logged_admin = Auth::guard('admin')->user();
@@ -241,21 +327,41 @@ class TindakanKedisiplinanController extends AdminBaseController
         return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil dihapus.']);
     }
 
-    public function print_pengajuan_sp_pdf(Request $request)
-    {
-        $pengajuan_id = $request->route('id');
-        $data = DB::select("
-            SELECT pengajuan_kedisiplinan_karyawan.*, employee_atribut.employee_name, employee_atribut.department_name, employee_atribut.sub_dept_name, employee_atribut.department_id, employee_atribut.sub_dept_id, employee_atribut.nik, employee_atribut.status_jabatan
-            FROM pengajuan_kedisiplinan_karyawan
-            LEFT JOIN employee_atribut
-                ON pengajuan_kedisiplinan_karyawan.enroll_id_karyawan_bermasalah = employee_atribut.enroll_id
-            WHERE pengajuan_kedisiplinan_karyawan.id = ?
-            LIMIT 1
-        ", [$pengajuan_id]);
+   public function print_pengajuan_sp_pdf(Request $request)
+{
+    $pengajuan_id = $request->route('id');
 
-        $pdf = PDF::loadview('hris/tindakan-kedisiplinan/export_pengajuan_kedisiplinan_pdf',['data'=>$data]);
-        return $pdf->stream('form-nilai-kinerja.pdf');
+    // Ambil semua data pengajuan (anggap bisa lebih dari 1)
+    $data = DB::select("
+        SELECT pk.*,
+               ea.employee_name,
+               ea.department_name,
+               ea.sub_dept_name,
+               ea.department_id,
+               ea.sub_dept_id,
+               ea.nik,
+               ea.status_jabatan
+        FROM pengajuan_kedisiplinan_karyawan pk
+        LEFT JOIN employee_atribut ea ON pk.enroll_id_karyawan_bermasalah = ea.enroll_id
+        WHERE pk.id = ?
+    ", [$pengajuan_id]);
+
+    // Loop tiap pengajuan dan tambahkan faktor_list
+    foreach ($data as &$item) {
+        $item->faktor_list = DB::table('pengajuan_kedisiplinan_faktor')
+            ->where('pengajuan_kedisiplinan_karyawan_id', $item->id)
+            ->select('faktor', 'uraian')
+            ->get();
     }
+
+    // Kirim ke view
+    $pdf = PDF::loadView('hris/tindakan-kedisiplinan/export_pengajuan_kedisiplinan_pdf', [
+        'data' => $data
+    ]);
+
+    return $pdf->stream('form-nilai-kinerja.pdf');
+}
+
 
     public function print_sp_karyawan(Request $request)
     {

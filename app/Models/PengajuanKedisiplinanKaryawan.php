@@ -27,4 +27,9 @@ class PengajuanKedisiplinanKaryawan extends Model
         'uraian_tugas' => 'array',
     ];
 
+    public function faktor()
+    {
+        return $this->hasMany(PengajuanKedisiplinanFaktor::class);
+    }
+
 }

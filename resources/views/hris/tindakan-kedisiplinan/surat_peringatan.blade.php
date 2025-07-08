@@ -298,7 +298,9 @@ h1 {
                                                         <thead>
                                                             <tr class="text-center">
                                                                 <th scope="col">Tanggal Pengajuan</th>
+                                                                <th scope="col">NIK</th>
                                                                 <th scope="col">Diajukan Oleh</th>
+                                                                <th scope="col">NIK</th>
                                                                 <th scope="col">Karyawan Yang Diajukan</th>
                                                                 <th scope="col">Bagian</th>
                                                                 <th scope="col">Department</th>
@@ -318,7 +320,9 @@ h1 {
                                                         <thead>
                                                             <tr class="text-center">
                                                                 <th scope="col">Tanggal Pengajuan</th>
+                                                                <th scope="col">NIK</th>
                                                                 <th scope="col">Diajukan Oleh</th>
+                                                                <th scope="col">NIK</th>
                                                                 <th scope="col">Karyawan Yang Diajukan</th>
                                                                 <th scope="col">Bagian</th>
                                                                 <th scope="col">Department</th>
@@ -338,7 +342,9 @@ h1 {
                                                         <thead>
                                                             <tr class="text-center">
                                                                 <th scope="col">Tanggal Pengajuan</th>
+                                                                <th scope="col">NIK</th>
                                                                 <th scope="col">Diajukan Oleh</th>
+                                                                <th scope="col">NIK</th>
                                                                 <th scope="col">Karyawan Yang Diajukan</th>
                                                                 <th scope="col">Bagian</th>
                                                                 <th scope="col">Department</th>
@@ -453,16 +459,14 @@ h1 {
                                             <span>NAMA</span>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-10">
                                     <div style="display: block; text-align: start; height: 25px;">
                                          <span>:</span>
                                         <strong><span id="create_employee_name"></span></strong>
                                         <input id="enroll_id_karyawan_bermasalah" type="hidden">
                                     </div>
                                 </div>
-                                <div class="col-md-7">
 
-                                </div>
                                 <div class="col-md-2">
                                     <div style="display: block; text-align: start;  height: 25px;">
                                             <span>NIK</span>
@@ -519,50 +523,63 @@ h1 {
                                 <div class="col-md-7">
 
                                 </div>
-                                 {{-- <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; padding-top: 10px;">
-                                    <h5 style="font-weight: bold;">Untuk diberikan tindakan pendisiplinan dalam bentuk :</h5>
-                                </div> --}}
+                                <div class="col-md-12" style="margin-top: 10px; padding-top: 5px;">
+                                    <h6 style="font-weight: bold;">Dikarenakan telah melakukan pelanggaran/ kesalahan (Uraikan Pelanggaran)</h6>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                       <textarea required type="text" class="form-control create-control" placeholder="(Uraikan Pelanggaran)" id="uraian_pelanggaran" name="uraian_pelanggaran"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-12" style="padding-top: 5px;">
+                                    <h6 style="font-weight: bold;">Akibat dari pelanggaran tersebut</h6>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                       <textarea required type="text" class="form-control create-control" placeholder="(Akibat dari pelanggaran)" id="sumber_permasalahan" name="sumber_permasalahan"></textarea>
+                                    </div>
+                                </div>
 
-                                {{-- <div class="col-md-12">
-                                     <div class="radio-container">
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="tindakan_pendisiplinan" value="counseling" checked class="mr-2">
-                                            <span>Counseling</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="tindakan_pendisiplinan" value="surat_peringatan" class="mr-2">
-                                            <span>Surat Peringatan</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="tindakan_pendisiplinan" value="coaching" class="mr-2">
-                                            <span>Coaching</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="tindakan_pendisiplinan" value="mutasi_demosi" class="mr-2">
-                                            <span>Mutasi/Demosi</span>
-                                        </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="tindakan_pendisiplinan" value="phk" class="mr-2">
-                                            <span>PHK</span>
-                                        </label>
-                                    </div>
-                                </div> --}}
-                                <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; padding-top: 10px;">
-                                    <h6 style="font-weight: bold;">Dikarenakan telah melakukan pelanggaran/ kesalahan (Jelaskan pelanggaran/kesalahan yang dilakukan beserta akibatnya)</h6>
+
+                                <div class="col-md-12" style="margin-bottom: 5px;">
+                                    <h6 style="font-weight: bold;">Yang diakibatkan oleh</h6>
                                 </div>
-                                <div class="col-md-12">
+                               <div class="col-md-12">
                                     <div class="form-group">
-                                       <textarea type="text" class="form-control create-control" placeholder="(Jelaskan pelanggaran/kesalahan yang dilakukan beserta akibatnya)" id="pelanggaran" name="pelanggaran"></textarea>
+                                        @php
+                                            $factors = ['Manusia', 'Metode', 'Mesin', 'Material', 'Financial', 'Lingkungan'];
+                                        @endphp
+
+                                        <table class="table table-bordered align-middle">
+                                            <thead class="table-light">
+                                                <tr class="text-center">
+                                                    <th style="width: 20%;">FAKTOR</th>
+                                                    <th style="width: 5%;">=</th>
+                                                    <th style="width: 5%;">✓</th>
+                                                    <th>URAIAN</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($factors as $index => $factor)
+                                                    <tr>
+                                                        <td>{{ $factor }}</td>
+                                                        <td class="text-center">=</td>
+                                                        <td class="text-center">
+                                                            <div class="form-check d-flex justify-content-center">
+                                                                <input class="form-check-input faktor-checkbox" type="checkbox" name="faktor[{{ $index }}][checked]">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control" name="faktor[{{ $index }}][uraian]" placeholder="Uraian...">
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
-                                <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; padding-top: 10px;">
-                                    <h6 style="font-weight: bold;">Yang diakibatkan oleh (Tulis akar permasalahan)</h6>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                       <textarea type="text" class="form-control create-control" placeholder="(Tulis akar permasalahan)" id="sumber_permasalahan" name="sumber_permasalahan"></textarea>
-                                    </div>
-                                </div>
+
+
                                 <div class="col-md-9">
                                 </div>
                                   <div class="col-md-3">
@@ -674,15 +691,12 @@ h1 {
                                             <span>NAMA</span>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                 <div class="col-md-10">
                                     <div style="display: block; text-align: start; height: 25px;">
                                          <span>:</span>
                                         <strong><span id="edit_employee_name_bermasalah"></span></strong>
                                         <input id="enroll_id_karyawan_bermasalah_edit" type="hidden">
                                     </div>
-                                </div>
-                                <div class="col-md-7">
-
                                 </div>
                                 <div class="col-md-2">
                                     <div style="display: block; text-align: start;  height: 25px;">
@@ -703,42 +717,33 @@ h1 {
                                             <span>BAGIAN</span>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-10">
                                     <div style="display: block; text-align: start; height: 25px;">
                                         <span>:</span>
                                         <strong><span id="edit_employee_sub_dept_bermasalah"></span></strong>
                                     </div>
-                                </div>
-                                <div class="col-md-7">
-
                                 </div>
                                 <div class="col-md-2">
                                     <div style="display: block; text-align: start; height: 25px;">
                                             <span>DEPARTMENT</span>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-10">
                                     <div style="display: block; text-align: start; height: 25px;">
                                         <span>:</span>
                                         <strong><span id="edit_employee_department_bermasalah"></span></strong>
                                     </div>
-                                </div>
-                                <div class="col-md-7">
-
                                 </div>
                                 <div class="col-md-2">
                                     <div style="display: block; text-align: start; height: 25px;">
                                             <span>JABATAN</span>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-10">
                                     <div style="display: block; text-align: start; height: 25px;">
                                         <span>:</span>
                                         <strong><span id="edit_employee_jabatan_bermasalah"></span></strong>
                                     </div>
-                                </div>
-                                <div class="col-md-7">
-
                                 </div>
                                 @if ($user === 'fadli' || $user === 'mega@ptnag.com' || $user === 'rudy@ptnag.com' || $user === 'ersa@ptnag.com' || $user === 'indri@nag.nirwanaindonesia.com' || $user === 'pujiprana@nag.nirwanaindonesia.com')
                                  <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; padding-top: 10px;">
@@ -772,19 +777,53 @@ h1 {
                                 </div>
                                 @endif
                                 <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; padding-top: 10px;">
-                                    <h5 style="font-weight: bold;">Dikarenakan telah melakukan pelanggaran/ kesalahan (Jelaskan pelanggaran/kesalahan yang dilakukan beserta akibatnya)</h5>
+                                    <h6 style="font-weight: bold;">Dikarenakan telah melakukan pelanggaran/ kesalahan (Uraikan Pelanggaran)</h6>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                       <textarea type="text" class="form-control create-control" placeholder="(Jelaskan pelanggaran/kesalahan yang dilakukan beserta akibatnya)" id="pelanggaran_edit" name="pelanggaran_edit"></textarea>
+                                       <textarea type="text" class="form-control create-control" placeholder="(Uraikan Pelanggaran)" id="pelanggaran_edit" name="pelanggaran_edit"></textarea>
                                     </div>
                                 </div>
-                                <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; padding-top: 10px;">
-                                    <h5 style="font-weight: bold;">Yang diakibatkan oleh (Tulis akar permasalahan)</h5>
+                                <div class="col-md-12" style="margin-bottom: 10px; ">
+                                    <h6 style="font-weight: bold;">Akibat dari pelanggaran tersebut</h6>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                       <textarea type="text" class="form-control create-control" placeholder="(Tulis akar permasalahan)" id="sumber_permasalahan_edit" name="sumber_permasalahan_edit"></textarea>
+                                       <textarea type="text" class="form-control create-control" placeholder="(Akibat dari pelanggaran)" id="sumber_permasalahan_edit" name="sumber_permasalahan_edit"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        @php
+                                            $factors = ['Manusia', 'Metode', 'Mesin', 'Material', 'Financial', 'Lingkungan'];
+                                        @endphp
+
+                                        <table class="table table-bordered align-middle" id="table-faktor-edit">
+                                            <thead class="table-light text-center">
+                                                <tr>
+                                                    <th style="width: 20%;">FAKTOR</th>
+                                                    <th style="width: 5%;">=</th>
+                                                    <th style="width: 5%;">✓</th>
+                                                    <th>URAIAN</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($factors as $index => $factor)
+                                                    <tr>
+                                                        <td>{{ $factor }}</td>
+                                                        <td class="text-center">=</td>
+                                                        <td class="text-center">
+                                                            <div class="form-check d-flex justify-content-center">
+                                                                <input type="checkbox" class="form-check-input faktor-checkbox-edit" name="faktor_edit[{{ $index }}][checked]" data-faktor="{{ $factor }}">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control uraian-faktor-edit" name="faktor_edit[{{ $index }}][uraian]" placeholder="Uraian..." data-faktor="{{ $factor }}">
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                                 <div class="col-md-9">
@@ -852,6 +891,23 @@ h1 {
     </style>
 
     <script>
+        function validateCheckboxes() {
+            const checked = document.querySelectorAll('.faktor-checkbox:checked');
+            if (checked.length < 1) {
+                swal("", "Minimal 1 faktor harus dicentang.", "info");
+                return false;
+            }
+            return true;
+        }
+        function validateEditableCheckboxes() {
+            const checked = document.querySelectorAll('.faktor-checkbox-edit:checked');
+            if (checked.length < 1) {
+                swal("", "Minimal 1 faktor harus dicentang.", "info");
+                return false;
+            }
+            return true;
+        }
+
         $('body').on('change', '#selectDepartment', function () {
                 var department_id = $('#selectDepartment').val();
 
@@ -979,6 +1035,11 @@ h1 {
             $("#title-modal-edit1-approve").text('Edit Pengajuan Tenaga Kerja');
             $("#btn-update-pengajuan").show();
             $("#btn-approve-pengajuan").hide();
+            // Kosongkan dulu semua faktor (reset state)
+            $('.faktor-checkbox-edit').prop('checked', false);
+            $('.uraian-faktor-edit').val('');
+
+
             $.ajax({
                 type: "POST",
                 url: "{{ route('tindakan_kedisiplinan.get_detail_tindakan_kedisiplinan') }}",
@@ -986,8 +1047,8 @@ h1 {
                     id: id
                 },
                 success: function(res) {
-                   var data = res;
-                      var tanggal_pengajuan=data.tanggal_pengajuan.substr(8,2)+'-'+data.tanggal_pengajuan.substr(5,2)+'-'+data.tanggal_pengajuan.substr(0,4);
+                    var data = res;
+                    var tanggal_pengajuan=data.tanggal_pengajuan.substr(8,2)+'-'+data.tanggal_pengajuan.substr(5,2)+'-'+data.tanggal_pengajuan.substr(0,4);
                     $('#enroll_id_diajukan_oleh_edit').val(data.enroll_id_diajukan_oleh);
                     $('#id_pengajuan_edit').val(data.id);
                     $('#tanggal_pengajuan_edit').val(tanggal_pengajuan);
@@ -1006,6 +1067,16 @@ h1 {
                     $('input[name="tindakan_pendisiplinan_edit"][value="' + data.tindakan_pendisiplinan + '"]').prop('checked', true);
                     $('#pelanggaran_edit').val(data.pelanggaran);
                     $('#sumber_permasalahan_edit').val(data.sumber_permasalahan);
+                    // Loop data faktor dari backend
+                    data.faktor_list.forEach(function(item) {
+                        const faktor = item.faktor;
+                        const uraian = item.uraian;
+
+                        // Cari checkbox & input berdasarkan data-faktor
+                        $('.faktor-checkbox-edit[data-faktor="' + faktor + '"]').prop('checked', true);
+                        $('.uraian-faktor-edit[data-faktor="' + faktor + '"]').val(uraian);
+                    });
+
                 }
             });
         }
@@ -1054,6 +1125,8 @@ h1 {
             $("#title-modal-edit1-approve").text('Approve Pengajuan Tenaga Kerja');
             $("#btn-approve-pengajuan").show();
             $("#btn-update-pengajuan").hide();
+             $('.faktor-checkbox-edit').prop('checked', false);
+            $('.uraian-faktor-edit').val('');
             $.ajax({
                 type: "POST",
                 url: "{{ route('tindakan_kedisiplinan.get_detail_tindakan_kedisiplinan') }}",
@@ -1081,6 +1154,15 @@ h1 {
                     $('input[name="tindakan_pendisiplinan_edit"][value="' + data.tindakan_pendisiplinan + '"]').prop('checked', true);
                     $('#pelanggaran_edit').val(data.pelanggaran);
                     $('#sumber_permasalahan_edit').val(data.sumber_permasalahan);
+                     // Loop data faktor dari backend
+                    data.faktor_list.forEach(function(item) {
+                        const faktor = item.faktor;
+                        const uraian = item.uraian;
+
+                        // Cari checkbox & input berdasarkan data-faktor
+                        $('.faktor-checkbox-edit[data-faktor="' + faktor + '"]').prop('checked', true);
+                        $('.uraian-faktor-edit[data-faktor="' + faktor + '"]').val(uraian);
+                    });
                 }
             });
         }
@@ -1156,8 +1238,9 @@ h1 {
                             return moment(data).format('ll');  // Formatkan tanggal ke dmy
                         }
                     },
-                    { data: 'data_diajukan_name'
-                    },
+                    { data: 'data_diajukan_nik'},
+                    { data: 'data_diajukan_name'},
+                    { data: 'data_karyawan_bermasalah_nik'},
                     { data: 'data_karyawan_bermasalah_name' },
                     { data: 'data_karyawan_bermasalah_bagian_name' },
                     { data: 'data_karyawan_bermasalah_dept_name' },
@@ -1209,8 +1292,9 @@ h1 {
                             return moment(data).format('ll');  // Formatkan tanggal ke dmy
                         }
                     },
-                    { data: 'data_diajukan_name'
-                    },
+                    { data: 'data_diajukan_nik'},
+                    { data: 'data_diajukan_name'},
+                    { data: 'data_karyawan_bermasalah_nik'},
                     { data: 'data_karyawan_bermasalah_name' },
                     { data: 'data_karyawan_bermasalah_bagian_name' },
                     { data: 'data_karyawan_bermasalah_dept_name' },
@@ -1263,8 +1347,9 @@ h1 {
                             return moment(data).format('ll');  // Formatkan tanggal ke dmy
                         }
                     },
-                    { data: 'data_diajukan_name'
-                    },
+                    { data: 'data_diajukan_nik'},
+                    { data: 'data_diajukan_name'},
+                    { data: 'data_karyawan_bermasalah_nik'},
                     { data: 'data_karyawan_bermasalah_name' },
                     { data: 'data_karyawan_bermasalah_bagian_name' },
                     { data: 'data_karyawan_bermasalah_dept_name' },
@@ -1400,8 +1485,10 @@ h1 {
                 var tindakan_pendisiplinan = $('input[name="tindakan_pendisiplinan"]:checked').val();
                 var enroll_id_diajukan_oleh = $('#enroll_id_diajukan_oleh').val();
                 var enroll_id_karyawan_bermasalah = $('#enroll_id_karyawan_bermasalah').val();
-                var pelanggaran = $('#pelanggaran').val();
+                var uraian_pelanggaran = $('#uraian_pelanggaran').val();
                 var sumber_permasalahan = $('#sumber_permasalahan').val();
+                // Ambil semua data faktor yang diceklis beserta uraian-nya
+
 
                 if(!enroll_id_diajukan_oleh){
                     swal("", "Harap isi pengajuan oleh terlebih dahulu!", "info");
@@ -1411,7 +1498,7 @@ h1 {
                     swal("", "Harap isi karyawan bermasalah terlebih dahulu!", "info");
                     return;
                 }
-                if(!pelanggaran){
+                if(!uraian_pelanggaran){
                     swal("", "Harap isi permasalahan terlebih dahulu!", "info");
                     return;
                 }
@@ -1419,10 +1506,23 @@ h1 {
                     swal("", "Harap isi sumber masalah terlebih dahulu!", "info");
                     return;
                 }
-                // if(!tindakan_pendisiplinan){
-                //     swal("", "Harap isi tindakan kedisiplinan terlebih dahulu!", "info");
-                //     return;
-                // }
+                if (!validateCheckboxes()) {
+                    return;
+                }
+
+                var faktorList = [];
+
+                $('input.form-check-input:checked').each(function () {
+                    var $row = $(this).closest('tr');
+                    var uraian = $row.find('input[type="text"]').val();
+                    var faktor = $row.find('td:first').text().trim();
+
+                    faktorList.push({
+                        faktor: faktor,
+                        uraian: uraian
+                    });
+                });
+
 
 
                 $.ajax({
@@ -1435,9 +1535,10 @@ h1 {
                         tanggal_pengajuan:tanggal_perizinan,
                         enroll_id_diajukan_oleh:enroll_id_diajukan_oleh,
                         enroll_id_karyawan_bermasalah:enroll_id_karyawan_bermasalah,
-                        pelanggaran:pelanggaran,
+                        pelanggaran:uraian_pelanggaran,
                         sumber_permasalahan:sumber_permasalahan,
                         tindakan_pendisiplinan:tindakan_pendisiplinan,
+                        faktorList: faktorList
                     },
                     dataType: 'json',
                     success: function(res){
@@ -1474,12 +1575,6 @@ h1 {
                 var pelanggaran_edit = $('#pelanggaran_edit').val();
                 var sumber_permasalahan_edit = $('#sumber_permasalahan_edit').val();
 
-                console.log("Tanggal Pengajuan Edit:", tanggal_pengajuan);
-                console.log("enroll_id_diajukan_oleh_edit:", enroll_id_diajukan_oleh_edit);
-                console.log("enroll_id_karyawan_bermasalah_edit:", enroll_id_karyawan_bermasalah_edit);
-                console.log("tindakan_pendisiplinan_edit:", tindakan_pendisiplinan_edit);
-                console.log("pelanggaran_edit:", pelanggaran_edit);
-                console.log("sumber_permasalahan_edit:", sumber_permasalahan_edit);
 
                 if(!enroll_id_diajukan_oleh_edit){
                     swal("", "Harap isi pengajuan oleh terlebih dahulu!", "info");
@@ -1502,6 +1597,21 @@ h1 {
                     return;
                 }
 
+                if (!validateEditableCheckboxes()) {
+                    return;
+                }
+                var faktorListEdit = [];
+
+                $('input.faktor-checkbox-edit:checked').each(function () {
+                    var $row = $(this).closest('tr');
+                    var uraian = $row.find('input.uraian-faktor-edit').val();
+                    var faktor = $(this).data('faktor');
+
+                    faktorListEdit.push({
+                        faktor: faktor,
+                        uraian: uraian
+                    });
+                });
 
                 $.ajax({
                     type:"POST",
@@ -1517,6 +1627,7 @@ h1 {
                         pelanggaran:pelanggaran_edit,
                         sumber_permasalahan:sumber_permasalahan_edit,
                         tindakan_pendisiplinan:tindakan_pendisiplinan_edit,
+                        faktorList: faktorListEdit,
                     },
                     dataType: 'json',
                     success: function(res){
