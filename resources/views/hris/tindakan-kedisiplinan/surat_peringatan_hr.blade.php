@@ -1180,16 +1180,24 @@ h1 {
                     });
                     return;
                 }
-                if(no_form == '') {
+                  if(selectedKodePasal == '') {
                     notif({
-                        msg: "<b>Error:</b> No form wajib diisi.",
+                        msg: "<b>Error:</b> Pasal wajib dipilih.",
                         type: "error"
                     });
                     return;
                 }
-                if(selectedKodePasal == '') {
+
+                  if(alasan_pelanggaran == '') {
+                      notif({
+                          msg: "<b>Error:</b> Alasan pelanggaran wajib diisi.",
+                          type: "error"
+                      });
+                      return;
+                  }
+                if(no_form == '') {
                     notif({
-                        msg: "<b>Error:</b> Pasal wajib dipilih.",
+                        msg: "<b>Error:</b> No form wajib diisi.",
                         type: "error"
                     });
                     return;
