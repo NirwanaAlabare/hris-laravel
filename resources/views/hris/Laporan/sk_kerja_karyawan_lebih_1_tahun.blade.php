@@ -225,7 +225,7 @@
             </tr>
             <tr>
                 <td></td>
-                <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><b>Manager Compliance - HRGA</b></td>
+                <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><b>Manager HR & GA - Compliance</b></td>
             </tr>
             <table width="562">
                 <thead >
