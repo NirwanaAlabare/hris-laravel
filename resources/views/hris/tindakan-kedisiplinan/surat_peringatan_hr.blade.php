@@ -944,7 +944,7 @@ h1 {
                             }
 
                             if (dateSpan) {
-                                dateSpan.textContent = `(${sp.tanggal_mulai} - ${sp.tanggal_sampai})`;
+                                dateSpan.textContent = `(${moment(sp.tanggal_mulai).format('DD-MM-YYYY')} - ${moment(sp.tanggal_sampai).format('DD-MM-YYYY')})`;
                             }
 
                             if (label) {
@@ -1069,7 +1069,7 @@ h1 {
                             }
 
                             if (dateSpan) {
-                                dateSpan.textContent = `(${sp.tanggal_mulai} - ${sp.tanggal_sampai})`;
+                                dateSpan.textContent = `(${moment(sp.tanggal_mulai).format('DD-MM-YYYY')} - ${moment(sp.tanggal_sampai).format('DD-MM-YYYY')})`;
                             }
 
                             if (label) {
