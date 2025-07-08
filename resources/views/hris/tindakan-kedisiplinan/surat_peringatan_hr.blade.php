@@ -427,6 +427,7 @@ h1 {
                                     <h6 style="font-weight: bold;">Untuk diberikan Surat Peringatan :</h6>
                                 </div>
 
+
                                 <div class="col-md-12">
                                      <div class="radio-container">
                                         <label class="radio-wrapper" id="label_sp_1">
@@ -446,6 +447,9 @@ h1 {
                                         </label>
                                     </div>
                                 </div>
+                                 <div class="col-md-12">
+                                    <div id="info_sp_aktif" class="mt-2"></div>
+                                </div>
                                 <div class="col-md-12" style="margin-top: 10px; margin-bottom: 3px; padding-top: 10px;">
                                     <h6 style="font-weight: bold;">Dikarenakan Karyawan tersebut telah melakukan pelanggaran Peraturan Perusahaan pasal :</h6>
                                 </div>
@@ -453,14 +457,6 @@ h1 {
                                     <div class="form-group">
                                         <select id="pasalKaryawan" name="pasalKaryawan" style='width: 100%; font-weight: bold;' data-placeholder="Pilih Pasal" class="form-control create-control select2-show-search EmployeeID">
                                             <option value="">-- Pilih Pasal --</option>
-                                            {{-- @foreach ($pasal_data as $r_empl)
-                                                <option
-                                                    value="{{$r_empl->kode_pasal}}"
-                                                >
-                                                    {{$r_empl->pasal_select}}
-
-                                                </option>
-                                            @endforeach --}}
                                         </select>
                                         <small class="error-message text-danger"></small>
                                     </div>
@@ -546,7 +542,7 @@ h1 {
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label class="form-label">Pilih Karyawan : </label>
-                                        <select required id="karyawanBermasalahIDEdit" name="karyawanBermasalahIDEdit" style='width: 100%;' data-placeholder="Pilih karyawan" class="form-control create-control select2 select2-show-search EmployeeID">
+                                        <select disabled required id="karyawanBermasalahIDEdit" name="karyawanBermasalahIDEdit" style='width: 100%;' data-placeholder="Pilih karyawan" class="form-control create-control select2 select2-show-search EmployeeID">
                                             <option value="">-- Pilih Karyawan --</option>
                                             @foreach ($selectemployee as $r_empl)
                                                 <option
@@ -645,6 +641,9 @@ h1 {
                                             <span id="sp_3_date_edit" style="font-size: 11px;"></span>
                                         </label>
                                     </div>
+                                </div>
+                                  <div class="col-md-12">
+                                    <div id="info_sp_aktif_edit" class="mt-2"></div>
                                 </div>
                                 <div class="col-md-12" style="margin-top: 10px; margin-bottom: 3px; padding-top: 10px;">
                                     <h6 style="font-weight: bold;">Dikarenakan Karyawan tersebut telah melakukan pelanggaran Peraturan Perusahaan pasal :</h6>
@@ -953,15 +952,64 @@ h1 {
                         });
 
                         // Tentukan default radio yang bisa dipilih
-                        if (!usedSPs.includes('sp_1')) {
+                     if (usedSPs.includes('sp_3')) {
+                            // Jika SP 3 sudah ada: disable semua radio + tombol simpan
+                            ['sp_1', 'sp_2', 'sp_3'].forEach(spKey => {
+                                const radio = document.getElementById(spKey + '_radio_edit');
+                                 const label = document.getElementById('label_' + spKey + '_edit');
+                                if (radio) radio.disabled = true;
+                                if(label) label.classList.add('disabled');
+                            });
+                            $('#btn-simpan-pengajuan').prop('disabled', true);
+                        } else {
+                            $('#btn-simpan-pengajuan').prop('disabled', false);
+
+                            if (usedSPs.includes('sp_2')) {
+                                const radio1 = document.getElementById('sp_1_radio_edit');
+                                const label1 = document.getElementById('label_sp_1_edit');
+                                if (radio1) radio1.disabled = true;
+                                if (label1) label1.classList.add('disabled');
+                            }
+                        }
+
+                            // Tentukan default radio yang bisa dipilih
+                        const spUrutan = ['sp_1', 'sp_2', 'sp_3'];
+
+                        if (usedSPs.includes('sp_3')) {
+                            // Jika SP 3 sudah dipakai, maka semuanya disable dan tidak ada yang dipilih
+                            spUrutan.forEach(sp => {
+                                const radio = document.getElementById(sp + '_radio_edit');
+                                if (radio) radio.checked = false;
+                            });
+                        } else if (usedSPs.includes('sp_2')) {
+                            // Jika SP 2 sudah dipakai, berarti tinggal SP 3 yang boleh dipilih
+                            document.getElementById('sp_3_radio_edit').checked = true;
+                            // tampilkanPasal('sp_3');
+                            tampilkanAllPasal();
+                        } else if (usedSPs.includes('sp_1')) {
+                            // Jika SP 1 sudah dipakai, pilih SP 2
+                            document.getElementById('sp_2_radio_edit').checked = true;
+                            // tampilkanPasal('sp_2');
+                            tampilkanAllPasal();
+                        } else {
+                            // Jika belum ada SP sama sekali, pilih SP 1
                             document.getElementById('sp_1_radio_edit').checked = true;
                             tampilkanPasal('sp_1');
-                        } else if (!usedSPs.includes('sp_2')) {
-                            document.getElementById('sp_2_radio_edit').checked = true;
-                            tampilkanPasal('sp_2');
-                        } else if (!usedSPs.includes('sp_3')) {
-                            document.getElementById('sp_3_radio_edit').checked = true;
-                            tampilkanPasal('sp_3');
+                        }
+
+                        // Tampilkan info SP aktif di bawah radio
+                        const infoDiv = document.getElementById('info_sp_aktif_edit');
+                        infoDiv.innerHTML = ''; // kosongkan dulu
+
+                        if (res.length > 0) {
+                            let html = '<strong>Surat Peringatan Aktif:</strong><ul style="padding-left: 16px;">';
+                            res.forEach(sp => {
+                                const mulai = sp.tanggal_mulai.split('-').reverse().join('-');
+                                const sampai = sp.tanggal_sampai.split('-').reverse().join('-');
+                                html += `<b><li>${sp.surat_peringatan.toUpperCase().replace('_', ' ')}</b> (${mulai} sampai ${sampai})</li>`;
+                            });
+                            html += '</ul>';
+                            infoDiv.innerHTML = html;
                         }
 
                         // Jika ada SP aktif, munculkan alert
@@ -997,6 +1045,28 @@ h1 {
 
             // tambahkan ke select
             hasilFilter.forEach(pasal => {
+                const potongText = pasal.pasal_select.length > 140
+                    ? pasal.pasal_select.substring(0, 137) + '...'
+                    : pasal.pasal_select;
+
+                select.append(`
+                    <option value="${pasal.kode_pasal}" data-full-text="${pasal.pasal_select}">
+                        ${potongText}
+                    </option>
+                `);
+
+            });
+
+            // refresh Select2 jika pakai
+            select.trigger('change.select2');
+        }
+         function tampilkanAllPasal() {
+            // kosongkan dulu isi dropdown
+            const select = $('#pasalKaryawan');
+            select.empty().append('<option value="">-- Pilih Pasal --</option>');
+
+            // tambahkan ke select
+            semuaPasal.forEach(pasal => {
                 const potongText = pasal.pasal_select.length > 140
                     ? pasal.pasal_select.substring(0, 137) + '...'
                     : pasal.pasal_select;
@@ -1077,17 +1147,66 @@ h1 {
                             }
                         });
 
-                        // Tentukan default radio yang bisa dipilih
-                        if (!usedSPs.includes('sp_1')) {
-                            document.getElementById('sp_1_radio').checked = true;
-                            tampilkanPasal('sp_1');
-                        } else if (!usedSPs.includes('sp_2')) {
-                            document.getElementById('sp_2_radio').checked = true;
-                            tampilkanPasal('sp_2');
-                        } else if (!usedSPs.includes('sp_3')) {
-                            document.getElementById('sp_3_radio').checked = true;
-                            tampilkanPasal('sp_3');
+                         if (usedSPs.includes('sp_3')) {
+                            // Jika SP 3 sudah ada: disable semua radio + tombol simpan
+                            ['sp_1', 'sp_2', 'sp_3'].forEach(spKey => {
+                                const radio = document.getElementById(spKey + '_radio');
+                                 const label = document.getElementById('label_' + spKey);
+                                if (radio) radio.disabled = true;
+                                if(label) label.classList.add('disabled');
+                            });
+                            $('#btn-simpan-pengajuan').prop('disabled', true);
+                        } else {
+                            $('#btn-simpan-pengajuan').prop('disabled', false);
+
+                            if (usedSPs.includes('sp_2')) {
+                                const radio1 = document.getElementById('sp_1_radio');
+                                const label1 = document.getElementById('label_sp_1');
+                                if (radio1) radio1.disabled = true;
+                                if (label1) label1.classList.add('disabled');
+                            }
                         }
+
+                        // Tentukan default radio yang bisa dipilih
+                    const spUrutan = ['sp_1', 'sp_2', 'sp_3'];
+
+                    if (usedSPs.includes('sp_3')) {
+                        // Jika SP 3 sudah dipakai, maka semuanya disable dan tidak ada yang dipilih
+                        spUrutan.forEach(sp => {
+                            const radio = document.getElementById(sp + '_radio');
+                            if (radio) radio.checked = false;
+                        });
+                    } else if (usedSPs.includes('sp_2')) {
+                        // Jika SP 2 sudah dipakai, berarti tinggal SP 3 yang boleh dipilih
+                        document.getElementById('sp_3_radio').checked = true;
+                        // tampilkanPasal('sp_3');
+                        tampilkanAllPasal();
+                    } else if (usedSPs.includes('sp_1')) {
+                        // Jika SP 1 sudah dipakai, pilih SP 2
+                        document.getElementById('sp_2_radio').checked = true;
+                        // tampilkanPasal('sp_2');
+                        tampilkanAllPasal();
+                    } else {
+                        // Jika belum ada SP sama sekali, pilih SP 1
+                        document.getElementById('sp_1_radio').checked = true;
+                        tampilkanPasal('sp_1');
+                    }
+
+                    // Tampilkan info SP aktif di bawah radio
+                    const infoDiv = document.getElementById('info_sp_aktif');
+                    infoDiv.innerHTML = ''; // kosongkan dulu
+
+                    if (res.length > 0) {
+                        let html = '<strong>Surat Peringatan Aktif:</strong><ul style="padding-left: 16px;">';
+                        res.forEach(sp => {
+                            const mulai = sp.tanggal_mulai.split('-').reverse().join('-');
+                            const sampai = sp.tanggal_sampai.split('-').reverse().join('-');
+                            html += `<b><li>${sp.surat_peringatan.toUpperCase().replace('_', ' ')}</b> (${mulai} sampai ${sampai})</li>`;
+                        });
+                        html += '</ul>';
+                        infoDiv.innerHTML = html;
+                    }
+
 
                         // Jika ada SP aktif, munculkan alert
                         if (usedSPs.length > 0) {
@@ -1144,6 +1263,7 @@ h1 {
             window.open(url, '_blank');
         }
 
+
         function openModalEditPengajuan(id) {
             $("#ajax-modal-edit-pengajuan").modal('show');
             $("#title-modal-edit-surat-peringatan").text('Edit Surat Peringatan');
@@ -1155,11 +1275,102 @@ h1 {
                     id: id
                 },
                 success: function(res) {
-                   var data = res;
+                   var data = res.data;
+                   var history_peringatan = res.history_peringatan;
                    console.log(data);
                     var tanggal_berlaku_mulai=data.tanggal_mulai.substr(8,2)+'-'+data.tanggal_mulai.substr(5,2)+'-'+data.tanggal_mulai.substr(0,4);
                     var tanggal_berlaku_sampai=data.tanggal_sampai.substr(8,2)+'-'+data.tanggal_sampai.substr(5,2)+'-'+data.tanggal_sampai.substr(0,4);
                     tampilkanPasalEdit(data.surat_peringatan); // render ulang opsi pasal
+                    ['sp_1', 'sp_2', 'sp_3'].forEach(sp => {
+                        const radio = document.getElementById(sp + '_radio_edit');
+                        const label = document.getElementById('label_' + sp + '_edit');
+                        if (radio) {
+                            radio.disabled = false;
+                            radio.checked = false;
+                        }
+                        if (label) {
+                            label.classList.remove('disabled');
+                        }
+                    });
+
+                    // Disable berdasarkan level SP saat edit
+                    // if (data.surat_peringatan === 'sp_2') {
+                    //     // SP 2: Disable SP 1
+                    //     const sp1 = document.getElementById('sp_1_radio_edit');
+                    //     const label1 = document.getElementById('label_sp_1_edit');
+                    //     if (sp1) sp1.disabled = true;
+                    //     if (label1) label1.classList.add('disabled');
+                    // } else if (data.surat_peringatan === 'sp_3') {
+                    //     // SP 3: Disable SP 1 & SP 2
+                    //     ['sp_1', 'sp_2'].forEach(sp => {
+                    //         const radio = document.getElementById(sp + '_radio_edit');
+                    //         const label = document.getElementById('label_' + sp + '_edit');
+                    //         if (radio) radio.disabled = true;
+                    //         if (label) label.classList.add('disabled');
+                    //     });
+                    // }
+
+                    // const usedSPs = history_peringatan.map(sp => sp.surat_peringatan);
+
+                    // if (usedSPs.includes('sp_3')) {
+                    // ['sp_1', 'sp_2', 'sp_3'].forEach(sp => {
+                    //     const radio = document.getElementById(sp + '_radio_edit');
+                    //     const label = document.getElementById('label_' + sp +'_edit');
+                    //     if (radio) radio.disabled = true;
+                    //     if (label) label.classList.add('disabled');
+                    // });
+                    // } else if (usedSPs.includes('sp_2')) {
+                    // ['sp_1', 'sp_2'].forEach(sp => {
+                    //     const radio = document.getElementById(sp + '_radio_edit');
+                    //     const label = document.getElementById('label_' + sp+'_edit');
+                    //     if (radio) radio.disabled = true;
+                    //     if (label) label.classList.add('disabled');
+                    // });
+                    // } else if (usedSPs.includes('sp_1')) {
+                    // const radio = document.getElementById('sp_1_radio_edit');
+                    // const label = document.getElementById('label_sp_1_edit');
+                    // if (radio) radio.disabled = true;
+                    // if (label) label.classList.add('disabled');
+                    // }
+const usedSPs = history_peringatan.map(sp => sp.surat_peringatan);
+const currentSP = data.surat_peringatan;
+
+// Urutan SP biar bisa tahu mana yang "lebih kecil"
+const spUrutan = ['sp_1', 'sp_2', 'sp_3'];
+const currentIndex = spUrutan.indexOf(currentSP);
+                    spUrutan.forEach((sp, index) => {
+    const radio = document.getElementById(sp + '_radio_edit');
+    const label = document.getElementById('label_' + sp + '_edit');
+
+    // ✅ Syarat disable:
+    // - Kalau SP sedang diedit, jangan disable
+    // - Kalau SP < currentSP, disable (walaupun belum dipakai)
+    // - Kalau SP ada di history dan bukan currentSP, disable
+
+    if (sp !== currentSP && (index < currentIndex || usedSPs.includes(sp))) {
+        if (radio) radio.disabled = true;
+        if (label) label.classList.add('disabled');
+    }
+});
+
+                    const infoDiv = document.getElementById('info_sp_aktif_edit');
+                    infoDiv.innerHTML = ''; // kosongkan dulu
+
+                    if (history_peringatan.length > 0) {
+                        let html = '<strong>Surat Peringatan Aktif:</strong><ul style="padding-left: 16px;">';
+                        history_peringatan.forEach(sp => {
+                            const mulai = sp.tanggal_mulai.split('-').reverse().join('-');
+                            const sampai = sp.tanggal_sampai.split('-').reverse().join('-');
+                            html += `<b><li>${sp.surat_peringatan.toUpperCase().replace('_', ' ')}</b> (${mulai} sampai ${sampai})</li>`;
+                        });
+                        html += '</ul>';
+                        infoDiv.innerHTML = html;
+                    }
+
+
+                    // Centang sesuai SP yang sedang diedit
+                    const radioEdit = document.getElementById(data.surat_peringatan + '_radio_edit');
+                    if (radioEdit) radioEdit.checked = true;
                     setTimeout(() => {
                         $('#EditpasalKaryawan').val(data.kode_pasal).trigger('change.select2');
                     }, 200);

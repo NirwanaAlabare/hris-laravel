@@ -191,8 +191,28 @@ class TindakanKedisiplinanController extends AdminBaseController
     public function get_detail_surat_peringatan(Request $request)
     {
         $id = $request->id;
+        $date = date('Y-m-d');
         $data = DB::select("SELECT surat_peringatan_karyawan.*, ea.employee_name ,ea.nik, ea.sub_dept_name, ea.department_name, ea.status_jabatan from surat_peringatan_karyawan left join employee_atribut ea on surat_peringatan_karyawan.enroll_id = ea.enroll_id WHERE id = ?", [$id]);
-        return $data[0];
+        $enroll_id = $data[0]->enroll_id;
+        $tanggal_berjalan = $date;
+
+        // Query pertama
+        $history_peringatan  = SuratPeringatanKaryawan::select(
+            'surat_peringatan_karyawan.*',
+            'employee_atribut.employee_name',
+            'employee_atribut.nik',
+            'employee_atribut.department_name',
+            'employee_atribut.sub_dept_name',
+            'employee_atribut.status_jabatan'
+        )
+        ->leftJoin('employee_atribut', 'surat_peringatan_karyawan.enroll_id', '=', 'employee_atribut.enroll_id')
+        ->where('surat_peringatan_karyawan.enroll_id', $enroll_id)
+        ->where('surat_peringatan_karyawan.tanggal_mulai', '<=', $tanggal_berjalan)
+        ->where('surat_peringatan_karyawan.tanggal_sampai', '>=', $tanggal_berjalan)
+        ->get();
+
+        // Format response untuk DataTables
+        return ['data' => $data[0], 'history_peringatan' => $history_peringatan];
     }
 
 
