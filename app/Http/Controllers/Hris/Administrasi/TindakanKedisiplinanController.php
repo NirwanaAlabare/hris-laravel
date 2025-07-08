@@ -421,6 +421,31 @@ class TindakanKedisiplinanController extends AdminBaseController
             'data' => $data
         ]);
     }
+    public function get_status_sp(Request $request)
+    {
+        $email = Auth::guard('admin')->user()->email;
+        $enroll_id = $request->id;
+        $tanggal_berjalan = $request->tanggal_berjalan;
+
+        // Query pertama
+        $query  = SuratPeringatanKaryawan::select(
+            'surat_peringatan_karyawan.*',
+            'employee_atribut.employee_name',
+            'employee_atribut.nik',
+            'employee_atribut.department_name',
+            'employee_atribut.sub_dept_name',
+            'employee_atribut.status_jabatan'
+        )
+        ->leftJoin('employee_atribut', 'surat_peringatan_karyawan.enroll_id', '=', 'employee_atribut.enroll_id')
+        ->where('surat_peringatan_karyawan.enroll_id', $enroll_id)
+        ->where('surat_peringatan_karyawan.tanggal_mulai', '<=', $tanggal_berjalan)
+        ->where('surat_peringatan_karyawan.tanggal_sampai', '>=', $tanggal_berjalan);
+
+        $data = $query ->get();
+        // Format response untuk DataTables
+        return $data;
+    }
+
     public function get_surat_peringatan(Request $request)
     {
         $email = Auth::guard('admin')->user()->email;

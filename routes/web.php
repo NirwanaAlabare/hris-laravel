@@ -344,6 +344,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
       // TINDAKAN KEDISIPLINAN
     Route::get('/tindakan_kedisiplinan/index', ['as' => 'tindakan_kedisiplinan.tindakan_kedisiplinan','uses' => 'Administrasi\TindakanKedisiplinanController@index']);
     Route::post('/tindakan_kedisiplinan/get_surat_peringatan', ['as' => 'tindakan_kedisiplinan.get_surat_peringatan','uses' => 'Administrasi\TindakanKedisiplinanController@get_surat_peringatan']);
+    Route::post('/tindakan_kedisiplinan/get_status_sp', ['as' => 'tindakan_kedisiplinan.get_status_sp','uses' => 'Administrasi\TindakanKedisiplinanController@get_status_sp']);
     Route::get('/tindakan_kedisiplinan/surat_peringatan_hr', ['as' => 'tindakan_kedisiplinan.surat_peringatan_hr','uses' => 'Administrasi\TindakanKedisiplinanController@surat_peringatan_hr']);
     Route::get('/tindakan_kedisiplinan/print_pengajuan_sp_pdf/{id}', ['as' => 'tindakan_kedisiplinan.print_pengajuan_sp_pdf','uses' => 'Administrasi\TindakanKedisiplinanController@print_pengajuan_sp_pdf']);
     Route::get('/tindakan_kedisiplinan/print_sp_karyawan/{id}', ['as' => 'tindakan_kedisiplinan.print_sp_karyawan','uses' => 'Administrasi\TindakanKedisiplinanController@print_sp_karyawan']);

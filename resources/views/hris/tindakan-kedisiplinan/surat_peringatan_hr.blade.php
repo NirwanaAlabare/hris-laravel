@@ -183,6 +183,14 @@ h1 {
     width: 100%;
     }
 
+    .radio-wrapper.disabled {
+        border-color: #777777;
+        background-color: #dfdfdf;
+    }
+    .radio-wrapper.disabled:hover {
+        border-color: #777777;
+        background-color: #dfdfdf;
+    }
     .radio-wrapper:hover {
         border-color: #007bff;
         background-color: #e6f0ff;
@@ -436,17 +444,20 @@ h1 {
 
                                 <div class="col-md-12">
                                      <div class="radio-container">
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="tindakan_pendisiplinan" value="sp_1" checked class="mr-2">
+                                        <label class="radio-wrapper" id="label_sp_1">
+                                            <input type="radio" name="tindakan_pendisiplinan" value="sp_1" checked class="mr-2" id="sp_1_radio">
                                             <span>SP 1</span>
+                                            <span id="sp_1_date" style="font-size: 11px;"></span>
                                         </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="tindakan_pendisiplinan" value="sp_2" class="mr-2">
+                                        <label class="radio-wrapper" id="label_sp_2">
+                                            <input type="radio" name="tindakan_pendisiplinan" value="sp_2" class="mr-2" id="sp_2_radio">
                                             <span>SP 2</span>
+                                            <span id="sp_2_date" style="font-size: 11px;"></span>
                                         </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="tindakan_pendisiplinan" value="sp_3" class="mr-2">
+                                        <label class="radio-wrapper" id="label_sp_3">
+                                            <input type="radio" name="tindakan_pendisiplinan" value="sp_3" class="mr-2" id="sp_3_radio">
                                             <span>SP 3</span>
+                                            <span id="sp_3_date" style="font-size: 11px;"></span>
                                         </label>
                                     </div>
                                 </div>
@@ -648,17 +659,20 @@ h1 {
 
                                 <div class="col-md-12">
                                      <div class="radio-container">
-                                        <label class="radio-wrapper">
-                                            <input type="radio"  name="edit_tindakan_pendisiplinan" value="sp_1" checked class="mr-2">
+                                        <label class="radio-wrapper" id="label_sp_1_edit">
+                                            <input type="radio"  name="edit_tindakan_pendisiplinan" value="sp_1" checked class="mr-2" id="sp_1_radio_edit">
                                             <span>SP 1</span>
+                                            <span id="sp_1_date_edit" style="font-size: 11px;"></span>
                                         </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="edit_tindakan_pendisiplinan" value="sp_2" class="mr-2">
+                                        <label class="radio-wrapper" id="label_sp_2_edit">
+                                            <input type="radio" name="edit_tindakan_pendisiplinan" value="sp_2" class="mr-2" id="sp_2_radio_edit">
                                             <span>SP 2</span>
+                                            <span id="sp_2_date_edit" style="font-size: 11px;"></span>
                                         </label>
-                                        <label class="radio-wrapper">
-                                            <input type="radio" name="edit_tindakan_pendisiplinan" value="sp_3" class="mr-2">
+                                        <label class="radio-wrapper" id="label_sp_3_edit">
+                                            <input type="radio" name="edit_tindakan_pendisiplinan" value="sp_3" class="mr-2" id="sp_3_radio_edit">
                                             <span>SP 3</span>
+                                            <span id="sp_3_date_edit" style="font-size: 11px;"></span>
                                         </label>
                                     </div>
                                 </div>
@@ -914,8 +928,86 @@ h1 {
             var statusJabatan = selectedOption.data('status_jabatan_edit');
             var employee_name = selectedOption.data('employee_name_edit');
             var employee_nik = selectedOption.data('employee_nik_edit');
-
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
             if(selectedOption.val() != null){
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('tindakan_kedisiplinan.get_status_sp') }}",
+                    data: {
+                        id: selectedOption.val(),
+                        tanggal_berjalan: formattedDate
+                    },
+                    success: function(res) {
+                        // Daftar SP yang ada di response
+                        const usedSPs = res.map(sp => sp.surat_peringatan);
+
+                        // Reset semua input radio (enable, unchecked, dan hapus class disabled)
+                        ['sp_1', 'sp_2', 'sp_3'].forEach(function(sp_key) {
+                            const radio = document.getElementById(sp_key + '_radio_edit');
+                            const dateSpan = document.getElementById(sp_key + '_date_edit');
+                            const label = document.getElementById('label_' + sp_key + '_edit');
+
+                            if (radio) {
+                                radio.disabled = false;
+                                radio.checked = false;
+                            }
+
+                            if (dateSpan) {
+                                dateSpan.textContent = '';
+                            }
+
+                            if (label) {
+                                label.classList.remove('disabled');
+                            }
+                        });
+
+                        // Tampilkan tanggal dan disable radio yang sudah dipakai
+                        res.forEach(function(sp) {
+                            const spKey = sp.surat_peringatan;
+                            const radio = document.getElementById(spKey + '_radio_edit');
+                            const dateSpan = document.getElementById(spKey + '_date_edit');
+                            const label = document.getElementById('label_' + spKey  + '_edit');
+
+                            if (radio) {
+                                radio.disabled = true;
+                            }
+
+                            if (dateSpan) {
+                                dateSpan.textContent = `(${sp.tanggal_mulai} - ${sp.tanggal_sampai})`;
+                            }
+
+                            if (label) {
+                                label.classList.add('disabled');
+                            }
+                        });
+
+                        // Tentukan default radio yang bisa dipilih
+                        if (!usedSPs.includes('sp_1')) {
+                            document.getElementById('sp_1_radio_edit').checked = true;
+                            tampilkanPasal('sp_1');
+                        } else if (!usedSPs.includes('sp_2')) {
+                            document.getElementById('sp_2_radio_edit').checked = true;
+                            tampilkanPasal('sp_2');
+                        } else if (!usedSPs.includes('sp_3')) {
+                            document.getElementById('sp_3_radio_edit').checked = true;
+                            tampilkanPasal('sp_3');
+                        }
+
+                        // Jika ada SP aktif, munculkan alert
+                        if (usedSPs.length > 0) {
+                            Swal.fire({
+                                title: 'Karyawan Sudah Ada SP',
+                                text: 'Karyawan ini sudah memiliki Surat Peringatan yang aktif.',
+                                icon: 'warning',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    }
+
+
+                });
+
                 $("#edit_employee_name").text(employee_name);
                 $("#edit_employee_nik").text(employee_nik);
                 $("#edit_employee_sub_dept").text(subDept);
@@ -924,6 +1016,32 @@ h1 {
                 document.getElementById('edit_enroll_id_karyawan_bermasalah').value =  selectedOption.val();
             }
         });
+
+         function tampilkanPasal(spFilter) {
+            // kosongkan dulu isi dropdown
+            const select = $('#pasalKaryawan');
+            select.empty().append('<option value="">-- Pilih Pasal --</option>');
+
+            // filter berdasarkan nilai sp (sp_1, sp_2, sp_3)
+            const hasilFilter = semuaPasal.filter(pasal => pasal.sp === spFilter?.replace('sp_',''));
+
+            // tambahkan ke select
+            hasilFilter.forEach(pasal => {
+                const potongText = pasal.pasal_select.length > 140
+                    ? pasal.pasal_select.substring(0, 137) + '...'
+                    : pasal.pasal_select;
+
+                select.append(`
+                    <option value="${pasal.kode_pasal}" data-full-text="${pasal.pasal_select}">
+                        ${potongText}
+                    </option>
+                `);
+
+            });
+
+            // refresh Select2 jika pakai
+            select.trigger('change.select2');
+        }
 
 
         $("#karyawanBermasalahID").select2().on("select2:select", function() {
@@ -935,8 +1053,86 @@ h1 {
             var statusJabatan = selectedOption.data('status_jabatan');
             var employee_name = selectedOption.data('employee_name');
             var employee_nik = selectedOption.data('employee_nik');
-
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
             if(selectedOption.val() != null){
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('tindakan_kedisiplinan.get_status_sp') }}",
+                    data: {
+                        id: selectedOption.val(),
+                        tanggal_berjalan: formattedDate
+                    },
+                    success: function(res) {
+                        // Daftar SP yang ada di response
+                        const usedSPs = res.map(sp => sp.surat_peringatan);
+
+                        // Reset semua input radio (enable, unchecked, dan hapus class disabled)
+                        ['sp_1', 'sp_2', 'sp_3'].forEach(function(sp_key) {
+                            const radio = document.getElementById(sp_key + '_radio');
+                            const dateSpan = document.getElementById(sp_key + '_date');
+                            const label = document.getElementById('label_' + sp_key);
+
+                            if (radio) {
+                                radio.disabled = false;
+                                radio.checked = false;
+                            }
+
+                            if (dateSpan) {
+                                dateSpan.textContent = '';
+                            }
+
+                            if (label) {
+                                label.classList.remove('disabled');
+                            }
+                        });
+
+                        // Tampilkan tanggal dan disable radio yang sudah dipakai
+                        res.forEach(function(sp) {
+                            const spKey = sp.surat_peringatan;
+                            const radio = document.getElementById(spKey + '_radio');
+                            const dateSpan = document.getElementById(spKey + '_date');
+                            const label = document.getElementById('label_' + spKey);
+
+                            if (radio) {
+                                radio.disabled = true;
+                            }
+
+                            if (dateSpan) {
+                                dateSpan.textContent = `(${sp.tanggal_mulai} - ${sp.tanggal_sampai})`;
+                            }
+
+                            if (label) {
+                                label.classList.add('disabled');
+                            }
+                        });
+
+                        // Tentukan default radio yang bisa dipilih
+                        if (!usedSPs.includes('sp_1')) {
+                            document.getElementById('sp_1_radio').checked = true;
+                            tampilkanPasal('sp_1');
+                        } else if (!usedSPs.includes('sp_2')) {
+                            document.getElementById('sp_2_radio').checked = true;
+                            tampilkanPasal('sp_2');
+                        } else if (!usedSPs.includes('sp_3')) {
+                            document.getElementById('sp_3_radio').checked = true;
+                            tampilkanPasal('sp_3');
+                        }
+
+                        // Jika ada SP aktif, munculkan alert
+                        if (usedSPs.length > 0) {
+                            Swal.fire({
+                                title: 'Karyawan Sudah Ada SP',
+                                text: 'Karyawan ini sudah memiliki Surat Peringatan yang aktif.',
+                                icon: 'warning',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    }
+
+
+                });
+
                 $("#create_employee_name").text(employee_name);
                 $("#create_employee_nik").text(employee_nik);
                 $("#create_employee_sub_dept").text(subDept);
@@ -946,6 +1142,32 @@ h1 {
             }
         });
 
+         function tampilkanPasalEdit(spFilter) {
+            // kosongkan dulu isi dropdown
+            const select = $('#EditpasalKaryawan');
+            select.empty().append('<option value="">-- Pilih Pasal --</option>');
+
+            // filter berdasarkan nilai sp (sp_1, sp_2, sp_3)
+            const hasilFilter = semuaPasal.filter(pasal => pasal.sp === spFilter?.replace('sp_',''));
+
+            // tambahkan ke select
+            hasilFilter.forEach(pasal => {
+                const potongText = pasal.pasal_select.length > 140
+                    ? pasal.pasal_select.substring(0, 137) + '...'
+                    : pasal.pasal_select;
+
+                select.append(`
+                    <option value="${pasal.kode_pasal}" data-full-text="${pasal.pasal_select}">
+                        ${potongText}
+                    </option>
+                `);
+            });
+
+            // refresh Select2 jika pakai
+            select.trigger('change.select2');
+        }
+
+
         function printPengajuanPDF(id) {
             var url = "{{ route('tindakan_kedisiplinan.print_sp_karyawan', ':id') }}";
             url = url.replace(':id', id);
@@ -953,7 +1175,6 @@ h1 {
         }
 
         function openModalEditPengajuan(id) {
-            console.log(id);
             $("#ajax-modal-edit-pengajuan").modal('show');
             $("#title-modal-edit-surat-peringatan").text('Edit Surat Peringatan');
             $("#btn-update-pengajuan").show();
@@ -968,6 +1189,10 @@ h1 {
                    console.log(data);
                     var tanggal_berlaku_mulai=data.tanggal_mulai.substr(8,2)+'-'+data.tanggal_mulai.substr(5,2)+'-'+data.tanggal_mulai.substr(0,4);
                     var tanggal_berlaku_sampai=data.tanggal_sampai.substr(8,2)+'-'+data.tanggal_sampai.substr(5,2)+'-'+data.tanggal_sampai.substr(0,4);
+                    tampilkanPasalEdit(data.surat_peringatan); // render ulang opsi pasal
+                    setTimeout(() => {
+                        $('#EditpasalKaryawan').val(data.kode_pasal).trigger('change.select2');
+                    }, 200);
                     $('#EditpasalKaryawan').val(data.kode_pasal).trigger('change');
                     $('#karyawanBermasalahIDEdit').val(data.enroll_id).trigger('change');
                     $('#edit_enroll_id_karyawan_bermasalah').val(data.enroll_id);
