@@ -372,71 +372,56 @@ h1 {
                                             <span>NAMA</span>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-10">
                                     <div style="display: block; text-align: start; height: 25px;">
                                          <span>:</span>
                                         <strong><span id="create_employee_name"></span></strong>
                                         <input id="enroll_id_karyawan_bermasalah" type="hidden">
                                     </div>
                                 </div>
-                                <div class="col-md-7">
-
-                                </div>
                                 <div class="col-md-2">
                                     <div style="display: block; text-align: start;  height: 25px;">
                                             <span>NIK</span>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-10">
                                     <div style="display: block; text-align: start;  height: 25px;">
                                         <span>:</span>
                                         <strong><span id="create_employee_nik"></span></strong>
                                     </div>
-                                </div>
-                                <div class="col-md-7">
-
                                 </div>
                                 <div class="col-md-2">
                                     <div style="display: block; text-align: start;  height: 25px;">
                                             <span>BAGIAN</span>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-10">
                                     <div style="display: block; text-align: start; height: 25px;">
                                         <span>:</span>
                                         <strong><span id="create_employee_sub_dept"></span></strong>
                                     </div>
-                                </div>
-                                <div class="col-md-7">
-
                                 </div>
                                 <div class="col-md-2">
                                     <div style="display: block; text-align: start; height: 25px;">
                                             <span>DEPARTMENT</span>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-10">
                                     <div style="display: block; text-align: start; height: 25px;">
                                         <span>:</span>
                                         <strong><span id="create_employee_department"></span></strong>
                                     </div>
-                                </div>
-                                <div class="col-md-7">
-
                                 </div>
                                 <div class="col-md-2">
                                     <div style="display: block; text-align: start; height: 25px;">
                                             <span>JABATAN</span>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-10">
                                     <div style="display: block; text-align: start; height: 25px;">
                                         <span>:</span>
                                         <strong><span id="create_employee_jabatan"></span></strong>
                                     </div>
-                                </div>
-                                <div class="col-md-7">
-
                                 </div>
                                  <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; padding-top: 10px;">
                                     <h6 style="font-weight: bold;">Untuk diberikan Surat Peringatan :</h6>
@@ -586,7 +571,7 @@ h1 {
                                             <span>NAMA</span>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-10">
                                     <div style="display: block; text-align: start; height: 25px;">
                                          <span>:</span>
                                         <strong><span id="edit_employee_name"></span></strong>
@@ -594,64 +579,49 @@ h1 {
                                         <input id="edit_id_pengajuan" type="hidden">
                                     </div>
                                 </div>
-                                <div class="col-md-7">
-
-                                </div>
                                 <div class="col-md-2">
                                     <div style="display: block; text-align: start;  height: 25px;">
                                             <span>NIK</span>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-10">
                                     <div style="display: block; text-align: start;  height: 25px;">
                                         <span>:</span>
                                         <strong><span id="edit_employee_nik"></span></strong>
                                     </div>
-                                </div>
-                                <div class="col-md-7">
-
                                 </div>
                                 <div class="col-md-2">
                                     <div style="display: block; text-align: start;  height: 25px;">
                                             <span>BAGIAN</span>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-10">
                                     <div style="display: block; text-align: start; height: 25px;">
                                         <span>:</span>
                                         <strong><span id="edit_employee_sub_dept"></span></strong>
                                     </div>
-                                </div>
-                                <div class="col-md-7">
-
                                 </div>
                                 <div class="col-md-2">
                                     <div style="display: block; text-align: start; height: 25px;">
                                             <span>DEPARTMENT</span>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-10">
                                     <div style="display: block; text-align: start; height: 25px;">
                                         <span>:</span>
                                         <strong><span id="edit_employee_department"></span></strong>
                                     </div>
-                                </div>
-                                <div class="col-md-7">
-
                                 </div>
                                 <div class="col-md-2">
                                     <div style="display: block; text-align: start; height: 25px;">
                                             <span>JABATAN</span>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-10">
                                     <div style="display: block; text-align: start; height: 25px;">
                                         <span>:</span>
                                         <strong><span id="edit_employee_jabatan"></span></strong>
                                     </div>
-                                </div>
-                                <div class="col-md-7">
-
                                 </div>
                                  <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; padding-top: 10px;">
                                     <h6 style="font-weight: bold;">Untuk diberikan Surat Peringatan :</h6>
