@@ -279,46 +279,140 @@ class CutiKaryawanController extends AdminBaseController
             $bindings = $enroll_ids;
         }
 
-        $query = "
-            WITH RECURSIVE periode AS (
-                SELECT
-                    ea.enroll_id,
-                    ea.employee_name,
-                    ea.department_name,
-                    ea.nik,
-                    ea.status_aktif,
-                    ea.tanggal_resign,
-                    ea.sub_dept_name,
-                    ea.join_date,
-                    ea.join_date AS start_date,
-                    LEAST(DATE_ADD(ea.join_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
-                FROM (
-                    SELECT *
-                    FROM employee_atribut
-                    WHERE join_date IS NOT NULL
-                    $filterClause
-                    ORDER BY enroll_id
-                    LIMIT 10
-                ) ea
+        // $query = "
+        //     WITH RECURSIVE periode AS (
+        //         SELECT
+        //             ea.enroll_id,
+        //             ea.employee_name,
+        //             ea.department_name,
+        //             ea.nik,
+        //             ea.status_aktif,
+        //             ea.tanggal_resign,
+        //             ea.sub_dept_name,
+        //             ea.join_date,
+        //             ea.join_date AS start_date,
+        //             LEAST(DATE_ADD(ea.join_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
+        //         FROM (
+        //             SELECT *
+        //             FROM employee_atribut
+        //             WHERE join_date IS NOT NULL
+        //             $filterClause
+        //             ORDER BY enroll_id
+        //             LIMIT 10
+        //         ) ea
 
-                UNION ALL
+        //         UNION ALL
 
-                SELECT
-                    p.enroll_id,
-                    p.employee_name,
-                    p.department_name,
-                    p.nik,
-                    p.status_aktif,
-                    p.tanggal_resign,
-                    p.sub_dept_name,
-                    p.join_date,
-                    p.end_date AS start_date,
-                    LEAST(DATE_ADD(p.end_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
-                FROM periode p
-                WHERE p.end_date < CURDATE()
-            ),
+        //         SELECT
+        //             p.enroll_id,
+        //             p.employee_name,
+        //             p.department_name,
+        //             p.nik,
+        //             p.status_aktif,
+        //             p.tanggal_resign,
+        //             p.sub_dept_name,
+        //             p.join_date,
+        //             p.end_date AS start_date,
+        //             LEAST(DATE_ADD(p.end_date, INTERVAL 1 YEAR), CURDATE()) AS end_date
+        //         FROM periode p
+        //         WHERE p.end_date < CURDATE()
+        //     ),
 
-            cuti_dipakai AS (
+            // cuti_dipakai AS (
+            //     SELECT
+            //         p.enroll_id,
+            //         p.start_date,
+            //         p.end_date,
+            //         COUNT(d.uuid) AS used_leave
+            //     FROM periode p
+            //     LEFT JOIN data_absen_perijinan d
+            //     ON d.enroll_id = p.enroll_id
+            //     AND d.kode_absen_ijin = 'CT'
+            //     AND d.tanggal_mulai_ijin >= p.start_date
+            //     AND d.tanggal_mulai_ijin < p.end_date
+            //     GROUP BY p.enroll_id, p.start_date, p.end_date
+            // ),
+
+            // data_cuti AS (
+            //     SELECT
+            //         p.enroll_id,
+            //         p.employee_name,
+            //         p.department_name,
+            //         p.nik,
+            //         p.status_aktif,
+            //         p.tanggal_resign,
+            //         p.sub_dept_name,
+            //         p.join_date,
+            //         p.start_date,
+            //         p.end_date,
+            //         CONCAT(
+            //             TIMESTAMPDIFF(YEAR, p.join_date, p.end_date), ' tahun ',
+            //             TIMESTAMPDIFF(MONTH, p.join_date, p.end_date) % 12, ' bulan'
+            //         ) AS lama_bekerja,
+            //         CASE
+            //             WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 0
+            //             ELSE 1
+            //         END AS is_eligible,
+            //         COALESCE(c.used_leave, 0) AS used_leave,
+            //         CASE
+            //             WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 0
+            //             ELSE 12 - COALESCE(c.used_leave, 0)
+            //         END AS remaining_leave,
+            //         CASE
+            //             WHEN p.start_date < DATE_ADD(p.join_date, INTERVAL 1 YEAR) THEN 'Belum Berhak'
+            //             WHEN (12 - COALESCE(c.used_leave, 0)) > 0 THEN 'Masih Memiliki Cuti'
+            //             ELSE 'Cuti Habis'
+            //         END AS leave_status,
+            //         ROW_NUMBER() OVER (PARTITION BY p.enroll_id ORDER BY p.end_date DESC) AS rn
+            //     FROM periode p
+            //     LEFT JOIN cuti_dipakai c
+            //         ON p.enroll_id = c.enroll_id AND p.start_date = c.start_date
+            // )
+
+            // SELECT *
+            // FROM data_cuti
+            // WHERE rn = 1
+            // ORDER BY enroll_id
+        // ";
+
+        $query = "WITH RECURSIVE periode AS (
+            SELECT
+                ea.enroll_id,
+                ea.employee_name,
+                ea.department_name,
+                ea.nik,
+                ea.status_aktif,
+                ea.tanggal_resign,
+                ea.sub_dept_name,
+                ea.join_date,
+                ea.join_date AS start_date,
+                LEAST(DATE_ADD(ea.join_date, INTERVAL 1 YEAR), COALESCE(ea.tanggal_resign, CURDATE())) AS end_date
+            FROM (
+                SELECT *
+                FROM employee_atribut
+                WHERE join_date IS NOT NULL
+                $filterClause
+                ORDER BY enroll_id
+                LIMIT 10
+            ) ea
+
+            UNION ALL
+
+            SELECT
+                p.enroll_id,
+                p.employee_name,
+                p.department_name,
+                p.nik,
+                p.status_aktif,
+                p.tanggal_resign,
+                p.sub_dept_name,
+                p.join_date,
+                p.end_date AS start_date,
+                LEAST(DATE_ADD(p.end_date, INTERVAL 1 YEAR), COALESCE(p.tanggal_resign, CURDATE())) AS end_date
+            FROM periode p
+            WHERE p.end_date < COALESCE(p.tanggal_resign, CURDATE())
+        ),
+      cuti_dipakai AS (
                 SELECT
                     p.enroll_id,
                     p.start_date,
@@ -373,7 +467,8 @@ class CutiKaryawanController extends AdminBaseController
             FROM data_cuti
             WHERE rn = 1
             ORDER BY enroll_id
-        ";
+-- ... (lanjutan sama seperti sebelumnya)
+";
 
         $data_cuti = DB::select($query, $bindings);
             return datatables()->of($data_cuti)
