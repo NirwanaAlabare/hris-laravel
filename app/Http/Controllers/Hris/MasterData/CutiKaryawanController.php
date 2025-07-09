@@ -422,6 +422,7 @@ class CutiKaryawanController extends AdminBaseController
                 LEFT JOIN data_absen_perijinan d
                 ON d.enroll_id = p.enroll_id
                 AND d.kode_absen_ijin = 'CT'
+                AND d.nomor_form_perizinan != NULL
                 AND d.tanggal_mulai_ijin >= p.start_date
                 AND d.tanggal_mulai_ijin < p.end_date
                 GROUP BY p.enroll_id, p.start_date, p.end_date
