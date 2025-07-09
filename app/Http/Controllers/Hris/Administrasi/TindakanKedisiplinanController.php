@@ -35,17 +35,12 @@ use Yajra\DataTables\Facades\DataTables;
 use DateTime;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
-use App\Exports\ExportLineSheet;
-use App\Exports\ExportPengajuanKas;
-use App\Exports\ExportPengajuanBazzar;
-use Illuminate\Support\Facades\Storage;
-use FilippoToso\PdfWatermarker\Facades\ImageWatermarker;
+use App\Exports\exportExcelSuratPeringatan;
 use FilippoToso\PdfWatermarker\Support\Position;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
-use App\Exports\RekapCutiKaryawanKaryawanAll;
 use \avadim\FastExcelLaravel\Excel as FastExcel;
 
 
@@ -498,6 +493,45 @@ class TindakanKedisiplinanController extends AdminBaseController
             'data' => $data
         ]);
     }
+
+public function export_excel_surat_peringatan(Request $request)
+{
+    ini_set('max_execution_time', 0);
+
+    $query = SuratPeringatanKaryawan::select(
+        'surat_peringatan_karyawan.*',
+        'employee_atribut.employee_name',
+        'employee_atribut.nik',
+        'employee_atribut.department_name',
+        'employee_atribut.sub_dept_name',
+        'employee_atribut.status_jabatan',
+        'pasal_surat_peringatan.deskripsi',
+        'pasal_surat_peringatan.desc_surat_peringatan',
+        'pasal_surat_peringatan.pasal',
+    )
+    ->leftJoin('employee_atribut', 'surat_peringatan_karyawan.enroll_id', '=', 'employee_atribut.enroll_id')
+    ->leftJoin('pasal_surat_peringatan', 'surat_peringatan_karyawan.kode_pasal', '=', 'pasal_surat_peringatan.kode_pasal');
+
+    // Filter berdasarkan daterange jika ada
+    if (!empty($request->daterange1)) {
+        $arrperiode = explode(" s/d ", $request->daterange1);
+        $first_date = $arrperiode[0];
+        $last_date = $arrperiode[1];
+
+        $query->whereDate('surat_peringatan_karyawan.tanggal_mulai', '>=', $first_date)
+              ->whereDate('surat_peringatan_karyawan.tanggal_mulai', '<=', $last_date);
+    }
+
+    // Filter berdasarkan status_sp jika ada
+    if (!empty($request->status_sp)) {
+        $query->where('surat_peringatan_karyawan.surat_peringatan', $request->status_sp);
+    }
+
+    $result = $query->get();
+
+    return Excel::download(new exportExcelSuratPeringatan($result), 'Rekap Surat Peringatan.xlsx');
+}
+
 
 
 

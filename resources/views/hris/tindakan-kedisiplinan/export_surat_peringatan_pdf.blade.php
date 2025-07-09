@@ -70,7 +70,7 @@
                 <td width="100%" style="justify-content: center; text-align: center;  font-size: 20pt; font-weight: 800;">SURAT PERINGATAN</td>
             </tr>
             <tr>
-                    @php
+                @php
                     $bulan = \Carbon\Carbon::parse($value->tanggal_mulai)->month;
                     $bulanRomawi = [
                         1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV',

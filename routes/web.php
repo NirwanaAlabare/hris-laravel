@@ -359,6 +359,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('/tindakan_kedisiplinan/get_detail_surat_peringatan', ['as' => 'tindakan_kedisiplinan.get_detail_surat_peringatan','uses' => 'Administrasi\TindakanKedisiplinanController@get_detail_surat_peringatan']);
     Route::post('/tindakan_kedisiplinan/update_surat_peringatan', ['as' => 'tindakan_kedisiplinan.update_surat_peringatan','uses' => 'Administrasi\TindakanKedisiplinanController@update_surat_peringatan']);
     Route::post('/tindakan_kedisiplinan/delete_surat_peringatan', ['as' => 'tindakan_kedisiplinan.delete_surat_peringatan','uses' => 'Administrasi\TindakanKedisiplinanController@delete_surat_peringatan']);
+    Route::get('/tindakan_kedisiplinan/export_excel_surat_peringatan', ['as' => 'tindakan_kedisiplinan.export_excel_surat_peringatan','uses' => 'Administrasi\TindakanKedisiplinanController@export_excel_surat_peringatan']);
 
 
     // PENGAJUAN IZIN

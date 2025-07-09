@@ -284,12 +284,25 @@ h1 {
                                 <div class="col-md-12">
                                     <div clasl="" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
                                         <div class="mt-5 p-0">
-                                            <button class="btn btn-primary w-100" onclick="openModalBuatPengajuan()"  data-toggle="tooltip" title="Cari Data" id="recap_labor_cost_2"><i class="fa fa-plus" aria-hidden="true"></i> Buat Surat Peringatan</button>
+                                            <button class="btn btn-primary w-100" onclick="openModalBuatPengajuan()"  data-toggle="tooltip" title="Cari Data" ><i class="fa fa-plus" aria-hidden="true"></i> Buat Surat Peringatan</button>
                                         </div>
-
+                                        <div class="mt-5 p-0" style="display: flex; gap: 5px;">
+                                            <div class="col-auto">
+                                                <input type="hidden" id="daterange1" name="daterange1">
+                                                <a class="nav-link card-title m-0" style="border: 1px solid #d8d4dc" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
+                                            </div>
+                                            <div class="col-auto">
+                                                <select id="status_sp" class="form-control">
+                                                    <option value=''>-- PILIH STATUS --</option>
+                                                    <option value='sp_1'>SP 1</option>
+                                                    <option value='sp_2'>SP 2</option>
+                                                    <option value='sp_3'>SP 3</option>
+                                                </select>
+                                            </div>
+                                            <button class="btn btn-success w-100" onclick="ExportSuratPeringatan()"  data-toggle="tooltip" title="Cari Data" id="btn_export_excel_kontrak"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Excel</button>
+                                        </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                         <div class="m-0 p-0">
@@ -839,53 +852,113 @@ h1 {
 
     <script>
 
-    function copyPasal() {
-        const pasalSelect = $('#pasalKaryawan');
-        const selectedOption = pasalSelect.find(':selected');
-        const pasalText = selectedOption.data('full-text'); // ambil dari data attribute
-        navigator.clipboard.writeText(pasalText);
-    }
-
-    function copyEditPasal() {
-        const pasalSelect = $('#EditpasalKaryawan');
-       const selectedOption = pasalSelect.find(':selected');
-        const pasalText = selectedOption.data('full-text'); // ambil dari data attribute
-        navigator.clipboard.writeText(pasalText);
-    }
-
-        $(document).ready(function () {
-        function formatTanggal(tanggal) {
-            const dd = String(tanggal.getDate()).padStart(2, '0');
-            const mm = String(tanggal.getMonth() + 1).padStart(2, '0'); // Januari = 0
-            const yyyy = tanggal.getFullYear();
-            return `${dd}-${mm}-${yyyy}`;
-        }
-
-        function updateTanggalBerlaku() {
-            const today = new Date();
-            const startDate = formatTanggal(today);
-            const spValue = $('input[name="tindakan_pendisiplinan"]:checked').val();
-
-            let sampaiDate = new Date(today);
-            if (spValue === 'sp_3') {
-                sampaiDate.setMonth(sampaiDate.getMonth() + 6);
-            } else {
-                sampaiDate.setMonth(sampaiDate.getMonth() + 3);
-            }
-            const endDate = formatTanggal(sampaiDate);
-
-            $('#tanggal_berlaku_mulai').val(startDate);
-            $('#tanggal_berlaku_sampai').val(endDate);
-        }
-
-        // Set default saat halaman dimuat
-        updateTanggalBerlaku();
-
-        // Ubah tanggal saat SP 1, 2, atau 3 dipilih
-        $('input[name="tindakan_pendisiplinan"]').on('change', function () {
-            updateTanggalBerlaku();
+        $(document).ready(function() {
+            var start = moment();
+            var end = moment();
+            var htmlDateRange = '<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>'
+            $('#daterange-btn1').html(htmlDateRange);
+            var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
+            $('#daterange1').val(daterange1);
         });
-    });
+
+         $('#daterange-btn1').daterangepicker({
+            ranges: {
+                'Hari ini': [moment(), moment()],
+                'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                '7 Hari Kemarin': [moment().subtract(6, 'days'), moment()],
+                '30 Hari Kemarin': [moment().subtract(29, 'days'), moment()],
+                'Bulan Sekarang': [moment().startOf('month'), moment().endOf('month')],
+                'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            startDate: moment().subtract(29, 'days'),
+            endDate: moment()
+        }, function(start, end) {
+            $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>');
+            var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
+            $('#daterange1').val(daterange1);
+        });
+
+        function ExportSuratPeringatan() {
+            var status_sp = $('#status_sp').val();
+            var daterange1 = $('#daterange1').val();
+            $.ajax({
+                type: "get",
+                url: '{{ route('tindakan_kedisiplinan.export_excel_surat_peringatan') }}',
+                data: {
+                    daterange1: daterange1,
+                    status_sp: status_sp,
+                },
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function(response) {
+                    {
+                        $('#btn_export_excel_kontrak').removeClass("btn-loading");
+                        $("#btn_export_excel_kontrak").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Surat Peringatan');
+                        $("#btn_export_excel_kontrak").attr("disabled", false);
+                        var blob = new Blob([response]);
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = "Surat Peringatan "+Math.ceil(Math.random()*1000000)+".xlsx";
+                        link.click();
+                    }
+                },
+                error: function(res){
+                    swal("", "Export kontrak kerja gagal", "error");
+                    $('#btn_export_excel_kontrak').removeClass("btn-loading");
+                    $("#btn_export_excel_kontrak").attr("disabled", false);
+                    $("#btn_export_excel_kontrak").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Surat Peringatan');
+                }
+            });
+        }
+
+        function copyPasal() {
+            const pasalSelect = $('#pasalKaryawan');
+            const selectedOption = pasalSelect.find(':selected');
+            const pasalText = selectedOption.data('full-text'); // ambil dari data attribute
+            navigator.clipboard.writeText(pasalText);
+        }
+
+        function copyEditPasal() {
+            const pasalSelect = $('#EditpasalKaryawan');
+        const selectedOption = pasalSelect.find(':selected');
+            const pasalText = selectedOption.data('full-text'); // ambil dari data attribute
+            navigator.clipboard.writeText(pasalText);
+        }
+
+            $(document).ready(function () {
+            function formatTanggal(tanggal) {
+                const dd = String(tanggal.getDate()).padStart(2, '0');
+                const mm = String(tanggal.getMonth() + 1).padStart(2, '0'); // Januari = 0
+                const yyyy = tanggal.getFullYear();
+                return `${dd}-${mm}-${yyyy}`;
+            }
+
+            function updateTanggalBerlaku() {
+                const today = new Date();
+                const startDate = formatTanggal(today);
+                const spValue = $('input[name="tindakan_pendisiplinan"]:checked').val();
+
+                let sampaiDate = new Date(today);
+                if (spValue === 'sp_3') {
+                    sampaiDate.setMonth(sampaiDate.getMonth() + 6);
+                } else {
+                    sampaiDate.setMonth(sampaiDate.getMonth() + 3);
+                }
+                const endDate = formatTanggal(sampaiDate);
+
+                $('#tanggal_berlaku_mulai').val(startDate);
+                $('#tanggal_berlaku_sampai').val(endDate);
+            }
+
+            // Set default saat halaman dimuat
+            updateTanggalBerlaku();
+
+            // Ubah tanggal saat SP 1, 2, atau 3 dipilih
+            $('input[name="tindakan_pendisiplinan"]').on('change', function () {
+                updateTanggalBerlaku();
+            });
+        });
 
 
          $("#karyawanBermasalahIDEdit").select2().on("select2:select", function() {
@@ -1293,65 +1366,26 @@ h1 {
                         }
                     });
 
-                    // Disable berdasarkan level SP saat edit
-                    // if (data.surat_peringatan === 'sp_2') {
-                    //     // SP 2: Disable SP 1
-                    //     const sp1 = document.getElementById('sp_1_radio_edit');
-                    //     const label1 = document.getElementById('label_sp_1_edit');
-                    //     if (sp1) sp1.disabled = true;
-                    //     if (label1) label1.classList.add('disabled');
-                    // } else if (data.surat_peringatan === 'sp_3') {
-                    //     // SP 3: Disable SP 1 & SP 2
-                    //     ['sp_1', 'sp_2'].forEach(sp => {
-                    //         const radio = document.getElementById(sp + '_radio_edit');
-                    //         const label = document.getElementById('label_' + sp + '_edit');
-                    //         if (radio) radio.disabled = true;
-                    //         if (label) label.classList.add('disabled');
-                    //     });
-                    // }
+                    const usedSPs = history_peringatan.map(sp => sp.surat_peringatan);
+                    const currentSP = data.surat_peringatan;
 
-                    // const usedSPs = history_peringatan.map(sp => sp.surat_peringatan);
+                    // Urutan SP biar bisa tahu mana yang "lebih kecil"
+                    const spUrutan = ['sp_1', 'sp_2', 'sp_3'];
+                    const currentIndex = spUrutan.indexOf(currentSP);
+                                        spUrutan.forEach((sp, index) => {
+                        const radio = document.getElementById(sp + '_radio_edit');
+                        const label = document.getElementById('label_' + sp + '_edit');
 
-                    // if (usedSPs.includes('sp_3')) {
-                    // ['sp_1', 'sp_2', 'sp_3'].forEach(sp => {
-                    //     const radio = document.getElementById(sp + '_radio_edit');
-                    //     const label = document.getElementById('label_' + sp +'_edit');
-                    //     if (radio) radio.disabled = true;
-                    //     if (label) label.classList.add('disabled');
-                    // });
-                    // } else if (usedSPs.includes('sp_2')) {
-                    // ['sp_1', 'sp_2'].forEach(sp => {
-                    //     const radio = document.getElementById(sp + '_radio_edit');
-                    //     const label = document.getElementById('label_' + sp+'_edit');
-                    //     if (radio) radio.disabled = true;
-                    //     if (label) label.classList.add('disabled');
-                    // });
-                    // } else if (usedSPs.includes('sp_1')) {
-                    // const radio = document.getElementById('sp_1_radio_edit');
-                    // const label = document.getElementById('label_sp_1_edit');
-                    // if (radio) radio.disabled = true;
-                    // if (label) label.classList.add('disabled');
-                    // }
-const usedSPs = history_peringatan.map(sp => sp.surat_peringatan);
-const currentSP = data.surat_peringatan;
+                        // ✅ Syarat disable:
+                        // - Kalau SP sedang diedit, jangan disable
+                        // - Kalau SP < currentSP, disable (walaupun belum dipakai)
+                        // - Kalau SP ada di history dan bukan currentSP, disable
 
-// Urutan SP biar bisa tahu mana yang "lebih kecil"
-const spUrutan = ['sp_1', 'sp_2', 'sp_3'];
-const currentIndex = spUrutan.indexOf(currentSP);
-                    spUrutan.forEach((sp, index) => {
-    const radio = document.getElementById(sp + '_radio_edit');
-    const label = document.getElementById('label_' + sp + '_edit');
-
-    // ✅ Syarat disable:
-    // - Kalau SP sedang diedit, jangan disable
-    // - Kalau SP < currentSP, disable (walaupun belum dipakai)
-    // - Kalau SP ada di history dan bukan currentSP, disable
-
-    if (sp !== currentSP && (index < currentIndex || usedSPs.includes(sp))) {
-        if (radio) radio.disabled = true;
-        if (label) label.classList.add('disabled');
-    }
-});
+                        if (sp !== currentSP && (index < currentIndex || usedSPs.includes(sp))) {
+                            if (radio) radio.disabled = true;
+                            if (label) label.classList.add('disabled');
+                        }
+                    });
 
                     const infoDiv = document.getElementById('info_sp_aktif_edit');
                     infoDiv.innerHTML = ''; // kosongkan dulu
