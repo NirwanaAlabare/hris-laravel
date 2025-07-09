@@ -587,7 +587,7 @@
         <thead>
             <tr>
                 <td width="65%" style=" height:10px; font-size: 14pt;"></td>
-                <td width="35%" style=" height:10px; font-size: 11pt; text-decoration: underline; letter-spacing: 0.5px;">{{$value->employee_name}}</td>
+                <td width="35%" style=" height:10px; font-size: 14pt; text-decoration: underline; letter-spacing: 0.5px;">{{$value->employee_name}}</td>
             </tr>
             <tr>
                 <td width="65%" style=" height:10px; font-size: 14pt;"></td>
