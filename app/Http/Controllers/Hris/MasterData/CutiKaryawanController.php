@@ -422,7 +422,7 @@ class CutiKaryawanController extends AdminBaseController
                 LEFT JOIN data_absen_perijinan d
                 ON d.enroll_id = p.enroll_id
                 AND d.kode_absen_ijin = 'CT'
-                AND d.nomor_form_perizinan != NULL
+                AND d.is_verifikasi = '1'
                 AND d.tanggal_mulai_ijin >= p.start_date
                 AND d.tanggal_mulai_ijin < p.end_date
                 GROUP BY p.enroll_id, p.start_date, p.end_date
@@ -673,6 +673,7 @@ class CutiKaryawanController extends AdminBaseController
                 )
                 ->where('dap.enroll_id', $enrollId)
                 ->where('dap.kode_absen_ijin', $kodeAbsen)
+                ->where('dap.is_verifikasi', '1')
                 ->whereBetween('dap.tanggal_mulai_ijin', [$currentStart->toDateString(), $currentEnd->toDateString()])
                 ->get();
 
