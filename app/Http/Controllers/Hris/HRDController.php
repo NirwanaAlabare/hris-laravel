@@ -1016,6 +1016,13 @@ class HRDController extends AdminBaseController
         WHERE id = ?", [$start_contract, $last_date, $id]);
 
         $updatedData = DB::table('employee_contract')->where('id', $id)->first();
+
+        $query = EmployeeAtribut::whereRaw('enroll_id = "' . $updatedData->enroll_id . '"')
+        ->update([
+            'tanggal_mulai_kontrak' => $start_contract,
+            'tanggal_akhir_kontrak' => $last_date,
+        ]);
+
         return $updatedData->enroll_id;
     }
     public function new_employee_contract(){
@@ -1024,6 +1031,11 @@ class HRDController extends AdminBaseController
         $contract=request()->contract;
         $end_contract=request()->end_contract;
         DB::insert("insert into employee_contract (id, enroll_id, contract, contract_end, created_at, updated_at) VALUES ('','$enroll_id','$contract','$end_contract','$timestamp','$timestamp')");
+        $query = EmployeeAtribut::whereRaw('enroll_id = "' . $enroll_id . '"')
+            ->update([
+                'tanggal_mulai_kontrak' => $contract,
+                'tanggal_akhir_kontrak' => $end_contract,
+            ]);
         return $enroll_id;
     }
     public function delete_employee_contract(){

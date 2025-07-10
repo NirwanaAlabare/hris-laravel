@@ -347,6 +347,10 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                         'updated_at'  => $timestamp
                     ]);
                 }
+                EmployeeAtribut::where('enroll_id', $request->enroll_id_input_2_val)->update([
+                    'tanggal_mulai_kontrak' => $adjustedDate,
+                    'tanggal_akhir_kontrak' => $adjustedContractEndCarbon
+                ]);
             }
 
             return response()->json([
