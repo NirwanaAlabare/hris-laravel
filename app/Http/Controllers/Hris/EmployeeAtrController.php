@@ -1379,10 +1379,37 @@ class EmployeeAtrController extends AdminBaseController
         //         DB::insert("insert into employee_contract (id, enroll_id, contract, contract_end, created_at, updated_at) VALUES ('','$enroll_id','$tanggal_mulai_kontrak','$tanggal_akhir_kontrak','$timestamp','$timestamp')");
         //     }
         // }
+        $employee_contract_before = EmployeeAtribut::whereRaw('enroll_id = "' . $enroll_id . '"')->first();
+        // dd($employee_contract_before->tanggal_mulai_kontrak, $employee_contract_before->tanggal_akhir_kontrak);
+        if ($tanggal_mulai_kontrak != '' && $tanggal_akhir_kontrak != '') {
+            // Cek apakah data kontrak ini sudah ada
+            $existing = DB::table('employee_contract')
+                ->where('enroll_id', $enroll_id)
+                ->whereDate('contract', $employee_contract_before->tanggal_mulai_kontrak)
+                ->whereDate('contract_end', $employee_contract_before->tanggal_akhir_kontrak)
+                ->first();
 
-        if($tanggal_mulai_kontrak!='' && $tanggal_akhir_kontrak!=''){
-            DB::insert("insert into employee_contract (id, enroll_id, contract, contract_end, created_at, updated_at) VALUES ('','$enroll_id','$tanggal_mulai_kontrak','$tanggal_akhir_kontrak','$timestamp','$timestamp')");
+            if ($existing) {
+                // Update jika sudah ada
+                DB::table('employee_contract')
+                    ->where('id', $existing->id)
+                    ->update([
+                        'contract' => $tanggal_mulai_kontrak,
+                        'contract_end' => $tanggal_akhir_kontrak,
+                        'updated_at' => $timestamp
+                    ]);
+            } else {
+                // Insert jika belum ada
+                DB::table('employee_contract')->insert([
+                    'enroll_id' => $enroll_id,
+                    'contract' => $tanggal_mulai_kontrak,
+                    'contract_end' => $tanggal_akhir_kontrak,
+                    'created_at' => $timestamp,
+                    'updated_at' => $timestamp
+                ]);
+            }
         }
+
         if($query > 0) {
             $query = EmployeeAtribut::whereRaw('enroll_id = "' . $enroll_id . '"')
             ->update([

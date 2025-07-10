@@ -2739,9 +2739,11 @@
                                             $("#btn-save").prop("disabled", true);
                                             $("#btn-cancel").prop("disabled", true);
 
-                                            setTimeout(function myFunction() {
-                                                location.reload();
-                                            }, 3000);
+                                            // setTimeout(function myFunction() {
+                                            //     location.reload();
+                                            // }, 3000);
+
+                                            $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
 
                                         },
                                         error: function(res){
@@ -2922,9 +2924,11 @@
                                 $("#btn-save").prop("disabled", true);
                                 $("#btn-cancel").prop("disabled", true);
 
-                                setTimeout(function myFunction() {
-                                    location.reload();
-                                }, 3000);
+                                // setTimeout(function myFunction() {
+                                //     location.reload();
+                                // }, 3000);
+
+                                 $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
 
                             },
                             error: function(res){
@@ -3027,6 +3031,7 @@
                         // setTimeout(function myFunction() {
                         //     location.reload();
                         //   }, 3000);
+                         $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
 
                     } else {
                         // else everythings
