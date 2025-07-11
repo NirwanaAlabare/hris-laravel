@@ -158,7 +158,7 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:9px;" colspan="6"></td>
             </tr>
               <tr>
-                <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">Keterengan</td>
+                <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">Keterangan</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">:</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; text-transform: uppercase;"> {{ $data->absen_alasan}}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
