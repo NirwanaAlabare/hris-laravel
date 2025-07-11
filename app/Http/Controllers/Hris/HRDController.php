@@ -1344,8 +1344,7 @@ class HRDController extends AdminBaseController
 
         $bulan_masuk = new DateTime($data->contract);
         $bulan_akhir = new DateTime($data->contract_end);
-
-        $jumlah_bulan_manual = $this->hitungBulanKontrak($data->contract, $data->contract_end);
+        $jumlah_bulan_manual = $this->hitungBulanKontrak($data->contract, $data->tanggal_resign ? $data->tanggal_resign : $data->contract_end);
 
         $total_penghasilan_bulanan = $umk + $tunjangan;
         $jumlah_bulan = $data->jumlah_bulan ?? $jumlah_bulan_manual;
