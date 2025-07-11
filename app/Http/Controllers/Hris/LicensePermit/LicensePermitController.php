@@ -131,13 +131,19 @@ class LicensePermitController extends AdminBaseController
         })
             ->addColumn('action', function ($row) {
                 return '<a href="' . $row->dokumen_url . '" class="btn btn-primary btn-sm" target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></a>
-                        <button class="btn btn-warning btn-sm download-btn" data-id="' . $row->id . '"><i class="fa fa-download" aria-hidden="true"></i></button>
                         <button class="btn btn-success btn-sm edit-btn" data-id="' . $row->id . '"><i class="fa fa-edit" aria-hidden="true"></i></button>
                         <button class="btn btn-danger btn-sm delete-btn" data-id="' . $row->id . '"><i class="fa fa-trash" aria-hidden="true"></i></button>';
             })
             ->rawColumns(['action'])
             ->make(true);
     }
+
+    //  ->addColumn('action', function ($row) {
+    //             return '<a href="' . $row->dokumen_url . '" class="btn btn-primary btn-sm" target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></a>
+    //                     <button class="btn btn-warning btn-sm download-btn" data-id="' . $row->id . '"><i class="fa fa-download" aria-hidden="true"></i></button>
+    //                     <button class="btn btn-success btn-sm edit-btn" data-id="' . $row->id . '"><i class="fa fa-edit" aria-hidden="true"></i></button>
+    //                     <button class="btn btn-danger btn-sm delete-btn" data-id="' . $row->id . '"><i class="fa fa-trash" aria-hidden="true"></i></button>';
+    //         })
 }
     public function getDokumenLegal($id)
     {
