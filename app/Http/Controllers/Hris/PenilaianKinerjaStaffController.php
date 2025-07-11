@@ -351,11 +351,11 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                         'created_at'  => $timestamp,
                         'updated_at'  => $timestamp
                     ]);
+                    EmployeeAtribut::where('enroll_id', $request->enroll_id_input_2_val)->update([
+                        'tanggal_mulai_kontrak' => $adjustedDate,
+                        'tanggal_akhir_kontrak' => $adjustedContractEndCarbon
+                    ]);
                 }
-                EmployeeAtribut::where('enroll_id', $request->enroll_id_input_2_val)->update([
-                    'tanggal_mulai_kontrak' => $adjustedDate,
-                    'tanggal_akhir_kontrak' => $adjustedContractEndCarbon
-                ]);
             }
 
             return response()->json([
@@ -474,6 +474,11 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                 $akhirKontrak = Carbon::parse($request->akhir_kontrak_text_val);
                 $adjustedDate = $akhirKontrak->copy()->addDay();
                 $adjustedContractEndCarbon = $adjustedDate->copy()->addMonths($request->perpanjang_bulan)->subDay(); // 2025-05-20
+                if ($adjustedContractEndCarbon->isSaturday()) {
+                    $adjustedContractEndCarbon->subDays(1); // Sabtu ke Jumat
+                } elseif ($adjustedContractEndCarbon->isSunday()) {
+                    $adjustedContractEndCarbon->subDays(2); // Minggu ke Jumat
+                }
 
                 $exists = DB::table('employee_contract')
                     ->where('enroll_id', $request->enroll_id_input_2_val)
@@ -490,6 +495,12 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                         'created_at'  => $timestamp,
                         'updated_at'  => $timestamp
                     ]);
+
+                    EmployeeAtribut::where('enroll_id', $request->enroll_id_input_2_val)->update([
+                        'tanggal_mulai_kontrak' => $adjustedDate,
+                        'tanggal_akhir_kontrak' => $adjustedContractEndCarbon
+                    ]);
+
                 }
             }
 
