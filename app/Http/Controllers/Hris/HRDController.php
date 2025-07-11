@@ -1342,9 +1342,18 @@ class HRDController extends AdminBaseController
             $tunjangan = 12500;
         }
 
-        $bulan_masuk = new DateTime($data->contract);
-        $bulan_akhir = new DateTime($data->contract_end);
-        $jumlah_bulan_manual = $this->hitungBulanKontrak($data->contract, $data->tanggal_resign ? $data->tanggal_resign : $data->contract_end);
+        // $bulan_masuk = new DateTime($data->contract);
+        // $bulan_akhir = new DateTime($data->contract_end);
+
+        $endDate = $data->tanggal_resign ?? $data->contract_end;
+        $endDate = Carbon::parse($endDate);
+
+        // Cek apakah hari Sabtu (6) atau Minggu (0)
+        if ($endDate->isFriday()) {
+            $endDate->addDays(2);
+        }
+        // dd($endDate->isWeekend());
+        $jumlah_bulan_manual = $this->hitungBulanKontrak($data->contract, $endDate);
 
         $total_penghasilan_bulanan = $umk + $tunjangan;
         $jumlah_bulan = $data->jumlah_bulan ?? $jumlah_bulan_manual;
