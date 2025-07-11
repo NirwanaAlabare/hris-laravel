@@ -811,7 +811,6 @@ class HRDController extends AdminBaseController
             $status_staff_string=request()->status_staff;
             $inStatusStaff='AND z.status_staff LIKE "'.$status_staff_string.'%"';
         }
-        // dd($status_kontrak);
         $inStatusKontrak='';
         $today = date('Y-m-d');
 
@@ -864,7 +863,10 @@ class HRDController extends AdminBaseController
                     WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
                     ELSE y.contract_end
                 END
-            ) >= "'.$thirty_days_later.'"';
+            ) >= "'.$thirty_day_more.'"';
+        }
+        else if($status_kontrak=='Not yet extended'){
+            $inStatusKontrak= 'AND z.tanggal_resign IS NULL AND y.contract_end <= "'.$today.'"';
         }
         $inStatusAktif='';
         if(request()->status_aktif){
@@ -1110,6 +1112,8 @@ class HRDController extends AdminBaseController
             }else if($status_kontrak=='Sixty Day'){
                 $thirty_day_more = date('Y-m-d',strtotime('+60 days',strtotime(date("Y-m-d")))) . PHP_EOL;
                 $inStatusKontrak='AND c.max_contract_end >= "'.$thirty_day_more.'"';
+            }else if($status_kontrak=='Not yet extended'){
+                $inStatusKontrak= 'AND a.tanggal_resign IS NULL AND c.max_contract_end <= "'.$today.'"';
             }
         }
 
@@ -1490,6 +1494,8 @@ class HRDController extends AdminBaseController
             }else if($status_kontrak=='Sixty Day'){
                 $thirty_day_more = date('Y-m-d',strtotime('+60 days',strtotime(date("Y-m-d")))) . PHP_EOL;
                 $inStatusKontrak='AND c.max_contract_end >= "'.$thirty_day_more.'"';
+            }else if($status_kontrak=='Not yet extended'){
+                $inStatusKontrak= 'AND a.tanggal_resign IS NULL AND c.max_contract_end <= "'.$today.'"';
             }
         }
         $inDateRangeContract='';
