@@ -151,7 +151,7 @@
                 <button type="button" id="btn-hapus-nospl" class="btn btn-danger btn-app" data-dismiss="modal">Hapus NO SPL</button>
                 {{-- <button type="button" class="btn btn-success btn-app" onclick="ExportSuratTandaTerimaExcelLembur()"  data-toggle="tooltip" title="Cari Data" id="btn_export_excel_tanda_terima_lembur"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Serah Terima</button>
                 <button type="button" id="btn_buat_serah_terima" class="btn btn-info btn-app" data-dismiss="modal"><i class="ion-plus"></i> Serah Terima</button> --}}
-                @if(in_array($enroll_id_loggin, [7765, 4241, 20]))
+                @if(in_array($enroll_id_loggin, [7765, 4241, 20,109,1885,64,4953,3602,7779,6801,6713,8083]))
                 <button type="button" class="btn btn-success btn-app"
                         onclick="ExportSuratTandaTerimaExcelLembur()"
                         data-toggle="tooltip" title="Cari Data"
@@ -159,14 +159,14 @@
                     <i class="fa fa-file-excel-o" aria-hidden="true"></i>
                     Export Serah Terima
                 </button>
-
-                <button type="button" id="btn_buat_serah_terima"
-                        class="btn btn-info btn-app"
-                        data-dismiss="modal">
+                @endif
+                @if(in_array($enroll_id_loggin, [7765, 4241, 20,6713,8083,1885]))
+                    <button type="button" id="btn_buat_serah_terima"
+                    class="btn btn-info btn-app"
+                    data-dismiss="modal">
                     <i class="ion-plus"></i> Serah Terima
                 </button>
-            @endif
-
+                @endif
             </div>
         </div>
     </div>
@@ -868,8 +868,8 @@
         }
 
          $(document).ready(function() {
-            var start = moment();
-            var end = moment();
+            var start = moment().subtract(1, 'months').date(26);   // Tanggal 26 bulan lalu
+            var end = moment().date(25);
             var htmlDateRange = '<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>'
             $('#daterange-btn1').html(htmlDateRange);
             var daterange_serah_terima = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
@@ -883,7 +883,8 @@
                 '7 Hari Kemarin': [moment().subtract(6, 'days'), moment()],
                 '30 Hari Kemarin': [moment().subtract(29, 'days'), moment()],
                 'Bulan Sekarang': [moment().startOf('month'), moment().endOf('month')],
-                'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                'Periode 26-25': [moment().subtract(1, 'months').date(26), moment().date(25)]
             },
             startDate: moment().subtract(29, 'days'),
             endDate: moment()

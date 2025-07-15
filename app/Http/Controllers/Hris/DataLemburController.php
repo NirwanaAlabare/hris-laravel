@@ -418,13 +418,17 @@ class DataLemburController extends AdminBaseController
 
 
     if (!empty($request->tanggal)) {
-        $arrperiode = explode(" s/d ", $request->tanggal);
-        $first_date = $arrperiode[0];
-        $last_date = $arrperiode[1];
+    $arrperiode = explode(" s/d ", $request->tanggal);
 
-        $query->whereDate('data_lembur.tanggal_berjalan', '>=', $first_date)
-              ->whereDate('data_lembur.tanggal_berjalan', '<=', $last_date);
+    if (count($arrperiode) == 2) {
+        $first_date = trim($arrperiode[0]);  // Sudah Y-m-d
+        $last_date  = trim($arrperiode[1]);
+
+        $query->whereDate('data_lembur.created_at', '>=', $first_date)
+              ->whereDate('data_lembur.created_at', '<=', $last_date);
     }
+}
+
 
     $result = $query->get();
     return Excel::download(new exportExcelSerahTerimaLembur($result), 'Serah_Terima_Lembur.xlsx');
