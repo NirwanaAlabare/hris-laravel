@@ -325,7 +325,11 @@ class GAController extends AdminBaseController
     }
     public function ajax_getallemployeeatribut()
     {
-        $query =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')->where('status_aktif', 'AKTIF')->groupby('enroll_id')->orderby('employee_name', 'asc')->get();
+        $loggedAdmin = Auth::guard('admin')->user();
+        $email = $loggedAdmin->email;
+        $id_user = $loggedAdmin->enroll_id;
+        $department_id = EmployeeAtribut::where('enroll_id', $id_user)->first()->department_id;
+        $query =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')->where('status_aktif', 'AKTIF')->where('department_id', $department_id)->groupby('enroll_id')->orderby('employee_name', 'asc')->get();
         return $query;
 
     }
