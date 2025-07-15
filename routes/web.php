@@ -541,6 +541,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('datalembur/ajax_getemployee',['as'=>'hris.datalembur.ajax_getemployee','uses'=>'DataLemburController@ajax_getemployee']);
     Route::post('datalembur/ajax_getsubdept',['as'=>'hris.datalembur.ajax_getsubdept','uses'=>'DataLemburController@ajax_getsubdept']);
     Route::post('datalembur/ajax_getnomorspl',['as'=>'hris.datalembur.ajax_getnomorspl','uses'=>'DataLemburController@ajax_getnomorspl']);
+    Route::post('datalembur/ajax_getnomorspl_list',['as'=>'hris.datalembur.ajax_getnomorspl_list','uses'=>'DataLemburController@ajax_getnomorspl_list']);
+    Route::post('datalembur/create_serah_terima_lembur',['as'=>'hris.datalembur.create_serah_terima_lembur','uses'=>'DataLemburController@create_serah_terima_lembur']);
     Route::post('datalembur/ajax_datalembur',['as'=>'hris.datalembur.ajax_datalembur','uses'=>'DataLemburController@ajax_datalembur']);
     Route::post('datalembur/ajax_datalembur2',['as'=>'hris.datalembur.ajax_datalembur2','uses'=>'DataLemburController@ajax_datalembur2']);
     Route::post('datalembur/verificating',['as'=>'hris.datalembur.verificating','uses'=>'DataLemburController@verificating']);
@@ -556,6 +558,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('datalembur/import_data_lembur',['as'=>'hris.datalembur.import_data_lembur','uses'=>'DataLemburController@import_data_lembur']);
     Route::post('datalembur/importing_data_lembur',['as'=>'hris.datalembur.importing_data_lembur','uses'=>'DataLemburController@importing_data_lembur']);
     Route::get('datalembur/get_last_nomor_form_lembur',['as'=>'hris.datalembur.get_last_nomor_form_lembur','uses'=>'DataLemburController@get_last_nomor_form_lembur']);
+    Route::get('datalembur/export_excel_tanda_terima_lembur',['as'=>'hris.datalembur.export_excel_tanda_terima_lembur','uses'=>'DataLemburController@export_excel_tanda_terima_lembur']);
 
     // DATA PAYROLL
     Route::get('payroll/lembur/',['as'=>'hris.payroll.lembur','uses'=> 'PayrollController@lembur']);

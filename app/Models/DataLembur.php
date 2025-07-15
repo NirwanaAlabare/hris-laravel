@@ -45,7 +45,8 @@ class DataLembur extends \Eloquent
         'capai_target',
         'created_at',
         'updated_at',
-        'deleted_at'
+        'deleted_at',
+        'serah_terima'
     ];
     protected $guarded = [];
 
@@ -91,7 +92,8 @@ class DataLembur extends \Eloquent
         'capai_target',
         'created_at',
         'updated_at',
-        'deleted_at'
+        'deleted_at',
+        'serah_terima'
     ];
 
     public $incrementing = false;

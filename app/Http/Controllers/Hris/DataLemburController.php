@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Hris;
 
 use App\Http\Controllers\AdminBaseController;
+use App\Exports\exportExcelSerahTerimaLembur;
 use App\Models\DataLembur;
 use App\Models\MasterDataAbsenKehadiran;
 use App\Models\EmployeeAtribut;
@@ -51,8 +52,12 @@ class DataLemburController extends AdminBaseController
     {
         $this->department = $this->ajax_getselectdepart();
         $this->selectemployee = $this->ajax_getallemployeeatribut();
-        // $this->allnfl = $this->ajax_getAllNomorFormLembur();
         $this->periode_lembur = $this->ajax_gettanggallembur();
+        $loggedAdmin = Auth::guard('admin')->user();
+        $enroll_id = $loggedAdmin->enroll_id;
+        $this->enroll_id_loggin = $enroll_id;
+        $this->data['enroll_id_loggin'] = $this->enroll_id_loggin;
+        $this->data['periode_lembur'] = $this->periode_lembur;
 
         return View::make('hris/datalembur', $this->data);
     }
@@ -268,6 +273,163 @@ class DataLemburController extends AdminBaseController
         return $sorted->take(1000);
 
     }
+
+    public function ajax_getnomorspl_list(Request $request)
+    {
+        $start = $request->input('start', 0);
+        $limit = $request->input('length', 10);
+        $orderColumnIndex = $request->input('order.0.column');
+        $orderColumnName = $request->input('columns.' . $orderColumnIndex . '.data') ?: 'dl.nomor_form_lembur';
+
+        $orderDir = $request->input('order.0.dir', 'asc');
+        $search = $request->input('search.value');
+
+        $periode_lembur = $request->periode_lembur;
+        $array_periode_lembur = explode(' s/d ', $periode_lembur);
+        $awal_bulan = substr($array_periode_lembur[0], 0, 10);
+        $akhir_bulan = substr($array_periode_lembur[1], 0, 10);
+
+        $nomor_form_lembur = $request->nomor_form_lembur;
+        $arrayNomorSPL = str_replace(',', '","', $nomor_form_lembur);
+        $inNomorSPL = !empty($nomor_form_lembur)
+            ? ' AND dl.nomor_form_lembur IN ("' . $arrayNomorSPL . '")'
+            : '';
+
+        $searchSQL = '';
+        if (!empty($search)) {
+            $search = addslashes($search);
+            $searchSQL = " AND (
+                dl.nomor_form_lembur LIKE '%{$search}%'
+                OR ma.tanggal_berjalan LIKE '%{$search}%'
+                OR dl.catatan LIKE '%{$search}%'
+            )";
+        }
+
+        $querySQL = "
+            SELECT
+                CONCAT(
+                    dl.nomor_form_lembur,
+                    ' [ ',
+                    DATE_FORMAT(ma.tanggal_berjalan, '%d %b %Y'),
+                    ' ] => ',
+                    COUNT(ma.enroll_id),
+                    ' karyawan'
+                ) AS tanggal_nomor_spl,
+                dl.nomor_form_lembur,
+                ma.tanggal_berjalan,
+                dl.mulai_jam_lembur,
+                dl.akhir_jam_lembur,
+                dl.jumlah_jam_lembur,
+                dl.serah_terima,
+                dl.catatan,
+                dl.jumlah_jam_istirahat_lembur,
+                COUNT(ma.enroll_id) AS jml_data,
+                dl.created_at
+            FROM
+                data_lembur dl
+            JOIN
+                master_data_absen_kehadiran ma ON ma.uuid = dl.uuid_master
+            WHERE
+                ma.tanggal_berjalan BETWEEN '{$awal_bulan}' AND '{$akhir_bulan}'
+                AND dl.serah_terima IS NULL
+                {$inNomorSPL}
+                {$searchSQL}
+            GROUP BY
+                dl.nomor_form_lembur, ma.tanggal_berjalan
+            ORDER BY {$orderColumnName} {$orderDir}
+            LIMIT {$start}, {$limit}
+        ";
+
+        $query = DB::select($querySQL);
+
+        $sorted = collect($query)->sortByDesc(function ($item) {
+            preg_match('/\/(\d+)$/', $item->nomor_form_lembur, $match);
+            return isset($match[1]) ? (int)$match[1] : 0;
+        })->values();
+
+        $data = $sorted;
+
+        // Hitung total data (tanpa LIMIT) untuk pagination
+        $countSQL = "
+            SELECT COUNT(DISTINCT CONCAT(dl.nomor_form_lembur, ma.tanggal_berjalan)) AS total
+            FROM
+                data_lembur dl
+            JOIN
+                master_data_absen_kehadiran ma ON ma.uuid = dl.uuid_master
+            WHERE
+                ma.tanggal_berjalan BETWEEN '{$awal_bulan}' AND '{$akhir_bulan}'
+                {$inNomorSPL}
+                {$searchSQL}
+        ";
+
+        $totalData = DB::selectOne($countSQL)->total ?? 0;
+
+        return response()->json([
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => intval($totalData),
+            'recordsFiltered' => intval($totalData),
+            'data' => $data
+        ]);
+    }
+
+
+    public function create_serah_terima_lembur(Request $request)
+    {
+        $daftarSPL = $request->input('daftarSPL');
+
+        if (is_array($daftarSPL) && count($daftarSPL) > 0) {
+            foreach ($daftarSPL as $value) {
+                DataLembur::where('nomor_form_lembur', $value['nomor'])
+                    ->update([
+                        'serah_terima' => true
+                    ]);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Serah Terima Lembur Berhasil'
+            ]);
+        }
+
+        return response()->json([
+            'status' => false,
+            'message' => 'Data SPL kosong atau tidak valid'
+        ], 400);
+    }
+
+    public function export_excel_tanda_terima_lembur(Request $request)
+    {
+    ini_set('max_execution_time', 0);
+  $query = DataLembur::select(
+        'employee_atribut.employee_name',
+        'employee_atribut.nik',
+        'employee_atribut.department_name',
+        'employee_atribut.sub_dept_name',
+        'employee_atribut.status_jabatan',
+        'data_lembur.nomor_form_lembur',
+        'data_lembur.created_at',
+        'data_lembur.tanggal_berjalan',
+        DB::raw('COUNT(data_lembur.enroll_id) AS jumlah_karyawan')
+    )
+    ->leftJoin('employee_atribut', 'data_lembur.enroll_id', '=', 'employee_atribut.enroll_id')
+    ->where('data_lembur.serah_terima', '=', true)
+    ->groupBy('data_lembur.nomor_form_lembur', 'data_lembur.tanggal_berjalan')
+    ->orderBy('data_lembur.created_at', 'desc');
+
+
+    if (!empty($request->daterange1)) {
+        $arrperiode = explode(" s/d ", $request->daterange1);
+        $first_date = $arrperiode[0];
+        $last_date = $arrperiode[1];
+
+        $query->whereDate('data_lembur.tanggal_berjalan', '>=', $first_date)
+              ->whereDate('data_lembur.tanggal_berjalan', '<=', $last_date);
+    }
+
+    $result = $query->get();
+    return Excel::download(new exportExcelSerahTerimaLembur($result), 'Serah_Terima_Lembur.xlsx');
+    }
+
 
     public function add_datalembur()
     {
