@@ -400,25 +400,25 @@ class DataLemburController extends AdminBaseController
     public function export_excel_tanda_terima_lembur(Request $request)
     {
     ini_set('max_execution_time', 0);
-  $query = DataLembur::select(
-        'employee_atribut.employee_name',
-        'employee_atribut.nik',
-        'employee_atribut.department_name',
-        'employee_atribut.sub_dept_name',
-        'employee_atribut.status_jabatan',
-        'data_lembur.nomor_form_lembur',
-        'data_lembur.created_at',
-        'data_lembur.tanggal_berjalan',
-        DB::raw('COUNT(data_lembur.enroll_id) AS jumlah_karyawan')
-    )
-    ->leftJoin('employee_atribut', 'data_lembur.enroll_id', '=', 'employee_atribut.enroll_id')
-    ->where('data_lembur.serah_terima', '=', true)
-    ->groupBy('data_lembur.nomor_form_lembur', 'data_lembur.tanggal_berjalan')
-    ->orderBy('data_lembur.created_at', 'desc');
+    $query = DataLembur::select(
+            'employee_atribut.employee_name',
+            'employee_atribut.nik',
+            'employee_atribut.department_name',
+            'employee_atribut.sub_dept_name',
+            'employee_atribut.status_jabatan',
+            'data_lembur.nomor_form_lembur',
+            'data_lembur.created_at',
+            'data_lembur.tanggal_berjalan',
+            DB::raw('COUNT(data_lembur.enroll_id) AS jumlah_karyawan')
+        )
+        ->leftJoin('employee_atribut', 'data_lembur.enroll_id', '=', 'employee_atribut.enroll_id')
+        ->where('data_lembur.serah_terima', '=', true)
+        ->groupBy('data_lembur.nomor_form_lembur', 'data_lembur.tanggal_berjalan')
+        ->orderBy('data_lembur.created_at', 'desc');
 
 
-    if (!empty($request->daterange1)) {
-        $arrperiode = explode(" s/d ", $request->daterange1);
+    if (!empty($request->tanggal)) {
+        $arrperiode = explode(" s/d ", $request->tanggal);
         $first_date = $arrperiode[0];
         $last_date = $arrperiode[1];
 
