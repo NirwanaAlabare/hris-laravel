@@ -1381,32 +1381,25 @@ class EmployeeAtrController extends AdminBaseController
         // }
         $employee_contract_before = EmployeeAtribut::whereRaw('enroll_id = "' . $enroll_id . '"')->first();
         // dd($employee_contract_before->tanggal_mulai_kontrak, $employee_contract_before->tanggal_akhir_kontrak);
-        if ($tanggal_mulai_kontrak != '' && $tanggal_akhir_kontrak != '') {
-            // Cek apakah data kontrak ini sudah ada
-            $existing = DB::table('employee_contract')
-                ->where('enroll_id', $enroll_id)
-                ->whereDate('contract', $employee_contract_before->tanggal_mulai_kontrak)
-                ->whereDate('contract_end', $employee_contract_before->tanggal_akhir_kontrak)
-                ->first();
+        if($employee_contract_before){
+            if ($tanggal_mulai_kontrak != '' && $tanggal_akhir_kontrak != '') {
+                // Cek apakah data kontrak ini sudah ada
+                $existing = DB::table('employee_contract')
+                    ->where('enroll_id', $enroll_id)
+                    ->whereDate('contract', $employee_contract_before->tanggal_mulai_kontrak)
+                    ->whereDate('contract_end', $employee_contract_before->tanggal_akhir_kontrak)
+                    ->first();
 
-            if ($existing) {
-                // Update jika sudah ada
-                DB::table('employee_contract')
-                    ->where('id', $existing->id)
-                    ->update([
-                        'contract' => $tanggal_mulai_kontrak,
-                        'contract_end' => $tanggal_akhir_kontrak,
-                        'updated_at' => $timestamp
-                    ]);
-            } else {
-                // Insert jika belum ada
-                DB::table('employee_contract')->insert([
-                    'enroll_id' => $enroll_id,
-                    'contract' => $tanggal_mulai_kontrak,
-                    'contract_end' => $tanggal_akhir_kontrak,
-                    'created_at' => $timestamp,
-                    'updated_at' => $timestamp
-                ]);
+                if ($existing) {
+                    // Update jika sudah ada
+                    DB::table('employee_contract')
+                        ->where('id', $existing->id)
+                        ->update([
+                            'contract' => $tanggal_mulai_kontrak,
+                            'contract_end' => $tanggal_akhir_kontrak,
+                            'updated_at' => $timestamp
+                        ]);
+                }
             }
         }
 
@@ -1624,7 +1617,6 @@ class EmployeeAtrController extends AdminBaseController
                 }
             }
         } else {
-
             $query = EmployeeAtribut::create([
 
                 'employee_id' => $employee_id,
@@ -1706,6 +1698,15 @@ class EmployeeAtrController extends AdminBaseController
                 'rt' => $rt,
                 'rw' => $rw,
                 'kode_pos' => $kode_pos
+            ]);
+
+            // Insert jika belum ada
+            DB::table('employee_contract')->insert([
+                'enroll_id' => $enroll_id,
+                'contract' => $tanggal_mulai_kontrak,
+                'contract_end' => $tanggal_akhir_kontrak,
+                'created_at' => $timestamp,
+                'updated_at' => $timestamp
             ]);
 
             info('Karyawan dengan nama ' . $employee_name . ' dari departemen '. $sub_dept_name->sub_dept_name .' telah di tambah oleh '.$operator);
