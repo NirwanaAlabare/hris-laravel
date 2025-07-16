@@ -323,16 +323,47 @@ class GAController extends AdminBaseController
             'subdistricts.required'=>'harus dipilih',
         ]);
     }
+    // public function ajax_getallemployeeatribut()
+    // {
+    //     $loggedAdmin = Auth::guard('admin')->user();
+    //     $email = $loggedAdmin->email;
+    //     $id_user = $loggedAdmin->enroll_id;
+    //     $department_id = EmployeeAtribut::where('enroll_id', $id_user)->first()->department_id;
+    //     $query =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')->where('status_aktif', 'AKTIF')->where('department_id', $department_id)->groupby('enroll_id')->orderby('employee_name', 'asc')->get();
+    //     return $query;
+
+    // }
+
     public function ajax_getallemployeeatribut()
     {
         $loggedAdmin = Auth::guard('admin')->user();
-        $email = $loggedAdmin->email;
         $id_user = $loggedAdmin->enroll_id;
-        $department_id = EmployeeAtribut::where('enroll_id', $id_user)->first()->department_id;
-        $query =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')->where('status_aktif', 'AKTIF')->where('department_id', $department_id)->groupby('enroll_id')->orderby('employee_name', 'asc')->get();
-        return $query;
 
+        $department_id = EmployeeAtribut::where('enroll_id', $id_user)->first()->department_id;
+
+        // Jika DEP13 atau DEP07, maka keduanya bisa lihat data masing-masing
+        if (in_array($department_id, ['DEP13', 'DEP07','DEP23'])) {
+            $allowedDepartments = ['DEP13', 'DEP07','DEP23'];
+        }else if (in_array($department_id, ['DEP03', 'DEP04', 'DEP01', 'DEP01', 'DEP14'])) {
+            $allowedDepartments = ['DEP03', 'DEP04', 'DEP01', 'DEP01', 'DEP14'];
+        }else if (in_array($department_id, ['DEP17', 'DEP18'])) {
+            $allowedDepartments = ['DEP17', 'DEP18'];
+        }else if (in_array($department_id, ['DEP22', 'DEP19'])) {
+            $allowedDepartments = ['DEP22', 'DEP19'];
+        } else {
+            $allowedDepartments = [$department_id];
+        }
+
+        $query = EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')
+            ->where('status_aktif', 'AKTIF')
+            ->whereIn('department_id', $allowedDepartments)
+            ->groupBy('enroll_id')
+            ->orderBy('employee_name', 'asc')
+            ->get();
+
+        return $query;
     }
+
     public function get_province(){
         $province = DB::select("select*from provinces order by prov_id");
         return $province;
