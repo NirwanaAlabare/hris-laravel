@@ -48,11 +48,11 @@ class GagalAbsenExport implements FromQuery, WithMapping, ShouldAutoSize, WithEv
 
         $inSearchData = "";
         if($searchData) {
-            $inSearchData = ' 
+            $inSearchData = '
                 AND (
-                    UPPER(master_data_absen_kehadiran.enroll_id) LIKE ("%' . $searchData . '%") 
-                    OR UPPER(employee_atribut.nik) LIKE ("%' . $searchData . '%") 
-                    OR UPPER(employee_atribut.employee_name) LIKE ("%' . $searchData . '%") 
+                    UPPER(master_data_absen_kehadiran.enroll_id) LIKE ("%' . $searchData . '%")
+                    OR UPPER(employee_atribut.nik) LIKE ("%' . $searchData . '%")
+                    OR UPPER(employee_atribut.employee_name) LIKE ("%' . $searchData . '%")
                 )
             ';
 
@@ -80,27 +80,27 @@ class GagalAbsenExport implements FromQuery, WithMapping, ShouldAutoSize, WithEv
                     department_all.department_name,
                     department_all.sub_dept_name,
                     master_data_absen_kehadiran.mulai_jam_kerja,
-                    master_data_absen_kehadiran.akhir_jam_kerja,                
+                    master_data_absen_kehadiran.akhir_jam_kerja,
                     master_data_absen_kehadiran.absen_masuk_kerja,
-                    master_data_absen_kehadiran.absen_pulang_kerja,                
+                    master_data_absen_kehadiran.absen_pulang_kerja,
                     master_data_absen_kehadiran.holiday_name,
                     master_data_absen_kehadiran.status_absen
                 ')
                 ->whereRaw('
                    (
-                    (substr(master_data_absen_kehadiran.tanggal_berjalan, 1, 10) between "' . $tanggalMulai . '" and "' . $tanggalSampai . '"  and employee_atribut.enroll_id is not null 
+                    (substr(master_data_absen_kehadiran.tanggal_berjalan, 1, 10) between "' . $tanggalMulai . '" and "' . $tanggalSampai . '"  and employee_atribut.enroll_id is not null
                         AND master_data_absen_kehadiran.status_absen IN ("M","TL"))
                     or
                     (substr(master_data_absen_kehadiran.tanggal_berjalan, 1, 10) between "' . $tanggalMulai . '" and "' . $tanggalSampai . '"  and employee_atribut.enroll_id is not null
-                        AND master_data_absen_kehadiran.mulai_jam_kerja is null AND master_data_absen_kehadiran.akhir_jam_kerja is null AND 
+                        AND master_data_absen_kehadiran.mulai_jam_kerja is null AND master_data_absen_kehadiran.akhir_jam_kerja is null AND
                             ((master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null) or (master_data_absen_kehadiran.absen_masuk_kerja is null AND master_data_absen_kehadiran.absen_pulang_kerja is not null))
-                        ) 
-                    or 
+                        )
+                    or
                      (substr(master_data_absen_kehadiran.tanggal_berjalan, 1, 10) between "' . $tanggalMulai . '" and "' . $tanggalSampai . '"  and employee_atribut.enroll_id is not null
-                        AND master_data_absen_kehadiran.mulai_jam_kerja is not null AND master_data_absen_kehadiran.akhir_jam_kerja is not null AND 
+                        AND master_data_absen_kehadiran.mulai_jam_kerja is not null AND master_data_absen_kehadiran.akhir_jam_kerja is not null AND
                             ((master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null) or (master_data_absen_kehadiran.absen_masuk_kerja is null AND master_data_absen_kehadiran.absen_pulang_kerja is not null))
                             AND master_data_absen_kehadiran.status_absen = "LP"
-                        ) 
+                        )
                         )
                 ' . $this->inSearchData . '
             ')
@@ -153,7 +153,7 @@ class GagalAbsenExport implements FromQuery, WithMapping, ShouldAutoSize, WithEv
         $status_absen = $Kehadiran->status_absen;
 
         return [
-            $Kehadiran->tanggal_berjalan,
+            \Carbon\Carbon::parse($Kehadiran->tanggal_berjalan)->format('d-m-Y'),
             $Kehadiran->nama_hari,
             $Kehadiran->nik,
             $Kehadiran->enroll_id,
@@ -209,12 +209,12 @@ class GagalAbsenExport implements FromQuery, WithMapping, ShouldAutoSize, WithEv
                 $sheet->setCellValue('J5', 'JADWAL KERJA');
                 $sheet->setCellValue('J6', 'IN');
                 $sheet->setCellValue('K6', 'OUT');
-                
+
                 $sheet->mergeCells('L5:M5');
                 $sheet->setCellValue('L5', 'ABSEN');
                 $sheet->setCellValue('L6', 'IN');
                 $sheet->setCellValue('M6', 'OUT');
-                
+
                 $sheet->setCellValue('N5', 'STATUS ABSEN');
 
                 $sheet->mergeCells('A5:A6');
