@@ -154,60 +154,66 @@
                 </div>
             </div>
             <div class="card-body px-6 pt-2 pb-5">
-                <div class="row pb-2">
-                    <div class="col-10">
-                                    {{-- <button type="button" class="btn btn-app btn-success mr-0 mt-2 mb-0" data-target="#import_kontrak" data-toggle="modal" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Import Kontrak Kerja</button>
-                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-2 mb-0" style="font-size:11pt" onclick="export_excel_kontrak()" id="btn_export_excel_kontrak"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Kontrak Kerja</button>
-                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-2 mb-0" data-target="#import_nilai_kinerja_staff" data-toggle="modal" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Import Penilaian Kinerja</button>
-                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-2 mb-0" onclick="export_excel_format_penilaian_nonstaff()" id="export_excel_format_penilaian_nonstaff" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Format Penilaian Non Staff</button>
-                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-2 mb-0" onclick="export_rekap_penilaian()" id="export_rekap_penilaian" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Rekap Penilaian</button>
-                                    <button type="button" class="btn btn-app btn-success mr-0 ml-1 mt-2 mb-0" onclick="adjustment_sallary()" id="adjustment_sallary" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Format Adjustment Sallary</button>
-                                    <button type="button" class="btn btn-app btn-success mr-0 mt-2 ml-1 mb-0" data-target="#import_adjustment_sallary" data-toggle="modal" style="font-size:11pt"><i class="fa fa-file-excel-o" style="font-size:11pt"></i> Import Adjustment Sallary</button>
-                                    <button type="button" class="btn btn-primary mr-0 ml-0 mt-2 mb-0" style="visibility: hidden" id="print_form_penilaian" style="font-size:11pt"><i class="fa fa-file-pdf-o" style="font-size:11pt"></i>Form Penilaian (PDF)</button>
-                                    <button class="btn btn-danger  mt-2 ml-0" id="print_kontrak_kerja" style="visibility: hidden"><span class="fa fa-file-pdf-o"></span> Print Checked Employee</button> --}}
-                            <div class="dropdown">
-                                <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Aksi Kontrak & Penilaian
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="min-width: 250px;">
+                <div class="row align-items-center">
 
-                                    <button class="dropdown-item" data-toggle="modal" data-target="#import_kontrak">
-                                        <i class="fa fa-file-excel-o"></i> Import Kontrak Kerja
-                                    </button>
+    <!-- Kolom Tombol Dropdown & PDF -->
+    <div class="col d-flex flex-wrap align-items-center">
 
-                                    <button class="dropdown-item" onclick="export_excel_kontrak()">
-                                        <i class="fa fa-file-excel-o"></i> Export Kontrak Kerja
-                                    </button>
+        <!-- Dropdown Aksi -->
+        <div class="dropdown mr-2 mb-2">
+            <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">
+                Aksi Kontrak & Penilaian
+            </button>
+            <div class="dropdown-menu" style="min-width: 250px;">
+                <button class="dropdown-item" onclick="export_excel_kontrak()">
+                    <i class="fa fa-file-excel-o"></i> Export Kontrak Kerja
+                </button>
+                <button class="dropdown-item" onclick="adjustment_sallary()">
+                    <i class="fa fa-file-excel-o"></i> Format Adjustment Salary
+                </button>
+                <button class="dropdown-item" onclick="export_excel_format_penilaian_nonstaff()">
+                    <i class="fa fa-file-excel-o"></i> Format Penilaian Non Staff
+                </button>
+                <button class="dropdown-item" data-toggle="modal" data-target="#import_adjustment_sallary">
+                    <i class="fa fa-file-excel-o"></i> Import Adjustment Salary
+                </button>
+                <button class="dropdown-item" data-toggle="modal" data-target="#import_kontrak">
+                    <i class="fa fa-file-excel-o"></i> Import Kontrak Kerja
+                </button>
+                <button class="dropdown-item" data-toggle="modal" data-target="#import_nilai_kinerja_staff">
+                    <i class="fa fa-file-excel-o"></i> Import Penilaian Kinerja
+                </button>
+                <button class="dropdown-item" onclick="export_rekap_penilaian()">
+                    <i class="fa fa-file-excel-o"></i> Rekap Penilaian
+                </button>
+            </div>
+        </div>
 
-                                    <button class="dropdown-item" data-toggle="modal" data-target="#import_nilai_kinerja_staff">
-                                        <i class="fa fa-file-excel-o"></i> Import Penilaian Kinerja
-                                    </button>
+        <!-- Tombol Form Penilaian PDF -->
+        <button type="button" class="btn btn-primary mr-2 mb-2"
+                id="print_form_penilaian"
+                style="display: none;">
+            <i class="fa fa-file-pdf-o"></i> Form Penilaian (PDF)
+        </button>
 
-                                    <button class="dropdown-item" onclick="export_excel_format_penilaian_nonstaff()">
-                                        <i class="fa fa-file-excel-o"></i> Format Penilaian Non Staff
-                                    </button>
+        <!-- Tombol Print Employee -->
+        <button class="btn btn-danger mr-2 mb-2"
+                id="print_kontrak_kerja"
+                style="display: none;">
+            <i class="fa fa-file-pdf-o"></i> Print Checked Employee
+        </button>
 
-                                    <button class="dropdown-item" onclick="export_rekap_penilaian()">
-                                        <i class="fa fa-file-excel-o"></i> Rekap Penilaian
-                                    </button>
+    </div>
 
-                                    <button class="dropdown-item" onclick="adjustment_sallary()">
-                                        <i class="fa fa-file-excel-o"></i> Format Adjustment Salary
-                                    </button>
+    <!-- Kolom Tombol Hapus Filter -->
+    <div class="col-auto mb-2">
+        <button id="btn-hapus-filter" class="btn btn-danger">
+            Hapus Filter <i class="fa fa-close" aria-hidden="true"></i>
+        </button>
+    </div>
 
-                                    <button class="dropdown-item" data-toggle="modal" data-target="#import_adjustment_sallary">
-                                        <i class="fa fa-file-excel-o"></i> Import Adjustment Salary
-                                    </button>
+</div>
 
-                                </div>
-                            </div>
-                            <button type="button" class="btn btn-primary mr-0 ml-0 mt-2 mb-0" style="visibility: hidden" id="print_form_penilaian" style="font-size:11pt"><i class="fa fa-file-pdf-o" style="font-size:11pt"></i>Form Penilaian (PDF)</button>
-                                    <button class="btn btn-danger  mt-2 ml-0" id="print_kontrak_kerja" style="visibility: hidden"><span class="fa fa-file-pdf-o"></span> Print Checked Employee</button>
-                    </div>
-                    <div class="col-2">
-                        <button  id="btn-hapus-filter" class="btn btn-danger">Hapus Filter <i class="fa fa-close" aria-hidden="true"></i> </button>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col">
                         <div class="table-responsive">
@@ -958,7 +964,8 @@ function updateRange(start, end) {
     var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
     $('#daterange1').val(daterange1);
 
-    document.getElementById("print_form_penilaian").style.visibility = "visible";
+    document.getElementById("print_form_penilaian").style.display = "inline-block";
+
     $('#status_kontrak').val("");
     $('#datatable').DataTable().ajax.reload();
 }
@@ -969,7 +976,7 @@ function updateRange(start, end) {
         $('#daterange-btn1').data('daterangepicker').setEndDate(moment());
         let status_kontrak = document.getElementById("status_kontrak").value;
         if(!status_kontrak) {
-            document.getElementById("print_form_penilaian").style.visibility = "hidden";
+             document.getElementById("print_form_penilaian").style.display = "none";
         }
         if($('#daterange1').val()){
             $('#status_kontrak').val("");
@@ -2033,26 +2040,6 @@ function updateRange(start, end) {
             currentPageCheck = 0;
         }
     });
-    // function actionThisEmployeeCheck(element) {
-    //     if (element.checked) {
-    //         console.log('element.value',element.value);
-    //         if(!checkedEmployeeArr.find((value) => value == element.value)) {
-    //             checkedEmployeeArr.push(element.value);
-    //         }
-    //     } else {
-    //         if(checkedEmployeeArr.find((value) => value == element.value)) {
-    //             const index = checkedEmployeeArr.indexOf(element.value);
-    //             if (index > -1) { // only splice array when item is found
-    //                 checkedEmployeeArr.splice(index, 1); // 2nd parameter means remove one item only
-    //             }
-    //         }
-    //     }
-    //     if(checkedEmployeeArr.length>0){
-    //         document.getElementById("print_kontrak_kerja").style.visibility = "visible";
-    //     }else{
-    //         document.getElementById("print_kontrak_kerja").style.visibility = "hidden";
-    //     }
-    // }
 
     function actionThisEmployeeCheck(element) {
     if (element.checked) {
@@ -2067,9 +2054,9 @@ function updateRange(start, end) {
     }
 
     if (checkedEmployeeArr.length > 0) {
-        document.getElementById("print_kontrak_kerja").style.visibility = "visible";
+        document.getElementById("print_kontrak_kerja").style.display = "inline-block";
     } else {
-        document.getElementById("print_kontrak_kerja").style.visibility = "hidden";
+        document.getElementById("print_kontrak_kerja").style.display = "none";
     }
 }
 
@@ -2235,7 +2222,7 @@ function updateRange(start, end) {
             $('#datatable').DataTable().ajax.reload(null, false);
         }
 
-        document.getElementById("print_kontrak_kerja").style.visibility = element.checked ? "visible" : "hidden";
+        document.getElementById("print_kontrak_kerja").style.display  = element.checked ? "inline-block" : "none";
     }
 
 
@@ -2250,9 +2237,9 @@ function updateRange(start, end) {
         let status = e.target.value;
         let date_range = $('#daterange1').val();
         if(status || date_range){
-            document.getElementById("print_form_penilaian").style.visibility = "visible";
+            document.getElementById("print_form_penilaian").style.display = "inline-block";
         }else{
-            document.getElementById("print_form_penilaian").style.visibility = "hidden";
+            document.getElementById("print_form_penilaian").style.display = "none";
         }
         if(status && date_range){
             $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i></span><i class="fa fa-angle-down ml-1"></i>');
