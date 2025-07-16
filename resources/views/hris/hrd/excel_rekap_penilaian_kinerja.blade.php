@@ -42,12 +42,9 @@
                 <td rowspan="1" style="border:1px solid black">Day Finish</td>
                 <td rowspan="1" style="border:1px solid black">Finish</td>
             </tr>
-            @php
-                $grouped = collect($query)->groupBy('enroll_id');
-            @endphp
-            @foreach ($grouped as $enrollId => $contracts)
+            @foreach ($query as $enrollId => $contracts)
                 @php
-                    $first = $contracts->first();
+                    $first = $contracts;
                     $join_date = $first->join_date;
                     $today = date('Y-m-d');
                     $diff = abs(strtotime($today) - strtotime($join_date));

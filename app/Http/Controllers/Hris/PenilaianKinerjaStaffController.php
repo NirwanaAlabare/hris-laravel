@@ -1115,86 +1115,120 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         }
         $inStatusAktif='AND z.status_aktif = "aktif"';
 
-       $data_kontrak_non_staff = DB::select("
-            SELECT
-                z.enroll_id,
-                z.nik,
-                z.employee_name,
-                z.status_jabatan,
-                z.department_name,
-                z.sub_dept_name,
-                z.status_aktif,
-                z.status_staff,
-                z.tanggal_resign,
-                z.join_date,
-                z.ibu_kandung,
-                z.nomor_ktp,
-                y.id,
-                y.contract,
-                y.contract AS contract_last,
-                y.contract_end  AS contract_end_last,
-                -- logika untuk mengganti contract_end dengan tanggal_resign jika ada
-                CASE
-                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
-                    ELSE y.contract_end
-                END AS contract_end
-            FROM (
-                SELECT
-                    a.enroll_id,
-                    a.id,
-                    e.contract,
-                    e.contract_end
-                FROM (
-                    SELECT
-                        enroll_id,
-                        MAX(contract) AS contract,
-                        MAX(contract_end) AS contract_end
-                    FROM employee_contract
-                    GROUP BY enroll_id
-                ) e
-                INNER JOIN (
-                    SELECT
-                        id,
-                        enroll_id,
-                        contract,
-                        contract_end
-                    FROM employee_contract
-                ) a ON e.enroll_id = a.enroll_id AND e.contract_end = a.contract_end
-            ) y
-            RIGHT JOIN (
-                SELECT
-                    enroll_id,
-                    nik,
-                    employee_name,
-                    tanggal_resign,
-                    tempat_lahir,
-                    status_jabatan,
-                    nomor_tlpn,
-                    agama,
-                    status_kawin,
-                    join_date,
-                    nomor_kk,
-                    pendidikan_terakhir,
-                    jurusan_pendidikan,
-                    alamat_rumah,
-                    department_name,
-                    sub_dept_name,
-                    status_aktif,
-                    status_staff,
-                    ibu_kandung,
-                    nomor_ktp
-                FROM employee_atribut
-            ) z ON y.enroll_id = z.enroll_id
-            WHERE z.enroll_id IS NOT NULL
-                $inStatusKontrakRange
-                $inDepartment_name
-                $inEnrollId
-                $inStatusStaff
-                $inStatusKontrak
-                $inStatusAktif
-            GROUP BY z.enroll_id
-            ORDER BY z.enroll_id
-        ");
+
+        $data_kontrak_non_staff = DB::select("
+        SELECT
+            z.enroll_id,
+            z.nik,
+            z.employee_name,
+            z.status_jabatan,
+            z.department_name,
+            z.sub_dept_name,
+            z.status_aktif,
+            z.status_staff,
+            z.tanggal_resign,
+            z.join_date,
+            z.ibu_kandung,
+            z.nomor_ktp,
+            y.id,
+            y.contract,
+            y.contract AS contract_last,
+            y.contract_end AS contract_end_last,
+            CASE
+                WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+                ELSE y.contract_end
+            END AS contract_end
+        FROM employee_contract y
+        LEFT JOIN employee_atribut z ON y.enroll_id = z.enroll_id
+        WHERE z.enroll_id IS NOT NULL
+            $inDepartment_name
+            $inEnrollId
+            $inStatusStaff
+            $inStatusAktif
+        ORDER BY z.enroll_id, y.contract_end ASC
+    ");
+
+
+    // $data_kontrak_non_staff = DB::select("
+    //     SELECT
+    //         z.enroll_id,
+    //         z.nik,
+    //         z.employee_name,
+    //         z.status_jabatan,
+    //         z.department_name,
+    //         z.sub_dept_name,
+    //         z.status_aktif,
+    //         z.status_staff,
+    //         z.tanggal_resign,
+    //         z.join_date,
+    //         z.ibu_kandung,
+    //         z.nomor_ktp,
+    //         y.id,
+    //         y.contract,
+    //         y.contract AS contract_last,
+    //         y.contract_end  AS contract_end_last,
+    //         -- logika untuk mengganti contract_end dengan tanggal_resign jika ada
+    //         CASE
+    //             WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
+    //             ELSE y.contract_end
+    //         END AS contract_end
+    //     FROM (
+    //         SELECT
+    //             a.enroll_id,
+    //             a.id,
+    //             e.contract,
+    //             e.contract_end
+    //         FROM (
+    //             SELECT
+    //                 enroll_id,
+    //                 MAX(contract) AS contract,
+    //                 MAX(contract_end) AS contract_end
+    //             FROM employee_contract
+    //             GROUP BY enroll_id
+    //         ) e
+    //         INNER JOIN (
+    //             SELECT
+    //                 id,
+    //                 enroll_id,
+    //                 contract,
+    //                 contract_end
+    //             FROM employee_contract
+    //         ) a ON e.enroll_id = a.enroll_id AND e.contract_end = a.contract_end
+    //     ) y
+    //     RIGHT JOIN (
+    //         SELECT
+    //             enroll_id,
+    //             nik,
+    //             employee_name,
+    //             tanggal_resign,
+    //             tempat_lahir,
+    //             status_jabatan,
+    //             nomor_tlpn,
+    //             agama,
+    //             status_kawin,
+    //             join_date,
+    //             nomor_kk,
+    //             pendidikan_terakhir,
+    //             jurusan_pendidikan,
+    //             alamat_rumah,
+    //             department_name,
+    //             sub_dept_name,
+    //             status_aktif,
+    //             status_staff,
+    //             ibu_kandung,
+    //             nomor_ktp
+    //         FROM employee_atribut
+    //     ) z ON y.enroll_id = z.enroll_id
+    //     WHERE z.enroll_id IS NOT NULL
+    //         $inStatusKontrakRange
+    //         $inDepartment_name
+    //         $inEnrollId
+    //         $inStatusStaff
+    //         $inStatusKontrak
+    //         $inStatusAktif
+    //     GROUP BY z.enroll_id
+    //     ORDER BY z.enroll_id
+    // ");
 
         $data = [];
 
