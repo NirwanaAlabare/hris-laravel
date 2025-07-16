@@ -1,6 +1,13 @@
 
     <!-- Sidebar menu-->
 {{--  <div class="app-sidebar__overlay" data-toggle="sidebar"></div>  --}}
+<style>
+    .slide-menu .slide-item span {
+        display: block;
+        text-align: left;
+        padding-left: 10px;
+    }
+</style>
 <aside class="app-sidebar toggle-sidebar shadow">
     <ul class="side-menu toggle-menu">
     <li class="slide">

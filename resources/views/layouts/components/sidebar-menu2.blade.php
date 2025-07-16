@@ -1,5 +1,13 @@
 <!-- Sidebar menu-->
 {{--  <div class="app-sidebar__overlay" data-toggle="sidebar"></div>  --}}
+<style>
+    .slide-menu .slide-item span {
+        display: block;
+        text-align: left;
+        padding-left: 10px;
+    }
+</style>
+
 <aside class="app-sidebar toggle-sidebar shadow">
     <ul class="side-menu toggle-menu">
         @php
@@ -10,7 +18,7 @@
             <a class="side-menu__item" data-toggle="slide" href="#"><i class="side-menu__icon typcn typcn-clipboard"></i><span class="side-menu__label">Master Data</span><i class="angle fa fa-angle-right"></i></a>
             <ul class="slide-menu">
                 <li><a href="{{route('hris.hrd.index')}}" class="slide-item"><span> Surat Keterangan Kerja</span></a></li>
-                <li><a href="{{route('hris.hrd.kontrak_kerja')}}" class="slide-item"><span> Kontrak Kerja</span></a></li>
+                <li><a href="{{route('hris.hrd.kontrak_kerja')}}" class="slide-item"><span> PKS</span></a></li>
                 <li><a href="{{route('hris.hrd.layoff_termination')}}" class="slide-item"><span> Layoff & Termination</span></a></li>
                 <li><a href="{{route('permintaan_tenaga_kerja_hr.permintaan_tenaga_kerja_hr')}}" class="slide-item"><span> Permintaan Tenaga Kerja</span></a></li>
                 <li><a href="{{route('tindakan_kedisiplinan.surat_peringatan_hr')}}" class="slide-item"><span> Kedisiplinan</span></a></li>
