@@ -222,7 +222,7 @@
         <thead>
             <tr>
                 <td style="font-size: 14pt;  text-align: justify;">
-                   Sanksi yang diberikan kepada <b>{{$value->employee_name}}</b> berlaku mulai tanggal <b>{{Carbon\Carbon::parse($value->tanggal_mulai)->translatedFormat('d F Y')}}</b> sampai dengan <b>{{Carbon\Carbon::parse($value->tanggal_sampai)->translatedFormat('d F Y')}}</b>.
+                   Sanksi yang diberikan kepada <b>{{$value->employee_name}}</b> berlaku mulai tanggal {{" "}} <b>{{Carbon\Carbon::parse($value->tanggal_mulai)->translatedFormat('d F Y')}}</b> sampai dengan <b>{{Carbon\Carbon::parse($value->tanggal_sampai)->translatedFormat('d F Y')}}</b>.
                 </td>
             </tr>
         </thead>
