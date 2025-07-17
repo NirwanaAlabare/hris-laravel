@@ -55,18 +55,18 @@
                 <td style="">{{ $data_pkwt->department_name }}</td>
                 <td>{{ \Carbon\Carbon::parse($data_pkwt->join_date)->translatedFormat('d F Y') }}</td>
                 <td>{{ $data_pkwt->tanggal_resign ? \Carbon\Carbon::parse($data_pkwt->tanggal_resign)->translatedFormat('d F Y') : '' }}</td>
-                <td style="border:1px solid black; text-align:center">{{ $years }}</td>
-                <td style="border:1px solid black; text-align:center">{{ $month }}</td>
-                <td style="border:1px solid black; text-align:center">{{ $day }}</td>
+                <td style="text-align:center">{{ $years }}</td>
+                <td style="text-align:center">{{ $month }}</td>
+                <td style="text-align:center">{{ $day }}</td>
                 <td>{{ $data_pkwt->contract ? \Carbon\Carbon::parse($data_pkwt->contract)->translatedFormat('l') : '' }}</td>
                 <td>{{ $data_pkwt->contract ? \Carbon\Carbon::parse($data_pkwt->contract)->translatedFormat('d F Y') : '' }}</td>
                 <td>{{ $data_pkwt->contract_end ? \Carbon\Carbon::parse($data_pkwt->contract_end)->translatedFormat('l') : '' }}</td>
                 <td>{{ $data_pkwt->contract_end ? \Carbon\Carbon::parse($data_pkwt->contract_end)->translatedFormat('d F Y') : '' }}</td>
-                <td style="border:1px solid black; text-align:center">{{ $data_pkwt->jumlah_bulan }}</td>
-                <td style="border:1px solid black; text-align:center">{{number_format($data_pkwt->umk, 0, '.', '.');}}</td>
-                <td style="border:1px solid black; text-align:center">{{$data_pkwt->tunjangan, 0, '.', '.'}}</td>
-                <td style="border:1px solid black; text-align:center">{{number_format($data_pkwt->total_penghasilan_bulanan, 0, '.', '.');}}</td>
-                <td style="border:1px solid black; text-align:center">{{ number_format($data_pkwt->total_kompensasi, 0, '.', '.'); }}</td>
+                <td style="text-align:center">{{ $data_pkwt->jumlah_bulan }}</td>
+                <td style="text-align:center">{{number_format($data_pkwt->umk, 0, '.', '.');}}</td>
+                <td style="text-align:center">{{$data_pkwt->tunjangan, 0, '.', '.'}}</td>
+                <td style="text-align:center">{{number_format($data_pkwt->total_penghasilan_bulanan, 0, '.', '.');}}</td>
+                <td style="text-align:center">{{ number_format($data_pkwt->total_kompensasi, 0, '.', '.'); }}</td>
             </tr>
         @endforeach
         </table>
