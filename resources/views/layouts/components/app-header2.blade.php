@@ -39,18 +39,20 @@
     background-color: #920559;
 }
 
+.greenSub {
+    background-color: #31AFD4;
+}
+
 .theme-switcher {
-    height:30px;
-    width:30px;
-    background-color: var(--primary);
+    width: 30px;
+    height: 30px;
     color: white;
     border: none;
-    border-radius: 50px;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 18px;
+    margin-right: 10px;
 }
 button.theme-switcher:hover {
             opacity: 0.8;
@@ -75,17 +77,19 @@ button.theme-switcher:hover {
             @endif
 
             <div class="d-flex order-lg-2 ml-auto header-rightmenu">
-            <div class="dropdown text-center mt-4 pb-4">
-            <a  class="">
-                <button class="theme-switcher" id="themeSwitcher">T
-                </button>
-            </a>
-            <div class="dropdown-theme text-center mt-4 pb-4" id="colorPicker">
-                <div class="color-option primarySub" data-color="primary"></div>
-                <div class="color-option secondSub" data-color="second"></div>
-                <div class="color-option pinkSub" data-color="pink"></div>
+             <div class="dropdown text-center mt-3 pb-4">
+                <a  class="">
+                    <button class="btn btn-icon p-0 m-0" style="border: none; background: none; width: auto;" id="themeSwitcher">
+                        <img class="theme-switcher" src="{{URL::asset('assets/images/brand/pngwing.png')}}"/>
+                    </button>
+                </a>
+                <div class="dropdown-theme text-center mt-4 pb-4" id="colorPicker">
+                    <div class="color-option primarySub" data-color="primary"></div>
+                    <div class="color-option secondSub" data-color="second"></div>
+                    <div class="color-option pinkSub" data-color="pink"></div>
+                    <div class="color-option greenSub" data-color="green"></div>
+                </div>
             </div>
-        </div>
                 <div class="dropdown">
                     <a  class="nav-link icon full-screen-link" id="fullscreen-button">
                         <i class="fe fe-maximize-2"></i>
@@ -201,17 +205,21 @@ button.theme-switcher:hover {
                         const colorType = this.getAttribute('data-color');
 
                         if (colorType === 'primary') {
-                            body.classList.remove('second-theme', 'pink-theme');
+                            body.classList.remove('second-theme', 'pink-theme','green-theme');
                             body.classList.add('light-theme'); // Default light theme
                             localStorage.setItem('theme', 'light');
                         } else if (colorType === 'pink') {
-                            body.classList.remove('second-theme', 'light-theme');
+                            body.classList.remove('second-theme', 'light-theme','green-theme');
                             body.classList.add('pink-theme');
                             localStorage.setItem('theme', 'pink');
                         } else if (colorType === 'second') {
-                            body.classList.remove('pink-theme', 'light-theme');
+                            body.classList.remove('pink-theme', 'light-theme','green-theme');
                             body.classList.add('second-theme');
                             localStorage.setItem('theme', 'second');
+                        }else if (colorType === 'green') {
+                            body.classList.remove('pink-theme', 'light-theme','second-theme');
+                            body.classList.add('green-theme');
+                            localStorage.setItem('theme', 'green');
                         }
 
                         colorPicker.style.display = 'none';

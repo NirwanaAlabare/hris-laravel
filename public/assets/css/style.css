@@ -37,6 +37,11 @@
     --font-family-monospace: Monaco, Consolas, "Liberation Mono", "Courier New", monospace
 }
 
+.green-theme {
+    --primary: #31AFD4;
+    --secondary: #0093BB;
+}
+
 .second-theme {
     --primary: #920559;
     --secondary: #5A154B;
