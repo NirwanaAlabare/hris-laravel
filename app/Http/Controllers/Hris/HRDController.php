@@ -1267,6 +1267,8 @@ class HRDController extends AdminBaseController
     }
 
       public function download_excel_rekap_pkwt(){
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '10240000000000000M');
         $data = DB::select("
         SELECT
             a.status_staff,
