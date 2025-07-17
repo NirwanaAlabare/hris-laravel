@@ -16,8 +16,9 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use DB;
 
-class exportExcelKompensasiPKWT implements FromView
+class exportExcelKompensasiPKWT implements FromView, WithEvents
 {
+    use Exportable;
     public function __construct($query)
     {
         $this->query = $query;
@@ -27,5 +28,19 @@ class exportExcelKompensasiPKWT implements FromView
         return view('hris.Laporan.excel_kompensasi_pkwt',[
             'query' => $this->query,
         ]);
+    }
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function(AfterSheet $event) {
+                $sheet = $event->sheet->getDelegate();
+
+                // Format kolom N dan O sebagai tanggal Excel
+                $sheet->getStyle('H2:H1000')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+                $sheet->getStyle('I2:I1000')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+                $sheet->getStyle('N2:N1000')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+                $sheet->getStyle('P2:P1000')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+            },
+        ];
     }
 }

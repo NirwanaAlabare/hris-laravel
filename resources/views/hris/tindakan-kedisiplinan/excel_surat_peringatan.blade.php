@@ -11,24 +11,24 @@
                 <td colspan="6"></td>
             </tr>
             <tr>
-                <td width="10" style="border:1px solid black">No Surat</td>
-                <td width="10" style="border:1px solid black">Bulan</td>
-                <td width="35" style="border:1px solid black" >Nomor Surat</td>
-                <td width="10" style="border:1px solid black">ID</td>
-                <td width="13" style="border:1px solid black">NIP</td>
-                <td width="20" style="border:1px solid black">Nama</td>
-                <td width="20" style="border:1px solid black">Bagian</td>
-                <td width="20" style="border:1px solid black">Department</td>
-                <td width="20" style="border:1px solid black">Jabatan</td>
-                <td width="20" style="border:1px solid black">Kode Pasal</td>
-                <td width="20" style="border:1px solid black">Ket</td>
-                <td width="20" style="border:1px solid black">Pasal</td>
-                <td width="20" style="border:1px solid black">Uraian</td>
-                <td width="20" style="border:1px solid black">Awal Masa SP</td>
-                <td width="20" style="border:1px solid black">Akhir Masa SP</td>
-                <td width="10" style="border:1px solid black">SP Ke</td>
-                <td width="10" style="border:1px solid black">Terbilang</td>
-                <td width="18" style="border:1px solid black">Lamanya Masa SP</td>
+                <td width="10" >No Surat</td>
+                <td width="10" >Bulan</td>
+                <td width="35"  >Nomor Surat</td>
+                <td width="10" >ID</td>
+                <td width="13" >NIP</td>
+                <td width="20" >Nama</td>
+                <td width="20" >Bagian</td>
+                <td width="20" >Department</td>
+                <td width="20" >Jabatan</td>
+                <td width="20" >Kode Pasal</td>
+                <td width="20" >Ket</td>
+                <td width="20" >Pasal</td>
+                <td width="20" >Uraian</td>
+                <td width="20" >Awal Masa SP</td>
+                <td width="20" >Akhir Masa SP</td>
+                <td width="10" >SP Ke</td>
+                <td width="10" >Terbilang</td>
+                <td width="18" >Lamanya Masa SP</td>
             </tr>
             @foreach ($query as $enrollId => $data_sp)
             <tr>
@@ -73,8 +73,8 @@
                 <td style="">{{ $data_sp->deskripsi }}</td>
                 <td style="">{{$data_sp->pasal}}. {{ $data_sp->desc_surat_peringatan }}</td>
                 <td style="">{{ $data_sp->alasan_pelanggaran }}</td>
-                <td>{{ \Carbon\Carbon::parse($data_sp->tanggal_mulai)->format('d-m-Y') }}</td>
-                <td>{{ \Carbon\Carbon::parse($data_sp->tanggal_sampai)->format('d-m-Y') }}</td>
+                <td>{{ \Carbon\Carbon::parse($data_sp->tanggal_mulai)->translatedFormat('d F Y') }}</td>
+                <td>{{ \Carbon\Carbon::parse($data_sp->tanggal_sampai)->translatedFormat('d F Y') }}</td>
                 <td>
                     @if(strtolower($data_sp->surat_peringatan) == strtolower('sp_1'))
                         1

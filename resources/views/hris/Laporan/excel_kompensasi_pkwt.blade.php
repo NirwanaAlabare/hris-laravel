@@ -11,30 +11,30 @@
                 <td colspan="6"></td>
             </tr>
             <tr>
-                <td rowspan="2" width="18" style="border:1px solid black">Aktif/ Non Aktif</td>
-                <td rowspan="2" width="10" style="border:1px solid black">ID</td>
-                <td rowspan="2" width="13" style="border:1px solid black">NIP</td>
-                <td rowspan="2" width="20" style="border:1px solid black">Nama Karyawan</td>
-                <td rowspan="2" width="20" style="border:1px solid black">Jabatan</td>
-                <td rowspan="2" width="20" style="border:1px solid black">Bagian</td>
-                <td rowspan="2" width="20" style="border:1px solid black">Department</td>
-                <td rowspan="2" width="20" style="border:1px solid black">Tanggal Masuk</td>
-                <td rowspan="2" width="20" style="border:1px solid black">Tanggal Keluar</td>
-                <td colspan="3" style="border:1px solid black; text-align:center">Masa Kerja</td>
-                <td rowspan="2" width="20" style="border:1px solid black">PKS (Hari Mulai)</td>
-                <td rowspan="2" width="20" style="border:1px solid black">PKS Mulai</td>
-                <td rowspan="2" width="20" style="border:1px solid black">PKS (Hari Akhir)</td>
-                <td rowspan="2" width="20" style="border:1px solid black">PKS Akhir</td>
-                <td rowspan="2" width="20" style="border:1px solid black">PKS (Bulan)</td>
-                <td rowspan="2" width="20" style="border:1px solid black">Gapok</td>
-                <td rowspan="2" width="20" style="border:1px solid black">TMK</td>
-                <td rowspan="2" width="20" style="border:1px solid black">THP</td>
-                <td rowspan="2" width="20" style="border:1px solid black">Kompensasi</td>
+                <td rowspan="2" width="18">Aktif/ Non Aktif</td>
+                <td rowspan="2" width="10">ID</td>
+                <td rowspan="2" width="13">NIP</td>
+                <td rowspan="2" width="20">Nama Karyawan</td>
+                <td rowspan="2" width="20">Jabatan</td>
+                <td rowspan="2" width="20">Bagian</td>
+                <td rowspan="2" width="20">Department</td>
+                <td rowspan="2" width="20">Tanggal Masuk</td>
+                <td rowspan="2" width="20">Tanggal Keluar</td>
+                <td colspan="3" style="text-align:center">Masa Kerja</td>
+                <td rowspan="2" width="20">PKS (Hari Mulai)</td>
+                <td rowspan="2" width="20">PKS Mulai</td>
+                <td rowspan="2" width="20">PKS (Hari Akhir)</td>
+                <td rowspan="2" width="20">PKS Akhir</td>
+                <td rowspan="2" width="20">PKS (Bulan)</td>
+                <td rowspan="2" width="20">Gapok</td>
+                <td rowspan="2" width="20">TMK</td>
+                <td rowspan="2" width="20">THP</td>
+                <td rowspan="2" width="20">Kompensasi</td>
             </tr>
             <tr>
-                <td style="border:1px solid black; text-align:center">T</td>
-                <td style="border:1px solid black; text-align:center">B</td>
-                <td style="border:1px solid black; text-align:center">H</td>
+                <td style="text-align:center">T</td>
+                <td style="text-align:center">B</td>
+                <td style="text-align:center">H</td>
             </tr>
             @foreach ($query as $enrollId => $data_pkwt)
             @php
