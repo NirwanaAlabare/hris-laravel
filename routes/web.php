@@ -167,6 +167,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('hrd/download_excel_penilaian_kinerja_nonstaff',['as'=>'hris.hrd.download_excel_penilaian_kinerja_nonstaff','uses'=>'PenilaianKinerjaStaffController@download_excel_penilaian_kinerja_nonstaff']);
     Route::get('hrd/download_excel_rencana_adjustment_grade',['as'=>'hris.hrd.download_excel_rencana_adjustment_grade','uses'=>'PenilaianKinerjaStaffController@download_excel_rencana_adjustment_grade']);
     Route::get('hrd/download-excel-rekap-penilaian',['as'=>'hris.hrd.download_excel_rekap_penilaian','uses'=>'PenilaianKinerjaStaffController@download_excel_rekap_penilaian']);
+    Route::get('hrd/download-excel-rekap-pkwt',['as'=>'hris.hrd.download_excel_rekap_pkwt','uses'=>'HRDController@download_excel_rekap_pkwt']);
 
     Route::get('hrd/download-foto/{filename}', function ($filename) {
         $filePath = 'app/public/images/' . $filename; // NOTE: ini tidak ideal, solusi sementara

@@ -156,63 +156,97 @@
             <div class="card-body px-6 pt-2 pb-5">
                 <div class="row align-items-center">
 
-    <!-- Kolom Tombol Dropdown & PDF -->
-    <div class="col d-flex flex-wrap align-items-center">
+                    <!-- Kolom Tombol Dropdown & PDF -->
+                    <div class="col d-flex flex-wrap align-items-center">
 
-        <!-- Dropdown Aksi -->
-        <div class="dropdown mr-2 mb-2">
-            <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">
-                Aksi Kontrak & Penilaian
-            </button>
-            <div class="dropdown-menu" style="min-width: 250px;">
-                <button class="dropdown-item" onclick="export_excel_kontrak()">
-                    <i class="fa fa-file-excel-o"></i> Export Kontrak Kerja
-                </button>
-                <button class="dropdown-item" onclick="adjustment_sallary()">
-                    <i class="fa fa-file-excel-o"></i> Format Adjustment Salary
-                </button>
-                <button class="dropdown-item" onclick="export_excel_format_penilaian_nonstaff()">
-                    <i class="fa fa-file-excel-o"></i> Format Penilaian Non Staff
-                </button>
-                <button class="dropdown-item" data-toggle="modal" data-target="#import_adjustment_sallary">
-                    <i class="fa fa-file-excel-o"></i> Import Adjustment Salary
-                </button>
-                <button class="dropdown-item" data-toggle="modal" data-target="#import_kontrak">
-                    <i class="fa fa-file-excel-o"></i> Import Kontrak Kerja
-                </button>
-                <button class="dropdown-item" data-toggle="modal" data-target="#import_nilai_kinerja_staff">
-                    <i class="fa fa-file-excel-o"></i> Import Penilaian Kinerja
-                </button>
-                <button class="dropdown-item" onclick="export_rekap_penilaian()">
-                    <i class="fa fa-file-excel-o"></i> Rekap Penilaian
-                </button>
-            </div>
-        </div>
+                        <!-- Dropdown Aksi -->
+                        <div class="dropdown mr-2 mb-2">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                Aksi Kontrak & Penilaian
+                            </button>
+                            <div class="dropdown-menu" style="min-width: 250px;">
+                                <button class="dropdown-item" onclick="showPrintButton('btn_export_kontrak_show')">
+                                    <i class="fa fa-file-excel-o"></i> Export Kontrak Kerja
+                                </button>
+                                <button class="dropdown-item" onclick="showPrintButton('btn_export_kompensasi_pkwt_show')">
+                                    <i class="fa fa-file-excel-o"></i> Export Kompensasi PKWT
+                                </button>
+                                <button class="dropdown-item" onclick="showPrintButton('btn_adjustment_salary_show')">
+                                    <i class="fa fa-file-excel-o"></i> Format Adjustment Salary
+                                </button>
+                                <button class="dropdown-item" onclick="showPrintButton('btn_format_penilaian_nonstaff_show')">
+                                    <i class="fa fa-file-excel-o"></i> Format Penilaian Non Staff
+                                </button>
+                                <button class="dropdown-item" onclick="showPrintButton('btn_import_adjustment_sallary_show')">
+                                    <i class="fa fa-file-excel-o"></i> Import Adjustment Salary
+                                </button>
+                                <button class="dropdown-item" onclick="showPrintButton('btn_import_kontrak_show')">
+                                    <i class="fa fa-file-excel-o"></i> Import Kontrak Kerja
+                                </button>
+                                <button class="dropdown-item" onclick="showPrintButton('btn_import_nilai_kinerja_staff_show')">
+                                    <i class="fa fa-file-excel-o"></i> Import Penilaian Kinerja
+                                </button>
+                                <button class="dropdown-item" onclick="showPrintButton('btn_export_rekap_penilaian');">
+                                    <i class="fa fa-file-excel-o"></i> Rekap Penilaian
+                                </button>
+                            </div>
+                        </div>
 
-        <!-- Tombol Form Penilaian PDF -->
-        <button type="button" class="btn btn-primary mr-2 mb-2"
-                id="print_form_penilaian"
-                style="display: none;">
-            <i class="fa fa-file-pdf-o"></i> Form Penilaian (PDF)
-        </button>
+                        <!-- Tombol-tombol yang akan muncul sesuai pilihan -->
+                        <button type="button" class="btn btn-success mr-2 mb-2" onclick="export_excel_kontrak()" id="btn_export_kontrak_show" style="display: none;">
+                            <i class="fa fa-file-excel-o"></i> Export Kontrak Kerja
+                            <span id="spinner_export_kontrak_kerja" class="fa fa-spinner fa-spin ml-2 d-none"></span>
+                        </button>
+                        <button type="button" class="btn btn-success mr-2 mb-2" onclick="export_kompensasi_pkwt()" id="btn_export_kompensasi_pkwt_show" style="display: none;">
+                            <i class="fa fa-file-excel-o"></i> Export Kompensasi PKWT
+                            <span id="spinner_export_kompensasi_pkwt_show" class="fa fa-spinner fa-spin ml-2 d-none"></span>
+                        </button>
+                        <button type="button" class="btn btn-success mr-2 mb-2" onclick="adjustment_sallary()" id="btn_adjustment_salary_show" style="display: none;">
+                            <i class="fa fa-file-excel-o"></i> Format Adjustment Salary
+                            <span id="spinner_adjustment_salary" class="fa fa-spinner fa-spin ml-2 d-none"></span>
+                        </button>
+                        <button type="button" class="btn btn-success mr-2 mb-2" onclick="export_excel_format_penilaian_nonstaff()" id="btn_format_penilaian_nonstaff_show" style="display: none;">
+                            <i class="fa fa-file-excel-o"></i> Format Penilaian Non Staff
+                            <span id="spinner_format_penilaian_nonstaff" class="fa fa-spinner fa-spin ml-2 d-none"></span>
+                        </button>
+                        <button type="button" class="btn btn-success mr-2 mb-2" data-toggle="modal" data-target="#import_adjustment_sallary" id="btn_import_adjustment_sallary_show" style="display: none;">
+                            <i class="fa fa-file-excel-o"></i> Import Adjustment Salary
+                        </button>
+                        <button type="button" class="btn btn-success mr-2 mb-2" data-toggle="modal" data-target="#import_kontrak" id="btn_import_kontrak_show" style="display: none;">
+                            <i class="fa fa-file-excel-o"></i> Import Kontrak Kerja
+                        </button>
+                        <button type="button" class="btn btn-success mr-2 mb-2" data-toggle="modal" data-target="#import_nilai_kinerja_staff" id="btn_import_nilai_kinerja_staff_show" style="display: none;">
+                            <i class="fa fa-file-excel-o"></i> Import Penilaian Kinerja
+                        </button>
+                        <button type="button" class="btn btn-success mr-2 mb-2" id="btn_export_rekap_penilaian" onclick="export_rekap_penilaian()" style="display: none;">
+                            <i class="fa fa-file-excel-o"></i> Rekap Penilaian
+                            <span id="spinner_rekap_penilaian" class="fa fa-spinner fa-spin ml-2 d-none"></span>
+                        </button>
 
-        <!-- Tombol Print Employee -->
-        <button class="btn btn-danger mr-2 mb-2"
-                id="print_kontrak_kerja"
-                style="display: none;">
-            <i class="fa fa-file-pdf-o"></i> Print Checked Employee
-        </button>
 
-    </div>
+                        <!-- Tombol Form Penilaian PDF -->
+                        <button type="button" class="btn btn-primary mr-2 mb-2"
+                                id="print_form_penilaian"
+                                style="display: none;">
+                            <i class="fa fa-file-pdf-o"></i> Form Penilaian (PDF)
+                        </button>
 
-    <!-- Kolom Tombol Hapus Filter -->
-    <div class="col-auto mb-2">
-        <button id="btn-hapus-filter" class="btn btn-danger">
-            Hapus Filter <i class="fa fa-close" aria-hidden="true"></i>
-        </button>
-    </div>
+                        <!-- Tombol Print Employee -->
+                        <button class="btn btn-danger mr-2 mb-2"
+                                id="print_kontrak_kerja"
+                                style="display: none;">
+                            <i class="fa fa-file-pdf-o"></i> Print Checked Employee
+                        </button>
 
-</div>
+                    </div>
+
+                    <!-- Kolom Tombol Hapus Filter -->
+                    <div class="col-auto mb-2">
+                        <button id="btn-hapus-filter" class="btn btn-danger">
+                            Hapus Filter <i class="fa fa-close" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
 
                 <div class="row">
                     <div class="col">
@@ -939,6 +973,24 @@
 
 <script>
 
+    function showPrintButton(buttonId) {
+    // Sembunyikan semua tombol terlebih dahulu
+    $("#btn_export_kontrak_show").hide();
+    $("#btn_adjustment_salary_show").hide();
+    $("#btn_format_penilaian_nonstaff_show").hide();
+    $("#btn_import_adjustment_sallary_show").hide();
+    $("#btn_import_kontrak_show").hide();
+    $("#btn_import_nilai_kinerja_staff_show").hide();
+    $("#btn_export_rekap_penilaian").hide();
+    $("#btn_export_kompensasi_pkwt_show").hide();
+    // Tambahkan id tombol lainnya juga jika ada
+
+    // Tampilkan tombol sesuai pilihan
+    console.log('buttonId',buttonId);
+    $("#" + buttonId).show();
+}
+
+
     $('#daterange-btn1').daterangepicker({
         ranges: {
             'Hari ini': [moment(), moment()],
@@ -1323,8 +1375,7 @@ function updateRange(start, end) {
     });
 
     function export_excel_format_penilaian_nonstaff(){
-        $("#export_excel_format_penilaian_nonstaff").addClass("btn-loading");
-        $("#export_excel_format_penilaian_nonstaff").html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loading...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+        $("#spinner_format_penilaian_nonstaff").removeClass("d-none");
         $("#export_excel_format_penilaian_nonstaff").attr("disabled", true);
         let search_variable=$('#search_variable').val();
         var department_id = $('#selectDepartment').val();
@@ -1358,8 +1409,7 @@ function updateRange(start, end) {
             },
             success: function(response) {
                 {
-                    $('#export_excel_format_penilaian_nonstaff').removeClass("btn-loading");
-                    $("#export_excel_format_penilaian_nonstaff").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Format Penilaian Non Staff');
+                    $("#spinner_format_penilaian_nonstaff").addClass("d-none");
                     $("#export_excel_format_penilaian_nonstaff").attr("disabled", false);
                     var blob = new Blob([response]);
                     var link = document.createElement('a');
@@ -1370,16 +1420,14 @@ function updateRange(start, end) {
             },
             error: function(res){
                 swal("", "Export kontrak kerja gagal", "error");
-                $('#export_excel_format_penilaian_nonstaff').removeClass("btn-loading");
+                $("#spinner_format_penilaian_nonstaff").addClass("d-none");
                 $("#export_excel_format_penilaian_nonstaff").attr("disabled", false);
-                $("#export_excel_format_penilaian_nonstaff").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Format Penilaian Non Staff');
             }
         });
     }
     function adjustment_sallary(){
-        $("#adjustment_sallary").addClass("btn-loading");
-        $("#adjustment_sallary").html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loading...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
-        $("#adjustment_sallary").attr("disabled", true);
+        $("#spinner_adjustment_salary").removeClass("d-none");
+        $("#btn_adjustment_salary_show").attr("disabled", true);
         let search_variable=$('#search_variable').val();
         var department_id = $('#selectDepartment').val();
 
@@ -1412,9 +1460,8 @@ function updateRange(start, end) {
             },
             success: function(response) {
                 {
-                    $('#adjustment_sallary').removeClass("btn-loading");
-                    $("#adjustment_sallary").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Format Adjustment Sallary');
-                    $("#adjustment_sallary").attr("disabled", false);
+                    $("#spinner_adjustment_salary").addClass("d-none");
+                    $("#btn_adjustment_salary_show").attr("disabled", false);
                     var blob = new Blob([response]);
                     var link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
@@ -1424,16 +1471,14 @@ function updateRange(start, end) {
             },
             error: function(res){
                 swal("", "Export kontrak kerja gagal", "error");
-                $('#adjustment_sallary').removeClass("btn-loading");
-                $("#adjustment_sallary").attr("disabled", false);
-                $("#adjustment_sallary").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Format Adjustment Sallary');
+                $("#spinner_adjustment_salary").addClass("d-none");
+                $("#btn_adjustment_salary_show").attr("disabled", false);
             }
         });
     }
     function export_rekap_penilaian(){
-        $("#export_rekap_penilaian").addClass("btn-loading");
-        $("#export_rekap_penilaian").html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loading...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
-        $("#export_rekap_penilaian").attr("disabled", true);
+        $("#btn_export_rekap_penilaian").attr("disabled", true);
+        $("#spinner_rekap_penilaian").removeClass("d-none");
         let search_variable=$('#search_variable').val();
         var department_id = $('#selectDepartment').val();
         let status_staff = document.getElementById("status_staff").value;
@@ -1467,9 +1512,8 @@ function updateRange(start, end) {
             },
             success: function(response) {
                 {
-                    $('#export_rekap_penilaian').removeClass("btn-loading");
-                    $("#export_rekap_penilaian").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Rekap Penilaian');
-                    $("#export_rekap_penilaian").attr("disabled", false);
+                    $("#spinner_rekap_penilaian").addClass("d-none");
+                    $("#btn_export_rekap_penilaian").attr("disabled", false);
                     var blob = new Blob([response]);
                     var link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
@@ -1478,10 +1522,61 @@ function updateRange(start, end) {
                 }
             },
             error: function(res){
-                swal("", "Export kontrak kerja gagal", "error");
-                $('#export_rekap_penilaian').removeClass("btn-loading");
-                $("#export_rekap_penilaian").attr("disabled", false);
-                $("#export_rekap_penilaian").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Rekap Penilaian');
+                swal("", "Export Rekap Penilaian gagal", "error");
+                $("#spinner_rekap_penilaian").addClass("d-none");
+                $("#btn_export_rekap_penilaian").attr("disabled", false);
+            }
+        });
+    }
+    function export_kompensasi_pkwt(){
+        $("#btn_export_kompensasi_pkwt_show").attr("disabled", true);
+        $("#spinner_export_kompensasi_pkwt_show").removeClass("d-none");
+        let search_variable=$('#search_variable').val();
+        var department_id = $('#selectDepartment').val();
+        let status_staff = document.getElementById("status_staff").value;
+        let no_ktp = document.getElementById("searchNoKTP").value;
+        let enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+        let status_aktif = document.getElementById("status_aktif").value;
+        let status_kontrak = document.getElementById("status_kontrak").value;
+        var today=new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+        var hour = today.getHours();
+        var minutes = today.getMinutes();
+        var seconds = today.getSeconds();
+        today_date = yyyy + '-' + mm + '-' + dd + ' '+ hour +'.'+minutes+'.'+seconds;
+        $.ajax({
+            type: "get",
+            url: '{{ route('hris.hrd.download_excel_rekap_pkwt') }}',
+            data: {
+                search_variable: search_variable,
+                no_ktp: no_ktp,
+                enroll_id: enroll_id,
+                status_aktif: status_aktif,
+                status_staff: status_staff,
+                status_kontrak: status_kontrak,
+                department_name: department_id,
+                date_range: $('#daterange1').val(),
+            },
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function(response) {
+                {
+                    $("#spinner_export_kompensasi_pkwt_show").addClass("d-none");
+                    $("#btn_export_kompensasi_pkwt_show").attr("disabled", false);
+                    var blob = new Blob([response]);
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "Rekap Kompenasasi PKWT "+today_date+" "+Math.ceil(Math.random()*1000000)+".xlsx";
+                    link.click();
+                }
+            },
+            error: function(res){
+                swal("", "Export Kompensasi PKWT gagal", "error");
+                $("#spinner_export_kompensasi_pkwt_show").addClass("d-none");
+                $("#btn_export_kompensasi_pkwt_show").attr("disabled", false);
             }
         });
     }
@@ -1506,8 +1601,7 @@ function updateRange(start, end) {
         datatableFilter.innerHTML = `<span> Search : </span><input type="text" class="form-control form-control-sm" id="search_variable" onkeyup="dataTableReload()">`;
     });
     function export_excel_kontrak(){
-        $("#btn_export_excel_kontrak").addClass("btn-loading");
-        $("#btn_export_excel_kontrak").html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loading...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+        $("#spinner_export_kontrak_kerja").removeClass("d-none");
         $("#btn_export_excel_kontrak").attr("disabled", true);
         let search_variable=$('#search_variable').val();
         let no_ktp = document.getElementById("searchNoKTP").value;
@@ -1539,8 +1633,7 @@ function updateRange(start, end) {
             },
             success: function(response) {
                 {
-                    $('#btn_export_excel_kontrak').removeClass("btn-loading");
-                    $("#btn_export_excel_kontrak").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Kontrak Kerja');
+                    $("#spinner_export_kontrak_kerja").addClass("d-none");
                     $("#btn_export_excel_kontrak").attr("disabled", false);
                     var blob = new Blob([response]);
                     var link = document.createElement('a');
@@ -1551,9 +1644,8 @@ function updateRange(start, end) {
             },
             error: function(res){
                 swal("", "Export kontrak kerja gagal", "error");
-                $('#btn_export_excel_kontrak').removeClass("btn-loading");
+                $("#spinner_export_kontrak_kerja").addClass("d-none");
                 $("#btn_export_excel_kontrak").attr("disabled", false);
-                $("#btn_export_excel_kontrak").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Kontrak Kerja');
             }
         });
     }
@@ -2139,51 +2231,9 @@ function updateRange(start, end) {
             value: $('meta[name="csrf-token"]').attr('content')
         }).appendTo(form);
 
-        // Submit dan buka tab baru
         form.appendTo('body').submit().remove();
     });
 
-    // function actionCheckAllEmployee(element) {
-    //     var enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
-    //     var no_ktp = $('#searchNoKTP').val();
-    //     var status_kontrak = $('#status_kontrak').val();
-    //     var status_aktif = $('#status_aktif').val();
-    //     var status_staff = $('#status_staff').val();
-    //     var search_variable = $('#search_variable').val();
-    //     console.log('element', element.checked);
-    //     if (element.checked) {
-    //         $.ajax({
-    //             type:"POST",
-    //             url: "{{route('hris.hrd.ajax_getemployeeidbyfilter')}}",
-    //             dataType: 'json',
-    //             data: {
-    //                 enroll_id: enroll_id,
-    //                 no_ktp: no_ktp,
-    //                 status_kontrak: status_kontrak,
-    //                 status_aktif: status_aktif,
-    //                 status_staff: status_staff,
-    //                 search_variable: search_variable,
-    //                 date_range: $('#daterange1').val(),
-    //                 department_name: $('#selectDepartment').val(),
-    //             },
-    //             dataType: 'json',
-    //             headers: {
-    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-    //             success: function(res){
-    //                 if(res){
-    //                     checkedEmployeeArr = res;
-
-    //                     $('#datatable').DataTable().ajax.reload(null, false);
-    //                     document.getElementById("print_kontrak_kerja").style.visibility = "visible";
-    //                 }
-    //             }
-    //         });
-    //     } else {
-    //         checkedEmployeeArr = [];
-    //         document.getElementById("print_kontrak_kerja").style.visibility = "hidden";
-    //         $('#datatable').DataTable().ajax.reload(null, false);
-    //     }
-    // }
 
     function actionCheckAllEmployee(element) {
         var enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();

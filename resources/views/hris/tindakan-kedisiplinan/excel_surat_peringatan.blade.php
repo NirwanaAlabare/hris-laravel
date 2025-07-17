@@ -28,6 +28,7 @@
                 <td width="20" style="border:1px solid black">Akhir Masa SP</td>
                 <td width="10" style="border:1px solid black">SP Ke</td>
                 <td width="10" style="border:1px solid black">Terbilang</td>
+                <td width="18" style="border:1px solid black">Lamanya Masa SP</td>
             </tr>
             @foreach ($query as $enrollId => $data_sp)
             <tr>
@@ -39,6 +40,25 @@
                     9 => 'IX', 10 => 'X', 11 => 'XI', 12 => 'XII'
                 ];
                 $tahun = \Carbon\Carbon::parse($data_sp->tanggal_mulai)->year;
+
+                $start = \Carbon\Carbon::parse($data_sp->tanggal_mulai);
+                $end = \Carbon\Carbon::parse($data_sp->tanggal_sampai);
+
+                $diff = $start->diff($end);
+
+                $selisih_bulan = ($diff->y * 12) + $diff->m;
+
+                // Ambang hari untuk pembulatan (misalnya lewat 10 hari)
+                $ambang_hari = 10;
+
+                if ($diff->d >= $ambang_hari) {
+                    $selisih_bulan++;
+                }
+
+                // Minimal 1 bulan agar tidak kosong
+                if ($selisih_bulan < 1) {
+                    $selisih_bulan = 1;
+                }
             @endphp
                 <td style="">{{ $data_sp->no_form }}</td>
                 <td style="">{{ $bulanRomawi[$bulan] }}</td>
@@ -53,8 +73,8 @@
                 <td style="">{{ $data_sp->deskripsi }}</td>
                 <td style="">{{$data_sp->pasal}}. {{ $data_sp->desc_surat_peringatan }}</td>
                 <td style="">{{ $data_sp->alasan_pelanggaran }}</td>
-                <td>{{ \Carbon\Carbon::parse($data_sp->tanggal_mulai)->translatedFormat('d F Y') }}</td>
-                <td>{{ \Carbon\Carbon::parse($data_sp->tanggal_sampai)->translatedFormat('d F Y') }}</td>
+                <td>{{ \Carbon\Carbon::parse($data_sp->tanggal_mulai)->format('d-m-Y') }}</td>
+                <td>{{ \Carbon\Carbon::parse($data_sp->tanggal_sampai)->format('d-m-Y') }}</td>
                 <td>
                     @if(strtolower($data_sp->surat_peringatan) == strtolower('sp_1'))
                         1
@@ -76,6 +96,9 @@
                     @if(strtolower($data_sp->surat_peringatan) == strtolower('sp_3'))
                         Tiga
                     @endif
+                </td>
+                <td>
+                    {{ $selisih_bulan }} bulan
                 </td>
             </tr>
         @endforeach

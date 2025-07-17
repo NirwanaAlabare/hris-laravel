@@ -20,6 +20,7 @@ use App\Models\MasterDataAbsenKehadiran;
 use App\Models\DepartmentAll;
 use App\Exports\exportExcelKontrak;
 use App\Exports\exportExcelHadirLayoff;
+use App\Exports\exportExcelKompensasiPKWT;
 use App\Models\DasarPotBPJS;
 use DateTime;
 use Maatwebsite\Excel\Facades\Excel;
@@ -1263,6 +1264,102 @@ class HRDController extends AdminBaseController
         }
 
         return $jumlah_bulan;
+    }
+
+      public function download_excel_rekap_pkwt(){
+        $data = DB::select("
+        SELECT
+            a.status_staff,
+            a.enroll_id,
+            a.nik,
+            a.employee_name,
+            a.status_jabatan,
+            a.sub_dept_name,
+            a.department_name,
+            a.status_kontrak_tetap,
+            a.status_aktif,
+            a.join_date,
+            a.tanggal_resign,
+            a.nomor_ktp,
+            a.tempat_lahir,
+            a.alamat_rumah,
+            a.tanggal_lahir,
+            a.no_surat,
+            b.contract,
+            b.contract_end,
+            c.max_contract,
+            c.max_contract_end,
+            b.jumlah_bulan,
+            c.created_at
+        FROM employee_atribut a
+        LEFT JOIN employee_contract b ON a.enroll_id = b.enroll_id
+        LEFT JOIN (
+            SELECT
+                ec1.enroll_id,
+                ec1.jumlah_bulan,
+                ec1.created_at,
+                ec1.contract AS max_contract,
+                ec1.contract_end AS max_contract_end
+            FROM employee_contract ec1
+            INNER JOIN (
+                SELECT enroll_id, MAX(contract) AS max_contract
+                FROM employee_contract
+                GROUP BY enroll_id
+            ) ec2 ON ec1.enroll_id = ec2.enroll_id AND ec1.contract = ec2.max_contract
+        ) c ON a.enroll_id = c.enroll_id
+    ");
+    $tahun_umk = date('Y');
+    $tahun_umk = 'UMK '.$tahun_umk;
+
+    $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $tahun_umk)->first()->dasar_pot_bpjs_rupiah ?? 0;
+       foreach ($data as $item) {
+
+
+            $tanggal_masuk = $item->join_date;
+            $tanggal_akhir = $item->tanggal_resign ?? $item->contract_end;
+
+            $selisih_tahun = date_diff(date_create($tanggal_masuk), date_create($tanggal_akhir))->y;
+
+            if ($selisih_tahun < 1) {
+                $tunjangan = 0;
+            } elseif ($selisih_tahun < 3) {
+                $tunjangan = 2500;
+            } elseif ($selisih_tahun < 6) {
+                $tunjangan = 5000;
+            } elseif ($selisih_tahun < 9) {
+                $tunjangan = 7500;
+            } elseif ($selisih_tahun < 12) {
+                $tunjangan = 10000;
+            } else {
+                $tunjangan = 12500;
+            }
+
+            $endDate = Carbon::parse($tanggal_akhir);
+
+            // Jika hari Jumat, tambahkan 2 hari
+            if ($endDate->isFriday()) {
+                $endDate->addDays(2);
+            }
+
+            $contract_start = $item->contract ?? $item->join_date;   // fallback ke join_date jika contract null
+            $contract_end = $endDate ? $endDate->format('Y-m-d') : now()->format('Y-m-d');
+
+            $jumlah_bulan_manual = $this->hitungBulanKontrak($contract_start, $contract_end);
+
+            $total_penghasilan_bulanan = $umk + $tunjangan;
+            $jumlah_bulan = $item->jumlah_bulan ?? $jumlah_bulan_manual;
+
+            $total_kompensasi = $total_penghasilan_bulanan * ($jumlah_bulan / 12);
+
+            // Simpan atau tampilkan hasil
+            $item->umk = $umk;
+            $item->tunjangan = $tunjangan;
+            $item->total_penghasilan_bulanan = $total_penghasilan_bulanan;
+            $item->jumlah_bulan = $jumlah_bulan;
+            $item->total_kompensasi = $total_kompensasi;
+        }
+
+        return Excel::download(new exportExcelKompensasiPKWT($data), 'Rekap Surat Peringatan.xlsx');
     }
 
 
