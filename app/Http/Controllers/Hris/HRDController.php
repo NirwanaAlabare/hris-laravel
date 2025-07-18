@@ -149,7 +149,7 @@ class HRDController extends AdminBaseController
             if($tanggalSampai == $today->toDateString()){
                 if ($streak > 1 && $tanggal_akhir === $today->toDateString()) {
                     $kategori = match (true) {
-                        $streak >= 5 => 'SP-3',
+                        $streak >= 6 => 'RESIGNED',
                         $streak >= 3 => 'SP-2',
                         default => 'SP-1',
                     };
@@ -168,7 +168,7 @@ class HRDController extends AdminBaseController
             } else{
                  if ($streak > 1) {
                     $kategori = match (true) {
-                        $streak >= 5 => 'SP-3',
+                        $streak >= 6 => 'RESIGNED',
                         $streak >= 3 => 'SP-2',
                         default => 'SP-1',
                     };
@@ -255,33 +255,22 @@ class HRDController extends AdminBaseController
                 $isMangkir = $absen['status'] === 'M';
                 $isTidakHadirLainnya = in_array($absen['status'], ['CG','CM','CN','CT','DL','I','IG','IKS','IM','KA','KM','KR','L','LN','LP','NA','R','S','TL']);
                 $isHadir = !$isMangkir && !$isWeekend && !$isTidakHadirLainnya;
-
-                // if ($isMangkir) {
-                //     $streak++;
-                //     if (!$tanggal_akhir) {
-                //         $tanggal_akhir = $absen['tanggal'];
-                //     }
-                //     $tanggal_mulai = $absen['tanggal'];
-                // } elseif ($isHadir) {
-                //     break;
-                // }
                if ($isMangkir) {
                     $streak++;
 
                     if (!$tanggal_akhir) {
-                        $tanggal_akhir = $absen['tanggal'];  // Mangkir pertama ditemukan (tanggal terbaru)
+                        $tanggal_akhir = $absen['tanggal'];
                     }
 
-                    $tanggal_mulai = $absen['tanggal'];      // Mangkir terakhir dalam streak
+                    $tanggal_mulai = $absen['tanggal'];
                 } else {
-                    // Jika ketemu hadir atau izin lainnya, streak dianggap selesai.
                     break;
                 }
 
             }
-            if ($streak > 1) {
+            if ($streak > 0) {
                 $kategori = match (true) {
-                    $streak >= 5 => 'III',
+                    $streak >= 6 => 'RESIGNED',
                     $streak >= 3 => 'II',
                     default => 'I',
                 };
@@ -389,7 +378,7 @@ class HRDController extends AdminBaseController
               if($tanggalSampai == $today->toDateString()){
                 if ($streak > 1 && $tanggal_akhir === $today->toDateString()) {
                     $kategori = match (true) {
-                        $streak >= 5 => 'SP-3',
+                        $streak >= 6 => 'RESIGNED',
                         $streak >= 3 => 'SP-2',
                         default => 'SP-1',
                     };
@@ -412,7 +401,7 @@ class HRDController extends AdminBaseController
              } else {
                 if ($streak > 1) {
                     $kategori = match (true) {
-                        $streak >= 5 => 'SP-3',
+                        $streak >= 6 => 'RESIGNED',
                         $streak >= 3 => 'SP-2',
                         default => 'SP-1',
                     };
@@ -1723,7 +1712,7 @@ class HRDController extends AdminBaseController
             }
             if ($streak > 1) {
                 $kategori = match (true) {
-                    $streak >= 5 => 'III',
+                    $streak >= 6 => 'RESIGNED',
                     $streak >= 3 => 'II',
                     default => 'I',
                 };

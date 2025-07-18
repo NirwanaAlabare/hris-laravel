@@ -485,7 +485,7 @@
                     let btn_check = '';
                     if (row.kategori === 'SP-2') {
                         warnaBtn = 'btn-warning';
-                    } else if (row.kategori === 'SP-3') {
+                    } else if (row.kategori === 'RESIGNED') {
                         warnaBtn = 'btn-danger';
                     }
                     if(row.kategori != row.sp_kerja){
