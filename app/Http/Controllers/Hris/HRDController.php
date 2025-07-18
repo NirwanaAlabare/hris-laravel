@@ -24,6 +24,8 @@ use App\Exports\exportExcelKompensasiPKWT;
 use App\Models\DasarPotBPJS;
 use DateTime;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class HRDController extends AdminBaseController
 {
@@ -240,7 +242,6 @@ class HRDController extends AdminBaseController
                 'alamat_rumah' => $row->alamat_rumah
             ];
         }
-
         $hasil = [];
 
         foreach ($absenPerOrang as $enroll_id => $absens) {
@@ -255,15 +256,28 @@ class HRDController extends AdminBaseController
                 $isTidakHadirLainnya = in_array($absen['status'], ['CG','CM','CN','CT','DL','I','IG','IKS','IM','KA','KM','KR','L','LN','LP','NA','R','S','TL']);
                 $isHadir = !$isMangkir && !$isWeekend && !$isTidakHadirLainnya;
 
-                if ($isMangkir) {
+                // if ($isMangkir) {
+                //     $streak++;
+                //     if (!$tanggal_akhir) {
+                //         $tanggal_akhir = $absen['tanggal'];
+                //     }
+                //     $tanggal_mulai = $absen['tanggal'];
+                // } elseif ($isHadir) {
+                //     break;
+                // }
+               if ($isMangkir) {
                     $streak++;
+
                     if (!$tanggal_akhir) {
-                        $tanggal_akhir = $absen['tanggal'];
+                        $tanggal_akhir = $absen['tanggal'];  // Mangkir pertama ditemukan (tanggal terbaru)
                     }
-                    $tanggal_mulai = $absen['tanggal'];
-                } elseif ($isHadir) {
+
+                    $tanggal_mulai = $absen['tanggal'];      // Mangkir terakhir dalam streak
+                } else {
+                    // Jika ketemu hadir atau izin lainnya, streak dianggap selesai.
                     break;
                 }
+
             }
             if ($streak > 1) {
                 $kategori = match (true) {
@@ -1625,4 +1639,159 @@ class HRDController extends AdminBaseController
         $enroll_id_array=array_column($query,'enroll_id');
         return $enroll_id_array;
     }
+
+    // public function send_to_whatsapp_laporan_pemanggilan(Request $request){
+    //     $bulan = now()->format('n'); // 1–12
+    //     $tahun = now()->format('Y');
+
+    //     // Array bulan romawi
+    //     $bulanRomawi = [
+    //     1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV',
+    //     5 => 'V', 6 => 'VI', 7 => 'VII', 8 => 'VIII',
+    //     9 => 'IX', 10 => 'X', 11 => 'XI', 12 => 'XII'
+    //     ];
+
+    //     // Format nomor form dinamis
+    //     $no_form_url=request()->no_form;
+    //     $no_form = $no_form_url.'/HRD-NAC/EXT/' . $bulanRomawi[$bulan] . '/' . $tahun;
+
+    //     $enroll_id=request()->enroll_id;
+    //     $reason=request()->reason;
+    //     $fileName="Surat Pemanggilan Karyawan ".request()->enroll_id.'_'.date('His');
+    //     $date_now = Carbon::parse(date('Y-m-d'))->translatedFormat('d F Y');
+
+    //     $date = date('Y-m-d');
+
+    //     $today = Carbon::today();
+    //     $maxDaysToCheck = 30; // maksimal cek 30 hari ke belakang
+    //     $startDate = $today->copy()->subDays($maxDaysToCheck)->toDateString();
+    //     $endDate = $today->toDateString();
+
+    //     // Ambil semua data karyawan aktif dengan status absen (M dan lainnya) dalam rentang tanggal tersebut
+    //     $data = DB::select(DB::raw("
+    //         SELECT mda.tanggal_berjalan, mda.enroll_id, ea.employee_name, ea.sub_dept_name, mda.status_absen, ea.department_name, ea.nik, ea.status_jabatan, ea.alamat_rumah, mda.kode_hari
+    //         FROM master_data_absen_kehadiran mda
+    //         JOIN employee_atribut ea ON mda.enroll_id = ea.enroll_id
+    //         WHERE mda.tanggal_berjalan <= '$endDate'
+    //         AND ea.status_aktif = 'Aktif'
+    //         AND mda.enroll_id = '$enroll_id'
+    //         ORDER BY mda.enroll_id, mda.tanggal_berjalan DESC
+    //     "));
+
+    //     $absenPerOrang = [];
+    //     foreach ($data as $row) {
+    //         $absenPerOrang[$row->enroll_id][] = [
+    //             'tanggal' => $row->tanggal_berjalan,
+    //             'status' => $row->status_absen,
+    //             'sub_dept_name' => $row->sub_dept_name,
+    //             'kode_hari' => $row->kode_hari,
+    //             'nama' => $row->employee_name,
+    //             'department_name' => $row->department_name,
+    //             'nik' => $row->nik,
+    //             'status_jabatan' => $row->status_jabatan,
+    //             'alamat_rumah' => $row->alamat_rumah
+    //         ];
+    //     }
+
+    //     $hasil = [];
+
+    //     foreach ($absenPerOrang as $enroll_id => $absens) {
+    //         $streak = 0;
+    //         $tanggal_akhir = null;
+    //         $tanggal_mulai = null;
+    //         $nama = $absens[0]['nama'] ?? '-';
+
+    //         foreach ($absens as $absen) {
+    //             $isWeekend = in_array($absen['kode_hari'], [5, 6]);
+    //             $isMangkir = $absen['status'] === 'M';
+    //             $isTidakHadirLainnya = in_array($absen['status'], ['CG','CM','CN','CT','DL','I','IG','IKS','IM','KA','KM','KR','L','LN','LP','NA','R','S','TL']);
+    //             $isHadir = !$isMangkir && !$isWeekend && !$isTidakHadirLainnya;
+
+    //             if ($isMangkir) {
+    //                 $streak++;
+
+    //                 if (!$tanggal_akhir) {
+    //                     $tanggal_akhir = $absen['tanggal'];  // Mangkir pertama ditemukan (tanggal terbaru)
+    //                 }
+
+    //                 $tanggal_mulai = $absen['tanggal'];      // Mangkir terakhir dalam streak
+    //             } else {
+    //                 // Jika ketemu hadir atau izin lainnya, streak dianggap selesai.
+    //                 break;
+    //             }
+    //         }
+    //         if ($streak > 1) {
+    //             $kategori = match (true) {
+    //                 $streak >= 5 => 'III',
+    //                 $streak >= 3 => 'II',
+    //                 default => 'I',
+    //             };
+
+    //             $hasil[] = [
+    //                 'enroll_id' => $enroll_id,
+    //                 'employee_name' => $nama,
+    //                 'jumlah_hari_mangkir' => $streak,
+    //                 'mulai' => Carbon::parse($tanggal_mulai)->translatedFormat('d F Y'),
+    //                 'selesai' => Carbon::parse($tanggal_akhir)->translatedFormat('d F Y'),
+    //                 'kategori' => $kategori,
+    //                 'department_name' => $absens[0]['department_name'] ?? '-',
+    //                 'nik' => $absens[0]['nik'] ?? '-',
+    //                 'status_jabatan' => $absens[0]['status_jabatan'] ?? '-',
+    //                 'alamat_rumah' => $absens[0]['alamat_rumah'] ?? '-',
+    //             ];
+    //         }
+    //     }
+
+    //     $pdfContent = PDF::loadView('hris.sp_kehadiran_karyawan', [
+    //             "data" => $hasil[0],
+    //             "no_form" => $no_form
+    //         ])
+    //         ->setPaper('letter', 'portrait')
+    //         ->output(); // <-- Output isi file (bukan stream)
+
+    //     $fileName = $fileName . '.pdf';
+
+    //     // Simpan sementara di storage Laravel
+    //     Storage::put('public/' . $fileName, $pdfContent);
+    //     $caption = "*Kepada Yth. Sdr/i. *,\n\n".
+    //        "Nama : *{$absenPerOrang[$enroll_id][0]['nama']}*\n".
+    //        "NIP : *{$absenPerOrang[$enroll_id][0]['nik']}*\n".
+    //        "Jabatan : *{$absenPerOrang[$enroll_id][0]['status_jabatan']}*\n".
+    //        "Bagian : *{$absenPerOrang[$enroll_id][0]['sub_dept_name']}*\n".
+    //        "Department : *{$absenPerOrang[$enroll_id][0]['department_name']}*\n\n".
+    //        "Dengan hormat,".
+    //        "Sehubungan dengan hasil pemantauan absensi dan evaluasi internal perusahaan, kami mencatat adanya ketidakhadiran Saudara/i dalam beberapa waktu terakhir tanpa keterangan yang dapat kami verifikasi secara resmi.\n\n".
+    //        "Oleh karena itu, melalui surat ini kami mengundang Saudara/i untuk hadir dalam rangka klarifikasi atas ketidakhadiran tersebut. Surat panggilan resmi telah kami lampirkan sebagai bagian dari prosedur penanganan ketidakhadiran yang berlaku di perusahaan.\n\n".
+    //        "Dimohon kepada Saudara/i untuk membaca dan mematuhi isi surat panggilan tersebut dengan penuh tanggung jawab. Kehadiran dan penjelasan Saudara/i sangat penting sebagai bagian dari proses klarifikasi dan penegakan kedisiplinan kerja.\n\n".
+    //        "Atas perhatian dan kerja samanya, kami sampaikan terima kasih.\n\n".
+    //        "Hormat kami,\n".
+    //        "PT. Nirwana Alabare Garment\n".
+    //        "HR & GA Department";
+
+
+    //     // Kirim ke API WhatsApp
+    //     $response = Http::withHeaders([
+    //                 'Authorization' => 'Bearer SECRET_API_KEY_123',
+    //             ])->attach(
+    //             'file',
+    //             Storage::get('public/' . $fileName),
+    //             $fileName
+    //         )->post('http://10.10.5.111:3000/send-document', [
+    //             // 'nomor' => '6282290000094', // Ganti sesuai kebutuhan
+    //             'nomor' => '6285795555385', // Ganti sesuai kebutuhan
+    //             'caption' => $caption
+    //         ]);
+
+    //     // Hapus file setelah dikirim (opsional)
+    //     Storage::delete('public/' . $fileName);
+
+    //     // Kembalikan respon dari API
+    //     return $response->json();
+    //     // return response()->json([
+    //     //     'status' => false,
+    //     //     'message' => 'Sedang dalam perbaikan.',
+    //     //     'error'   => 'Sedang dalam perbaikan.'
+    //     // ]);
+
+    // }
 }
