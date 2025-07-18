@@ -124,8 +124,17 @@ Route::group(['middleware' => ['auth.admin', 'lock','role:all,attendance_payroll
     Route::get('departmentall/index',['as'=>'hris.departmentall.index','uses'=>'DepartmentAllController@index']);
     Route::get('/cuti_karyawan', ['as' => 'cuti_karyawan.index','uses' => 'MasterData\CutiKaryawanController@index']);
 
+});
 
-
+Route::group(['middleware' => ['auth.admin', 'lock','role:all'], 'prefix' => 'hris','namespace' => 'Hris'], function()
+{
+    Route::get('/dokumen_legal', ['as' => 'dokumen_legal.index','uses' => 'LicensePermit\LicensePermitController@index']);
+    Route::post('/dokumen_legal/store', ['as' => 'dokumen_legal.store','uses' => 'LicensePermit\LicensePermitController@store']);
+    Route::get('/get-dokumen-legal', ['as' => 'dokumen_legal.get_dokumen_legal','uses' => 'LicensePermit\LicensePermitController@get_dokumen_legal']);
+    Route::delete('/delete-dokumen-legal/{id}', ['as' => 'dokumen_legal.delete_dokumen_legal','uses' => 'LicensePermit\LicensePermitController@delete_dokumen_legal']);
+    Route::get('/get-dokumen-legal/{id}', ['as' => 'dokumen_legal.get_edit_dokumen_legal','uses' => 'LicensePermit\LicensePermitController@getDokumenLegal']);
+    Route::post('/update-dokumen-legal', ['as' => 'dokumen_legal.update_dokumen_legal','uses' => 'LicensePermit\LicensePermitController@updateDokumenLegal']);
+    Route::get('/download_watermark/{id}', ['as' => 'dokumen_legal.download_watermark','uses' => 'LicensePermit\LicensePermitController@download_watermark']);
 });
 
 // KEPERSONALIAAN / PENILAIAN KINERJA
@@ -287,14 +296,6 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('/bazzar/export_voucher', ['as' => 'bazzar.export_voucher','uses' => 'Bazzar\BazzarController@export_voucher']);
 
 
-    // LICENSE PERMIT
-    Route::get('/dokumen_legal', ['as' => 'dokumen_legal.index','uses' => 'LicensePermit\LicensePermitController@index']);
-    Route::post('/dokumen_legal/store', ['as' => 'dokumen_legal.store','uses' => 'LicensePermit\LicensePermitController@store']);
-    Route::get('/get-dokumen-legal', ['as' => 'dokumen_legal.get_dokumen_legal','uses' => 'LicensePermit\LicensePermitController@get_dokumen_legal']);
-    Route::delete('/delete-dokumen-legal/{id}', ['as' => 'dokumen_legal.delete_dokumen_legal','uses' => 'LicensePermit\LicensePermitController@delete_dokumen_legal']);
-    Route::get('/get-dokumen-legal/{id}', ['as' => 'dokumen_legal.get_edit_dokumen_legal','uses' => 'LicensePermit\LicensePermitController@getDokumenLegal']);
-    Route::post('/update-dokumen-legal', ['as' => 'dokumen_legal.update_dokumen_legal','uses' => 'LicensePermit\LicensePermitController@updateDokumenLegal']);
-    Route::get('/download_watermark/{id}', ['as' => 'dokumen_legal.download_watermark','uses' => 'LicensePermit\LicensePermitController@download_watermark']);
 
     // ENTERTAINT
     Route::get('/entertaint-tamu', ['as' => 'entertaint_tamu.index','uses' => 'Entertaint\EntertaintController@index']);
