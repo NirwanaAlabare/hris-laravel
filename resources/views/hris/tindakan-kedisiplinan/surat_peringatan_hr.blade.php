@@ -292,6 +292,13 @@ h1 {
                                                 <a class="nav-link card-title m-0" style="border: 1px solid #d8d4dc" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
                                             </div>
                                             <div class="col-auto">
+                                                <select id="rentan_posisi" class="form-control">
+                                                    <option value=''>-- PILIH KONDISI --</option>
+                                                    <option value='dalam_rentan_waktu'>DALAM MASA SP</option>
+                                                    <option value='selesai_rentan_waktu'>SELESAI MASA SP</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-auto">
                                                 <select id="status_sp" class="form-control">
                                                     <option value=''>-- PILIH STATUS --</option>
                                                     <option value='sp_1'>SP 1</option>
@@ -852,34 +859,11 @@ h1 {
 
     <script>
 
-        $(document).ready(function() {
-            var start = moment();
-            var end = moment();
-            var htmlDateRange = '<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>'
-            $('#daterange-btn1').html(htmlDateRange);
-            var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
-            $('#daterange1').val(daterange1);
-        });
 
-         $('#daterange-btn1').daterangepicker({
-            ranges: {
-                'Hari ini': [moment(), moment()],
-                'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                '7 Hari Kemarin': [moment().subtract(6, 'days'), moment()],
-                '30 Hari Kemarin': [moment().subtract(29, 'days'), moment()],
-                'Bulan Sekarang': [moment().startOf('month'), moment().endOf('month')],
-                'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-            },
-            startDate: moment().subtract(29, 'days'),
-            endDate: moment()
-        }, function(start, end) {
-            $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>');
-            var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
-            $('#daterange1').val(daterange1);
-        });
 
         function ExportSuratPeringatan() {
             var status_sp = $('#status_sp').val();
+            var rentan_posisi = $('#rentan_posisi').val();
             var daterange1 = $('#daterange1').val();
             $.ajax({
                 type: "get",
@@ -887,6 +871,7 @@ h1 {
                 data: {
                     daterange1: daterange1,
                     status_sp: status_sp,
+                    rentan_posisi: rentan_posisi,
                 },
                 xhrFields: {
                     responseType: 'blob'
@@ -1467,22 +1452,45 @@ h1 {
             }
             return tindakanName;
         }
+
         $(document).ready(function() {
             var start = moment().subtract(29, 'days');
             var end = moment();
             var htmlDateRange = '<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>'
             var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
             var dateUpdateKehadiran = end.format("DD-MM-YYYY");
-
             $('#daterange-btn1').html(htmlDateRange);
             $('#daterange1').val(daterange1);
-            $('#daterange2').val(daterange1);
+
+
+            $('#daterange-btn1').daterangepicker({
+                ranges: {
+                    'Hari ini': [moment(), moment()],
+                    'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    '7 Hari Kemarin': [moment().subtract(6, 'days'), moment()],
+                    '30 Hari Kemarin': [moment().subtract(29, 'days'), moment()],
+                    'Bulan Sekarang': [moment().startOf('month'), moment().endOf('month')],
+                    'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+                startDate: moment().subtract(29, 'days'),
+                endDate: moment()
+            }, function(start, end) {
+                $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>');
+                var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
+                $('#daterange1').val(daterange1);
+                tableWaiting.ajax.reload();
+            });
 
             var tableWaiting = $('#datatable-ajax-crud-waiting').DataTable({
                 ajax: {
                     url: '{{ route('tindakan_kedisiplinan.get_surat_peringatan') }}',
                     type: "POST",
-                    data: { status_pengajuan: 'pending' },
+                     data: function(d) {
+                        d.status_pengajuan = 'pending';
+                        d.surat_peringatan = $('#status_sp').val(); // tambahkan status_sp
+                        d.rentan_posisi = $('#rentan_posisi').val(); // tambahkan status_sp
+                        d.daterange1 = $('#daterange1').val();
+                    },
                     onSuccess: function(data) {
                         console.log("Data loaded successfully", data);
                     },
@@ -1533,6 +1541,12 @@ h1 {
                         }
                     }
                 ],
+            });
+            $('#status_sp').on('change', function() {
+                tableWaiting.ajax.reload();
+            });
+            $('#rentan_posisi').on('change', function() {
+                tableWaiting.ajax.reload();
             });
 
 
