@@ -127,7 +127,7 @@
         </tr>
         <tr>
             <td></td>
-            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;text-align:justify" colspan="4">Majalaya, {{Carbon\Carbon::parse($created_date)->translatedFormat('d F Y')}}</td>
+            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;text-align:justify" colspan="4">Bandung, {{Carbon\Carbon::parse($created_date)->translatedFormat('d F Y')}}</td>
             <td></td>
         </tr>
         <tr>
