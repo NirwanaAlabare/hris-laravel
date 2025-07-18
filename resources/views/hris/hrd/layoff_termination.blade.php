@@ -164,9 +164,15 @@
                                     <small class="error-message text-danger"></small>
                                 </div>
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-5">
                             </div>
-                                <div class="col-md-4">
+                             <div class="col-md-3">
+                                <button class="btn btn-success w-100" id="btn-send-to-whatsapp" data-toggle="tooltip" title="Kirim laporan ke whatsapp" style="margin-top: 10px;">
+                                    <i class="fa fa-send" aria-hidden="true"></i>
+                                    whatsapp
+                                </button>
+                            </div>
+                            <div class="col-md-4">
                                 <button class="btn btn-primary w-100" id="btn-update-form" data-toggle="tooltip" title="Simpan & Print" style="margin-top: 10px;">
                                     <i class="fa fa-save" aria-hidden="true"></i>
                                     Simpan & Print
@@ -254,6 +260,46 @@
             return;
         }
         export_sp_kerja($('#enroll_id_layoff').val(), edit_no_form);
+    });
+    $('body').on('click', '#btn-send-to-whatsapp', function (event) {
+        var edit_no_form = $('#edit_no_form').val();
+        if(edit_no_form === '') {
+            iziToast.error({
+                title: 'Error',
+                message: 'Nomor Form tidak boleh kosong',
+                position: 'topRight'
+            });
+            return;
+        }
+        var enroll_id = $('#enroll_id_layoff').val();
+        $("#btn-send-to-whatsapp").addClass("btn-loading");
+        $("#btn-send-to-whatsapp").attr("disabled", true);
+        $.ajax({
+            type: "post",
+            url: '{{ route('hris.hrd.send_to_whatsapp_laporan_pemanggilan') }}',
+            data: {
+                enroll_id: enroll_id,
+                no_form: edit_no_form,
+            },
+            success: function(response) {
+                {
+                    if(response.status){
+                        swal("WhatsApp", "Berhasil kirim ke whatsapp karyawan.", "success");
+                        $('#btn-send-to-whatsapp').removeClass("btn-loading");
+                        $("#btn-send-to-whatsapp").attr("disabled", false);
+                    }else{
+                        swal("WhatsApp", "Gagal kirim ke whatsapp karyawan.", "error");
+                        $('#btn-send-to-whatsapp').removeClass("btn-loading");
+                        $("#btn-send-to-whatsapp").attr("disabled", false);
+                    }
+                }
+            },
+            error: function(res){
+                swal("WhatsApp", "Gagal kirim ke whatsapp karyawan.", "error");
+                $('#btn-send-to-whatsapp').removeClass("btn-loading");
+                $("#btn-send-to-whatsapp").attr("disabled", false);
+            }
+        });
     });
 
     function openModalNomorForm(id) {
