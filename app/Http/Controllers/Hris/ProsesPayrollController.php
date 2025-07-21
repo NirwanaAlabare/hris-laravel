@@ -3789,7 +3789,6 @@ class ProsesPayrollController extends AdminBaseController
                 ];
             }
 
-
             $records_payroll=[];
             foreach ($data_payroll as $k => $v) {
                // $count=$security->where('enroll_id',$v['enroll_id'])->count();
@@ -3815,6 +3814,14 @@ class ProsesPayrollController extends AdminBaseController
                         $total_upah_thp_rupiah=ceil($total_upah_thp_rupiah / 1000) * 1000;
                     }
                 }
+
+                $startDate = Carbon::createFromFormat("Y-m-d", $v['join_date']);
+                $today = Carbon::today();
+                $diff = $startDate->diff($today);
+                $years = $diff->y;
+                $months = $diff->m;
+                $days = $diff->d;
+
                 $records_payroll=[
                     'kode_rekap_payroll'=>$v['kode_rekap_payroll'],
                     'periode_kehadiran'=>$v['periode_kehadiran'],
@@ -3922,7 +3929,10 @@ class ProsesPayrollController extends AdminBaseController
                     'npwp'=>$v['npwp'],
                     'operator'=>$v['operator'],
                     'sub_dept_id'=>$v['sub_dept_id'],
-                    'total_upah_thp_rupiah_employee'=>ceil($total_upah_thp_rupiah / 100) * 100
+                    'total_upah_thp_rupiah_employee'=>ceil($total_upah_thp_rupiah / 100) * 100,
+                    'year'=>$years,
+                    'month'=>$months,
+                    'day'=>$days
                 ];
 
                 $count=RekapPerhitunganPayroll::where( 'kode_rekap_payroll',$v['kode_rekap_payroll'])->count();
@@ -3952,10 +3962,26 @@ class ProsesPayrollController extends AdminBaseController
                 RekapPerhitunganPayroll::where( 'kode_rekap_payroll',$value->kode_rekap_payroll)->update($data);
             }
 
+
             //rekap jurnal
             $departement=DepartmentAll::whereIn('site_nirwana_id',['NAG','NAK'])->get();
             $data_potongan = $this->potongan($periode_payroll);
             $data_koreksi = $this->koreksi($periode_payroll);
+
+            $payroll_all = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year)
+            ->where('periode_bulan_payroll', $month)
+            ->where('periode_umk', null)
+            ->where('kategori_karyawan', 'NON STAFF')
+            ->whereHas('employee_atribut', function ($query) use ($tanggal_awal) {
+                $query->whereNull('tanggal_resign')
+                    ->orWhere('tanggal_resign', '>', $tanggal_awal);
+            })
+            ->get();
+
+            $payroll_grouped = $payroll_all->groupBy('sub_dept_id');
+
+
+
             foreach ($departement as $key => $value) {
                 $potongan_bpjs_tk=$data_potongan->where('sub_dept_id',$value->sub_dept_id)->where('status_jabatan','NON STAFF')->where('jenis_potongan','1')->sum('jumlah_rp_potongan');
                 $potongan_bpjs_ks=$data_potongan->where('sub_dept_id',$value->sub_dept_id)->where('status_jabatan','NON STAFF')->where('jenis_potongan','2')->sum('jumlah_rp_potongan');
@@ -3964,12 +3990,16 @@ class ProsesPayrollController extends AdminBaseController
                 $potongan_lain=$data_potongan->where('sub_dept_id',$value->sub_dept_id)->where('status_jabatan','NON STAFF')->where('jenis_potongan','5')->sum('jumlah_rp_potongan');
                 $koreksi_upah=$data_koreksi->where('sub_dept_id',$value->sub_dept_id)->where('status_jabatan','NON STAFF')->where('jenis_koreksi','1')->sum('jumlah_rp_potongan');
                 $koreksi_insentif=$data_koreksi->where('sub_dept_id',$value->sub_dept_id)->where('status_jabatan','NON STAFF')->where('jenis_koreksi','2')->sum('jumlah_rp_potongan');
-                $payroll=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->where('periode_umk',null)
-                    ->where('kategori_karyawan','NON STAFF')->where('sub_dept_id',$value->sub_dept_id)
-                    ->whereHas('employee_atribut',function($query)use($tanggal_awal){
-                        $query->where('tanggal_resign',null)
-                        ->orWhere('tanggal_resign','>',$tanggal_awal);
-                    })->get();
+
+                $payroll = $payroll_grouped->get($value->sub_dept_id, collect());
+
+                // $payroll=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->where('periode_umk',null)
+                // ->where('kategori_karyawan','NON STAFF')->where('sub_dept_id',$value->sub_dept_id)
+                // ->whereHas('employee_atribut',function($query)use($tanggal_awal){
+                //     $query->where('tanggal_resign',null)
+                //     ->orWhere('tanggal_resign','>',$tanggal_awal);
+                // })->get();
+
                 $rp_cuti_tahuna=0;
                 $potongan_kehadiran_rupiah= $payroll->sum('potongan_kehadiran_rupiah');
                 $rp_pot_jam=$payroll->sum('potongan_iks_rupiah')+$payroll->sum('potongan_dtpc_rupiah');

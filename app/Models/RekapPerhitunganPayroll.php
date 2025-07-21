@@ -104,7 +104,10 @@ class RekapPerhitunganPayroll extends \Eloquent
         'kehadiran_m_estimasi',
         'sub_dept_id',
         'pembulatan',
-        'total_upah_thp_rupiah_employee'
+        'total_upah_thp_rupiah_employee',
+        'year',
+        'month',
+        'day'
     ];
     protected $guarded = ['kode_rekap_payroll'];
 
@@ -210,7 +213,10 @@ class RekapPerhitunganPayroll extends \Eloquent
         'kehadiran_m_estimasi',
         'sub_dept_id',
         'pembulatan',
-        'total_upah_thp_rupiah_employee'
+        'total_upah_thp_rupiah_employee',
+        'year',
+        'month',
+        'day'
     ];
 
     protected $appends = [];

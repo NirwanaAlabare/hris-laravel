@@ -188,7 +188,10 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                     status_kawin,
                     potongan_dtpc_rupiah,
                     created_at,
-                    updated_at
+                    updated_at,
+                    year,
+                    month,
+                    day
 
                 ')
                 ->whereRaw('
@@ -341,24 +344,29 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         // $years = $diff->y;
         // $months = $diff->m;
         // $days = $diff->d;
-        $explodePeriodePayroll = explode(" s/d ", $periode_kehadiran);
-        $startPeriode = Carbon::parse($explodePeriodePayroll[0]); // 2025-02-26
-        $endPeriode = Carbon::parse($explodePeriodePayroll[1]);   // 2025-03-25
+        // $explodePeriodePayroll = explode(" s/d ", $periode_kehadiran);
+        // $startPeriode = Carbon::parse($explodePeriodePayroll[0]); // 2025-02-26
+        // $endPeriode = Carbon::parse($explodePeriodePayroll[1]);   // 2025-03-25
 
-        // Ubah join_date menjadi objek Carbon
-        $startDate = Carbon::createFromFormat("d-m-Y", $join_date);
-        $today = Carbon::today();
-        if ($startDate->lessThan($startPeriode)) {
-            // Jika join_date sebelum periode awal, hitung ke startPeriode
-            $diff = $startDate->diff($startPeriode);
-        } else {
-            // Jika join_date dalam rentang periode, hitung ke endPeriode
-            $diff = $startDate->diff($today);
-        }
+        // // Ubah join_date menjadi objek Carbon
+        // $startDate = Carbon::createFromFormat("d-m-Y", $join_date);
+        // $today = Carbon::today();
+        // if ($startDate->lessThan($startPeriode)) {
+        //     // Jika join_date sebelum periode awal, hitung ke endPeriode
+        //     $diff = $startDate->diff($startPeriode);
+        // } else {
+        //     // Jika join_date dalam rentang periode, hitung ke endPeriode
+        //     $diff = $startDate->diff($today);
+        // }
 
-        $years = $diff->y;
-        $months = $diff->m;
-        $days = $diff->d + 1;
+        // $years = $diff->y;
+        // $months = $diff->m;
+        // $days = $diff->d + 1;
+
+        if($Data->year == 0){ $years = '0';} else { $years = $Data->year; }
+        if($Data->month == 0){ $months = '0';} else { $months = $Data->month; }
+        if($Data->day == 0){ $days = '0';} else { $days = $Data->day; }
+
         $kosong=" ";
         $nol='0';
         $pot_hari_kerja=$kehadiran_itb+$kehadiran_m+$kehadiran_r;
