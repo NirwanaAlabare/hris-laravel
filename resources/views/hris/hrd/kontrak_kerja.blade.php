@@ -2309,9 +2309,9 @@ function updateRange(start, end) {
         datatable.ajax.reload();
     }
     function renderDateTimeCalendar(data) {
-    const parts = data.split('-');
-    return `${parts[2]}-${parts[1]}-${parts[0]}`; // YYYY-MM-DD
-}
+        const parts = data.split('-');
+        return `${parts[2]}-${parts[1]}-${parts[0]}`; // YYYY-MM-DD
+    }
 
 
     function getDetail(enroll_id){

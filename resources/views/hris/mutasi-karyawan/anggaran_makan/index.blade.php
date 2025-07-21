@@ -58,7 +58,7 @@
                 <div class="col">
                     <div class="row">
                         <div class="col-4 text-right">Tanggal :</div>
-                        <div class="col pl-0"><input type="date" class="form-control form-control-sm " id="tgl-awal" name="tgl_awal" oninput="dataTableReload()" onchange="dataTableReload()" value="{{ date('Y-m-d') }}" style="background-color:white"></div>
+                        <div class="col pl-0"><input type="text" class="form-control form-control-sm fc-datepicker" id="tgl-awal" name="tgl_awal" oninput="dataTableReload()" onchange="dataTableReload()" value="{{ date('d-m-Y') }}" style="background-color:white"></div>
                     </div>
                 </div>
             </div>
@@ -92,7 +92,7 @@
                             <h6 class="modal-title fs-1">TANGGAL</h6>
                         </div>
                         <div class="col-8">
-                            <input type="date" class="form-control" id="tanggal">
+                            <input type="text" class="form-control fc-datepicker" id="tanggal" value="{{ date('d-m-Y') }}">
                             <h6 style="margin-bottom:0"></h6>
                         </div>
                     </div>
@@ -161,7 +161,7 @@
                             <h6 class="modal-title fs-1">TANGGAL</h6>
                         </div>
                         <div class="col-8">
-                            <input type="date" class="form-control" id="edit_tanggal" value="{{ date('Y-m-d') }}">
+                            <input type="text" class="form-control fc-datepicker" id="edit_tanggal" value="{{ date('Y-m-d') }}">
                         </div>
                     </div>
                     <div class="row py-3 px-2">
@@ -257,7 +257,17 @@
     <script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
     <script src="{{URL::asset('assets/js/iziToast.min.js')}}"></script>
     <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}"></script>
+
+     <!-- Datepicker js -->
+ <script src="{{URL::asset('assets/plugins/spectrum-date-picker/spectrum.js')}}"></script>
+ <script src="{{URL::asset('assets/plugins/spectrum-date-picker/jquery-ui.js')}}"></script>
+ <script src="{{URL::asset('assets/plugins/input-mask/jquery.maskedinput.js')}}"></script>
     <script>
+        $('.fc-datepicker').datepicker({
+                showOtherMonths: true,
+                selectOtherMonths: true,
+                dateFormat: 'dd-mm-yy'
+            });
           $(document).ready(function() {
             $.ajaxSetup({
                 headers: {
@@ -396,6 +406,10 @@
                 $(this).empty();
             }
         });
+        function renderDateTimeCalendar(data) {
+            const parts = data.split('-');
+            return `${parts[2]}-${parts[1]}-${parts[0]}`; // YYYY-MM-DD
+        }
         let datatable = $("#datatable").DataTable({
             ordering: false,
             processing: true,
@@ -407,7 +421,7 @@
             ajax: {
                 url: '{{ route('anggaran_makan.index') }}',
                 data: function(d) {
-                    d.tgl_awal = $('#tgl-awal').val();
+                    d.tgl_awal = renderDateTimeCalendar($('#tgl-awal').val())   ;
                 },
             },
             columns: [
@@ -537,7 +551,7 @@
                 },
                 success:function(res){
                     $('#edit_id').val(res[0].id);
-                    $('#edit_tanggal').val(res[0].tanggal);
+                    $('#edit_tanggal').val(renderDateTimeCalendar(res[0].tanggal));
                     $('#edit_keterangan').val(res[0].keterangan);
                     $('#edit_bagian').val(res[0].dept);
                     $('#edit_staff').val(res[0].staff);
@@ -569,7 +583,10 @@
             });
         });
         $('#save_estimation').click(function(){
-            var tanggal=$('#tanggal').val();
+            var tanggal = $('#tanggal').val();  // contoh: 28-07-2025
+            var parts = tanggal.split('-');     // hasil: ['28', '07', '2025']
+            var formatBaru = parts[2] + '-' + parts[1] + '-' + parts[0];
+
             var keterangan=$('#keterangan').val();
             var bagian=$('#bagian').val();
             var staff=$('#staff').val();
@@ -578,7 +595,7 @@
                 type:"POST",
                 url: '{{ route('anggaran_makan.store') }}',
                 data: {
-                    tanggal:tanggal,
+                    tanggal:formatBaru,
                     keterangan:keterangan,
                     bagian:bagian,
                     staff:staff,
@@ -637,6 +654,8 @@
         $('#update_estimation').click(function(){
             var id=$('#edit_id').val();
             var tanggal=$('#edit_tanggal').val();
+            var parts = tanggal.split('-');     // hasil: ['28', '07', '2025']
+            var formatBaru = parts[2] + '-' + parts[1] + '-' + parts[0];
             var keterangan=$('#edit_keterangan').val();
             var bagian=$('#edit_bagian').val();
             var staff=$('#edit_staff').val();
@@ -646,7 +665,7 @@
                 url: '{{ route('anggaran_makan.update') }}',
                 data: {
                     id:id,
-                    tanggal:tanggal,
+                    tanggal:formatBaru,
                     keterangan:keterangan,
                     bagian:bagian,
                     staff:staff,
