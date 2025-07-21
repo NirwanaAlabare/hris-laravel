@@ -203,6 +203,10 @@ class HRDController extends AdminBaseController
         ];
 
         // Format nomor form dinamis
+        $from=request()->from;
+        $to=request()->to;
+        $jumlah_hari_mangkir=request()->jumlah_hari_mangkir;
+
         $no_form_url=request()->no_form;
         $no_form = $no_form_url.'/HRD-NAC/EXT/' . $bulanRomawi[$bulan] . '/' . $tahun;
 
@@ -253,7 +257,7 @@ class HRDController extends AdminBaseController
             foreach ($absens as $absen) {
                 $isWeekend = in_array($absen['kode_hari'], [5, 6]);
                 $isMangkir = $absen['status'] === 'M';
-                $isTidakHadirLainnya = in_array($absen['status'], ['CG','CM','CN','CT','DL','I','IG','IKS','IM','KA','KM','KR','L','LN','LP','NA','R','S','TL']);
+                $isTidakHadirLainnya = in_array($absen['status'], ['CG','CM','CN','CT','DL','I','IG','IKS','IM','KA','KM','KR','L','LN','LP','NA','R','S','TL','ITB']);
                 $isHadir = !$isMangkir && !$isWeekend && !$isTidakHadirLainnya;
                if ($isMangkir) {
                     $streak++;
@@ -289,7 +293,7 @@ class HRDController extends AdminBaseController
                 ];
             }
         }
-        $pdf = PDF::loadView('hris.sp_kehadiran_karyawan',["data" => $hasil[0],"no_form"=>$no_form])->setPaper('letter', 'fotrait')->stream($fileName.'.pdf');
+        $pdf = PDF::loadView('hris.sp_kehadiran_karyawan',["data" => $hasil[0],"no_form"=>$no_form,"from"=>$from,"to"=>$to,"jumlah_hari_mangkir"=>$jumlah_hari_mangkir])->setPaper('letter', 'fotrait')->stream($fileName.'.pdf');
         return $pdf;
     }
 
@@ -1640,6 +1644,10 @@ class HRDController extends AdminBaseController
         9 => 'IX', 10 => 'X', 11 => 'XI', 12 => 'XII'
         ];
 
+        $mulai=request()->mulai;
+        $selesai=request()->selesai;
+        $jumlah_hari_mangkir=request()->jumlah_hari_mangkir;
+
         // Format nomor form dinamis
         $no_form_url=request()->no_form;
         $no_form = $no_form_url.'/HRD-NAC/EXT/' . $bulanRomawi[$bulan] . '/' . $tahun;
@@ -1734,7 +1742,10 @@ class HRDController extends AdminBaseController
 
         $pdfContent = PDF::loadView('hris.sp_kehadiran_karyawan', [
                 "data" => $hasil[0],
-                "no_form" => $no_form
+                "no_form" => $no_form,
+                "from"=>$mulai,
+                "to"=>$selesai,
+                "jumlah_hari_mangkir"=>$jumlah_hari_mangkir
             ])
             ->setPaper('letter', 'portrait')
             ->output(); // <-- Output isi file (bukan stream)

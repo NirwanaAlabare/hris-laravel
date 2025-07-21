@@ -160,6 +160,9 @@
                     </div>
                     <div class="modal-body">
                         <input id="enroll_id_layoff" type="hidden">
+                        <input id="mulai_mangkir_input" type="hidden">
+                        <input id="sampai_mangkir_input" type="hidden">
+                        <input id="jumlah_hari_mangkir_input" type="hidden">
                         <div class="row">
                             <div class="col-md-12" style="margin-top: 1px; margin-bottom: 3px; padding-top: 10px;">
                                 <h6 style="font-weight: bold;">No Form :</h6>
@@ -181,7 +184,7 @@
                             <div class="col-md-4">
                                 <button class="btn btn-primary w-100" id="btn-update-form" data-toggle="tooltip" title="Simpan & Print" style="margin-top: 10px;">
                                     <i class="fa fa-save" aria-hidden="true"></i>
-                                    Simpan & Print
+                                    Print
                                 </button>
                             </div>
                         </div>
@@ -324,6 +327,9 @@ $('#clear-daterange').on('click', function () {
     });
     $('body').on('click', '#btn-send-to-whatsapp', function (event) {
         var edit_no_form = $('#edit_no_form').val();
+        var mulai = $("#mulai_mangkir_input").val();
+        var selesai = $("#sampai_mangkir_input").val();
+        var jumlah_hari_mangkir = $("#jumlah_hari_mangkir_input").val();
         if(edit_no_form === '') {
             iziToast.error({
                 title: 'Error',
@@ -341,6 +347,9 @@ $('#clear-daterange').on('click', function () {
             data: {
                 enroll_id: enroll_id,
                 no_form: edit_no_form,
+                mulai: mulai,
+                selesai: selesai,
+                jumlah_hari_mangkir: jumlah_hari_mangkir,
             },
             success: function(response) {
                 {
@@ -363,13 +372,19 @@ $('#clear-daterange').on('click', function () {
         });
     });
 
-    function openModalNomorForm(id) {
+    function openModalNomorForm(id, mulai, selesai, jumlah_hari_mangkir) {
         $("#ajax-modal-no-form-pengajuan").modal('show');
         $("#enroll_id_layoff").val(id);
+        $("#mulai_mangkir_input").val(mulai);
+        $("#sampai_mangkir_input").val(selesai);
+        $("#jumlah_hari_mangkir_input").val(jumlah_hari_mangkir);
     }
     function closeModalNoForm() {
         $("#edit_no_form").val('');
         $("#enroll_id_layoff").val('');
+        $("#mulai_mangkir_input").val('');
+        $("#sampai_mangkir_input").val('');
+        $("#jumlah_hari_mangkir_input").val('');
         $("#ajax-modal-no-form-pengajuan").modal('hide');
     }
 
@@ -568,7 +583,7 @@ $('#clear-daterange').on('click', function () {
                         <div class="col text-center">
                            <button class='btn ${warnaBtn}'
                                 style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt'
-                                onclick="openModalNomorForm('${row.enroll_id}')"
+                                onclick="openModalNomorForm('${row.enroll_id} ','${row.mulai}' ,'${row.selesai}' ,'${row.jumlah_hari_mangkir}')"
                                 >
                                 ${row.kategori}
                             </button>
@@ -615,7 +630,10 @@ $('#clear-daterange').on('click', function () {
     }
 
     function export_sp_kerja(enroll_id){
-        var url = 'export_sp_kehadiran_karyawan_adjustment?enroll_id='+enroll_id+ '&no_form=' + $('#edit_no_form').val();
+        var mulai = $("#mulai_mangkir_input").val();
+        var selesai = $("#sampai_mangkir_input").val();
+        var jumlah_hari_mangkir = $("#jumlah_hari_mangkir_input").val();
+        var url = 'export_sp_kehadiran_karyawan_adjustment?enroll_id='+enroll_id+ '&from=' + mulai + '&to=' + selesai + '&jumlah_hari_mangkir=' + jumlah_hari_mangkir + '&no_form=' + $('#edit_no_form').val();
         window.open(url, '_blank');
     }
 
