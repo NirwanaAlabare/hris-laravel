@@ -206,7 +206,6 @@ class HRDController extends AdminBaseController
         $from=request()->from;
         $to=request()->to;
         $jumlah_hari_mangkir=request()->jumlah_hari_mangkir;
-
         $no_form_url=request()->no_form;
         $no_form = $no_form_url.'/HRD-NAC/EXT/' . $bulanRomawi[$bulan] . '/' . $tahun;
 
@@ -291,6 +290,15 @@ class HRDController extends AdminBaseController
                     'status_jabatan' => $absens[0]['status_jabatan'] ?? '-',
                     'alamat_rumah' => $absens[0]['alamat_rumah'] ?? '-',
                 ];
+            }
+        }
+        if($jumlah_hari_mangkir){
+            if($jumlah_hari_mangkir >= 1 && $jumlah_hari_mangkir <= 3){
+                $hasil[0]['kategori'] = 'I';
+            }else if($jumlah_hari_mangkir >= 4 && $jumlah_hari_mangkir <= 5){
+                $hasil[0]['kategori'] = 'II';
+            }else if($jumlah_hari_mangkir >= 6){
+                $hasil[0]['kategori'] = 'RESIGNED';
             }
         }
         $pdf = PDF::loadView('hris.sp_kehadiran_karyawan',["data" => $hasil[0],"no_form"=>$no_form,"from"=>$from,"to"=>$to,"jumlah_hari_mangkir"=>$jumlah_hari_mangkir])->setPaper('letter', 'fotrait')->stream($fileName.'.pdf');
@@ -1737,6 +1745,15 @@ class HRDController extends AdminBaseController
                     'status_jabatan' => $absens[0]['status_jabatan'] ?? '-',
                     'alamat_rumah' => $absens[0]['alamat_rumah'] ?? '-',
                 ];
+            }
+        }
+         if($jumlah_hari_mangkir){
+            if($jumlah_hari_mangkir >= 1 && $jumlah_hari_mangkir <= 3){
+                $hasil[0]['kategori'] = 'I';
+            }else if($jumlah_hari_mangkir >= 4 && $jumlah_hari_mangkir <= 5){
+                $hasil[0]['kategori'] = 'II';
+            }else if($jumlah_hari_mangkir >= 6){
+                $hasil[0]['kategori'] = 'RESIGNED';
             }
         }
 

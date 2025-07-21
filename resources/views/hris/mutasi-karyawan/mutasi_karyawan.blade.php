@@ -533,13 +533,6 @@
             datatable_detail.ajax.reload();
         }
 
-        function export_sp_kerja(enroll_id){
-            var url = 'export_sp_kehadiran_karyawan?enroll_id='+enroll_id;
-            window.open(url, '_blank');
-        }
-
-
-
         $('#daterange-btn1').daterangepicker({
                 ranges: {
                     'Hari ini': [moment(), moment()],
