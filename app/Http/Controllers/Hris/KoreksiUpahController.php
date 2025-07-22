@@ -476,7 +476,7 @@ class KoreksiUpahController extends AdminBaseController
         return $query;
     }
 
-     //=============Andri====================
+    // =============Andri====================
      public function format_import_koreksiupah()
      {
          $filepath = public_path('format_import/format_import_koreksi_upah.xlsx');
@@ -506,14 +506,19 @@ class KoreksiUpahController extends AdminBaseController
                         $tgl_awal = ($tgl_awal - 25569) * 86400;
                         $tgl_priode_awal=date('m/d/Y', $tgl_awal);
 
-                        $tgl_koreksi = date('Y-m-d', $tgl_awal);
-                        $tgl_koreksi_plus1 = date('Y-m-d', strtotime('+1 day', $tgl_awal));
+                        // $tgl_koreksi_plus1 = date('Y-m-d', strtotime('+1 day', $tgl_awal));
 
                         $tgl_akhir =$row[5];
                         $tgl_akhir = ($tgl_akhir - 25569) * 86400;
                         $tgl_akhir = 25569 + ($tgl_akhir / 86400);
                         $tgl_akhir = ($tgl_akhir - 25569) * 86400;
                         $tgl_priode_akhir=date('m/d/Y', $tgl_akhir);
+
+                        $tgl_koreksi_awal =$row[8];
+                        $tgl_koreksi_awal = ($tgl_koreksi_awal - 25569) * 86400;
+                        $tgl_koreksi_awal = 25569 + ($tgl_koreksi_awal / 86400);
+                        $tgl_koreksi_awal = ($tgl_koreksi_awal - 25569) * 86400;
+                        $tgl_koreksi = date('Y-m-d', $tgl_koreksi_awal);
 
 
                         $data_import[]=[
