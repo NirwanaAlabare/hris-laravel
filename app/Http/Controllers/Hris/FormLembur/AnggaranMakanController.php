@@ -90,10 +90,12 @@ class AnggaranMakanController extends AdminBaseController
         DB::delete("delete from estimasi_anggaran_makan where id = '$id_estimasi'");
     }
     public function export_excel_konsumsi_estimasi(Request $request){
-        return Excel::download(new BiayaMakanKaryawanEstimasi($request->from), 'Laporan_Penerimaan FG_Stok.xlsx');
+        $from = \Carbon\Carbon::createFromFormat('d-m-Y', $request->from)->format('Y-m-d');
+        return Excel::download(new BiayaMakanKaryawanEstimasi($from), 'Laporan_Penerimaan FG_Stok.xlsx');
     }
     public function export_excel_overtime_recap(Request $request){
-        return Excel::download(new OvertimeRecap($request->from), 'Laporan_Penerimaan FG_Stok.xlsx');
+        $from = \Carbon\Carbon::createFromFormat('d-m-Y', $request->from)->format('Y-m-d');
+        return Excel::download(new OvertimeRecap($from), 'Laporan_Penerimaan FG_Stok.xlsx');
     }
     public function export_excel_overtime_recap2(Request $request){
         $from=date('Y-m-d');
@@ -101,7 +103,7 @@ class AnggaranMakanController extends AdminBaseController
         return Excel::download(new OvertimeRecap($from), $fileName);
     }
     public function export_pdf_konsumsi(){
-        $tanggal=request()->tanggal;
+        $tanggal = \Carbon\Carbon::createFromFormat('d-m-Y', request()->tanggal)->format('Y-m-d');
         $tanggal_carbon=Carbon::parse($tanggal)->translatedFormat('l d F Y');
         $data = DB::select("select '' shift,b.department_name department,non_staff,if(non_staff!=0,8000,0) harga,8000*non_staff jumlah,staff,if(staff!=0,10000,0) harga2,10000*staff jumlah2,staff+non_staff jumlah_karyawan,(non_staff*8000)+(staff*10000) total from estimasi_anggaran_makan inner join (select*from department_all where site_nirwana_id='NAG' and status='AKTIF' group by department_id) b on estimasi_anggaran_makan.dept=b.department_id where tanggal='$tanggal' and keterangan='LEMBUR' order by keterangan,dept");
         $data2 = DB::select("select '' shift,b.department_name department,non_staff,if(non_staff!=0,8000,0) harga,8000*non_staff jumlah,staff,if(staff!=0,10000,0) harga2,10000*staff jumlah2,staff+non_staff jumlah_karyawan,(non_staff*8000)+(staff*10000) total from estimasi_anggaran_makan inner join (select*from department_all where site_nirwana_id='NAG' and status='AKTIF' group by department_id) b on estimasi_anggaran_makan.dept=b.department_id where tanggal='$tanggal' and keterangan='SHIFT MALAM' order by keterangan,dept");
