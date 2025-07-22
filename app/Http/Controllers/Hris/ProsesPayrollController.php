@@ -2714,7 +2714,7 @@ class ProsesPayrollController extends AdminBaseController
                 $diff = $startDate->diff($today);
                 $years = $diff->y;
                 $months = $diff->m;
-                $days = $diff->d;
+                $days = $diff->d + 1; // Tambahkan 1 hari untuk menghitung hari ke-1
 
                 $records_payroll=[
                     'kode_rekap_payroll'=>$v['kode_rekap_payroll'],
