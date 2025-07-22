@@ -229,8 +229,7 @@
                 <p>Bandung, {{Carbon\Carbon::parse(date('Y-m-d'))->translatedFormat('d F Y')}}</p>
                 <p>PT. Nirwana Alabare Garment</p>
                 {{-- <img class="" src="{{ public_path('assets/images/hrd/ttd-hr.png') }}" width="114"> --}}
-                <div style="height: 85px"></div>
-                <p style="margin-left:18px; margin-top:0px">Rudy Aristian Fajar</p>
+                <p style="margin-top:0px">Rudy Aristian Fajar</p>
                 <p>HRGA - Compliance Manager</p>
             </div>
 
