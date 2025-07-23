@@ -112,7 +112,7 @@
                             @endif
                             @if ($modul=='general_affair, administrasi' || $modul=='all' || $modul == 'attendance_payroll_general_affair_administrasi')
                             <div class="col">
-                                <a href="{{route('hris.ga.form_pengajuan_transportasi')}}" >
+                                <a href="{{route('hris.ga.data_pengajuan_transportasi')}}" >
                                     <div class="card card-3">
                                         <h3 class="text-theme">General Affair</h3>
                                     </div>
