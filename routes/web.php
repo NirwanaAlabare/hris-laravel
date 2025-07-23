@@ -562,6 +562,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('datalembur/importing_data_lembur',['as'=>'hris.datalembur.importing_data_lembur','uses'=>'DataLemburController@importing_data_lembur']);
     Route::get('datalembur/get_last_nomor_form_lembur',['as'=>'hris.datalembur.get_last_nomor_form_lembur','uses'=>'DataLemburController@get_last_nomor_form_lembur']);
     Route::get('datalembur/export_excel_tanda_terima_lembur',['as'=>'hris.datalembur.export_excel_tanda_terima_lembur','uses'=>'DataLemburController@export_excel_tanda_terima_lembur']);
+    Route::get('datalembur/export_excel_tanda_terima_lembur_all_date',['as'=>'hris.datalembur.export_excel_tanda_terima_lembur_all_date','uses'=>'DataLemburController@export_excel_tanda_terima_lembur_all_date']);
 
     // DATA PAYROLL
     Route::get('payroll/lembur/',['as'=>'hris.payroll.lembur','uses'=> 'PayrollController@lembur']);

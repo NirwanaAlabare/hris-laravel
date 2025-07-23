@@ -901,14 +901,58 @@ h1 {
             const pasalSelect = $('#pasalKaryawan');
             const selectedOption = pasalSelect.find(':selected');
             const pasalText = selectedOption.data('full-text'); // ambil dari data attribute
-            navigator.clipboard.writeText(pasalText);
+            // navigator.clipboard.writeText(pasalText);
+            if (!pasalText) {
+                alert('Tidak ada teks untuk disalin.');
+                return;
+            }
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(pasalText);
+            } else {
+                // fallback untuk browser non-HTTPS
+                const textarea = document.createElement('textarea');
+                textarea.value = pasalText;
+                textarea.style.position = 'fixed'; // agar tidak scroll ke bawah
+                document.body.appendChild(textarea);
+                textarea.focus();
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                } catch (err) {
+                    alert('Fallback gagal: ' + err);
+                }
+                document.body.removeChild(textarea);
+            }
         }
 
         function copyEditPasal() {
             const pasalSelect = $('#EditpasalKaryawan');
-        const selectedOption = pasalSelect.find(':selected');
+            const selectedOption = pasalSelect.find(':selected');
             const pasalText = selectedOption.data('full-text'); // ambil dari data attribute
-            navigator.clipboard.writeText(pasalText);
+            // navigator.clipboard.writeText(pasalText);
+            if (!pasalText) {
+                alert('Tidak ada teks untuk disalin.');
+                return;
+            }
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(pasalText);
+            } else {
+                // fallback untuk browser non-HTTPS
+                const textarea = document.createElement('textarea');
+                textarea.value = pasalText;
+                textarea.style.position = 'fixed'; // agar tidak scroll ke bawah
+                document.body.appendChild(textarea);
+                textarea.focus();
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                } catch (err) {
+                    alert('Fallback gagal: ' + err);
+                }
+                document.body.removeChild(textarea);
+            }
         }
 
             $(document).ready(function () {

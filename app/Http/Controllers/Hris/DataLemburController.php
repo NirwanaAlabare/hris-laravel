@@ -288,7 +288,6 @@ class DataLemburController extends AdminBaseController
         $array_periode_lembur = explode(' s/d ', $periode_lembur);
         $awal_bulan = substr($array_periode_lembur[0], 0, 10);
         $akhir_bulan = substr($array_periode_lembur[1], 0, 10);
-
         $nomor_form_lembur = $request->nomor_form_lembur;
         $arrayNomorSPL = str_replace(',', '","', $nomor_form_lembur);
         $inNomorSPL = !empty($nomor_form_lembur)
@@ -315,6 +314,7 @@ class DataLemburController extends AdminBaseController
                     COUNT(ma.enroll_id),
                     ' karyawan'
                 ) AS tanggal_nomor_spl,
+                dl.uuid,
                 dl.nomor_form_lembur,
                 ma.tanggal_berjalan,
                 dl.mulai_jam_lembur,
@@ -330,8 +330,7 @@ class DataLemburController extends AdminBaseController
             JOIN
                 master_data_absen_kehadiran ma ON ma.uuid = dl.uuid_master
             WHERE
-                ma.tanggal_berjalan BETWEEN '{$awal_bulan}' AND '{$akhir_bulan}'
-                AND dl.serah_terima IS NULL
+                DATE(dl.created_at) BETWEEN '{$awal_bulan}' AND '{$akhir_bulan}'
                 {$inNomorSPL}
                 {$searchSQL}
             GROUP BY
@@ -341,7 +340,6 @@ class DataLemburController extends AdminBaseController
         ";
 
         $query = DB::select($querySQL);
-
         $sorted = collect($query)->sortByDesc(function ($item) {
             preg_match('/\/(\d+)$/', $item->nomor_form_lembur, $match);
             return isset($match[1]) ? (int)$match[1] : 0;
@@ -357,7 +355,7 @@ class DataLemburController extends AdminBaseController
             JOIN
                 master_data_absen_kehadiran ma ON ma.uuid = dl.uuid_master
             WHERE
-                ma.tanggal_berjalan BETWEEN '{$awal_bulan}' AND '{$akhir_bulan}'
+                DATE(dl.created_at) BETWEEN '{$awal_bulan}' AND '{$akhir_bulan}'
                 {$inNomorSPL}
                 {$searchSQL}
         ";
@@ -375,63 +373,120 @@ class DataLemburController extends AdminBaseController
 
     public function create_serah_terima_lembur(Request $request)
     {
-        $daftarSPL = $request->input('daftarSPL');
+        $daftarSPLTambah = $request->input('daftarSPLTambah', []); // checkbox yang baru di-check
+        $daftarSPLHapus = $request->input('daftarSPLHapus', []);   // checkbox yang di-uncheck dari sebelumnya
 
-        if (is_array($daftarSPL) && count($daftarSPL) > 0) {
-            foreach ($daftarSPL as $value) {
-                DataLembur::where('nomor_form_lembur', $value['nomor'])
-                    ->update([
+        try {
+            DB::beginTransaction();
+
+            // ✅ Tambah (checked)
+            if (is_array($daftarSPLTambah) && count($daftarSPLTambah) > 0) {
+                foreach ($daftarSPLTambah as $value) {
+                    DataLembur::where('uuid', $value['uuid'])->update([
                         'serah_terima' => true
                     ]);
+                }
             }
+
+            // ❌ Hapus (unchecked)
+            if (is_array($daftarSPLHapus) && count($daftarSPLHapus) > 0) {
+                foreach ($daftarSPLHapus as $value) {
+                    DataLembur::where('uuid', $value['uuid'])->update([
+                        'serah_terima' => false
+                    ]);
+                }
+            }
+
+            DB::commit();
 
             return response()->json([
                 'status' => true,
-                'message' => 'Serah Terima Lembur Berhasil'
+                'message' => 'Serah Terima Lembur berhasil diperbarui'
             ]);
-        }
 
-        return response()->json([
-            'status' => false,
-            'message' => 'Data SPL kosong atau tidak valid'
-        ], 400);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Terjadi kesalahan saat menyimpan data',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
+
 
     public function export_excel_tanda_terima_lembur(Request $request)
     {
-    ini_set('max_execution_time', 0);
-    $query = DataLembur::select(
-            'employee_atribut.employee_name',
-            'employee_atribut.nik',
-            'employee_atribut.department_name',
-            'employee_atribut.sub_dept_name',
-            'employee_atribut.status_jabatan',
-            'data_lembur.nomor_form_lembur',
-            'data_lembur.created_at',
-            'data_lembur.tanggal_berjalan',
-            DB::raw('COUNT(data_lembur.enroll_id) AS jumlah_karyawan')
-        )
-        ->leftJoin('employee_atribut', 'data_lembur.enroll_id', '=', 'employee_atribut.enroll_id')
-        ->where('data_lembur.serah_terima', '=', true)
-        ->groupBy('data_lembur.nomor_form_lembur', 'data_lembur.tanggal_berjalan')
-        ->orderBy('data_lembur.created_at', 'desc');
+        ini_set('max_execution_time', 0);
+        $query = DataLembur::select(
+                'employee_atribut.employee_name',
+                'employee_atribut.nik',
+                'employee_atribut.department_name',
+                'employee_atribut.sub_dept_name',
+                'employee_atribut.status_jabatan',
+                'data_lembur.nomor_form_lembur',
+                'data_lembur.serah_terima',
+                'data_lembur.created_at',
+                'data_lembur.tanggal_berjalan',
+                DB::raw('COUNT(data_lembur.enroll_id) AS jumlah_karyawan')
+            )
+            ->leftJoin('employee_atribut', 'data_lembur.enroll_id', '=', 'employee_atribut.enroll_id')
+            ->where('data_lembur.serah_terima', '=', true)
+            ->groupBy('data_lembur.nomor_form_lembur', 'data_lembur.tanggal_berjalan')
+            ->orderBy('data_lembur.nomor_form_lembur', 'ASC');
 
 
-    if (!empty($request->tanggal)) {
-    $arrperiode = explode(" s/d ", $request->tanggal);
+        if (!empty($request->tanggal)) {
+            $arrperiode = explode(" s/d ", $request->tanggal);
 
-    if (count($arrperiode) == 2) {
-        $first_date = trim($arrperiode[0]);  // Sudah Y-m-d
-        $last_date  = trim($arrperiode[1]);
+            if (count($arrperiode) == 2) {
+                $first_date = trim($arrperiode[0]);  // Sudah Y-m-d
+                $last_date  = trim($arrperiode[1]);
 
-        $query->whereDate('data_lembur.created_at', '>=', $first_date)
-              ->whereDate('data_lembur.created_at', '<=', $last_date);
+                $query->whereDate('data_lembur.created_at', '>=', $first_date)
+                    ->whereDate('data_lembur.created_at', '<=', $last_date);
+            }
+        }
+
+
+        $result = $query->get();
+        return Excel::download(new exportExcelSerahTerimaLembur($result), 'Serah_Terima_Lembur.xlsx');
     }
-}
+    public function export_excel_tanda_terima_lembur_all_date(Request $request)
+    {
+        ini_set('max_execution_time', 0);
+        $query = DataLembur::select(
+                'employee_atribut.employee_name',
+                'employee_atribut.nik',
+                'employee_atribut.department_name',
+                'employee_atribut.sub_dept_name',
+                'employee_atribut.status_jabatan',
+                'data_lembur.nomor_form_lembur',
+                'data_lembur.serah_terima',
+                'data_lembur.created_at',
+                'data_lembur.tanggal_berjalan',
+                DB::raw('COUNT(data_lembur.enroll_id) AS jumlah_karyawan')
+            )
+            ->leftJoin('employee_atribut', 'data_lembur.enroll_id', '=', 'employee_atribut.enroll_id')
+            ->groupBy('data_lembur.nomor_form_lembur', 'data_lembur.tanggal_berjalan')
+            ->orderBy('data_lembur.nomor_form_lembur', 'ASC');
 
 
-    $result = $query->get();
-    return Excel::download(new exportExcelSerahTerimaLembur($result), 'Serah_Terima_Lembur.xlsx');
+        if (!empty($request->tanggal)) {
+            $arrperiode = explode(" s/d ", $request->tanggal);
+
+            if (count($arrperiode) == 2) {
+                $first_date = trim($arrperiode[0]);  // Sudah Y-m-d
+                $last_date  = trim($arrperiode[1]);
+
+                $query->whereDate('data_lembur.created_at', '>=', $first_date)
+                    ->whereDate('data_lembur.created_at', '<=', $last_date);
+            }
+        }
+
+
+        $result = $query->get();
+        return Excel::download(new exportExcelSerahTerimaLembur($result), 'Serah_Terima_Lembur.xlsx');
     }
 
 

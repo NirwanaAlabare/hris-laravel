@@ -138,7 +138,16 @@
                     <div class="form-group">
                         <label class="form-label">FILTER SERAH TERIMA : </label>
                             <input type="hidden" id="daterange_serah_terima" name="daterange_serah_terima">
-                            <a class="nav-link card-title m-0" style="border: 1px solid #d8d4dc" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                                <a class="nav-link card-title m-0" style="border: 1px solid #d8d4dc" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
+                                <button type="button" class="btn btn-success btn-app"
+                                    onclick="ExportSuratTandaTerimaExcelAllDate()"
+                                    data-toggle="tooltip" title="Cari Data"
+                                    id="btn_export_excel_tanda_terima_lembur_all_date">
+                                <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                                Export SPL Serah Terima
+                            </button>
+                            </div>
                     </div>
                 </div>
             </div>
@@ -149,17 +158,13 @@
                 <a href="javascript:void(0)" id="btn-cari" class="btn btn-app btn-secondary mr-0 mt-0 mb-0" data-toggle="tooltip" title="Cari Data"><i class="ion-search"></i> Cari</a>
                 <button type="button" id="btn-update_edit2" class="btn btn-secondary btn-app" data-dismiss="modal">Tambah Karyawan</button>
                 <button type="button" id="btn-hapus-nospl" class="btn btn-danger btn-app" data-dismiss="modal">Hapus NO SPL</button>
-                {{-- <button type="button" class="btn btn-success btn-app" onclick="ExportSuratTandaTerimaExcelLembur()"  data-toggle="tooltip" title="Cari Data" id="btn_export_excel_tanda_terima_lembur"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Serah Terima</button>
-                <button type="button" id="btn_buat_serah_terima" class="btn btn-info btn-app" data-dismiss="modal"><i class="ion-plus"></i> Serah Terima</button> --}}
-                @if(in_array($enroll_id_loggin, [7765, 4241, 20,109,1885,64,4953,3602,7779,6801,6713,8083]))
                 <button type="button" class="btn btn-success btn-app"
                         onclick="ExportSuratTandaTerimaExcelLembur()"
                         data-toggle="tooltip" title="Cari Data"
                         id="btn_export_excel_tanda_terima_lembur">
-                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>
-                    Export Serah Terima
+                    <i class="fa fa-check" aria-hidden="true"></i>
+                    Export Serah Terima Checked
                 </button>
-                @endif
                 @if(in_array($enroll_id_loggin, [7765, 4241, 20,6713,8083,1885]))
                     <button type="button" id="btn_buat_serah_terima"
                     class="btn btn-info btn-app"
@@ -745,9 +750,9 @@
                     <div class="modal-content">
                         <div class="modal-header bg-primary p-2">
                             <h4 class="modal-title pl-2"><b>FORM SERAH TERIMA LEMBUR KARYAWAN</b></h4>
-                            <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
+                            {{-- <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
                                 <i class="fa fa-remove"></i>
-                            </button>
+                            </button> --}}
                         </div>
                         <div class="modal-body">
                             <div class="row">
@@ -836,7 +841,6 @@
 
         function ExportSuratTandaTerimaExcelLembur(){
             var tanggal = $('#daterange_serah_terima').val();
-            console.log('tanggal',tanggal);
             $.ajax({
                 type: "get",
                 url: '{{ route('hris.datalembur.export_excel_tanda_terima_lembur') }}',
@@ -849,7 +853,7 @@
                 success: function(response) {
                     {
                         $('#btn_export_excel_tanda_terima_lembur').removeClass("btn-loading");
-                        $("#btn_export_excel_tanda_terima_lembur").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Serah Terima');
+                        $("#btn_export_excel_tanda_terima_lembur").html('<i class="fa fa-check" style="font-size:11pt"></i> Export Serah Terima');
                         $("#btn_export_excel_tanda_terima_lembur").attr("disabled", false);
                         var blob = new Blob([response]);
                         var link = document.createElement('a');
@@ -862,7 +866,39 @@
                     swal("", "Export kontrak kerja gagal", "error");
                     $('#btn_export_excel_tanda_terima_lembur').removeClass("btn-loading");
                     $("#btn_export_excel_tanda_terima_lembur").attr("disabled", false);
-                    $("#btn_export_excel_tanda_terima_lembur").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Serah Terima');
+                    $("#btn_export_excel_tanda_terima_lembur").html('<i class="fa fa-check" style="font-size:11pt"></i> Export Serah Terima');
+                }
+            });
+        }
+
+        function ExportSuratTandaTerimaExcelAllDate(){
+            var tanggal = $('#daterange_serah_terima').val();
+            $.ajax({
+                type: "get",
+                url: '{{ route('hris.datalembur.export_excel_tanda_terima_lembur_all_date') }}',
+                data: {
+                    tanggal: tanggal,
+                },
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function(response) {
+                    {
+                        $('#btn_export_excel_tanda_terima_lembur_all_date').removeClass("btn-loading");
+                        $("#btn_export_excel_tanda_terima_lembur_all_date").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Serah Terima');
+                        $("#btn_export_excel_tanda_terima_lembur_all_date").attr("disabled", false);
+                        var blob = new Blob([response]);
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = "Laporan Serah Terima Lembur "+Math.ceil(Math.random()*1000000)+".xlsx";
+                        link.click();
+                    }
+                },
+                error: function(res){
+                    swal("", "Export kontrak kerja gagal", "error");
+                    $('#btn_export_excel_tanda_terima_lembur_all_date').removeClass("btn-loading");
+                    $("#btn_export_excel_tanda_terima_lembur_all_date").attr("disabled", false);
+                    $("#btn_export_excel_tanda_terima_lembur_all_date").html('<i class="fa fa-file-excel-o" style="font-size:11pt"></i> Export Serah Terima');
                 }
             });
         }
@@ -2248,7 +2284,7 @@
 
         });
 
-         $('body').on('click', '#btn_buat_serah_terima', function (event) {
+        $('body').on('click', '#btn_buat_serah_terima', function (event) {
 
             $("#ajax-modal-buat-serah-terima").modal('show');
             $('#datatable-ajax-modal-list-spl-checklist').DataTable().clear();
@@ -2260,7 +2296,9 @@
 
             var periode_lembur = $('#periode_lembur').val();
 
-            if(periode_lembur){
+            var tanggal = $('#daterange_serah_terima').val();
+            console.log("tanggal", tanggal);
+            if(tanggal){
                 var table1 = $('#datatable-ajax-modal-list-spl-checklist').DataTable({
                 processing: true,
                 serverSide: true,
@@ -2276,7 +2314,10 @@
                     },
                     "dataSrc": "data",
                     data: function (d) {
-                        d.periode_lembur = periode_lembur; // tambahkan parameter di sini
+                        d.periode_lembur = tanggal; // tambahkan parameter di sini
+                    },
+                    onSuccess: function (data) {
+                        console.log(data);
                     }
                 },
                 columns: [
@@ -2292,6 +2333,7 @@
                     {
                         title: 'TANGGAL PENGINPUTAN',
                         data: 'created_at',
+                        orderable: false,
                         name: 'created_at',
                         render: function (data, type, row) {
                             if (!data) return '-';
@@ -2313,6 +2355,7 @@
                     {
                         title: 'TANGGAL SPL',
                         data: 'tanggal_berjalan',
+                        orderable: false,
                         name: 'tanggal_berjalan',
                         render: function (data, type, row) {
                             if (!data) return '-';
@@ -2334,24 +2377,30 @@
                     {
                         title: 'NO SPL',
                         data: 'nomor_form_lembur',
+                        orderable: false,
                         name: 'nomor_form_lembur'
                     },
                     {
                         title: 'JML DATA',
                         data: 'jml_data',
+                        orderable: false,
                         name: 'jml_data',
-                        className: 'text-center align-middle',  // Horizontal & vertikal center
+                        className: 'text-center align-middle',
                     },
                   {
                         title: 'SERAH TERIMA',
+                        orderable: false,
                         data: null,
-                        className: 'text-center align-middle',  // Horizontal & vertikal center
+                        className: 'text-center align-middle',
                         render: function (data, type, row, meta) {
                             return `
                                 <input type="checkbox"
                                     class="checkbox-serah-terima"
                                     data-nomor="${row.nomor_form_lembur}"
+                                    data-uuid="${row.uuid}"
                                     data-tanggal="${row.tanggal_berjalan}"
+                                    data-default="${row.serah_terima ? '1' : '0'}"
+                                    ${row.serah_terima ? 'checked' : ''}
                                     style="transform: scale(1.2); vertical-align: middle;">
                             `;
                         }
@@ -2365,16 +2414,32 @@
         });
 
         $('body').on('click', '#btn-save-serah-terima', function () {
-            let daftarSPL = [];
 
-            $('.checkbox-serah-terima:checked').each(function() {
-                daftarSPL.push({
+            let daftarSPLTambah = []; // checked baru
+            let daftarSPLHapus = [];  // uncheck dari sebelumnya
+
+            $('.checkbox-serah-terima').each(function () {
+                const isChecked = $(this).is(':checked');
+                const isDefault = $(this).data('default') == '1'; // dari database
+
+                const dataSPL = {
                     nomor: $(this).data('nomor'),
-                    tanggal: $(this).data('tanggal')
-                });
+                    tanggal: $(this).data('tanggal'),
+                    uuid: $(this).data('uuid')
+                };
+
+                if (isChecked && !isDefault) {
+                    // baru dicentang
+                    daftarSPLTambah.push(dataSPL);
+                } else if (!isChecked && isDefault) {
+                    // sebelumnya dicentang, sekarang uncheck
+                    daftarSPLHapus.push(dataSPL);
+                }
             });
 
-            console.log(daftarSPL);
+            console.log('Tambah:', daftarSPLTambah);
+            console.log('Hapus:', daftarSPLHapus);
+
              $.ajax({
                 type:"POST",
                 url: "{{route('hris.datalembur.create_serah_terima_lembur')}}",
@@ -2382,7 +2447,8 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 data: {
-                    daftarSPL:daftarSPL,
+                    daftarSPLTambah:daftarSPLTambah,
+                    daftarSPLHapus:daftarSPLHapus,
                 },
                 dataType: 'json',
                 success: function(res){
@@ -2390,12 +2456,17 @@
                             msg: "<b>Success:</b> Data berhasil di simpan.",
                             type: "success"
                         });
-
-                        $('#datatable-ajax-modal-list-spl-checklist').on('draw.dt', function () {
-                            $('.checkbox-serah-terima').prop('checked', false);
-                        });
-
                         $("#ajax-modal-buat-serah-terima").modal('hide');
+
+                        // $('#datatable-ajax-modal-list-spl-checklist').on('draw.dt', function () {
+                        //     $('.checkbox-serah-terima').prop('checked', false);
+                        // });
+
+
+                       if ( $.fn.DataTable.isDataTable('#datatable-ajax-modal-list-spl-checklist') ) {
+                            $('#datatable-ajax-modal-list-spl-checklist').DataTable().clear().destroy();
+                        }
+
 
                     },
                 error: function(res){
@@ -2406,14 +2477,13 @@
                     });
                 }
             });
-
-
-
         });
+
+
         $('body').on('click', '#btn-close-serah-terima', function () {
-            $('#datatable-ajax-modal-list-spl-checklist').on('draw.dt', function () {
-                $('.checkbox-serah-terima').prop('checked', false);
-            });
+            if ($.fn.DataTable.isDataTable('#datatable-ajax-modal-list-spl-checklist')) {
+                $('#datatable-ajax-modal-list-spl-checklist').DataTable().clear().destroy();
+            }
             $("#ajax-modal-buat-serah-terima").modal('hide');
         });
 
