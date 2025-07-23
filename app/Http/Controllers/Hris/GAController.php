@@ -340,16 +340,19 @@ class GAController extends AdminBaseController
         $id_user = $loggedAdmin->enroll_id;
 
         $department_id = EmployeeAtribut::where('enroll_id', $id_user)->first()->department_id;
+        // DEP02
 
         // Jika DEP13 atau DEP07, maka keduanya bisa lihat data masing-masing
         if (in_array($department_id, ['DEP13', 'DEP07','DEP23'])) {
             $allowedDepartments = ['DEP13', 'DEP07','DEP23'];
-        }else if (in_array($department_id, ['DEP03', 'DEP04', 'DEP01', 'DEP01', 'DEP14'])) {
-            $allowedDepartments = ['DEP03', 'DEP04', 'DEP01', 'DEP01', 'DEP14'];
+        }else if (in_array($department_id, ['DEP03', 'DEP04', 'DEP01', 'DEP14'])) {
+            $allowedDepartments = ['DEP03', 'DEP04', 'DEP01', 'DEP14'];
         }else if (in_array($department_id, ['DEP17', 'DEP18'])) {
             $allowedDepartments = ['DEP17', 'DEP18'];
         }else if (in_array($department_id, ['DEP22', 'DEP19'])) {
             $allowedDepartments = ['DEP22', 'DEP19'];
+        }else if (in_array($department_id, ['DEP08'])) {
+            $allowedDepartments = ['DEP08', 'DEP02'];
         } else {
             $allowedDepartments = [$department_id];
         }
