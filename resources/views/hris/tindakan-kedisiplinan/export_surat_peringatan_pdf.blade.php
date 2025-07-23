@@ -270,7 +270,7 @@
             </tr>
         </thead>
     </table>
-    @if($value->status_jabatan == 'OPERATOR' || $value->status_jabatan == 'STAFF')
+    @if($value->status_jabatan == 'OPERATOR' || $value->status_jabatan == 'STAFF' || $value->status_jabatan == 'ADMINISTRASI')
     <table width="100%" style="width: 90%; margin-left:30px; font-family: 'Times New Roman', Times, serif; font-size: 11pt;">
         <thead>
             <tr style="height: 65px; vertical-align: bottom;">
