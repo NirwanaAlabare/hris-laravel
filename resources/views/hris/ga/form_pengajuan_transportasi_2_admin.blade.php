@@ -1,4 +1,4 @@
-@extends('admin.adminlayouts.adminlayout4')
+@extends('admin.adminlayouts.adminlayout-mut-karyawan')
 
 @section('head')
 <link href="{{ URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
@@ -11,7 +11,7 @@
 
 @stop
 @section('mainarea')
-<div class="card">
+<div class="">
     <div class="card-header mt-7 pt-1 pb-0">
         <ul class="nav nav-tabs">
             <li class="nav-item">
@@ -19,16 +19,11 @@
             </li>
             <li class="nav-item">
                 @if ($id_user==4241 || $id_user==20 || $id_user==7765 || $id_user==6083)
-                    <a class="btn btn-white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data <span class="badge text-dark" style="font-weight:bold; background-color:#d2eafc;padding-left:5px;padding-right:5px">{{$pengajuan_transportasi}}</span></a>
+                <a class="btn btn-white" style="background-color:rgb(228, 228, 228); position: relative; padding-right: 40px; padding-left: 40px" href="{{route('hris.ga.data_pengajuan_transportasi_admin')}}">Data <span class="text-dark h-5 w-5" style="font-weight:bold; background-color:#d2eafc; border:1px solid #0091ff;font-size:10px; display: flex; justify-content: center; align-items: center;position: absolute; top: 7px; right: 10px; border-radius: 100%;">{{$pengajuan_transportasi}}</span></a>
                 @else
-                    <a class="btn btn-white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data</a>
+                    <a class="btn btn-white" href="{{route('hris.ga.data_pengajuan_transportasi_admin')}}">Data</a>
                 @endif
             </li>
-            @if ($id_user==4241 || $id_user==20 || $id_user==7765 || $id_user==6083 || $id_user==0)
-            <li class="nav-item">
-                <a class="btn btn-white" href="{{route('hris.ga.summary_driver_task')}}">Summary Driver</a>
-            </li>
-            @endif
         </ul>
     </div>
 
@@ -2944,7 +2939,7 @@
           headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
           success: function(res){
               swal("", "Permintaan transportasi terkirim", "success");
-              var url = 'data_pengajuan_transportasi';
+              var url = 'data_pengajuan_transportasi_admin';
               window.open(url, '_self');
           },
           error: function(error){

@@ -51,11 +51,17 @@
         </ul>
     </li>
     <li class="slide">
-        <a class="side-menu__item"  data-toggle="slide" href="#"><i class="side-menu__icon fa fa-user-circle-o"></i><span class="side-menu__label">Tindakan Kedisiplinan</span><i class="angle fa fa-angle-right"></i></a>
+        <a class="side-menu__item"  data-toggle="slide" href="#"><i class="side-menu__icon fa fa-user-circle-o"></i><span class="side-menu__label">Tindakan Pendisiplinan</span><i class="angle fa fa-angle-right"></i></a>
         <ul class="slide-menu">
-            <li><a href="{{route('tindakan_kedisiplinan.tindakan_kedisiplinan')}}" class="slide-item"><span>Surat Peringatan</span></a></li>
+            <li><a href="{{route('tindakan_kedisiplinan.tindakan_kedisiplinan')}}" class="slide-item"><span>Form Pengajuan Tindak Pedisplinan</span></a></li>
         </ul>
     </li>
+     <li class="slide">
+            <a class="side-menu__item" data-toggle="slide" href="#"><i class="side-menu__icon fa fa-car"></i><span class="side-menu__label">Transportasi</span><i class="angle fa fa-angle-right"></i></a>
+            <ul class="slide-menu">
+                <li><a href="{{route('hris.ga.form_pengajuan_transportasi_2_admin')}}" class="slide-item pl-3"><span> Pengajuan Transportasi</span></a></li>
+            </ul>
+        </li>
     @php
     if (($loggedAdmin->name == "HR") || ($loggedAdmin->name == "HRD")|| ($loggedAdmin->name == "GA") || ($loggedAdmin->email == 'mega@ptnag.com') || ($loggedAdmin->email == 'rudy@ptnag.com') || ($loggedAdmin->email == 'fadli') || ($loggedAdmin->email == 'indri@nag.nirwanaindonesia.com') || ($loggedAdmin->email == 'ersa@ptnag.com')) {
         @endphp

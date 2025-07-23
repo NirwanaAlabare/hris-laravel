@@ -12,25 +12,25 @@
 
 <div class="card-header mt-7 pt-1 pb-0">
     <ul class="nav nav-tabs">
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="btn btn-white" href="{{route('hris.ga.form_pengajuan_transportasi')}}">Formulir</a>
-        </li>
+        </li> --}}
         <li class="nav-item">
-            @if ($id_user==4241 || $id_user==20 || $id_user==5321 || $id_user==6083)
-                <a class="btn btn-white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data <span class="badge text-dark" style="font-weight:bold; background-color:#d2eafc;padding-left:5px;padding-right:5px">{{$pengajuan_transportasi}}</span></a>
+            @if ($id_user==4241 || $id_user==20 || $id_user==7765 || $id_user==6083)
+                <a class="btn btn-white" style="background-color:rgb(228, 228, 228); position: relative; padding-right: 40px; padding-left: 40px" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data <span class="text-dark h-5 w-5" style="font-weight:bold; background-color:#d2eafc;border:1px solid #0091ff; font-size:10px; display: flex; justify-content: center; align-items: center;position: absolute; top: 7px; right: 10px; border-radius: 100%;">{{$pengajuan_transportasi}}</span></a>
             @else
-            <a class="btn btn-white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data</a>
+            <a class="btn btn-white" style="background-color:rgb(228, 228, 228);" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data</a>
             @endif
         </li>
-        @if ($id_user==4241 || $id_user==20 || $id_user==5321 || $id_user==6083)
-        <li class="nav-item">
-            <a class="btn btn-primary" style="background-color:blue" href="{{route('hris.ga.summary_driver_task')}}">Summary Driver</a>
-        </li>
-        @endif
+        @if ($id_user==4241 || $id_user==20 || $id_user==7765 || $id_user==6083 || $id_user==0)
+            <li class="nav-item">
+                <a class="btn btn-primary"  href="{{route('hris.ga.summary_driver_task')}}">Summary Driver</a>
+            </li>
+            @endif
     </ul>
 </div>
 <div class="card-body py-0" style="border: 1px solid #d8d4dc">
-    <div class="row mx-0 py-1 px-2 text-dark border-left border-right border-bottom ">
+    <div class="row mx-0 py-1 mt-5 px-5 text-dark border-top border-left border-right border-bottom ">
         <div class="col-12">
             <i class="fa fa-filter"></i> Filter
         </div>
@@ -140,7 +140,7 @@
                     return `<div class="row">
                                 <div class="col-5"><label class="border-bottom border-dark">`+row.tujuan_pemberangkatan.replace("_", " ")+`</label></div>
                             </div>
-                            ${ row.tujuan_pemberangkatan.indexOf('antar_barang') > -1 || row.tujuan_pemberangkatan.indexOf('jemput_barang') > -1 ? 
+                            ${ row.tujuan_pemberangkatan.indexOf('antar_barang') > -1 || row.tujuan_pemberangkatan.indexOf('jemput_barang') > -1 ?
                                 `<div class="row">
                                     <div class="col-12">`+(row.keterangan_barang==null?'':row.keterangan_barang)+`</div>
                                 </div>
@@ -157,13 +157,13 @@
                                     <div class="col-7">: `+row.nama_penerima+`</div>
                                 </div>`: ``
                             }
-                            ${ row.tujuan_pemberangkatan.indexOf('antar_dinas') > -1 || row.tujuan_pemberangkatan.indexOf('jemput_dinas') > -1 ? 
+                            ${ row.tujuan_pemberangkatan.indexOf('antar_dinas') > -1 || row.tujuan_pemberangkatan.indexOf('jemput_dinas') > -1 ?
                                 `<div class="row">
                                     <div class="col-3">Karyawan</div>
                                     <div class="col-9">: `+(row.karyawan_dinas_luar==null?'':row.karyawan_dinas_luar)+`</div>
                                 </div>`: ``
                             }
-                            ${ row.tujuan_pemberangkatan.indexOf('antar_tamu') > -1 || row.tujuan_pemberangkatan.indexOf('jemput_tamu') > -1 ? 
+                            ${ row.tujuan_pemberangkatan.indexOf('antar_tamu') > -1 || row.tujuan_pemberangkatan.indexOf('jemput_tamu') > -1 ?
                                 `<div class="row">
                                     <div class="col-5">Nama Tamu</div>
                                     <div class="col-7">: `+row.nama_tamu+`</div>

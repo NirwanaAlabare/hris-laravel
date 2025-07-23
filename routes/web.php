@@ -396,6 +396,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('hrd/ajax_getemployeeidbyfilter',['as'=>'hris.hrd.ajax_getemployeeidbyfilter','uses'=>'HRDController@ajax_getemployeeidbyfilter']);
 
     Route::get('ga/form_pengajuan_transportasi',['as'=>'hris.ga.form_pengajuan_transportasi','uses'=>'GAController@form_pengajuan_transportasi']);
+    Route::get('ga/form_pengajuan_transportasi_2_admin',['as'=>'hris.ga.form_pengajuan_transportasi_2_admin','uses'=>'GAController@form_pengajuan_transportasi_2_admin']);
+    Route::get('ga/data_pengajuan_transportasi_admin',['as'=>'hris.ga.data_pengajuan_transportasi_admin','uses'=>'GAController@data_pengajuan_transportasi_admin']);
     Route::post('ga/get_province',['as'=>'hris.ga.get_province','uses'=>'GAController@get_province']);
     Route::post('ga/get_all_zone_name',['as'=>'hris.ga.get_all_zone_name','uses'=>'GAController@get_all_zone_name']);
     Route::post('ga/get_cities',['as'=>'hris.ga.get_cities','uses'=>'GAController@get_cities']);
@@ -423,6 +425,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('ga/print_pdf_summary_driver',['as'=>'hris.ga.print_pdf_summary_driver','uses'=>'GAController@print_pdf_summary_driver']);
     Route::post('ga/export_excel_transportasi',['as'=>'hris.ga.export_excel_transportasi','uses'=>'GAController@export_excel_transportasi']);
     Route::get('ga/lihat_detail',['as'=>'hris.ga.lihat_detail','uses'=>'GAController@lihat_detail']);
+    Route::get('ga/lihat_detail_admin',['as'=>'hris.ga.lihat_detail_admin','uses'=>'GAController@lihat_detail_admin']);
     Route::get('ga/edit_detail',['as'=>'hris.ga.edit_detail','uses'=>'GAController@edit_detail']);
     Route::post('ga/get_route_from_user',['as'=>'hris.ga.get_route_from_user','uses'=>'GAController@get_route_from_user']);
     Route::post('ga/get_route_from_user_choice',['as'=>'hris.ga.get_route_from_user_choice','uses'=>'GAController@get_route_from_user_choice']);

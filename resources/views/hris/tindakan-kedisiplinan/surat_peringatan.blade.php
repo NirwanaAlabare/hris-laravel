@@ -246,7 +246,7 @@ h1 {
     <div class="page-header shadow pr-2 m-0 pt-0 pb-0 pl-2">
         <ol class="breadcrumb breadcrumb-arrow m-0 p-0">
             <li><a href="{{route('entertaint_tamu.index')}}">Administrasi</a></li>
-            <li class="active"><span>Surat Peringatan</span></li>
+            <li class="active"><span>Form Pengajuan Tindak Pendisiplinan</span></li>
             <input type="hidden" value="{{$user}}" id="username_who_access">
         </ol>
         <div class="ml-auto">
@@ -266,14 +266,14 @@ h1 {
         <div class="col-md-12">
             <div class="card card-primary card-outline tab-content">
                     <div class="card-header bg-primary p-3">
-                        <div class="card-title">Surat Peringatan</div>
+                        <div class="card-title">Form Pengajuan Tindak Pendisiplinan</div>
                     </div>
                         <div class="mt-4 ml-4 mr-5 mb-0">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div clasl="" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
                                         <div class="mt-5 p-0">
-                                            <button class="btn btn-primary w-100" onclick="openModalBuatPengajuan()"  data-toggle="tooltip" title="Cari Data" id="recap_labor_cost_2"><i class="fa fa-plus" aria-hidden="true"></i> Pengajuan Kedisiplinan</button>
+                                            <button class="btn btn-primary w-100" onclick="openModalBuatPengajuan()"  data-toggle="tooltip" title="Cari Data" id="recap_labor_cost_2"><i class="fa fa-plus" aria-hidden="true"></i> Pengajuan Pendisiplinan</button>
                                         </div>
 
                                     </div>
@@ -1708,7 +1708,7 @@ h1 {
     <script>
         function closeModalBuatPengajuan() {
             $("#ajax-modal-tambah").modal('hide');
-            $('#title-modal-edit1').text('Buat Form Pengajuan Kedisiplinan');
+            $('#title-modal-edit1').text('Buat Form Pengajuan Pendisiplinan');
             $('#tanggal_pengajuan').val('');
             $('#tanggal_mulai_ijin').val('');
             $('#tanggal_akhir_ijin').val('');
@@ -1724,7 +1724,7 @@ h1 {
         }
         function openModalBuatPengajuan() {
             $("#ajax-modal-tambah").modal('show');
-            $('#title-modal-edit1').text('Buat Form Pengajuan Kedisiplinan');
+            $('#title-modal-edit1').text('Buat Form Pengajuan Pendisiplinan');
             var today = new Date();
             var dd = String(today.getDate()).padStart(2, '0');
             var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!

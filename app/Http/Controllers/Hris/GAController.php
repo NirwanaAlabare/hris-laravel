@@ -40,6 +40,18 @@ class GAController extends AdminBaseController
         $tujuan_short=DB::select("select a.provinsi,a.city,a.district,a.subdistrict,e.prov_id,d.city_id,c.dis_id,b.subdis_id,a.instansi,a.detail_alamat from (select*from tujuan_transportasi where permintaan_transportasi_id in (select id from permintaan_transportasi where created_by = '$id_user'))a inner join subdistricts b on a.subdistrict=b.subdis_name inner join districts c on a.district=c.dis_name and b.dis_id=c.dis_id inner join cities d on c.city_id=d.city_id inner join provinces e on e.prov_id=d.prov_id group by a.detail_alamat,b.subdis_id");
         return View::make('hris/ga/form_pengajuan_transportasi_2', $this->data,compact('id_user','provincies','cities','districts','subdistricts','tujuan_short','pengajuan_transportasi'));
     }
+    public function form_pengajuan_transportasi_2_admin(){
+        $this->selectemployee = $this->ajax_getallemployeeatribut();
+        $provincies=DB::select('select * from provinces order by prov_id');
+        $cities=DB::select("select * from cities order by city_id");
+        $districts=DB::select("select * from districts order by dis_id");
+        $subdistricts=DB::select("select * from subdistricts order by subdis_id");
+        $loggedAdmin = Auth::guard('admin')->user();
+        $id_user = $loggedAdmin->enroll_id;
+        $pengajuan_transportasi=PermintaanTransportasi::where('status',0)->count();
+        $tujuan_short=DB::select("select a.provinsi,a.city,a.district,a.subdistrict,e.prov_id,d.city_id,c.dis_id,b.subdis_id,a.instansi,a.detail_alamat from (select*from tujuan_transportasi where permintaan_transportasi_id in (select id from permintaan_transportasi where created_by = '$id_user'))a inner join subdistricts b on a.subdistrict=b.subdis_name inner join districts c on a.district=c.dis_name and b.dis_id=c.dis_id inner join cities d on c.city_id=d.city_id inner join provinces e on e.prov_id=d.prov_id group by a.detail_alamat,b.subdis_id");
+        return View::make('hris/ga/form_pengajuan_transportasi_2_admin', $this->data,compact('id_user','provincies','cities','districts','subdistricts','tujuan_short','pengajuan_transportasi'));
+    }
     public function get_all_destination_history(){
         $id=request()->id;
         $tujuan_short=DB::select("select a.instansi,a.detail_alamat,a.subdistrict,c.dis_id,d.city_id,e.prov_id,b.subdis_name,c.dis_name,d.city_name,e.prov_name,concat(a.instansi,' (',a.detail_alamat,') - ',b.subdis_name,' - ',c.dis_name,' - ',d.city_name,' - ',e.prov_name) detail_alamat_tujuan from (select*from tujuan_transportasi where permintaan_transportasi_id in (select id from permintaan_transportasi where created_by = $id) order by created_at)a inner join subdistricts b on a.subdistrict=b.subdis_id inner join districts c on b.dis_id=c.dis_id inner join cities d on c.city_id=d.city_id inner join provinces e on d.prov_id=e.prov_id group by instansi,detail_alamat,subdistrict");
@@ -63,6 +75,20 @@ class GAController extends AdminBaseController
             DB::raw("select*from ga_master_kendaraan") );
         $pengajuan_transportasi=PermintaanTransportasi::where('status',0)->count();
         return View::make('hris/ga/data_pengajuan_transportasi', $this->data,compact('email','id_user','drivers','vehicles','pengajuan_transportasi'));
+    }
+    public function data_pengajuan_transportasi_admin(){
+        $this->selectemployee = $this->ajax_getallemployeeatribut();
+        $loggedAdmin = Auth::guard('admin')->user();
+        $email = $loggedAdmin->email;
+        $id_user = $loggedAdmin->enroll_id;
+        $drivers=EmployeeAtribut::where('sub_dept_id','DEP08SUB002')->where(function($query){
+            $query->where('status_aktif','AKTIF')
+            ->orWhere('tanggal_resign','>',date('Y-m-d'));
+        })->get();
+        $vehicles =  DB::connection('laravel_nds')->select(
+            DB::raw("select*from ga_master_kendaraan") );
+        $pengajuan_transportasi=PermintaanTransportasi::where('status',0)->count();
+        return View::make('hris/ga/data_pengajuan_transportasi_admin', $this->data,compact('email','id_user','drivers','vehicles','pengajuan_transportasi'));
     }
     public function get_data_pengajuan_transportasi(Request $request){
         $user=request()->user;
@@ -779,6 +805,21 @@ class GAController extends AdminBaseController
             DB::raw("select*from ga_master_kendaraan") );
         $pengajuan_transportasi=DB::select("select a.created_by,a.enroll_id,a.id,b.employee_name,b.nik,b.department_name,b.sub_dept_name,a.id_desa,c.subdis_name nama_desa,d.dis_id,d.dis_name nama_kecamatan,e.city_id,e.city_name nama_kota,f.prov_id,f.prov_name nama_provinsi,a.instansi,a.detail_alamat,a.tanggal_pemberangkatan,a.jam_pemberangkatan,a.status,a.created_at,a.updated_at from (select*from permintaan_transportasi where id='$id') a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id");
         return View::make('hris/ga/data_detail_pengajuan_transportasi_2', $this->data,compact('pengajuan_transportasi','provincies','id_user','drivers','vehicles'));
+    }
+    public function lihat_detail_admin(){
+        $loggedAdmin = Auth::guard('admin')->user();
+        $id_user = $loggedAdmin->enroll_id;
+        $this->selectemployee = $this->ajax_getallemployeeatribut();
+        $provincies=DB::select('select * from provinces order by prov_id');
+        $id=request()->id;
+        $drivers=EmployeeAtribut::where('sub_dept_id','DEP08SUB002')->where(function($query){
+            $query->where('status_aktif','AKTIF')
+            ->orWhere('tanggal_resign','>',date('Y-m-d'));
+        })->get();
+        $vehicles =  DB::connection('laravel_nds')->select(
+            DB::raw("select*from ga_master_kendaraan") );
+        $pengajuan_transportasi=DB::select("select a.created_by,a.enroll_id,a.id,b.employee_name,b.nik,b.department_name,b.sub_dept_name,a.id_desa,c.subdis_name nama_desa,d.dis_id,d.dis_name nama_kecamatan,e.city_id,e.city_name nama_kota,f.prov_id,f.prov_name nama_provinsi,a.instansi,a.detail_alamat,a.tanggal_pemberangkatan,a.jam_pemberangkatan,a.status,a.created_at,a.updated_at from (select*from permintaan_transportasi where id='$id') a inner join employee_atribut b on a.enroll_id=b.enroll_id inner join subdistricts c on a.id_desa=c.subdis_id inner join districts d on c.dis_id=d.dis_id inner join cities e on d.city_id=e.city_id inner join provinces f on e.prov_id=f.prov_id");
+        return View::make('hris/ga/data_detail_pengajuan_transportasi_2_admin', $this->data,compact('pengajuan_transportasi','provincies','id_user','drivers','vehicles'));
     }
     public function get_employee_dinas(){
         $employee_array = explode(',', request()->id);

@@ -6,7 +6,7 @@
         <li class="slide">
             <a class="side-menu__item" data-toggle="slide" href="#"><i class="side-menu__icon fa fa-car"></i><span class="side-menu__label">Transportasi</span><i class="angle fa fa-angle-right"></i></a>
             <ul class="slide-menu">
-                <li><a href="{{route('hris.ga.form_pengajuan_transportasi')}}" class="slide-item pl-3"><span> Pengajuan Transportasi</span></a></li>
+                <li><a href="{{route('hris.ga.data_pengajuan_transportasi')}}" class="slide-item pl-3"><span> Pengajuan Transportasi</span></a></li>
                 <li><a href="{{route('hris.ga.pemeliharaan_kendaraan')}}" class="slide-item pl-3"><span> Pemeliharaan Kendaraan</span></a></li>
             </ul>
         </li>

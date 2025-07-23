@@ -18,7 +18,7 @@
                 <a class="btn btn-primary" style="background-color:blue" href="{{route('hris.ga.form_pengajuan_transportasi')}}">Formulir</a>
             </li>
             <li class="nav-item">
-                @if ($id_user==4241 || $id_user==20 || $id_user==5321 || $id_user==6083)
+                @if ($id_user==4241 || $id_user==20 || $id_user==7765 || $id_user==6083)
                     <a class="btn btn-white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data <span class="badge text-dark" style="font-weight:bold; background-color:#d2eafc;padding-left:5px;padding-right:5px">{{$pengajuan_transportasi}}</span></a>
                 @else
                     <a class="btn btn-white" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data</a>
@@ -210,13 +210,13 @@
         </div>
     </div>
     <div class="card-body px-6 py-4" style="border: 1px solid #d8d4dc">
-        
+
         <div class="row pb-2 pt-1">
             <div class="col-2 pt-1">
-                
+
             </div>
             <div class="col-4 pt-2">
-                
+
             </div>
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Tujuan</label>
@@ -228,7 +228,7 @@
                             <button class="btn btn-primary py-1 mr-3" id="tujuan_lainnya" style="font-weight:bold"> + Daftar Tujuan</button></label>
                         </td>
                         <td width="1000px">
-                            
+
                         </td>
                     </tr>
                 </table>
@@ -239,7 +239,7 @@
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Provinsi</label>
             </div>
             <div class="col-4">
-                
+
             </div>
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Provinsi</label>
@@ -255,7 +255,7 @@
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kabupaten/Kota</label>
             </div>
             <div class="col-4">
-                
+
             </div>
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kabupaten/Kota</label>
@@ -286,7 +286,7 @@
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kelurahan/Desa</label>
             </div>
             <div class="col-4">
-                
+
             </div>
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Kelurahan/Desa</label>
@@ -302,7 +302,7 @@
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Detail Alamat</label>
             </div>
             <div class="col-4">
-                
+
             </div>
             <div class="col-2 pt-1">
                 <label class="form-label" style="font-weight: bold; color:rgb(99, 99, 132);font-size:12pt"> Detail Alamat</label>
@@ -576,7 +576,7 @@
     });
     var count=1;
     var all_history_alamat=[];
-    
+
     function pilih_history_alamat(value){
         var pilihan_history=$('#pilihan_history').val();
         const myArray = pilihan_history.split("-");
@@ -901,7 +901,7 @@
         if(!province.includes('') && !city.includes('') && !district.includes('') && !subdistrict.includes('') && !detail_alamat.includes('') && !tanggal_kedatangan.includes('') && !jam_kedatangan.includes('')){
             $('#tujuanLainnyaModal').modal('hide');
         }
-        
+
         if(($('#checkbox_3').is(':checked')||$('#checkbox_4').is(':checked')) && !$('#checkbox_1').is(':checked') && !$('#checkbox_2').is(':checked'))
         {
             $('#instansi').val($('#instansi_yang_ke_1').val());
@@ -1542,7 +1542,7 @@
                 }
             });
         });
-        $('#checkbox_1').on('change', function() { 
+        $('#checkbox_1').on('change', function() {
             if (this.checked) {
                 document.getElementById('tag_nama_tamu').style.display='block';
             }else{
@@ -1554,7 +1554,7 @@
                 }
             }
         });
-        $('#checkbox_2').on('change', function() { 
+        $('#checkbox_2').on('change', function() {
             if (this.checked) {
                 document.getElementById('tag_nama_tamu').style.display='block';
             }else{
@@ -1566,7 +1566,7 @@
                 }
             }
         });
-        $('#checkbox_3').on('change', function() { 
+        $('#checkbox_3').on('change', function() {
             if (this.checked) {
                 document.getElementById('tag_jenis_barang').style.display='block';
                 var keterangan = $("input[name='keterangan_ke[]']").map(function(){return $(this).val();}).get();
@@ -1584,7 +1584,7 @@
                 }
             }
         });
-        $('#checkbox_4').on('change', function() { 
+        $('#checkbox_4').on('change', function() {
             if (this.checked) {
                 document.getElementById('tag_jenis_barang').style.display='block';
                 var keterangan = $("input[name='keterangan_ke[]']").map(function(){return $(this).val();}).get();
@@ -1601,7 +1601,7 @@
                 }
             }
         });
-        $('#checkbox_5').on('change', function() { 
+        $('#checkbox_5').on('change', function() {
             if (this.checked) {
                 document.getElementById('tag_antar_dinas').style.display='block';
             }else{
@@ -1611,7 +1611,7 @@
                 }
             }
         });
-        $('#checkbox_6').on('change', function() { 
+        $('#checkbox_6').on('change', function() {
             if (this.checked) {
                 document.getElementById('tag_antar_dinas').style.display='block';
             }else{

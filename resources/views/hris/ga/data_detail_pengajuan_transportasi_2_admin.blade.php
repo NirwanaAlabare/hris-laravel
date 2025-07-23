@@ -1,4 +1,4 @@
-@extends('admin.adminlayouts.adminlayout4')
+@extends('admin.adminlayouts.adminlayout-mut-karyawan')
 
 @section('head')
 <link href="{{ URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
@@ -18,11 +18,11 @@
 <div class="card">
     <div class="card-header mt-7 pt-1 pb-0">
         <ul class="nav nav-tabs">
-            {{-- <li class="nav-item">
-                <a class="btn btn-white" style="background-color:rgb(228, 228, 228);" href="{{route('hris.ga.form_pengajuan_transportasi')}}">Formulir</a>
-            </li> --}}
             <li class="nav-item">
-                <a class="btn btn-white" style="background-color:rgb(228, 228, 228);" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data </a>
+                <a class="btn btn-white" style="background-color:rgb(228, 228, 228);" href="{{route('hris.ga.form_pengajuan_transportasi_2_admin')}}">Formulir</a>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-white" style="background-color:rgb(228, 228, 228);" href="{{route('hris.ga.data_pengajuan_transportasi_admin')}}">Data</a>
             </li>
             <li class="nav-item">
                 <a class="btn btn-primary" href="#">Lihat Pengajuan Transportasi</a>
@@ -137,7 +137,7 @@
         </div>
         <div class="row pt-2">
             <div class="col-12 text-center">
-                <a class="btn" style="background-color:rgb(236, 165, 32);color:rgb(0, 0, 0)" href="{{route('hris.ga.data_pengajuan_transportasi')}}"><i class="fa fa-caret-left" style="font-size:12pt" aria-hidden="true"></i> Back</a>
+                <a class="btn" style="background-color:rgb(236, 165, 32);color:rgb(0, 0, 0)" href="{{route('hris.ga.data_pengajuan_transportasi_admin')}}"><i class="fa fa-caret-left" style="font-size:12pt" aria-hidden="true"></i> Back</a>
                 @if($id_user==4241 || $id_user==20 || $id_user==5321 || $id_user==6083)
                 <button class="btn btn-success" onclick="saveChanges()"><i class="fa fa-save" style="font-size:11pt"></i> UPDATE REQUEST</button>
                 @endif
@@ -2632,7 +2632,7 @@
                         swal("", "Status permintaan transportasi telah di hapus oleh user", "error");
                     }else{
                         swal("", "Permintaan transportasi berhasil di update", "success");
-                        var url = 'data_pengajuan_transportasi';
+                        var url = 'data_pengajuan_transportasi_admin';
                         window.open(url, '_self');
                     }
                 },

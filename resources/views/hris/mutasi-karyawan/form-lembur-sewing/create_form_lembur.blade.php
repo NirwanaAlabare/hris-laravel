@@ -26,7 +26,7 @@
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <form action="#" method="post" onsubmit="submitForm(this, event)" name='form_modal' id='form_modal'>
-            <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-dialog modal-md modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header bg-sb text-black">
                         <h1 class="modal-title fs-1">Scan QR Tambah Karyawan</h1>

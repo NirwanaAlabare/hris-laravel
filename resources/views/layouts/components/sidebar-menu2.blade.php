@@ -21,7 +21,7 @@
                 <li><a href="{{route('hris.hrd.kontrak_kerja')}}" class="slide-item"><span> PKS</span></a></li>
                 <li><a href="{{route('hris.hrd.layoff_termination')}}" class="slide-item"><span> Layoff & Termination</span></a></li>
                 <li><a href="{{route('permintaan_tenaga_kerja_hr.permintaan_tenaga_kerja_hr')}}" class="slide-item"><span> Permintaan Tenaga Kerja</span></a></li>
-                <li><a href="{{route('tindakan_kedisiplinan.surat_peringatan_hr')}}" class="slide-item"><span> Kedisiplinan</span></a></li>
+                <li><a href="{{route('tindakan_kedisiplinan.surat_peringatan_hr')}}" class="slide-item"><span> Pendisiplinan</span></a></li>
             </ul>
         </li>
         @php
