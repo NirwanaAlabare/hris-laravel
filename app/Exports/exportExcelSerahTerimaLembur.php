@@ -16,7 +16,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use DB;
 
-class exportExcelSerahTerimaLembur implements FromView
+class exportExcelSerahTerimaLembur implements FromView, WithColumnFormatting
 {
     public function __construct($query)
     {
@@ -27,5 +27,13 @@ class exportExcelSerahTerimaLembur implements FromView
         return view('hris.Laporan.excel_serah_terima',[
             'query' => $this->query,
         ]);
+    }
+
+     public function columnFormats(): array
+    {
+        return [
+            'B' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'C' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+        ];
     }
 }

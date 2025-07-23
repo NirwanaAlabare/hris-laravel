@@ -24,8 +24,8 @@
             @foreach ($query as $enrollId => $data_sp)
             <tr>
                 <td style="">{{ $enrollId + 1 }}</td>
-                <td>{{ \Carbon\Carbon::parse($data_sp->created_at)->translatedFormat('d F Y') }}</td>
-                <td>{{ \Carbon\Carbon::parse($data_sp->tanggal_berjalan)->translatedFormat('d F Y') }}</td>
+                <td>{{ \Carbon\Carbon::parse($data_sp->created_at)->translatedFormat('d-m-Y') }}</td>
+                <td>{{ \Carbon\Carbon::parse($data_sp->tanggal_berjalan)->translatedFormat('d-m-Y') }}</td>
                 <td style="">{{ $data_sp->nomor_form_lembur }}</td>
                 <td style="">{{ $data_sp->jumlah_karyawan }}</td>
                 <td style=""></td>
