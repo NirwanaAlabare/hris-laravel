@@ -238,7 +238,7 @@ class KoreksiPotonganController extends AdminBaseController
             $query = DataKoreksiPotongan::create([
                 'uuid' => Str::uuid(),
                 'kode_koreksi_potongan' => $kode_koreksi_potongan,
-                'tanggal_koreksi' => $format_tanggal,
+                'tanggal_koreksi' => $tanggal_koreksi,
                 'enroll_id' => $enroll_id,
                 'jumlah_rp_potongan' => $jumlah_rp_potongan,
                 'periode_tanggal_koreksi' => $periode_tanggal_koreksi,
