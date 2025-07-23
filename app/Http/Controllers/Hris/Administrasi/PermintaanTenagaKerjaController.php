@@ -359,10 +359,9 @@ class PermintaanTenagaKerjaController extends AdminBaseController
             $item->status_pengajuan = $data[0]->status_pengajuan ?? null;
 
         }
-
-
         $pdf = PDF::loadview('hris/permintaan_tenaga_kerja/export_permintaan_tenaga_kerja_pdf',['data'=>$kualifikasi]);
-        return $pdf->stream('form-nilai-kinerja.pdf');
+        $date_bulan = date('ym');
+        return $pdf->stream(' FPTK '.$date_bulan.' '.$data[0]->sub_dept_name.' .pdf');
     }
     public function get_employee_fptk(Request $request)
     {
