@@ -27,11 +27,6 @@
             <a class="btn btn-white" style="background-color:rgb(228, 228, 228);" href="{{route('hris.ga.summary_driver_task')}}">Summary Driver</a>
         </li>
         @endif
-         @if ($id_user==4241 || $id_user==20 || $id_user==7765 || $id_user==6083 || $id_user==0)
-            <li class="nav-item">
-                <a class="btn btn-white" style="background-color:rgb(228, 228, 228);" href="{{route('hris.ga.summary_driver_task')}}">Summary Driver</a>
-            </li>
-            @endif
     </ul>
 </div>
 
