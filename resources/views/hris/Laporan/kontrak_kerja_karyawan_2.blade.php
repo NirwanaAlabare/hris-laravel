@@ -88,7 +88,7 @@
         <tr>
             <td style="font-family:Arial, Helvetica, sans-serif;font-size:7pt;text-align:justify;padding-top:8px">
                 Dalam hal ini bertindak atas nama diri sendiri, dan selanjutnya disebut <b>PIHAK KEDUA</b>.<br>
-                Pada hari <b>{{Carbon\Carbon::parse($contract2)->translatedFormat('l')}}</b> Tanggal <b>{{Carbon\Carbon::parse($contract_end2)->translatedFormat('d F Y')}}</b> bertempat di PT. Nirwana Alabare Garment kedua belah pihak sepakat untuk mengadakan Perjanjian Kerja Waktu Tertentu dengan ketentuan-ketentuan sebagai berikut:</b>.
+                Pada hari <b>{{Carbon\Carbon::parse($contract2)->translatedFormat('l')}}</b> Tanggal <b>{{Carbon\Carbon::parse($contract2)->translatedFormat('d F Y')}}</b> bertempat di PT. Nirwana Alabare Garment kedua belah pihak sepakat untuk mengadakan Perjanjian Kerja Waktu Tertentu dengan ketentuan-ketentuan sebagai berikut:</b>.
             </td>
         </tr>
         <tr>
