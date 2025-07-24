@@ -273,50 +273,55 @@ h1 {
     </div>
 
 
-    <div class="row p-3">
-        <div class="col-md-12">
-            <div class="card card-primary card-outline tab-content">
-                    <div class="card-header bg-primary p-3">
-                        <div class="card-title">Surat Peringatan</div>
-                    </div>
-                        <div class="mt-4 ml-4 mr-5 mb-0">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div clasl="" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-                                        <div class="mt-5 p-0">
-                                            <button class="btn btn-primary w-100" onclick="openModalBuatPengajuan()"  data-toggle="tooltip" title="Cari Data" ><i class="fa fa-plus" aria-hidden="true"></i> Buat Surat Peringatan</button>
-                                        </div>
-                                        <div class="mt-5 p-0" style="display: flex; gap: 5px;">
-                                            <div class="col-auto">
-                                                <input type="hidden" id="daterange1" name="daterange1">
-                                                <a class="nav-link card-title m-0" style="border: 1px solid #d8d4dc" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
+     <div class="m-0 p-0">
+        <div class="card-body m-0">
+            <div class="panel panel-primary py-2 pt-5">
+                <div class="tab_wrapper first_tab">
+                    <ul class="tab_list">
+                        <li class="text-sm" id="tab-surat-peringatan">Surat Peringatan</li>
+                        <li class="text-sm" id="tab-coaching">Coaching</li>
+                    </ul>
+                    <div class="content_wrapper">
+                        <!-- Tab surat peringatan -->
+                        <div class="tab_content active" id="tab-surat-peringatan">
+                            <div class="">
+                                <div class="mt-4 ml-4 mr-5 mb-0">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div clasl="" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                                                <div class="mt-5 p-0">
+                                                    <button class="btn btn-primary w-100" onclick="openModalBuatPengajuan()"  data-toggle="tooltip" title="Cari Data" ><i class="fa fa-plus" aria-hidden="true"></i> Buat Surat Peringatan</button>
+                                                </div>
+                                                <div class="mt-5 p-0" style="display: flex; gap: 5px;">
+                                                    <div class="col-auto">
+                                                        <input type="hidden" id="daterange1" name="daterange1">
+                                                        <a class="nav-link card-title m-0" style="border: 1px solid #d8d4dc" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <select id="rentan_posisi" class="form-control">
+                                                            <option value=''>-- PILIH KONDISI --</option>
+                                                            <option value='dalam_rentan_waktu'>DALAM MASA SP</option>
+                                                            <option value='selesai_rentan_waktu'>SELESAI MASA SP</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <select id="status_sp" class="form-control">
+                                                            <option value=''>-- PILIH STATUS --</option>
+                                                            <option value='sp_1'>SP 1</option>
+                                                            <option value='sp_2'>SP 2</option>
+                                                            <option value='sp_3'>SP 3</option>
+                                                        </select>
+                                                    </div>
+                                                    <button class="btn btn-success w-100" onclick="ExportSuratPeringatan()"  data-toggle="tooltip" title="Cari Data" id="btn_export_excel_kontrak"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Excel</button>
+                                                </div>
                                             </div>
-                                            <div class="col-auto">
-                                                <select id="rentan_posisi" class="form-control">
-                                                    <option value=''>-- PILIH KONDISI --</option>
-                                                    <option value='dalam_rentan_waktu'>DALAM MASA SP</option>
-                                                    <option value='selesai_rentan_waktu'>SELESAI MASA SP</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-auto">
-                                                <select id="status_sp" class="form-control">
-                                                    <option value=''>-- PILIH STATUS --</option>
-                                                    <option value='sp_1'>SP 1</option>
-                                                    <option value='sp_2'>SP 2</option>
-                                                    <option value='sp_3'>SP 3</option>
-                                                </select>
-                                            </div>
-                                            <button class="btn btn-success w-100" onclick="ExportSuratPeringatan()"  data-toggle="tooltip" title="Cari Data" id="btn_export_excel_kontrak"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Excel</button>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="m-0 p-0">
-                            <div class="card-body m-0">
-                                <div class=" px-3 py-2 pt-5">
-                                            <!-- Tab Waiting -->
-                                            <div class="tab_content active" id="tab-content-waiting">
+                                <div class="m-0 p-0">
+                                    <div class="card-body m-0">
+                                        <div class=" px-3 py-2 pt-5">
+                                            <div class="" >
                                                 <div class="table-responsive">
                                                     <table id="datatable-ajax-crud-waiting" class="table table-sm table-striped table-hover table-bordered w-100">
                                                         <thead>
@@ -337,12 +342,132 @@ h1 {
                                                     </table>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                         <div class="tab_content" id="tab-coaching">
+                            <div class="">
+                                <div class="mt-4 ml-4 mr-5 mb-0">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            {{-- <div clasl="" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                                                <div class="mt-5 p-0">
+                                                    <button class="btn btn-primary w-100" onclick="openModalBuatPengajuan()"  data-toggle="tooltip" title="Cari Data" ><i class="fa fa-plus" aria-hidden="true"></i> Buat Form Coaching</button>
+                                                </div>
+                                                <div class="mt-5 p-0" style="display: flex; gap: 5px;">
+                                                    <div class="col-auto">
+                                                        <select id="rentan_posisi" class="form-control">
+                                                            <option value=''>-- PILIH KONDISI --</option>
+                                                            <option value='dalam_rentan_waktu'>DALAM MASA SP</option>
+                                                            <option value='selesai_rentan_waktu'>SELESAI MASA SP</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <select id="status_sp" class="form-control">
+                                                            <option value=''>-- PILIH STATUS --</option>
+                                                            <option value='sp_1'>SP 1</option>
+                                                            <option value='sp_2'>SP 2</option>
+                                                            <option value='sp_3'>SP 3</option>
+                                                        </select>
+                                                    </div>
+                                                    <button class="btn btn-success w-100" onclick="ExportSuratPeringatan()"  data-toggle="tooltip" title="Cari Data" id="btn_export_excel_kontrak"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Excel</button>
+                                                </div>
+                                            </div> --}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="m-0 p-0">
+                                    <div class="card-body m-0">
+                                        <div class=" px-3 py-2 pt-5">
+                                            <div class="" >
+                                                <div class="table-responsive">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+
+    {{-- <div class="row p-3">
+        <div class="col-md-12">
+            <div class="card card-primary card-outline tab-content">
+                <div class="card-header bg-primary p-3">
+                    <div class="card-title">Surat Peringatan</div>
+                </div>
+                <div class="mt-4 ml-4 mr-5 mb-0">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div clasl="" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                                <div class="mt-5 p-0">
+                                    <button class="btn btn-primary w-100" onclick="openModalBuatPengajuan()"  data-toggle="tooltip" title="Cari Data" ><i class="fa fa-plus" aria-hidden="true"></i> Buat Surat Peringatan</button>
+                                </div>
+                                <div class="mt-5 p-0" style="display: flex; gap: 5px;">
+                                    <div class="col-auto">
+                                        <input type="hidden" id="daterange1" name="daterange1">
+                                        <a class="nav-link card-title m-0" style="border: 1px solid #d8d4dc" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
+                                    </div>
+                                    <div class="col-auto">
+                                        <select id="rentan_posisi" class="form-control">
+                                            <option value=''>-- PILIH KONDISI --</option>
+                                            <option value='dalam_rentan_waktu'>DALAM MASA SP</option>
+                                            <option value='selesai_rentan_waktu'>SELESAI MASA SP</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-auto">
+                                        <select id="status_sp" class="form-control">
+                                            <option value=''>-- PILIH STATUS --</option>
+                                            <option value='sp_1'>SP 1</option>
+                                            <option value='sp_2'>SP 2</option>
+                                            <option value='sp_3'>SP 3</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-success w-100" onclick="ExportSuratPeringatan()"  data-toggle="tooltip" title="Cari Data" id="btn_export_excel_kontrak"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Excel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="m-0 p-0">
+                    <div class="card-body m-0">
+                        <div class=" px-3 py-2 pt-5">
+                                    <!-- Tab Waiting -->
+                                    <div class="tab_content active" id="tab-content-waiting">
+                                        <div class="table-responsive">
+                                            <table id="datatable-ajax-crud-waiting" class="table table-sm table-striped table-hover table-bordered w-100">
+                                                <thead>
+                                                    <tr class="text-center">
+                                                        <th scope="col">Nik</th>
+                                                        <th scope="col">Nama</th>
+                                                        <th scope="col">Bagian</th>
+                                                        <th scope="col">Department</th>
+                                                        <th scope="col">Peringatan</th>
+                                                        <th scope="col">Pasal</th>
+                                                        <th scope="col">Tanggal Mulai</th>
+                                                        <th scope="col">Tanggal Sampai</th>
+                                                        <th scope="col">Aksi</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> --}}
 
 
     {{-- MODAL TAMBAH --}}
@@ -773,6 +898,10 @@ h1 {
     </style>
 
     <script>
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    $('#datatable-ajax-crud-waiting').DataTable().columns.adjust().draw();
+});
+
          $('.fc-datepicker').datepicker({
             showOtherMonths: true,
             selectOtherMonths: true,

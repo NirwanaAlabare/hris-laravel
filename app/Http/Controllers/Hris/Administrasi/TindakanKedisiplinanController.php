@@ -343,7 +343,7 @@ class TindakanKedisiplinanController extends AdminBaseController
     }
 
    public function print_pengajuan_sp_pdf(Request $request)
-{
+    {
     $pengajuan_id = $request->route('id');
 
     // Ambil semua data pengajuan (anggap bisa lebih dari 1)
@@ -375,7 +375,7 @@ class TindakanKedisiplinanController extends AdminBaseController
     ]);
 
     return $pdf->stream('form-nilai-kinerja.pdf');
-}
+    }
 
 
     public function print_sp_karyawan(Request $request)
@@ -467,6 +467,9 @@ class TindakanKedisiplinanController extends AdminBaseController
         $search = $request->input('search.value');
         $status_sp = $request->input('surat_peringatan');
         $rentan_posisi = $request->input('rentan_posisi');
+        $start = $request->input('start'); // index pertama
+        $length = $request->input('length'); // jumlah data per halaman
+
 
         $today = now()->format('Y-m-d');
 
@@ -514,71 +517,73 @@ class TindakanKedisiplinanController extends AdminBaseController
         }
 
 
-        $data = $query ->get();
-        // Format response untuk DataTables
+
+        $start = $request->input('start', 0);
+        $length = $request->input('length', 10);
+
+        $totalFiltered = $query->count(); // total setelah filter
+
+        $data = $query->skip($start)->take($length)->get();
+
         return response()->json([
             'draw' => intval($request->input('draw')),
-            'recordsTotal' => count($data),
-            'recordsFiltered' => count($data),
-            'data' => $data
+            'recordsTotal' => $totalFiltered,
+            'recordsFiltered' => $totalFiltered,
+            'data' => $data,
         ]);
     }
 
-public function export_excel_surat_peringatan(Request $request)
-{
-    ini_set('max_execution_time', 0);
-    $today = now()->format('Y-m-d');
+    public function export_excel_surat_peringatan(Request $request)
+    {
+        ini_set('max_execution_time', 0);
+        $today = now()->format('Y-m-d');
 
-    $query = SuratPeringatanKaryawan::select(
-        'surat_peringatan_karyawan.*',
-        'employee_atribut.employee_name',
-        'employee_atribut.nik',
-        'employee_atribut.department_name',
-        'employee_atribut.sub_dept_name',
-        'employee_atribut.status_jabatan',
-        'pasal_surat_peringatan.deskripsi',
-        'pasal_surat_peringatan.desc_surat_peringatan',
-        'pasal_surat_peringatan.pasal',
-    )
-    ->leftJoin('employee_atribut', 'surat_peringatan_karyawan.enroll_id', '=', 'employee_atribut.enroll_id')
-    ->leftJoin('pasal_surat_peringatan', 'surat_peringatan_karyawan.kode_pasal', '=', 'pasal_surat_peringatan.kode_pasal')
-    ->orderBy('surat_peringatan_karyawan.tanggal_mulai', 'ASC');
+        $query = SuratPeringatanKaryawan::select(
+            'surat_peringatan_karyawan.*',
+            'employee_atribut.employee_name',
+            'employee_atribut.nik',
+            'employee_atribut.department_name',
+            'employee_atribut.sub_dept_name',
+            'employee_atribut.status_jabatan',
+            'pasal_surat_peringatan.deskripsi',
+            'pasal_surat_peringatan.desc_surat_peringatan',
+            'pasal_surat_peringatan.pasal',
+        )
+        ->leftJoin('employee_atribut', 'surat_peringatan_karyawan.enroll_id', '=', 'employee_atribut.enroll_id')
+        ->leftJoin('pasal_surat_peringatan', 'surat_peringatan_karyawan.kode_pasal', '=', 'pasal_surat_peringatan.kode_pasal')
+        ->orderBy('surat_peringatan_karyawan.tanggal_mulai', 'ASC');
 
-    // Filter berdasarkan daterange jika ada
-    if (!empty($request->daterange1)) {
-        $arrperiode = explode(" s/d ", $request->daterange1);
-        $first_date = $arrperiode[0];
-        $last_date = $arrperiode[1];
+        // Filter berdasarkan daterange jika ada
+        if (!empty($request->daterange1)) {
+            $arrperiode = explode(" s/d ", $request->daterange1);
+            $first_date = $arrperiode[0];
+            $last_date = $arrperiode[1];
 
-        // $query->whereDate('surat_peringatan_karyawan.tanggal_mulai', '>=', $first_date)
-        //       ->whereDate('surat_peringatan_karyawan.tanggal_mulai', '<=', $last_date);
-        $query->where(function($q) use ($first_date, $last_date) {
-                $q->whereDate('surat_peringatan_karyawan.tanggal_mulai', '<=', $last_date)
-                ->whereDate('surat_peringatan_karyawan.tanggal_sampai', '>=', $first_date);
-            });
+            // $query->whereDate('surat_peringatan_karyawan.tanggal_mulai', '>=', $first_date)
+            //       ->whereDate('surat_peringatan_karyawan.tanggal_mulai', '<=', $last_date);
+            $query->where(function($q) use ($first_date, $last_date) {
+                    $q->whereDate('surat_peringatan_karyawan.tanggal_mulai', '<=', $last_date)
+                    ->whereDate('surat_peringatan_karyawan.tanggal_sampai', '>=', $first_date);
+                });
+        }
+
+        // Filter berdasarkan status_sp jika ada
+        if (!empty($request->status_sp)) {
+            $query->where('surat_peringatan_karyawan.surat_peringatan', $request->status_sp);
+        }
+        if (!empty($request->rentan_posisi)) {
+                if ($request->rentan_posisi == 'dalam_rentan_waktu') {
+                    // Dalam masa SP (hari ini antara tanggal_mulai dan tanggal_sampai)
+                    $query->whereDate('surat_peringatan_karyawan.tanggal_mulai', '<=', $today)
+                        ->whereDate('surat_peringatan_karyawan.tanggal_sampai', '>=', $today);
+                } elseif ($request->rentan_posisi == 'selesai_rentan_waktu') {
+                    // Selesai masa SP (tanggal_sampai sudah lewat hari ini)
+                    $query->whereDate('surat_peringatan_karyawan.tanggal_sampai', '<', $today);
+                }
+        }
+
+        $result = $query->get();
+
+        return Excel::download(new exportExcelSuratPeringatan($result), 'Rekap Surat Peringatan.xlsx');
     }
-
-    // Filter berdasarkan status_sp jika ada
-    if (!empty($request->status_sp)) {
-        $query->where('surat_peringatan_karyawan.surat_peringatan', $request->status_sp);
-    }
-    if (!empty($request->rentan_posisi)) {
-            if ($request->rentan_posisi == 'dalam_rentan_waktu') {
-                // Dalam masa SP (hari ini antara tanggal_mulai dan tanggal_sampai)
-                $query->whereDate('surat_peringatan_karyawan.tanggal_mulai', '<=', $today)
-                    ->whereDate('surat_peringatan_karyawan.tanggal_sampai', '>=', $today);
-            } elseif ($request->rentan_posisi == 'selesai_rentan_waktu') {
-                // Selesai masa SP (tanggal_sampai sudah lewat hari ini)
-                $query->whereDate('surat_peringatan_karyawan.tanggal_sampai', '<', $today);
-            }
-    }
-
-    $result = $query->get();
-
-    return Excel::download(new exportExcelSuratPeringatan($result), 'Rekap Surat Peringatan.xlsx');
-}
-
-
-
-
 }
