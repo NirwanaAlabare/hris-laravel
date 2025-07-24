@@ -110,7 +110,7 @@
                                     </a>
                                 </div>
                             @endif
-                            @if ($modul=='general_affair, administrasi' || $modul=='all' || $modul == 'attendance_payroll_general_affair_administrasi')
+                            @if ($modul=='all' || $email == 'tita')
                             <div class="col">
                                 <a href="{{route('hris.ga.data_pengajuan_transportasi')}}" >
                                     <div class="card card-3">
