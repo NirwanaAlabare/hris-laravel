@@ -822,109 +822,12 @@ h1 {
                                 <div class="col-md-12" style="margin-top: 5px; margin-bottom: 10px; padding-top: 5px; border-bottom: 1px solid #ccc; border-top: 1px solid #ccc;">
                                     <h5 style="font-weight: bold;">Data Kebutuhan :</h5>
                                 </div>
-                                {{-- <div class="col-md-2">
-                                    <div style="display: block; text-align: start;  height: 25px;">
-                                            <span>Bagian</span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div style="display: block; text-align: start; height: 25px;">
-                                        <span>:</span>
-                                        <strong><span id="bagian_text"></span></strong>
-                                    </div>
-                                </div>
-                               <div class="col-md-2">
 
-                                </div>
-                                 <div class="col-md-2">
-                                    <div style="display: block; text-align: start; height: 25px;">
-                                            <span>Jumlah Permintaan</span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div style="display: block; text-align: start; height: 25px;">
-                                        <span>:</span>
-                                        <strong><span id="jml_permintaan_text"></span></strong>
-
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div style="display: block; text-align: start; height: 25px;">
-                                            <span>Department</span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div style="display: block; text-align: start; height: 25px;">
-                                        <span>:</span>
-                                        <strong><span id="department_text"></span></strong>
-                                    </div>
-                                </div>
-                                  <div class="col-md-2">
-
-                                </div>
-                                 <div class="col-md-2">
-                                    <div style="display: block; text-align: start; height: 25px;">
-                                            <span>Jumlah Realisasi</span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div style="display: block; text-align: start; height: 25px;">
-                                         <span>:</span>
-                                        <strong><span id="jml_realisasi_text"></span></strong>
-                                    </div>
-                                </div>
-                                 <div class="col-md-2">
-                                    <div style="display: block; text-align: start; height: 25px;">
-                                            <span>Jabatan</span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div style="display: block; text-align: start; height: 25px;">
-                                         <span>:</span>
-                                        <strong><span id="jabatan_text"></span></strong>
-                                    </div>
-                                </div>
-                                  <div class="col-md-2">
-
-                                </div>
-                                 <div class="col-md-2">
-                                    <div style="display: block; text-align: start; height: 25px;">
-                                            <span>Status Permintaan</span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div style="display: block; text-align: start; height: 25px;">
-                                         <span>:</span>
-                                        <strong><span id="status_permintaan_text"></span></strong>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 mt-5">
-                                    <div class="form-group">
-                                        <label class="form-label" style="font-weight: bold;">Masukan ID karyawan : </label>
-                                        <input name="karyawan_list" onkeydown="fillTheField(event)" type="text" id="karyawan_list" class="form-control py-1 px-1">
-
-                                    </div>
-                                </div> --}}
                                 <div class="col-md-12 mt-3" id="list-kebutuhan-karyawan">
                                     <!-- List kebutuhan muncul di sini -->
                                 </div>
 
-                                {{-- <div class="col-md-12">
-                                <table class="table" id="tabel-karyawan">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Enroll ID</th>
-                                                <th>Nama</th>
-                                                <th>Jabatan</th>
-                                                <th>Departemen</th>
-                                                <th>Aksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Isi dinamis dari AJAX -->
-                                        </tbody>
-                                </table> --}}
+
                                 <div class="mt-3 justify-content-between" style="display: flex; gap: 10px; align-items: center; justify-content: space-between;">
                                     <button class="btn btn-success" id="btn-simpan-selesai-karyawan">
                                         <i class="fa fa-check"></i> Simpan & Selesai
@@ -1159,75 +1062,7 @@ h1 {
         });
     </script>
     <script>
-    // function fillTheField(event) {
-    //     if (event.keyCode == 13) {
-    //         event.preventDefault(); // mencegah form submit jika dalam form
 
-    //         var no_permintaan_pengajuan = $("#no_permintaan_pengajuan").val();
-    //         var enroll_id = $('#karyawan_list').val();
-    //         var jml_permintaan_val = $('#jml_permintaan_val').val();
-    //         $.ajax({
-    //             type: "POST",
-    //             url: '{{ route('permintaan_tenaga_kerja.get_employee_fptk') }}',
-    //             data: {
-    //                 no_permintaan_pengajuan: no_permintaan_pengajuan,
-    //                 enroll_id: enroll_id,
-    //                 _token: '{{ csrf_token() }}'
-    //             },
-    //             success: function(res) {
-    //                 if (res.success) {
-    //                     $('#karyawan_list').css('border', '');
-    //                     let data = res.data;
-
-    //                     let existingRow = $("#tabel-karyawan tbody tr").filter(function () {
-    //                         return $(this).find("td:first").text() == data.enroll_id;
-    //                     });
-
-    //                  if (existingRow.length === 0) {
-    //                         let currentRowCount = $("#tabel-karyawan tbody tr").length;
-
-    //                         if (currentRowCount >= jml_permintaan_val) {
-    //                             notif({
-    //                                 msg: "<b>Info:</b> Jumlah karyawan tidak boleh lebih dari " + jml_permintaan_val,
-    //                                 type: "warning"
-    //                             });
-    //                             $('#karyawan_list').css('border', '1px solid #f79307');
-    //                             return;
-    //                         }
-
-    //                         let rowNumber = currentRowCount + 1;
-    //                         let newRow = `
-    //                             <tr data-enroll="${data.enroll_id}">
-    //                                 <td>${rowNumber}</td>
-    //                                 <td>${data.enroll_id}</td>
-    //                                 <td>${data.employee_name}</td>
-    //                                 <td>${data.sub_dept_name}</td>
-    //                                 <td>${data.department_name}</td>
-    //                                 <td><button class='btn btn-danger' onclick='removeRow(this)'><i class='fa fa-trash'></i></button></td>
-    //                             </tr>
-    //                         `;
-    //                         $("#tabel-karyawan tbody").append(newRow);
-    //                         $('#karyawan_list').val('').css('border', '');
-    //                     }
-
-    //                 } else {
-    //                     notif({
-    //                             msg: "<b>Info:</b> Karyawan dengan enroll ID tidak ditemukan",
-    //                             type: "error"
-    //                         });
-    //                         $('#karyawan_list').css('border', '1px solid red');
-
-    //                 }
-    //             },
-    //             error: function() {
-    //                 notif({
-    //                             msg: "<b>Error:</b> Terjadi kesalahan.",
-    //                             type: "error"
-    //                         });
-    //             }
-    //         });
-    //     }
-    // }
     let listEnrollId = [];
     let listEnrollIdPerKualifikasi = {};
 
@@ -1870,74 +1705,6 @@ h1 {
                 }
             });
         }
-
-        // function openModalRealisasiPengajuan(id) {
-        //     $('#ajax-modal-realisasi-pengajuan').modal({
-        //         backdrop: 'static',
-        //         keyboard: false
-        //     });
-        //     $("#btn-approve-permintaan").show();
-        //     $("#btn-reject-permintaan").show();
-        //     $("#btn-update-permintaan").hide();
-        //     $("#title-modal-realisasi").text('Realisasi Pengajuan Tenaga Kerja');
-        //     $("#tabel-karyawan tbody").empty();
-        //     $('#karyawan_list').val('').css('border', '');
-        //     $('#karyawan_list').val('').css('background', '');
-        //     $.ajax({
-        //         type: "POST",
-        //         url: "{{ route('permintaan_tenaga_kerja.get_detail_permintaan_tk') }}",
-        //         data: {
-        //             id: id
-        //         },
-        //         success: function(res) {
-        //             var data = res.kualifikasi;
-        //             var karyawanList = res.karyawan;
-        //             $('#id_modal_permintaan').val(data.id);
-        //             $('#enroll_id_approve').val(data.duajukan_oleh_id);
-        //             $('#tanggal_pengajuan_text').text(moment(data.tanggal_pengajuan).format('LL'));
-        //             $('#tgl_kebutuhan_text').text(moment(data.tanggal_kebutuhan).format('LL'));
-        //             $('#no_permintaan_text').text(data.no_permintaan);
-        //             $('#diajukan_oleh_text').text(data.employee_name);
-        //             $('#jml_permintaan_text').text(data.jumlah_kebutuhan);
-        //             $('#jml_realisasi_text').text(data.jumlah_karyawan);
-        //             $('#status_permintaan_text').text(data.status_pengajuan_realisasi.toUpperCase());
-        //             $('#bagian_text').text(data.kode_bagian_name);
-        //             $('#department_text').text(data.kode_dept_name);
-        //             $('#jabatan_text').text(data.rencana_jabatan.toUpperCase());
-
-        //             $('#no_permintaan_pengajuan').val(data.no_permintaan);
-        //             $('#jml_permintaan_val').val(data.jumlah_kebutuhan);
-
-        //            $("#tabel-karyawan tbody").empty();
-
-        //              var status = data.status_pengajuan_realisasi.toLowerCase();
-
-        //             if (status !== 'done') {
-        //                 $('#btn-simpan-selesai-karyawan').show();
-        //                 $('#btn-set-to-pending-karyawan').hide();
-        //             } else {
-        //                 $('#btn-simpan-selesai-karyawan').hide();
-        //                 $('#btn-set-to-pending-karyawan').show();
-        //             }
-
-        //             // Masukkan semua karyawan yang terkait no_fptk ke tabel
-        //             karyawanList.forEach((emp, index) => {
-        //                 let newRow = `
-        //                     <tr data-enroll="${data.enroll_id}">
-        //                         <td>${index + 1}</td>
-        //                         <td>${emp.enroll_id}</td>
-        //                         <td>${emp.employee_name}</td>
-        //                         <td>${emp.sub_dept_name}</td>
-        //                         <td>${emp.department_name}</td>
-        //                         <td><button class='btn btn-danger' onclick='removeRow(this)'><i class='fa fa-trash'></i></button></td>
-        //                     </tr>
-        //                 `;
-        //                 $("#tabel-karyawan tbody").append(newRow);
-        //             });
-
-        //         }
-        //     });
-        // }
 
         function setToNull() {
             $('#tanggal_pengajuan').val(null).prop('disabled', false);  // Format tanggal dan disable
