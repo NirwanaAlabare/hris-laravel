@@ -393,7 +393,7 @@ class TindakanKedisiplinanController extends AdminBaseController
         ", [$pengajuan_id]);
         // dd($data);
         $pdf = PDF::loadview('hris/tindakan-kedisiplinan/export_surat_peringatan_pdf',['data'=>$data]);
-        return $pdf->stream('form-nilai-kinerja.pdf');
+        return $pdf->stream('SP '.$data[0]->enroll_id.' '.$data[0]->employee_name.'.pdf');
     }
 
 
