@@ -2709,12 +2709,36 @@ class ProsesPayrollController extends AdminBaseController
                     }
                 }
 
-                $startDate = Carbon::createFromFormat("Y-m-d", $v['join_date']);
-                $today = Carbon::today();
-                $diff = $startDate->diff($today);
-                $years = $diff->y;
-                $months = $diff->m;
-                $days = $diff->d + 1; // Tambahkan 1 hari untuk menghitung hari ke-1
+                $start = Carbon::createFromFormat('Y-m-d', $v['join_date']);
+                $end = Carbon::today();
+
+                // Ubah jadi format tanggal (Y, m, d)
+                $startY = (int) $start->format('Y');
+                $startM = (int) $start->format('m');
+                $startD = (int) $start->format('d');
+
+                $endY = (int) $end->format('Y');
+                $endM = (int) $end->format('m');
+                $endD = (int) $end->format('d');
+
+                // Hitung awal
+                $years = $endY - $startY;
+                $months = $endM - $startM;
+                $days = $endD - $startD;
+
+                // Koreksi kalau hari negatif
+                if ($days < 0) {
+                    $endPrevMonth = $end->copy()->subMonthNoOverflow();
+                    $days += $endPrevMonth->daysInMonth;
+                    $months--;
+                }
+
+                // Koreksi kalau bulan negatif
+                if ($months < 0) {
+                    $months += 12;
+                    $years--;
+                }
+
 
                 $records_payroll=[
                     'kode_rekap_payroll'=>$v['kode_rekap_payroll'],
