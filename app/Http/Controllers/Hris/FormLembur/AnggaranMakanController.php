@@ -29,7 +29,7 @@ class AnggaranMakanController extends AdminBaseController
         }
         $user=Auth::guard('admin')->user()->name;
         if ($request->ajax()) {
-            if(Auth::guard('admin')->user()->name=='HR' || Auth::guard('admin')->user()->name=='IT' || Auth::guard('admin')->user()->name=='GA' || Auth::guard('admin')->user()->email =='mega@ptnag.com' || Auth::guard('admin')->user()->email =='rudy@ptnag.com' || Auth::guard('admin')->user()->email =='fadli' || Auth::guard('admin')->user()->email =='ersa@ptnag.com' || Auth::guard('admin')->user()->email =='indri@nag.nirwanaindonesia.com'){
+            if(Auth::guard('admin')->user()->name=='HR' || Auth::guard('admin')->user()->name=='IT' || Auth::guard('admin')->user()->name=='GA' || Auth::guard('admin')->user()->email =='mega@ptnag.com' || Auth::guard('admin')->user()->email =='rudy@ptnag.com' || Auth::guard('admin')->user()->email =='fadli' || Auth::guard('admin')->user()->email =='ersa@ptnag.com' || Auth::guard('admin')->user()->email =='indri@nag.nirwanaindonesia.com'  || Auth::guard('admin')->user()->email =='tita'){
                 $data_input=DB::select("select a.id,a.keterangan,a.tanggal,DATE_FORMAT(tanggal, '%d %M %Y') tanggal_fix,d.department_name,a.staff,a.non_staff,a.created_by from estimasi_anggaran_makan a inner join (select*from department_all where site_nirwana_id='NAG' and status='AKTIF' group by department_id)d on a.dept=d.department_id where tanggal = '$tgl_awal' order by a.updated_at desc");
                 return DataTables::of($data_input)->toJson();
             }else{
