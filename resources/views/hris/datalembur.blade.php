@@ -142,7 +142,7 @@
                                 <a class="nav-link card-title m-0" style="border: 1px solid #d8d4dc" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
                                 <button type="button" class="btn btn-success btn-app"
                                     onclick="ExportSuratTandaTerimaExcelAllDate()"
-                                    data-toggle="tooltip" title="Cari Data"
+                                    data-toggle="tooltip" title="Export SPL All"
                                     id="btn_export_excel_tanda_terima_lembur_all_date">
                                 <i class="fa fa-file-excel-o" aria-hidden="true"></i>
                                 Export SPL Serah Terima
@@ -160,7 +160,7 @@
                 <button type="button" id="btn-hapus-nospl" class="btn btn-danger btn-app" data-dismiss="modal">Hapus NO SPL</button>
                 <button type="button" class="btn btn-success btn-app"
                         onclick="ExportSuratTandaTerimaExcelLembur()"
-                        data-toggle="tooltip" title="Cari Data"
+                        data-toggle="tooltip" title="Export SPL Checked"
                         id="btn_export_excel_tanda_terima_lembur">
                     <i class="fa fa-check" aria-hidden="true"></i>
                     Export Serah Terima Checked
