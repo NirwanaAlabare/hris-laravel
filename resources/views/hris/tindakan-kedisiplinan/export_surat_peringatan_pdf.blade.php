@@ -404,6 +404,11 @@
                     <div style="width: 100px; border-bottom: 1px solid #000; margin: 0 auto;">&nbsp;</div>
                 </td>
 
+                 <!-- Garis General Manager -->
+                <td style="text-align: center;">
+                    <div style="width: 100px; border-bottom: 1px solid #000; margin: 0 auto;">&nbsp;</div>
+                </td>
+
                 <!-- Nama + Garis kanan -->
                 <td style="text-align: center;">
                     <div style="width:200px; border-bottom: 1px solid #000; margin: 0 auto;">
@@ -416,6 +421,7 @@
             <tr style="height: 25px;">
                 <td style="text-align: left;">Manager HRGA-Compliance</td>
                 <td style="text-align: center;">Manager</td>
+                <td style="text-align: center;">General Manager</td>
                 <td style="text-align: center;">Karyawan</td>
             </tr>
         </thead>
