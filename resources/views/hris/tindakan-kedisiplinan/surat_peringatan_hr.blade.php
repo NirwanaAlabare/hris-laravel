@@ -280,7 +280,6 @@ h1 {
                     <ul class="tab_list">
                         <li class="text-sm" id="tab-surat-peringatan">Surat Peringatan</li>
                         <li class="text-sm" id="tab-coaching">Coaching</li>
-                        <li class="text-sm" id="tab-counselling">Counselling</li>
                     </ul>
                     <div class="content_wrapper">
                         <!-- Tab surat peringatan -->
@@ -386,28 +385,7 @@ h1 {
                                 </div>
                             </div>
                         </div>
-                         <div class="tab_content" id="tab-counselling">
-                            <div class="">
-                                <div class="mt-4 ml-4 mr-5 mb-0">
-                                    <div class="row">
-                                        <div class="col-md-12">
 
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="m-0 p-0">
-                                    <div class="card-body m-0">
-                                        <div class=" px-3 py-2 pt-5">
-                                            <div class="" >
-                                                <div class="table-responsive">
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
