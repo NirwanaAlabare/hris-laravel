@@ -619,7 +619,8 @@ class TindakanKedisiplinanController extends AdminBaseController
         ->where(function($q) use ($search) {
             $q->where('employee_atribut.employee_name', 'like', '%' . $search . '%')
               ->orWhere('employee_atribut.nik', 'like', '%' . $search . '%');
-        });
+        })
+        ->orderBy('pengajuan_coaching_karyawan.enroll_id_karyawan_coaching', 'ASC');
 
         $start = $request->input('start', 0);
         $length = $request->input('length', 10);
