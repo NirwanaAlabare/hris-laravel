@@ -280,6 +280,7 @@ h1 {
                     <ul class="tab_list">
                         <li class="text-sm" id="tab-surat-peringatan">Surat Peringatan</li>
                         <li class="text-sm" id="tab-coaching">Coaching</li>
+                        <li class="text-sm" id="tab-counselling">Counselling</li>
                     </ul>
                     <div class="content_wrapper">
                         <!-- Tab surat peringatan -->
@@ -348,6 +349,50 @@ h1 {
                             </div>
                         </div>
                          <div class="tab_content" id="tab-coaching">
+                            <div class="">
+                                <div class="mt-4 ml-4 mr-5 mb-0">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            {{-- <div clasl="" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                                                <div class="mt-5 p-0">
+                                                    <button class="btn btn-primary w-100" onclick="openModalBuatPengajuan()"  data-toggle="tooltip" title="Cari Data" ><i class="fa fa-plus" aria-hidden="true"></i> Buat Form Coaching</button>
+                                                </div>
+                                                <div class="mt-5 p-0" style="display: flex; gap: 5px;">
+                                                    <div class="col-auto">
+                                                        <select id="rentan_posisi" class="form-control">
+                                                            <option value=''>-- PILIH KONDISI --</option>
+                                                            <option value='dalam_rentan_waktu'>DALAM MASA SP</option>
+                                                            <option value='selesai_rentan_waktu'>SELESAI MASA SP</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <select id="status_sp" class="form-control">
+                                                            <option value=''>-- PILIH STATUS --</option>
+                                                            <option value='sp_1'>SP 1</option>
+                                                            <option value='sp_2'>SP 2</option>
+                                                            <option value='sp_3'>SP 3</option>
+                                                        </select>
+                                                    </div>
+                                                    <button class="btn btn-success w-100" onclick="ExportSuratPeringatan()"  data-toggle="tooltip" title="Cari Data" id="btn_export_excel_kontrak"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Excel</button>
+                                                </div>
+                                            </div> --}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="m-0 p-0">
+                                    <div class="card-body m-0">
+                                        <div class=" px-3 py-2 pt-5">
+                                            <div class="" >
+                                                <div class="table-responsive">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="tab_content" id="tab-counselling">
                             <div class="">
                                 <div class="mt-4 ml-4 mr-5 mb-0">
                                     <div class="row">
