@@ -21,6 +21,7 @@ use App\Models\EntertainPengajuanPendamping;
 use App\Models\EntertainPengajuanKeterangan;
 use App\Models\DataAbsenPerijinanDTPC;
 use App\Models\SuratPeringatanKaryawan;
+use App\Models\PengajuanCoachingKaryawan;
 use App\Models\PengajuanKedisiplinanKaryawan;
 use App\Models\Notification;
 use App\Models\PasalSuratPeringatan;
@@ -226,6 +227,19 @@ class TindakanKedisiplinanController extends AdminBaseController
         return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil dibuat.']);
     }
 
+    public function simpan_form_coaching(Request $request){
+        $logged_admin = Auth::guard('admin')->user();
+        $tanggal_pengajuan_coaching = date('Y-m-d');
+        PengajuanCoachingKaryawan::create([
+                'tanggal_pengajuan_coaching' => $tanggal_pengajuan_coaching,
+                'nomor_form_coaching' => $request->no_form_coaching,
+                'enroll_id_karyawan_coaching' => $request->enroll_id_karyawan_coaching,
+                'deskripsi_coaching' => $request->deskripsi_coaching,
+                'created_by' => $logged_admin->email,
+        ]);
+        return response()->json(['message' => 'Form Coaching berhasil dibuat.']);
+    }
+
     public function update_surat_peringatan(Request $request){
         $logged_admin = Auth::guard('admin')->user();
         SuratPeringatanKaryawan::where('id', $request->id_pengajuan)->update([
@@ -400,11 +414,50 @@ class TindakanKedisiplinanController extends AdminBaseController
     {
         $pengajuan_id = $request->route('id');
         $data = DB::select("
-            SELECT * FROM employee_atribut
-            WHERE enroll_id = ?
-        ", [7770]);
+            SELECT * FROM pengajuan_coaching_karyawan
+            LEFT JOIN employee_atribut ON pengajuan_coaching_karyawan.enroll_id_karyawan_coaching = employee_atribut.enroll_id
+            WHERE pengajuan_coaching_karyawan.id = ?
+        ", [$pengajuan_id]);
         $pdf = PDF::loadview('hris/tindakan-kedisiplinan/export_form_coaching_pdf',['data'=>$data]);
         return $pdf->stream('SP '.$data[0]->enroll_id.' '.$data[0]->employee_name.'.pdf');
+    }
+
+    public function get_detail_coaching(Request $request)
+    {
+        $pengajuan_id = $request->id;
+        $data = DB::select("
+            SELECT * FROM pengajuan_coaching_karyawan
+            LEFT JOIN employee_atribut ON pengajuan_coaching_karyawan.enroll_id_karyawan_coaching = employee_atribut.enroll_id
+            WHERE pengajuan_coaching_karyawan.id = ?
+        ", [$pengajuan_id]);
+        return $data[0];
+    }
+
+    public function update_form_coaching(Request $request, $id)
+    {
+        $request->validate([
+            'enroll_id_karyawan_coaching' => 'required',
+            'deskripsi_coaching' => 'required',
+            'no_form_coaching' => 'required',
+        ]);
+
+        $coaching = PengajuanCoachingKaryawan::findOrFail($id);
+        $coaching->enroll_id_karyawan_coaching = $request->enroll_id_karyawan_coaching;
+        $coaching->deskripsi_coaching = $request->deskripsi_coaching;
+        $coaching->nomor_form_coaching = $request->no_form_coaching;
+        $coaching->save();
+
+        return response()->json(['message' => 'Berhasil diupdate']);
+    }
+
+    public function delete_form_coaching(Request $request)
+    {
+
+        DB::table('pengajuan_coaching_karyawan')
+            ->where('id', $request->id_pengajuan)
+            ->delete();
+
+        return response()->json(['message' => 'Berhasil dihapus']);
     }
 
 
@@ -528,6 +581,45 @@ class TindakanKedisiplinanController extends AdminBaseController
         }
 
 
+
+        $start = $request->input('start', 0);
+        $length = $request->input('length', 10);
+
+        $totalFiltered = $query->count(); // total setelah filter
+
+        $data = $query->skip($start)->take($length)->get();
+
+        return response()->json([
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => $totalFiltered,
+            'recordsFiltered' => $totalFiltered,
+            'data' => $data,
+        ]);
+    }
+
+    public function get_karyawan_coaching_list(Request $request)
+    {
+        $email = Auth::guard('admin')->user()->email;
+        $search = $request->input('search.value');
+        $start = $request->input('start'); // index pertama
+        $length = $request->input('length'); // jumlah data per halaman
+
+        $today = now()->format('Y-m-d');
+
+        // Query pertama
+        $query  = PengajuanCoachingKaryawan::select(
+            'pengajuan_coaching_karyawan.*',
+            'employee_atribut.employee_name',
+            'employee_atribut.nik',
+            'employee_atribut.department_name',
+            'employee_atribut.sub_dept_name',
+            'employee_atribut.status_jabatan'
+        )
+        ->leftJoin('employee_atribut', 'pengajuan_coaching_karyawan.enroll_id_karyawan_coaching', '=', 'employee_atribut.enroll_id')
+        ->where(function($q) use ($search) {
+            $q->where('employee_atribut.employee_name', 'like', '%' . $search . '%')
+              ->orWhere('employee_atribut.nik', 'like', '%' . $search . '%');
+        });
 
         $start = $request->input('start', 0);
         $length = $request->input('length', 10);

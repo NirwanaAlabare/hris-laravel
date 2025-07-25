@@ -356,36 +356,29 @@ h1 {
                                             <div clasl="" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
                                                 <div class="mt-5 p-0">
                                                     <button class="btn btn-primary w-100" onclick="openModalBuatPengajuanFormCoaching()"  data-toggle="tooltip" title="Cari Data" ><i class="fa fa-plus" aria-hidden="true"></i> Buat Form Coaching</button>
-                                                    <button class="btn mt-3 btn-danger w-100" onclick="exportPdfCoaching()"  data-toggle="tooltip" title="Export PDF Coaching" ><i class="fa fa-file-pdf-o" aria-hidden="true"></i> PDF COACHING</button>
                                                 </div>
-                                                {{-- <div class="mt-5 p-0" style="display: flex; gap: 5px;">
-                                                    <div class="col-auto">
-                                                        <select id="rentan_posisi" class="form-control">
-                                                            <option value=''>-- PILIH KONDISI --</option>
-                                                            <option value='dalam_rentan_waktu'>DALAM MASA SP</option>
-                                                            <option value='selesai_rentan_waktu'>SELESAI MASA SP</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-auto">
-                                                        <select id="status_sp" class="form-control">
-                                                            <option value=''>-- PILIH STATUS --</option>
-                                                            <option value='sp_1'>SP 1</option>
-                                                            <option value='sp_2'>SP 2</option>
-                                                            <option value='sp_3'>SP 3</option>
-                                                        </select>
-                                                    </div>
-                                                    <button class="btn btn-success w-100" onclick="ExportSuratPeringatan()"  data-toggle="tooltip" title="Cari Data" id="btn_export_excel_kontrak"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Excel</button>
-                                                </div> --}}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="m-0 p-0">
+                              <div class="m-0 p-0">
                                     <div class="card-body m-0">
                                         <div class=" px-3 py-2 pt-5">
                                             <div class="" >
                                                 <div class="table-responsive">
-
+                                                    <table id="datatable-coaching-list" class="table table-sm table-striped table-hover table-bordered w-100">
+                                                        <thead>
+                                                            <tr class="text-center">
+                                                                <th scope="col">Nik</th>
+                                                                <th scope="col">Nama</th>
+                                                                <th scope="col">Bagian</th>
+                                                                <th scope="col">Department</th>
+                                                                <th scope="col">Aksi</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
                                             </div>
                                         </div>
@@ -421,7 +414,7 @@ h1 {
         </div>
     </div>
 
-        {{-- MODAL TAMBAH FORM COACHING --}}
+    {{-- MODAL TAMBAH FORM COACHING --}}
     <div class="modal fade" id="ajax-modal-tambah-form-coaching"  role="dialog" data-backdrop="static" aria-hidden="true">
         <div class="modal-dialog modal-md modal-dialog-scrollable" role="document" style="max-width: 50%;">
             <div class="row">
@@ -988,8 +981,9 @@ h1 {
 
     <script>
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-    $('#datatable-ajax-crud-waiting').DataTable().columns.adjust().draw();
-});
+            console.log('Tab changed to: ' + e.target.id);
+            $('#datatable-ajax-crud-waiting').DataTable().columns.adjust().draw();
+        });
 
          $('.fc-datepicker').datepicker({
             showOtherMonths: true,
@@ -1013,6 +1007,11 @@ h1 {
          function openModalBuatPengajuanFormCoaching() {
             $("#ajax-modal-tambah-form-coaching").modal('show');
             $('#title-ajax-modal-tambah-form-coaching').text('Buat Form Coaching');
+            $('#btn-simpan-form-coaching')
+            .text('Simpan')
+            .data('mode', 'add')
+            .data('id', null);
+
             var today = new Date();
             var dd = String(today.getDate()).padStart(2, '0');
             var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -1027,41 +1026,142 @@ h1 {
             $("#didelegasikan_enroll_id").val(null);
         }
 
-        $('body').on('click', '#btn-simpan-form-coaching', function (event) {
-                var enroll_id_karyawan_coaching = $('#enroll_id_karyawan_coaching').val();
-                var deskripsi_coaching = $('#deskripsi_coaching').val();
-                var no_form_coaching = $('#no_form_coaching').val();
+       $('body').on('click', '#btn-simpan-form-coaching', function (event) {
+            const mode = $(this).data('mode'); // 'add' atau 'edit'
+            const id = $(this).data('id');
 
-                if(enroll_id_karyawan_coaching == '') {
-                    notif({
-                        msg: "<b>Error:</b> Mohon pilih karyawan terlebih dahulu.",
-                        type: "error"
-                    });
-                    return;
+            var enroll_id_karyawan_coaching = $('#enroll_id_karyawan_coaching').val();
+            var deskripsi_coaching = $('#deskripsi_coaching').val();
+            var no_form_coaching = $('#no_form_coaching').val();
+
+            if (enroll_id_karyawan_coaching == '') {
+                notif({ msg: "<b>Error:</b> Mohon pilih karyawan terlebih dahulu.", type: "error" });
+                return;
+            }
+            if (deskripsi_coaching == '') {
+                notif({ msg: "<b>Error:</b> Alasan pelanggaran wajib diisi.", type: "error" });
+                return;
+            }
+            if (no_form_coaching == '') {
+                notif({ msg: "<b>Error:</b> No form wajib diisi.", type: "error" });
+                return;
+            }
+
+            // Default ke tambah
+            let ajaxUrl = `{{ route('tindakan_kedisiplinan.simpan_form_coaching') }}`;
+            let dataPost = {
+                enroll_id_karyawan_coaching,
+                deskripsi_coaching,
+                no_form_coaching,
+                _token: $('meta[name="csrf-token"]').attr('content'),
+            };
+
+            if (mode === 'edit') {
+                ajaxUrl = `{{ route('tindakan_kedisiplinan.update_form_coaching', ['id' => '__ID__']) }}`.replace('__ID__', id);
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: ajaxUrl,
+                dataType: 'json',
+                data: dataPost,
+                success: function (res) {
+                    notif({ msg: "<b>Success:</b> Data berhasil disimpan.", type: "success" });
+                    closeModalBuatPengajuanFormCoaching();
+                    datatable_coaching_list.ajax.reload();
+                },
+                error: function (res) {
+                    notif({ msg: "<b>Error:</b> Oops data gagal disimpan.", type: "error" });
+                    datatable_coaching_list.ajax.reload();
                 }
-                if(deskripsi_coaching == '') {
-                    notif({
-                        msg: "<b>Error:</b> Alasan pelanggaran wajib diisi.",
-                        type: "error"
-                    });
-                    return;
-                }
-                if(no_form_coaching == '') {
-                    notif({
-                        msg: "<b>Error:</b> No form wajib diisi.",
-                        type: "error"
-                    });
-                    return;
-                }
-                console.log({
-                    "enroll_id":enroll_id_karyawan_coaching,
-                    "deskripsi_coaching":deskripsi_coaching,
-                    "no_form_coaching":no_form_coaching,
-                });
             });
+        });
 
 
-            $("#karyawanCoachingID").select2().on("select2:select", function() {
+
+
+        var datatable_coaching_list = $('#datatable-coaching-list').DataTable({
+            ajax: {
+                url: '{{ route('tindakan_kedisiplinan.get_karyawan_coaching_list') }}',
+                type: "POST",
+                    data: function(d) {
+
+                    },
+                onSuccess: function(data) {
+                    console.log("Data loaded successfully", data);
+                },
+            },
+            processing: true,
+            serverSide: true,
+            columns: [
+                { data: 'nik',orderable: false},
+                { data: 'employee_name',orderable: false},
+                { data: 'sub_dept_name',orderable: false },
+                { data: 'department_name',orderable: false },
+                {
+                    data: null,
+                    orderable: false,
+                    searchable: false,
+                    className: "text-center",
+                    render: function (data, type, row) {
+                            const uuidNo = encodeURIComponent(row.id);
+                            let exportUrl;
+                            let btnClass;
+                                return `
+                                    <button class="btn btn-sm mr-1 btn-danger" onclick="exportPdfCoaching('${row.id}')" data-id="${row.id}" title="Print">
+                                        <i class="fa fa-file-pdf-o"></i>
+                                    </button>
+                                    <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuanCoaching('${row.id}')" data-id-coaching="${row.id}" title="Edit">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm mr-1 btn-danger" id="btn-remove-coaching" data-id_pengajuan-coaching="${row.id}" title="Hapus">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                `;
+                    }
+                }
+            ],
+        });
+
+        function openModalEditPengajuanCoaching(id) {
+            // Ubah judul modal
+            $('#title-ajax-modal-tambah-form-coaching').text('Edit Form Coaching');
+
+            // Tampilkan modal
+            $('#ajax-modal-tambah-form-coaching').modal('show');
+
+            // Hapus error dan isi awal
+            $('.error-message').text('');
+            $('#btn-simpan-form-coaching').text('Update').data('mode', 'edit').data('id', id);
+
+            // Ambil data coaching dari server
+            $.ajax({
+                url: "{{ route('tindakan_kedisiplinan.get_detail_coaching') }}",
+                data: {
+                    id: id
+                },
+                type: 'GET',
+                success: function(res) {
+                    // Isi semua input dari response
+                    $('#karyawanCoachingID').val(res.enroll_id).trigger('change');
+                    $('#enroll_id_karyawan_coaching').val(res.enroll_id);
+                    $('#create_coaching_employee_name').text(res.employee_name);
+                    $('#create_coaching_employee_nik').text(res.nik);
+                    $('#create_coaching_employee_sub_dept').text(res.sub_dept_name);
+                    $('#create_coaching_employee_department').text(res.department_name);
+                    $('#create_coaching_employee_jabatan').text(res.status_jabatan);
+                    $('#deskripsi_coaching').val(res.deskripsi_coaching);
+                    $('#no_form_coaching').val(res.nomor_form_coaching);
+                    // Jika ada info tambahan bisa ditambahkan di sini
+                },
+                error: function(err) {
+                    alert('Gagal mengambil data untuk edit.');
+                    $('#ajax-modal-tambah-form-coaching').modal('hide');
+                }
+            });
+        }
+
+        $("#karyawanCoachingID").select2().on("select2:select", function() {
             var selectedOption = $('#karyawanCoachingID').find(':selected');
             var department = selectedOption.data('department_name_coaching');
             var department_id = selectedOption.data('department_data_id_coaching');
@@ -1080,6 +1180,50 @@ h1 {
             document.getElementById('enroll_id_karyawan_coaching').value =  selectedOption.val();
         });
 
+
+         $('body').on('click', '#btn-remove-coaching', function (event) {
+                var id_pengajuan = $(this).data('id_pengajuan-coaching');
+
+                let message = "Anda Yakin Ingin Menghapus Data Ini !!!";
+                let type = "warning";
+                swal({
+                    title: message,
+                    type: type,
+                    showCancelButton: true,
+                    confirmButtonText: 'Saya Yakin',
+                    cancelButtonText: 'Tutup'
+                },function(isConfirm){
+                    if(isConfirm) {
+                        $.ajax({
+                            type:"POST",
+                            url: "{{route('tindakan_kedisiplinan.delete_form_coaching')}}",
+                            dataType: 'json',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                            data: {
+                                id_pengajuan:id_pengajuan,
+                            },
+                            dataType: 'json',
+                            success: function(res){
+                                notif({
+                                    msg: "<b>Info:</b> Data berhasil di hapus.",
+                                    type: "info"
+                                });
+                                datatable_coaching_list.ajax.reload();
+                            },
+                            error: function(res){
+                                notif({
+                                    msg: "<b>Error:</b> Oops data gagal di hapus.",
+                                    type: "error"
+                                });
+                                datatable_coaching_list.ajax.reload();
+                            }
+                        });
+                    }
+                  }
+                );
+
+            });
     </script>
 
     {{-- SURAT PERINGATAN --}}

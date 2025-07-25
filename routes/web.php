@@ -364,6 +364,13 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('/tindakan_kedisiplinan/update_surat_peringatan', ['as' => 'tindakan_kedisiplinan.update_surat_peringatan','uses' => 'Administrasi\TindakanKedisiplinanController@update_surat_peringatan']);
     Route::post('/tindakan_kedisiplinan/delete_surat_peringatan', ['as' => 'tindakan_kedisiplinan.delete_surat_peringatan','uses' => 'Administrasi\TindakanKedisiplinanController@delete_surat_peringatan']);
     Route::get('/tindakan_kedisiplinan/export_excel_surat_peringatan', ['as' => 'tindakan_kedisiplinan.export_excel_surat_peringatan','uses' => 'Administrasi\TindakanKedisiplinanController@export_excel_surat_peringatan']);
+    // COACHING
+    Route::post('/tindakan_kedisiplinan/get_karyawan_coaching_list', ['as' => 'tindakan_kedisiplinan.get_karyawan_coaching_list','uses' => 'Administrasi\TindakanKedisiplinanController@get_karyawan_coaching_list']);
+    Route::post('/tindakan_kedisiplinan/simpan_form_coaching', ['as' => 'tindakan_kedisiplinan.simpan_form_coaching','uses' => 'Administrasi\TindakanKedisiplinanController@simpan_form_coaching']);
+    Route::get('/tindakan_kedisiplinan/get_detail_coaching', ['as' => 'tindakan_kedisiplinan.get_detail_coaching','uses' => 'Administrasi\TindakanKedisiplinanController@get_detail_coaching']);
+    Route::post('/tindakan_kedisiplinan/update_form_coaching/{id}', ['as' => 'tindakan_kedisiplinan.update_form_coaching','uses' => 'Administrasi\TindakanKedisiplinanController@update_form_coaching']);
+    Route::post('/tindakan_kedisiplinan/delete_form_coaching', ['as' => 'tindakan_kedisiplinan.delete_form_coaching','uses' => 'Administrasi\TindakanKedisiplinanController@delete_form_coaching']);
+
 
 
     // PENGAJUAN IZIN
