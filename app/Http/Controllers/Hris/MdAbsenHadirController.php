@@ -1568,7 +1568,6 @@ class MdAbsenHadirController extends AdminBaseController
                     $kode_ijin_payroll='DL';
                 }
             }
-
             $interval = date_diff(date_create(substr($Kehadiran->akhir_jam_kerja, 0, 5)), date_create(substr($Kehadiran->mulai_jam_kerja, 0, 5)));
             $minutes = $interval->days * 24 * 60;
             $minutes += $interval->h * 60;
@@ -1662,6 +1661,9 @@ class MdAbsenHadirController extends AdminBaseController
             $total_lembur_12345=$Kehadiran->total_lembur_1234;
 
             $status = $Kehadiran->status_absen;
+            if($status == 'IKS' && $kode_ijin_payroll == 'DT'){
+                $kode_ijin_payroll = 'IKS';
+            }
             if($status == 'IKS'){
                 if ($Kehadiran->jumlah_menit_absen_dt > 0 && $Kehadiran->jumlah_menit_absen_pc > 0) {
                     $status = 'DTPC';
@@ -1673,7 +1675,6 @@ class MdAbsenHadirController extends AdminBaseController
                     $status = 'IKS';
                 }
             }
-
             $data = [
                 Date::stringToExcel($Kehadiran->tanggal_berjalan),
                 $Kehadiran->nama_hari,
