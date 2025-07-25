@@ -353,11 +353,12 @@ h1 {
                                 <div class="mt-4 ml-4 mr-5 mb-0">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            {{-- <div clasl="" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                                            <div clasl="" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
                                                 <div class="mt-5 p-0">
-                                                    <button class="btn btn-primary w-100" onclick="openModalBuatPengajuan()"  data-toggle="tooltip" title="Cari Data" ><i class="fa fa-plus" aria-hidden="true"></i> Buat Form Coaching</button>
+                                                    <button class="btn btn-primary w-100" onclick="openModalBuatPengajuanFormCoaching()"  data-toggle="tooltip" title="Cari Data" ><i class="fa fa-plus" aria-hidden="true"></i> Buat Form Coaching</button>
+                                                    <button class="btn mt-3 btn-danger w-100" onclick="exportPdfCoaching()"  data-toggle="tooltip" title="Export PDF Coaching" ><i class="fa fa-file-pdf-o" aria-hidden="true"></i> PDF COACHING</button>
                                                 </div>
-                                                <div class="mt-5 p-0" style="display: flex; gap: 5px;">
+                                                {{-- <div class="mt-5 p-0" style="display: flex; gap: 5px;">
                                                     <div class="col-auto">
                                                         <select id="rentan_posisi" class="form-control">
                                                             <option value=''>-- PILIH KONDISI --</option>
@@ -374,8 +375,8 @@ h1 {
                                                         </select>
                                                     </div>
                                                     <button class="btn btn-success w-100" onclick="ExportSuratPeringatan()"  data-toggle="tooltip" title="Cari Data" id="btn_export_excel_kontrak"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Excel</button>
-                                                </div>
-                                            </div> --}}
+                                                </div> --}}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -397,29 +398,7 @@ h1 {
                                 <div class="mt-4 ml-4 mr-5 mb-0">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            {{-- <div clasl="" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-                                                <div class="mt-5 p-0">
-                                                    <button class="btn btn-primary w-100" onclick="openModalBuatPengajuan()"  data-toggle="tooltip" title="Cari Data" ><i class="fa fa-plus" aria-hidden="true"></i> Buat Form Coaching</button>
-                                                </div>
-                                                <div class="mt-5 p-0" style="display: flex; gap: 5px;">
-                                                    <div class="col-auto">
-                                                        <select id="rentan_posisi" class="form-control">
-                                                            <option value=''>-- PILIH KONDISI --</option>
-                                                            <option value='dalam_rentan_waktu'>DALAM MASA SP</option>
-                                                            <option value='selesai_rentan_waktu'>SELESAI MASA SP</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-auto">
-                                                        <select id="status_sp" class="form-control">
-                                                            <option value=''>-- PILIH STATUS --</option>
-                                                            <option value='sp_1'>SP 1</option>
-                                                            <option value='sp_2'>SP 2</option>
-                                                            <option value='sp_3'>SP 3</option>
-                                                        </select>
-                                                    </div>
-                                                    <button class="btn btn-success w-100" onclick="ExportSuratPeringatan()"  data-toggle="tooltip" title="Cari Data" id="btn_export_excel_kontrak"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Excel</button>
-                                                </div>
-                                            </div> --}}
+
                                         </div>
                                     </div>
                                 </div>
@@ -442,80 +421,145 @@ h1 {
         </div>
     </div>
 
-
-    {{-- <div class="row p-3">
-        <div class="col-md-12">
-            <div class="card card-primary card-outline tab-content">
-                <div class="card-header bg-primary p-3">
-                    <div class="card-title">Surat Peringatan</div>
-                </div>
-                <div class="mt-4 ml-4 mr-5 mb-0">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div clasl="" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-                                <div class="mt-5 p-0">
-                                    <button class="btn btn-primary w-100" onclick="openModalBuatPengajuan()"  data-toggle="tooltip" title="Cari Data" ><i class="fa fa-plus" aria-hidden="true"></i> Buat Surat Peringatan</button>
+        {{-- MODAL TAMBAH FORM COACHING --}}
+    <div class="modal fade" id="ajax-modal-tambah-form-coaching"  role="dialog" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-scrollable" role="document" style="max-width: 50%;">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary p-2">
+                            <h4 class="modal-title pl-2 font-weight-bold" id="title-ajax-modal-tambah-form-coaching"></h4>
+                             <div class="mt-0 p-0">
+                                <button onclick="closeModalBuatPengajuanFormCoaching()" class="btn btn-danger btn-sm w-100" data-toggle="tooltip" title="Tutup">x</button>
+                             </div>
+                        </div>
+                        <div class="modal-body">
+                            <input id="enroll_id_diajukan_oleh" type="hidden">
+                            <div class="row">
+                                <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px;">
+                                    <h6 style="font-weight: bold;">Dengan ini mengajukan karyawan untuk dilakukan Coahing:</h6>
                                 </div>
-                                <div class="mt-5 p-0" style="display: flex; gap: 5px;">
-                                    <div class="col-auto">
-                                        <input type="hidden" id="daterange1" name="daterange1">
-                                        <a class="nav-link card-title m-0" style="border: 1px solid #d8d4dc" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
-                                    </div>
-                                    <div class="col-auto">
-                                        <select id="rentan_posisi" class="form-control">
-                                            <option value=''>-- PILIH KONDISI --</option>
-                                            <option value='dalam_rentan_waktu'>DALAM MASA SP</option>
-                                            <option value='selesai_rentan_waktu'>SELESAI MASA SP</option>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Pilih Karyawan : </label>
+                                        <select id="karyawanCoachingID" name="karyawanCoachingID" style='width: 100%;' data-placeholder="Pilih karyawan" class="form-control create-control select2 select2-show-search EmployeeCoachingID">
+                                            <option value="">-- Pilih Karyawan --</option>
+                                            @foreach ($selectemployee as $r_empl)
+                                                <option
+                                                    value="{{$r_empl->enroll_id}}"
+                                                    data-department_name_coaching="{{$r_empl->department_name}}"
+                                                    data-sub_dept_name_coaching="{{$r_empl->sub_dept_name}}"
+                                                    data-department_data_id_coaching="{{$r_empl->department_id}}"
+                                                    data-sub_dept_data_id_coaching="{{$r_empl->sub_dept_id}}"
+                                                    data-status_jabatan_coaching="{{$r_empl->status_jabatan}}"
+                                                    data-employee_name_coaching="{{$r_empl->employee_name}}"
+                                                    data-employee_nik_coaching="{{$r_empl->nik}}"
+                                                >
+                                                    {{$r_empl->select_employee}}
+                                                </option>
+                                            @endforeach
                                         </select>
+                                        <small class="error-message text-danger"></small>
                                     </div>
-                                    <div class="col-auto">
-                                        <select id="status_sp" class="form-control">
-                                            <option value=''>-- PILIH STATUS --</option>
-                                            <option value='sp_1'>SP 1</option>
-                                            <option value='sp_2'>SP 2</option>
-                                            <option value='sp_3'>SP 3</option>
-                                        </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                            <span>NAMA</span>
                                     </div>
-                                    <button class="btn btn-success w-100" onclick="ExportSuratPeringatan()"  data-toggle="tooltip" title="Cari Data" id="btn_export_excel_kontrak"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Excel</button>
+                                </div>
+                                <div class="col-md-10">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                         <span>:</span>
+                                        <strong><span id="create_coaching_employee_name"></span></strong>
+                                        <input id="enroll_id_karyawan_coaching" type="hidden">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div style="display: block; text-align: start;  height: 25px;">
+                                            <span>NIK</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div style="display: block; text-align: start;  height: 25px;">
+                                        <span>:</span>
+                                        <strong><span id="create_coaching_employee_nik"></span></strong>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div style="display: block; text-align: start;  height: 25px;">
+                                            <span>BAGIAN</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                        <span>:</span>
+                                        <strong><span id="create_coaching_employee_sub_dept"></span></strong>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                            <span>DEPARTMENT</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                        <span>:</span>
+                                        <strong><span id="create_coaching_employee_department"></span></strong>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                            <span>JABATAN</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div style="display: block; text-align: start; height: 25px;">
+                                        <span>:</span>
+                                        <strong><span id="create_coaching_employee_jabatan"></span></strong>
+                                    </div>
+                                </div>
+                                 <div class="col-md-12">
+                                    <div id="info_sp_aktif" class="mt-2"></div>
+                                </div>
+
+                                <div class="col-md-12" style="margin-top: 1px; margin-bottom: 3px; padding-top: 10px;">
+                                    <h6 style="font-weight: bold;">Deskripsi :</h6>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <textarea id="deskripsi_coaching" name="deskripsi_coaching" class="form-control" rows="3" placeholder="Deskripsi Coaching" maxlength="500"></textarea>
+                                        <small class="error-message text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="col-md-12" style="margin-top: 1px; margin-bottom: 3px; padding-top: 10px;">
+                                    <h6 style="font-weight: bold;">No Form :</h6>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <input  id="no_form_coaching" name="no_form_coaching" class="form-control" rows="3" placeholder="Nomor Form" maxlength="500"></input>
+                                        <small class="error-message text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                </div>
+                                  <div class="col-md-3">
+                                    <button class="btn btn-primary w-100" id="btn-simpan-form-coaching" data-toggle="tooltip" title="Simpan Data" style="margin-top: 10px;">
+                                        <i class="fa fa-save" aria-hidden="true"></i>
+                                        Simpan
+                                    </button>
+                                </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="m-0 p-0">
-                    <div class="card-body m-0">
-                        <div class=" px-3 py-2 pt-5">
-                                    <!-- Tab Waiting -->
-                                    <div class="tab_content active" id="tab-content-waiting">
-                                        <div class="table-responsive">
-                                            <table id="datatable-ajax-crud-waiting" class="table table-sm table-striped table-hover table-bordered w-100">
-                                                <thead>
-                                                    <tr class="text-center">
-                                                        <th scope="col">Nik</th>
-                                                        <th scope="col">Nama</th>
-                                                        <th scope="col">Bagian</th>
-                                                        <th scope="col">Department</th>
-                                                        <th scope="col">Peringatan</th>
-                                                        <th scope="col">Pasal</th>
-                                                        <th scope="col">Tanggal Mulai</th>
-                                                        <th scope="col">Tanggal Sampai</th>
-                                                        <th scope="col">Aksi</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
-    </div> --}}
+    </div>
 
 
-    {{-- MODAL TAMBAH --}}
+    {{-- MODAL TAMBAH PENGAJUAN SP --}}
     <div class="modal fade" id="ajax-modal-tambah"  role="dialog" data-backdrop="static" aria-hidden="true">
         <div class="modal-dialog modal-md modal-dialog-scrollable" role="document" style="max-width: 50%;">
             <div class="row">
@@ -710,7 +754,7 @@ h1 {
     </div>
 
 
-    {{-- EDIT SP --}}
+    {{-- EDIT PENGAJUAN SP --}}
     <div class="modal fade" id="ajax-modal-edit-pengajuan"  role="dialog" data-backdrop="static" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document" style="max-width: 50%;">
             <div class="row">
@@ -953,6 +997,92 @@ h1 {
             dateFormat: 'dd-mm-yy'
         });
     </script>
+
+    {{-- COACHING --}}
+    <script>
+        function exportPdfCoaching(id) {
+            var url = "{{ route('tindakan_kedisiplinan.print_form_coaching', ':id') }}";
+            url = url.replace(':id', id);
+            window.open(url, '_blank');
+        }
+
+          function closeModalBuatPengajuanFormCoaching() {
+            $("#ajax-modal-tambah-form-coaching").modal('hide');
+        }
+
+         function openModalBuatPengajuanFormCoaching() {
+            $("#ajax-modal-tambah-form-coaching").modal('show');
+            $('#title-ajax-modal-tambah-form-coaching').text('Buat Form Coaching');
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+
+            today = dd + '-' + mm + '-' + yyyy;
+
+            $('#tanggal_pengajuan').val(today);
+            $('#tanggal_mulai_ijin').val(today);
+            $('#tanggal_akhir_ijin').val(today);
+            $("#uuid_master").val(null);
+            $("#didelegasikan_enroll_id").val(null);
+        }
+
+        $('body').on('click', '#btn-simpan-form-coaching', function (event) {
+                var enroll_id_karyawan_coaching = $('#enroll_id_karyawan_coaching').val();
+                var deskripsi_coaching = $('#deskripsi_coaching').val();
+                var no_form_coaching = $('#no_form_coaching').val();
+
+                if(enroll_id_karyawan_coaching == '') {
+                    notif({
+                        msg: "<b>Error:</b> Mohon pilih karyawan terlebih dahulu.",
+                        type: "error"
+                    });
+                    return;
+                }
+                if(deskripsi_coaching == '') {
+                    notif({
+                        msg: "<b>Error:</b> Alasan pelanggaran wajib diisi.",
+                        type: "error"
+                    });
+                    return;
+                }
+                if(no_form_coaching == '') {
+                    notif({
+                        msg: "<b>Error:</b> No form wajib diisi.",
+                        type: "error"
+                    });
+                    return;
+                }
+                console.log({
+                    "enroll_id":enroll_id_karyawan_coaching,
+                    "deskripsi_coaching":deskripsi_coaching,
+                    "no_form_coaching":no_form_coaching,
+                });
+            });
+
+
+            $("#karyawanCoachingID").select2().on("select2:select", function() {
+            var selectedOption = $('#karyawanCoachingID').find(':selected');
+            var department = selectedOption.data('department_name_coaching');
+            var department_id = selectedOption.data('department_data_id_coaching');
+            var subDept = selectedOption.data('sub_dept_name_coaching');
+            var subDeptID = selectedOption.data('sub_dept_data_id_coaching');
+            var statusJabatan = selectedOption.data('status_jabatan_coaching');
+            var employee_name = selectedOption.data('employee_name_coaching');
+            var employee_nik = selectedOption.data('employee_nik_coaching');
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            $("#create_coaching_employee_name").text(employee_name);
+            $("#create_coaching_employee_nik").text(employee_nik);
+            $("#create_coaching_employee_sub_dept").text(subDept);
+            $("#create_coaching_employee_department").text(department);
+            $("#create_coaching_employee_jabatan").text(statusJabatan);
+            document.getElementById('enroll_id_karyawan_coaching').value =  selectedOption.val();
+        });
+
+    </script>
+
+    {{-- SURAT PERINGATAN --}}
     <script>
         const semuaPasal = @json($pasal_data);
     </script>
@@ -1359,7 +1489,6 @@ h1 {
             select.trigger('change.select2');
         }
 
-
         $("#karyawanBermasalahID").select2().on("select2:select", function() {
             var selectedOption = $('#karyawanBermasalahID').find(':selected');
             var department = selectedOption.data('department_name');
@@ -1716,25 +1845,29 @@ h1 {
                 processing: true,
                 serverSide: true,
                 columns: [
-                    { data: 'nik'},
-                    { data: 'employee_name'},
-                    { data: 'sub_dept_name' },
-                    { data: 'department_name' },
+                    { data: 'nik',orderable: false},
+                    { data: 'employee_name',orderable: false},
+                    { data: 'sub_dept_name',orderable: false },
+                    { data: 'department_name',orderable: false },
                     { data: 'surat_peringatan',
+                    orderable: false,
                         render: function(data, type, row) {
                             return renderTindakanName(data);
                         }
                      },
-                    { data: 'kode_pasal'},
+                    { data: 'kode_pasal', orderable: false},
                     { data: 'tanggal_mulai',
+                      orderable: false,
                       render: function(data, type, row) {
                             return moment(data).locale('id').format('DD MMMM YYYY');
                             }
                     },
-                    { data: 'tanggal_sampai',
-                      render: function(data, type, row) {
+                    {
+                    data: 'tanggal_sampai',
+                    orderable: false,
+                    render: function(data, type, row) {
                             return moment(data).locale('id').format('DD MMMM YYYY');
-                            }
+                    }
                     },
                     {
                         data: null,
@@ -2041,6 +2174,7 @@ h1 {
             $("#uuid_master").val(null);
             $("#didelegasikan_enroll_id").val(null);
         }
+
         function closeModalEditPengajuan() {
             $("#ajax-modal-edit-pengajuan").modal('hide');
             $('#title-modal-edit1').text('Buat Form Surat Peringatan');

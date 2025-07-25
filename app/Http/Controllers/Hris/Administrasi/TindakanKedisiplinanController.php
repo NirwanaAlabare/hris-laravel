@@ -396,6 +396,17 @@ class TindakanKedisiplinanController extends AdminBaseController
         return $pdf->stream('SP '.$data[0]->enroll_id.' '.$data[0]->employee_name.'.pdf');
     }
 
+    public function print_form_coaching(Request $request)
+    {
+        $pengajuan_id = $request->route('id');
+        $data = DB::select("
+            SELECT * FROM employee_atribut
+            WHERE enroll_id = ?
+        ", [7770]);
+        $pdf = PDF::loadview('hris/tindakan-kedisiplinan/export_form_coaching_pdf',['data'=>$data]);
+        return $pdf->stream('SP '.$data[0]->enroll_id.' '.$data[0]->employee_name.'.pdf');
+    }
+
 
     public function ajax_data_pengajuan_sp(Request $request)
     {
@@ -470,7 +481,6 @@ class TindakanKedisiplinanController extends AdminBaseController
         $start = $request->input('start'); // index pertama
         $length = $request->input('length'); // jumlah data per halaman
 
-
         $today = now()->format('Y-m-d');
 
         // Query pertama
@@ -489,7 +499,8 @@ class TindakanKedisiplinanController extends AdminBaseController
               ->orWhere('surat_peringatan_karyawan.surat_peringatan', 'like', '%' . $search . '%')
               ->orWhere('surat_peringatan_karyawan.tanggal_mulai', 'like', '%' . $search . '%')
               ->orWhere('surat_peringatan_karyawan.tanggal_sampai', 'like', '%' . $search . '%');
-        });
+        })
+        ->orderBy('surat_peringatan_karyawan.tanggal_mulai', 'ASC');
 
         if (!empty($request->daterange1)) {
             $arrperiode = explode(" s/d ", $request->daterange1);

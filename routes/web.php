@@ -351,6 +351,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('/tindakan_kedisiplinan/surat_peringatan_hr', ['as' => 'tindakan_kedisiplinan.surat_peringatan_hr','uses' => 'Administrasi\TindakanKedisiplinanController@surat_peringatan_hr']);
     Route::get('/tindakan_kedisiplinan/print_pengajuan_sp_pdf/{id}', ['as' => 'tindakan_kedisiplinan.print_pengajuan_sp_pdf','uses' => 'Administrasi\TindakanKedisiplinanController@print_pengajuan_sp_pdf']);
     Route::get('/tindakan_kedisiplinan/print_sp_karyawan/{id}', ['as' => 'tindakan_kedisiplinan.print_sp_karyawan','uses' => 'Administrasi\TindakanKedisiplinanController@print_sp_karyawan']);
+    Route::get('/tindakan_kedisiplinan/print_form_coaching/{id}', ['as' => 'tindakan_kedisiplinan.print_form_coaching','uses' => 'Administrasi\TindakanKedisiplinanController@print_form_coaching']);
     Route::post('/tindakan_kedisiplinan/get_detail_tindakan_kedisiplinan', ['as' => 'tindakan_kedisiplinan.get_detail_tindakan_kedisiplinan','uses' => 'Administrasi\TindakanKedisiplinanController@get_detail_tindakan_kedisiplinan']);
     Route::post('/tindakan_kedisiplinan/ajax_data_pengajuan_sp', ['as' => 'tindakan_kedisiplinan.ajax_data_pengajuan_sp','uses' => 'Administrasi\TindakanKedisiplinanController@ajax_data_pengajuan_sp']);
     Route::post('/tindakan_kedisiplinan/create_form_tindakan_kedisiplinan', ['as' => 'tindakan_kedisiplinan.create_form_tindakan_kedisiplinan','uses' => 'Administrasi\TindakanKedisiplinanController@create_form_tindakan_kedisiplinan']);
