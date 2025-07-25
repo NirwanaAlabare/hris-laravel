@@ -270,7 +270,7 @@
             </tr>
         </thead>
     </table>
-    @if($value->status_jabatan == 'OPERATOR' || $value->status_jabatan == 'STAFF' || $value->status_jabatan == 'ADMINISTRASI')
+    @if($value->status_jabatan == 'OPERATOR' || $value->status_jabatan == 'ADMINISTRASI')
     <table width="100%" style="width: 90%; margin-left:30px; font-family: 'Times New Roman', Times, serif; font-size: 11pt;">
         <thead>
             <tr style="height: 65px; vertical-align: bottom;">
@@ -291,11 +291,6 @@
                     <div style="width: 100px; border-bottom: 1px solid #000; margin: 0 auto;">&nbsp;</div>
                 </td>
 
-                <!-- Garis Manager -->
-                <td style="text-align: center;">
-                    <div style="width: 100px; border-bottom: 1px solid #000; margin: 0 auto;">&nbsp;</div>
-                </td>
-
                 <!-- Nama + Garis kanan -->
                 <td style="text-align: center;">
                     <div style="width:200px; border-bottom: 1px solid #000; margin: 0 auto;">
@@ -309,7 +304,46 @@
                 <td style="text-align: left;">Manager HRGA-Compliance</td>
                 <td style="text-align: center;">Leader</td>
                 <td style="text-align: center;">Chief</td>
-                <td style="text-align: center;">Manager</td>
+                <td style="text-align: center;">Karyawan</td>
+            </tr>
+        </thead>
+    </table>
+    @endif
+    @if($value->status_jabatan == 'STAFF')
+    <table width="100%" style="width: 90%; margin-left:30px; font-family: 'Times New Roman', Times, serif; font-size: 11pt;">
+        <thead>
+            <tr style="height: 65px; vertical-align: bottom;">
+                <!-- Nama + Garis kiri -->
+                <td style="text-align: left;">
+                    <div style="width:200px; border-bottom: 1px solid #000; text-align: center;">
+                        RUDY ARISTIAN FAJAR
+                    </div>
+                </td>
+
+                <!-- Garis Leader -->
+                <td style="text-align: center;">
+                    <div style="width: 100px; border-bottom: 1px solid #000; margin: 0 auto;">&nbsp;</div>
+                </td>
+
+                <!-- Garis Chief -->
+                <td style="text-align: center;">
+                    <div style="width: 100px; border-bottom: 1px solid #000; margin: 0 auto;">&nbsp;</div>
+                </td>
+
+
+                <!-- Nama + Garis kanan -->
+                <td style="text-align: center;">
+                    <div style="width:200px; border-bottom: 1px solid #000; margin: 0 auto;">
+                        {{ $value->employee_name }}
+                    </div>
+                </td>
+            </tr>
+
+            <!-- Jabatan -->
+            <tr style="height: 25px;">
+                <td style="text-align: left;">Manager HRGA-Compliance</td>
+                <td style="text-align: center;">SPV</td>
+                <td style="text-align: center;">Chief</td>
                 <td style="text-align: center;">Karyawan</td>
             </tr>
         </thead>
