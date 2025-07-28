@@ -1,3 +1,5 @@
+@php use Illuminate\Support\Str; @endphp
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -270,7 +272,6 @@
             </tr>
         </thead>
     </table>
-    @if($value->status_jabatan == 'OPERATOR' || $value->status_jabatan == 'ADMINISTRASI')
     <table width="100%" style="width: 90%; margin-left:30px; font-family: 'Times New Roman', Times, serif; font-size: 11pt;">
         <thead>
             <tr style="height: 65px; vertical-align: bottom;">
@@ -280,16 +281,14 @@
                         RUDY ARISTIAN FAJAR
                     </div>
                 </td>
-
-                <!-- Garis Leader -->
-                <td style="text-align: center;">
-                    <div style="width: 100px; border-bottom: 1px solid #000; margin: 0 auto;">&nbsp;</div>
-                </td>
-
-                <!-- Garis Chief -->
-                <td style="text-align: center;">
-                    <div style="width: 100px; border-bottom: 1px solid #000; margin: 0 auto;">&nbsp;</div>
-                </td>
+                 <!-- Loop approval list -->
+                @foreach ($approval_list as $approver)
+                    <td style="text-align: center;">
+                        <div style="width: 100px; border-bottom: 1px solid #000; margin: 0 auto;">
+                            {{-- {{ $approver->employee_name }} --}}
+                        </div>
+                    </td>
+                @endforeach
 
                 <!-- Nama + Garis kanan -->
                 <td style="text-align: center;">
@@ -298,18 +297,17 @@
                     </div>
                 </td>
             </tr>
-
             <!-- Jabatan -->
             <tr style="height: 25px;">
                 <td style="text-align: left;">Manager HRGA-Compliance</td>
-                <td style="text-align: center;">Leader</td>
-                <td style="text-align: center;">Chief</td>
+                @foreach ($approval_list as $approver)
+                    <td style="text-align: center;">{{ Str::title(strtolower($approver->status_jabatan)) }}</td>
+                @endforeach
                 <td style="text-align: center;">Karyawan</td>
             </tr>
         </thead>
     </table>
-    @endif
-    @if($value->status_jabatan == 'STAFF')
+    {{-- @if($value->status_jabatan == 'STAFF')
     <table width="100%" style="width: 90%; margin-left:30px; font-family: 'Times New Roman', Times, serif; font-size: 11pt;">
         <thead>
             <tr style="height: 65px; vertical-align: bottom;">
@@ -459,14 +457,7 @@
             </tr>
         </thead>
     </table>
-    @endif
-    {{-- <table width="100%" style="">
-        <thead>
-            <tr>
-                <td style="height:100px;"></td>
-            </tr>
-        </thead>
-    </table> --}}
+    @endif --}}
         <table width="40%" style="border: 2px solid #747474; position: absolute; left: 0; bottom: 10px;">
             <thead>
                 <tr>

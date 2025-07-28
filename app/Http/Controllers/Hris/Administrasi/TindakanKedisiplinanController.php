@@ -405,8 +405,142 @@ class TindakanKedisiplinanController extends AdminBaseController
             WHERE surat_peringatan_karyawan.id = ?
             LIMIT 1
         ", [$pengajuan_id]);
-        // dd($data);
-        $pdf = PDF::loadview('hris/tindakan-kedisiplinan/export_surat_peringatan_pdf',['data'=>$data]);
+
+
+        $struktur_jabatan = [
+            [
+                'status_jabatan' => 'OPERATOR',
+                'level' => 2
+            ],
+            [
+                'status_jabatan' => 'Administrasi',
+                'level' => 2
+            ],
+            [
+                'status_jabatan' => 'STAFF',
+                'level' => 3
+            ],
+            [
+                'status_jabatan' => 'LEADER',
+                'level' => 3
+            ],
+            [
+                'status_jabatan' => 'SPV',
+                'level' => 4
+            ],
+            [
+                'status_jabatan' => 'CHIEF',
+                'level' => 5
+            ],
+            [
+                'status_jabatan' => 'ASST. MANAGER',
+                'level' => 6
+            ],
+            [
+                'status_jabatan' => 'MANAGER',
+                'level' => 7
+            ],
+            [
+                'status_jabatan' => 'GENERAL MANAGER',
+                'level' => 8
+            ],
+        ];
+
+        // Ambil data karyawan (hanya 1 data karena LIMIT 1)
+        $karyawan = $data[0];
+
+        // Langkah 1: Cari level dari status_jabatan saat ini
+        $current_level = null;
+        foreach ($struktur_jabatan as $item) {
+            if (strtoupper($item['status_jabatan']) === strtoupper($karyawan->status_jabatan)) {
+                $current_level = $item['level'];
+                break;
+            }
+        }
+
+        if (is_null($current_level)) {
+            return response()->json(['error' => 'Level jabatan tidak ditemukan.'], 400);
+        }
+
+        $target_jabatan = collect($struktur_jabatan)
+            ->filter(function ($item) use ($current_level) {
+                // Ambil semua level lebih tinggi
+                if ($item['level'] >= ($current_level + 1)) {
+                    // Jika level 3, hanya LEADER yang diizinkan
+                    if ($item['level'] === 3 && strtoupper($item['status_jabatan']) !== 'LEADER') {
+                        return false;
+                    }
+                    return true;
+                }
+                return false;
+            })
+            ->sortBy('level')
+            ->pluck('status_jabatan')
+            ->values()
+            ->toArray();
+
+
+
+        // Langkah 3: Cari data approval berdasarkan status_jabatan yang ditemukan
+        $approval_list = [];
+        $used_levels = [];
+
+        foreach ($target_jabatan as $jabatan) {
+            // Cari level dari jabatan saat ini
+            $jabatan_level = collect($struktur_jabatan)
+                ->firstWhere('status_jabatan', $jabatan)['level'] ?? null;
+
+            if (is_null($jabatan_level) || in_array($jabatan_level, $used_levels)) {
+                continue; // Skip jika level tidak valid atau sudah digunakan
+            }
+
+            // Cari 1 orang dari jabatan dan level ini
+            $approver = DB::table('employee_atribut')
+                ->select('enroll_id', 'employee_name', 'nik', 'department_name', 'sub_dept_name', 'status_jabatan')
+                ->where('department_id', $karyawan->department_id)
+                ->where('sub_dept_id', $karyawan->sub_dept_id)
+                ->where('status_aktif', 'aktif')
+                ->whereRaw('LOWER(status_jabatan) = ?', [strtolower($jabatan)])
+                ->orderBy('enroll_id')
+                ->first();
+
+            if ($approver) {
+                $approval_list[] = $approver;
+                $used_levels[] = $jabatan_level;
+            }
+
+            if (count($approval_list) >= 2) {
+                break;
+            }
+        }
+        // Jika hanya 1 orang dan dia MANAGER, tambahkan GENERAL MANAGER
+        if (count($approval_list) === 1 && strtoupper($approval_list[0]->status_jabatan) === 'MANAGER') {
+            $gm = DB::table('employee_atribut')
+                ->select('enroll_id', 'employee_name', 'nik', 'department_name', 'sub_dept_name', 'status_jabatan')
+                ->where('status_aktif', 'aktif')
+                ->whereRaw('LOWER(status_jabatan) = ?', ['general manager'])
+                ->orderBy('enroll_id')
+                ->first();
+
+            if ($gm) {
+                $approval_list[] = $gm;
+            }
+        }
+        if (count($approval_list) === 0) {
+            $gm = DB::table('employee_atribut')
+                ->select('enroll_id', 'employee_name', 'nik', 'department_name', 'sub_dept_name', 'status_jabatan')
+                ->where('status_aktif', 'aktif')
+                ->whereRaw('LOWER(status_jabatan) = ?', ['general manager'])
+                ->orderBy('enroll_id')
+                ->first();
+
+            if ($gm) {
+                $approval_list[] = $gm;
+            }
+        }
+
+
+        $pdf = PDF::loadview('hris/tindakan-kedisiplinan/export_surat_peringatan_pdf',['data'=>$data,'approval_list'=>$approval_list]);
         return $pdf->stream('SP '.$data[0]->enroll_id.' '.$data[0]->employee_name.'.pdf');
     }
 
@@ -418,7 +552,140 @@ class TindakanKedisiplinanController extends AdminBaseController
             LEFT JOIN employee_atribut ON pengajuan_coaching_karyawan.enroll_id_karyawan_coaching = employee_atribut.enroll_id
             WHERE pengajuan_coaching_karyawan.id = ?
         ", [$pengajuan_id]);
-        $pdf = PDF::loadview('hris/tindakan-kedisiplinan/export_form_coaching_pdf',['data'=>$data]);
+
+        $struktur_jabatan = [
+            [
+                'status_jabatan' => 'OPERATOR',
+                'level' => 2
+            ],
+            [
+                'status_jabatan' => 'Administrasi',
+                'level' => 2
+            ],
+            [
+                'status_jabatan' => 'STAFF',
+                'level' => 3
+            ],
+            [
+                'status_jabatan' => 'LEADER',
+                'level' => 3
+            ],
+            [
+                'status_jabatan' => 'SPV',
+                'level' => 4
+            ],
+            [
+                'status_jabatan' => 'CHIEF',
+                'level' => 5
+            ],
+            [
+                'status_jabatan' => 'ASST. MANAGER',
+                'level' => 6
+            ],
+            [
+                'status_jabatan' => 'MANAGER',
+                'level' => 7
+            ],
+            [
+                'status_jabatan' => 'GENERAL MANAGER',
+                'level' => 8
+            ],
+        ];
+
+        // Ambil data karyawan (hanya 1 data karena LIMIT 1)
+        $karyawan = $data[0];
+
+        // Langkah 1: Cari level dari status_jabatan saat ini
+        $current_level = null;
+        foreach ($struktur_jabatan as $item) {
+            if (strtoupper($item['status_jabatan']) === strtoupper($karyawan->status_jabatan)) {
+                $current_level = $item['level'];
+                break;
+            }
+        }
+
+        if (is_null($current_level)) {
+            return response()->json(['error' => 'Level jabatan tidak ditemukan.'], 400);
+        }
+
+        $target_jabatan = collect($struktur_jabatan)
+            ->filter(function ($item) use ($current_level) {
+                // Ambil semua level lebih tinggi
+                if ($item['level'] >= ($current_level + 1)) {
+                    // Jika level 3, hanya LEADER yang diizinkan
+                    if ($item['level'] === 3 && strtoupper($item['status_jabatan']) !== 'LEADER') {
+                        return false;
+                    }
+                    return true;
+                }
+                return false;
+            })
+            ->sortBy('level')
+            ->pluck('status_jabatan')
+            ->values()
+            ->toArray();
+
+
+
+        // Langkah 3: Cari data approval berdasarkan status_jabatan yang ditemukan
+        $approval_list = [];
+        $used_levels = [];
+
+        foreach ($target_jabatan as $jabatan) {
+            // Cari level dari jabatan saat ini
+            $jabatan_level = collect($struktur_jabatan)
+                ->firstWhere('status_jabatan', $jabatan)['level'] ?? null;
+
+            if (is_null($jabatan_level) || in_array($jabatan_level, $used_levels)) {
+                continue; // Skip jika level tidak valid atau sudah digunakan
+            }
+
+
+            $approver = DB::table('employee_atribut')
+                ->select('enroll_id', 'employee_name', 'nik', 'department_name', 'sub_dept_name', 'status_jabatan')
+                ->where('department_id', $karyawan->department_id)
+                ->where('sub_dept_id', $karyawan->sub_dept_id)
+                ->where('status_aktif', 'aktif')
+                ->whereRaw('LOWER(status_jabatan) = ?', [strtolower($jabatan)])
+                ->orderBy('enroll_id')
+                ->first();
+
+            if ($approver) {
+                $approval_list[] = $approver;
+                $used_levels[] = $jabatan_level;
+            }
+
+            if (count($approval_list) >= 2) {
+                break;
+            }
+        }
+
+         if (count($approval_list) === 1 && strtoupper($approval_list[0]->status_jabatan) === 'MANAGER') {
+            $gm = DB::table('employee_atribut')
+                ->select('enroll_id', 'employee_name', 'nik', 'department_name', 'sub_dept_name', 'status_jabatan')
+                ->where('status_aktif', 'aktif')
+                ->whereRaw('LOWER(status_jabatan) = ?', ['general manager'])
+                ->orderBy('enroll_id')
+                ->first();
+
+            if ($gm) {
+                $approval_list[] = $gm;
+            }
+        }
+        if (count($approval_list) === 0) {
+            $gm = DB::table('employee_atribut')
+                ->select('enroll_id', 'employee_name', 'nik', 'department_name', 'sub_dept_name', 'status_jabatan')
+                ->where('status_aktif', 'aktif')
+                ->whereRaw('LOWER(status_jabatan) = ?', ['general manager'])
+                ->orderBy('enroll_id')
+                ->first();
+
+            if ($gm) {
+                $approval_list[] = $gm;
+            }
+        }
+
+        $pdf = PDF::loadview('hris/tindakan-kedisiplinan/export_form_coaching_pdf',['data'=>$data,'approval_list'=>$approval_list]);
         return $pdf->stream('SP '.$data[0]->enroll_id.' '.$data[0]->employee_name.'.pdf');
     }
 
