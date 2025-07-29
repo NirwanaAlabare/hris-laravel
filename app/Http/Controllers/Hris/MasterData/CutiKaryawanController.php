@@ -2063,6 +2063,7 @@ class CutiKaryawanController extends AdminBaseController
         $email = Auth::guard('admin')->user()->email;
         $status = $request->input('is_verifikasi_pengajuan_admin');
         $search = $request->input('search.value');
+
         // Query pertama
         $query1 = DB::table('data_absen_perijinan')
             ->select(
@@ -2140,6 +2141,16 @@ class CutiKaryawanController extends AdminBaseController
                   ->orWhere('nama_absen_ijin', 'LIKE', "%{$search}%")
                   ->orWhere('absen_alasan', 'LIKE', "%{$search}%")
                   ->orWhere('keterangan_reject', 'LIKE', "%{$search}%");
+            });
+        }
+        if (!empty($request->tanggal_range)) {
+            $arrperiode = explode(" s/d ", $request->tanggal_range);
+            $first_date = $arrperiode[0];
+            $last_date = $arrperiode[1];
+
+           $combinedQuery->where(function($q) use ($first_date, $last_date) {
+                $q->whereDate('tanggal_perizinan', '<=', $last_date)
+                ->whereDate('tanggal_perizinan', '>=', $first_date);
             });
         }
 

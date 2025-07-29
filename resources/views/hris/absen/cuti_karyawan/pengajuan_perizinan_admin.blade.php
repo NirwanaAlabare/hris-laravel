@@ -203,11 +203,14 @@ h1 {
                                         <div class="mt-5 p-0">
                                             <button class="btn btn-primary w-100" onclick="openModalBuatPengajuan()"  data-toggle="tooltip" title="Cari Data" id="recap_labor_cost_2"><i class="fa fa-plus" aria-hidden="true"></i> Buat Pengajuan</button>
                                         </div>
-                                         {{-- <div class="mt-5 p-0 w-50">
+                                         <div class="mt-5 p-0 w-50">
                                           <input type="" class="form-control" id="daterange-btn1" data-toggle="tooltip"
-                                            title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran">
+                                            title="" data-placement="bottom"  placeholder="PILIH TANGGAL" data-original-title="Klik di sini untuk pilih tanggal kehadiran">
                                             </input>
-                                        </div> --}}
+                                        </div>
+                                        <div class="mt-5 p-0 w-50">
+                                            <button type="button" class="btn btn-secondary ml-2" id="clear-daterange">Clear</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -792,22 +795,9 @@ h1 {
             $("#selectBagian").append(new Option("-- PILIH BAGIAN --", ""));
         });
 
-         $('#daterange-btn1').daterangepicker({
-            ranges: {
-                'Hari ini': [moment(), moment()],
-                'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                '7 Hari Kemarin': [moment().subtract(6, 'days'), moment()],
-                '30 Hari Kemarin': [moment().subtract(29, 'days'), moment()],
-                'Bulan Sekarang': [moment().startOf('month'), moment().endOf('month')],
-                'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-            },
-            startDate: moment().subtract(29, 'days'),
-            endDate: moment()
-        }, function(start, end) {
-            $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>');
-            var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
-            $('#daterange1').val(daterange1);
-        })
+
+
+
 
 
         $('body').on('click', '#btn-icon-refresh-izin', function(event){
@@ -1153,21 +1143,39 @@ h1 {
         var perijinanChecked = [];
         var currentPageCheck = 0;
         $(document).ready(function() {
-            var start = moment().subtract(29, 'days');
-            var end = moment();
-            var htmlDateRange = '<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>'
-            var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
-            var dateUpdateKehadiran = end.format("DD-MM-YYYY");
 
-            $('#daterange-btn1').html(htmlDateRange);
+             $('#daterange-btn1').daterangepicker({
+            ranges: {
+                'Hari ini': [moment(), moment()],
+                'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                '7 Hari Kemarin': [moment().subtract(6, 'days'), moment()],
+                '30 Hari Kemarin': [moment().subtract(29, 'days'), moment()],
+                'Bulan Sekarang': [moment().startOf('month'), moment().endOf('month')],
+                'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            startDate: moment().subtract(29, 'days'),
+            endDate: moment()
+        }, function(start, end) {
+            $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>');
+            var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
             $('#daterange1').val(daterange1);
-            $('#daterange2').val(daterange1);
+            tableWaiting.ajax.reload(); // reload data table with new date range
+        })
+
+        $('#clear-daterange').on('click', function () {
+            $('#daterange-btn1').val(''); // kosongkan input
+            $('#daterange1').val('');     // kosongkan hidden input
+            tableWaiting.ajax.reload();
+        });
 
             var tableWaiting = $('#datatable-ajax-crud-waiting').DataTable({
                 ajax: {
                     url: '{{ route('cuti_karyawan.dataabsenperijinan.ajax_dataabsenperizinan') }}',
                     type: "POST",
-                    data: { is_verifikasi_pengajuan_admin: 0 },  // Data untuk tab "Waiting"
+                    data: function (d) {
+                        d.is_verifikasi_pengajuan_admin = 0;
+                        d.tanggal_range = $('#daterange1').val(); // kirim range terpilih
+                    }
                 },
                 processing: true,
                 serverSide: true,
