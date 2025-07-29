@@ -220,11 +220,10 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $periode_payroll = $tanggal_awal_baru . ' - ' . $tanggal_akhir_baru;
 
         $data_potongan = $this->potongan($periode_payroll);
-
         list($year, $month) = explode('-', $bulan_priode);
         list($year_before, $month_before) = explode('-', $bulan_sebelum);
         // $departement=DepartmentAll::where('site_nirwana_id','NAG')->groupBy('department_id')->get();
-        $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG', 'NAGD', 'NAK'])
+        $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG'])
                         ->groupBy('department_id')
                         ->get();
         $data=[];
@@ -389,7 +388,6 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $selisih_gaji_before=array_sum(array_column($arrayData,'jumlah_sebelum_int'));
         $selisih_gaji_total=$selisih_gaji-$selisih_gaji_before;
         if($selisih_gaji_total==0){$selisih_gaji_total=0;}else{$selisih_gaji_total=number_format( $selisih_gaji_total , 2 , ',' , '.');}
-
         $grand_total=[
             'id_department'=>'',
             'nama_department'=>'GRAND TOTAL',
@@ -446,7 +444,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
 
         $data_potongan = $this->potongan($periode_payroll);
         // $departement=DepartmentAll::where('site_nirwana_id','NAG')->groupBy('department_id')->get();
-        $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG', 'NAGD', 'NAK'])
+        $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG'])
                         ->groupBy('department_id')
                         ->get();
         list($year_before, $month_before) = explode('-', $bulan_sebelum);
