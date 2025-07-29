@@ -223,8 +223,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         list($year, $month) = explode('-', $bulan_priode);
         list($year_before, $month_before) = explode('-', $bulan_sebelum);
         // $departement=DepartmentAll::where('site_nirwana_id','NAG')->groupBy('department_id')->get();
-        $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG'])
-                        ->groupBy('department_id')
+        $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG','NAK','NAGD'])
+                        ->groupBy('department_name')
                         ->get();
         $data=[];
         foreach ($departement as $key => $value) {
@@ -444,8 +444,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
 
         $data_potongan = $this->potongan($periode_payroll);
         // $departement=DepartmentAll::where('site_nirwana_id','NAG')->groupBy('department_id')->get();
-        $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG'])
-                        ->groupBy('department_id')
+        $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG','NAK','NAGD'])
+                        ->groupBy('department_name')
                         ->get();
         list($year_before, $month_before) = explode('-', $bulan_sebelum);
         $data=[];
