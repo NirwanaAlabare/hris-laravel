@@ -1048,61 +1048,79 @@
             rekapperhitunganpayroll();
         });
 
+        let currentPayrollRequest = null;
+
         function rekapperhitunganpayrolldepartment(){
             $('#payroll_department').empty();
             $('#loading_payroll_department').addClass("spinner-border");
-            let periode_payroll=document.getElementsByName("periode_payroll")[0].value;
-            let status_staff=document.getElementById("status_staff").value;
-            jQuery.ajax({
-                type : "post",
-                url : '{{route('hris.rekapperhitunganpayroll.get_payroll_department')}}',
-                data : {
+
+            let periode_payroll = document.getElementsByName("periode_payroll")[0].value;
+            let status_staff = document.getElementById("status_staff").value;
+
+            // Batalkan request sebelumnya jika masih berjalan
+            if (currentPayrollRequest !== null && currentPayrollRequest.readyState !== 4) {
+                currentPayrollRequest.abort();
+            }
+
+            // Kirim request baru
+            currentPayrollRequest = jQuery.ajax({
+                type: "post",
+                url: '{{route('hris.rekapperhitunganpayroll.get_payroll_department')}}',
+                data: {
                     periode_payroll: periode_payroll,
                     status_staff: status_staff
                 },
-                success:function(response)
-                {
-                    let selisih_karyawan='';
-                    let selisih_gaji='';
+                success: function(response) {
+                    console.log('response', response);
+                    let selisih_karyawan = '';
+                    let selisih_gaji = '';
+
                     $.each(response, function (key, value) {
-                        if(value.selisih_karyawan>0){
-                            selisih_karyawan="<i class='fa fa-level-up' aria-hidden='true' style='color:green'></i> "+value.selisih_karyawan;
-                        }else if(value.selisih_karyawan<0){
-                            selisih_karyawan="<i class='fa fa-level-down' aria-hidden='true' style='color:red'></i> "+Math.abs(value.selisih_karyawan);
-                        }else{
-                            selisih_karyawan='-';
+                        if(value.selisih_karyawan > 0){
+                            selisih_karyawan = "<i class='fa fa-level-up' style='color:green'></i> " + value.selisih_karyawan;
+                        } else if(value.selisih_karyawan < 0){
+                            selisih_karyawan = "<i class='fa fa-level-down' style='color:red'></i> " + Math.abs(value.selisih_karyawan);
+                        } else {
+                            selisih_karyawan = '-';
                         }
+
                         if(!value.selisih_gaji.includes('-')){
-                            selisih_gaji="<i class='fa fa-level-up' aria-hidden='true' style='color:green'></i> "+value.selisih_gaji;
-                        }else if(value.selisih_gaji.includes('-')){
-                            selisih_gaji="<i class='fa fa-level-down' aria-hidden='true' style='color:red'></i> "+value.selisih_gaji.replace('-','');
-                        }else{
-                            selisih_gaji='-';
+                            selisih_gaji = "<i class='fa fa-level-up' style='color:green'></i> " + value.selisih_gaji;
+                        } else {
+                            selisih_gaji = "<i class='fa fa-level-down' style='color:red'></i> " + value.selisih_gaji.replace('-', '');
                         }
+
                         $('#payroll_department').append(
                             "<tr>\
-                                <th style='background-color:white' class='px-3 py-1'>"+value.nama_department+"</th>\
-                                <td align='center'>"+value.jumlah_karyawan+"</td>\
-                                <td class='text-right pr-3'>"+value.bruto+"</td>\
-                                <td class='text-right pr-3'>"+value.pph+"</td>\
-                                <td class='text-right pr-3'>"+value.upah_neto_rupiah+"</td>\
-                                <td class='text-right pr-3'>"+value.total_bpjs_tk+"</td>\
-                                <td class='text-right pr-3'>"+value.total_bpjs_ks+"</td>\
-                                <td class='text-right pr-3'>"+value.potongan+"</td>\
-                                <td class='text-right pr-3'>"+value.jumlah+"</td>\
+                                <th style='background-color:white' class='px-3 py-1'>" + value.nama_department + "</th>\
+                                <td align='center'>" + value.jumlah_karyawan + "</td>\
+                                <td class='text-right pr-3'>" + value.bruto + "</td>\
+                                <td class='text-right pr-3'>" + value.pph + "</td>\
+                                <td class='text-right pr-3'>" + value.upah_neto_rupiah + "</td>\
+                                <td class='text-right pr-3'>" + value.total_bpjs_tk + "</td>\
+                                <td class='text-right pr-3'>" + value.total_bpjs_ks + "</td>\
+                                <td class='text-right pr-3'>" + value.potongan + "</td>\
+                                <td class='text-right pr-3'>" + value.jumlah + "</td>\
                                 <td></td>\
-                                <td align='center'>"+value.jumlah_karyawan_sebelum+"</td>\
-                                <td class='text-right pr-3'>"+value.jumlah_sebelum+"</td>\
-                                <td align='center'>"+selisih_karyawan+"</td>\
-                                <td class='text-right pr-3'>"+selisih_gaji+"</td>\
+                                <td align='center'>" + value.jumlah_karyawan_sebelum + "</td>\
+                                <td class='text-right pr-3'>" + value.jumlah_sebelum + "</td>\
+                                <td align='center'>" + selisih_karyawan + "</td>\
+                                <td class='text-right pr-3'>" + selisih_gaji + "</td>\
                             </tr>"
                         );
                     });
 
                     $('#loading_payroll_department').removeClass("spinner-border");
+                },
+                error: function(xhr, status, error) {
+                    if (status !== 'abort') {
+                        console.error("Error:", error);
+                    }
+                    $('#loading_payroll_department').removeClass("spinner-border");
                 }
             });
         }
+
     </script>
     <script>
 
