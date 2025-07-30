@@ -546,6 +546,7 @@ class PermintaanTenagaKerjaController extends AdminBaseController
                 'department_all.department_name',
                 'department_all2.sub_dept_name',
                 DB::raw('(SELECT SUM(jumlah_kebutuhan) FROM sub_pengajuan_permintaan_tk WHERE sub_pengajuan_permintaan_tk.no_permintaan_id = pengajuan_permintaan_tk.no_permintaan) AS jumlah_kebutuhan'),
+                DB::raw('(SELECT MIN(tanggal_kebutuhan) FROM sub_pengajuan_permintaan_tk WHERE sub_pengajuan_permintaan_tk.no_permintaan_id = pengajuan_permintaan_tk.no_permintaan) AS tanggal_kebutuhan'),
                 DB::raw('(SELECT department_kode FROM sub_pengajuan_permintaan_tk WHERE sub_pengajuan_permintaan_tk.no_permintaan_id = pengajuan_permintaan_tk.no_permintaan LIMIT 1) AS department_kode_sub'),
                 DB::raw('(SELECT bagian_kode FROM sub_pengajuan_permintaan_tk WHERE sub_pengajuan_permintaan_tk.no_permintaan_id = pengajuan_permintaan_tk.no_permintaan LIMIT 1) AS bagian_kode_sub'),
                 DB::raw('(SELECT COUNT(*) FROM employee_atribut WHERE employee_atribut.no_fptk = pengajuan_permintaan_tk.no_permintaan) AS jumlah_karyawan')
