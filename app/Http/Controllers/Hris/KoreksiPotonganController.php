@@ -321,6 +321,19 @@ class KoreksiPotonganController extends AdminBaseController
             $loggedAdmin->email;
             $data_import=[];
             $head=$data[0][0];
+
+
+            $jenisPotonganMapping = [
+                'POTONGAN BPJS TK' => 1,
+                'POTONGAN BPJS KS' => 2,
+                'POTONGAN BAZAR' => 3,
+                'POTONGAN KAS BON' => 4,
+                'POTONGAN LAINNYA' => 5,
+                'POTONGAN KARYAWAN' => 6,
+                'POTONGAN UPAH' => 7,
+                'POTONGAN LEMBUR' => 8,
+            ];
+
             if($head[0]=='enroll_id' && $head[3]=='jumlah_rp_potongan' ){
                 foreach ($data[0] as $key2 => $row) {
                     if($key2>0){
@@ -346,6 +359,8 @@ class KoreksiPotonganController extends AdminBaseController
                         $tgl_koreksi_awal = ($tgl_koreksi_awal - 25569) * 86400;
                         $tgl_koreksi = date('Y-m-d', $tgl_koreksi_awal);
 
+                        $jenis_potongan_string = strtoupper(trim($row[7]));
+
                         $data_import[]=[
                             'kode_koreksi_potongan'=>date('Y').date('m').date('i').date('s').$nik,
                             'tanggal_koreksi'=>$tgl_koreksi,
@@ -362,7 +377,7 @@ class KoreksiPotonganController extends AdminBaseController
                             'periode_tanggal_koreksi'=>$tgl_priode_awal.' - '.$tgl_priode_akhir,
                             'keterangan'=>$row[6],
                             'operator'=> $loggedAdmin->email,
-                            'jenis_potongan'=>$row[7],
+                            'jenis_potongan'=>$jenisPotonganMapping[$jenis_potongan_string] ?? null,
                         ];
                     }
                 }
@@ -434,11 +449,10 @@ class KoreksiPotonganController extends AdminBaseController
     ->leftJoin('employee_atribut','data_koreksi_potongan.enroll_id','=','employee_atribut.enroll_id')
     ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
     ->where('periode_tanggal_koreksi',$request->priode_payroll)
+    ->where('jenis_potongan',$request->jenis_potongan_export)
     ->orderBy('data_koreksi_potongan.updated_at','asc')
     ->get();
-
-
-        return Excel::download(new KoreksiPotonganExport($DataKoreksiPotongan),'KoreksiUpah'.time().'.xlsx');
+        return Excel::download(new KoreksiPotonganExport($DataKoreksiPotongan, $request->priode_payroll),'KoreksiUpah'.time().'.xlsx');
     }
 
 }

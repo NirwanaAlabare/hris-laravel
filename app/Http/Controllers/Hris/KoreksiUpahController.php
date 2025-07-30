@@ -492,6 +492,14 @@ class KoreksiUpahController extends AdminBaseController
 
             $data_import=[];
 
+            $jenisKoreksiMapping = [
+                'UPAH' => 1,
+                'INSENTIF JABATAN' => 2,
+                'LEMBUR' => 3,
+                'INSENTIF LAINNYA' => 4,
+            ];
+
+
             $head=$data[0][0];
             if($head[0]=='enroll_id' && $head[3]=='jumlah_rp_koreksi' ){
                 foreach ($data[0] as $key2 => $row) {
@@ -520,6 +528,7 @@ class KoreksiUpahController extends AdminBaseController
                         $tgl_koreksi_awal = ($tgl_koreksi_awal - 25569) * 86400;
                         $tgl_koreksi = date('Y-m-d', $tgl_koreksi_awal);
 
+                        $jenis_koreksi_string = strtoupper(trim($row[7]));
 
                         $data_import[]=[
                             'kode_koreksi_upah'=>date('Y').date('m').date('i').date('s').$nik,
@@ -537,7 +546,7 @@ class KoreksiUpahController extends AdminBaseController
                             'periode_tanggal_koreksi'=>$tgl_priode_awal.' - '.$tgl_priode_akhir,
                             'keterangan'=>$row[6],
                             'operator'=> $loggedAdmin->email,
-                            'jenis_koreksi' => $row[7]
+                            'jenis_koreksi' => $jenisKoreksiMapping[$jenis_koreksi_string] ?? null,
 
                         ];
                     }
@@ -591,8 +600,6 @@ class KoreksiUpahController extends AdminBaseController
 
      public function export_koreksiupah(Request $request)
      {
-        // $DataKoreksiUpah=DataKoreksiUpah::where('periode_tanggal_koreksi',$request->priode_payroll)->get();
-
         $DataKoreksiUpah =  DataKoreksiUpah::selectRaw('
                     data_koreksi_upah.uuid,
                     data_koreksi_upah.kode_koreksi_upah,
@@ -613,6 +620,7 @@ class KoreksiUpahController extends AdminBaseController
                 ->leftJoin('employee_atribut','data_koreksi_upah.enroll_id','=','employee_atribut.enroll_id')
                 ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
                 ->where('periode_tanggal_koreksi',$request->priode_payroll)
+                ->where('jenis_koreksi',$request->jenis_koreksi_export)
                 ->orderBy('data_koreksi_upah.updated_at','asc')
                 ->get();
 

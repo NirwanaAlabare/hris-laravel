@@ -43,9 +43,16 @@
         </ol>
         <div class="ml-auto">
             <div class="input-group">
+                <a href="#" id="btn-exportexcel" class="btn btn-primary p-1 mr-1 px-3 text-white btn-icon" data-target="#export_potonganupah" data-toggle="modal" title="" data-original-title="Export Data to Excel">
+                    <span>
+                        <i class="fa fa-file-excel-o"></i>
+                        Export Koreksi Potongan
+                    </span>
+                </a>
+
                 <div class="text-white">
-                    <a href="{{route('hris.koreksipotongan.format')}}" id="btn-examimport" class="btn btn-icon btn-orange text-white p-0 mr-1" data-toggle="tooltip" title="" data-original-title="Format File Excel"><i class="fa fa-file-excel-o"></i>Format File </a>
-                    <button type="button" id="btn-import" class="btn btn-icon btn-warning text-white p-0 mr-1"  data-target="#import_koreksipotongan" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Data</button>
+                    <button type="button" id="btn-import" class="btn btn-icon btn-warning text-white p-1 px-3 mr-1"  data-target="#import_koreksipotongan" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Data</button>
+                    <a href="{{route('hris.koreksipotongan.format')}}" id="btn-examimport" class="btn btn-icon btn-orange text-white p-1 px-3 mr-1" data-toggle="tooltip" title="" data-original-title="Format File Excel"><i class="fa fa-file-excel-o"></i>Format File </a>
                 </div>
                     <!-- modal -->
 
@@ -86,12 +93,6 @@
                     </form>
                     <!-- end modal -->
 
-                <a href="#" id="btn-exportexcel" class="btn btn-primary p-0 mr-1 text-white btn-icon" data-target="#export_potonganupah" data-toggle="modal" title="" data-original-title="Export Data to Excel">
-                    <span>
-                        <i class="fa fa-file-excel-o"></i>
-                    </span>
-                </a>
-
                 <!-- modal -->
                 <form id="upload" name="custForm" action="{{route ('hris.export.koreksipotongan')}}" method="post" enctype="multipart/form-data">
                         @csrf
@@ -118,6 +119,21 @@
                                                             </select>
                                                         </div>
                                                     </div>
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Jenis Koreksi : </label>
+                                                                <select id="jenis_potongan_export" name="jenis_potongan_export" class="form-control">
+                                                                    <option value=1>POTONGAN BPJS TK</option>
+                                                                    <option value=2>POTONGAN BPJS KS</option>
+                                                                    <option value=3>POTONGAN BAZAR</option>
+                                                                    <option value=4>POTONGAN KAS BON</option>
+                                                                    <option value=5>POTONGAN LAINNYA</option>
+                                                                    <option value=6>PIUTANG KARYAWAN</option>
+                                                                    <option value=7>POTONGAN UPAH</option>
+                                                                    <option value=8>POTONGAN LEMBUR</option>
+                                                                </select>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="modal-footer bg-primary p-1">
@@ -134,7 +150,7 @@
                     </form>
                     <!-- end modal -->
 
-                <a href="#" id="btn-refresh-page" class="btn btn-secondary p-0 mr-0 text-white btn-icon" data-toggle="tooltip"
+                <a href="#" id="btn-refresh-page" class="btn btn-secondary p-1 mr-0 text-white btn-icon" data-toggle="tooltip"
                     title="" data-placement="bottom" data-original-title="Refresh Page">
                     <span>
                         <i class="fa fa-refresh"></i>

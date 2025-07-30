@@ -44,96 +44,107 @@
         <div class="ml-auto">
             <div class="input-group">
 
+                <a href="#" id="btn-exportexcel" class="btn btn-primary p-1 px-3 mr-1 text-white btn-icon"   data-target="#export_koreksiupah" data-toggle="modal" title="" data-original-title="Export Data to Excel">
+                    <span>
+                        <i class="fa fa-file-excel-o"></i>
+                        Export Koreksi Upah
+                    </span>
+                </a>
+                <!-- modal -->
+                <form id="upload" name="custForm" action="{{route ('hris.employeeatr.export.koreksiupah')}}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal fade" id="export_koreksiupah" role="dialog" data-backdrop="static" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-primary p-2">
+                                            <h4 class="modal-title pl-2 font-weight-bold" >Export Koreksi Upah</h4>
+                                            <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
+                                                <i class="fa fa-remove"></i>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Priode payroll : </label>
+                                                        <select id="" class="form-control" name="priode_payroll">
+                                                        @foreach($priode_koreksi as $key2 => $value2)
+                                                            <option name="priode_payroll" value="{{$value2['periode']}}">{{$value2['periode']}}</option>
+                                                        @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Jenis Koreksi : </label>
+                                                            <select id="jenis_koreksi_export" name="jenis_koreksi_export" class="form-control">
+                                                            <option value=1>UPAH</option>
+                                                            <option value=2>INSENTIF JABATAN</option>
+                                                            <option value=3>LEMBUR</option>
+                                                            <option value=4>INSENTIF LAINNYA</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer bg-primary p-1">
+                                            <div class="btn-list">
+                                                <button type="submit" id="export_grade_bpjs" class="btn btn-secondary btn-app">Export</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- end modal -->
                 <div class="text-white">
-                    <a href="{{route('hris.koreksiupah.format')}}" id="btn-examimport" class="btn btn-icon btn-orange text-white p-0 mr-1" data-toggle="tooltip" title="" data-original-title="Format File Excel"><i class="fa fa-file-excel-o"></i>Format File </a>
-                    <button type="button" id="btn-import" class="btn btn-icon btn-warning text-white p-0 mr-1"  data-target="#import_koreksiupah" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Data</button>
+                    <button type="button" id="btn-import" class="btn btn-icon btn-warning text-white p-1 px-3 mr-1"  data-target="#import_koreksiupah" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Data</button>
+                    <a href="{{route('hris.koreksiupah.format')}}" id="btn-examimport" class="btn btn-icon btn-orange text-white p-1 px-3 mr-1" data-toggle="tooltip" title="" data-original-title="Format File Excel"><i class="fa fa-file-excel-o"></i>Format File </a>
                 </div>
                     <!-- modal -->
 
-                    <form id="upload" name="custForm" action="{{route ('hris.employeeatr.import.koreksiupah')}}" method="post" enctype="multipart/form-data">
-                        @csrf
-                        <div class="modal fade" id="import_koreksiupah" role="dialog" data-backdrop="static" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="modal-content">
-                                            <div class="modal-header bg-primary p-2">
-                                                <h4 class="modal-title pl-2 font-weight-bold" >Import Koreksi Upah</h4>
-                                                <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
-                                                    <i class="fa fa-remove"></i>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <label class="form-label">file import : </label>
-                                                            <input class="form-control" name="file_import" type="file" accept=".xlsx, .xls, .csv" required>
-                                                        </div>
+                <form id="upload" name="custForm" action="{{route ('hris.employeeatr.import.koreksiupah')}}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal fade" id="import_koreksiupah" role="dialog" data-backdrop="static" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-primary p-2">
+                                            <h4 class="modal-title pl-2 font-weight-bold" >Import Koreksi Upah</h4>
+                                            <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
+                                                <i class="fa fa-remove"></i>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">file import : </label>
+                                                        <input class="form-control" name="file_import" type="file" accept=".xlsx, .xls, .csv" required>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="modal-footer bg-primary p-1">
-                                                <div class="btn-list">
-                                                    <button type="submit" id="export_grade_bpjs" class="btn btn-secondary btn-app">Simpan</button>
-                                                    <!-- <button type="button" id="" class="btn btn-warning btn-app" data-dismiss="modal">Tutup</button> -->
-                                                </div>
+                                        </div>
+                                        <div class="modal-footer bg-primary p-1">
+                                            <div class="btn-list">
+                                                <button type="submit" id="export_grade_bpjs" class="btn btn-secondary btn-app">Simpan</button>
+                                                <!-- <button type="button" id="" class="btn btn-warning btn-app" data-dismiss="modal">Tutup</button> -->
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
+                    </div>
+                </form>
                     <!-- end modal -->
 
-                <a href="#" id="btn-exportexcel" class="btn btn-primary p-0 mr-1 text-white btn-icon"   data-target="#export_koreksiupah" data-toggle="modal" title="" data-original-title="Export Data to Excel">
-                    <span>
-                        <i class="fa fa-file-excel-o"></i>
-                    </span>
-                </a>
-                    <!-- modal -->
-                    <form id="upload" name="custForm" action="{{route ('hris.employeeatr.export.koreksiupah')}}" method="post" enctype="multipart/form-data">
-                        @csrf
-                        <div class="modal fade" id="export_koreksiupah" role="dialog" data-backdrop="static" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="modal-content">
-                                            <div class="modal-header bg-primary p-2">
-                                                <h4 class="modal-title pl-2 font-weight-bold" >Export Koreksi Upah</h4>
-                                                <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
-                                                    <i class="fa fa-remove"></i>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <label class="form-label">Priode payroll : </label>
-                                                            <select id="" class="form-control" name="priode_payroll">
-                                                            @foreach($priode_koreksi as $key2 => $value2)
-                                                                <option name="priode_payroll" value="{{$value2['periode']}}">{{$value2['periode']}}</option>
-                                                            @endforeach
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer bg-primary p-1">
-                                                <div class="btn-list">
-                                                    <button type="submit" id="export_grade_bpjs" class="btn btn-secondary btn-app">Export</button>
-                                                    <!-- <button type="button" id="" class="btn btn-warning btn-app" data-dismiss="modal">Tutup</button> -->
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                    <!-- end modal -->
-                <a href="#" id="btn-refresh-page" class="btn btn-secondary p-0 mr-0 text-white btn-icon" data-toggle="tooltip"
+                <a href="#" id="btn-refresh-page" class="btn btn-secondary p-1 px-3 mr-0 text-white btn-icon" data-toggle="tooltip"
                     title="" data-placement="bottom" data-original-title="Refresh Page">
                     <span>
                         <i class="fa fa-refresh"></i>
