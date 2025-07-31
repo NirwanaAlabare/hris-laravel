@@ -2540,7 +2540,179 @@ class ProsesPayrollController extends AdminBaseController
             }
 
             //rekap payroll
-            $all_karyawan=DB::select("select a.enroll_id,a.nik,a.kode_grade kode_grade,a.join_date,a.employee_name,a.tanggal_resign,a.ptkp ptkp, a.npwp npwp, a.status_jabatan jabatan_karyawan, a.sub_dept_name nama_bagian,a.department_name nama_department,a.status_staff kategori_karyawan,a.status_aktif aktif_karyawan,a.jenis_kelamin,a.status_kawin,a.site_nirwana_name site_nirwana_name, case when  a.nama_bank is null or a.nama_bank = '' or a.nama_bank ='-' then 'TUNAI' else a.nama_bank end nama_bank, a.nomor_rekening_bank nomor_rekening_bank, a.sub_dept_id sub_dept_id,c.insentif,d.periode_payroll,d.kode_rekap,d.periode_tahun_bulan,d.kehadiran_iby,d.kehadiran_itb,d.kehadiran_m,d.kehadiran_lby,d.kehadiran_lsm,d.kehadiran_r,d.kehadiran_tk,d.total_kehadiran,d.total_kehadiran_net,d.kehadiran_m_estimasi,d.kehadiran_ok,d.kehadiran_dt,d.kehadiran_pc,d.kehadiran_dtpc,d.gaji_pokok,d.gaji_harian,d.gaji_menit,d.potongan_kehadiran_rupiah,e.lembur_1,e.lembur_2,e.lembur_3,e.lembur_4,e.total_lembur_1234,e.lembur1_rupiah,e.lembur2_rupiah, e.lembur3_rupiah, e.lembur4_rupiah,e.total_lembur_rupiah,f.koreksi_upah_rupiah,f.insentif_jabatan,g.koreksi_potongan,iks.potongan_iks_menit,iks.potongan_iks_rupiah,dtpc.potongan_dt_menit,dtpc.potongan_pc_menit,dtpc.potongan_dtpc_menit,dtpc.potongan_dt_rupiah,dtpc.potongan_pc_rupiah,dtpc.potongan_dtpc_rupiah,bpjs.bpjs_tk_jkm_bruto_rupiah,bpjs.bpjs_tk_jkm_neto_rupiah,bpjs.bpjs_tk_jkk_bruto_rupiah,bpjs.bpjs_tk_jkk_neto_rupiah,bpjs.bpjs_tk_jht_bruto_rupiah,bpjs.bpjs_tk_jht_neto_rupiah,bpjs.bpjs_tk_jpn_bruto_rupiah,bpjs.bpjs_tk_jpn_neto_rupiah,bpjs.bpjs_ks_jkn_bruto_rupiah,bpjs.bpjs_ks_jkn_neto_rupiah from (select*from employee_atribut where (status_aktif='AKTIF' or tanggal_resign>'$tanggal_awal') and join_date<='$tanggal_akhir'$inEnrollId2) a left join (select*from grading_salary where SUBSTRING(periode_umk,1,4)='$tahun') c on a.kode_grade=c.kode_grade inner join (select*from rekap_perhitungan_kehadiran_karyawan where periode_payroll='$priode')d on a.enroll_id=d.enroll_id left join (select enroll_id,sum(lembur_1) lembur_1,sum(lembur_2) lembur_2,sum(lembur_3) lembur_3,sum(lembur_4) lembur_4,sum(total_lembur_1234) total_lembur_1234,sum(lembur1_rupiah)lembur1_rupiah,sum(lembur2_rupiah) lembur2_rupiah,sum(lembur3_rupiah) lembur3_rupiah,sum(lembur4_rupiah) lembur4_rupiah,sum(total_lembur_rupiah) total_lembur_rupiah from rekap_perhitungan_lembur where tanggal_berjalan>='$tanggal_awal' and tanggal_berjalan<='$tanggal_akhir' group by enroll_id) e on a.enroll_id=e.enroll_id left join (select enroll_id, SUM(case when jenis_koreksi != 2 or jenis_koreksi is null THEN jumlah_rp_potongan else 0 end) koreksi_upah_rupiah, SUM(case when jenis_koreksi = 2 THEN jumlah_rp_potongan else 0 end) insentif_jabatan from data_koreksi_upah where periode_tanggal_koreksi='$periode_payroll2' group by enroll_id) f on a.enroll_id=f.enroll_id left join (select enroll_id,sum(jumlah_rp_potongan) koreksi_potongan from data_koreksi_potongan where periode_tanggal_koreksi='$periode_payroll2' group by enroll_id) g on a.enroll_id=g.enroll_id left join (select*from employee_bpjs where periode_kehadiran='$priode') bpjs on a.enroll_id=bpjs.enroll_id left join (select enroll_id,sum(jumlah_menit_absen_dt) potongan_dt_menit,sum(jumlah_menit_absen_pc) potongan_pc_menit,sum(jumlah_menit_absen_dtpc) potongan_dtpc_menit,sum(potongan_dt_rupiah) potongan_dt_rupiah,sum(potongan_pc_rupiah) potongan_pc_rupiah, sum(potongan_dtpc_rupiah) potongan_dtpc_rupiah from rekap_perhitungan_dtpc where tanggal_berjalan>='$tanggal_awal' and tanggal_berjalan<='$tanggal_akhir' group by enroll_id) dtpc on a.enroll_id=dtpc.enroll_id left join (select enroll_id,sum(lama_ijin_menit) potongan_iks_menit,sum(potongan_iks_rupiah) potongan_iks_rupiah from rekap_perhitungan_iks where tanggal_berjalan>='$tanggal_awal' and tanggal_berjalan<='$tanggal_akhir' group by enroll_id) iks on a.enroll_id=iks.enroll_id");
+            $all_karyawan=DB::select("SELECT
+                            a.enroll_id,
+                            a.nik,
+                            a.kode_grade kode_grade,
+                            a.join_date,
+                            a.employee_name,
+                            a.tanggal_resign,
+                            a.ptkp ptkp,
+                            a.npwp npwp,
+                            a.status_jabatan jabatan_karyawan,
+                            a.sub_dept_name nama_bagian,
+                            a.department_name nama_department,
+                            a.status_staff kategori_karyawan,
+                            a.status_aktif aktif_karyawan,
+                            a.jenis_kelamin,
+                            a.status_kawin,
+                            a.site_nirwana_name site_nirwana_name,
+                        CASE
+
+                                WHEN a.nama_bank IS NULL
+                                OR a.nama_bank = ''
+                                OR a.nama_bank = '-' THEN
+                                    'TUNAI' ELSE a.nama_bank
+                                END nama_bank,
+                            a.nomor_rekening_bank nomor_rekening_bank,
+                            a.sub_dept_id sub_dept_id,
+                            c.insentif,
+                            d.periode_payroll,
+                            d.kode_rekap,
+                            d.periode_tahun_bulan,
+                            d.kehadiran_iby,
+                            d.kehadiran_itb,
+                            d.kehadiran_m,
+                            d.kehadiran_lby,
+                            d.kehadiran_lsm,
+                            d.kehadiran_r,
+                            d.kehadiran_tk,
+                            d.total_kehadiran,
+                            d.total_kehadiran_net,
+                            d.kehadiran_m_estimasi,
+                            d.kehadiran_ok,
+                            d.kehadiran_dt,
+                            d.kehadiran_pc,
+                            d.kehadiran_dtpc,
+                            d.gaji_pokok,
+                            d.gaji_harian,
+                            d.gaji_menit,
+                            d.potongan_kehadiran_rupiah,
+                            e.lembur_1,
+                            e.lembur_2,
+                            e.lembur_3,
+                            e.lembur_4,
+                            e.total_lembur_1234,
+                            e.lembur1_rupiah,
+                            e.lembur2_rupiah,
+                            e.lembur3_rupiah,
+                            e.lembur4_rupiah,
+                            e.total_lembur_rupiah,
+                            f.koreksi_upah,
+                            f.insentif_jabatan,
+                            f.koreksi_insentif,
+                            f.koreksi_lembur,
+                            f.koreksi_upah_rupiah,
+                            g.potongan_piutang,
+                            g.potongan_insentif,
+                            g.potongan_upah,
+                            g.potongan_lembur,
+                            g.koreksi_potongan,
+                            iks.potongan_iks_menit,
+                            iks.potongan_iks_rupiah,
+                            dtpc.potongan_dt_menit,
+                            dtpc.potongan_pc_menit,
+                            dtpc.potongan_dtpc_menit,
+                            dtpc.potongan_dt_rupiah,
+                            dtpc.potongan_pc_rupiah,
+                            dtpc.potongan_dtpc_rupiah,
+                            bpjs.bpjs_tk_jkm_bruto_rupiah,
+                            bpjs.bpjs_tk_jkm_neto_rupiah,
+                            bpjs.bpjs_tk_jkk_bruto_rupiah,
+                            bpjs.bpjs_tk_jkk_neto_rupiah,
+                            bpjs.bpjs_tk_jht_bruto_rupiah,
+                            bpjs.bpjs_tk_jht_neto_rupiah,
+                            bpjs.bpjs_tk_jpn_bruto_rupiah,
+                            bpjs.bpjs_tk_jpn_neto_rupiah,
+                            bpjs.bpjs_ks_jkn_bruto_rupiah,
+                            bpjs.bpjs_ks_jkn_neto_rupiah
+                        FROM
+                            ( SELECT * FROM employee_atribut WHERE ( status_aktif = 'AKTIF' OR tanggal_resign > '$tanggal_awal' ) AND join_date <= '$tanggal_akhir' $inEnrollId2 ) a
+                            LEFT JOIN ( SELECT * FROM grading_salary WHERE SUBSTRING( periode_umk, 1, 4 )= '$tahun' ) c ON a.kode_grade = c.kode_grade
+                            INNER JOIN ( SELECT * FROM rekap_perhitungan_kehadiran_karyawan WHERE periode_payroll = '$priode' ) d ON a.enroll_id = d.enroll_id
+                            LEFT JOIN (
+                            SELECT
+                                enroll_id,
+                                sum( lembur_1 ) lembur_1,
+                                sum( lembur_2 ) lembur_2,
+                                sum( lembur_3 ) lembur_3,
+                                sum( lembur_4 ) lembur_4,
+                                sum( total_lembur_1234 ) total_lembur_1234,
+                                sum( lembur1_rupiah ) lembur1_rupiah,
+                                sum( lembur2_rupiah ) lembur2_rupiah,
+                                sum( lembur3_rupiah ) lembur3_rupiah,
+                                sum( lembur4_rupiah ) lembur4_rupiah,
+                                sum( total_lembur_rupiah ) total_lembur_rupiah
+                            FROM
+                                rekap_perhitungan_lembur
+                            WHERE
+                                tanggal_berjalan >= '$tanggal_awal'
+                                AND tanggal_berjalan <= '$tanggal_akhir'
+                            GROUP BY
+                                enroll_id
+                            ) e ON a.enroll_id = e.enroll_id
+                            LEFT JOIN (
+                            SELECT
+                                enroll_id,
+                                SUM( CASE WHEN jenis_koreksi = 1 THEN jumlah_rp_potongan ELSE 0 END ) AS koreksi_upah,
+                                SUM( CASE WHEN jenis_koreksi = 2 THEN jumlah_rp_potongan ELSE 0 END) insentif_jabatan,
+                                SUM( CASE WHEN jenis_koreksi = 3 THEN jumlah_rp_potongan ELSE 0 END ) AS koreksi_lembur,
+                                SUM( CASE WHEN jenis_koreksi = 4 THEN jumlah_rp_potongan ELSE 0 END ) AS koreksi_insentif,
+                                SUM( CASE WHEN jenis_koreksi != 2 or jenis_koreksi IS NULL THEN jumlah_rp_potongan ELSE 0 END) koreksi_upah_rupiah
+                            FROM
+                                data_koreksi_upah
+                            WHERE
+                                periode_tanggal_koreksi = '$periode_payroll2'
+                            GROUP BY
+                                enroll_id
+                            ) f ON a.enroll_id = f.enroll_id
+
+                            LEFT JOIN (
+                            SELECT enroll_id,
+                                SUM(CASE WHEN jenis_potongan = 4 THEN jumlah_rp_potongan ELSE 0 END) AS potongan_piutang,
+                                SUM(CASE WHEN jenis_potongan = 5 THEN jumlah_rp_potongan ELSE 0 END) AS potongan_insentif,
+                                SUM(CASE WHEN jenis_potongan = 7 THEN jumlah_rp_potongan ELSE 0 END) AS potongan_upah,
+                                SUM(CASE WHEN jenis_potongan = 8 THEN jumlah_rp_potongan ELSE 0 END) AS potongan_lembur,
+                                sum(jumlah_rp_potongan) koreksi_potongan
+                            FROM data_koreksi_potongan
+                            WHERE
+                            periode_tanggal_koreksi = '$periode_payroll2'
+                            GROUP BY
+                            enroll_id
+                            ) g ON a.enroll_id = g.enroll_id
+                            LEFT JOIN ( SELECT * FROM employee_bpjs WHERE periode_kehadiran = '$priode' ) bpjs ON a.enroll_id = bpjs.enroll_id
+                            LEFT JOIN (
+                            SELECT
+                                enroll_id,
+                                sum( jumlah_menit_absen_dt ) potongan_dt_menit,
+                                sum( jumlah_menit_absen_pc ) potongan_pc_menit,
+                                sum( jumlah_menit_absen_dtpc ) potongan_dtpc_menit,
+                                sum( potongan_dt_rupiah ) potongan_dt_rupiah,
+                                sum( potongan_pc_rupiah ) potongan_pc_rupiah,
+                                sum( potongan_dtpc_rupiah ) potongan_dtpc_rupiah
+                            FROM
+                                rekap_perhitungan_dtpc
+                            WHERE
+                                tanggal_berjalan >= '$tanggal_awal'
+                                AND tanggal_berjalan <= '$tanggal_akhir'
+                            GROUP BY
+                                enroll_id
+                            ) dtpc ON a.enroll_id = dtpc.enroll_id
+                            LEFT JOIN (
+                            SELECT
+                                enroll_id,
+                                sum( lama_ijin_menit ) potongan_iks_menit,
+                                sum( potongan_iks_rupiah ) potongan_iks_rupiah
+                            FROM
+                                rekap_perhitungan_iks
+                            WHERE
+                                tanggal_berjalan >= '$tanggal_awal'
+                                AND tanggal_berjalan <= '$tanggal_akhir'
+                            GROUP BY
+                            enroll_id
+                            ) iks ON a.enroll_id = iks.enroll_id");
+
+            // $all_karyawan=DB::select("select a.enroll_id,a.nik,a.kode_grade kode_grade,a.join_date,a.employee_name,a.tanggal_resign,a.ptkp ptkp, a.npwp npwp, a.status_jabatan jabatan_karyawan, a.sub_dept_name nama_bagian,a.department_name nama_department,a.status_staff kategori_karyawan,a.status_aktif aktif_karyawan,a.jenis_kelamin,a.status_kawin,a.site_nirwana_name site_nirwana_name, case when  a.nama_bank is null or a.nama_bank = '' or a.nama_bank ='-' then 'TUNAI' else a.nama_bank end nama_bank, a.nomor_rekening_bank nomor_rekening_bank, a.sub_dept_id sub_dept_id,c.insentif,d.periode_payroll,d.kode_rekap,d.periode_tahun_bulan,d.kehadiran_iby,d.kehadiran_itb,d.kehadiran_m,d.kehadiran_lby,d.kehadiran_lsm,d.kehadiran_r,d.kehadiran_tk,d.total_kehadiran,d.total_kehadiran_net,d.kehadiran_m_estimasi,d.kehadiran_ok,d.kehadiran_dt,d.kehadiran_pc,d.kehadiran_dtpc,d.gaji_pokok,d.gaji_harian,d.gaji_menit,d.potongan_kehadiran_rupiah,e.lembur_1,e.lembur_2,e.lembur_3,e.lembur_4,e.total_lembur_1234,e.lembur1_rupiah,e.lembur2_rupiah, e.lembur3_rupiah, e.lembur4_rupiah,e.total_lembur_rupiah,f.koreksi_upah_rupiah,f.insentif_jabatan,g.koreksi_potongan,iks.potongan_iks_menit,iks.potongan_iks_rupiah,dtpc.potongan_dt_menit,dtpc.potongan_pc_menit,dtpc.potongan_dtpc_menit,dtpc.potongan_dt_rupiah,dtpc.potongan_pc_rupiah,dtpc.potongan_dtpc_rupiah,bpjs.bpjs_tk_jkm_bruto_rupiah,bpjs.bpjs_tk_jkm_neto_rupiah,bpjs.bpjs_tk_jkk_bruto_rupiah,bpjs.bpjs_tk_jkk_neto_rupiah,bpjs.bpjs_tk_jht_bruto_rupiah,bpjs.bpjs_tk_jht_neto_rupiah,bpjs.bpjs_tk_jpn_bruto_rupiah,bpjs.bpjs_tk_jpn_neto_rupiah,bpjs.bpjs_ks_jkn_bruto_rupiah,bpjs.bpjs_ks_jkn_neto_rupiah from (select*from employee_atribut where (status_aktif='AKTIF' or tanggal_resign>'$tanggal_awal') and join_date<='$tanggal_akhir'$inEnrollId2) a left join (select*from grading_salary where SUBSTRING(periode_umk,1,4)='$tahun') c on a.kode_grade=c.kode_grade inner join (select*from rekap_perhitungan_kehadiran_karyawan where periode_payroll='$priode')d on a.enroll_id=d.enroll_id left join (select enroll_id,sum(lembur_1) lembur_1,sum(lembur_2) lembur_2,sum(lembur_3) lembur_3,sum(lembur_4) lembur_4,sum(total_lembur_1234) total_lembur_1234,sum(lembur1_rupiah)lembur1_rupiah,sum(lembur2_rupiah) lembur2_rupiah,sum(lembur3_rupiah) lembur3_rupiah,sum(lembur4_rupiah) lembur4_rupiah,sum(total_lembur_rupiah) total_lembur_rupiah from rekap_perhitungan_lembur where tanggal_berjalan>='$tanggal_awal' and tanggal_berjalan<='$tanggal_akhir' group by enroll_id) e on a.enroll_id=e.enroll_id left join (select enroll_id, SUM(case when jenis_koreksi != 2 or jenis_koreksi is null THEN jumlah_rp_potongan else 0 end) koreksi_upah_rupiah, SUM(case when jenis_koreksi = 2 THEN jumlah_rp_potongan else 0 end) insentif_jabatan from data_koreksi_upah where periode_tanggal_koreksi='$periode_payroll2' group by enroll_id) f on a.enroll_id=f.enroll_id left join (select enroll_id,sum(jumlah_rp_potongan) koreksi_potongan from data_koreksi_potongan where periode_tanggal_koreksi='$periode_payroll2' group by enroll_id) g on a.enroll_id=g.enroll_id left join (select*from employee_bpjs where periode_kehadiran='$priode') bpjs on a.enroll_id=bpjs.enroll_id left join (select enroll_id,sum(jumlah_menit_absen_dt) potongan_dt_menit,sum(jumlah_menit_absen_pc) potongan_pc_menit,sum(jumlah_menit_absen_dtpc) potongan_dtpc_menit,sum(potongan_dt_rupiah) potongan_dt_rupiah,sum(potongan_pc_rupiah) potongan_pc_rupiah, sum(potongan_dtpc_rupiah) potongan_dtpc_rupiah from rekap_perhitungan_dtpc where tanggal_berjalan>='$tanggal_awal' and tanggal_berjalan<='$tanggal_akhir' group by enroll_id) dtpc on a.enroll_id=dtpc.enroll_id left join (select enroll_id,sum(lama_ijin_menit) potongan_iks_menit,sum(potongan_iks_rupiah) potongan_iks_rupiah from rekap_perhitungan_iks where tanggal_berjalan>='$tanggal_awal' and tanggal_berjalan<='$tanggal_akhir' group by enroll_id) iks on a.enroll_id=iks.enroll_id");
             $data_payroll=[];
             foreach ($all_karyawan as $key => $value) {
                 $premi_karyawan=0;
@@ -2626,15 +2798,10 @@ class ProsesPayrollController extends AdminBaseController
                     'upah_per_menit'=>$value->gaji_menit,
                     'potongan_kehadiran_rupiah'=>$value->potongan_kehadiran_rupiah,
                     'kehadiran_m_estimasi'=>$value->kehadiran_m_estimasi,
-                    // 'lembur_1'=>(int)$value->lembur_1,
                     'lembur_1'=>$value->lembur_1,
-                    // 'lembur_2'=>(int)$value->lembur_2,
                     'lembur_2'=>$value->lembur_2,
-                    // 'lembur_3'=>(int)$value->lembur_3,
                     'lembur_3'=>$value->lembur_3,
-                    // 'lembur_4'=>(int)$value->lembur_4,
                     'lembur_4'=>$value->lembur_4,
-                    // 'total_lembur_1234'=>(int)$value->total_lembur_1234,
                     'total_lembur_1234'=>$value->total_lembur_1234,
                     'lembur1_rupiah'=>(int)$value->lembur1_rupiah,
                     'lembur2_rupiah'=>(int)$value->lembur2_rupiah,
@@ -2643,6 +2810,14 @@ class ProsesPayrollController extends AdminBaseController
                     'total_lembur_rupiah'=>(int)$value->total_lembur_rupiah,
 
                     'pendapatan_lainnya_rupiah'=>0,
+
+                    'koreksi_upah'=>(int)$value->koreksi_upah,
+                    'koreksi_lembur'=>(int)$value->koreksi_lembur,
+                    'koreksi_insentif'=>(int)$value->koreksi_insentif,
+                    'potongan_piutang'=>(int)$value->potongan_piutang,
+                    'potongan_insentif'=>(int)$value->potongan_insentif,
+                    'potongan_upah'=>(int)$value->potongan_upah,
+                    'potongan_lembur'=>(int)$value->potongan_lembur,
 
                     'koreksi_upah_rupiah'=>(int)$value->koreksi_upah_rupiah,
                     'insentif_jabatan'=>(int)$value->insentif_jabatan,
@@ -2788,6 +2963,14 @@ class ProsesPayrollController extends AdminBaseController
                     'total_lembur_rupiah'=>$v['total_lembur_rupiah'],
 
                     'pendapatan_lainnya_rupiah'=>$v['pendapatan_lainnya_rupiah'],
+
+                    'koreksi_upah'=>$v['koreksi_upah'],
+                    'koreksi_lembur'=>$v['koreksi_lembur'],
+                    'koreksi_insentif'=>$v['koreksi_insentif'],
+                    'potongan_piutang'=>$v['potongan_piutang'],
+                    'potongan_insentif'=>$v['potongan_insentif'],
+                    'potongan_upah'=>$v['potongan_upah'],
+                    'potongan_lembur'=>$v['potongan_lembur'],
 
                     'koreksi_upah_rupiah'=>$v['koreksi_upah_rupiah'],
                     'insentif_jabatan'=>$v['insentif_jabatan'],

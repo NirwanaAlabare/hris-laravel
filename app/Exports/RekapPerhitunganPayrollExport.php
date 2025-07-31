@@ -191,7 +191,14 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                     updated_at,
                     year,
                     month,
-                    day
+                    day,
+                    koreksi_upah,
+                    koreksi_lembur,
+                    koreksi_insentif,
+                    potongan_upah,
+                    potongan_lembur,
+                    potongan_insentif,
+                    potongan_piutang
 
                 ')
                 ->whereRaw('
@@ -244,6 +251,16 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         if($Data->tunjangan_karyawan_rupiah == 0){ $tunjangan_karyawan_rupiah = '0'; $readOnlyTunjanganKaryawanRupiah = '0'; } else { $tunjangan_karyawan_rupiah = $Data->tunjangan_karyawan_rupiah; $readOnlyTunjanganKaryawanRupiah = $Data->tunjangan_karyawan_rupiah; }
         if($Data->premi_karyawan == 0){ $premi_karyawan = '0';} else { $premi_karyawan = $Data->premi_karyawan; }
         if($Data->insentif_jabatan == 0){ $insentif_jabatan = '0';} else { $insentif_jabatan = $Data->insentif_jabatan; }
+
+
+        if($Data->koreksi_upah == 0){ $koreksi_upah = '0';} else { $koreksi_upah = $Data->koreksi_upah;}
+        if($Data->koreksi_lembur == 0){ $koreksi_lembur = '0';} else { $koreksi_lembur = $Data->koreksi_lembur; }
+        if($Data->koreksi_insentif == 0){ $koreksi_insentif = '0';} else { $koreksi_insentif = $Data->koreksi_insentif; }
+        if($Data->potongan_upah == 0){ $potongan_upah = '0';} else { $potongan_upah = $Data->potongan_upah; }
+        if($Data->potongan_lembur == 0){ $potongan_lembur = '0';} else { $potongan_lembur = $Data->potongan_lembur; }
+        if($Data->potongan_insentif == 0){ $potongan_insentif = '0';} else { $potongan_insentif = $Data->potongan_insentif; }
+        if($Data->potongan_piutang == 0){ $potongan_piutang = '0';} else { $potongan_piutang = $Data->potongan_piutang; }
+
         if($Data->lembur_1 == 0){ $lembur_1 = '0';} else { $lembur_1 = $Data->lembur_1; }
         if($Data->lembur_2 == 0){ $lembur_2 = '0';} else { $lembur_2 = $Data->lembur_2; }
         if($Data->lembur_3 == 0){ $lembur_3 = '0';} else { $lembur_3 = $Data->lembur_3; }
@@ -462,8 +479,13 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
             $lembur2_rupiah,
             $lembur3_rupiah,
             $lembur4_rupiah,
-            $koreksi_upah_rupiah,
-            $koreksi_potongan_rupiah,
+            $koreksi_upah,
+            $koreksi_lembur,
+            $koreksi_insentif,
+            $potongan_upah,
+            $potongan_lembur,
+            $potongan_insentif,
+            $potongan_piutang,
             $nol,
             abs($potongan_kehadiran_rupiah),
             $rp_pot_jam,
@@ -513,6 +535,11 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
             'BM' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
             'BN' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
             'BO' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+            'BP' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+            'BQ' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+            'BR' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+            'BS' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+            'BT' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
         ];
     }
 
@@ -721,50 +748,57 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                 $sheet->mergeCells('AZ5:AZ6');
                 $sheet->setCellValue('AZ5', 'Rp Lembur 4');
 
-                $sheet->mergeCells('BA5:BB5');
+                $sheet->mergeCells('BA5:BG5');
                 $sheet->setCellValue('BA5','Lain- Lain (Koreksi + -)');
-                $sheet->setCellValue('BA6', '+');
-                $sheet->setCellValue('BB6', '-');
+                $sheet->getStyle('BA5')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->setCellValue('BA6', '+ Upah');
+                $sheet->setCellValue('BB6', '+ Lembur');
+                $sheet->setCellValue('BC6', '+ Insentif');
 
-                $sheet->mergeCells('BC5:BC6');
-                $sheet->setCellValue('BC5', 'Rp. Cuti Tahunan');
-
-
-                $sheet->mergeCells('BD5:BD6');
-                $sheet->setCellValue('BD5', 'Rp. Potongan Hari Kerja');
-
-                $sheet->mergeCells('BE5:BE6');
-                $sheet->setCellValue('BE5', 'Rp Pot. Jam (DT,PC,IKS)');
-
-                $sheet->mergeCells('BF5:BF6');
-                $sheet->setCellValue('BF5', 'Bruto');
-
-                $sheet->mergeCells('BG5:BG6');
-                $sheet->setCellValue('BG5', 'PPH');
+                $sheet->setCellValue('BD6', '- Upah');
+                $sheet->setCellValue('BE6', '- Lembur');
+                $sheet->setCellValue('BF6', '- Insentif');
+                $sheet->setCellValue('BG6', '- Piutang');
 
                 $sheet->mergeCells('BH5:BH6');
-                $sheet->setCellValue('BH5', 'Netto');
+                $sheet->setCellValue('BH5', 'Rp. Cuti Tahunan');
+
 
                 $sheet->mergeCells('BI5:BI6');
-                $sheet->setCellValue('BI5', 'Bpjamsostek');
+                $sheet->setCellValue('BI5', 'Rp. Potongan Hari Kerja');
 
                 $sheet->mergeCells('BJ5:BJ6');
-                $sheet->setCellValue('BJ5', 'BPJS Kesehatan');
+                $sheet->setCellValue('BJ5', 'Rp Pot. Jam (DT,PC,IKS)');
 
                 $sheet->mergeCells('BK5:BK6');
-                $sheet->setCellValue('BK5', 'Serikat');
+                $sheet->setCellValue('BK5', 'Bruto');
 
                 $sheet->mergeCells('BL5:BL6');
-                $sheet->setCellValue('BL5', 'Koperasi');
+                $sheet->setCellValue('BL5', 'PPH');
 
                 $sheet->mergeCells('BM5:BM6');
-                $sheet->setCellValue('BM5', 'Total Potongan');
+                $sheet->setCellValue('BM5', 'Netto');
 
                 $sheet->mergeCells('BN5:BN6');
-                $sheet->setCellValue('BN5', 'Pembulatan');
+                $sheet->setCellValue('BN5', 'Bpjamsostek');
 
                 $sheet->mergeCells('BO5:BO6');
-                $sheet->setCellValue('BO5', 'Jumlah');
+                $sheet->setCellValue('BO5', 'BPJS Kesehatan');
+
+                $sheet->mergeCells('BP5:BP6');
+                $sheet->setCellValue('BP5', 'Serikat');
+
+                $sheet->mergeCells('BQ5:BQ6');
+                $sheet->setCellValue('BQ5', 'Koperasi');
+
+                $sheet->mergeCells('BR5:BR6');
+                $sheet->setCellValue('BR5', 'Total Potongan');
+
+                $sheet->mergeCells('BS5:BS6');
+                $sheet->setCellValue('BS5', 'Pembulatan');
+
+                $sheet->mergeCells('BT5:BT6');
+                $sheet->setCellValue('BT5', 'Jumlah');
 
             },
         ];

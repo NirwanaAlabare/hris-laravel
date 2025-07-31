@@ -223,8 +223,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         list($year, $month) = explode('-', $bulan_priode);
         list($year_before, $month_before) = explode('-', $bulan_sebelum);
         // $departement=DepartmentAll::where('site_nirwana_id','NAG')->groupBy('department_id')->get();
-        $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG'])
-                        ->groupBy('department_id')
+        $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG', 'NAGD', 'NAK'])
+                        ->groupBy('department_name')
                         ->get();
         $data=[];
         foreach ($departement as $key => $value) {
@@ -296,35 +296,38 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             if($payroll->sum('bpjs_ks_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkm_rupiah')+$payroll->sum('bpjs_ks_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkk_rupiah')+$payroll->sum('bpjs_ks_jht_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jht_rupiah')+$payroll->sum('bpjs_ks_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jpn_rupiah')+$payroll->sum('bpjs_ks_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkn_rupiah')==0){$bpjs_ks_perusahaan=0;}else{$bpjs_ks_perusahaan=$payroll->sum('bpjs_ks_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkm_rupiah')+$payroll->sum('bpjs_ks_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkk_rupiah')+$payroll->sum('bpjs_ks_jht_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jht_rupiah')+$payroll->sum('bpjs_ks_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jpn_rupiah')+$payroll->sum('bpjs_ks_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkn_rupiah');}
             $bpjs_ks_perusahaan_int=$payroll->sum('bpjs_ks_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkm_rupiah')+$payroll->sum('bpjs_ks_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkk_rupiah')+$payroll->sum('bpjs_ks_jht_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jht_rupiah')+$payroll->sum('bpjs_ks_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jpn_rupiah')+$payroll->sum('bpjs_ks_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkn_rupiah');
 
-            $data[$key]=[
-                'id_department'=>$value->department_id,
-                'nama_department'=>$value->department_name,
-                'jumlah_karyawan'=>$payroll->count(),
-                'bruto'=>$bruto,
-                'bruto_int'=>$bruto_int,
-                'pph'=>$pph21,
-                'pph_int'=>$pph21_int,
-                'upah_neto_rupiah'=>$upah_neto_rupiah,
-                'upah_neto_rupiah_int'=>$upah_neto_rupiah_int,
-                'total_bpjs_tk'=>$total_bpjs_tk,
-                'total_bpjs_tk_int'=>$total_bpjs_tk_int,
-                'total_bpjs_ks'=>$total_bpjs_ks,
-                'total_bpjs_ks_int'=>$total_bpjs_ks_int,
-                'potongan'=>$potongan,
-                'potongan_int'=>$potongan_int,
-                'jumlah'=>number_format($jumlah , 0 , ',' , '.'),
-                'jumlah_int'=>$jumlah_int,
-                'jumlah_karyawan_sebelum'=>$payroll_before->count(),
-                'jumlah_sebelum'=>$jumlah_sebelum,
-                'jumlah_sebelum_int'=>$jumlah_sebelum_int,
-                'selisih_karyawan'=>$payroll->count()-$payroll_before->count(),
-                'selisih_gaji'=>(int)(ceil($payroll->sum('total_upah_thp_rupiah') / 100) * 100)-(int)(ceil($payroll_before->sum('total_upah_thp_rupiah') / 100) * 100),
-                'bpjs_tk_perusahaan'=>$bpjs_tk_perusahaan,
-                'total_bpjs_tk_all'=>(double)$payroll->sum('total_bpjs_tk')+$bpjs_tk_perusahaan,
-                'bpjs_ks_perusahaan'=>$bpjs_ks_perusahaan,
-                'total_bpjs_ks_all'=>(double)$payroll->sum('total_bpjs_ks')+$bpjs_ks_perusahaan,
-                'periode'=>$year.'-'.$month
-            ];
+            if($payroll->count() >0){
+                $data[$key]=[
+                    'id_department'=>$value->department_id,
+                    'nama_department'=>$value->department_name,
+                    'jumlah_karyawan'=>$payroll->count(),
+                    'bruto'=>$bruto,
+                    'bruto_int'=>$bruto_int,
+                    'pph'=>$pph21,
+                    'pph_int'=>$pph21_int,
+                    'upah_neto_rupiah'=>$upah_neto_rupiah,
+                    'upah_neto_rupiah_int'=>$upah_neto_rupiah_int,
+                    'total_bpjs_tk'=>$total_bpjs_tk,
+                    'total_bpjs_tk_int'=>$total_bpjs_tk_int,
+                    'total_bpjs_ks'=>$total_bpjs_ks,
+                    'total_bpjs_ks_int'=>$total_bpjs_ks_int,
+                    'potongan'=>$potongan,
+                    'potongan_int'=>$potongan_int,
+                    'jumlah'=>number_format($jumlah , 0 , ',' , '.'),
+                    'jumlah_int'=>$jumlah_int,
+                    'jumlah_karyawan_sebelum'=>$payroll_before->count(),
+                    'jumlah_sebelum'=>$jumlah_sebelum,
+                    'jumlah_sebelum_int'=>$jumlah_sebelum_int,
+                    'selisih_karyawan'=>$payroll->count()-$payroll_before->count(),
+                    'selisih_gaji'=>(int)(ceil($payroll->sum('total_upah_thp_rupiah') / 100) * 100)-(int)(ceil($payroll_before->sum('total_upah_thp_rupiah') / 100) * 100),
+                    'bpjs_tk_perusahaan'=>$bpjs_tk_perusahaan,
+                    'total_bpjs_tk_all'=>(double)$payroll->sum('total_bpjs_tk')+$bpjs_tk_perusahaan,
+                    'bpjs_ks_perusahaan'=>$bpjs_ks_perusahaan,
+                    'total_bpjs_ks_all'=>(double)$payroll->sum('total_bpjs_ks')+$bpjs_ks_perusahaan,
+                    'periode'=>$year.'-'.$month
+                ];
+            }
+
         }
         $arrayData=[];
         foreach($data as $key=>$value){

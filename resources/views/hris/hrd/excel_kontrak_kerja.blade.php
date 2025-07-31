@@ -16,43 +16,43 @@
             })->max();
         @endphp
             <tr>
-                <td colspan="6">Rekap Kontrak Kerja Karyawan</td>
+                <td colspan="6" style="font-size: 12px; font-weight:600;">Rekap Kontrak Kerja Karyawan</td>
             </tr>
             <tr>
-            <td rowspan="2" style="border:1px solid black">Aktif/Tidak Aktif</td>
-            <td rowspan="2" style="border:1px solid black">Staff / Non Staff</td>
-            <td rowspan="2" style="border:1px solid black"></td>
-            <td rowspan="2" style="border:1px solid black">NO ID</td>
-            <td rowspan="2" style="border:1px solid black">NIP</td>
-            <td rowspan="2" style="border:1px solid black">Nama</td>
-            <td rowspan="2" style="border:1px solid black">Jabatan</td>
-            <td rowspan="2" style="border:1px solid black">Bagian</td>
-            <td rowspan="2" style="border:1px solid black">Department</td>
-            <td rowspan="2" style="border:1px solid black">Status</td>
-            <td rowspan="2" style="border:1px solid black">Join Date</td>
-            <td rowspan="2" style="border:1px solid black">Tanggal Resign</td>
-            <td colspan="3" style="border:1px solid black">Masa Kerja</td>
+            <td rowspan="2" style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">Aktif/Tidak Aktif</td>
+            <td rowspan="2" style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">Staff / Non Staff</td>
+            <td rowspan="2" style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;"></td>
+            <td rowspan="2" style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">NO ID</td>
+            <td rowspan="2" style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">NIP</td>
+            <td rowspan="2" style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">Nama</td>
+            <td rowspan="2" style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">Jabatan</td>
+            <td rowspan="2" style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">Bagian</td>
+            <td rowspan="2" style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">Department</td>
+            <td rowspan="2" style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">Status</td>
+            <td rowspan="2" style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">Join Date</td>
+            <td rowspan="2" style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">Tanggal Resign</td>
+            <td colspan="3" style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">Masa Kerja</td>
 
             @for ($i = 1; $i <= $maxContracts; $i++)
-                <td colspan="2" style="border:1px solid black">PKS {{ $i }}</td>
+                <td colspan="2" style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">PKS {{ $i }}</td>
             @endfor
 
-            <td rowspan="2" style="border:1px solid black"></td>
-            <td colspan="2" style="border:1px solid black">Tanggal Terakhir Kontrak</td>
-            <td rowspan="2" style="border:1px solid black">Periode</td>
+            <td rowspan="2" style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;"></td>
+            <td colspan="2" style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">Tanggal Terakhir Kontrak</td>
+            <td rowspan="2" style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">Periode</td>
         </tr>
         <tr>
-            <td style="border:1px solid black">THN</td>
-            <td style="border:1px solid black">BLN</td>
-            <td style="border:1px solid black">HR</td>
+            <td style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">THN</td>
+            <td style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">BLN</td>
+            <td style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">HR</td>
 
             @for ($i = 1; $i <= $maxContracts; $i++)
-                <td style="border:1px solid black">Start</td>
-                <td style="border:1px solid black">End</td>
+                <td style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">Start</td>
+                <td style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">End</td>
             @endfor
 
-            <td style="border:1px solid black">Awal Kontrak</td>
-            <td style="border:1px solid black">Akhir Kontrak</td>
+            <td style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">Awal Kontrak</td>
+            <td style="border:1px solid black; font-size: 8px; font-weight:600; text-align:center;">Akhir Kontrak</td>
         </tr>
 
         @foreach ($grouped as $enrollId => $contracts)
@@ -70,53 +70,53 @@
 
             <tr>
                 {{-- Kolom Data Karyawan --}}
-                <td style="border:1px solid black">{{ $first->status_aktif }}</td>
-                <td style="border:1px solid black">{{ $first->status_staff }}</td>
-                <td style="border:1px solid black"></td>
-                <td style="border:1px solid black">{{ $first->enroll_id }}</td>
-                <td style="border:1px solid black">{{ $first->nik }}</td>
-                <td style="border:1px solid black">{{ $first->employee_name }}</td>
-                <td style="border:1px solid black">{{ $first->status_jabatan }}</td>
-                <td style="border:1px solid black">{{ $first->sub_dept_name }}</td>
-                <td style="border:1px solid black">{{ $first->department_name }}</td>
-                <td style="border:1px solid black">{{ $first->status_kontrak_tetap }}</td>
-                <td style="border:1px solid black">{{ \PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($first->join_date) }}</td>
-                <td style="border:1px solid black">{{ \PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($first->tanggal_resign) }}</td>
+                <td style="border:1px solid black; font-size: 8px;">{{ $first->status_aktif }}</td>
+                <td style="border:1px solid black; font-size: 8px;">{{ $first->status_staff }}</td>
+                <td style="border:1px solid black; font-size: 8px;"></td>
+                <td style="border:1px solid black; font-size: 8px;">{{ $first->enroll_id }}</td>
+                <td style="border:1px solid black; font-size: 8px;">{{ $first->nik }}</td>
+                <td style="border:1px solid black; font-size: 8px;">{{ $first->employee_name }}</td>
+                <td style="border:1px solid black; font-size: 8px;">{{ $first->status_jabatan }}</td>
+                <td style="border:1px solid black; font-size: 8px;">{{ $first->sub_dept_name }}</td>
+                <td style="border:1px solid black; font-size: 8px;">{{ $first->department_name }}</td>
+                <td style="border:1px solid black; font-size: 8px;">{{ $first->status_kontrak_tetap }}</td>
+                <td style="border:1px solid black; font-size: 8px;">{{ \PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($first->join_date) }}</td>
+                <td style="border:1px solid black; font-size: 8px;">{{ \PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($first->tanggal_resign) }}</td>
 
                 {{-- Masa Kerja --}}
-                <td style="border:1px solid black">{{ $years }}</td>
-                <td style="border:1px solid black">{{ $month }}</td>
-                <td style="border:1px solid black">{{ $day }}</td>
+                <td style="border:1px solid black; font-size: 8px;">{{ $years }}</td>
+                <td style="border:1px solid black; font-size: 8px;">{{ $month }}</td>
+                <td style="border:1px solid black; font-size: 8px;">{{ $day }}</td>
 
                 {{-- Kontrak 1 - 46 --}}
                 @foreach ($contracts as $contract)
-                    <td style="border:1px solid black">
+                    <td style="border:1px solid black; font-size: 8px;">
                         {{ \PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($contract->contract) }}
                     </td>
-                    <td style="border:1px solid black">
+                    <td style="border:1px solid black; font-size: 8px;">
                         {{ \PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($contract->contract_end) }}
                     </td>
                 @endforeach
 
                 {{-- Jika kurang dari 46 kontrak, tambahkan kolom kosong --}}
                 @for ($i = $contracts->count(); $i < $maxContracts; $i++)
-                    <td style="border:1px solid black"></td>
-                    <td style="border:1px solid black"></td>
+                    <td style="border:1px solid black; font-size: 8px;"></td>
+                    <td style="border:1px solid black; font-size: 8px;"></td>
                 @endfor
 
                 {{-- Kolom Kosong Tambahan --}}
-                <td style="border:1px solid black"></td>
+                <td style="border:1px solid black; font-size: 8px;"></td>
 
                 {{-- Tanggal Terakhir Kontrak --}}
-                <td style="border:1px solid black">
+                <td style="border:1px solid black; font-size: 8px;">
                     {{ \PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($first->contract_last) }}
                 </td>
-                <td style="border:1px solid black">
+                <td style="border:1px solid black; font-size: 8px;">
                     {{ \PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($first->contract_end_last) }}
                 </td>
 
                 {{-- Periode --}}
-              <td style="border:1px solid black">
+              <td style="border:1px solid black; font-size: 8px;">
                 ="{{ $periode }}"
             </td>
 

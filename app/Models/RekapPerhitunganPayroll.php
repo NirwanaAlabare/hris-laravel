@@ -107,7 +107,14 @@ class RekapPerhitunganPayroll extends \Eloquent
         'total_upah_thp_rupiah_employee',
         'year',
         'month',
-        'day'
+        'day',
+        'koreksi_upah',
+        'koreksi_lembur',
+        'koreksi_insentif',
+        'potongan_piutang',
+        'potongan_insentif',
+        'potongan_upah',
+        'potongan_lembur'
     ];
     protected $guarded = ['kode_rekap_payroll'];
 
@@ -216,7 +223,14 @@ class RekapPerhitunganPayroll extends \Eloquent
         'total_upah_thp_rupiah_employee',
         'year',
         'month',
-        'day'
+        'day',
+        'koreksi_upah',
+        'koreksi_lembur',
+        'koreksi_insentif',
+        'potongan_piutang',
+        'potongan_insentif',
+        'potongan_upah',
+        'potongan_lembur'
     ];
 
     protected $appends = [];
