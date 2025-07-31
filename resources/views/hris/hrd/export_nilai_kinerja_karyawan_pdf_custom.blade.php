@@ -302,23 +302,38 @@
         <tr>
           <td style="border: 1px solid #000; background-color: #f8d7da; padding: 5px;">
             10<br>
-            <input type="radio" name="nilai_kinerja" value="10" class="penilaian-radio" {{ ($data_penilaian->nilai_kinerja ?? null) == 10 ? 'checked' : '' }}>
+            {{-- <input type="radio" name="nilai_kinerja" value="10" class="penilaian-radio" {{ ($data_penilaian->nilai_kinerja ?? null) == 10 ? 'checked' : '' }}> --}}
+            <span style="font-size: 20px; color: #555;">
+                {!! ($data_penilaian->nilai_kinerja ?? null) == 10 ? '&#9679;' : '&#9675;' !!}
+            </span>
           </td>
           <td style="border: 1px solid #000; background-color: #ffe5b4; padding: 5px;">
             20<br>
-            <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="20" class="penilaian-radio" {{ ($data_penilaian->nilai_kinerja ?? null) == 20 ? 'checked' : '' }}>
+            {{-- <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="20" class="penilaian-radio" {{ ($data_penilaian->nilai_kinerja ?? null) == 20 ? 'checked' : '' }}> --}}
+            <span style="font-size: 20px; color: #555;">
+                {!! ($data_penilaian->nilai_kinerja ?? null) == 20 ? '&#9679;' : '&#9675;' !!}
+            </span>
           </td>
           <td style="border: 1px solid #000; background-color: #fff3cd; padding: 5px;">
             30<br>
-            <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="30" class="penilaian-radio" {{ ($data_penilaian->nilai_kinerja ?? null) == 30 ? 'checked' : '' }}>
+            {{-- <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="30" class="penilaian-radio" {{ ($data_penilaian->nilai_kinerja ?? null) == 30 ? 'checked' : '' }}> --}}
+            <span style="font-size: 20px; color: #555;">
+                {!! ($data_penilaian->nilai_kinerja ?? null) == 30 ? '&#9679;' : '&#9675;' !!}
+            </span>
           </td>
           <td style="border: 1px solid #000; background-color: #d4edda; padding: 5px;">
             40<br>
-            <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="40" class="penilaian-radio" {{ ($data_penilaian->nilai_kinerja ?? null) == 40 ? 'checked' : '' }}>
+            {{-- <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="40" class="penilaian-radio" {{ ($data_penilaian->nilai_kinerja ?? null) == 40 ? 'checked' : '' }}> --}}
+            <span style="font-size: 20px; color: #555;">
+                {!! ($data_penilaian->nilai_kinerja ?? null) == 40 ? '&#9679;' : '&#9675;' !!}
+            </span>
           </td>
           <td style="border: 1px solid #000; background-color: #c3e6cb; padding: 5px;">
             50<br>
-            <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="50" class="penilaian-radio" {{ ($data_penilaian->nilai_kinerja ?? null) == 50 ? 'checked' : '' }}>
+            {{-- <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="50" class="penilaian-radio" {{ ($data_penilaian->nilai_kinerja ?? null) == 50 ? 'checked' : '' }}> --}}
+            <span style="font-size: 20px; color: #555;">
+                {!! ($data_penilaian->nilai_kinerja ?? null) == 50 ? '&#9679;' : '&#9675;' !!}
+            </span>
           </td>
         </tr>
       </table>
@@ -378,10 +393,12 @@
                 </td>
 
                 @foreach ([10, 20, 30, 40, 50] as $nilai)
-                    <td style="text-align: center; border: 1px solid black;">
-                        <input type="radio" class="penilaian-radio" name="kompetensi[{{ $index }}]"
+                    <td style="text-align: center; border: 1px solid black; font-size: 20px; color: #555;">
+                        {{-- <input type="radio" class="penilaian-radio" name="kompetensi[{{ $index }}]"
                             value="{{ $nilai }}"
-                            {{ ($data_penilaian->$index ?? null) == $nilai ? 'checked' : '' }}>
+                            {{ ($data_penilaian->$index ?? null) == $nilai ? 'checked' : '' }}> --}}
+
+                            {!! ($data_penilaian->$index ?? null) == $nilai ? '&#9679;' : '&#9675;' !!}
                     </td>
                 @endforeach
             </tr>

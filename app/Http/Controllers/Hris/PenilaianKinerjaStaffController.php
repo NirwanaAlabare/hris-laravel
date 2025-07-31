@@ -30,6 +30,7 @@ use App\Exports\ExcelPenilaianKinerjaNonstaff;
 use App\Models\DepartmentAll;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Response;
 use PDF;
 
 
@@ -521,6 +522,9 @@ class PenilaianKinerjaStaffController extends AdminBaseController
 
     public function export_penilaian_kinerja_staff_pdf(Request $request)
     {
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '4000M');
+        set_time_limit(300);
         $enroll_id=$request->enroll_id;
         $contract=$request->contract;
         $contract_end=$request->contract_end;
@@ -626,10 +630,22 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         $periode = $date->format('ym'); // format yymm
         $judul_export = 'PA ' . $data_karyawan->employee_name . ' ' . $periode;
 
+        try {
+            $pdf = PDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_custom', [
+                'data_penilaian'=>$data_penilaian,
+                'data_karyawan'=>$data_karyawan,
+                'contract'=>$contract,
+                'contract_end'=>$contract_end
+            ]);
+            return $pdf->stream($judul_export . '.pdf');
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
 
-        $pdf = PDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_custom',['data_penilaian'=>$data_penilaian,'data_karyawan'=>$data_karyawan,'contract'=>$contract,'contract_end'=>$contract_end]);
-        // return $pdf->stream('laporan-kinerja.pdf');
-        return $pdf->stream($judul_export . '.pdf');
+
+
+        // $pdf = PDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_custom',['data_penilaian'=>$data_penilaian,'data_karyawan'=>$data_karyawan,'contract'=>$contract,'contract_end'=>$contract_end]);
+        // return $pdf->stream($judul_export . '.pdf');
 
     }
 
@@ -1166,6 +1182,11 @@ class PenilaianKinerjaStaffController extends AdminBaseController
     }
 
     public function print_selected_form_penilaian(){
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '4000M');
+        set_time_limit(300);
+
+
         $enroll_id = request()->enroll_id;
         $inDateRangeContract='';
         $inEnrollIds='';
@@ -1426,7 +1447,22 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             }
             return $karyawan;
         });
-        $pdf = PDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_all',['data'=>$data]);
-        return $pdf->stream('Performance Appraisal.pdf');
+
+        try {
+            $renderingPdf = true;
+            $pdf = PDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_all',compact('data', 'renderingPdf'));
+            return $pdf->stream('Penilaian Kinerja.pdf');
+            // return Response::make($pdf->stream('Penilaian Kinerja.pdf'), 200, [
+            //     'Content-Type' => 'application/pdf',
+            //     'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+            //     'Pragma' => 'no-cache',
+            //     'Expires' => 'Sat, 01 Jan 2000 00:00:00 GMT',
+            // ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+
+        // $pdf = PDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_all',['data'=>$data]);
+        // return $pdf->stream('Performance Appraisal.pdf');
     }
 }

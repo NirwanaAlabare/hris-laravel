@@ -305,23 +305,38 @@
         <tr>
           <td style="border: 1px solid #000; background-color: #f8d7da; padding: 5px;">
             10<br>
-            <input type="radio" name="nilai_kinerja" value="10" class="penilaian-radio" {{ ($value->penilaian->nilai_kinerja ?? null) == 10 ? 'checked' : '' }} >
+            {{-- <input type="radio" name="nilai_kinerja" value="10" class="penilaian-radio" {{ ($value->penilaian->nilai_kinerja ?? null) == 10 ? 'checked' : '' }} > --}}
+            <span style="font-size: 20px; color: #555;">
+                {!! ($value->penilaian->nilai_kinerja ?? null) == 10 ? '&#9679;' : '&#9675;' !!}
+            </span>
           </td>
           <td style="border: 1px solid #000; background-color: #ffe5b4; padding: 5px;">
             20<br>
-            <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="20" class="penilaian-radio" {{ ($value->penilaian->nilai_kinerja ?? null) == 20 ? 'checked' : '' }}>
+            {{-- <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="20" class="penilaian-radio" {{ ($value->penilaian->nilai_kinerja ?? null) == 20 ? 'checked' : '' }}> --}}
+            <span style="font-size: 20px; color: #555;">
+                {!! ($value->penilaian->nilai_kinerja ?? null) == 20 ? '&#9679;' : '&#9675;' !!}
+            </span>
           </td>
           <td style="border: 1px solid #000; background-color: #fff3cd; padding: 5px;">
             30<br>
-            <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="30" class="penilaian-radio" {{ ($value->penilaian->nilai_kinerja ?? null) == 30 ? 'checked' : '' }}>
+            {{-- <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="30" class="penilaian-radio" {{ ($value->penilaian->nilai_kinerja ?? null) == 30 ? 'checked' : '' }}> --}}
+            <span style="font-size: 20px; color: #555;">
+                {!! ($value->penilaian->nilai_kinerja ?? null) == 30 ? '&#9679;' : '&#9675;' !!}
+            </span>
           </td>
           <td style="border: 1px solid #000; background-color: #d4edda; padding: 5px;">
             40<br>
-            <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="40" class="penilaian-radio" {{ ($value->penilaian->nilai_kinerja ?? null) == 40 ? 'checked' : '' }}>
+            {{-- <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="40" class="penilaian-radio" {{ ($value->penilaian->nilai_kinerja ?? null) == 40 ? 'checked' : '' }}> --}}
+            <span style="font-size: 20px; color: #555;">
+                {!! ($value->penilaian->nilai_kinerja ?? null) == 40 ? '&#9679;' : '&#9675;' !!}
+            </span>
           </td>
           <td style="border: 1px solid #000; background-color: #c3e6cb; padding: 5px;">
             50<br>
-            <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="50" class="penilaian-radio" {{ ($value->penilaian->nilai_kinerja ?? null) == 50 ? 'checked' : '' }}>
+            {{-- <input type="radio" name="nilai_kinerja" id="nilai_kinerja" value="50" class="penilaian-radio" {{ ($value->penilaian->nilai_kinerja ?? null) == 50 ? 'checked' : '' }}> --}}
+            <span style="font-size: 20px; color: #555;">
+                {!! ($value->penilaian->nilai_kinerja ?? null) == 50 ? '&#9679;' : '&#9675;' !!}
+            </span>
           </td>
         </tr>
       </table>
@@ -362,6 +377,7 @@
           </tr>
         </thead>
         <tbody>
+
         @php
             $kompetensiList = [
                 "tanggung_jawab_tugas" => "Tanggung jawab terhadap tugas yang diberikan",
@@ -373,22 +389,45 @@
             ];
         @endphp
 
-        @foreach ($kompetensiList as $index => $kompetensi)
+        @foreach ($kompetensiList as $index => $label)
+        <tr>
+            <td style="text-align: left; padding: 6px; border: 1px solid black;">
+                {{ $label }}
+            </td>
 
+            @foreach ([10, 20, 30, 40, 50] as $nilai)
+                <td style="text-align: center; border: 1px solid black; font-size: 20px; color: #555;">
+                    {!! isset($value->penilaian[$index]) && $value->penilaian[$index] == $nilai ? '&#9679;' : '&#9675;' !!}
+                </td>
+            @endforeach
+        </tr>
+        @endforeach
+
+        {{-- Debug tampilkan semua index yg tersedia --}}
+        {{-- @php
+            $kompetensiList = [
+                "tanggung_jawab_tugas" => "Tanggung jawab terhadap tugas yang diberikan",
+                "inisiatif_kerjasama" => "Inisiatif dan Kerjasama",
+                "akurasi_pekerjaan" => "Akurasi dalam pekerjaan",
+                "kemauan_kegigihan" => "Kemauan dan Kegigihan dalam mencapai tujuan",
+                "penyampaian_informasi" => "Penyampaian dan Penerimaan informasi",
+                "attitude_sikap_kerja" => "Attitude / Sikap Kerja"
+            ];
+        @endphp
+
+        @foreach ($kompetensiList as $index => $kompetensi)
         <tr>
             <td class="text-start"
                 style="line-height: 1.2; padding: 6px; black;border: 1px solid black; border-left:none;">
                 {{ $kompetensi }}
             </td>
-
             @foreach ([10, 20, 30, 40, 50] as $nilai)
                 <td style="text-align: center; border: 1px solid black;">
-                    <input type="radio" class="penilaian-radio" name="kompetensi[{{ $index }}]" value="{{ $nilai }}" {{ isset($value->penilaian[$index]) && $value->penilaian[$index] == $nilai ? 'checked' : '' }}
-                    >
+                    <input type="radio" class="penilaian-radio" name="kompetensi[{{ $index }}]" value="{{ $nilai }}" {{ isset($value->penilaian[$index]) && $value->penilaian[$index] == $nilai ? 'checked' : '' }}>
                 </td>
             @endforeach
         </tr>
-        @endforeach
+        @endforeach --}}
         </tbody>
     </table>
     <table width="100%" style="border-bottom:1px solid black; border-top:0px; border-left: 1px solid; border-right: 1px solid;">
@@ -398,6 +437,9 @@
             </tr>
         </thead>
     </table>
+
+
+
     <div class="container custom-table" style="border:none; padding:0px; margin:0px;">
         <!-- Penilaian Kedisiplinan -->
         <table class="discipline" style="border-right: 1px solid;">
