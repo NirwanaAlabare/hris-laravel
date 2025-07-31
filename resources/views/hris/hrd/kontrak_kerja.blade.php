@@ -1609,6 +1609,7 @@ function updateRange(start, end) {
         let status_aktif = document.getElementById("status_aktif").value;
         let status_staff = document.getElementById("status_staff").value;
         let status_kontrak = document.getElementById("status_kontrak").value;
+        var department_id = $('#selectDepartment').val();
         var today=new Date();
         var dd = String(today.getDate()).padStart(2, '0');
         var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -1626,7 +1627,8 @@ function updateRange(start, end) {
                 enroll_id: enroll_id,
                 status_aktif: status_aktif,
                 status_staff: status_staff,
-                status_kontrak: status_kontrak
+                status_kontrak: status_kontrak,
+                department_id: department_id,
             },
             xhrFields: {
                 responseType: 'blob'

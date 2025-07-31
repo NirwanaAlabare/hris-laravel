@@ -1088,6 +1088,7 @@ class HRDController extends AdminBaseController
         $inStatusAktif='';
         $inStatusStaff='';
         $inStatusKontrak='';
+        $inDepartment='';
         if (request("search_variable")) {
             $search_variable=request()->search_variable;
             $inSearchVariable = 'AND (a.enroll_id = "'.$search_variable.'" or a.nik LIKE "'.$search_variable.'%" or a.employee_name LIKE "%'.$search_variable.'%" or a.tempat_lahir LIKE "%'.$search_variable.'%" or a.nomor_tlpn LIKE "'.$search_variable.'%" or a.agama LIKE "'.$search_variable.'%" or a.status_kawin LIKE "'.$search_variable.'%" or a.nomor_kk LIKE "'.$search_variable.'%" or a.pendidikan_terakhir LIKE "'.$search_variable.'%" or a.jurusan_pendidikan LIKE "'.$search_variable.'%" or a.alamat_rumah LIKE "%'.$search_variable.'%" or a.department_name LIKE "%'.$search_variable.'%" or a.sub_dept_name LIKE "%'.$search_variable.'%" or a.status_aktif LIKE "'.$search_variable.'%" or a.ibu_kandung LIKE "%'.$search_variable.'%" or a.nomor_ktp LIKE "'.$search_variable.'%")';
@@ -1111,7 +1112,11 @@ class HRDController extends AdminBaseController
         }
         if(request()->status_staff){
             $status_staff=request()->status_staff;
-            $inStatusAktif='AND a.status_staff = "'.$status_staff.'"';
+            $inStatusStaff='AND a.status_staff = "'.$status_staff.'"';
+        }
+        if(request()->department_id){
+            $department_id=request()->department_id;
+            $inDepartment='AND a.department_name = "'.$department_id.'"';
         }
         if(request()->status_kontrak){
             $today = date('Y-m-d');
@@ -1132,7 +1137,6 @@ class HRDController extends AdminBaseController
                 $inStatusKontrak= 'AND a.tanggal_resign IS NULL AND c.max_contract_end <= "'.$today.'"';
             }
         }
-
         $query = DB::select("
                 SELECT
                     a.status_staff,
@@ -1142,6 +1146,7 @@ class HRDController extends AdminBaseController
                     a.status_jabatan,
                     a.sub_dept_name,
                     a.department_name,
+                    a.department_id,
                     a.status_kontrak_tetap,
                     a.status_aktif,
                     a.status_staff,
@@ -1178,6 +1183,7 @@ class HRDController extends AdminBaseController
                     $inStatusAktif
                     $inStatusKontrak
                     $inStatusStaff
+                    $inDepartment
                 ORDER BY a.enroll_id, b.contract_end
             ");
 
