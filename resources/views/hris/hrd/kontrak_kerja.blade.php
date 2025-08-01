@@ -2356,7 +2356,7 @@ function updateRange(start, end) {
                                         <input type='hidden' value="+res[i]['id']+" id='last_id-"+res[i]['id']+"'>\
                                         <label class='py-1 mb-0' id='last_label_end-"+res[i]['id']+"'>"+end.toLocaleDateString("id-ID", options)+"</label>\
                                     </div>\
-                                    < class='col-6 py-1 border border-body text-dark'>\
+                                    <div class='col-6 py-1 border border-body text-dark'>\
                                         <a href='#' class='btn btn-sm btn-success py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' id='editButtonEdit-"+res[i].id+"' onClick='editContract(" + res[i]['enroll_id'] + "," +"\"" + res[i]['contract'] + "\"," +"\"" + res[i]['contract_end'] + "\"," +"\"" + res[i]['id'] + "\"" +");'>&nbsp;<span class='fa fa-edit' style='font-size:9pt'></span></a>\
                                         <a href='#' class='btn btn-sm btn-warning text-dark py-0 px-2 border border-body' style='font-weight:bold;font-size:9pt;font-family:Arial; display:none;' id='cancelButtonEdit-"+res[i].id+"'  onClick='cancelEditContract("+res[i]['id']+");'><i class='fa fa-times-circle' style='font-size:9pt'></i> Cancel</a>\
                                         <a href='#' class='btn btn-sm btn-warning text-dark border border-body py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial; display:none;' id='saveButtonEdit-"+res[i].id+"' onClick='saveEditContract("+res[i]['id']+");'><i class='fa fa-arrow-circle-down' style='font-size:9pt'></i> Save</a>\

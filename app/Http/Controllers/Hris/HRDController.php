@@ -1262,30 +1262,7 @@ class HRDController extends AdminBaseController
         return $pdf;
     }
 
-    public function hitungBulanKontrak(string $awal, string $akhir): int {
-        $start = new DateTime($awal);
-        $end = new DateTime($akhir);
 
-        // Jika tanggal akhir lebih kecil dari tanggal mulai, langsung return 0
-        if ($end < $start) {
-            return 0;
-        }
-
-        // Tambahkan 1 hari ke tanggal akhir untuk memastikan periode mencakup hari terakhir
-        $end->modify('+1 day');
-
-        $jumlah_bulan = 0;
-        while ($start < $end) {
-            $next = (clone $start)->modify('+1 month');
-            if ($next > $end) {
-                break;
-            }
-            $jumlah_bulan++;
-            $start = $next;
-        }
-
-        return $jumlah_bulan;
-    }
 
       public function download_excel_rekap_pkwt(){
         ini_set('max_execution_time', 0);
@@ -1356,21 +1333,51 @@ class HRDController extends AdminBaseController
             } else {
                 $tunjangan = 12500;
             }
+            //  Perhitungan masa kerja
+            $start = Carbon::createFromFormat('Y-m-d', $item->join_date);
+            $end = Carbon::today();
 
-            $endDate = Carbon::parse($tanggal_akhir);
+            // Ubah jadi format tanggal (Y, m, d)
+            $startY = (int) $start->format('Y');
+            $startM = (int) $start->format('m');
+            $startD = (int) $start->format('d');
 
-            // Jika hari Jumat, tambahkan 2 hari
-            if ($endDate->isFriday()) {
-                $endDate->addDays(2);
+            $endY = (int) $end->format('Y');
+            $endM = (int) $end->format('m');
+            $endD = (int) $end->format('d');
+
+            // Hitung awal
+            $years = $endY - $startY;
+            $months = $endM - $startM;
+            $days = $endD - $startD;
+
+            // Koreksi kalau hari negatif
+            if ($days < 0) {
+                $endPrevMonth = $end->copy()->subMonthNoOverflow();
+                $days += $endPrevMonth->daysInMonth;
+                $months--;
             }
 
-            $contract_start = $item->contract ?? $item->join_date;   // fallback ke join_date jika contract null
+            // Koreksi kalau bulan negatif
+            if ($months < 0) {
+                $months += 12;
+                $years--;
+            }
+
+            $item->years = $years;
+            $item->months = $months;
+            $item->days = $days;
+
+            $endDate = $item->tanggal_resign ? $item->tanggal_resign : $item->contract_end;
+            $endDate = Carbon::parse($endDate);
+
+            $contract_start = $item->contract ? $item->contract : $item->join_date;   // fallback ke join_date jika contract null
             $contract_end = $endDate ? $endDate->format('Y-m-d') : now()->format('Y-m-d');
 
             $jumlah_bulan_manual = $this->hitungBulanKontrak($contract_start, $contract_end);
 
             $total_penghasilan_bulanan = $umk + $tunjangan;
-            $jumlah_bulan = $item->jumlah_bulan ?? $jumlah_bulan_manual;
+            $jumlah_bulan = $item->jumlah_bulan ? $item->jumlah_bulan : $jumlah_bulan_manual;
 
             $total_kompensasi = $total_penghasilan_bulanan * ($jumlah_bulan / 12);
 
@@ -1384,7 +1391,6 @@ class HRDController extends AdminBaseController
 
         return Excel::download(new exportExcelKompensasiPKWT($data), 'Rekap Surat Peringatan.xlsx');
     }
-
 
 
     public function print_pdf_kompensasi_pkwt(){
@@ -1422,28 +1428,28 @@ class HRDController extends AdminBaseController
             c.max_contract_end,
             b.jumlah_bulan,
             c.created_at
-        FROM employee_atribut a
-        LEFT JOIN employee_contract b ON a.enroll_id = b.enroll_id
-        LEFT JOIN (
-    SELECT
-        ec1.enroll_id,
-        ec1.jumlah_bulan,
-        ec1.created_at,
-        ec1.contract AS max_contract,
-        ec1.contract_end AS max_contract_end
-    FROM employee_contract ec1
-    INNER JOIN (
-        SELECT enroll_id, MAX(contract) AS max_contract
-        FROM employee_contract
-        GROUP BY enroll_id
-    ) ec2 ON ec1.enroll_id = ec2.enroll_id AND ec1.contract = ec2.max_contract
-) c ON a.enroll_id = c.enroll_id
-        WHERE
-            a.enroll_id = $enroll_id
-            AND b.contract = '$contract'
-            AND b.contract_end = '$contract_end'
-        GROUP BY a.enroll_id
-    ");
+                FROM employee_atribut a
+                LEFT JOIN employee_contract b ON a.enroll_id = b.enroll_id
+                LEFT JOIN (
+            SELECT
+                ec1.enroll_id,
+                ec1.jumlah_bulan,
+                ec1.created_at,
+                ec1.contract AS max_contract,
+                ec1.contract_end AS max_contract_end
+            FROM employee_contract ec1
+            INNER JOIN (
+                SELECT enroll_id, MAX(contract) AS max_contract
+                FROM employee_contract
+                GROUP BY enroll_id
+            ) ec2 ON ec1.enroll_id = ec2.enroll_id AND ec1.contract = ec2.max_contract
+        ) c ON a.enroll_id = c.enroll_id
+                WHERE
+                    a.enroll_id = $enroll_id
+                    AND b.contract = '$contract'
+                    AND b.contract_end = '$contract_end'
+                GROUP BY a.enroll_id
+            ");
 
         $tahun_umk = date('Y', strtotime($contract_end));
         $tahun_umk = 'UMK '.$tahun_umk;
@@ -1466,27 +1472,64 @@ class HRDController extends AdminBaseController
             $tunjangan = 12500;
         }
 
-        // $bulan_masuk = new DateTime($data->contract);
-        // $bulan_akhir = new DateTime($data->contract_end);
+        // 2 bulan 1 hari → dibulatkan menjadi 3 bulan ✔
+        // 1 bulan 15 hari → dibulatkan menjadi 2 bulan ✔
+        // 10 hari kerja → tidak mendapatkan kompensasi, karena belum genap 1 bulan ❌
 
-        $endDate = $data->tanggal_resign ?? $data->contract_end;
+        $endDate = $data->tanggal_resign ? $data->tanggal_resign : $data->contract_end;
         $endDate = Carbon::parse($endDate);
 
-        // Cek apakah hari Sabtu (6) atau Minggu (0)
-        if ($endDate->isFriday()) {
-            $endDate->addDays(2);
-        }
-        // dd($endDate->isWeekend());
-        $jumlah_bulan_manual = $this->hitungBulanKontrak($data->contract, $endDate);
+        $contract = $data->contract;
+        // $endDate = '2025-02-20';
+        $jumlah_bulan_manual = $this->hitungBulanKontrak($contract, $endDate);
 
         $total_penghasilan_bulanan = $umk + $tunjangan;
-        $jumlah_bulan = $data->jumlah_bulan ?? $jumlah_bulan_manual;
+        $jumlah_bulan = $jumlah_bulan_manual;
         $total_kompensasi = $total_penghasilan_bulanan * ($jumlah_bulan / 12);
 
         $fileName='Kompensasi PKWT '.$data->employee_name.'('.request()->enroll_id.') '.$contract_end.' '.date('His');
-        $pdf = PDF::loadView('hris.laporan.pdf_kompensasi_pkwt',["no_form"=>$no_form,"contract2"=>$contract,"contract_end2"=>$data->tanggal_resign ? $data->tanggal_resign : $data->contract_end,"data" => $data,"umk"=>$umk, "tunjangan"=>$tunjangan, "total_kompensasi"=>$total_kompensasi, "jumlah_bulan"=>$jumlah_bulan])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+        $pdf = PDF::loadView('hris.laporan.pdf_kompensasi_pkwt',["no_form"=>$no_form,"contract2"=>$contract,"contract_end2"=>$endDate,"data" => $data,"umk"=>$umk, "tunjangan"=>$tunjangan, "total_kompensasi"=>$total_kompensasi, "jumlah_bulan"=>$jumlah_bulan])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
         return $pdf;
     }
+
+    public function hitungBulanKontrak(string $awal, string $akhir): int {
+        $start = new DateTime($awal);
+        $end = new DateTime($akhir);
+
+        if ($end < $start) return 0;
+
+        // Hitung total hari
+        $totalHari = (int)$start->diff($end)->format('%a') + 1; // inklusif
+
+        if ($totalHari < 10) {
+            return 0;
+        }
+
+        // Hitung bulan dan hari
+        $interval = $start->diff($end);
+        $bulan = $interval->y * 12 + $interval->m;
+        $hari = $interval->d;
+
+        // Konversi semua ke hari untuk logika lebih fleksibel
+        $hariPerBulan = 30; // asumsi kasar
+        $totalBulanEstimasi = $totalHari / $hariPerBulan;
+
+        // Aturan pembulatan sesuai instruksi
+        if ($totalBulanEstimasi < 1.5) {
+            return 1;
+        }
+
+        // Bulatkan ke atas jika lewat 1 hari dari angka bulat
+        $extra = $totalBulanEstimasi - floor($totalBulanEstimasi);
+        if ($extra > 0.033) { // kira-kira 1 hari
+            return (int)floor($totalBulanEstimasi) + 1;
+        }
+
+        return (int)floor($totalBulanEstimasi);
+    }
+
+
+
     public function print_all_pdf_kontrak(){
         $enroll_id = request()->enroll_id;
         $no_form = request()->no_form;

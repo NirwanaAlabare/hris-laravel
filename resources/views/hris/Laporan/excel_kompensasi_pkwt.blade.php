@@ -37,14 +37,6 @@
                 <td style="text-align:center">H</td>
             </tr>
             @foreach ($query as $enrollId => $data_pkwt)
-            @php
-                $join_date = $data_pkwt->join_date;
-                $today = date('Y-m-d');
-                $diff = abs(strtotime($today) - strtotime($join_date));
-                $years = floor($diff / (365 * 60 * 60 * 24));
-                $month = floor(($diff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
-                $day = floor(($diff - $years * 365 * 60 * 60 * 24 - $month * 30 * 60 * 60 * 24) / (60 * 60 * 24));
-            @endphp
             <tr>
                 <td style="">{{ $data_pkwt->status_aktif }}</td>
                 <td style="">{{ $data_pkwt->enroll_id }}</td>
@@ -55,9 +47,9 @@
                 <td style="">{{ $data_pkwt->department_name }}</td>
                 <td>{{ \Carbon\Carbon::parse($data_pkwt->join_date)->translatedFormat('d F Y') }}</td>
                 <td>{{ $data_pkwt->tanggal_resign ? \Carbon\Carbon::parse($data_pkwt->tanggal_resign)->translatedFormat('d F Y') : '' }}</td>
-                <td style="text-align:center">{{ $years }}</td>
-                <td style="text-align:center">{{ $month }}</td>
-                <td style="text-align:center">{{ $day }}</td>
+                <td style="text-align:center">{{ $data_pkwt->years }}</td>
+                <td style="text-align:center">{{ $data_pkwt->months }}</td>
+                <td style="text-align:center">{{ $data_pkwt->days }}</td>
                 <td>{{ $data_pkwt->contract ? \Carbon\Carbon::parse($data_pkwt->contract)->translatedFormat('l') : '' }}</td>
                 <td>{{ $data_pkwt->contract ? \Carbon\Carbon::parse($data_pkwt->contract)->translatedFormat('d F Y') : '' }}</td>
                 <td>{{ $data_pkwt->contract_end ? \Carbon\Carbon::parse($data_pkwt->contract_end)->translatedFormat('l') : '' }}</td>

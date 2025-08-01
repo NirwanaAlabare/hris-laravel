@@ -54,7 +54,7 @@
         <table width="100%" style="margin-top: 0px;">
             <tr>
                 <td align="left">Awal Kontrak</td>
-                <td align="right">{{Carbon\Carbon::parse($data->contract)->translatedFormat('d F Y')}}</td>
+                <td align="right">{{Carbon\Carbon::parse($contract2)->translatedFormat('d F Y')}}</td>
             </tr>
             <tr>
                 <td align="left">Akhir Kontrak</td>
