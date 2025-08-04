@@ -1527,6 +1527,7 @@ class EmployeeAtrController extends AdminBaseController
                     }
                     // tanggal resign tidak kosong
                 } else {
+                    $bulan_sekarang_date=date('Y-m-'.'25');
 
                     $query1 =  MasterDataAbsenKehadiran::selectRaw('
                         tanggal_berjalan,
@@ -1543,6 +1544,7 @@ class EmployeeAtrController extends AdminBaseController
                         AND kode_hari not in (5,6)
                         AND holiday_name is null
                         AND status_absen = "R"
+                        AND tanggal_berjalan <= "' . $bulan_sekarang_date . '"
                     ')
                     ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
                     ->get();
@@ -1561,6 +1563,7 @@ class EmployeeAtrController extends AdminBaseController
                             info('Karyawan dengan nama ' . $employee_name . ' dari departemen '. $sub_dept_name .' berubah tanggal resign nya menjadi '.$q1->tanggal_resign);
                         }
                     }
+
                     $query2 =  MasterDataAbsenKehadiran::selectRaw('
                         master_data_absen_kehadiran.tanggal_berjalan,
                         employee_atribut.enroll_id,
@@ -1574,6 +1577,7 @@ class EmployeeAtrController extends AdminBaseController
                         AND employee_atribut.tanggal_resign <= master_data_absen_kehadiran.tanggal_berjalan
                         AND master_data_absen_kehadiran.kode_hari not in (5,6)
                         AND master_data_absen_kehadiran.holiday_name is null
+                        AND master_data_absen_kehadiran.tanggal_berjalan <= "' . $bulan_sekarang_date . '"
                     ')
                     ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
                     ->get();
@@ -1591,6 +1595,7 @@ class EmployeeAtrController extends AdminBaseController
                             ]);
                         }
                     }
+
                     $tanggal_awal='';
                     $tanggal_sekarang=date('Y-m-d');
                     $bulan_sekarang=date('Y-m-'.'25');
@@ -1614,6 +1619,14 @@ class EmployeeAtrController extends AdminBaseController
                     MasterDataAbsenKehadiran::where('enroll_id',$enroll_id)->where('tanggal_berjalan','<',$tanggal_resign)->where('tanggal_berjalan','>=',$tanggal_awal)->where('status_absen','R')->where('absen_masuk_kerja',null)->where('absen_pulang_kerja',null)->update([
                         'status_absen'=>'M'
                     ]);
+                    $tanggal_mulai_hapus = date('Y-m-') . '26'; // misal: 2025-08-26
+
+                    MasterDataAbsenKehadiran::join('employee_atribut', 'master_data_absen_kehadiran.enroll_id', '=', 'employee_atribut.enroll_id')
+                        ->where('employee_atribut.enroll_id', $enroll_id)
+                        ->whereDate('master_data_absen_kehadiran.tanggal_berjalan', '>=', $tanggal_mulai_hapus)
+                        ->whereDate('employee_atribut.tanggal_resign', '<=', $tanggal_mulai_hapus)
+                        ->delete();
+
                 }
             }
         } else {
