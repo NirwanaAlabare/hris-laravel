@@ -1775,7 +1775,7 @@ class HRDController extends AdminBaseController
                     break;
                 }
             }
-            if ($streak > 1) {
+            if ($streak >= 1) {
                 $kategori = match (true) {
                     $streak >= 6 => 'RESIGNED',
                     $streak >= 3 => 'II',
