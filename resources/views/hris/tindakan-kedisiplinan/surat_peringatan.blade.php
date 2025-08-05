@@ -746,12 +746,10 @@ h1 {
                                     </div>
                                 </div>
                                 @if ($user === 'fadli' || $user === 'mega@ptnag.com' || $user === 'rudy@ptnag.com' || $user === 'ersa@ptnag.com' || $user === 'indri@nag.nirwanaindonesia.com' || $user === 'pujiprana@nag.nirwanaindonesia.com')
-                                 <div class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; padding-top: 10px;">
+                                 <div id="section-tindakan-pendisiplinan" class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; padding-top: 10px;">
                                     <h5 style="font-weight: bold;">Untuk diberikan tindakan pendisiplinan dalam bentuk :</h5>
                                 </div>
-                                @endif
-                                @if ($user === 'fadli' || $user === 'mega@ptnag.com' || $user === 'rudy@ptnag.com' || $user === 'ersa@ptnag.com' || $user === 'indri@nag.nirwanaindonesia.com' || $user === 'pujiprana@nag.nirwanaindonesia.com')
-                                <div class="col-md-12">
+                                <div class="col-md-12" id="radio-tindakan-pendisiplinan" >
                                      <div class="radio-container">
                                         <label class="radio-wrapper">
                                             <input type="radio" name="tindakan_pendisiplinan_edit" value="counseling" checked class="mr-2">
@@ -1040,6 +1038,8 @@ h1 {
             $('.uraian-faktor-edit').val('');
             // Reset semua radio button tindakan_pendisiplinan_edit
             $('input[name="tindakan_pendisiplinan_edit"]').prop('checked', false);
+            $('#section-tindakan-pendisiplinan').hide();
+            $('#radio-tindakan-pendisiplinan').hide();
 
 
             $.ajax({
@@ -1131,6 +1131,10 @@ h1 {
              $('.faktor-checkbox-edit').prop('checked', false);
             $('.uraian-faktor-edit').val('');
             $('input[name="tindakan_pendisiplinan_edit"]').prop('checked', false);
+
+            $('#section-tindakan-pendisiplinan').show();
+            $('#radio-tindakan-pendisiplinan').show();
+
             $.ajax({
                 type: "POST",
                 url: "{{ route('tindakan_kedisiplinan.get_detail_tindakan_kedisiplinan') }}",
