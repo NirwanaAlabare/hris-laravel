@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
 
 <table class="table">
     <tr>
@@ -30,6 +28,7 @@
             $style = '';
         @endphp
         @foreach ($data as $item)
+
             @if ($item->absen_masuk_kerja == null)
                 @php
                     $style = 'red';
@@ -41,16 +40,14 @@
             @endif
             <tr>
                 <td style="background-color: {{ $style }}">{{ $no++ }}.</td>
-                <td style="background-color: {{ $style }}">
-                    {{ date('d-M-Y', strtotime($item->tanggal_berjalan)) }}</td>
-                <td style="background-color: {{ $style }}">{{ $item->enroll_id }}</td>
+                <td style="background-color: {{ $style }}">{{ date('d-M-Y', strtotime($item->tanggal_berjalan)) }}</td>
+                <td style="background-color: {{ $style }}">{{ preg_replace('/[^\x20-\x7E]/', '', $item->enroll_id) ?? '-' }}</td>
                 <td style="background-color: {{ $style }}">{{ $item->nik }}</td>
                 <td style="background-color: {{ $style }}">{{ $item->nm_karyawan }}</td>
                 <td style="background-color: {{ $style }}">{{ $item->sewing_nonsewing }}</td>
                 <td style="background-color: {{ $style }}">{{ $item->line }}</td>
                 <td style="background-color: {{ $style }}">{{ $item->line_asal }}</td>
-                <td style="background-color: {{ $style }}">{{ date('d-M-Y', strtotime($item->tgl_pindah)) }}
-                </td>
+                <td style="background-color: {{ $style }}">{{ date('d-M-Y', strtotime($item->tgl_pindah)) }}</td>
                 <td style="background-color: {{ $style }}">{{ $item->absen_masuk_kerja }}</td>
                 <td style="background-color: {{ $style }}">{{ $item->status_absen }}</td>
             </tr>
@@ -59,4 +56,3 @@
 
 </table>
 
-</html>

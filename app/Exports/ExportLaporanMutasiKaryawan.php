@@ -49,7 +49,7 @@ class ExportLaporanMutasiKaryawan implements FromView, WithEvents, ShouldAutoSiz
         $data = DB::select("
             SELECT
             line,
-            b.enroll_id,
+            ea.enroll_id,
             ea.employee_name nm_karyawan,
             ea.nik,
             tanggal_berjalan,
