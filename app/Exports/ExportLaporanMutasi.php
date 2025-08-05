@@ -20,7 +20,7 @@ class ExportLaporanMutasi implements FromView
     public function view(): View
     {
         $data = DB::select('
-        select a.id, b.*,ea.sewing_nonsewing,
+        select a.id, b.*,ea.enroll_id enroll_id_fix, ea.sewing_nonsewing,
         c.absen_masuk_kerja,
         DATE_FORMAT(tgl_pindah, "%d-%m-%Y") tgl_pindah_fix,
         DATE_FORMAT(b.updated_at, "%d-%m-%Y %H:%i:%s") tgl_update_fix,

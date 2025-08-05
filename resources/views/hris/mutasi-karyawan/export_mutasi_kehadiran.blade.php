@@ -36,7 +36,7 @@
         <tr>
             <td style="border:1px solid black">{{ $no }}.</td>
             <td style="border:1px solid black">{{ date('d F Y', strtotime( $value->tanggal_berjalan )) }}</td>
-            <td style="border:1px solid black">{{ $value->enroll_id }}</td>
+            <td style="border:1px solid black">{{ preg_replace('/[^\x20-\x7E]/', '', $value->enroll_id_fix) ?? '-' }}</td>
             <td style="border:1px solid black">{{ $value->nik }}</td>
             <td style="border:1px solid black">{{ $value->nm_karyawan }}</td>
             <td style="border:1px solid black">{{ $value->sewing_nonsewing }}</td>
