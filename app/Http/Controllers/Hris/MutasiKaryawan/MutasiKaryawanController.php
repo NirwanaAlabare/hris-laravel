@@ -133,9 +133,18 @@ class MutasiKaryawanController extends AdminBaseController
         $tglskrg = date('Y-m-d');
         $additionalQuery = '';
         $nama = $request->input('search_variable');
-
         if ($nama) {
-            $line_skrg=DB::select('select line from mut_karyawan_input where tgl_pindah ="'.$tglskrg.'" and nm_karyawan like "%'.$nama.'%" or enroll_id like "%'.$nama.'%" or line like "%'.$nama.'%" or enroll_id like "%'.$nama.'%" or nik like "%'.$nama.'%"');
+            $line_skrg = DB::select("
+                SELECT line FROM mut_karyawan_input
+                WHERE tgl_pindah = '$tglskrg'
+                AND (
+                    nm_karyawan LIKE '%$nama%' OR
+                    enroll_id LIKE '%$nama%' OR
+                    line LIKE '%$nama%' OR
+                    nik LIKE '%$nama%'
+                )
+            ");
+
             $lines=[];
             foreach($line_skrg as $no){
                 $lines[]=$no->line;
