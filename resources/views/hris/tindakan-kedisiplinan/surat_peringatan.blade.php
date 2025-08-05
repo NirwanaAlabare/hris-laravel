@@ -1032,7 +1032,7 @@ h1 {
 
         function openModalEditPengajuan(id) {
             $("#ajax-modal-edit-pengajuan").modal('show');
-            $("#title-modal-edit1-approve").text('Edit Pengajuan Tenaga Kerja');
+            $("#title-modal-edit1-approve").text('Edit Pendisiplinan');
             $("#btn-update-pengajuan").show();
             $("#btn-approve-pengajuan").hide();
             // Kosongkan dulu semua faktor (reset state)
