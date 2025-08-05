@@ -211,7 +211,7 @@
                 <td style="vertical-align: middle; font-size: 8pt; border: none; width:10%; padding-left:5px;">Surat Peringatan</td>
                 <td style="vertical-align: middle; font-size: 8pt; border: none; width:3%;"></td>
                 <td style="vertical-align: middle; font-size: 14pt; border: 2px solid; width:4%; text-align: center;">
-                    @if(strtolower($value->tindakan_pendisiplinan) == strtolower('couching'))
+                    @if(strtolower($value->tindakan_pendisiplinan) == strtolower('coaching'))
                         ✔
                     @endif
                 </td>

@@ -1038,6 +1038,8 @@ h1 {
             // Kosongkan dulu semua faktor (reset state)
             $('.faktor-checkbox-edit').prop('checked', false);
             $('.uraian-faktor-edit').val('');
+            // Reset semua radio button tindakan_pendisiplinan_edit
+            $('input[name="tindakan_pendisiplinan_edit"]').prop('checked', false);
 
 
             $.ajax({
@@ -1048,6 +1050,7 @@ h1 {
                 },
                 success: function(res) {
                     var data = res;
+                    console.log(data);
                     var tanggal_pengajuan=data.tanggal_pengajuan.substr(8,2)+'-'+data.tanggal_pengajuan.substr(5,2)+'-'+data.tanggal_pengajuan.substr(0,4);
                     $('#enroll_id_diajukan_oleh_edit').val(data.enroll_id_diajukan_oleh);
                     $('#id_pengajuan_edit').val(data.id);
@@ -1127,6 +1130,7 @@ h1 {
             $("#btn-update-pengajuan").hide();
              $('.faktor-checkbox-edit').prop('checked', false);
             $('.uraian-faktor-edit').val('');
+            $('input[name="tindakan_pendisiplinan_edit"]').prop('checked', false);
             $.ajax({
                 type: "POST",
                 url: "{{ route('tindakan_kedisiplinan.get_detail_tindakan_kedisiplinan') }}",
