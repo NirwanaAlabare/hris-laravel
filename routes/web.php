@@ -112,6 +112,7 @@ Route::group(['middleware' => ['auth.admin', 'lock','role:all,attendance_payroll
     Route::get('datalembur/add_datalembur/',['as'=>'hris.datalembur.add_datalembur','uses'=> 'DataLemburController@add_datalembur']);
     Route::get('koreksiupah/index',['as'=>'hris.koreksiupah.index','uses'=>'KoreksiUpahController@index']);
     Route::get('koreksipotongan/index',['as'=>'hris.koreksipotongan.index','uses'=>'KoreksiPotonganController@index']);
+    Route::get('verifikasi_koreksi/index',['as'=>'hris.verifikasi_koreksi.index','uses'=>'KoreksiPotonganController@verifikasi_koreksi']);
     Route::get('gagalabsen/index/',['as'=>'hris.gagalabsen.index','uses'=> 'GagalAbsenController@index']);
     Route::get('dataabsenperijinan/index',['as'=>'hris.dataabsenperijinan.index','uses'=>'DataAbsenPerijinanController@index']);
     Route::get('rekapperhitunganlembur/index',['as'=>'hris.rekapperhitunganlembur.index','uses'=>'RekapPerhitunganLemburController@index']);
@@ -370,6 +371,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('/tindakan_kedisiplinan/get_detail_coaching', ['as' => 'tindakan_kedisiplinan.get_detail_coaching','uses' => 'Administrasi\TindakanKedisiplinanController@get_detail_coaching']);
     Route::post('/tindakan_kedisiplinan/update_form_coaching/{id}', ['as' => 'tindakan_kedisiplinan.update_form_coaching','uses' => 'Administrasi\TindakanKedisiplinanController@update_form_coaching']);
     Route::post('/tindakan_kedisiplinan/delete_form_coaching', ['as' => 'tindakan_kedisiplinan.delete_form_coaching','uses' => 'Administrasi\TindakanKedisiplinanController@delete_form_coaching']);
+    Route::post('/tindakan_kedisiplinan/get_last_no_form', ['as' => 'tindakan_kedisiplinan.get_last_no_form','uses' => 'Administrasi\TindakanKedisiplinanController@get_last_no_form']);
 
 
 
@@ -679,6 +681,10 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('koreksiupah/datatable_ins_jabatan',['as'=>'hris.koreksiupah.datatable_ins_jabatan','uses'=>'KoreksiUpahController@datatable_ins_jabatan']);
 
     Route::post('koreksipotongan/ajax_datakoreksipotongan',['as'=>'hris.koreksipotongan.ajax_datakoreksipotongan','uses'=>'KoreksiPotonganController@ajax_datakoreksipotongan']);
+    Route::post('koreksipotongan/list_verifikasi_koreksi',['as'=>'hris.koreksipotongan.list_verifikasi_koreksi','uses'=>'KoreksiPotonganController@list_verifikasi_koreksi']);
+    Route::post('koreksipotongan/unverifikasi_koreksi',['as'=>'hris.koreksipotongan.unverifikasi_koreksi','uses'=>'KoreksiPotonganController@unverifikasi_koreksi']);
+    Route::post('koreksipotongan/verifikasi_koreksi_data',['as'=>'hris.koreksipotongan.verifikasi_koreksi_data','uses'=>'KoreksiPotonganController@verifikasi_koreksi_data']);
+
     Route::post('koreksipotongan/create',['as'=>'hris.koreksipotongan.create','uses'=>'KoreksiPotonganController@create']);
     Route::post('koreksipotongan/update',['as'=>'hris.koreksipotongan.update','uses'=>'KoreksiPotonganController@update']);
     Route::post('koreksipotongan/destroy',['as'=>'hris.koreksipotongan.destroy','uses'=>'KoreksiPotonganController@destroy']);

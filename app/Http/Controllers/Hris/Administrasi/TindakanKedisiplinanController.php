@@ -727,6 +727,21 @@ class TindakanKedisiplinanController extends AdminBaseController
         return response()->json(['message' => 'Berhasil dihapus']);
     }
 
+    public function get_last_no_form(Request $request)
+    {
+
+      $no_form = DB::table('surat_peringatan_karyawan')
+    ->select('no_form')
+    ->orderByRaw('CAST(no_form AS UNSIGNED) DESC')
+    ->first();
+
+        return response()->json([
+            'message' => 'Berhasil dapat no form',
+            'no_form' => (int) $no_form->no_form + 1
+        ]);
+
+    }
+
 
     public function ajax_data_pengajuan_sp(Request $request)
     {

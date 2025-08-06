@@ -2314,20 +2314,34 @@ h1 {
 
         }
         function openModalBuatPengajuan() {
-            $("#ajax-modal-tambah").modal('show');
-            $('#title-modal-edit1').text('Buat Form Surat Peringatan');
-            var today = new Date();
-            var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-            var yyyy = today.getFullYear();
+            $.ajax({
+                type:"POST",
+                url: "{{route('tindakan_kedisiplinan.get_last_no_form')}}",
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    dataType: 'json',
+                success: function(res){
+                    $("#ajax-modal-tambah").modal('show');
+                    $('#title-modal-edit1').text('Buat Form Surat Peringatan');
+                    var today = new Date();
+                    var dd = String(today.getDate()).padStart(2, '0');
+                    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                    var yyyy = today.getFullYear();
 
-            today = dd + '-' + mm + '-' + yyyy;
+                    today = dd + '-' + mm + '-' + yyyy;
 
-            $('#tanggal_pengajuan').val(today);
-            $('#tanggal_mulai_ijin').val(today);
-            $('#tanggal_akhir_ijin').val(today);
-            $("#uuid_master").val(null);
-            $("#didelegasikan_enroll_id").val(null);
+                    $('#tanggal_pengajuan').val(today);
+                    $('#tanggal_mulai_ijin').val(today);
+                    $('#tanggal_akhir_ijin').val(today);
+                    $("#uuid_master").val(null);
+                    $("#didelegasikan_enroll_id").val(null);
+                    $('#no_form').val(res.no_form);
+                },
+                error: function(res){
+                    console.error("Error fetching last no_form:", res);
+                }
+            });
         }
         function searchData() {
             var selectEmployeeID = $('#selectEmployeeID').val();
