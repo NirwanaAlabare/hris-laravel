@@ -232,8 +232,10 @@ h1 {
                                                                     <input type="checkbox" id="checkAllEmployee" onchange="actionCheckAllEmployee(this)">
                                                                 </th>
 
+                                                                <th scope="col">No Koreksi</th>
                                                                 <th scope="col">Tanggal Koreksi</th>
                                                                 <th scope="col">Jenis Koreksi</th>
+                                                                <th scope="col" width="15%">Periode</th>
                                                                 <th scope="col">NIP</th>
                                                                 <th scope="col">Nama Karyawan</th>
                                                                 <th scope="col">Depaerment</th>
@@ -255,8 +257,10 @@ h1 {
                                                         <thead>
                                                             <tr class="text-center">
                                                                 <th scope="col">Aksi</th>
+                                                                <th scope="col">No Koreksi</th>
                                                                 <th scope="col">Tanggal Koreksi</th>
                                                                 <th scope="col">Jenis Koreksi</th>
+                                                                <th scope="col" width="15%">Periode</th>
                                                                 <th scope="col">NIP</th>
                                                                 <th scope="col">Nama Karyawan</th>
                                                                 <th scope="col">Depaerment</th>
@@ -603,14 +607,15 @@ h1 {
                         data: 'uuid',
                         orderable: false
                     },
+                    { data: 'kode_koreksi' },
                     { data: 'tanggal_koreksi',
                     width: '10%',
-                      render: function(data, type, row) {
-                            return moment(data).format('DD-MM-YYYY');  // Formatkan tanggal ke dmy
-                        }
+                    render: function(data, type, row) {
+                        return moment(data).format('DD-MM-YYYY');  // Formatkan tanggal ke dmy
+                    }
                     },
                     { data: 'sumber',
-                    className: "text-center",
+                        className: "text-center",
                         render: function(data, type, row) {
                             if(data == 'PENAMBAH UPAH'){
                                 return `<span class="badge badge-pill w-75 badge-primary text-white">${data}</span>`;
@@ -619,6 +624,7 @@ h1 {
                             }
                         }
                     },
+                    { data: 'periode_tanggal_koreksi' },
                     { data: 'nik' },
                     { data: 'employee_name' },
                     {data: 'department_name'},
@@ -724,11 +730,12 @@ h1 {
                                 }
                         }
                     },
+                    { data: 'kode_koreksi' },
                     {   data: 'tanggal_koreksi',
-                        render: function(data, type, row) {
-                                return moment(data).format('DD-MM-YYYY');  // Formatkan tanggal ke dmy
-                        }
-                    },
+                    render: function(data, type, row) {
+                        return moment(data).format('DD-MM-YYYY');  // Formatkan tanggal ke dmy
+                    }
+                },
                     {   data: 'sumber',
                         className: "text-center",
                         render: function(data, type, row) {
@@ -739,6 +746,7 @@ h1 {
                             }
                         }
                     },
+                    { data: 'periode_tanggal_koreksi' },
                     { data: 'nik' },
                     { data: 'employee_name' },
                     {data: 'department_name'},
