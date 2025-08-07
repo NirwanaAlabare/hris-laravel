@@ -298,6 +298,14 @@ h1 {
                                                         <a class="nav-link card-title m-0" style="border: 1px solid #d8d4dc" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
                                                     </div>
                                                     <div class="col-auto">
+                                                         <select id="selectDepartment" name="selectDepartment" class="form-control">
+                                                            <option value="">-- PILIH DEPARTMENT --</option>
+                                                            @foreach ($department as $r_department)
+                                                                <option value="{{$r_department->department_id}}">{{$r_department->department_name}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-auto">
                                                         <select id="rentan_posisi" class="form-control">
                                                             <option value=''>-- PILIH KONDISI --</option>
                                                             <option value='dalam_rentan_waktu'>DALAM MASA SP</option>
@@ -1290,6 +1298,7 @@ h1 {
         function ExportSuratPeringatan() {
             var status_sp = $('#status_sp').val();
             var rentan_posisi = $('#rentan_posisi').val();
+            var selectDepartment = $('#selectDepartment').val();
             var daterange1 = $('#daterange1').val();
             $.ajax({
                 type: "get",
@@ -1298,6 +1307,7 @@ h1 {
                     daterange1: daterange1,
                     status_sp: status_sp,
                     rentan_posisi: rentan_posisi,
+                    selectDepartment: selectDepartment,
                 },
                 xhrFields: {
                     responseType: 'blob'
@@ -1958,6 +1968,7 @@ h1 {
                         d.status_pengajuan = 'pending';
                         d.surat_peringatan = $('#status_sp').val(); // tambahkan status_sp
                         d.rentan_posisi = $('#rentan_posisi').val(); // tambahkan status_sp
+                        d.selectDepartment = $('#selectDepartment').val(); // tambahkan status_sp
                         d.daterange1 = $('#daterange1').val();
                     },
                     onSuccess: function(data) {
@@ -2019,6 +2030,9 @@ h1 {
                 tableWaiting.ajax.reload();
             });
             $('#rentan_posisi').on('change', function() {
+                tableWaiting.ajax.reload();
+            });
+            $('#selectDepartment').on('change', function() {
                 tableWaiting.ajax.reload();
             });
 

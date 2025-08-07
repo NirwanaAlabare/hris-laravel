@@ -70,7 +70,7 @@ class TindakanKedisiplinanController extends AdminBaseController
         group by d.sub_dept_id
         order by department_name asc");
 
-        $DepartmentAllModel =  DepartmentAll::groupBy('department_name')
+        $DepartmentAllModel =  DepartmentAll::select('department_id , department_name')->groupBy('department_name')
         ->orderBy('department_name','asc')
         ->get();
         $NirwananameAllModel =  DepartmentAll::groupBy('site_nirwana_name')
@@ -812,6 +812,7 @@ class TindakanKedisiplinanController extends AdminBaseController
         $email = Auth::guard('admin')->user()->email;
         $search = $request->input('search.value');
         $status_sp = $request->input('surat_peringatan');
+        $selectDepartment = $request->input('selectDepartment');
         $rentan_posisi = $request->input('rentan_posisi');
         $start = $request->input('start'); // index pertama
         $length = $request->input('length'); // jumlah data per halaman
@@ -824,6 +825,7 @@ class TindakanKedisiplinanController extends AdminBaseController
             'employee_atribut.employee_name',
             'employee_atribut.nik',
             'employee_atribut.department_name',
+            'employee_atribut.department_id',
             'employee_atribut.sub_dept_name',
             'employee_atribut.status_jabatan'
         )
@@ -848,8 +850,11 @@ class TindakanKedisiplinanController extends AdminBaseController
             });
         }
 
-         if (!empty($status_sp)) {
+        if (!empty($status_sp)) {
             $query->where('surat_peringatan_karyawan.surat_peringatan', $status_sp);
+        }
+        if (!empty($selectDepartment)) {
+            $query->where('employee_atribut.department_id', $selectDepartment);
         }
         if (!empty($rentan_posisi)) {
             if ($rentan_posisi == 'dalam_rentan_waktu') {
@@ -929,6 +934,7 @@ class TindakanKedisiplinanController extends AdminBaseController
             'employee_atribut.employee_name',
             'employee_atribut.nik',
             'employee_atribut.department_name',
+            'employee_atribut.department_id',
             'employee_atribut.sub_dept_name',
             'employee_atribut.status_jabatan',
             'pasal_surat_peringatan.deskripsi',
@@ -956,6 +962,9 @@ class TindakanKedisiplinanController extends AdminBaseController
         // Filter berdasarkan status_sp jika ada
         if (!empty($request->status_sp)) {
             $query->where('surat_peringatan_karyawan.surat_peringatan', $request->status_sp);
+        }
+        if (!empty($request->selectDepartment)) {
+            $query->where('employee_atribut.department_id', $request->selectDepartment);
         }
         if (!empty($request->rentan_posisi)) {
                 if ($request->rentan_posisi == 'dalam_rentan_waktu') {
