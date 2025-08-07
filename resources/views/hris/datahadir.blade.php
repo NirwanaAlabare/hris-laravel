@@ -41,7 +41,7 @@
             z-index: 10;
           }
     </style>
-    <style>
+    {{-- <style>
         #head_kehadiran, #tabel_data_kehadiran { display: block; }
 
         #tabel_data_kehadiran {
@@ -50,7 +50,41 @@
             overflow-x: hidden;
             font-size: 10pt; /* Hide the horizontal scroll */
         }
-    </style>
+    </style> --}}
+<style>
+.table-wrapper-kehadiran {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.table-kehadiran {
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table-kehadiran th,
+.table-kehadiran td {
+    white-space: nowrap;
+    text-align: center;
+    padding: 8px;
+    border: 1px solid #ccc;
+    font-size: 10pt;
+    width: auto;
+}
+
+.table-kehadiran thead th {
+    background-color: rgba(255, 255, 255, 0.6);
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+</style>
+
+
+
 
 @stop
 @section('mainarea')
@@ -330,30 +364,34 @@
                                 </div>
                             </div>
                             <div class="row pt-2 justify-content-center">
-                                <div class="col-12">
-                                    <table class="table table-bordered" style="overflow-x:auto" width="2500">
-                                        <thead id="head_kehadiran">
-                                            <tr>
-                                                <td width="70px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">NO</td>
-                                                <td width="110px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NIK</td>
-                                                <td width="58px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt">ID</td>
-                                                <td style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt" width="100px">TANGGAL</td>
-                                                <td style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt" width="250px">NAMA KARYAWAN</td>
-                                                <td style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt" width="113px">KERJA/LIBUR</td>
-                                                <td style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt" width="122px">SCHEDULE IN</td>
-                                                <td style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt" width="122px">SCHEDULE OUT</td>
-                                                <td style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt" width="122px">ABSEN IN</td>
-                                                <td style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px;font-size:10pt" width="122px">ABSEN OUT</td>
-                                            </tr>
+                              <div class="col-12">
+                                <div style="overflow-x: auto;">
+                                    <div class="table-wrapper-kehadiran" style="max-height: 400px; overflow-y: auto;">
+                                    <table class="table table-bordered table-kehadiran" style="table-layout: fixed;">
+                                        <thead class="thead-light" style="position: sticky; top: 0; background-color: white; z-index: 1;">
+                                        <tr>
+                                            <th style="width: 2%;">NO</th>
+                                            <th style="width: 5%;">NIK</th>
+                                            <th style="width: 3%;">ID</th>
+                                            <th style="width: 5%;">TANGGAL</th>
+                                            <th style="width: 10%;">NAMA</th>
+                                            <th style="width: 5%;">KERJA</th>
+                                            <th style="width: 5%;">IN</th>
+                                            <th style="width: 5%;">OUT</th>
+                                            <th style="width: 5%;">ABSEN IN</th>
+                                            <th style="width: 5%;">ABSEN OUT</th>
+                                        </tr>
                                         </thead>
                                         <tbody id="tabel_data_kehadiran">
                                         </tbody>
                                     </table>
-                                </div>
-                                <div class="col-12 text-center">
-                                    <div id="loading_data_hadir">
                                     </div>
                                 </div>
+                                </div>
+                                <div class="col-12 text-center">
+                                <div id="loading_data_hadir"></div>
+                                </div>
+
                             </div>
                             <div class="row pt-0 pb-3 pr-3">
                                 <div class="col text-center pt-2">
@@ -940,16 +978,16 @@
                         $('#length').text('LENGTH : '+data[1].jumlah_data);
                         jQuery.each(data, function(key,value){
                             $('#tabel_data_kehadiran').append("<tr>\
-                                <td width='70px'>"+data[key].no+"</td>\
-                                <td width='110px'>"+data[key].nik+"</td>\
-                                <td width='58px'>"+data[key].enroll_id+"</td>\
-                                <td width='100px'>"+moment(data[key].tanggal_berjalan).format('DD-MM-YYYY')+"</td>\
-                                <td width='250px'>"+data[key].employee_name+"</td>\
-                                <td width='113px'>"+data[key].kerja_libur+"</td>\
-                                <td align='center' width='122px'>"+data[key].jadwal_masuk_kerja+"</td>\
-                                <td align='center' width='122px'>"+data[key].jadwal_pulang_kerja+"</td>\
-                                <td align='center' width='122px'>"+data[key].absen_masuk_kerja+"</td>\
-                                <td align='center' width='122px'>"+data[key].absen_pulang_kerja+"</td>\
+                                <td >"+data[key].no+"</td>\
+                                <td >"+data[key].nik+"</td>\
+                                <td >"+data[key].enroll_id+"</td>\
+                                <td >"+moment(data[key].tanggal_berjalan).format('DD-MM-YYYY')+"</td>\
+                                <td >"+data[key].employee_name+"</td>\
+                                <td >"+data[key].kerja_libur+"</td>\
+                                <td align='center' >"+data[key].jadwal_masuk_kerja+"</td>\
+                                <td align='center' >"+data[key].jadwal_pulang_kerja+"</td>\
+                                <td align='center' >"+data[key].absen_masuk_kerja+"</td>\
+                                <td align='center' >"+data[key].absen_pulang_kerja+"</td>\
                             </tr>");
                         });
                         document.getElementById('presenceImportButton').style.visibility='visible';
