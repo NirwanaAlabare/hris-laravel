@@ -274,10 +274,11 @@
                     </div>
                 </td>
 
-               @foreach ($approval_list as $approver)
+
+                @foreach ($approval_list as $approver)
                     <td style="text-align: center;">
-                        <div style="width: 100px; border-bottom: 1px solid #000; margin: 0 auto;">
-                            {{-- {{ $approver->employee_name }} --}}
+                        <div style="width: {{$approver->enroll_id == 2 ? "200px" : "100px"}}; border-bottom: 1px solid #000; margin: 0 auto;">
+                            {{ $approver->enroll_id == 2 ? "BOBBY TANGNGA" : "" }}
                         </div>
                     </td>
                 @endforeach
