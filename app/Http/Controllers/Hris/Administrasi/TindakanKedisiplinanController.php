@@ -70,7 +70,7 @@ class TindakanKedisiplinanController extends AdminBaseController
         group by d.sub_dept_id
         order by department_name asc");
 
-        $DepartmentAllModel =  DepartmentAll::select('department_id , department_name')->groupBy('department_name')
+        $DepartmentAllModel =  DepartmentAll::groupBy('department_name')
         ->orderBy('department_name','asc')
         ->get();
         $NirwananameAllModel =  DepartmentAll::groupBy('site_nirwana_name')
@@ -773,6 +773,7 @@ class TindakanKedisiplinanController extends AdminBaseController
                 $q->where('pengajuan_kedisiplinan_karyawan.created_by', $email);
             });
         }
+
         $data = $query->get();
         // Format response untuk DataTables
         return response()->json([
