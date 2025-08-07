@@ -508,7 +508,8 @@ class KoreksiPotonganController extends AdminBaseController
                 'periode_tanggal_koreksi' => $periode_tanggal_koreksi,
                 'jenis_potongan' => $jenis_potongan,
                 'keterangan' => $keterangan,
-                'operator' => $email
+                'operator' => $email,
+                'is_verifikasi_acc' => 0,
             ]);
         }
 
@@ -675,6 +676,7 @@ class KoreksiPotonganController extends AdminBaseController
                             'keterangan'=>$value['keterangan'],
                             'operator'=>$value['operator'],
                             'jenis_potongan'=>$value['jenis_potongan'],
+                            'is_verifikasi_acc' => 0,
 
                         ];
                         DataKoreksiPotongan::create($data_insert);

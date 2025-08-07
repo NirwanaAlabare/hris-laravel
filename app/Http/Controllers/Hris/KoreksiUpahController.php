@@ -341,7 +341,8 @@ class KoreksiUpahController extends AdminBaseController
                 'periode_tanggal_koreksi' => $periode_tanggal_koreksi,
                 'keterangan' => $keterangan,
                 'operator' => $email,
-                'jenis_koreksi' => $jenis_koreksi
+                'jenis_koreksi' => $jenis_koreksi,
+                'is_verifikasi_acc' => 0,
 
             ]);
         }
@@ -389,7 +390,8 @@ class KoreksiUpahController extends AdminBaseController
             'periode_tanggal_koreksi' => $periode_tanggal_kehadiran,
             'keterangan' => $keterangan,
             'operator' => $loggedAdmin,
-            'jenis_koreksi' => $jenis_koreksi
+            'jenis_koreksi' => $jenis_koreksi,
+            'is_verifikasi_acc' => 0,
         ];
         $data_koreksi_db=DataKoreksiUpah::where('enroll_id',$enroll_id)->where('periode_tanggal_koreksi',$periode_tanggal_kehadiran)->count();
         if($data_koreksi_db==0){
@@ -581,6 +583,7 @@ class KoreksiUpahController extends AdminBaseController
                             'keterangan'=>$value['keterangan'],
                             'operator'=>$value['operator'],
                             'jenis_koreksi' => $value['jenis_koreksi'],
+                            'is_verifikasi_acc' => 0,
 
                         ];
                         DataKoreksiUpah::create($data_insert);
