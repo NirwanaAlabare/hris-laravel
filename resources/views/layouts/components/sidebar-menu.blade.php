@@ -36,6 +36,7 @@
                     <ul class="sub-slide-menu">
                         <li><a class="sub-slide-item" href="{{route('hris.koreksiupah.index')}}"><span>Penambah Upah</span></a></li>
                         <li><a class="sub-slide-item" href="{{route('hris.koreksipotongan.index')}}"><span>Pengurang Upah</span></a></li>
+                        <li><a class="sub-slide-item" href="{{route('hris.verifikasi_koreksi.index')}}"><span>Verifikasi Koreksi</span></a></li>
                     </ul>
                 </li>
                 @php
