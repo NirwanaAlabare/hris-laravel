@@ -26,7 +26,8 @@ class DataKoreksiPotongan extends \Eloquent
         'created_at',
         'updated_at',
         'deleted_at',
-        'operator'
+        'operator',
+        'is_verifikasi_acc',
     ];
     protected $guarded = ['kode_koreksi'];
 
@@ -58,6 +59,7 @@ class DataKoreksiPotongan extends \Eloquent
         'updated_at',
         'deleted_at',
         'operator',
+        'is_verifikasi_acc',
     ];
 
     protected $appends = [];

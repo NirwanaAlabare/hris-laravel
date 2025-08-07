@@ -26,7 +26,8 @@ class DataKoreksiUpah extends \Eloquent
         'created_at',
         'updated_at',
         'deleted_at',
-        'jenis_koreksi'
+        'jenis_koreksi',
+        'is_verifikasi_acc',
     ];
     protected $guarded = ['kode_koreksi_upah'];
 
@@ -57,7 +58,8 @@ class DataKoreksiUpah extends \Eloquent
         'created_at',
         'updated_at',
         'deleted_at',
-        'jenis_koreksi'
+        'jenis_koreksi',
+        'is_verifikasi_acc',
     ];
 
     protected $appends = [];
