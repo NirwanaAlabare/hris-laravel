@@ -131,35 +131,29 @@
 </head>
 <body>
         <div class="container">
-            <div class="thead">
-            <table class="no-padding" width="506" style="border-bottom: 2px solid black;">
-                <tr>
-                    <td width="10%"></td>
-                    <td width="13%" align="right"><img src="{{ public_path('assets/images/brand/logo.jpg') }}" width="42" style="margin-right: 10px"></td>
-                    <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:18pt;font-weight:bold">PT NIRWANA ALABARE GARMENT</td>
-                    <td width="10%"></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td align="center" colspan="2" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:10pt;font-weight:bold">Jl. Raya Rancaekek – Majalaya No. 289</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td align="center" colspan="2" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:10pt;font-weight:bold">Desa Solokan Jeruk Kecamatan Solokan Jeruk, Kabupaten Bandung 40382</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td align="center" colspan="2" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:10pt;font-weight:bold">Telp. +62 22 8596 2076 / +62 22 8596 2081</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td align="center" colspan="2" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:10pt;color:blue;"><i>https://nirwanagroup.co.id</i></td>
-                    <td></td>
-                </tr>
-            </table>
+            <div class="thead" style="border-bottom: 4px solid black;">
+                <table class="purchase-order" width="100%" style="margin-top:28px;">
+                    <thead>
+                        <tr>
+                            <td style="vertical-align: middle; text-align: center;">
+                                <img height="52" src="{{ public_path('assets/image/header-kop.png') }}" alt="">
+                            </td>
+                        </tr>
+                    </thead>
+                </table>
+                <table width="100%" style="font-family:Arial, Helvetica, sans-serif; line-height: 14px; padding-bottom:1px;" >
+                    <thead>
+                        <tr>
+                            <td width="100%" style="justify-content: center; text-align: center; font-weight:700; font-size: 8.5pt; margin:0; padding:0;">Jl. Raya Rancaekek – Majalaya No. 289</td>
+                        </tr>
+                        <tr>
+                            <td width="100%" style="justify-content: center; text-align: center; font-weight:700; font-size: 8.5pt;  margin:0; padding:0;">Desa Solokan Jeruk Kecamatan Solokan Jeruk, Kabupaten Bandung 40382</td>
+                        </tr>
+                        <tr>
+                            <td width="100%" style="justify-content: center; text-align: center; font-weight:700; font-size: 8.5pt; margin:0; padding:0;">Telp. 022-85962081</td>
+                        </tr>
+                    </thead>
+                </table>
             </div>
             <div class="content">
                 <table>
@@ -235,34 +229,28 @@
 
             <div class="divider"></div>
 
-            <div class="thead">
-                <table class="no-padding" width="506" style="border-bottom: 2px solid black;">
-                    <tr>
-                        <td width="10%"></td>
-                        <td width="13%" align="right"><img src="{{ public_path('assets/images/brand/logo.jpg') }}" width="42" style="margin-right: 10px"></td>
-                        <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:18pt;font-weight:bold">PT NIRWANA ALABARE GARMENT</td>
-                        <td width="10%"></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td align="center" colspan="2" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:10pt;font-weight:bold">Jl. Raya Rancaekek – Majalaya No. 289</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td align="center" colspan="2" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:10pt;font-weight:bold">Desa Solokan Jeruk Kecamatan Solokan Jeruk, Kabupaten Bandung 40382</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td align="center" colspan="2" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:10pt;font-weight:bold">Telp. +62 22 8596 2076 / +62 22 8596 2081</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td align="center" colspan="2" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:10pt;color:blue;"><i>https://nirwanagroup.co.id</i></td>
-                        <td></td>
-                    </tr>
+            <div class="thead" style="border-bottom: 4px solid black;">
+                <table class="purchase-order" width="100%" style="margin-top:10px;">
+                    <thead>
+                        <tr>
+                            <td style="vertical-align: middle; text-align: center;">
+                                <img height="52" src="{{ public_path('assets/image/header-kop.png') }}" alt="">
+                            </td>
+                        </tr>
+                    </thead>
+                </table>
+                <table width="100%" style="font-family:Arial, Helvetica, sans-serif; line-height: 14px; padding-bottom:1px;" >
+                    <thead>
+                        <tr>
+                            <td width="100%" style="justify-content: center; text-align: center; font-weight:700; font-size: 8.5pt; margin:0; padding:0;">Jl. Raya Rancaekek – Majalaya No. 289</td>
+                        </tr>
+                        <tr>
+                            <td width="100%" style="justify-content: center; text-align: center; font-weight:700; font-size: 8.5pt;  margin:0; padding:0;">Desa Solokan Jeruk Kecamatan Solokan Jeruk, Kabupaten Bandung 40382</td>
+                        </tr>
+                        <tr>
+                            <td width="100%" style="justify-content: center; text-align: center; font-weight:700; font-size: 8.5pt; margin:0; padding:0;">Telp. 022-85962081</td>
+                        </tr>
+                    </thead>
                 </table>
             </div>
             <div class="footer">
