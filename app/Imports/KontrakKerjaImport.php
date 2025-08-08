@@ -28,7 +28,7 @@ class KontrakKerjaImport implements ToModel, WithStartRow, WithCalculatedFormula
         $bagian=EmployeeAtribut::where('enroll_id',$row[2])->pluck('sub_dept_name');
         $contract=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[9])->format('Y-m-d');
         $contract_end=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[10])->format('Y-m-d');
-        $jumlah_bulan=$row[11];
+        $jumlah_bulan=$row[11] ? $row[11] : null;
         $this->rows[]=[
             'nik'=>$nik,
             'employee_name'=>$employee_name,

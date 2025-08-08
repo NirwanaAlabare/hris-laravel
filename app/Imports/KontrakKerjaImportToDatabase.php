@@ -24,7 +24,7 @@ class KontrakKerjaImportToDatabase implements ToModel, WithStartRow, WithCalcula
         $enroll_id=$row[2];
         $contract=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[9])->format('Y-m-d');
         $contract_end=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[10])->format('Y-m-d');
-        $jumlah_bulan=$row[11];
+        $jumlah_bulan=$row[11] ? $row[11] : null;
         $employee_contract=DB::select("select*from employee_contract where enroll_id = '$enroll_id' AND contract = '$contract'");
         $timestamp = Carbon::now();
         if($employee_contract){
