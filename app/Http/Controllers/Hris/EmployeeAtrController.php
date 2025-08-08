@@ -748,28 +748,27 @@ class EmployeeAtrController extends AdminBaseController
         {
             foreach ($query as $q)
             {
-                if($q->tanggal_resign!=null){
-                    $tanggal_masuk = $q->join_date;
-                    $selisih_tahun = date_diff(date_create($tanggal_masuk), date_create($q->tanggal_resign))->y;
-                    $tipe_surat = 'Paklaring';
-                    if($selisih_tahun<1){
-                        $tipe_surat = 'SK Kerja';
-                        $selisih_tahun = date_diff(date_create($tanggal_masuk), date_create(date('Y-m-d')))->m.' (bulan)';
-                    }
-                    $tanggal_resign=Carbon::parse($q->tanggal_resign)->format('d-M-Y');
-                }else{
-                    $tanggal_masuk = $q->join_date;
-                    $selisih_tahun = date_diff(date_create($tanggal_masuk), date_create(date('Y-m-d')))->y;
-                    $tipe_surat = 'Paklaring';
-                    if($selisih_tahun<1){
-                        $selisih_tahun = date_diff(date_create($tanggal_masuk), date_create(date('Y-m-d')))->m.' (bulan)';
-                        $tipe_surat = 'SK Kerja';
-                    }
-                    $tanggal_resign='-';
-                }
-                if(str_contains(strtolower($q->sebab_resign), 'kabur')){
-                    $tipe_surat='SK Kerja';
-                }
+                $tanggal_masuk = $q->join_date;
+    $tanggal_selesai = $q->tanggal_resign ?? date('Y-m-d');
+
+    $diff = date_diff(date_create($tanggal_masuk), date_create($tanggal_selesai));
+    $total_bulan = ($diff->y * 12) + $diff->m;
+
+    if ($diff->y >= 1) {
+        $selisih_tahun = $diff->y . ' tahun ' . $diff->m . ' bulan';
+        $tipe_surat = 'Paklaring';
+    } else {
+        $selisih_tahun = $total_bulan . ' bulan';
+        $tipe_surat = 'SK Kerja';
+    }
+
+    $tanggal_resign = $q->tanggal_resign
+        ? Carbon::parse($q->tanggal_resign)->format('d-M-Y')
+        : '-';
+
+    if (str_contains(strtolower($q->sebab_resign), 'kabur')) {
+        $tipe_surat = 'SK Kerja';
+    }
                 $nestedData['employee_id'] = $q->employee_id;
                 $nestedData['employee_name'] = $q->employee_name;
                 $nestedData['jenis_kelamin'] = $q->jenis_kelamin;

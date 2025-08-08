@@ -3,7 +3,21 @@
 @section('head')
 <link href="{{ URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
 <link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
+<style>
+#datatable-ajax-crud-modal {
+    table-layout: fixed;
+    width: 100% !important;
+}
 
+#datatable-ajax-crud-modal th,
+#datatable-ajax-crud-modal td {
+    vertical-align: middle;
+    text-align: center;
+    white-space: nowrap;
+}
+
+
+</style>
 @stop
 @section('mainarea')
 
@@ -210,8 +224,8 @@
                     </div>
                     <div class="row pt-2">
                         <div class="col-12 text-left">
-                            <table id="datatable-ajax-crud-modal" class="table table-bordered table-sm w-100 table-hover text-nowrap">
-                                <thead class="table-primary">
+                            <table id="datatable-ajax-crud-modal" class="table table-bordered table-sm table-fixed table-hover text-nowrap">
+                                <thead class="bg-primary">
                                     <tr style='text-align:center; vertical-align:middle'>
                                         <th>ID</th>
                                         <th>NIK</th>
@@ -220,7 +234,7 @@
                                         <th>Masa kerja</th>
                                         <th>Sebab Resign</th>
                                         <th>Tipe Surat</th>
-                                        <th scope="col" class="text-center">
+                                        <th>
                                             <span class="fa fa-print"></span><span class="fa fa-check text-success"></span> <input type="checkbox" style='width: 15px; height: 15px;' id="checkAllEmployeeModal" onchange="actionCheckAllEmployeeModal(this)">
                                         </th>
                                     </tr>
@@ -291,22 +305,22 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <table id="datatable-ajax-crud" class="table table-sm table-striped table-bordered">
+                        <table id="datatable-ajax-crud" class="table table-sm table-fixed table-bordered">
                             <thead>
                                 <tr>
-                                    <th scope="col" width="3%">
+                                    <th scope="col">
                                         <input type="checkbox" id="checkAllEmployee" onchange="actionCheckAllEmployee(this)">
                                     </th>
-                                    <th scope="col" width="3%"></th>
-                                    <th scope="col" width="5%"></th>
-                                    <th scope="col" width="14%"></th>
-                                    <th scope="col" width="14%"></th>
-                                    <th scope="col" width="14%"></th>
-                                    <th scope="col" width="8%"></th>
-                                    <th scope="col" width="8%"></th>
-                                    <th scope="col" width="18%"></th>
-                                    <th scope="col" width="9%" class="text-center"></th>
-                                    <th scope="col" width="5%" class="text-right"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col" class="text-center"></th>
+                                    <th scope="col" class="text-right"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -409,6 +423,7 @@
             pagingType: "simple",
             destroy: true,
             scrollY: '500px',
+            autoWidth: false,
             scrollCollapse: true,
             "ajax": {
                 "url": "{{ route('hris.employeeatr.ajax_getemployeeatr2') }}",
@@ -585,6 +600,7 @@
             destroy: true,
             bPaginate: false,
             scrollX: true,
+            autoWidth: false,
             scrollY: '450px',
             "ajax": {
                 "url": "{{ route('hris.employeeatr.ajax_getemployeeatr3') }}",
@@ -674,6 +690,9 @@
             ],
         });
         table2.draw();
+        $('#print_sk_checked').on('shown.bs.modal', function () {
+            table2.columns.adjust().draw(false);
+        });
         $('#datatable-ajax-crud-modal').DataTable().ajax.reload(null, false);
     });
     $('#selectEmployeeID').on('change',function(){
