@@ -1389,7 +1389,7 @@ class HRDController extends AdminBaseController
             $item->total_kompensasi = $total_kompensasi;
         }
 
-        return Excel::download(new exportExcelKompensasiPKWT($data), 'Rekap Surat Peringatan.xlsx');
+        return Excel::download(new exportExcelKompensasiPKWT($data), 'Kompensasi PKWT.xlsx');
     }
 
 
