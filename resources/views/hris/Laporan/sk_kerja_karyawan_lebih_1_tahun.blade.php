@@ -26,28 +26,34 @@
     <div id="watermark">
         <img src="{{ public_path('assets/images/brand/nirwana logo.jpg') }}" width="460">
     </div>
-    <table width="506" style="border-bottom: 2px solid black">
-        <tr>
-            <td width="10%"></td>
-            <td width="13%" align="right"><img src="{{ public_path('assets/images/brand/nirwana logo.jpg') }}" width="42"></td>
-            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:18pt;font-weight:bold">PT NIRWANA ALABARE GARMENT</td>
-            <td width="10%"></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td align="center" colspan="2" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:10pt;font-weight:bold">Jl. Raya Rancaekek – Majalaya No. 289</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td align="center" colspan="2" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:10pt;font-weight:bold">Desa Solokan Jeruk Kecamatan Solokan Jeruk, Kabupaten Bandung 40382</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td align="center" colspan="2" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:10pt;font-weight:bold">Telp. 022-85962081</td>
-            <td></td>
-        </tr>
+    <table class="purchase-order" width="100%" style="margin-top:16px;">
+        <thead>
+            <tr>
+                <td style="vertical-align: middle; text-align: center;">
+                    <img height="52" src="{{ public_path('assets/image/header-kop.png') }}" alt="">
+                </td>
+            </tr>
+        </thead>
+    </table>
+    <table width="100%" style="font-family:Arial, Helvetica, sans-serif; line-height: 12px;" >
+        <thead>
+            <tr>
+                <td width="100%" style="justify-content: center; text-align: center; font-weight:700; font-size: 8.5pt; margin:0; padding:0;">Jl. Raya Rancaekek – Majalaya No. 289</td>
+            </tr>
+            <tr>
+                <td width="100%" style="justify-content: center; text-align: center; font-weight:700; font-size: 8.5pt;  margin:0; padding:0;">Desa Solokan Jeruk Kecamatan Solokan Jeruk, Kabupaten Bandung 40382</td>
+            </tr>
+            <tr>
+                <td width="100%" style="justify-content: center; text-align: center; font-weight:700; font-size: 8.5pt; margin:0; padding:0;">Telp. 022-85962081</td>
+            </tr>
+        </thead>
+    </table>
+    <table width="100%" style="margin-top: -3px;">
+        <thead>
+            <tr>
+                <td style="height:2px; background-color: #000;"></td>
+            </tr>
+        </thead>
     </table>
     <table width="506">
         <thead>
@@ -83,7 +89,7 @@
                 <td></td>
             </tr>
             <tr>
-                <td colspan="5" style="height: 8"></td>
+                <td colspan="5" style="height: 5"></td>
             </tr>
             <tr>
                 <td width="4%"></td>
@@ -97,7 +103,7 @@
                 <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><i>Name</i></td>
             </tr>
             <tr>
-                <td colspan="5" style="height: 8"></td>
+                <td colspan="5" style="height: 5"></td>
             </tr>
             <tr>
                 <td></td>
@@ -111,7 +117,7 @@
                 <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><i>Reg. No.</i></td>
             </tr>
             <tr>
-                <td colspan="5" style="height: 8"></td>
+                <td colspan="5" style="height: 5"></td>
             </tr>
             <tr>
                 <td></td>
@@ -125,7 +131,7 @@
                 <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><i>Section</i></td>
             </tr>
             <tr>
-                <td colspan="5" style="height: 8"></td>
+                <td colspan="5" style="height: 5"></td>
             </tr>
             <tr>
                 <td></td>
@@ -139,7 +145,7 @@
                 <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><i>Department</i></td>
             </tr>
             <tr>
-                <td colspan="5" style="height: 8"></td>
+                <td colspan="5" style="height: 5"></td>
             </tr>
             <tr>
                 <td></td>
@@ -153,7 +159,7 @@
                 <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><i>Last Position</i></td>
             </tr>
             <tr>
-                <td colspan="5" style="height: 8"></td>
+                <td colspan="5" style="height: 5"></td>
             </tr>
             <tr>
                 <td></td>
@@ -167,7 +173,7 @@
                 <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><i>Length of Service</i></td>
             </tr>
             <tr>
-                <td colspan="5" style="height: 8"></td>
+                <td colspan="5" style="height: 5"></td>
             </tr>
             <tr>
                 <td></td>
@@ -181,7 +187,7 @@
                 <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"><i>Reason Of Termination</i></td>
             </tr>
             <tr>
-                <td colspan="5" style="height: 8"></td>
+                <td colspan="5" style="height: 5"></td>
             </tr>
             <tr>
                 <td></td>
@@ -192,7 +198,7 @@
                 <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;text-align:justify"><i>We express our sincere thanks for your efforts and cooperation extended to company.</i></td>
             </tr>
             <tr>
-                <td colspan="5" style="height: 8"></td>
+                <td colspan="5" style="height: 5"></td>
             </tr>
             <tr>
                 <td></td>
@@ -203,14 +209,14 @@
                 <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;text-align:justify"><i>Wishing you achievement and success always accompanying in the future.</i></td>
             </tr>
             <tr>
-                <td colspan="5" style="height: 8"></td>
+                <td colspan="5" style="height: 5"></td>
             </tr>
             <tr>
                 <td></td>
                 <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Bandung, {{Carbon\Carbon::parse(date('Y-m-d'))->translatedFormat('d F Y')}}</td>
             </tr>
             <tr>
-                <td colspan="5" style="height: 8"></td>
+                <td colspan="5" style="height: 5"></td>
             </tr>
             <tr>
                 <td></td>
