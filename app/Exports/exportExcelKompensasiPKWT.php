@@ -14,6 +14,8 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
+use Carbon\Carbon;
 use DB;
 
 class exportExcelKompensasiPKWT implements FromView, WithEvents
@@ -21,7 +23,7 @@ class exportExcelKompensasiPKWT implements FromView, WithEvents
     use Exportable;
     public function __construct($query)
     {
-        $this->query = $query;
+    $this->query = $query;
     }
     public function view(): View
     {
@@ -35,11 +37,12 @@ class exportExcelKompensasiPKWT implements FromView, WithEvents
             AfterSheet::class => function(AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
 
-                // Format kolom N dan O sebagai tanggal Excel
-                $sheet->getStyle('H2:H1000')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
-                $sheet->getStyle('I2:I1000')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
-                $sheet->getStyle('N2:N1000')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
-                $sheet->getStyle('P2:P1000')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+
+               $sheet->getStyle('H:H')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+$sheet->getStyle('I:I')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+$sheet->getStyle('N:N')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+$sheet->getStyle('P:P')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+
             },
         ];
     }
