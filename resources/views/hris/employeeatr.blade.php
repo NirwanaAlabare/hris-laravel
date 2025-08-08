@@ -96,7 +96,7 @@
                                         <div class="modal-content">
                                             <form method="POST" action="{{route('hris.employeeatr.import_employee_excel')}}" enctype='multipart/form-data'>
                                                 {{csrf_field()}}
-                                                <div class="modal-header bg-success p-2">
+                                                <div class="modal-header bg-primary p-2">
                                                     <h4 class="modal-title pl-2 font-weight-bold" >Import Employee</h4>
                                                     <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
                                                         <i class="fa fa-remove"></i>
@@ -112,7 +112,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="modal-footer bg-success p-1">
+                                                <div class="modal-footer bg-primary p-1">
                                                     <div class="btn-list">
                                                         <button type="submit" class="btn btn-light">Import</button>
                                                         <!-- <button type="button" id="" class="btn btn-warning btn-app" data-dismiss="modal">Tutup</button> -->
@@ -160,7 +160,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="modal-content">
-                                            <div class="modal-header bg-success p-2">
+                                            <div class="modal-header bg-primary p-2">
                                                 <h4 class="modal-title pl-2 font-weight-bold" >Import Employee</h4>
                                                 <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
                                                     <i class="fa fa-remove"></i>
@@ -209,7 +209,7 @@
                                                         </table>
                                                     </div>
                                                     <div class="col-4 text-center">
-                                                        <button type="button" id="employeeImportButton" class="btn btn-success py-1" style="visibility: hidden"><i class="fa fa-upload" aria-hidden="true"></i> IMPORT</button>
+                                                        <button type="button" id="employeeImportButton" class="btn btn-primary py-1" style="visibility: hidden"><i class="fa fa-upload" aria-hidden="true"></i> IMPORT</button>
                                                     </div>
                                                     <div class="col-4 text-right">
                                                         <div class="row">
@@ -238,7 +238,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="modal-footer py-2 bg-success"></div>
+                                            <div class="modal-footer py-2 bg-primary"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -249,7 +249,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="modal-content">
-                                            <div class="modal-header bg-success">
+                                            <div class="modal-header bg-primary">
                                                 <h4 class="modal-title font-weight-bold" >Select Employee</h4>
                                                 <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
                                                     <i class="fa fa-remove"></i>
@@ -283,7 +283,7 @@
                                                     // </div>
                                                 </div>
                                             </div>
-                                            <div class="modal-footer py-3 bg-success">
+                                            <div class="modal-footer py-3 bg-primary">
                                             </div>
                                         </div>
                                     </div>

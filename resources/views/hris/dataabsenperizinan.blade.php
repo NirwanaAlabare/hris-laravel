@@ -81,7 +81,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="modal-content">
-                                        <div class="modal-header bg-success p-2">
+                                        <div class="modal-header bg-primary p-2">
                                             <h4 class="modal-title pl-2 font-weight-bold" >Import Perizinan</h4>
                                             <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
                                                 <i class="fa fa-remove"></i>
@@ -129,11 +129,11 @@
                                                     </table>
                                                 </div>
                                                 <div class="col-4 text-center">
-                                                    <button type="button" id="permitImportButton" class="btn btn-success py-1" style="visibility: hidden"><i class="fa fa-upload" aria-hidden="true"></i> IMPORT</button>
+                                                    <button type="button" id="permitImportButton" class="btn btn-primary py-1" style="visibility: hidden"><i class="fa fa-upload" aria-hidden="true"></i> IMPORT</button>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="modal-footer bg-success py-2">
+                                        <div class="modal-footer bg-primary py-2">
                                         </div>
                                     </div>
                                 </div>

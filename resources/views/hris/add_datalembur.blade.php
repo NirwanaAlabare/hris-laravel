@@ -150,7 +150,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="modal-content">
-                        <div class="modal-header bg-success p-2">
+                        <div class="modal-header bg-primary p-2">
                             <h4 class="modal-title pl-2 font-weight-bold" >Import Data Lembur</h4>
                             <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
                                 <i class="fa fa-remove"></i>
@@ -210,7 +210,7 @@
                             <div class="row pt-0 pb-3 pr-3">
                                 <div class="col-2"></div>
                                 <div class="col-8 text-center pt-2">
-                                    <button type="button" id="overtimeImportButton" class="btn btn-success py-1" style="visibility: hidden"><i class="fa fa-upload" aria-hidden="true"></i> IMPORT</button>
+                                    <button type="button" id="overtimeImportButton" class="btn btn-primary py-1" style="visibility: hidden"><i class="fa fa-upload" aria-hidden="true"></i> IMPORT</button>
                                 </div>
                                 <div class="col-2 pl-8 pt-1" id="keterangan" style="visibility: hidden">
                                     <label class="mb-0" style="font-size:10pt">L : Waktu Lembur</label><br>
@@ -218,7 +218,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer bg-success pt-3 pb-2">
+                        <div class="modal-footer bg-primary pt-3 pb-2">
                         </div>
                     </div>
                 </div>
@@ -230,7 +230,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="modal-content">
-                        <div class="modal-header bg-success">
+                        <div class="modal-header bg-primary">
                             <h4 class="modal-title pl-2 font-weight-bold" >Import data lembur dari NDS</h4>
                             <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
                                 <i class="fa fa-remove"></i>
@@ -307,7 +307,7 @@
                                     </table>
                                 </div>
                                 <div class="col-4 text-center pt-1">
-                                    <button class="btn btn-success py-1" style="visibility: hidden" id="import_data_lembur_button">IMPORT</button>
+                                    <button class="btn btn-primary py-1" style="visibility: hidden" id="import_data_lembur_button">IMPORT</button>
                                 </div>
                                 <div class="col-2"></div>
                                 <div class="col-2 pt-1" id="data_sudah_ada" style="visibility: hidden">
@@ -315,7 +315,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer bg-success">
+                        <div class="modal-footer bg-primary">
                         </div>
                     </div>
                 </div>
