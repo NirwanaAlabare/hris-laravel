@@ -12,38 +12,39 @@
 @foreach ($data as $key=>$value)
 @if ($value->status_staff=='NON STAFF')
 <body>
-    <table width="527" style="border-bottom: 2px solid black;line-height: 8px;">
-        <tr>
-            <td width="10%"></td>
-            <td align="center" width="25%" align="right"><img src="{{ public_path('assets/images/brand/logo.jpg') }}" width="30"></td>
-            <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:middle;font-size:10pt;font-weight:bold;padding-top:6px">PT NIRWANA ALABARE GARMENT</td>
-            <td width="10%"></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td colspan="2" style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt;font-weight:bold" align="center">Jl. Raya Rancaekek – Majalaya No. 289</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td colspan="2" style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt;font-weight:bold" align="center">Desa Solokan Jeruk Kecamatan Solokan Jeruk, Kabupaten Bandung 40382</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td colspan="2" style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt;font-weight:bold" align="center">Telp. +62 22 8596 2076 / +62 22 8596 2081</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td colspan="2" style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt;text-decoration:underline;font-style:italic;padding-bottom:7px" align="center">https://nirwanagroup.co.id</td>
-            <td></td>
-        </tr>
-    </table>
-    <table width="527" style="line-height: 8px;">
+     <table class="purchase-order" width="100%" style="margin-top:26px;">
         <thead>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt" align="center"><b><u>SURAT PERJANJIAN KERJA WAKTU TERTENTU</u></b></td>
+                <td style="vertical-align: middle; text-align: center;">
+                    <img height="52" src="{{ public_path('assets/image/header-kop.png') }}" alt="">
+                </td>
+            </tr>
+        </thead>
+    </table>
+    <table width="100%" style="font-family:Arial, Helvetica, sans-serif; line-height: 12px;" >
+        <thead>
+            <tr>
+                <td width="100%" style="justify-content: center; text-align: center; font-weight:700; font-size: 8.5pt; margin:0; padding:0;">Jl. Raya Rancaekek – Majalaya No. 289</td>
+            </tr>
+            <tr>
+                <td width="100%" style="justify-content: center; text-align: center; font-weight:700; font-size: 8.5pt;  margin:0; padding:0;">Desa Solokan Jeruk Kecamatan Solokan Jeruk, Kabupaten Bandung 40382</td>
+            </tr>
+            <tr>
+                <td width="100%" style="justify-content: center; text-align: center; font-weight:700; font-size: 8.5pt; margin:0; padding:0;">Telp. 022-85962081</td>
+            </tr>
+        </thead>
+    </table>
+    <table width="100%" style="margin-top: -3px;">
+        <thead>
+            <tr>
+                <td style="height:2px; background-color: #000;"></td>
+            </tr>
+        </thead>
+    </table>
+    <table width="527" style="line-height: 9px;">
+        <thead>
+            <tr>
+                <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt;padding-top:3px" align="center"><b><u>SURAT PERJANJIAN KERJA WAKTU TERTENTU</u></b></td>
             </tr>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt" align="center"><b>No.{{$value->enroll_id}}/{{$no_form}}</b></td>
@@ -63,24 +64,24 @@
     <table width="527" style="padding-top:8px">
         <thead>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="20%">Nama</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="1%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;font-weight:bold;vertical-align:top">{{$value->employee_name}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top" width="20%">Nama</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top" width="1%">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;font-weight:bold;vertical-align:top">{{$value->employee_name}}</td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="20%">NIP</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="1%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;font-weight:bold;vertical-align:top">{{$value->nik}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top" width="20%">NIP</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top" width="1%">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;font-weight:bold;vertical-align:top">{{$value->nik}}</td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top">Tempat, Tanggal lahir</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="1%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;font-weight:bold;vertical-align:top">{{$value->tempat_lahir}}, {{Carbon\Carbon::parse($value->tanggal_lahir)->translatedFormat('d F Y')}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top">Tempat, Tanggal lahir</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top" width="1%">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;font-weight:bold;vertical-align:top">{{$value->tempat_lahir}}, {{Carbon\Carbon::parse($value->tanggal_lahir)->translatedFormat('d F Y')}}</td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top">Alamat</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="1%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;font-weight:bold;vertical-align:top;vertical-align:top">{{$value->alamat_rumah}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top">Alamat</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top" width="1%">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;font-weight:bold;vertical-align:top;vertical-align:top">{{$value->alamat_rumah}}</td>
             </tr>
         </thead>
     </table>
@@ -144,14 +145,15 @@
             </tr>
         </thead>
     </table>
-    <table width="562" style="position: absolute; bottom: 140px;">
+    <table width="562" style="position: absolute; bottom: 57px;">
         <thead>
             <tr>
                 <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top;" width="88%"><u>{{$value->employee_name}}</u></td>
             </tr>
-            <tr>
-                <td style="height:25px;" width="88%"></td>
-            </tr>
+        </thead>
+    </table>
+    <table width="562" style="position: absolute; bottom: 70px;">
+        <thead>
             <tr>
                 <td style="border-bottom:1px solid black;" width="88%"></td>
                 <td rowspan="2">
@@ -164,48 +166,49 @@
 </body>
 @else
 <body>
-    <table width="527" style="border-bottom: 2px solid black;line-height: 8px;">
-        <tr>
-            <td width="10%"></td>
-            <td align="center" width="25%" align="right"><img src="{{ public_path('assets/images/brand/logo.jpg') }}" width="30"></td>
-            <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:middle;font-size:10pt;font-weight:bold;padding-top:6px">PT NIRWANA ALABARE GARMENT</td>
-            <td width="10%"></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td colspan="2" style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt;font-weight:bold" align="center">Jl. Raya Rancaekek – Majalaya No. 289</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td colspan="2" style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt;font-weight:bold" align="center">Desa Solokan Jeruk Kecamatan Solokan Jeruk, Kabupaten Bandung 40382</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td colspan="2" style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt;font-weight:bold" align="center">Telp. +62 22 8596 2076 / +62 22 8596 2081</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td colspan="2" style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt;text-decoration:underline;font-style:italic;padding-bottom:5px" align="center">https://nirwanagroup.co.id</td>
-            <td></td>
-        </tr>
+     <table class="purchase-order" width="100%" style="margin-top:26px;">
+        <thead>
+            <tr>
+                <td style="vertical-align: middle; text-align: center;">
+                    <img height="52" src="{{ public_path('assets/image/header-kop.png') }}" alt="">
+                </td>
+            </tr>
+        </thead>
+    </table>
+    <table width="100%" style="font-family:Arial, Helvetica, sans-serif; line-height: 12px;" >
+        <thead>
+            <tr>
+                <td width="100%" style="justify-content: center; text-align: center; font-weight:700; font-size: 8.5pt; margin:0; padding:0;">Jl. Raya Rancaekek – Majalaya No. 289</td>
+            </tr>
+            <tr>
+                <td width="100%" style="justify-content: center; text-align: center; font-weight:700; font-size: 8.5pt;  margin:0; padding:0;">Desa Solokan Jeruk Kecamatan Solokan Jeruk, Kabupaten Bandung 40382</td>
+            </tr>
+            <tr>
+                <td width="100%" style="justify-content: center; text-align: center; font-weight:700; font-size: 8.5pt; margin:0; padding:0;">Telp. 022-85962081</td>
+            </tr>
+        </thead>
+    </table>
+    <table width="100%" style="margin-top: -3px;">
+        <thead>
+            <tr>
+                <td style="height:2px; background-color: #000;"></td>
+            </tr>
+        </thead>
     </table>
     <table width="527" style="line-height: 9px;">
         <thead>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7.5pt;padding-top:5px" align="center"><b><u>SURAT PERJANJIAN KERJA WAKTU TERTENTU</u></b></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7.3pt;padding-top:3px" align="center"><b><u>SURAT PERJANJIAN KERJA WAKTU TERTENTU</u></b></td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7.5pt" align="center">No.{{$value->enroll_id}}/{{$no_form}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7.3pt" align="center">No.{{$value->enroll_id}}/{{$no_form}}</td>
             </tr>
         </thead>
     </table>
     <table width="527">
         <thead>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify">
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify">
                     Yang bertandatangan dibawah ini :
                 </td>
             </tr>
@@ -214,26 +217,26 @@
     <table width="527">
         <thead>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="20%">Nama</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="1%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;font-weight:bold;vertical-align:top">{{$value->status_jabatan == 'MANAGER' ? "BOBBY TANGNGA" : "RUDY ARISTIAN FAJAR"}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top" width="20%">Nama</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top" width="1%">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;font-weight:bold;vertical-align:top">{{$value->status_jabatan == 'MANAGER' ? "BOBBY TANGNGA" : "RUDY ARISTIAN FAJAR"}}</td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top">Jabatan</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="1%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;font-weight:bold;vertical-align:top">{{$value->status_jabatan == 'MANAGER' ? "GENERAL MANAGER" : "HR & GA DEPARTMENT"}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top">Jabatan</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top" width="1%">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;font-weight:bold;vertical-align:top">{{$value->status_jabatan == 'MANAGER' ? "GENERAL MANAGER" : "HR & GA DEPARTMENT"}}</td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top">Alamat</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="1%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;font-weight:bold;vertical-align:top;vertical-align:top">JALAN RANCAEKEK MAJALAYA NO.289 DESA SOLOKAN JERUK, KECAMATAN SOLOKAN JERUK KABUPATEN BANDUNG.</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top">Alamat</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top" width="1%">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;font-weight:bold;vertical-align:top;vertical-align:top">JALAN RANCAEKEK MAJALAYA NO.289 DESA SOLOKAN JERUK, KECAMATAN SOLOKAN JERUK KABUPATEN BANDUNG.</td>
             </tr>
         </thead>
     </table>
     <table width="527">
         <thead>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify">
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify">
                     Dalam perjanjian ini bertindak untuk dan atas nama PT. Nirwana Alabare Garment berkedudukan di Jalan Rancaekek Majalaya No.289 Desa Solokan Jeruk Kecamatan Solokan Jeruk Kabupaten Bandung selanjutnya disebut  sebagai <b>PERUSAHAAN</b> atau <b>PIHAK PERTAMA</b>.
                 </td>
             </tr>
@@ -242,24 +245,24 @@
     <table width="527">
         <thead>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="20%">Nama</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="1%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;font-weight:bold;vertical-align:top">{{$value->employee_name}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top" width="20%">Nama</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top" width="1%">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;font-weight:bold;vertical-align:top">{{$value->employee_name}}</td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top">ID / NIP</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="1%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;font-weight:bold;vertical-align:top">{{$value->enroll_id}}/ {{$value->nik}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top">ID / NIP</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top" width="1%">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;font-weight:bold;vertical-align:top">{{$value->enroll_id}}/ {{$value->nik}}</td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top">Tempat, Tanggal lahir</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="1%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;font-weight:bold;vertical-align:top">{{$value->tempat_lahir}}, {{Carbon\Carbon::parse($value->tanggal_lahir)->translatedFormat('d F Y')}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top">Tempat, Tanggal lahir</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top" width="1%">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;font-weight:bold;vertical-align:top">{{$value->tempat_lahir}}, {{Carbon\Carbon::parse($value->tanggal_lahir)->translatedFormat('d F Y')}}</td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top">Alamat</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top" width="1%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;font-weight:bold;vertical-align:top;vertical-align:top">{{$value->alamat_rumah}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top">Alamat</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top" width="1%">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;font-weight:bold;vertical-align:top;vertical-align:top">{{$value->alamat_rumah}}</td>
             </tr>
         </thead>
     </table>
@@ -268,13 +271,13 @@
     @endphp
     <table width="527">
         <tr>
-            <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;">
+            <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;">
                 Dalam perjanjian ini bertindak untuk dan atas nama dirinya sendiri selanjutnya disebut sebagai <b>PEKERJA</b> atau <b>PIHAK KEDUA</b>.<br>Pada hari <b>{{Carbon\Carbon::parse($value->contract)->translatedFormat('l')}}</b> Tanggal <b>{{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}</b> bertempat di <b>Jalan Rancaekek Majalaya No.289 Desa Solokan Jeruk Kecamatan Solokan Jeruk Kabupaten Bandung</b>, Kedua belah pihak sepakat untuk mengadakan <b>Perjanjian Kerja Waktu Tertentu</b> dengan ketentuan – ketentuan sebagai berikut :
             </td>
         </tr>
         <tr>
             <td>
-                <ol style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;padding-left:20px;margin-top:0px;margin-bottom:0px">
+                <ol style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;padding-left:20px;margin-top:0px;margin-bottom:0px">
                     <li><b>PIHAK  PERTAMA</b> menerima <b>PIHAK  KEDUA</b> sebagai  Karyawan dimulai sejak Tanggal <b>{{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}</b> sampai dengan tanggal <b>{{Carbon\Carbon::parse($value->contract_end)->translatedFormat('d F Y')}}</b>.</li>
                     <li><b>PIHAK  PERTAMA</b> mempekerjakan <b>PIHAK  KEDUA</b> sebagai <b>{{$value->status_jabatan}}</b> di bagian <b>{{$value->sub_dept_name}}</b>, dan memiliki kedudukan sebagai karyawan dengan golongan jabatan tertentu, bertanggung jawab sebagai pemikir, perencana, pelaksana dan atau pengendali atau dalam hal ini disebut staff.</li>
                     <li><b>PIHAK KEDUA</b> menyatakan bersedia mengikuti jadwal kerja yang telah ditentukan yaitu Senin s/d Jumat pukul
@@ -310,27 +313,27 @@
             </td>
         </tr>
     </table>
-    <table width="527">
+    <table width="527" style="margin-top:-5px;">
         <thead>
             <tr>
                 <td width='20px'></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold"></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold;"><b>Solokan Jeruk, <u>{{Carbon\Carbon::parse(date($value->contract))->translatedFormat('d F Y')}}</u></b></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;font-weight:bold"></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;font-weight:bold;"><b>Solokan Jeruk, <u>{{Carbon\Carbon::parse(date($value->contract))->translatedFormat('d F Y')}}</u></b></td>
             </tr>
             <tr>
                 <td></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold"><b>PIHAK PERTAMA,</b></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold"><b>PIHAK KEDUA,</b></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;font-weight:bold"><b>PIHAK PERTAMA,</b></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;font-weight:bold"><b>PIHAK KEDUA,</b></td>
             </tr>
             <tr>
                 <td></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold"><b>PT. Nirwana Alabare Garment</b></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold"><b>Karyawan</b></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;font-weight:bold"><b>PT. Nirwana Alabare Garment</b></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;font-weight:bold"><b>Karyawan</b></td>
             </tr>
             <tr>
                 <td></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold;padding-top:60px"><b><u>{{$value->status_jabatan == 'MANAGER' ? "BOBBY TANGNGA" : "RUDY ARISTIAN FAJAR"}}</u></b></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;font-weight:bold;padding-top:60px"><b><u>{{$value->employee_name}}</u></b></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;font-weight:bold;padding-top:55px"><b><u>{{$value->status_jabatan == 'MANAGER' ? "BOBBY TANGNGA" : "RUDY ARISTIAN FAJAR"}}</u></b></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;font-weight:bold;padding-top:55px"><b><u>{{$value->employee_name}}</u></b></td>
             </tr>
             <tr>
                 <td></td>
@@ -340,16 +343,19 @@
         </thead>
     </table>
 
-    <table width="562" style="position: absolute; bottom: 110px;">
+   <table width="562" style="position: absolute; bottom: 57px;">
         <thead>
             <tr>
-                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top; padding-left:25px; padding-top:5px" width="88%"><u>{{$value->employee_name}}</u></td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size:6pt;color:rgb(2, 2, 99);vertical-align:top; padding-left:25px;" width="88%"><u>{{$value->employee_name}}</u></td>
             </tr>
+        </thead>
+    </table>
+    <table width="562" style="position: absolute; bottom: 70px;">
+        <thead>
             <tr>
                 <td style="border-bottom:1px solid black;" width="88%"></td>
                 <td rowspan="2">
-                    <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($no_form) . '&type=SK_KERJA', 'QRCODE') }}" alt="barcode"
-                    style="width: 60px; height: 60px;background-color:white;" />
+                    <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($no_form) . '&type=SK_KERJA', 'QRCODE') }}" alt="barcode" style="width: 60px; height: 60px;background-color:white" />
                 </td>
             </tr>
         </thead>

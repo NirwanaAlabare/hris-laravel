@@ -33,13 +33,9 @@
     <table class="purchase-order" width="100%" style="">
         <thead>
             <tr>
-                {{-- <td width="100%" style="vertical-align: middle; text-align: center;" colspan="2" rowspan="4"> --}}
-                    {{-- <img height="50" src="{{ public_path('assets/images/brand/nirwana logo.jpg') }}" alt=""> --}}
-                {{-- </td> --}}
                 <td style="vertical-align: middle; text-align: center;">
                     <img height="65" src="{{ public_path('assets/image/header-kop.png') }}" alt="">
                 </td>
-                {{-- <td style="vertical-align: middle; font-size: 30pt; text-align: center; font-weight: 800; line-height: 0px; font-family: 'Arial', sans-serif; letter-spacing: 0.5px;" colspan="8" rowspan="4">PT NIRWANA ALABARE GARMENT</td> --}}
             </tr>
         </thead>
     </table>
@@ -345,16 +341,16 @@
             </tr>
         </thead>
     </table>
-    <table width="100%" style="">
+    <table width="100%" style="font-family: 'Arial', sans-serif; ">
         <thead>
             <tr>
-                <td width="100%" style="justify-content: center; text-align: center;  font-size: 9pt; font-weight: 800;">Jl. Raya Rancaekek – Majalaya No. 289</td>
+                <td width="100%" style="justify-content: center; text-align: center;  font-size: 10pt; font-weight: 800;">Jl. Raya Rancaekek – Majalaya No. 289</td>
             </tr>
             <tr>
-                <td width="100%" style="justify-content: center; text-align: center;  font-size: 9pt; font-weight: 800;">Desa Solokan Jeruk Kecamatan Solokan Jeruk, Kabupaten Bandung 40382</td>
+                <td width="100%" style="justify-content: center; text-align: center;  font-size: 10pt; font-weight: 800;">Desa Solokan Jeruk Kecamatan Solokan Jeruk, Kabupaten Bandung 40382</td>
             </tr>
             <tr>
-                <td width="100%" style="justify-content: center; text-align: center;  font-size: 9pt; font-weight: 800;">Telp. 022-85962081</td>
+                <td width="100%" style="justify-content: center; text-align: center;  font-size: 10pt; font-weight: 800;">Telp. 022-85962081</td>
             </tr>
         </thead>
     </table>
