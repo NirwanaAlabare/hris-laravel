@@ -88,6 +88,18 @@
       color: var(--primary);
     }
 
+    .date-badge-card-jabatan {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--color-emerald);
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius-lg);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: white;
+      margin-bottom: 10px;
+      margin-top: 6px;
+    }
     .date-badge-card {
       display: inline-flex;
       align-items: center;
@@ -310,6 +322,17 @@
       margin-top: 40px;
     }
 
+    .count-icon-2 {
+      background-color: var(--color-primary-light);
+      color: var(--color-primary);
+      width: 3rem;
+      height: 3rem;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     .progress-container {
       margin-bottom: 1rem;
     }
@@ -389,6 +412,14 @@
     }
 
     .progress-indicator.non-staff-sa {
+      background-color: var(--primary);
+      /* width: 91.1%; */
+    }
+    .progress-indicator.indicator-jabatan-tidak-aktif {
+      background-color: var(--primary);
+      /* width: 91.1%; */
+    }
+    .progress-indicator.indicator-jabatan-aktif {
       background-color: var(--primary);
       /* width: 91.1%; */
     }
@@ -596,207 +627,289 @@
       </div>
 
       <!-- Statistics Card -->
-      <div class="card-app">
-        <div class="card-header-app amber">
-          <div class="card-title">Statistik Kehadiran</div>
-          <div class="card-description">Perbandingan periode waktu</div>
-        </div>
-        <div class="card-content-app">
-          <div class="stat-card">
-            <div class="stat-info">
-              <div class="stat-icon today-icon">
-                <i class="fa fa-line-chart"></i>
-              </div>
-              <div class="stat-details">
-                <div class="stat-period">Hari Ini</div>
-                <div class="stat-count" id="absen_m_hari_ini"></div>
-              </div>
+        <div class="card-app">
+            <div class="card-header-app amber">
+            <div class="card-title">Statistik Kehadiran</div>
+            <div class="card-description">Perbandingan periode waktu</div>
             </div>
-            <div class="stat-code today">M</div>
-          </div>
+            <div class="card-content-app">
+            <div class="stat-card">
+                <div class="stat-info">
+                <div class="stat-icon today-icon">
+                    <i class="fa fa-line-chart"></i>
+                </div>
+                <div class="stat-details">
+                    <div class="stat-period">Hari Ini</div>
+                    <div class="stat-count" id="absen_m_hari_ini"></div>
+                </div>
+                </div>
+                <div class="stat-code today">M</div>
+            </div>
 
-          <div class="stat-card">
-            <div class="stat-info">
-              <div class="stat-icon yesterday-icon">
-                <i class="fa fa-user"></i>
-              </div>
-              <div class="stat-details">
-                <div class="stat-period">Hari Kemarin</div>
-                <div class="stat-count" id="absen_tl_hari_kemarin"></div>
-              </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                <div class="stat-icon yesterday-icon">
+                    <i class="fa fa-user"></i>
+                </div>
+                <div class="stat-details">
+                    <div class="stat-period">Hari Kemarin</div>
+                    <div class="stat-count" id="absen_tl_hari_kemarin"></div>
+                </div>
+                </div>
+                <div class="stat-code yesterday">TL</div>
             </div>
-            <div class="stat-code yesterday">TL</div>
-          </div>
 
-          <div class="stat-card">
-            <div class="stat-info">
-              <div class="stat-icon lastweek-icon">
-                <i class="fa fa-bar-chart"></i>
-              </div>
-              <div class="stat-details">
-                <div class="stat-period">Minggu Kemarin</div>
-                <div class="stat-count" id="absen_m_weekly"></div>
-              </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                <div class="stat-icon lastweek-icon">
+                    <i class="fa fa-bar-chart"></i>
+                </div>
+                <div class="stat-details">
+                    <div class="stat-period">Minggu Kemarin</div>
+                    <div class="stat-count" id="absen_m_weekly"></div>
+                </div>
+                </div>
+                <div class="stat-code lastweek">M</div>
             </div>
-            <div class="stat-code lastweek">M</div>
-          </div>
+            </div>
         </div>
-      </div>
-    </div>
-    <div class="row mt-3">
-    <div class="col-md-3 gap-0 m-0 p-0">
-        <div class="jml-karyawan-card">
-            <div class="px-4 py-2" >
-                <div class="employee-count">
-                    <div>
-                        <div class="date-badge-card">
-                        <div style="">Gunajaya Santosa</div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-3 gap-0 m-0 p-0">
+                <div class="jml-karyawan-card">
+                    <div class="px-4 py-2" >
+                        <div class="employee-count">
+                            <div>
+                                <div class="date-badge-card">
+                                <div style="">Gunajaya Santosa</div>
+                                </div>
+                                <div class="count-value" id="total_karyawan_aktif_gs"></div>
+                                <div class="count-label">Jumlah Karyawan Aktif</div>
+                            </div>
+                            <div class="count-icon">
+                                <i class="fa fa-users fa-lg"></i>
+                            </div>
                         </div>
-                        <div class="count-value" id="total_karyawan_aktif_gs"></div>
-                        <div class="count-label">Jumlah Karyawan Aktif</div>
-                    </div>
-                    <div class="count-icon">
-                        <i class="fa fa-users fa-lg"></i>
+
+                        <div class="progress-container">
+                            <div class="progress-header">
+                            <div class="progress-label">Staff</div>
+                            <div class="progress-value" id="jumlah_staff_gs"></div>
+                            </div>
+                            <div class="progress-bar gray">
+                            <div class="progress-indicator staff-gs"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress-container">
+                            <div class="progress-header">
+                            <div class="progress-label">Non Staff</div>
+                            <div class="progress-value" id="jumlah_nonstaff_gs"></div>
+                            </div>
+                            <div class="progress-bar gray">
+                            <div class="progress-indicator non-staff-gs"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <div class="progress-container">
-                    <div class="progress-header">
-                    <div class="progress-label">Staff</div>
-                    <div class="progress-value" id="jumlah_staff_gs"></div>
+            </div>
+            <div class="col-md-3 gap-0 m-0 p-0">
+                <div class="jml-karyawan-card">
+                    <div class="px-4 py-2" >
+                    <div class="employee-count">
+                        <div>
+                            <div class="date-badge-card">
+                            <div style="">Nirwana Alabare Garment - Dago</div>
+                            </div>
+                            <div class="count-value" id="total_karyawan_aktif_nagd"></div>
+                            <div class="count-label">Jumlah Karyawan Aktif</div>
+                        </div>
+                        <div class="count-icon">
+                            <i class="fa fa-users fa-lg"></i>
+                        </div>
                     </div>
-                    <div class="progress-bar gray">
-                    <div class="progress-indicator staff-gs"></div>
+
+                    <div class="progress-container">
+                        <div class="progress-header">
+                        <div class="progress-label">Staff</div>
+                        <div class="progress-value" id="jumlah_staff_nagd"></div>
+                        </div>
+                        <div class="progress-bar gray">
+                        <div class="progress-indicator staff-nagd"></div>
+                        </div>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-header">
+                        <div class="progress-label">Non Staff</div>
+                        <div class="progress-value" id="jumlah_nonstaff_nagd"></div>
+                        </div>
+                        <div class="progress-bar gray">
+                        <div class="progress-indicator non-staff-nagd"></div>
+                        </div>
+                    </div>
                     </div>
                 </div>
-
-                <div class="progress-container">
-                    <div class="progress-header">
-                    <div class="progress-label">Non Staff</div>
-                    <div class="progress-value" id="jumlah_nonstaff_gs"></div>
+            </div>
+            <div class="col-md-3 gap-0 m-0 p-0">
+                <div class="jml-karyawan-card">
+                    <div class="px-4 py-2" >
+                    <div class="employee-count">
+                        <div>
+                            <div class="date-badge-card">
+                            <div style="">Nirwana Alabare Knitting</div>
+                            </div>
+                            <div class="count-value" id="total_karyawan_aktif_nak"></div>
+                            <div class="count-label">Jumlah Karyawan Aktif</div>
+                        </div>
+                        <div class="count-icon">
+                            <i class="fa fa-users fa-lg"></i>
+                        </div>
                     </div>
-                    <div class="progress-bar gray">
-                    <div class="progress-indicator non-staff-gs"></div>
+
+                    <div class="progress-container">
+                        <div class="progress-header">
+                        <div class="progress-label">Staff</div>
+                        <div class="progress-value" id="jumlah_staff_nak"></div>
+                        </div>
+                        <div class="progress-bar gray">
+                        <div class="progress-indicator staff-nak"></div>
+                        </div>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-header">
+                        <div class="progress-label">Non Staff</div>
+                        <div class="progress-value" id="jumlah_nonstaff_nak"></div>
+                        </div>
+                        <div class="progress-bar gray">
+                        <div class="progress-indicator non-staff-nak"></div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 gap-0 m-0 p-0">
+                <div class="jml-karyawan-card">
+                    <div class="px-4 py-2" >
+                    <div class="employee-count">
+                        <div>
+                            <div class="date-badge-card">
+                            <div style="">Soljer Abadi</div>
+                            </div>
+                            <div class="count-value" id="total_karyawan_aktif_sa"></div>
+                            <div class="count-label">Jumlah Karyawan Aktif</div>
+                        </div>
+                        <div class="count-icon">
+                            <i class="fa fa-users fa-lg"></i>
+                        </div>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-header">
+                        <div class="progress-label">Staff</div>
+                        <div class="progress-value" id="jumlah_staff_sa"></div>
+                        </div>
+                        <div class="progress-bar gray">
+                        <div class="progress-indicator staff-sa"></div>
+                        </div>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-header">
+                        <div class="progress-label">Non Staff</div>
+                        <div class="progress-value" id="jumlah_nonstaff_sa"></div>
+                        </div>
+                        <div class="progress-bar gray">
+                        <div class="progress-indicator non-staff-sa"></div>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-3 gap-0 m-0 p-0">
-        <div class="jml-karyawan-card">
-            <div class="px-4 py-2" >
-            <div class="employee-count">
-                <div>
-                    <div class="date-badge-card">
-                    <div style="">Nirwana Alabare Garment - Dago</div>
+
+         <div class="row mt-3">
+                <div class="col-md-3 gap-0 m-0 p-0">
+                <div class="jml-karyawan-card">
+                    <div class="px-4 py-2" >
+                        <div class="employee-count">
+                            <div>
+                                <div class="date-badge-card-jabatan">
+                                <div style="">Aktif</div>
+                                </div>
+                               <div class="count-value">{{ number_format($total_semua_aktif, 0, ',', ',') }}</div>
+                                <div class="count-label">Jumlah Karyawan Aktif</div>
+                            </div>
+                            <div class="count-icon">
+                                <i class="fa fa-user-circle-o fa-lg"></i>
+                            </div>
+                        </div>
+                       @foreach ($data_jabatan_aktif as $value)
+                            @php
+                                $persentase = $total_semua_aktif > 0
+                                    ? round(($value->total / $total_semua_aktif) * 100, 2)
+                                    : 0;
+                            @endphp
+
+                            <div class="progress-container">
+                                <div class="progress-header">
+                                    <div class="progress-label">{{ $value->status_jabatan }}</div>
+                                    <div class="progress-value">{{ $value->total }} ({{ $persentase }}%)</div>
+                                </div>
+                                <div class="progress-bar gray">
+                                    <div class="progress-indicator indicator-jabatan-aktif"
+                                        style="width: {{ $persentase }}%;">
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+
                     </div>
-                    <div class="count-value" id="total_karyawan_aktif_nagd"></div>
-                    <div class="count-label">Jumlah Karyawan Aktif</div>
-                </div>
-                <div class="count-icon">
-                    <i class="fa fa-users fa-lg"></i>
                 </div>
             </div>
-
-            <div class="progress-container">
-                <div class="progress-header">
-                <div class="progress-label">Staff</div>
-                <div class="progress-value" id="jumlah_staff_nagd"></div>
-                </div>
-                <div class="progress-bar gray">
-                <div class="progress-indicator staff-nagd"></div>
-                </div>
-            </div>
-
-            <div class="progress-container">
-                <div class="progress-header">
-                <div class="progress-label">Non Staff</div>
-                <div class="progress-value" id="jumlah_nonstaff_nagd"></div>
-                </div>
-                <div class="progress-bar gray">
-                <div class="progress-indicator non-staff-nagd"></div>
-                </div>
-            </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 gap-0 m-0 p-0">
-        <div class="jml-karyawan-card">
-            <div class="px-4 py-2" >
-            <div class="employee-count">
-                <div>
-                    <div class="date-badge-card">
-                    <div style="">Nirwana Alabare Knitting</div>
+            <div class="col-md-3 gap-0 m-0 p-0">
+               <div class="jml-karyawan-card">
+                    <div class="px-4 py-2" >
+                    <div class="employee-count">
+                        <div>
+                            <div class="date-badge-card-jabatan" style="background-color: red; color: white;">
+                            <div style="">Non Aktif</div>
+                            </div>
+                            <div class="count-value">{{ number_format($total_semua_non_aktif, 0, ',', ',') }}</div>
+                            <div class="count-label">Jumlah Karyawan Non-Aktif</div>
+                        </div>
+                        <div class="count-icon">
+                            <i class="fa fa-user-times fa-lg"></i>
+                        </div>
                     </div>
-                    <div class="count-value" id="total_karyawan_aktif_nak"></div>
-                    <div class="count-label">Jumlah Karyawan Aktif</div>
-                </div>
-                <div class="count-icon">
-                    <i class="fa fa-users fa-lg"></i>
-                </div>
-            </div>
 
-            <div class="progress-container">
-                <div class="progress-header">
-                <div class="progress-label">Staff</div>
-                <div class="progress-value" id="jumlah_staff_nak"></div>
-                </div>
-                <div class="progress-bar gray">
-                <div class="progress-indicator staff-nak"></div>
-                </div>
-            </div>
+                    @foreach ($data_jabatan_non_aktif as $value)
+                            @php
+                                $persentase = $total_semua_non_aktif > 0
+                                    ? round(($value->total / $total_semua_non_aktif) * 100, 2)
+                                    : 0;
+                            @endphp
 
-            <div class="progress-container">
-                <div class="progress-header">
-                <div class="progress-label">Non Staff</div>
-                <div class="progress-value" id="jumlah_nonstaff_nak"></div>
-                </div>
-                <div class="progress-bar gray">
-                <div class="progress-indicator non-staff-nak"></div>
-                </div>
-            </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 gap-0 m-0 p-0">
-        <div class="jml-karyawan-card">
-            <div class="px-4 py-2" >
-            <div class="employee-count">
-                <div>
-                    <div class="date-badge-card">
-                    <div style="">Soljer Abadi</div>
+                            <div class="progress-container">
+                                <div class="progress-header">
+                                    <div class="progress-label">{{ $value->status_jabatan }}</div>
+                                    <div class="progress-value">{{ $value->total }} ({{ $persentase }}%)</div>
+                                </div>
+                                <div class="progress-bar gray">
+                                    <div class="progress-indicator indicator-jabatan-aktif"
+                                        style="width: {{ $persentase }}%;">
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
-                    <div class="count-value" id="total_karyawan_aktif_sa"></div>
-                    <div class="count-label">Jumlah Karyawan Aktif</div>
-                </div>
-                <div class="count-icon">
-                    <i class="fa fa-users fa-lg"></i>
                 </div>
             </div>
 
-            <div class="progress-container">
-                <div class="progress-header">
-                <div class="progress-label">Staff</div>
-                <div class="progress-value" id="jumlah_staff_sa"></div>
-                </div>
-                <div class="progress-bar gray">
-                <div class="progress-indicator staff-sa"></div>
-                </div>
-            </div>
 
-            <div class="progress-container">
-                <div class="progress-header">
-                <div class="progress-label">Non Staff</div>
-                <div class="progress-value" id="jumlah_nonstaff_sa"></div>
-                </div>
-                <div class="progress-bar gray">
-                <div class="progress-indicator non-staff-sa"></div>
-                </div>
-            </div>
-            </div>
         </div>
-    </div>
-    </div>
+
 </div>
 
 <!-- row end -->

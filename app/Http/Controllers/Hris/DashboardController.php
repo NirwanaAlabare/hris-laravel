@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Hris;
 
 use App\Models\DepartmentAll;
+use App\Models\EmployeeAtribut;
 use App\Http\Controllers\AdminBaseController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +31,11 @@ class DashboardController extends AdminBaseController
 
     public function index(Request $request)
     {
-        return View::make('hris/dashboard', $this->data);
+        $data_jabatan_aktif = EmployeeAtribut::select(DB::raw('COUNT(*) as total'), 'status_jabatan', 'status_aktif')->where('status_aktif','AKTIF')->where('site_nirwana_id','NAG')->groupBy('status_jabatan')->get();
+        $total_semua_aktif = $data_jabatan_aktif->sum('total');
+        $data_jabatan_non_aktif = EmployeeAtribut::select(DB::raw('COUNT(*) as total'), 'status_jabatan', 'status_aktif')->where('status_aktif','TIDAK AKTIF')->where('site_nirwana_id','NAG')->groupBy('status_jabatan')->get();
+        $total_semua_non_aktif = $data_jabatan_non_aktif->sum('total');
+        return View::make('hris/dashboard', $this->data, compact('data_jabatan_aktif', 'data_jabatan_non_aktif', 'total_semua_aktif', 'total_semua_non_aktif'));
     }
     public function tes(){
         $loggedAdmin = Auth::guard('admin')->user();
