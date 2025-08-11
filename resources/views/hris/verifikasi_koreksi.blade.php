@@ -506,8 +506,6 @@ h1 {
         }
 
         function actionCheckAllEmployee(element) {
-            const allowedUsers = ['ersa@ptnag.com', 'IT', 'mega@ptnag.com', 'fadli', 'rudy@ptnag.com', 'hrd','indri@nag.nirwanaindonesia.com'];
-            const currentUser = $('#username_who_access').val();
             const btn = document.getElementById("verifikasi-btn");
             if (element.checked) {
                 $('#datatable-ajax-crud-waiting tbody input.form-check-input').each(function() {
@@ -537,8 +535,6 @@ h1 {
         }
 
         function actionThisEmployeeCheck(element) {
-            const allowedUsers = ['ersa@ptnag.com', 'IT', 'mega@ptnag.com', 'fadli', 'rudy@ptnag.com', 'hrd','indri@nag.nirwanaindonesia.com'];
-            const currentUser = $('#username_who_access').val();
             const btn = document.getElementById("verifikasi-btn");
                 if (element.checked) {
                     if(!perijinanChecked.find((value) => value == element.value)) {
@@ -553,9 +549,7 @@ h1 {
                     }
                 }
                 if(perijinanChecked.length>0){
-                    if (allowedUsers.includes(currentUser)) {
                         btn.style.display = "flex";
-                    }
                 }else{
                     btn.style.display = "none";
                 }
@@ -718,16 +712,11 @@ h1 {
                         width: '10%',
                         className: "text-center",
                         render: function (data, type, row) {
-
-                                if($('#username_who_access').val()=='ersa@ptnag.com' || $('#username_who_access').val()=='IT'|| $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='fadli'|| $('#username_who_access').val()=='rudy@ptnag.com'|| $('#username_who_access').val()=='hrd' || $('#username_who_access').val()=='indri@nag.nirwanaindonesia.com'){
-                                    return `
-                                       <button class="btn btn-sm py-0 m-0 btn-danger" id="btn-unverif" data-uuid="${row.uuid}" data-sumber="${row.sumber}" title="UnVerif">
-                                        Unverif
-                                    </button>
-                                    `;
-                                }else{
-                                    return ``;
-                                }
+                        return `
+                            <button class="btn btn-sm py-0 m-0 btn-danger" id="btn-unverif" data-uuid="${row.uuid}" data-sumber="${row.sumber}" title="UnVerif">
+                                Unverif
+                            </button>
+                        `;
                         }
                     },
                     { data: 'kode_koreksi' },
