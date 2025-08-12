@@ -1089,6 +1089,13 @@ class HRDController extends AdminBaseController
         $inStatusStaff='';
         $inStatusKontrak='';
         $inDepartment='';
+        $inDateRange='';
+        if(request()->date_range){
+            $daterange1 = explode(" s/d ", request()->date_range);
+            $tanggalMulai = date('Y-m-d', strtotime($daterange1[0]));
+            $tanggalSampai = date('Y-m-d', strtotime($daterange1[1]));
+            $inDateRange='AND c.max_contract_end BETWEEN "'.$tanggalMulai.'" AND "'.$tanggalSampai.'"';
+        }
         if (request("search_variable")) {
             $search_variable=request()->search_variable;
             $inSearchVariable = 'AND (a.enroll_id = "'.$search_variable.'" or a.nik LIKE "'.$search_variable.'%" or a.employee_name LIKE "%'.$search_variable.'%" or a.tempat_lahir LIKE "%'.$search_variable.'%" or a.nomor_tlpn LIKE "'.$search_variable.'%" or a.agama LIKE "'.$search_variable.'%" or a.status_kawin LIKE "'.$search_variable.'%" or a.nomor_kk LIKE "'.$search_variable.'%" or a.pendidikan_terakhir LIKE "'.$search_variable.'%" or a.jurusan_pendidikan LIKE "'.$search_variable.'%" or a.alamat_rumah LIKE "%'.$search_variable.'%" or a.department_name LIKE "%'.$search_variable.'%" or a.sub_dept_name LIKE "%'.$search_variable.'%" or a.status_aktif LIKE "'.$search_variable.'%" or a.ibu_kandung LIKE "%'.$search_variable.'%" or a.nomor_ktp LIKE "'.$search_variable.'%")';
@@ -1184,9 +1191,9 @@ class HRDController extends AdminBaseController
                     $inStatusKontrak
                     $inStatusStaff
                     $inDepartment
+                    $inDateRange
                 ORDER BY a.enroll_id, b.contract_end
             ");
-
         return Excel::download(new exportExcelKontrak($query), 'Laporan_Penerimaan FG_Stok.xlsx');
     }
     public function print_pdf_kontrak(){

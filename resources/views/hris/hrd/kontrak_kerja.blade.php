@@ -1629,6 +1629,7 @@ function updateRange(start, end) {
                 status_staff: status_staff,
                 status_kontrak: status_kontrak,
                 department_id: department_id,
+                date_range: $('#daterange1').val()
             },
             xhrFields: {
                 responseType: 'blob'
