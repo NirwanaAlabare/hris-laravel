@@ -1186,13 +1186,22 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         ini_set('memory_limit', '4000M');
         set_time_limit(300);
 
-
         $enroll_id = request()->enroll_id;
         $inDateRangeContract='';
         $inEnrollIds='';
         $data_penilaian = collect();
         $today = date('Y-m-d');
         $inStatusKontrak='';
+        $inStatusStaff='';
+
+        if(request()->status_staff){
+            $status_staff = request()->status_staff;
+            if($status_staff == 'STAFF'){
+                $inStatusStaff = 'AND z.status_staff = "STAFF"';
+            }else {
+                $inStatusStaff = 'AND z.status_staff = "NON STAFF"';
+            }
+        }
 
         if(request()->status_kontrak){
             $status_kontrak=request()->status_kontrak;
@@ -1337,12 +1346,11 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                 $inDateRangeContract
                 $inEnrollIds
                 $inStatusKontrak
+                $inStatusStaff
             AND z.status_aktif = 'AKTIF'
             GROUP BY z.enroll_id
             ORDER BY z.sub_dept_name ASC
         "));
-
-
         // Gabungkan data_penilaian ke masing-masing data_karyawan berdasarkan enroll_id
         $data = $data_karyawan->map(function ($karyawan) use ($data_penilaian) {
             $enroll_id = $karyawan->enroll_id;

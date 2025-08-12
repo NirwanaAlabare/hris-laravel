@@ -2227,6 +2227,13 @@ function updateRange(start, end) {
             value: $('#status_kontrak').val()
         }).appendTo(form);
 
+        // Tambahkan status_staff
+        $('<input>').attr({
+            type: 'hidden',
+            name: 'status_staff',
+            value: $('#status_staff').val()
+        }).appendTo(form);
+
         $('<input>').attr({
             type: 'hidden',
             name: '_token',
