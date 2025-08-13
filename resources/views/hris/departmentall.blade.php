@@ -64,7 +64,7 @@
                             </div>
                           </button>
                       </div>
-                  
+
                       <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
                         <div class="card-body">
                             <div class="row">
@@ -347,10 +347,10 @@
                                 <tr>
                                     <th scope="col">Site Nirwana ID</th>
                                     <th scope="col">Site Nirwana Nama</th>
-                                    <th scope="col">Department ID</th>
-                                    <th scope="col">Department Nama</th>
-                                    <th scope="col">Sub Deparment ID</th>
-                                    <th scope="col">Sub Department Nama</th>
+                                    <th scope="col">ID Departemen</th>
+                                    <th scope="col">Departemen</th>
+                                    <th scope="col">ID Bagian</th>
+                                    <th scope="col">Bagian</th>
                                     <th scope="col"><i class="fa fa-male" aria-hidden="true"></i></th>
                                     <th scope="col">Option</th>
                                 </tr>
@@ -363,7 +363,7 @@
     </div>
 
     <!-- boostrap show department model -->
-    
+
     <div class="modal fade" id="import_department_excel" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document" style="max-width: 1330px">
             <div class="row">
@@ -389,10 +389,10 @@
                                                 <td width="60px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">No</td>
                                                 <td width="140px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Site Nirwana ID</td>
                                                 <td width="170px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Site Nirwana Name</td>
-                                                <td width="140px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Department ID</td>
-                                                <td width="170px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Department Name</td>
-                                                <td width="160px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Sub Department Id</td>
-                                                <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Sub Department Name</td>
+                                                <td width="140px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ID Departmen</td>
+                                                <td width="170px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Departmen</td>
+                                                <td width="160px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ID Bagian</td>
+                                                <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Bagian</td>
                                                 <td width="60px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px"><i class="fa fa-male"></i></td>
                                                 <td width="140px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Status</td>
                                             </tr>
@@ -410,7 +410,7 @@
                                 <div class="col-12 text-center">
                                     <button type="button" id="departmentImportButton" class="btn btn-success py-1" style="visibility: hidden"><i class="fa fa-upload" aria-hidden="true"></i> IMPORT</button>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                         <div class="modal-footer bg-info py-2">
                         </div>
@@ -432,25 +432,25 @@
             <div class="form-group">
                 <label for="name" class="col-sm-6 control-label">Site Nirwana ID :</label>
                 <div class="col-sm-12" id="site_nirwana_id"></div>
-            </div>                
+            </div>
             <div class="form-group">
                 <label for="name" class="col-sm-6 control-label">Site Nirwana Nama :</label>
                 <div class="col-sm-12" id="site_nirwana_name"></div>
-            </div>                
+            </div>
             <div class="form-group">
-                <label for="name" class="col-sm-6 control-label">Department ID :</label>
+                <label for="name" class="col-sm-6 control-label">ID Departemen :</label>
                 <div class="col-sm-12" id="department_id"></div>
-            </div>                
+            </div>
             <div class="form-group">
-                <label for="name" class="col-sm-6 control-label">Department Nama :</label>
+                <label for="name" class="col-sm-6 control-label">Departemen :</label>
                 <div class="col-sm-12" id="department_name"></div>
-            </div>                
+            </div>
             <div class="form-group">
-                <label for="name" class="col-sm-6 control-label">Sub Department ID :</label>
+                <label for="name" class="col-sm-6 control-label">ID Bagian :</label>
                 <div class="col-sm-12" id="sub_dept_id"></div>
-            </div>                
+            </div>
             <div class="form-group">
-                <label for="name" class="col-sm-6 control-label">Sub Department Nama :</label>
+                <label for="name" class="col-sm-6 control-label">Bagian :</label>
                 <div class="col-sm-12" id="sub_dept_name"></div>
             </div>
             <div class="form-group">
@@ -465,7 +465,7 @@
       </div>
     </div>
     <!-- end bootstrap model -->
-        
+
 @endsection
 
 @section('footerjs')
@@ -695,7 +695,7 @@
         $('#pilih_sub_department').on('change',function(e){
             $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
         });
-        
+
         $('#save_department_modal').click(function(){
             var data = new FormData();
             data.append('department_id', $('#department_id_modal').val());
@@ -710,7 +710,7 @@
                 contentType: false,
                 processData: false,
                 method: 'POST',
-                type: 'POST', 
+                type: 'POST',
                 success: function(data){
                     $('#department_name_modal').val('');
                     $('#sub_department_name_modal').val('');
@@ -790,7 +790,7 @@
                 contentType: false,
                 processData: false,
                 method: 'POST',
-                type: 'POST', 
+                type: 'POST',
                 success: function(data){
                     console.log(data);
                     $('#department_name_modal_sub').val('');
@@ -995,7 +995,7 @@
                }
             });
         });
-                
+
         $("#cancel-formSaveChanges1").click(function () {
             $("#ajax-department-model-addedit").hide("slow");
            });
@@ -1012,7 +1012,7 @@
             var status = $("#status_addedit").val();
             $("#btn-save-change").html('Please Wait...');
             $("#btn-save-change"). attr("disabled", true);
-            
+
             // ajax
             $.ajax({
                 type:"POST",
