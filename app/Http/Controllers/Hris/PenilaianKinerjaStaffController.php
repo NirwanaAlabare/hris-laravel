@@ -331,6 +331,11 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                 $akhirKontrak = Carbon::parse($request->akhir_kontrak_text_val);
                 $adjustedDate = $akhirKontrak->copy()->addDay();
                 $adjustedContractEndCarbon = $adjustedDate->copy()->addMonths($request->perpanjang_bulan)->subDay(); // 2025-05-20
+                if ($adjustedDate->isSaturday()) {
+                    $adjustedDate->subDays(1); // Sabtu ke Jumat
+                } elseif ($adjustedDate->isSunday()) {
+                    $adjustedDate->subDays(2); // Minggu ke Jumat
+                }
                 if ($adjustedContractEndCarbon->isSaturday()) {
                     $adjustedContractEndCarbon->subDays(1); // Sabtu ke Jumat
                 } elseif ($adjustedContractEndCarbon->isSunday()) {
@@ -475,6 +480,11 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                 $akhirKontrak = Carbon::parse($request->akhir_kontrak_text_val);
                 $adjustedDate = $akhirKontrak->copy()->addDay();
                 $adjustedContractEndCarbon = $adjustedDate->copy()->addMonths($request->perpanjang_bulan)->subDay(); // 2025-05-20
+                if ($adjustedDate->isSaturday()) {
+                    $adjustedDate->subDays(1); // Sabtu ke Jumat
+                } elseif ($adjustedDate->isSunday()) {
+                    $adjustedDate->subDays(2); // Minggu ke Jumat
+                }
                 if ($adjustedContractEndCarbon->isSaturday()) {
                     $adjustedContractEndCarbon->subDays(1); // Sabtu ke Jumat
                 } elseif ($adjustedContractEndCarbon->isSunday()) {
