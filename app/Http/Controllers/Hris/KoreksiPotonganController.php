@@ -24,6 +24,7 @@ use App\Models\EmployeeAtribut;
 use App\Models\RefAbsenIjin;
 use App\Models\DataKoreksiUpah;
 use App\Exports\KoreksiPotonganExport;
+use App\Exports\VerifikasiKoreksiPotonganExport;
 
 
 /**
@@ -459,6 +460,143 @@ class KoreksiPotonganController extends AdminBaseController
             'recordsFiltered' => $totalData,
             'data' => $data,
         ]);
+    }
+
+    public function export_verifikasi_koreksi (Request $request)
+    {
+        if (!$request->ajax()) {
+            return response()->json([]);
+        }
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $search = $request->input('search.value');
+
+
+        $data = [];
+
+        $upahQuery = DataKoreksiUpah::selectRaw('
+                data_koreksi_upah.uuid,
+                data_koreksi_upah.kode_koreksi_upah AS kode_koreksi,
+                data_koreksi_upah.tanggal_koreksi,
+                data_koreksi_upah.is_verifikasi_acc,
+                employee_atribut.enroll_id,
+                employee_atribut.nik,
+                employee_atribut.employee_name,
+                department_all.sub_dept_name,
+                department_all.department_name,
+                data_koreksi_upah.jumlah_rp_potongan,
+                data_koreksi_upah.periode_tanggal_koreksi,
+                data_koreksi_upah.jenis_koreksi AS jenis,
+                data_koreksi_upah.operator,
+                data_koreksi_upah.keterangan,
+                data_koreksi_upah.created_at,
+                data_koreksi_upah.updated_at,
+                "PENAMBAH UPAH" AS sumber
+            ')
+            ->leftJoin('employee_atribut','data_koreksi_upah.enroll_id','=','employee_atribut.enroll_id')
+            ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
+            ->where('data_koreksi_upah.jenis_koreksi', '!=', 2);
+
+        // ====================
+        // Query 2: Data Koreksi Potongan
+        // ====================
+        $potonganQuery = DataKoreksiPotongan::selectRaw('
+                data_koreksi_potongan.uuid,
+                data_koreksi_potongan.kode_koreksi_potongan AS kode_koreksi,
+                data_koreksi_potongan.tanggal_koreksi,
+                data_koreksi_potongan.is_verifikasi_acc,
+                employee_atribut.enroll_id,
+                employee_atribut.nik,
+                employee_atribut.employee_name,
+                department_all.sub_dept_name,
+                department_all.department_name,
+                data_koreksi_potongan.jumlah_rp_potongan,
+                data_koreksi_potongan.periode_tanggal_koreksi,
+                data_koreksi_potongan.jenis_potongan AS jenis,
+                data_koreksi_potongan.operator,
+                data_koreksi_potongan.keterangan,
+                data_koreksi_potongan.created_at,
+                data_koreksi_potongan.updated_at,
+                "POTONGAN" AS sumber
+            ')
+            ->leftJoin('employee_atribut','data_koreksi_potongan.enroll_id','=','employee_atribut.enroll_id')
+            ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id');
+
+        // ====================
+        // Filter (jika ada search)
+        // ====================
+
+        if (!empty($request->tanggal_range)) {
+            $daterange = explode(" s/d ", $request->tanggal_range);
+            $tanggal_awal = date('Y-m-d', strtotime($daterange[0]));
+            $tanggal_akhir = date('Y-m-d', strtotime($daterange[1]));
+            $upahQuery->whereBetween('data_koreksi_upah.tanggal_koreksi', [$tanggal_awal, $tanggal_akhir]);
+            $potonganQuery->whereBetween('data_koreksi_potongan.tanggal_koreksi', [$tanggal_awal, $tanggal_akhir]);
+
+        }
+
+        // ====================
+        // Ambil Data
+        // ====================
+        $upahResults = $upahQuery->get();
+        $potonganResults = $potonganQuery->get();
+        $merged = $upahResults->concat($potonganResults)->values();
+
+        // Sort by updated_at descending
+        $sorted = $merged->sortByDesc('updated_at')->values();
+
+        // Hitung total sebelum pagination
+        $totalData = $sorted->count();
+
+        // Ambil sesuai pagination
+        $paginated = $sorted->slice($start)->take($limit);
+
+        // Format data akhir
+        $data = [];
+        foreach ($paginated as $q) {
+            $nested = [
+                'uuid' => $q->uuid,
+                'kode_koreksi' => $q->kode_koreksi,
+                'tanggal_koreksi' => $q->tanggal_koreksi,
+                'enroll_id' => $q->enroll_id,
+                'nik' => $q->nik,
+                'employee_name' => $q->employee_name,
+                'department_name' => $q->department_name,
+                'sub_dept_name' => $q->sub_dept_name,
+                'jumlah_rp_potongan' => $q->jumlah_rp_potongan,
+                'jumlah_rp_potongan_format' => number_format($q->jumlah_rp_potongan),
+                'periode_tanggal_koreksi' => $q->periode_tanggal_koreksi,
+                'operator' => $q->operator,
+                'keterangan' => $q->keterangan,
+                'is_verifikasi_acc' => $q->is_verifikasi_acc,
+                'created_at' => substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5),
+                'updated_at' => substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5),
+                'sumber' => $q->sumber,
+            ];
+
+            // Format periode
+            $explodePeriode = explode(" - ", $q->periode_tanggal_koreksi);
+            if (count($explodePeriode) == 2) {
+                $periodeStart = strtoupper(date("d M Y", strtotime(str_replace('/', '-', $explodePeriode[0]))));
+                $periodeEnd = strtoupper(date("d M Y", strtotime(str_replace('/', '-', $explodePeriode[1]))));
+                $nested['periode_tanggal_koreksi_format'] = "$periodeStart - $periodeEnd";
+            }
+
+            // Label jenis
+            if ($q->sumber === 'upah') {
+                $nested['jenis_koreksi'] = $q->jenis;
+            } else {
+                $nested['jenis_potongan'] = $q->jenis;
+                $nested['nama_potongan'] = match ($q->jenis) {
+                    1 => 'Potongan BPJS',
+                    2 => 'Potongan Bazar',
+                    default => 'Potongan Lainnya'
+                };
+            }
+
+            $data[] = $nested;
+        }
+        return Excel::download(new VerifikasiKoreksiPotonganExport($data),'Verifikasi Koreksi'.time().'.xlsx');
     }
 
 

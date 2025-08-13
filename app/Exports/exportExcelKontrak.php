@@ -246,41 +246,5 @@ class exportExcelKontrak implements FromView, WithColumnWidths, WithColumnFormat
             'DG' => 7,
         ];
     }
-    // public function registerEvents() : array
-    // {
-    //     return [
-    //         AfterSheet::class => function(AfterSheet $event) {
-    //             $default_font_style = [
-    //                 'font' => [
-    //                     'name' => 'Calibri',
-    //                     'italic' => true,
-    //                     'size' => 12
-    //                 ],
-    //             ];
-    //             $header_style = [
-    //                 'font' => [
-    //                     'name' => 'Calibri',
-    //                     'bold' => true,
-    //                     'size' => 8
-    //                 ],
-    //                 'alignment' => [
-    //                     'horizontal' => Alignment::HORIZONTAL_CENTER,
-    //                     'vertical' => Alignment::VERTICAL_TOP,
-    //                     'wrapText' => true,
-    //                 ],
-    //             ];
-    //             $text_style = [
-    //                 'font' => [
-    //                     'name' => 'Calibri',
-    //                     'size' => 8
-    //                 ],
-    //             ];
-    //             $sheet = $event->sheet;
-    //             $sheet->getDelegate()->getStyle('A1')->applyFromArray($default_font_style);
-    //             $sheet->getDelegate()->getStyle('A2:DG2')->applyFromArray($header_style);
-    //             $sheet->getDelegate()->getStyle('M3:DG3')->applyFromArray($header_style);
-    //             $sheet->getDelegate()->getStyle('A4:DG10000')->applyFromArray($text_style);
-    //         }
-    //     ];
-    // }
+
 }

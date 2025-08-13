@@ -682,6 +682,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
 
     Route::post('koreksipotongan/ajax_datakoreksipotongan',['as'=>'hris.koreksipotongan.ajax_datakoreksipotongan','uses'=>'KoreksiPotonganController@ajax_datakoreksipotongan']);
     Route::post('koreksipotongan/list_verifikasi_koreksi',['as'=>'hris.koreksipotongan.list_verifikasi_koreksi','uses'=>'KoreksiPotonganController@list_verifikasi_koreksi']);
+    Route::post('koreksipotongan/export_verifikasi_koreksi',['as'=>'hris.koreksipotongan.export_verifikasi_koreksi','uses'=>'KoreksiPotonganController@export_verifikasi_koreksi']);
     Route::post('koreksipotongan/unverifikasi_koreksi',['as'=>'hris.koreksipotongan.unverifikasi_koreksi','uses'=>'KoreksiPotonganController@unverifikasi_koreksi']);
     Route::post('koreksipotongan/verifikasi_koreksi_data',['as'=>'hris.koreksipotongan.verifikasi_koreksi_data','uses'=>'KoreksiPotonganController@verifikasi_koreksi_data']);
 
