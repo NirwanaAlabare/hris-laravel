@@ -327,7 +327,7 @@
                     </div>
                     <div class="row">
                         <div class="col-2">
-                            <label class="form-label text-primary pt-1">Sub Department Name</label>
+                            <label class="form-label text-primary pt-1">Sub Bagian</label>
                         </div>
                         <div class="col-3">
                             <select class="form-control form-control-sm" id="pilih_sub_department">
@@ -683,7 +683,7 @@
                 dataType: 'json',
                 success: function(resA){
                     if(resA){
-                        $("#pilih_sub_department").append(new Option('Filter Sub Department Name', ''));
+                        $("#pilih_sub_department").append(new Option('Filter Bagian', ''));
                         for(i=0;i<resA.length;i++) {
                             $("#pilih_sub_department").append(new Option(resA[i].sub_dept_name, resA[i].sub_dept_id));
                         }
