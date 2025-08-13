@@ -1068,6 +1068,17 @@ class HRDController extends AdminBaseController
             $data_penilaian->delete();
         }
         DB::delete("delete from employee_contract where id = '$id'");
+        $lastContract = DB::table('employee_contract')
+        ->where('enroll_id', $enroll_id)
+        ->orderByDesc('contract')
+        ->first();
+
+        if($lastContract){
+            EmployeeAtribut::where('enroll_id', $enroll_id)->update([
+                'tanggal_mulai_kontrak' => $lastContract->contract,
+                'tanggal_akhir_kontrak' => $lastContract->contract_end
+            ]);
+        }
         return request()->enroll_id;
     }
     public function import_kontrak_kerja(){
