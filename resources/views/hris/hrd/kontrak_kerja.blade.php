@@ -2888,11 +2888,15 @@ function updateRange(start, end) {
 
                 var last_date=new Date(res[res.length-1]['contract_end']);
 
+                last_date.setDate(last_date.getDate()+1);
                 var dayOfWeek = last_date.getDay();
+
                 if (dayOfWeek === 5) { // Jumat
-                    last_date.setDate(last_date.getDate());
-                }else{
-                    last_date.setDate(last_date.getDate()+1);
+                    last_date.setDate(last_date.getDate()); // mundur ke Jumat
+                } else if (dayOfWeek === 6) { // Sabtu
+                    last_date.setDate(last_date.getDate() - 1); // mundur ke Jumat
+                } else if (dayOfWeek === 0) { // Minggu
+                    last_date.setDate(last_date.getDate() - 2); // mundur ke Jumat
                 }
 
                 var dd = String(last_date.getDate()).padStart(2, '0');
