@@ -327,7 +327,7 @@
                     </div>
                     <div class="row">
                         <div class="col-2">
-                            <label class="form-label text-primary pt-1">Sub Bagian</label>
+                            <label class="form-label text-primary pt-1">Bagian</label>
                         </div>
                         <div class="col-3">
                             <select class="form-control form-control-sm" id="pilih_sub_department">
