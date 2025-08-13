@@ -12,6 +12,7 @@ use Dompdf\FontMetrics;
 use App\Models\EmployeeAtribut;
 use App\Models\RekapPerhitunganPayroll;
 use App\Models\VoucherBazzar;
+use App\Models\PenilaianKinerja;
 use App\Imports\KontrakKerjaImport;
 use App\Imports\KontrakKerjaImportToDatabase;
 use Illuminate\Http\Request;
@@ -1058,6 +1059,14 @@ class HRDController extends AdminBaseController
     }
     public function delete_employee_contract(){
         $id=request()->id;
+        $data_contract = DB::table('employee_contract')->where('id', $id)->first();
+        $enroll_id = $data_contract->enroll_id;
+        $contract = $data_contract->contract;
+        $contract_end = $data_contract->contract_end;
+        $data_penilaian = PenilaianKinerja::where('enroll_id', $enroll_id)->where('tgl_awal_kontrak',$contract)->where('tgl_akhir_kontrak', $contract_end)->first();
+        if($data_penilaian){
+            $data_penilaian->delete();
+        }
         DB::delete("delete from employee_contract where id = '$id'");
         return request()->enroll_id;
     }
