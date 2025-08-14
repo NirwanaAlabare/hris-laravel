@@ -222,6 +222,7 @@ class TindakanKedisiplinanController extends AdminBaseController
             'tanggal_sampai' => $request->tanggal_berlaku_sampai,
             'operator' => $logged_admin->email,
             'alasan_pelanggaran' => $request->alasan_pelanggaran,
+            'tanggapan_karyawan_terkait' => $request->tanggapan_karyawan_terkait,
             'no_form' => $request->no_form,
         ]);
         return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil dibuat.']);
@@ -250,6 +251,7 @@ class TindakanKedisiplinanController extends AdminBaseController
             'tanggal_sampai' => $request->tanggal_berlaku_sampai,
             'operator' => $logged_admin->email,
             'alasan_pelanggaran' => $request->alasan_pelanggaran,
+            'tanggapan_karyawan_terkait' => $request->tanggapan_karyawan_terkait,
             'no_form' => $request->no_form,
         ]);
         return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil dibuat.']);

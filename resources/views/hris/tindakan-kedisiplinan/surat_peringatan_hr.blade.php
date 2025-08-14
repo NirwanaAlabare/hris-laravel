@@ -686,6 +686,15 @@ h1 {
                                         <small class="error-message text-danger"></small>
                                     </div>
                                 </div>
+                                <div class="col-md-12" style="margin-top: 1px; margin-bottom: 3px; padding-top: 10px;">
+                                    <h6 style="font-weight: bold;">Tanggapan Karyawan terkait :</h6>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <textarea id="tanggapan_karyawan_terkait" name="tanggapan_karyawan_terkait" class="form-control" rows="3" placeholder="Tanggapan dari karyawan terkait." maxlength="500"></textarea>
+                                        <small class="error-message text-danger"></small>
+                                    </div>
+                                </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
                                        <h6 style="font-weight: bold;">Sanksi yang diberikan berlaku mulai tanggal:</h6>
@@ -877,6 +886,15 @@ h1 {
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <textarea id="edit_alasan_pelanggaran" name="edit_alasan_pelanggaran" class="form-control" rows="3" placeholder="Alasan Pelanggaran" maxlength="500"></textarea>
+                                        <small class="error-message text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="col-md-12" style="margin-top: 1px; margin-bottom: 3px; padding-top: 10px;">
+                                    <h6 style="font-weight: bold;">Tanggapan karyawan terkait :</h6>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <textarea id="edit_tanggapan_karyawan_terkait" name="edit_tanggapan_karyawan_terkait" class="form-control" rows="3" placeholder="Tanggapan karyawan terkait." maxlength="500"></textarea>
                                         <small class="error-message text-danger"></small>
                                     </div>
                                 </div>
@@ -1882,6 +1900,7 @@ h1 {
                     $('#edit_employee_jabatan').text(data.status_jabatan);
                     $('input[name="edit_tindakan_pendisiplinan"][value="' + data.surat_peringatan + '"]').prop('checked', true);
                     $('#edit_alasan_pelanggaran').val(data.alasan_pelanggaran);
+                    $('#edit_tanggapan_karyawan_terkait').val(data.tanggapan_karyawan_terkait);
                     $('#edit_tanggal_berlaku_mulai').val(tanggal_berlaku_mulai);
                     $('#edit_tanggal_berlaku_sampai').val(tanggal_berlaku_sampai);
                     $('#edit_no_form').val(data.no_form);
@@ -1905,6 +1924,7 @@ h1 {
 
                 $('#no_form').val('');
                 $('#alasan_pelanggaran').val('');
+                $('#tanggapan_karyawan_terkait').val('');
 
                 $('#pasalKaryawan').val('').trigger('change');
                 $('#karyawanBermasalahID').val('').trigger('change');
@@ -2090,6 +2110,7 @@ h1 {
                 let selectedKodePasal = $('#pasalKaryawan').val();
                 var enroll_id_karyawan_bermasalah = $('#enroll_id_karyawan_bermasalah').val();
                 var alasan_pelanggaran = $('#alasan_pelanggaran').val();
+                var tanggapan_karyawan_terkait = $('#tanggapan_karyawan_terkait').val();
                 var no_form = $('#no_form').val();
 
 
@@ -2157,6 +2178,7 @@ h1 {
                         tanggal_berlaku_sampai:tanggal_berlaku_sampai,
                         selectedKodePasal:selectedKodePasal,
                         alasan_pelanggaran:alasan_pelanggaran,
+                        tanggapan_karyawan_terkait:tanggapan_karyawan_terkait,
                         no_form:no_form,
                     },
                     dataType: 'json',
@@ -2189,6 +2211,7 @@ h1 {
                 let selectedKodePasal = $('#EditpasalKaryawan').val();
                 var enroll_id_karyawan_bermasalah = $('#edit_enroll_id_karyawan_bermasalah').val();
                 var alasan_pelanggaran = $('#edit_alasan_pelanggaran').val();
+                var edit_tanggapan_karyawan_terkait = $('#edit_tanggapan_karyawan_terkait').val();
                 var no_form = $('#edit_no_form').val();
                 var edit_id_pengajuan = $('#edit_id_pengajuan').val();
 
@@ -2242,6 +2265,7 @@ h1 {
                         tanggal_berlaku_sampai:tanggal_berlaku_sampai,
                         selectedKodePasal:selectedKodePasal,
                         alasan_pelanggaran:alasan_pelanggaran,
+                        tanggapan_karyawan_terkait:edit_tanggapan_karyawan_terkait,
                         no_form:no_form,
                     },
                     dataType: 'json',

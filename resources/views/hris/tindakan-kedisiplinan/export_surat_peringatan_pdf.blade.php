@@ -399,10 +399,19 @@
             <tr>
                 <td style="vertical-align: middle; font-size: 14pt; width:1%;"></td>
                 <td style="vertical-align: middle; font-size: 14pt; width:1%;"></td>
-                <td style="vertical-align: middle; font-size: 14pt; width:1%;"><div style="border: 1px solid #000; height:20px; width:20px;"></div></td>
+                <td style="vertical-align: middle; font-size: 14pt; width:1%;">
+                    <div style="border: 1px solid #000; height:20px; width:20px;">
+                         @if(!empty($value->tanggapan_karyawan_terkait))
+                            ✔
+                        @endif
+                    </div>
+                </td>
                 <td style="vertical-align: middle; font-size: 14pt; width:19%;">Ada</td>
                 <td style="vertical-align: middle; font-size: 14pt; width:10%;"></td>
-                <td style="vertical-align: middle; font-size: 14pt; width:1%;"><div style="border: 1px solid #000; height:20px; width:20px;"></div></td>
+                <td style="vertical-align: middle; font-size: 14pt; width:1%;">
+                    <div style="border: 1px solid #000; height:20px; width:20px;">
+                    </div>
+                </td>
                 <td style="vertical-align: middle; font-size: 14pt; width:19%;">Tidak</td>
             </tr>
         </thead>
@@ -433,7 +442,7 @@
      <table width="100%" style="border: 1px solid #000; width: 85%; margin-left:60px;">
         <thead>
             <tr>
-                <td style="vertical-align: middle; font-size: 14pt; height: 500px;"></td>
+                <td style=" vertical-align: top;font-size: 14pt; height: 500px; text-align: start; justify-content: start; align-items: start; padding:5px;">{{$value->tanggapan_karyawan_terkait}}</td>
             </tr>
         </thead>
     </table>

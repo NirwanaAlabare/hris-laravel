@@ -19,6 +19,7 @@ class SuratPeringatanKaryawan extends Model
     'operator',
     'surat_peringatan',
     'alasan_pelanggaran',
+    'tanggapan_karyawan_terkait',
     'no_form',
 ];
 
