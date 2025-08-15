@@ -789,7 +789,7 @@ class KoreksiPotonganController extends AdminBaseController
 
                 foreach ($collect as $key => $value) {
                    $findDT = DataKoreksiPotongan::where('enroll_id',$value['enroll_id'])->where('periode_tanggal_koreksi',$value['periode_tanggal_koreksi'])
-                        ->where('jenis_potongan',$value['jenis_potongan'])->count();
+                        ->where('jenis_potongan',$value['jenis_potongan'])->where('tanggal_koreksi',$value['tanggal_koreksi'])->count();
                     if($findDT){
                         $data_update=[
                             'kode_koreksi_potongan'=>$value['kode_koreksi_potongan'],

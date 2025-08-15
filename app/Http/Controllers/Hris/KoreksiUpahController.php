@@ -557,7 +557,7 @@ class KoreksiUpahController extends AdminBaseController
 
                 foreach ($collect as $key => $value) {
                     $findDT = DataKoreksiUpah::where('enroll_id',$value['enroll_id'])->where('periode_tanggal_koreksi',$value['periode_tanggal_koreksi'])
-                            ->where('jenis_koreksi',$value['jenis_koreksi'])->count();
+                            ->where('jenis_koreksi',$value['jenis_koreksi'])->where('tanggal_koreksi',$value['tanggal_koreksi'])->count();
                     if($findDT){
                         $data_update=[
                             'kode_koreksi_upah'=>$value['kode_koreksi_upah'],
