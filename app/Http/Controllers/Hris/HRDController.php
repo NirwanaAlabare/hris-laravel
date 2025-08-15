@@ -1453,7 +1453,6 @@ class HRDController extends AdminBaseController
             $contract_start = $item->contract ? $item->contract : $item->join_date;   // fallback ke join_date jika contract null
             $contract_end = $endDate ? $endDate->format('Y-m-d') : now()->format('Y-m-d');
             $jumlah_bulan_manual = $this->hitungBulanKontrak($contract_start, $contract_end);
-            dd($jumlah_bulan_manual);
             $total_penghasilan_bulanan = $umk + $tunjangan;
             $jumlah_bulan = $item->jumlah_bulan ? $item->jumlah_bulan : $jumlah_bulan_manual;
 
