@@ -394,7 +394,6 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
             SUM(CASE WHEN jenis_koreksi = 3 THEN jumlah_rp_potongan ELSE 0 END) AS koreksi_lembur,
             SUM(CASE WHEN jenis_koreksi = 4 THEN jumlah_rp_potongan ELSE 0 END) AS koreksi_insentif
         FROM data_koreksi_upah
-        WHERE is_verifikasi_acc = 1
         GROUP BY enroll_id, tanggal_koreksi
         ) f ON a.enroll_id = f.enroll_id AND a.tanggal_berjalan = f.tanggal_koreksi
         LEFT JOIN (
@@ -404,7 +403,6 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
             SUM(CASE WHEN jenis_potongan = 7 THEN jumlah_rp_potongan ELSE 0 END) AS potongan_upah,
             SUM(CASE WHEN jenis_potongan = 8 THEN jumlah_rp_potongan ELSE 0 END) AS potongan_lembur
         FROM data_koreksi_potongan
-        WHERE is_verifikasi_acc = 1
         GROUP BY enroll_id, tanggal_koreksi
         ) g ON a.enroll_id = g.enroll_id AND a.tanggal_berjalan = g.tanggal_koreksi
         left join ref_absen_ijin h on a.status_absen=h.kode_absen_ijin left join data_absen_perijinan dap on a.uuid = dap.uuid_master left join grading_salary i on b.kode_grade=i.kode_grade and substring(i.periode_umk,1,4)=substring(a.tanggal_berjalan,1,4) inner join dasar_pot_bpjs bpjs on REGEXP_SUBSTR(bpjs.kode_dasar_pot_bpjs, '[0-9]+')=substring(a.tanggal_berjalan,1,4) where a.tanggal_berjalan>='".$this->tanggal_awal."' and a.tanggal_berjalan<='".$this->tanggal_akhir."'".$this->inEnrollId.$this->inStatusStaff);
