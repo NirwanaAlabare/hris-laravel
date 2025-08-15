@@ -1452,9 +1452,8 @@ class HRDController extends AdminBaseController
 
             $contract_start = $item->contract ? $item->contract : $item->join_date;   // fallback ke join_date jika contract null
             $contract_end = $endDate ? $endDate->format('Y-m-d') : now()->format('Y-m-d');
-
             $jumlah_bulan_manual = $this->hitungBulanKontrak($contract_start, $contract_end);
-
+            dd($jumlah_bulan_manual);
             $total_penghasilan_bulanan = $umk + $tunjangan;
             $jumlah_bulan = $item->jumlah_bulan ? $item->jumlah_bulan : $jumlah_bulan_manual;
 
@@ -1470,6 +1469,7 @@ class HRDController extends AdminBaseController
 
         return Excel::download(new exportExcelKompensasiPKWT($data), 'Kompensasi PKWT.xlsx');
     }
+
 
 
     public function print_pdf_kompensasi_pkwt(){
@@ -1579,7 +1579,6 @@ class HRDController extends AdminBaseController
 
         // Hitung total hari
         $totalHari = (int)$start->diff($end)->format('%a') + 1; // inklusif
-
         if ($totalHari < 10) {
             return 0;
         }
@@ -1594,17 +1593,21 @@ class HRDController extends AdminBaseController
         $totalBulanEstimasi = $totalHari / $hariPerBulan;
 
         // Aturan pembulatan sesuai instruksi
-        if ($totalBulanEstimasi < 1.5) {
-            return 1;
-        }
+        // if ($totalBulanEstimasi < 1.5) {
+        //     return 1;
+        // }
+        if ($bulan === 0) {
+        return 1;
+    }
 
-        // Bulatkan ke atas jika lewat 1 hari dari angka bulat
-        $extra = $totalBulanEstimasi - floor($totalBulanEstimasi);
-        if ($extra > 0.033) { // kira-kira 1 hari
-            return (int)floor($totalBulanEstimasi) + 1;
-        }
+        // // Bulatkan ke atas jika lewat 1 hari dari angka bulat
+        // $extra = $totalBulanEstimasi - floor($totalBulanEstimasi);
+        // if ($extra > 0.033) { // kira-kira 1 hari
+        //     return (int)floor($totalBulanEstimasi) + 1;
+        // }
 
-        return (int)floor($totalBulanEstimasi);
+        // return (int)floor($totalBulanEstimasi);
+         return $hari >= 15 ? $bulan + 1 : $bulan;
     }
 
 
