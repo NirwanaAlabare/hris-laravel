@@ -1291,9 +1291,60 @@ class HRDController extends AdminBaseController
 
 
 
-      public function download_excel_rekap_pkwt(){
+      public function download_excel_rekap_pkwt(Request $request){
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '10240000000000000M');
+
+        $inEnrollId='';
+        $inIbuKandung='';
+        $inStatusAktif='';
+        $inStatusStaff='';
+        $inStatusKontrak='';
+        $inDepartment='';
+        $inDateRange='';
+        if(request()->date_range){
+            $daterange1 = explode(" s/d ", request()->date_range);
+            $tanggalMulai = date('Y-m-d', strtotime($daterange1[0]));
+            $tanggalSampai = date('Y-m-d', strtotime($daterange1[1]));
+            $inDateRange='AND c.max_contract_end BETWEEN "'.$tanggalMulai.'" AND "'.$tanggalSampai.'"';
+        }
+        if(request()->enroll_id){
+            $enroll_id=request()->enroll_id;
+            $enroll_id_string=implode(',', $enroll_id);
+            $inEnrollId='AND a.enroll_id in ('.$enroll_id_string.')';
+        }
+        if(request()->status_aktif){
+            $status_aktif=request()->status_aktif;
+            $inStatusAktif='AND a.status_aktif = "'.$status_aktif.'"';
+        }
+        if(request()->status_staff){
+            $status_staff=request()->status_staff;
+            $inStatusStaff='AND a.status_staff = "'.$status_staff.'"';
+        }
+        if(request()->department_name){
+            $department_name=request()->department_name;
+            $inDepartment='AND a.department_name = "'.$department_name.'"';
+        }
+        if(request()->status_kontrak){
+            $today = date('Y-m-d');
+            $status_kontrak=request()->status_kontrak;
+            if($status_kontrak=='One Day'){
+                $one_days_later = date('Y-m-d', strtotime('+1 days'));
+                $inStatusKontrak='AND c.max_contract_end BETWEEN "'.$today.'" AND "'.$one_days_later.'"';
+            }else if($status_kontrak=='Nine Day'){
+                $nine_days_later = date('Y-m-d', strtotime('+9 days'));
+                $inStatusKontrak='AND c.max_contract_end BETWEEN "'.$today.'" AND "'.$nine_days_later.'"';
+            }else if($status_kontrak=='Thirty Day'){
+                $thirty_days_later = date('Y-m-d', strtotime('+30 days'));
+                $inStatusKontrak = 'AND c.max_contract_end BETWEEN "'.$today.'" AND "'.$thirty_days_later.'"';
+            }else if($status_kontrak=='Sixty Day'){
+                $thirty_day_more = date('Y-m-d',strtotime('+60 days',strtotime(date("Y-m-d")))) . PHP_EOL;
+                $inStatusKontrak='AND c.max_contract_end >= "'.$thirty_day_more.'"';
+            }else if($status_kontrak=='Not yet extended'){
+                $inStatusKontrak= 'AND a.tanggal_resign IS NULL AND c.max_contract_end <= "'.$today.'"';
+            }
+        }
+
         $data = DB::select("
         SELECT
             a.status_staff,
@@ -1334,6 +1385,7 @@ class HRDController extends AdminBaseController
                 GROUP BY enroll_id
             ) ec2 ON ec1.enroll_id = ec2.enroll_id AND ec1.contract = ec2.max_contract
         ) c ON a.enroll_id = c.enroll_id
+         WHERE a.enroll_id IS NOT NULL $inDateRange $inEnrollId $inIbuKandung $inStatusAktif $inStatusStaff $inDepartment $inStatusKontrak
     ");
     $tahun_umk = date('Y');
     $tahun_umk = 'UMK '.$tahun_umk;
