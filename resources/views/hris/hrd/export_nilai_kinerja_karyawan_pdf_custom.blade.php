@@ -169,45 +169,45 @@
                 <td style="height:2px;" colspan="6"></td>
             </tr>
             <tr>
-                <td style="padding-left: 10px;font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="20%">ID / NIK</td>
+                <td style="padding-left: 10px;font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="16%">ID / NIK</td>
                 <td style="font-size:8pt;vertical-align:top;text-align:left;" width="2%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">{{ $data_karyawan->nik }}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="22%">{{ $data_karyawan->nik }}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="2%">Bagian</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="2%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">{{ $data_karyawan->sub_dept_name }}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="22%">{{ $data_karyawan->sub_dept_name }}</td>
             </tr>
             <tr>
                 <td style="height:2px;" colspan="6"></td>
             </tr>
             <tr>
-                <td style="padding-left: 10px;font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="20%">Nama</td>
+                <td style="padding-left: 10px;font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="16%">Nama</td>
                 <td style="font-size:8pt;vertical-align:top;text-align:left;" width="2%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">{{ $data_karyawan->employee_name }}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="22%">{{ $data_karyawan->employee_name }}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="2%">Jabatan</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="2%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">{{ $data_karyawan->status_jabatan }}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="22%">{{ $data_karyawan->status_jabatan }}</td>
             </tr>
             <tr>
                 <td style="height:2px;" colspan="6"></td>
             </tr>
             <tr>
-                <td style="padding-left: 10px;font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="20%">Department</td>
+                <td style="padding-left: 10px;font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="16%">Department</td>
                 <td style="font-size:8pt;vertical-align:top;text-align:left;" width="2%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">{{ $data_karyawan->department_name }}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="22%">{{ $data_karyawan->department_name }}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="10%">Dievaluasi Oleh</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="2%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%"></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="22%"></td>
             </tr>
             <tr>
                 <td style="height:2px;" colspan="6"></td>
             </tr>
             <tr>
-                <td style="padding-left: 10px;font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="20%">Tanggal Masuk Kerja</td>
+                <td style="padding-left: 10px;font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="16%">Tanggal Masuk Kerja</td>
                 <td style="font-size:8pt;vertical-align:top;text-align:left;" width="2%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">{{ \Carbon\Carbon::parse($data_karyawan->join_date)->translatedFormat('d F Y') }}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="22%">{{ \Carbon\Carbon::parse($data_karyawan->join_date)->translatedFormat('d F Y') }}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="13%">Periode Penilaian</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="2%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="22%">
                     @if(isset($contract) && $contract && isset($tgl_penilaian_akhir) && $tgl_penilaian_akhir)
                         {{ \Carbon\Carbon::parse($contract)->translatedFormat('d F Y') }} - {{ \Carbon\Carbon::parse($tgl_penilaian_akhir)->translatedFormat('d F Y') }}
                     @endif
@@ -222,7 +222,7 @@
                 <td style="padding-left: 10px;font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;">Status Karyawan</td>
                 <td style="font-size:8pt;vertical-align:top">:</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;">{{$data_karyawan->status_aktif}}</td>
-              <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">
                     @if(isset($data_penilaian->tgl_akhir_kontrak) && $data_penilaian->tgl_akhir_kontrak)
                         Perpanjangan PKS {{ \Carbon\Carbon::parse($data_penilaian->tgl_akhir_kontrak)->translatedFormat('d F Y') }}
                     @else
