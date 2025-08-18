@@ -584,6 +584,18 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             $data_penilaian->perpanjang_bulan = null;
             $data_penilaian->judul_training = null;
 
+            $start_date = Carbon::parse($contract);
+            $end_date = Carbon::parse($contract_end)->subDays(14);
+
+            $jumlah_mangkir = MasterDataAbsenKehadiran::where('enroll_id', $enroll_id)
+            ->whereBetween('tanggal_berjalan', [$start_date, $end_date])
+            ->where('status_absen', 'M')
+            ->count();
+            $jumlah_ijin = MasterDataAbsenKehadiran::where('enroll_id', $enroll_id)
+                ->whereBetween('tanggal_berjalan', [$start_date, $end_date])
+                ->where('status_absen', 'I')
+                ->count();
+
             $sp1_kali = 0;
             $sp2_kali = 0;
             $sp3_kali = 0;
@@ -602,16 +614,16 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             $data_penilaian->sp2_kali = $sp2_kali;
             $data_penilaian->sp3_kali = $sp3_kali;
             $data_penilaian->kecelakaan_kali = 0;
-            $data_penilaian->mangkir_kali = 0;
-            $data_penilaian->ijin_kali = 0;
+            $data_penilaian->mangkir_kali = $jumlah_mangkir;
+            $data_penilaian->ijin_kali = $jumlah_ijin;
 
             $kejadian = [
                 'sp3_kali' => $sp3_kali,
                 'sp2_kali' => $sp2_kali,
                 'sp1_kali' => $sp1_kali,
                 'kecelakaan_kali' => 0,
-                'mangkir_kali' => 0,
-                'ijin_kali' => 0,
+                'mangkir_kali' => $jumlah_mangkir,
+                'ijin_kali' => $jumlah_ijin,
             ];
 
             $total = [
@@ -619,8 +631,8 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                 'sp2_kali' => $sp2_kali * 4,
                 'sp1_kali' => $sp1_kali * 2,
                 'kecelakaan_kali' => 0,
-                'mangkir_kali' => 0,
-                'ijin_kali' => 0,
+                'mangkir_kali' => $jumlah_mangkir * 1,
+                'ijin_kali' => $jumlah_ijin * 0.5,
             ];
 
             $total_pengurangan = array_sum($total);
