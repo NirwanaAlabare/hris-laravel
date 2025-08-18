@@ -208,13 +208,11 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="13%">Periode Penilaian</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="2%">:</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">
-                @if(isset($data_penilaian->tgl_akhir_kontrak) && $data_penilaian->tgl_akhir_kontrak)
-                    Perpanjangan PKS {{ \Carbon\Carbon::parse($data_penilaian->tgl_akhir_kontrak)->translatedFormat('d F Y') }}
-                @else
-                    Perpanjangan PKS {{ \Carbon\Carbon::parse($contract_end)->translatedFormat('d F Y') }}
-                @endif
-
+                    @if(isset($contract) && $contract && isset($tgl_penilaian_akhir) && $tgl_penilaian_akhir)
+                        {{ \Carbon\Carbon::parse($contract)->translatedFormat('d F Y') }} - {{ \Carbon\Carbon::parse($tgl_penilaian_akhir)->translatedFormat('d F Y') }}
+                    @endif
                 </td>
+
             </tr>
             <tr>
             <tr>
@@ -224,9 +222,13 @@
                 <td style="padding-left: 10px;font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;">Status Karyawan</td>
                 <td style="font-size:8pt;vertical-align:top">:</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;">{{$data_karyawan->status_aktif}}</td>
-                <td style="font-size:8pt;vertical-align:top"></td>
-                <td style="font-size:8pt;vertical-align:top"></td>
-                <td style="font-size:8pt;vertical-align:top"></td>
+              <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">
+                    @if(isset($data_penilaian->tgl_akhir_kontrak) && $data_penilaian->tgl_akhir_kontrak)
+                        Perpanjangan PKS {{ \Carbon\Carbon::parse($data_penilaian->tgl_akhir_kontrak)->translatedFormat('d F Y') }}
+                    @else
+                        Perpanjangan PKS {{ \Carbon\Carbon::parse($contract_end)->translatedFormat('d F Y') }}
+                    @endif
+                </td>
             </tr>
             <tr>
                 <td style="height:2px;" colspan="6"></td>

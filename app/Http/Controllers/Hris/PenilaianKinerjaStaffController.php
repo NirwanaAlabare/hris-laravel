@@ -174,9 +174,12 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         })
         ->get();
 
-
         $start_date = Carbon::parse($contract);
-        $end_date = Carbon::parse($contract_end)->subDays(14);
+        if($data[0]->status_staff == 'STAFF'){
+            $end_date = Carbon::parse($contract_end)->subDays(30);
+        }else{
+            $end_date = Carbon::parse($contract_end)->subDays(14);
+        }
 
         $jumlah_mangkir = MasterDataAbsenKehadiran::where('enroll_id', $enroll_id)
             ->whereBetween('tanggal_berjalan', [$start_date, $end_date])
@@ -235,6 +238,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             'data_penilaian' => $data_penilaian,
             'jumlah_mangkir' => $jumlah_mangkir,
             'jumlah_ijin' => $jumlah_ijin,
+            'tgl_penilaian_akhir' => $end_date,
         ]);
     }
     public function store_penilaian_kinerja_staff(Request $request){
@@ -548,7 +552,12 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         })
         ->get();
 
-
+        $start_date = Carbon::parse($contract);
+        if($data_karyawan->status_staff == 'STAFF'){
+            $end_date = Carbon::parse($contract_end)->subDays(30);
+        }else{
+            $end_date = Carbon::parse($contract_end)->subDays(14);
+        }
 
         if($data_penilaian){
             $kejadian = [
@@ -584,8 +593,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             $data_penilaian->perpanjang_bulan = null;
             $data_penilaian->judul_training = null;
 
-            $start_date = Carbon::parse($contract);
-            $end_date = Carbon::parse($contract_end)->subDays(14);
+
 
             $jumlah_mangkir = MasterDataAbsenKehadiran::where('enroll_id', $enroll_id)
             ->whereBetween('tanggal_berjalan', [$start_date, $end_date])
@@ -657,7 +665,8 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                 'data_penilaian'=>$data_penilaian,
                 'data_karyawan'=>$data_karyawan,
                 'contract'=>$contract,
-                'contract_end'=>$contract_end
+                'contract_end'=>$contract_end,
+                'tgl_penilaian_akhir'=>$end_date,
             ]);
             return $pdf->stream($judul_export . '.pdf');
         } catch (\Exception $e) {
@@ -1373,6 +1382,10 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             GROUP BY z.enroll_id
             ORDER BY z.sub_dept_name ASC
         "));
+
+
+
+
         // Gabungkan data_penilaian ke masing-masing data_karyawan berdasarkan enroll_id
         $data = $data_karyawan->map(function ($karyawan) use ($data_penilaian) {
             $enroll_id = $karyawan->enroll_id;
@@ -1385,6 +1398,24 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             })
             ->get();
 
+            $start_date = Carbon::parse($contract);
+            if($karyawan->status_staff == 'STAFF'){
+                $end_date = Carbon::parse($contract_end)->subDays(30);
+            }else{
+                $end_date = Carbon::parse($contract_end)->subDays(14);
+            }
+
+            $jumlah_mangkir = MasterDataAbsenKehadiran::where('enroll_id', $enroll_id)
+                ->whereBetween('tanggal_berjalan', [$start_date, $end_date])
+                ->where('status_absen', 'M')
+                ->count();
+            $jumlah_ijin = MasterDataAbsenKehadiran::where('enroll_id', $enroll_id)
+                ->whereBetween('tanggal_berjalan', [$start_date, $end_date])
+                ->where('status_absen', 'I')
+                ->count();
+            $karyawan->jumlah_mangkir = $jumlah_mangkir;
+            $karyawan->jumlah_ijin = $jumlah_ijin;
+            $karyawan->tgl_penilaian_akhir = $end_date;
             if ($data_penilaian->has($enroll_id)) {
                 $penilaian = $data_penilaian->get($enroll_id);
 
@@ -1447,8 +1478,8 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                     'sp2_kali' => $sp2_kali,
                     'sp1_kali' => $sp1_kali,
                     'kecelakaan_kali' => 0,
-                    'mangkir_kali' => 0,
-                    'ijin_kali' => 0,
+                    'mangkir_kali' => $jumlah_mangkir,
+                    'ijin_kali' => $jumlah_ijin,
                 ];
 
                 $total = [
@@ -1456,8 +1487,8 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                     'sp2_kali' => $sp2_kali * 4,
                     'sp1_kali' => $sp1_kali * 2,
                     'kecelakaan_kali' => 0 * 2,
-                    'mangkir_kali' => 0 * 1,
-                    'ijin_kali' => 0 * 0.5,
+                    'mangkir_kali' => $jumlah_mangkir * 1,
+                    'ijin_kali' => $jumlah_ijin * 0.5,
                 ];
                 $total_pengurangan = array_sum($total);
 

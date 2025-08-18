@@ -2759,7 +2759,7 @@ function updateRange(start, end) {
                 $('#department_text').text(data[0]['department_name']);
                 $('#bagian_text').text(data[0]['sub_dept_name']);
                 $('#jabatan_text').text(data[0]['status_jabatan']);
-                $('#periode_penilaian_text').text(moment(contract).format('DD MMMM YYYY')+' - '+moment(contract_end).format('DD MMMM YYYY'));
+                $('#periode_penilaian_text').text(moment(contract).format('DD MMMM YYYY')+' - '+moment(res.tgl_penilaian_akhir).format('DD MMMM YYYY'));
                 $('#diketahui_oleh').text(data[0]['employee_name']);
 
                 $('#enroll_id_input_2_val').val(data[0]['enroll_id']);
