@@ -27,6 +27,12 @@ class PemeliharaanKendaraanController extends AdminBaseController
         $vehicle_item=DB::select("select*from vehicle_item order by created_at desc");
         return View::make('hris/ga/pemeliharaan_kendaraan',compact('vehicles','vehicle_item'), $this->data);
     }
+    public function pengajuan_perbaikan_kendaraan(){
+        $vehicles =  DB::connection('laravel_nds')->select( DB::raw("select*from ga_master_kendaraan") );
+        $vehicle_item=DB::select("select*from vehicle_item order by created_at desc");
+        $user = auth()->user();
+        return View::make('hris/ga/pengajuan_perbaikan_kendaraan',compact('vehicles','vehicle_item','user'), $this->data);
+    }
     public function get_data_jenis_pemeliharaan(){
         $data_input=DB::select("select*from jenis_pemeliharaan order by created_at desc");
         return DataTables::of($data_input)->toJson();
@@ -184,7 +190,7 @@ class PemeliharaanKendaraanController extends AdminBaseController
         $kategori_items = DB::select("select*from kategori_items order by category_name");
         return $kategori_items;
     }
-    
+
     public function _validation_kategori_item(){
         $validation=request()->validate([
             'category_name'=>'required',

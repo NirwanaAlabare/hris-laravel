@@ -786,6 +786,7 @@ class HRDController extends AdminBaseController
         $inIbuKandung='';
         $inNoKTP='';
         $inStatusStaff='';
+        $statusPenilaian="AND y.status_penilaian IS NULL";
         $status_kontrak=request()->status_kontrak;
         $compare='';
 
@@ -827,6 +828,10 @@ class HRDController extends AdminBaseController
         if(request()->status_staff){
             $status_staff_string=request()->status_staff;
             $inStatusStaff='AND z.status_staff LIKE "'.$status_staff_string.'%"';
+        }
+        if(request()->status_penilaian){
+            $status_penilaian=request()->status_penilaian;
+            $statusPenilaian = "AND y.status_penilaian = '{$status_penilaian}'";
         }
         $inStatusKontrak='';
         $today = date('Y-m-d');
@@ -929,6 +934,7 @@ class HRDController extends AdminBaseController
             z.tanggal_resign,
             z.ibu_kandung,
             z.nomor_ktp,
+            y.status_penilaian,
             y.id,
             y.contract,
             -- logika untuk mengganti contract_end dengan tanggal_resign jika ada
@@ -938,27 +944,18 @@ class HRDController extends AdminBaseController
             -- END y.contract_end AS contract_end
             y.contract_end AS contract_end
         FROM (
-            SELECT
-                a.enroll_id,
-                a.id,
-                e.contract,
-                e.contract_end
-            FROM (
-                SELECT
-                    enroll_id,
-                    MAX(contract) AS contract,
-                    MAX(contract_end) AS contract_end
-                FROM employee_contract
-                GROUP BY enroll_id
-            ) e
-            INNER JOIN (
-                SELECT
-                    id,
-                    enroll_id,
-                    contract,
-                    contract_end
-                FROM employee_contract
-            ) a ON e.enroll_id = a.enroll_id AND e.contract_end = a.contract_end
+           SELECT
+            a.enroll_id,
+            a.id,
+            a.status_penilaian,
+            a.contract,
+            a.contract_end
+        FROM employee_contract a
+        INNER JOIN (
+            SELECT enroll_id, MAX(contract_end) AS contract_end
+            FROM employee_contract
+            GROUP BY enroll_id
+        ) e ON a.enroll_id = e.enroll_id AND a.contract_end = e.contract_end
         ) y
         RIGHT JOIN (
             SELECT
@@ -990,12 +987,12 @@ class HRDController extends AdminBaseController
             $inStatusAktif
             $inEnrollId
             $inStatusStaff
+            $statusPenilaian
             $inDateRangeContract
             $inDepartment_name
         GROUP BY z.enroll_id
         ORDER BY z.enroll_id
     ");
-    // dd($data_input);
     return DataTables::of($data_input)->toJson();
 
     }

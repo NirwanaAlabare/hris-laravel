@@ -1526,4 +1526,31 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         // $pdf = PDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_all',['data'=>$data]);
         // return $pdf->stream('Performance Appraisal.pdf');
     }
+
+
+    public function move_to_proses_penilaian(){
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '4000M');
+        set_time_limit(300);
+        $status_penilaian = request()->status_penilaian;
+        if ($enrollIds = request()->enroll_id) {
+            $escapedIds = implode(',', array_map('intval', $enrollIds)); // sanitize ID to integer
+            $inEnrollIds = "AND z.enroll_id IN ($escapedIds)";
+            $latestContracts = DB::table('employee_contract')
+                ->selectRaw('MAX(id) as id')
+                ->whereIn('enroll_id', $enrollIds)
+                ->groupBy('enroll_id')
+                ->pluck('id');
+
+            // Update hanya kontrak terakhir
+            DB::table('employee_contract')
+                ->whereIn('id', $latestContracts)
+                ->update([
+                    'status_penilaian' => $status_penilaian === 'proses_penilaian'
+            ? 'proses_penilaian'
+            : null,
+            ]);
+        }
+        return response()->json(['message' => 'Data berhasil disimpan'], 200);
+    }
 }

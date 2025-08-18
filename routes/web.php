@@ -401,6 +401,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('hrd/print_pdf_kontrak',['as'=>'hris.hrd.print_pdf_kontrak','uses'=>'HRDController@print_pdf_kontrak']);
     Route::post('hrd/print_all_pdf_kontrak',['as'=>'hris.hrd.print_all_pdf_kontrak','uses'=>'HRDController@print_all_pdf_kontrak']);
     Route::post('hrd/print_selected_form_penilaian',['as'=>'hris.hrd.print_selected_form_penilaian','uses'=>'PenilaianKinerjaStaffController@print_selected_form_penilaian']);
+    Route::post('hrd/move_to_proses_penilaian',['as'=>'hris.hrd.move_to_proses_penilaian','uses'=>'PenilaianKinerjaStaffController@move_to_proses_penilaian']);
     Route::get('hrd/print_pdf_kontrak_2',['as'=>'hris.hrd.print_pdf_kontrak_2','uses'=>'HRDController@print_pdf_kontrak_2']);
     Route::get('hrd/print_pdf_kompensasi_pkwt',['as'=>'hris.hrd.print_pdf_kompensasi_pkwt','uses'=>'HRDController@print_pdf_kompensasi_pkwt']);
     Route::post('hrd/ajax_getemployeeidbyfilter',['as'=>'hris.hrd.ajax_getemployeeidbyfilter','uses'=>'HRDController@ajax_getemployeeidbyfilter']);
@@ -469,6 +470,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('ga/get_vehicle_category_name',['as'=>'hris.ga.get_vehicle_category_name','uses'=>'PemeliharaanKendaraanController@get_vehicle_category_name']);
     Route::get('ga/get_kategori_item',['as'=>'hris.ga.get_kategori_item','uses'=>'PemeliharaanKendaraanController@get_kategori_item']);
     Route::post('ga/store_item',['as'=>'hris.ga.store_item','uses'=>'PemeliharaanKendaraanController@store_item']);
+
+    Route::get('ga/pengajuan_perbaikan_kendaraan',['as'=>'hris.ga.pengajuan_perbaikan_kendaraan','uses'=>'PemeliharaanKendaraanController@pengajuan_perbaikan_kendaraan']);
 
     //Route::resource('mdabsenhadir', 'MdAbsenHadirController',['as' => 'hris']);
     Route::post('mdabsenhadir/ajax_datahadir/',['as'=>'hris.mdabsenhadir.ajax_datahadir','uses'=> 'MdAbsenHadirController@ajax_datahadir']);
