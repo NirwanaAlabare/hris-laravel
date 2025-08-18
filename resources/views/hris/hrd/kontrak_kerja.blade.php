@@ -9,7 +9,8 @@
 
 <link rel="stylesheet" href="{{ URL::asset('assets/css/iziToast.min.css') }}">
 
-
+<!-- Tabs css-->
+	<link href="{{URL::asset('assets/plugins/tabs/tabs-style.css')}}" rel="stylesheet" />
 <style>
     .modal-body {
     max-height: 90vh; /* Sesuaikan dengan tinggi yang diinginkan */
@@ -47,6 +48,7 @@
         </div>
     </div>
 </div>
+
 <div class="row">
     <div class="col-lg-12 col-md-12">
         <div class="card shadow">
@@ -238,6 +240,19 @@
                             <i class="fa fa-file-pdf-o"></i> Print Checked Employee
                         </button>
 
+                        <!-- Tombol Print Employee -->
+                        <button class="btn btn-info mr-2 mb-2"
+                                id="btn_ubah_proses_penilaian"
+                                style="display: none;">
+                            <i class="fa fa-share"></i> Ubah ke Proses Penilaian
+                        </button>
+
+                        <button class="btn btn-primary mr-2 mb-2"
+                                id="btn_ubah_proses_penilaian_ke_done"
+                                style="display: none;">
+                            <i class="fa fa-reply"></i> Tandai Selesai Penilaian
+                        </button>
+
                     </div>
 
                     <!-- Kolom Tombol Hapus Filter -->
@@ -250,27 +265,66 @@
 
                 <div class="row">
                     <div class="col">
-                        <div class="table-responsive">
-                            <table id="datatable" class="table table-bordered table-sm w-100 table-hover text-nowrap">
-                                <thead class="bg-primary text-white">
-                                    <tr style='text-align:center;'>
-                                        <th rowspan="2" style="vertical-align: middle">
-                                            <input type="checkbox" id="checkAllEmployee" onchange="actionCheckAllEmployee(this)">
-                                        </th>
-                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">ID</th>
-                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">NIK</th>
-                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">Employee Name</th>
-                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">Department</th>
-                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">Bagian</th>
-                                        <th colspan="2" style="vertical-align: middle;font-weight:bold">Kontrak</th>
-                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold;border:1px solid rgb(195, 195, 195)"><span class="fa fa-cog"></span></th>
-                                    </tr>
-                                    <tr style='text-align:center; vertical-align:middle'>
-                                        <th style="font-weight:bold">Awal</th>
-                                        <th style="font-weight:bold">Akhir</th>
-                                    </tr>
-                                </thead>
-                            </table>
+                        <div class="panel panel-primary  px-3 py-2 pt-5">
+                            <div class="tab_wrapper first_tab">
+                                <ul class="tab_list">
+                                    <li class="text-sm" id="tab-waiting">PKS</li>
+                                    <li class="text-sm" id="tab-verifikasi">Dalam Proses Penilaian</li>
+                                </ul>
+                                <div class="content_wrapper">
+                                    <!-- Tab Waiting -->
+                                    <div class="tab_content active" id="tab-content-waiting">
+                                        <div class="table-responsive">
+                                            <table id="datatable" class="table table-bordered table-sm w-100 table-hover text-nowrap">
+                                                <thead class="bg-primary text-white">
+                                                    <tr style='text-align:center;'>
+                                                        <th rowspan="2" style="vertical-align: middle">
+                                                            <input type="checkbox" id="checkAllEmployee" onchange="actionCheckAllEmployee(this)">
+                                                        </th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">ID</th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">NIK</th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">Employee Name</th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">Department</th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">Bagian</th>
+                                                        <th colspan="2" style="vertical-align: middle;font-weight:bold">Kontrak</th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold;border:1px solid rgb(195, 195, 195)"><span class="fa fa-cog"></span></th>
+                                                    </tr>
+                                                    <tr style='text-align:center; vertical-align:middle'>
+                                                        <th style="font-weight:bold">Awal</th>
+                                                        <th style="font-weight:bold">Akhir</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                    <!-- Tab Verifikasi -->
+                                    <div class="tab_content" id="tab-content-verifikasi">
+                                      <div class="table-responsive">
+                                            <table id="table_on_process" class="table table-bordered table-sm w-100 table-hover text-nowrap">
+                                                <thead class="bg-primary text-white">
+                                                    <tr style='text-align:center;'>
+                                                        <th rowspan="2" style="vertical-align: middle">
+                                                            <input type="checkbox" id="checkAllEmployeeOnProcess" onchange="actionCheckAllEmployeeOnProcess(this)">
+                                                        </th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">ID</th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">NIK</th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">Employee Name</th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">Department</th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">Bagian</th>
+                                                        <th colspan="2" style="vertical-align: middle;font-weight:bold">Kontrak</th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold;border:1px solid rgb(195, 195, 195)"><span class="fa fa-cog"></span></th>
+                                                    </tr>
+                                                    <tr style='text-align:center; vertical-align:middle'>
+                                                        <th style="font-weight:bold">Awal</th>
+                                                        <th style="font-weight:bold">Akhir</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -278,6 +332,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="import_kontrak" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered" style="max-width: 60%;" role="document">
         <div class="modal-content">
@@ -935,7 +990,9 @@
  <script src="{{URL::asset('assets/plugins/spectrum-date-picker/spectrum.js')}}"></script>
  <script src="{{URL::asset('assets/plugins/spectrum-date-picker/jquery-ui.js')}}"></script>
  <script src="{{URL::asset('assets/plugins/input-mask/jquery.maskedinput.js')}}"></script>
-
+    <!---Tabs js-->
+    <script src="{{URL::asset('assets/plugins/tabs/jquery.multipurpose_tabcontent.js')}}"></script>
+    <script src="{{URL::asset('assets/plugins/tabs/tabs.js')}}"></script>
 <style>
 
     #tabel_nilai_kinerja_staff {
@@ -1017,6 +1074,7 @@ function updateRange(start, end) {
     $('#daterange1').val(daterange1);
 
     document.getElementById("print_form_penilaian").style.display = "inline-block";
+    document.getElementById("btn_ubah_proses_penilaian").style.display = "inline-block";
 
     $('#status_kontrak').val("");
     $('#datatable').DataTable().ajax.reload();
@@ -1029,6 +1087,7 @@ function updateRange(start, end) {
         let status_kontrak = document.getElementById("status_kontrak").value;
         if(!status_kontrak) {
              document.getElementById("print_form_penilaian").style.display = "none";
+             document.getElementById("btn_ubah_proses_penilaian").style.display = "none";
         }
         if($('#daterange1').val()){
             $('#status_kontrak').val("");
@@ -1128,6 +1187,7 @@ function updateRange(start, end) {
                     getDetail(response.enroll_id)
                     $('#extendContractModal').modal('show');
                     datatable.ajax.reload();
+                    table_on_process.ajax.reload();
                     $('#penilaianKinerjaModal').modal('hide');
                 },
                 error: function(xhr, status, error) {
@@ -1372,6 +1432,7 @@ function updateRange(start, end) {
 
     $('#selectDepartment').on('change',function(){
         datatable.ajax.reload();
+        table_on_process.ajax.reload();
     });
 
     function export_excel_format_penilaian_nonstaff(){
@@ -1789,6 +1850,7 @@ function updateRange(start, end) {
         $(".modal-backdrop").remove();
         $("body").removeClass("modal-open");
         datatable.ajax.reload();
+        table_on_process.ajax.reload();
     });
 
     $('#contractImportButton').on('click',function(){
@@ -1987,7 +2049,9 @@ function updateRange(start, end) {
     });
 
     var currentPageCheck = 0;
+    var currentPageCheckOnProcess = 0;
     var checkedEmployeeArr = [];
+    var checkedEmployeeArrOnProcess = [];
     let datatable = $("#datatable").DataTable({
         ordering: true,
         processing: true,
@@ -2018,6 +2082,7 @@ function updateRange(start, end) {
                 d.search_variable = $('#search_variable').val();
                 d.contract = $('#daterange1').val();
                 d.department_name = $('#selectDepartment').val();
+                d.status_penilaian = null;
             },
         },
         columns: [
@@ -2136,24 +2201,174 @@ function updateRange(start, end) {
         }
     });
 
-    function actionThisEmployeeCheck(element) {
-    if (element.checked) {
-        if (!checkedEmployeeArr.includes(element.value)) {
-            checkedEmployeeArr.push(element.value);
+    let table_on_process = $("#table_on_process").DataTable({
+        ordering: true,
+        processing: true,
+        serverSide: true,
+        paging: true,
+        searching: true,
+        destroy: true,
+        scrollX: false,
+        ajax: {
+            url: '{{ route('hris.hrd.get_employee_contract') }}',
+            data: function(d) {
+                d.search_variable = $('#search_variable').val();
+                d.status_penilaian = 'proses_penilaian';
+            },
+        },
+        columns: [
+            {
+                data: 'enroll_id',
+                orderable: false
+            },
+            {
+                data: 'enroll_id'
+            }, {
+                data: 'nik'
+            },
+            {
+                data: 'employee_name'
+            },
+            {
+                data: 'department_name'
+            },
+            {
+                data: 'sub_dept_name'
+            },
+            {
+                data: 'enroll_id'
+            },
+            {
+                data: 'enroll_id'
+            },
+            {
+                data: 'enroll_id',
+                orderable: false
+            },
+        ],
+        order: [
+            [1, 'asc']
+        ],
+        columnDefs: [
+            {
+                targets: [0],
+                render: (data, type, row, meta) => {
+                    return `
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" style='width: 20px; height: 20px;' value="`+data+`" style='width: 20px; height: 20px;' id="checked_enroll_id_on_process` + row.enroll_id + `" onchange="actionThisEmployeeCheckOnProcess(this)" >
+                        </div>
+                    `
+                }
+            },
+            {
+                targets: [6],
+                render: (data, type, row, meta) => {
+                    var options = { weekday: 'long',  year: 'numeric', month: 'long', day: 'numeric' };
+                    var tes=new Date(row.contract);
+                    if(row.contract==null){
+                        return '';
+                    }else{
+                        return tes.toLocaleDateString("id-ID", options)
+                    }
+                }
+            },
+            {
+                targets: [7],
+                render: (data, type, row, meta) => {
+                    var options = { weekday: 'long',  year: 'numeric', month: 'long', day: 'numeric' };
+                    var tes=new Date(row.contract_end);
+                    if(row.contract_end==null){
+                        return '';
+                    }else{
+                        return tes.toLocaleDateString("id-ID", options)
+                    }
+                }
+            },
+            {
+                targets: [8],
+                render: (data, type, row, meta) => {
+                    return `
+                        <div class='d-flex gap-1'>
+                            <a onclick="openExtendModal('` + row.enroll_id + `', '` + row.employee_name + `');">
+                                <i class='fa fa-pencil-square-o' style='color:black;background-color:orange;font-size:14pt;border:1px solid #838584;padding:2pt;cursor:pointer'></i>
+                            </a>
+                            <a onclick="print_pdf('` + row.enroll_id + `');">
+                                <i class='fa fa-file-pdf-o' style='color:white;background-color:red;font-size:14pt;border:1px solid #838584;padding:2pt;cursor:pointer'></i>
+                            </a>
+                        </div>
+                    `
+                }
+            }
+        ],
+        "createdRow": function (row, data, dataIndex) {
+            if ((data['tanggal_resign'] != null)) {
+                if(new Date(data['tanggal_resign']).getTime()<=new Date()){
+                    $(row).css('background', 'red');
+                }else{
+                    $(row).css('background', 'white');
+                }
+            }else{
+                $(row).css('background', 'white');
+            }
+        },
+        rowCallback: function(row, data, dataIndex){
+            let currentEnrollId = data['enroll_id'];
+
+            checkedEmployeeArr.forEach((item, index, array) => {
+                if(item==currentEnrollId){
+                    currentPageCheckOnProcess++;
+                    $(row).find('input[id="checked_enroll_id_on_process'+item+'"]').prop('checked', true);
+                }
+            });
+        },
+        drawCallback: function (settings) {
+            if (currentPageCheckOnProcess == 0) {
+                $('#checkAllEmployeeOnProcess').prop("checked", false);
+            } else {
+                $('#checkAllEmployeeOnProcess').prop("checked", true);
+            }
+
+            currentPageCheckOnProcess = 0;
         }
-    } else {
-        checkedEmployeeArr = checkedEmployeeArr.filter(function(id) {
-            return id != element.value;
-        });
-        $("#checkAllEmployee").prop('checked', false);
+    });
+
+    function actionThisEmployeeCheck(element) {
+        if (element.checked) {
+            if (!checkedEmployeeArr.includes(element.value)) {
+                checkedEmployeeArr.push(element.value);
+            }
+        } else {
+            checkedEmployeeArr = checkedEmployeeArr.filter(function(id) {
+                return id != element.value;
+            });
+            $("#checkAllEmployee").prop('checked', false);
+        }
+
+        if (checkedEmployeeArr.length > 0) {
+            document.getElementById("print_kontrak_kerja").style.display = "inline-block";
+        } else {
+            document.getElementById("print_kontrak_kerja").style.display = "none";
+        }
     }
 
-    if (checkedEmployeeArr.length > 0) {
-        document.getElementById("print_kontrak_kerja").style.display = "inline-block";
-    } else {
-        document.getElementById("print_kontrak_kerja").style.display = "none";
+    function actionThisEmployeeCheckOnProcess(element) {
+        if (element.checked) {
+            if (!checkedEmployeeArrOnProcess.includes(element.value)) {
+                checkedEmployeeArrOnProcess.push(element.value);
+            }
+        } else {
+            checkedEmployeeArrOnProcess = checkedEmployeeArrOnProcess.filter(function(id) {
+                return id != element.value;
+            });
+            $("#checkAllEmployeeOnProcess").prop('checked', false);
+        }
+
+        if (checkedEmployeeArrOnProcess.length > 0) {
+            document.getElementById("btn_ubah_proses_penilaian_ke_done").style.display = "inline-block";
+        } else {
+            document.getElementById("btn_ubah_proses_penilaian_ke_done").style.display = "none";
+        }
     }
-}
 
 
     $('#print_kontrak_kerja').on('click', function () {
@@ -2195,10 +2410,68 @@ function updateRange(start, end) {
         form.appendTo('body').submit().remove();
     });
 
+    $('#btn_ubah_proses_penilaian').on('click', function () {
+        var enroll_id = checkedEmployeeArr;
+        $.ajax({
+            url: "{{ route('hris.hrd.move_to_proses_penilaian') }}",
+            method: 'POST',
+            data: {
+                enroll_id: enroll_id,
+                status_penilaian: 'proses_penilaian',
+                _token: $('meta[name="csrf-token"]').attr('content') // jangan lupa CSRF
+            },
+            success: function (res) {
+            notif({
+                    msg: "<b>Info:</b>Berhasil diproses!",
+                    type: "info"
+                });
+                // kalau perlu refresh datatable:
+                datatable.ajax.reload();
+                table_on_process.ajax.reload();
+                checkedEmployeeArr = [];
+                document.getElementById("btn_ubah_proses_penilaian").style.display = "none";
+            },
+            error: function (xhr) {
+                console.error(xhr.responseText);
+                datatable.ajax.reload();
+                table_on_process.ajax.reload();
+            }
+        });
+    });
+
+    $('#btn_ubah_proses_penilaian_ke_done').on('click', function () {
+        var enroll_id = checkedEmployeeArrOnProcess;
+        $.ajax({
+            url: "{{ route('hris.hrd.move_to_proses_penilaian') }}",
+            method: 'POST',
+            data: {
+                enroll_id: enroll_id,
+                status_penilaian: null,
+                _token: $('meta[name="csrf-token"]').attr('content') // jangan lupa CSRF
+            },
+            success: function (res) {
+            notif({
+                    msg: "<b>Info:</b>Berhasil diproses!",
+                    type: "info"
+                });
+                // kalau perlu refresh datatable:
+                datatable.ajax.reload();
+                table_on_process.ajax.reload();
+                checkedEmployeeArrOnProcess = [];
+                document.getElementById("btn_ubah_proses_penilaian_ke_done").style.display = "none";
+            },
+            error: function (xhr) {
+                console.error(xhr.responseText);
+                datatable.ajax.reload();
+                table_on_process.ajax.reload();
+            }
+        });
+    });
+
+
     $('#print_form_penilaian').on('click', function () {
 
         var enroll_id = checkedEmployeeArr;
-        console.log('enroll_id', enroll_id);
         // Buat form secara dinamis
         var form = $('<form>', {
             action: 'print_selected_form_penilaian', // endpoint tanpa query string
@@ -2285,21 +2558,50 @@ function updateRange(start, end) {
         document.getElementById("print_kontrak_kerja").style.display  = element.checked ? "inline-block" : "none";
     }
 
+    function actionCheckAllEmployeeOnProcess(element) {
+        if (element.checked) {
+            // ambil semua enroll_id dari data di datatable
+            checkedEmployeeArrOnProcess = table_on_process
+                .rows({ search: 'applied' }) // hanya yg terlihat setelah filter/search
+                .data()
+                .pluck('enroll_id')
+                .toArray();
+
+            // tandai semua checkbox baris
+            $('#table_on_process input.form-check-input').prop('checked', true);
+
+        } else {
+            checkedEmployeeArrOnProcess = [];
+
+            // uncheck semua checkbox baris
+            $('#table_on_process input.form-check-input').prop('checked', false);
+        }
+
+        // tampilkan / sembunyikan tombol
+        document.getElementById("btn_ubah_proses_penilaian_ke_done").style.display =
+            element.checked ? "inline-block" : "none";
+    }
+
+
 
     $('#selectEmployeeID').on('change',function(){
         datatable.ajax.reload();
+        table_on_process.ajax.reload();
     });
 
     $('#searchNoKTP').on('keyup',function(){
         datatable.ajax.reload();
+        table_on_process.ajax.reload();
     });
     $('#status_kontrak').on('change',function(e){
         let status = e.target.value;
         let date_range = $('#daterange1').val();
         if(status || date_range){
             document.getElementById("print_form_penilaian").style.display = "inline-block";
+            document.getElementById("btn_ubah_proses_penilaian").style.display = "inline-block";
         }else{
             document.getElementById("print_form_penilaian").style.display = "none";
+            document.getElementById("btn_ubah_proses_penilaian").style.display = "none";
         }
         if(status && date_range){
             $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i></span><i class="fa fa-angle-down ml-1"></i>');
@@ -2308,15 +2610,19 @@ function updateRange(start, end) {
             $('#daterange-btn1').data('daterangepicker').setEndDate(moment());
         }
         datatable.ajax.reload();
+        table_on_process.ajax.reload();
     });
     $('#status_aktif').on('change',function(){
         datatable.ajax.reload();
+        table_on_process.ajax.reload();
     });
     $('#status_staff').on('change',function(){
         datatable.ajax.reload();
+        table_on_process.ajax.reload();
     });
     function dataTableReload() {
         datatable.ajax.reload();
+        table_on_process.ajax.reload();
     }
     function renderDateTimeCalendar(data) {
         const parts = data.split('-');
@@ -2650,6 +2956,7 @@ function updateRange(start, end) {
                 // reload table & update detail
                 getDetail(res);
                 datatable.ajax.reload();
+                table_on_process.ajax.reload();
             }
         });
     }
@@ -3010,6 +3317,7 @@ function updateRange(start, end) {
                 });
                 getDetail(res);
                 datatable.ajax.reload();
+                table_on_process.ajax.reload();
             }
         });
     }
