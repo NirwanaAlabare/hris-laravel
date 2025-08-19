@@ -1697,6 +1697,7 @@ class HRDController extends AdminBaseController
         $inEnrollId='';
         $inIbuKandung='';
         $inStatusAktif='';
+        $statusPenilaian="AND b.status_penilaian IS NULL";
         $inStatusStaff='';
         $inStatusKontrak='';
         if (request("search_variable")) {
@@ -1719,6 +1720,10 @@ class HRDController extends AdminBaseController
         if(request()->status_staff){
             $status_staff=request()->status_staff;
             $inStatusStaff='AND a.status_staff = "'.$status_staff.'"';
+        }
+        if(request()->status_penilaian){
+            $status_penilaian=request()->status_penilaian;
+            $statusPenilaian = "AND b.status_penilaian = '{$status_penilaian}'";
         }
         $today = date('Y-m-d');
         if(request()->status_kontrak){
@@ -1763,7 +1768,36 @@ class HRDController extends AdminBaseController
             $department=request("department_name");
             $inDepartment_name = ' AND a.department_name = "'.$department.'"';
         }
-        $query= DB::select("select a.enroll_id, a.tanggal_resign, a.department_name from employee_atribut a left join employee_contract b on a.enroll_id=b.enroll_id left join (select enroll_id,max(contract_end) max_contract_end from employee_contract group by enroll_id)c on a.enroll_id=c.enroll_id where a.enroll_id is not null ".$inSearchVariable." ".$inEnrollId." ".$inNoKTP." ".$inIbuKandung." ".$inStatusAktif." ".$inStatusKontrak." ".$inStatusStaff." ".$inDateRangeContract." ".$inDepartment_name." group by a.enroll_id");
+        // $query= DB::select("select a.enroll_id, a.tanggal_resign, a.department_name from employee_atribut a left join employee_contract b on a.enroll_id=b.enroll_id left join (select enroll_id,max(contract_end) max_contract_end from employee_contract group by enroll_id)c on a.enroll_id=c.enroll_id where a.enroll_id is not null ".$inSearchVariable." ".$inEnrollId." ".$inNoKTP." ".$inIbuKandung." ".$inStatusAktif." ".$inStatusKontrak." ".$inStatusStaff." ".$inDateRangeContract." ".$inDepartment_name." group by a.enroll_id");
+        $query = DB::select("
+        SELECT
+            a.enroll_id,
+            a.tanggal_resign,
+            a.department_name,
+            b.status_penilaian
+        FROM employee_atribut a
+        LEFT JOIN employee_contract b
+            ON a.enroll_id = b.enroll_id
+        LEFT JOIN (
+            SELECT enroll_id, MAX(contract_end) AS max_contract_end
+            FROM employee_contract
+            GROUP BY enroll_id
+        ) c ON a.enroll_id = c.enroll_id AND b.contract_end = c.max_contract_end
+        WHERE a.enroll_id IS NOT NULL
+            $inSearchVariable
+            $inEnrollId
+            $inNoKTP
+            $inIbuKandung
+            $inStatusAktif
+            $inStatusKontrak
+            $inStatusStaff
+            $inDateRangeContract
+            $inDepartment_name
+            $statusPenilaian
+        GROUP BY a.enroll_id, a.tanggal_resign, a.department_name, b.status_penilaian
+    ");
+
+
         $enroll_id_array=array_column($query,'enroll_id');
         return $enroll_id_array;
     }

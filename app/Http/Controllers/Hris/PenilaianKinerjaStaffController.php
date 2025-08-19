@@ -1536,11 +1536,15 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         if ($enrollIds = request()->enroll_id) {
             $escapedIds = implode(',', array_map('intval', $enrollIds)); // sanitize ID to integer
             $inEnrollIds = "AND z.enroll_id IN ($escapedIds)";
-            $latestContracts = DB::table('employee_contract')
-                ->selectRaw('MAX(id) as id')
-                ->whereIn('enroll_id', $enrollIds)
-                ->groupBy('enroll_id')
-                ->pluck('id');
+         $latestContracts = DB::table('employee_contract as ec1')
+            ->select('ec1.id')
+            ->whereIn('ec1.enroll_id', $enrollIds)
+            ->whereRaw('ec1.contract_end = (
+                SELECT MAX(ec2.contract_end)
+                FROM employee_contract ec2
+                WHERE ec2.enroll_id = ec1.enroll_id
+            )')
+            ->pluck('id');
 
             // Update hanya kontrak terakhir
             DB::table('employee_contract')

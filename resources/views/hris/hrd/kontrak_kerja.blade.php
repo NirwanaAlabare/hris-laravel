@@ -2212,7 +2212,14 @@ function updateRange(start, end) {
         ajax: {
             url: '{{ route('hris.hrd.get_employee_contract') }}',
             data: function(d) {
+                d.enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+                d.no_ktp = $('#searchNoKTP').val();
+                d.status_kontrak = $('#status_kontrak').val();
+                d.status_aktif = $('#status_aktif').val();
+                d.status_staff = $('#status_staff').val();
                 d.search_variable = $('#search_variable').val();
+                d.contract = $('#daterange1').val();
+                d.department_name = $('#selectDepartment').val();
                 d.status_penilaian = 'proses_penilaian';
             },
         },
@@ -2314,7 +2321,7 @@ function updateRange(start, end) {
         rowCallback: function(row, data, dataIndex){
             let currentEnrollId = data['enroll_id'];
 
-            checkedEmployeeArr.forEach((item, index, array) => {
+            checkedEmployeeArrOnProcess.forEach((item, index, array) => {
                 if(item==currentEnrollId){
                     currentPageCheckOnProcess++;
                     $(row).find('input[id="checked_enroll_id_on_process'+item+'"]').prop('checked', true);
@@ -2332,6 +2339,24 @@ function updateRange(start, end) {
         }
     });
 
+    function setActiveTab(tabElement) {
+        // hapus active dari semua tab & konten
+        document.querySelectorAll(".tab_list li").forEach(li => li.classList.remove("active"));
+        document.querySelectorAll(".tab_content").forEach(content => content.classList.remove("active"));
+
+        // tambahkan active ke tab yg diklik
+        tabElement.classList.add("active");
+
+        // tampilkan tab aktif di console
+        let status_kontrak = document.getElementById("status_kontrak").value;
+    }
+
+    document.querySelectorAll(".tab_list li").forEach(tab => {
+        tab.addEventListener("click", function() {
+            setActiveTab(this);
+        });
+    });
+
     function actionThisEmployeeCheck(element) {
         if (element.checked) {
             if (!checkedEmployeeArr.includes(element.value)) {
@@ -2346,8 +2371,10 @@ function updateRange(start, end) {
 
         if (checkedEmployeeArr.length > 0) {
             document.getElementById("print_kontrak_kerja").style.display = "inline-block";
+            document.getElementById("btn_ubah_proses_penilaian").style.display = "inline-block";
         } else {
             document.getElementById("print_kontrak_kerja").style.display = "none";
+            document.getElementById("btn_ubah_proses_penilaian").style.display = "none";
         }
     }
 
@@ -2556,25 +2583,55 @@ function updateRange(start, end) {
         }
 
         document.getElementById("print_kontrak_kerja").style.display  = element.checked ? "inline-block" : "none";
+        document.getElementById("btn_ubah_proses_penilaian").style.display = element.checked ? "inline-block" : "none";
     }
 
     function actionCheckAllEmployeeOnProcess(element) {
+        var enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+        var no_ktp = $('#searchNoKTP').val();
+        var status_kontrak = $('#status_kontrak').val();
+        var status_aktif = $('#status_aktif').val();
+        var status_staff = $('#status_staff').val();
+        var search_variable = $('#search_variable').val();
         if (element.checked) {
-            // ambil semua enroll_id dari data di datatable
-            checkedEmployeeArrOnProcess = table_on_process
-                .rows({ search: 'applied' }) // hanya yg terlihat setelah filter/search
-                .data()
-                .pluck('enroll_id')
-                .toArray();
+             $.ajax({
+                type:"POST",
+                url: "{{ route('hris.hrd.ajax_getemployeeidbyfilter') }}",
+                data: {
+                    enroll_id: enroll_id,
+                    no_ktp: no_ktp,
+                    status_kontrak: status_kontrak,
+                    status_aktif: status_aktif,
+                    status_staff: status_staff,
+                    search_variable: search_variable,
+                    date_range: $('#daterange1').val(),
+                    department_name: $('#selectDepartment').val(),
+                    status_penilaian: 'proses_penilaian',
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(res){
+                    if(res){
+                        checkedEmployeeArrOnProcess = res;
+                        console.log(checkedEmployeeArrOnProcess);
 
-            // tandai semua checkbox baris
-            $('#table_on_process input.form-check-input').prop('checked', true);
+                        let table = $('#table_on_process').DataTable();
+
+                        table.ajax.reload(function(){
+                            checkedEmployeeArrOnProcess.forEach(function(id){
+                                $('#table_on_process input[type="checkbox"][value="'+id+'"]').prop('checked', true);
+                            });
+                        }, false);
+                    }
+                }
+            });
 
         } else {
             checkedEmployeeArrOnProcess = [];
-
+            $('#table_on_process').DataTable().ajax.reload(null, false);
             // uncheck semua checkbox baris
-            $('#table_on_process input.form-check-input').prop('checked', false);
+            // $('#table_on_process input.form-check-input').prop('checked', false);
         }
 
         // tampilkan / sembunyikan tombol
