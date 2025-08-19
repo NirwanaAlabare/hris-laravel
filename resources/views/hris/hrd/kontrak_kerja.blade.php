@@ -1074,7 +1074,7 @@ function updateRange(start, end) {
     $('#daterange1').val(daterange1);
 
     document.getElementById("print_form_penilaian").style.display = "inline-block";
-    document.getElementById("btn_ubah_proses_penilaian").style.display = "inline-block";
+    // document.getElementById("btn_ubah_proses_penilaian").style.display = "inline-block";
 
     $('#status_kontrak').val("");
     $('#datatable').DataTable().ajax.reload();
@@ -1087,7 +1087,7 @@ function updateRange(start, end) {
         let status_kontrak = document.getElementById("status_kontrak").value;
         if(!status_kontrak) {
              document.getElementById("print_form_penilaian").style.display = "none";
-             document.getElementById("btn_ubah_proses_penilaian").style.display = "none";
+            //  document.getElementById("btn_ubah_proses_penilaian").style.display = "none";
         }
         if($('#daterange1').val()){
             $('#status_kontrak').val("");
@@ -2655,10 +2655,10 @@ function updateRange(start, end) {
         let date_range = $('#daterange1').val();
         if(status || date_range){
             document.getElementById("print_form_penilaian").style.display = "inline-block";
-            document.getElementById("btn_ubah_proses_penilaian").style.display = "inline-block";
+            // document.getElementById("btn_ubah_proses_penilaian").style.display = "inline-block";
         }else{
             document.getElementById("print_form_penilaian").style.display = "none";
-            document.getElementById("btn_ubah_proses_penilaian").style.display = "none";
+            // document.getElementById("btn_ubah_proses_penilaian").style.display = "none";
         }
         if(status && date_range){
             $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i></span><i class="fa fa-angle-down ml-1"></i>');
