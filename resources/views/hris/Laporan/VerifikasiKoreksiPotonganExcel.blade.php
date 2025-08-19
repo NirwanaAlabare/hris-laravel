@@ -83,6 +83,12 @@
                     7 => 'POTONGAN UPAH',
                     8 => 'POTONGAN LEMBUR',
                 ];
+                $jenisKoreksi = [
+                    1 => 'UPAH',
+                    2 => 'INSENTIF JABATAN',
+                    3 => 'LEMBUR',
+                    4 => 'INSENTIF LAINNYA',
+                ];
             @endphp
             @foreach($data as $key => $value)
             <tr>
@@ -97,7 +103,11 @@
               <td>{{$value['periode_tanggal_koreksi']}}</td>
               <td>{{$value['jumlah_rp_potongan']}}</td>
               <td>
-                  {{ $jenisPotongan[$value['jenis_potongan']] ?? 'TIDAK DIKETAHUI' }}
+                   @if($value['sumber'] === 'PENAMBAH UPAH')
+                        {{ $jenisKoreksi[$value['jenis_potongan']] ?? 'TIDAK DIKETAHUI' }}
+                    @else
+                        {{ $jenisPotongan[$value['jenis_potongan']] ?? 'TIDAK DIKETAHUI' }}
+                    @endif
                 </td>
 
                 <td>{{$value['keterangan'] }}</td>
