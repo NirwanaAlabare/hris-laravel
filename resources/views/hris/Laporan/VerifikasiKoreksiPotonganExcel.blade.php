@@ -40,6 +40,8 @@
         <table style="table-layout: fixed; width: 100%;">
             <colgroup>
                 <col style="width: 40px;">   <!-- No -->
+                <col style="width: 140px;">  <!-- Enroll ID -->
+                <col style="width: 160px;">  <!-- Enroll ID -->
                 <col style="width: 100px;">  <!-- Enroll ID -->
                 <col style="width: 100px;">  <!-- NIK -->
                 <col style="width: 150px;">  <!-- Name -->
@@ -51,12 +53,14 @@
                 <col style="width: 100px;">  <!-- Jumlah Potongan -->
                 <col style="width: 180px;">  <!-- Jenis Potongan -->
                 <col style="width: 200px;">  <!-- Keterangan -->
-                <col style="width: 100px;">  <!-- Jumlah Potongan -->
+                <col style="width: 140px;">  <!-- Jumlah Potongan -->
             </colgroup>
 
           <thead>
             <tr>
             <th style="font-weight:bold;text-align:center;background-color:#C0C0C0;">No</th>
+            <th style="font-weight:bold;text-align:center;background-color:#C0C0C0;">No Form</th>
+            <th style="font-weight:bold;text-align:center;background-color:#C0C0C0;">No Koreksi</th>
             <th style="font-weight:bold;text-align:center;background-color:#C0C0C0;">ID</th>
             <th style="font-weight:bold;text-align:center;background-color:#C0C0C0;">NIK</th>
             <th style="font-weight:bold;text-align:center;background-color:#C0C0C0;">Nama</th>
@@ -93,6 +97,8 @@
             @foreach($data as $key => $value)
             <tr>
               <td>{{$key+1}}</td>
+              <td>{{$value['nomor_form_koreksi_upah']}}</td>
+              <td>{{$value['kode_koreksi']}}</td>
               <td>{{$value['enroll_id']}}</td>
               <td>{{$value['nik'] }}</td>
               <td>{{$value['employee_name'] }}</td>
