@@ -6,6 +6,10 @@
     <link href="{{ URL::asset('assets/plugins/datatable/css/buttons.bootstrap4.min.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('assets/plugins/datatable/responsivebootstrap4.min.css') }}" rel="stylesheet" />
 
+    <link href="{{ URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
+    <link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+
 	<!-- Notifications  css -->
 	<link href="{{URL::asset('assets/plugins/notify-growl/css/jquery.growl.css')}}" rel="stylesheet" />
 	<link href="{{URL::asset('assets/plugins/notify-growl/css/notifIt.css')}}" rel="stylesheet" />
@@ -281,7 +285,7 @@
     </div>
     <!-- row -->
     <div class="row">
-        <div class="col-sm-12 col-md-12 col-lg-7 col-xl-7">
+        <div class="col-sm-12 col-md-12 col-lg-9 col-xl-9">
             <!-- Begin Form Edit Absen Karyawan -->
 
             <div id="data-cari-koreksiupah" class="card shadow">
@@ -299,11 +303,9 @@
                         <div class="col-4">
                         </div>
                     </div>
-                    <div class="row pb-3">
-                        <div class="col-4 pt-2">
-                            <label class="form-label text-primary">PERIODE TANGGAL KOREKSI</label>
-                        </div>
+                    <div class="row mb-5 mt-5">
                         <div class="col-4">
+                            <label class="form-label text-primary">PERIODE TANGGAL KOREKSI</label>
                             <select id="periode_payroll" name="periode_payroll" class="form-control">
                                 @foreach ($periode_payroll as $r_periode_payroll)
                                     <option value="{{$r_periode_payroll->periode_payroll}}">
@@ -316,12 +318,40 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="col-5">
+                            <label class="form-label text-primary">NO FORM</label>
+                            <select id="selectNoSPL" name="selectNoSPL" multiple class="form-control select2 py-0">
+
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label text-primary">JENIS KOREKSI</label>
+                            <select id="jenis_koreksi_filter" name="jenis_koreksi_filter" class="form-control">
+                                    <option value="">
+                                        JENIS KOREKSI
+                                    </option>
+                                    <option value="1">
+                                        UPAH
+                                    </option>
+                                    <option value="2">
+                                        INSENTIF JABATAN
+                                    </option>
+                                    <option value="3">
+                                        LEMBUR
+                                    </option>
+                                    <option value="4">
+                                        INSENTIF LAINNYA
+                                    </option>
+                            </select>
+                        </div>
+
                     </div>
                     <div class="table-responsive">
                         <table id="datatable-ajax-crud"
                             class="table table-sm table-striped table-hover w-100">
                             <thead>
                                 <tr class="text-center">
+                                    <th scope="col"></th>
                                     <th scope="col"></th>
                                     <th scope="col"></th>
                                     <th scope="col"></th>
@@ -374,7 +404,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-12 col-md-12 col-lg-5 col-xl-5">
+        <div class="col-sm-12 col-md-12 col-lg-3 col-xl-3">
             <!-- Begin Form Edit Absen Karyawan -->
             <div id="data-add-koreksiupah" class="card shadow">
                 <div class="card-header bg-primary p-2">
@@ -607,6 +637,7 @@
     <script src="{{ URL::asset('assets/plugins/datatable/dataTables.responsive.min.js') }}"></script>
     <script src="{{ URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.js') }}"></script>
 
+    <script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
     <!-- Notifications js -->
     <script src="{{URL::asset('assets/plugins/notify-growl/js/rainbow.js')}}"></script>
     <script src="{{URL::asset('assets/plugins/notify-growl/js/sample.js')}}"></script>
@@ -1421,6 +1452,7 @@
             }
         }
         $(document).ready(function() {
+            getnomorspl();
             $('#periode_tanggal_kehadiran').val($('#periode_payroll').val());
             $('#delete_insentif_jabatan').attr("disabled");
             var table1 = $('#datatable-ajax-crud').DataTable({
@@ -1438,8 +1470,10 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     "dataSrc": "data",
-                    "data": {
-                        periode_payroll:periode_payroll,
+                    "data": function (d) {
+                        d.periode_lembur = $('#periode_tanggal_kehadiran').val(); // harus sama dengan backend
+                        d.nomor_form_koreksi_upah = $('#selectNoSPL').val(); // bisa array
+                        d.jenis_koreksi_filter = $('#jenis_koreksi_filter').val(); // bisa array
                     },
                 },
                 columns: [
@@ -1452,6 +1486,11 @@
                         title: 'KODE KOREKSI UPAH',
                         data: 'kode_koreksi_upah',
                         name: 'kode_koreksi_upah'
+                    },
+                    {
+                        title: 'NO FORM',
+                        data: 'nomor_form_koreksi_upah',
+                        name: 'nomor_form_koreksi_upah'
                     },
                     {
                         title: 'PERIODE KOREKSI',
@@ -1497,15 +1536,15 @@
                 columnDefs: [
                     {
                         'visible': false,
-                        'targets': [0,1,3,9]
+                        'targets': [0,3]
                     },
                     {
                         orderable: false,
-                        targets: [2,4,5,6,7,8]
+                        targets: [2,3,4,5,6,7,8]
                     },
                     {
                         className: "w-5 text-center text-nowrap",
-                        targets: [2,4,5]
+                        targets: [2,3,4,5,6,7,8]
                     },
                     {
                         className: "w-5 text-right text-nowrap",
@@ -1629,13 +1668,50 @@
                 $("#jumlah_rp_potongan2").val(formatRupiah(data["insentif"]));
             });
         });
+
+         $('#periode_payroll').on('change',function(){
+            testing2();
+            $('#delete_insentif_jabatan').attr("disabled");
+            $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+            $("#selectNoSPL").empty();
+            $("#selectNoSPL").val(null).trigger("change");
+            getnomorspl();
+        });
+        $('body').on('change', '#selectNoSPL', function () {
+            $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+        });
+        $('body').on('change', '#jenis_koreksi_filter', function () {
+            $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+        });
+         function getnomorspl()
+        {
+            var periode_lembur = $('#periode_payroll').val();
+
+            if(periode_lembur){
+                $.ajax({
+                    type:"POST",
+                    url: "{{route('hris.koreksi_upah.ajax_getnomorspl')}}",
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    data: {
+                        periode_lembur:periode_lembur,
+                    },
+                    dataType: 'json',
+                    success: function(resA){
+                        if(resA){
+                            for(i=0;i<resA.length;i++) {
+                                $("#selectNoSPL").append(new Option(resA[i].tanggal_nomor_spl, resA[i].nomor_form_koreksi_upah));
+                            }
+                        }
+                    }
+                });
+            }
+        };
     </script>
 
     <script>
-        $('#periode_payroll').on('change',function(){
-            testing2();
-            $('#delete_insentif_jabatan').attr("disabled");
-        });
+
         $('#periode_tanggal_kehadiran').on('change',function(){
             $('#nama_karyawan2').val('');
             $('#jumlah_rp_potongan2').val('');
@@ -1694,6 +1770,81 @@
                 type: "info"
             });
         @endif
+    </script>
+
+     <script>
+        $(function(){
+            'use strict';
+
+            $('.select2').select2({
+            minimumResultsForSearch: Infinity
+            });
+
+            // Select2 by showing the search
+            $('.select2-show-search').select2({
+            minimumResultsForSearch: ''
+            });
+
+            // Colored Hover
+            $('#select2').select2({
+            dropdownCssClass: 'hover-success',
+            minimumResultsForSearch: Infinity // disabling search
+            });
+
+            $('#select3').select2({
+            dropdownCssClass: 'hover-danger',
+            minimumResultsForSearch: Infinity // disabling search
+            });
+
+            // Outline Select
+            $('#select4').select2({
+            containerCssClass: 'select2-outline-success',
+            dropdownCssClass: 'bd-success hover-success',
+            minimumResultsForSearch: Infinity // disabling search
+            });
+
+            $('#select5').select2({
+            containerCssClass: 'select2-outline-info',
+            dropdownCssClass: 'bd-info hover-info',
+            minimumResultsForSearch: Infinity // disabling search
+            });
+
+            // Full Colored Select Box
+            $('#select6').select2({
+            containerCssClass: 'select2-full-color select2-primary',
+            minimumResultsForSearch: Infinity // disabling search
+            });
+
+            $('#select7').select2({
+            containerCssClass: 'select2-full-color select2-danger',
+            dropdownCssClass: 'hover-danger',
+            minimumResultsForSearch: Infinity // disabling search
+            });
+
+            // Full Colored Dropdown
+            $('#select8').select2({
+            dropdownCssClass: 'select2-drop-color select2-drop-primary',
+            minimumResultsForSearch: Infinity // disabling search
+            });
+
+            $('#select9').select2({
+            dropdownCssClass: 'select2-drop-color select2-drop-indigo',
+            minimumResultsForSearch: Infinity // disabling search
+            });
+
+            // Full colored for both box and dropdown
+            $('#select10').select2({
+            containerCssClass: 'select2-full-color select2-primary',
+            dropdownCssClass: 'select2-drop-color select2-drop-primary',
+            minimumResultsForSearch: Infinity // disabling search
+            });
+
+            $('#select11').select2({
+            containerCssClass: 'select2-full-color select2-indigo',
+            dropdownCssClass: 'select2-drop-color select2-drop-indigo',
+            minimumResultsForSearch: Infinity // disabling search
+            });
+        });
     </script>
 
 @endsection
