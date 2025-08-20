@@ -26,7 +26,7 @@ class VerifikasiKoreksiPotonganExport implements FromView,WithColumnFormatting
      public function columnFormats(): array
     {
         return [
-            'H' => NumberFormat::FORMAT_DATE_XLSX15,
+            'J' => NumberFormat::FORMAT_DATE_XLSX15,
         ];
     }
 }
