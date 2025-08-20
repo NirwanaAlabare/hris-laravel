@@ -199,14 +199,33 @@ h1 {
                         <div class="mt-4 ml-4 mr-5 mb-0">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div clasl="" style="display: flex; justify-content: start; align-items: center; gap: 10px;">
-                                         <div class="mt-5 p-0 w-50">
+                                         {{-- <div class="mt-5 p-0 w-50">
                                           <input type="" class="form-control" id="daterange-btn1" data-toggle="tooltip"
                                             title="" data-placement="bottom"  placeholder="PILIH TANGGAL" data-original-title="Klik di sini untuk pilih tanggal kehadiran">
                                             </input>
-                                        </div>
-                                        <div class="mt-5 p-0 w-50">
+                                        </div> --}}
+                                         <label class="form-label">PERIODE : </label>
+                                         <select id="periode_lembur" name="periode_lembur" class="form-control">
+                                            @foreach ($periode_lembur as $r_periode_lembur)
+                                                <option value="{{$r_periode_lembur->periode_payroll}}">
+                                                @php
+                                                    setlocale(LC_ALL, 'id-ID', 'id_ID');
+                                                    $datePeriode = explode(" s/d ", $r_periode_lembur->periode_payroll);
+                                                    echo strtoupper(strftime("%d %b %Y", strtotime($datePeriode[0])) . ' s/d ' . strftime("%d %b %Y", strtotime($datePeriode[1])));
+                                                @endphp
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        {{-- <div class="mt-5 p-0 w-50">
                                             <button type="button" class="btn btn-warning ml-2" id="clear-daterange">Clear</button>
+                                        </div> --}}
+                                </div>
+                                <div class="col-md-6" id="inputSearch1">
+                                    <div class="form-group">
+                                        <div class="form-group">
+                                             <label class="form-label">NO FORM : </label>
+                                            <select id="selectNoSPL" name="selectNoSPL" multiple class="form-control select2 py-0">
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -241,6 +260,7 @@ h1 {
                                                                     <input type="checkbox" id="checkAllEmployee" onchange="actionCheckAllEmployee(this)">
                                                                 </th>
 
+                                                                <th scope="col">No Form</th>
                                                                 <th scope="col">No Koreksi</th>
                                                                 <th scope="col">Tanggal Koreksi</th>
                                                                 <th scope="col">Jenis Koreksi</th>
@@ -266,6 +286,7 @@ h1 {
                                                         <thead>
                                                             <tr class="text-center">
                                                                 <th scope="col">Aksi</th>
+                                                                <th scope="col">No Form</th>
                                                                 <th scope="col">No Koreksi</th>
                                                                 <th scope="col">Tanggal Koreksi</th>
                                                                 <th scope="col">Jenis Koreksi</th>
@@ -399,7 +420,8 @@ h1 {
                 type:"POST",
                 url: "{{route('hris.koreksipotongan.export_verifikasi_koreksi')}}",
                 data: {
-                    tanggal_range: $('#daterange1').val(),
+                    periode_lembur : $('#periode_lembur').val(),
+                    nomor_form_koreksi_upah : $('#selectNoSPL').val()
                 },
                  xhrFields: {
                  responseType: 'blob' // PENTING untuk file biner
@@ -562,11 +584,13 @@ h1 {
                 }
         }
 
+
+
         var perijinanChecked = [];
         var currentPageCheck = 0;
         $(document).ready(function() {
-
-             $('#daterange-btn1').daterangepicker({
+            getnomorspl();
+            $('#daterange-btn1').daterangepicker({
             ranges: {
                 'Hari ini': [moment(), moment()],
                 'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -592,13 +616,54 @@ h1 {
             tableVerifikasi.ajax.reload();
         });
 
+        $('body').on('change', '#periode_lembur', function () {
+            var periode_lembur = $('#periode_lembur').val();
+            tableWaiting.ajax.reload();
+            tableVerifikasi.ajax.reload();
+            $("#selectNoSPL").empty();
+            $("#selectNoSPL").val(null).trigger("change");
+            getnomorspl();
+        });
+
+        $('body').on('change', '#selectNoSPL', function () {
+            tableWaiting.ajax.reload();
+            tableVerifikasi.ajax.reload();
+        });
+
+        function getnomorspl()
+        {
+            var periode_lembur = $('#periode_lembur').val();
+
+            if(periode_lembur){
+                $.ajax({
+                    type:"POST",
+                    url: "{{route('hris.koreksi_upah.ajax_getnomorspl')}}",
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    data: {
+                        periode_lembur:periode_lembur,
+                    },
+                    dataType: 'json',
+                    success: function(resA){
+                        if(resA){
+                            for(i=0;i<resA.length;i++) {
+                                $("#selectNoSPL").append(new Option(resA[i].tanggal_nomor_spl, resA[i].nomor_form_koreksi_upah));
+                            }
+                        }
+                    }
+                });
+            }
+        };
+
             var tableWaiting = $('#datatable-ajax-crud-waiting').DataTable({
                 ajax: {
                     url: '{{ route('hris.koreksipotongan.list_verifikasi_koreksi') }}',
                     type: "POST",
                     data: function (d) {
                         d.is_verifikasi_acc = 0;
-                        d.tanggal_range = $('#daterange1').val(); // kirim range terpilih
+                        d.periode_lembur = $('#periode_lembur').val();
+                        d.nomor_form_koreksi_upah = $('#selectNoSPL').val();
                     }
                 },
                 processing: true,
@@ -608,6 +673,7 @@ h1 {
                         data: 'uuid',
                         orderable: false
                     },
+                    { data: 'nomor_form_koreksi_upah' },
                     { data: 'kode_koreksi' },
                     { data: 'tanggal_koreksi',
                     width: '10%',
@@ -706,7 +772,8 @@ h1 {
                     type: "POST",
                     data: function (d) {
                         d.is_verifikasi_acc = 1;
-                        d.tanggal_range = $('#daterange1').val(); // kirim range terpilih
+                        d.periode_lembur = $('#periode_lembur').val();
+                        d.nomor_form_koreksi_upah = $('#selectNoSPL').val();
                     }
                 },
                 processing: true,
@@ -726,6 +793,7 @@ h1 {
                         `;
                         }
                     },
+                    { data: 'nomor_form_koreksi_upah' },
                     { data: 'kode_koreksi' },
                     {   data: 'tanggal_koreksi',
                     render: function(data, type, row) {

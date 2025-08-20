@@ -102,6 +102,7 @@
                 </form>
                 <!-- end modal -->
                 <div class="text-white">
+                    <button type="button" id="btn-import-upah" class="btn btn-icon btn-info text-white p-1 px-3 mr-1"  data-target="#import_koreksiupah_from_nds" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Koreksi Upah NDS</button>
                     <button type="button" id="btn-import" class="btn btn-icon btn-warning text-white p-1 px-3 mr-1"  data-target="#import_koreksiupah" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Data</button>
                     <a href="{{route('hris.koreksiupah.format')}}" id="btn-examimport" class="btn btn-icon btn-orange text-white p-1 px-3 mr-1" data-toggle="tooltip" title="" data-original-title="Format File Excel"><i class="fa fa-file-excel-o"></i>Format File </a>
                 </div>
@@ -487,6 +488,105 @@
     <!-- row end -->
 </div>
 
+    <div class="modal fade" id="import_koreksiupah_from_nds" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="max-width: 1200px">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary">
+                            <h4 class="modal-title pl-2 font-weight-bold" >Import Koreksi insentif dari NDS</h4>
+                            <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
+                                <i class="fa fa-remove"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-2">
+                                    <h5 class="modal-title pl-2 pt-1 font-weight-bold" >Tanggal Insentif</h5>
+                                </div>
+                                <div class="col-3">
+                                    <input type="date" class="form-control" id="tanggal_lembur_nds" style="background-color: white">
+                                </div>
+                            </div>
+                            <div class="row pt-3">
+                                <div class="col-2">
+                                    <h5 class="modal-title pl-2 pt-1 font-weight-bold" >Daftar Karyawan</h5>
+                                </div>
+                                <div class="col-3">
+                                    <select id="selectNoForm" name="selectNoForm" class="form-control" style="background-color: white">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row pt-3">
+                                <div class="col-2">
+                                    <h5 class="modal-title pl-2 pt-1 font-weight-bold" >Nomor Form Insentif</h5>
+                                </div>
+                                <div class="col-3">
+                                    <input class="form-control pt-1" id="new_nomor_form_lembur" readonly>
+                                </div>
+                                <div class="col-1 pt-1 pl-0">
+                                    <a href="#" onclick="get_new_nomor_form_lembur()" id="btn-icon-refresh_new_form_lembur" style="visibility: hidden; font-size: 12pt"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                </div>
+                            </div>
+                            <div class="row pt-3">
+                                <div class="col-12">
+                                    <table class="table table-bordered" style="overflow-x:auto">
+                                        <thead id="head_overtime_from_nds">
+                                            <tr>
+                                                <td rowspan="2" width="45px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NO</td>
+                                                <td rowspan="2" width="60px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ID</td>
+                                                <td rowspan="2" width="100px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NIK</td>
+                                                <td rowspan="2" width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NAMA KARYAWAN</td>
+                                                <td colspan="3" width="180px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Actual Absent</td>
+                                                <td rowspan="2" width="115px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">DARI</td>
+                                                <td rowspan="2" width="115px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">SAMPAI</td>
+                                                <td rowspan="2" width="80px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">I</td>
+                                                <td rowspan="2" width="80px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">T</td>
+                                                <td rowspan="2" width="125px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Jumlah</td>
+                                                <td rowspan="2" width="125px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Ket</td>
+                                                <td rowspan="2" width="40px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px"><span class="fa fa-cog"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td width="60px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">IN</td>
+                                                <td width="60px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">OUT</td>
+                                                <td width="60px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">Stats</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabel_overtime_from_nds">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row py-0">
+                                <div class="col-4" id="data_ada_dan_tidak" style="visibility: hidden">
+                                    <table style="font-weight: bold">
+                                        <tr>
+                                            <td>Total</td>
+                                            <td><input type="text" class="form-control col-3" id="total_new_data_lembur" readonly style="background-color: white"></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="150">Data will be import </td>
+                                            <td><input type="text" class="form-control col-3" id="total_new_data_lembur_import" readonly style="background-color: white"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-4 text-center pt-1">
+                                    <button class="btn btn-primary py-1" style="visibility: hidden" id="import_data_lembur_button">IMPORT</button>
+                                </div>
+                                <div class="col-2"></div>
+                                <div class="col-2 pt-1" id="data_sudah_ada" style="visibility: hidden">
+                                    <i class="fa fa-square" aria-hidden="true" style="color:red;"></i>&nbsp;Data Sudah ada
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-primary">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @section('footerjs')
@@ -527,6 +627,210 @@
     <script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
 
     <script type="text/javascript">
+
+        $('body').on('change', '#tanggal_lembur_nds', function () {
+            var tanggal_lembur = $('#tanggal_lembur_nds').val();
+            $("#selectNoForm").empty();
+            $("#selectNoForm").val(null).trigger("change");
+            document.getElementById('tabel_overtime_from_nds').style.height='1px';
+            document.getElementById('import_data_lembur_button').style.visibility='hidden';
+            document.getElementById('data_sudah_ada').style.visibility='hidden';
+            document.getElementById('data_ada_dan_tidak').style.visibility='hidden';
+            getnomorform();
+        });
+        function getnomorform()
+        {
+            var tanggal_lembur = $('#tanggal_lembur_nds').val();
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.koreksi_upah.get_list_insentif')}}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    tanggal_lembur:tanggal_lembur,
+                },
+                success: function(response){
+                    console.log('response',response);
+                    $("#selectNoForm").append("<option value=''>Daftar karyawan</option>");
+                    for(i=0;i<response.length;i++) {
+                        $("#selectNoForm").append("<option value="+response[i].no_form+">"+response[i].dept+" => "+response[i].jml_insentif+" karyawan</option>");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    swal("", "Pilih nomor form gagal!", "error");
+                }
+            });
+        }
+
+        function get_new_nomor_form_lembur(){
+            $.ajax({
+                type:"GET",
+                url: "{{route('hris.koreksi_upah.get_last_nomor_form_koreksi_upah')}}",
+                success: function(res){
+                    $('#new_nomor_form_lembur').val(res);
+                    document.getElementById('btn-icon-refresh_new_form_lembur').style.visibility='visible';
+                }
+            });
+        }
+        $('#selectNoForm').on('change',function(){
+            var tanggal_lembur = $('#tanggal_lembur_nds').val();
+            $('#tabel_overtime_from_nds').empty();
+            let no_form=$('#selectNoForm').val();
+            document.getElementById('tabel_overtime_from_nds').style.height='1px';
+            document.getElementById('import_data_lembur_button').style.visibility='hidden';
+            document.getElementById('data_sudah_ada').style.visibility='hidden';
+            document.getElementById('data_ada_dan_tidak').style.visibility='hidden';
+            document.getElementById('btn-icon-refresh_new_form_lembur').style.visibility='hidden';
+            $('#new_nomor_form_lembur').val('');
+            get_new_nomor_form_lembur();
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.koreksi_upah.getkaryawanInsentif')}}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                data: {
+                    no_form:no_form,
+                    tanggal_lembur:tanggal_lembur
+                },
+                success: function(data){
+                    let total_data=data.length;
+                    let total_data_imported=0;
+                    console.log('data', data);
+                    jQuery.each(data, function(key,value){
+                        let status_absen=data[key].status_absen;
+                        if(data[key].status_absen==null){
+                            status_absen='';
+                        }
+                        let time1 = data[key].jam_lembur_awal_rencana;
+                        let time2 = data[key].jam_lembur_akhir_rencana;
+                        let date1 = new Date(`2000-01-01T${time1}Z`);
+                        let date2 = new Date(`2000-01-01T${time2}Z`);
+                        if (date2 < date1) {
+                            date2.setDate(date2.getDate() + 1);
+                        }
+                        let jam_lembur = ((date2 - date1)/3600000)-(data[key].jam_lembur_istirahat/60);
+                        let jam_lembur_istirahat=data[key].jam_lembur_istirahat/60;
+                        let absen_masuk_kerja=data[key].absen_masuk_kerja;
+                        if(data[key].absen_masuk_kerja==null){
+                            absen_masuk_kerja='';
+                        }
+                        let absen_pulang_kerja=data[key].absen_pulang_kerja;
+                        if(data[key].absen_pulang_kerja==null){
+                            absen_pulang_kerja='';
+                        }
+                        let textcolor='black';
+                        if(data[key].nomor_form_koreksi_upah!=null){
+                            textcolor='red';
+                        }else{
+                            total_data_imported+=1;
+                            textcolor='black';
+                        }
+                        $('#tabel_overtime_from_nds').append("<tr style='color:"+textcolor+"' id='row_overtime_employee_"+key+"'>\
+                            <td width='45px'>"+(key+1)+"</td>\
+                            <td width='60px'><input type='hidden' name='enroll_id_from_nds[]' class='form-control form-control-sm' value='"+data[key].enroll_id+"''>"+data[key].enroll_id+"</td>\
+                            <td width='100px'>"+data[key].nik+"</td>\
+                            <td width='200px'>"+data[key].employee_name+"</td>\
+                            <td width='60px'>"+absen_masuk_kerja+"</td>\
+                            <td width='60px'>"+absen_pulang_kerja+"</td>\
+                            <td width='60px'>"+status_absen+"</td>\
+                            <td width='115px'><input name='jam_lembur_awal_rencana[]' type='time' id='jam_lembur_awal_rencana_"+key+"' class='form-control form-control-sm px-2' value='"+(data[key].jam_lembur_awal_rencana)+"'' onChange='calculateTotalLembur("+key+")'></td>\
+                            <td width='115px'><input name='jam_lembur_akhir_rencana[]' type='time' id='jam_lembur_akhir_rencana_"+key+"' class='form-control form-control-sm px-2' value='"+(data[key].jam_lembur_akhir_rencana)+"' onChange='calculateTotalLembur("+key+")'></td>\
+                            <td width='80px'><input name='jam_lembur_istirahat[]' type='number' id='jam_lembur_istirahat_"+key+"' class='form-control form-control-sm px-1' value='"+(data[key].jam_lembur_istirahat)+"' onChange='calculateTotalLembur("+key+")'></td>\
+                            <td width='80px'><input name='total_lembur[]' type='number' id='total_lembur_"+key+"' class='form-control form-control-sm px-1' value='"+(jam_lembur)+"' onChange='calculateAkhirLembur("+key+")'></td>\
+                            <td width='125px' style='font-size:8pt;padding-left:5px;padding-right:5px; word-break:break-all;'><input type='number' class='form-control form-control-sm px-1' name='jml_insentif[]' id='jml_insentif_"+key+"' value='"+data[key].jml_insentif+"'></td>\
+                            <td width='125px' style='font-size:8pt;padding-left:5px;padding-right:5px; word-break:break-all;'><input type='hidden' class='form-control form-control-sm px-1' name='keterangan_lembur[]' id='keterangan_lembur_"+key+"' value='"+data[key].ket+"'>"+data[key].ket+"</td>\
+                            <td width='40px'><a href='#' onClick='deletePengajuan("+key+")' style='color:red;font-size:12pt'><span class='fa fa-trash'></span></a></td>\
+                        </tr>");
+                        document.getElementById('tabel_overtime_from_nds').style.height='300px';
+                        document.getElementById('import_data_lembur_button').style.visibility='visible';
+                        document.getElementById('data_sudah_ada').style.visibility='visible';
+                        document.getElementById('data_ada_dan_tidak').style.visibility='visible';
+                        $('#total_new_data_lembur').val(total_data);
+                        $('#total_new_data_lembur_import').val(total_data_imported);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    swal("", "Pilih nomor form gagal!", "error");
+                }
+            });
+        });
+
+        function deletePengajuan(key){
+            var enroll_id = $("input[name='enroll_id_from_nds[]']").map(function(){return $(this).val();}).get();
+            enroll_id.splice(key, 1);
+            var jawa_rencana = $("input[name='jam_lembur_awal_rencana[]']").map(function(){return $(this).val();}).get();
+            jawa_rencana.splice(key, 1);
+            var jakir_rencana = $("input[name='jam_lembur_akhir_rencana[]']").map(function(){return $(this).val();}).get();
+            jakir_rencana.splice(key, 1);
+            var istirahat = $("input[name='jam_lembur_istirahat[]']").map(function(){return $(this).val();}).get();
+            istirahat.splice(key, 1);
+            var jakir_rencana_ket = $("input[name='keterangan_lembur[]']").map(function(){return $(this).val();}).get();
+            jakir_rencana_ket.splice(key, 1);
+            var jml_insentif = $("input[name='jml_insentif[]']").map(function(){return $(this).val();}).get();
+            jml_insentif.splice(key, 1);
+            var row = document.getElementById('row_overtime_employee_'+key);
+            row.parentNode.removeChild(row);
+            var total_data=$('#total_new_data_lembur').val()-1;
+            $('#total_new_data_lembur').val(total_data);
+            var total_data_imported=$('#total_new_data_lembur_import').val()-1;
+            $('#total_new_data_lembur_import').val(total_data_imported);
+        }
+
+         $('#import_data_lembur_button').on('click',function(){
+            $("#import_data_lembur_button").addClass("btn-loading");
+            $("#import_data_lembur_button").html('Loading...');
+            $("#import_data_lembur_button").attr("disabled", true);
+            var tanggal_lembur = $('#tanggal_lembur_nds').val();
+            var new_nomor_form_lembur = $('#new_nomor_form_lembur').val();
+            var enroll_id = $("input[name='enroll_id_from_nds[]']").map(function(){return $(this).val();}).get();
+            var jam_lembur_awal_rencana = $("input[name='jam_lembur_awal_rencana[]']").map(function(){return $(this).val();}).get();
+            var jam_lembur_akhir_rencana = $("input[name='jam_lembur_akhir_rencana[]']").map(function(){return $(this).val();}).get();
+            var jam_lembur_istirahat = $("input[name='jam_lembur_istirahat[]']").map(function(){return $(this).val();}).get();
+            var jam_lembur = $("input[name='total_lembur[]']").map(function(){return $(this).val();}).get();
+            var keterangan = $("input[name='keterangan_lembur[]']").map(function(){return $(this).val();}).get();
+            var jml_insentif = $("input[name='jml_insentif[]']").map(function(){return $(this).val();}).get();
+            $.ajax({
+                type:"POST",
+                url: "{{route('hris.koreksi_upah.importkaryawanInsentif')}}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                data: {
+                    tanggal_lembur:tanggal_lembur,
+                    new_nomor_form_lembur:new_nomor_form_lembur,
+                    enroll_id:enroll_id,
+                    jam_lembur_awal_rencana:jam_lembur_awal_rencana,
+                    jam_lembur_akhir_rencana:jam_lembur_akhir_rencana,
+                    jam_lembur_istirahat:jam_lembur_istirahat,
+                    jam_lembur:jam_lembur,
+                    keterangan:keterangan,
+                    jumlah_insentif:jml_insentif,
+                },
+                success: function(data){
+                    console.log(data);
+                    swal("", "Data lembur berhasil di import", "success");
+                    $('#tabel_overtime_from_nds').empty();
+                    document.getElementById('tabel_overtime_from_nds').style.height='1px';
+                    document.getElementById('import_data_lembur_button').style.visibility='hidden';
+                    document.getElementById('data_sudah_ada').style.visibility='hidden';
+                    $("#import_data_lembur_button").removeClass("btn-loading");
+                    $("#import_data_lembur_button").html('IMPORT');
+                    $("#import_data_lembur_button").attr("disabled", false);
+                    $('#import_data_lembur_from_nds').modal('hide');
+                    document.getElementById('tanggal_lembur_nds').value='';
+                    document.getElementById('selectNoForm').value='';
+                    document.getElementById('btn-icon-refresh_new_form_lembur').style.visibility='hidden';
+                    $('#new_nomor_form_lembur').val('');
+                    document.getElementById('data_ada_dan_tidak').style.visibility='hidden';
+                },
+                error: function (xhr, status, error) {
+                    swal("", "Data lembur gagal di import", "error");
+                    $("#import_data_lembur_button").removeClass("btn-loading");
+                    $("#import_data_lembur_button").html('IMPORT');
+                    $("#import_data_lembur_button").attr("disabled", false);
+                }
+            });
+        });
 
         function formatRupiah(angka) {
             return "Rp " + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");

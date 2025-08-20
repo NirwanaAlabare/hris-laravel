@@ -8,6 +8,7 @@ class DataKoreksiUpah extends \Eloquent
     // Don't forget to fill this array
     protected $fillable = [
         'uuid',
+        'nomor_form_koreksi_upah',
         'kode_koreksi_upah',
         'tanggal_koreksi',
         'enroll_id',

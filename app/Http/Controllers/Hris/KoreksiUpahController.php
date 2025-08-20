@@ -6,8 +6,12 @@ use App\Models\EmployeeAtribut;
 use App\Http\Controllers\AdminBaseController;
 use App\Models\DataKoreksiUpah;
 use App\Models\RekapKehadiranKaryawan;
+use App\Models\MutKaryawanInputFormLemburDet;
+use App\Models\MasterDataAbsenKehadiran;
 use App\Models\DepartmentAll;
+use App\Models\DataLembur;
 use GuzzleHttp\Client;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
@@ -477,6 +481,410 @@ class KoreksiUpahController extends AdminBaseController
 
         return $query;
     }
+
+     public function get_list_insentif()
+    {
+        $tanggal_lembur = request()->tanggal_lembur;
+        $datalembur = DB::select("
+            select
+                z.no_form,
+                count(z.enroll_id) as jumlah,
+                z.dept,
+                -- jumlah yang punya insentif
+                count(if(z.uuid_koreksi_upah != '', 1, null)) as jml_insentif,
+                -- list enroll_id yang punya insentif (dipisahkan koma)
+                group_concat(distinct if(z.uuid_koreksi_upah != '', z.enroll_id, null) order by z.enroll_id) as enroll_id_insentif
+            from (
+                select
+                    b.no_form,
+                    b.tgl_lembur,
+                    a.enroll_id,
+                    b.line as dept,
+                    a.uuid_koreksi_upah
+                from mut_karyawan_input_form_lembur_det a
+                inner join mut_karyawan_input_form_lembur b
+                    on a.no_form = b.no_form
+                where b.tgl_lembur = '$tanggal_lembur'
+
+                union all
+
+                select
+                    b.no_form,
+                    b.tgl_lembur,
+                    a.enroll_id,
+                    b.dept as dept,
+                    a.uuid_koreksi_upah
+                from mut_karyawan_input_non_sewing_form_lembur_det a
+                inner join mut_karyawan_input_non_sewing_form_lembur b
+                    on a.no_form = b.no_form
+                where b.tgl_lembur = '$tanggal_lembur'
+            ) z
+            group by z.no_form, z.dept
+            having jml_insentif > 0
+            order by z.dept
+        ");
+        return $datalembur;
+    }
+
+    public function getkaryawanInsentif()
+    {
+        $tanggal_lembur=request()->tanggal_lembur;
+        $no_form=request()->no_form;
+
+
+    //  $karyawanLembur = DB::select("
+    //         select
+    //             z.no_form,
+    //             z.dept,
+    //             z.enroll_id,
+    //             z.employee_name,
+    //             z.nik,
+    //             z.ket,
+    //             z.absen_masuk_kerja,
+    //             z.nomor_form_lembur,
+    //             z.status_absen,
+    //             z.absen_pulang_kerja,
+    //             z.jml_insentif,
+    //             z.jam_lembur_awal_rencana,
+    //             z.jam_lembur_akhir_rencana,
+    //             z.jam_lembur_istirahat
+    //         from (
+    //             -- SEWING
+    //             select
+    //                 b.no_form,
+    //                 b.tgl_lembur,
+    //                 a.enroll_id,
+    //                 e.employee_name,
+    //                 e.nik,
+    //                 coalesce(c.ket, ns.keterangan) as ket,
+    //                 SUBSTR(a.jam_lembur_awal_rencana,1,5) as jam_lembur_awal_rencana,
+    //                 SUBSTR(a.jam_lembur_akhir_rencana,1,5) as jam_lembur_akhir_rencana,
+    //                 a.jam_lembur_istirahat,
+    //                 b.line as dept,
+    //                 a.uuid_koreksi_upah as jml_insentif,
+    //                 m.absen_masuk_kerja,
+    //                 m.nomor_form_lembur,
+    //                 m.status_absen,
+    //                 m.absen_pulang_kerja
+    //             from mut_karyawan_input_form_lembur_det a
+    //             inner join mut_karyawan_input_form_lembur b
+    //                 on a.no_form = b.no_form
+    //             inner join (
+    //                 select *
+    //                 from master_data_absen_kehadiran
+    //                 where tanggal_berjalan = '$tanggal_lembur'
+    //             ) m on a.enroll_id = m.enroll_id
+    //             inner join employee_atribut e on a.enroll_id = e.enroll_id
+    //             left join mut_karyawan_input_form_lembur_det_ket c on b.no_form = c.no_form
+    //             left join mut_karyawan_input_non_sewing_form_lembur_det ns on b.no_form = ns.no_form
+    //             where b.tgl_lembur = '$tanggal_lembur'
+    //             and b.no_form = '$no_form'
+    //             and a.uuid_koreksi_upah is not null
+    //             and a.uuid_koreksi_upah != ''
+
+    //             union all
+
+    //             -- NON SEWING
+    //             select
+    //                 b.no_form,
+    //                 b.tgl_lembur,
+    //                 a.enroll_id,
+    //                 e.employee_name,
+    //                 e.nik,
+    //                 coalesce(c.ket, ns.keterangan) as ket,
+    //                 SUBSTR(a.jam_lembur_awal_rencana,1,5) as jam_lembur_awal_rencana,
+    //                 SUBSTR(a.jam_lembur_akhir_rencana,1,5) as jam_lembur_akhir_rencana,
+    //                 a.jam_lembur_istirahat as jam_lembur_istirahat,
+    //                 b.dept as dept,
+    //                 a.uuid_koreksi_upah as jml_insentif,
+    //                 m.absen_masuk_kerja,
+    //                 m.nomor_form_lembur,
+    //                 m.status_absen,
+    //                 m.absen_pulang_kerja
+    //             from mut_karyawan_input_non_sewing_form_lembur_det a
+    //             inner join mut_karyawan_input_non_sewing_form_lembur b
+    //                 on a.no_form = b.no_form
+    //             inner join (
+    //                 select *
+    //                 from master_data_absen_kehadiran
+    //                 where tanggal_berjalan = '$tanggal_lembur'
+    //             ) m on a.enroll_id = m.enroll_id
+    //             inner join employee_atribut e on a.enroll_id = e.enroll_id
+    //             left join mut_karyawan_input_form_lembur_det_ket c on b.no_form = c.no_form
+    //             left join mut_karyawan_input_non_sewing_form_lembur_det ns on b.no_form = ns.no_form
+    //             where b.tgl_lembur = '$tanggal_lembur'
+    //             and b.no_form = '$no_form'
+    //             and a.uuid_koreksi_upah is not null
+    //             and a.uuid_koreksi_upah != ''
+    //         ) z
+    //         group by z.enroll_id
+    //         order by z.dept, z.enroll_id
+    //     ");
+
+
+        $jenis_koreksi = '4'; // contoh value, bisa request()->jenis_koreksi
+
+        $karyawanLembur = DB::select("
+            select
+                z.no_form,
+                z.dept,
+                z.enroll_id,
+                z.employee_name,
+                z.nik,
+                z.ket,
+                z.absen_masuk_kerja,
+                z.nomor_form_lembur,
+                z.status_absen,
+                z.absen_pulang_kerja,
+                z.jml_insentif,
+                z.jam_lembur_awal_rencana,
+                z.jam_lembur_akhir_rencana,
+                z.jam_lembur_istirahat,
+                dku.nomor_form_koreksi_upah
+            from (
+                -- SEWING
+                select
+                    b.no_form,
+                    b.tgl_lembur,
+                    a.enroll_id,
+                    e.employee_name,
+                    e.nik,
+                    coalesce(c.ket, ns.keterangan) as ket,
+                    SUBSTR(a.jam_lembur_awal_rencana,1,5) as jam_lembur_awal_rencana,
+                    SUBSTR(a.jam_lembur_akhir_rencana,1,5) as jam_lembur_akhir_rencana,
+                    a.jam_lembur_istirahat,
+                    b.line as dept,
+                    a.uuid_koreksi_upah as jml_insentif,
+                    m.absen_masuk_kerja,
+                    m.nomor_form_lembur,
+                    m.status_absen,
+                    m.absen_pulang_kerja
+                from mut_karyawan_input_form_lembur_det a
+                inner join mut_karyawan_input_form_lembur b
+                    on a.no_form = b.no_form
+                inner join (
+                    select *
+                    from master_data_absen_kehadiran
+                    where tanggal_berjalan = '$tanggal_lembur'
+                ) m on a.enroll_id = m.enroll_id
+                inner join employee_atribut e on a.enroll_id = e.enroll_id
+                left join mut_karyawan_input_form_lembur_det_ket c on b.no_form = c.no_form
+                left join mut_karyawan_input_non_sewing_form_lembur_det ns on b.no_form = ns.no_form
+                where b.tgl_lembur = '$tanggal_lembur'
+                and b.no_form = '$no_form'
+                and a.uuid_koreksi_upah is not null
+                and a.uuid_koreksi_upah != ''
+
+                union all
+
+                -- NON SEWING
+                select
+                    b.no_form,
+                    b.tgl_lembur,
+                    a.enroll_id,
+                    e.employee_name,
+                    e.nik,
+                    coalesce(c.ket, ns.keterangan) as ket,
+                    SUBSTR(a.jam_lembur_awal_rencana,1,5) as jam_lembur_awal_rencana,
+                    SUBSTR(a.jam_lembur_akhir_rencana,1,5) as jam_lembur_akhir_rencana,
+                    a.jam_lembur_istirahat as jam_lembur_istirahat,
+                    b.dept as dept,
+                    a.uuid_koreksi_upah as jml_insentif,
+                    m.absen_masuk_kerja,
+                    m.nomor_form_lembur,
+                    m.status_absen,
+                    m.absen_pulang_kerja
+                from mut_karyawan_input_non_sewing_form_lembur_det a
+                inner join mut_karyawan_input_non_sewing_form_lembur b
+                    on a.no_form = b.no_form
+                inner join (
+                    select *
+                    from master_data_absen_kehadiran
+                    where tanggal_berjalan = '$tanggal_lembur'
+                ) m on a.enroll_id = m.enroll_id
+                inner join employee_atribut e on a.enroll_id = e.enroll_id
+                left join mut_karyawan_input_form_lembur_det_ket c on b.no_form = c.no_form
+                left join mut_karyawan_input_non_sewing_form_lembur_det ns on b.no_form = ns.no_form
+                where b.tgl_lembur = '$tanggal_lembur'
+                and b.no_form = '$no_form'
+                and a.uuid_koreksi_upah is not null
+                and a.uuid_koreksi_upah != ''
+            ) z
+            left join data_koreksi_upah dku
+                on dku.enroll_id = z.enroll_id
+                and dku.tanggal_koreksi = z.tgl_lembur
+                and dku.jenis_koreksi = '$jenis_koreksi'
+                and dku.deleted_at is null
+            group by z.enroll_id
+            order by z.dept, z.enroll_id
+        ");
+
+
+        return $karyawanLembur;
+    }
+
+    public function importkaryawanInsentif()
+    {
+
+        $loggedAdmin = Auth::guard('admin')->user();
+        $email = $loggedAdmin->email;
+        $kodelembur = "SPL/HR";
+        $thnbln = date("ym");
+
+         $last_nomor = DataKoreksiUpah::select('nomor_form_koreksi_upah')
+        ->orderByRaw("CAST(SUBSTRING_INDEX(nomor_form_koreksi_upah, '/', -1) AS UNSIGNED) DESC")
+        ->limit(1)
+        ->pluck('nomor_form_koreksi_upah')
+        ->first();
+
+        // Ambil angka terakhir setelah "/"
+        $last_angka = $last_nomor
+            ? (int) collect(explode('/', $last_nomor))->last()
+            : 0;
+
+        $ldate = date('Ym');
+
+        $nomor_form_lembur = 'INS/HR/' . substr($ldate, 2) . '/' . sprintf("%05d", $last_angka + 1);
+
+        $enroll_id=request()->enroll_id;
+
+        $tanggal_lembur = Carbon::parse(request()->tanggal_lembur)->format('Ymd');
+
+        $tglkoreksi = explode('-', request()->tanggal_lembur);
+
+        // Ambil waktu sekarang (menit & detik)
+        $minute = now()->format('i');
+        $second = now()->format('s');
+
+        // Ambil NIK dari request sesuai index
+
+
+        $tanggalKoreksi = Carbon::parse(request()->tanggal_lembur);
+
+        // Tentukan awal periode (26 bulan lalu)
+        $start = $tanggalKoreksi->copy()->subMonth()->day(26);
+
+        // Tentukan akhir periode (25 bulan ini)
+        $end = $tanggalKoreksi->copy()->day(25);
+
+        // Format ke MM/DD/YYYY
+        $periode_tanggal_koreksi = $start->format('m/d/Y') . ' - ' . $end->format('m/d/Y');
+
+       $data = [];
+
+        foreach (request()->enroll_id as $key => $enroll_id) {
+            $nik=EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('nik')[0];
+            $kode_koreksi_upah = $tanggal_lembur . $minute . $second . $nik;
+
+           DataKoreksiUpah::updateOrInsert(
+                [
+                    'tanggal_koreksi' => $tanggal_lembur,
+                    'jenis_koreksi' => 4,
+                    'enroll_id' => $enroll_id,
+                ],
+                [
+                    'uuid' => Str::uuid(),
+                    'nomor_form_koreksi_upah' => $nomor_form_lembur,
+                    'kode_koreksi_upah' => $kode_koreksi_upah,
+                    'jumlah_rp_potongan' => request()->jumlah_insentif[$key] ?? 0,
+                    'periode_tanggal_koreksi' => $periode_tanggal_koreksi,
+                    'keterangan' => request()->keterangan[$key] ?? '',
+                    'operator' => $email,
+                    'is_verifikasi_acc' => 0,
+                ]
+            );
+        }
+        // $enrollIds = request()->enroll_id;
+
+        // DataKoreksiUpah::where('tanggal_koreksi', $tanggal_lembur)
+        //     ->where('jenis_koreksi', 4)
+        //     ->whereIn('enroll_id', $enrollIds)
+        //     ->delete();
+
+        //  DataKoreksiUpah::insert($data);
+
+        // DataKoreksiUpah::upsert(
+        //     $data,
+        //     ['tanggal_koreksi', 'jenis_koreksi', 'enroll_id'], // unique key
+        //     [
+        //         'uuid',
+        //         'nomor_form_koreksi_upah',
+        //         'kode_koreksi_upah',
+        //         'jumlah_rp_potongan',
+        //         'periode_tanggal_koreksi',
+        //         'keterangan',
+        //         'operator',
+        //         'is_verifikasi_acc',
+        //     ]
+        // );
+
+    }
+
+     public function ajax_getnomorspl(Request $request)
+    {
+
+        $periode_lembur = $request->periode_lembur;
+        $array_periode_lembur = explode(' s/d ', $periode_lembur);
+        $awal_bulan = substr($array_periode_lembur[0], 0, 10);
+        $akhir_bulan = substr($array_periode_lembur[1], 0, 10);
+
+        $nomor_form_koreksi_upah = $request->nomor_form_koreksi_upah;
+        $arrayNomorSPL = str_replace(',','","',$nomor_form_koreksi_upah);
+
+        if(!empty($nomor_form_koreksi_upah)) {
+            $inNomorSPL = ' AND dku.nomor_form_koreksi_upah IN ("' . $arrayNomorSPL . '")';
+        } else {
+            $inNomorSPL = '';
+        }
+        $query = DB::select("
+            SELECT
+                CONCAT(
+                    dku.nomor_form_koreksi_upah,
+                    ' [ ',
+                    DATE_FORMAT(dku.tanggal_koreksi, '%d %b %Y'),
+                    ' ] => ',
+                    COUNT(dku.enroll_id),
+                    ' karyawan'
+                ) AS tanggal_nomor_spl,
+                dku.nomor_form_koreksi_upah,
+                dku.keterangan
+            FROM
+                data_koreksi_upah dku
+            WHERE
+                dku.tanggal_koreksi BETWEEN '{$awal_bulan}' AND '{$akhir_bulan}'
+                {$inNomorSPL}
+                AND dku.nomor_form_koreksi_upah IS NOT NULL
+                AND dku.nomor_form_koreksi_upah != ''
+            GROUP BY
+                dku.nomor_form_koreksi_upah, dku.tanggal_koreksi
+        ");
+        $sorted = collect($query)->sortByDesc(function ($item) {
+            preg_match('/\/(\d+)$/', $item->nomor_form_koreksi_upah, $match);
+            return isset($match[1]) ? (int)$match[1] : 0;
+        })->values();
+
+        return $sorted->take(1000);
+
+    }
+
+    public function get_last_nomor_form_koreksi_upah()
+    {
+         $last_nomor = DataKoreksiUpah::select('nomor_form_koreksi_upah')
+        ->orderByRaw("CAST(SUBSTRING_INDEX(nomor_form_koreksi_upah, '/', -1) AS UNSIGNED) DESC")
+        ->limit(1)
+        ->pluck('nomor_form_koreksi_upah')
+        ->first();
+
+        // Ambil angka terakhir setelah "/"
+        $last_angka = $last_nomor
+            ? (int) collect(explode('/', $last_nomor))->last()
+            : 0;
+
+        $ldate = date('Ym');
+
+        return 'INS/HR/' . substr($ldate, 2) . '/' . sprintf("%05d", $last_angka + 1);
+    }
+
 
     // =============Andri====================
      public function format_import_koreksiupah()

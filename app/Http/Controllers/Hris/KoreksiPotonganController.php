@@ -22,6 +22,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 use App\Models\EmployeeAtribut;
 use App\Models\RefAbsenIjin;
+use App\Models\RekapKehadiranKaryawan;
 use App\Models\DataKoreksiUpah;
 use App\Exports\KoreksiPotonganExport;
 use App\Exports\VerifikasiKoreksiPotonganExport;
@@ -71,13 +72,25 @@ class KoreksiPotonganController extends AdminBaseController
         $refabsenijin = $this->ajax_getselectrefabsenijin();
 
         $selectemployee = $this->ajax_getallemployeeatribut();
+        $periode_lembur = $this->ajax_gettanggallembur();
 
         return view('hris/verifikasi_koreksi', [
             'page' => 'dashboard-mut-karyawan', "subPageGroup" => "proses-karyawan", "subPage" => "form-lembur-non-sewing",
             "data_dept" => $data_dept, "user" => $user,
             "selectemployee" => $selectemployee,
             "refabsenijin" => $refabsenijin,
+            "periode_lembur" => $periode_lembur,
         ], $this->data);
+    }
+
+     public function ajax_gettanggallembur()
+    {
+        $query =  RekapKehadiranKaryawan::selectRaw('periode_payroll')
+                                    ->groupby('periode_payroll')
+                                    ->orderby('periode_payroll', 'desc')
+                                    ->get();
+        return $query;
+
     }
 
        private function ajax_getselectrefabsenijin()
@@ -315,50 +328,50 @@ class KoreksiPotonganController extends AdminBaseController
                 data_koreksi_upah.jenis_koreksi AS jenis,
                 data_koreksi_upah.operator,
                 data_koreksi_upah.keterangan,
+                data_koreksi_upah.nomor_form_koreksi_upah,
                 data_koreksi_upah.created_at,
                 data_koreksi_upah.updated_at,
                 "PENAMBAH UPAH" AS sumber
             ')
             ->leftJoin('employee_atribut','data_koreksi_upah.enroll_id','=','employee_atribut.enroll_id')
             ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
-            ->where('data_koreksi_upah.jenis_koreksi', '!=', 2);
+            ->where('data_koreksi_upah.jenis_koreksi', '=', 4);
 
         // ====================
         // Query 2: Data Koreksi Potongan
         // ====================
-        $potonganQuery = DataKoreksiPotongan::selectRaw('
-                data_koreksi_potongan.uuid,
-                data_koreksi_potongan.kode_koreksi_potongan AS kode_koreksi,
-                data_koreksi_potongan.tanggal_koreksi,
-                data_koreksi_potongan.is_verifikasi_acc,
-                employee_atribut.enroll_id,
-                employee_atribut.nik,
-                employee_atribut.employee_name,
-                department_all.sub_dept_name,
-                department_all.department_name,
-                data_koreksi_potongan.jumlah_rp_potongan,
-                data_koreksi_potongan.periode_tanggal_koreksi,
-                data_koreksi_potongan.jenis_potongan AS jenis,
-                data_koreksi_potongan.operator,
-                data_koreksi_potongan.keterangan,
-                data_koreksi_potongan.created_at,
-                data_koreksi_potongan.updated_at,
-                "POTONGAN" AS sumber
-            ')
-            ->leftJoin('employee_atribut','data_koreksi_potongan.enroll_id','=','employee_atribut.enroll_id')
-            ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id');
+        // $potonganQuery = DataKoreksiPotongan::selectRaw('
+        //         data_koreksi_potongan.uuid,
+        //         data_koreksi_potongan.kode_koreksi_potongan AS kode_koreksi,
+        //         data_koreksi_potongan.tanggal_koreksi,
+        //         data_koreksi_potongan.is_verifikasi_acc,
+        //         employee_atribut.enroll_id,
+        //         employee_atribut.nik,
+        //         employee_atribut.employee_name,
+        //         department_all.sub_dept_name,
+        //         department_all.department_name,
+        //         data_koreksi_potongan.jumlah_rp_potongan,
+        //         data_koreksi_potongan.periode_tanggal_koreksi,
+        //         data_koreksi_potongan.jenis_potongan AS jenis,
+        //         data_koreksi_potongan.operator,
+        //         data_koreksi_potongan.keterangan,
+        //         data_koreksi_potongan.created_at,
+        //         data_koreksi_potongan.updated_at,
+        //         "POTONGAN" AS sumber
+        // ')
+        // ->leftJoin('employee_atribut','data_koreksi_potongan.enroll_id','=','employee_atribut.enroll_id')
+        // ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id');
 
         // ====================
         // Filter (jika ada search)
         // ====================
 
-        if (!empty($request->tanggal_range)) {
-            $daterange = explode(" s/d ", $request->tanggal_range);
+        if (!empty($request->periode_lembur)) {
+            $daterange = explode(" s/d ", $request->periode_lembur);
             $tanggal_awal = date('Y-m-d', strtotime($daterange[0]));
             $tanggal_akhir = date('Y-m-d', strtotime($daterange[1]));
             $upahQuery->whereBetween('data_koreksi_upah.tanggal_koreksi', [$tanggal_awal, $tanggal_akhir]);
-            $potonganQuery->whereBetween('data_koreksi_potongan.tanggal_koreksi', [$tanggal_awal, $tanggal_akhir]);
-
+            // $potonganQuery->whereBetween('data_koreksi_potongan.tanggal_koreksi', [$tanggal_awal, $tanggal_akhir]);
         }
 
         if (!empty($search)) {
@@ -370,36 +383,39 @@ class KoreksiPotonganController extends AdminBaseController
                     ->orWhere('department_all.sub_dept_name', 'like', "%$search%")
                     ->orWhere('department_all.department_name', 'like', "%$search%")
                     ->orWhere('data_koreksi_upah.keterangan', 'like', "%$search%")
+                    ->orWhere('data_koreksi_upah.nomor_form_koreksi_upah', 'like', "%$search%")
                     ->orWhere('data_koreksi_upah.kode_koreksi_upah', 'like', "%$search%");
                 });
             };
 
             $upahQuery->where($searchFilter);
-            $potonganQuery->where(function($q) use ($search) {
-                $q->where('employee_atribut.enroll_id', 'like', "%$search%")
-                ->orWhere('employee_atribut.nik', 'like', "%$search%")
-                ->orWhere('employee_atribut.employee_name', 'like', "%$search%")
-                ->orWhere('department_all.sub_dept_name', 'like', "%$search%")
-                ->orWhere('department_all.department_name', 'like', "%$search%")
-                ->orWhere('data_koreksi_potongan.keterangan', 'like', "%$search%")
-                ->orWhere('data_koreksi_potongan.kode_koreksi_potongan', 'like', "%$search%");
-            });
+            // $potonganQuery->where(function($q) use ($search) {
+            //     $q->where('employee_atribut.enroll_id', 'like', "%$search%")
+            //     ->orWhere('employee_atribut.nik', 'like', "%$search%")
+            //     ->orWhere('employee_atribut.employee_name', 'like', "%$search%")
+            //     ->orWhere('department_all.sub_dept_name', 'like', "%$search%")
+            //     ->orWhere('department_all.department_name', 'like', "%$search%")
+            //     ->orWhere('data_koreksi_potongan.keterangan', 'like', "%$search%")
+            //     ->orWhere('data_koreksi_potongan.kode_koreksi_potongan', 'like', "%$search%");
+            // });
         }
 
          if ($request->is_verifikasi_acc == '0') {
             $upahQuery->where('data_koreksi_upah.is_verifikasi_acc', 0);
-            $potonganQuery->where('data_koreksi_potongan.is_verifikasi_acc', 0);
+            // $potonganQuery->where('data_koreksi_potongan.is_verifikasi_acc', 0);
         } elseif ($request->is_verifikasi_acc == '1') {
             $upahQuery->where('data_koreksi_upah.is_verifikasi_acc', 1);
-            $potonganQuery->where('data_koreksi_potongan.is_verifikasi_acc', 1);
+            // $potonganQuery->where('data_koreksi_potongan.is_verifikasi_acc', 1);
         }
 
-        // ====================
-        // Ambil Data
-        // ====================
+        if ($request->nomor_form_koreksi_upah) {
+             $nomor_form_koreksi_upah = $request->nomor_form_koreksi_upah;
+            $upahQuery->whereIn('data_koreksi_upah.nomor_form_koreksi_upah', $nomor_form_koreksi_upah);
+        }
+
         $upahResults = $upahQuery->get();
-        $potonganResults = $potonganQuery->get();
-        $merged = $upahResults->concat($potonganResults)->values();
+        // $potonganResults = $potonganQuery->get();
+        $merged = $upahResults->values();
 
         // Sort by updated_at descending
         $sorted = $merged->sortByDesc('updated_at')->values();
@@ -427,6 +443,7 @@ class KoreksiPotonganController extends AdminBaseController
                 'periode_tanggal_koreksi' => $q->periode_tanggal_koreksi,
                 'operator' => $q->operator,
                 'keterangan' => $q->keterangan,
+                'nomor_form_koreksi_upah' => $q->nomor_form_koreksi_upah,
                 'created_at' => substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5),
                 'updated_at' => substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5),
                 'sumber' => $q->sumber,
@@ -489,6 +506,7 @@ class KoreksiPotonganController extends AdminBaseController
                 data_koreksi_upah.jenis_koreksi AS jenis,
                 data_koreksi_upah.operator,
                 data_koreksi_upah.keterangan,
+                data_koreksi_upah.nomor_form_koreksi_upah,
                 data_koreksi_upah.created_at,
                 data_koreksi_upah.updated_at,
                 "PENAMBAH UPAH" AS sumber
@@ -500,47 +518,51 @@ class KoreksiPotonganController extends AdminBaseController
         // ====================
         // Query 2: Data Koreksi Potongan
         // ====================
-        $potonganQuery = DataKoreksiPotongan::selectRaw('
-                data_koreksi_potongan.uuid,
-                data_koreksi_potongan.kode_koreksi_potongan AS kode_koreksi,
-                data_koreksi_potongan.tanggal_koreksi,
-                data_koreksi_potongan.is_verifikasi_acc,
-                employee_atribut.enroll_id,
-                employee_atribut.nik,
-                employee_atribut.employee_name,
-                department_all.sub_dept_name,
-                department_all.department_name,
-                data_koreksi_potongan.jumlah_rp_potongan,
-                data_koreksi_potongan.periode_tanggal_koreksi,
-                data_koreksi_potongan.jenis_potongan AS jenis,
-                data_koreksi_potongan.operator,
-                data_koreksi_potongan.keterangan,
-                data_koreksi_potongan.created_at,
-                data_koreksi_potongan.updated_at,
-                "POTONGAN" AS sumber
-            ')
-            ->leftJoin('employee_atribut','data_koreksi_potongan.enroll_id','=','employee_atribut.enroll_id')
-            ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id');
+        // $potonganQuery = DataKoreksiPotongan::selectRaw('
+        //         data_koreksi_potongan.uuid,
+        //         data_koreksi_potongan.kode_koreksi_potongan AS kode_koreksi,
+        //         data_koreksi_potongan.tanggal_koreksi,
+        //         data_koreksi_potongan.is_verifikasi_acc,
+        //         employee_atribut.enroll_id,
+        //         employee_atribut.nik,
+        //         employee_atribut.employee_name,
+        //         department_all.sub_dept_name,
+        //         department_all.department_name,
+        //         data_koreksi_potongan.jumlah_rp_potongan,
+        //         data_koreksi_potongan.periode_tanggal_koreksi,
+        //         data_koreksi_potongan.jenis_potongan AS jenis,
+        //         data_koreksi_potongan.operator,
+        //         data_koreksi_potongan.keterangan,
+        //         data_koreksi_potongan.created_at,
+        //         data_koreksi_potongan.updated_at,
+        //         "POTONGAN" AS sumber
+        //     ')
+        //     ->leftJoin('employee_atribut','data_koreksi_potongan.enroll_id','=','employee_atribut.enroll_id')
+        //     ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id');
 
         // ====================
         // Filter (jika ada search)
         // ====================
-
-        if (!empty($request->tanggal_range)) {
-            $daterange = explode(" s/d ", $request->tanggal_range);
+         if (!empty($request->periode_lembur)) {
+            $daterange = explode(" s/d ", $request->periode_lembur);
             $tanggal_awal = date('Y-m-d', strtotime($daterange[0]));
             $tanggal_akhir = date('Y-m-d', strtotime($daterange[1]));
             $upahQuery->whereBetween('data_koreksi_upah.tanggal_koreksi', [$tanggal_awal, $tanggal_akhir]);
-            $potonganQuery->whereBetween('data_koreksi_potongan.tanggal_koreksi', [$tanggal_awal, $tanggal_akhir]);
-
+            // $potonganQuery->whereBetween('data_koreksi_potongan.tanggal_koreksi', [$tanggal_awal, $tanggal_akhir]);
         }
+
+        if ($request->nomor_form_koreksi_upah) {
+            $nomor_form_koreksi_upah = $request->nomor_form_koreksi_upah;
+            $upahQuery->whereIn('data_koreksi_upah.nomor_form_koreksi_upah', $nomor_form_koreksi_upah);
+        }
+
 
         // ====================
         // Ambil Data
         // ====================
         $upahResults = $upahQuery->get();
-        $potonganResults = $potonganQuery->get();
-        $merged = $upahResults->concat($potonganResults)->values();
+        // $potonganResults = $potonganQuery->get();
+        $merged = $upahResults->values();
 
         // Sort by updated_at descending
         $sorted = $merged->sortByDesc('updated_at')->values();
@@ -568,6 +590,7 @@ class KoreksiPotonganController extends AdminBaseController
                 'periode_tanggal_koreksi' => $q->periode_tanggal_koreksi,
                 'operator' => $q->operator,
                 'keterangan' => $q->keterangan,
+                'nomor_form_koreksi_upah' => $q->nomor_form_koreksi_upah,
                 'is_verifikasi_acc' => $q->is_verifikasi_acc,
                 'created_at' => substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5),
                 'updated_at' => substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5),

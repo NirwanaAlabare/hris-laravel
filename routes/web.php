@@ -580,6 +580,12 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('datalembur/export_excel_tanda_terima_lembur',['as'=>'hris.datalembur.export_excel_tanda_terima_lembur','uses'=>'DataLemburController@export_excel_tanda_terima_lembur']);
     Route::get('datalembur/export_excel_tanda_terima_lembur_all_date',['as'=>'hris.datalembur.export_excel_tanda_terima_lembur_all_date','uses'=>'DataLemburController@export_excel_tanda_terima_lembur_all_date']);
 
+    Route::post('koreksi-upah/get_list_insentif',['as'=>'hris.koreksi_upah.get_list_insentif','uses'=>'KoreksiUpahController@get_list_insentif']);
+    Route::post('koreksi-upah/getkaryawanInsentif',['as'=>'hris.koreksi_upah.getkaryawanInsentif','uses'=>'KoreksiUpahController@getkaryawanInsentif']);
+    Route::post('koreksi-upah/importkaryawanInsentif',['as'=>'hris.koreksi_upah.importkaryawanInsentif','uses'=>'KoreksiUpahController@importkaryawanInsentif']);
+    Route::get('koreksi-upah/get_last_nomor_form_lembur',['as'=>'hris.koreksi_upah.get_last_nomor_form_koreksi_upah','uses'=>'KoreksiUpahController@get_last_nomor_form_koreksi_upah']);
+    Route::post('koreksi-upah/ajax_getnomorspl',['as'=>'hris.koreksi_upah.ajax_getnomorspl','uses'=>'KoreksiUpahController@ajax_getnomorspl']);
+
     // DATA PAYROLL
     Route::get('payroll/lembur/',['as'=>'hris.payroll.lembur','uses'=> 'PayrollController@lembur']);
 
