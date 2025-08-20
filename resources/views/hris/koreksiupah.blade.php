@@ -564,10 +564,10 @@
                                             <td>Total</td>
                                             <td><input type="text" class="form-control col-3" id="total_new_data_lembur" readonly style="background-color: white"></td>
                                         </tr>
-                                        <tr>
+                                        {{-- <tr>
                                             <td width="150">Data will be import </td>
                                             <td><input type="text" class="form-control col-3" id="total_new_data_lembur_import" readonly style="background-color: white"></td>
-                                        </tr>
+                                        </tr> --}}
                                     </table>
                                 </div>
                                 <div class="col-4 text-center pt-1">
