@@ -415,7 +415,7 @@ class TindakanKedisiplinanController extends AdminBaseController
                 'level' => 2
             ],
             [
-                'status_jabatan' => 'Administrasi',
+                'status_jabatan' => 'ADMINISTRASI',
                 'level' => 2
             ],
             [
@@ -506,6 +506,16 @@ class TindakanKedisiplinanController extends AdminBaseController
                 ->orderBy('enroll_id')
                 ->first();
 
+            if (!$approver) {
+                $approver = DB::table('employee_atribut')
+                    ->select('enroll_id', 'employee_name', 'nik', 'department_name', 'sub_dept_name', 'status_jabatan')
+                    ->where('department_id', $karyawan->department_id)
+                    ->where('status_aktif', 'aktif')
+                    ->whereRaw('LOWER(status_jabatan) = ?', [strtolower($jabatan)])
+                    ->orderBy('enroll_id')
+                    ->first();
+            }
+
             if ($approver) {
                 $approval_list[] = $approver;
                 $used_levels[] = $jabatan_level;
@@ -540,8 +550,6 @@ class TindakanKedisiplinanController extends AdminBaseController
                 $approval_list[] = $gm;
             }
         }
-
-
         $pdf = PDF::loadview('hris/tindakan-kedisiplinan/export_surat_peringatan_pdf',['data'=>$data,'approval_list'=>$approval_list]);
         return $pdf->stream('SP '.$data[0]->enroll_id.' '.$data[0]->employee_name.'.pdf');
     }
@@ -561,7 +569,7 @@ class TindakanKedisiplinanController extends AdminBaseController
                 'level' => 2
             ],
             [
-                'status_jabatan' => 'Administrasi',
+                'status_jabatan' => 'ADMINISTRASI',
                 'level' => 2
             ],
             [
@@ -651,6 +659,15 @@ class TindakanKedisiplinanController extends AdminBaseController
                 ->whereRaw('LOWER(status_jabatan) = ?', [strtolower($jabatan)])
                 ->orderBy('enroll_id')
                 ->first();
+            if (!$approver) {
+                $approver = DB::table('employee_atribut')
+                    ->select('enroll_id', 'employee_name', 'nik', 'department_name', 'sub_dept_name', 'status_jabatan')
+                    ->where('department_id', $karyawan->department_id)
+                    ->where('status_aktif', 'aktif')
+                    ->whereRaw('LOWER(status_jabatan) = ?', [strtolower($jabatan)])
+                    ->orderBy('enroll_id')
+                    ->first();
+            }
 
             if ($approver) {
                 $approval_list[] = $approver;
