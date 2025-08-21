@@ -648,7 +648,7 @@ h1 {
                     success: function(resA){
                         if(resA){
                             for(i=0;i<resA.length;i++) {
-                                $("#selectNoSPL").append(new Option(resA[i].tanggal_nomor_spl, resA[i].nomor_form_koreksi_upah));
+                                $("#selectNoSPL").append(new Option(resA[i].tanggal_nomor_spl, resA[i].nomor_form));
                             }
                         }
                     }

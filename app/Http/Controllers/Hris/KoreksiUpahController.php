@@ -330,6 +330,7 @@ class KoreksiUpahController extends AdminBaseController
 
         $format_tanggal = \Carbon\Carbon::createFromFormat('m/d/Y', $tanggal_awal)->format('Y-m-d');
 
+
          $findDT = DataKoreksiUpah::where('enroll_id',$request->enroll_id)->where('periode_tanggal_koreksi',$request->periode_tanggal_koreksi)
             ->where('jenis_koreksi',$request->jenis_koreksi)->count();
             if($findDT > 0) {
@@ -337,9 +338,9 @@ class KoreksiUpahController extends AdminBaseController
         } else {
             $query = DataKoreksiUpah::create([
                 'uuid' => Str::uuid(),
-                'nomor_form_koreksi_upah' => $jenis_koreksi == 4 ? $nomor_form_lembur : null,
+                'nomor_form_koreksi_upah' => $jenis_koreksi == 2 ? null : $nomor_form_lembur,
                 'kode_koreksi_upah' => $kode_koreksi_upah,
-                'tanggal_koreksi' => $format_tanggal,
+                'tanggal_koreksi' => $tanggal_koreksi,
                 'enroll_id' => $enroll_id,
                 'jumlah_rp_potongan' => $jumlah_rp_potongan,
                 'periode_tanggal_koreksi' => $periode_tanggal_koreksi,
@@ -705,22 +706,24 @@ class KoreksiUpahController extends AdminBaseController
         }
     }
 
-     public function ajax_getnomorspl(Request $request)
+    public function ajax_getnomorspl(Request $request)
     {
-
         $periode_lembur = $request->periode_lembur;
         $array_periode_lembur = explode(' s/d ', $periode_lembur);
         $awal_bulan = substr($array_periode_lembur[0], 0, 10);
         $akhir_bulan = substr($array_periode_lembur[1], 0, 10);
 
-        $nomor_form_koreksi_upah = $request->nomor_form_koreksi_upah;
-        $arrayNomorSPL = str_replace(',','","',$nomor_form_koreksi_upah);
+        $nomor_form = $request->nomor_form_koreksi_upah; // request kirim nomor form
+        $arrayNomorSPL = str_replace(',', '","', $nomor_form);
 
-        if(!empty($nomor_form_koreksi_upah)) {
-            $inNomorSPL = ' AND dku.nomor_form_koreksi_upah IN ("' . $arrayNomorSPL . '")';
+        if (!empty($nomor_form)) {
+            $inNomorSPL_upah = ' AND dku.nomor_form_koreksi_upah IN ("' . $arrayNomorSPL . '")';
+            $inNomorSPL_potongan = ' AND dkp.nomor_form_koreksi_potongan IN ("' . $arrayNomorSPL . '")';
         } else {
-            $inNomorSPL = '';
+            $inNomorSPL_upah = '';
+            $inNomorSPL_potongan = '';
         }
+
         $query = DB::select("
             SELECT
                 CONCAT(
@@ -731,26 +734,51 @@ class KoreksiUpahController extends AdminBaseController
                     COUNT(dku.enroll_id),
                     ' karyawan'
                 ) AS tanggal_nomor_spl,
-                dku.nomor_form_koreksi_upah,
+                dku.nomor_form_koreksi_upah AS nomor_form,
                 dku.keterangan
             FROM
                 data_koreksi_upah dku
             WHERE
                 dku.tanggal_koreksi BETWEEN '{$awal_bulan}' AND '{$akhir_bulan}'
-                {$inNomorSPL}
+                {$inNomorSPL_upah}
                 AND dku.nomor_form_koreksi_upah IS NOT NULL
                 AND dku.nomor_form_koreksi_upah != ''
             GROUP BY
                 dku.nomor_form_koreksi_upah, dku.tanggal_koreksi
+
+            UNION ALL
+
+            SELECT
+                CONCAT(
+                    dkp.nomor_form_koreksi_potongan,
+                    ' [ ',
+                    DATE_FORMAT(dkp.tanggal_koreksi, '%d %b %Y'),
+                    ' ] => ',
+                    COUNT(dkp.enroll_id),
+                    ' karyawan'
+                ) AS tanggal_nomor_spl,
+                dkp.nomor_form_koreksi_potongan AS nomor_form,
+                dkp.keterangan
+            FROM
+                data_koreksi_potongan dkp
+            WHERE
+                dkp.tanggal_koreksi BETWEEN '{$awal_bulan}' AND '{$akhir_bulan}'
+                {$inNomorSPL_potongan}
+                AND dkp.nomor_form_koreksi_potongan IS NOT NULL
+                AND dkp.nomor_form_koreksi_potongan != ''
+            GROUP BY
+                dkp.nomor_form_koreksi_potongan, dkp.tanggal_koreksi
         ");
+
+        // Sort berdasarkan angka terakhir setelah "/"
         $sorted = collect($query)->sortByDesc(function ($item) {
-            preg_match('/\/(\d+)$/', $item->nomor_form_koreksi_upah, $match);
-            return isset($match[1]) ? (int)$match[1] : 0;
+            preg_match('/\/(\d+)$/', $item->nomor_form, $match);
+            return isset($match[1]) ? (int) $match[1] : 0;
         })->values();
 
         return $sorted->take(1000);
-
     }
+
 
     public function get_last_nomor_form_koreksi_upah()
     {
@@ -842,7 +870,7 @@ class KoreksiUpahController extends AdminBaseController
 
                         $data_import[]=[
                             'kode_koreksi_upah'=>date('Y').date('m').date('i').date('s').$nik,
-                            'nomor_form_koreksi_upah'=> $jenisKoreksiMapping[$jenis_koreksi_string] == 4 ? $nomor_form_lembur : null,
+                            'nomor_form_koreksi_upah'=> $jenisKoreksiMapping[$jenis_koreksi_string] == 2 ? null : $nomor_form_lembur,
                             'tanggal_koreksi'=> $tgl_koreksi,
                             'enroll_id'=>$row[0],
                             'nik'=>$employee->nik??null,

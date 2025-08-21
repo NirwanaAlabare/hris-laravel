@@ -28,6 +28,7 @@ class DataKoreksiPotongan extends \Eloquent
         'deleted_at',
         'operator',
         'is_verifikasi_acc',
+        'nomor_form_koreksi_potongan',
     ];
     protected $guarded = ['kode_koreksi'];
 
@@ -60,6 +61,7 @@ class DataKoreksiPotongan extends \Eloquent
         'deleted_at',
         'operator',
         'is_verifikasi_acc',
+        'nomor_form_koreksi_potongan',
     ];
 
     protected $appends = [];

@@ -340,27 +340,28 @@ class KoreksiPotonganController extends AdminBaseController
         // ====================
         // Query 2: Data Koreksi Potongan
         // ====================
-        // $potonganQuery = DataKoreksiPotongan::selectRaw('
-        //         data_koreksi_potongan.uuid,
-        //         data_koreksi_potongan.kode_koreksi_potongan AS kode_koreksi,
-        //         data_koreksi_potongan.tanggal_koreksi,
-        //         data_koreksi_potongan.is_verifikasi_acc,
-        //         employee_atribut.enroll_id,
-        //         employee_atribut.nik,
-        //         employee_atribut.employee_name,
-        //         department_all.sub_dept_name,
-        //         department_all.department_name,
-        //         data_koreksi_potongan.jumlah_rp_potongan,
-        //         data_koreksi_potongan.periode_tanggal_koreksi,
-        //         data_koreksi_potongan.jenis_potongan AS jenis,
-        //         data_koreksi_potongan.operator,
-        //         data_koreksi_potongan.keterangan,
-        //         data_koreksi_potongan.created_at,
-        //         data_koreksi_potongan.updated_at,
-        //         "POTONGAN" AS sumber
-        // ')
-        // ->leftJoin('employee_atribut','data_koreksi_potongan.enroll_id','=','employee_atribut.enroll_id')
-        // ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id');
+        $potonganQuery = DataKoreksiPotongan::selectRaw('
+                data_koreksi_potongan.uuid,
+                data_koreksi_potongan.kode_koreksi_potongan AS kode_koreksi,
+                data_koreksi_potongan.tanggal_koreksi,
+                data_koreksi_potongan.is_verifikasi_acc,
+                employee_atribut.enroll_id,
+                employee_atribut.nik,
+                employee_atribut.employee_name,
+                department_all.sub_dept_name,
+                department_all.department_name,
+                data_koreksi_potongan.jumlah_rp_potongan,
+                data_koreksi_potongan.periode_tanggal_koreksi,
+                data_koreksi_potongan.jenis_potongan AS jenis,
+                data_koreksi_potongan.nomor_form_koreksi_potongan AS nomor_form_koreksi_upah,
+                data_koreksi_potongan.operator,
+                data_koreksi_potongan.keterangan,
+                data_koreksi_potongan.created_at,
+                data_koreksi_potongan.updated_at,
+                "POTONGAN" AS sumber
+        ')
+        ->leftJoin('employee_atribut','data_koreksi_potongan.enroll_id','=','employee_atribut.enroll_id')
+        ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id');
 
         // ====================
         // Filter (jika ada search)
@@ -371,7 +372,7 @@ class KoreksiPotonganController extends AdminBaseController
             $tanggal_awal = date('Y-m-d', strtotime($daterange[0]));
             $tanggal_akhir = date('Y-m-d', strtotime($daterange[1]));
             $upahQuery->whereBetween('data_koreksi_upah.tanggal_koreksi', [$tanggal_awal, $tanggal_akhir]);
-            // $potonganQuery->whereBetween('data_koreksi_potongan.tanggal_koreksi', [$tanggal_awal, $tanggal_akhir]);
+            $potonganQuery->whereBetween('data_koreksi_potongan.tanggal_koreksi', [$tanggal_awal, $tanggal_akhir]);
         }
 
         if (!empty($search)) {
@@ -389,33 +390,37 @@ class KoreksiPotonganController extends AdminBaseController
             };
 
             $upahQuery->where($searchFilter);
-            // $potonganQuery->where(function($q) use ($search) {
-            //     $q->where('employee_atribut.enroll_id', 'like', "%$search%")
-            //     ->orWhere('employee_atribut.nik', 'like', "%$search%")
-            //     ->orWhere('employee_atribut.employee_name', 'like', "%$search%")
-            //     ->orWhere('department_all.sub_dept_name', 'like', "%$search%")
-            //     ->orWhere('department_all.department_name', 'like', "%$search%")
-            //     ->orWhere('data_koreksi_potongan.keterangan', 'like', "%$search%")
-            //     ->orWhere('data_koreksi_potongan.kode_koreksi_potongan', 'like', "%$search%");
-            // });
+            $potonganQuery->where(function($q) use ($search) {
+                $q->where('employee_atribut.enroll_id', 'like', "%$search%")
+                ->orWhere('employee_atribut.nik', 'like', "%$search%")
+                ->orWhere('employee_atribut.employee_name', 'like', "%$search%")
+                ->orWhere('department_all.sub_dept_name', 'like', "%$search%")
+                ->orWhere('department_all.department_name', 'like', "%$search%")
+                ->orWhere('data_koreksi_potongan.keterangan', 'like', "%$search%")
+                ->orWhere('data_koreksi_potongan.nomor_form_koreksi_potongan', 'like', "%$search%")
+                ->orWhere('data_koreksi_potongan.kode_koreksi_potongan', 'like', "%$search%");
+            });
         }
 
          if ($request->is_verifikasi_acc == '0') {
             $upahQuery->where('data_koreksi_upah.is_verifikasi_acc', 0);
-            // $potonganQuery->where('data_koreksi_potongan.is_verifikasi_acc', 0);
+            $potonganQuery->where('data_koreksi_potongan.is_verifikasi_acc', 0);
         } elseif ($request->is_verifikasi_acc == '1') {
             $upahQuery->where('data_koreksi_upah.is_verifikasi_acc', 1);
-            // $potonganQuery->where('data_koreksi_potongan.is_verifikasi_acc', 1);
+            $potonganQuery->where('data_koreksi_potongan.is_verifikasi_acc', 1);
         }
 
         if ($request->nomor_form_koreksi_upah) {
-             $nomor_form_koreksi_upah = $request->nomor_form_koreksi_upah;
+            $nomor_form_koreksi_upah = $request->nomor_form_koreksi_upah;
             $upahQuery->whereIn('data_koreksi_upah.nomor_form_koreksi_upah', $nomor_form_koreksi_upah);
+            $potonganQuery->whereIn('data_koreksi_potongan.nomor_form_koreksi_potongan', $nomor_form_koreksi_upah);
         }
 
         $upahResults = $upahQuery->get();
-        // $potonganResults = $potonganQuery->get();
-        $merged = $upahResults->values();
+        $potonganResults = $potonganQuery->get();
+        // $merged = $upahResults->values();
+        $merged = $upahResults->concat($potonganResults)->values();
+
 
         // Sort by updated_at descending
         $sorted = $merged->sortByDesc('updated_at')->values();
@@ -518,27 +523,28 @@ class KoreksiPotonganController extends AdminBaseController
         // ====================
         // Query 2: Data Koreksi Potongan
         // ====================
-        // $potonganQuery = DataKoreksiPotongan::selectRaw('
-        //         data_koreksi_potongan.uuid,
-        //         data_koreksi_potongan.kode_koreksi_potongan AS kode_koreksi,
-        //         data_koreksi_potongan.tanggal_koreksi,
-        //         data_koreksi_potongan.is_verifikasi_acc,
-        //         employee_atribut.enroll_id,
-        //         employee_atribut.nik,
-        //         employee_atribut.employee_name,
-        //         department_all.sub_dept_name,
-        //         department_all.department_name,
-        //         data_koreksi_potongan.jumlah_rp_potongan,
-        //         data_koreksi_potongan.periode_tanggal_koreksi,
-        //         data_koreksi_potongan.jenis_potongan AS jenis,
-        //         data_koreksi_potongan.operator,
-        //         data_koreksi_potongan.keterangan,
-        //         data_koreksi_potongan.created_at,
-        //         data_koreksi_potongan.updated_at,
-        //         "POTONGAN" AS sumber
-        //     ')
-        //     ->leftJoin('employee_atribut','data_koreksi_potongan.enroll_id','=','employee_atribut.enroll_id')
-        //     ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id');
+        $potonganQuery = DataKoreksiPotongan::selectRaw('
+                data_koreksi_potongan.uuid,
+                data_koreksi_potongan.kode_koreksi_potongan AS kode_koreksi,
+                data_koreksi_potongan.tanggal_koreksi,
+                data_koreksi_potongan.is_verifikasi_acc,
+                employee_atribut.enroll_id,
+                employee_atribut.nik,
+                employee_atribut.employee_name,
+                department_all.sub_dept_name,
+                department_all.department_name,
+                data_koreksi_potongan.jumlah_rp_potongan,
+                data_koreksi_potongan.periode_tanggal_koreksi,
+                data_koreksi_potongan.jenis_potongan AS jenis,
+                data_koreksi_potongan.operator,
+                data_koreksi_potongan.nomor_form_koreksi_potongan,
+                data_koreksi_potongan.keterangan,
+                data_koreksi_potongan.created_at,
+                data_koreksi_potongan.updated_at,
+                "POTONGAN" AS sumber
+            ')
+            ->leftJoin('employee_atribut','data_koreksi_potongan.enroll_id','=','employee_atribut.enroll_id')
+            ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id');
 
         // ====================
         // Filter (jika ada search)
@@ -548,12 +554,13 @@ class KoreksiPotonganController extends AdminBaseController
             $tanggal_awal = date('Y-m-d', strtotime($daterange[0]));
             $tanggal_akhir = date('Y-m-d', strtotime($daterange[1]));
             $upahQuery->whereBetween('data_koreksi_upah.tanggal_koreksi', [$tanggal_awal, $tanggal_akhir]);
-            // $potonganQuery->whereBetween('data_koreksi_potongan.tanggal_koreksi', [$tanggal_awal, $tanggal_akhir]);
+            $potonganQuery->whereBetween('data_koreksi_potongan.tanggal_koreksi', [$tanggal_awal, $tanggal_akhir]);
         }
 
         if ($request->nomor_form_koreksi_upah) {
             $nomor_form_koreksi_upah = $request->nomor_form_koreksi_upah;
             $upahQuery->whereIn('data_koreksi_upah.nomor_form_koreksi_upah', $nomor_form_koreksi_upah);
+            $potonganQuery->whereIn('data_koreksi_potongan.nomor_form_koreksi_potongan', $nomor_form_koreksi_upah);
         }
 
 
@@ -561,8 +568,9 @@ class KoreksiPotonganController extends AdminBaseController
         // Ambil Data
         // ====================
         $upahResults = $upahQuery->get();
-        // $potonganResults = $potonganQuery->get();
-        $merged = $upahResults->values();
+        $potonganResults = $potonganQuery->get();
+        // $merged = $upahResults->values();
+        $merged = $upahResults->concat($potonganResults)->values();
 
         // Sort by updated_at descending
         $sorted = $merged->sortByDesc('updated_at')->values();
@@ -650,6 +658,21 @@ class KoreksiPotonganController extends AdminBaseController
         // Ubah ke format yang diinginkan
         $format_tanggal = \Carbon\Carbon::createFromFormat('m/d/Y', $tanggal_awal)->format('Y-m-d');
 
+        $last_nomor = DataKoreksiPotongan::select('nomor_form_koreksi_potongan')
+            ->orderByRaw("CAST(SUBSTRING_INDEX(nomor_form_koreksi_potongan, '/', -1) AS UNSIGNED) DESC")
+            ->limit(1)
+            ->pluck('nomor_form_koreksi_potongan')
+            ->first();
+
+        // Ambil angka terakhir setelah "/"
+        $last_angka = $last_nomor
+            ? (int) collect(explode('/', $last_nomor))->last()
+            : 0;
+
+        $ldate = date('Ym');
+
+        $nomor_form_koreksi_potongan = 'KPU/HR/' . substr($ldate, 2) . '/' . sprintf("%05d", $last_angka + 1);
+
         // sebelumnya
         // $findDT = DataKoreksiPotongan::where('kode_koreksi_potongan','=', $kode_koreksi_potongan)->count();
 
@@ -665,6 +688,7 @@ class KoreksiPotonganController extends AdminBaseController
                 'uuid' => Str::uuid(),
                 'kode_koreksi_potongan' => $kode_koreksi_potongan,
                 'tanggal_koreksi' => $tanggal_koreksi,
+                'nomor_form_koreksi_potongan' => $nomor_form_koreksi_potongan,
                 'enroll_id' => $enroll_id,
                 'jumlah_rp_potongan' => $jumlah_rp_potongan,
                 'periode_tanggal_koreksi' => $periode_tanggal_koreksi,
@@ -761,6 +785,21 @@ class KoreksiPotonganController extends AdminBaseController
                 'POTONGAN LEMBUR' => 8,
             ];
 
+           $last_nomor = DataKoreksiPotongan::select('nomor_form_koreksi_potongan')
+                ->orderByRaw("CAST(SUBSTRING_INDEX(nomor_form_koreksi_potongan, '/', -1) AS UNSIGNED) DESC")
+                ->limit(1)
+                ->pluck('nomor_form_koreksi_potongan')
+                ->first();
+
+            // Ambil angka terakhir setelah "/"
+            $last_angka = $last_nomor
+                ? (int) collect(explode('/', $last_nomor))->last()
+                : 0;
+
+            $ldate = date('Ym');
+
+            $nomor_form_koreksi_potongan = 'KPU/HR/' . substr($ldate, 2) . '/' . sprintf("%05d", $last_angka + 1);
+
             if($head[0]=='enroll_id' && $head[3]=='jumlah_rp_potongan' ){
                 foreach ($data[0] as $key2 => $row) {
                     if($key2>0){
@@ -790,6 +829,7 @@ class KoreksiPotonganController extends AdminBaseController
 
                         $data_import[]=[
                             'kode_koreksi_potongan'=>date('Y').date('m').date('i').date('s').$nik,
+                            'nomor_form_koreksi_potongan'=>$nomor_form_koreksi_potongan,
                             'tanggal_koreksi'=>$tgl_koreksi,
                             'enroll_id'=>$row[0],
                             'nik'=>$employee->nik??null,
@@ -831,6 +871,7 @@ class KoreksiPotonganController extends AdminBaseController
                         $data_insert=[
                             'uuid' => Str::uuid(),
                             'kode_koreksi_potongan'=>$value['kode_koreksi_potongan'],
+                            'nomor_form_koreksi_potongan'=>$value['nomor_form_koreksi_potongan'],
                             'tanggal_koreksi'=>$value['tanggal_koreksi'],
                             'enroll_id'=>$value['enroll_id'],
                             'jumlah_rp_potongan'=>$value['jumlah_rp_potongan'],
