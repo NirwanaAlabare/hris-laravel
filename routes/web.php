@@ -472,6 +472,13 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('ga/store_item',['as'=>'hris.ga.store_item','uses'=>'PemeliharaanKendaraanController@store_item']);
 
     Route::get('ga/pengajuan_perbaikan_kendaraan',['as'=>'hris.ga.pengajuan_perbaikan_kendaraan','uses'=>'PemeliharaanKendaraanController@pengajuan_perbaikan_kendaraan']);
+    Route::get('ga/pemeriksaan_kendaraan',['as'=>'hris.ga.pemeriksaan_kendaraan','uses'=>'PemeliharaanKendaraanController@pemeriksaan_kendaraan']);
+    Route::post('ga/store_pemeriksaan_kendaraan',['as'=>'hris.ga.store_pemeriksaan_kendaraan','uses'=>'PemeliharaanKendaraanController@store_pemeriksaan_kendaraan']);
+    Route::get('ga/ajax_get_pemeriksaan_kendaraan_list',['as'=>'hris.ga.ajax_get_pemeriksaan_kendaraan_list','uses'=>'PemeliharaanKendaraanController@ajax_get_pemeriksaan_kendaraan_list']);
+    Route::get('ga/pemeriksaan-kendaraan/detail/{id}',['as'=>'hris.ga.ajax_get_pemeriksaan_kendaraan_detail','uses'=>'PemeliharaanKendaraanController@ajax_get_pemeriksaan_kendaraan_detail']);
+
+
+
 
     //Route::resource('mdabsenhadir', 'MdAbsenHadirController',['as' => 'hris']);
     Route::post('mdabsenhadir/ajax_datahadir/',['as'=>'hris.mdabsenhadir.ajax_datahadir','uses'=> 'MdAbsenHadirController@ajax_datahadir']);
@@ -585,6 +592,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('koreksi-upah/importkaryawanInsentif',['as'=>'hris.koreksi_upah.importkaryawanInsentif','uses'=>'KoreksiUpahController@importkaryawanInsentif']);
     Route::get('koreksi-upah/get_last_nomor_form_lembur',['as'=>'hris.koreksi_upah.get_last_nomor_form_koreksi_upah','uses'=>'KoreksiUpahController@get_last_nomor_form_koreksi_upah']);
     Route::post('koreksi-upah/ajax_getnomorspl',['as'=>'hris.koreksi_upah.ajax_getnomorspl','uses'=>'KoreksiUpahController@ajax_getnomorspl']);
+    Route::post('koreksi-upah/ajax_getnomorspl_upah',['as'=>'hris.koreksi_upah.ajax_getnomorspl_upah','uses'=>'KoreksiUpahController@ajax_getnomorspl_upah']);
+    Route::post('koreksi-potongan/ajax_getnomorspl_potongan',['as'=>'hris.koreksi_potongan.ajax_getnomorspl_potongan','uses'=>'KoreksiPotonganController@ajax_getnomorspl_potongan']);
 
     // DATA PAYROLL
     Route::get('payroll/lembur/',['as'=>'hris.payroll.lembur','uses'=> 'PayrollController@lembur']);
