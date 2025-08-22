@@ -167,7 +167,7 @@ class KoreksiUpahController extends AdminBaseController
     {
 
         if(request()->ajax()) {
-             $limit = $request->input('length');
+        $limit = $request->input('length');
         $start = $request->input('start');
 
         $query = DataKoreksiUpah::selectRaw('
@@ -704,6 +704,56 @@ class KoreksiUpahController extends AdminBaseController
                 ]
             );
         }
+    }
+
+    public function ajax_getnomorspl_upah(Request $request)
+    {
+        $periode_lembur = $request->periode_lembur;
+        $array_periode_lembur = explode(' s/d ', $periode_lembur);
+        $awal_bulan = substr($array_periode_lembur[0], 0, 10);
+        $akhir_bulan = substr($array_periode_lembur[1], 0, 10);
+
+        $nomor_form = $request->nomor_form_koreksi_upah; // request kirim nomor form
+        $arrayNomorSPL = str_replace(',', '","', $nomor_form);
+
+        if (!empty($nomor_form)) {
+            $inNomorSPL_upah = ' AND dku.nomor_form_koreksi_upah IN ("' . $arrayNomorSPL . '")';
+            $inNomorSPL_potongan = ' AND dkp.nomor_form_koreksi_potongan IN ("' . $arrayNomorSPL . '")';
+        } else {
+            $inNomorSPL_upah = '';
+            $inNomorSPL_potongan = '';
+        }
+
+        $query = DB::select("
+            SELECT
+                CONCAT(
+                    dku.nomor_form_koreksi_upah,
+                    ' [ ',
+                    DATE_FORMAT(dku.tanggal_koreksi, '%d %b %Y'),
+                    ' ] => ',
+                    COUNT(dku.enroll_id),
+                    ' karyawan'
+                ) AS tanggal_nomor_spl,
+                dku.nomor_form_koreksi_upah AS nomor_form,
+                dku.keterangan
+            FROM
+                data_koreksi_upah dku
+            WHERE
+                dku.tanggal_koreksi BETWEEN '{$awal_bulan}' AND '{$akhir_bulan}'
+                {$inNomorSPL_upah}
+                AND dku.nomor_form_koreksi_upah IS NOT NULL
+                AND dku.nomor_form_koreksi_upah != ''
+            GROUP BY
+                dku.nomor_form_koreksi_upah, dku.tanggal_koreksi
+        ");
+
+        // Sort berdasarkan angka terakhir setelah "/"
+        $sorted = collect($query)->sortByDesc(function ($item) {
+            preg_match('/\/(\d+)$/', $item->nomor_form, $match);
+            return isset($match[1]) ? (int) $match[1] : 0;
+        })->values();
+
+        return $sorted->take(1000);
     }
 
     public function ajax_getnomorspl(Request $request)

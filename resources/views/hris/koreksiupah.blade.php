@@ -1690,7 +1690,7 @@
             if(periode_lembur){
                 $.ajax({
                     type:"POST",
-                    url: "{{route('hris.koreksi_upah.ajax_getnomorspl')}}",
+                    url: "{{route('hris.koreksi_upah.ajax_getnomorspl_upah')}}",
                     dataType: 'json',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -1701,7 +1701,7 @@
                     success: function(resA){
                         if(resA){
                             for(i=0;i<resA.length;i++) {
-                                $("#selectNoSPL").append(new Option(resA[i].tanggal_nomor_spl, resA[i].nomor_form_koreksi_upah));
+                                $("#selectNoSPL").append(new Option(resA[i].nomor_form, resA[i].nomor_form_koreksi_upah));
                             }
                         }
                     }
