@@ -1106,6 +1106,7 @@ class HRDController extends AdminBaseController
         $inStatusStaff='';
         $inStatusKontrak='';
         $inDepartment='';
+        $incheckedEmployeeArr='';
         $inDateRange='';
         if(request()->date_range){
             $daterange1 = explode(" s/d ", request()->date_range);
@@ -1141,6 +1142,9 @@ class HRDController extends AdminBaseController
         if(request()->department_id){
             $department_id=request()->department_id;
             $inDepartment='AND a.department_name = "'.$department_id.'"';
+        }
+        if(request()->checkedEmployeeArr){
+            $incheckedEmployeeArr='AND a.enroll_id in (' . implode(',', request()->checkedEmployeeArr) . ')';
         }
         if(request()->status_kontrak){
             $today = date('Y-m-d');
@@ -1203,6 +1207,7 @@ class HRDController extends AdminBaseController
                     $inSearchVariable
                     $inEnrollId
                     $inNoKTP
+                    $incheckedEmployeeArr
                     $inIbuKandung
                     $inStatusAktif
                     $inStatusKontrak

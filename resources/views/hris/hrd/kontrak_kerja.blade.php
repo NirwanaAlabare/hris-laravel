@@ -1661,58 +1661,7 @@ function updateRange(start, end) {
         let datatableFilter = document.getElementById("datatable_filter");
         datatableFilter.innerHTML = `<span> Search : </span><input type="text" class="form-control form-control-sm" id="search_variable" onkeyup="dataTableReload()">`;
     });
-    function export_excel_kontrak(){
-        $("#spinner_export_kontrak_kerja").removeClass("d-none");
-        $("#btn_export_excel_kontrak").attr("disabled", true);
-        let search_variable=$('#search_variable').val();
-        let no_ktp = document.getElementById("searchNoKTP").value;
-        let enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
-        let status_aktif = document.getElementById("status_aktif").value;
-        let status_staff = document.getElementById("status_staff").value;
-        let status_kontrak = document.getElementById("status_kontrak").value;
-        var department_id = $('#selectDepartment').val();
-        var today=new Date();
-        var dd = String(today.getDate()).padStart(2, '0');
-        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-        var yyyy = today.getFullYear();
-        var hour = today.getHours();
-        var minutes = today.getMinutes();
-        var seconds = today.getSeconds();
-        today_date = yyyy + '-' + mm + '-' + dd + ' '+ hour +'.'+minutes+'.'+seconds;
-        $.ajax({
-            type: "get",
-            url: '{{ route('hris.hrd.export_excel_kontrak') }}',
-            data: {
-                search_variable: search_variable,
-                no_ktp: no_ktp,
-                enroll_id: enroll_id,
-                status_aktif: status_aktif,
-                status_staff: status_staff,
-                status_kontrak: status_kontrak,
-                department_id: department_id,
-                date_range: $('#daterange1').val()
-            },
-            xhrFields: {
-                responseType: 'blob'
-            },
-            success: function(response) {
-                {
-                    $("#spinner_export_kontrak_kerja").addClass("d-none");
-                    $("#btn_export_excel_kontrak").attr("disabled", false);
-                    var blob = new Blob([response]);
-                    var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = "Kontrak kerja "+today_date+" "+Math.ceil(Math.random()*1000000)+".xlsx";
-                    link.click();
-                }
-            },
-            error: function(res){
-                swal("", "Export kontrak kerja gagal", "error");
-                $("#spinner_export_kontrak_kerja").addClass("d-none");
-                $("#btn_export_excel_kontrak").attr("disabled", false);
-            }
-        });
-    }
+
     $('.data_range').daterangepicker({
         ranges: {
             'Hari ini': [moment(), moment()],
@@ -2346,7 +2295,8 @@ function updateRange(start, end) {
 
         // tambahkan active ke tab yg diklik
         tabElement.classList.add("active");
-
+        checkedEmployeeArr = [];
+        checkedEmployeeArrOnProcess = [];
         // tampilkan tab aktif di console
         let status_kontrak = document.getElementById("status_kontrak").value;
     }
@@ -2496,6 +2446,62 @@ function updateRange(start, end) {
     });
 
 
+    function export_excel_kontrak(){
+        var enroll_id_checked = checkedEmployeeArr.length > 0 ? checkedEmployeeArr : checkedEmployeeArrOnProcess;
+        $("#spinner_export_kontrak_kerja").removeClass("d-none");
+        $("#btn_export_excel_kontrak").attr("disabled", true);
+        let search_variable=$('#search_variable').val();
+        let no_ktp = document.getElementById("searchNoKTP").value;
+        let enroll_id = $("select[name='selectEmployeeID[]']").map(function(){return $(this).val();}).get();
+        let status_aktif = document.getElementById("status_aktif").value;
+        let status_staff = document.getElementById("status_staff").value;
+        let status_kontrak = document.getElementById("status_kontrak").value;
+        var department_id = $('#selectDepartment').val();
+        var today=new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+        var hour = today.getHours();
+        var minutes = today.getMinutes();
+        var seconds = today.getSeconds();
+        today_date = yyyy + '-' + mm + '-' + dd + ' '+ hour +'.'+minutes+'.'+seconds;
+        $.ajax({
+            type: "get",
+            url: '{{ route('hris.hrd.export_excel_kontrak') }}',
+            data: {
+                search_variable: search_variable,
+                no_ktp: no_ktp,
+                checkedEmployeeArr: enroll_id_checked,
+                enroll_id: enroll_id,
+                status_aktif: status_aktif,
+                status_staff: status_staff,
+                status_kontrak: status_kontrak,
+                department_id: department_id,
+                date_range: $('#daterange1').val()
+            },
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function(response) {
+                {
+                    $("#spinner_export_kontrak_kerja").addClass("d-none");
+                    $("#btn_export_excel_kontrak").attr("disabled", false);
+                    var blob = new Blob([response]);
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "Kontrak kerja "+today_date+" "+Math.ceil(Math.random()*1000000)+".xlsx";
+                    link.click();
+                }
+            },
+            error: function(res){
+                swal("", "Export kontrak kerja gagal", "error");
+                $("#spinner_export_kontrak_kerja").addClass("d-none");
+                $("#btn_export_excel_kontrak").attr("disabled", false);
+            }
+        });
+    }
+
+
     $('#print_form_penilaian').on('click', function () {
 
         var enroll_id = checkedEmployeeArr;
@@ -2638,6 +2644,7 @@ function updateRange(start, end) {
         document.getElementById("btn_ubah_proses_penilaian_ke_done").style.display =
             element.checked ? "inline-block" : "none";
     }
+
 
 
 
