@@ -2217,7 +2217,7 @@ function updateRange(start, end) {
                 d.status_kontrak = $('#status_kontrak').val();
                 d.status_aktif = $('#status_aktif').val();
                 d.status_staff = $('#status_staff').val();
-                d.search_variable = $('#search_variable').val();
+                d.search_variable = d.search.value;
                 d.contract = $('#daterange1').val();
                 d.department_name = $('#selectDepartment').val();
                 d.status_penilaian = 'proses_penilaian';
