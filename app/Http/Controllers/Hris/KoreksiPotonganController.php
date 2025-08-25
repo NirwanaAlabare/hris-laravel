@@ -385,7 +385,8 @@ class KoreksiPotonganController extends AdminBaseController
             ')
             ->leftJoin('employee_atribut','data_koreksi_upah.enroll_id','=','employee_atribut.enroll_id')
             ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
-            ->where('data_koreksi_upah.jenis_koreksi', '!=', 2);
+            ->where('data_koreksi_upah.jenis_koreksi', '!=', 2)
+            ->orderBy('employee_atribut.employee_name', 'ASC');
 
         // ====================
         // Query 2: Data Koreksi Potongan
@@ -411,7 +412,8 @@ class KoreksiPotonganController extends AdminBaseController
                 "POTONGAN" AS sumber
         ')
         ->leftJoin('employee_atribut','data_koreksi_potongan.enroll_id','=','employee_atribut.enroll_id')
-        ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id');
+        ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
+        ->orderBy('employee_atribut.employee_name', 'ASC');
 
         // ====================
         // Filter (jika ada search)
