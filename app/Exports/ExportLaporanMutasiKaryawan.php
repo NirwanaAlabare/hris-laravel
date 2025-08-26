@@ -60,7 +60,8 @@ class ExportLaporanMutasiKaryawan implements FromView, WithEvents, ShouldAutoSiz
             status_absen,
             a.tgl_pindah,
             DATE_FORMAT(a.tgl_pindah, '%d-%m-%Y') tgl_pindah_fix,
-            DATE_FORMAT(b.updated_at, '%d-%m-%Y %H:%i:%s') tgl_update_fix
+            DATE_FORMAT(b.updated_at, '%d-%m-%Y %H:%i:%s') tgl_update_fix,
+            CASE WHEN status_absen = 'M' THEN 'No' ELSE 'Yes' END AS status_scan
             from
             (
             select tgl_pindah,max(id) id from mut_karyawan_input a where tgl_pindah >= '$this->from' and tgl_pindah <= '$this->to'

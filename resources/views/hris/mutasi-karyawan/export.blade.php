@@ -20,6 +20,7 @@
             <th style="background-color: yellow">Tgl. Pindah</th>
             <th style="background-color: yellow">Jam Absen</th>
             <th style="background-color: yellow">Status Absen</th>
+            <th style="background-color: yellow">Status Scan</th>
         </tr>
     </thead>
     <tbody>
@@ -50,6 +51,8 @@
                 <td style="background-color: {{ $style }}">{{ date('d-M-Y', strtotime($item->tgl_pindah)) }}</td>
                 <td style="background-color: {{ $style }}">{{ $item->absen_masuk_kerja }}</td>
                 <td style="background-color: {{ $style }}">{{ $item->status_absen }}</td>
+                <td style="background-color: {{ $style }}">{{ $item->status_scan }}</td>
+
             </tr>
         @endforeach
     </tbody>
