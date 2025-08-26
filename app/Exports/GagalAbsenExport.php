@@ -197,7 +197,7 @@ class GagalAbsenExport implements FromQuery, WithMapping, ShouldAutoSize, WithEv
                 $sheet->getStyle('A6:A1000')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
                 $sheet->setCellValue('A5', 'TANGGAL');
                 $sheet->setCellValue('B5', 'HARI');
-                $sheet->setCellValue('C5', 'NIK');
+                $sheet->setCellValue('C5', 'NIP');
                 $sheet->setCellValue('D5', 'NO. ABSEN');
                 $sheet->setCellValue('E5', 'NAMA KARYAWAN');
                 $sheet->setCellValue('F5', 'STAFF/NON STAFF');
