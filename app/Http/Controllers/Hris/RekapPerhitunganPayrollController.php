@@ -226,6 +226,9 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG', 'NAGD', 'NAK'])
                         ->groupBy('department_name')
                         ->get();
+        // $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG', 'NAGD', 'NAK'])
+        //                 ->where('department_name','CUTTING')
+        //                 ->get();
         $data=[];
         foreach ($departement as $key => $value) {
             if($status_staff){
@@ -253,6 +256,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     ->orWhere('tanggal_resign','>',$tanggal_awal2);
                 })->get();
             }
+            // dd($payroll->toArray());
             if($payroll->sum('upah_bruto_rupiah')==0){$bruto=0;}else{$bruto=number_format( $payroll->sum('upah_bruto_rupiah') , 2 , ',' , '.');}
             $bruto_int=$payroll->sum('upah_bruto_rupiah');
             if($payroll->sum('pph21')==0){$pph21=0;}else{$pph21=number_format( $payroll->sum('pph21') , 2 , ',' , '.');}
@@ -271,62 +275,116 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $iuran_koperasi=$payroll->sum('iuran_koperasi');
             if($potongan_lain + $rp_cuti_tahuna + $potongan_kehadiran_rupiah + $rp_pot_jam + $iuran_serikat_rupiah + $iuran_koperasi==0){$potongan=0;}else{$potongan=number_format( $potongan_lain + $rp_cuti_tahuna + $potongan_kehadiran_rupiah + $rp_pot_jam + $iuran_serikat_rupiah + $iuran_koperasi , 0 , ',' , '.');}
             $potongan_int=$potongan_lain + $rp_cuti_tahuna + $potongan_kehadiran_rupiah + $rp_pot_jam + $iuran_serikat_rupiah + $iuran_koperasi;
-            if($payroll->sum('total_upah_thp_rupiah')==0){$jumlah=0;}else{
-                // $jumlah=number_format( $payroll->sum('total_upah_thp_rupiah') , 0 , ',' , '.');
+
+            if($payroll->sum('total_upah_thp_rupiah')==0){
+                $jumlah=0;
+            }else{
                 $jumlah = $payroll->map(function ($item) {
-                    if($item->total_kehadiran_net<=0){
+                    if ($item->total_kehadiran_net<=0 && $item->koreksi_upah_rupiah==0 && $item->total_lembur_rupiah==0 && ($item->total_bpjs_tk!=0 || $item->total_bpjs_ks!=0)){
                         return 0;
-                    }else{
-                        return ceil($item->total_upah_thp_rupiah / 100) * 100;
+                    }
+                    $nilai_bersih = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+
+                    // Ambil nama bank dari data payroll
+                    $tunai = strtoupper($item->nama_bank) === 'TUNAI';
+
+                    if ($tunai) {
+                        // TUNAI → pembulatan ke atas kelipatan 500
+                        return ceil($nilai_bersih / 500) * 500;
+                    } else {
+                        // NON-TUNAI → pembulatan ke atas kelipatan 100
+                        return ceil($nilai_bersih / 100) * 100;
                     }
                 })->sum();
             }
-            $total_upah_thp_rupiah_int=ceil($payroll->sum('total_upah_thp_rupiah') / 100) * 100;
-            $jumlah_int = $payroll->map(function ($item) {
-                if($item->total_kehadiran_net<=0){
+
+
+           $jumlah_int = $payroll->map(function ($item) {
+                if ($item->total_kehadiran_net<=0 && $item->koreksi_upah_rupiah==0 && $item->total_lembur_rupiah==0 && ($item->total_bpjs_tk!=0 || $item->total_bpjs_ks!=0)) {
                     return 0;
-                }else{
-                    return ceil($item->total_upah_thp_rupiah / 100) * 100;
+                }
+
+                // Hitung nilai bersih (neto - potongan)
+                $nilai_bersih = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+
+                // Ambil nama bank dari data payroll
+                $tunai = strtoupper($item->nama_bank) === 'TUNAI';
+
+                if ($tunai) {
+                    // TUNAI → pembulatan ke atas kelipatan 500
+                    return ceil($nilai_bersih / 500) * 500;
+                } else {
+                    // NON-TUNAI → pembulatan ke atas kelipatan 100
+                    return ceil($nilai_bersih / 100) * 100;
                 }
             })->sum();
+           $jumlah_sebelum_int = $payroll_before->map(function ($item) {
+                if ($item->total_kehadiran_net<=0 && $item->koreksi_upah_rupiah==0 && $item->total_lembur_rupiah==0 && ($item->total_bpjs_tk!=0 || $item->total_bpjs_ks!=0) ) {
+                    return 0;
+                }
+
+                // Hitung nilai bersih (neto - potongan)
+                $nilai_bersih = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+
+                // Ambil nama bank dari data payroll
+                $tunai = strtoupper($item->nama_bank) === 'TUNAI';
+
+                if ($tunai) {
+                    // TUNAI → pembulatan ke atas kelipatan 500
+                    return ceil($nilai_bersih / 500) * 500;
+                } else {
+                    // NON-TUNAI → pembulatan ke atas kelipatan 100
+                    return ceil($nilai_bersih / 100) * 100;
+                }
+            })->sum();
+
+              // $jumlah_int = $payroll->map(function ($item) {
+            //     if($item->total_kehadiran_net<=0){
+            //         return 0;
+            //     }else{
+            //         return ceil($item->total_upah_thp_rupiah / 100) * 100;
+            //     }
+            // })->sum();
+            //  $jumlah_int = ceil($payroll->sum('total_upah_thp_rupiah') / 100) * 100;
+
             if($payroll_before->sum('total_upah_thp_rupiah')==0){$jumlah_sebelum=0;}else{$jumlah_sebelum=number_format( $payroll_before->sum('total_upah_thp_rupiah'), 0 , ',' , '.');}
-            $jumlah_sebelum_int=$payroll_before->sum('total_upah_thp_rupiah');
+            // $jumlah_sebelum_int=$payroll_before->sum('total_upah_thp_rupiah');
+
+
             if($payroll->sum('bpjs_tk_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkm_rupiah')+$payroll->sum('bpjs_tk_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkk_rupiah')+$payroll->sum('bpjs_tk_jht_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jht_rupiah')+$payroll->sum('bpjs_tk_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jpn_rupiah')+$payroll->sum('bpjs_tk_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkn_rupiah')==0){$bpjs_tk_perusahaan=0;}else{$bpjs_tk_perusahaan=$payroll->sum('bpjs_tk_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkm_rupiah')+$payroll->sum('bpjs_tk_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkk_rupiah')+$payroll->sum('bpjs_tk_jht_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jht_rupiah')+$payroll->sum('bpjs_tk_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jpn_rupiah')+$payroll->sum('bpjs_tk_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkn_rupiah');}
             $bpjs_tk_perusahaan_int=$payroll->sum('bpjs_tk_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkm_rupiah')+$payroll->sum('bpjs_tk_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkk_rupiah')+$payroll->sum('bpjs_tk_jht_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jht_rupiah')+$payroll->sum('bpjs_tk_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jpn_rupiah')+$payroll->sum('bpjs_tk_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkn_rupiah');
             if($payroll->sum('bpjs_ks_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkm_rupiah')+$payroll->sum('bpjs_ks_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkk_rupiah')+$payroll->sum('bpjs_ks_jht_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jht_rupiah')+$payroll->sum('bpjs_ks_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jpn_rupiah')+$payroll->sum('bpjs_ks_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkn_rupiah')==0){$bpjs_ks_perusahaan=0;}else{$bpjs_ks_perusahaan=$payroll->sum('bpjs_ks_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkm_rupiah')+$payroll->sum('bpjs_ks_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkk_rupiah')+$payroll->sum('bpjs_ks_jht_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jht_rupiah')+$payroll->sum('bpjs_ks_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jpn_rupiah')+$payroll->sum('bpjs_ks_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkn_rupiah');}
             $bpjs_ks_perusahaan_int=$payroll->sum('bpjs_ks_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkm_rupiah')+$payroll->sum('bpjs_ks_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkk_rupiah')+$payroll->sum('bpjs_ks_jht_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jht_rupiah')+$payroll->sum('bpjs_ks_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jpn_rupiah')+$payroll->sum('bpjs_ks_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkn_rupiah');
 
-            if($payroll->count() >0){
-                $data[$key]=[
-                    'id_department'=>$value->department_id,
-                    'nama_department'=>$value->department_name,
-                    'jumlah_karyawan'=>$payroll->count(),
-                    'bruto'=>$bruto,
-                    'bruto_int'=>$bruto_int,
-                    'pph'=>$pph21,
-                    'pph_int'=>$pph21_int,
-                    'upah_neto_rupiah'=>$upah_neto_rupiah,
-                    'upah_neto_rupiah_int'=>$upah_neto_rupiah_int,
-                    'total_bpjs_tk'=>$total_bpjs_tk,
-                    'total_bpjs_tk_int'=>$total_bpjs_tk_int,
-                    'total_bpjs_ks'=>$total_bpjs_ks,
-                    'total_bpjs_ks_int'=>$total_bpjs_ks_int,
-                    'potongan'=>$potongan,
-                    'potongan_int'=>$potongan_int,
-                    'jumlah'=>number_format($jumlah , 0 , ',' , '.'),
-                    'jumlah_int'=>$jumlah_int,
-                    'jumlah_karyawan_sebelum'=>$payroll_before->count(),
-                    'jumlah_sebelum'=>$jumlah_sebelum,
-                    'jumlah_sebelum_int'=>$jumlah_sebelum_int,
-                    'selisih_karyawan'=>$payroll->count()-$payroll_before->count(),
-                    'selisih_gaji'=>(int)(ceil($payroll->sum('total_upah_thp_rupiah') / 100) * 100)-(int)(ceil($payroll_before->sum('total_upah_thp_rupiah') / 100) * 100),
-                    'bpjs_tk_perusahaan'=>$bpjs_tk_perusahaan,
-                    'total_bpjs_tk_all'=>(double)$payroll->sum('total_bpjs_tk')+$bpjs_tk_perusahaan,
-                    'bpjs_ks_perusahaan'=>$bpjs_ks_perusahaan,
-                    'total_bpjs_ks_all'=>(double)$payroll->sum('total_bpjs_ks')+$bpjs_ks_perusahaan,
-                    'periode'=>$year.'-'.$month
-                ];
-            }
+            $data[$key]=[
+                'id_department'=>$value->department_id,
+                'nama_department'=>$value->department_name,
+                'jumlah_karyawan'=>$payroll->count(),
+                'bruto'=>$bruto,
+                'bruto_int'=>$bruto_int,
+                'pph'=>$pph21,
+                'pph_int'=>$pph21_int,
+                'upah_neto_rupiah'=>$upah_neto_rupiah,
+                'upah_neto_rupiah_int'=>$upah_neto_rupiah_int,
+                'total_bpjs_tk'=>$total_bpjs_tk,
+                'total_bpjs_tk_int'=>$total_bpjs_tk_int,
+                'total_bpjs_ks'=>$total_bpjs_ks,
+                'total_bpjs_ks_int'=>$total_bpjs_ks_int,
+                'potongan'=>$potongan,
+                'potongan_int'=>$potongan_int,
+                'jumlah'=>number_format($jumlah , 0 , ',' , '.'),
+                'jumlah_int'=>$jumlah_int,
+                'jumlah_karyawan_sebelum'=>$payroll_before->count(),
+                'jumlah_sebelum'=>$jumlah_sebelum,
+                'jumlah_sebelum_int'=>$jumlah_sebelum_int,
+                'selisih_karyawan'=>$payroll->count()-$payroll_before->count(),
+                'selisih_gaji'=>$jumlah_int-$jumlah_sebelum_int,
+                'bpjs_tk_perusahaan'=>$bpjs_tk_perusahaan,
+                'total_bpjs_tk_all'=>(double)$payroll->sum('total_bpjs_tk')+$bpjs_tk_perusahaan,
+                'bpjs_ks_perusahaan'=>$bpjs_ks_perusahaan,
+                'total_bpjs_ks_all'=>(double)$payroll->sum('total_bpjs_ks')+$bpjs_ks_perusahaan,
+                'periode'=>$year.'-'.$month
+            ];
 
         }
         $arrayData=[];
@@ -364,6 +422,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 'periode'=>$value['periode'],
             ];
         }
+        // dd($data);
         $jumlah_karyawan = array_sum(array_column($arrayData,'jumlah_karyawan'));
         $bruto_total = array_sum(array_column($arrayData,'bruto_int'));
         if($bruto_total==0){$bruto_total=0;}else{$bruto_total=number_format( $bruto_total , 2 , ',' , '.');}
@@ -436,62 +495,136 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $bulan_priode = $periode_payroll;
         $bulan_sekarang1 = strtotime(date( $bulan_priode));
         $bulan_sebelum = strtotime("-1 month", $bulan_sekarang1);
+        $bulan_sebelum2 = strtotime("-2 month", $bulan_sekarang1);
         $bulan_sebelum=date('Y-m-', $bulan_sebelum);
         $bulan_sekarang=date('Y-m-', $bulan_sekarang1);
+        $bulan_sebelum2=date('Y-m-', $bulan_sebelum2);
 
         $tanggal_awal=$bulan_sebelum.'26';
         $tanggal_akhir=$bulan_sekarang.'25';
+        $tanggal_awal2=$bulan_sebelum2.'26';
         $tanggal_awal_baru = date('m/d/Y', strtotime($tanggal_awal));
         $tanggal_akhir_baru = date('m/d/Y', strtotime($tanggal_akhir));
         $periode_payroll = $tanggal_awal_baru . ' - ' . $tanggal_akhir_baru;
-
         $data_potongan = $this->potongan($periode_payroll);
         // $departement=DepartmentAll::where('site_nirwana_id','NAG')->groupBy('department_id')->get();
-        $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG'])
-                        ->groupBy('department_id')
+        // $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG', 'NAGD', 'NAK'])
+        //                 ->groupBy('department_id')
+        //                 ->get();
+        $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG', 'NAGD', 'NAK'])
+                        ->groupBy('department_name')
                         ->get();
         list($year_before, $month_before) = explode('-', $bulan_sebelum);
         $data=[];
         foreach ($departement as $key => $value) {
             if($status_staff){
+                // $payroll=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)
+                // ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)
+                // ->where('total_kehadiran_net','>',0)->get();
                 $payroll=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)
-                ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)
-                ->where('total_kehadiran_net','>',0)->get();
+                ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)->where('periode_umk',null)
+                ->whereHas('employee_atribut',function($query)use($tanggal_awal){
+                    $query->where('tanggal_resign',null)
+                    ->orWhere('tanggal_resign','>',$tanggal_awal);
+                })->get();
                 $payroll_before=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year_before)->where('periode_bulan_payroll', $month_before)
-                ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)
-                ->where('total_kehadiran_net','>',0)->get();
+                ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)->where('periode_umk',null)
+                ->whereHas('employee_atribut',function($query)use($tanggal_awal2){
+                    $query->where('tanggal_resign',null)
+                    ->orWhere('tanggal_resign','>',$tanggal_awal2);
+                })->get();
+                // $payroll_bni=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)
+                // ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)
+                // ->where('total_kehadiran_net','>',0)->where('nama_bank','BNI')->where(function ($query) use ($tgl_awal){
+                //     $query->where('tanggal_resign',null)->orWhere('tanggal_resign','>',$tgl_awal);
+                // })->get();
+
                 $payroll_bni=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)
-                ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)
-                ->where('total_kehadiran_net','>',0)->where('nama_bank','BNI')->where(function ($query) use ($tgl_awal){
-                    $query->where('tanggal_resign',null)->orWhere('tanggal_resign','>',$tgl_awal);
+                ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)->where('periode_umk',null)
+                ->where('nama_bank','BNI')
+                ->whereHas('employee_atribut',function($query)use($tanggal_awal){
+                    $query->where('tanggal_resign',null)
+                    ->orWhere('tanggal_resign','>',$tanggal_awal);
                 })->get();
                 $payroll_cimb=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)
-                ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)
-                ->where('total_kehadiran_net','>',0)->where('nama_bank','CIMB NIAGA')->where(function ($query) use ($tgl_awal){
-                    $query->where('tanggal_resign',null)->orWhere('tanggal_resign','>',$tgl_awal);
+                ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)->where('periode_umk',null)
+                ->where('nama_bank','CIMB NIAGA')
+                ->whereHas('employee_atribut',function($query)use($tanggal_awal){
+                    $query->where('tanggal_resign',null)
+                    ->orWhere('tanggal_resign','>',$tanggal_awal);
                 })->get();
+
+                // $payroll_cimb=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)
+                // ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)
+                // ->where('total_kehadiran_net','>',0)->where('nama_bank','CIMB NIAGA')->where(function ($query) use ($tgl_awal){
+                //     $query->where('tanggal_resign',null)->orWhere('tanggal_resign','>',$tgl_awal);
+                // })->get();
                 $payroll_other=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)
-                ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)
-                ->where('total_kehadiran_net','>',0)->whereNotIn('nama_bank',['BNI','CIMB NIAGA'])->where(function ($query) use ($tgl_awal){
-                    $query->where('tanggal_resign',null)->orWhere('tanggal_resign','>',$tgl_awal);
+                ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)->where('periode_umk',null)
+                ->whereNotIn('nama_bank',['BNI','CIMB NIAGA'])
+                ->whereHas('employee_atribut',function($query)use($tanggal_awal){
+                    $query->where('tanggal_resign',null)
+                    ->orWhere('tanggal_resign','>',$tanggal_awal);
                 })->get();
+                // $payroll_other=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)
+                // ->where('kategori_karyawan',$status_staff)->where('nama_department',$value->department_name)
+                // ->where('total_kehadiran_net','>',0)->whereNotIn('nama_bank',['BNI','CIMB NIAGA'])->where(function ($query) use ($tgl_awal){
+                //     $query->where('tanggal_resign',null)->orWhere('tanggal_resign','>',$tgl_awal);
+                // })->get();
             }else{
-                $payroll=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->where('nama_department',$value->department_name)
-                ->where('total_kehadiran_net','>',0)->get();
-                $payroll_before=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year_before)->where('periode_bulan_payroll', $month_before)->where('nama_department',$value->department_name)
-                ->where('total_kehadiran_net','>',0)->get();
-                $payroll_bni=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->where('nama_department',$value->department_name)
-                ->where('total_kehadiran_net','>',0)->where('nama_bank','BNI')->where(function ($query) use ($tgl_awal){
-                    $query->where('tanggal_resign',null)->orWhere('tanggal_resign','>',$tgl_awal);
+                // $payroll=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->where('nama_department',$value->department_name)
+                // ->where('total_kehadiran_net','>',0)->get();
+                // $payroll_before=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year_before)->where('periode_bulan_payroll', $month_before)->where('nama_department',$value->department_name)
+                // ->where('total_kehadiran_net','>',0)->get();
+
+                $payroll=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)
+                ->where('nama_department',$value->department_name)->where('periode_umk',null)
+                ->whereHas('employee_atribut',function($query)use($tanggal_awal){
+                    $query->where('tanggal_resign',null)
+                    ->orWhere('tanggal_resign','>',$tanggal_awal);
                 })->get();
-                $payroll_cimb=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->where('nama_department',$value->department_name)
-                ->where('total_kehadiran_net','>',0)->where('nama_bank','CIMB NIAGA')->where(function ($query) use ($tgl_awal){
-                    $query->where('tanggal_resign',null)->orWhere('tanggal_resign','>',$tgl_awal);
+                $payroll_before=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year_before)->where('periode_bulan_payroll', $month_before)
+                ->where('nama_department',$value->department_name)->where('periode_umk',null)
+                ->whereHas('employee_atribut',function($query)use($tanggal_awal2){
+                    $query->where('tanggal_resign',null)
+                    ->orWhere('tanggal_resign','>',$tanggal_awal2);
                 })->get();
-                $payroll_other=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->where('nama_department',$value->department_name)
-                ->where('total_kehadiran_net','>',0)->whereNotIn('nama_bank',['BNI','CIMB NIAGA'])->where(function ($query) use ($tgl_awal){
-                    $query->where('tanggal_resign',null)->orWhere('tanggal_resign','>',$tgl_awal);
+
+                 $payroll_bni=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)
+                ->where('nama_department',$value->department_name)->where('periode_umk',null)
+                ->where('nama_bank','BNI')
+                ->whereHas('employee_atribut',function($query)use($tanggal_awal){
+                    $query->where('tanggal_resign',null)
+                    ->orWhere('tanggal_resign','>',$tanggal_awal);
                 })->get();
+                $payroll_cimb=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)
+                ->where('nama_department',$value->department_name)->where('periode_umk',null)
+                ->where('nama_bank','CIMB NIAGA')
+                ->whereHas('employee_atribut',function($query)use($tanggal_awal){
+                    $query->where('tanggal_resign',null)
+                    ->orWhere('tanggal_resign','>',$tanggal_awal);
+                })->get();
+                 $payroll_other=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)
+                ->where('nama_department',$value->department_name)->where('periode_umk',null)
+                ->whereNotIn('nama_bank',['BNI','CIMB NIAGA'])
+                ->whereHas('employee_atribut',function($query)use($tanggal_awal){
+                    $query->where('tanggal_resign',null)
+                    ->orWhere('tanggal_resign','>',$tanggal_awal);
+                })->get();
+
+
+                // $payroll_bni=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->where('nama_department',$value->department_name)
+                // ->where('total_kehadiran_net','>',0)->where('nama_bank','BNI')->where(function ($query) use ($tgl_awal){
+                //     $query->where('tanggal_resign',null)->orWhere('tanggal_resign','>',$tgl_awal);
+                // })->get();
+                // $payroll_cimb=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->where('nama_department',$value->department_name)
+                // ->where('total_kehadiran_net','>',0)->where('nama_bank','CIMB NIAGA')->where(function ($query) use ($tgl_awal){
+                //     $query->where('tanggal_resign',null)->orWhere('tanggal_resign','>',$tgl_awal);
+                // })->get();
+                // $payroll_other=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->where('nama_department',$value->department_name)
+                // ->where('total_kehadiran_net','>',0)->whereNotIn('nama_bank',['BNI','CIMB NIAGA'])->where(function ($query) use ($tgl_awal){
+                //     $query->where('tanggal_resign',null)->orWhere('tanggal_resign','>',$tgl_awal);
+                // })->get();
             }
             if($payroll->sum('upah_bruto_rupiah')==0){$bruto=0;}else{$bruto=number_format( $payroll->sum('upah_bruto_rupiah') , 2 , ',' , '.');}
             $bruto_int=$payroll->sum('upah_bruto_rupiah');
@@ -511,18 +644,80 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $iuran_koperasi=$payroll->sum('iuran_koperasi');
             if($potongan_lain + $rp_cuti_tahuna + $potongan_kehadiran_rupiah + $rp_pot_jam + $iuran_serikat_rupiah + $iuran_koperasi==0){$potongan=0;}else{$potongan=number_format( $potongan_lain + $rp_cuti_tahuna + $potongan_kehadiran_rupiah + $rp_pot_jam + $iuran_serikat_rupiah + $iuran_koperasi , 0 , ',' , '.');}
             $potongan_int=$potongan_lain + $rp_cuti_tahuna + $potongan_kehadiran_rupiah + $rp_pot_jam + $iuran_serikat_rupiah + $iuran_koperasi;
-            if(ceil($payroll->sum('total_upah_thp_rupiah') / 100) * 100==0){$jumlah=0;}else{$jumlah=number_format( ceil($payroll->sum('total_upah_thp_rupiah') / 100) * 100 , 0 , ',' , '.');}
-            $total_upah_thp_rupiah_int=ceil($payroll->sum('total_upah_thp_rupiah') / 100) * 100;
-            $jumlah_int=ceil($payroll->sum('total_upah_thp_rupiah')/100)*100;
+
+
+           $jumlah_int = $payroll->map(function ($item) {
+                if ($item->total_kehadiran_net<=0 && $item->koreksi_upah_rupiah==0 && $item->total_lembur_rupiah==0 && ($item->total_bpjs_tk!=0 || $item->total_bpjs_ks!=0)) {
+                    return 0;
+                }
+
+                // Hitung nilai bersih (neto - potongan)
+                $nilai_bersih = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+
+                // Ambil nama bank dari data payroll
+                $tunai = strtoupper($item->nama_bank) === 'TUNAI';
+
+                if ($tunai) {
+                    // TUNAI → pembulatan ke atas kelipatan 500
+                    return ceil($nilai_bersih / 500) * 500;
+                } else {
+                    // NON-TUNAI → pembulatan ke atas kelipatan 100
+                    return ceil($nilai_bersih / 100) * 100;
+                }
+            })->sum();
+           $jumlah_sebelum_int = $payroll_before->map(function ($item) {
+                if ($item->total_kehadiran_net<=0 && $item->koreksi_upah_rupiah==0 && $item->total_lembur_rupiah==0 && ($item->total_bpjs_tk!=0 || $item->total_bpjs_ks!=0) ) {
+                    return 0;
+                }
+
+                // Hitung nilai bersih (neto - potongan)
+                $nilai_bersih = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+
+                // Ambil nama bank dari data payroll
+                $tunai = strtoupper($item->nama_bank) === 'TUNAI';
+
+                if ($tunai) {
+                    // TUNAI → pembulatan ke atas kelipatan 500
+                    return ceil($nilai_bersih / 500) * 500;
+                } else {
+                    // NON-TUNAI → pembulatan ke atas kelipatan 100
+                    return ceil($nilai_bersih / 100) * 100;
+                }
+            })->sum();
+
+
             if(ceil($payroll_before->sum('total_upah_thp_rupiah') / 100) * 100==0){$jumlah_sebelum=0;}else{$jumlah_sebelum=number_format( ceil($payroll_before->sum('total_upah_thp_rupiah') / 100) * 100 , 0 , ',' , '.');}
-            $jumlah_sebelum_int=ceil($payroll_before->sum('total_upah_thp_rupiah') / 100) * 100;
             if($payroll->sum('bpjs_tk_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkm_rupiah')+$payroll->sum('bpjs_tk_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkk_rupiah')+$payroll->sum('bpjs_tk_jht_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jht_rupiah')+$payroll->sum('bpjs_tk_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jpn_rupiah')+$payroll->sum('bpjs_tk_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkn_rupiah')==0){$bpjs_tk_perusahaan=0;}else{$bpjs_tk_perusahaan=$payroll->sum('bpjs_tk_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkm_rupiah')+$payroll->sum('bpjs_tk_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkk_rupiah')+$payroll->sum('bpjs_tk_jht_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jht_rupiah')+$payroll->sum('bpjs_tk_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jpn_rupiah')+$payroll->sum('bpjs_tk_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkn_rupiah');}
             $bpjs_tk_perusahaan_int=$payroll->sum('bpjs_tk_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkm_rupiah')+$payroll->sum('bpjs_tk_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkk_rupiah')+$payroll->sum('bpjs_tk_jht_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jht_rupiah')+$payroll->sum('bpjs_tk_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jpn_rupiah')+$payroll->sum('bpjs_tk_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_tk_jkn_rupiah');
             if($payroll->sum('bpjs_ks_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkm_rupiah')+$payroll->sum('bpjs_ks_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkk_rupiah')+$payroll->sum('bpjs_ks_jht_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jht_rupiah')+$payroll->sum('bpjs_ks_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jpn_rupiah')+$payroll->sum('bpjs_ks_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkn_rupiah')==0){$bpjs_ks_perusahaan=0;}else{$bpjs_ks_perusahaan=$payroll->sum('bpjs_ks_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkm_rupiah')+$payroll->sum('bpjs_ks_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkk_rupiah')+$payroll->sum('bpjs_ks_jht_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jht_rupiah')+$payroll->sum('bpjs_ks_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jpn_rupiah')+$payroll->sum('bpjs_ks_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkn_rupiah');}
             $bpjs_ks_perusahaan_int=$payroll->sum('bpjs_ks_jkm_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkm_rupiah')+$payroll->sum('bpjs_ks_jkk_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkk_rupiah')+$payroll->sum('bpjs_ks_jht_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jht_rupiah')+$payroll->sum('bpjs_ks_jpn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jpn_rupiah')+$payroll->sum('bpjs_ks_jkn_perusahaan_rupiah')+$payroll->sum('bpjs_ks_jkn_rupiah');
-            $gaji_bni=$payroll_bni->sum('total_upah_thp_rupiah');
-            $gaji_cimb=$payroll_cimb->sum('total_upah_thp_rupiah');
-            $gaji_other=$payroll_other->sum('total_upah_thp_rupiah');
+            // $gaji_bni=$payroll_bni->sum('total_upah_thp_rupiah');
+            // $gaji_cimb=$payroll_cimb->sum('total_upah_thp_rupiah');
+            // $gaji_other=$payroll_other->sum('total_upah_thp_rupiah');
+
+            $gaji_bni = $payroll_bni->map(function ($item) {
+                if ($item->total_kehadiran_net<=0 && $item->koreksi_upah_rupiah==0 && $item->total_lembur_rupiah==0 && ($item->total_bpjs_tk!=0 || $item->total_bpjs_ks!=0)) {
+                    return 0;
+                }
+                $nilai_bersih = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+                return ceil($nilai_bersih / 100) * 100;
+            })->sum();
+            $gaji_cimb = $payroll_cimb->map(function ($item) {
+                if ($item->total_kehadiran_net<=0 && $item->koreksi_upah_rupiah==0 && $item->total_lembur_rupiah==0 && ($item->total_bpjs_tk!=0 || $item->total_bpjs_ks!=0)) {
+                    return 0;
+                }
+                $nilai_bersih = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+                return ceil($nilai_bersih / 100) * 100;
+            })->sum();
+
+            $gaji_other = $payroll_other->map(function ($item) {
+                if ($item->total_kehadiran_net<=0 && $item->koreksi_upah_rupiah==0 && $item->total_lembur_rupiah==0 && ($item->total_bpjs_tk!=0 || $item->total_bpjs_ks!=0)) {
+                    return 0;
+                }
+                $nilai_bersih = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+                return ceil($nilai_bersih / 500) * 500;
+            })->sum();
+
             $gaji_segala_bank=ceil(($gaji_bni+$gaji_cimb+$gaji_other) / 100) * 100;
             $data[$key]=[
                 'id_department'=>$value->department_id,
