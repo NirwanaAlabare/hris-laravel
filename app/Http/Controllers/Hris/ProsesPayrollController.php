@@ -2885,8 +2885,13 @@ class ProsesPayrollController extends AdminBaseController
                 }
 
                 $start = Carbon::createFromFormat('Y-m-d', $v['join_date']);
-                $end = Carbon::today();
+                $end = Carbon::createFromFormat('Y-m-d', $tanggal_awal);
 
+             if ($start->greaterThan($end)) {
+                $years = 0;
+                $months = 0;
+                $days = 0;
+            } else {
                 // Ubah jadi format tanggal (Y, m, d)
                 $startY = (int) $start->format('Y');
                 $startM = (int) $start->format('m');
@@ -2913,6 +2918,7 @@ class ProsesPayrollController extends AdminBaseController
                     $months += 12;
                     $years--;
                 }
+            }
 
 
                 $records_payroll=[
