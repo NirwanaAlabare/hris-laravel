@@ -31,6 +31,9 @@ use \Maatwebsite\Excel\Sheet;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 use Auth;
 
@@ -352,33 +355,6 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         $upah_per_jam=$upah_per_bulan/173;
         $periode_kehadiran = $Data->periode_early ?? $Data->periode_kehadiran;
 
-        // $explodePeriodePayroll = explode(" s/d ", $periode_kehadiran);
-        // $periodePayroll =$explodePeriodePayroll[1];
-
-        // $startDate = Carbon::parse($join_date);
-        // $endDate = Carbon::parse($periodePayroll);
-        // $diff = $startDate->diff($endDate);
-        // $years = $diff->y;
-        // $months = $diff->m;
-        // $days = $diff->d;
-        // $explodePeriodePayroll = explode(" s/d ", $periode_kehadiran);
-        // $startPeriode = Carbon::parse($explodePeriodePayroll[0]); // 2025-02-26
-        // $endPeriode = Carbon::parse($explodePeriodePayroll[1]);   // 2025-03-25
-
-        // // Ubah join_date menjadi objek Carbon
-        // $startDate = Carbon::createFromFormat("d-m-Y", $join_date);
-        // $today = Carbon::today();
-        // if ($startDate->lessThan($startPeriode)) {
-        //     // Jika join_date sebelum periode awal, hitung ke endPeriode
-        //     $diff = $startDate->diff($startPeriode);
-        // } else {
-        //     // Jika join_date dalam rentang periode, hitung ke endPeriode
-        //     $diff = $startDate->diff($today);
-        // }
-
-        // $years = $diff->y;
-        // $months = $diff->m;
-        // $days = $diff->d + 1;
 
         if($Data->year == 0){ $years = '0';} else { $years = $Data->year; }
         if($Data->month == 0){ $months = '0';} else { $months = $Data->month; }
@@ -425,6 +401,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         }
         return [
             $kosong,
+            $site_nirwana_name,
             $enroll_id,
             $nik,
             $employee_name,
@@ -503,306 +480,470 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         ];
     }
 
+    // public function columnFormats(): array
+    // {
+    //     return [
+    //         'I' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+    //         'P' => NumberFormat::FORMAT_TEXT,
+    //         'AO' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'AP' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'AQ' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'AR' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'AS' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'AT' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'AU' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'AV' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'AW' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'AX' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'AY' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'AZ' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'BA' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'BB' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'BC' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'BD' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'BE' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'BF' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'BG' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'BH' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'BI' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'BJ' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'BK' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'BL' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'BM' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'BN' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'BO' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'BP' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'BQ' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'BR' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'BS' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //         'BT' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+    //     ];
+    // }
+
     public function columnFormats(): array
     {
-        return [
-            'I' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'P' => NumberFormat::FORMAT_TEXT,
-            'AO' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'AP' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'AQ' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'AR' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'AS' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'AT' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'AU' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'AV' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'AW' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'AX' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'AY' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'AZ' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BA' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BB' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BC' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BD' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BE' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BF' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BG' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BH' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BI' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BJ' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BK' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BL' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BM' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BN' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BO' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BP' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BQ' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BR' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BS' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'BT' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+        $formats = [
+            // 'I' (kolom 10)
+            Coordinate::stringFromColumnIndex(10) => NumberFormat::FORMAT_DATE_DDMMYYYY,
+
+            // 'P' (kolom 17)
+            Coordinate::stringFromColumnIndex(17) => NumberFormat::FORMAT_TEXT,
         ];
+
+        // 'AO' (kolom 42) s/d 'BU' (kolom 73)
+        for ($i = 42; $i <= 73; $i++) {
+            $formats[Coordinate::stringFromColumnIndex($i)] = NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3;
+        }
+
+        return $formats;
     }
 
     public function title(): string
     {
         return 'REKAPPERHITUNGANPAYROLL';
     }
+    // public function registerEvents(): array
+    // {
+    //     $counter = 1;
+
+    //     return [
+    //         AfterSheet::class => function (AfterSheet $event) use (&$counter) {
+    //             $sheet = $event->sheet;
+    //             $sheet->setCellValue('A1', 'PT NIRWANA ALABARE GARMENT');
+    //             $sheet->getDelegate()->getStyle('A1')->getFont()->setSize(18);
+    //             $sheet->setCellValue('A2', 'Rekap Perhitungan Payroll Karyawan');
+    //             $sheet->getDelegate()->getStyle('A1')->getFont()->setSize(16);
+    //             $sheet->getDelegate()->getStyle('BD5')->getAlignment()->setWrapText(true);
+    //             if($this->periode_umk){
+    //                 if($this->periode_umk=='2023-10'){
+    //                     $tanggal='26 - 31 desember 2023';
+    //                 }else if($this->periode_umk=='2024-01'){
+    //                     $tanggal='01 - 25 januari 2023';
+    //                 }
+    //             }else{
+    //                 setlocale(LC_ALL, 'id-ID', 'id_ID');
+    //                 $datePeriode = explode("-", $this->periode_payroll);
+    //                 $tanggal = strtoupper(date("F", mktime(0, 0, 0, $datePeriode[1], 10))) . ' ' . $datePeriode[0];
+    //             }
+    //             $sheet->setCellValue('A3', 'Periode  : ' . $tanggal);
+    //             $sheet->getDelegate()->getStyle('A1')->getFont()->setSize(14);
+    //             $sheet->mergeCells('A1:D1');
+    //             $sheet->mergeCells('A2:D2');
+    //             $sheet->mergeCells('A3:D3');
+
+
+    //             $highestRow = $event->sheet->getHighestRow();
+
+    //             $event->sheet->getStyle('A7:A' . $highestRow)
+    //                 ->getNumberFormat()
+    //                 ->setFormatCode('0');
+
+    //             for ($row = 7; $row <= $highestRow; $row++) {
+    //                 $event->sheet->setCellValue('A' . $row, $counter);
+    //                 $counter++;
+    //             }
+
+    //             $sheet->mergeCells('A5:A6');
+    //             $sheet->setCellValue('A5', 'NO');
+
+    //             $sheet->mergeCells('B5:B6');
+    //             $sheet->setCellValue('B5', 'ID');
+
+    //             $sheet->mergeCells('C5:C6');
+    //             $sheet->setCellValue('C5', 'NIP');
+
+    //             $sheet->mergeCells('D5:D6');
+    //             $sheet->setCellValue('D5', 'Nama Karyawan');
+
+    //             $sheet->mergeCells('E5:E6');
+    //             $sheet->setCellValue('E5', 'ID Department');
+
+    //             $sheet->mergeCells('F5:F6');
+    //             $sheet->setCellValue('F5', 'Department');
+
+    //             $sheet->mergeCells('G5:G6');
+    //             $sheet->setCellValue('G5', 'ID Bagian');
+
+    //             $sheet->mergeCells('H5:H6');
+    //             $sheet->setCellValue('H5', 'Bagian');
+
+    //             $sheet->mergeCells('I5:I6');
+    //             $sheet->setCellValue('I5', 'Join Date');
+
+
+    //             $sheet->mergeCells('J5:L5');
+    //             $sheet->setCellValue('J5', 'Masa Kerja');
+    //             $sheet->setCellValue('J6', 'T');
+    //             $sheet->setCellValue('K6', 'B');
+    //             $sheet->setCellValue('L6', 'H');
+
+    //             $sheet->mergeCells('M5:M6');
+    //             $sheet->setCellValue('M5', 'Staff /non Staff');
+
+    //             $sheet->mergeCells('N5:N6');
+    //             $sheet->setCellValue('N5', 'Aktif / Tidak Aktif');
+
+    //             $sheet->mergeCells('O5:O6');
+    //             $sheet->setCellValue('O5', 'Bank');
+
+    //             $sheet->mergeCells('P5:P6');
+    //             $sheet->setCellValue('P5', 'Rekening');
+
+    //             $sheet->mergeCells('Q5:Q6');
+    //             $sheet->setCellValue('Q5', 'JK');
+
+    //             $sheet->mergeCells('R5:R6');
+    //             $sheet->setCellValue('R5', 'ST');
+
+    //             //kosong
+
+    //             $sheet->mergeCells('S5:S6');
+    //             $sheet->setCellValue('S5', '');
+
+    //             $sheet->mergeCells('T5:T6');
+    //             $sheet->setCellValue('T5', 'IBY');
+
+    //             $sheet->mergeCells('U5:U6');
+    //             $sheet->setCellValue('U5', 'ITB');
+
+    //             $sheet->mergeCells('V5:V6');
+    //             $sheet->setCellValue('V5', 'M');
+
+    //             $sheet->mergeCells('W5:W6');
+    //             $sheet->setCellValue('W5', 'DT');
+
+    //             $sheet->mergeCells('X5:X6');
+    //             $sheet->setCellValue('X5', 'PC');
+
+    //             $sheet->mergeCells('Y5:Y6');
+    //             $sheet->setCellValue('Y5', 'DTPC');
+
+    //             $sheet->mergeCells('Z5:Z6');
+    //             $sheet->setCellValue('Z5', 'LBY');
+
+    //             $sheet->mergeCells('AA5:AA6');
+    //             $sheet->setCellValue('AA5', 'LSM');
+
+    //             $sheet->mergeCells('AB5:AB6');
+    //             $sheet->setCellValue('AB5', 'R');
+
+    //             $sheet->mergeCells('AC5:AC6');
+    //             $sheet->setCellValue('AC5', 'OK');
+
+    //             $sheet->mergeCells('AD5:AD6');
+    //             $sheet->setCellValue('AD5', 'Hari Kerja');
+
+    //             $sheet->mergeCells('AE5:AE6');
+    //             $sheet->setCellValue('AE5', 'Pot. Hari Kerja');
+
+    //             $sheet->mergeCells('AF5:AF6');
+    //             $sheet->setCellValue('AF5', 'Total Absensi');
+
+    //             $sheet->mergeCells('AG5:AG6');
+    //             $sheet->setCellValue('AG5', 'Jam Lembur 1');
+
+    //             $sheet->mergeCells('AH5:AH6');
+    //             $sheet->setCellValue('AH5', 'Jam Lembur 2');
+
+    //             $sheet->mergeCells('AI5:AI6');
+    //             $sheet->setCellValue('AI5', 'Jam Lembur 3');
+
+    //             $sheet->mergeCells('AJ5:AJ6');
+    //             $sheet->setCellValue('AJ5', 'Jam Lembur 4');
+
+    //             $sheet->mergeCells('AK5:AK6');
+    //             $sheet->setCellValue('AK5', 'Datang Terlambat');
+
+    //             $sheet->mergeCells('AL5:AL6');
+    //             $sheet->setCellValue('AL5', 'Pulang Cepat');
+
+    //             $sheet->mergeCells('AM5:AM6');
+    //             $sheet->setCellValue('AM5', 'Ijin Keluar Sementara');
+
+    //             $sheet->mergeCells('AN5:AN6');
+    //             $sheet->setCellValue('AN5', 'Sisa Cuti Tahunan');
+
+    //             //kosong
+
+    //             $sheet->mergeCells('AO5:AO6');
+    //             $sheet->setCellValue('AO5', '');
+
+    //             $sheet->mergeCells('AP5:AP6');
+    //             $sheet->setCellValue('AP5', 'Upah/ Hari');
+
+    //             $sheet->mergeCells('AQ5:AQ6');
+    //             $sheet->setCellValue('AQ5', 'Upah/ Jam');
+    //             //kosong
+
+
+    //             $sheet->mergeCells('AR5:AR6');
+    //             $sheet->setCellValue('AR5', '');
+
+    //             $sheet->mergeCells('AS5:AS6');
+    //             $sheet->setCellValue('AS5', 'Gaji Pokok');
+
+    //             $sheet->mergeCells('AT5:AT6');
+    //             $sheet->setCellValue('AT5', 'Seniority Allowance');
+
+    //             $sheet->mergeCells('AU5:AU6');
+    //             $sheet->setCellValue('AU5', 'Insentif (Kehadiran)');
+
+    //             $sheet->mergeCells('AV5:AV6');
+    //             $sheet->setCellValue('AV5', 'Insentif (Jabatan)');
+
+    //             $sheet->mergeCells('AW5:AW6');
+    //             $sheet->setCellValue('AW5', 'Rp Lembur 1');
+
+    //             $sheet->mergeCells('AX5:AX6');
+    //             $sheet->setCellValue('AX5', 'Rp Lembur 2');
+
+    //             $sheet->mergeCells('AY5:AY6');
+    //             $sheet->setCellValue('AY5', 'Rp Lembur 3');
+
+    //             $sheet->mergeCells('AZ5:AZ6');
+    //             $sheet->setCellValue('AZ5', 'Rp Lembur 4');
+
+    //             $sheet->mergeCells('BA5:BG5');
+    //             $sheet->setCellValue('BA5','Lain- Lain (Koreksi + -)');
+    //             $sheet->getStyle('BA5')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+    //             $sheet->setCellValue('BA6', '+ Upah');
+    //             $sheet->setCellValue('BB6', '+ Lembur');
+    //             $sheet->setCellValue('BC6', '+ Insentif');
+
+    //             $sheet->setCellValue('BD6', '- Upah');
+    //             $sheet->setCellValue('BE6', '- Lembur');
+    //             $sheet->setCellValue('BF6', '- Insentif');
+    //             $sheet->setCellValue('BG6', '- Piutang');
+
+    //             $sheet->mergeCells('BH5:BH6');
+    //             $sheet->setCellValue('BH5', 'Rp. Cuti Tahunan');
+
+
+    //             $sheet->mergeCells('BI5:BI6');
+    //             $sheet->setCellValue('BI5', 'Rp. Potongan Hari Kerja');
+
+    //             $sheet->mergeCells('BJ5:BJ6');
+    //             $sheet->setCellValue('BJ5', 'Rp Pot. Jam (DT,PC,IKS)');
+
+    //             $sheet->mergeCells('BK5:BK6');
+    //             $sheet->setCellValue('BK5', 'Bruto');
+
+    //             $sheet->mergeCells('BL5:BL6');
+    //             $sheet->setCellValue('BL5', 'PPH');
+
+    //             $sheet->mergeCells('BM5:BM6');
+    //             $sheet->setCellValue('BM5', 'Netto');
+
+    //             $sheet->mergeCells('BN5:BN6');
+    //             $sheet->setCellValue('BN5', 'Bpjamsostek');
+
+    //             $sheet->mergeCells('BO5:BO6');
+    //             $sheet->setCellValue('BO5', 'BPJS Kesehatan');
+
+    //             $sheet->mergeCells('BP5:BP6');
+    //             $sheet->setCellValue('BP5', 'Serikat');
+
+    //             $sheet->mergeCells('BQ5:BQ6');
+    //             $sheet->setCellValue('BQ5', 'Koperasi');
+
+    //             $sheet->mergeCells('BR5:BR6');
+    //             $sheet->setCellValue('BR5', 'Total Potongan');
+
+    //             $sheet->mergeCells('BS5:BS6');
+    //             $sheet->setCellValue('BS5', 'Pembulatan');
+
+    //             $sheet->mergeCells('BT5:BT6');
+    //             $sheet->setCellValue('BT5', 'Jumlah');
+
+    //         },
+    //     ];
+    // }
+
+
     public function registerEvents(): array
-    {
-        $counter = 1;
+{
+    $counter = 1;
 
-        return [
-            AfterSheet::class => function (AfterSheet $event) use (&$counter) {
-                $sheet = $event->sheet;
-                $sheet->setCellValue('A1', 'PT NIRWANA ALABARE GARMENT');
-                $sheet->getDelegate()->getStyle('A1')->getFont()->setSize(18);
-                $sheet->setCellValue('A2', 'Rekap Perhitungan Payroll Karyawan');
-                $sheet->getDelegate()->getStyle('A1')->getFont()->setSize(16);
-                $sheet->getDelegate()->getStyle('BD5')->getAlignment()->setWrapText(true);
-                if($this->periode_umk){
-                    if($this->periode_umk=='2023-10'){
-                        $tanggal='26 - 31 desember 2023';
-                    }else if($this->periode_umk=='2024-01'){
-                        $tanggal='01 - 25 januari 2023';
+    return [
+        AfterSheet::class => function (AfterSheet $event) use (&$counter) {
+            $sheet = $event->sheet->getDelegate();
+
+            // Judul atas
+            $sheet->setCellValue('A1', 'PT NIRWANA ALABARE GARMENT');
+            $sheet->getStyle('A1')->getFont()->setSize(18);
+            $sheet->setCellValue('A2', 'Rekap Perhitungan Payroll Karyawan');
+            $sheet->getStyle('A2')->getFont()->setSize(16);
+
+            if($this->periode_umk){
+                if($this->periode_umk=='2023-10'){
+                    $tanggal='26 - 31 desember 2023';
+                }else if($this->periode_umk=='2024-01'){
+                    $tanggal='01 - 25 januari 2023';
+                }
+            }else{
+                setlocale(LC_ALL, 'id-ID', 'id_ID');
+                $datePeriode = explode("-", $this->periode_payroll);
+                $tanggal = strtoupper(date("F", mktime(0, 0, 0, $datePeriode[1], 10))) . ' ' . $datePeriode[0];
+            }
+
+            $sheet->setCellValue('A3', 'Periode  : ' . $tanggal);
+            $sheet->getStyle('A3')->getFont()->setSize(14);
+            $sheet->mergeCells('A1:D1');
+            $sheet->mergeCells('A2:D2');
+            $sheet->mergeCells('A3:D3');
+
+            // Header kolom baris 5–6
+            $headers = [
+                1 => ['label' => 'NO'],
+                2 => ['label' => 'PT'],
+                3 => ['label' => 'ID'],
+                4 => ['label' => 'NIP'],
+                5 => ['label' => 'Nama Karyawan'],
+                6 => ['label' => 'ID Department'],
+                7 => ['label' => 'Department'],
+                8 => ['label' => 'ID Bagian'],
+                9 => ['label' => 'Bagian'],
+                10 => ['label' => 'Join Date'],
+                11 => ['label' => 'Masa Kerja', 'children' => ['T','B','H']], // merge 3 kolom
+                14 => ['label' => 'Staff /non Staff'],
+                15 => ['label' => 'Aktif / Tidak Aktif'],
+                16 => ['label' => 'Bank'],
+                17 => ['label' => 'Rekening'],
+                18 => ['label' => 'JK'],
+                19 => ['label' => 'ST'],
+                20 => ['label' => ''], // kosong
+                21 => ['label' => 'IBY'],
+                22 => ['label' => 'ITB'],
+                23 => ['label' => 'M'],
+                24 => ['label' => 'DT'],
+                25 => ['label' => 'PC'],
+                26 => ['label' => 'DTPC'],
+                27 => ['label' => 'LBY'],
+                28 => ['label' => 'LSM'],
+                29 => ['label' => 'R'],
+                30 => ['label' => 'OK'],
+                31 => ['label' => 'Hari Kerja'],
+                32 => ['label' => 'Pot. Hari Kerja'],
+                33 => ['label' => 'Total Absensi'],
+                34 => ['label' => 'Jam Lembur 1'],
+                35 => ['label' => 'Jam Lembur 2'],
+                36 => ['label' => 'Jam Lembur 3'],
+                37 => ['label' => 'Jam Lembur 4'],
+                38 => ['label' => 'Datang Terlambat'],
+                39 => ['label' => 'Pulang Cepat'],
+                40 => ['label' => 'Ijin Keluar Sementara'],
+                41 => ['label' => 'Sisa Cuti Tahunan'],
+                42 => ['label' => ''], // kosong
+                43 => ['label' => 'Upah/ Hari'],
+                44 => ['label' => 'Upah/ Jam'],
+                45 => ['label' => ''], // kosong
+                46 => ['label' => 'Gaji Pokok'],
+                47 => ['label' => 'Seniority Allowance'],
+                48 => ['label' => 'Insentif (Kehadiran)'],
+                49 => ['label' => 'Insentif (Jabatan)'],
+                50 => ['label' => 'Rp Lembur 1'],
+                51 => ['label' => 'Rp Lembur 2'],
+                52 => ['label' => 'Rp Lembur 3'],
+                53 => ['label' => 'Rp Lembur 4'],
+                54 => ['label' => 'Lain- Lain (Koreksi + -)', 'children' => [
+                    '+ Upah','+ Lembur','+ Insentif','- Upah','- Lembur','- Insentif','- Piutang'
+                ]],
+                61 => ['label' => 'Rp. Cuti Tahunan'],
+                62 => ['label' => 'Rp. Potongan Hari Kerja'],
+                63 => ['label' => 'Rp Pot. Jam (DT,PC,IKS)'],
+                64 => ['label' => 'Bruto'],
+                65 => ['label' => 'PPH'],
+                66 => ['label' => 'Netto'],
+                67 => ['label' => 'Bpjamsostek'],
+                68 => ['label' => 'BPJS Kesehatan'],
+                69 => ['label' => 'Serikat'],
+                70 => ['label' => 'Koperasi'],
+                71 => ['label' => 'Total Potongan'],
+                72 => ['label' => 'Pembulatan'],
+                73 => ['label' => 'Jumlah'],
+            ];
+
+            foreach ($headers as $index => $item) {
+                $col = Coordinate::stringFromColumnIndex($index);
+                if (isset($item['children'])) {
+                    $childCount = count($item['children']);
+                    $lastCol = Coordinate::stringFromColumnIndex($index + $childCount - 1);
+                    $sheet->mergeCells("{$col}5:{$lastCol}5");
+                    $sheet->setCellValue("{$col}5", $item['label']);
+                    foreach ($item['children'] as $i => $child) {
+                        $c = Coordinate::stringFromColumnIndex($index + $i);
+                        $sheet->setCellValue("{$c}6", $child);
                     }
-                }else{
-                    setlocale(LC_ALL, 'id-ID', 'id_ID');
-                    $datePeriode = explode("-", $this->periode_payroll);
-                    $tanggal = strtoupper(date("F", mktime(0, 0, 0, $datePeriode[1], 10))) . ' ' . $datePeriode[0];
+                } else {
+                    $sheet->mergeCells("{$col}5:{$col}6");
+                    $sheet->setCellValue("{$col}5", $item['label']);
                 }
-                $sheet->setCellValue('A3', 'Periode  : ' . $tanggal);
-                $sheet->getDelegate()->getStyle('A1')->getFont()->setSize(14);
-                $sheet->mergeCells('A1:D1');
-                $sheet->mergeCells('A2:D2');
-                $sheet->mergeCells('A3:D3');
-
-
-                $highestRow = $event->sheet->getHighestRow();
-
-                $event->sheet->getStyle('A7:A' . $highestRow)
-                    ->getNumberFormat()
-                    ->setFormatCode('0');
-
-                for ($row = 7; $row <= $highestRow; $row++) {
-                    $event->sheet->setCellValue('A' . $row, $counter);
-                    $counter++;
-                }
-
-                $sheet->mergeCells('A5:A6');
-                $sheet->setCellValue('A5', 'NO');
-
-                $sheet->mergeCells('B5:B6');
-                $sheet->setCellValue('B5', 'ID');
-
-                $sheet->mergeCells('C5:C6');
-                $sheet->setCellValue('C5', 'NIP');
-
-                $sheet->mergeCells('D5:D6');
-                $sheet->setCellValue('D5', 'Nama Karyawan');
-
-                $sheet->mergeCells('E5:E6');
-                $sheet->setCellValue('E5', 'ID Department');
-
-                $sheet->mergeCells('F5:F6');
-                $sheet->setCellValue('F5', 'Department');
-
-                $sheet->mergeCells('G5:G6');
-                $sheet->setCellValue('G5', 'ID Bagian');
-
-                $sheet->mergeCells('H5:H6');
-                $sheet->setCellValue('H5', 'Bagian');
-
-                $sheet->mergeCells('I5:I6');
-                $sheet->setCellValue('I5', 'Join Date');
-
-
-                $sheet->mergeCells('J5:L5');
-                $sheet->setCellValue('J5', 'Masa Kerja');
-                $sheet->setCellValue('J6', 'T');
-                $sheet->setCellValue('K6', 'B');
-                $sheet->setCellValue('L6', 'H');
-
-                $sheet->mergeCells('M5:M6');
-                $sheet->setCellValue('M5', 'Staff /non Staff');
-
-                $sheet->mergeCells('N5:N6');
-                $sheet->setCellValue('N5', 'Aktif / Tidak Aktif');
-
-                $sheet->mergeCells('O5:O6');
-                $sheet->setCellValue('O5', 'Bank');
-
-                $sheet->mergeCells('P5:P6');
-                $sheet->setCellValue('P5', 'Rekening');
-
-                $sheet->mergeCells('Q5:Q6');
-                $sheet->setCellValue('Q5', 'JK');
-
-                $sheet->mergeCells('R5:R6');
-                $sheet->setCellValue('R5', 'ST');
-
-                //kosong
-
-                $sheet->mergeCells('S5:S6');
-                $sheet->setCellValue('S5', '');
-
-                $sheet->mergeCells('T5:T6');
-                $sheet->setCellValue('T5', 'IBY');
-
-                $sheet->mergeCells('U5:U6');
-                $sheet->setCellValue('U5', 'ITB');
-
-                $sheet->mergeCells('V5:V6');
-                $sheet->setCellValue('V5', 'M');
-
-                $sheet->mergeCells('W5:W6');
-                $sheet->setCellValue('W5', 'DT');
-
-                $sheet->mergeCells('X5:X6');
-                $sheet->setCellValue('X5', 'PC');
-
-                $sheet->mergeCells('Y5:Y6');
-                $sheet->setCellValue('Y5', 'DTPC');
-
-                $sheet->mergeCells('Z5:Z6');
-                $sheet->setCellValue('Z5', 'LBY');
-
-                $sheet->mergeCells('AA5:AA6');
-                $sheet->setCellValue('AA5', 'LSM');
-
-                $sheet->mergeCells('AB5:AB6');
-                $sheet->setCellValue('AB5', 'R');
-
-                $sheet->mergeCells('AC5:AC6');
-                $sheet->setCellValue('AC5', 'OK');
-
-                $sheet->mergeCells('AD5:AD6');
-                $sheet->setCellValue('AD5', 'Hari Kerja');
-
-                $sheet->mergeCells('AE5:AE6');
-                $sheet->setCellValue('AE5', 'Pot. Hari Kerja');
-
-                $sheet->mergeCells('AF5:AF6');
-                $sheet->setCellValue('AF5', 'Total Absensi');
-
-                $sheet->mergeCells('AG5:AG6');
-                $sheet->setCellValue('AG5', 'Jam Lembur 1');
-
-                $sheet->mergeCells('AH5:AH6');
-                $sheet->setCellValue('AH5', 'Jam Lembur 2');
-
-                $sheet->mergeCells('AI5:AI6');
-                $sheet->setCellValue('AI5', 'Jam Lembur 3');
-
-                $sheet->mergeCells('AJ5:AJ6');
-                $sheet->setCellValue('AJ5', 'Jam Lembur 4');
-
-                $sheet->mergeCells('AK5:AK6');
-                $sheet->setCellValue('AK5', 'Datang Terlambat');
-
-                $sheet->mergeCells('AL5:AL6');
-                $sheet->setCellValue('AL5', 'Pulang Cepat');
-
-                $sheet->mergeCells('AM5:AM6');
-                $sheet->setCellValue('AM5', 'Ijin Keluar Sementara');
-
-                $sheet->mergeCells('AN5:AN6');
-                $sheet->setCellValue('AN5', 'Sisa Cuti Tahunan');
-
-                //kosong
-
-                $sheet->mergeCells('AO5:AO6');
-                $sheet->setCellValue('AO5', '');
-
-                $sheet->mergeCells('AP5:AP6');
-                $sheet->setCellValue('AP5', 'Upah/ Hari');
-
-                $sheet->mergeCells('AQ5:AQ6');
-                $sheet->setCellValue('AQ5', 'Upah/ Jam');
-                //kosong
-
-
-                $sheet->mergeCells('AR5:AR6');
-                $sheet->setCellValue('AR5', '');
-
-                $sheet->mergeCells('AS5:AS6');
-                $sheet->setCellValue('AS5', 'Gaji Pokok');
-
-                $sheet->mergeCells('AT5:AT6');
-                $sheet->setCellValue('AT5', 'Seniority Allowance');
-
-                $sheet->mergeCells('AU5:AU6');
-                $sheet->setCellValue('AU5', 'Insentif (Kehadiran)');
-
-                $sheet->mergeCells('AV5:AV6');
-                $sheet->setCellValue('AV5', 'Insentif (Jabatan)');
-
-                $sheet->mergeCells('AW5:AW6');
-                $sheet->setCellValue('AW5', 'Rp Lembur 1');
-
-                $sheet->mergeCells('AX5:AX6');
-                $sheet->setCellValue('AX5', 'Rp Lembur 2');
-
-                $sheet->mergeCells('AY5:AY6');
-                $sheet->setCellValue('AY5', 'Rp Lembur 3');
-
-                $sheet->mergeCells('AZ5:AZ6');
-                $sheet->setCellValue('AZ5', 'Rp Lembur 4');
-
-                $sheet->mergeCells('BA5:BG5');
-                $sheet->setCellValue('BA5','Lain- Lain (Koreksi + -)');
-                $sheet->getStyle('BA5')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-                $sheet->setCellValue('BA6', '+ Upah');
-                $sheet->setCellValue('BB6', '+ Lembur');
-                $sheet->setCellValue('BC6', '+ Insentif');
-
-                $sheet->setCellValue('BD6', '- Upah');
-                $sheet->setCellValue('BE6', '- Lembur');
-                $sheet->setCellValue('BF6', '- Insentif');
-                $sheet->setCellValue('BG6', '- Piutang');
-
-                $sheet->mergeCells('BH5:BH6');
-                $sheet->setCellValue('BH5', 'Rp. Cuti Tahunan');
-
-
-                $sheet->mergeCells('BI5:BI6');
-                $sheet->setCellValue('BI5', 'Rp. Potongan Hari Kerja');
-
-                $sheet->mergeCells('BJ5:BJ6');
-                $sheet->setCellValue('BJ5', 'Rp Pot. Jam (DT,PC,IKS)');
-
-                $sheet->mergeCells('BK5:BK6');
-                $sheet->setCellValue('BK5', 'Bruto');
-
-                $sheet->mergeCells('BL5:BL6');
-                $sheet->setCellValue('BL5', 'PPH');
-
-                $sheet->mergeCells('BM5:BM6');
-                $sheet->setCellValue('BM5', 'Netto');
-
-                $sheet->mergeCells('BN5:BN6');
-                $sheet->setCellValue('BN5', 'Bpjamsostek');
-
-                $sheet->mergeCells('BO5:BO6');
-                $sheet->setCellValue('BO5', 'BPJS Kesehatan');
-
-                $sheet->mergeCells('BP5:BP6');
-                $sheet->setCellValue('BP5', 'Serikat');
-
-                $sheet->mergeCells('BQ5:BQ6');
-                $sheet->setCellValue('BQ5', 'Koperasi');
-
-                $sheet->mergeCells('BR5:BR6');
-                $sheet->setCellValue('BR5', 'Total Potongan');
-
-                $sheet->mergeCells('BS5:BS6');
-                $sheet->setCellValue('BS5', 'Pembulatan');
-
-                $sheet->mergeCells('BT5:BT6');
-                $sheet->setCellValue('BT5', 'Jumlah');
-
-            },
-        ];
-    }
+            }
+
+            // kasih styling header
+            $lastCol = Coordinate::stringFromColumnIndex(max(array_keys($headers)));
+            $sheet->getStyle("A5:{$lastCol}6")->applyFromArray([
+                'font' => ['bold' => true],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical'   => Alignment::VERTICAL_CENTER,
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    ],
+                ],
+            ]);
+
+            // isi nomor urut di kolom A
+            $highestRow = $event->sheet->getHighestRow();
+            for ($row = 7; $row <= $highestRow; $row++) {
+                $event->sheet->setCellValue("A{$row}", $counter);
+                $counter++;
+            }
+        },
+    ];
+}
 
     public function properties(): array
     {
