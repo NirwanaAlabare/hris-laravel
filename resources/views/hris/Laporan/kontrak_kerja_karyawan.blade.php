@@ -282,12 +282,12 @@
                     <li><b>PIHAK  PERTAMA</b> mempekerjakan <b>PIHAK  KEDUA</b> sebagai <b>{{$value->status_jabatan}}</b> di bagian <b>{{$value->sub_dept_name}}</b>, dan memiliki kedudukan sebagai karyawan dengan golongan jabatan tertentu, bertanggung jawab sebagai pemikir, perencana, pelaksana dan atau pengendali atau dalam hal ini disebut staff.</li>
                     <li><b>PIHAK KEDUA</b> menyatakan bersedia mengikuti jadwal kerja yang telah ditentukan yaitu Senin s/d Jumat pukul
                         <b>
-                        @if(in_array($value->department_name, $departemen_khusus))
+                        {{-- @if(in_array($value->department_name, $departemen_khusus))
                             07:30 s/d 16:30
                         @else
                             07:00 s/d 16:00
-                        @endif
-                            {{-- {{ date('H:i', strtotime($value->mulai_jam_kerja)) }} s/d {{ date('H:i', strtotime($value->mulai_jam_kerja)) == '07:00' ? '16:00' : '16:30' }} --}}
+                        @endif --}}
+                            {{ date('H:i', strtotime($value->mulai_jam_kerja)) }} s/d {{ date('H:i', strtotime($value->mulai_jam_kerja)) == '07:00' ? '16:00' : '16:30' }}
                         </b>, atau ditentukan lain oleh <b>PIHAK PERTAMA</b>.</li>
                     <li><b>PIHAK KEDUA</b> besedia melaksanakan tugas dan tanggung jawabnya yang diberikan Pimpinan/atasannya dengan sebaik-baiknya serta bersedia mengikuti dan patuh terhadap ketentuan-ketentuan dan prosedur yang berlaku didalamnya.</li>
                     <li><b>PIHAK KEDUA</b> wajib mematuhi Peraturan Perusahaan yang berlaku dan menjaga ketertiban, kedisiplinan, produktivitas kerja, kerjasama dan kebersihan di lingkungan kerjanya serta merawat peralatan kerja, fasilitas perusahaan, dan barang inventaris yang menjadi tanggung jawabnya.</li>
