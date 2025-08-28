@@ -1289,12 +1289,30 @@ class DataAbsenPerijinanController extends AdminBaseController
                     'updated_absen_ijin' => now()
                 ]);
             }else{
+                // $query1 = MasterDataAbsenKehadiran::whereBetween('tanggal_berjalan', [$tanggal_perizinan, $tanggal_perizinan])
+                // ->where('enroll_id', $data[0][$i][1])
+                // ->where(function ($query3) {
+                //     $query3->whereNotIn('kode_hari', [6, 5])
+                //         ->orWhereNotNull('mulai_jam_kerja');
+                // })->whereNotIn('status_absen',['LN','R'])->update([
+                //     'nomor_absen_ijin' => $nomor_form_perizinan,
+                //     'status_absen' => $data[0][$i][4],
+                //     'operator' => $email,
+                //     'absen_masuk_kerja'=>null,
+                //     'absen_pulang_kerja'=>null,
+                //     'jumlah_menit_absen_dt'=>0,
+                //     'jumlah_menit_absen_pc'=>0,
+                //     'jumlah_menit_absen_dtpc'=>0,
+                //     'updated_absen_ijin' => now()
+                // ]);
                 $query1 = MasterDataAbsenKehadiran::whereBetween('tanggal_berjalan', [$tanggal_perizinan, $tanggal_perizinan])
                 ->where('enroll_id', $data[0][$i][1])
                 ->where(function ($query3) {
                     $query3->whereNotIn('kode_hari', [6, 5]);
-                        // ->orWhereNotNull('mulai_jam_kerja');
-                })->whereNotIn('status_absen',['LN','R'])->update([
+                })->where(function ($q) {
+                        $q->whereNotIn('status_absen', ['LN','R'])
+                        ->orWhereNull('status_absen');
+                    })->update([
                     'nomor_absen_ijin' => $nomor_form_perizinan,
                     'status_absen' => $data[0][$i][4],
                     'operator' => $email,
