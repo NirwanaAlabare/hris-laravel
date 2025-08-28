@@ -1292,8 +1292,8 @@ class DataAbsenPerijinanController extends AdminBaseController
                 $query1 = MasterDataAbsenKehadiran::whereBetween('tanggal_berjalan', [$tanggal_perizinan, $tanggal_perizinan])
                 ->where('enroll_id', $data[0][$i][1])
                 ->where(function ($query3) {
-                    $query3->whereNotIn('kode_hari', [6, 5])
-                        ->orWhereNotNull('mulai_jam_kerja');
+                    $query3->whereNotIn('kode_hari', [6, 5]);
+                        // ->orWhereNotNull('mulai_jam_kerja');
                 })->whereNotIn('status_absen',['LN','R'])->update([
                     'nomor_absen_ijin' => $nomor_form_perizinan,
                     'status_absen' => $data[0][$i][4],
