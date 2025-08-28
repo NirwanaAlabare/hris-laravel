@@ -1526,7 +1526,6 @@ class EmployeeAtrController extends AdminBaseController
                     }
                     // tanggal resign tidak kosong
                 } else {
-                    $bulan_sekarang_date=date('Y-m-'.'25');
 
                     $query1 =  MasterDataAbsenKehadiran::selectRaw('
                         tanggal_berjalan,
@@ -1543,7 +1542,6 @@ class EmployeeAtrController extends AdminBaseController
                         AND kode_hari not in (5,6)
                         AND holiday_name is null
                         AND status_absen = "R"
-                        AND tanggal_berjalan <= "' . $bulan_sekarang_date . '"
                     ')
                     ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
                     ->get();
@@ -1576,7 +1574,6 @@ class EmployeeAtrController extends AdminBaseController
                         AND employee_atribut.tanggal_resign <= master_data_absen_kehadiran.tanggal_berjalan
                         AND master_data_absen_kehadiran.kode_hari not in (5,6)
                         AND master_data_absen_kehadiran.holiday_name is null
-                        AND master_data_absen_kehadiran.tanggal_berjalan <= "' . $bulan_sekarang_date . '"
                     ')
                     ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
                     ->get();
