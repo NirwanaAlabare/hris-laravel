@@ -263,6 +263,10 @@ class PermintaanTenagaKerjaController extends AdminBaseController
 }
 
     public function update_permintaan_tk(Request $request){
+         PengajuanPermintaanTk::where('id', $request->id)->update([
+            'status_permintaan' => $request->status_permintaan,
+            'diajukan_oleh_id' => $request->diajukanOlehID,
+        ]);
          foreach ($request->kualifikasi as $item) {
             SubPengajuanPermintaanTk::where('id', $item['id_kualifikasi'])->update([
                 'department_kode'     => $item['selectDepartment'],
