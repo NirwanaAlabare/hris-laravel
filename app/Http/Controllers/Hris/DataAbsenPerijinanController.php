@@ -1259,7 +1259,7 @@ class DataAbsenPerijinanController extends AdminBaseController
             $nomor_form_perizinan =  $nomor_form_perizinan . $nomorform;
             DataAbsenPerijinan::create([
                 'uuid' => Str::uuid(),
-                'tanggal_perizinan' => date('Y-m-d'),
+                'tanggal_perizinan' => $tanggal_perizinan,
                 'nomor_form_perizinan' => $nomor_form_perizinan,
                 'enroll_id' => $data[0][$i][1],
                 'kode_absen_ijin' => $data[0][$i][4],
