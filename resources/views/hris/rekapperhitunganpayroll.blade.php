@@ -991,7 +991,7 @@
                 type: 'GET',
                 url: '{{route('hris.rekapperhitunganpayroll.get_last_update_labor')}}',
                 success:function(data){
-                    $('#last_periode_labor').html('<i><b>&nbsp;&nbsp;Last Period Proses (Labor Cost ) :</b> '+new Date(data.tanggal_berjalan).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"})+'&nbsp;&nbsp;</i>');
+                    $('#last_periode_labor').html('<i><b>&nbsp;&nbsp;Last Period Proses (Labor Cost ) :</b> '+new Date(data.tanggal_akhir).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"})+'&nbsp;&nbsp;</i>');
                     $('#last_update_labor').html('<i><b>&nbsp;&nbsp;Last Update :</b> '+new Date(data.created_at).toLocaleDateString('id-ID', { weekday: 'long', year:"numeric", month:"long", day:"numeric"})+', '+data.created_at.substr(11,5)+'&nbsp;&nbsp;</i>');
                 },
                 error: function(res){

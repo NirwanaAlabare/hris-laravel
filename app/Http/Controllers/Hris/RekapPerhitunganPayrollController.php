@@ -929,7 +929,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
     }
 
     public function get_last_update_labor(){
-        $last_update=DB::select('select * from daily_labor_costs order by tanggal_berjalan desc limit 1')[0];
+        $last_update=DB::select('select * from history_proses_labor order by created_at desc limit 1')[0];
         return $last_update;
     }
 
