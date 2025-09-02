@@ -109,7 +109,7 @@ class GagalAbsenController extends AdminBaseController
                         ->whereRaw('
                               ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                                 AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                                AND master_data_absen_kehadiran.status_absen IN ("M","TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                                AND master_data_absen_kehadiran.status_absen IN ("M","TL","LP")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                                 AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
                                 AND master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is 														null) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                                 AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
@@ -129,7 +129,7 @@ class GagalAbsenController extends AdminBaseController
                 $totalData = MasterDataAbsenKehadiran::whereRaw('
                             ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                             AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                            AND master_data_absen_kehadiran.status_absen IN ("M","TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                            AND master_data_absen_kehadiran.status_absen IN ("M","TL","LP")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
                             AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
                             AND master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
                             OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
@@ -163,7 +163,7 @@ class GagalAbsenController extends AdminBaseController
                         ->whereRaw('
                             (
                                 (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '" AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                                AND master_data_absen_kehadiran.status_absen IN ("M","TL")
+                                AND master_data_absen_kehadiran.status_absen IN ("M","TL","LP")
                                 AND
                                 (
                                     upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
@@ -210,7 +210,7 @@ class GagalAbsenController extends AdminBaseController
                 $totalData = MasterDataAbsenKehadiran::whereRaw('
                                 (
                                     (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '" AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                                    AND master_data_absen_kehadiran.status_absen IN ("M","TL")
+                                    AND master_data_absen_kehadiran.status_absen IN ("M","TL","LP")
                                     AND
                                     (
                                         upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
@@ -285,7 +285,7 @@ class GagalAbsenController extends AdminBaseController
 
             }
         }
-
+        // dd($totalData);
         $json_data = array(
             "draw"            => intval($request->input('draw')),
             "recordsTotal"    => intval($totalData),
