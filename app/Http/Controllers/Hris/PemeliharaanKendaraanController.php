@@ -6,9 +6,13 @@ use Illuminate\Support\Facades\View;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\PemeliharaanKendaraan;
 use App\Models\VehicleItem;
+use App\Models\EmployeeAtribut;
 use App\Models\KategoriItem;
 use App\Models\VehicleMaintenance;
 use App\Models\VehicleMaintenancePrice;
+use App\Models\GaPemeriksaanKendaraan;
+use App\Models\GaPemeriksaanKendaraanDet;
+use Carbon\Carbon;
 use DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -30,9 +34,319 @@ class PemeliharaanKendaraanController extends AdminBaseController
     public function pengajuan_perbaikan_kendaraan(){
         $vehicles =  DB::connection('laravel_nds')->select( DB::raw("select*from ga_master_kendaraan") );
         $vehicle_item=DB::select("select*from vehicle_item order by created_at desc");
+        $selectemployee = $this->ajax_getallemployeeatribut([]);
         $user = auth()->user();
-        return View::make('hris/ga/pengajuan_perbaikan_kendaraan',compact('vehicles','vehicle_item','user'), $this->data);
+        return View::make('hris/ga/pengajuan_perbaikan_kendaraan',compact('vehicles','vehicle_item','user','selectemployee'), $this->data);
     }
+
+    public function pemeriksaan_kendaraan(){
+        $selectemployee = $this->ajax_getallemployeeatribut(['DEP08SUB002']);
+        $vehicles =  DB::connection('laravel_nds')->select( DB::raw("select*from ga_master_kendaraan") );
+        // $komponent_pemerikasaan_kendaraan=DB::select("select komponen_pemeriksaan_kendaraan.*, komponen_pemeriksaan_kendaraan_input.id, komponen_pemeriksaan_kendaraan_input.nama_item_pemeriksaan_detail,komponen_pemeriksaan_kendaraan_input.nama_item_list from komponen_pemeriksaan_kendaraan LEFT JOIN komponen_pemeriksaan_kendaraan_input on komponen_pemeriksaan_kendaraan.id=komponen_pemeriksaan_kendaraan_input.id_kompoen_pemeriksaan_kendaraan order by komponen_pemeriksaan_kendaraan.sort asc");
+        $komponent_pemerikasaan_kendaraan = DB::table('komponen_pemeriksaan_kendaraan')
+            ->orderBy('sort', 'asc')
+            ->get();
+
+        foreach ($komponent_pemerikasaan_kendaraan as $k) {
+            $k->inputs = DB::table('komponen_pemeriksaan_kendaraan_input')
+                ->where('id_kompoen_pemeriksaan_kendaraan', $k->id)
+                ->get();
+        }
+        // dd($komponent_pemerikasaan_kendaraan);
+        $user = auth()->user();
+        return View::make('hris/ga/pemeriksaan_kendaraan',compact('vehicles','komponent_pemerikasaan_kendaraan','user','selectemployee'), $this->data);
+    }
+
+    public function store_pemeriksaan_kendaraan(Request $request){
+        DB::beginTransaction();
+        try {
+            $tanggalPemeriksaan = null;
+            if ($request->filled('tanggal_pemeriksaan')) {
+                $tanggalPemeriksaan = Carbon::createFromFormat('d-m-Y', $request->tanggal_pemeriksaan)
+                                        ->format('Y-m-d');
+            }
+
+            // 1. Insert ke header
+            $header = GaPemeriksaanKendaraan::create([
+                'kendaraan_id'        => $request->kendaraan_id,
+                'enroll_id'           => $request->enroll_id,
+                'oddometer'           => $request->oddometer,
+                'tanggal_pemeriksaan' => $tanggalPemeriksaan,
+                'created_by'          => auth()->id() ?? null,
+            ]);
+
+            // 2. Insert ke detail
+            if ($request->has('pemeriksaan')) {
+                foreach ($request->pemeriksaan as $komponenId => $status) {
+                    $catatan = $request->catatan[$komponenId] ?? null;
+
+                    $fotoPaths = [];
+                    if ($request->hasFile("foto.$komponenId")) {
+                        foreach ($request->file("foto.$komponenId") as $file) {
+                            // $path = $file->store('pemeriksaan_kendaraan', 'public');
+                            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+                            // $path = $file->storeAs('pemeriksaan_kendaraan', $filename);
+                            $path = $file->storeAs('pemeriksaan_kendaraan', $filename, 'public');
+
+                            $fotoPaths[] = [
+                                'path' => $path,
+                                'original' => $file->getClientOriginalName(),
+                            ];
+                        }
+                    }
+
+                    GaPemeriksaanKendaraanDet::create([
+                        'pemeriksaan_kendaraan_id' => $header->id,
+                        'komponen_id' => $komponenId,
+                        'status'      => $status,
+                        'catatan'     => $catatan,
+                        'foto_path'   => $fotoPaths ? $fotoPaths[0]['path'] : null,
+                        'original_name'   => $fotoPaths ? $fotoPaths[0]['original'] : null,
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Data berhasil disimpan']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menyimpan data',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+
+    }
+
+    public function ajax_get_pemeriksaan_kendaraan_list(Request $request)
+{
+    if ($request->ajax()) {
+        $tanggal = $request->tanggal;
+
+        if ($tanggal) {
+            try {
+                // coba format d-m-Y (misal 02-09-2025)
+                $parsed = Carbon::createFromFormat('d-m-Y', $tanggal);
+            } catch (\Exception $e) {
+                try {
+                    // fallback format Y-m-d (misal 2025-09-02)
+                    $parsed = Carbon::createFromFormat('Y-m-d', $tanggal);
+                } catch (\Exception $e) {
+                    // fallback terakhir → pakai hari ini
+                    $parsed = Carbon::today();
+                }
+            }
+        } else {
+            $parsed = Carbon::today();
+        }
+        $tanggal = $parsed->format('Y-m-d');
+        $data = DB::table('ga_pemeriksaan_kendaraan as pk')
+            ->leftjoin('ga_pemeriksaan_kendaraan_det as pkd', 'pk.id', '=', 'pkd.pemeriksaan_kendaraan_id')
+            ->leftJoin('ga_master_kendaraan as k', 'pk.kendaraan_id', '=', 'k.id')
+            ->leftJoin('employee_atribut as e', 'pk.enroll_id', '=', 'e.enroll_id')
+            ->select(
+                'pk.id',
+                'pk.oddometer',
+                'pk.tanggal_pemeriksaan',
+                'k.tipe',
+                'e.employee_name',
+                DB::raw("SUM(CASE WHEN pkd.status = 'tidak_baik' THEN 1 ELSE 0 END) as jumlah_tidak_baik")
+            )
+            ->whereDate('pk.tanggal_pemeriksaan', $tanggal)
+            ->groupBy('pk.id', 'pk.tanggal_pemeriksaan', 'k.tipe', 'e.employee_name');
+
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->editColumn('tanggal_pemeriksaan', function ($row) {
+                return \Carbon\Carbon::parse($row->tanggal_pemeriksaan)->format('d-m-Y');
+            })
+            ->addColumn('kendaraan', function ($row) {
+                return $row->tipe ?? '-';
+            })
+            ->addColumn('diajukan_oleh', function ($row) {
+                return $row->employee_name ?? '-';
+            })
+            ->addColumn('oddometer', function ($row) {
+                return $row->oddometer ?? '-';
+            })
+            ->addColumn('jumlah_tidak_baik', function ($row) {
+                return $row->jumlah_tidak_baik;
+            })
+            ->addColumn('aksi', function ($row) {
+                return '
+                <button class="btn btn-sm btn-primary btn-detail mr-2" data-id="'.$row->id.'">Detail</button>
+                <button class="btn btn-sm btn-warning btn-edit" data-id="'.$row->id.'">Edit</button>
+                ';
+            })
+            ->rawColumns(['aksi'])
+            ->make(true);
+    }
+}
+
+
+    public function ajax_edit_pemeriksaan_kendaraan($id)
+    {
+        // ambil data utama
+        $data = GaPemeriksaanKendaraan::with(['detail','kendaraan','employee'])->findOrFail($id);
+
+        // kembalikan response JSON agar bisa isi form di modal
+        return response()->json($data);
+    }
+
+  public function ajax_update_pemeriksaan_kendaraan(Request $request, $id)
+    {
+        try {
+            // Format tanggal
+            $tanggalPemeriksaan = null;
+            if ($request->filled('tanggal_pemeriksaan')) {
+                $tanggalPemeriksaan = Carbon::createFromFormat('Y-m-d', $request->tanggal_pemeriksaan)
+                                        ->format('Y-m-d');
+            }
+
+            // 1. Update header
+            $header = GaPemeriksaanKendaraan::findOrFail($id);
+            $header->update([
+                'kendaraan_id'        => $request->kendaraan_id,
+                'enroll_id'           => $request->enroll_id,
+                'oddometer'           => $request->oddometer,
+                'tanggal_pemeriksaan' => $tanggalPemeriksaan,
+                'updated_by'          => auth()->id() ?? null,
+            ]);
+
+            // 2. Hapus detail lama
+            GaPemeriksaanKendaraanDet::where('pemeriksaan_kendaraan_id', $header->id)->delete();
+
+            // 3. Insert detail baru
+       if ($request->has('pemeriksaan')) {
+            foreach ($request->pemeriksaan as $komponenId => $status) {
+                $catatan = $request->catatan[$komponenId] ?? null; // ambil sesuai ID
+                $fotoPaths = [];
+                \Log::info('Loop data', [
+                    'komponenId' => $komponenId,
+                    'status'     => $status,
+                    'catatan'    => $catatan,
+                ]);
+                if ($request->hasFile("foto.$komponenId")) {
+                    foreach ($request->file("foto.$komponenId") as $file) {
+                        $filename = uniqid().'.'.$file->getClientOriginalExtension();
+                        $path = $file->storeAs('pemeriksaan_kendaraan', $filename, 'public');
+                        $fotoPaths[] = [
+                            'path'     => $path,
+                            'original' => $file->getClientOriginalName(),
+                        ];
+                    }
+                }
+
+                GaPemeriksaanKendaraanDet::updateOrCreate(
+                    [
+                        'pemeriksaan_kendaraan_id' => $header->id,
+                        'komponen_id' => $komponenId, // selalu sesuai key
+                    ],
+                    [
+                        'status'        => $status,
+                        'catatan'       => $catatan,
+                        'foto_path'     => $fotoPaths ? $fotoPaths[0]['path'] : null,
+                        'original_name' => $fotoPaths ? $fotoPaths[0]['original'] : null,
+                    ]
+                );
+            }
+        }
+
+
+
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Data pemeriksaan berhasil diperbarui'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal update data',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
+   public function ajax_get_pemeriksaan_kendaraan_detail(Request $request)
+    {
+        if ($request->ajax()) {
+        $data = DB::table('ga_pemeriksaan_kendaraan as pk')
+            ->join('ga_pemeriksaan_kendaraan_det as pkd', 'pk.id', '=', 'pkd.pemeriksaan_kendaraan_id')
+            ->join('komponen_pemeriksaan_kendaraan as kpk', 'pkd.komponen_id', '=', 'kpk.id')
+            ->leftJoin('ga_master_kendaraan as k', 'pk.kendaraan_id', '=', 'k.id')
+            ->leftJoin('employee_atribut as e', 'pk.enroll_id', '=', 'e.enroll_id')
+            ->select(
+                'pk.id',
+                'pk.tanggal_pemeriksaan',
+                'k.tipe',
+                'e.employee_name',
+                'kpk.nama_item_pemeriksaan as nama_komponen',
+                'pkd.status',
+                'pkd.catatan',
+                'pkd.foto_path'
+            )
+            ->where('pk.id', $request->id)
+            ->get();
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->editColumn('tanggal_pemeriksaan', function ($row) {
+                return \Carbon\Carbon::parse($row->tanggal_pemeriksaan)->format('d-m-Y');
+            })
+            ->addColumn('kendaraan', function ($row) {
+                return $row->tipe ?? '-'; // FIX
+            })
+            ->addColumn('diajukan_oleh', function ($row) {
+                return $row->employee_name ?? '-';
+            })
+            ->addColumn('komponen', function ($row) {
+                return $row->nama_komponen ?? '-';
+            })
+            ->addColumn('status', function ($row) {
+                return $row->status == 'baik'
+                    ? '<span class="badge bg-success">Baik</span>'
+                    : '<span class="badge bg-danger">Tidak Baik</span>';
+            })
+            ->addColumn('catatan', function ($row) {
+                return $row->catatan ?? '-';
+            })
+            ->addColumn('foto_path', function ($row) {
+                return $row->foto_path
+                    ? '<a href="'.asset('storage/'.$row->foto_path).'" target="_blank">Lihat Foto</a>'
+                    : '-';
+            })
+            ->rawColumns(['status','foto_path'])
+            ->make(true);
+        }
+    }
+
+
+    public function ajax_getallemployeeatribut($bagian)
+    {
+        if(empty($bagian)){
+            $query = EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, department_name,department_id,sub_dept_name, sub_dept_id, status_aktif,
+                                           concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')
+                                    ->where('status_aktif', 'AKTIF')
+                                    ->groupby('enroll_id')
+                                    ->orderby('employee_name', 'asc')
+                                    ->get();
+        }else{
+            $query = EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, department_name,department_id,sub_dept_name, sub_dept_id, status_aktif,
+                                           concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')
+                                    ->where('status_aktif', 'AKTIF')
+                                    ->whereIn('sub_dept_id', $bagian)
+                                    ->groupby('enroll_id')
+                                    ->orderby('employee_name', 'asc')
+                                    ->get();
+        }
+        return $query;
+    }
+
     public function get_data_jenis_pemeliharaan(){
         $data_input=DB::select("select*from jenis_pemeliharaan order by created_at desc");
         return DataTables::of($data_input)->toJson();

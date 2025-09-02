@@ -476,6 +476,17 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('ga/store_pemeriksaan_kendaraan',['as'=>'hris.ga.store_pemeriksaan_kendaraan','uses'=>'PemeliharaanKendaraanController@store_pemeriksaan_kendaraan']);
     Route::get('ga/ajax_get_pemeriksaan_kendaraan_list',['as'=>'hris.ga.ajax_get_pemeriksaan_kendaraan_list','uses'=>'PemeliharaanKendaraanController@ajax_get_pemeriksaan_kendaraan_list']);
     Route::get('ga/pemeriksaan-kendaraan/detail/{id}',['as'=>'hris.ga.ajax_get_pemeriksaan_kendaraan_detail','uses'=>'PemeliharaanKendaraanController@ajax_get_pemeriksaan_kendaraan_detail']);
+    // Ambil data detail untuk edit
+    Route::get('ga/pemeriksaan-kendaraan/edit/{id}', [
+        'as' => 'hris.ga.ajax_edit_pemeriksaan_kendaraan',
+        'uses' => 'PemeliharaanKendaraanController@ajax_edit_pemeriksaan_kendaraan'
+    ]);
+
+    // Update data setelah submit edit
+    Route::post('ga/pemeriksaan-kendaraan/update/{id}', [
+        'as' => 'hris.ga.ajax_update_pemeriksaan_kendaraan',
+        'uses' => 'PemeliharaanKendaraanController@ajax_update_pemeriksaan_kendaraan'
+    ]);
 
 
 

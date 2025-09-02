@@ -9,6 +9,7 @@
             <ul class="slide-menu">
                 <li><a href="{{route('hris.ga.data_pengajuan_transportasi')}}" class="slide-item pl-3"><span> Pengajuan Transportasi</span></a></li>
                 <li><a href="{{route('hris.ga.pemeliharaan_kendaraan')}}" class="slide-item pl-3"><span> Pemeliharaan Kendaraan</span></a></li>
+                <li><a href="{{route('hris.ga.pemeriksaan_kendaraan')}}" class="slide-item pl-3"><span> Pemeriksaan Kendaraan</span></a></li>
             </ul>
         </li>
         @endif
