@@ -308,9 +308,10 @@ class PemeliharaanKendaraanController extends AdminBaseController
                 return $row->nama_komponen ?? '-';
             })
             ->addColumn('status', function ($row) {
-                return $row->status == 'baik'
+                return $row->employee_name ? ($row->status == 'baik'
                     ? '<span class="badge bg-success">Baik</span>'
-                    : '<span class="badge bg-danger">Tidak Baik</span>';
+                    : '<span class="badge bg-danger">Tidak Baik</span>') :
+                    '-';
             })
             ->addColumn('catatan', function ($row) {
                 return $row->catatan ?? '-';

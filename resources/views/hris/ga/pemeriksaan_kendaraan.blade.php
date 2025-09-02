@@ -629,12 +629,15 @@ h1 {
                     { data: 'oddometer', name: 'oddometer' },
                     { data: 'jumlah_tidak_baik', name: 'jumlah_tidak_baik',
                         render: function(data, type, row) {
-                            if (type === 'display') {
+                            console.log(row);
+                            if (type === 'display' && row.employee_name !==null) {
                                 if (data != 0) {
                                     return '<span class="badge bg-danger">Kerusakan: ' + data + '</span>';
                                 } else {
                                     return '<span class="badge bg-success">Semua Baik</span>';
                                 }
+                            }else{
+                                return 'Belum Diperiksa';
                             }
                             return data;
                         }
