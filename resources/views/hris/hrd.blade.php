@@ -190,7 +190,7 @@
                         Tanggal Pembuatan
                     </div>
                     <div class="col-7">
-                        <input type="date" class="form-control py-0 px-2" id="date_input" style="background-color:white">
+                        <input type="text" class="form-control py-0 px-2 fc-datepicker" value="{{date('d-m-Y')}}" id="date_input" style="background-color:white">
                     </div>
                 </div>
                 <div class="row bg-light">
@@ -339,6 +339,9 @@
 <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
 <script src="{{ URL::asset('assets/plugins/datatable/dataTables.responsive.min.js') }}"></script>
 <script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
+ <script src="{{URL::asset('assets/plugins/spectrum-date-picker/spectrum.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/spectrum-date-picker/jquery-ui.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/input-mask/jquery.maskedinput.js')}}"></script>
 <script type="text/javascript">
     $(function(){
         'use strict';
@@ -1040,6 +1043,12 @@
         var url = 'export_pdf_paklaring?enroll_id='+enroll_id+'&no_form='+no_form+'&reason='+reason+'&no_surat='+no_surat;
         window.open(url, '_blank');
     }
+   $('.fc-datepicker').datepicker({
+           showOtherMonths: true,
+           selectOtherMonths: true,
+           dateFormat: 'dd-mm-yy'
+       });
+
     function export_sk_bni(){
         var enroll_id=$('#enroll_id_input_2').val();
         var no_form='NO. '+$('#no_form_input_2').val()+'/'+$('#no_form_input_next_2').val();
