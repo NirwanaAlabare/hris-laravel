@@ -163,7 +163,7 @@ h1 {
                                     <div class="form-group">
                                         <label class="form-label">TGL PEMERIKSAAN : </label>
                                         <div class="input-group">
-                                            <input type="text" id="filter_tanggal" name="filter_tanggal" value="{{ date('Y-m-d') }}" class="form-control create-control fc-datepicker">
+                                            <input type="text" class="form-control py-0 px-2 fc-datepicker" value="{{date('d-m-Y')}}" id="filter_tanggal" style="background-color:white">
                                         </div>
                                     </div>
                                 </div>
@@ -256,7 +256,7 @@ h1 {
                                     <div class="form-group">
                                         <label class="form-label">TGL PEMERIKSAAN : </label>
                                         <div class="input-group">
-                                            <input type="text" id="tanggal_pemeriksaan" name="tanggal_pemeriksaan" class="form-control create-control fc-datepicker">
+                                            <input type="text" id="tanggal_pemeriksaan" name="tanggal_pemeriksaan" value="{{date('d-m-Y')}}" class="form-control create-control fc-datepicker">
                                         </div>
                                     </div>
                                 </div>
