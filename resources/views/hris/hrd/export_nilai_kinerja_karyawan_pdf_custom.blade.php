@@ -222,8 +222,10 @@
                 <td style="padding-left: 10px;font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;">Status Karyawan</td>
                 <td style="font-size:8pt;vertical-align:top">:</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;">{{$data_karyawan->status_aktif}}</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="25%">
-                    @if(isset($data_penilaian->tgl_akhir_kontrak) && $data_penilaian->tgl_akhir_kontrak)
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;"></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="2%"></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left; font-style: italic;" width="17%">
+                     @if(isset($data_penilaian->tgl_akhir_kontrak) && $data_penilaian->tgl_akhir_kontrak)
                         Perpanjangan PKS {{ \Carbon\Carbon::parse($data_penilaian->tgl_akhir_kontrak)->translatedFormat('d F Y') }}
                     @else
                         Perpanjangan PKS {{ \Carbon\Carbon::parse($contract_end)->translatedFormat('d F Y') }}
