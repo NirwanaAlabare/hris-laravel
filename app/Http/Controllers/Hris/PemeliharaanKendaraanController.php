@@ -42,14 +42,13 @@ class PemeliharaanKendaraanController extends AdminBaseController
     public function pemeriksaan_kendaraan(){
         $selectemployee = $this->ajax_getallemployeeatribut(['DEP08SUB002']);
         $vehicles =  DB::connection('laravel_nds')->select( DB::raw("select*from ga_master_kendaraan") );
-        // $komponent_pemerikasaan_kendaraan=DB::select("select komponen_pemeriksaan_kendaraan.*, komponen_pemeriksaan_kendaraan_input.id, komponen_pemeriksaan_kendaraan_input.nama_item_pemeriksaan_detail,komponen_pemeriksaan_kendaraan_input.nama_item_list from komponen_pemeriksaan_kendaraan LEFT JOIN komponen_pemeriksaan_kendaraan_input on komponen_pemeriksaan_kendaraan.id=komponen_pemeriksaan_kendaraan_input.id_kompoen_pemeriksaan_kendaraan order by komponen_pemeriksaan_kendaraan.sort asc");
         $komponent_pemerikasaan_kendaraan = DB::table('komponen_pemeriksaan_kendaraan')
             ->orderBy('sort', 'asc')
             ->get();
 
         foreach ($komponent_pemerikasaan_kendaraan as $k) {
             $k->inputs = DB::table('komponen_pemeriksaan_kendaraan_input')
-                ->where('id_kompoen_pemeriksaan_kendaraan', $k->id)
+                ->where('id_komponen_pemeriksaan_kendaraan', $k->id)
                 ->get();
         }
         // dd($komponent_pemerikasaan_kendaraan);
@@ -120,69 +119,69 @@ class PemeliharaanKendaraanController extends AdminBaseController
     }
 
     public function ajax_get_pemeriksaan_kendaraan_list(Request $request)
-{
-    if ($request->ajax()) {
-        $tanggal = $request->tanggal;
+    {
+        if ($request->ajax()) {
+            $tanggal = $request->tanggal;
 
-        if ($tanggal) {
-            try {
-                // coba format d-m-Y (misal 02-09-2025)
-                $parsed = Carbon::createFromFormat('d-m-Y', $tanggal);
-            } catch (\Exception $e) {
+            if ($tanggal) {
                 try {
-                    // fallback format Y-m-d (misal 2025-09-02)
-                    $parsed = Carbon::createFromFormat('Y-m-d', $tanggal);
+                    // coba format d-m-Y (misal 02-09-2025)
+                    $parsed = Carbon::createFromFormat('d-m-Y', $tanggal);
                 } catch (\Exception $e) {
-                    // fallback terakhir → pakai hari ini
-                    $parsed = Carbon::today();
+                    try {
+                        // fallback format Y-m-d (misal 2025-09-02)
+                        $parsed = Carbon::createFromFormat('Y-m-d', $tanggal);
+                    } catch (\Exception $e) {
+                        // fallback terakhir → pakai hari ini
+                        $parsed = Carbon::today();
+                    }
                 }
+            } else {
+                $parsed = Carbon::today();
             }
-        } else {
-            $parsed = Carbon::today();
-        }
-        $tanggal = $parsed->format('Y-m-d');
-        $data = DB::table('ga_pemeriksaan_kendaraan as pk')
-            ->leftjoin('ga_pemeriksaan_kendaraan_det as pkd', 'pk.id', '=', 'pkd.pemeriksaan_kendaraan_id')
-            ->leftJoin('ga_master_kendaraan as k', 'pk.kendaraan_id', '=', 'k.id')
-            ->leftJoin('employee_atribut as e', 'pk.enroll_id', '=', 'e.enroll_id')
-            ->select(
-                'pk.id',
-                'pk.oddometer',
-                'pk.tanggal_pemeriksaan',
-                'k.tipe',
-                'e.employee_name',
-                DB::raw("SUM(CASE WHEN pkd.status = 'tidak_baik' THEN 1 ELSE 0 END) as jumlah_tidak_baik")
-            )
-            ->whereDate('pk.tanggal_pemeriksaan', $tanggal)
-            ->groupBy('pk.id', 'pk.tanggal_pemeriksaan', 'k.tipe', 'e.employee_name');
+            $tanggal = $parsed->format('Y-m-d');
+            $data = DB::table('ga_pemeriksaan_kendaraan as pk')
+                ->leftjoin('ga_pemeriksaan_kendaraan_det as pkd', 'pk.id', '=', 'pkd.pemeriksaan_kendaraan_id')
+                ->leftJoin('ga_master_kendaraan as k', 'pk.kendaraan_id', '=', 'k.id')
+                ->leftJoin('employee_atribut as e', 'pk.enroll_id', '=', 'e.enroll_id')
+                ->select(
+                    'pk.id',
+                    'pk.oddometer',
+                    'pk.tanggal_pemeriksaan',
+                    'k.tipe',
+                    'e.employee_name',
+                    DB::raw("SUM(CASE WHEN pkd.status = 'tidak_baik' THEN 1 ELSE 0 END) as jumlah_tidak_baik")
+                )
+                ->whereDate('pk.tanggal_pemeriksaan', $tanggal)
+                ->groupBy('pk.id', 'pk.tanggal_pemeriksaan', 'k.tipe', 'e.employee_name');
 
-        return DataTables::of($data)
-            ->addIndexColumn()
-            ->editColumn('tanggal_pemeriksaan', function ($row) {
-                return \Carbon\Carbon::parse($row->tanggal_pemeriksaan)->format('d-m-Y');
-            })
-            ->addColumn('kendaraan', function ($row) {
-                return $row->tipe ?? '-';
-            })
-            ->addColumn('diajukan_oleh', function ($row) {
-                return $row->employee_name ?? '-';
-            })
-            ->addColumn('oddometer', function ($row) {
-                return $row->oddometer ?? '-';
-            })
-            ->addColumn('jumlah_tidak_baik', function ($row) {
-                return $row->jumlah_tidak_baik;
-            })
-            ->addColumn('aksi', function ($row) {
-                return '
-                <button class="btn btn-sm btn-primary btn-detail mr-2" data-id="'.$row->id.'">Detail</button>
-                <button class="btn btn-sm btn-warning btn-edit" data-id="'.$row->id.'">Edit</button>
-                ';
-            })
-            ->rawColumns(['aksi'])
-            ->make(true);
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('tanggal_pemeriksaan', function ($row) {
+                    return \Carbon\Carbon::parse($row->tanggal_pemeriksaan)->format('d-m-Y');
+                })
+                ->addColumn('kendaraan', function ($row) {
+                    return $row->tipe ?? '-';
+                })
+                ->addColumn('diajukan_oleh', function ($row) {
+                    return $row->employee_name ?? '-';
+                })
+                ->addColumn('oddometer', function ($row) {
+                    return $row->oddometer ?? '-';
+                })
+                ->addColumn('jumlah_tidak_baik', function ($row) {
+                    return $row->jumlah_tidak_baik;
+                })
+                ->addColumn('aksi', function ($row) {
+                    return '
+                    <button class="btn btn-sm btn-primary btn-detail mr-2" data-id="'.$row->id.'">Detail</button>
+                    <button class="btn btn-sm btn-warning btn-edit" data-id="'.$row->id.'">Edit</button>
+                    ';
+                })
+                ->rawColumns(['aksi'])
+                ->make(true);
+        }
     }
-}
 
 
     public function ajax_edit_pemeriksaan_kendaraan($id)
@@ -278,7 +277,7 @@ class PemeliharaanKendaraanController extends AdminBaseController
         if ($request->ajax()) {
         $data = DB::table('ga_pemeriksaan_kendaraan as pk')
             ->join('ga_pemeriksaan_kendaraan_det as pkd', 'pk.id', '=', 'pkd.pemeriksaan_kendaraan_id')
-            ->join('komponen_pemeriksaan_kendaraan as kpk', 'pkd.komponen_id', '=', 'kpk.id')
+            ->join('komponen_pemeriksaan_kendaraan_input as kpk', 'pkd.komponen_id', '=', 'kpk.id')
             ->leftJoin('ga_master_kendaraan as k', 'pk.kendaraan_id', '=', 'k.id')
             ->leftJoin('employee_atribut as e', 'pk.enroll_id', '=', 'e.enroll_id')
             ->select(
@@ -286,13 +285,14 @@ class PemeliharaanKendaraanController extends AdminBaseController
                 'pk.tanggal_pemeriksaan',
                 'k.tipe',
                 'e.employee_name',
-                'kpk.nama_item_pemeriksaan as nama_komponen',
+                'kpk.nama_item_pemeriksaan_detail as nama_komponen',
                 'pkd.status',
                 'pkd.catatan',
                 'pkd.foto_path'
             )
             ->where('pk.id', $request->id)
             ->get();
+        // dd($data->toArray());
         return DataTables::of($data)
             ->addIndexColumn()
             ->editColumn('tanggal_pemeriksaan', function ($row) {
