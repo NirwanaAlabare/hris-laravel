@@ -295,7 +295,7 @@
                         @else
                             07:00 s/d 16:00
                         @endif --}}
-                        {{ date('H:i', strtotime($value->mulai_jam_kerja)) }} s/d {{ date('H:i', strtotime($value->akhir_jam_kerja)) == '07:00' ? '16:00' : '16:30' }}
+                        {{ date('H:i', strtotime($value->mulai_jam_kerja)) }} s/d {{ date('H:i', strtotime($value->mulai_jam_kerja)) == '07:00' ? '16:00' : '16:30' }}
                     </b>, atau ditentukan lain oleh <b>PIHAK PERTAMA</b>.</li>
                     <li><b>PIHAK KEDUA</b> besedia melaksanakan tugas dan tanggung jawabnya yang diberikan Pimpinan/atasannya dengan sebaik-baiknya serta bersedia mengikuti dan patuh terhadap ketentuan-ketentuan dan prosedur yang berlaku didalamnya.</li>
                     <li><b>PIHAK KEDUA</b> wajib mematuhi Peraturan Perusahaan yang berlaku dan menjaga ketertiban, kedisiplinan, produktivitas kerja, kerjasama dan kebersihan di lingkungan kerjanya serta merawat peralatan kerja, fasilitas perusahaan, dan barang inventaris yang menjadi tanggung jawabnya.</li>
