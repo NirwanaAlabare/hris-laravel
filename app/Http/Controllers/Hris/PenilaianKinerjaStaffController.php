@@ -330,7 +330,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                 'penilai' => $request->penilai,
             ]);
 
-             if ($request->rekomendasi_perpanjang_kontrak == 'perpanjang') {
+             if ($request->rekomendasi_perpanjang_kontrak == 'perpanjang' || !empty($request->perpanjang_bulan)) {
                 $timestamp = Carbon::now();
                 $akhirKontrak = Carbon::parse($request->akhir_kontrak_text_val);
                 $adjustedDate = $akhirKontrak->copy()->addDay();
@@ -479,7 +479,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             ]);
 
 
-            if ($request->rekomendasi_perpanjang_kontrak == 'perpanjang') {
+            if ($request->rekomendasi_perpanjang_kontrak == 'perpanjang' || !empty($request->perpanjang_bulan)) {
                 $timestamp = Carbon::now();
                 $akhirKontrak = Carbon::parse($request->akhir_kontrak_text_val);
                 $adjustedDate = $akhirKontrak->copy()->addDay();
