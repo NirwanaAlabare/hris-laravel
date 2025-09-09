@@ -353,11 +353,15 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                     ->exists();
 
                 if (!$exists) {
+                       DB::table('employee_contract')
+                        ->where('enroll_id', $request->enroll_id_input_2_val)
+                        ->update(['status_penilaian' => null]);
                     DB::table('employee_contract')->insert([
                         'enroll_id'   => $request->enroll_id_input_2_val,
                         'contract'    => $adjustedDate,
                         'contract_end'=> $adjustedContractEndCarbon,
                         'jumlah_bulan'=> $request->perpanjang_bulan,
+                        'status_penilaian'=> 'proses_penilaian',
                         'created_at'  => $timestamp,
                         'updated_at'  => $timestamp
                     ]);
@@ -502,11 +506,15 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                     ->exists();
 
                 if (!$exists) {
+                    DB::table('employee_contract')
+                        ->where('enroll_id', $request->enroll_id_input_2_val)
+                        ->update(['status_penilaian' => null]);
                     DB::table('employee_contract')->insert([
                         'enroll_id'   => $request->enroll_id_input_2_val,
                         'contract'    => $adjustedDate,
                         'contract_end'=> $adjustedContractEndCarbon,
                         'jumlah_bulan'=> $request->perpanjang_bulan,
+                        'status_penilaian'=> 'proses_penilaian',
                         'created_at'  => $timestamp,
                         'updated_at'  => $timestamp
                     ]);
@@ -517,6 +525,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
                     ]);
 
                 }
+
             }
 
 
