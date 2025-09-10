@@ -539,8 +539,10 @@ class MdAbsenHadirController extends AdminBaseController
                 ];
             }
         }
+
         foreach($fix_array_data as $key=>$value){
-            $result=array_filter($value);
+            // $result=array_filter($value);
+            $result = $value;
             MasterDataAbsenKehadiran::where('enroll_id',$value['enroll_id'])->where('tanggal_berjalan',$value['tanggal_berjalan'])->update($result);
             $absen_TL=MasterDataAbsenKehadiran::where('enroll_id',$value['enroll_id'])->where('tanggal_berjalan',$value['tanggal_berjalan'])->where('absen_masuk_kerja','!=',null)->where('absen_pulang_kerja','!=',null)->whereIn('status_absen',['TL','M'])->get();
             if($absen_TL){
