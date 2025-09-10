@@ -308,7 +308,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
         $kode_pos=$Data->kode_pos;
 
         return [
-            (string)$employee_id,
+            (string)$site_nirwana_name,
             $enroll_id,
             $nik,
             $employee_name,
@@ -423,7 +423,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
     public function columnWidths(): array
     {
         return [
-            'A' => 12,
+            'A' => 33,
             'B' => 8,
             'C' => 11,
             'D' => 26,
@@ -582,7 +582,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
                 $sheet->mergeCells('A2:D2');
                 $sheet->mergeCells('A3:D3');
 
-                $sheet->setCellValue('A5', 'EMPLOYEE ID');
+                $sheet->setCellValue('A5', 'PT');
                 $sheet->setCellValue('B5', 'ID');
                 $sheet->setCellValue('C5', 'NIP');
                 $sheet->setCellValue('D5', 'NAMA KARYAWAN');
