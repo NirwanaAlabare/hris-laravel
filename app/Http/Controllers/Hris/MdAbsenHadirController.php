@@ -489,6 +489,7 @@ class MdAbsenHadirController extends AdminBaseController
                 'enroll_id'=>$data[0][$i][1],
                 'tanggal_berjalan'=>$tanggal_berjalan,
                 'kerja_libur'=>$data[0][$i][5],
+                'nama_hari'=>$data[0][$i][3],
                 'jadwal_masuk_kerja'=>$jadwal_masuk_kerja,
                 'jadwal_pulang_kerja'=>$jadwal_pulang_kerja,
                 'absen_masuk_kerja'=>$absen_masuk_kerja,
@@ -517,6 +518,7 @@ class MdAbsenHadirController extends AdminBaseController
                     'akhir_jam_kerja'=>$value['jadwal_pulang_kerja'],
                     'absen_masuk_kerja'=>$value['absen_masuk_kerja'],
                     'absen_pulang_kerja'=>$value['absen_pulang_kerja'],
+                    'nama_hari'=>$value['nama_hari'],
                 ];
             }else if($absen_masuk_kerja!=$value['absen_masuk_kerja'] || $absen_pulang_kerja!=$value['absen_pulang_kerja']){
                 $fix_array_data[$key]=[
@@ -526,6 +528,7 @@ class MdAbsenHadirController extends AdminBaseController
                     'akhir_jam_kerja'=>$value['jadwal_pulang_kerja'],
                     'absen_masuk_kerja'=>$value['absen_masuk_kerja'],
                     'absen_pulang_kerja'=>$value['absen_pulang_kerja'],
+                    'nama_hari'=>$value['nama_hari'],
                     'operator'=>'inject absen by excel file'
                 ];
             }else{
@@ -536,9 +539,82 @@ class MdAbsenHadirController extends AdminBaseController
                     'akhir_jam_kerja'=>$value['jadwal_pulang_kerja'],
                     'absen_masuk_kerja'=>$value['absen_masuk_kerja'],
                     'absen_pulang_kerja'=>$value['absen_pulang_kerja'],
+                    'nama_hari'=>$value['nama_hari'],
                 ];
             }
         }
+        // dd($fix_array_data);
+        foreach($fix_array_data as $key=>$value){
+            $tanggal_berjalan=$value['tanggal_berjalan'];
+            $absen_masuk_kerja=$value['absen_masuk_kerja'];
+            $absen_pulang_kerja=$value['absen_pulang_kerja'];
+            $mulai_jam_kerja=$value['mulai_jam_kerja'];
+            $akhir_jam_kerja=$value['akhir_jam_kerja'];
+            $mulai_jam_lembur=null;
+            $akhir_jam_lembur=null;
+            $nomor_form_lembur=null;
+            $operator='inject absen by excel file';
+            $kode_hari='';
+            if($value['nama_hari']=='Minggu'){
+                $kode_hari=6;
+            }else if($value['nama_hari']=='Senin'){
+                $kode_hari=0;
+            }else if($value['nama_hari']=='Selasa'){
+                $kode_hari=1;
+            }else if($value['nama_hari']=='Rabu'){
+                $kode_hari=2;
+            }else if($value['nama_hari']=='Kamis'){
+                $kode_hari=3;
+            }else if($value['nama_hari']=='Jumat'){
+                $kode_hari=4;
+            }else if($value['nama_hari']=='Sabtu'){
+                $kode_hari=5;
+            }
+            $nama_hari=$value['nama_hari'];
+            $employee_data=EmployeeAtribut::where('enroll_id',$value['enroll_id'])->first();
+            if($employee_data){
+                $nik=$employee_data->nik;
+                $enroll_id=$employee_data->enroll_id;
+                $employee_name=$employee_data->employee_name;
+                $department_id=$employee_data->department_id;
+                $department_name=$employee_data->department_name;
+                $sub_dept_id=$employee_data->sub_dept_id;
+                $sub_dept_name=$employee_data->sub_dept_name;
+                $site_nirwana_id=$employee_data->site_nirwana_id;
+                $site_nirwana_name=$employee_data->site_nirwana_name;
+                $join_date=$employee_data->join_date;
+                $tanggal_resign=$employee_data->tanggal_resign;
+            }
+            $query = DataKehadiranInOutEdited::create([
+                'uuid' => Str::uuid(),
+                'tanggal_absen' => $tanggal_berjalan,
+                'kode_hari' => $kode_hari,
+                'nama_hari' => $nama_hari,
+                'site_nirwana_id' => $site_nirwana_id,
+                'site_nirwana_name' => $site_nirwana_name,
+                'holiday_name' => null,
+                'nik' => $nik,
+                'enroll_id' => $enroll_id,
+                'employee_name' => $employee_name,
+                'department_id' => $department_id,
+                'department_name' => $department_name,
+                'sub_dept_id' => $sub_dept_id,
+                'sub_dept_name' => $sub_dept_name,
+                'status_absen' => null,
+                'absen_masuk_kerja' => $absen_masuk_kerja,
+                'absen_pulang_kerja' => $absen_pulang_kerja,
+                'mulai_jam_kerja' => $mulai_jam_kerja,
+                'akhir_jam_kerja' => $akhir_jam_kerja,
+                'mulai_jam_lembur' => $mulai_jam_lembur,
+                'akhir_jam_lembur' => $akhir_jam_lembur,
+                'nomor_form_lembur' => $nomor_form_lembur,
+                'join_date' => $join_date,
+                'tanggal_resign' => $tanggal_resign,
+                'operator' => $operator
+            ]);
+        }
+
+
 
         foreach($fix_array_data as $key=>$value){
             // $result=array_filter($value);
