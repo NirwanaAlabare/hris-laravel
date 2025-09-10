@@ -1812,7 +1812,7 @@ h1 {
                 let firstDepartment = $('.kualifikasi-item').first().find('select[name="selectDepartment"]').val();
                 let firstBagian = $('.kualifikasi-item').first().find('select[name="selectBagian"]').val();
                 let firstTanggal = $('.kualifikasi-item').first().find('input[name="tanggal_kebutuhan[]"]').val();
-
+                 var isValid = true;
                 $('.kualifikasi-item').each(function (index) {
                     var parent = $(this);
 
@@ -1830,6 +1830,14 @@ h1 {
                     var fasilitas = parent.find('[name="fasilitas[]"]').val();
                     var jangka_waktu_kontrak = parent.find('[name="jangka_waktu_kontrak[]"]').val();
                     var keterangan_tambahan = parent.find('[name="keterangan_tambahan[]"]').val();
+
+                    if (!selectDepartment || !selectBagian || !tanggal_kebutuhan_fix || !jumlah_kebutuhan ||
+                        !rencana_jabatan || !pend_minimal || !rencana_jurusan || !pengalaman_kerja) {
+
+                        swal("", "Harap lengkapi semua field wajib di bagian kualifikasi!", "warning");
+                        isValid = false;
+                        return false; // break each
+                    }
 
                     var uraianTugas = [];
                     parent.find('[name="uraian_tugas[' + index + '][]"]').each(function () {
@@ -1853,7 +1861,9 @@ h1 {
                         uraianTugas: uraianTugas
                     });
                 });
-
+                if (!isValid) {
+                    return; // hentikan jika ada yang kosong
+                }
                 if (!enroll_id) {
                     swal("", "Harap isi pengajuan terlebih dahulu!", "info");
                     return;
@@ -1889,199 +1899,98 @@ h1 {
             });
 
           $('body').on('click', '#btn-update-permintaan', function (event) {
-            var id = $('#id_modal_permintaan').val();
-            var tanggal_periz = $('#tanggal_pengajuan_approve').val();
-            var tanggal_perizinan = tanggal_periz.substr(6, 4) + '-' + tanggal_periz.substr(3, 2) + '-' + tanggal_periz.substr(0, 2);
-            var status_permintaan = $('input[name="status_permintaan"]:checked').val();
-            var enroll_id = $('#enroll_id_approve').val();
+                var id = $('#id_modal_permintaan').val();
+                var tanggal_periz = $('#tanggal_pengajuan_approve').val();
+                    console.log('Tanggal Kebutuhan:', tanggal_periz);
 
-            var kualifikasi = [];
+                var tanggal_perizinan = tanggal_periz.substr(6, 4) + '-' + tanggal_periz.substr(3, 2) + '-' + tanggal_periz.substr(0, 2);
+                var status_permintaan = $('input[name="status_permintaan"]:checked').val();
+                var enroll_id = $('#enroll_id_approve').val();
+
+                var kualifikasi = [];
 
 
-            $('.container-kualifikasi-update').each(function (index) {
-                var parent = $(this);
+                $('.container-kualifikasi-update').each(function (index) {
+                    var parent = $(this);
 
-                var id_kualifikasi = parent.find('[name="id_kualifikasi[' + index + ']"]').val();
-                var selectDepartment = parent.find('select[name="selectDepartmentModalApprove[' + index + ']"]').val();
-                var selectBagian = parent.find('select[name="selectBagianModalApprove[' + index + ']"]').val();
-                var tanggal_kebutuhan = parent.find('input[name="tanggal_kebutuhan[' + index + ']"]').val();
-                var tanggal_kebutuhan_fix = tanggal_kebutuhan.substr(6, 4) + '-' + tanggal_kebutuhan.substr(3, 2) + '-' + tanggal_kebutuhan.substr(0, 2);
-                var jumlah_kebutuhan = parent.find('[name="jumlah_kebutuhan[' + index + ']"]').val();
-                var rencana_jabatan = parent.find('input[name="rencana_jabatan[' + index + ']"]:checked').val();
-                var pend_minimal = parent.find('input[name="pend_minimal[' + index + ']"]:checked').val();
-                var rencana_jurusan = parent.find('[name="rencana_jurusan[' + index + ']"]').val();
-                var pengalaman_kerja = parent.find('input[name="pengalaman_kerja[' + index + ']"]:checked').val();
-                var waktu_pengalaman = parent.find('[name="waktu_pengalaman[' + index + ']"]').val();
-                var besaran_gaji = parent.find('[name="besaran_gaji[' + index + ']"]').val();
-                var fasilitas = parent.find('[name="fasilitas[' + index + ']"]').val();
-                var jangka_waktu_kontrak = parent.find('[name="jangka_waktu[' + index + ']"]').val();
-                var keterangan_tambahan = parent.find('[name="keterangan_tambahan[' + index + ']"]').val();
+                    var id_kualifikasi = parent.find('[name="id_kualifikasi[' + index + ']"]').val();
+                    var selectDepartment = parent.find('select[name="selectDepartmentModalApprove[' + index + ']"]').val();
+                    var selectBagian = parent.find('select[name="selectBagianModalApprove[' + index + ']"]').val();
+                    var tanggal_kebutuhan = parent.find('input[name="tanggal_kebutuhan[' + index + ']"]').val();
+                    var tanggal_kebutuhan_fix = tanggal_kebutuhan.substr(6, 4) + '-' + tanggal_kebutuhan.substr(3, 2) + '-' + tanggal_kebutuhan.substr(0, 2);
+                    var jumlah_kebutuhan = parent.find('[name="jumlah_kebutuhan[' + index + ']"]').val();
+                    var rencana_jabatan = parent.find('input[name="rencana_jabatan[' + index + ']"]:checked').val();
+                    var pend_minimal = parent.find('input[name="pend_minimal[' + index + ']"]:checked').val();
+                    var rencana_jurusan = parent.find('[name="rencana_jurusan[' + index + ']"]').val();
+                    var pengalaman_kerja = parent.find('input[name="pengalaman_kerja[' + index + ']"]:checked').val();
+                    var waktu_pengalaman = parent.find('[name="waktu_pengalaman[' + index + ']"]').val();
+                    var besaran_gaji = parent.find('[name="besaran_gaji[' + index + ']"]').val();
+                    var fasilitas = parent.find('[name="fasilitas[' + index + ']"]').val();
+                    var jangka_waktu_kontrak = parent.find('[name="jangka_waktu[' + index + ']"]').val();
+                    var keterangan_tambahan = parent.find('[name="keterangan_tambahan[' + index + ']"]').val();
 
-                var uraianTugas = [];
-                parent.find('[name="uraian_tugas[' + index + '][]"]').each(function () {
-                    uraianTugas.push($(this).val());
+
+                    var uraianTugas = [];
+                    parent.find('[name="uraian_tugas[' + index + '][]"]').each(function () {
+                        uraianTugas.push($(this).val());
+                    });
+
+                    kualifikasi.push({
+                        id_kualifikasi: id_kualifikasi,
+                        selectDepartment: selectDepartment,
+                        selectBagian: selectBagian,
+                        tanggal_kebutuhan: tanggal_kebutuhan_fix,
+                        jumlah_kebutuhan: jumlah_kebutuhan,
+                        rencana_jabatan: rencana_jabatan,
+                        pend_minimal: pend_minimal,
+                        rencana_jurusan: rencana_jurusan,
+                        pengalaman_kerja: pengalaman_kerja,
+                        waktu_pengalaman: waktu_pengalaman,
+                        besaran_gaji: besaran_gaji,
+                        fasilitas: fasilitas,
+                        jangka_waktu_kontrak: jangka_waktu_kontrak,
+                        keterangan_tambahan: keterangan_tambahan,
+                        uraianTugas: uraianTugas
+                    });
                 });
 
-                kualifikasi.push({
-                    id_kualifikasi: id_kualifikasi,
-                    selectDepartment: selectDepartment,
-                    selectBagian: selectBagian,
-                    tanggal_kebutuhan: tanggal_kebutuhan_fix,
-                    jumlah_kebutuhan: jumlah_kebutuhan,
-                    rencana_jabatan: rencana_jabatan,
-                    pend_minimal: pend_minimal,
-                    rencana_jurusan: rencana_jurusan,
-                    pengalaman_kerja: pengalaman_kerja,
-                    waktu_pengalaman: waktu_pengalaman,
-                    besaran_gaji: besaran_gaji,
-                    fasilitas: fasilitas,
-                    jangka_waktu_kontrak: jangka_waktu_kontrak,
-                    keterangan_tambahan: keterangan_tambahan,
-                    uraianTugas: uraianTugas
+                console.log(kualifikasi);
+
+                $.ajax({
+                    type:"POST",
+                    url: "{{route('permintaan_tenaga_kerja.update_permintaan_tk')}}",
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    data: {
+                        id:id,
+                        tanggal_perizinan:tanggal_perizinan,
+                        status_permintaan:status_permintaan,
+                        diajukanOlehID:enroll_id,
+                        kualifikasi:kualifikasi
+                    },
+                    dataType: 'json',
+                    success: function(res){
+                        notif({
+                            msg: "<b>Info:</b> Data berhasil di simpan.",
+                            type: "info"
+                        });
+                        tableVerifikasi.ajax.reload();
+                        tableWaiting.ajax.reload();
+                        tableReject.ajax.reload();
+                        $("#ajax-modal-approve-pengajuan").modal('hide');
+                    },
+                    error: function(res){
+                        notif({
+                            msg: "<b>Error:</b> Oops data gagal di simpan.",
+                            type: "error"
+                        });
+                        tableVerifikasi.ajax.reload();
+                        tableWaiting.ajax.reload();
+                        tableReject.ajax.reload();
+                    }
                 });
             });
-
-            console.log(kualifikasi);
-
-            $.ajax({
-                type:"POST",
-                url: "{{route('permintaan_tenaga_kerja.update_permintaan_tk')}}",
-                dataType: 'json',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                data: {
-                    id:id,
-                    tanggal_perizinan:tanggal_perizinan,
-                    status_permintaan:status_permintaan,
-                    diajukanOlehID:enroll_id,
-                    kualifikasi:kualifikasi
-                },
-                dataType: 'json',
-                success: function(res){
-                    notif({
-                        msg: "<b>Info:</b> Data berhasil di simpan.",
-                        type: "info"
-                    });
-                    tableVerifikasi.ajax.reload();
-                    tableWaiting.ajax.reload();
-                    tableReject.ajax.reload();
-                    $("#ajax-modal-approve-pengajuan").modal('hide');
-                },
-                error: function(res){
-                    notif({
-                        msg: "<b>Error:</b> Oops data gagal di simpan.",
-                        type: "error"
-                    });
-                    tableVerifikasi.ajax.reload();
-                    tableWaiting.ajax.reload();
-                    tableReject.ajax.reload();
-                }
-            });
-
-            // lanjut kirim ajax untuk update ke backend
-        });
-
-            // $('body').on('click', '#btn-update-permintaan', function (event) {
-            //     var id = $('#id_modal_permintaan').val();
-            //     var tanggal_periz = $('#tanggal_pengajuan_approve').val();
-            //     var tanggal_perizinan=tanggal_periz.substr(6, 4)+'-'+tanggal_periz.substr(3,2)+'-'+tanggal_periz.substr(0,2);
-            //     var status_permintaan = $('input[name="status_permintaan"]:checked').val();
-            //     var enroll_id = $('#enroll_id_approve').val();
-            //     var selectDepartment = $('#selectDepartmentModalApprove').val();
-            //     var selectBagian = $('#selectBagianModalApprove').val();
-            //     var jumlah_kebutuhan = $('#jumlah_kebutuhan_approve').val();
-            //     var rencana_jabatan = $('input[name="rencana_jabatan"]:checked').val();
-            //     var pend_minimal = $('input[name="pend_minimal"]:checked').val();
-            //     var rencana_jurusan = $('#rencana_jurusan_approve').val();
-            //     var pengalaman_kerja = $('input[name="pengalaman_kerja"]:checked').val();
-            //     var waktu_pengalaman = $('#waktu_pengalaman_approve').val();
-            //     var besaran_gaji = $('#besaran_gaji_approve').val();
-            //     var fasilitas = $('#fasilitas_approve').val();
-            //     var jangka_waktu_kontrak = $('#jangka_waktu_kontrak_approve').val();
-            //     var keterangan_tambahan = $('#keterangan_tambahan_approve').val();
-
-            //     var tanggal_kebutuhan = $('#tanggal_kebutuhan_approve').val();
-            //     tanggal_kebutuhan=tanggal_kebutuhan.substr(6, 4)+'-'+tanggal_kebutuhan.substr(3,2)+'-'+tanggal_kebutuhan.substr(0,2);
-
-            //     var uraianTugas = [];
-            //     $('input[name="uraian_tugas_approve[]"]').each(function () {
-            //         uraianTugas.push($(this).val());
-            //     });
-            //     var besaran_gaji_bersih = besaran_gaji.replace(/[^\d]/g, '');
-
-            //     if(!enroll_id){
-            //         swal("", "Harap isi pengajuan terlebih dahulu!", "info");
-            //         return;
-            //     }
-            //     if(!selectDepartment){
-            //         swal("", "Harap isi department rencana kebutuhan terlebih dahulu!", "info");
-            //         return;
-            //     }
-            //     if(!selectBagian){
-            //         swal("", "Harap isi bagian rencana kebutuhan terlebih dahulu!", "info");
-            //         return;
-            //     }
-            //     if(!tanggal_kebutuhan){
-            //         swal("", "Harap isi tanggal rencana kebutuhan terlebih dahulu!", "info");
-            //         return;
-            //     }
-            //     if(!jumlah_kebutuhan){
-            //         swal("", "Harap isi jumlah rencana kebutuhan terlebih dahulu!", "info");
-            //         return;
-            //     }
-            //     if(pengalaman_kerja == 'ya' && !waktu_pengalaman){
-            //         swal("", "Harap isi waktu pengalaman kerja terlebih dahulu!", "info");
-            //         return;
-            //     }
-
-            //     $.ajax({
-            //         type:"POST",
-            //         url: "{{route('permintaan_tenaga_kerja.update_permintaan_tk')}}",
-            //         dataType: 'json',
-            //         headers: {
-            //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            //         data: {
-            //             id:id,
-            //             tanggal_perizinan:tanggal_perizinan,
-            //             status_permintaan:status_permintaan,
-            //             diajukanOlehID:enroll_id,
-            //             selectDepartment:selectDepartment,
-            //             selectBagian:selectBagian,
-            //             tanggal_kebutuhan:tanggal_kebutuhan,
-            //             jumlah_kebutuhan:jumlah_kebutuhan,
-            //             rencana_jabatan:rencana_jabatan,
-            //             uraianTugas:uraianTugas,
-            //             rencana_jurusan:rencana_jurusan,
-            //             pengalaman_kerja:pengalaman_kerja,
-            //             pend_minimal:pend_minimal,
-            //             waktu_pengalaman:waktu_pengalaman,
-            //             besaran_gaji:besaran_gaji_bersih,
-            //             fasilitas:fasilitas,
-            //             jangka_waktu_kontrak:jangka_waktu_kontrak,
-            //             keterangan_tambahan:keterangan_tambahan
-            //         },
-            //         dataType: 'json',
-            //         success: function(res){
-            //             notif({
-            //                 msg: "<b>Info:</b> Data berhasil di simpan.",
-            //                 type: "info"
-            //             });
-            //             tableVerifikasi.ajax.reload();
-            //             tableWaiting.ajax.reload();
-            //             tableReject.ajax.reload();
-            //             $("#ajax-modal-approve-pengajuan").modal('hide');
-            //         },
-            //         error: function(res){
-            //             notif({
-            //                 msg: "<b>Error:</b> Oops data gagal di simpan.",
-            //                 type: "error"
-            //             });
-            //             tableVerifikasi.ajax.reload();
-            //             tableWaiting.ajax.reload();
-            //             tableReject.ajax.reload();
-            //         }
-            //     });
-            // });
 
         });
     </script>
