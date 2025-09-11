@@ -1999,7 +1999,7 @@ h1 {
                 serverSide: true,
                 columns: [
                     { data: 'nik',orderable: false},
-                    { data: 'employee_name',orderable: false},
+                    { data: 'employee_name',orderable: true},
                     { data: 'sub_dept_name',orderable: false },
                     { data: 'department_name',orderable: false },
                     { data: 'surat_peringatan',
@@ -2010,14 +2010,14 @@ h1 {
                      },
                     { data: 'kode_pasal', orderable: false},
                     { data: 'tanggal_mulai',
-                      orderable: false,
+                      orderable: true,
                       render: function(data, type, row) {
                             return moment(data).locale('id').format('DD MMMM YYYY');
                             }
                     },
                     {
                     data: 'tanggal_sampai',
-                    orderable: false,
+                    orderable: true,
                     render: function(data, type, row) {
                             return moment(data).locale('id').format('DD MMMM YYYY');
                     }

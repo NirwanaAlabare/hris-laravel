@@ -827,82 +827,97 @@ class TindakanKedisiplinanController extends AdminBaseController
         return $data;
     }
 
-    public function get_surat_peringatan(Request $request)
-    {
-        $email = Auth::guard('admin')->user()->email;
-        $search = $request->input('search.value');
-        $status_sp = $request->input('surat_peringatan');
-        $selectDepartment = $request->input('selectDepartment');
-        $rentan_posisi = $request->input('rentan_posisi');
-        $start = $request->input('start'); // index pertama
-        $length = $request->input('length'); // jumlah data per halaman
+   public function get_surat_peringatan(Request $request)
+{
+    $email = Auth::guard('admin')->user()->email;
+    $search = $request->input('search.value');
+    $status_sp = $request->input('surat_peringatan');
+    $selectDepartment = $request->input('selectDepartment');
+    $rentan_posisi = $request->input('rentan_posisi');
+    $today = now()->format('Y-m-d');
 
-        $today = now()->format('Y-m-d');
+    $query  = SuratPeringatanKaryawan::select(
+        'surat_peringatan_karyawan.*',
+        'employee_atribut.employee_name',
+        'employee_atribut.nik',
+        'employee_atribut.department_name',
+        'employee_atribut.department_id',
+        'employee_atribut.sub_dept_name',
+        'employee_atribut.status_jabatan'
+    )
+    ->leftJoin('employee_atribut', 'surat_peringatan_karyawan.enroll_id', '=', 'employee_atribut.enroll_id')
+    ->where(function($q) use ($search) {
+        $q->where('employee_atribut.employee_name', 'like', '%' . $search . '%')
+          ->orWhere('employee_atribut.nik', 'like', '%' . $search . '%')
+          ->orWhere('surat_peringatan_karyawan.surat_peringatan', 'like', '%' . $search . '%')
+          ->orWhere('surat_peringatan_karyawan.tanggal_mulai', 'like', '%' . $search . '%')
+          ->orWhere('surat_peringatan_karyawan.tanggal_sampai', 'like', '%' . $search . '%');
+    });
 
-        // Query pertama
-        $query  = SuratPeringatanKaryawan::select(
-            'surat_peringatan_karyawan.*',
-            'employee_atribut.employee_name',
-            'employee_atribut.nik',
-            'employee_atribut.department_name',
-            'employee_atribut.department_id',
-            'employee_atribut.sub_dept_name',
-            'employee_atribut.status_jabatan'
-        )
-        ->leftJoin('employee_atribut', 'surat_peringatan_karyawan.enroll_id', '=', 'employee_atribut.enroll_id')
-        ->where(function($q) use ($search) {
-            $q->where('employee_atribut.employee_name', 'like', '%' . $search . '%')
-              ->orWhere('employee_atribut.nik', 'like', '%' . $search . '%')
-              ->orWhere('surat_peringatan_karyawan.surat_peringatan', 'like', '%' . $search . '%')
-              ->orWhere('surat_peringatan_karyawan.tanggal_mulai', 'like', '%' . $search . '%')
-              ->orWhere('surat_peringatan_karyawan.tanggal_sampai', 'like', '%' . $search . '%');
-        })
-        ->orderBy('surat_peringatan_karyawan.tanggal_mulai', 'ASC');
+    // filter rentang tanggal
+    if (!empty($request->daterange1)) {
+        $arrperiode = explode(" s/d ", $request->daterange1);
+        $first_date = $arrperiode[0];
+        $last_date = $arrperiode[1];
 
-        if (!empty($request->daterange1)) {
-            $arrperiode = explode(" s/d ", $request->daterange1);
-            $first_date = $arrperiode[0];
-            $last_date = $arrperiode[1];
-
-           $query->where(function($q) use ($first_date, $last_date) {
-                $q->whereDate('surat_peringatan_karyawan.tanggal_mulai', '<=', $last_date)
-                ->whereDate('surat_peringatan_karyawan.tanggal_sampai', '>=', $first_date);
-            });
-        }
-
-        if (!empty($status_sp)) {
-            $query->where('surat_peringatan_karyawan.surat_peringatan', $status_sp);
-        }
-        if (!empty($selectDepartment)) {
-            $query->where('employee_atribut.department_id', $selectDepartment);
-        }
-        if (!empty($rentan_posisi)) {
-            if ($rentan_posisi == 'dalam_rentan_waktu') {
-                // Dalam masa SP (hari ini antara tanggal_mulai dan tanggal_sampai)
-                $query->whereDate('surat_peringatan_karyawan.tanggal_mulai', '<=', $today)
-                    ->whereDate('surat_peringatan_karyawan.tanggal_sampai', '>=', $today);
-            } elseif ($rentan_posisi == 'selesai_rentan_waktu') {
-                // Selesai masa SP (tanggal_sampai sudah lewat hari ini)
-                $query->whereDate('surat_peringatan_karyawan.tanggal_sampai', '<', $today);
-            }
-        }
-
-
-
-        $start = $request->input('start', 0);
-        $length = $request->input('length', 10);
-
-        $totalFiltered = $query->count(); // total setelah filter
-
-        $data = $query->skip($start)->take($length)->get();
-
-        return response()->json([
-            'draw' => intval($request->input('draw')),
-            'recordsTotal' => $totalFiltered,
-            'recordsFiltered' => $totalFiltered,
-            'data' => $data,
-        ]);
+        $query->where(function($q) use ($first_date, $last_date) {
+            $q->whereDate('surat_peringatan_karyawan.tanggal_mulai', '<=', $last_date)
+              ->whereDate('surat_peringatan_karyawan.tanggal_sampai', '>=', $first_date);
+        });
     }
+
+    // filter tambahan
+    if (!empty($status_sp)) {
+        $query->where('surat_peringatan_karyawan.surat_peringatan', $status_sp);
+    }
+    if (!empty($selectDepartment)) {
+        $query->where('employee_atribut.department_id', $selectDepartment);
+    }
+    if (!empty($rentan_posisi)) {
+        if ($rentan_posisi == 'dalam_rentan_waktu') {
+            $query->whereDate('surat_peringatan_karyawan.tanggal_mulai', '<=', $today)
+                  ->whereDate('surat_peringatan_karyawan.tanggal_sampai', '>=', $today);
+        } elseif ($rentan_posisi == 'selesai_rentan_waktu') {
+            $query->whereDate('surat_peringatan_karyawan.tanggal_sampai', '<', $today);
+        }
+    }
+
+    // ===== Handle Order dari DataTables =====
+    $columns = [
+        0 => 'employee_atribut.nik',
+        1 => 'employee_atribut.employee_name',
+        2 => 'employee_atribut.sub_dept_name',
+        3 => 'employee_atribut.department_name',
+        4 => 'surat_peringatan_karyawan.surat_peringatan',
+        5 => 'surat_peringatan_karyawan.kode_pasal',
+        6 => 'surat_peringatan_karyawan.tanggal_mulai',
+        7 => 'surat_peringatan_karyawan.tanggal_sampai',
+    ];
+
+    $orderColIndex = $request->input('order.0.column');
+    $orderDir = $request->input('order.0.dir', 'asc');
+
+    if (isset($columns[$orderColIndex])) {
+        $query->orderBy($columns[$orderColIndex], $orderDir);
+    } else {
+        $query->orderBy('surat_peringatan_karyawan.tanggal_mulai', 'asc');
+    }
+
+    // pagination
+    $start = $request->input('start', 0);
+    $length = $request->input('length', 10);
+
+    $totalFiltered = $query->count();
+    $data = $query->skip($start)->take($length)->get();
+
+    return response()->json([
+        'draw' => intval($request->input('draw')),
+        'recordsTotal' => $totalFiltered,
+        'recordsFiltered' => $totalFiltered,
+        'data' => $data,
+    ]);
+}
+
 
     public function get_karyawan_coaching_list(Request $request)
     {
