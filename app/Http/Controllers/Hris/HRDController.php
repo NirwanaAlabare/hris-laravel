@@ -1275,16 +1275,63 @@ class HRDController extends AdminBaseController
         $no_form=request()->no_form;
         $contract=request()->contract;
         $contract_end=request()->contract_end;
-        $data=DB::select("select a.status_staff,c.max_contract,mda.*,
-                    c.max_contract_end,a.enroll_id,a.nik,a.employee_name,a.status_jabatan,a.sub_dept_name,a.department_name,a.status_kontrak_tetap,a.status_aktif,a.join_date,a.tanggal_resign,a.nomor_ktp,a.tempat_lahir,a.alamat_rumah,a.tanggal_lahir,a.no_surat,b.contract,b.contract_end,c.max_contract,c.max_contract_end from employee_atribut a left join employee_contract b on a.enroll_id=b.enroll_id left join (select enroll_id,max(contract) max_contract,max(contract_end) max_contract_end from employee_contract group by enroll_id)c on a.enroll_id=c.enroll_id LEFT JOIN (
-                    SELECT mulai_jam_kerja, akhir_jam_kerja, tanggal_berjalan, enroll_id
+        // $data=DB::select("select a.status_staff,c.max_contract,mda.*,
+        //             c.max_contract_end,a.enroll_id,a.nik,a.employee_name,a.status_jabatan,a.sub_dept_name,a.department_name,a.status_kontrak_tetap,a.status_aktif,a.join_date,a.tanggal_resign,a.nomor_ktp,a.tempat_lahir,a.alamat_rumah,a.tanggal_lahir,a.no_surat,b.contract,b.contract_end,c.max_contract,c.max_contract_end from employee_atribut a left join employee_contract b on a.enroll_id=b.enroll_id left join (select enroll_id,max(contract) max_contract,max(contract_end) max_contract_end from employee_contract group by enroll_id)c on a.enroll_id=c.enroll_id LEFT JOIN (
+        //             SELECT mulai_jam_kerja, akhir_jam_kerja, tanggal_berjalan, enroll_id
+        //             FROM master_data_absen_kehadiran
+        //             WHERE (enroll_id, tanggal_berjalan) IN (
+        //                 SELECT enroll_id, MAX(tanggal_berjalan)
+        //                 FROM master_data_absen_kehadiran
+        //                 GROUP BY enroll_id
+        //             )
+        //             ) mda ON a.enroll_id = mda.enroll_id where a.enroll_id=".$enroll_id." group by a.enroll_id order by a.enroll_id, b.contract_end desc");
+        $data = DB::select("
+                SELECT a.status_staff,
+                    c.max_contract,
+                    mda.*,
+                    c.max_contract_end,
+                    a.enroll_id,
+                    a.nik,
+                    a.employee_name,
+                    a.status_jabatan,
+                    a.sub_dept_name,
+                    a.department_name,
+                    a.status_kontrak_tetap,
+                    a.status_aktif,
+                    a.join_date,
+                    a.tanggal_resign,
+                    a.nomor_ktp,
+                    a.tempat_lahir,
+                    a.alamat_rumah,
+                    a.tanggal_lahir,
+                    a.no_surat,
+                    b.contract,
+                    b.contract_end,
+                    c.max_contract,
+                    c.max_contract_end
+                FROM employee_atribut a
+                LEFT JOIN employee_contract b
+                    ON a.enroll_id = b.enroll_id
+                LEFT JOIN (
+                    SELECT enroll_id,
+                        MAX(contract) max_contract,
+                        MAX(contract_end) max_contract_end
+                    FROM employee_contract
+                    GROUP BY enroll_id
+                ) c ON a.enroll_id = c.enroll_id
+                LEFT JOIN (
+                    SELECT mulai_jam_kerja,
+                        akhir_jam_kerja,
+                        tanggal_berjalan,
+                        enroll_id
                     FROM master_data_absen_kehadiran
-                    WHERE (enroll_id, tanggal_berjalan) IN (
-                        SELECT enroll_id, MAX(tanggal_berjalan)
-                        FROM master_data_absen_kehadiran
-                        GROUP BY enroll_id
-                    )
-                    ) mda ON a.enroll_id = mda.enroll_id where a.enroll_id=".$enroll_id." group by a.enroll_id order by a.enroll_id, b.contract_end desc");
+                    WHERE tanggal_berjalan = CURDATE()
+                ) mda ON a.enroll_id = mda.enroll_id
+                WHERE a.enroll_id = ".$enroll_id."
+                GROUP BY a.enroll_id
+                ORDER BY a.enroll_id, b.contract_end DESC
+            ");
+
         $umk=DasarPotBPJS::orderBy('created_at','desc')->limit(1)->first()->dasar_pot_bpjs_rupiah;
         $fileName='PKS ' .request()->enroll_id.' ' .$data[0]->employee_name.' '.Carbon::parse($contract)->translatedFormat('d-m-Y').' ';
         $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan_2',["no_form"=>$no_form,"contract2"=>$contract,"contract_end2"=>$contract_end,"data" => $data,"umk"=>$umk])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
