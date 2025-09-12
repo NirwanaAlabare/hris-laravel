@@ -961,6 +961,15 @@ h1 {
             });
         });
 
+        $(document).on('click', '.btn-detail-pengajuan', function () {
+                // Redirect atau tampilkan form edit
+                  let id = $(this).data('id');
+                  let url = '{{ route('hris.ga.print_pengajuan_perbaikan_kendaraan', ':id') }}';
+                  url = url.replace(':id', id);
+                  window.open(url, '_blank');
+                //   window.location.href = url;
+        });
+
         $("#action-form").on("click", function (e) {
             e.preventDefault();
 
