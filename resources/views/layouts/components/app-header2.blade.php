@@ -100,7 +100,14 @@ button.theme-switcher:hover {
                         <span class="mr-3 d-none d-lg-block ">
                             <span class="text-gray-white"><span class="ml-2">{{ $loggedAdmin->name }}</span></span>
                         </span>
-                        <span class="avatar avatar-md brround"><img src="{{URL::asset('assets/images/users/avatars/avatar4.png')}}" alt="Profile-img" class="avatar avatar-md brround"></span>
+                        {{-- <span class="avatar avatar-md brround"><img src="{{URL::asset('assets/images/users/avatars/avatar4.png')}}" alt="Profile-img" class="avatar avatar-md brround"></span> --}}
+                        @php
+                            $initial = strtoupper(substr($loggedAdmin->name, 0, 1));
+                        @endphp
+
+                        <span class="avatar avatar-md brround d-flex align-items-center justify-content-center bg-primary text-white">
+                            {{ $initial }}
+                        </span>
                     </a>
                 </div><!-- Right-siebar-->
             </div>
@@ -112,7 +119,11 @@ button.theme-switcher:hover {
             </div>
             <div class="card-body p-0">
                 <div class="header-user text-center mt-4 pb-4">
-                    <span class="avatar avatar-xxl brround"><img src="{{URL::asset('assets/images/users/avatars/avatar4.png')}}" alt="Profile-img" class="avatar avatar-xxl brround"></span>
+                    {{-- <span class="avatar avatar-xxl brround"><img src="{{URL::asset('assets/images/users/avatars/avatar4.png')}}" alt="Profile-img" class="avatar avatar-xxl brround"></span> --}}
+
+                        <span class="avatar avatar-xxl brround bg-primary text-white">
+                            {{ $initial }}
+                        </span>
                     <div class="dropdown-item text-center font-weight-semibold user h3 mb-0">{{ $loggedAdmin->name }}</div>
                     @php
                     $role_user = "";
