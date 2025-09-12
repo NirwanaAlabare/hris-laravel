@@ -425,9 +425,8 @@
             pageLength: 10,
             pagingType: "simple",
             destroy: true,
-            scrollY: '500px',
             autoWidth: false,
-            scrollCollapse: true,
+            scrollCollapse: false,
             "ajax": {
                 "url": "{{ route('hris.employeeatr.ajax_getemployeeatr2') }}",
                 "dataType": "json",
@@ -602,9 +601,8 @@
             processing: true,
             destroy: true,
             bPaginate: false,
-            scrollX: true,
+            scrollX: false,
             autoWidth: false,
-            scrollY: '450px',
             "ajax": {
                 "url": "{{ route('hris.employeeatr.ajax_getemployeeatr3') }}",
                 "dataType": "json",
