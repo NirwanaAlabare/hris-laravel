@@ -95,7 +95,7 @@
                 <ul class="slide-menu">
                     @if (!$isReza)
                         <li><a class="slide-item" href="{{ route('hris.gradingsalary.index') }}"><span> Grading Salary</span></a></li>
-                        <li><a class="slide-item" href="{{ route('hris.employeegrading.index') }}"><span> Salary Karyawan</span></a></li>
+                        {{-- <li><a class="slide-item" href="{{ route('hris.employeegrading.index') }}"><span> Salary Karyawan</span></a></li> --}}
                         <li><a class="slide-item" href="{{ route('hris.tunjangankaryawan.index') }}"><span> Tunjangan Karyawan</span></a></li>
                     @endif
 
@@ -103,9 +103,9 @@
                         <li><a class="slide-item" href="{{ route('hris.rekapperhitunganpayroll.index') }}"><span> Laporan Payroll</span></a></li>
                     @endif
 
-                    @if (!$isReza)
+                    {{-- @if (!$isReza)
                         <li><a class="slide-item" href="{{ route('hris.dataclosingpayroll.index') }}"><span> Closing Payroll</span></a></li>
-                    @endif
+                    @endif --}}
 
                     {{-- @if ($isReza || $isFadli)
                         <li><a class="slide-item" href="{{ route('hris.aktifitasperubahan.index') }}"><span> Aktifitas Perubahan</span></a></li>

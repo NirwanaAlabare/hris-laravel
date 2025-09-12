@@ -72,7 +72,6 @@
                             <option value="">-- PILIH STATUS STAFF --</option>
                             <option value="STAFF">STAFF</option>
                             <option value="NON STAFF">NON STAFF</option>
-                            <option value="OPERATOR">OPERATOR</option>
                         </select>
                     </div>
                 </div>
@@ -113,9 +112,9 @@
                             <span class="input-group-append">
                                 <button class="btn btn-primary btn-app" type="button" id="btn-update-bpjs"><i class="fa fa-upload"></i> Update</button>
                             </span>
-                        </div>                    
+                        </div>
                     </div>
-                </div>                
+                </div>
                 <div class="col-md-4" id="inputSearch">
                     <div class="form-group">
                         <label class="form-label">CARI DATA : </label>
@@ -215,7 +214,7 @@
                             <label class="form-label font-weight-bold">GAJI POKOK (RP) : </label>
                             <input readonly type="text" class="form-control text-right" id="dasar_pot_bpjs">
                         </div>
-                    </div>                            
+                    </div>
                     <div class="col-md-8">
                         <div class="form-group">
                             <label class="form-label font-weight-bold">Nama Karyawan : </label>
@@ -242,7 +241,7 @@
                                     <div class="alert alert-info alert-dismissible fade show m-0" role="alert">
                                         <span class="alert-inner--icon"><i class="fe fe-bell"></i></span>
                                         <span class="alert-inner--text"><strong>Info!</strong> Harap di isi dengan benar data di bawah ini, untuk proses perhitungan BPJS Karyawan!</span>
-                                    </div>                                    
+                                    </div>
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="form-group">
@@ -272,7 +271,7 @@
                                                 <input type="text" class="form-control" id="nomor_bpjs_ketenagakerjaan">
                                             </div>
                                         </div>
-                    
+
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label font-weight-bold">Status BPJS KS : </label>
@@ -323,8 +322,8 @@
                                                 <label class="form-label font-weight-bold">Bagian : </label>
                                                 <input readonly type="text" class="form-control" id="sub_dept_name">
                                             </div>
-                                        </div>                
-                                    </div>                
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="tab_content">
@@ -356,7 +355,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>                                            
+                                            </div>
                                             <div class="expanel expanel-success">
                                                 <div class="expanel-heading">
                                                     <h4 class="expanel-title">BPJS KETENAGAKERJAAN (JAMINAN HARI TUA)</h4>
@@ -383,7 +382,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>                                            
+                                            </div>
                                             <div class="expanel expanel-success">
                                                 <div class="expanel-heading">
                                                     <h4 class="expanel-title">BPJS KETENAGAKERJAAN (JAMINAN KEMATIAN)</h4>
@@ -407,10 +406,10 @@
                                                                 <label class="form-label font-weight-bold">KARYAWAN (JKM <label id="bpjs_tk_jkm_karyawan_persen" class="font-weight-bold"></label>%) : </label>
                                                                 <input readonly type="text" class="form-control" id="bpjs_tk_jkm_karyawan_rupiah">
                                                             </div>
-                                                        </div>                
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>                                            
+                                            </div>
 
                                             <div class="expanel expanel-success">
                                                 <div class="expanel-heading">
@@ -435,12 +434,12 @@
                                                                 <label class="form-label font-weight-bold">KARYAWAN (JPN <label id="bpjs_tk_jpn_karyawan_persen" class="font-weight-bold"></label>%) : </label>
                                                                 <input readonly type="text" class="form-control" id="bpjs_tk_jpn_karyawan_rupiah">
                                                             </div>
-                                                        </div>                
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>                                            
-                                        </div>                                            
-                                    </div>                            
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="tab_content">
@@ -469,17 +468,17 @@
                                                                 <label class="form-label font-weight-bold">KARYAWAN (JKN <label id="bpjs_ks_jkn_karyawan_persen" class="font-weight-bold"></label>%) : </label>
                                                                 <input readonly type="text" class="form-control" id="bpjs_ks_jkn_karyawan_rupiah">
                                                             </div>
-                                                        </div>            
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>                                                       
-                                        </div>                                                       
-                                    </div>                            
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                             </div>
-                        </div>                
-                    </div>                
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer bg-primary p-1">
@@ -681,9 +680,9 @@
         });
 
         $('body').on('click', '#btn-cari', function (event) {
-            var status_staff = $("#status_staff").val();                        
-            var searchData = $("#searchData").val();      
-            var periode_kehadiran = $("#periode_payroll").val();      
+            var status_staff = $("#status_staff").val();
+            var searchData = $("#searchData").val();
+            var periode_kehadiran = $("#periode_payroll").val();
 
             $("#btn-cari").addClass("btn-loading");
             $("#btn-cari").html('Loading...');
@@ -705,7 +704,7 @@
                 data: {
                     status_staff:status_staff,
                     searchData:searchData,
-                    periode_kehadiran:periode_kehadiran,        
+                    periode_kehadiran:periode_kehadiran,
                 },
                 dataType: 'json',
                 success: function(res){
@@ -723,7 +722,7 @@
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                             data: {},
                             dataType: 'json',
-                            success: function(res1){                                
+                            success: function(res1){
                                 $("#bpjs_tk_persen_1").html('JKK ' + res1[0].bpjs_tk_jkk_persen + '%');
                                 $("#bpjs_tk_persen_2").html('JHT ' + res1[0].bpjs_tk_jht_persen + '%');
                                 $("#bpjs_tk_persen_3").html('JKM ' + res1[0].bpjs_tk_jkm_persen + '%');
@@ -731,14 +730,14 @@
                                 $("#bpjs_ks_persen").html('JKN ' + res1[0].bpjs_ks_jkn_persen + '%');
                             }
                         });
-            
+
 
                         for(i=0;i<res.length;i++) {
                             nomor_urut = i+1;
-                            
+
                             $htmlTable = '' +
                             '<tr class="text-center">' +
-                            '   <td class="text-nowrap text-right align-middle">' + 
+                            '   <td class="text-nowrap text-right align-middle">' +
                                     nomor_urut + '. ' +
                             '       <input type="hidden" id="kode_bpjs_' + i + '" name="kode_bpjs" value="' + res[i].kode_bpjs + '" >' +
                             '       <input type="hidden" id="site_nirwana_name_' + i + '" name="site_nirwana_name" value="' + res[i].site_nirwana_name + '" >' +
@@ -757,7 +756,7 @@
                             '       <input type="hidden" id="bpjs_tk_jkm_rupiah_' + i + '" name="bpjs_tk_jkm_rupiah" value="' + res[i].bpjs_tk_jkm_rupiah + '" >' +
                             '       <input type="hidden" id="bpjs_tk_jkm_perusahaan_rupiah_' + i + '" name="bpjs_tk_jkm_perusahaan_rupiah" value="' + res[i].bpjs_tk_jkm_perusahaan_rupiah + '" >' +
                             '       <input type="hidden" id="bpjs_tk_jkm_karyawan_rupiah_' + i + '" name="bpjs_tk_jkm_karyawan_rupiah" value="' + res[i].bpjs_tk_jkm_karyawan_rupiah + '" >' +
-                            
+
                             '       <input type="hidden" id="bpjs_tk_jkk_persen_' + i + '" name="bpjs_tk_jkk_persen" value="' + res[i].bpjs_tk_jkk_persen + '" >' +
                             '       <input type="hidden" id="bpjs_tk_jkk_perusahaan_persen_' + i + '" name="bpjs_tk_jkk_perusahaan_persen" value="' + res[i].bpjs_tk_jkk_perusahaan_persen + '" >' +
                             '       <input type="hidden" id="bpjs_tk_jkk_karyawan_persen_' + i + '" name="bpjs_tk_jkk_karyawan_persen" value="' + res[i].bpjs_tk_jkk_karyawan_persen + '" >' +
@@ -844,7 +843,7 @@
 
         $('#datatable-ajax-crud tbody').on('dblclick', 'tr', function (e) {
             // get the current row
-            var currentRow = $(this).closest("tr"); 
+            var currentRow = $(this).closest("tr");
 
             var kode_bpjs = currentRow.find('input[name="kode_bpjs"]').val();
             var site_nirwana_name = currentRow.find('input[name="site_nirwana_name"]').val();
@@ -875,7 +874,7 @@
             var bpjs_tk_jht_rupiah = currentRow.find("td:eq(7)").text();
             var bpjs_tk_jht_perusahaan_rupiah = currentRow.find('input[name="bpjs_tk_jht_perusahaan_rupiah"]').val();
             var bpjs_tk_jht_karyawan_rupiah = currentRow.find('input[name="bpjs_tk_jht_karyawan_rupiah"]').val();
-            
+
             var bpjs_tk_jpn_persen = currentRow.find('input[name="bpjs_tk_jpn_persen"]').val();
             var bpjs_tk_jpn_perusahaan_persen = currentRow.find('input[name="bpjs_tk_jpn_perusahaan_persen"]').val();
             var bpjs_tk_jpn_karyawan_persen = currentRow.find('input[name="bpjs_tk_jpn_karyawan_persen"]').val();
@@ -898,7 +897,7 @@
             var bpjs_tk_jkm_rupiah = currentRow.find("td:eq(8)").text();
             var bpjs_tk_jpn_rupiah = currentRow.find("td:eq(9)").text();
             var bpjs_ks_jkn_rupiah = currentRow.find("td:eq(10)").text();
-            
+
             $("#bpjs_tk_jkk_persen").html(bpjs_tk_jkk_persen);
             $("#bpjs_tk_jkk_perusahaan_persen").html(bpjs_tk_jkk_perusahaan_persen);
             $("#bpjs_tk_jkk_karyawan_persen").html(bpjs_tk_jkk_karyawan_persen);
@@ -919,7 +918,7 @@
             $("#bpjs_tk_jht_rupiah").val(bpjs_tk_jht_rupiah);
             $("#bpjs_tk_jht_perusahaan_rupiah").val(bpjs_tk_jht_perusahaan_rupiah);
             $("#bpjs_tk_jht_karyawan_rupiah").val(bpjs_tk_jht_karyawan_rupiah);
-            
+
             $("#bpjs_tk_jpn_persen").html(bpjs_tk_jpn_persen);
             $("#bpjs_tk_jpn_perusahaan_persen").html(bpjs_tk_jpn_perusahaan_persen);
             $("#bpjs_tk_jpn_karyawan_persen").html(bpjs_tk_jpn_karyawan_persen);
@@ -934,67 +933,67 @@
             $("#bpjs_ks_jkn_perusahaan_rupiah").val(bpjs_ks_jkn_perusahaan_rupiah);
             $("#bpjs_ks_jkn_karyawan_rupiah").val(bpjs_ks_jkn_karyawan_rupiah);
 
-            $("#ajax-bpjs-karyawan-model").modal('show');            
-                        
-            if (!kode_bpjs) { 
-                kode_bpjs = ""; 
+            $("#ajax-bpjs-karyawan-model").modal('show');
+
+            if (!kode_bpjs) {
+                kode_bpjs = "";
             }
-            if (!site_nirwana_name) { 
-                site_nirwana_name = ""; 
+            if (!site_nirwana_name) {
+                site_nirwana_name = "";
             }
-            if (!department_name) { 
-                department_name = ""; 
+            if (!department_name) {
+                department_name = "";
             }
-            if (!sub_dept_name) { 
-                sub_dept_name = ""; 
+            if (!sub_dept_name) {
+                sub_dept_name = "";
             }
-            if (!status_aktif_bpjs_tk) { 
-                status_aktif_bpjs_tk = ""; 
+            if (!status_aktif_bpjs_tk) {
+                status_aktif_bpjs_tk = "";
             }
-            if (!tanggal_bpjs_ketenagakerjaan) { 
-                tanggal_bpjs_ketenagakerjaan = ""; 
+            if (!tanggal_bpjs_ketenagakerjaan) {
+                tanggal_bpjs_ketenagakerjaan = "";
             }
-            if (!nomor_bpjs_ketenagakerjaan) { 
-                nomor_bpjs_ketenagakerjaan = ""; 
+            if (!nomor_bpjs_ketenagakerjaan) {
+                nomor_bpjs_ketenagakerjaan = "";
             }
-            if (!status_aktif_bpjs_ks) { 
-                status_aktif_bpjs_ks = "";  
+            if (!status_aktif_bpjs_ks) {
+                status_aktif_bpjs_ks = "";
             }
-            if (!tanggal_bpjs_kesehatan) { 
-                tanggal_bpjs_kesehatan = ""; 
+            if (!tanggal_bpjs_kesehatan) {
+                tanggal_bpjs_kesehatan = "";
             }
-            if (!nomor_bpjs_kesehatan) { 
-                nomor_bpjs_kesehatan = ""; 
+            if (!nomor_bpjs_kesehatan) {
+                nomor_bpjs_kesehatan = "";
             }
 
-            $("#kode_bpjs_modal").val(kode_bpjs);            
-            $("#enroll_id").val(enroll_id);            
-            $("#nik").val(nik);            
-            $("#employee_name").val(employee_name);            
-            
+            $("#kode_bpjs_modal").val(kode_bpjs);
+            $("#enroll_id").val(enroll_id);
+            $("#nik").val(nik);
+            $("#employee_name").val(employee_name);
+
             $("#dasar_pot_bpjs").val(dasar_pot_bpjs);
 
-            $("#site_nirwana_name").val(site_nirwana_name);            
-            $("#department_name").val(department_name);            
-            $("#sub_dept_name").val(sub_dept_name);            
-            
-            $("#total_iuran").val(total_iuran);            
-            
+            $("#site_nirwana_name").val(site_nirwana_name);
+            $("#department_name").val(department_name);
+            $("#sub_dept_name").val(sub_dept_name);
+
+            $("#total_iuran").val(total_iuran);
+
             $("#status_aktif_bpjs_tk").val(status_aktif_bpjs_tk).trigger("change");
-            $("#tanggal_bpjs_ketenagakerjaan").val(tanggal_bpjs_ketenagakerjaan);            
-            $("#nomor_bpjs_ketenagakerjaan").val(nomor_bpjs_ketenagakerjaan);            
+            $("#tanggal_bpjs_ketenagakerjaan").val(tanggal_bpjs_ketenagakerjaan);
+            $("#nomor_bpjs_ketenagakerjaan").val(nomor_bpjs_ketenagakerjaan);
             $("#status_aktif_bpjs_ks").val(status_aktif_bpjs_ks).trigger("change");
-            $("#tanggal_bpjs_kesehatan").val(tanggal_bpjs_kesehatan);            
-            $("#nomor_bpjs_kesehatan").val(nomor_bpjs_kesehatan);       
-                        
+            $("#tanggal_bpjs_kesehatan").val(tanggal_bpjs_kesehatan);
+            $("#nomor_bpjs_kesehatan").val(nomor_bpjs_kesehatan);
+
         });
 
         $('body').on('click', '#btn-update-bpjs', function (event) {
-            var kode_periode_bpjs = $("#kode_periode_bpjs").val();                        
-            var periode_payroll = $("#periode_payroll").val();                        
+            var kode_periode_bpjs = $("#kode_periode_bpjs").val();
+            var periode_payroll = $("#periode_payroll").val();
 
             var tanggal = periode_payroll.split(' s/d ');
-            
+
             // LAGI COBA TEST CLOSING PAYROLL
             $.ajax({
                 type:"POST",
@@ -1023,7 +1022,7 @@
                         $("#btn-update-bpjs").addClass("btn-loading");
                         $("#btn-update-bpjs").html('Loading...');
                         $("#btn-update-bpjs").attr("disabled", true);
-                        
+
                         $("#datatable-ajax-crud tbody").empty();
                         $("#datatable-ajax-crud").show();
                         $("#loadingProcess").show();
@@ -1070,10 +1069,10 @@
 
                 },
                 error: function(res){
-                                
+
                 }
-            });           
-                        
+            });
+
         });
 
         function defaultDate(s) {
@@ -1082,7 +1081,7 @@
                 var d = bits[2] + '-' + bits[1] + '-' + bits[0];
             }
             return d;
-        }        
+        }
 
         $('body').on('click', '#btn-update', function (event) {
             var kode_bpjs = $("#kode_bpjs_modal").val();
@@ -1093,7 +1092,7 @@
             var status_aktif_bpjs_ks = $("#status_aktif_bpjs_ks").val();
             var tanggal_bpjs_kesehatan = $("#tanggal_bpjs_kesehatan").val();
             var nomor_bpjs_kesehatan = $("#nomor_bpjs_kesehatan").val();
-            
+
             $('#btn-update').addClass("btn-loading");
             $("#btn-update").html('Please wait...');
             $("#btn-update").attr("disabled", true);
@@ -1119,14 +1118,14 @@
                     notif({
                         msg: "<b>Info:</b> Data berhasil di simpan.",
                         type: "info"
-                    });    
+                    });
                     $("#btn-cari").click();
                 },
                 error: function(res){
                     notif({
                         msg: "<b>Error:</b> Oops data gagal di simpan.",
                         type: "error"
-                    });    
+                    });
                 }
             });
 
