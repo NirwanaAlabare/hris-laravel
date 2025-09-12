@@ -471,7 +471,17 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::get('ga/get_kategori_item',['as'=>'hris.ga.get_kategori_item','uses'=>'PemeliharaanKendaraanController@get_kategori_item']);
     Route::post('ga/store_item',['as'=>'hris.ga.store_item','uses'=>'PemeliharaanKendaraanController@store_item']);
 
-    Route::get('ga/pengajuan_perbaikan_kendaraan',['as'=>'hris.ga.pengajuan_perbaikan_kendaraan','uses'=>'PemeliharaanKendaraanController@pengajuan_perbaikan_kendaraan']);
+
+    Route::get('/ga/pengajuan-perbaikan-kendaraan/{id}/edit', ['as'=>'hris.ga.edit_pengajuan_perbaikan_kendaraan','uses'=>'PemeliharaanKendaraanController@edit_pengajuan_perbaikan_kendaraan']);
+    Route::post('/ga/update_pengajuan_perbaikan_kendaraan/{id}', ['as'=>'hris.ga.update_pengajuan_perbaikan_kendaraan','uses'=>'PemeliharaanKendaraanController@update_pengajuan_perbaikan_kendaraan']);
+    Route::post('/ga/approve_pengajuan_perbaikan_kendaraan/{id}', ['as' => 'hris.ga.approve_pengajuan_perbaikan_kendaraan', 'uses' => 'PemeliharaanKendaraanController@approve_pengajuan']);
+    Route::get('/ga/print_pengajuan_perbaikan_kendaraan/{id}', ['as'=>'hris.ga.print_pengajuan_perbaikan_kendaraan','uses'=>'PemeliharaanKendaraanController@print_pengajuan_perbaikan_kendaraan']);
+
+
+
+    Route::get('ga/pengajuan_perbaikan_kendaraan',['as'=>'hris.ga.get_pengajuan_perbaikan_kendaraan','uses'=>'PemeliharaanKendaraanController@pengajuan_perbaikan_kendaraan']);
+    Route::post('ga/ajax_get_pengajuan_perbaikan_kendaraan_list',['as'=>'hris.ga.ajax_get_pengajuan_perbaikan_kendaraan_list','uses'=>'PemeliharaanKendaraanController@ajax_get_pengajuan_perbaikan_kendaraan_list']);
+    Route::post('ga/pengajuan_perbaikan_kendaraan',['as'=>'hris.ga.pengajuan_perbaikan_kendaraan','uses'=>'PemeliharaanKendaraanController@create_pengajuan_perbaikan_kendaraan']);
     Route::get('ga/pemeriksaan_kendaraan',['as'=>'hris.ga.pemeriksaan_kendaraan','uses'=>'PemeliharaanKendaraanController@pemeriksaan_kendaraan']);
     Route::post('ga/store_pemeriksaan_kendaraan',['as'=>'hris.ga.store_pemeriksaan_kendaraan','uses'=>'PemeliharaanKendaraanController@store_pemeriksaan_kendaraan']);
     Route::get('ga/ajax_get_pemeriksaan_kendaraan_list',['as'=>'hris.ga.ajax_get_pemeriksaan_kendaraan_list','uses'=>'PemeliharaanKendaraanController@ajax_get_pemeriksaan_kendaraan_list']);

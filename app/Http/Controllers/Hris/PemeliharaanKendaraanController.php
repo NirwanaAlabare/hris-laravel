@@ -9,9 +9,12 @@ use App\Models\VehicleItem;
 use App\Models\EmployeeAtribut;
 use App\Models\KategoriItem;
 use App\Models\VehicleMaintenance;
+use App\Models\GaPengajuanPerbaikanKendaraan;
+use App\Models\GaPengajuanPerbaikanKendaraanDetail;
 use App\Models\VehicleMaintenancePrice;
 use App\Models\GaPemeriksaanKendaraan;
 use App\Models\GaPemeriksaanKendaraanDet;
+use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use DB;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -34,9 +37,10 @@ class PemeliharaanKendaraanController extends AdminBaseController
     public function pengajuan_perbaikan_kendaraan(){
         $vehicles =  DB::connection('laravel_nds')->select( DB::raw("select*from ga_master_kendaraan") );
         $vehicle_item=DB::select("select*from vehicle_item order by created_at desc");
-        $selectemployee = $this->ajax_getallemployeeatribut([]);
+        $selectemployee = $this->ajax_getallemployeeatribut(['DEP08SUB002']);
+        $komponent_pemerikasaan_kendaraan = DB::select("SELECT * FROM ga_pemeriksaan_kendaraan_det  gpkd JOIN komponen_pemeriksaan_kendaraan_input kpki ON kpki.id = gpkd.komponen_id WHERE gpkd.`status` ='tidak_baik' GROUP BY komponen_id;");
         $user = auth()->user();
-        return View::make('hris/ga/pengajuan_perbaikan_kendaraan',compact('vehicles','vehicle_item','user','selectemployee'), $this->data);
+        return View::make('hris/ga/pengajuan_perbaikan_kendaraan',compact('vehicles','vehicle_item','user','selectemployee','komponent_pemerikasaan_kendaraan'), $this->data);
     }
 
     public function pemeriksaan_kendaraan(){
@@ -54,6 +58,220 @@ class PemeliharaanKendaraanController extends AdminBaseController
         // dd($komponent_pemerikasaan_kendaraan);
         $user = auth()->user();
         return View::make('hris/ga/pemeriksaan_kendaraan',compact('vehicles','komponent_pemerikasaan_kendaraan','user','selectemployee'), $this->data);
+    }
+
+
+    public function edit_pengajuan_perbaikan_kendaraan($id)
+    {
+         $data = GaPengajuanPerbaikanKendaraan::with('details')->findOrFail($id);
+        return response()->json($data);
+    }
+
+    public function update_pengajuan_perbaikan_kendaraan(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'tanggal_pengajuan_perbaikan' => 'required|date',
+            'diajukanOlehID'                   => 'required|integer',
+            'vehicle_id'                  => 'required|integer',
+            'jenis_pemeliharaan'          => 'required|array',
+            'jenis_pemeliharaan.*'        => 'nullable|integer',
+            'odometer'                    => 'required|array',
+            'odometer.*'                  => 'nullable|numeric',
+            'penyedia_jasa'               => 'required|array',
+            'penyedia_jasa.*'             => 'nullable|string',
+            'keterangan'                  => 'nullable|array',
+            'keterangan.*'                => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            // update parent
+            $pengajuan = GaPengajuanPerbaikanKendaraan::findOrFail($id);
+            $pengajuan->update([
+                'kendaraan_id'     => $request->vehicle_id,
+                'enroll_id'        => $request->diajukanOlehID,
+                'tanggal_pengajuan'=> $request->tanggal_pengajuan_perbaikan,
+            ]);
+
+            // hapus detail lama
+            GaPengajuanPerbaikanKendaraanDetail::where('pengajuan_id', $id)->delete();
+
+            // simpan detail baru
+            foreach ($request->jenis_pemeliharaan as $i => $komponenId) {
+                if ($komponenId) {
+                    GaPengajuanPerbaikanKendaraanDetail::create([
+                        'pengajuan_id'                            => $pengajuan->id,
+                        'komponen_pemeriksaan_kendaraan_input_id' => $komponenId,
+                        'odometer'                                => $request->odometer[$i] ?? null,
+                        'penyedia_jasa'                           => $request->penyedia_jasa[$i] ?? null,
+                        'keterangan'                              => $request->keterangan[$i] ?? null,
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'status'  => 'success',
+                'message' => 'Pengajuan berhasil diupdate',
+                'data'    => $pengajuan->load('details')
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Gagal update data',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
+    public function approve_pengajuan($id)
+    {
+        $pengajuan = GaPengajuanPerbaikanKendaraan::findOrFail($id);
+        $pengajuan->update([
+            'status_pengajuan' => 'approved',
+            'approved_at' => now(),
+            'approved_by' => auth()->user()->id ?? null,
+        ]);
+
+        return response()->json(['status' => 'success']);
+    }
+
+    public function create_pengajuan_perbaikan_kendaraan(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'tanggal_pengajuan_perbaikan' => 'required|date',
+            'diajukanOlehID' => 'required|integer',
+            'vehicle_id' => 'required|integer',
+
+            'jenis_pemeliharaan' => 'required|array',
+            'jenis_pemeliharaan.*' => 'required|integer',
+
+            'odometer' => 'required|array',
+            'odometer.*' => 'required|numeric',
+
+            'penyedia_jasa' => 'required|array',
+            'penyedia_jasa.*' => 'required|string',
+
+            'keterangan' => 'nullable|array',
+            'keterangan.*' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // simpan induk
+            $pengajuan = GaPengajuanPerbaikanKendaraan::create([
+                'kendaraan_id'     => $request->vehicle_id,
+                'enroll_id'        => $request->diajukanOlehID,
+                'tanggal_pengajuan'=> $request->tanggal_pengajuan_perbaikan,
+                'status_pengajuan' => 'pending',
+            ]);
+
+            // simpan detail
+            foreach ($request->jenis_pemeliharaan as $i => $komponen) {
+                GaPengajuanPerbaikanKendaraanDetail::create([
+                    'pengajuan_id'                             => $pengajuan->id,
+                    'komponen_pemeriksaan_kendaraan_input_id'  => $komponen,
+                    'odometer'                                 => $request->odometer[$i],
+                    'penyedia_jasa'                            => $request->penyedia_jasa[$i],
+                    'keterangan'                               => $request->keterangan[$i] ?? null,
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Pengajuan perbaikan berhasil disimpan',
+                'data' => $pengajuan->load('details')
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal menyimpan data',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function ajax_get_pengajuan_perbaikan_kendaraan_list(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = DB::table('ga_pengajuan_perbaikan_kendaraan as pk')
+                ->leftJoin('ga_master_kendaraan as k', 'pk.kendaraan_id', '=', 'k.id')
+                ->leftJoin('employee_atribut as e', 'pk.enroll_id', '=', 'e.enroll_id')
+                ->select(
+                    'pk.id',
+                    'pk.tanggal_pengajuan',
+                    'k.merk',
+                    'k.plat_no',
+                    'e.employee_name',
+                    'e.nik as nip',
+                    'pk.status_pengajuan'
+                )
+                ->orderBy('pk.created_at', 'desc');
+
+            if ($request->has('status_pengajuan') && $request->status_pengajuan != '') {
+                $data->where('pk.status_pengajuan', $request->status_pengajuan);
+            }
+
+            // 🔹 Filter tanggal_range (format: "dd-mm-yyyy - dd-mm-yyyy")
+            if ($request->has('tanggal_range') && !empty($request->tanggal_range)) {
+                $dates = explode(" s/d ", $request->tanggal_range);
+                 // pastikan ada dua tanggal yang valid
+                if (count($dates) == 2) {
+                    try {
+                        $data->whereBetween('pk.tanggal_pengajuan', [$dates[0], $dates[1]]);
+                    } catch (\Exception $e) {
+                        // kalau parsing gagal, abaikan filter tanggal
+                    }
+                }
+            }
+
+             return DataTables::of($data)
+            ->addIndexColumn()
+            ->editColumn('tanggal_pengajuan', function ($row) {
+                return \Carbon\Carbon::parse($row->tanggal_pengajuan)
+                    ->translatedFormat('d F Y');
+            })
+            ->addColumn('merk_kendaraan', fn($row) => $row->merk ?? '-')
+            ->addColumn('nomor_polisi', fn($row) => $row->plat_no ?? '-')
+            ->addColumn('driver', fn($row) => $row->employee_name ?? '-')
+            ->addColumn('nip', fn($row) => $row->nip ?? '-')
+            ->addColumn('status_pengajuan', function ($row) {
+                switch ($row->status_pengajuan) {
+                    case 'pending':
+                        return '<span class="badge bg-warning">Pending</span>';
+                    case 'approved':
+                        return '<span class="badge bg-success">Approved</span>';
+                    case 'rejected':
+                        return '<span class="badge bg-danger">Rejected</span>';
+                    default:
+                        return '<span class="badge bg-secondary">Unknown</span>';
+                }
+            })
+            ->rawColumns(['status_pengajuan'])
+            ->make(true);
+        }
     }
 
     public function store_pemeriksaan_kendaraan(Request $request){
@@ -183,7 +401,6 @@ class PemeliharaanKendaraanController extends AdminBaseController
         }
     }
 
-
     public function ajax_edit_pemeriksaan_kendaraan($id)
     {
         // ambil data utama
@@ -193,7 +410,7 @@ class PemeliharaanKendaraanController extends AdminBaseController
         return response()->json($data);
     }
 
-  public function ajax_update_pemeriksaan_kendaraan(Request $request, $id)
+    public function ajax_update_pemeriksaan_kendaraan(Request $request, $id)
     {
         try {
             // Format tanggal
@@ -270,9 +487,21 @@ class PemeliharaanKendaraanController extends AdminBaseController
         }
     }
 
+    public function print_pengajuan_perbaikan_kendaraan(){
+        $id=request()->id;
+        $data = GaPengajuanPerbaikanKendaraan::with('details.detail_input_list','employee')
+        ->where('id', $id)
+        ->firstOrFail();
+        $kendaraan = DB::connection('laravel_nds')
+        ->table('ga_master_kendaraan')
+        ->where('id', $data->kendaraan_id)
+        ->first();
+        $fileName='Form Pengajuan Pemeliharaan Kendaraan '.date('His');
+        $pdf = PDF::loadView('hris.laporan.print_pemeliharaan_kendaraan',["data"=>$data,"kendaraan"=>$kendaraan])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+        return $pdf;
+    }
 
-
-   public function ajax_get_pemeriksaan_kendaraan_detail(Request $request)
+    public function ajax_get_pemeriksaan_kendaraan_detail(Request $request)
     {
         if ($request->ajax()) {
         $data = DB::table('ga_pemeriksaan_kendaraan as pk')
@@ -325,7 +554,6 @@ class PemeliharaanKendaraanController extends AdminBaseController
             ->make(true);
         }
     }
-
 
     public function ajax_getallemployeeatribut($bagian)
     {
