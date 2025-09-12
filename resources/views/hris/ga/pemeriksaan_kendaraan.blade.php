@@ -714,6 +714,9 @@ h1 {
                         // reload datatable
                         $('#datatable_ajax_pemeriksaan_kendaraan_list').DataTable().ajax.reload();
                         $('#ajax-modal-tambah').modal('hide');
+                        setTimeout(function () {
+                            location.reload();
+                        }, 800);
                     },
                     error: function (xhr) {
                         notif({
@@ -721,6 +724,9 @@ h1 {
                             type: "error"
                         });
                         console.log(xhr.responseText);
+                         setTimeout(function () {
+                            location.reload();
+                        }, 800);
                     }
                 });
             });
@@ -988,6 +994,9 @@ h1 {
                     });
                     $('#datatable_ajax_pemeriksaan_kendaraan_list').DataTable().ajax.reload();
                     $("#ajax-modal-ajukan-perbaikan").modal("hide");
+                    setTimeout(function () {
+                        location.reload();
+                    }, 800);
                 }
             });
         });
