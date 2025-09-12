@@ -13,6 +13,7 @@ class GaPengajuanPerbaikanKendaraan extends Model
 
     protected $fillable = [
         'kendaraan_id',
+        'id_pemerliharaan',
         'enroll_id',
         'tanggal_pengajuan',
         'status_pengajuan'

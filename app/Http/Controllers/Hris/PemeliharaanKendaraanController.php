@@ -38,7 +38,7 @@ class PemeliharaanKendaraanController extends AdminBaseController
         $vehicles =  DB::connection('laravel_nds')->select( DB::raw("select*from ga_master_kendaraan") );
         $vehicle_item=DB::select("select*from vehicle_item order by created_at desc");
         $selectemployee = $this->ajax_getallemployeeatribut(['DEP08SUB002']);
-        $komponent_pemerikasaan_kendaraan = DB::select("SELECT * FROM ga_pemeriksaan_kendaraan_det  gpkd JOIN komponen_pemeriksaan_kendaraan_input kpki ON kpki.id = gpkd.komponen_id WHERE gpkd.`status` ='tidak_baik' GROUP BY komponen_id;");
+        $komponent_pemerikasaan_kendaraan = DB::select("SELECT * FROM komponen_pemeriksaan_kendaraan_input");
         $user = auth()->user();
         return View::make('hris/ga/pengajuan_perbaikan_kendaraan',compact('vehicles','vehicle_item','user','selectemployee','komponent_pemerikasaan_kendaraan'), $this->data);
     }
@@ -49,15 +49,14 @@ class PemeliharaanKendaraanController extends AdminBaseController
         $komponent_pemerikasaan_kendaraan = DB::table('komponen_pemeriksaan_kendaraan')
             ->orderBy('sort', 'asc')
             ->get();
-
+        $komponent_pemerikasaan_kendaraan_from_pemeriksaan = DB::select("SELECT * FROM ga_pemeriksaan_kendaraan_det  gpkd JOIN komponen_pemeriksaan_kendaraan_input kpki ON kpki.id = gpkd.komponen_id WHERE gpkd.`status` ='tidak_baik' GROUP BY komponen_id;");
         foreach ($komponent_pemerikasaan_kendaraan as $k) {
             $k->inputs = DB::table('komponen_pemeriksaan_kendaraan_input')
                 ->where('id_komponen_pemeriksaan_kendaraan', $k->id)
                 ->get();
         }
-        // dd($komponent_pemerikasaan_kendaraan);
         $user = auth()->user();
-        return View::make('hris/ga/pemeriksaan_kendaraan',compact('vehicles','komponent_pemerikasaan_kendaraan','user','selectemployee'), $this->data);
+        return View::make('hris/ga/pemeriksaan_kendaraan',compact('vehicles','komponent_pemerikasaan_kendaraan','user','selectemployee','komponent_pemerikasaan_kendaraan_from_pemeriksaan'), $this->data);
     }
 
 
@@ -154,8 +153,8 @@ class PemeliharaanKendaraanController extends AdminBaseController
             'jenis_pemeliharaan' => 'required|array',
             'jenis_pemeliharaan.*' => 'required|integer',
 
-            'odometer' => 'required|array',
-            'odometer.*' => 'required|numeric',
+            'odometer' => 'nullable|array',
+            'odometer.*' => 'nullable|numeric',
 
             'penyedia_jasa' => 'required|array',
             'penyedia_jasa.*' => 'required|string',
@@ -163,7 +162,6 @@ class PemeliharaanKendaraanController extends AdminBaseController
             'keterangan' => 'nullable|array',
             'keterangan.*' => 'nullable|string',
         ]);
-
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
@@ -176,6 +174,7 @@ class PemeliharaanKendaraanController extends AdminBaseController
 
             // simpan induk
             $pengajuan = GaPengajuanPerbaikanKendaraan::create([
+                'id_pemerliharaan' => $request->id_pemerliharaan ? $request->id_pemerliharaan : null,
                 'kendaraan_id'     => $request->vehicle_id,
                 'enroll_id'        => $request->diajukanOlehID,
                 'tanggal_pengajuan'=> $request->tanggal_pengajuan_perbaikan,
@@ -187,7 +186,7 @@ class PemeliharaanKendaraanController extends AdminBaseController
                 GaPengajuanPerbaikanKendaraanDetail::create([
                     'pengajuan_id'                             => $pengajuan->id,
                     'komponen_pemeriksaan_kendaraan_input_id'  => $komponen,
-                    'odometer'                                 => $request->odometer[$i],
+                    'odometer'                                 => $request->odometer[$i] ?? null,
                     'penyedia_jasa'                            => $request->penyedia_jasa[$i],
                     'keterangan'                               => $request->keterangan[$i] ?? null,
                 ]);
@@ -361,6 +360,7 @@ class PemeliharaanKendaraanController extends AdminBaseController
             $data = DB::table('ga_pemeriksaan_kendaraan as pk')
                 ->leftjoin('ga_pemeriksaan_kendaraan_det as pkd', 'pk.id', '=', 'pkd.pemeriksaan_kendaraan_id')
                 ->leftJoin('ga_master_kendaraan as k', 'pk.kendaraan_id', '=', 'k.id')
+                ->leftJoin('ga_pengajuan_perbaikan_kendaraan as gppk', 'pk.id', '=', 'gppk.id_pemerliharaan')
                 ->leftJoin('employee_atribut as e', 'pk.enroll_id', '=', 'e.enroll_id')
                 ->select(
                     'pk.id',
@@ -368,11 +368,11 @@ class PemeliharaanKendaraanController extends AdminBaseController
                     'pk.tanggal_pemeriksaan',
                     'k.tipe',
                     'e.employee_name',
+                    'gppk.id as pengajuan_id',
                     DB::raw("SUM(CASE WHEN pkd.status = 'tidak_baik' THEN 1 ELSE 0 END) as jumlah_tidak_baik")
                 )
                 ->whereDate('pk.tanggal_pemeriksaan', $tanggal)
                 ->groupBy('pk.id', 'pk.tanggal_pemeriksaan', 'k.tipe', 'e.employee_name');
-
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->editColumn('tanggal_pemeriksaan', function ($row) {
@@ -391,10 +391,20 @@ class PemeliharaanKendaraanController extends AdminBaseController
                     return $row->jumlah_tidak_baik;
                 })
                 ->addColumn('aksi', function ($row) {
-                    return '
-                    <button class="btn btn-sm btn-primary btn-detail mr-2" data-id="'.$row->id.'">Detail</button>
-                    <button class="btn btn-sm btn-warning btn-edit" data-id="'.$row->id.'">Edit</button>
+                    $btn = '
+                        <button class="btn btn-sm btn-primary btn-detail mr-2" data-id="'.$row->id.'">Detail</button>
+                        <button class="btn btn-sm btn-warning btn-edit mr-2" data-id="'.$row->id.'">Edit</button>
                     ';
+
+                    if ($row->jumlah_tidak_baik != 0 && !$row->pengajuan_id) {
+                        $btn .= '<button class="btn btn-sm btn-danger btn-ajukan-perbaikan" data-id="'.$row->id.'">Ajukan Perbaikan</button>';
+                    }
+
+                    if ($row->pengajuan_id) {
+                        $btn .= '<button class="btn btn-sm btn-success btn-detail-pengajuan" data-id="'.$row->pengajuan_id.'">Diajukan</button>';
+                    }
+
+                    return $btn;
                 })
                 ->rawColumns(['aksi'])
                 ->make(true);
@@ -404,7 +414,7 @@ class PemeliharaanKendaraanController extends AdminBaseController
     public function ajax_edit_pemeriksaan_kendaraan($id)
     {
         // ambil data utama
-        $data = GaPemeriksaanKendaraan::with(['detail','kendaraan','employee'])->findOrFail($id);
+        $data = GaPemeriksaanKendaraan::with(['detail.detail_input_list','kendaraan','employee'])->findOrFail($id);
 
         // kembalikan response JSON agar bisa isi form di modal
         return response()->json($data);

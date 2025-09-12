@@ -69,7 +69,7 @@
                         <div class="col-md-6">
                             <div clasl="card-header mt-5 p-0" style="display: flex; justify-content: end; align-items: center;">
                                 <div class="mt-5 p-0">
-                                    <button class="btn btn-primary w-100" onclick="open_modal_buat_dokumen()"  data-toggle="tooltip" title="BUAT PENGAJUAN" id="recap_labor_cost_2"><i class="fa fa-plus" aria-hidden="true"></i> Buat Pengajuan</button>
+                                    <button class="btn btn-primary w-100" onclick="open_modal_buat_pengajuan_perbaikan()"  data-toggle="tooltip" title="BUAT PENGAJUAN" id="recap_labor_cost_2"><i class="fa fa-plus" aria-hidden="true"></i> Buat Pengajuan</button>
                                 </div>
                             </div>
                         </div>
@@ -322,7 +322,6 @@
     <script src="{{URL::asset('assets/plugins/tabs/tabs.js')}}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-    <script src="{{URL::asset('assets/js/iziToast.min.js')}}"></script>
 
     <script>
          $('.fc-datepicker').datepicker({
@@ -330,9 +329,9 @@
             selectOtherMonths: true,
             dateFormat: 'dd-mm-yy'
         });
-         function open_modal_buat_dokumen() {
+         function open_modal_buat_pengajuan_perbaikan() {
             $("#ajax-modal-tambah").modal('show');
-            $('#title-modal-list').text('PENGAJUAN KUPON KARYAWAN');
+            $('#title-modal-list').text('PENGAJUAN PERBAIKAN KENDARAAN');
         }
 
     </script>
@@ -462,29 +461,53 @@
             data.diajukanOlehID = $("#diajukanOlehID").val();
             data.vehicle_id = $("#vehicle_id").val();
 
+            if(data.diajukanOlehID == null || data.diajukanOlehID == ""){
+                isValid = false;
+                $("#diajukanOlehID").addClass("is-invalid");
+                 iziToast.error({
+                    message: 'Pengajuan wajib diisi.',
+                    position: 'topCenter'
+                });
+                return;
+            }
+            if(data.vehicle_id == null || data.vehicle_id == ""){
+                isValid = false;
+                $("#vehicle_id").addClass("is-invalid");
+                 iziToast.error({
+                    message: 'Kendaraan wajib diisi.',
+                    position: 'topCenter'
+                });
+                return;
+            }
+
             // Ambil data array dari tabel pemeliharaan
             data.jenis_pemeliharaan = [];
             data.odometer = [];
             data.penyedia_jasa = [];
             data.keterangan = [];
 
-            $("#pemeliharaan-table tbody tr").each(function () {
-                let jenis = $(this).find(".jenis_pemeliharaan").val();
-                let odo   = $(this).find(".odometer").val();
-                let jasa  = $(this).find(".penyedia_jasa").val();
-                let ket   = $(this).find(".keterangan").val();
+           $("#pemeliharaan-table tbody tr").each(function () {
+                let jenis = $(this).find(".jenis_pemeliharaan");
+                let jasa  = $(this).find(".penyedia_jasa");
+                let ket   = $(this).find(".keterangan");
 
-                if (!jenis || !odo || !jasa) {
+                // reset invalid dulu
+                jenis.removeClass("is-invalid");
+                jasa.removeClass("is-invalid");
+
+                // validasi per field
+                if (!jenis.val()) {
                     isValid = false;
-                    $(this).find("input, select").addClass("is-invalid");
-                } else {
-                    $(this).find("input, select").removeClass("is-invalid");
+                    jenis.addClass("is-invalid");
+                }
+                if (!jasa.val()) {
+                    isValid = false;
+                    jasa.addClass("is-invalid");
                 }
 
-                data.jenis_pemeliharaan.push(jenis);
-                data.odometer.push(odo);
-                data.penyedia_jasa.push(jasa);
-                data.keterangan.push(ket);
+                data.jenis_pemeliharaan.push(jenis.val());
+                data.penyedia_jasa.push(jasa.val());
+                data.keterangan.push(ket.val());
             });
 
             return { isValid, data };
@@ -545,7 +568,7 @@
 
                     // kosongkan table body
                     $('#pemeliharaan-table tbody').empty();
-
+                    console.log(res.details);
                     // render detail
                     if (res.details && res.details.length > 0) {
                         res.details.forEach(d => {
@@ -607,7 +630,7 @@
 
         $('#btn-close, #btn-close_edit1').on('click', function () {
         // reset table detail
-        $('#pemeliharaan-table tbody').html(`
+            $('#pemeliharaan-table tbody').html(`
                 <tr>
                     <td>
                         <select class="form-control jenis_pemeliharaan" name="jenis_pemeliharaan[]">

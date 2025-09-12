@@ -22,7 +22,7 @@ class GaPengajuanPerbaikanKendaraanDetail extends Model
         return $this->belongsTo(GaPengajuanPerbaikanKendaraan::class, 'pengajuan_id');
     }
 
-      public function detail_input_list()
+    public function detail_input_list()
     {
         return $this->belongsTo(KomponenPemeriksaanKendaraanInput::class, 'komponen_pemeriksaan_kendaraan_input_id','id');
     }

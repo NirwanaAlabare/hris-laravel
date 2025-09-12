@@ -26,4 +26,9 @@ class GaPemeriksaanKendaraanDet extends Model
     {
         return $this->belongsTo(GaPemeriksaanKendaraan::class, 'pemeriksaan_kendaraan_id');
     }
+
+    public function detail_input_list()
+    {
+        return $this->belongsTo(KomponenPemeriksaanKendaraanInput::class, 'komponen_id','id');
+    }
 }

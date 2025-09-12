@@ -4,6 +4,7 @@
     <link href="{{ URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
     <link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+    <link rel="stylesheet" href="{{ URL::asset('assets/css/iziToast.min.css') }}">
 @stop
 <style>
  .timestamp {
@@ -156,9 +157,6 @@ h1 {
                 <div class="mt-4 ml-4 mr-5 mb-0">
                     <div class=""  aria-labelledby="">
                         <div clasl="card-header m-0 p-0" style="display: flex; justify-content: space-between; align-items: center;">
-                            {{-- <div class="m-0 p-0">
-                                <button class="btn btn-primary w-100" onclick="open_modal_buat_dokumen()"  data-toggle="tooltip" title="Tambah dokumen" id="recap_labor_cost_2"><i class="fa fa-plus" aria-hidden="true"></i> Buat Pemeriksaan</button>
-                            </div> --}}
                             <div class="col-md-2">
                                     <div class="form-group">
                                         <label class="form-label">TGL PEMERIKSAAN : </label>
@@ -212,7 +210,7 @@ h1 {
                                  <div class="col-md-12">
                                     <div class="form-group">
                                         <label class="form-label">PILIH KENDARAAN : </label>
-                                        <select id="PilihKendaraanID" name="PilihKendaraanID" class="form-control" id="vehicle_id">
+                                        <select disabled id="PilihKendaraanID" name="PilihKendaraanID" class="form-control">
                                             <option value="">Pilih Kendaraan</option>
                                             @foreach ($vehicles as $key=>$value)
                                                 <option value="{{$value->id}}">{{$value->plat_no}} || {{$value->merk}} {{$value->tipe}}</option>
@@ -382,6 +380,114 @@ h1 {
     </div>
 
 
+    <div class="modal fade" id="ajax-modal-ajukan-perbaikan"  role="dialog" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document" style="max-width: 50%;">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary p-2">
+                            <h4 class="modal-title pl-2 font-weight-bold" id="title-modal-edit1">BUAT PENGAJUAN PERBAIKAN</h4>
+                            <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
+                                <i class="fa fa-remove"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                 <div class="col-md-12">
+                                    <div class="form-group border">
+                                        <label class="form-label">TANGGAL PENGAJUAN : </label>
+                                        <div class="input-group">
+                                            <p class="form-label" id="tanggal_pengajuan_label">{{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+                                            <input type="hidden" id="tanggal_pengajuan_perbaikan" name="tanggal_pengajuan_perbaikan" value="{{ \Carbon\Carbon::now()->translatedFormat('Y-m-d') }}" class="form-control create-control">
+                                            <input type="hidden" id="id_pemerliharaan" name="id_pemerliharaan" value="" class="form-control create-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="form-label">PEMERIKSA : </label>
+                                        <select disabled id="diajukanOlehIDPengajuanPerbaikan" name="diajukanOlehIDPengajuanPerbaikan" style='width: 100%;' data-placeholder="Pilih Pemeriksa" class="form-control create-control select2 select2-show-search EmployeeID">
+                                            <option value="">
+                                                    Pilih Pemeriksa
+                                                </option>
+                                            @foreach ($selectemployee as $r_empl)
+                                                <option
+                                                    value="{{$r_empl->enroll_id}}"
+                                                    data-department_name="{{$r_empl->department_name}}"
+                                                    data-sub_dept_name="{{$r_empl->sub_dept_name}}"
+                                                    data-department_data_id="{{$r_empl->department_id}}"
+                                                    data-sub_dept_data_id="{{$r_empl->sub_dept_id}}"
+                                                >
+                                                    {{$r_empl->select_employee}}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <small class="error-message text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="form-label">PILIH KENDARAAN : </label>
+                                        <select class="form-control" disabled id="PilihKendaraanIDPengajuanPerbaikan" name="PilihKendaraanIDPengajuanPerbaikan">
+                                            <option value="">Pilih Kendaraan</option>
+                                            @foreach ($vehicles as $key=>$value)
+                                                <option value="{{$value->id}}">{{$value->plat_no}} || {{$value->merk}} {{$value->tipe}}</option>
+                                            @endforeach
+                                        </select>
+                                        <small class="error-message text-danger"></small>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                <label class="form-label">DETAIL PEMELIHARAAN :</label>
+                                <table class="table table-bordered" id="pemeliharaan-table">
+                                    <thead>
+                                        <tr>
+                                            <th width="25%">Jenis Pemeliharaan</th>
+                                            <th width="15%">Odometer</th>
+                                            <th width="25%">Penyedia Jasa</th>
+                                            <th width="25%">Keterangan</th>
+                                            <th width="10%">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <select class="form-control jenis_pemeliharaan" name="jenis_pemeliharaan[]">
+                                                    <option value="">Pilih</option>
+                                                    @foreach ($komponent_pemerikasaan_kendaraan as $value)
+                                                        <option value="{{$value->id}}">
+                                                            {{$value->nama_item_pemeriksaan}}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td><input type="text" class="form-control odometer" name="odometer[]"></td>
+                                            <td><input type="text" class="form-control penyedia_jasa" name="penyedia_jasa[]"></td>
+                                            <td><input type="text" class="form-control keterangan" name="keterangan[]"></td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-danger btn-sm remove-row">X</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                {{-- <button type="button" class="btn btn-success btn-sm" id="add-row">+ Tambah</button> --}}
+                            </div>
+
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-primary p-1">
+                            <div class="btn-list">
+                                <button type="button" id="action-form" data-mode="create"  class="btn btn-secondary btn-app">Simpan</button>
+                                <button type="button" id="btn-close_edit_pengajuan_perbaikan" class="btn btn-warning btn-app" data-dismiss="modal">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 @endsection
 @section('footerjs')
     <!-- DataTables & Plugins -->
@@ -508,22 +614,38 @@ h1 {
                 let enroll_id   = $('#diajukanOlehID').val();
                 let oddometer   = $('#oddometer').val();
                 let tanggal     = $('#tanggal_pemeriksaan').val();
-
+                console.log(oddometer);
                 // Validasi satu per satu
-                if (!kendaraan_id) {
-                    $("#PilihKendaraanID").next(".error-message").text("Kendaraan wajib dipilih.");
-                    isValid = false;
-                }
                 if (!enroll_id) {
-                    $("#diajukanOlehID").next(".error-message").text("Pengaju wajib dipilih.");
+                    $("#diajukanOlehID").closest(".form-group").find(".error-message").text("Pengaju wajib dipilih.");
+                    iziToast.error({
+                        message: 'Identitas Pengaju wajib dipilih.',
+                        position: 'topCenter'
+                    });
                     isValid = false;
                 }
-                if (!oddometer) {
-                    $("#oddometer").next(".error-message").text("Odometer wajib diisi.");
+                if (!kendaraan_id) {
+                    $("#PilihKendaraanID").closest(".form-group").find(".error-message").text("Kendaraan wajib dipilih.");
+                    iziToast.error({
+                        message: 'Kendaraan wajib dipilih.',
+                        position: 'topCenter'
+                    });
+                    isValid = false;
+                }
+                if (!oddometer || oddometer == 0) {
+                    $("#oddometer").closest(".form-group").find(".error-message").text("Odometer wajib diisi.");
+                    iziToast.error({
+                        message: 'Odometer wajib diisi.',
+                        position: 'topCenter'
+                    });
                     isValid = false;
                 }
                 if (!tanggal) {
-                    $("#tanggal_pemeriksaan").next(".error-message").text("Tanggal pemeriksaan wajib diisi.");
+                    $("#tanggal_pemeriksaan").closest(".form-group").find(".error-message").text("Tanggal pemeriksaan wajib diisi.");
+                    iziToast.error({
+                        message: 'Tanggal pemeriksaan wajib diisi.',
+                        position: 'topCenter'
+                    });
                     isValid = false;
                 }
 
@@ -705,7 +827,6 @@ h1 {
         $(document).on('click', '.btn-edit', function() {
             let id = $(this).data('id');
             $.get("{{ route('hris.ga.ajax_edit_pemeriksaan_kendaraan', '') }}/" + id, function(data) {
-                console.log(data);
                 // isi form modal dengan data
                 $('#PilihKendaraanID').val(data.kendaraan_id).trigger('change');
                 $('#diajukanOlehID').val(data.enroll_id).trigger('change');
@@ -755,7 +876,122 @@ h1 {
                 $('#ajax-modal-tambah').modal('show');
             });
         });
+         $(document).on('click', '.remove-row', function () {
+            $(this).closest('tr').remove();
+        });
 
+        function validateForm() {
+            let isValid = true;
+            let data = {};
+
+            data.id_pemerliharaan = $("#id_pemerliharaan").val();
+            data.tanggal_pengajuan_perbaikan = $("#tanggal_pengajuan_perbaikan").val();
+            data.diajukanOlehID = $("#diajukanOlehIDPengajuanPerbaikan").val();
+            data.vehicle_id = $("#PilihKendaraanIDPengajuanPerbaikan").val();
+
+            // Ambil data array dari tabel pemeliharaan
+            data.jenis_pemeliharaan = [];
+            data.odometer = [];
+            data.penyedia_jasa = [];
+            data.keterangan = [];
+
+           $("#pemeliharaan-table tbody tr").each(function () {
+                let jenis = $(this).find(".jenis_pemeliharaan");
+                let jasa  = $(this).find(".penyedia_jasa");
+                let ket   = $(this).find(".keterangan");
+
+                // reset invalid dulu
+                jenis.removeClass("is-invalid");
+                jasa.removeClass("is-invalid");
+
+                // validasi per field
+                if (!jenis.val()) {
+                    isValid = false;
+                    jenis.addClass("is-invalid");
+                }
+                if (!jasa.val()) {
+                    isValid = false;
+                    jasa.addClass("is-invalid");
+                }
+
+                data.jenis_pemeliharaan.push(jenis.val());
+                data.penyedia_jasa.push(jasa.val());
+                data.keterangan.push(ket.val());
+            });
+
+            return { isValid, data };
+        }
+
+        $(document).on('click', '.btn-ajukan-perbaikan', function() {
+            let id = $(this).data('id');
+            $.get("{{ route('hris.ga.ajax_edit_pemeriksaan_kendaraan', '') }}/" + id, function(data) {
+                console.log(data);
+                $('#PilihKendaraanIDPengajuanPerbaikan').val(data.kendaraan_id).trigger('change');
+                $('#diajukanOlehIDPengajuanPerbaikan').val(data.enroll_id).trigger('change');
+                $('#id_pemerliharaan').val(id);
+                const details = data.detail.filter(d => d.status === 'tidak_baik');
+                $('#pemeliharaan-table tbody').empty();
+                if (details && details.length > 0) {
+                    details.forEach(d => {
+                        $('#pemeliharaan-table tbody').append(`
+                            <tr>
+                                <td>
+                                    <select class="form-control jenis_pemeliharaan" name="jenis_pemeliharaan[]">
+                                        <option value="">Pilih</option>
+                                        @foreach ($komponent_pemerikasaan_kendaraan_from_pemeriksaan as $value)
+                                            <option value="{{ $value->id }}"
+                                                ${d.komponen_id == {{ $value->id }} ? 'selected' : ''}>
+                                                {{ $value->nama_item_pemeriksaan_detail }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td><input type="text" class="form-control odometer" name="odometer[]" value="${d.odometer ?? ''}"></td>
+                                <td><input type="text" class="form-control penyedia_jasa" name="penyedia_jasa[]" value="${d.penyedia_jasa ?? ''}"></td>
+                                <td><input type="text" class="form-control keterangan" name="keterangan[]" value="${d.catatan ?? ''}"></td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-danger btn-sm remove-row">X</button>
+                                </td>
+                            </tr>
+                        `);
+                    });
+                }
+
+                $("#ajax-modal-ajukan-perbaikan").modal('show');
+            });
+        });
+
+        $("#action-form").on("click", function (e) {
+            e.preventDefault();
+
+            let { isValid, data } = validateForm();
+            let id   = $(this).data("id");
+            if (!isValid) return;
+            let mode = $(this).data("mode");
+            $.ajax({
+                url: "{{ route('hris.ga.pengajuan_perbaikan_kendaraan') }}",
+                type: "POST",
+                data: data, // <-- sudah bentuk array
+                success: function () {
+                    iziToast.success({
+                        message: 'Pengajuan berhasil disimpan.',
+                        position: 'topCenter'
+                    });
+                    $("#datatable-ajax-crud-waiting").DataTable().ajax.reload(null, false);
+                    $('#datatable-ajax-crud-verifikasi').DataTable().ajax.reload(null, false);
+                    $("#ajax-modal-ajukan-perbaikan").modal("hide");
+                }
+            });
+        });
+
+        $('#btn-close_edit_pengajuan_perbaikan').on('click', function () {
+            // reset dropdown pemeriksa
+            $('#PilihKendaraanIDPengajuanPerbaikan').val('').trigger('change');
+
+            // reset dropdown kendaraan
+            $('#diajukanOlehIDPengajuanPerbaikan').val('').trigger('change');
+            $('#action-form').data('mode', 'create').removeData('id').text('Simpan');
+        });
 
 
         function formatTanggal(dateString) {
@@ -792,243 +1028,11 @@ h1 {
             $("#edit-file-upload").val(""); // Hapus file yang dipilih dari input
         });
 
-
-        function open_modal_buat_dokumen() {
-            $("#form_mode").val("create");
-            $("#record_id").val("");
-            $("#ajax-modal-tambah").modal('show');
-            $('#title-modal-list').text('BUAT PERBAIKAN KENDARAAN');
-            $("#ajax-modal-tambah").find("input, textarea, select").val("");
-            $(".pilihan-pemeriksaan[value='baik']").prop("checked", true);
-        }
-
         function undo() {
             window.location.reload();
         }
 
 
-        $(document).ready(function() {
-            $("#selectEmployeeID").val('');
-            $("#txt_name").val('');
-            $("#txt_enroll_id").val('');
-            $("#txt_department").val('');
-            $("#txt_bagian").val('');
-            $("#txt_staff").val('');
-            $("#txt_nik").val('');
-            $("#txt_jumlah").val('');
-            dataTableDepartmentReload();
-            $("#txt_jumlah").on("input", function() {
-                let value = $(this).val().replace(/[^\d]/g, ""); // Hanya angka
-                if (value) {
-                    value = parseInt(value, 10); // Ubah ke angka
-                    $(this).val("Rp " + value.toLocaleString("id-ID")); // Format ke Rupiah
-                } else {
-                    $(this).val(""); // Kosongkan jika tidak ada angka
-                }
-            });
-            $("#jumlah_edit1").on("input", function() {
-                let value = $(this).val().replace(/[^\d]/g, ""); // Hanya angka
-                if (value) {
-                    value = parseInt(value, 10); // Ubah ke angka
-                    $(this).val("Rp " + value.toLocaleString("id-ID")); // Format ke Rupiah
-                } else {
-                    $(this).val(""); // Kosongkan jika tidak ada angka
-                }
-            });
-
-            $("#selectEmployeeID").select2().on("select2:select", function() {
-                cek_filter_modal();
-            });
-
-        })
-
-        function dataTableDepartmentReload() {
-            let activeTab = $(".nav-tabs .list.active").attr("id"); // Dapatkan tab yang aktif saat ini
-            let status = activeTab ? activeTab.replace("-tab", "") : "default";
-            let tableId = "#datatable_" + status;
-
-            // Hapus DataTable lama jika ada
-            if ($.fn.DataTable.isDataTable(tableId)) {
-                $(tableId).DataTable().clear().destroy();
-            }
-
-            // Tambahkan kolom lainnya
-            let columns = [
-                {
-                    data: 'id',
-                    className: "text-center",
-                    width:'15%',
-                    render: (data, type, row, meta) => {
-                        return `
-                            <div>
-                                <a style="text-align:center; color:white;" class="btn btn-primary btn-sm" onclick="showModalDepartment('${row.sub_dept_name}', '${row.sub_dept_id}')">
-                                    <i class="fa fa-search"></i>
-                                </a>
-                                <a class="btn btn-gray btn-sm mt-1" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_voucher_bagian('${row.sub_dept_id}')">
-                                    <i class="fa fa-print" aria-hidden="true"></i>
-                                </a>
-                                <a class="btn btn-success btn-sm mt-1" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_pengajuan_excel_bagian('${row.sub_dept_id}','${row.status}')">
-                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>
-                                </a>
-                            </div>
-                        `;
-                    }
-                },
-                {
-                    data: 'created_at',
-                    className: "text-center",
-                    render: (data, type, row, meta) => {
-                            return `
-                            <div class="">
-                                        `+moment(data.created_at).format('DD MMMM YYYY - HH:mm')+`
-                            </div>
-                            `
-                    }
-                 },
-                { data: 'sub_dept_name' },
-                { data: 'jml_data', className: "text-center", },
-                {
-                    data: 'jumlah',
-                    className: "text-center",
-                    render: function(data, type, row) {
-                        if (!data) return "Rp 0"; // Jika kosong, tampilkan Rp 0
-                        return "Rp " + parseInt(data, 10).toLocaleString("id-ID");
-                    }
-                },
-
-            ];
-            // Inisialisasi DataTable
-            $(tableId).DataTable({
-                processing: true,
-                paging: false,
-                searching: false,
-                ordering: false,
-                destroy: true,
-                ajax: {
-                    url: '{{ route('bazzar.get_bazzar_detail') }}',
-                    dataSrc: "data",
-                    data: {
-                        status: status,
-                    },
-                    onSuccess: function (response) {
-                        console.log(response);
-                    }
-                },
-                columns: columns
-            });
-        }
-
-        function hapus(a) {
-            let id_tmp = a;
-            Swal.fire({
-            icon: 'error',
-            title: 'Hapus data?',
-            showCancelButton: true,
-            showConfirmButton: true,
-            confirmButtonText: 'Hapus',
-            cancelButtonText: 'Batal',
-            confirmButtonColor: '#fa4456',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '{{ route('bazzar.hapus') }}',
-                        type: 'POST',
-                        data: {
-                            id_bazzar: id_tmp
-                        },
-                        success: function (res) {
-                            notif({
-                                msg: "<b>Info:</b> Data berhasil di hapus",
-                                type: "info"
-                            });
-                            dataTableDepartmentReload();
-                            $('.modal').modal('hide');
-
-                        }, error: function (jqXHR) {
-                            let res = jqXHR.responseJSON;
-                            let message = '';
-
-                            for (let key in res.errors) {
-                                message = res.errors[key];
-                            }
-                            dataTableDepartmentReload();
-                            notif({
-                                    msg: "<b>Info:</b> Terjadi kesalahan",
-                                    type: "error"
-                                })
-                        }
-                    })
-                }
-            })
-
-
-        }
-        function edit_data(editData)
-        {
-            editData = JSON.parse(decodeURIComponent(editData));
-            console.log('editData',editData)
-            if (editData) {
-                $("#ajax-modal-edit1").modal('show');
-
-                $('#title-modal-edit1').text('EDIT PENGAJUAN KUPON : '+ editData.employee_name);
-                $('#id_pengajuan').val(editData.id);
-                $('#employee_name_edit1').val(editData.employee_name);
-                $('#department_edit1').val(editData.department_name);
-                $('#bagain_edit1').val(editData.sub_dept_name);
-                $('#status_staff_edit1').val(editData.status_staff);
-                $('#nik_edit1').val(editData.nik);
-                $('#jumlah_edit1').val(editData.jumlah);
-            }
-
-        };
-
-        $('body').on('click', '#btn-update_edit1', function (event) {
-            var jumlah_edit = $('#jumlah_edit1').val();
-            var id_pengajuan = $('#id_pengajuan').val();
-            let jumlah_value = jumlah_edit.trim().replace(/Rp\s?|[^0-9]/g, "");
-            $('#btn-update_edit1').addClass("btn-loading");
-            $('#btn-update_edit1').html('Loading...');
-            $('#btn-update_edit1').attr("disabled", true);
-            console.log('id_pengajuan',id_pengajuan)
-            console.log('jumlah_value',jumlah_value)
-            $.ajax({
-                type:"POST",
-                url: "{{route('bazzar.edit_pengajuan')}}",
-                data: {
-                    id_pengajuan:id_pengajuan,
-                    jumlah_edit:jumlah_value
-                },
-                success: function(res){
-                    notif({
-                        msg: "<b>Success:</b> Data berhasil di simpan.",
-                        type: "success"
-                    });
-
-                    $("#btn-update_edit1").removeClass("btn-loading");
-                    $("#btn-update_edit1").html('Simpan');
-                    $("#btn-update_edit1").attr("disabled", false);
-
-                    $("#ajax-modal-edit1").modal('hide');
-                    dataTableReload();
-                    dataTableDepartmentReload();
-                    setTimeout(function myFunction() {
-                        undo();
-                    }, 2000);
-                },
-                error: function(res){
-                    notif({
-                        msg: "<b>Oops!</b> Simpan data lembur gagal.",
-                        type: "error",
-                        position: "center"
-                    });
-
-                    $("#btn-update_edit1").removeClass("btn-loading");
-                    $("#btn-update_edit1").html('Simpan');
-                    $("#btn-update_edit1").attr("disabled", false);
-
-                }
-            });
-        });
 
     </script>
 @endsection
