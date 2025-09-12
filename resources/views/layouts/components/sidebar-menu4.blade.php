@@ -77,3 +77,29 @@
     @endphp
        </ul>
     </aside>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // lepas semua handler click lama di .slide > a[data-toggle="slide"]
+    if (window.jQuery) {
+        $('.slide > a[data-toggle="slide"]').off('click');
+        $('.sub-slide > a[data-toggle="sub-slide"]').off('click');
+    }
+
+    // bikin handler baru (multi expand allowed)
+    document.querySelectorAll(".slide > a[data-toggle='slide']").forEach(function(el) {
+        el.addEventListener("click", function(e) {
+            e.preventDefault();
+            el.parentElement.classList.toggle("is-expanded");
+        });
+    });
+
+    document.querySelectorAll(".sub-slide > a[data-toggle='sub-slide']").forEach(function(el) {
+        el.addEventListener("click", function(e) {
+            e.preventDefault();
+            el.parentElement.classList.toggle("is-expanded");
+        });
+    });
+});
+</script>
