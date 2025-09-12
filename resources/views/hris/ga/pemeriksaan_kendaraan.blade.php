@@ -977,8 +977,7 @@ h1 {
                         message: 'Pengajuan berhasil disimpan.',
                         position: 'topCenter'
                     });
-                    $("#datatable-ajax-crud-waiting").DataTable().ajax.reload(null, false);
-                    $('#datatable-ajax-crud-verifikasi').DataTable().ajax.reload(null, false);
+                    $('#datatable_ajax_pemeriksaan_kendaraan_list').DataTable().ajax.reload();
                     $("#ajax-modal-ajukan-perbaikan").modal("hide");
                 }
             });
