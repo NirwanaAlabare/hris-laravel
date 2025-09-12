@@ -24,6 +24,11 @@ class GaPengajuanPerbaikanKendaraan extends Model
         return $this->belongsTo(EmployeeAtribut::class, 'enroll_id', 'enroll_id');
     }
 
+    public function pemeliharaan()
+    {
+        return $this->belongsTo(GaPemeriksaanKendaraan::class, 'id_pemerliharaan', 'id');
+    }
+
     public function details()
     {
         return $this->hasMany(GaPengajuanPerbaikanKendaraanDetail::class, 'pengajuan_id');

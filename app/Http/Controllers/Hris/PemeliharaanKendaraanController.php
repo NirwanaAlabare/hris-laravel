@@ -499,7 +499,7 @@ class PemeliharaanKendaraanController extends AdminBaseController
 
     public function print_pengajuan_perbaikan_kendaraan(){
         $id=request()->id;
-        $data = GaPengajuanPerbaikanKendaraan::with('details.detail_input_list','employee')
+        $data = GaPengajuanPerbaikanKendaraan::with('details.detail_input_list','employee','pemeliharaan')
         ->where('id', $id)
         ->firstOrFail();
         $kendaraan = DB::connection('laravel_nds')

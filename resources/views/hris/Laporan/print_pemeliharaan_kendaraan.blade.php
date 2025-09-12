@@ -90,7 +90,7 @@
             <tr>
                 <td style="padding-left: 10px;font-family:sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="16%">ODDOMETER</td>
                 <td style="font-size:8pt;vertical-align:top;text-align:left;" width="2%">:</td>
-                <td style="font-family:sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="22%">{{$data->oddometer}}</td>
+                <td style="font-family:sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="22%">{{$data->pemeliharaan ? $data->pemeliharaan->oddometer : '-'}}</td>
                 <td style="font-family:sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="10%"></td>
                 <td style="font-family:sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="2%"></td>
                 <td style="font-family:sans-serif;font-size:7.5pt;text-align:justify;vertical-align:top;text-align:left;" width="22%"></td>
