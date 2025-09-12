@@ -401,7 +401,7 @@ class PemeliharaanKendaraanController extends AdminBaseController
                     }
 
                     if ($row->pengajuan_id) {
-                        $btn .= '<button class="btn btn-sm btn-success btn-detail-pengajuan" data-id="'.$row->pengajuan_id.'">Diajukan</button>';
+                        $btn .= '<button class="btn btn-sm btn-success btn-detail-pengajuan" data-id="'.$row->pengajuan_id.'">Perbaikan Diajukan</button>';
                     }
 
                     return $btn;
