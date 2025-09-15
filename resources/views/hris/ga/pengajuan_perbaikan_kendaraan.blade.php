@@ -24,6 +24,32 @@
         line-height: 0.3;
     }
 </style>
+<style>
+.image-card {
+    position: relative;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    text-align: center;
+    background: #f9f9f9;
+}
+.image-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+.image-actions {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+.image-actions button {
+    margin-left: 3px;
+}
+
+</style>
+
 
 @stop
 @section('mainarea')
@@ -127,6 +153,7 @@
                                                         <th scope="col">Driver</th>
                                                         <th scope="col">NIP</th>
                                                         <th scope="col">Aksi</th>
+                                                        <th scope="col">Status Realisasi</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -134,24 +161,6 @@
                                             </table>
                                         </div>
                                     </div>
-                                    {{-- <div class="tab_content" id="tab-content-rejected">
-                                        <div class="table-responsive">
-                                            <table id="datatable-ajax-crud-rejected" class="table table-sm table-striped table-hover table-bordered w-100">
-                                                <thead>
-                                                    <tr class="text-center">
-                                                        <th scope="col">Tanggal Pengajuan</th>
-                                                        <th scope="col">Merk Kendaraan</th>
-                                                        <th scope="col">Nomor Polisi</th>
-                                                        <th scope="col">Driver</th>
-                                                        <th scope="col">NIP</th>
-                                                        <th scope="col">Aksi</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div> --}}
                                 </div>
 
                             </div>
@@ -268,6 +277,121 @@
         </div>
     </div>
 
+    <div class="modal fade" id="ajax-modal-realisasi-perbaikan"  role="dialog" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document" style="max-width: 50%;">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary p-2">
+                            <h4 class="modal-title pl-2 font-weight-bold" id="title-modal-realisasi">REALISASI PERBAIKAN</h4>
+                            <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
+                                <i class="fa fa-remove"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                                <form id="form-realisasi" enctype="multipart/form-data">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group border">
+                                                <label class="form-label">TANGGAL PENGAJUAN : </label>
+                                                <div class="input-group">
+                                                    <p class="form-label" id="tanggal_pengajuan_label_realisasi">{{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+                                                    <input type="hidden" id="tanggal_pengajuan_perbaikan_realisasi" name="tanggal_pengajuan_perbaikan_realisasi" value="{{ \Carbon\Carbon::now()->translatedFormat('Y-m-d') }}" class="form-control create-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="form-label">PEMERIKSA : </label>
+                                                <select id="diajukanOlehIDRealisasi" name="diajukanOlehIDRealisasi" style='width: 100%;' data-placeholder="Pilih Pemeriksa" class="form-control create-control select2 select2-show-search EmployeeID">
+                                                    <option value="">
+                                                            Pilih Pemeriksa
+                                                        </option>
+                                                    @foreach ($selectemployee as $r_empl)
+                                                        <option
+                                                            value="{{$r_empl->enroll_id}}"
+                                                            data-department_name="{{$r_empl->department_name}}"
+                                                            data-sub_dept_name="{{$r_empl->sub_dept_name}}"
+                                                            data-department_data_id="{{$r_empl->department_id}}"
+                                                            data-sub_dept_data_id="{{$r_empl->sub_dept_id}}"
+                                                        >
+                                                            {{$r_empl->select_employee}}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <small class="error-message text-danger"></small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="form-label">PILIH KENDARAAN : </label>
+                                                <select class="form-control" id="vehicle_id_realisasi">
+                                                    <option value="">Pilih Kendaraan</option>
+                                                    @foreach ($vehicles as $key=>$value)
+                                                        <option value="{{$value->id}}">{{$value->plat_no}} || {{$value->merk}} {{$value->tipe}}</option>
+                                                    @endforeach
+                                                </select>
+                                                <small class="error-message text-danger"></small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="form-label">DETAIL PEMELIHARAAN :</label>
+                                            <table class="table table-bordered" id="pemeliharaan-table-realisasi">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="30%">Jenis Pemeliharaan</th>
+                                                        <th width="15%">Odometer</th>
+                                                        <th width="25%">Penyedia Jasa</th>
+                                                        <th width="30%">Keterangan</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <select class="form-control jenis_pemeliharaan" name="jenis_pemeliharaan[]">
+                                                                <option value="">Pilih</option>
+                                                                @foreach ($komponent_pemerikasaan_kendaraan as $value)
+                                                                    <option value="{{$value->id}}">
+                                                                        {{$value->nama_item_pemeriksaan_detail}}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </td>
+                                                        <td><input type="text" class="form-control odometer" name="odometer[]"></td>
+                                                        <td><input type="text" class="form-control penyedia_jasa" name="penyedia_jasa[]"></td>
+                                                        <td><input type="text" class="form-control keterangan" name="keterangan[]"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="form-label font-weight-bold">Upload Foto Kendaraan:</label>
+                                                <div class="mb-2">
+                                                    <button type="button" class="btn btn-sm btn-primary" id="addImageBtn">
+                                                        <i class="fa fa-plus"></i> Tambah Gambar
+                                                    </button>
+                                                </div>
+                                                <div class="row" id="preview-container"></div>
+                                            </div>
+                                            <!-- Input file hidden (akan diklik via JS) -->
+                                            <input type="file" id="imageInput" accept="image/*" style="display:none" multiple>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer bg-primary p-1">
+                                <div class="btn-list">
+                                    <button type="button" id="action-form-realisasi" data-mode="realisasi"  class="btn btn-secondary btn-app">Simpan</button>
+                                    <button type="button" id="btn-close_edit1" class="btn btn-warning btn-app" data-dismiss="modal">Tutup</button>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="modal-approve" role="dialog" data-backdrop="static" aria-hidden="true">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
@@ -288,6 +412,30 @@
             </div>
         </div>
     </div>
+
+
+    <!-- Modal Konfirmasi Hapus -->
+    <div class="modal fade" id="modal-delete" tabindex="-1" role="dialog" aria-labelledby="modalDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title" id="modalDeleteLabel">Konfirmasi Hapus</h5>
+            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body text-center">
+            <p>Apakah Anda yakin ingin menghapus data ini?</p>
+            <input type="hidden" id="delete-id">
+        </div>
+        <div class="modal-footer justify-content-center">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-danger" id="btn-confirm-delete">Hapus</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
 
 
 @endsection
@@ -395,6 +543,169 @@
     </script>
 
     <script>
+
+        $(document).ready(function() {
+    let files = []; // simpan file di memory
+
+    // Klik tombol tambah gambar
+    $("#addImageBtn").on("click", function() {
+        $("#imageInput").click();
+    });
+
+    // Saat pilih gambar
+    $("#imageInput").on("change", function(e) {
+        let newFiles = Array.from(e.target.files);
+
+        newFiles.forEach(file => {
+            let reader = new FileReader();
+            reader.onload = function(ev) {
+                let index = files.push(file) - 1; // simpan ke array
+                $("#preview-container").append(`
+                    <div class="col-md-3" id="image-card-${index}">
+                        <div class="image-card">
+                            <img src="${ev.target.result}" alt="preview">
+                            <div class="image-actions">
+                                <button type="button" class="btn btn-sm btn-danger remove-image" data-index="${index}">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-warning replace-image" data-index="${index}">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // reset input biar bisa pilih file sama lagi
+        $(this).val("");
+    });
+
+    // Hapus gambar
+    $(document).on("click", ".remove-image", function() {
+        let index = $(this).data("index");
+        files[index] = null; // tandai null
+        $(`#image-card-${index}`).remove();
+    });
+
+    // Ganti gambar
+    $(document).on("click", ".replace-image", function() {
+        let index = $(this).data("index");
+        let input = $("<input type='file' accept='image/*' style='display:none'>");
+        input.on("change", function(e) {
+            let file = e.target.files[0];
+            if (!file) return;
+
+            let reader = new FileReader();
+            reader.onload = function(ev) {
+                files[index] = file; // update file
+                $(`#image-card-${index} img`).attr("src", ev.target.result);
+            };
+            reader.readAsDataURL(file);
+        });
+        input.click();
+    });
+
+    // Saat submit form
+    $("#action-form-realisasi").on("click", function(e) {
+        let id = $(this).data('id');
+        e.preventDefault();
+        let formEl = document.getElementById("form-realisasi");
+        let formData = new FormData(formEl);
+
+        // file baru
+        files.forEach((file, i) => {
+            if (file !== null) {
+                formData.append("images[]", file);
+            }
+        });
+
+        // id gambar yang dihapus
+        deletedImages.forEach(imgId => {
+            formData.append("deletedImages[]", imgId);
+        });
+
+        $.ajax({
+            url: "{{ route('hris.ga.realisasi_pengajuan_perbaikan_kendaraan', ':id') }}".replace(':id', id),
+            method: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(res) {
+            iziToast.success({
+                message: 'Realisasi berhasil disimpan!',
+                position: 'topCenter'
+            });
+
+            // tutup modal
+            $('#ajax-modal-realisasi-perbaikan').modal('hide');
+
+            // reset variabel
+            deletedImages = [];
+            files = [];
+
+            // reset form
+            formEl.reset();
+
+            // kosongkan preview gambar lama & baru
+            $("#image-preview-container").empty();
+            $('#datatable-ajax-crud-waiting').DataTable().ajax.reload(null, false);
+            $('#datatable-ajax-crud-verifikasi').DataTable().ajax.reload(null, false);
+            },
+            error: function(xhr) {
+                iziToast.error({
+                    message: 'Gagal menyimpan realisasi!',
+                    position: 'topCenter'
+                });
+                console.error(xhr.responseJSON);
+            }
+        });
+    });
+
+});
+
+
+
+        // ketika tombol delete diklik
+        $(document).on("click", ".btn-delete", function () {
+            let id = $(this).data("id");
+            $("#delete-id").val(id);
+            $("#modal-delete").modal("show");
+        });
+
+        // ketika tombol hapus di modal ditekan
+        $("#btn-confirm-delete").on("click", function () {
+            let id = $("#delete-id").val();
+
+            $.ajax({
+                url: "{{ route('hris.ga.delete_pengajuan_perbaikan_kendaraan', ':id') }}".replace(':id', id),
+                type: "DELETE",
+                data: {
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function (res) {
+                    $("#modal-delete").modal("hide");
+                    $('#datatable-ajax-crud-waiting').DataTable().ajax.reload(null, false);
+
+                    iziToast.success({
+                        message: "Data berhasil dihapus!",
+                        position: "topCenter"
+                    });
+                },
+                error: function () {
+                    iziToast.error({
+                        message: "Gagal menghapus data!",
+                        position: "topCenter"
+                    });
+                }
+            });
+        });
+
+
+
+
         $("#diajukanOlehID").select2().on("select2:select", function() {
             var selectedOption = $('#diajukanOlehID').find(':selected');
             var department = selectedOption.data('department_name');
@@ -547,8 +858,91 @@
             });
         });
 
+        let deletedImages = [];
 
-        // klik tombol edit
+        $(document).on('click', '.btn-delete-image', function() {
+            let id = $(this).data('id');
+            deletedImages.push(id); // simpan id yang dihapus
+            $(this).closest('.image-item').remove(); // hapus dari tampilan
+        });
+
+
+        // klik tombol realisasi
+        $(document).on('click', '.btn-realisasi', function () {
+            let id = $(this).data('id');
+
+            $.ajax({
+                url: "{{ route('hris.ga.edit_pengajuan_perbaikan_kendaraan', ':id') }}".replace(':id', id),
+                type: 'GET',
+                success: function (res) {
+                    // ubah judul modal
+                    $('#title-modal-realisasi').text('REALISASI PERBAIKAN');
+
+                    // isi field utama
+                     $('#tanggal_pengajuan_label_realisasi').text(res.tanggal_pengajuan_format);
+                    $('#tanggal_pengajuan_perbaikan_realisasi').val(res.tanggal_pengajuan);
+                    $('#diajukanOlehIDRealisasi').val(res.enroll_id).trigger('change').prop('disabled', true);
+                    $('#vehicle_id_realisasi').val(res.kendaraan_id).trigger('change').prop('disabled', true);
+
+                    // kosongkan table body
+                    $('#pemeliharaan-table-realisasi tbody').empty();
+                    // render detail
+                    if (res.details && res.details.length > 0) {
+                        res.details.forEach(d => {
+                            $('#pemeliharaan-table-realisasi tbody').append(`
+                                <tr>
+                                    <td>
+                                        <select disabled class="form-control jenis_pemeliharaan" name="jenis_pemeliharaan[]">
+                                            <option value="">Pilih</option>
+                                            @foreach ($komponent_pemerikasaan_kendaraan as $value)
+                                                <option value="{{ $value->id }}"
+                                                    ${d.komponen_pemeriksaan_kendaraan_input_id == {{ $value->id }} ? 'selected' : ''}>
+                                                    {{ $value->nama_item_pemeriksaan_detail }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td><input type="text" disabled class="form-control odometer" name="odometer[]" value="${d.odometer ?? ''}"></td>
+                                    <td><input type="text" disabled class="form-control penyedia_jasa" name="penyedia_jasa[]" value="${d.penyedia_jasa ?? ''}"></td>
+                                    <td><input type="text" disabled class="form-control keterangan" name="keterangan[]" value="${d.keterangan ?? ''}"></td>
+                                </tr>
+                            `);
+                        });
+                    }
+
+                    // kosongkan preview container
+                    $('#preview-container').empty();
+
+                    // render images dari DB
+                    if (res.images && res.images.length > 0) {
+                        res.images.forEach((    img, index) => {
+                            let url = "{{ asset('storage') }}/" + img.path;
+                            $('#preview-container').append(`
+                                <div class="col-md-3 mb-2 image-item" id="image-card-${index}" data-id="${img.id}">
+                                    <div class="image-card">
+                                            <img src="${url}" class="img-fluid mb-2 rounded shadow">
+                                        <div class="image-actions card-body text-center p-1">
+                                            <button type="button" class="btn btn-sm btn-danger btn-delete-image" data-id="${img.id}">
+                                                <i class="fa fa-trash"></i> Hapus
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `);
+                        });
+                    }
+                    // ubah tombol simpan → update
+                    $('#action-form-realisasi')
+                        .data('mode', 'realisasi')
+                        .data('id', id)
+                        .text('Simpan & Realisasi');
+
+                    // tampilkan modal
+                    $('#ajax-modal-realisasi-perbaikan').modal('show');
+                }
+            });
+        });
+
         // klik tombol edit
         $(document).on('click', '.btn-edit', function () {
             let id = $(this).data('id');
@@ -712,162 +1106,162 @@
         });
 
 
-            $('#daterange-btn1').daterangepicker({
-                ranges: {
-                    'Hari ini': [moment(), moment()],
-                    'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    '7 Hari Kemarin': [moment().subtract(6, 'days'), moment()],
-                    '30 Hari Kemarin': [moment().subtract(29, 'days'), moment()],
-                    'Bulan Sekarang': [moment().startOf('month'), moment().endOf('month')],
-                    'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                },
-                startDate: moment().subtract(29, 'days'),
-                endDate: moment()
-            }, function(start, end) {
-                $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>');
-                var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
-                $('#daterange1').val(daterange1);
-                tableWaiting.ajax.reload(); // reload data table with new date range
-                tableVerifikasi.ajax.reload();
-            });
+        $('#daterange-btn1').daterangepicker({
+            ranges: {
+                'Hari ini': [moment(), moment()],
+                'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                '7 Hari Kemarin': [moment().subtract(6, 'days'), moment()],
+                '30 Hari Kemarin': [moment().subtract(29, 'days'), moment()],
+                'Bulan Sekarang': [moment().startOf('month'), moment().endOf('month')],
+                'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            startDate: moment().subtract(29, 'days'),
+            endDate: moment()
+        }, function(start, end) {
+            $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>');
+            var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
+            $('#daterange1').val(daterange1);
+            tableWaiting.ajax.reload(); // reload data table with new date range
+            tableVerifikasi.ajax.reload();
+        });
 
-            $('#clear-daterange').on('click', function () {
-                $('#daterange-btn1').val(''); // kosongkan input
-                $('#daterange1').val('');     // kosongkan hidden input
+        $('#clear-daterange').on('click', function () {
+            $('#daterange-btn1').val(''); // kosongkan input
+            $('#daterange1').val('');     // kosongkan hidden input
+            tableWaiting.ajax.reload();
+            tableVerifikasi.ajax.reload();
+        });
+
+        var tableWaiting = $('#datatable-ajax-crud-waiting').DataTable({
+            ajax: {
+                url: '{{ route('hris.ga.ajax_get_pengajuan_perbaikan_kendaraan_list') }}',
+                type: "POST",
+                data: function (d) {
+                    d.status_pengajuan = 'pending';
+                    d.tanggal_range = $('#daterange1').val(); // kirim range terpilih
+                }
+            },
+            processing: true,
+            serverSide: true,
+            columns: [
+                { data: 'tanggal_pengajuan', name: 'tanggal_pengajuan', className: 'text-center' },
+                { data: 'merk_kendaraan', name: 'merk_kendaraan' },
+                { data: 'nomor_polisi', name: 'nomor_polisi', className: 'text-center' },
+                { data: 'driver', name: 'driver' },
+                { data: 'nip', name: 'nip', className: 'text-center' },
+                {
+                    data: 'id',
+                    name: 'aksi',
+                    className: 'text-center',
+                    render: function (data, type, row) {
+                        return `
+                            <button type="button" class="btn btn-sm btn-primary btn-edit" data-id="${row.id}">Edit</button>
+                            <button type="button" class="btn btn-sm btn-success btn-approve" data-id="${row.id}">Approve</button>
+                            <button type="button" class="btn btn-sm btn-warning btn-print-pdf" data-id="${row.id}"><i class="fa fa-file-pdf-o"></i></button>
+                            <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="${row.id}"><i class="fa fa-trash"></i></button>
+                        `;
+                    }
+                }
+            ]
+        });
+
+        // Table untuk Verifikasi (is_verifikasi == 1)
+        var tableVerifikasi = $('#datatable-ajax-crud-verifikasi').DataTable({
+            ajax: {
+                url: '{{ route('hris.ga.ajax_get_pengajuan_perbaikan_kendaraan_list') }}',
+                type: "POST",
+                data: function (d) {
+                    d.status_pengajuan = 'approved';
+                    d.tanggal_range = $('#daterange1').val(); // kirim range terpilih
+                }
+            },
+            processing: true,
+            serverSide: true,
+            columns: [
+                { data: 'tanggal_pengajuan', name: 'tanggal_pengajuan', className: 'text-center' },
+                { data: 'merk_kendaraan', name: 'merk_kendaraan' },
+                { data: 'nomor_polisi', name: 'nomor_polisi', className: 'text-center' },
+                { data: 'driver', name: 'driver' },
+                { data: 'nip', name: 'nip', className: 'text-center' },
+                {
+                    data: 'id',
+                    name: 'aksi',
+                    className: 'text-center',
+                    render: function (data, type, row) {
+                        return `
+                            <button type="button" class="btn btn-sm btn-warning btn-realisasi" data-id="${row.id}">Realisasi</button>
+                            <button type="button" class="btn btn-sm btn-danger btn-print-pdf" data-id="${row.id}"><i class="fa fa-file-pdf-o"></i></button>
+                        `;
+                    }
+                },
+                {
+                    data: 'total_images',
+                    name: 'realisasi',
+                    className: 'text-center',
+                    render: function (data, type, row) {
+                         return `${data} foto uploaded`;
+                    }
+                }
+            ]
+        });
+
+        // Table untuk Verifikasi (is_reject == 1)
+        var tableDitolak = $('#datatable-ajax-crud-ditolak').DataTable({
+            ajax: {
+                url: '{{ route('hris.ga.ajax_get_pengajuan_perbaikan_kendaraan_list') }}',
+                type: "POST",
+                data: function (d) {
+                    d.status_pengajuan = 'rejected';
+                    d.tanggal_range = $('#daterange1').val(); // kirim range terpilih
+                }
+            },
+            processing: true,
+            serverSide: true,
+            columns: [
+                { data: 'tanggal_pengajuan', name: 'tanggal_pengajuan', className: 'text-center' },
+                { data: 'merk_kendaraan', name: 'merk_kendaraan' },
+                { data: 'nomor_polisi', name: 'nomor_polisi', className: 'text-center' },
+                { data: 'driver', name: 'driver' },
+                { data: 'nip', name: 'nip', className: 'text-center' },
+                {
+                    data: 'id',
+                    name: 'aksi',
+                    className: 'text-center',
+                    render: function (data, type, row) {
+                        return `
+                            <button type="button" class="btn btn-sm btn-primary btn-edit" data-id="${row.id}">Edit</button>
+                        `;
+                    }
+                }
+            ]
+        });
+
+
+        // Pastikan tab yang aktif saat ini memiliki DataTable yang diinisialisasi
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+            var target = $(e.target).attr("href"); // Get the target tab
+            if (target === "#tab-content-verifikasi") {
+                tableVerifikasi.ajax.reload();
+            } else if (target === "#tab-content-waiting") {
                 tableWaiting.ajax.reload();
-                tableVerifikasi.ajax.reload();
-            });
+            } else if (target === "#tab-content-reject") {
+                tableReject.ajax.reload();
+            }
+        });
 
-            var tableWaiting = $('#datatable-ajax-crud-waiting').DataTable({
-                ajax: {
-                    url: '{{ route('hris.ga.ajax_get_pengajuan_perbaikan_kendaraan_list') }}',
-                    type: "POST",
-                    data: function (d) {
-                        d.status_pengajuan = 'pending';
-                        d.tanggal_range = $('#daterange1').val(); // kirim range terpilih
-                    }
-                },
-                processing: true,
-                serverSide: true,
-                columns: [
-                    { data: 'tanggal_pengajuan', name: 'tanggal_pengajuan', className: 'text-center' },
-                    { data: 'merk_kendaraan', name: 'merk_kendaraan' },
-                    { data: 'nomor_polisi', name: 'nomor_polisi', className: 'text-center' },
-                    { data: 'driver', name: 'driver' },
-                    { data: 'nip', name: 'nip', className: 'text-center' },
-                    {
-                        data: 'id',
-                        name: 'aksi',
-                        className: 'text-center',
-                        render: function (data, type, row) {
-                            return `
-                                <button type="button" class="btn btn-sm btn-primary btn-edit" data-id="${row.id}">Edit</button>
-                                <button type="button" class="btn btn-sm btn-success btn-approve" data-id="${row.id}">Approve</button>
-                                <button type="button" class="btn btn-sm btn-danger btn-print-pdf" data-id="${row.id}"><i class="fa fa-file-pdf-o"></i></button>
-                            `;
-                        }
-                    }
-                ]
-            });
+        $(document).on('click', '.btn-lihat', function () {
+            let uuid = $(this).data('id');
+            // Lakukan sesuatu, misal tampilkan modal detail
+        });
 
-            // Table untuk Verifikasi (is_verifikasi == 1)
-            var tableVerifikasi = $('#datatable-ajax-crud-verifikasi').DataTable({
-                ajax: {
-                    url: '{{ route('hris.ga.ajax_get_pengajuan_perbaikan_kendaraan_list') }}',
-                    type: "POST",
-                    data: function (d) {
-                        d.status_pengajuan = 'approved';
-                        d.tanggal_range = $('#daterange1').val(); // kirim range terpilih
-                    }
-                },
-                processing: true,
-                serverSide: true,
-                columns: [
-                    { data: 'tanggal_pengajuan', name: 'tanggal_pengajuan', className: 'text-center' },
-                    { data: 'merk_kendaraan', name: 'merk_kendaraan' },
-                    { data: 'nomor_polisi', name: 'nomor_polisi', className: 'text-center' },
-                    { data: 'driver', name: 'driver' },
-                    { data: 'nip', name: 'nip', className: 'text-center' },
-                    {
-                        data: 'id',
-                        name: 'aksi',
-                        className: 'text-center',
-                        render: function (data, type, row) {
-                            return `
-                                <button type="button" class="btn btn-sm btn-primary btn-edit" data-id="${row.id}">Edit</button>
-                                <button type="button" class="btn btn-sm btn-danger btn-print-pdf" data-id="${row.id}"><i class="fa fa-file-pdf-o"></i></button>
-                            `;
-                        }
-                    }
-                ]
-            });
-
-            // Table untuk Verifikasi (is_reject == 1)
-            var tableDitolak = $('#datatable-ajax-crud-ditolak').DataTable({
-                ajax: {
-                    url: '{{ route('hris.ga.ajax_get_pengajuan_perbaikan_kendaraan_list') }}',
-                    type: "POST",
-                    data: function (d) {
-                        d.status_pengajuan = 'rejected';
-                        d.tanggal_range = $('#daterange1').val(); // kirim range terpilih
-                    }
-                },
-                processing: true,
-                serverSide: true,
-                columns: [
-                    { data: 'tanggal_pengajuan', name: 'tanggal_pengajuan', className: 'text-center' },
-                    { data: 'merk_kendaraan', name: 'merk_kendaraan' },
-                    { data: 'nomor_polisi', name: 'nomor_polisi', className: 'text-center' },
-                    { data: 'driver', name: 'driver' },
-                    { data: 'nip', name: 'nip', className: 'text-center' },
-                    {
-                        data: 'id',
-                        name: 'aksi',
-                        className: 'text-center',
-                        render: function (data, type, row) {
-                            return `
-                                <button type="button" class="btn btn-sm btn-primary btn-edit" data-id="${row.id}">Edit</button>
-                            `;
-                        }
-                    }
-                ]
-            });
-
-
-            // Pastikan tab yang aktif saat ini memiliki DataTable yang diinisialisasi
-            $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
-                var target = $(e.target).attr("href"); // Get the target tab
-                if (target === "#tab-content-verifikasi") {
-                    tableVerifikasi.ajax.reload();
-                } else if (target === "#tab-content-waiting") {
-                    tableWaiting.ajax.reload();
-                } else if (target === "#tab-content-reject") {
-                    tableReject.ajax.reload();
-                }
-            });
-
-            $(document).on('click', '.btn-lihat', function () {
-                let uuid = $(this).data('id');
-                // Lakukan sesuatu, misal tampilkan modal detail
-            });
-
-            $(document).on('click', '.btn-print-pdf', function () {
-                // Redirect atau tampilkan form edit
-                  let id = $(this).data('id');
-                  let url = '{{ route('hris.ga.print_pengajuan_perbaikan_kendaraan', ':id') }}';
-                  url = url.replace(':id', id);
-                  window.open(url, '_blank');
-                //   window.location.href = url;
-            });
-
-            $(document).on('click', '.btn-delete', function () {
-                let uuid = $(this).data('id');
-                if (confirm("Yakin ingin menghapus?")) {
-                    // Kirim AJAX delete ke server
-                }
-            });
-
-
+        $(document).on('click', '.btn-print-pdf', function () {
+            // Redirect atau tampilkan form edit
+                let id = $(this).data('id');
+                let url = '{{ route('hris.ga.print_pengajuan_perbaikan_kendaraan', ':id') }}';
+                url = url.replace(':id', id);
+                window.open(url, '_blank');
+            //   window.location.href = url;
+        });
         });
     </script>
     <script>

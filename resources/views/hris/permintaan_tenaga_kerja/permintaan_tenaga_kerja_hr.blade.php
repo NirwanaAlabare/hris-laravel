@@ -1274,7 +1274,7 @@ h1 {
                 </div>
                 <div class="col-md-3">
                     <label>Department:</label>
-                    <select disabled class="form-control select-department-update" id="selectDepartmentModalApprove_${index}" name="selectDepartmentModalApprove[${index}]">
+                    <select disabled class="form-control select-department-update" id="selectDepartmentModalApprove${index}" name="selectDepartmentModalApprove[${index}]">
                         <option value="">Pilih</option>
                         @foreach ($department as $dept)
                             <option value="{{ $dept->department_id }}" ${data.department_kode == '{{ $dept->department_id }}' ? 'selected' : ''}>{{ $dept->department_name }}</option>
@@ -2362,22 +2362,22 @@ h1 {
                 var enroll_id = $('#enroll_id_approve').val();
                 var selectDepartment = $('#selectDepartmentModalApprove').val();
                 var selectBagian = $('#selectBagianModalApprove').val();
-                var jumlah_kebutuhan = $('#jumlah_kebutuhan_approve').val();
+                var jumlah_kebutuhan = $('#jumlah_kebutuhan').val();
                 var rencana_jabatan = $('input[name="rencana_jabatan"]:checked').val();
                 var pend_minimal = $('input[name="pend_minimal"]:checked').val();
-                var rencana_jurusan = $('#rencana_jurusan_approve').val();
+                var rencana_jurusan = $('#rencana_jurusan').val();
                 var pengalaman_kerja = $('input[name="pengalaman_kerja"]:checked').val();
-                var waktu_pengalaman = $('#waktu_pengalaman_approve').val();
-                var besaran_gaji = $('#besaran_gaji_approve').val();
-                var fasilitas = $('#fasilitas_approve').val();
-                var jangka_waktu_kontrak = $('#jangka_waktu_kontrak_approve').val();
-                var keterangan_tambahan = $('#keterangan_tambahan_approve').val();
+                var waktu_pengalaman = $('#waktu_pengalaman').val();
+                var besaran_gaji = $('#besaran_gaji').val();
+                var fasilitas = $('#fasilitas').val();
+                var jangka_waktu_kontrak = $('#jangka_waktu_kontrak').val();
+                var keterangan_tambahan = $('#keterangan_tambahan').val();
 
-                var tanggal_kebutuhan = $('#tanggal_kebutuhan_approve').val();
+                var tanggal_kebutuhan = $('#tanggal_kebutuhan').val();
                 tanggal_kebutuhan=tanggal_kebutuhan.substr(6, 4)+'-'+tanggal_kebutuhan.substr(3,2)+'-'+tanggal_kebutuhan.substr(0,2);
-
+                console.log('selectDepartment:', selectDepartment);
                 var uraianTugas = [];
-                $('input[name="uraian_tugas_approve[]"]').each(function () {
+                $('input[name="uraian_tugas[]"]').each(function () {
                     uraianTugas.push($(this).val());
                 });
                 var besaran_gaji_bersih = besaran_gaji.replace(/[^\d]/g, '');

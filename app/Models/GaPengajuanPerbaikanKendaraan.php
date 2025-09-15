@@ -33,4 +33,10 @@ class GaPengajuanPerbaikanKendaraan extends Model
     {
         return $this->hasMany(GaPengajuanPerbaikanKendaraanDetail::class, 'pengajuan_id');
     }
+
+    public function images()
+    {
+        return $this->hasMany(GaPengajuanPerbaikanImage::class, 'pengajuan_id');
+    }
+
 }

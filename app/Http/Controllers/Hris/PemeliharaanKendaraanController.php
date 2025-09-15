@@ -10,6 +10,7 @@ use App\Models\EmployeeAtribut;
 use App\Models\KategoriItem;
 use App\Models\VehicleMaintenance;
 use App\Models\GaPengajuanPerbaikanKendaraan;
+use App\Models\GaPengajuanPerbaikanImage;
 use App\Models\GaPengajuanPerbaikanKendaraanDetail;
 use App\Models\VehicleMaintenancePrice;
 use App\Models\GaPemeriksaanKendaraan;
@@ -62,7 +63,7 @@ class PemeliharaanKendaraanController extends AdminBaseController
 
     public function edit_pengajuan_perbaikan_kendaraan($id)
     {
-         $data = GaPengajuanPerbaikanKendaraan::with('details')->findOrFail($id);
+         $data = GaPengajuanPerbaikanKendaraan::with(['details', 'images'])->findOrFail($id);
         return response()->json($data);
     }
 
@@ -128,6 +129,60 @@ class PemeliharaanKendaraanController extends AdminBaseController
             ], 500);
         }
     }
+
+   public function realisasi_pengajuan_perbaikan_kendaraan(Request $request, $id)
+{
+    $request->validate([
+        'deletedImages' => 'array',
+        'deletedImages.*' => 'integer'
+    ]);
+
+    try {
+        $pengajuan = GaPengajuanPerbaikanKendaraan::findOrFail($id);
+
+        // pakai transaction biar aman
+        \DB::transaction(function () use ($request, $pengajuan) {
+            // hapus gambar lama yang dipilih
+            if ($request->filled('deletedImages')) {
+                $deletedIds = $request->deletedImages;
+                $imagesToDelete = GaPengajuanPerbaikanImage::whereIn('id', $deletedIds)->get();
+
+                foreach ($imagesToDelete as $img) {
+                    if (\Storage::disk('public')->exists($img->path)) {
+                        \Storage::disk('public')->delete($img->path);
+                    }
+                    $img->delete();
+                }
+            }
+
+            // upload gambar baru
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $file) {
+                    $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+                    $path = $file->storeAs('uploads/perbaikan_kendaraan', $filename, 'public');
+
+                    GaPengajuanPerbaikanImage::create([
+                        'pengajuan_id' => $pengajuan->id,
+                        'path' => $path
+                    ]);
+                }
+            }
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Realisasi berhasil diperbarui',
+            'data'    => $pengajuan->load('images')
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Gagal update data',
+            'error'   => $e->getMessage()
+        ], 500);
+    }
+}
+
 
 
 
@@ -211,6 +266,26 @@ class PemeliharaanKendaraanController extends AdminBaseController
         }
     }
 
+    public function destroy($id)
+    {
+        $pengajuan = GaPengajuanPerbaikanKendaraan::findOrFail($id);
+
+        // Storage::disk('public')->delete($data->foto_path);
+
+        GaPengajuanPerbaikanKendaraanDetail::where('pengajuan_id', $pengajuan->id)->delete();
+
+        // Kalau ada gambar terkait bisa ikut dihapus juga
+        if ($pengajuan->images && is_array($pengajuan->images)) {
+            foreach ($pengajuan->images as $img) {
+                Storage::disk('public')->delete($img['path']);
+            }
+        }
+        // Hapus induk
+        $pengajuan->delete();
+
+        return response()->json(['success' => true]);
+    }
+
 
     public function ajax_get_pengajuan_perbaikan_kendaraan_list(Request $request)
     {
@@ -221,11 +296,13 @@ class PemeliharaanKendaraanController extends AdminBaseController
                 ->select(
                     'pk.id',
                     'pk.tanggal_pengajuan',
-                    'k.merk',
+                    'k.tipe as merk',
                     'k.plat_no',
                     'e.employee_name',
                     'e.nik as nip',
-                    'pk.status_pengajuan'
+                    'pk.status_pengajuan',
+                    DB::raw('(SELECT COUNT(*) FROM ga_pengajuan_perbaikan_images
+                          WHERE pengajuan_id = pk.id) as total_images')
                 )
                 ->orderBy('pk.created_at', 'desc');
 
@@ -301,7 +378,6 @@ class PemeliharaanKendaraanController extends AdminBaseController
                         foreach ($request->file("foto.$komponenId") as $file) {
                             // $path = $file->store('pemeriksaan_kendaraan', 'public');
                             $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-                            // $path = $file->storeAs('pemeriksaan_kendaraan', $filename);
                             $path = $file->storeAs('pemeriksaan_kendaraan', $filename, 'public');
 
                             $fotoPaths[] = [
