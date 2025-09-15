@@ -366,7 +366,7 @@
                                         </div>
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label class="form-label font-weight-bold">Upload Foto Kendaraan:</label>
+                                                <label class="form-label font-weight-bold">Realisasi (Bukti Foto):</label>
                                                 <div class="mb-2">
                                                     <button type="button" class="btn btn-sm btn-primary" id="addImageBtn">
                                                         <i class="fa fa-plus"></i> Tambah Gambar
