@@ -1830,14 +1830,64 @@ h1 {
                     var fasilitas = parent.find('[name="fasilitas[]"]').val();
                     var jangka_waktu_kontrak = parent.find('[name="jangka_waktu_kontrak[]"]').val();
                     var keterangan_tambahan = parent.find('[name="keterangan_tambahan[]"]').val();
-
-                    if (!selectDepartment || !selectBagian || !tanggal_kebutuhan_fix || !jumlah_kebutuhan ||
-                        !rencana_jabatan || !pend_minimal || !rencana_jurusan || !pengalaman_kerja) {
-
-                        swal("", "Harap lengkapi semua field wajib di bagian kualifikasi!", "warning");
+                    console.log('Validasi Kualifikasi:', {
+                        selectDepartment,
+                        selectBagian,
+                        tanggal_kebutuhan_fix,
+                        jumlah_kebutuhan,
+                        rencana_jabatan,
+                        pend_minimal,
+                        rencana_jurusan,
+                        pengalaman_kerja
+                    });
+                   if (!selectDepartment) {
                         isValid = false;
-                        return false; // break each
+                        swal("", "Harap pilih Rencana Departemen!", "warning");
+                        return false;
                     }
+
+                    if (!selectBagian) {
+                        isValid = false;
+                        swal("", "Harap pilih Rencana Bagian!", "warning");
+                        return false;
+                    }
+
+                    if (!tanggal_kebutuhan_fix || tanggal_kebutuhan_fix === '--') {
+                        isValid = false;
+                        swal("", "Harap isi Rencana Tanggal Kebutuhan!", "warning");
+                        return false;
+                    }
+
+                    if (!jumlah_kebutuhan || jumlah_kebutuhan <= 0) {
+                        isValid = false;
+                        swal("", "Harap isi Jumlah Kebutuhan!", "warning");
+                        return false;
+                    }
+
+                    if (!rencana_jabatan) {
+                        isValid = false;
+                        swal("", "Harap isi Rencana Jabatan!", "warning");
+                        return false;
+                    }
+
+                    if (!pend_minimal) {
+                        isValid = false;
+                        swal("", "Harap pilih Pendidikan Minimal!", "warning");
+                        return false;
+                    }
+
+                    if (!rencana_jurusan) {
+                        isValid = false;
+                        swal("", "Harap isi Rencana Jurusan!", "warning");
+                        return false;
+                    }
+
+                    if (!pengalaman_kerja) {
+                        isValid = false;
+                        swal("", "Harap isi Pengalaman Kerja!", "warning");
+                        return false;
+                    }
+
 
                     var uraianTugas = [];
                     parent.find('[name="uraian_tugas[' + index + '][]"]').each(function () {
