@@ -724,7 +724,7 @@
             formEl.reset();
 
             // kosongkan preview gambar lama & baru
-            $("#image-preview-container").empty();
+            $("#preview-container").empty();
             $('#datatable-ajax-crud-waiting').DataTable().ajax.reload(null, false);
             $('#datatable-ajax-crud-verifikasi').DataTable().ajax.reload(null, false);
             },
@@ -1003,7 +1003,9 @@
                             $('#preview-container').append(`
                                 <div class="col-md-3 mb-2 image-item" id="image-card-${index}" data-id="${img.id}">
                                     <div class="image-card">
+                                         <a href="${url}" target="_blank">
                                             <img src="${url}" class="img-fluid mb-2 rounded shadow">
+                                        </a>
                                         <div class="image-actions card-body text-center p-1">
                                             <button type="button" class="btn btn-sm btn-danger btn-delete-image" data-id="${img.id}">
                                                 <i class="fa fa-trash"></i> Hapus
