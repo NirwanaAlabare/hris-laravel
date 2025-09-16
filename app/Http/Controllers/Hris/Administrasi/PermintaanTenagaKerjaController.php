@@ -541,7 +541,7 @@ class PermintaanTenagaKerjaController extends AdminBaseController
         $status = $request->input('status_pengajuan');
         $search = $request->input('search_variable');
         // Query pertama
-        $query  = DB::table('pengajuan_permintaan_tk')
+        $baseQuery   = DB::table('pengajuan_permintaan_tk')
             ->select(
                 'employee_atribut.employee_name',
                 'employee_atribut.nik',
@@ -576,76 +576,47 @@ class PermintaanTenagaKerjaController extends AdminBaseController
             'bobby',
             'pujiprana@nag.nirwanaindonesia.com'
         ])) {
-            $query->where('pengajuan_permintaan_tk.created_by', $email);
+            $baseQuery ->where('pengajuan_permintaan_tk.created_by', $email);
         }
 
          // 🔎 filter global DataTables
         if (!empty($search)) {
-            $query->where(function($q) use ($search) {
+            $baseQuery ->where(function($q) use ($search) {
                 $q->where('pengajuan_permintaan_tk.no_permintaan', 'like', "%{$search}%")
                 ->orWhere('employee_atribut.employee_name', 'like', "%{$search}%")
                 ->orWhere('department_all.department_name', 'like', "%{$search}%")
                 ->orWhere('department_all2.sub_dept_name', 'like', "%{$search}%");
             });
         }
+            // hitung total tanpa filter
+      // hitung total tanpa filter
+        $recordsTotal = DB::table('pengajuan_permintaan_tk')
+            ->where('status_pengajuan', $status)
+            ->count();
 
-         // hitung total sebelum limit
-        $recordsFiltered = $query->count();
+        // hitung total setelah filter
+        $recordsFiltered = DB::table(DB::raw("({$baseQuery->toSql()}) as sub"))
+            ->mergeBindings($baseQuery)
+            ->count();
 
-        // paginasi sesuai request DataTables
+        // ambil data dengan limit
         $start  = $request->input('start', 0);
         $length = $request->input('length', 10);
-        $query->skip($start)->take($length);
-
-        $columns = [
-            0 => 'pengajuan_permintaan_tk.no_permintaan',
-            1 => 'pengajuan_permintaan_tk.tanggal_pengajuan',
-            2 => 'employee_atribut.employee_name',
-            3 => 'department_all.department_name',
-            4 => 'department_all2.sub_dept_name',
-            5 => DB::raw('(SELECT SUM(jumlah_kebutuhan) FROM sub_pengajuan_permintaan_tk
-                        WHERE sub_pengajuan_permintaan_tk.no_permintaan_id = pengajuan_permintaan_tk.no_permintaan)'),
-            6 => DB::raw('(SELECT MIN(tanggal_kebutuhan) FROM sub_pengajuan_permintaan_tk
-                        WHERE sub_pengajuan_permintaan_tk.no_permintaan_id = pengajuan_permintaan_tk.no_permintaan)'),
-            7 => 'pengajuan_permintaan_tk.created_at',
-        ];
+        $data = (clone $baseQuery)
+            ->orderBy('pengajuan_permintaan_tk.created_at', 'asc')
+            ->skip($start)
+            ->take($length)
+            ->get();
 
 
 
-      if ($request->has('order')) {
-            $orderColIdx = $request->input('order.0.column');
-            $orderDir    = $request->input('order.0.dir');
-            $columns     = $request->input('columns');
-
-            if (isset($columns[$orderColIdx]['name'])) {
-                $colName = $columns[$orderColIdx]['name'];
-
-                if ($colName === 'jumlah_kebutuhan') {
-                    $query->orderByRaw("(SELECT SUM(jumlah_kebutuhan)
-                                        FROM sub_pengajuan_permintaan_tk
-                                        WHERE sub_pengajuan_permintaan_tk.no_permintaan_id = pengajuan_permintaan_tk.no_permintaan) $orderDir");
-                } elseif ($colName === 'tanggal_kebutuhan') {
-                    $query->orderByRaw("(SELECT MIN(tanggal_kebutuhan)
-                                        FROM sub_pengajuan_permintaan_tk
-                                        WHERE sub_pengajuan_permintaan_tk.no_permintaan_id = pengajuan_permintaan_tk.no_permintaan) $orderDir");
-                } else {
-                    $query->orderBy($colName, $orderDir);
-                }
-            }
-        } else {
-            $query->orderBy('pengajuan_permintaan_tk.created_at', 'asc');
-        }
-
-
-
-        $data = $query->get();
         // Format response untuk DataTables
         return response()->json([
-            'draw' => intval($request->input('draw')),
-            'recordsTotal' => $recordsFiltered,
-            'recordsFiltered' => $recordsFiltered,
-            'data' => $data
-        ]);
+        'draw' => intval($request->input('draw')),
+        'recordsTotal' => $recordsTotal,
+        'recordsFiltered' => $recordsFiltered,
+        'data' => $data
+    ]);
     }
 
 
