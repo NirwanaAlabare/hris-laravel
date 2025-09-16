@@ -1518,67 +1518,57 @@ h1 {
                 ajax: {
                     url: '{{ route('permintaan_tenaga_kerja.ajax_data_permintaan_tk') }}',
                     type: "POST",
-                    data: { status_pengajuan: 'waiting_approval' },
-                    onSuccess: function(data) {
-                        console.log("Data loaded successfully", data);
+                    data: function(d) {
+                        d.status_pengajuan = 'waiting_approval';
+                        d.search_variable = d.search.value;
                     },
                 },
                 processing: true,
                 serverSide: true,
+                ordering: false,
                 columns: [
-                    { data: 'no_permintaan' },
-                    { data: 'tanggal_perizinan',
-                      render: function(data, type, row) {
-                            return moment(data).format('ll');  // Formatkan tanggal ke dmy
-                        }
-                    },
-                    { data: 'diajukan_oleh_id',
-                        render: function (data, type, row) {
-                            return `<p>${row.employee_name}</p>`;
-                        }
-                    },
-                    { data: 'department_name' },
-                    { data: 'sub_dept_name' },
-                    { data: 'jumlah_kebutuhan' },
-                    { data: 'tanggal_kebutuhan' ,
-                         render: function(data, type, row) {
-                            return moment(data).format('ll');  // Formatkan tanggal ke dmy
-                        }
-                    },
-                    {
-                        data: null,
-                        orderable: false,
-                        searchable: false,
-                        className: "text-center",
-                        render: function (data, type, row) {
-                                const uuidNo = encodeURIComponent(row.id);
-                                let exportUrl;
-                                let btnClass;
-                                    return `
-                                        <button class="btn btn-sm mr-1 btn-danger" onclick="printPengajuanPDF('${row.id}')" data-id="${row.id}" title="Print">
-                                            <i class="fa fa-file-pdf-o"></i>
-                                        </button>
-                                        <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.id}')" data-id="${row.id}" title="Edit">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-id_pengajuan="${row.id}" title="Hapus">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    `;
-                        }
+                { data: 'no_permintaan', name: 'pengajuan_permintaan_tk.no_permintaan' },
+                { data: 'tanggal_pengajuan', name: 'pengajuan_permintaan_tk.tanggal_pengajuan',
+                render: function(data) { return data ? moment(data).format('ll') : '-'; }
+                },
+                { data: 'employee_name', name: 'employee_atribut.employee_name' },
+                { data: 'department_name', name: 'department_all.department_name' },
+                { data: 'sub_dept_name', name: 'department_all2.sub_dept_name' },
+                { data: 'jumlah_kebutuhan', name: 'jumlah_kebutuhan' },
+                { data: 'tanggal_kebutuhan', name: 'tanggal_kebutuhan',
+                render: function(data) { return data ? moment(data).format('ll') : '-'; }
+                },
+                {
+                    data: null,
+                    orderable: false,
+                    searchable: false,
+                    className: "text-center",
+                    render: function (data, type, row) {
+                        return `
+                            <button class="btn btn-sm mr-1 btn-danger" onclick="printPengajuanPDF('${row.id}')"><i class="fa fa-file-pdf-o"></i></button>
+                            <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.id}')"><i class="fa fa-edit"></i></button>
+                            <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-id_pengajuan="${row.id}"><i class="fa fa-trash"></i></button>
+                        `;
                     }
-                ],
+                }
+            ],
+
             });
+
 
             // Table untuk Verifikasi (is_verifikasi == 1)
             var tableVerifikasi = $('#datatable-ajax-crud-verifikasi').DataTable({
                 ajax: {
                     url: '{{ route('permintaan_tenaga_kerja.ajax_data_permintaan_tk') }}',
                     type: "POST",
-                    data: { status_pengajuan: 'approved' },  // Data untuk tab "Verifikasi"
+                    data: function(d) {
+                        d.status_pengajuan= 'approved';
+                        d.search_variable = d.search.value;
+                     },
                 },
                 processing: true,
                 serverSide: true,
+                ordering: false,
                 columns: [
                     { data: 'no_permintaan' },
                     { data: 'tanggal_perizinan',
@@ -1638,10 +1628,14 @@ h1 {
                 ajax: {
                     url: '{{ route('permintaan_tenaga_kerja.ajax_data_permintaan_tk') }}',
                     type: "POST",
-                    data: { status_pengajuan: 'cancel' },  // Data untuk tab "Verifikasi"
+                    data: function(d) {
+                        d.status_pengajuan= 'cancel';
+                        d.search_variable = d.search.value;
+                     },
                 },
                 processing: true,
                 serverSide: true,
+                ordering: false,
                 columns: [
                     { data: 'no_permintaan' },
                     { data: 'tanggal_perizinan',
@@ -1830,16 +1824,7 @@ h1 {
                     var fasilitas = parent.find('[name="fasilitas[]"]').val();
                     var jangka_waktu_kontrak = parent.find('[name="jangka_waktu_kontrak[]"]').val();
                     var keterangan_tambahan = parent.find('[name="keterangan_tambahan[]"]').val();
-                    console.log('Validasi Kualifikasi:', {
-                        selectDepartment,
-                        selectBagian,
-                        tanggal_kebutuhan_fix,
-                        jumlah_kebutuhan,
-                        rencana_jabatan,
-                        pend_minimal,
-                        rencana_jurusan,
-                        pengalaman_kerja
-                    });
+
                    if (!selectDepartment) {
                         isValid = false;
                         swal("", "Harap pilih Rencana Departemen!", "warning");
@@ -1876,11 +1861,11 @@ h1 {
                         return false;
                     }
 
-                    if (!rencana_jurusan) {
-                        isValid = false;
-                        swal("", "Harap isi Rencana Jurusan!", "warning");
-                        return false;
-                    }
+                    // if (!rencana_jurusan) {
+                    //     isValid = false;
+                    //     swal("", "Harap isi Rencana Jurusan!", "warning");
+                    //     return false;
+                    // }
 
                     if (!pengalaman_kerja) {
                         isValid = false;

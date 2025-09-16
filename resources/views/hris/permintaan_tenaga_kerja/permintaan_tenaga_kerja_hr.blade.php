@@ -1765,13 +1765,17 @@ h1 {
                 ajax: {
                     url: '{{ route('permintaan_tenaga_kerja.ajax_data_permintaan_tk') }}',
                     type: "POST",
-                    data: { status_pengajuan: 'waiting_approval' },
+                    data: function(d) {
+                        d.status_pengajuan = 'waiting_approval';
+                        d.search_variable = d.search.value;
+                    },
                     onSuccess: function(data) {
                         console.log("Data loaded successfully", data);
                     },
                 },
                 processing: true,
                 serverSide: true,
+                ordering: false,
                 columns: [
                     { data: 'no_permintaan' },
                     { data: 'tanggal_pengajuan',
@@ -1825,10 +1829,15 @@ h1 {
                 ajax: {
                     url: '{{ route('permintaan_tenaga_kerja.ajax_data_permintaan_tk') }}',
                     type: "POST",
-                    data: { status_pengajuan: 'approved' },  // Data untuk tab "Verifikasi"
+                    data: function(d) {
+                        d.status_pengajuan = 'approved';
+                        d.search_variable = d.search.value;
+                    },
                 },
                 processing: true,
                 serverSide: true,
+                ordering: false,
+
                 columns: [
                     { data: 'no_permintaan' },
                     { data: 'tanggal_pengajuan',
@@ -1900,10 +1909,14 @@ h1 {
                 ajax: {
                     url: '{{ route('permintaan_tenaga_kerja.ajax_data_permintaan_tk') }}',
                     type: "POST",
-                    data: { status_pengajuan: 'cancel' },  // Data untuk tab "Verifikasi"
+                    data: function(d) {
+                        d.status_pengajuan = 'cancel';
+                        d.search_variable = d.search.value;
+                    }
                 },
                 processing: true,
                 serverSide: true,
+                ordering: false,
                 columns: [
                     { data: 'no_permintaan' },
                     { data: 'tanggal_pengajuan',
