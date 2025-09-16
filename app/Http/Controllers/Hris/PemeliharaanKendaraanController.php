@@ -15,8 +15,10 @@ use App\Models\GaPengajuanPerbaikanKendaraanDetail;
 use App\Models\VehicleMaintenancePrice;
 use App\Models\GaPemeriksaanKendaraan;
 use App\Models\GaPemeriksaanKendaraanDet;
+use App\Exports\PengajuanPerbaikanKendaraanExport;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use DB;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -412,6 +414,43 @@ class PemeliharaanKendaraanController extends AdminBaseController
             ], 500);
         }
 
+    }
+
+    public function export_pengajuan_perbaikan_kendaraan(Request $request)
+    {
+         $data = GaPengajuanPerbaikanKendaraan::with(['details.detail_input_list', 'images'])
+            ->leftJoin('ga_master_kendaraan as k', 'ga_pengajuan_perbaikan_kendaraan.kendaraan_id', '=', 'k.id')
+            ->leftJoin('employee_atribut as e', 'ga_pengajuan_perbaikan_kendaraan.enroll_id', '=', 'e.enroll_id')
+            ->select(
+                'ga_pengajuan_perbaikan_kendaraan.id',
+                'ga_pengajuan_perbaikan_kendaraan.tanggal_pengajuan',
+                'k.tipe as merk',
+                'k.plat_no',
+                'e.employee_name',
+                'e.nik as nip',
+                'ga_pengajuan_perbaikan_kendaraan.status_pengajuan',
+                DB::raw('(SELECT COUNT(*) FROM ga_pengajuan_perbaikan_images
+                        WHERE pengajuan_id = ga_pengajuan_perbaikan_kendaraan.id) as total_images')
+            )
+            ->orderBy('ga_pengajuan_perbaikan_kendaraan.created_at', 'desc');
+
+
+            if ($request->has('status_pengajuan') && $request->status_pengajuan != '') {
+                $data->where('ga_pengajuan_perbaikan_kendaraan.status_pengajuan', $request->status_pengajuan);
+            }
+            // 🔹 Filter tanggal_range (format: "dd-mm-yyyy - dd-mm-yyyy")
+            if ($request->has('tanggal_range') && !empty($request->tanggal_range)) {
+                $dates = explode(" s/d ", $request->tanggal_range);
+                if (count($dates) == 2) {
+                    try {
+                        $data->whereBetween('ga_pengajuan_perbaikan_kendaraan.tanggal_pengajuan', [$dates[0], $dates[1]]);
+                    } catch (\Exception $e) {
+                    }
+                }
+            }
+        $data = $data->get();
+        // dd($data->toArray());
+        return Excel::download(new PengajuanPerbaikanKendaraanExport($data), 'pengajuan_perbaikan_kendaraan.xlsx');
     }
 
     public function ajax_get_pemeriksaan_kendaraan_list(Request $request)

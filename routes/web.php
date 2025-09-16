@@ -478,6 +478,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris','namesp
     Route::post('/ga/approve_pengajuan_perbaikan_kendaraan/{id}', ['as' => 'hris.ga.approve_pengajuan_perbaikan_kendaraan', 'uses' => 'PemeliharaanKendaraanController@approve_pengajuan']);
     Route::get('/ga/print_pengajuan_perbaikan_kendaraan/{id}', ['as'=>'hris.ga.print_pengajuan_perbaikan_kendaraan','uses'=>'PemeliharaanKendaraanController@print_pengajuan_perbaikan_kendaraan']);
     Route::delete('/ga/delete_pengajuan_perbaikan_kendaraan/{id}', ['as'=>'hris.ga.delete_pengajuan_perbaikan_kendaraan','uses'=>'PemeliharaanKendaraanController@destroy']);
+    Route::post('/ga/export_pengajuan_perbaikan_kendaraan', ['as' => 'hris.ga.export_pengajuan_perbaikan_kendaraan', 'uses' => 'PemeliharaanKendaraanController@export_pengajuan_perbaikan_kendaraan']);
 
 
 

@@ -100,7 +100,7 @@
                             </div>
                         </div>
                     </div>
-                    {{-- <div class="row">
+                    <div class="row">
                         <div class="col-md-6">
                             <div clasl="" style="display: flex; justify-content: start; align-items: center; gap: 10px;">
                                 <div class="mt-5 p-0 w-50">
@@ -108,7 +108,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div> --}}
+                    </div>
                 </div>
                 <div class="m-0 p-0">
                     <div class="card-body m-0">
@@ -512,7 +512,7 @@
              $("#export-excel").attr("disabled", true);
             $.ajax({
                 type:"POST",
-                url: "{{route('hris.koreksipotongan.export_verifikasi_koreksi')}}",
+                url: "{{route('hris.ga.export_pengajuan_perbaikan_kendaraan')}}",
                 data: {
                     tanggal_range: $('#daterange1').val(),
                 },
@@ -524,7 +524,7 @@
                     var blob = new Blob([res]);
                     var link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
-                    link.download = "Rekap Verifikasi Koreksi "+today_date+".xlsx";
+                    link.download = "Rekap Pengajuan Perbaikan Kendaraan "+today_date+".xlsx";
                     link.click();
                     notif({
                         msg: "<b>Info:</b> Data berhasil di download.",

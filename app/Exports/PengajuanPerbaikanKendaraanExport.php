@@ -18,7 +18,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 use Carbon\Carbon;
 use DB;
 
-class exportExcelKompensasiPKWT implements FromView, WithEvents
+class PengajuanPerbaikanKendaraanExport implements FromView, WithEvents
 {
     use Exportable;
     public function __construct($query)
@@ -27,7 +27,7 @@ class exportExcelKompensasiPKWT implements FromView, WithEvents
     }
     public function view(): View
     {
-        return view('hris.Laporan.excel_kompensasi_pkwt',[
+        return view('hris.Laporan.excel_pengajuan_perbaikan_kendaraan',[
             'query' => $this->query,
         ]);
     }
@@ -36,11 +36,11 @@ class exportExcelKompensasiPKWT implements FromView, WithEvents
         return [
             AfterSheet::class => function(AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
-                $sheet->getStyle('H:H')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
-                $sheet->getStyle('I:I')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
-                $sheet->getStyle('N:N')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
-                $sheet->getStyle('P:P')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
-
+                $sheet->getStyle('A:A')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+                $sheet->getStyle('K:K')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+                foreach (range('A', $sheet->getHighestDataColumn()) as $col) {
+                    $sheet->getColumnDimension($col)->setAutoSize(true);
+                }
             },
         ];
     }
