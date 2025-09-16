@@ -903,17 +903,23 @@ h1 {
 
            $("#pemeliharaan-table tbody tr").each(function () {
                 let jenis = $(this).find(".jenis_pemeliharaan");
+                let odometer = $(this).find(".odometer");
                 let jasa  = $(this).find(".penyedia_jasa");
                 let ket   = $(this).find(".keterangan");
 
                 // reset invalid dulu
                 jenis.removeClass("is-invalid");
+                odometer.removeClass("is-invalid");
                 jasa.removeClass("is-invalid");
 
                 // validasi per field
                 if (!jenis.val()) {
                     isValid = false;
                     jenis.addClass("is-invalid");
+                }
+                if (!odometer.val()) {
+                    isValid = false;
+                    odometer.addClass("is-invalid");
                 }
                 if (!jasa.val()) {
                     isValid = false;
@@ -922,6 +928,7 @@ h1 {
 
                 data.jenis_pemeliharaan.push(jenis.val());
                 data.penyedia_jasa.push(jasa.val());
+                data.odometer.push(odometer.val());
                 data.keterangan.push(ket.val());
             });
 
