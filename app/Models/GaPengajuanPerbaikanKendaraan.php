@@ -16,7 +16,9 @@ class GaPengajuanPerbaikanKendaraan extends Model
         'id_pemerliharaan',
         'enroll_id',
         'tanggal_pengajuan',
-        'status_pengajuan'
+        'status_pengajuan',
+        'approved_at',
+        'approved_by'
     ];
 
     public function employee()

@@ -16,6 +16,7 @@ use App\Models\VehicleMaintenancePrice;
 use App\Models\GaPemeriksaanKendaraan;
 use App\Models\GaPemeriksaanKendaraanDet;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use DB;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -189,10 +190,12 @@ class PemeliharaanKendaraanController extends AdminBaseController
     public function approve_pengajuan($id)
     {
         $pengajuan = GaPengajuanPerbaikanKendaraan::findOrFail($id);
+        $loggedAdmin = Auth::guard('admin')->user();
+        $enroll_id = $loggedAdmin->enroll_id;
         $pengajuan->update([
             'status_pengajuan' => 'approved',
             'approved_at' => now(),
-            'approved_by' => auth()->user()->id ?? null,
+            'approved_by' => $enroll_id ?? null,
         ]);
 
         return response()->json(['status' => 'success']);
