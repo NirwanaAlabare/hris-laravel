@@ -126,76 +126,11 @@
                     <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px; border-left: 1px solid #000;border-bottom: 1px solid #000;">{{$index+1}}</td>
                     <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000; border-bottom: 1px solid #000;">{{$detail->detail_input_list->nama_item_pemeriksaan_detail}}</td>
                     <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000; border-bottom: 1px solid #000;">{{$detail->penyedia_jasa}}</td>
-                    <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000; border-bottom: 1px solid #000;">{{$detail->odometer}}</td>
+                    <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000; border-bottom: 1px solid #000;"></td>
                     <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000; border-bottom: 1px solid #000;">{{$detail->keterangan}}</td>
                 </tr>
             @endforeach
-          {{-- <tr>
-            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px; border-left: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-          </tr>
-          <tr>
-            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px; border-left: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-          </tr>
-          <tr>
-            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px; border-left: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-          </tr>
-          <tr>
-            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px; border-bottom: 1px solid #000; border-left: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;  border-bottom: 1px solid #000; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;  border-bottom: 1px solid #000; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;  border-bottom: 1px solid #000; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;  border-bottom: 1px solid #000; border-right: 1px solid #000;"></td>
-          </tr> --}}
         </tbody>
-        {{-- <tbody style="font-family: sans-serif; font-size: 7.5pt;">
-          <tr>
-            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px; border-left: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-          </tr>
-          <tr>
-            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px; border-left: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-          </tr>
-          <tr>
-            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px; border-left: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-          </tr>
-          <tr>
-            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px; border-left: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px; border-right: 1px solid #000;"></td>
-          </tr>
-          <tr>
-            <td style="border-top: 1px solid #000; height: 21px; padding-left: 10px; border-bottom: 1px solid #000; border-left: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;  border-bottom: 1px solid #000; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;  border-bottom: 1px solid #000; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;  border-bottom: 1px solid #000; border-right: 1px solid #000;"></td>
-            <td style="border-top: 1px solid #000; border-left: 1px solid #000; padding-left: 10px;  border-bottom: 1px solid #000; border-right: 1px solid #000;"></td>
-          </tr>
-        </tbody> --}}
     </table>
     <table width="100%" style="padding-top:8px;">
         <thead>
