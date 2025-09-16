@@ -1052,6 +1052,9 @@ class HRDController extends AdminBaseController
                 'tanggal_mulai_kontrak' => $contract,
                 'tanggal_akhir_kontrak' => $end_contract,
             ]);
+        DB::table('employee_contract')
+                        ->where('enroll_id', $enroll_id)
+                        ->update(['status_penilaian' => null]);
         return $enroll_id;
     }
     public function delete_employee_contract(){

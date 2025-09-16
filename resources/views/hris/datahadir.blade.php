@@ -1388,6 +1388,7 @@
                 'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
                 '7 Hari Kemarin': [moment().subtract(6, 'days'), moment()],
                 '30 Hari Kemarin': [moment().subtract(29, 'days'), moment()],
+                '1 Tahun': [moment().subtract(1, 'year'), moment()],
                 'Bulan Sekarang': [moment().startOf('month'), moment().endOf('month')],
                 'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
             },
