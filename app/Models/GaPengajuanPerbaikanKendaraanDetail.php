@@ -13,6 +13,7 @@ class GaPengajuanPerbaikanKendaraanDetail extends Model
         'pengajuan_id',
         'komponen_pemeriksaan_kendaraan_input_id', // ganti field
         'odometer',
+        'odometer_realisasi',
         'penyedia_jasa',
         'keterangan',
     ];

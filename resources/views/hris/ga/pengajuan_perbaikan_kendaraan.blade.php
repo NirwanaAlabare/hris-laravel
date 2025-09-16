@@ -153,6 +153,7 @@
                                                         <th scope="col">Driver</th>
                                                         <th scope="col">NIP</th>
                                                         <th scope="col">Aksi</th>
+                                                        <th scope="col">Tgl Realisasi</th>
                                                         <th scope="col">Status Realisasi</th>
                                                     </tr>
                                                 </thead>
@@ -340,7 +341,7 @@
                                                 <thead>
                                                     <tr>
                                                         <th width="30%">Jenis Pemeliharaan</th>
-                                                        <th width="15%">Odometer</th>
+                                                        <th width="15%">Odometer Realisasi</th>
                                                         <th width="25%">Penyedia Jasa</th>
                                                         <th width="30%">Keterangan</th>
                                                     </tr>
@@ -364,7 +365,7 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div class="col-md-12">
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="form-label font-weight-bold">Realisasi (Bukti Foto):</label>
                                                 <div class="mb-2">
@@ -372,9 +373,18 @@
                                                         <i class="fa fa-plus"></i> Tambah Gambar
                                                     </button>
                                                 </div>
-                                                <div class="row" id="preview-container"></div>
                                             </div>
-                                            <!-- Input file hidden (akan diklik via JS) -->
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="form-label font-weight-bold">Tanggal Realisasi:</label>
+                                                <div class="input-group">
+                                                    <input type="text" id="tanggal_realisasi" name="tanggal_realisasi" class="form-control fc-datepicker" placeholder="DD-MM-YYYY" value="{{ \Carbon\Carbon::now()->translatedFormat('d-m-Y') }}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row" id="preview-container"></div>
                                             <input type="file" id="imageInput" accept="image/*" style="display:none" multiple>
                                         </div>
                                     </div>
@@ -608,12 +618,74 @@
         input.click();
     });
 
+     function validateFormRealisasi() {
+            let isValid = true;
+            let data = {};
+
+            data.id_detail_realisasi = [];
+            data.jenis_pemeliharaan = [];
+            data.odometer = [];
+            data.penyedia_jasa = [];
+            data.keterangan = [];
+
+           $("#pemeliharaan-table-realisasi tbody tr").each(function () {
+                let id_detail_realisasi = $(this).find(".id_detail_realisasi");
+                let jenis = $(this).find(".jenis_pemeliharaan");
+                let jasa  = $(this).find(".penyedia_jasa");
+                let odometer  = $(this).find(".odometer");
+                let ket   = $(this).find(".keterangan");
+
+                // reset invalid dulu
+                jenis.removeClass("is-invalid");
+                odometer.removeClass("is-invalid");
+                jasa.removeClass("is-invalid");
+
+                // validasi per field
+                if (!jenis.val()) {
+                    isValid = false;
+                    jenis.addClass("is-invalid");
+                }
+                if (!odometer.val()) {
+                    isValid = false;
+                    odometer.addClass("is-invalid");
+                }
+                if (!jasa.val()) {
+                    isValid = false;
+                    jasa.addClass("is-invalid");
+                }
+
+                data.id_detail_realisasi.push(id_detail_realisasi.val());
+                data.jenis_pemeliharaan.push(jenis.val());
+                data.penyedia_jasa.push(jasa.val());
+                data.odometer.push(odometer.val());
+                data.keterangan.push(ket.val());
+            });
+
+            return { isValid, data };
+        }
+
+
     // Saat submit form
     $("#action-form-realisasi").on("click", function(e) {
         let id = $(this).data('id');
         e.preventDefault();
+
+        let { isValid, data } = validateFormRealisasi();
+        console.log(data);
+        if (!isValid) return;
+
         let formEl = document.getElementById("form-realisasi");
         let formData = new FormData(formEl);
+        let tanggal_realisasi = $("#tanggal_realisasi").val();
+        if(tanggal_realisasi == null || tanggal_realisasi == ""){
+            iziToast.error({
+                message: 'Tanggal realisasi wajib diisi!',
+                position: 'topCenter'
+            });
+            return;
+        }
+        formData.append("tanggal_realisasi", tanggal_realisasi);
+        formData.append("details", JSON.stringify(data));
 
         // file baru
         files.forEach((file, i) => {
@@ -626,6 +698,8 @@
         deletedImages.forEach(imgId => {
             formData.append("deletedImages[]", imgId);
         });
+
+
 
         $.ajax({
             url: "{{ route('hris.ga.realisasi_pengajuan_perbaikan_kendaraan', ':id') }}".replace(':id', id),
@@ -751,7 +825,7 @@
 
 
 
-       function setToNull() {
+        function setToNull() {
             $("#tanggal_pengajuan_perbaikan").val("");
             $("#diajukanOlehID").val("").trigger("change");  // kalau pakai select2
             $("#vehicle_id").val("").trigger("change");      // kalau pakai select2
@@ -800,16 +874,22 @@
            $("#pemeliharaan-table tbody tr").each(function () {
                 let jenis = $(this).find(".jenis_pemeliharaan");
                 let jasa  = $(this).find(".penyedia_jasa");
+                let odometer  = $(this).find(".odometer");
                 let ket   = $(this).find(".keterangan");
 
                 // reset invalid dulu
                 jenis.removeClass("is-invalid");
+                odometer.removeClass("is-invalid");
                 jasa.removeClass("is-invalid");
 
                 // validasi per field
                 if (!jenis.val()) {
                     isValid = false;
                     jenis.addClass("is-invalid");
+                }
+                if (!odometer.val()) {
+                    isValid = false;
+                    odometer.addClass("is-invalid");
                 }
                 if (!jasa.val()) {
                     isValid = false;
@@ -818,6 +898,7 @@
 
                 data.jenis_pemeliharaan.push(jenis.val());
                 data.penyedia_jasa.push(jasa.val());
+                data.odometer.push(odometer.val());
                 data.keterangan.push(ket.val());
             });
 
@@ -877,10 +958,11 @@
                 success: function (res) {
                     // ubah judul modal
                     $('#title-modal-realisasi').text('REALISASI PERBAIKAN');
-
+                    console.log(res);
                     // isi field utama
-                     $('#tanggal_pengajuan_label_realisasi').text(res.tanggal_pengajuan_format);
+                    $('#tanggal_pengajuan_label_realisasi').text(res.tanggal_pengajuan_format);
                     $('#tanggal_pengajuan_perbaikan_realisasi').val(res.tanggal_pengajuan);
+                    $('#tanggal_realisasi').val(res.tanggal_realisasi ? moment(res.tanggal_realisasi).format('DD-MM-YYYY') : '{{ \Carbon\Carbon::now()->translatedFormat('d-m-Y') }}');
                     $('#diajukanOlehIDRealisasi').val(res.enroll_id).trigger('change').prop('disabled', true);
                     $('#vehicle_id_realisasi').val(res.kendaraan_id).trigger('change').prop('disabled', true);
 
@@ -892,6 +974,7 @@
                             $('#pemeliharaan-table-realisasi tbody').append(`
                                 <tr>
                                     <td>
+                                        <input type="hidden" class="form-control id_detail_realisasi" name="id_detail_realisasi[]" value="${d.id ?? ''}">
                                         <select disabled class="form-control jenis_pemeliharaan" name="jenis_pemeliharaan[]">
                                             <option value="">Pilih</option>
                                             @foreach ($komponent_pemerikasaan_kendaraan as $value)
@@ -902,9 +985,9 @@
                                             @endforeach
                                         </select>
                                     </td>
-                                    <td><input type="text" disabled class="form-control odometer" name="odometer[]" value="${d.odometer ?? ''}"></td>
-                                    <td><input type="text" disabled class="form-control penyedia_jasa" name="penyedia_jasa[]" value="${d.penyedia_jasa ?? ''}"></td>
-                                    <td><input type="text" disabled class="form-control keterangan" name="keterangan[]" value="${d.keterangan ?? ''}"></td>
+                                    <td><input type="text" class="form-control odometer" name="odometer[]" value="${d.odometer_realisasi ?? ''}"></td>
+                                    <td><input type="text" class="form-control penyedia_jasa" name="penyedia_jasa[]" value="${d.penyedia_jasa ?? ''}"></td>
+                                    <td><input type="text" class="form-control keterangan" name="keterangan[]" value="${d.keterangan ?? ''}"></td>
                                 </tr>
                             `);
                         });
@@ -1194,6 +1277,17 @@
                         `;
                     }
                 },
+                { data: 'tanggal_realisasi', name: 'tanggal_realisasi', className: 'text-center',
+                     render: function (data, type, row) {
+                            if (!data) return '-';
+                            let date = new Date(data); // input: "2025-09-12"
+                            return new Intl.DateTimeFormat('id-ID', {
+                                day: '2-digit',
+                                month: 'long',
+                                year: 'numeric'
+                            }).format(date);
+                        }
+                 },
                 {
                     data: 'total_images',
                     name: 'realisasi',

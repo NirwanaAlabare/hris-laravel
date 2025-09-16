@@ -92,7 +92,6 @@ class PemeliharaanKendaraanController extends AdminBaseController
                 'errors' => $validator->errors()
             ], 422);
         }
-
         try {
             // update parent
             $pengajuan = GaPengajuanPerbaikanKendaraan::findOrFail($id);
@@ -139,10 +138,22 @@ class PemeliharaanKendaraanController extends AdminBaseController
         'deletedImages' => 'array',
         'deletedImages.*' => 'integer'
     ]);
-
     try {
         $pengajuan = GaPengajuanPerbaikanKendaraan::findOrFail($id);
-
+        $pengajuan->update([
+            'tanggal_realisasi' => $request->tanggal_realisasi ? Carbon::createFromFormat('d-m-Y', $request->tanggal_realisasi)->format('Y-m-d') : null,
+        ]);
+        if ($request->has('odometer')) {
+            foreach ($request->odometer as $index => $odo) {
+                if (!empty($request->id_detail_realisasi[$index])) {
+                    $pengajuan->details()
+                        ->where('id', $request->id_detail_realisasi[$index])
+                        ->update([
+                            'odometer_realisasi' => $odo,
+                        ]);
+                }
+            }
+        }
         // pakai transaction biar aman
         \DB::transaction(function () use ($request, $pengajuan) {
             // hapus gambar lama yang dipilih
@@ -228,7 +239,7 @@ class PemeliharaanKendaraanController extends AdminBaseController
                 'errors' => $validator->errors()
             ], 422);
         }
-
+        // dd($request->odometer);
         try {
             DB::beginTransaction();
 
@@ -301,6 +312,7 @@ class PemeliharaanKendaraanController extends AdminBaseController
                 ->select(
                     'pk.id',
                     'pk.tanggal_pengajuan',
+                    'pk.tanggal_realisasi',
                     'k.tipe as merk',
                     'k.plat_no',
                     'e.employee_name',
@@ -424,6 +436,7 @@ class PemeliharaanKendaraanController extends AdminBaseController
             ->select(
                 'ga_pengajuan_perbaikan_kendaraan.id',
                 'ga_pengajuan_perbaikan_kendaraan.tanggal_pengajuan',
+                'ga_pengajuan_perbaikan_kendaraan.tanggal_realisasi',
                 'k.tipe as merk',
                 'k.plat_no',
                 'e.employee_name',

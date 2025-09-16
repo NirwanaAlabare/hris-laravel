@@ -17,6 +17,7 @@ class GaPengajuanPerbaikanKendaraan extends Model
         'enroll_id',
         'tanggal_pengajuan',
         'status_pengajuan',
+        'tanggal_realisasi',
         'approved_at',
         'approved_by'
     ];

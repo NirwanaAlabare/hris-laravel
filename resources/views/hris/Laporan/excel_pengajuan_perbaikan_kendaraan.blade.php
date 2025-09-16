@@ -26,7 +26,7 @@
             <td><b>DESKRIPSI PEMELIHARAAN</b></td>
             <td><b>PENYEDIA JASA</b></td>
             <td><b>KETERANGAN</b></td>
-            <td><b>TANGGAL DISETUJUI</b></td>
+            <td><b>TANGGAL REALISASI</b></td>
             <td><b>STATUS REALISASI</b></td>
         </tr>
 
@@ -55,9 +55,9 @@
                     <td style="vertical-align: top;">{{ $data_perbaikan['details'][0]['penyedia_jasa'] ?? '' }}</td>
                     <td style="vertical-align: top;"></td>
                     <td style="vertical-align: top;" rowspan="{{ $rowspan }}">
-                        {{ $data_perbaikan['status_pengajuan'] == 'approved'
+                        {{ $data_perbaikan['tanggal_realisasi']
                             ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel(
-                                \Carbon\Carbon::parse($data_perbaikan['tanggal_pengajuan'])
+                                \Carbon\Carbon::parse($data_perbaikan['tanggal_realisasi'])
                               )
                             : ''
                         }}
@@ -96,8 +96,8 @@
                     <td style="vertical-align: top;">-</td>
                     <td style="vertical-align: top;">-</td>
                     <td style="vertical-align: top;">-</td>
-                    <td style="vertical-align: top;">{{ $data_perbaikan['status_pengajuan'] == 'approved'
-                            ? $data_perbaikan['tanggal_pengajuan'] : '' }}
+                    <td style="vertical-align: top;">{{ $data_perbaikan['tanggal_realisasi']
+                            ? $data_perbaikan['tanggal_realisasi'] : '' }}
                     </td>
                     <td style="vertical-align: top;" rowspan="{{ $rowspan }}">
                         @foreach($data_perbaikan['images'] as $img)
