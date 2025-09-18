@@ -125,7 +125,7 @@
     <table width="527" style="line-height: 8px;padding-top:8px">
         <thead>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7pt">Solokan Jeruk, {{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7pt">Bandung, {{Carbon\Carbon::parse($value->contract)->translatedFormat('d F Y')}}</td>
             </tr>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7pt;font-weight:bold" width="45%"><b>PIHAK PERTAMA,</b></td>
@@ -318,7 +318,7 @@
             <tr>
                 <td width='20px'></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;font-weight:bold"></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;font-weight:bold;"><b>Solokan Jeruk, <u>{{Carbon\Carbon::parse(date($value->contract))->translatedFormat('d F Y')}}</u></b></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;font-weight:bold;"><b>Bandung, <u>{{Carbon\Carbon::parse(date($value->contract))->translatedFormat('d F Y')}}</u></b></td>
             </tr>
             <tr>
                 <td></td>
