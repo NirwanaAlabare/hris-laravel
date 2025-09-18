@@ -1891,7 +1891,8 @@
                                         swal({
                                             title: "Update Absensi",
                                             text: "Data gagal di update",
-                                            icon: "danger",
+                                            icon: "error",
+                                            type: "error",
                                         });
                                         $('#btn-updateKehadiran').removeClass("btn-loading");
                                         $("#btn-updateKehadiran").attr("disabled", false);
