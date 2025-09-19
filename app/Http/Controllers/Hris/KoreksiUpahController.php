@@ -917,10 +917,11 @@ class KoreksiUpahController extends AdminBaseController
                         $tgl_koreksi = date('Y-m-d', $tgl_koreksi_awal);
 
                         $jenis_koreksi_string = strtoupper(trim($row[7]));
-
+                        $jenis_val = $jenisKoreksiMapping[$jenis_koreksi_string] ?? null;
                         $data_import[]=[
                             'kode_koreksi_upah'=>date('Y').date('m').date('i').date('s').$nik,
-                            'nomor_form_koreksi_upah'=> $jenisKoreksiMapping[$jenis_koreksi_string] == 2 ? null : $nomor_form_lembur,
+                            // 'nomor_form_koreksi_upah'=> $jenisKoreksiMapping[$jenis_koreksi_string] == 2 ? NULL : $nomor_form_lembur,
+                            'nomor_form_koreksi_upah' => ($jenis_val === 2) ? null : ($nomor_form_lembur ?? null),
                             'tanggal_koreksi'=> $tgl_koreksi,
                             'enroll_id'=>$row[0],
                             'nik'=>$employee->nik??null,
