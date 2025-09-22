@@ -282,6 +282,7 @@
                                         <th class="bg-primary w-5 align-middle" scope="col" width="50px">STAFF</th>
                                         <th class="bg-primary w-5 align-middle" scope="col" width="50px">TANGGAL<br>RESIGN</th>
                                         <th class="bg-primary w-5 align-middle" scope="col" width="50px">BAGIAN</th>
+                                        <th class="bg-primary w-5 align-middle" scope="col" width="50px">APROVAL</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -2794,8 +2795,6 @@
                     },
                     dataType: 'json',
                     success: function(res){
-                        console.log('filter_data',res);
-
                         if(res.length > 0){
                             nomor_urut=0;
                             for(i=0;i<res.length;i++) {
@@ -2980,6 +2979,7 @@
                                     '   <td class="text-nowrap text-center align-middle">' + res[i].employee_atribut.status_staff  + '</td>' +
                                     '   <td class="text-nowrap text-center align-middle">' + tanggal_resign  + '</td>' +
                                     '   <td class="text-left align-middle">' + sub_dept_name  + '</td>' +
+                                    '   <td class="text-left align-middle">' + res[i].data_lembur.verifikasi_by  + '</td>' +
                                     '</tr>';
 
                                     $("#datatable-verifikasi tbody").append(htmlTable);
