@@ -42,6 +42,7 @@ class DataKoreksiUpah extends \Eloquent
     protected $casts = [
         'uuid',
         'kode_koreksi_upah',
+        'nomor_form_koreksi_upah',
         'tanggal_koreksi',
         'enroll_id',
         'nik',
