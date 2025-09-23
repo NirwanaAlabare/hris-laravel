@@ -766,12 +766,10 @@
                 <td width="21%" style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; border-top:0px;">Disetujui</td>
                 <td width="21%" style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; border-top:0px;">Diketahui</td>
                 <td width="21%" style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; border-top:0px;">Disetujui</td>
-                <td width="21%" style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; border-top:0px;">Diketahui</td>
             </tr>
             <tr>
                 <td style="height: 55px;border:1px solid black;"></td>
                 <td style="height: 55px;border:1px solid black;"></td>
-                <td style="border:1px solid black;"></td>
                 <td style="border:1px solid black;"></td>
                 <td style="border:1px solid black;"></td>
             </tr>
@@ -779,8 +777,7 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center; text-transform: uppercase;"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center;">Chief/Dept. Head/Manager</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center;">HR-GA</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center;">General Mgr Produksi</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center;">General Mgr Factory</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;text-align:justify;vertical-align:top;border:1px solid black;text-align:center;">General Manager</td>
             </tr>
         </thead>
 </table>
