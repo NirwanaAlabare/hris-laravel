@@ -1660,6 +1660,11 @@
             $("#btn-cancel").prop("disabled", false);
             $('#btn-save').html('<i class="fa fa-save"></i> Save');
             $('#alamat_rumah').val('');
+            $("#enroll_id, #nik").prop({
+                disabled: false,
+                readonly: false
+            });
+
 
             $('#alamat_jalan').val('');
             $('#rt').val('');
