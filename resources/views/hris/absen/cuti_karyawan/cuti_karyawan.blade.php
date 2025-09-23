@@ -645,7 +645,8 @@ h1 {
                                                 <td colspan="6" class="text-center fw-bold fs-1">-</td>
                                             </tr>`;
                                     } else {
-                                        totalDipakai++;
+                                        const days = countWorkingDaysBetween(item.tanggal_mulai_ijin, item.tanggal_akhir_ijin);
+                                        totalDipakai += days;
                                         row = `
                                             <tr>
                                                 <td>${index + 1}</td>
@@ -668,10 +669,12 @@ h1 {
 
                             // Tambahkan baris total di bawah tabel
                             const footer = document.createElement('tfoot');
+                            const jatahCuti = 12;
+                            const sisaCuti = Math.max(jatahCuti - totalDipakai, 0);
                             footer.innerHTML = `
                                <tr id="footer-primary" class="fw-bold">
                                     <td colspan="7" class="text-end">
-                                        Total Cuti Dipakai: ${totalDipakai} &nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp; Cuti Hangus / Tidak Terpakai: ${totalHangus}
+                                        Total Cuti Dipakai: ${totalDipakai} &nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp; Cuti Hangus / Tidak Terpakai: ${sisaCuti}
                                     </td>
                                 </tr>
                             `;
@@ -707,34 +710,58 @@ h1 {
                 }
             });
 
-            // if ($.fn.DataTable.isDataTable('#table_detail_cuti_karyawan')) {
-            //     $('#table_detail_cuti_karyawan').DataTable().clear().destroy();
-            // }
+            // --- Helper: parse tanggal dengan aman (menghindari masalah timezone) ---
+            function parseDateDMY(input) {
+                if (!input) return null;
+                const s = String(input).trim();
+                const parts = s.split('-');
+                if (parts.length === 3) {
+                    const d = parseInt(parts[0], 10);
+                    const m = parseInt(parts[1], 10) - 1; // bulan 0–11
+                    const y = parseInt(parts[2], 10);
+                    if (!isNaN(d) && !isNaN(m) && !isNaN(y)) {
+                        return new Date(y, m, d);
+                    }
+                }
+                return null;
+            }
+
+            function countWorkingDaysBetween(startInput, endInput) {
+                const start = parseDateDMY(startInput);
+                const end = parseDateDMY(endInput);
+                if (!start || !end) return 0;
+
+                // tukar kalau start > end
+                let s = start;
+                let e = end;
+                if (s > e) { s = end; e = start; }
+
+                let count = 0;
+                for (let d = new Date(s); d <= e; d.setDate(d.getDate() + 1)) {
+                    const day = d.getDay(); // 0 = Minggu, 6 = Sabtu
+                    if (day !== 0 && day !== 6) count++;
+                }
+                return count;
+            }
 
 
-            // $('#table_detail_cuti_karyawan').DataTable({
-            //     processing: true,
-            //     serverSide: true,
-            //     responsive: true,
-            //     autoWidth: false,
-            //     paging: false,
-            //     searching: false,
-            //     info: false,
-            //     ajax: {
-            //         url: '{{ route('cuti_karyawan.show_by_id') }}',
-            //         data: function(d) {
-            //             d.enroll_id = enrollId;
-            //         }
-            //     },
-            //     columns: [
-            //         { data: 'tanggal_perizinan', name: 'tanggal_perizinan' },
-            //         { data: 'nomor_form_perizinan', name: 'nomor_form_perizinan' },
-            //         { data: 'tanggal_mulai_ijin', name: 'tanggal_mulai_ijin' },
-            //         { data: 'tanggal_akhir_ijin', name: 'tanggal_akhir_ijin' },
-            //         { data: 'kode_absen_ijin', name: 'kode_absen_ijin' },
-            //         { data: 'absen_alasan', name: 'absen_alasan' },
-            //     ]
-            // });
+
+            // Helper untuk hitung jumlah hari kerja (exclude Sabtu & Minggu)
+            function countWorkingDays(startDate, endDate) {
+                let start = new Date(startDate);
+                let end = new Date(endDate);
+                let count = 0;
+
+                while (start <= end) {
+                    const day = start.getDay(); // 0 = Minggu, 6 = Sabtu
+                    if (day !== 0 && day !== 6) {
+                        count++;
+                    }
+                    start.setDate(start.getDate() + 1);
+                }
+                return count;
+            }
+
         });
     </script>
 
