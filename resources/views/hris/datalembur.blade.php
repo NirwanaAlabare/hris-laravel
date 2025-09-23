@@ -217,6 +217,7 @@
                                             <th class="bg-primary w-5 align-middle" scope="col">ACTION</th>
                                             <th class="bg-primary w-5 align-middle" scope="col"></th>
                                             <th class="bg-primary w-5 align-middle" scope="col">NOMOR<br>SPL</th>
+                                            <th class="bg-primary w-5 align-middle" scope="col">INSENTIF</th>
                                             <th class="bg-primary w-5 align-middle" scope="col">TANGGAL<br>LEMBUR</th>
                                             <th class="bg-primary w-5 align-middle" scope="col">HARI</th>
                                             <th class="bg-primary w-5 align-middle" scope="col">KERJA</th>
@@ -264,6 +265,7 @@
                                         <th class="bg-primary w-5 align-middle" scope="col">ACTION</th>
                                         @endif
                                         <th class="bg-primary w-5 align-middle" scope="col">NOMOR<br>SPL</th>
+                                        <th class="bg-primary w-5 align-middle" scope="col">INSENTIF</th>
                                         <th class="bg-primary w-5 align-middle" scope="col">TANGGAL<br>LEMBUR</th>
                                         <th class="bg-primary w-5 align-middle" scope="col">HARI</th>
                                         <th class="bg-primary w-5 align-middle" scope="col">KERJA</th>
@@ -330,6 +332,7 @@
                                                 <thead class="border text-center">
                                                     <tr>
                                                         <th class="bg-primary w-5 align-middle" scope="col">NOMOR<br>SPL</th>
+                                                        <th class="bg-primary w-5 align-middle" scope="col">INSENTIF</th>
                                                         <th class="bg-primary w-5 align-middle" scope="col">Tanggal<br>Lembur</th>
                                                         <th class="bg-primary w-5 align-middle" scope="col">Hari</th>
                                                         <th class="bg-primary w-5 align-middle" scope="col">Kerja</th>
@@ -367,6 +370,7 @@
                                                 <thead class="border text-center">
                                                     <tr>
                                                         <th class="bg-primary w-5 align-middle" scope="col">NOMOR<br>SPL</th>
+                                                        <th class="bg-primary w-5 align-middle" scope="col">INSENTIF</th>
                                                         <th class="bg-primary w-5 align-middle" scope="col">Tanggal<br>Lembur</th>
                                                         <th class="bg-primary w-5 align-middle" scope="col">Hari</th>
                                                         <th class="bg-primary w-5 align-middle" scope="col">Kerja</th>
@@ -2759,6 +2763,14 @@
             });
             TampilDataLembur();
         });
+        function formatRupiah(angka) {
+            if (!angka) return "-";
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(angka);
+        }
         function TampilDataLembur() {
             $("#subtitle-table1").empty();
             $("#subtitle-table_verif").empty();
@@ -2799,6 +2811,7 @@
                             nomor_urut=0;
                             for(i=0;i<res.length;i++) {
                                 if (res[i].data_lembur.is_verifikasi==0) {
+                                    console.log("res[i]", res[i]);
                                     nomor_urut=nomor_urut+1;
                                     var uuid = res[i].data_lembur.uuid
                                     var tanggal_lembur = moment(res[i].tanggal_berjalan).format('DD MMM YYYY');
@@ -2829,7 +2842,7 @@
                                     var bgwarna = '';
                                     if(status_kerja == 'LIBUR') { bgwarna = 'style="background: yellow"'; }
                                     if(!tanggal_lembur) { bgwarna = 'style="background: red"'; tanggal_lembur = ''; }
-                                    if(tanggal_resign) { bgwarna = 'style="background: red"'; tanggal_resign = moment(res[i].tanggal_resign).format('DD MMM YYYY'); } else { tanggal_resign = ''; }
+                                    if(tanggal_resign) { bgwarna = 'style="background: red"'; tanggal_resign = moment(res[i].tanggal_resign).format('DD MMM YYYY'); } else { tanggal_resign = '-'; }
                                     if(!mulai_jam_kerja) { bgwarna = 'style="background: red"'; mulai_jam_kerja = ''; }
                                     if(!akhir_jam_kerja) { bgwarna = 'style="background: red"'; akhir_jam_kerja = ''; }
                                     if(!absen_masuk_kerja) { bgwarna = 'style="background: red"'; absen_masuk_kerja = ''; }
@@ -2872,6 +2885,7 @@
                                     '   <td> <input type="checkbox" class="checked" name="uuid[]"  value="'+res[i].data_lembur.uuid+'">'+'</td>'+
 
                                     '   <td class="text-nowrap text-center align-middle">' + res[i].data_lembur.nomor_form_lembur  + '</td>' +
+                                    '   <td class="text-nowrap text-center align-middle">' + formatRupiah(res[i].jml_insentif)  + '</td>' +
                                     '   <td class="text-nowrap text-center align-middle">' + tanggal_lembur  + '</td>' +
                                     '   <td class="text-nowrap text-left align-middle">' + res[i].nama_hari  + '</td>' +
                                     '   <td class="text-nowrap text-left align-middle">' + status_kerja  + '</td>' +
@@ -2932,7 +2946,12 @@
                                     var bgwarna = '';
                                     if(status_kerja == 'LIBUR') { bgwarna = 'style="background: yellow"'; }
                                     if(!tanggal_lembur) { bgwarna = 'style="background: red"'; tanggal_lembur = ''; }
-                                    if(tanggal_resign) { bgwarna = 'style="background: red"'; tanggal_resign = moment(res[i].employee_atribut.tanggal_resign).format('DD MMM YYYY'); } else { tanggal_resign = ''; }
+                                    if(tanggal_resign) {
+                                        bgwarna = 'style="background: red"';
+                                        tanggal_resign = moment(res[i].employee_atribut.tanggal_resign).format('DD MMM YYYY');
+                                    } else {
+                                        tanggal_resign = '-';
+                                    }
                                     if(!mulai_jam_kerja) { bgwarna = 'style="background: red"'; mulai_jam_kerja = ''; }
                                     if(!akhir_jam_kerja) { bgwarna = 'style="background: red"'; akhir_jam_kerja = ''; }
                                     if(!absen_masuk_kerja) { bgwarna = 'style="background: red"'; absen_masuk_kerja = ''; }
@@ -2961,6 +2980,7 @@
                                     '  </td>' +
                                     @endif
                                     '   <td class="text-nowrap text-center align-middle">' + res[i].data_lembur.nomor_form_lembur  + '</td>' +
+                                    '   <td class="text-nowrap text-center align-middle">' + formatRupiah(res[i].jml_insentif)  + '</td>' +
                                     '   <td class="text-nowrap text-center align-middle">' + tanggal_lembur  + '</td>' +
                                     '   <td class="text-nowrap text-left align-middle">' + res[i].nama_hari  + '</td>' +
                                     '   <td class="text-nowrap text-left align-middle">' + status_kerja  + '</td>' +
