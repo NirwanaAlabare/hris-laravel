@@ -46,111 +46,195 @@ class Kehadiran{
             $tanggal_akhir=date('Y-m-d', strtotime('25-'.$bln_sekarang));
         }
         $tgl_berjalan=$join_date;
-        while (strtotime( $tgl_berjalan) <= strtotime($tanggal_akhir)) {
-            $hari=date('D',strtotime(  $tgl_berjalan));
-            $staffnonstaff=$employee->status_staff;
-            if($hari=='Sun'){
-                $kode_hari='6';
-                $nama_hari='Minggu';
-                $status_absen=null;
-                $mulai_jam_kerja=null;
-                $akhir_jam_kerja=null;
-            }else if($hari=='Mon'){
-                $kode_hari='0';
-                $nama_hari='Senin';
-                $status_absen='M';
-                if($staffnonstaff=='STAFF'){
-                    $mulai_jam_kerja='07:30:00';
-                    $akhir_jam_kerja='17:30:00';
-                }else if($staffnonstaff=='NON STAFF'){
-                    $mulai_jam_kerja='07:00:00';
-                    $akhir_jam_kerja='16:00:00';
-                }else{
-                    $mulai_jam_kerja=null;
-                    $akhir_jam_kerja=null;
-                }
-            }else if($hari=='Tue'){
-                $kode_hari='1';
-                $nama_hari='Selasa';
-                $status_absen='M';
-                if($staffnonstaff=='STAFF'){
-                    $mulai_jam_kerja='07:30:00';
-                    $akhir_jam_kerja='17:30:00';
-                }else if($staffnonstaff=='NON STAFF'){
-                    $mulai_jam_kerja='07:00:00';
-                    $akhir_jam_kerja='16:00:00';
-                }else{
-                    $mulai_jam_kerja=null;
-                    $akhir_jam_kerja=null;
-                }
-            }else if($hari=='Wed'){
-                $kode_hari='2';
-                $nama_hari='Rabu';
-                $status_absen='M';
-                if($staffnonstaff=='STAFF'){
-                    $mulai_jam_kerja='07:30:00';
-                    $akhir_jam_kerja='17:30:00';
-                }else if($staffnonstaff=='NON STAFF'){
-                    $mulai_jam_kerja='07:00:00';
-                    $akhir_jam_kerja='16:00:00';
-                }else{
-                    $mulai_jam_kerja=null;
-                    $akhir_jam_kerja=null;
-                }
-            }else if($hari=='Thu'){
-                $kode_hari='3';
-                $nama_hari='Kamis';
-                $status_absen='M';
-                if($staffnonstaff=='STAFF'){
-                    $mulai_jam_kerja='07:30:00';
-                    $akhir_jam_kerja='17:30:00';
-                }else if($staffnonstaff=='NON STAFF'){
-                    $mulai_jam_kerja='07:00:00';
-                    $akhir_jam_kerja='16:00:00';
-                }else{
-                    $mulai_jam_kerja=null;
-                    $akhir_jam_kerja=null;
-                }
-            }else if($hari=='Fri'){
-                $kode_hari='4';
-                $nama_hari='Jumat';
-                $status_absen='M';
-                if($staffnonstaff=='STAFF'){
-                    $mulai_jam_kerja='07:30:00';
-                    $akhir_jam_kerja='17:30:00';
-                }else if($staffnonstaff=='NON STAFF'){
-                    $mulai_jam_kerja='07:00:00';
-                    $akhir_jam_kerja='16:00:00';
-                }else{
-                    $mulai_jam_kerja=null;
-                    $akhir_jam_kerja=null;
-                }
-            }else if($hari=='Sat'){
-                $kode_hari='5';
-                $nama_hari='Sabtu';
-                $status_absen=null;
-                $mulai_jam_kerja=null;
-                $akhir_jam_kerja=null;
+        while (strtotime($tgl_berjalan) <= strtotime($tanggal_akhir)) {
+            $hari = date('D', strtotime($tgl_berjalan));
+            $kode_hari = null;
+            $nama_hari = null;
+            $status_absen = null;
+            $mulai_jam_kerja = null;
+            $akhir_jam_kerja = null;
 
+            if ($hari == 'Sun') {
+                $kode_hari = '6';
+                $nama_hari = 'Minggu';
+                $status_absen = null;
+            } elseif ($hari == 'Mon') {
+                $kode_hari = '0';
+                $nama_hari = 'Senin';
+                $status_absen = 'M';
+                [$mulai_jam_kerja, $akhir_jam_kerja] = $this->getJamKerja($employee);
+            } elseif ($hari == 'Tue') {
+                $kode_hari = '1';
+                $nama_hari = 'Selasa';
+                $status_absen = 'M';
+                [$mulai_jam_kerja, $akhir_jam_kerja] = $this->getJamKerja($employee);
+            } elseif ($hari == 'Wed') {
+                $kode_hari = '2';
+                $nama_hari = 'Rabu';
+                $status_absen = 'M';
+                [$mulai_jam_kerja, $akhir_jam_kerja] = $this->getJamKerja($employee);
+            } elseif ($hari == 'Thu') {
+                $kode_hari = '3';
+                $nama_hari = 'Kamis';
+                $status_absen = 'M';
+                [$mulai_jam_kerja, $akhir_jam_kerja] = $this->getJamKerja($employee);
+            } elseif ($hari == 'Fri') {
+                $kode_hari = '4';
+                $nama_hari = 'Jumat';
+                $status_absen = 'M';
+                [$mulai_jam_kerja, $akhir_jam_kerja] = $this->getJamKerja($employee);
+            } elseif ($hari == 'Sat') {
+                $kode_hari = '5';
+                $nama_hari = 'Sabtu';
+                $status_absen = null;
             }
 
-
-            $x=[
+            $x = [
                 'uuid' => Str::uuid('uuid'),
                 'tanggal_berjalan' => $tgl_berjalan,
-                'kode_hari' =>$kode_hari,
+                'kode_hari' => $kode_hari,
                 'nama_hari' => $nama_hari,
                 'mulai_jam_kerja' => $mulai_jam_kerja,
                 'akhir_jam_kerja' => $akhir_jam_kerja,
                 'enroll_id' => $employee->enroll_id,
                 'status_absen' => $status_absen,
-                'operator' =>$loggedAdmin->email,
+                'operator' => $loggedAdmin->email,
             ];
             MasterDataAbsenKehadiran::create($x);
-             $tgl_berjalan = date ("Y-m-d", strtotime("+1 day", strtotime($tgl_berjalan)));
+
+            $tgl_berjalan = date("Y-m-d", strtotime("+1 day", strtotime($tgl_berjalan)));
         }
 
+        // while (strtotime( $tgl_berjalan) <= strtotime($tanggal_akhir)) {
+        //     $hari=date('D',strtotime(  $tgl_berjalan));
+        //     $staffnonstaff=$employee->status_staff;
+        //     if($hari=='Sun'){
+        //         $kode_hari='6';
+        //         $nama_hari='Minggu';
+        //         $status_absen=null;
+        //         $mulai_jam_kerja=null;
+        //         $akhir_jam_kerja=null;
+        //     }else if($hari=='Mon'){
+        //         $kode_hari='0';
+        //         $nama_hari='Senin';
+        //         $status_absen='M';
+        //         if($staffnonstaff=='STAFF'){
+        //             $mulai_jam_kerja='07:30:00';
+        //             $akhir_jam_kerja='17:30:00';
+        //         }else if($staffnonstaff=='NON STAFF'){
+        //             $mulai_jam_kerja='07:00:00';
+        //             $akhir_jam_kerja='16:00:00';
+        //         }else{
+        //             $mulai_jam_kerja=null;
+        //             $akhir_jam_kerja=null;
+        //         }
+        //     }else if($hari=='Tue'){
+        //         $kode_hari='1';
+        //         $nama_hari='Selasa';
+        //         $status_absen='M';
+        //         if($staffnonstaff=='STAFF'){
+        //             $mulai_jam_kerja='07:30:00';
+        //             $akhir_jam_kerja='17:30:00';
+        //         }else if($staffnonstaff=='NON STAFF'){
+        //             $mulai_jam_kerja='07:00:00';
+        //             $akhir_jam_kerja='16:00:00';
+        //         }else{
+        //             $mulai_jam_kerja=null;
+        //             $akhir_jam_kerja=null;
+        //         }
+        //     }else if($hari=='Wed'){
+        //         $kode_hari='2';
+        //         $nama_hari='Rabu';
+        //         $status_absen='M';
+        //         if($staffnonstaff=='STAFF'){
+        //             $mulai_jam_kerja='07:30:00';
+        //             $akhir_jam_kerja='17:30:00';
+        //         }else if($staffnonstaff=='NON STAFF'){
+        //             $mulai_jam_kerja='07:00:00';
+        //             $akhir_jam_kerja='16:00:00';
+        //         }else{
+        //             $mulai_jam_kerja=null;
+        //             $akhir_jam_kerja=null;
+        //         }
+        //     }else if($hari=='Thu'){
+        //         $kode_hari='3';
+        //         $nama_hari='Kamis';
+        //         $status_absen='M';
+        //         if($staffnonstaff=='STAFF'){
+        //             $mulai_jam_kerja='07:30:00';
+        //             $akhir_jam_kerja='17:30:00';
+        //         }else if($staffnonstaff=='NON STAFF'){
+        //             $mulai_jam_kerja='07:00:00';
+        //             $akhir_jam_kerja='16:00:00';
+        //         }else{
+        //             $mulai_jam_kerja=null;
+        //             $akhir_jam_kerja=null;
+        //         }
+        //     }else if($hari=='Fri'){
+        //         $kode_hari='4';
+        //         $nama_hari='Jumat';
+        //         $status_absen='M';
+        //         if($staffnonstaff=='STAFF'){
+        //             $mulai_jam_kerja='07:30:00';
+        //             $akhir_jam_kerja='17:30:00';
+        //         }else if($staffnonstaff=='NON STAFF'){
+        //             $mulai_jam_kerja='07:00:00';
+        //             $akhir_jam_kerja='16:00:00';
+        //         }else{
+        //             $mulai_jam_kerja=null;
+        //             $akhir_jam_kerja=null;
+        //         }
+        //     }else if($hari=='Sat'){
+        //         $kode_hari='5';
+        //         $nama_hari='Sabtu';
+        //         $status_absen=null;
+        //         $mulai_jam_kerja=null;
+        //         $akhir_jam_kerja=null;
+
+        //     }
+
+
+        //     $x=[
+        //         'uuid' => Str::uuid('uuid'),
+        //         'tanggal_berjalan' => $tgl_berjalan,
+        //         'kode_hari' =>$kode_hari,
+        //         'nama_hari' => $nama_hari,
+        //         'mulai_jam_kerja' => $mulai_jam_kerja,
+        //         'akhir_jam_kerja' => $akhir_jam_kerja,
+        //         'enroll_id' => $employee->enroll_id,
+        //         'status_absen' => $status_absen,
+        //         'operator' =>$loggedAdmin->email,
+        //     ];
+        //     MasterDataAbsenKehadiran::create($x);
+        //      $tgl_berjalan = date ("Y-m-d", strtotime("+1 day", strtotime($tgl_berjalan)));
+        // }
+
     }
+
+    private function getJamKerja($employee) {
+    // default
+    $mulai = '07:00:00';
+    $akhir = '16:00:00';
+
+    if ($employee->status_staff === 'STAFF') {
+        if (in_array($employee->department_id, ['DEP09', 'DEP15', 'DEP17'])) {
+            $mulai = '07:00:00';
+            $akhir = '17:00:00';
+        } elseif (in_array($employee->department_id, [
+            'DEP02','DEP05','DEP06','DEP08','DEP10','DEP11','DEP16','DEP27','DEP24','DEP28'
+        ])) {
+            $mulai = '07:30:00';
+            $akhir = '17:30:00';
+        } else {
+            // staff tapi tidak masuk list, pakai default staff?
+            $mulai = '07:00:00';
+            $akhir = '16:00:00';
+        }
+    }
+
+    return [$mulai, $akhir];
+}
+
 
     public function creat_master_absen_26()
     {
