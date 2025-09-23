@@ -1999,16 +1999,15 @@
 
                             var currentRow = $('#datatable-ajax-crud').find("tr:eq(" + rowid + ")");
                             var nomor_form_lembur = currentRow.find("td:eq(2)").html();
-                            var enroll_id = currentRow.find("td:eq(6)").html();
-                            var nik = currentRow.find("td:eq(7)").html();
-                            var employee_name = currentRow.find("td:eq(8)").html();
-                            var jumlah_jam_lembur = currentRow.find("td:eq(15)").html();
-                            var jumlah_jam_istirahat_lembur = currentRow.find("td:eq(16)").html();
+                            var enroll_id = currentRow.find("td:eq(7)").html();
+                            var nik = currentRow.find("td:eq(8)").html();
+                            var employee_name = currentRow.find("td:eq(9)").html();
+                            var jumlah_jam_lembur = currentRow.find("td:eq(16)").html();
+                            var jumlah_jam_istirahat_lembur = currentRow.find("td:eq(17)").html();
                             var catatan = currentRow.find('input[name="catatan"]').val();
                             var mulai_jam_lembur = currentRow.find('input[name="mulai_jam_lembur_edit1"]').val();
                             var akhir_jam_lembur = currentRow.find('input[name="akhir_jam_lembur_edit1"]').val();
                             var tanggal_berjalan = currentRow.find('input[name="tanggal_berjalan_edit1"]').val();
-
                             $('#title-modal-edit1').text('EDIT DATA LEMBUR KARYAWAN : [' + enroll_id + '][' + nik + '] ' + employee_name);
                             $('#tanggal_berjalan_edit1').val(tanggal_berjalan);
                             $('#enroll_id_edit1').val(enroll_id);
