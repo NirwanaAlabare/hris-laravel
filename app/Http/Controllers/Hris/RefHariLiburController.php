@@ -142,12 +142,35 @@ class RefHariLiburController extends AdminBaseController
                 'tanggal_libur' => $tanggal_libur,
                 'status_absen' => $status_absen
             ]);
+              try {
+                    DB::connection('mysql_sb')
+                        ->table('mgt_rep_hari_libur')
+                        ->where('id', $request->id)
+                        ->update([
+                            'nama_hari_libur' => $nama_hari_libur,
+                            'tanggal_libur'   => $tanggal_libur,
+                            'status_absen'    => $status_absen
+                        ]);
+                } catch (\Exception $e) {
+                    // Jangan lakukan apa-apa (abaikan error)
+                }
         }else{
             $query = RefHariLibur::create([
                 'nama_hari_libur' => $nama_hari_libur,
                 'tanggal_libur' => $tanggal_libur,
                 'status_absen' => $status_absen
             ]);
+           try {
+                DB::connection('mysql_sb')
+                    ->table('mgt_rep_hari_libur')
+                    ->insert([
+                        'nama_hari_libur' => $nama_hari_libur,
+                        'tanggal_libur'   => $tanggal_libur,
+                        'status_absen'    => $status_absen
+                    ]);
+            } catch (\Exception $e) {
+                // Jangan lakukan apa-apa (abaikan error)
+            }
         }
         if($status_absen=='LP'){
             MasterDataAbsenKehadiran::where('tanggal_berjalan',$tanggal_libur)
@@ -225,6 +248,14 @@ class RefHariLiburController extends AdminBaseController
                     MasterDataAbsenKehadiran::where('uuid',$value->uuid)->update($update_izin);
                 }
             $query = RefHariLibur::where('id','=',$id)->delete();
+            try {
+                DB::connection('mysql_sb')
+                    ->table('mgt_rep_hari_libur')
+                    ->where('id', $id)
+                    ->delete();
+            } catch (\Exception $e) {
+                // Jangan lakukan apa-apa (abaikan error)
+            }
         } else {
             $query = false;
         }
