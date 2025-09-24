@@ -47,14 +47,14 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
     public function cekHari($tanggal, $bahasa = 'id') {
         // Konversi tanggal ke timestamp
         $timestamp = strtotime($tanggal);
-    
+
         if (!$timestamp) {
             return "Format tanggal tidak valid.";
         }
-    
+
         // Nama hari dalam bahasa Inggris
         $hariInggris = date('l', $timestamp);
-    
+
         // Array nama hari dalam bahasa Indonesia
         $hariIndonesia = [
             'Sunday'    => 'Minggu',
@@ -65,12 +65,12 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
             'Friday'    => 'Jumat',
             'Saturday'  => 'Sabtu'
         ];
-    
+
         // Kembalikan nama hari sesuai bahasa
         if ($bahasa === 'id') {
             return $hariIndonesia[$hariInggris] ?? "Hari tidak ditemukan.";
         }
-    
+
         return $hariInggris; // Default ke bahasa Inggris
     }
 
@@ -80,39 +80,40 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
 
         $q =  RekapPerhitunganLembur::query()
                  ->selectRaw('
-                    rekap_perhitungan_lembur.enroll_id, 
-                    rekap_perhitungan_lembur.nomor_form_lembur, 
-                    employee_atribut.employee_name, 
-                    employee_atribut.status_staff, 
-                    employee_atribut.department_name, 
-                    employee_atribut.sub_dept_name, 
-                    rekap_perhitungan_lembur.tanggal_berjalan, 
-                    mda.mulai_jam_kerja, 
-                    mda.akhir_jam_kerja, 
-                    mda.jumlah_jam_kerja, 
-                    mda.absen_masuk_kerja, 
-                    mda.absen_pulang_kerja, 
-                    dl.mulai_jam_lembur, 
-                    dl.akhir_jam_lembur, 
-                    rekap_perhitungan_lembur.final_mulai_jam_lembur, 
-                    rekap_perhitungan_lembur.final_selesai_jam_lembur, 
-                    rekap_perhitungan_lembur.final_total_jam_lembur, 
-                    rekap_perhitungan_lembur.final_jam_istirahat_lembur, 
-                    rekap_perhitungan_lembur.final_total_menit_lembur, 
-                    rekap_perhitungan_lembur.final_jam_lembur_roundown, 
-                    rekap_perhitungan_lembur.final_menit_lembur_roundown, 
-                    rekap_perhitungan_lembur.lembur_1, 
-                    rekap_perhitungan_lembur.lembur_2, 
-                    rekap_perhitungan_lembur.lembur_3, 
-                    rekap_perhitungan_lembur.lembur_4, 
-                    rekap_perhitungan_lembur.total_lembur_1234, 
-                    grading_salary.salary_bulanan, 
-                    rekap_perhitungan_lembur.lembur1_rupiah, 
-                    rekap_perhitungan_lembur.lembur2_rupiah, 
-                    rekap_perhitungan_lembur.lembur3_rupiah, 
-                    rekap_perhitungan_lembur.lembur4_rupiah, 
-                    rekap_perhitungan_lembur.total_lembur_rupiah
-                 ')        
+                    rekap_perhitungan_lembur.enroll_id,
+                    rekap_perhitungan_lembur.nomor_form_lembur,
+                    employee_atribut.employee_name,
+                    employee_atribut.status_staff,
+                    employee_atribut.department_name,
+                    employee_atribut.sub_dept_name,
+                    rekap_perhitungan_lembur.tanggal_berjalan,
+                    mda.mulai_jam_kerja,
+                    mda.akhir_jam_kerja,
+                    mda.jumlah_jam_kerja,
+                    mda.absen_masuk_kerja,
+                    mda.absen_pulang_kerja,
+                    dl.mulai_jam_lembur,
+                    dl.akhir_jam_lembur,
+                    rekap_perhitungan_lembur.final_mulai_jam_lembur,
+                    rekap_perhitungan_lembur.final_selesai_jam_lembur,
+                    rekap_perhitungan_lembur.final_total_jam_lembur,
+                    rekap_perhitungan_lembur.final_jam_istirahat_lembur,
+                    rekap_perhitungan_lembur.final_total_menit_lembur,
+                    rekap_perhitungan_lembur.final_jam_lembur_roundown,
+                    rekap_perhitungan_lembur.final_menit_lembur_roundown,
+                    rekap_perhitungan_lembur.lembur_1,
+                    rekap_perhitungan_lembur.lembur_2,
+                    rekap_perhitungan_lembur.lembur_3,
+                    rekap_perhitungan_lembur.lembur_4,
+                    rekap_perhitungan_lembur.total_lembur_1234,
+                    grading_salary.salary_bulanan,
+                    rekap_perhitungan_lembur.lembur1_rupiah,
+                    rekap_perhitungan_lembur.lembur2_rupiah,
+                    rekap_perhitungan_lembur.lembur3_rupiah,
+                    rekap_perhitungan_lembur.lembur4_rupiah,
+                    rekap_perhitungan_lembur.total_lembur_rupiah,
+                    mlb.jml_insentif
+                 ')
                  ->whereRaw('
                     ' . $dateRange . '
                 ')
@@ -126,16 +127,30 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
                              ->on("dl.enroll_id", "=", "rekap_perhitungan_lembur.enroll_id");
                 })
                 ->leftJoin(\DB::raw('(SELECT * FROM grading_salary) AS grading_salary'), function($leftjoin){
-                        $leftjoin->on(\DB::raw('SUBSTRING(grading_salary.periode_umk, 1, 4)'), 
-                        '=', 
+                        $leftjoin->on(\DB::raw('SUBSTRING(grading_salary.periode_umk, 1, 4)'),
+                        '=',
                         \DB::raw('SUBSTRING(rekap_perhitungan_lembur.tanggal_berjalan, 1, 4)'))
                         ->on('grading_salary.kode_grade','=','employee_atribut.kode_grade');
                     }
                 )
+                ->leftJoin(\DB::raw("(
+                    SELECT
+                        a.tgl_lembur,
+                        b.enroll_id,
+                        b.uuid_koreksi_upah AS jml_insentif
+                    FROM mut_karyawan_input_form_lembur a
+                    INNER JOIN mut_karyawan_input_form_lembur_det b
+                        ON a.no_form = b.no_form
+                ) mlb"),
+                function($join) {
+                    $join->on('mda.enroll_id', '=', 'mlb.enroll_id')
+                        ->on('mda.tanggal_berjalan', '=', 'mlb.tgl_lembur');
+                }
+            )
                 ->orderBy('employee_atribut.employee_name','asc')
                 ->orderBy('rekap_perhitungan_lembur.tanggal_berjalan','asc')
                 ->limit(1);
-       
+
         return $q;
     }
 
@@ -249,6 +264,7 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
         $lembur3_rupiah = $Data->lembur3_rupiah;
         $lembur4_rupiah = $Data->lembur4_rupiah;
         $total_lembur_rupiah = $Data->total_lembur_rupiah;
+        $insentif = $Data->jml_insentif;
 
         return [
             $enroll_id,
@@ -285,7 +301,8 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
             $lembur2_rupiah,
             $lembur3_rupiah,
             $lembur4_rupiah,
-            $total_lembur_rupiah
+            $total_lembur_rupiah,
+            $insentif
         ];
     }
 
@@ -297,7 +314,7 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
     {
         return [
             'H' => 6,
-            'J' => 6,            
+            'J' => 6,
         ];
     }
 
@@ -316,7 +333,7 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
                 $sheet->mergeCells('A1:D1');
                 $sheet->mergeCells('A2:D2');
                 $sheet->mergeCells('A3:D3');
-    
+
                 $sheet->setCellValue('A5', 'Nomor Absen');
                 $sheet->setCellValue('B5', 'Nomor Form SPL');
                 $sheet->setCellValue('C5', 'Nama Karyawan');
@@ -358,6 +375,7 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
                 $sheet->setCellValue('AG6', 'L3');
                 $sheet->setCellValue('AH6', 'L4');
                 $sheet->setCellValue('AI6', 'Total');
+                $sheet->setCellValue('AJ6', 'Insentif');
 
                 $sheet->mergeCells('A5:A6');
                 $sheet->mergeCells('B5:B6');

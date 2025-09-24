@@ -1110,7 +1110,8 @@ class DataLemburController extends AdminBaseController
                     employee_atribut.status_staff,
                     data_lembur.is_verifikasi,data_lembur.mulai_jam_lembur,data_lembur.akhir_jam_lembur,data_lembur.catatan,
                     rekap_lembur.lembur_1,rekap_lembur.lembur_2,rekap_lembur.lembur_3,rekap_lembur.lembur_4, rekap_lembur.total_lembur_1234,
-                    rekap_lembur.lembur1_rupiah,rekap_lembur.lembur2_rupiah,rekap_lembur.lembur3_rupiah,rekap_lembur.lembur4_rupiah, rekap_lembur.total_lembur_rupiah
+                    rekap_lembur.lembur1_rupiah,rekap_lembur.lembur2_rupiah,rekap_lembur.lembur3_rupiah,rekap_lembur.lembur4_rupiah, rekap_lembur.total_lembur_rupiah,
+                    mlb.jml_insentif
                 FROM
                     master_data_absen_kehadiran mda
                 JOIN
@@ -1122,6 +1123,16 @@ class DataLemburController extends AdminBaseController
                 ON
                     mda.uuid = data_lembur.uuid_master
                 LEFT JOIN rekap_perhitungan_lembur rekap_lembur ON data_lembur.enroll_id = rekap_lembur.enroll_id AND data_lembur.tanggal_berjalan = rekap_lembur.tanggal_berjalan
+                LEFT JOIN (
+                    SELECT
+                        a.tgl_lembur,
+                        b.enroll_id,
+                        b.uuid_koreksi_upah AS jml_insentif
+                    FROM mut_karyawan_input_form_lembur a
+                    INNER JOIN mut_karyawan_input_form_lembur_det b
+                        ON a.no_form = b.no_form
+                ) mlb
+                    ON mda.enroll_id = mlb.enroll_id AND mda.tanggal_berjalan = mlb.tgl_lembur
                 WHERE
                     mda.nomor_form_lembur IS NOT NULL".$inVerificationStatus."
                     AND mda.tanggal_berjalan >= '$tanggal_awal'
@@ -1200,6 +1211,7 @@ class DataLemburController extends AdminBaseController
         $sheet->writeTo('AD7', 'RP. LEMBUR 4')->applyTextCenter();
         $sheet->writeTo('AE7', 'TOTAL LEMBUR')->applyTextCenter();
         $sheet->writeTo('AF7', 'VERIFY STATUS')->applyTextCenter();
+        $sheet->writeTo('AG7', 'INSENTIF')->applyTextCenter();
         $sheet->writeAreas();
 
         if(Auth::guard('admin')->user()->role_user!='payroll'){
@@ -1232,6 +1244,7 @@ class DataLemburController extends AdminBaseController
                     'AD7' => ['width' => 15],
                     'AE7' => ['width' => 15],
                     'AF7' => ['width' => 15],
+                    'AG7' => ['width' => 15],
                     'K' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
                     'L' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
                     'M' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
@@ -1273,6 +1286,7 @@ class DataLemburController extends AdminBaseController
                     'AD7' => ['width' => 15],
                     'AE7' => ['width' => 15],
                     'AF7' => ['width' => 15],
+                    'AG7' => ['width' => 15],
                     'K' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
                     'L' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
                     'M' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
@@ -1315,6 +1329,7 @@ class DataLemburController extends AdminBaseController
                 'AD7' => ['width' => 15],
                 'AE7' => ['width' => 15],
                 'AF7' => ['width' => 15],
+                'AG7' => ['width' => 15],
                 'K' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
                 'L' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
                 'M' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
@@ -1414,7 +1429,8 @@ class DataLemburController extends AdminBaseController
                         $lembur3_rupiah,
                         $lembur4_rupiah,
                         $total_lembur_rupiah,
-                        $is_verifikasi
+                        $is_verifikasi,
+                        $lembur->jml_insentif
                     ];
                 }else{
                     $data = [
@@ -1449,7 +1465,8 @@ class DataLemburController extends AdminBaseController
                         $lembur3_rupiah,
                         $lembur4_rupiah,
                         $total_lembur_rupiah,
-                        $is_verifikasi
+                        $is_verifikasi,
+                        $lembur->jml_insentif
                     ];
                 }
             }else{
@@ -1485,7 +1502,8 @@ class DataLemburController extends AdminBaseController
                     $lembur3_rupiah,
                     $lembur4_rupiah,
                     $total_lembur_rupiah,
-                    $is_verifikasi
+                    $is_verifikasi,
+                    $lembur->jml_insentif
                 ];
             }
             $sheet->writeRow($data);
