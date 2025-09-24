@@ -235,12 +235,25 @@
     <table width="100%" style="width: 90%; margin-left:30px;">
         <thead>
             <tr>
-                <td style="vertical-align: middle; font-size: 14pt; text-align: justify;">
+                {{-- <td style="vertical-align: middle; font-size: 14pt; text-align: justify;">
                     Perusahaan mengharapkan atas pelanggaran yang telah dilakukan agar dapat diperbaiki. Jika
                     Saudara masih melakukan pelanggaran yang sama atau pelanggaran lainnya selama masa
                     peringatan ini, maka kami akan memberikan sanksi berupa surat peringatan 2 atau surat
                     peringatan 3 (tiga) dan atau pemutusan hubungan kerja Saudara
+                </td> --}}
+                <td style="vertical-align: middle; font-size: 14pt; text-align: justify;">
+                    Perusahaan mengharapkan atas pelanggaran yang telah dilakukan agar dapat diperbaiki.
+                    Jika Saudara masih melakukan pelanggaran yang sama atau pelanggaran lainnya selama masa
+                    peringatan ini, maka kami akan memberikan sanksi berupa
+                    @if(strtolower($value->surat_peringatan) == 'sp_1')
+                        surat peringatan 2 (dua), surat peringatan 3 (tiga), dan/atau pemutusan hubungan kerja.
+                    @elseif(strtolower($value->surat_peringatan) == 'sp_2')
+                        surat peringatan 3 (tiga), dan/atau pemutusan hubungan kerja.
+                    @elseif(strtolower($value->surat_peringatan) == 'sp_3')
+                        pemutusan hubungan kerja.
+                    @endif
                 </td>
+
             </tr>
         </thead>
     </table>
