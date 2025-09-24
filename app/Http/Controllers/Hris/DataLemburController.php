@@ -2330,6 +2330,7 @@ class DataLemburController extends AdminBaseController
                 ')
             ->update([
                 'tanggal_berjalan' => $tanggal_lembur,
+                'jumlah_jam_istirahat_lembur' => $jumlah_jam_istirahat,
                 'tanggal_absen' => $tanggal_lembur,
                 'mulai_jam_lembur' => $mulai_jam_lembur,
                 'akhir_jam_lembur' => $akhir_jam_lembur,
