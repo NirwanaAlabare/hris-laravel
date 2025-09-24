@@ -1650,6 +1650,7 @@
                     var all_uuid=[];
                     for(i=0;i<data.length;i++) {
                         all_uuid.push(data[i].uuid);
+                        console.log(data[i].datalembur.jumlah_jam_istirahat_lembur);
                         var status_kerja='';
                         if(data[i].kode_hari!=5 && data[i].kode_hari!=6 && data[i].holiday_name!=null){
                             status_kerja='Libur';
@@ -2937,7 +2938,7 @@
                                     var akhir_jam_lembur = res[i].data_lembur.akhir_jam_lembur;
                                     var sub_dept_name = res[i].employee_atribut.dept ? res[i].employee_atribut.dept.sub_dept_name : "-";
                                     var jumlah_jam_lembur = res[i].data_lembur.jumlah_jam_lembur;
-                                    var jumlah_jam_istirahat_lembur = res[i].data_lembur.jumlah_jam_istirahat;
+                                    var jumlah_jam_istirahat_lembur = res[i].data_lembur.jumlah_jam_istirahat_lembur;
                                     var catatan = res[i].data_lembur.catatan;
                                     var mulai_jam_lembur_edit1 = res[i].mulai_jam_lembur;
                                     var akhir_jam_lembur_edit1 = res[i].akhir_jam_lembur;
