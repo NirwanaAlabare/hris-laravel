@@ -697,6 +697,7 @@
             $("#BtnProsesPayroll4").attr("disabled", true);
             var enroll_id=$('#selectEmployeeID2').val();
             var daterange1 = $('#daterange1').val();
+
             jQuery.ajax({
                 type : "post",
                 url : '{{route('hris.rekapperhitunganpayroll.proses_payroll_harian')}}',
@@ -711,9 +712,12 @@
                     $('#BtnProsesPayroll4').removeClass("btn-loading");
                     $("#BtnProsesPayroll4").attr("disabled", false);
                     $("#BtnProsesPayroll4").html('<i class="fa fa-download"></i></span> PROSES PAYROLL HARIAN');
+                    var dates = daterange1.split(" s/d ");
+                    var start_date = dates[0].trim();
+                    var end_date   = dates.length > 1 ? dates[1].trim() : dates[0].trim();
+                    updateLabor(start_date, end_date);
                 },
                 error: function(res){
-                    console.log(res);
                     swal("", "Proses Payroll Harian Gagal", "error");
                     $('#BtnProsesPayroll4').removeClass("btn-loading");
                     $("#BtnProsesPayroll4").attr("disabled", false);
@@ -721,6 +725,28 @@
                 }
             });
         });
+
+        function updateLabor(start_date, end_date) {
+            $.ajax({
+                type: "post",
+                url: "http://10.10.5.62:8123/api/mgt-report-proses/update_data_labor",
+                data: {
+                    frequency: 'daily',
+                    user: 'nds',
+                    start_date: start_date,
+                    end_date: end_date,
+                },
+                dataType: "json",
+                success: function(response) {
+                    // console.log("response", response);
+                },
+                error: function(res) {
+                    // console.log("error",res);
+                }
+            });
+        }
+
+
         $(function(){
             'use strict';
 
