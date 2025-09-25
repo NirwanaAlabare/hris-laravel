@@ -835,7 +835,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
             // Header kolom baris 5–6
             $headers = [
                 1 => ['label' => 'NO'],
-                2 => ['label' => 'PT'],
+                2 => ['label' => 'PERUSAHAAN'],
                 3 => ['label' => 'ID'],
                 4 => ['label' => 'NIP'],
                 5 => ['label' => 'Nama Karyawan'],

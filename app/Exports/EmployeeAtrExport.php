@@ -582,7 +582,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
                 $sheet->mergeCells('A2:D2');
                 $sheet->mergeCells('A3:D3');
 
-                $sheet->setCellValue('A5', 'PT');
+                $sheet->setCellValue('A5', 'PERUSAHAAN');
                 $sheet->setCellValue('B5', 'ID');
                 $sheet->setCellValue('C5', 'NIP');
                 $sheet->setCellValue('D5', 'NAMA KARYAWAN');
