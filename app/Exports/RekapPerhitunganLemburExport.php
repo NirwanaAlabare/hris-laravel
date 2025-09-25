@@ -94,6 +94,7 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
                     mda.absen_pulang_kerja,
                     dl.mulai_jam_lembur,
                     dl.akhir_jam_lembur,
+                    dl.capai_target,
                     rekap_perhitungan_lembur.final_mulai_jam_lembur,
                     rekap_perhitungan_lembur.final_selesai_jam_lembur,
                     rekap_perhitungan_lembur.final_total_jam_lembur,
@@ -265,6 +266,7 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
         $lembur4_rupiah = $Data->lembur4_rupiah;
         $total_lembur_rupiah = $Data->total_lembur_rupiah;
         $insentif = $Data->jml_insentif;
+        $capai_target = ($Data->capai_target > 0 || $Data->capai_target != '' || $Data->capai_target != null) ? 'Mencapai' : 'Tidak Mencapai';
 
         return [
             $enroll_id,
@@ -302,7 +304,8 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
             $lembur3_rupiah,
             $lembur4_rupiah,
             $total_lembur_rupiah,
-            $insentif
+            $insentif,
+            $capai_target
         ];
     }
 
@@ -376,6 +379,7 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
                 $sheet->setCellValue('AH6', 'L4');
                 $sheet->setCellValue('AI6', 'Total');
                 $sheet->setCellValue('AJ6', 'Insentif');
+                $sheet->setCellValue('AK6', 'Capai Target');
 
                 $sheet->mergeCells('A5:A6');
                 $sheet->mergeCells('B5:B6');

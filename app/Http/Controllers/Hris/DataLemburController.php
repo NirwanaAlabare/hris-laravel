@@ -1108,7 +1108,7 @@ class DataLemburController extends AdminBaseController
                     employee_atribut.department_id, employee_atribut.department_name, employee_atribut.sub_dept_id, employee_atribut.sub_dept_name,
                     employee_atribut.site_nirwana_id, employee_atribut.site_nirwana_name,
                     employee_atribut.status_staff,
-                    data_lembur.is_verifikasi,data_lembur.mulai_jam_lembur,data_lembur.akhir_jam_lembur,data_lembur.catatan,
+                    data_lembur.is_verifikasi,data_lembur.mulai_jam_lembur,data_lembur.akhir_jam_lembur,data_lembur.catatan,data_lembur.capai_target,
                     rekap_lembur.lembur_1,rekap_lembur.lembur_2,rekap_lembur.lembur_3,rekap_lembur.lembur_4, rekap_lembur.total_lembur_1234,
                     rekap_lembur.lembur1_rupiah,rekap_lembur.lembur2_rupiah,rekap_lembur.lembur3_rupiah,rekap_lembur.lembur4_rupiah, rekap_lembur.total_lembur_rupiah,
                     mlb.jml_insentif
@@ -1212,6 +1212,7 @@ class DataLemburController extends AdminBaseController
         $sheet->writeTo('AE7', 'TOTAL LEMBUR')->applyTextCenter();
         $sheet->writeTo('AF7', 'VERIFY STATUS')->applyTextCenter();
         $sheet->writeTo('AG7', 'INSENTIF')->applyTextCenter();
+        $sheet->writeTo('AH7', 'Capai Target')->applyTextCenter();
         $sheet->writeAreas();
 
         if(Auth::guard('admin')->user()->role_user!='payroll'){
@@ -1245,6 +1246,7 @@ class DataLemburController extends AdminBaseController
                     'AE7' => ['width' => 15],
                     'AF7' => ['width' => 15],
                     'AG7' => ['width' => 15],
+                    'AH7' => ['width' => 15],
                     'K' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
                     'L' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
                     'M' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
@@ -1287,6 +1289,7 @@ class DataLemburController extends AdminBaseController
                     'AE7' => ['width' => 15],
                     'AF7' => ['width' => 15],
                     'AG7' => ['width' => 15],
+                    'AH7' => ['width' => 15],
                     'K' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
                     'L' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
                     'M' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
@@ -1330,6 +1333,7 @@ class DataLemburController extends AdminBaseController
                 'AE7' => ['width' => 15],
                 'AF7' => ['width' => 15],
                 'AG7' => ['width' => 15],
+                'AH7' => ['width' => 15],
                 'K' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
                 'L' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
                 'M' => ['format' => NumberFormat::FORMAT_DATE_TIME3],
@@ -1388,6 +1392,7 @@ class DataLemburController extends AdminBaseController
             $lembur3_rupiah=$lembur->lembur3_rupiah;
             $lembur4_rupiah=$lembur->lembur4_rupiah;
             $total_lembur_rupiah=$lembur->total_lembur_rupiah;
+            $capai_target = ($lembur->capai_target > 0 || $lembur->capai_target != '' || $lembur->capai_target != null) ? 'Mencapai' : 'Tidak Mencapai';
 
             $kode_grade=EmployeeAtribut::where('enroll_id',$lembur->enroll_id)->pluck('kode_grade')->first();
             $salary = GradingSalary::where('kode_grade', $kode_grade)
@@ -1430,7 +1435,8 @@ class DataLemburController extends AdminBaseController
                         $lembur4_rupiah,
                         $total_lembur_rupiah,
                         $is_verifikasi,
-                        $lembur->jml_insentif
+                        $lembur->jml_insentif,
+                        $capai_target
                     ];
                 }else{
                     $data = [
@@ -1466,7 +1472,8 @@ class DataLemburController extends AdminBaseController
                         $lembur4_rupiah,
                         $total_lembur_rupiah,
                         $is_verifikasi,
-                        $lembur->jml_insentif
+                        $lembur->jml_insentif,
+                        $capai_target
                     ];
                 }
             }else{
@@ -1503,7 +1510,8 @@ class DataLemburController extends AdminBaseController
                     $lembur4_rupiah,
                     $total_lembur_rupiah,
                     $is_verifikasi,
-                    $lembur->jml_insentif
+                    $lembur->jml_insentif,
+                    $capai_target
                 ];
             }
             $sheet->writeRow($data);
