@@ -2863,7 +2863,7 @@ class CutiKaryawanController extends AdminBaseController
                 'verifikasi_by'=>$verifikasi_by,
                 'operator' => $email,
                 'diajukan_oleh' => $email,
-                'is_verifikasi_pengajuan_admin' => 0,
+                'is_verifikasi_pengajuan_admin' => $is_verifikasi,
             ]);
         } else {
             return 0;

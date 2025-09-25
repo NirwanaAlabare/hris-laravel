@@ -242,7 +242,7 @@ class DataAbsenPerijinanController extends AdminBaseController
             'verifikasi_by'=>$verifikasi_by,
             'operator' => $email,
             'diajukan_oleh' => $email,
-            'is_verifikasi_pengajuan_admin' => 0,
+            'is_verifikasi_pengajuan_admin' => $is_verifikasi,
         ]);
 
         if ($query) {
@@ -642,7 +642,7 @@ class DataAbsenPerijinanController extends AdminBaseController
                 'verifikasi_by'=>$verifikasi_by,
                 'operator' => $email,
                 'diajukan_oleh' => $email,
-                'is_verifikasi_pengajuan_admin' => 1,
+                'is_verifikasi_pengajuan_admin' => $is_verifikasi,
             ]);
         } else {
             return 0;
@@ -1092,7 +1092,7 @@ class DataAbsenPerijinanController extends AdminBaseController
                             'operator' => 'system_injek_lebaran',
                             'is_verifikasi'=>1,
                             'verifikasi_by'=>'system',
-                            'is_verifikasi_pengajuan_admin' => 0,
+                            'is_verifikasi_pengajuan_admin' => 1,
                         ];
                         $query = DataAbsenPerijinan::create($perijinan);
 
@@ -1270,7 +1270,7 @@ class DataAbsenPerijinanController extends AdminBaseController
                 'verifikasi_by'=>$verifikasi_by,
                 'operator' => $email,
                 'diajukan_oleh' => $email,
-                'is_verifikasi_pengajuan_admin' => 0,
+                'is_verifikasi_pengajuan_admin' => $is_verifikasi,
             ]);
             if($data[0][$i][4]=='DL') {
                 $query1 = MasterDataAbsenKehadiran::whereBetween('tanggal_berjalan', [$tanggal_perizinan, $tanggal_perizinan])
