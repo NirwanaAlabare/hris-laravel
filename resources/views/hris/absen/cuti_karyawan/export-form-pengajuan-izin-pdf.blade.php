@@ -177,7 +177,7 @@
         <td style="width: 50%; vertical-align: top; padding-left: 20px;">
             {!! checkboxRow('Datang terlambat', 'DT', $data) !!}
             {!! checkboxRow('Pulang lebih awal', 'PC', $data) !!}
-            {!! checkboxRow('Ijin keluar perusahaan sementara', 'IK', $data) !!}
+            {!! checkboxRow('Ijin keluar perusahaan sementara', 'IKS', $data) !!}
         </td>
         <td style="width: 50%; vertical-align: top;">
              {!! checkboxRow('Dinas Luar', 'DL', $data) !!}

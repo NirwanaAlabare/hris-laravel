@@ -964,14 +964,45 @@ class CutiKaryawanController extends AdminBaseController
         if (!$data) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
+        // dd($data);
+        $periode = $this->getPeriode($data->tanggal_perizinan);
+        $tanggal = \Carbon\Carbon::parse($data->tanggal_perizinan)->format('d'); // ambil tanggal (22, 23, dst)
+        $kodeAbsen = $data->kode_absen_ijin;
+        if (in_array($kodeAbsen, ['S', 'I'])) {
+            $kodeAbsen = 'TK';
+        }
+        // format nama file
+        $fileName = $periode . ' ' . $tanggal . ' ' . $kodeAbsen . ' ' . $data->employee_name;
 
-        $fileName = 'Form Pengajuan Cuti ' . date('Y-m-d') . ' ' . rand(10, 1000000);
+
         $pdf = PDF::loadView('hris.absen.cuti_karyawan.export-form-pengajuan-izin-pdf', [
             'data' => $data
         ])->setPaper('A4', 'portrait');
 
         return $pdf->stream($fileName . '.pdf', ['Attachment' => false]);
     }
+
+    function getPeriode($tanggal)
+    {
+        $date = \Carbon\Carbon::parse($tanggal);
+
+        // ambil tanggal & bulan berjalan
+        $day = $date->day;
+        $month = $date->month;
+        $year = $date->year;
+
+        // logika cut-off: 26 bulan lalu -> 25 bulan berjalan
+        if ($day >= 26) {
+            // geser ke bulan berikut
+            $date->addMonth();
+            $month = $date->month;
+            $year = $date->year;
+        }
+
+        return substr($year, 2, 2) . str_pad($month, 2, '0', STR_PAD_LEFT);
+    }
+
+
     public function get_data_perizinan(Request $request) {
         $uuid = $request->input('uuid');
 
