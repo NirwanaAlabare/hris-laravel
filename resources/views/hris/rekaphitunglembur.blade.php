@@ -260,7 +260,7 @@
         $(document).ready(function() {
             var start = moment().subtract(29, 'days');
             var end = moment();
-            var htmlDateRange = '<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' - ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>'
+            var htmlDateRange = '<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>'
             $('#daterange-btn1').html(htmlDateRange);
             var daterange1 = start.format("YYYY-MM-DD") + " - " + end.format("YYYY-MM-DD");
             $('#daterange1').val(daterange1);
