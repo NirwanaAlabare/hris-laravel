@@ -90,7 +90,8 @@
                         <div class="expanel-body mr-0 mt-0 mb-0">
                             <div class="form-group m-0 p-0">
                                 <label class="form-label">Tanggal Lembur : </label>
-                                <input readonly id="daterange1" name="daterange1" type="text" class="form-control" placeholder="MM-DD-YYYY MM-DD-YYYY" maxlength="40" size="40">
+                                <input type="hidden" id="daterange1" name="daterange1">
+                                <a class="nav-link card-title py-2 pl-3" style="border: 1px solid #d8d4dc" id="daterange-btn1" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Klik di sini untuk pilih tanggal kehadiran"></a>
                             </div>
                         </div>
                     </div>
@@ -228,7 +229,7 @@
         });
 
         //Date range as a button
-        $('#daterange1').daterangepicker({
+       $('#daterange-btn1').daterangepicker({
             ranges: {
                 'Hari ini': [moment(), moment()],
                 'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -240,8 +241,10 @@
             startDate: moment().subtract(29, 'days'),
             endDate: moment()
         }, function(start, end) {
-            //
-        })
+            $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>');
+            var daterange1 = start.format("YYYY-MM-DD") + " - " + end.format("YYYY-MM-DD");
+            $('#daterange1').val(daterange1);
+        });
 
         $('body').on('click', '#btn-exportexcel', function (event) {
             notif({
@@ -252,6 +255,15 @@
 
         $('body').on('click', '#btn-refresh-page', function (event) {
             location.reload();
+        });
+
+        $(document).ready(function() {
+            var start = moment().subtract(29, 'days');
+            var end = moment();
+            var htmlDateRange = '<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' - ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>'
+            $('#daterange-btn1').html(htmlDateRange);
+            var daterange1 = start.format("YYYY-MM-DD") + " - " + end.format("YYYY-MM-DD");
+            $('#daterange1').val(daterange1);
         });
 
         $(document).ready(function() {
@@ -269,6 +281,7 @@
             var daterange1 = $('#daterange1').val();
             var searchName = $('#searchName').val();
 
+            console.log('daterange1',daterange1);
             var table1 = $('#datatable-ajax-crud').DataTable({
                 processing: true,
                 serverSide: true,
@@ -544,87 +557,4 @@
         });
 
     </script>
-
-     <!-- Andri -->
-
-     {{-- <script>
-        // $('.fc-datepickeraaaa').datepicker({
-        // format: 'Y',
-        // showButtonPanel: true
-        // })
-        // const datePicker = document.getElementById('report_date');
-
-        jQuery(document).ready(function($) {
-
-        $('#report_date').datepicker({
-            dateFormat: 'MM yy',
-            showButtonPanel: false,
-        })
-            const BtnProsesLembur = document.getElementsByClassName('BtnProsesLembur')[0];
-            const PriodeProses = document.getElementsByClassName("PriodeProses");
-
-            BtnProsesLembur.addEventListener('click', function(event) {
-                let tmp = PriodeProses[0].value;
-
-                if (tmp == ''||tmp==null) {
-                    swal({
-                        title: "Harap Pilih Periode",
-                        text: "Data Periode Lembur tidak boleh kosong",
-                        icon: "warning",
-                        button : false,
-                    });
-                } else{
-                    event.preventDefault();
-                    const submited =document.getElementsByTagName('form')[0];
-                    swal({
-                        title: 'Apakah Anda Yakin ?',
-                        text: 'Proses Lembur',
-                        type: "warning",
-                        showCancelButton: true,
-                        confirmButtonText: 'YES',
-                        cancelButtonText: 'NO'
-                    },function(isConfirm){
-                        if(isConfirm) {
-                            $('#BtnProsesLembur').addClass("btn-loading");
-                            $("#BtnProsesLembur").html('Please wait...');
-                            $("#BtnProsesLembur").attr("disabled", true);
-                            console.log('submited',submited);
-                            // $.ajax({
-                            //     data: $('#form_proses_Lembur').serialize(),
-                            //     url: '{{ route("hris.proses.lembur.rekap") }}',
-                            //     type: "post",
-                            //     success: function (data) {
-                            //         console.log('data',data);
-                            //         notif({
-                            //             msg: "<b>Info:</b> Data Berhasil di Proses.",
-                            //             type: "info"
-                            //         });
-
-                            //         $('#BtnProsesLembur').removeClass("btn-loading");
-                            //         $("#BtnProsesLembur").html('<span><i class="fa fa-download"></i></span> PROSES Lembur');
-                            //         $("#BtnProsesLembur").attr("disabled", false);
-
-                            //     },
-                            //     error: function (xhr, status, error) {
-                            //         console.log('error',error);
-                            //         notif({
-                            //             msg: "<b>Error:</b> Oops data gagal di Proses.",
-                            //             type: "error"
-                            //         });
-
-                            //         $('#BtnProsesLembur').removeClass("btn-loading");
-                            //         $("#BtnProsesLembur").attr("disabled", false);
-                            //         $("#BtnProsesLembur").html('<span><i class="fa fa-download"></i></span> PROSES Lembur');
-                            //     }
-                            // });
-
-                            cari_rekap_lembur()
-                        }
-                    });
-                }
-            });
-        });
-    </script> --}}
-
-
 @endsection

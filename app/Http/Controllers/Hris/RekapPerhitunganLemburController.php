@@ -48,14 +48,14 @@ class RekapPerhitunganLemburController extends AdminBaseController
     public function cekHari($tanggal, $bahasa = 'id') {
         // Konversi tanggal ke timestamp
         $timestamp = strtotime($tanggal);
-    
+
         if (!$timestamp) {
             return "Format tanggal tidak valid.";
         }
-    
+
         // Nama hari dalam bahasa Inggris
         $hariInggris = date('l', $timestamp);
-    
+
         // Array nama hari dalam bahasa Indonesia
         $hariIndonesia = [
             'Sunday'    => 'Minggu',
@@ -66,12 +66,12 @@ class RekapPerhitunganLemburController extends AdminBaseController
             'Friday'    => 'Jumat',
             'Saturday'  => 'Sabtu'
         ];
-    
+
         // Kembalikan nama hari sesuai bahasa
         if ($bahasa === 'id') {
             return $hariIndonesia[$hariInggris] ?? "Hari tidak ditemukan.";
         }
-    
+
         return $hariInggris; // Default ke bahasa Inggris
     }
 
@@ -79,6 +79,7 @@ class RekapPerhitunganLemburController extends AdminBaseController
     {
 
         $daterange1 = explode(" - ", $request->daterange1);
+        // dd($daterange1);
         $tanggalMulai = date('Y-m-d', strtotime($daterange1[0]));
         $tanggalSampai = date('Y-m-d', strtotime($daterange1[1]));
 
@@ -130,7 +131,7 @@ class RekapPerhitunganLemburController extends AdminBaseController
         $dir = $request->input('order.0.dir');
         $totalData = 0;
         $totalFiltered = 0;
-        
+
         if(empty($request->input('search.value')))
         {
             if(empty($daterange1)) {
@@ -151,8 +152,8 @@ class RekapPerhitunganLemburController extends AdminBaseController
                 ')
                 ->leftJoin('employee_atribut', 'rekap_perhitungan_lembur.enroll_id', '=', 'employee_atribut.enroll_id')
                 ->leftJoin(\DB::raw('(SELECT * FROM grading_salary) AS grading_salary'), function($leftjoin){
-                        $leftjoin->on(\DB::raw('SUBSTRING(grading_salary.periode_umk, 1, 4)'), 
-                        '=', 
+                        $leftjoin->on(\DB::raw('SUBSTRING(grading_salary.periode_umk, 1, 4)'),
+                        '=',
                         \DB::raw('SUBSTRING(rekap_perhitungan_lembur.tanggal_berjalan, 1, 4)'))
                         ->on('grading_salary.kode_grade','=','employee_atribut.kode_grade');
                     }
@@ -193,8 +194,8 @@ class RekapPerhitunganLemburController extends AdminBaseController
                 ')
                 ->leftJoin('employee_atribut', 'rekap_perhitungan_lembur.enroll_id', '=', 'employee_atribut.enroll_id')
                 ->leftJoin(\DB::raw('(SELECT * FROM grading_salary) AS grading_salary'), function($leftjoin){
-                        $leftjoin->on(\DB::raw('SUBSTRING(grading_salary.periode_umk, 1, 4)'), 
-                        '=', 
+                        $leftjoin->on(\DB::raw('SUBSTRING(grading_salary.periode_umk, 1, 4)'),
+                        '=',
                         \DB::raw('SUBSTRING(rekap_perhitungan_lembur.tanggal_berjalan, 1, 4)'))
                         ->on('grading_salary.kode_grade','=','employee_atribut.kode_grade');
                     }
@@ -341,7 +342,6 @@ class RekapPerhitunganLemburController extends AdminBaseController
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '4000M');
         $daterange1 = explode(" - ", $request->input('daterange1'));
-
         $fileName = 'RekapPerhitunganLembur_' . time() . '.xlsx';
         return (new RekapPerhitunganLemburExport)->exportParams($daterange1)->download($fileName);
 

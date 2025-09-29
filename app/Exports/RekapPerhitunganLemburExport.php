@@ -76,7 +76,10 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
 
     public function query()
     {
-        $dateRange = 'rekap_perhitungan_lembur.tanggal_berjalan between concat(substr("' . $this->daterange1[0] . '", 7, 4),"-",substr("' . $this->daterange1[0] . '", 1, 2),"-",substr("' . $this->daterange1[0] . '", 4, 2)) and concat(substr("' . $this->daterange1[1] . '", 7, 4),"-",substr("' . $this->daterange1[1] . '", 1, 2),"-",substr("' . $this->daterange1[1] . '", 4, 2))';
+        $startDate = date('Y-m-d', strtotime($this->daterange1[0]));
+        $endDate   = date('Y-m-d', strtotime($this->daterange1[1]));
+        // $dateRange = 'rekap_perhitungan_lembur.tanggal_berjalan between concat(substr("' . $this->daterange1[0] . '", 7, 4),"-",substr("' . $this->daterange1[0] . '", 1, 2),"-",substr("' . $this->daterange1[0] . '", 4, 2)) and concat(substr("' . $this->daterange1[1] . '", 7, 4),"-",substr("' . $this->daterange1[1] . '", 1, 2),"-",substr("' . $this->daterange1[1] . '", 4, 2))';
+        $dateRange = "rekap_perhitungan_lembur.tanggal_berjalan BETWEEN '$startDate' AND '$endDate'";
 
         $q =  RekapPerhitunganLembur::query()
                  ->selectRaw('
