@@ -176,6 +176,7 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
         if($role_user=='payroll' || $email='willy@ptnag.com'){
             $tanggal_berjalan = $Data->tanggal_berjalan;
         }
+        $tanggal_berjalan = date('d-m-Y', strtotime($tanggal_berjalan));
         $time='';
         if($Data->mulai_jam_kerja!=null || $Data->mulai_jam_kerja!=''){
             $mulai_jam_kerja = $Data->mulai_jam_kerja;
@@ -267,7 +268,6 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
         $total_lembur_rupiah = $Data->total_lembur_rupiah;
         $insentif = $Data->jml_insentif;
         $capai_target = ($Data->capai_target > 0 || $Data->capai_target != '' || $Data->capai_target != null) ? 'Mencapai' : 'Tidak Mencapai';
-
         return [
             $enroll_id,
             $nomor_form_lembur,
@@ -275,7 +275,8 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
             $status_staff,
             $department_name,
             $sub_dept_name,
-            $tanggal_berjalan,
+            // $tanggal_berjalan,
+            Date::stringToExcel($tanggal_berjalan),
             $time,
             $time2,
             $time3,
@@ -409,6 +410,7 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
         $role_user=$loggedAdmin->role_user;
         if($role_user=='payroll' || $email='willy@ptnag.com'){
             return [
+                'G' => NumberFormat::FORMAT_DATE_DDMMYYYY,
                 'H' => NumberFormat::FORMAT_DATE_TIME3,
                 'I' => NumberFormat::FORMAT_DATE_TIME3,
                 'J' => NumberFormat::FORMAT_DATE_TIME3,

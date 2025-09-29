@@ -337,7 +337,15 @@
                     {
                         title: 'TANGGAL',
                         data: 'tanggal_berjalan',
-                        name: 'tanggal_berjalan'
+                        name: 'tanggal_berjalan',
+                        render: function (data) {
+                            if (!data) return '';
+                            let date = new Date(data);
+                            let day = ("0" + date.getDate()).slice(-2);
+                            let month = ("0" + (date.getMonth() + 1)).slice(-2);
+                            let year = date.getFullYear();
+                            return `${day}-${month}-${year}`;
+                        }
                     },
                     {
                         title: 'KODE HARI',
