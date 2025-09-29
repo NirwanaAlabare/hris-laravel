@@ -398,7 +398,7 @@ class RecapLaborAll implements WithTitle, WithEvents, FromCollection, WithMappin
         ) f ON a.enroll_id = f.enroll_id AND a.tanggal_berjalan = f.tanggal_koreksi
         LEFT JOIN (
         SELECT enroll_id, tanggal_koreksi,
-            SUM(CASE WHEN jenis_potongan = 4 THEN jumlah_rp_potongan ELSE 0 END) AS potongan_piutang,
+            SUM(CASE WHEN jenis_potongan IN (4, 6) THEN jumlah_rp_potongan ELSE 0 END) AS potongan_piutang,
             SUM(CASE WHEN jenis_potongan = 5 THEN jumlah_rp_potongan ELSE 0 END) AS potongan_insentif,
             SUM(CASE WHEN jenis_potongan = 7 THEN jumlah_rp_potongan ELSE 0 END) AS potongan_upah,
             SUM(CASE WHEN jenis_potongan = 8 THEN jumlah_rp_potongan ELSE 0 END) AS potongan_lembur
