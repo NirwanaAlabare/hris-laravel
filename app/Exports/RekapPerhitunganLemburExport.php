@@ -230,8 +230,18 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
         }
         // $mulai_jam_lembur = $Data->mulai_jam_lembur;
         // $akhir_jam_lembur = $Data->akhir_jam_lembur;
-        $mulai_jam_lembur = \Carbon\Carbon::parse($Data->mulai_jam_lembur)->format('H:i:s');
-        $akhir_jam_lembur = \Carbon\Carbon::parse($Data->akhir_jam_lembur)->format('H:i:s');
+        // $mulai_jam_lembur = \Carbon\Carbon::parse($Data->mulai_jam_lembur)->format('H:i:s');
+        // $akhir_jam_lembur = \Carbon\Carbon::parse($Data->akhir_jam_lembur)->format('H:i:s');
+
+        $timestamp_mulai_lembur = new \DateTime($Data->mulai_jam_lembur);
+        $excelTimestamp_mulai_lembur = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp_mulai_lembur);
+        $excelDateMulaiLembur = floor($excelTimestamp_mulai_lembur);
+        $mulai_jam_lembur = $excelTimestamp_mulai_lembur - $excelDateMulaiLembur;
+
+        $timestamp_akhir_lembur = new \DateTime($Data->akhir_jam_lembur);
+        $excelTimestamp_akhir_lembur = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp_akhir_lembur);
+        $excelDateAkhirLembur = floor($excelTimestamp_akhir_lembur);
+        $akhir_jam_lembur = $excelTimestamp_akhir_lembur - $excelDateAkhirLembur;
 
         $nama_hari = $this->cekHari($Data->tanggal_berjalan);
 
@@ -254,9 +264,25 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
         }
 
 
-        $final_mulai_jam_lembur = $Data->final_mulai_jam_lembur;
-        $final_selesai_jam_lembur = $Data->final_selesai_jam_lembur;
-        $final_total_jam_lembur = $Data->final_total_jam_lembur;
+        // $final_mulai_jam_lembur = $Data->final_mulai_jam_lembur;
+        $timestamp_final_mulai_jam_lembur = new \DateTime($Data->final_mulai_jam_lembur);
+        $excelTimestamp_final_mulai_jam_lembur = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp_final_mulai_jam_lembur);
+        $excelDateFinalMulaiLembur = floor($excelTimestamp_final_mulai_jam_lembur);
+        $final_mulai_jam_lembur = $excelTimestamp_final_mulai_jam_lembur - $excelDateFinalMulaiLembur;
+
+        $timestamp_final_selesai_jam_lembur = new \DateTime($Data->final_selesai_jam_lembur);
+        $excelTimestamp_final_selesai_jam_lembur = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp_final_selesai_jam_lembur);
+        $excelDateFinalselesaiLembur = floor($excelTimestamp_final_selesai_jam_lembur);
+        $final_selesai_jam_lembur = $excelTimestamp_final_selesai_jam_lembur - $excelDateFinalMulaiLembur;
+
+        $timestamp_final_total_jam_lembur = new \DateTime($Data->final_total_jam_lembur);
+        $excelTimestamp_final_total_jam_lembur = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($timestamp_final_total_jam_lembur);
+        $excelDateFinaltotalLembur = floor($excelTimestamp_final_total_jam_lembur);
+        $final_total_jam_lembur = $excelTimestamp_final_total_jam_lembur - $excelDateFinalMulaiLembur;
+
+
+        // $final_selesai_jam_lembur = $Data->final_selesai_jam_lembur;
+        // $final_total_jam_lembur = $Data->final_total_jam_lembur;
         $final_jam_istirahat_lembur = $Data->final_jam_istirahat_lembur;
         $final_total_menit_lembur = $Data->final_total_menit_lembur;
         $final_jam_lembur_roundown = $Data->final_jam_lembur_roundown;
@@ -423,6 +449,11 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
                 'K' => NumberFormat::FORMAT_DATE_TIME3,
                 'L' => NumberFormat::FORMAT_DATE_TIME3,
                 'M' => NumberFormat::FORMAT_DATE_TIME3,
+                'N' => NumberFormat::FORMAT_DATE_TIME3,
+                'O' => NumberFormat::FORMAT_DATE_TIME3,
+                'R' => NumberFormat::FORMAT_DATE_TIME3,
+                'S' => NumberFormat::FORMAT_DATE_TIME3,
+                'T' => NumberFormat::FORMAT_DATE_TIME3,
             ];
         }else{
             return [
@@ -433,6 +464,11 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
                 'K' => NumberFormat::FORMAT_DATE_TIME3,
                 'L' => NumberFormat::FORMAT_DATE_TIME3,
                 'M' => NumberFormat::FORMAT_DATE_TIME3,
+                'N' => NumberFormat::FORMAT_DATE_TIME3,
+                'O' => NumberFormat::FORMAT_DATE_TIME3,
+                'R' => NumberFormat::FORMAT_DATE_TIME3,
+                'S' => NumberFormat::FORMAT_DATE_TIME3,
+                'T' => NumberFormat::FORMAT_DATE_TIME3,
             ];
         }
     }
