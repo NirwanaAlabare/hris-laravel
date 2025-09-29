@@ -228,8 +228,11 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
             $excelDate6 = floor($excelTimestamp6);
             $time6 = $excelTimestamp6 - $excelDate6;
         }
-        $mulai_jam_lembur = $Data->mulai_jam_lembur;
-        $akhir_jam_lembur = $Data->akhir_jam_lembur;
+        // $mulai_jam_lembur = $Data->mulai_jam_lembur;
+        // $akhir_jam_lembur = $Data->akhir_jam_lembur;
+        $mulai_jam_lembur = \Carbon\Carbon::parse($Data->mulai_jam_lembur)->format('H:i:s');
+        $akhir_jam_lembur = \Carbon\Carbon::parse($Data->akhir_jam_lembur)->format('H:i:s');
+
         $nama_hari = $this->cekHari($Data->tanggal_berjalan);
 
         $jumlah_menit_istirahat = '01:00';
