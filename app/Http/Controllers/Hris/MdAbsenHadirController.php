@@ -2099,131 +2099,25 @@ class MdAbsenHadirController extends AdminBaseController
                 foreach($kehardiran_arr as $val) {
                     $countEditedData=DataKehadiranInOutEdited::where('tanggal_absen', $val->tanggal_absen)->where('enroll_id','=', $val["enroll_id"])->count();
                     $count=LogDataGagalAbsen::where('tanggal_absen',$val->tanggal_absen)->where('enroll_id',$val["enroll_id"])->count();
-
-                    if($countEditedData<1 && $count<1){
-                        if($val["operator"]=='system' || $val["operator"]=='system_injek_lebaran') {
-                            if($val["status_absen"] == "TL" || $val["status_absen"] == "M" || $val["status_absen"] == "IKS" || $val["status_absen"] == "" || $val["status_absen"] == null || !$val["status_absen"] || $val["status_absen"] == "LN" || $val["status_absen"] == "LP" || $val["status_absen"] == "CT" || $val["status_absen"] == "L") {
-                                if($val["mulai_jam_kerja"]!=null){
-                                    if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"]=='LP'){
-                                        if($val["status_absen"]=='LP'){
-                                            if($value->absen_in!='' && $value->absen_out==''){
-                                                $status_absen=$val["status_absen"];
-                                            }else if($value->absen_in=='' && $value->absen_out==''){
-                                                $status_absen=$val["status_absen"];
-                                            }else if($value->absen_in=='' && $value->absen_out!=''){
-                                                $status_absen=$val["status_absen"];
+                    if($val->status_absen!='LP'){
+                        if($countEditedData<1 && $count<1){
+                            if($val["operator"]=='system' || $val["operator"]=='system_injek_lebaran') {
+                                if($val["status_absen"] == "TL" || $val["status_absen"] == "M" || $val["status_absen"] == "IKS" || $val["status_absen"] == "" || $val["status_absen"] == null || !$val["status_absen"] || $val["status_absen"] == "LN" || $val["status_absen"] == "LP" || $val["status_absen"] == "CT" || $val["status_absen"] == "L") {
+                                    if($val["mulai_jam_kerja"]!=null){
+                                        if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"]=='LP'){
+                                            if($val["status_absen"]=='LP'){
+                                                if($value->absen_in!='' && $value->absen_out==''){
+                                                    $status_absen=$val["status_absen"];
+                                                }else if($value->absen_in=='' && $value->absen_out==''){
+                                                    $status_absen=$val["status_absen"];
+                                                }else if($value->absen_in=='' && $value->absen_out!=''){
+                                                    $status_absen=$val["status_absen"];
+                                                }else{
+                                                    $status_absen=$value->status_absen;
+                                                }
                                             }else{
-                                                $status_absen=$value->status_absen;
-                                            }
-                                        }else{
-                                            $status_absen=$val["status_absen"];
-                                        }
-                                    }
-                                    else{
-                                        $status_absen=$value->status_absen;
-                                    }
-                                    // MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
-                                    // ->where('enroll_id', $val->enroll_id)->update([
-                                    //     'absen_masuk_kerja' => $value->absen_in,
-                                    //     'absen_pulang_kerja' => $value->absen_out,
-                                    //     'status_absen' => $status_absen
-                                    // ]);
-                                    $data_update_1[] = [
-                                        'tanggal_berjalan' => $val->tanggal_absen,
-                                        'enroll_id' => $val->enroll_id,
-                                        'absen_masuk_kerja' => $value->absen_in,
-                                        'absen_pulang_kerja' => $value->absen_out,
-                                        'status_absen' => $status_absen
-                                    ];
-                                }else{
-                                    if($val["mulai_lembur"]!=null && $val["akhir_lembur"]!=null){
-                                        if($val["mulai_lembur"]<$val["akhir_lembur"]){
-                                            if($val["status_absen"] == "LN"){
-                                                $status_absen='LN';
-                                            }
-                                            else{
-                                                $status_absen=$value->status_absen;
-                                            }
-                                            // MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
-                                            // ->where('enroll_id', $val->enroll_id)->update([
-                                            //     'absen_masuk_kerja' => $value->absen_in,
-                                            //     'absen_pulang_kerja' => $value->absen_out,
-                                            //     'status_absen' => $status_absen
-                                            // ]);
-                                            $data_update_1[] = [
-                                                'tanggal_berjalan' => $val->tanggal_absen,
-                                                'enroll_id' => $val->enroll_id,
-                                                'absen_masuk_kerja' => $value->absen_in,
-                                                'absen_pulang_kerja' => $value->absen_out,
-                                                'status_absen' => $status_absen
-                                            ];
-                                        }
-                                    }else{
-                                        $mulai_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('mulai_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->mulai_jam_kerja;
-                                        $akhir_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('akhir_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->akhir_jam_kerja;
-                                        if($mulai_jam_kerja_kemarin<$akhir_jam_kerja_kemarin){
-                                            if($val["status_absen"] == "LN" ||$val["status_absen"]=='IKS'){
                                                 $status_absen=$val["status_absen"];
                                             }
-                                            else{
-                                                $status_absen=$value->status_absen;
-                                            }
-                                            // MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
-                                            // ->where('enroll_id', $val->enroll_id)->update([
-                                            //     'absen_masuk_kerja' => $value->absen_in,
-                                            //     'absen_pulang_kerja' => $value->absen_out,
-                                            //     'status_absen' => $status_absen
-                                            // ]);
-                                            $data_update_1[] = [
-                                                'tanggal_berjalan' => $val->tanggal_absen,
-                                                'enroll_id' => $val->enroll_id,
-                                                'absen_masuk_kerja' => $value->absen_in,
-                                                'absen_pulang_kerja' => $value->absen_out,
-                                                'status_absen' => $status_absen
-                                            ];
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            if ($val["status_absen"] == "TL" || $val["status_absen"] == "M") {
-                                if($val["mulai_jam_kerja"]!=null){
-                                    if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"]=='LP'){
-                                        if($val["status_absen"]=='LP'){
-                                            if($value->absen_in!='' && $value->absen_out==''){
-                                                $status_absen=$val["status_absen"];
-                                            }else if($value->absen_in=='' && $value->absen_out==''){
-                                                $status_absen=$val["status_absen"];
-                                            }else if($value->absen_in=='' && $value->absen_out!=''){
-                                                $status_absen=$val["status_absen"];
-                                            }else{
-                                                $status_absen=$value->status_absen;
-                                            }
-                                        }else{
-                                            $status_absen=$val["status_absen"];
-                                        }
-                                    }
-                                    else{
-                                        $status_absen=$value->status_absen;
-                                    }
-                                    // MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
-                                    // ->where('enroll_id', $val->enroll_id)
-                                    // ->update([
-                                    //     'absen_masuk_kerja' => $value->absen_in,
-                                    //     'absen_pulang_kerja' => $value->absen_out,
-                                    //     'status_absen' => $status_absen
-                                    // ]);
-                                    $data_update_1[] = [
-                                        'tanggal_berjalan' => $val->tanggal_absen,
-                                        'enroll_id' => $val->enroll_id,
-                                        'absen_masuk_kerja' => $value->absen_in,
-                                        'absen_pulang_kerja' => $value->absen_out,
-                                        'status_absen' => $status_absen
-                                    ];
-                                }else{
-                                    if($val["mulai_lembur"]<$val["akhir_lembur"]){
-                                        if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"){
-                                            $status_absen=$val["status_absen"];
                                         }
                                         else{
                                             $status_absen=$value->status_absen;
@@ -2241,53 +2135,17 @@ class MdAbsenHadirController extends AdminBaseController
                                             'absen_pulang_kerja' => $value->absen_out,
                                             'status_absen' => $status_absen
                                         ];
-                                    }
-                                }
-                            }else{
-                                if($count<1){
-                                    if($val["mulai_jam_kerja"]!=null){
-                                        if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"] == "R"){
-                                            $status_absen=$val["status_absen"];
-                                        }
-                                        else{
-                                            if($val["status_absen"]=="S"||$val["status_absen"]=='LP'){
-                                                if($value->absen_in!='' && $value->absen_out==''){
-                                                    $status_absen=$val["status_absen"];
-                                                }else if($value->absen_in=='' && $value->absen_out==''){
-                                                    $status_absen=$val["status_absen"];
-                                                }else if($value->absen_in=='' && $value->absen_out!=''){
-                                                    $status_absen=$val["status_absen"];
-                                                }else{
-                                                    $status_absen=$value->status_absen;
-                                                }
-                                            }else{
-                                                $status_absen=$value->status_absen;
-                                            }
-                                        }
-                                        // MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
-                                        // ->where('enroll_id', $val->enroll_id)
-                                        // ->update([
-                                        //     'absen_masuk_kerja' => $value->absen_in,
-                                        //     'absen_pulang_kerja' => $value->absen_out,
-                                        //     'status_absen' => $status_absen
-                                        // ]);
-                                        $data_update_1[] = [
-                                            'tanggal_berjalan' => $val->tanggal_absen,
-                                            'enroll_id' => $val->enroll_id,
-                                            'absen_masuk_kerja' => $value->absen_in,
-                                            'absen_pulang_kerja' => $value->absen_out,
-                                            'status_absen' => $status_absen
-                                        ];
                                     }else{
-                                        if($val['nomor_form_lembur']!=null){
+                                        if($val["mulai_lembur"]!=null && $val["akhir_lembur"]!=null){
                                             if($val["mulai_lembur"]<$val["akhir_lembur"]){
-                                                if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"] == "R"){
-                                                    $status_absen=$val["status_absen"];
+                                                if($val["status_absen"] == "LN"){
+                                                    $status_absen='LN';
                                                 }
                                                 else{
-                                                    $status_absen=null;
+                                                    $status_absen=$value->status_absen;
                                                 }
-                                                // MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->update([
+                                                // MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
+                                                // ->where('enroll_id', $val->enroll_id)->update([
                                                 //     'absen_masuk_kerja' => $value->absen_in,
                                                 //     'absen_pulang_kerja' => $value->absen_out,
                                                 //     'status_absen' => $status_absen
@@ -2304,11 +2162,11 @@ class MdAbsenHadirController extends AdminBaseController
                                             $mulai_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('mulai_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->mulai_jam_kerja;
                                             $akhir_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('akhir_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->akhir_jam_kerja;
                                             if($mulai_jam_kerja_kemarin<$akhir_jam_kerja_kemarin){
-                                                if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"] == "R"){
+                                                if($val["status_absen"] == "LN" ||$val["status_absen"]=='IKS'){
                                                     $status_absen=$val["status_absen"];
                                                 }
                                                 else{
-                                                    $status_absen=null;
+                                                    $status_absen=$value->status_absen;
                                                 }
                                                 // MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
                                                 // ->where('enroll_id', $val->enroll_id)->update([
@@ -2327,47 +2185,189 @@ class MdAbsenHadirController extends AdminBaseController
                                         }
                                     }
                                 }
+                            } else {
+                                if ($val["status_absen"] == "TL" || $val["status_absen"] == "M") {
+                                    if($val["mulai_jam_kerja"]!=null){
+                                        if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"]=='LP'){
+                                            if($val["status_absen"]=='LP'){
+                                                if($value->absen_in!='' && $value->absen_out==''){
+                                                    $status_absen=$val["status_absen"];
+                                                }else if($value->absen_in=='' && $value->absen_out==''){
+                                                    $status_absen=$val["status_absen"];
+                                                }else if($value->absen_in=='' && $value->absen_out!=''){
+                                                    $status_absen=$val["status_absen"];
+                                                }else{
+                                                    $status_absen=$value->status_absen;
+                                                }
+                                            }else{
+                                                $status_absen=$val["status_absen"];
+                                            }
+                                        }
+                                        else{
+                                            $status_absen=$value->status_absen;
+                                        }
+                                        // MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
+                                        // ->where('enroll_id', $val->enroll_id)
+                                        // ->update([
+                                        //     'absen_masuk_kerja' => $value->absen_in,
+                                        //     'absen_pulang_kerja' => $value->absen_out,
+                                        //     'status_absen' => $status_absen
+                                        // ]);
+                                        $data_update_1[] = [
+                                            'tanggal_berjalan' => $val->tanggal_absen,
+                                            'enroll_id' => $val->enroll_id,
+                                            'absen_masuk_kerja' => $value->absen_in,
+                                            'absen_pulang_kerja' => $value->absen_out,
+                                            'status_absen' => $status_absen
+                                        ];
+                                    }else{
+                                        if($val["mulai_lembur"]<$val["akhir_lembur"]){
+                                            if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"){
+                                                $status_absen=$val["status_absen"];
+                                            }
+                                            else{
+                                                $status_absen=$value->status_absen;
+                                            }
+                                            // MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
+                                            // ->where('enroll_id', $val->enroll_id)->update([
+                                            //     'absen_masuk_kerja' => $value->absen_in,
+                                            //     'absen_pulang_kerja' => $value->absen_out,
+                                            //     'status_absen' => $status_absen
+                                            // ]);
+                                            $data_update_1[] = [
+                                                'tanggal_berjalan' => $val->tanggal_absen,
+                                                'enroll_id' => $val->enroll_id,
+                                                'absen_masuk_kerja' => $value->absen_in,
+                                                'absen_pulang_kerja' => $value->absen_out,
+                                                'status_absen' => $status_absen
+                                            ];
+                                        }
+                                    }
+                                }else{
+                                    if($count<1){
+                                        if($val["mulai_jam_kerja"]!=null){
+                                            if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"] == "R"){
+                                                $status_absen=$val["status_absen"];
+                                            }
+                                            else{
+                                                if($val["status_absen"]=="S"||$val["status_absen"]=='LP'){
+                                                    if($value->absen_in!='' && $value->absen_out==''){
+                                                        $status_absen=$val["status_absen"];
+                                                    }else if($value->absen_in=='' && $value->absen_out==''){
+                                                        $status_absen=$val["status_absen"];
+                                                    }else if($value->absen_in=='' && $value->absen_out!=''){
+                                                        $status_absen=$val["status_absen"];
+                                                    }else{
+                                                        $status_absen=$value->status_absen;
+                                                    }
+                                                }else{
+                                                    $status_absen=$value->status_absen;
+                                                }
+                                            }
+                                            // MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
+                                            // ->where('enroll_id', $val->enroll_id)
+                                            // ->update([
+                                            //     'absen_masuk_kerja' => $value->absen_in,
+                                            //     'absen_pulang_kerja' => $value->absen_out,
+                                            //     'status_absen' => $status_absen
+                                            // ]);
+                                            $data_update_1[] = [
+                                                'tanggal_berjalan' => $val->tanggal_absen,
+                                                'enroll_id' => $val->enroll_id,
+                                                'absen_masuk_kerja' => $value->absen_in,
+                                                'absen_pulang_kerja' => $value->absen_out,
+                                                'status_absen' => $status_absen
+                                            ];
+                                        }else{
+                                            if($val['nomor_form_lembur']!=null){
+                                                if($val["mulai_lembur"]<$val["akhir_lembur"]){
+                                                    if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"] == "R"){
+                                                        $status_absen=$val["status_absen"];
+                                                    }
+                                                    else{
+                                                        $status_absen=null;
+                                                    }
+                                                    // MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->update([
+                                                    //     'absen_masuk_kerja' => $value->absen_in,
+                                                    //     'absen_pulang_kerja' => $value->absen_out,
+                                                    //     'status_absen' => $status_absen
+                                                    // ]);
+                                                    $data_update_1[] = [
+                                                        'tanggal_berjalan' => $val->tanggal_absen,
+                                                        'enroll_id' => $val->enroll_id,
+                                                        'absen_masuk_kerja' => $value->absen_in,
+                                                        'absen_pulang_kerja' => $value->absen_out,
+                                                        'status_absen' => $status_absen
+                                                    ];
+                                                }
+                                            }else{
+                                                $mulai_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('mulai_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->mulai_jam_kerja;
+                                                $akhir_jam_kerja_kemarin=MasterDataAbsenKehadiran::where('tanggal_berjalan','<', $val->tanggal_absen)->where('enroll_id', $val->enroll_id)->whereNotNull('akhir_jam_kerja')->orderBy('tanggal_berjalan','DESC')->limit(1)->first()->akhir_jam_kerja;
+                                                if($mulai_jam_kerja_kemarin<$akhir_jam_kerja_kemarin){
+                                                    if($val["status_absen"] == "LN"||$val["status_absen"] == "IKS"||$val["status_absen"] == "DL"||$val["status_absen"] == "R"){
+                                                        $status_absen=$val["status_absen"];
+                                                    }
+                                                    else{
+                                                        $status_absen=null;
+                                                    }
+                                                    // MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
+                                                    // ->where('enroll_id', $val->enroll_id)->update([
+                                                    //     'absen_masuk_kerja' => $value->absen_in,
+                                                    //     'absen_pulang_kerja' => $value->absen_out,
+                                                    //     'status_absen' => $status_absen
+                                                    // ]);
+                                                    $data_update_1[] = [
+                                                        'tanggal_berjalan' => $val->tanggal_absen,
+                                                        'enroll_id' => $val->enroll_id,
+                                                        'absen_masuk_kerja' => $value->absen_in,
+                                                        'absen_pulang_kerja' => $value->absen_out,
+                                                        'status_absen' => $status_absen
+                                                    ];
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                        }
-                    }else if($countEditedData>0 && $count<1){
-                        $datakehadiraneditin = count(DataKehadiranInOutEdited::where('tanggal_absen', $val->tanggal_absen)->where('enroll_id','=', $val["enroll_id"])->where('absen_masuk_kerja','!=',null)->where('absen_pulang_kerja',null)->get());
-                        //gagal absen pagi
-                        if($datakehadiraneditin==1){
-                            if($value->absen_in!=null && $value->absen_out==null){
-                                if($value->absen_in>$datakehadiraneditin){
+                        }else if($countEditedData>0 && $count<1){
+                            $datakehadiraneditin = count(DataKehadiranInOutEdited::where('tanggal_absen', $val->tanggal_absen)->where('enroll_id','=', $val["enroll_id"])->where('absen_masuk_kerja','!=',null)->where('absen_pulang_kerja',null)->get());
+                            //gagal absen pagi
+                            if($datakehadiraneditin==1){
+                                if($value->absen_in!=null && $value->absen_out==null){
+                                    if($value->absen_in>$datakehadiraneditin){
+                                        // MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
+                                        // ->where('enroll_id', $val->enroll_id)
+                                        // ->update([
+                                        //     'absen_pulang_kerja' => $value->absen_in,
+                                        //     'status_absen'=>null
+                                        // ]);
+
+                                        $data_update_2[] = [
+                                            'tanggal_berjalan' => $val->tanggal_absen,
+                                            'enroll_id' => $val->enroll_id,
+                                            'absen_pulang_kerja' => $value->absen_in,
+                                            'status_absen' => null
+                                        ];
+                                    }
+                                }else if($value->absen_in!=null && $value->absen_out!=null){
                                     // MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
                                     // ->where('enroll_id', $val->enroll_id)
                                     // ->update([
-                                    //     'absen_pulang_kerja' => $value->absen_in,
+                                    //     'absen_pulang_kerja' => $value->absen_out,
                                     //     'status_absen'=>null
                                     // ]);
-
                                     $data_update_2[] = [
                                         'tanggal_berjalan' => $val->tanggal_absen,
                                         'enroll_id' => $val->enroll_id,
-                                        'absen_pulang_kerja' => $value->absen_in,
+                                        'absen_pulang_kerja' => $value->absen_out,
                                         'status_absen' => null
                                     ];
                                 }
-                            }else if($value->absen_in!=null && $value->absen_out!=null){
-                                // MasterDataAbsenKehadiran::where('tanggal_berjalan', $val->tanggal_absen)
-                                // ->where('enroll_id', $val->enroll_id)
-                                // ->update([
-                                //     'absen_pulang_kerja' => $value->absen_out,
-                                //     'status_absen'=>null
-                                // ]);
-                                $data_update_2[] = [
-                                    'tanggal_berjalan' => $val->tanggal_absen,
-                                    'enroll_id' => $val->enroll_id,
-                                    'absen_pulang_kerja' => $value->absen_out,
-                                    'status_absen' => null
-                                ];
                             }
                         }
                     }
                 }
             }
-
             foreach ($data_update_1 as $k => $v) {
                 MasterDataAbsenKehadiran::where('tanggal_berjalan', $v["tanggal_berjalan"])
                 ->where('enroll_id', $v["enroll_id"])
@@ -3254,18 +3254,6 @@ class MdAbsenHadirController extends AdminBaseController
                     }
                 }
             }
-
-
-            // foreach($data_update as $value){
-            //     MasterDataAbsenKehadiran::where('tanggal_berjalan', $value['tanggal_berjalan'])->where('enroll_id', $value['enroll_id'])
-            //     ->update([
-            //         'jumlah_menit_absen_dtpc'=>$value['jumlah_menit_absen_dtpc'],
-            //         'jumlah_absen_menit_kerja'=>$value['jumlah_absen_menit_kerja'],
-            //         'jumlah_menit_absen_dt'=>$value['jumlah_menit_absen_dt'],
-            //         'jumlah_menit_absen_pc'=>$value['jumlah_menit_absen_pc'],
-            //     ]);
-            // }
-
 
             $setClearMTL = MasterDataAbsenKehadiran::selectRaw("
                 substr(tanggal_berjalan,1, 10) tanggal_absen,
