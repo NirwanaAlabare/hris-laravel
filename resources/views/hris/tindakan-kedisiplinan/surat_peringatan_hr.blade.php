@@ -1863,10 +1863,10 @@ h1 {
                         // - Kalau SP < currentSP, disable (walaupun belum dipakai)
                         // - Kalau SP ada di history dan bukan currentSP, disable
 
-                        if (sp !== currentSP && (index < currentIndex || usedSPs.includes(sp))) {
-                            if (radio) radio.disabled = true;
-                            if (label) label.classList.add('disabled');
-                        }
+                        // if (sp !== currentSP && (index < currentIndex || usedSPs.includes(sp))) {
+                        //     if (radio) radio.disabled = true;
+                        //     if (label) label.classList.add('disabled');
+                        // }
                     });
 
                     const infoDiv = document.getElementById('info_sp_aktif_edit');
