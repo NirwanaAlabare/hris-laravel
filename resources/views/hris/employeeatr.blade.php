@@ -1720,8 +1720,8 @@
                 $("#btn-reset").prop("disabled", true);
                 $("#btn-cancel").prop("disabled", false);
                 $('#btn-save').html('<i class="fa fa-edit"></i> Update');
-                $("#btn-periksa_enroll_id").attr("disabled", true);
-                $("#enroll_id").attr("readonly", true);
+                // $("#btn-periksa_enroll_id").attr("disabled", true);
+                // $("#enroll_id").attr("readonly", true);
                 $('#is_periksaenroll_id').val(1);
                 // $("#btn-periksa_nik").attr("disabled", true);
                 // $("#nik").attr("readonly", true);
