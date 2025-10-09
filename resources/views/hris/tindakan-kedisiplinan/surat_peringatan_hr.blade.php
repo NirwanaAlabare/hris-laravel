@@ -2191,6 +2191,9 @@ h1 {
                         $("#ajax-modal-tambah").modal('hide');
                         setToNull();
                         closeModalBuatPengajuan();
+                        setTimeout(function myFunction() {
+                            location.reload();
+                        }, 1000);
                     },
                     error: function(res){
                         notif({
@@ -2278,6 +2281,9 @@ h1 {
                         $("#ajax-modal-tambah").modal('hide');
                         setToNull();
                         closeModalEditPengajuan();
+                        setTimeout(function myFunction() {
+                            location.reload();
+                        }, 1000);
                     },
                     error: function(res){
                         notif({

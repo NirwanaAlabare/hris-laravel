@@ -1559,6 +1559,9 @@ h1 {
                         tableReject.ajax.reload();
                         $("#ajax-modal-tambah").modal('hide');
                         setToNull();
+                        setTimeout(function myFunction() {
+                            location.reload();
+                        }, 1000);
                     },
                     error: function(res){
                         notif({
@@ -1665,6 +1668,9 @@ h1 {
                         $('input[name="tindakan_pendisiplinan_edit"][value="' + null + '"]').prop('checked', true);
                         $('#pelanggaran_edit').val(null);
                         $('#sumber_permasalahan_edit').val(null);
+                        setTimeout(function myFunction() {
+                            location.reload();
+                        }, 1000);
                     },
                     error: function(res){
                         notif({
