@@ -2926,6 +2926,7 @@ class CutiKaryawanController extends AdminBaseController
         }
 
         if ($absen) {
+
             DataAbsenPerijinan::where('uuid',request()->uuid)->update([
                 'kode_absen_ijin' => request()->kode_absen_ijin,
                 'absen_alasan' => request()->absen_alasan,
@@ -2941,7 +2942,6 @@ class CutiKaryawanController extends AdminBaseController
             return response()->json(['message' => 'Pengajuan sudah diverifikasi atau tidak ditemukan.'], 400);
         }
     }
-
     public function create_iks_menu_admin(Request $request)
     {
         $loggedAdmin = Auth::guard('admin')->user();
@@ -2961,13 +2961,63 @@ class CutiKaryawanController extends AdminBaseController
         $time_akhir_ijin = $request->time_akhir_ijin;
         $total_time_ijin = $request->total_time_ijin;
         $query = false;
+        $kode_hari = MasterDataAbsenKehadiran::select('kode_hari','mulai_jam_kerja','akhir_jam_kerja')->where('enroll_id',$enroll_id)->where('tanggal_berjalan',$tanggal_perizinan)->first();
+        $value = $kode_hari;
+        if($value->kode_hari == 4){
+            $jam_mulai_istirahat='11:30';
+            $jam_selesai_istirahat='12:30';
+        }
+        else{
+            if($value->mulai_jam_kerja == '06:00' && $value->akhir_jam_kerja == '15:00'){
+                $jam_mulai_istirahat='10:00';
+                $jam_selesai_istirahat='11:00';
+            }
+            elseif($value->mulai_jam_kerja == '16:00' && $value->akhir_jam_kerja == '23:00'){
+                $jam_mulai_istirahat='18:00';
+                $jam_selesai_istirahat='19:00';
+            }
+            else{
+                $jam_mulai_istirahat='12:00';
+                $jam_selesai_istirahat='13:00';
+            }
+        }
+
+        $mulaiIjin   = new DateTime($time_mulai_ijin);
+        $akhirIjin   = new DateTime($time_akhir_ijin);
+        $mulaiBreak  = new DateTime($jam_mulai_istirahat);
+        $akhirBreak  = new DateTime($jam_selesai_istirahat);
+
+        // Hitung total durasi ijin
+        $totalMinutes = ($akhirIjin->getTimestamp() - $mulaiIjin->getTimestamp()) / 60;
+
+        // Hitung overlap dengan jam istirahat
+        $overlapMulai = max($mulaiIjin->getTimestamp(), $mulaiBreak->getTimestamp());
+        $overlapAkhir = min($akhirIjin->getTimestamp(), $akhirBreak->getTimestamp());
+
+        $overlap = 0;
+        if ($overlapMulai < $overlapAkhir) {
+            $overlap = ($overlapAkhir - $overlapMulai) / 60;
+        }
+
+        // Total waktu ijin yang dihitung (diluar istirahat)
+        $total_time_ijin = $totalMinutes - $overlap;
+
+        // dd([
+        //     'mulai_ijin' => $time_mulai_ijin,
+        //     'akhir_ijin' => $time_akhir_ijin,
+        //     'mulai_jam_kerja' => $value->mulai_jam_kerja,
+        //     'akhir_jam_kerja' => $value->akhir_jam_kerja,
+        //     'istirahat_mulai' => $jam_mulai_istirahat,
+        //     'istirahat_akhir' => $jam_selesai_istirahat,
+        //     'total_ijin_dihitung' => $total_time_ijin,
+        //     'tanggal_akhir_ijin' => $request->tanggal_akhir_ijin
+        // ]);
 
 
         $query = DataAbsenPerijinan::create([
             'uuid' => Str::uuid(),
             'uuid_master' => $uuid_master,
             'tanggal_perizinan' => $tanggal_perizinan,
-            // 'nomor_form_perizinan' => $nomor_form_perizinan,
             'tanggal_mulai_ijin' => $tanggal_mulai_ijin,
             'tanggal_akhir_ijin' => $request->tanggal_akhir_ijin,
             'enroll_id' => $enroll_id,
