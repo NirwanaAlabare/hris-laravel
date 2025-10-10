@@ -554,7 +554,7 @@ class KoreksiUpahController extends AdminBaseController
             from (
                 -- SEWING
                 select
-                    b.no_form,
+                    a.no_form,
                     b.tgl_lembur,
                     a.enroll_id,
                     e.employee_name,
@@ -589,12 +589,12 @@ class KoreksiUpahController extends AdminBaseController
 
                 -- NON SEWING
                 select
-                    b.no_form,
+                    a.no_form,
                     b.tgl_lembur,
                     a.enroll_id,
                     e.employee_name,
                     e.nik,
-                    coalesce(c.ket, ns.keterangan) as ket,
+                    a.keterangan as ket,
                     SUBSTR(a.jam_lembur_awal_rencana,1,5) as jam_lembur_awal_rencana,
                     SUBSTR(a.jam_lembur_akhir_rencana,1,5) as jam_lembur_akhir_rencana,
                     a.jam_lembur_istirahat as jam_lembur_istirahat,
@@ -682,18 +682,58 @@ class KoreksiUpahController extends AdminBaseController
 
        $data = [];
 
+        // foreach (request()->enroll_id as $key => $enroll_id) {
+        //     $nik=EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('nik')[0];
+        //     $kode_koreksi_upah = $tanggal_lembur . $minute . $second . $nik;
+
+        //    DataKoreksiUpah::updateOrInsert(
+        //         [
+        //             'tanggal_koreksi' => $tanggal_lembur,
+        //             'jenis_koreksi' => 4,
+        //             'enroll_id' => $enroll_id,
+        //         ],
+        //         [
+        //             'uuid' => Str::uuid(),
+        //             'nomor_form_koreksi_upah' => $nomor_form_lembur,
+        //             'kode_koreksi_upah' => $kode_koreksi_upah,
+        //             'jumlah_rp_potongan' => request()->jumlah_insentif[$key] ?? 0,
+        //             'periode_tanggal_koreksi' => $periode_tanggal_koreksi,
+        //             'keterangan' => request()->keterangan[$key] ?? '',
+        //             'operator' => $email,
+        //             'is_verifikasi_acc' => 0,
+        //         ]
+        //     );
+        // }
+
         foreach (request()->enroll_id as $key => $enroll_id) {
-            $nik=EmployeeAtribut::where('enroll_id',request()->enroll_id[$key])->pluck('nik')[0];
+            $nik = EmployeeAtribut::where('enroll_id', $enroll_id)->value('nik');
             $kode_koreksi_upah = $tanggal_lembur . $minute . $second . $nik;
 
-           DataKoreksiUpah::updateOrInsert(
-                [
+            // Cek apakah data sudah ada
+            $existing = DataKoreksiUpah::where([
+                'tanggal_koreksi' => $tanggal_lembur,
+                'jenis_koreksi' => 4,
+                'enroll_id' => $enroll_id,
+            ])->first();
+
+            if ($existing) {
+                // Jika sudah ada, update (biarkan is_verifikasi_acc tetap)
+                $existing->update([
+                    'uuid' => $existing->uuid ?? Str::uuid(),
+                    'nomor_form_koreksi_upah' => $nomor_form_lembur,
+                    'kode_koreksi_upah' => $kode_koreksi_upah,
+                    'jumlah_rp_potongan' => request()->jumlah_insentif[$key] ?? 0,
+                    'periode_tanggal_koreksi' => $periode_tanggal_koreksi,
+                    'keterangan' => request()->keterangan[$key] ?? '',
+                    'operator' => $email,
+                ]);
+            } else {
+                // Jika belum ada, insert baru dengan is_verifikasi_acc = 0
+                DataKoreksiUpah::create([
+                    'uuid' => Str::uuid(),
                     'tanggal_koreksi' => $tanggal_lembur,
                     'jenis_koreksi' => 4,
                     'enroll_id' => $enroll_id,
-                ],
-                [
-                    'uuid' => Str::uuid(),
                     'nomor_form_koreksi_upah' => $nomor_form_lembur,
                     'kode_koreksi_upah' => $kode_koreksi_upah,
                     'jumlah_rp_potongan' => request()->jumlah_insentif[$key] ?? 0,
@@ -701,9 +741,10 @@ class KoreksiUpahController extends AdminBaseController
                     'keterangan' => request()->keterangan[$key] ?? '',
                     'operator' => $email,
                     'is_verifikasi_acc' => 0,
-                ]
-            );
+                ]);
+            }
         }
+
     }
 
     public function ajax_getnomorspl_upah(Request $request)
