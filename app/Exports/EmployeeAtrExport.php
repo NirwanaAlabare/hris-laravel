@@ -251,7 +251,6 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
         $alamat_rumah = $Data->alamat_rumah;
         $alamat_sementara = $Data->alamat_sementara;
         $site_nirwana_id = $Data->site_nirwana_id;
-        $site_nirwana_name = $Data->site_nirwana_name;
         $department_id = $Data->department_id;
         $department_name = $Data->department_name;
         $sub_dept_id = $Data->sub_dept_id;
@@ -306,6 +305,17 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
         $rt=$Data->rt;
         $rw=$Data->rw;
         $kode_pos=$Data->kode_pos;
+        $site_nirwana_name = $Data->site_nirwana_name;
+
+        if($site_nirwana_name=="PT. NIRWANA ALABARE GARMENT"){
+            $site_nirwana_name="GARMENT";
+        }elseif($site_nirwana_name=="PT. NIRWANA ALABARE KNITTING"){
+            $site_nirwana_name="KNITTING";
+        }elseif($site_nirwana_name=="PT. NIRWANA ALABARE GARMENT - DAGO"){
+            $site_nirwana_name="DAGO";
+        }else{
+            $site_nirwana_name=$site_nirwana_name;
+        }
 
         return [
             (string)$site_nirwana_name,
@@ -582,7 +592,7 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
                 $sheet->mergeCells('A2:D2');
                 $sheet->mergeCells('A3:D3');
 
-                $sheet->setCellValue('A5', 'PERUSAHAAN');
+                $sheet->setCellValue('A5', 'DIVISI');
                 $sheet->setCellValue('B5', 'ID');
                 $sheet->setCellValue('C5', 'NIP');
                 $sheet->setCellValue('D5', 'NAMA KARYAWAN');
