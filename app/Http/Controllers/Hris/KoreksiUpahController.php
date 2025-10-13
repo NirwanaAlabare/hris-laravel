@@ -720,7 +720,7 @@ class KoreksiUpahController extends AdminBaseController
                 // Jika sudah ada, update (biarkan is_verifikasi_acc tetap)
                 $existing->update([
                     'uuid' => $existing->uuid ?? Str::uuid(),
-                    'nomor_form_koreksi_upah' => $nomor_form_lembur,
+                    // 'nomor_form_koreksi_upah' => $nomor_form_lembur,
                     'kode_koreksi_upah' => $kode_koreksi_upah,
                     'jumlah_rp_potongan' => request()->jumlah_insentif[$key] ?? 0,
                     'periode_tanggal_koreksi' => $periode_tanggal_koreksi,
