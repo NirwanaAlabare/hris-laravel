@@ -4254,13 +4254,14 @@ class ProsesPayrollController extends AdminBaseController
                     $potongan_bpjs_tk=$data_potongan->where('sub_dept_id',$value->sub_dept_id)->where('status_jabatan','NON STAFF')->where('jenis_potongan','1')->sum('jumlah_rp_potongan');
                     $potongan_bpjs_ks=$data_potongan->where('sub_dept_id',$value->sub_dept_id)->where('status_jabatan','NON STAFF')->where('jenis_potongan','2')->sum('jumlah_rp_potongan');
                     $potongan_bazzar=$data_potongan->where('sub_dept_id',$value->sub_dept_id)->where('status_jabatan','NON STAFF')->where('jenis_potongan','3')->sum('jumlah_rp_potongan');
-                    $potongan_kasbon=$data_potongan->where('sub_dept_id',$value->sub_dept_id)->where('status_jabatan','NON STAFF')->where('jenis_potongan','4')->sum('jumlah_rp_potongan');
+                    $potongan_kasbon=$data_potongan->where('sub_dept_id',$value->sub_dept_id)->where('status_jabatan','NON STAFF')->where('jenis_potongan','6')->sum('jumlah_rp_potongan');
                     $potongan_lain=$data_potongan->where('sub_dept_id',$value->sub_dept_id)->where('status_jabatan','NON STAFF')->where('jenis_potongan','5')->sum('jumlah_rp_potongan');
                     $koreksi_upah=$data_koreksi->where('sub_dept_id',$value->sub_dept_id)->where('status_jabatan','NON STAFF')->where('jenis_koreksi','1')->sum('jumlah_rp_potongan');
                     $koreksi_insentif=$data_koreksi->where('sub_dept_id',$value->sub_dept_id)->where('status_jabatan','NON STAFF')->where('jenis_koreksi','2')->sum('jumlah_rp_potongan');
                     $payroll=RekapPerhitunganPayroll::where('periode_tahun_payroll',$year)->where('periode_bulan_payroll', $month)->where('periode_umk',null)
                         ->where('kategori_karyawan','NON STAFF')->where('sub_dept_id',$value->sub_dept_id)
                         ->where('total_kehadiran_net','>',0)->get();
+
 
                     $rp_cuti_tahuna=0;
                     $potongan_kehadiran_rupiah= $payroll->sum('potongan_kehadiran_rupiah');
@@ -4271,7 +4272,9 @@ class ProsesPayrollController extends AdminBaseController
                     $gaji_umk=$payroll->sum('upah_per_bulan');
                     $pembulatan=$payroll->sum('pembulatan');
                     $gaji=$gaji_umk+ $pembulatan + $koreksi_upah;
-                    $tunjangan_karyawan_rupiah=$payroll->sum('tunjangan_karyawan_rupiah')+$koreksi_insentif;
+                    $insentif_jabatan = $payroll->sum('insentif_jabatan');
+                    $premi_karyawan = $payroll->sum('premi_karyawan');
+                    $tunjangan_karyawan_rupiah=($payroll->sum('tunjangan_karyawan_rupiah')+$koreksi_insentif +$insentif_jabatan + $premi_karyawan);
                     $total_lembur_rupiah=$payroll->sum('total_lembur_rupiah');
                     $bonus=0;
                     $piutang_karyawan=$potongan_kasbon;
