@@ -2355,6 +2355,8 @@
             var sub_dept_id = $('#sub_dept_id').val();
             var enroll_id = $('#enroll_id').val();
             var join_date = $('#join_date').val();
+            var tanggal_mulai_kontrak = $('#tanggal_mulai_kontrak').val();
+            var tanggal_akhir_kontrak = $('#tanggal_akhir_kontrak').val();
             var nik = $('#nik').val();
             var status_aktif = $('#status_aktif').val();
             var status_staff = $('#status_staff').val();
@@ -2567,6 +2569,28 @@
 
                 return false;
             }
+            if(!tanggal_mulai_kontrak)
+            {
+                notif({
+                    msg: "<b>Error:</b> Oops Tanggal Mulai Kontrak belum di pilih.",
+                    type: "error"
+                });
+
+                $("#tanggal_mulai_kontrak").addClass('border-danger');
+
+                return false;
+            }
+            if(!tanggal_akhir_kontrak)
+            {
+                notif({
+                    msg: "<b>Error:</b> Oops Tanggal Akhir Kontrak belum di pilih.",
+                    type: "error"
+                });
+
+                $("#tanggal_akhir_kontrak").addClass('border-danger');
+
+                return false;
+            }
 
             if(!status_staff)
             {
@@ -2631,8 +2655,8 @@
                             tanggal_vaccine2 = defaultDate($('#tanggal_vaccine2').val());
                             tanggal_vaccine3 = defaultDate($('#tanggal_vaccine3').val());
                             tanggal_expire_sim = defaultDate($('#tanggal_expire_sim').val());
-                            tanggal_mulai_kontrak = defaultDate($('#tanggal_mulai_kontrak').val());
-                            tanggal_akhir_kontrak = defaultDate($('#tanggal_akhir_kontrak').val());
+                            tanggal_mulai_kontrak = defaultDate(tanggal_mulai_kontrak);
+                            tanggal_akhir_kontrak = defaultDate(tanggal_akhir_kontrak);
 
                             var form1Data = {
                                 employee_name:employee_name,
@@ -2817,8 +2841,8 @@
                 tanggal_vaccine2 = defaultDate($('#tanggal_vaccine2').val());
                 tanggal_vaccine3 = defaultDate($('#tanggal_vaccine3').val());
                 tanggal_expire_sim = defaultDate($('#tanggal_expire_sim').val());
-                tanggal_mulai_kontrak = defaultDate($('#tanggal_mulai_kontrak').val());
-                tanggal_akhir_kontrak = defaultDate($('#tanggal_akhir_kontrak').val());
+                tanggal_mulai_kontrak = defaultDate(tanggal_mulai_kontrak);
+                tanggal_akhir_kontrak = defaultDate(tanggal_akhir_kontrak);
 
                 var form1Data = {
                     employee_name:employee_name,
