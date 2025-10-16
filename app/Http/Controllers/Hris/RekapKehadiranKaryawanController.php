@@ -516,7 +516,7 @@ class RekapKehadiranKaryawanController extends AdminBaseController
         $grand_total=[];
         $data_tanggal_absensi=MasterDataAbsenKehadiran::select('tanggal_berjalan')->whereHas('employee_atribut',function($query){
             $query->where('site_nirwana_id','!=','SA');
-        })->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->where('enroll_id','5321')->pluck('tanggal_berjalan');
+        })->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->where('enroll_id','4241')->pluck('tanggal_berjalan');
         $jumlah_tanggal_absensi=count($data_tanggal_absensi)+1;
         $ijin_bayar=RefAbsenIjin::where('kode_ijin_payroll','IBY')->get()->toArray();
         $IBY=array_column($ijin_bayar,'kode_absen_ijin');
@@ -562,6 +562,7 @@ class RekapKehadiranKaryawanController extends AdminBaseController
                 $query->where('site_nirwana_id','!=','SA');
             })->where('tanggal_berjalan','<=',$date_now)->where('status_absen','R')->count()
         ];
+
         foreach($data_tanggal_absensi as $key=>$value){
             $tanggal_absensi[$key]=$value;
             $month_year[$key]=substr($value,0,7);
@@ -1159,6 +1160,7 @@ class RekapKehadiranKaryawanController extends AdminBaseController
             $no++;
             $periode_bulan[$no]=$value;
         }
+
         $persentase_non_sewing=[];
         $persentase_sewing=[];
         $persentase_non_sewing_present=[];
@@ -1211,8 +1213,8 @@ class RekapKehadiranKaryawanController extends AdminBaseController
                 'total'=>$total_persentase_sewing_absent
             ];
         }
-        $bulan_pertama=MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->where('tanggal_berjalan','like',$periode_bulan[0].'%')->where('enroll_id','5321')->count();
-        $bulan_kedua=MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->where('tanggal_berjalan','like',$periode_bulan[1].'%')->where('enroll_id','5321')->count();
+        $bulan_pertama=MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->where('tanggal_berjalan','like',$periode_bulan[0].'%')->where('enroll_id','4241')->count();
+        $bulan_kedua=MasterDataAbsenKehadiran::select('tanggal_berjalan')->where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->where('tanggal_berjalan','like',$periode_bulan[1].'%')->where('enroll_id','4241')->count();
         $sub_dept_names=DepartmentAll::where('site_nirwana_id','NAG')->get();
         $all_dept=[];
         foreach($sub_dept_names as $key=>$value){
