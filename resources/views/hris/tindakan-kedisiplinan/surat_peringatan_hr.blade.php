@@ -1428,6 +1428,7 @@ h1 {
                 } else {
                     sampaiDate.setMonth(sampaiDate.getMonth() + 3);
                 }
+                 sampaiDate.setDate(sampaiDate.getDate() - 1);
                 const endDate = formatTanggal(sampaiDate);
 
                 $('#tanggal_berlaku_mulai').val(startDate);
