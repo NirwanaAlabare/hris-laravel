@@ -480,14 +480,16 @@ class FormLemburNonSewingController extends AdminBaseController
             delete from mut_karyawan_input_form_lembur_tmp_det where created_by = '$user'
             ");
 
-            return array(
-                "status" => 200,
-                "message" => 'No Transaksi :
-                 ' . $kode_trans . '
-                 Sudah Terbuat',
-                "additional" => [],
-                "redirect" => 'reload'
-            );
+            // return array(
+            //     "status" => 200,
+            //     "message" => 'No Transaksi :
+            //      ' . $kode_trans . '
+            //      Sudah Terbuat',
+            //     "additional" => [],
+            //     "redirect" => route('flns.index')
+            // );
+            return redirect()->route('flns.index')->with('success', 'Data berhasil disimpan.');
+
         } else {
             return array(
                 "status" => 400,

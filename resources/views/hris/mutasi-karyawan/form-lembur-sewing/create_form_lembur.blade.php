@@ -96,6 +96,7 @@
     </div>
     <form id="form" name='form' method='post' action="{{ route('fls.store') }}"
         onsubmit="submitForm(this, event)">
+        @csrf
         <div class="card card-sb">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center ">
@@ -237,11 +238,7 @@
                                 </a>
                             </div>
                             <div class="p-2 bd-highlight">
-                                {{-- <a class="btn btn-outline-success" onclick="simpan()">
-                                <i class="fas fa-check"></i>
-                                Simpan
-                            </a> --}}
-                                <button type="submit" class="btn btn-outline-success">Simpan </button>
+                                <button type="submit" class="btn btn-outline-success" id="submitBtn" onclick="disableButton(this)">Simpan </button>
                             </div>
                         </div>
                     </div>
@@ -270,7 +267,11 @@
         }
     </style>
     <script>
-
+         function disableButton(btn) {
+            btn.disabled = true;
+            btn.innerHTML = 'Menyimpan...'; // Optional
+            btn.form.submit();
+        }
         var html5QrcodeScanner = null;
 
         $("#from_lembur").timepicker({
