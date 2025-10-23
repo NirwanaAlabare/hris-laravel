@@ -127,7 +127,7 @@ class MutasiKaryawanController extends AdminBaseController
 
     public function get_mutasi_list(Request $request){
         ini_set('max_execution_time', 0);
-        ini_set('memory_limit', '10240000000000000M');
+        // ini_set('memory_limit', '10240000000000000M');
 
         $tgl_skrg = Carbon::now()->isoFormat('D MMMM Y hh:mm:ss');
         $tglskrg = date('Y-m-d');
