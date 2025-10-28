@@ -53,7 +53,7 @@ class RekapPerhitunganIksExport implements FromQuery, WithMapping, ShouldAutoSiz
                 ->selectRaw('
                     rekap_perhitungan_iks.uuid,
                     rekap_perhitungan_iks.nomor_form_perizinan,
-                    date_format(rekap_perhitungan_iks.tanggal_berjalan, "%d-%m-%Y"),
+                    rekap_perhitungan_iks.tanggal_berjalan,
                     rekap_perhitungan_iks.enroll_id,
                     employee_atribut.nik,
                     employee_atribut.employee_name,
