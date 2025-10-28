@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\DB;
 
 use Auth;
 
-class RekapPerhitunganIksExport implements FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle
+class RekapPerhitunganIksExport implements FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle,WithColumnFormatting
 {
     use Exportable;
 
@@ -197,6 +197,13 @@ class RekapPerhitunganIksExport implements FromQuery, WithMapping, ShouldAutoSiz
                 $sheet->mergeCells('H5:H6');
                 $sheet->mergeCells('S5:S6');
             },
+        ];
+    }
+
+    public function columnFormats(): array
+    {
+        return [
+            'A' => NumberFormat::FORMAT_DATE_DDMMYYYY
         ];
     }
 
