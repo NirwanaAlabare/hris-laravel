@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\DB;
 
 use Auth;
 
-class RekapPerhitunganIksExport implements FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle
+class RekapPerhitunganIksExport implements FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle,WithColumnFormatting
 {
     use Exportable;
 
@@ -73,7 +73,7 @@ class RekapPerhitunganIksExport implements FromQuery, WithMapping, ShouldAutoSiz
                     IFNULL(rekap_perhitungan_iks.potongan_iks_rupiah, 0) potongan_dt_rupiah
                 ')
                 ->whereRaw('
-                    rekap_perhitungan_iks.tanggal_berjalan BETWEEN "' .$this->tanggalMulai . '" and "' . $this->tanggalSampai . '"                
+                    rekap_perhitungan_iks.tanggal_berjalan BETWEEN "' .$this->tanggalMulai . '" and "' . $this->tanggalSampai . '"
                 ')
                 ->leftJoin('employee_atribut','employee_atribut.enroll_id','=','rekap_perhitungan_iks.enroll_id')
                 ->leftJoin('department_all','department_all.sub_dept_id','=','employee_atribut.sub_dept_id')
@@ -82,7 +82,7 @@ class RekapPerhitunganIksExport implements FromQuery, WithMapping, ShouldAutoSiz
                 ->orderBy('employee_atribut.employee_name','asc')
                 ->orderBy('rekap_perhitungan_iks.tanggal_berjalan','asc')
                 ->limit(1);
-       
+
         return $q;
     }
 
@@ -94,6 +94,7 @@ class RekapPerhitunganIksExport implements FromQuery, WithMapping, ShouldAutoSiz
     public function map($Data): array
     {
         $tanggal_berjalan = $Data->tanggal_berjalan;
+        $tanggal_berjalan = date('d-m-Y', strtotime($tanggal_berjalan));
         $nomor_form_perizinan = $Data->nomor_form_perizinan;
         $enroll_id = $Data->enroll_id;
         $nik = $Data->nik;
@@ -114,7 +115,7 @@ class RekapPerhitunganIksExport implements FromQuery, WithMapping, ShouldAutoSiz
         $potongan_dt_rupiah = $Data->potongan_dt_rupiah;
 
         return [
-            $tanggal_berjalan,
+            Date::stringToExcel($tanggal_berjalan),
             $nomor_form_perizinan,
             $enroll_id,
             $nik,
@@ -156,7 +157,7 @@ class RekapPerhitunganIksExport implements FromQuery, WithMapping, ShouldAutoSiz
                 $sheet->mergeCells('A1:D1');
                 $sheet->mergeCells('A2:D2');
                 $sheet->mergeCells('A3:D3');
-    
+
                 $sheet->setCellValue('A5', 'Tanggal');
                 $sheet->setCellValue('B5', 'Nomor Perizinan');
                 $sheet->setCellValue('C5', 'Nomor Absen');
@@ -196,6 +197,13 @@ class RekapPerhitunganIksExport implements FromQuery, WithMapping, ShouldAutoSiz
                 $sheet->mergeCells('H5:H6');
                 $sheet->mergeCells('S5:S6');
             },
+        ];
+    }
+
+    public function columnFormats(): array
+    {
+        return [
+            'A' => NumberFormat::FORMAT_DATE_DDMMYYYY
         ];
     }
 
