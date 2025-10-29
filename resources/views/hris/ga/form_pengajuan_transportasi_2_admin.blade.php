@@ -18,7 +18,7 @@
                 <a class="btn btn-primary" style="background-color:blue" href="{{route('hris.ga.form_pengajuan_transportasi')}}">Formulir</a>
             </li>
             <li class="nav-item">
-                @if ($id_user==4241 || $id_user==20 || $id_user==7765 || $id_user==6083)
+                @if ($id_user==4241 || $id_user==20 || $id_user==8590 || $id_user==6083)
                 <a class="btn btn-white" style="background-color:rgb(228, 228, 228); position: relative; padding-right: 40px; padding-left: 40px" href="{{route('hris.ga.data_pengajuan_transportasi_admin')}}">Data <span class="text-dark h-5 w-5" style="font-weight:bold; background-color:#d2eafc; border:1px solid #0091ff;font-size:10px; display: flex; justify-content: center; align-items: center;position: absolute; top: 7px; right: 10px; border-radius: 100%;">{{$pengajuan_transportasi}}</span></a>
                 @else
                     <a class="btn btn-white" href="{{route('hris.ga.data_pengajuan_transportasi_admin')}}">Data</a>
