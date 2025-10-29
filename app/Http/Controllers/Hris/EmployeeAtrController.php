@@ -34,6 +34,7 @@ use App\Models\LogDataGagalAbsen;
 use Carbon\Carbon;
 use PDF;
 use Illuminate\Support\Facades\Storage;
+
 /**
  * Class MdAbsenHadirController
  * @package App\Http\Controllers\Hris
@@ -53,136 +54,140 @@ class EmployeeAtrController extends AdminBaseController
         $loggedAdmin = Auth::guard('admin')->user();
         $this->loggedAdmin = $loggedAdmin;
         $this->divisi = $this->ajax_getselectdivisi();
-        $department=DepartmentAll::select('department_name')->distinct()->orderBy('department_id')->groupBy('department_id')->get();
-        $jabatan=EmployeeAtribut::orderBy('created_at')->groupBy('status_jabatan')->pluck('status_jabatan');
+        $department = DepartmentAll::select('department_name')->distinct()->orderBy('department_id')->groupBy('department_id')->get();
+        $jabatan = EmployeeAtribut::orderBy('created_at')->groupBy('status_jabatan')->pluck('status_jabatan');
 
-        return View::make('hris/employeeatr', $this->data,compact('department','jabatan'));
+        return View::make('hris/employeeatr', $this->data, compact('department', 'jabatan'));
     }
-    public function export_pdf_id_card(){
-        $print_by=request()->print_by;
-        $employee=EmployeeAtribut::where('enroll_id',request()->enroll_id)->where(function ($query){
-            $query->where('status_aktif','AKTIF')
-            ->orWhere(function($queryes){
-                $queryes->where('status_aktif','TIDAK AKTIF');
-            });
+    public function export_pdf_id_card()
+    {
+        $print_by = request()->print_by;
+        $employee = EmployeeAtribut::where('enroll_id', request()->enroll_id)->where(function ($query) {
+            $query->where('status_aktif', 'AKTIF')
+                ->orWhere(function ($queryes) {
+                    $queryes->where('status_aktif', 'TIDAK AKTIF');
+                });
         })->get();
-        $pdf = PDF::loadView('hris.Laporan.id_card',["employee" => $employee,"print_by"=>$print_by])->stream('Id card karyawan'.'.pdf',array('Attachment'=>0));
+        $pdf = PDF::loadView('hris.Laporan.id_card', ["employee" => $employee, "print_by" => $print_by])->stream('Id card karyawan' . '.pdf', array('Attachment' => 0));
         return $pdf;
     }
-    public function export_pdf_id_card_department(){
-        $inDepartment='';
-        $print_by=request()->print_by;
-        if(request()->department){
-            $inDepartment=' AND department_name = "'.request()->department.'"';
+    public function export_pdf_id_card_department()
+    {
+        $inDepartment = '';
+        $print_by = request()->print_by;
+        if (request()->department) {
+            $inDepartment = ' AND department_name = "' . request()->department . '"';
         }
-        $inSubDepartment='';
-        if(request()->sub_department){
-            $inSubDepartment=' AND sub_dept_id = "'.request()->sub_department.'"';
+        $inSubDepartment = '';
+        if (request()->sub_department) {
+            $inSubDepartment = ' AND sub_dept_id = "' . request()->sub_department . '"';
         }
-        $employee=EmployeeAtribut::whereRaw('status_aktif!=""'.$inDepartment.''.$inSubDepartment.'')->where(function ($query){
-            $query->where('status_aktif','AKTIF')
-            ->orWhere(function($queryes){
-                $queryes->where('status_aktif','TIDAK AKTIF');
-            });
+        $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . $inSubDepartment . '')->where(function ($query) {
+            $query->where('status_aktif', 'AKTIF')
+                ->orWhere(function ($queryes) {
+                    $queryes->where('status_aktif', 'TIDAK AKTIF');
+                });
         })->get();
-        $pdf = PDF::loadView('hris.Laporan.id_card_department',["employee" => $employee,"print_by"=>$print_by])->setPaper('letter', 'landscape')->stream('Id card karyawan department'.'.pdf',array('Attachment'=>0));
+        $pdf = PDF::loadView('hris.Laporan.id_card_department', ["employee" => $employee, "print_by" => $print_by])->setPaper('letter', 'landscape')->stream('Id card karyawan department' . '.pdf', array('Attachment' => 0));
         return $pdf;
     }
 
-    public function export_pdf_id_card_employee(){
-        $print_by=request()->print_by;
-        $employees=explode(",",request()->employee);
-        $employee=EmployeeAtribut::whereIn('enroll_id',$employees)->get();
-        $pdf = PDF::loadView('hris.Laporan.id_card_department', ["employee" => $employee,  "print_by"=>$print_by])
-        ->setPaper('letter', 'landscape')
-        ->setOptions([
-            'margin-top' => 0,
-            'margin-bottom' => 0,
-            'margin-left' => 0,
-            'margin-right' => 0,
-        ])
-        ->stream('Id card karyawan department.pdf', ['Attachment' => 0]);
+    public function export_pdf_id_card_employee()
+    {
+        $print_by = request()->print_by;
+        $employees = explode(",", request()->employee);
+        $employee = EmployeeAtribut::whereIn('enroll_id', $employees)->get();
+        $pdf = PDF::loadView('hris.Laporan.id_card_department', ["employee" => $employee,  "print_by" => $print_by])
+            ->setPaper('letter', 'landscape')
+            ->setOptions([
+                'margin-top' => 0,
+                'margin-bottom' => 0,
+                'margin-left' => 0,
+                'margin-right' => 0,
+            ])
+            ->stream('Id card karyawan department.pdf', ['Attachment' => 0]);
 
-    return $pdf;
-
+        return $pdf;
     }
 
-    public function select_employee(){
-        $inDepartment='';
-        if(request()->department){
-            $inDepartment=' AND department_name = "'.request()->department.'"';
+    public function select_employee()
+    {
+        $inDepartment = '';
+        if (request()->department) {
+            $inDepartment = ' AND department_name = "' . request()->department . '"';
         }
-        $inSubDepartment='';
-        if(request()->sub_department){
-            $inSubDepartment=' AND sub_dept_id = "'.request()->sub_department.'"';
+        $inSubDepartment = '';
+        if (request()->sub_department) {
+            $inSubDepartment = ' AND sub_dept_id = "' . request()->sub_department . '"';
         }
-        $employee=EmployeeAtribut::whereRaw('status_aktif!=""'.$inDepartment.''.$inSubDepartment.'')->where(function ($query){
-            $query->where('status_aktif','AKTIF')
-            ->orWhere(function($queryes){
-                $queryes->where('status_aktif','TIDAK AKTIF');
-            });
+        $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . $inSubDepartment . '')->where(function ($query) {
+            $query->where('status_aktif', 'AKTIF')
+                ->orWhere(function ($queryes) {
+                    $queryes->where('status_aktif', 'TIDAK AKTIF');
+                });
         })->get();
         return $employee;
     }
-    public function get_employee(){
-        $employee=EmployeeAtribut::where('enroll_id',request()->id)->get();
+    public function get_employee()
+    {
+        $employee = EmployeeAtribut::where('enroll_id', request()->id)->get();
         return $employee;
     }
-    public function store_photo(){
+    public function store_photo()
+    {
         $image = request()->file('photo');
-        $employee=EmployeeAtribut::where('enroll_id',request()->enroll_id)->get();
-        $enroll_id='';
-        $employee_name='';
-        foreach($employee as $value){
-            $nik=$value->nik;
-            $employee_name=$value->employee_name;
+        $employee = EmployeeAtribut::where('enroll_id', request()->enroll_id)->get();
+        $enroll_id = '';
+        $employee_name = '';
+        foreach ($employee as $value) {
+            $nik = $value->nik;
+            $employee_name = $value->employee_name;
         }
         // $new_name = $nik.'_'.$employee_name.'_profile_photo_'.date('y-m-d').'_'.rand(). '.' . $image->getClientOriginalExtension();
-        $new_name = $nik.'.' . $image->getClientOriginalExtension();
+        $new_name = $nik . '.' . $image->getClientOriginalExtension();
         $image->move(public_path('storage/app/public/images'), $new_name);
-        EmployeeAtribut::where('enroll_id',request()->enroll_id)->update([
-            'lokasi_foto'=>$new_name
+        EmployeeAtribut::where('enroll_id', request()->enroll_id)->update([
+            'lokasi_foto' => $new_name
         ]);
         return request()->enroll_id;
     }
 
-  public function change_photo_profile(Request $request)
-{
-    $request->validate([
-        'photo' => 'required|image|mimes:jpeg,png,jpg|max:2048'
-    ]);
+    public function change_photo_profile(Request $request)
+    {
+        $request->validate([
+            'photo' => 'required|image|mimes:jpeg,png,jpg|max:2048'
+        ]);
 
-    $admin = Auth::guard('admin')->user();
+        $admin = Auth::guard('admin')->user();
 
-    $image = $request->file('photo');
+        $image = $request->file('photo');
 
-    $filename = $admin->nik . '_' . Str::random(5) . '.' . $image->getClientOriginalExtension();
+        $filename = $admin->nik . '_' . Str::random(5) . '.' . $image->getClientOriginalExtension();
 
-    // Simpan file ke storage/app/public/images/profile
-    $path = $image->storeAs('public/images/profile', $filename); // path internal, bukan URL
+        // Simpan file ke storage/app/public/images/profile
+        $path = $image->storeAs('public/images/profile', $filename); // path internal, bukan URL
 
-    // Simpan nama file ke database (opsional)
-    $admin->path_foto = $filename;
-    $admin->save();
+        // Simpan nama file ke database (opsional)
+        $admin->path_foto = $filename;
+        $admin->save();
 
-    // Buat full URL yang bisa diakses di browser
-    $publicUrl = asset(Storage::url($path)); // menghasilkan /storage/images/profile/namafile.jpg
+        // Buat full URL yang bisa diakses di browser
+        $publicUrl = asset(Storage::url($path)); // menghasilkan /storage/images/profile/namafile.jpg
 
-    return response()->json([
-        'message' => 'Upload berhasil',
-        'photo_url' => $publicUrl
-    ]);
-}
+        return response()->json([
+            'message' => 'Upload berhasil',
+            'photo_url' => $publicUrl
+        ]);
+    }
 
     private function ajax_getselectdivisi()
     {
         $query =  DepartmentAll::selectRaw('site_nirwana_id, site_nirwana_name')
-                                 ->groupby('site_nirwana_name')
-                                 ->orderby('site_nirwana_name', 'asc')
-                                 ->get();
+            ->groupby('site_nirwana_name')
+            ->orderby('site_nirwana_name', 'asc')
+            ->get();
 
         return $query;
-
     }
 
     public function ajax_getselectdept(Request $request)
@@ -190,14 +195,13 @@ class EmployeeAtrController extends AdminBaseController
         $site_nirwana_id = $request->site_nirwana_id;
 
         $query =  DepartmentAll::selectRaw('department_id, department_name')
-                                 ->whereRaw('site_nirwana_id = "' . $site_nirwana_id . '"')
-                                 ->where('status','AKTIF')
-                                 ->groupby('department_name')
-                                 ->orderby('department_name', 'asc')
-                                 ->get();
+            ->whereRaw('site_nirwana_id = "' . $site_nirwana_id . '"')
+            ->where('status', 'AKTIF')
+            ->groupby('department_name')
+            ->orderby('department_name', 'asc')
+            ->get();
 
         return $query;
-
     }
 
     public function ajax_getselectsubdept(Request $request)
@@ -206,13 +210,12 @@ class EmployeeAtrController extends AdminBaseController
         $department_id = $request->department_id;
 
         $query =  DepartmentAll::selectRaw('sub_dept_id, sub_dept_name')
-                                 ->whereRaw('site_nirwana_id = "' . $site_nirwana_id . '" and department_id = "' . $department_id . '"')
-                                 ->groupby('sub_dept_name')
-                                 ->orderby('sub_dept_name', 'asc')
-                                 ->get();
+            ->whereRaw('site_nirwana_id = "' . $site_nirwana_id . '" and department_id = "' . $department_id . '"')
+            ->groupby('sub_dept_name')
+            ->orderby('sub_dept_name', 'asc')
+            ->get();
 
         return $query;
-
     }
 
     public function ajax_periksaenroll_id(Request $request)
@@ -220,713 +223,705 @@ class EmployeeAtrController extends AdminBaseController
         $enroll_id = $request->enroll_id;
 
         $query =  EmployeeAtribut::where('enroll_id', '=', $enroll_id)
-                                 ->count();
+            ->count();
 
-        if($query > 0) {
+        if ($query > 0) {
             return false;
         } else {
             return true;
         }
-
     }
 
     public function ajax_periksanik(Request $request)
     {
-        $enroll_id=request()->enroll_id;
-        $nik=strtoupper($request->nik);
-        $site_nirwana_id = preg_replace('/[^A-Z]/', '', substr($nik,0,3));
-        $enroll_id_nik=substr($nik,-4);
+        $enroll_id = request()->enroll_id;
+        $nik = strtoupper($request->nik);
+        $site_nirwana_id = preg_replace('/[^A-Z]/', '', substr($nik, 0, 3));
+        $enroll_id_nik = substr($nik, -4);
         $site_nirwana_array = DepartmentAll::groupBy('site_nirwana_id')->pluck('site_nirwana_id')->toArray();
-        if (!in_array($site_nirwana_id, $site_nirwana_array) && $enroll_id!=$enroll_id_nik) {
+        if (!in_array($site_nirwana_id, $site_nirwana_array) && $enroll_id != $enroll_id_nik) {
             return false;
-        }else if (in_array($site_nirwana_id, $site_nirwana_array) && $enroll_id!=$enroll_id_nik) {
+        } else if (in_array($site_nirwana_id, $site_nirwana_array) && $enroll_id != $enroll_id_nik) {
             return false;
-        }else if (!in_array($site_nirwana_id, $site_nirwana_array) && $enroll_id==$enroll_id_nik) {
-            if($site_nirwana_id='SGT'){
+        } else if (!in_array($site_nirwana_id, $site_nirwana_array) && $enroll_id == $enroll_id_nik) {
+            if ($site_nirwana_id = 'SGT') {
                 return true;
-            }else{
+            } else {
                 return false;
             }
-        }else{
+        } else {
             $query =  EmployeeAtribut::where('nik', '=', $nik)->count();
-            if($query > 0) {
+            if ($query > 0) {
                 return false;
             } else {
                 return true;
             }
         }
-
     }
 
 
     public function ajax_getemployeeatr(Request $request)
     {
 
-        if(request()->ajax()) {
+        if (request()->ajax()) {
 
-        $columns = array(
-            0 => '',
-            1 => 'nik',
-            2 => 'enroll_id',
-            3 => 'employee_name'
-        );
-
-        $limit = $request->input('length');
-        $start = $request->input('start');
-        $order = $columns[$request->input('order.0.column')];
-        $dir = $request->input('order.0.dir');
-        $totalData = 0;
-        $totalFiltered = 0;
-        $department=$request->department_id;
-        $sub_dept_id=$request->sub_dept_id;
-        $inDepartment='';
-        $inSubDepartment='';
-        if($department){
-            $inDepartment = ' AND department_name = "'.$department.'"';
-        }
-        if($sub_dept_id){
-            $inSubDepartment = ' AND sub_dept_id = "'.$sub_dept_id.'"';
-        }
-        if(empty($request->input('search.value')))
-        {
-            $query =  EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')
-            ->leftJoin(\DB::raw('
-            (select y.enroll_id id_kontrak,y.id id_employee_kontrak,y.contract,y.contract_end from (
-                select a.enroll_id,a.id,e.contract,e.contract_end from (select enroll_id,max(contract) contract,max(contract_end) contract_end from employee_contract group by enroll_id)e
-                inner join (select id,enroll_id,contract,contract_end from employee_contract)a on e.enroll_id=a.enroll_id and e.contract_end=a.contract_end)y
-                ) AS employee_cont'),
-            'employee_atribut.enroll_id', '=', 'employee_cont.id_kontrak')->groupBy('employee_atribut.enroll_id')->offset($start)->limit($limit)->orderBy($order,$dir)->get();
-            $totalData = EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')->count();
-            $totalFiltered = $totalData;
-
-        } else {
-            $search = $request->input('search.value');
-
-            $query =  EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
-                $query->where('employee_id','LIKE',$search)
-                ->orWhere('nik',$search)
-                ->orWhere('enroll_id',$search)
-                ->orWhere('employee_name','LIKE',"%{$search}%")
-                ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
-                ->orWhere('department_name','LIKE',"%{$search}%")
-                ->orWhere('sub_dept_name','LIKE',"%{$search}%")
-                ->orWhere('work_status','LIKE',"%{$search}%")
-                ->orWhere('employee_status','LIKE',"%{$search}%")
-                ->orWhere('posisi_name','LIKE',"%{$search}%");
-            })->leftJoin(\DB::raw('
-            (select y.enroll_id id_kontrak,y.id id_employee_kontrak,y.contract,y.contract_end from (
-                select a.enroll_id,a.id,e.contract,e.contract_end from (select enroll_id,max(contract) contract,max(contract_end) contract_end from employee_contract group by enroll_id)e
-                inner join (select id,enroll_id,contract,contract_end from employee_contract)a on e.enroll_id=a.enroll_id and e.contract_end=a.contract_end)y
-                ) AS employee_cont'),
-            'employee_atribut.enroll_id', '=', 'employee_cont.id_kontrak')
-            ->groupBy('employee_atribut.enroll_id')
-            ->offset($start)
-            ->limit($limit)
-            ->orderBy($order,$dir)
-            ->get();
-
-            $totalData = EmployeeAtribut::whereRaw('status_aktif is not null'.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
-                $query->where('employee_id',$search)
-                ->orWhere('nik',$search)
-                ->orWhere('enroll_id',$search)
-                ->orWhere('employee_name','LIKE',"%{$search}%")
-                ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
-                ->orWhere('department_name','LIKE',"%{$search}%")
-                ->orWhere('sub_dept_name','LIKE',"%{$search}%")
-                ->orWhere('work_status','LIKE',"%{$search}%")
-                ->orWhere('employee_status','LIKE',"%{$search}%")
-                ->orWhere('posisi_name','LIKE',"%{$search}%");
-            })->count();
-
-            $totalFiltered = $totalData;
-
-        }
-
-        $data = array();
-        if(!empty($query))
-        {
-            foreach ($query as $q)
-            {
-                $nestedData['employee_id'] = $q->employee_id;
-                $nestedData['employee_name'] = $q->employee_name;
-                $nestedData['jenis_kelamin'] = $q->jenis_kelamin;
-                $nestedData['tempat_lahir'] = $q->tempat_lahir;
-                $nestedData['tanggal_lahir'] = $q->tanggal_lahir;
-                $nestedData['golongan_darah'] = $q->golongan_darah;
-                $nestedData['email'] = $q->email;
-                $nestedData['nomor_tlpn'] = $q->nomor_tlpn;
-                $nestedData['agama'] = $q->agama;
-                $nestedData['status_kawin'] = $q->status_kawin;
-                $nestedData['npwp'] = $q->npwp;
-                $nestedData['nomor_ktp'] = $q->nomor_ktp;
-                $nestedData['nomor_kk'] = $q->nomor_kk;
-                $nestedData['ptkp'] = $q->ptkp;
-                $nestedData['pendidikan_terakhir'] = $q->pendidikan_terakhir;
-                $nestedData['jurusan_pendidikan'] = $q->jurusan_pendidikan;
-                $nestedData['nama_bank'] = $q->nama_bank;
-                $nestedData['nomor_rekening_bank'] = $q->nomor_rekening_bank;
-                $nestedData['ibu_kandung'] = $q->ibu_kandung;
-                $nestedData['propinsi'] = $q->propinsi;
-                $nestedData['kota_kab'] = $q->kota_kab;
-                $nestedData['kecamatan'] = $q->kecamatan;
-                $nestedData['kelurahan_desa'] = $q->kelurahan_desa;
-                $nestedData['alamat_rumah'] = $q->alamat_rumah;
-                $nestedData['alamat_sementara'] = $q->alamat_sementara;
-                $nestedData['site_nirwana_id'] = $q->site_nirwana_id;
-                $nestedData['site_nirwana_name'] = $q->site_nirwana_name;
-                $nestedData['department_id'] = $q->department_id;
-                $nestedData['department_name'] = $q->department_name;
-                $nestedData['sub_dept_id'] = $q->sub_dept_id;
-                $nestedData['sub_dept_name'] = $q->sub_dept_name;
-                $nestedData['sewing_nonsewing'] = $q->sewing_nonsewing;
-                $nestedData['direct_indirect'] = $q->direct_indirect;
-                $nestedData['enroll_id'] = $q->enroll_id;
-                $nestedData['join_date'] = $q->join_date;
-
-                $new_employee = 0;
-                $bulanKemarin = date('Y-m-d', strtotime('first day of last month'));
-                $bulanSkrng = date('Y-m-d', strtotime('last day of this month'));
-                if (($q->join_date >= $bulanKemarin) && ($q->join_date <= $bulanSkrng)) {
-                    $new_employee = 1;
-                }
-
-                $nestedData['new_employee'] = $new_employee;
-
-                $nestedData['nik'] = $q->nik;
-                $nestedData['status_aktif'] = $q->status_aktif;
-                $nestedData['status_jabatan'] = $q->status_jabatan;
-                $nestedData['status_kontrak_tetap'] = $q->status_kontrak_tetap;
-                $nestedData['status_staff'] = $q->status_staff;
-
-                $nestedData['tanggal_resign'] = $q->tanggal_resign;
-                $nestedData['sebab_resign'] = $q->sebab_resign;
-                $deactive = 0;
-                if (($q->tanggal_resign <= now()) && ($q->tanggal_resign !== null ) ) {
-                    $deactive = 1;
-                }
-
-                $nestedData['deactive'] = $deactive;
-
-                $nestedData['tunjangan'] = $q->tunjangan;
-                $nestedData['kode_grade'] = $q->kode_grade;
-                $nestedData['referensi'] = $q->referensi;
-                $nestedData['employee_name_atasan'] = $q->employee_name_atasan;
-                $nestedData['status_aktif_bpjs_tk'] = $q->status_aktif_bpjs_tk;
-                $nestedData['tanggal_bpjs_ketenagakerjaan'] = $q->tanggal_bpjs_ketenagakerjaan;
-                $nestedData['nomor_bpjs_ketenagakerjaan'] = $q->nomor_bpjs_ketenagakerjaan;
-                $nestedData['status_aktif_bpjs_ks'] = $q->status_aktif_bpjs_ks;
-                $nestedData['tanggal_bpjs_kesehatan'] = $q->tanggal_bpjs_kesehatan;
-                $nestedData['nomor_bpjs_kesehatan'] = $q->nomor_bpjs_kesehatan;
-                $nestedData['premi'] = $q->premi;
-                $nestedData['pengalaman_bekerja'] = $q->pengalaman_bekerja;
-                $nestedData['lokasi_file_cv'] = $q->lokasi_file_cv;
-                $nestedData['nama_kerabat'] = $q->nama_kerabat;
-                $nestedData['nomor_tlpn_kerabat'] = $q->nomor_tlpn_kerabat;
-                $nestedData['hubungan_kerabat'] = $q->hubungan_kerabat;
-                $nestedData['alamat_kerabat'] = $q->alamat_kerabat;
-                $nestedData['tanggal_vaccine1'] = $q->tanggal_vaccine1;
-                $nestedData['nama_vaksin1'] = $q->nama_vaksin1;
-                $nestedData['tanggal_vaccine2'] = $q->tanggal_vaccine2;
-                $nestedData['nama_vaksin2'] = $q->nama_vaksin2;
-                $nestedData['tanggal_vaccine3'] = $q->tanggal_vaccine3;
-                $nestedData['nama_vaksin3'] = $q->nama_vaksin3;
-                $nestedData['golongan_sim'] = $q->golongan_sim;
-                $nestedData['nomor_sim'] = $q->nomor_sim;
-                $nestedData['tanggal_expire_sim'] = $q->tanggal_expire_sim;
-                $nestedData['catatan'] = $q->catatan;
-                $nestedData['no_surat'] = $q->no_surat;
-                $nestedData['lokasi_foto'] = $q->lokasi_foto;
-                $nestedData['operator'] = $q->operator;
-                $nestedData['tanggal_mulai_kontrak'] = $q->tanggal_mulai_kontrak;
-                $nestedData['tanggal_akhir_kontrak'] = $q->tanggal_akhir_kontrak;
-                $nestedData['catatan_kontrak'] = $q->catatan_kontrak;
-                $nestedData['kontrak_awal']=$q->contract;
-                $nestedData['kontrak_akhir']=$q->contract_end;
-                $nestedData['created_at'] = substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5);
-                $nestedData['updated_at'] = substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5);
-                $nestedData['alamat_jalan'] = $q->alamat_jalan;
-                $nestedData['rt'] = $q->rt;
-                $nestedData['rw'] = $q->rw;
-                $nestedData['kode_pos'] = $q->kode_pos;
-
-                $data[] = $nestedData;
-
-            }
-        }
-        $json_data = array(
-            "draw"            => intval($request->input('draw')),
-            "recordsTotal"    => intval($totalData),
-            "recordsFiltered" => intval($totalFiltered),
-            "data"            => $data
+            $columns = array(
+                0 => '',
+                1 => 'nik',
+                2 => 'enroll_id',
+                3 => 'employee_name'
             );
 
-        echo json_encode($json_data);
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $order = $columns[$request->input('order.0.column')];
+            $dir = $request->input('order.0.dir');
+            $totalData = 0;
+            $totalFiltered = 0;
+            $department = $request->department_id;
+            $sub_dept_id = $request->sub_dept_id;
+            $inDepartment = '';
+            $inSubDepartment = '';
+            if ($department) {
+                $inDepartment = ' AND department_name = "' . $department . '"';
+            }
+            if ($sub_dept_id) {
+                $inSubDepartment = ' AND sub_dept_id = "' . $sub_dept_id . '"';
+            }
+            if (empty($request->input('search.value'))) {
+                $query =  EmployeeAtribut::whereRaw('status_aktif is not null' . $inDepartment . '' . $inSubDepartment . '')
+                    ->leftJoin(
+                        \DB::raw('
+            (select y.enroll_id id_kontrak,y.id id_employee_kontrak,y.contract,y.contract_end from (
+                select a.enroll_id,a.id,e.contract,e.contract_end from (select enroll_id,max(contract) contract,max(contract_end) contract_end from employee_contract group by enroll_id)e
+                inner join (select id,enroll_id,contract,contract_end from employee_contract)a on e.enroll_id=a.enroll_id and e.contract_end=a.contract_end)y
+                ) AS employee_cont'),
+                        'employee_atribut.enroll_id',
+                        '=',
+                        'employee_cont.id_kontrak'
+                    )->groupBy('employee_atribut.enroll_id')->offset($start)->limit($limit)->orderBy($order, $dir)->get();
+                $totalData = EmployeeAtribut::whereRaw('status_aktif is not null' . $inDepartment . '' . $inSubDepartment . '')->count();
+                $totalFiltered = $totalData;
+            } else {
+                $search = $request->input('search.value');
+
+                $query =  EmployeeAtribut::whereRaw('status_aktif is not null' . $inDepartment . '' . $inSubDepartment . '')->where(function ($query) use ($search) {
+                    $query->where('employee_id', 'LIKE', $search)
+                        ->orWhere('nik', $search)
+                        ->orWhere('enroll_id', $search)
+                        ->orWhere('employee_name', 'LIKE', "%{$search}%")
+                        ->orWhere('site_nirwana_name', 'LIKE', "%{$search}%")
+                        ->orWhere('department_name', 'LIKE', "%{$search}%")
+                        ->orWhere('sub_dept_name', 'LIKE', "%{$search}%")
+                        ->orWhere('work_status', 'LIKE', "%{$search}%")
+                        ->orWhere('employee_status', 'LIKE', "%{$search}%")
+                        ->orWhere('posisi_name', 'LIKE', "%{$search}%");
+                })->leftJoin(
+                    \DB::raw('
+            (select y.enroll_id id_kontrak,y.id id_employee_kontrak,y.contract,y.contract_end from (
+                select a.enroll_id,a.id,e.contract,e.contract_end from (select enroll_id,max(contract) contract,max(contract_end) contract_end from employee_contract group by enroll_id)e
+                inner join (select id,enroll_id,contract,contract_end from employee_contract)a on e.enroll_id=a.enroll_id and e.contract_end=a.contract_end)y
+                ) AS employee_cont'),
+                    'employee_atribut.enroll_id',
+                    '=',
+                    'employee_cont.id_kontrak'
+                )
+                    ->groupBy('employee_atribut.enroll_id')
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy($order, $dir)
+                    ->get();
+
+                $totalData = EmployeeAtribut::whereRaw('status_aktif is not null' . $inDepartment . '' . $inSubDepartment . '')->where(function ($query) use ($search) {
+                    $query->where('employee_id', $search)
+                        ->orWhere('nik', $search)
+                        ->orWhere('enroll_id', $search)
+                        ->orWhere('employee_name', 'LIKE', "%{$search}%")
+                        ->orWhere('site_nirwana_name', 'LIKE', "%{$search}%")
+                        ->orWhere('department_name', 'LIKE', "%{$search}%")
+                        ->orWhere('sub_dept_name', 'LIKE', "%{$search}%")
+                        ->orWhere('work_status', 'LIKE', "%{$search}%")
+                        ->orWhere('employee_status', 'LIKE', "%{$search}%")
+                        ->orWhere('posisi_name', 'LIKE', "%{$search}%");
+                })->count();
+
+                $totalFiltered = $totalData;
+            }
+
+            $data = array();
+            if (!empty($query)) {
+                foreach ($query as $q) {
+                    $nestedData['employee_id'] = $q->employee_id;
+                    $nestedData['employee_name'] = $q->employee_name;
+                    $nestedData['jenis_kelamin'] = $q->jenis_kelamin;
+                    $nestedData['tempat_lahir'] = $q->tempat_lahir;
+                    $nestedData['tanggal_lahir'] = $q->tanggal_lahir;
+                    $nestedData['golongan_darah'] = $q->golongan_darah;
+                    $nestedData['email'] = $q->email;
+                    $nestedData['nomor_tlpn'] = $q->nomor_tlpn;
+                    $nestedData['agama'] = $q->agama;
+                    $nestedData['status_kawin'] = $q->status_kawin;
+                    $nestedData['npwp'] = $q->npwp;
+                    $nestedData['nomor_ktp'] = $q->nomor_ktp;
+                    $nestedData['nomor_kk'] = $q->nomor_kk;
+                    $nestedData['ptkp'] = $q->ptkp;
+                    $nestedData['pendidikan_terakhir'] = $q->pendidikan_terakhir;
+                    $nestedData['jurusan_pendidikan'] = $q->jurusan_pendidikan;
+                    $nestedData['nama_bank'] = $q->nama_bank;
+                    $nestedData['nomor_rekening_bank'] = $q->nomor_rekening_bank;
+                    $nestedData['ibu_kandung'] = $q->ibu_kandung;
+                    $nestedData['propinsi'] = $q->propinsi;
+                    $nestedData['kota_kab'] = $q->kota_kab;
+                    $nestedData['kecamatan'] = $q->kecamatan;
+                    $nestedData['kelurahan_desa'] = $q->kelurahan_desa;
+                    $nestedData['alamat_rumah'] = $q->alamat_rumah;
+                    $nestedData['alamat_sementara'] = $q->alamat_sementara;
+                    $nestedData['site_nirwana_id'] = $q->site_nirwana_id;
+                    $nestedData['site_nirwana_name'] = $q->site_nirwana_name;
+                    $nestedData['department_id'] = $q->department_id;
+                    $nestedData['department_name'] = $q->department_name;
+                    $nestedData['sub_dept_id'] = $q->sub_dept_id;
+                    $nestedData['sub_dept_name'] = $q->sub_dept_name;
+                    $nestedData['sewing_nonsewing'] = $q->sewing_nonsewing;
+                    $nestedData['direct_indirect'] = $q->direct_indirect;
+                    $nestedData['enroll_id'] = $q->enroll_id;
+                    $nestedData['join_date'] = $q->join_date;
+
+                    $new_employee = 0;
+                    $bulanKemarin = date('Y-m-d', strtotime('first day of last month'));
+                    $bulanSkrng = date('Y-m-d', strtotime('last day of this month'));
+                    if (($q->join_date >= $bulanKemarin) && ($q->join_date <= $bulanSkrng)) {
+                        $new_employee = 1;
+                    }
+
+                    $nestedData['new_employee'] = $new_employee;
+
+                    $nestedData['nik'] = $q->nik;
+                    $nestedData['status_aktif'] = $q->status_aktif;
+                    $nestedData['status_jabatan'] = $q->status_jabatan;
+                    $nestedData['status_kontrak_tetap'] = $q->status_kontrak_tetap;
+                    $nestedData['status_staff'] = $q->status_staff;
+
+                    $nestedData['tanggal_resign'] = $q->tanggal_resign;
+                    $nestedData['sebab_resign'] = $q->sebab_resign;
+                    $deactive = 0;
+                    if (($q->tanggal_resign <= now()) && ($q->tanggal_resign !== null)) {
+                        $deactive = 1;
+                    }
+
+                    $nestedData['deactive'] = $deactive;
+
+                    $nestedData['tunjangan'] = $q->tunjangan;
+                    $nestedData['kode_grade'] = $q->kode_grade;
+                    $nestedData['referensi'] = $q->referensi;
+                    $nestedData['employee_name_atasan'] = $q->employee_name_atasan;
+                    $nestedData['status_aktif_bpjs_tk'] = $q->status_aktif_bpjs_tk;
+                    $nestedData['tanggal_bpjs_ketenagakerjaan'] = $q->tanggal_bpjs_ketenagakerjaan;
+                    $nestedData['nomor_bpjs_ketenagakerjaan'] = $q->nomor_bpjs_ketenagakerjaan;
+                    $nestedData['status_aktif_bpjs_ks'] = $q->status_aktif_bpjs_ks;
+                    $nestedData['tanggal_bpjs_kesehatan'] = $q->tanggal_bpjs_kesehatan;
+                    $nestedData['nomor_bpjs_kesehatan'] = $q->nomor_bpjs_kesehatan;
+                    $nestedData['premi'] = $q->premi;
+                    $nestedData['pengalaman_bekerja'] = $q->pengalaman_bekerja;
+                    $nestedData['lokasi_file_cv'] = $q->lokasi_file_cv;
+                    $nestedData['nama_kerabat'] = $q->nama_kerabat;
+                    $nestedData['nomor_tlpn_kerabat'] = $q->nomor_tlpn_kerabat;
+                    $nestedData['hubungan_kerabat'] = $q->hubungan_kerabat;
+                    $nestedData['alamat_kerabat'] = $q->alamat_kerabat;
+                    $nestedData['tanggal_vaccine1'] = $q->tanggal_vaccine1;
+                    $nestedData['nama_vaksin1'] = $q->nama_vaksin1;
+                    $nestedData['tanggal_vaccine2'] = $q->tanggal_vaccine2;
+                    $nestedData['nama_vaksin2'] = $q->nama_vaksin2;
+                    $nestedData['tanggal_vaccine3'] = $q->tanggal_vaccine3;
+                    $nestedData['nama_vaksin3'] = $q->nama_vaksin3;
+                    $nestedData['golongan_sim'] = $q->golongan_sim;
+                    $nestedData['nomor_sim'] = $q->nomor_sim;
+                    $nestedData['tanggal_expire_sim'] = $q->tanggal_expire_sim;
+                    $nestedData['catatan'] = $q->catatan;
+                    $nestedData['no_surat'] = $q->no_surat;
+                    $nestedData['lokasi_foto'] = $q->lokasi_foto;
+                    $nestedData['operator'] = $q->operator;
+                    $nestedData['tanggal_mulai_kontrak'] = $q->tanggal_mulai_kontrak;
+                    $nestedData['tanggal_akhir_kontrak'] = $q->tanggal_akhir_kontrak;
+                    $nestedData['catatan_kontrak'] = $q->catatan_kontrak;
+                    $nestedData['kontrak_awal'] = $q->contract;
+                    $nestedData['kontrak_akhir'] = $q->contract_end;
+                    $nestedData['created_at'] = substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5);
+                    $nestedData['updated_at'] = substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5);
+                    $nestedData['alamat_jalan'] = $q->alamat_jalan;
+                    $nestedData['rt'] = $q->rt;
+                    $nestedData['rw'] = $q->rw;
+                    $nestedData['kode_pos'] = $q->kode_pos;
+
+                    $data[] = $nestedData;
+                }
+            }
+            $json_data = array(
+                "draw"            => intval($request->input('draw')),
+                "recordsTotal"    => intval($totalData),
+                "recordsFiltered" => intval($totalFiltered),
+                "data"            => $data
+            );
+
+            echo json_encode($json_data);
         }
     }
-    public function already_print(){
-        $enroll_id=request()->id;
-        EmployeeAtribut::where('enroll_id',$enroll_id)->update([
-            'sudah_diprint'=>1
+    public function already_print()
+    {
+        $enroll_id = request()->id;
+        EmployeeAtribut::where('enroll_id', $enroll_id)->update([
+            'sudah_diprint' => 1
         ]);
     }
-    public function not_yet_printed(){
-        $enroll_id=request()->id;
-        EmployeeAtribut::where('enroll_id',$enroll_id)->update([
-            'sudah_diprint'=>null
+    public function not_yet_printed()
+    {
+        $enroll_id = request()->id;
+        EmployeeAtribut::where('enroll_id', $enroll_id)->update([
+            'sudah_diprint' => null
         ]);
     }
     public function ajax_getemployeeatr2(Request $request)
     {
 
-        if(request()->ajax()) {
+        if (request()->ajax()) {
 
-        $columns = array(
-            0 => 'enroll_id',
-            1 => 'enroll_id',
-            2 => 'nik',
-            3 => 'employee_name',
-            4 => 'department_name',
-            5 => 'sub_dept_name',
-            6 => 'status_aktif'
-        );
-
-        $limit = $request->input('length');
-        $start = $request->input('start');
-        $order = $columns[$request->input('order.0.column')];
-        $dir = $request->input('order.0.dir');
-        $totalData = 0;
-        $totalFiltered = 0;
-        $searchData = $request->searchData;
-        $searchNoKTP = $request->selectNoKTP;
-        $searchIbuKandung = $request->searchIbuKandung;
-        $inSearchData='';
-        if($searchData){
-            $enroll_id = implode(", ", $searchData);
-            $allEnroll_id= '('.$enroll_id.')';
-            $inSearchData = ' AND employee_atribut.enroll_id IN '.$allEnroll_id.'';
-        }
-        $inSearchNoKTP='';
-        if($searchNoKTP){
-            $inSearchNoKTP = ' AND employee_atribut.nomor_ktp LIKE "'.$searchNoKTP.'%"';
-        }
-        $inSearchIbuKandung='';
-        if($searchIbuKandung){
-            $inSearchIbuKandung = ' AND employee_atribut.ibu_kandung LIKE "'.$searchIbuKandung.'%"';
-        }
-        if(empty($request->input('search.value')))
-        {
-            $query =  EmployeeAtribut::whereRaw('status_aktif is not null'.$inSearchData.''.$inSearchNoKTP.''.$inSearchIbuKandung.'')
-                            ->offset($start)
-                            ->limit($limit)
-                            ->orderBy($order,$dir)
-                            ->get();
-
-            $totalData = EmployeeAtribut::whereRaw('status_aktif is not null'.$inSearchData.''.$inSearchNoKTP.''.$inSearchIbuKandung.'')->count();
-            $totalFiltered = $totalData;
-
-        } else {
-            $search = $request->input('search.value');
-
-            $query =  EmployeeAtribut::whereRaw('status_aktif is not null'.$inSearchData.''.$inSearchNoKTP.''.$inSearchIbuKandung.'')->where(function($query)use($search){
-                $query->where('employee_id',$search)
-                ->orWhere('nik',$search)
-                ->orWhere('enroll_id',$search)
-                ->orWhere('employee_name','LIKE',"%{$search}%")
-                ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
-                ->orWhere('department_name','LIKE',"%{$search}%")
-                ->orWhere('sub_dept_name','LIKE',"%{$search}%")
-                ->orWhere('work_status','LIKE',"%{$search}%")
-                ->orWhere('employee_status','LIKE',"%{$search}%")
-                ->orWhere('posisi_name','LIKE',"%{$search}%");
-            })
-            ->offset($start)
-            ->limit($limit)
-            ->orderBy($order,$dir)
-            ->get();
-
-            $totalData = EmployeeAtribut::whereRaw('status_aktif is not null'.$inSearchData.''.$inSearchNoKTP.''.$inSearchIbuKandung.'')->where(function($query)use($search){
-                $query->where('employee_id','LIKE',"%{$search}%")
-                ->orWhere('nik',$search)
-                ->orWhere('enroll_id',$search)
-                ->orWhere('employee_name','LIKE',"%{$search}%")
-                ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
-                ->orWhere('department_name','LIKE',"%{$search}%")
-                ->orWhere('sub_dept_name','LIKE',"%{$search}%")
-                ->orWhere('work_status','LIKE',"%{$search}%")
-                ->orWhere('employee_status','LIKE',"%{$search}%")
-                ->orWhere('posisi_name','LIKE',"%{$search}%");
-            })->count();
-
-            $totalFiltered = $totalData;
-
-        }
-
-        $data = array();
-        if(!empty($query))
-        {
-            foreach ($query as $q)
-            {
-                if($q->tanggal_resign!=null){
-                    $tanggal_resign=Carbon::parse($q->tanggal_resign)->format('d-M-Y');
-                }else{
-                    $tanggal_resign='';
-                }
-                $nestedData['employee_id'] = $q->employee_id;
-                $nestedData['employee_name'] = $q->employee_name;
-                $nestedData['jenis_kelamin'] = $q->jenis_kelamin;
-                $nestedData['tempat_lahir'] = $q->tempat_lahir;
-                $nestedData['tanggal_lahir'] = $q->tanggal_lahir;
-                $nestedData['golongan_darah'] = $q->golongan_darah;
-                $nestedData['email'] = $q->email;
-                $nestedData['nomor_tlpn'] = $q->nomor_tlpn;
-                $nestedData['agama'] = $q->agama;
-                $nestedData['status_kawin'] = $q->status_kawin;
-                $nestedData['npwp'] = $q->npwp;
-                $nestedData['nomor_ktp'] = $q->nomor_ktp;
-                $nestedData['nomor_kk'] = $q->nomor_kk;
-                $nestedData['ptkp'] = $q->ptkp;
-                $nestedData['pendidikan_terakhir'] = $q->pendidikan_terakhir;
-                $nestedData['jurusan_pendidikan'] = $q->jurusan_pendidikan;
-                $nestedData['nama_bank'] = $q->nama_bank;
-                $nestedData['nomor_rekening_bank'] = $q->nomor_rekening_bank;
-                $nestedData['ibu_kandung'] = $q->ibu_kandung;
-                $nestedData['propinsi'] = $q->propinsi;
-                $nestedData['kota_kab'] = $q->kota_kab;
-                $nestedData['kecamatan'] = $q->kecamatan;
-                $nestedData['kelurahan_desa'] = $q->kelurahan_desa;
-                $nestedData['alamat_rumah'] = $q->alamat_rumah;
-                $nestedData['alamat_sementara'] = $q->alamat_sementara;
-                $nestedData['site_nirwana_id'] = $q->site_nirwana_id;
-                $nestedData['site_nirwana_name'] = $q->site_nirwana_name;
-                $nestedData['department_id'] = $q->department_id;
-                $nestedData['department_name'] = $q->department_name;
-                $nestedData['sub_dept_id'] = $q->sub_dept_id;
-                $nestedData['sub_dept_name'] = $q->sub_dept_name;
-                $nestedData['sewing_nonsewing'] = $q->sewing_nonsewing;
-                $nestedData['direct_indirect'] = $q->direct_indirect;
-                $nestedData['enroll_id'] = $q->enroll_id;
-                $nestedData['join_date'] = $q->join_date;
-
-                $new_employee = 0;
-                $bulanKemarin = date('Y-m-d', strtotime('first day of last month'));
-                $bulanSkrng = date('Y-m-d', strtotime('last day of this month'));
-                if (($q->join_date >= $bulanKemarin) && ($q->join_date <= $bulanSkrng)) {
-                    $new_employee = 1;
-                }
-
-                $nestedData['new_employee'] = $new_employee;
-
-                $nestedData['nik'] = $q->nik;
-                $nestedData['status_aktif'] = $q->status_aktif;
-                $nestedData['status_jabatan'] = $q->status_jabatan;
-                $nestedData['status_kontrak_tetap'] = $q->status_kontrak_tetap;
-                $nestedData['status_staff'] = $q->status_staff;
-
-                $nestedData['tanggal_resign'] = $tanggal_resign;
-                $deactive = 0;
-                if (($q->tanggal_resign <= now()) && ($q->tanggal_resign !== null ) ) {
-                    $deactive = 1;
-                }
-
-                $nestedData['deactive'] = $deactive;
-
-                $nestedData['tunjangan'] = $q->tunjangan;
-                $nestedData['kode_grade'] = $q->kode_grade;
-                $nestedData['referensi'] = $q->referensi;
-                $nestedData['employee_name_atasan'] = $q->employee_name_atasan;
-                $nestedData['status_aktif_bpjs_tk'] = $q->status_aktif_bpjs_tk;
-                $nestedData['tanggal_bpjs_ketenagakerjaan'] = $q->tanggal_bpjs_ketenagakerjaan;
-                $nestedData['nomor_bpjs_ketenagakerjaan'] = $q->nomor_bpjs_ketenagakerjaan;
-                $nestedData['status_aktif_bpjs_ks'] = $q->status_aktif_bpjs_ks;
-                $nestedData['tanggal_bpjs_kesehatan'] = $q->tanggal_bpjs_kesehatan;
-                $nestedData['nomor_bpjs_kesehatan'] = $q->nomor_bpjs_kesehatan;
-                $nestedData['premi'] = $q->premi;
-                $nestedData['pengalaman_bekerja'] = $q->pengalaman_bekerja;
-                $nestedData['lokasi_file_cv'] = $q->lokasi_file_cv;
-                $nestedData['nama_kerabat'] = $q->nama_kerabat;
-                $nestedData['nomor_tlpn_kerabat'] = $q->nomor_tlpn_kerabat;
-                $nestedData['hubungan_kerabat'] = $q->hubungan_kerabat;
-                $nestedData['alamat_kerabat'] = $q->alamat_kerabat;
-                $nestedData['tanggal_vaccine1'] = $q->tanggal_vaccine1;
-                $nestedData['nama_vaksin1'] = $q->nama_vaksin1;
-                $nestedData['tanggal_vaccine2'] = $q->tanggal_vaccine2;
-                $nestedData['nama_vaksin2'] = $q->nama_vaksin2;
-                $nestedData['tanggal_vaccine3'] = $q->tanggal_vaccine3;
-                $nestedData['nama_vaksin3'] = $q->nama_vaksin3;
-                $nestedData['golongan_sim'] = $q->golongan_sim;
-                $nestedData['nomor_sim'] = $q->nomor_sim;
-                $nestedData['tanggal_expire_sim'] = $q->tanggal_expire_sim;
-                $nestedData['catatan'] = $q->catatan;
-                $nestedData['lokasi_foto'] = $q->lokasi_foto;
-                $nestedData['operator'] = $q->operator;
-                $nestedData['tanggal_mulai_kontrak'] = $q->tanggal_mulai_kontrak;
-                $nestedData['tanggal_akhir_kontrak'] = $q->tanggal_akhir_kontrak;
-                $nestedData['catatan_kontrak'] = $q->catatan_kontrak;
-                $nestedData['sudah_diprint'] = $q->sudah_diprint;
-                $nestedData['created_at'] = substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5);
-                $nestedData['updated_at'] = substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5);
-                $nestedData['alamat_jalan'] = $q->alamat_jalan;
-                $nestedData['rt'] = $q->rt;
-                $nestedData['rw'] = $q->rw;
-                $nestedData['kode_pos'] = $q->kode_pos;
-
-                $data[] = $nestedData;
-
-            }
-        }
-
-        $json_data = array(
-            "draw"            => intval($request->input('draw')),
-            "recordsTotal"    => intval($totalData),
-            "recordsFiltered" => intval($totalFiltered),
-            "data"            => $data
+            $columns = array(
+                0 => 'enroll_id',
+                1 => 'enroll_id',
+                2 => 'nik',
+                3 => 'employee_name',
+                4 => 'department_name',
+                5 => 'sub_dept_name',
+                6 => 'status_aktif'
             );
 
-        echo json_encode($json_data);
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $order = $columns[$request->input('order.0.column')];
+            $dir = $request->input('order.0.dir');
+            $totalData = 0;
+            $totalFiltered = 0;
+            $searchData = $request->searchData;
+            $searchNoKTP = $request->selectNoKTP;
+            $searchIbuKandung = $request->searchIbuKandung;
+            $inSearchData = '';
+            if ($searchData) {
+                $enroll_id = implode(", ", $searchData);
+                $allEnroll_id = '(' . $enroll_id . ')';
+                $inSearchData = ' AND employee_atribut.enroll_id IN ' . $allEnroll_id . '';
+            }
+            $inSearchNoKTP = '';
+            if ($searchNoKTP) {
+                $inSearchNoKTP = ' AND employee_atribut.nomor_ktp LIKE "' . $searchNoKTP . '%"';
+            }
+            $inSearchIbuKandung = '';
+            if ($searchIbuKandung) {
+                $inSearchIbuKandung = ' AND employee_atribut.ibu_kandung LIKE "' . $searchIbuKandung . '%"';
+            }
+            if (empty($request->input('search.value'))) {
+                $query =  EmployeeAtribut::whereRaw('status_aktif is not null' . $inSearchData . '' . $inSearchNoKTP . '' . $inSearchIbuKandung . '')
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy($order, $dir)
+                    ->get();
+
+                $totalData = EmployeeAtribut::whereRaw('status_aktif is not null' . $inSearchData . '' . $inSearchNoKTP . '' . $inSearchIbuKandung . '')->count();
+                $totalFiltered = $totalData;
+            } else {
+                $search = $request->input('search.value');
+
+                $query =  EmployeeAtribut::whereRaw('status_aktif is not null' . $inSearchData . '' . $inSearchNoKTP . '' . $inSearchIbuKandung . '')->where(function ($query) use ($search) {
+                    $query->where('employee_id', $search)
+                        ->orWhere('nik', $search)
+                        ->orWhere('enroll_id', $search)
+                        ->orWhere('employee_name', 'LIKE', "%{$search}%")
+                        ->orWhere('site_nirwana_name', 'LIKE', "%{$search}%")
+                        ->orWhere('department_name', 'LIKE', "%{$search}%")
+                        ->orWhere('sub_dept_name', 'LIKE', "%{$search}%")
+                        ->orWhere('work_status', 'LIKE', "%{$search}%")
+                        ->orWhere('employee_status', 'LIKE', "%{$search}%")
+                        ->orWhere('posisi_name', 'LIKE', "%{$search}%");
+                })
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy($order, $dir)
+                    ->get();
+
+                $totalData = EmployeeAtribut::whereRaw('status_aktif is not null' . $inSearchData . '' . $inSearchNoKTP . '' . $inSearchIbuKandung . '')->where(function ($query) use ($search) {
+                    $query->where('employee_id', 'LIKE', "%{$search}%")
+                        ->orWhere('nik', $search)
+                        ->orWhere('enroll_id', $search)
+                        ->orWhere('employee_name', 'LIKE', "%{$search}%")
+                        ->orWhere('site_nirwana_name', 'LIKE', "%{$search}%")
+                        ->orWhere('department_name', 'LIKE', "%{$search}%")
+                        ->orWhere('sub_dept_name', 'LIKE', "%{$search}%")
+                        ->orWhere('work_status', 'LIKE', "%{$search}%")
+                        ->orWhere('employee_status', 'LIKE', "%{$search}%")
+                        ->orWhere('posisi_name', 'LIKE', "%{$search}%");
+                })->count();
+
+                $totalFiltered = $totalData;
+            }
+
+            $data = array();
+            if (!empty($query)) {
+                foreach ($query as $q) {
+                    if ($q->tanggal_resign != null) {
+                        $tanggal_resign = Carbon::parse($q->tanggal_resign)->format('d-M-Y');
+                    } else {
+                        $tanggal_resign = '';
+                    }
+                    $nestedData['employee_id'] = $q->employee_id;
+                    $nestedData['employee_name'] = $q->employee_name;
+                    $nestedData['jenis_kelamin'] = $q->jenis_kelamin;
+                    $nestedData['tempat_lahir'] = $q->tempat_lahir;
+                    $nestedData['tanggal_lahir'] = $q->tanggal_lahir;
+                    $nestedData['golongan_darah'] = $q->golongan_darah;
+                    $nestedData['email'] = $q->email;
+                    $nestedData['nomor_tlpn'] = $q->nomor_tlpn;
+                    $nestedData['agama'] = $q->agama;
+                    $nestedData['status_kawin'] = $q->status_kawin;
+                    $nestedData['npwp'] = $q->npwp;
+                    $nestedData['nomor_ktp'] = $q->nomor_ktp;
+                    $nestedData['nomor_kk'] = $q->nomor_kk;
+                    $nestedData['ptkp'] = $q->ptkp;
+                    $nestedData['pendidikan_terakhir'] = $q->pendidikan_terakhir;
+                    $nestedData['jurusan_pendidikan'] = $q->jurusan_pendidikan;
+                    $nestedData['nama_bank'] = $q->nama_bank;
+                    $nestedData['nomor_rekening_bank'] = $q->nomor_rekening_bank;
+                    $nestedData['ibu_kandung'] = $q->ibu_kandung;
+                    $nestedData['propinsi'] = $q->propinsi;
+                    $nestedData['kota_kab'] = $q->kota_kab;
+                    $nestedData['kecamatan'] = $q->kecamatan;
+                    $nestedData['kelurahan_desa'] = $q->kelurahan_desa;
+                    $nestedData['alamat_rumah'] = $q->alamat_rumah;
+                    $nestedData['alamat_sementara'] = $q->alamat_sementara;
+                    $nestedData['site_nirwana_id'] = $q->site_nirwana_id;
+                    $nestedData['site_nirwana_name'] = $q->site_nirwana_name;
+                    $nestedData['department_id'] = $q->department_id;
+                    $nestedData['department_name'] = $q->department_name;
+                    $nestedData['sub_dept_id'] = $q->sub_dept_id;
+                    $nestedData['sub_dept_name'] = $q->sub_dept_name;
+                    $nestedData['sewing_nonsewing'] = $q->sewing_nonsewing;
+                    $nestedData['direct_indirect'] = $q->direct_indirect;
+                    $nestedData['enroll_id'] = $q->enroll_id;
+                    $nestedData['join_date'] = $q->join_date;
+
+                    $new_employee = 0;
+                    $bulanKemarin = date('Y-m-d', strtotime('first day of last month'));
+                    $bulanSkrng = date('Y-m-d', strtotime('last day of this month'));
+                    if (($q->join_date >= $bulanKemarin) && ($q->join_date <= $bulanSkrng)) {
+                        $new_employee = 1;
+                    }
+
+                    $nestedData['new_employee'] = $new_employee;
+
+                    $nestedData['nik'] = $q->nik;
+                    $nestedData['status_aktif'] = $q->status_aktif;
+                    $nestedData['status_jabatan'] = $q->status_jabatan;
+                    $nestedData['status_kontrak_tetap'] = $q->status_kontrak_tetap;
+                    $nestedData['status_staff'] = $q->status_staff;
+
+                    $nestedData['tanggal_resign'] = $tanggal_resign;
+                    $deactive = 0;
+                    if (($q->tanggal_resign <= now()) && ($q->tanggal_resign !== null)) {
+                        $deactive = 1;
+                    }
+
+                    $nestedData['deactive'] = $deactive;
+
+                    $nestedData['tunjangan'] = $q->tunjangan;
+                    $nestedData['kode_grade'] = $q->kode_grade;
+                    $nestedData['referensi'] = $q->referensi;
+                    $nestedData['employee_name_atasan'] = $q->employee_name_atasan;
+                    $nestedData['status_aktif_bpjs_tk'] = $q->status_aktif_bpjs_tk;
+                    $nestedData['tanggal_bpjs_ketenagakerjaan'] = $q->tanggal_bpjs_ketenagakerjaan;
+                    $nestedData['nomor_bpjs_ketenagakerjaan'] = $q->nomor_bpjs_ketenagakerjaan;
+                    $nestedData['status_aktif_bpjs_ks'] = $q->status_aktif_bpjs_ks;
+                    $nestedData['tanggal_bpjs_kesehatan'] = $q->tanggal_bpjs_kesehatan;
+                    $nestedData['nomor_bpjs_kesehatan'] = $q->nomor_bpjs_kesehatan;
+                    $nestedData['premi'] = $q->premi;
+                    $nestedData['pengalaman_bekerja'] = $q->pengalaman_bekerja;
+                    $nestedData['lokasi_file_cv'] = $q->lokasi_file_cv;
+                    $nestedData['nama_kerabat'] = $q->nama_kerabat;
+                    $nestedData['nomor_tlpn_kerabat'] = $q->nomor_tlpn_kerabat;
+                    $nestedData['hubungan_kerabat'] = $q->hubungan_kerabat;
+                    $nestedData['alamat_kerabat'] = $q->alamat_kerabat;
+                    $nestedData['tanggal_vaccine1'] = $q->tanggal_vaccine1;
+                    $nestedData['nama_vaksin1'] = $q->nama_vaksin1;
+                    $nestedData['tanggal_vaccine2'] = $q->tanggal_vaccine2;
+                    $nestedData['nama_vaksin2'] = $q->nama_vaksin2;
+                    $nestedData['tanggal_vaccine3'] = $q->tanggal_vaccine3;
+                    $nestedData['nama_vaksin3'] = $q->nama_vaksin3;
+                    $nestedData['golongan_sim'] = $q->golongan_sim;
+                    $nestedData['nomor_sim'] = $q->nomor_sim;
+                    $nestedData['tanggal_expire_sim'] = $q->tanggal_expire_sim;
+                    $nestedData['catatan'] = $q->catatan;
+                    $nestedData['lokasi_foto'] = $q->lokasi_foto;
+                    $nestedData['operator'] = $q->operator;
+                    $nestedData['tanggal_mulai_kontrak'] = $q->tanggal_mulai_kontrak;
+                    $nestedData['tanggal_akhir_kontrak'] = $q->tanggal_akhir_kontrak;
+                    $nestedData['catatan_kontrak'] = $q->catatan_kontrak;
+                    $nestedData['sudah_diprint'] = $q->sudah_diprint;
+                    $nestedData['created_at'] = substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5);
+                    $nestedData['updated_at'] = substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5);
+                    $nestedData['alamat_jalan'] = $q->alamat_jalan;
+                    $nestedData['rt'] = $q->rt;
+                    $nestedData['rw'] = $q->rw;
+                    $nestedData['kode_pos'] = $q->kode_pos;
+
+                    $data[] = $nestedData;
+                }
+            }
+
+            $json_data = array(
+                "draw"            => intval($request->input('draw')),
+                "recordsTotal"    => intval($totalData),
+                "recordsFiltered" => intval($totalFiltered),
+                "data"            => $data
+            );
+
+            echo json_encode($json_data);
         }
     }
     public function ajax_getemployeeatr3(Request $request)
     {
 
-        if(request()->ajax()) {
+        if (request()->ajax()) {
 
-        $columns = array(
-            0 => 'enroll_id',
-            1 => 'nik',
-            2 => 'employee_name',
-            3 => 'tanggal_resign',
-            4 => 'masa_kerja',
-            5 => 'sebab_resign',
-            6 => 'tipe_surat',
-            7 => '',
-        );
-
-        $limit = $request->input('length');
-        $start = $request->input('start');
-        $totalData = 0;
-        $totalFiltered = 0;
-
-        if(empty($request->input('search.value'))){
-            $query =  EmployeeAtribut::whereIn('enroll_id',$request->checked_employees)->limit($limit)->get();
-
-            $totalData = EmployeeAtribut::whereIn('enroll_id',$request->checked_employees)->count();
-            $totalFiltered = $totalData;
-        }else{
-            $search = $request->input('search.value');
-            $query =  EmployeeAtribut::whereIn('enroll_id',$request->checked_employees)->where(function($query)use($search){
-                $query->where('employee_id','LIKE',$search)
-                ->orWhere('nik',$search)
-                ->orWhere('enroll_id',$search)
-                ->orWhere('employee_name','LIKE',"%{$search}%")
-                ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
-                ->orWhere('department_name','LIKE',"%{$search}%")
-                ->orWhere('sub_dept_name','LIKE',"%{$search}%")
-                ->orWhere('work_status','LIKE',"%{$search}%")
-                ->orWhere('employee_status','LIKE',"%{$search}%")
-                ->orWhere('posisi_name','LIKE',"%{$search}%");
-            })
-            ->limit($limit)
-            ->get();
-
-            $totalData = EmployeeAtribut::whereIn('enroll_id',$request->checked_employees)->where(function($query)use($search){
-                $query->where('employee_id',$search)
-                ->orWhere('nik',$search)
-                ->orWhere('enroll_id',$search)
-                ->orWhere('employee_name','LIKE',"%{$search}%")
-                ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
-                ->orWhere('department_name','LIKE',"%{$search}%")
-                ->orWhere('sub_dept_name','LIKE',"%{$search}%")
-                ->orWhere('work_status','LIKE',"%{$search}%")
-                ->orWhere('employee_status','LIKE',"%{$search}%")
-                ->orWhere('posisi_name','LIKE',"%{$search}%");
-            })->count();
-
-            $totalFiltered = $totalData;
-        }
-        $data = array();
-        if(!empty($query))
-        {
-            foreach ($query as $q)
-            {
-                $tanggal_masuk = $q->join_date;
-    $tanggal_selesai = $q->tanggal_resign ?? date('Y-m-d');
-
-    $diff = date_diff(date_create($tanggal_masuk), date_create($tanggal_selesai));
-    $total_bulan = ($diff->y * 12) + $diff->m;
-
-    if ($diff->y >= 1) {
-        $selisih_tahun = $diff->y . ' tahun ' . $diff->m . ' bulan';
-        $tipe_surat = 'Paklaring';
-    } else {
-        $selisih_tahun = $total_bulan . ' bulan';
-        $tipe_surat = 'SK Kerja';
-    }
-
-    $tanggal_resign = $q->tanggal_resign
-        ? Carbon::parse($q->tanggal_resign)->format('d-M-Y')
-        : '-';
-
-    if (str_contains(strtolower($q->sebab_resign), 'kabur')) {
-        $tipe_surat = 'SK Kerja';
-    }
-                $nestedData['employee_id'] = $q->employee_id;
-                $nestedData['employee_name'] = $q->employee_name;
-                $nestedData['jenis_kelamin'] = $q->jenis_kelamin;
-                $nestedData['tempat_lahir'] = $q->tempat_lahir;
-                $nestedData['tanggal_lahir'] = $q->tanggal_lahir;
-                $nestedData['golongan_darah'] = $q->golongan_darah;
-                $nestedData['email'] = $q->email;
-                $nestedData['nomor_tlpn'] = $q->nomor_tlpn;
-                $nestedData['agama'] = $q->agama;
-                $nestedData['status_kawin'] = $q->status_kawin;
-                $nestedData['npwp'] = $q->npwp;
-                $nestedData['nomor_ktp'] = $q->nomor_ktp;
-                $nestedData['nomor_kk'] = $q->nomor_kk;
-                $nestedData['ptkp'] = $q->ptkp;
-                $nestedData['pendidikan_terakhir'] = $q->pendidikan_terakhir;
-                $nestedData['jurusan_pendidikan'] = $q->jurusan_pendidikan;
-                $nestedData['nama_bank'] = $q->nama_bank;
-                $nestedData['nomor_rekening_bank'] = $q->nomor_rekening_bank;
-                $nestedData['ibu_kandung'] = $q->ibu_kandung;
-                $nestedData['propinsi'] = $q->propinsi;
-                $nestedData['kota_kab'] = $q->kota_kab;
-                $nestedData['kecamatan'] = $q->kecamatan;
-                $nestedData['kelurahan_desa'] = $q->kelurahan_desa;
-                $nestedData['alamat_rumah'] = $q->alamat_rumah;
-                $nestedData['alamat_sementara'] = $q->alamat_sementara;
-                $nestedData['site_nirwana_id'] = $q->site_nirwana_id;
-                $nestedData['site_nirwana_name'] = $q->site_nirwana_name;
-                $nestedData['department_id'] = $q->department_id;
-                $nestedData['department_name'] = $q->department_name;
-                $nestedData['sub_dept_id'] = $q->sub_dept_id;
-                $nestedData['sub_dept_name'] = $q->sub_dept_name;
-                $nestedData['sewing_nonsewing'] = $q->sewing_nonsewing;
-                $nestedData['direct_indirect'] = $q->direct_indirect;
-                $nestedData['enroll_id'] = $q->enroll_id;
-                $nestedData['join_date'] = $q->join_date;
-                $nestedData['tipe_surat'] = $tipe_surat;
-
-                $new_employee = 0;
-                $bulanKemarin = date('Y-m-d', strtotime('first day of last month'));
-                $bulanSkrng = date('Y-m-d', strtotime('last day of this month'));
-                if (($q->join_date >= $bulanKemarin) && ($q->join_date <= $bulanSkrng)) {
-                    $new_employee = 1;
-                }
-
-                $nestedData['new_employee'] = $new_employee;
-
-                $nestedData['nik'] = $q->nik;
-                $nestedData['status_aktif'] = $q->status_aktif;
-                $nestedData['status_jabatan'] = $q->status_jabatan;
-                $nestedData['status_kontrak_tetap'] = $q->status_kontrak_tetap;
-                $nestedData['status_staff'] = $q->status_staff;
-
-                $nestedData['tanggal_resign'] = $tanggal_resign;
-                $nestedData['masa_kerja'] = $selisih_tahun;
-                $nestedData['sebab_resign'] = $q->sebab_resign;
-                $deactive = 0;
-                if (($q->tanggal_resign <= now()) && ($q->tanggal_resign !== null ) ) {
-                    $deactive = 1;
-                }
-
-                $nestedData['deactive'] = $deactive;
-
-                $nestedData['tunjangan'] = $q->tunjangan;
-                $nestedData['kode_grade'] = $q->kode_grade;
-                $nestedData['referensi'] = $q->referensi;
-                $nestedData['employee_name_atasan'] = $q->employee_name_atasan;
-                $nestedData['status_aktif_bpjs_tk'] = $q->status_aktif_bpjs_tk;
-                $nestedData['tanggal_bpjs_ketenagakerjaan'] = $q->tanggal_bpjs_ketenagakerjaan;
-                $nestedData['nomor_bpjs_ketenagakerjaan'] = $q->nomor_bpjs_ketenagakerjaan;
-                $nestedData['status_aktif_bpjs_ks'] = $q->status_aktif_bpjs_ks;
-                $nestedData['tanggal_bpjs_kesehatan'] = $q->tanggal_bpjs_kesehatan;
-                $nestedData['nomor_bpjs_kesehatan'] = $q->nomor_bpjs_kesehatan;
-                $nestedData['premi'] = $q->premi;
-                $nestedData['pengalaman_bekerja'] = $q->pengalaman_bekerja;
-                $nestedData['lokasi_file_cv'] = $q->lokasi_file_cv;
-                $nestedData['nama_kerabat'] = $q->nama_kerabat;
-                $nestedData['nomor_tlpn_kerabat'] = $q->nomor_tlpn_kerabat;
-                $nestedData['hubungan_kerabat'] = $q->hubungan_kerabat;
-                $nestedData['alamat_kerabat'] = $q->alamat_kerabat;
-                $nestedData['tanggal_vaccine1'] = $q->tanggal_vaccine1;
-                $nestedData['nama_vaksin1'] = $q->nama_vaksin1;
-                $nestedData['tanggal_vaccine2'] = $q->tanggal_vaccine2;
-                $nestedData['nama_vaksin2'] = $q->nama_vaksin2;
-                $nestedData['tanggal_vaccine3'] = $q->tanggal_vaccine3;
-                $nestedData['nama_vaksin3'] = $q->nama_vaksin3;
-                $nestedData['golongan_sim'] = $q->golongan_sim;
-                $nestedData['nomor_sim'] = $q->nomor_sim;
-                $nestedData['tanggal_expire_sim'] = $q->tanggal_expire_sim;
-                $nestedData['catatan'] = $q->catatan;
-                $nestedData['lokasi_foto'] = $q->lokasi_foto;
-                $nestedData['operator'] = $q->operator;
-                $nestedData['tanggal_mulai_kontrak'] = $q->tanggal_mulai_kontrak;
-                $nestedData['tanggal_akhir_kontrak'] = $q->tanggal_akhir_kontrak;
-                $nestedData['catatan_kontrak'] = $q->catatan_kontrak;
-                $nestedData['sudah_diprint'] = $q->sudah_diprint;
-                $nestedData['created_at'] = substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5);
-                $nestedData['updated_at'] = substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5);
-                $nestedData['alamat_jalan'] = $q->alamat_jalan;
-                $nestedData['rt'] = $q->rt;
-                $nestedData['rw'] = $q->rw;
-                $nestedData['kode_pos'] = $q->kode_pos;
-
-                $data[] = $nestedData;
-
-            }
-        }
-
-        $json_data = array(
-            "draw"            => intval($request->input('draw')),
-            "recordsTotal"    => intval($totalData),
-            "recordsFiltered" => intval($totalFiltered),
-            "data"            => $data
+            $columns = array(
+                0 => 'enroll_id',
+                1 => 'nik',
+                2 => 'employee_name',
+                3 => 'tanggal_resign',
+                4 => 'masa_kerja',
+                5 => 'sebab_resign',
+                6 => 'tipe_surat',
+                7 => '',
             );
 
-        echo json_encode($json_data);
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $totalData = 0;
+            $totalFiltered = 0;
+
+            if (empty($request->input('search.value'))) {
+                $query =  EmployeeAtribut::whereIn('enroll_id', $request->checked_employees)->limit($limit)->get();
+
+                $totalData = EmployeeAtribut::whereIn('enroll_id', $request->checked_employees)->count();
+                $totalFiltered = $totalData;
+            } else {
+                $search = $request->input('search.value');
+                $query =  EmployeeAtribut::whereIn('enroll_id', $request->checked_employees)->where(function ($query) use ($search) {
+                    $query->where('employee_id', 'LIKE', $search)
+                        ->orWhere('nik', $search)
+                        ->orWhere('enroll_id', $search)
+                        ->orWhere('employee_name', 'LIKE', "%{$search}%")
+                        ->orWhere('site_nirwana_name', 'LIKE', "%{$search}%")
+                        ->orWhere('department_name', 'LIKE', "%{$search}%")
+                        ->orWhere('sub_dept_name', 'LIKE', "%{$search}%")
+                        ->orWhere('work_status', 'LIKE', "%{$search}%")
+                        ->orWhere('employee_status', 'LIKE', "%{$search}%")
+                        ->orWhere('posisi_name', 'LIKE', "%{$search}%");
+                })
+                    ->limit($limit)
+                    ->get();
+
+                $totalData = EmployeeAtribut::whereIn('enroll_id', $request->checked_employees)->where(function ($query) use ($search) {
+                    $query->where('employee_id', $search)
+                        ->orWhere('nik', $search)
+                        ->orWhere('enroll_id', $search)
+                        ->orWhere('employee_name', 'LIKE', "%{$search}%")
+                        ->orWhere('site_nirwana_name', 'LIKE', "%{$search}%")
+                        ->orWhere('department_name', 'LIKE', "%{$search}%")
+                        ->orWhere('sub_dept_name', 'LIKE', "%{$search}%")
+                        ->orWhere('work_status', 'LIKE', "%{$search}%")
+                        ->orWhere('employee_status', 'LIKE', "%{$search}%")
+                        ->orWhere('posisi_name', 'LIKE', "%{$search}%");
+                })->count();
+
+                $totalFiltered = $totalData;
+            }
+            $data = array();
+            if (!empty($query)) {
+                foreach ($query as $q) {
+                    $tanggal_masuk = $q->join_date;
+                    $tanggal_selesai = $q->tanggal_resign ?? date('Y-m-d');
+
+                    $diff = date_diff(date_create($tanggal_masuk), date_create($tanggal_selesai));
+                    $total_bulan = ($diff->y * 12) + $diff->m;
+
+                    if ($diff->y >= 1) {
+                        $selisih_tahun = $diff->y . ' tahun ' . $diff->m . ' bulan';
+                        $tipe_surat = 'Paklaring';
+                    } else {
+                        $selisih_tahun = $total_bulan . ' bulan';
+                        $tipe_surat = 'SK Kerja';
+                    }
+
+                    $tanggal_resign = $q->tanggal_resign
+                        ? Carbon::parse($q->tanggal_resign)->format('d-M-Y')
+                        : '-';
+
+                    if (str_contains(strtolower($q->sebab_resign), 'kabur')) {
+                        $tipe_surat = 'SK Kerja';
+                    }
+                    $nestedData['employee_id'] = $q->employee_id;
+                    $nestedData['employee_name'] = $q->employee_name;
+                    $nestedData['jenis_kelamin'] = $q->jenis_kelamin;
+                    $nestedData['tempat_lahir'] = $q->tempat_lahir;
+                    $nestedData['tanggal_lahir'] = $q->tanggal_lahir;
+                    $nestedData['golongan_darah'] = $q->golongan_darah;
+                    $nestedData['email'] = $q->email;
+                    $nestedData['nomor_tlpn'] = $q->nomor_tlpn;
+                    $nestedData['agama'] = $q->agama;
+                    $nestedData['status_kawin'] = $q->status_kawin;
+                    $nestedData['npwp'] = $q->npwp;
+                    $nestedData['nomor_ktp'] = $q->nomor_ktp;
+                    $nestedData['nomor_kk'] = $q->nomor_kk;
+                    $nestedData['ptkp'] = $q->ptkp;
+                    $nestedData['pendidikan_terakhir'] = $q->pendidikan_terakhir;
+                    $nestedData['jurusan_pendidikan'] = $q->jurusan_pendidikan;
+                    $nestedData['nama_bank'] = $q->nama_bank;
+                    $nestedData['nomor_rekening_bank'] = $q->nomor_rekening_bank;
+                    $nestedData['ibu_kandung'] = $q->ibu_kandung;
+                    $nestedData['propinsi'] = $q->propinsi;
+                    $nestedData['kota_kab'] = $q->kota_kab;
+                    $nestedData['kecamatan'] = $q->kecamatan;
+                    $nestedData['kelurahan_desa'] = $q->kelurahan_desa;
+                    $nestedData['alamat_rumah'] = $q->alamat_rumah;
+                    $nestedData['alamat_sementara'] = $q->alamat_sementara;
+                    $nestedData['site_nirwana_id'] = $q->site_nirwana_id;
+                    $nestedData['site_nirwana_name'] = $q->site_nirwana_name;
+                    $nestedData['department_id'] = $q->department_id;
+                    $nestedData['department_name'] = $q->department_name;
+                    $nestedData['sub_dept_id'] = $q->sub_dept_id;
+                    $nestedData['sub_dept_name'] = $q->sub_dept_name;
+                    $nestedData['sewing_nonsewing'] = $q->sewing_nonsewing;
+                    $nestedData['direct_indirect'] = $q->direct_indirect;
+                    $nestedData['enroll_id'] = $q->enroll_id;
+                    $nestedData['join_date'] = $q->join_date;
+                    $nestedData['tipe_surat'] = $tipe_surat;
+
+                    $new_employee = 0;
+                    $bulanKemarin = date('Y-m-d', strtotime('first day of last month'));
+                    $bulanSkrng = date('Y-m-d', strtotime('last day of this month'));
+                    if (($q->join_date >= $bulanKemarin) && ($q->join_date <= $bulanSkrng)) {
+                        $new_employee = 1;
+                    }
+
+                    $nestedData['new_employee'] = $new_employee;
+
+                    $nestedData['nik'] = $q->nik;
+                    $nestedData['status_aktif'] = $q->status_aktif;
+                    $nestedData['status_jabatan'] = $q->status_jabatan;
+                    $nestedData['status_kontrak_tetap'] = $q->status_kontrak_tetap;
+                    $nestedData['status_staff'] = $q->status_staff;
+
+                    $nestedData['tanggal_resign'] = $tanggal_resign;
+                    $nestedData['masa_kerja'] = $selisih_tahun;
+                    $nestedData['sebab_resign'] = $q->sebab_resign;
+                    $deactive = 0;
+                    if (($q->tanggal_resign <= now()) && ($q->tanggal_resign !== null)) {
+                        $deactive = 1;
+                    }
+
+                    $nestedData['deactive'] = $deactive;
+
+                    $nestedData['tunjangan'] = $q->tunjangan;
+                    $nestedData['kode_grade'] = $q->kode_grade;
+                    $nestedData['referensi'] = $q->referensi;
+                    $nestedData['employee_name_atasan'] = $q->employee_name_atasan;
+                    $nestedData['status_aktif_bpjs_tk'] = $q->status_aktif_bpjs_tk;
+                    $nestedData['tanggal_bpjs_ketenagakerjaan'] = $q->tanggal_bpjs_ketenagakerjaan;
+                    $nestedData['nomor_bpjs_ketenagakerjaan'] = $q->nomor_bpjs_ketenagakerjaan;
+                    $nestedData['status_aktif_bpjs_ks'] = $q->status_aktif_bpjs_ks;
+                    $nestedData['tanggal_bpjs_kesehatan'] = $q->tanggal_bpjs_kesehatan;
+                    $nestedData['nomor_bpjs_kesehatan'] = $q->nomor_bpjs_kesehatan;
+                    $nestedData['premi'] = $q->premi;
+                    $nestedData['pengalaman_bekerja'] = $q->pengalaman_bekerja;
+                    $nestedData['lokasi_file_cv'] = $q->lokasi_file_cv;
+                    $nestedData['nama_kerabat'] = $q->nama_kerabat;
+                    $nestedData['nomor_tlpn_kerabat'] = $q->nomor_tlpn_kerabat;
+                    $nestedData['hubungan_kerabat'] = $q->hubungan_kerabat;
+                    $nestedData['alamat_kerabat'] = $q->alamat_kerabat;
+                    $nestedData['tanggal_vaccine1'] = $q->tanggal_vaccine1;
+                    $nestedData['nama_vaksin1'] = $q->nama_vaksin1;
+                    $nestedData['tanggal_vaccine2'] = $q->tanggal_vaccine2;
+                    $nestedData['nama_vaksin2'] = $q->nama_vaksin2;
+                    $nestedData['tanggal_vaccine3'] = $q->tanggal_vaccine3;
+                    $nestedData['nama_vaksin3'] = $q->nama_vaksin3;
+                    $nestedData['golongan_sim'] = $q->golongan_sim;
+                    $nestedData['nomor_sim'] = $q->nomor_sim;
+                    $nestedData['tanggal_expire_sim'] = $q->tanggal_expire_sim;
+                    $nestedData['catatan'] = $q->catatan;
+                    $nestedData['lokasi_foto'] = $q->lokasi_foto;
+                    $nestedData['operator'] = $q->operator;
+                    $nestedData['tanggal_mulai_kontrak'] = $q->tanggal_mulai_kontrak;
+                    $nestedData['tanggal_akhir_kontrak'] = $q->tanggal_akhir_kontrak;
+                    $nestedData['catatan_kontrak'] = $q->catatan_kontrak;
+                    $nestedData['sudah_diprint'] = $q->sudah_diprint;
+                    $nestedData['created_at'] = substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5);
+                    $nestedData['updated_at'] = substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5);
+                    $nestedData['alamat_jalan'] = $q->alamat_jalan;
+                    $nestedData['rt'] = $q->rt;
+                    $nestedData['rw'] = $q->rw;
+                    $nestedData['kode_pos'] = $q->kode_pos;
+
+                    $data[] = $nestedData;
+                }
+            }
+
+            $json_data = array(
+                "draw"            => intval($request->input('draw')),
+                "recordsTotal"    => intval($totalData),
+                "recordsFiltered" => intval($totalFiltered),
+                "data"            => $data
+            );
+
+            echo json_encode($json_data);
         }
     }
 
     public function ajax_getemployeeatr4(Request $request)
     {
 
-        if(request()->ajax()) {
+        if (request()->ajax()) {
 
-        $columns = array(
-            0 => 'enroll_id',
-            1 => 'nik',
-            2 => 'employee_name',
-            3 => 'department_name',
-            4 => 'sub_dept_name',
-            5 => '',
-        );
+            $columns = array(
+                0 => 'enroll_id',
+                1 => 'nik',
+                2 => 'employee_name',
+                3 => 'department_name',
+                4 => 'sub_dept_name',
+                5 => '',
+            );
 
-        $limit = $request->input('length');
-        $start = $request->input('start');
-        $order = $columns[$request->input('order.0.column')];
-        $dir = $request->input('order.0.dir');
-        $totalData = 0;
-        $totalFiltered = 0;
-        $searchData = $request->searchData;
-        $searchNoKTP = $request->selectNoKTP;
-        $searchIbuKandung = $request->searchIbuKandung;
-        $inSearchData='';
-        if($searchData){
-            $enroll_id = implode(", ", $searchData);
-            $allEnroll_id= '('.$enroll_id.')';
-            $inSearchData = ' AND employee_atribut.enroll_id IN '.$allEnroll_id.'';
-        }
-        $inSearchNoKTP='';
-        if($searchNoKTP){
-            $inSearchNoKTP = ' AND employee_atribut.nomor_ktp LIKE "'.$searchNoKTP.'%"';
-        }
-        $inSearchIbuKandung='';
-        if($searchIbuKandung){
-            $inSearchIbuKandung = ' AND employee_atribut.ibu_kandung LIKE "'.$searchIbuKandung.'%"';
-        }
-        if(empty($request->input('search.value')))
-        {
-            $query =  EmployeeAtribut::selectRaw('
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $order = $columns[$request->input('order.0.column')];
+            $dir = $request->input('order.0.dir');
+            $totalData = 0;
+            $totalFiltered = 0;
+            $searchData = $request->searchData;
+            $searchNoKTP = $request->selectNoKTP;
+            $searchIbuKandung = $request->searchIbuKandung;
+            $inSearchData = '';
+            if ($searchData) {
+                $enroll_id = implode(", ", $searchData);
+                $allEnroll_id = '(' . $enroll_id . ')';
+                $inSearchData = ' AND employee_atribut.enroll_id IN ' . $allEnroll_id . '';
+            }
+            $inSearchNoKTP = '';
+            if ($searchNoKTP) {
+                $inSearchNoKTP = ' AND employee_atribut.nomor_ktp LIKE "' . $searchNoKTP . '%"';
+            }
+            $inSearchIbuKandung = '';
+            if ($searchIbuKandung) {
+                $inSearchIbuKandung = ' AND employee_atribut.ibu_kandung LIKE "' . $searchIbuKandung . '%"';
+            }
+            if (empty($request->input('search.value'))) {
+                $query =  EmployeeAtribut::selectRaw('
                             employee_atribut.enroll_id,
                             employee_atribut.nik,
                             employee_atribut.employee_name,
@@ -937,81 +932,76 @@ class EmployeeAtrController extends AdminBaseController
                             employee_contract.created_at,
                             employee_contract.updated_at
                         ')
-                        ->leftJoin('employee_contract','employee_atribut.enroll_id','=','employee_contract.enroll_id')
-                        ->offset($start)
-                        ->limit($limit)
-                        ->orderBy($order,$dir)
-                        ->groupBy('employee_atribut.enroll_id')
-                        ->get();
-            $totalData = EmployeeAtribut::count();
-            $totalFiltered = $totalData;
+                    ->leftJoin('employee_contract', 'employee_atribut.enroll_id', '=', 'employee_contract.enroll_id')
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy($order, $dir)
+                    ->groupBy('employee_atribut.enroll_id')
+                    ->get();
+                $totalData = EmployeeAtribut::count();
+                $totalFiltered = $totalData;
+            } else {
+                $search = $request->input('search.value');
 
-        } else {
-            $search = $request->input('search.value');
+                $query =  EmployeeAtribut::whereRaw('status_aktif is not null' . $inSearchData . '' . $inSearchNoKTP . '' . $inSearchIbuKandung . '')->where(function ($query) use ($search) {
+                    $query->where('employee_id', $search)
+                        ->orWhere('nik', $search)
+                        ->orWhere('enroll_id', $search)
+                        ->orWhere('employee_name', 'LIKE', "%{$search}%")
+                        ->orWhere('site_nirwana_name', 'LIKE', "%{$search}%")
+                        ->orWhere('department_name', 'LIKE', "%{$search}%")
+                        ->orWhere('sub_dept_name', 'LIKE', "%{$search}%")
+                        ->orWhere('work_status', 'LIKE', "%{$search}%")
+                        ->orWhere('employee_status', 'LIKE', "%{$search}%")
+                        ->orWhere('posisi_name', 'LIKE', "%{$search}%");
+                })
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy($order, $dir)
+                    ->get();
 
-            $query =  EmployeeAtribut::whereRaw('status_aktif is not null'.$inSearchData.''.$inSearchNoKTP.''.$inSearchIbuKandung.'')->where(function($query)use($search){
-                $query->where('employee_id',$search)
-                ->orWhere('nik',$search)
-                ->orWhere('enroll_id',$search)
-                ->orWhere('employee_name','LIKE',"%{$search}%")
-                ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
-                ->orWhere('department_name','LIKE',"%{$search}%")
-                ->orWhere('sub_dept_name','LIKE',"%{$search}%")
-                ->orWhere('work_status','LIKE',"%{$search}%")
-                ->orWhere('employee_status','LIKE',"%{$search}%")
-                ->orWhere('posisi_name','LIKE',"%{$search}%");
-            })
-            ->offset($start)
-            ->limit($limit)
-            ->orderBy($order,$dir)
-            ->get();
+                $totalData = EmployeeAtribut::whereRaw('status_aktif is not null' . $inSearchData . '' . $inSearchNoKTP . '' . $inSearchIbuKandung . '')->where(function ($query) use ($search) {
+                    $query->where('employee_id', 'LIKE', "%{$search}%")
+                        ->orWhere('nik', $search)
+                        ->orWhere('enroll_id', $search)
+                        ->orWhere('employee_name', 'LIKE', "%{$search}%")
+                        ->orWhere('site_nirwana_name', 'LIKE', "%{$search}%")
+                        ->orWhere('department_name', 'LIKE', "%{$search}%")
+                        ->orWhere('sub_dept_name', 'LIKE', "%{$search}%")
+                        ->orWhere('work_status', 'LIKE', "%{$search}%")
+                        ->orWhere('employee_status', 'LIKE', "%{$search}%")
+                        ->orWhere('posisi_name', 'LIKE', "%{$search}%");
+                })->count();
 
-            $totalData = EmployeeAtribut::whereRaw('status_aktif is not null'.$inSearchData.''.$inSearchNoKTP.''.$inSearchIbuKandung.'')->where(function($query)use($search){
-                $query->where('employee_id','LIKE',"%{$search}%")
-                ->orWhere('nik',$search)
-                ->orWhere('enroll_id',$search)
-                ->orWhere('employee_name','LIKE',"%{$search}%")
-                ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
-                ->orWhere('department_name','LIKE',"%{$search}%")
-                ->orWhere('sub_dept_name','LIKE',"%{$search}%")
-                ->orWhere('work_status','LIKE',"%{$search}%")
-                ->orWhere('employee_status','LIKE',"%{$search}%")
-                ->orWhere('posisi_name','LIKE',"%{$search}%");
-            })->count();
-
-            $totalFiltered = $totalData;
-
-        }
-
-        $data = array();
-        if(!empty($query))
-        {
-            foreach ($query as $q)
-            {
-                $nestedData['enroll_id'] = $q->enroll_id;
-                $nestedData['nik'] = $q->nik;
-                $nestedData['employee_name'] = $q->employee_name;
-                $nestedData['department_name'] = $q->department_name;
-                $nestedData['sub_dept_name'] = $q->sub_dept_name;
-                $nestedData['kontrak_kerja'] = $q->contract;
-                $nestedData['kontrak_kerja_akhir'] = $q->contract_end;
-
-                $nestedData['created_at'] = substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5);
-                $nestedData['updated_at'] = substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5);
-
-                $data[] = $nestedData;
-
+                $totalFiltered = $totalData;
             }
-        }
 
-        $json_data = array(
-            "draw"            => intval($request->input('draw')),
-            "recordsTotal"    => intval($totalData),
-            "recordsFiltered" => intval($totalFiltered),
-            "data"            => $data
+            $data = array();
+            if (!empty($query)) {
+                foreach ($query as $q) {
+                    $nestedData['enroll_id'] = $q->enroll_id;
+                    $nestedData['nik'] = $q->nik;
+                    $nestedData['employee_name'] = $q->employee_name;
+                    $nestedData['department_name'] = $q->department_name;
+                    $nestedData['sub_dept_name'] = $q->sub_dept_name;
+                    $nestedData['kontrak_kerja'] = $q->contract;
+                    $nestedData['kontrak_kerja_akhir'] = $q->contract_end;
+
+                    $nestedData['created_at'] = substr($q->created_at, 0, 10) . " " . substr($q->created_at, 11, 5);
+                    $nestedData['updated_at'] = substr($q->updated_at, 0, 10) . " " . substr($q->updated_at, 11, 5);
+
+                    $data[] = $nestedData;
+                }
+            }
+
+            $json_data = array(
+                "draw"            => intval($request->input('draw')),
+                "recordsTotal"    => intval($totalData),
+                "recordsFiltered" => intval($totalFiltered),
+                "data"            => $data
             );
 
-        echo json_encode($json_data);
+            echo json_encode($json_data);
         }
     }
     public function ajax_getemployeeid(Request $request)
@@ -1027,8 +1017,7 @@ class EmployeeAtrController extends AdminBaseController
         //     $inSubDepartment = ' AND sub_dept_id = "'.$sub_dept_id.'"';
         // }
 
-        if(empty($request->input('search.value')))
-        {
+        if (empty($request->input('search.value'))) {
             $employeeIds =  EmployeeAtribut::select("enroll_id")->pluck("enroll_id")->toArray();
         } else {
             $search = $request->input('search.value');
@@ -1040,224 +1029,220 @@ class EmployeeAtrController extends AdminBaseController
     }
     public function ajax_getemployeeids(Request $request)
     {
-        $department=$request->department_id;
-        $sub_dept_id=$request->sub_dept_id;
-        $inDepartment='';
-        $inSubDepartment='';
-        if($department){
-            $inDepartment = ' AND department_name = "'.$department.'"';
+        $department = $request->department_id;
+        $sub_dept_id = $request->sub_dept_id;
+        $inDepartment = '';
+        $inSubDepartment = '';
+        if ($department) {
+            $inDepartment = ' AND department_name = "' . $department . '"';
         }
-        if($sub_dept_id){
-            $inSubDepartment = ' AND sub_dept_id = "'.$sub_dept_id.'"';
+        if ($sub_dept_id) {
+            $inSubDepartment = ' AND sub_dept_id = "' . $sub_dept_id . '"';
         }
 
-        if(empty($request->input('search.value')))
-        {
-            $employeeIds =  EmployeeAtribut::select("enroll_id")->whereRaw('(status_aktif != "TIDAK AKTIF" or tanggal_resign> CURDATE())'.$inDepartment.''.$inSubDepartment.'')->pluck("enroll_id")->toArray();
+        if (empty($request->input('search.value'))) {
+            $employeeIds =  EmployeeAtribut::select("enroll_id")->whereRaw('(status_aktif != "TIDAK AKTIF" or tanggal_resign> CURDATE())' . $inDepartment . '' . $inSubDepartment . '')->pluck("enroll_id")->toArray();
         } else {
             $search = $request->input('search.value');
 
-            $employeeIds =  EmployeeAtribut::select("enroll_id")->whereRaw('(status_aktif != "TIDAK AKTIF" or tanggal_resign> CURDATE())'.$inDepartment.''.$inSubDepartment.'')->where(function($query)use($search){
-                $query->where('employee_id','LIKE',"%{$search}%")
-                ->orWhere('nik','LIKE',"%{$search}%")
-                ->orWhere('enroll_id','LIKE',"%{$search}%")
-                ->orWhere('employee_name','LIKE',"%{$search}%")
-                ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
-                ->orWhere('department_name','LIKE',"%{$search}%")
-                ->orWhere('sub_dept_name','LIKE',"%{$search}%")
-                ->orWhere('work_status','LIKE',"%{$search}%")
-                ->orWhere('employee_status','LIKE',"%{$search}%")
-                ->orWhere('posisi_name','LIKE',"%{$search}%");
+            $employeeIds =  EmployeeAtribut::select("enroll_id")->whereRaw('(status_aktif != "TIDAK AKTIF" or tanggal_resign> CURDATE())' . $inDepartment . '' . $inSubDepartment . '')->where(function ($query) use ($search) {
+                $query->where('employee_id', 'LIKE', "%{$search}%")
+                    ->orWhere('nik', 'LIKE', "%{$search}%")
+                    ->orWhere('enroll_id', 'LIKE', "%{$search}%")
+                    ->orWhere('employee_name', 'LIKE', "%{$search}%")
+                    ->orWhere('site_nirwana_name', 'LIKE', "%{$search}%")
+                    ->orWhere('department_name', 'LIKE', "%{$search}%")
+                    ->orWhere('sub_dept_name', 'LIKE', "%{$search}%")
+                    ->orWhere('work_status', 'LIKE', "%{$search}%")
+                    ->orWhere('employee_status', 'LIKE', "%{$search}%")
+                    ->orWhere('posisi_name', 'LIKE', "%{$search}%");
             })
-            ->pluck("enroll_id")->toArray();
+                ->pluck("enroll_id")->toArray();
         }
 
         return $employeeIds;
     }
-    public function set_already_print_sk(){
-        $employees=request()->employees;
-        foreach($employees as $value){
-            EmployeeAtribut::where('enroll_id',$value)->where('sudah_diprint',null)->update([
-                'sudah_diprint'=>1
+    public function set_already_print_sk()
+    {
+        $employees = request()->employees;
+        foreach ($employees as $value) {
+            EmployeeAtribut::where('enroll_id', $value)->where('sudah_diprint', null)->update([
+                'sudah_diprint' => 1
             ]);
         }
     }
-    public function set_back_print_sk(){
-        $employees=request()->employees;
-        foreach($employees as $value){
-            EmployeeAtribut::where('enroll_id',$value)->where('sudah_diprint',1)->update([
-                'sudah_diprint'=>null
+    public function set_back_print_sk()
+    {
+        $employees = request()->employees;
+        foreach ($employees as $value) {
+            EmployeeAtribut::where('enroll_id', $value)->where('sudah_diprint', 1)->update([
+                'sudah_diprint' => null
             ]);
         }
     }
-    public function ajax_getcheckedemployee(Request $request){
-        return EmployeeAtribut::whereIn('enroll_id',$request->employees)->get();
+    public function ajax_getcheckedemployee(Request $request)
+    {
+        return EmployeeAtribut::whereIn('enroll_id', $request->employees)->get();
     }
     public function ajax_getempatr(Request $request)
     {
 
-        if(request()->ajax()) {
+        if (request()->ajax()) {
 
-        $columns = array(
-            0 => 'enroll_id',
-            1 => 'nik',
-            2 => 'employee_name',
-        );
-
-        $limit = $request->input('length');
-        $start = $request->input('start');
-        $order = $columns[$request->input('order.0.column')];
-        $dir = $request->input('order.0.dir');
-        $totalData = 0;
-        $totalFiltered = 0;
-
-        if(empty($request->input('search.value')))
-        {
-            $query =  EmployeeAtribut::offset($start)
-                            ->limit($limit)
-                            ->orderBy($order,$dir)
-                            ->get();
-
-            $totalData = EmployeeAtribut::count();
-            $totalFiltered = $totalData;
-
-        } else {
-            $search = $request->input('search.value');
-
-            $query =  EmployeeAtribut::where('nik','LIKE',"%{$search}%")
-                            ->orWhere('enroll_id','LIKE',"%{$search}%")
-                            ->orWhere('employee_name','LIKE',"%{$search}%")
-                            ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
-                            ->orWhere('department_name','LIKE',"%{$search}%")
-                            ->orWhere('sub_dept_name','LIKE',"%{$search}%")
-                            ->orWhere('status_staff','LIKE',"%{$search}%")
-                            ->offset($start)
-                            ->limit($limit)
-                            ->orderBy($order,$dir)
-                            ->get();
-
-            $totalData = EmployeeAtribut::where('nik','LIKE',"%{$search}%")
-                            ->orWhere('enroll_id','LIKE',"%{$search}%")
-                            ->orWhere('employee_name','LIKE',"%{$search}%")
-                            ->orWhere('site_nirwana_name','LIKE',"%{$search}%")
-                            ->orWhere('department_name','LIKE',"%{$search}%")
-                            ->orWhere('sub_dept_name','LIKE',"%{$search}%")
-                            ->orWhere('status_staff','LIKE',"%{$search}%")
-                            ->count();
-            $totalFiltered = $totalData;
-
-        }
-
-        $data = array();
-        if(!empty($query))
-        {
-            foreach ($query as $q)
-            {
-                $nestedData['employee_id'] = $q->employee_id;
-                $nestedData['nik'] = $q->nik;
-                $nestedData['employee_name'] = $q->employee_name;
-                $nestedData['enroll_id'] = $q->enroll_id;
-                $nestedData['site_nirwana_name'] = $q->site_nirwana_name;
-                $nestedData['department_name'] = $q->department_name;
-                $nestedData['sub_dept_name'] = $q->sub_dept_name;
-                $nestedData['work_status'] = $q->work_status;
-                $nestedData['employee_status'] = $q->employee_status;
-                $nestedData['posisi_name'] = $q->posisi_name;
-                $nestedData['join_date'] = $q->join_date;
-                $new_employee = 0;
-                $bulanKemarin = date('Y-m-d', strtotime('first day of last month'));
-                $bulanSkrng = date('Y-m-d', strtotime('last day of this month'));
-                if (($q->join_date >= $bulanKemarin) && ($q->join_date <= $bulanSkrng)) {
-                    $new_employee = 1;
-                }
-                $nestedData['new_employee'] = $new_employee;
-                $nestedData['tanggal_resign'] = $q->tanggal_resign;
-                $deactive = 0;
-                if (($q->tanggal_resign <= now()) && ($q->tanggal_resign !== null ) ) {
-                    $deactive = 1;
-                }
-                $nestedData['deactive'] = $deactive;
-                $nestedData['jadwal_waktu_kerja1'] = $q->jadwal_waktu_kerja1;
-                $nestedData['jadwal_waktu_kerja2'] = $q->jadwal_waktu_kerja2;
-                $nestedData['jadwal_waktu_kerja3'] = $q->jadwal_waktu_kerja3;
-                $nestedData['site_nirwana_id'] = $q->site_nirwana_id;
-                $nestedData['department_id'] = $q->department_id;
-                $nestedData['sub_dept_id'] = $q->sub_dept_id;
-                $nestedData['sewing_nonsewing'] = $q->sewing_nonsewing;
-                $nestedData['direct_indirect'] = $q->direct_indirect;
-                $nestedData['kode_grade'] = $q->kode_grade;
-                $nestedData['jenis_kelamin'] = $q->jenis_kelamin;
-                $nestedData['tempat_lahir'] = $q->tempat_lahir;
-                $nestedData['tanggal_lahir'] = $q->tanggal_lahir;
-                $nestedData['alamat_rumah'] = $q->alamat_rumah;
-                $nestedData['saudara_yang_bisa_dihubungi'] = $q->saudara_yang_bisa_dihubungi;
-                $nestedData['hamlet'] = $q->hamlet;
-                $nestedData['kota_kab'] = $q->kota_kab;
-                $nestedData['kelurahan'] = $q->kelurahan;
-                $nestedData['wilayah'] = $q->wilayah;
-                $nestedData['propinsi'] = $q->propinsi;
-                $nestedData['kode_pos'] = $q->kode_pos;
-                $nestedData['agama'] = $q->agama;
-                $nestedData['nomor_ktp'] = $q->nomor_ktp;
-                $nestedData['golongan_darah'] = $q->golongan_darah;
-                $nestedData['status_kawin'] = $q->status_kawin;
-                $nestedData['pendidikan_terakhir'] = $q->pendidikan_terakhir;
-                $nestedData['jurusan_pendidikan'] = $q->jurusan_pendidikan;
-                $nestedData['nomor_bpjs_ketenagakerjaan'] = $q->nomor_bpjs_ketenagakerjaan;
-                $nestedData['tanggal_bpjs_ketenagakerjaan'] = $q->tanggal_bpjs_ketenagakerjaan;
-                $nestedData['nomor_bpjs_kesehatan'] = $q->nomor_bpjs_kesehatan;
-                $nestedData['premi'] = $q->premi;
-                $nestedData['tanggal_bpjs_kesehatan'] = $q->tanggal_bpjs_kesehatan;
-                $nestedData['allowance'] = $q->allowance;
-                $nestedData['nama_bank'] = $q->nama_bank;
-                $nestedData['nomor_rekening_bank'] = $q->nomor_rekening_bank;
-                $nestedData['catatan'] = $q->catatan;
-                $nestedData['email'] = $q->email;
-                $nestedData['ptkp'] = $q->ptkp;
-                $nestedData['tanggal_vaccine1'] = $q->tanggal_vaccine1;
-                $nestedData['tanggal_vaccine2'] = $q->tanggal_vaccine2;
-                $nestedData['tanggal_vaccine3'] = $q->tanggal_vaccine3;
-                $nestedData['created_at'] = $q->created_at;
-                $nestedData['updated_at'] = $q->updated_at;
-                $nestedData['nomor_tlpn'] = $q->nomor_tlpn;
-                $nestedData['npwp'] = $q->npwp;
-                $nestedData['golongan_sim'] = $q->golongan_sim;
-                $nestedData['nomor_sim'] = $q->nomor_sim;
-                $nestedData['tanggal_expire_sim'] = $q->tanggal_expire_sim;
-                $nestedData['nama_vaksin1'] = $q->nama_vaksin1;
-                $nestedData['nama_vaksin2'] = $q->nama_vaksin2;
-                $nestedData['nama_vaksin3'] = $q->nama_vaksin3;
-                $nestedData['employee_name_atasan'] = $q->employee_name_atasan;
-                $nestedData['nomor_kk'] = $q->nomor_kk;
-                $nestedData['lokasi_foto'] = $q->lokasi_foto;
-                $nestedData['lokasi_file_cv'] = $q->lokasi_file_cv;
-                $nestedData['pola_kerja'] = $q->pola_kerja;
-                $nestedData['alamat_sementara'] = $q->alamat_sementara;
-                $nestedData['kode_pos'] = $q->kode_pos;
-                $nestedData['kode_pos_sementara'] = $q->kode_pos_sementara;
-                $nestedData['nama_kerabat'] = $q->nama_kerabat;
-                $nestedData['nomor_tlpn_kerabat'] = $q->nomor_tlpn_kerabat;
-                $nestedData['alamat_kerabat'] = $q->alamat_kerabat;
-                $nestedData['hubungan_kerabat'] = $q->hubungan_kerabat;
-                $nestedData['pengalaman_bekerja'] = $q->pengalaman_bekerja;
-                $nestedData['alamat_jalan'] = $q->alamat_jalan;
-                $nestedData['rt'] = $q->rt;
-                $nestedData['rw'] = $q->rw;
-                $nestedData['kode_pos'] = $q->kode_pos;
-
-                $data[] = $nestedData;
-
-            }
-        }
-
-        $json_data = array(
-            "draw"            => intval($request->input('draw')),
-            "recordsTotal"    => intval($totalData),
-            "recordsFiltered" => intval($totalFiltered),
-            "data"            => $data
+            $columns = array(
+                0 => 'enroll_id',
+                1 => 'nik',
+                2 => 'employee_name',
             );
 
-        echo json_encode($json_data);
+            $limit = $request->input('length');
+            $start = $request->input('start');
+            $order = $columns[$request->input('order.0.column')];
+            $dir = $request->input('order.0.dir');
+            $totalData = 0;
+            $totalFiltered = 0;
+
+            if (empty($request->input('search.value'))) {
+                $query =  EmployeeAtribut::offset($start)
+                    ->limit($limit)
+                    ->orderBy($order, $dir)
+                    ->get();
+
+                $totalData = EmployeeAtribut::count();
+                $totalFiltered = $totalData;
+            } else {
+                $search = $request->input('search.value');
+
+                $query =  EmployeeAtribut::where('nik', 'LIKE', "%{$search}%")
+                    ->orWhere('enroll_id', 'LIKE', "%{$search}%")
+                    ->orWhere('employee_name', 'LIKE', "%{$search}%")
+                    ->orWhere('site_nirwana_name', 'LIKE', "%{$search}%")
+                    ->orWhere('department_name', 'LIKE', "%{$search}%")
+                    ->orWhere('sub_dept_name', 'LIKE', "%{$search}%")
+                    ->orWhere('status_staff', 'LIKE', "%{$search}%")
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy($order, $dir)
+                    ->get();
+
+                $totalData = EmployeeAtribut::where('nik', 'LIKE', "%{$search}%")
+                    ->orWhere('enroll_id', 'LIKE', "%{$search}%")
+                    ->orWhere('employee_name', 'LIKE', "%{$search}%")
+                    ->orWhere('site_nirwana_name', 'LIKE', "%{$search}%")
+                    ->orWhere('department_name', 'LIKE', "%{$search}%")
+                    ->orWhere('sub_dept_name', 'LIKE', "%{$search}%")
+                    ->orWhere('status_staff', 'LIKE', "%{$search}%")
+                    ->count();
+                $totalFiltered = $totalData;
+            }
+
+            $data = array();
+            if (!empty($query)) {
+                foreach ($query as $q) {
+                    $nestedData['employee_id'] = $q->employee_id;
+                    $nestedData['nik'] = $q->nik;
+                    $nestedData['employee_name'] = $q->employee_name;
+                    $nestedData['enroll_id'] = $q->enroll_id;
+                    $nestedData['site_nirwana_name'] = $q->site_nirwana_name;
+                    $nestedData['department_name'] = $q->department_name;
+                    $nestedData['sub_dept_name'] = $q->sub_dept_name;
+                    $nestedData['work_status'] = $q->work_status;
+                    $nestedData['employee_status'] = $q->employee_status;
+                    $nestedData['posisi_name'] = $q->posisi_name;
+                    $nestedData['join_date'] = $q->join_date;
+                    $new_employee = 0;
+                    $bulanKemarin = date('Y-m-d', strtotime('first day of last month'));
+                    $bulanSkrng = date('Y-m-d', strtotime('last day of this month'));
+                    if (($q->join_date >= $bulanKemarin) && ($q->join_date <= $bulanSkrng)) {
+                        $new_employee = 1;
+                    }
+                    $nestedData['new_employee'] = $new_employee;
+                    $nestedData['tanggal_resign'] = $q->tanggal_resign;
+                    $deactive = 0;
+                    if (($q->tanggal_resign <= now()) && ($q->tanggal_resign !== null)) {
+                        $deactive = 1;
+                    }
+                    $nestedData['deactive'] = $deactive;
+                    $nestedData['jadwal_waktu_kerja1'] = $q->jadwal_waktu_kerja1;
+                    $nestedData['jadwal_waktu_kerja2'] = $q->jadwal_waktu_kerja2;
+                    $nestedData['jadwal_waktu_kerja3'] = $q->jadwal_waktu_kerja3;
+                    $nestedData['site_nirwana_id'] = $q->site_nirwana_id;
+                    $nestedData['department_id'] = $q->department_id;
+                    $nestedData['sub_dept_id'] = $q->sub_dept_id;
+                    $nestedData['sewing_nonsewing'] = $q->sewing_nonsewing;
+                    $nestedData['direct_indirect'] = $q->direct_indirect;
+                    $nestedData['kode_grade'] = $q->kode_grade;
+                    $nestedData['jenis_kelamin'] = $q->jenis_kelamin;
+                    $nestedData['tempat_lahir'] = $q->tempat_lahir;
+                    $nestedData['tanggal_lahir'] = $q->tanggal_lahir;
+                    $nestedData['alamat_rumah'] = $q->alamat_rumah;
+                    $nestedData['saudara_yang_bisa_dihubungi'] = $q->saudara_yang_bisa_dihubungi;
+                    $nestedData['hamlet'] = $q->hamlet;
+                    $nestedData['kota_kab'] = $q->kota_kab;
+                    $nestedData['kelurahan'] = $q->kelurahan;
+                    $nestedData['wilayah'] = $q->wilayah;
+                    $nestedData['propinsi'] = $q->propinsi;
+                    $nestedData['kode_pos'] = $q->kode_pos;
+                    $nestedData['agama'] = $q->agama;
+                    $nestedData['nomor_ktp'] = $q->nomor_ktp;
+                    $nestedData['golongan_darah'] = $q->golongan_darah;
+                    $nestedData['status_kawin'] = $q->status_kawin;
+                    $nestedData['pendidikan_terakhir'] = $q->pendidikan_terakhir;
+                    $nestedData['jurusan_pendidikan'] = $q->jurusan_pendidikan;
+                    $nestedData['nomor_bpjs_ketenagakerjaan'] = $q->nomor_bpjs_ketenagakerjaan;
+                    $nestedData['tanggal_bpjs_ketenagakerjaan'] = $q->tanggal_bpjs_ketenagakerjaan;
+                    $nestedData['nomor_bpjs_kesehatan'] = $q->nomor_bpjs_kesehatan;
+                    $nestedData['premi'] = $q->premi;
+                    $nestedData['tanggal_bpjs_kesehatan'] = $q->tanggal_bpjs_kesehatan;
+                    $nestedData['allowance'] = $q->allowance;
+                    $nestedData['nama_bank'] = $q->nama_bank;
+                    $nestedData['nomor_rekening_bank'] = $q->nomor_rekening_bank;
+                    $nestedData['catatan'] = $q->catatan;
+                    $nestedData['email'] = $q->email;
+                    $nestedData['ptkp'] = $q->ptkp;
+                    $nestedData['tanggal_vaccine1'] = $q->tanggal_vaccine1;
+                    $nestedData['tanggal_vaccine2'] = $q->tanggal_vaccine2;
+                    $nestedData['tanggal_vaccine3'] = $q->tanggal_vaccine3;
+                    $nestedData['created_at'] = $q->created_at;
+                    $nestedData['updated_at'] = $q->updated_at;
+                    $nestedData['nomor_tlpn'] = $q->nomor_tlpn;
+                    $nestedData['npwp'] = $q->npwp;
+                    $nestedData['golongan_sim'] = $q->golongan_sim;
+                    $nestedData['nomor_sim'] = $q->nomor_sim;
+                    $nestedData['tanggal_expire_sim'] = $q->tanggal_expire_sim;
+                    $nestedData['nama_vaksin1'] = $q->nama_vaksin1;
+                    $nestedData['nama_vaksin2'] = $q->nama_vaksin2;
+                    $nestedData['nama_vaksin3'] = $q->nama_vaksin3;
+                    $nestedData['employee_name_atasan'] = $q->employee_name_atasan;
+                    $nestedData['nomor_kk'] = $q->nomor_kk;
+                    $nestedData['lokasi_foto'] = $q->lokasi_foto;
+                    $nestedData['lokasi_file_cv'] = $q->lokasi_file_cv;
+                    $nestedData['pola_kerja'] = $q->pola_kerja;
+                    $nestedData['alamat_sementara'] = $q->alamat_sementara;
+                    $nestedData['kode_pos'] = $q->kode_pos;
+                    $nestedData['kode_pos_sementara'] = $q->kode_pos_sementara;
+                    $nestedData['nama_kerabat'] = $q->nama_kerabat;
+                    $nestedData['nomor_tlpn_kerabat'] = $q->nomor_tlpn_kerabat;
+                    $nestedData['alamat_kerabat'] = $q->alamat_kerabat;
+                    $nestedData['hubungan_kerabat'] = $q->hubungan_kerabat;
+                    $nestedData['pengalaman_bekerja'] = $q->pengalaman_bekerja;
+                    $nestedData['alamat_jalan'] = $q->alamat_jalan;
+                    $nestedData['rt'] = $q->rt;
+                    $nestedData['rw'] = $q->rw;
+                    $nestedData['kode_pos'] = $q->kode_pos;
+
+                    $data[] = $nestedData;
+                }
+            }
+
+            $json_data = array(
+                "draw"            => intval($request->input('draw')),
+                "recordsTotal"    => intval($totalData),
+                "recordsFiltered" => intval($totalFiltered),
+                "data"            => $data
+            );
+
+            echo json_encode($json_data);
         }
     }
 
@@ -1303,7 +1288,11 @@ class EmployeeAtrController extends AdminBaseController
         $status_jabatan = strtoupper($request->status_jabatan);
         $status_kontrak_tetap = strtoupper($request->status_kontrak_tetap);
         $status_staff = strtoupper($request->status_staff);
-        if($request->tanggal_resign == "") { $tanggal_resign = null; } else { $tanggal_resign = $request->tanggal_resign; }
+        if ($request->tanggal_resign == "") {
+            $tanggal_resign = null;
+        } else {
+            $tanggal_resign = $request->tanggal_resign;
+        }
         $sebab_resign = $request->sebab_resign;
         $tunjangan = strtoupper($request->tunjangan);
         $kode_grade = strtoupper($request->kode_grade);
@@ -1345,27 +1334,27 @@ class EmployeeAtrController extends AdminBaseController
 
         $timestamp = Carbon::now();
         $site_nirwana_name =  DepartmentAll::select('site_nirwana_name')
-                                    ->where('site_nirwana_id', '=', $site_nirwana_id)
-                                    ->groupby('site_nirwana_id')
-                                    ->first();
+            ->where('site_nirwana_id', '=', $site_nirwana_id)
+            ->groupby('site_nirwana_id')
+            ->first();
 
         $department_name =  DepartmentAll::select('department_name')
-                                    ->where('site_nirwana_id', '=', $site_nirwana_id)
-                                    ->where('department_id', '=', $department_id)
-                                    ->groupby('department_id')
-                                    ->first();
+            ->where('site_nirwana_id', '=', $site_nirwana_id)
+            ->where('department_id', '=', $department_id)
+            ->groupby('department_id')
+            ->first();
 
         $sub_dept_name =  DepartmentAll::select('sub_dept_name')
-                                    ->where('site_nirwana_id', '=', $site_nirwana_id)
-                                    ->where('department_id', '=', $department_id)
-                                    ->where('sub_dept_id', '=', $sub_dept_id)
-                                    ->groupby('sub_dept_id')
-                                    ->first();
+            ->where('site_nirwana_id', '=', $site_nirwana_id)
+            ->where('department_id', '=', $department_id)
+            ->where('sub_dept_id', '=', $sub_dept_id)
+            ->groupby('sub_dept_id')
+            ->first();
 
 
         $query = EmployeeAtribut::whereRaw('enroll_id = "' . $enroll_id . '"')->count();
-        MasterDataAbsenKehadiran::where('enroll_id',$enroll_id)->update([
-            'nik'=>$request->nik
+        MasterDataAbsenKehadiran::where('enroll_id', $enroll_id)->update([
+            'nik' => $request->nik
         ]);
         //update master
         // $kontrak_awal=DB::select("select max(contract) contract from employee_contract where enroll_id='$enroll_id'")[0]->contract;
@@ -1380,7 +1369,7 @@ class EmployeeAtrController extends AdminBaseController
         // }
         $employee_contract_before = EmployeeAtribut::whereRaw('enroll_id = "' . $enroll_id . '"')->first();
         // dd($employee_contract_before->tanggal_mulai_kontrak, $employee_contract_before->tanggal_akhir_kontrak);
-        if($employee_contract_before){
+        if ($employee_contract_before) {
             if ($tanggal_mulai_kontrak != '' && $tanggal_akhir_kontrak != '') {
                 // Cek apakah data kontrak ini sudah ada
                 $existing = DB::table('employee_contract')
@@ -1402,95 +1391,95 @@ class EmployeeAtrController extends AdminBaseController
             }
         }
 
-        if($query > 0) {
+        if ($query > 0) {
             $query = EmployeeAtribut::whereRaw('enroll_id = "' . $enroll_id . '"')
-            ->update([
-                'employee_name' => $employee_name,
-                'jenis_kelamin' => $jenis_kelamin,
-                'tempat_lahir' => $tempat_lahir,
-                'tanggal_lahir' => $tanggal_lahir,
-                'golongan_darah' => $golongan_darah,
-                'email' => $email,
-                'nomor_tlpn' => $nomor_tlpn,
-                'agama' => $agama,
-                'status_kawin' => $status_kawin,
-                'npwp' => $npwp,
-                'nomor_ktp' => $nomor_ktp,
-                'nomor_kk' => $nomor_kk,
-                'ptkp' => $ptkp,
-                'pendidikan_terakhir' => $pendidikan_terakhir,
-                'jurusan_pendidikan' => $jurusan_pendidikan,
-                'nama_bank' => $nama_bank,
-                'nomor_rekening_bank' => $nomor_rekening_bank,
-                'ibu_kandung' => $ibu_kandung,
-                'propinsi' => $propinsi,
-                'kota_kab' => $kota_kab,
-                'kecamatan' => $kecamatan,
-                'kelurahan_desa' => $kelurahan_desa,
-                'alamat_rumah' => $alamat_rumah,
-                'alamat_sementara' => $alamat_sementara,
-                'site_nirwana_id' => $site_nirwana_id,
-                'site_nirwana_name' => $site_nirwana_name->site_nirwana_name,
-                'department_id' => $department_id,
-                'department_name' => $department_name->department_name,
-                'sub_dept_id' => $sub_dept_id,
-                'sub_dept_name' => $sub_dept_name->sub_dept_name,
-                'sewing_nonsewing'=>$sewing_nonsewing,
-                'direct_indirect'=>$direct_indirect,
-                'enroll_id' => $enroll_id,
-                'join_date' => $join_date,
-                'nik' => $nik,
-                'status_aktif' => $status_aktif,
-                'status_jabatan' => $status_jabatan,
-                'status_kontrak_tetap' => $status_kontrak_tetap,
-                'status_staff' => $status_staff,
-                'tanggal_resign' => $tanggal_resign,
-                'sebab_resign' => $sebab_resign,
-                'tunjangan' => $tunjangan,
-                'kode_grade' => $kode_grade,
-                'referensi' => $referensi,
-                'employee_name_atasan' => $employee_name_atasan,
-                'status_aktif_bpjs_tk' => $status_aktif_bpjs_tk,
-                'tanggal_bpjs_ketenagakerjaan' => $tanggal_bpjs_ketenagakerjaan,
-                'nomor_bpjs_ketenagakerjaan' => $nomor_bpjs_ketenagakerjaan,
-                'status_aktif_bpjs_ks' => $status_aktif_bpjs_ks,
-                'tanggal_bpjs_kesehatan' => $tanggal_bpjs_kesehatan,
-                'premi' => $premi,
-                'nomor_bpjs_kesehatan' => $nomor_bpjs_kesehatan,
-                'pengalaman_bekerja' => $pengalaman_bekerja,
-                'lokasi_file_cv' => $lokasi_file_cv,
-                'nama_kerabat' => $nama_kerabat,
-                'nomor_tlpn_kerabat' => $nomor_tlpn_kerabat,
-                'hubungan_kerabat' => $hubungan_kerabat,
-                'alamat_kerabat' => $alamat_kerabat,
-                'tanggal_vaccine1' => $tanggal_vaccine1,
-                'nama_vaksin1' => $nama_vaksin1,
-                'tanggal_vaccine2' => $tanggal_vaccine2,
-                'nama_vaksin2' => $nama_vaksin2,
-                'tanggal_vaccine3' => $tanggal_vaccine3,
-                'nama_vaksin3' => $nama_vaksin3,
-                'golongan_sim' => $golongan_sim,
-                'nomor_sim' => $nomor_sim,
-                'tanggal_expire_sim' => $tanggal_expire_sim,
-                'catatan' => $catatan,
-                'no_surat'=>$no_surat,
-                'lokasi_foto' => $lokasi_foto,
-                'operator' => $operator,
-                'tanggal_mulai_kontrak' => $tanggal_mulai_kontrak,
-                'tanggal_akhir_kontrak' => $tanggal_akhir_kontrak,
-                'catatan_kontrak' => $catatan_kontrak,
-                'alamat_jalan' => $alamat_jalan,
-                'rt' => $rt,
-                'rw' => $rw,
-                'kode_pos' => $kode_pos
-            ]);
+                ->update([
+                    'employee_name' => $employee_name,
+                    'jenis_kelamin' => $jenis_kelamin,
+                    'tempat_lahir' => $tempat_lahir,
+                    'tanggal_lahir' => $tanggal_lahir,
+                    'golongan_darah' => $golongan_darah,
+                    'email' => $email,
+                    'nomor_tlpn' => $nomor_tlpn,
+                    'agama' => $agama,
+                    'status_kawin' => $status_kawin,
+                    'npwp' => $npwp,
+                    'nomor_ktp' => $nomor_ktp,
+                    'nomor_kk' => $nomor_kk,
+                    'ptkp' => $ptkp,
+                    'pendidikan_terakhir' => $pendidikan_terakhir,
+                    'jurusan_pendidikan' => $jurusan_pendidikan,
+                    'nama_bank' => $nama_bank,
+                    'nomor_rekening_bank' => $nomor_rekening_bank,
+                    'ibu_kandung' => $ibu_kandung,
+                    'propinsi' => $propinsi,
+                    'kota_kab' => $kota_kab,
+                    'kecamatan' => $kecamatan,
+                    'kelurahan_desa' => $kelurahan_desa,
+                    'alamat_rumah' => $alamat_rumah,
+                    'alamat_sementara' => $alamat_sementara,
+                    'site_nirwana_id' => $site_nirwana_id,
+                    'site_nirwana_name' => $site_nirwana_name->site_nirwana_name,
+                    'department_id' => $department_id,
+                    'department_name' => $department_name->department_name,
+                    'sub_dept_id' => $sub_dept_id,
+                    'sub_dept_name' => $sub_dept_name->sub_dept_name,
+                    'sewing_nonsewing' => $sewing_nonsewing,
+                    'direct_indirect' => $direct_indirect,
+                    'enroll_id' => $enroll_id,
+                    'join_date' => $join_date,
+                    'nik' => $nik,
+                    'status_aktif' => $status_aktif,
+                    'status_jabatan' => $status_jabatan,
+                    'status_kontrak_tetap' => $status_kontrak_tetap,
+                    'status_staff' => $status_staff,
+                    'tanggal_resign' => $tanggal_resign,
+                    'sebab_resign' => $sebab_resign,
+                    'tunjangan' => $tunjangan,
+                    'kode_grade' => $kode_grade,
+                    'referensi' => $referensi,
+                    'employee_name_atasan' => $employee_name_atasan,
+                    'status_aktif_bpjs_tk' => $status_aktif_bpjs_tk,
+                    'tanggal_bpjs_ketenagakerjaan' => $tanggal_bpjs_ketenagakerjaan,
+                    'nomor_bpjs_ketenagakerjaan' => $nomor_bpjs_ketenagakerjaan,
+                    'status_aktif_bpjs_ks' => $status_aktif_bpjs_ks,
+                    'tanggal_bpjs_kesehatan' => $tanggal_bpjs_kesehatan,
+                    'premi' => $premi,
+                    'nomor_bpjs_kesehatan' => $nomor_bpjs_kesehatan,
+                    'pengalaman_bekerja' => $pengalaman_bekerja,
+                    'lokasi_file_cv' => $lokasi_file_cv,
+                    'nama_kerabat' => $nama_kerabat,
+                    'nomor_tlpn_kerabat' => $nomor_tlpn_kerabat,
+                    'hubungan_kerabat' => $hubungan_kerabat,
+                    'alamat_kerabat' => $alamat_kerabat,
+                    'tanggal_vaccine1' => $tanggal_vaccine1,
+                    'nama_vaksin1' => $nama_vaksin1,
+                    'tanggal_vaccine2' => $tanggal_vaccine2,
+                    'nama_vaksin2' => $nama_vaksin2,
+                    'tanggal_vaccine3' => $tanggal_vaccine3,
+                    'nama_vaksin3' => $nama_vaksin3,
+                    'golongan_sim' => $golongan_sim,
+                    'nomor_sim' => $nomor_sim,
+                    'tanggal_expire_sim' => $tanggal_expire_sim,
+                    'catatan' => $catatan,
+                    'no_surat' => $no_surat,
+                    'lokasi_foto' => $lokasi_foto,
+                    'operator' => $operator,
+                    'tanggal_mulai_kontrak' => $tanggal_mulai_kontrak,
+                    'tanggal_akhir_kontrak' => $tanggal_akhir_kontrak,
+                    'catatan_kontrak' => $catatan_kontrak,
+                    'alamat_jalan' => $alamat_jalan,
+                    'rt' => $rt,
+                    'rw' => $rw,
+                    'kode_pos' => $kode_pos
+                ]);
 
 
-            info('Karyawan dengan nama ' . $employee_name . ' dari departemen '. $sub_dept_name->sub_dept_name .' telah di update oleh '.$operator.' dengan tanggal resign '.$tanggal_resign);
+            info('Karyawan dengan nama ' . $employee_name . ' dari departemen ' . $sub_dept_name->sub_dept_name . ' telah di update oleh ' . $operator . ' dengan tanggal resign ' . $tanggal_resign);
             // update absen
-            if($query) {
+            if ($query) {
                 // jika tanggal resign kosong
-                if($request->tanggal_resign == "") {
+                if ($request->tanggal_resign == "") {
                     $query1 =  MasterDataAbsenKehadiran::selectRaw('
                         tanggal_berjalan,
                         employee_atribut.enroll_id,
@@ -1499,7 +1488,7 @@ class EmployeeAtrController extends AdminBaseController
                         employee_atribut.nik,
                         IF(absen_masuk_kerja is not null AND absen_pulang_kerja is null, "TL", "M") status_absen
                     ')
-                    ->whereRaw('
+                        ->whereRaw('
                         employee_atribut.enroll_id = "' . $enroll_id . '"
                         AND employee_atribut.status_aktif = "TIDAK AKTIF"
                         AND (absen_masuk_kerja is null OR absen_pulang_kerja is null)
@@ -1507,21 +1496,19 @@ class EmployeeAtrController extends AdminBaseController
                         AND holiday_name is null
                         AND status_absen = "R"
                     ')
-                    ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
-                    ->get();
-                    if(!empty($query1))
-                    {
-                        foreach ($query1 as $q1)
-                        {
+                        ->leftJoin('employee_atribut', 'master_data_absen_kehadiran.enroll_id', '=', 'employee_atribut.enroll_id')
+                        ->get();
+                    if (!empty($query1)) {
+                        foreach ($query1 as $q1) {
                             $query = MasterDataAbsenKehadiran::whereRaw('
                                 tanggal_berjalan = "' . $q1->tanggal_berjalan . '"
                                 AND enroll_id = "' . $enroll_id . '"
                             ')
-                            ->update([
-                                'status_absen' => $q1->status_absen,
-                                'operator' => $q1->operator
-                            ]);
-                            info('Karyawan dengan nama ' . $employee_name . ' dari departemen '. $sub_dept_name .' berubah status aktif nya menjadi '.$q1->status_aktif);
+                                ->update([
+                                    'status_absen' => $q1->status_absen,
+                                    'operator' => $q1->operator
+                                ]);
+                            info('Karyawan dengan nama ' . $employee_name . ' dari departemen ' . $sub_dept_name . ' berubah status aktif nya menjadi ' . $q1->status_aktif);
                         }
                     }
                     // tanggal resign tidak kosong
@@ -1535,7 +1522,7 @@ class EmployeeAtrController extends AdminBaseController
                         null AS status_aktif,
                         IF(absen_masuk_kerja is not null AND absen_pulang_kerja is null, "TL", "M") status_absen
                     ')
-                    ->whereRaw('
+                        ->whereRaw('
                         employee_atribut.enroll_id = "' . $enroll_id . '"
                         AND employee_atribut.status_aktif = "TIDAK AKTIF"
                         AND (absen_masuk_kerja is null OR absen_pulang_kerja is null)
@@ -1543,21 +1530,19 @@ class EmployeeAtrController extends AdminBaseController
                         AND holiday_name is null
                         AND status_absen = "R"
                     ')
-                    ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
-                    ->get();
-                    if(!empty($query1))
-                    {
-                        foreach ($query1 as $q1)
-                        {
+                        ->leftJoin('employee_atribut', 'master_data_absen_kehadiran.enroll_id', '=', 'employee_atribut.enroll_id')
+                        ->get();
+                    if (!empty($query1)) {
+                        foreach ($query1 as $q1) {
                             $query = MasterDataAbsenKehadiran::whereRaw('
                                 tanggal_berjalan = "' . $q1->tanggal_berjalan . '"
                                 AND enroll_id = "' . $enroll_id . '"
                             ')
-                            ->update([
-                                'status_absen' => $q1->status_absen,
-                                'operator' => $q1->operator
-                            ]);
-                            info('Karyawan dengan nama ' . $employee_name . ' dari departemen '. $sub_dept_name .' berubah tanggal resign nya menjadi '.$q1->tanggal_resign);
+                                ->update([
+                                    'status_absen' => $q1->status_absen,
+                                    'operator' => $q1->operator
+                                ]);
+                            info('Karyawan dengan nama ' . $employee_name . ' dari departemen ' . $sub_dept_name . ' berubah tanggal resign nya menjadi ' . $q1->tanggal_resign);
                         }
                     }
 
@@ -1569,51 +1554,49 @@ class EmployeeAtrController extends AdminBaseController
                         employee_atribut.nik,
                         "R" status_absen
                     ')
-                    ->whereRaw('
+                        ->whereRaw('
                         employee_atribut.enroll_id = "' . $enroll_id . '"
                         AND employee_atribut.tanggal_resign <= master_data_absen_kehadiran.tanggal_berjalan
                         AND master_data_absen_kehadiran.kode_hari not in (5,6)
                         AND master_data_absen_kehadiran.holiday_name is null
                     ')
-                    ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
-                    ->get();
-                    if(!empty($query2))
-                    {
-                        foreach ($query2 as $q2)
-                        {
+                        ->leftJoin('employee_atribut', 'master_data_absen_kehadiran.enroll_id', '=', 'employee_atribut.enroll_id')
+                        ->get();
+                    if (!empty($query2)) {
+                        foreach ($query2 as $q2) {
                             $query = MasterDataAbsenKehadiran::whereRaw('
                                 tanggal_berjalan = "' . $q2->tanggal_berjalan . '"
                                 AND enroll_id = "' . $enroll_id . '"
                             ')
-                            ->update([
-                                'status_absen' => $q2->status_absen,
-                                'operator' => $q2->operator
-                            ]);
+                                ->update([
+                                    'status_absen' => $q2->status_absen,
+                                    'operator' => $q2->operator
+                                ]);
                         }
                     }
 
-                    $tanggal_awal='';
-                    $tanggal_sekarang=date('Y-m-d');
-                    $bulan_sekarang=date('Y-m-'.'25');
-                    $bulan_sebelum=date('Y-m-d',strtotime( "-1 month", strtotime( $bulan_sekarang ) ));
-                    $bulan_setelah=date('Y-m-d',strtotime( "+1 month", strtotime( $bulan_sekarang ) ));
+                    $tanggal_awal = '';
+                    $tanggal_sekarang = date('Y-m-d');
+                    $bulan_sekarang = date('Y-m-' . '25');
+                    $bulan_sebelum = date('Y-m-d', strtotime("-1 month", strtotime($bulan_sekarang)));
+                    $bulan_setelah = date('Y-m-d', strtotime("+1 month", strtotime($bulan_sekarang)));
 
-                    if($tanggal_sekarang>$bulan_sebelum && $tanggal_sekarang<=$bulan_sekarang){
-                        $tanggal_awal=$bulan_sebelum;
-                    }else if($tanggal_sekarang>$bulan_sekarang && $tanggal_sekarang<=$bulan_setelah){
-                        $tanggal_awal=$bulan_sekarang;
+                    if ($tanggal_sekarang > $bulan_sebelum && $tanggal_sekarang <= $bulan_sekarang) {
+                        $tanggal_awal = $bulan_sebelum;
+                    } else if ($tanggal_sekarang > $bulan_sekarang && $tanggal_sekarang <= $bulan_setelah) {
+                        $tanggal_awal = $bulan_sekarang;
                     }
-                    MasterDataAbsenKehadiran::where('enroll_id',$enroll_id)->where('tanggal_berjalan','<',$tanggal_resign)->where('tanggal_berjalan','>=',$tanggal_awal)->where('status_absen','R')->where('absen_masuk_kerja','!=',null)->where('absen_pulang_kerja','!=',null)->update([
-                        'status_absen'=>''
+                    MasterDataAbsenKehadiran::where('enroll_id', $enroll_id)->where('tanggal_berjalan', '<', $tanggal_resign)->where('tanggal_berjalan', '>=', $tanggal_awal)->where('status_absen', 'R')->where('absen_masuk_kerja', '!=', null)->where('absen_pulang_kerja', '!=', null)->update([
+                        'status_absen' => ''
                     ]);
-                    MasterDataAbsenKehadiran::where('enroll_id',$enroll_id)->where('tanggal_berjalan','<',$tanggal_resign)->where('tanggal_berjalan','>=',$tanggal_awal)->where('status_absen','R')->where('absen_masuk_kerja','!=',null)->where('absen_pulang_kerja',null)->update([
-                        'status_absen'=>'TL'
+                    MasterDataAbsenKehadiran::where('enroll_id', $enroll_id)->where('tanggal_berjalan', '<', $tanggal_resign)->where('tanggal_berjalan', '>=', $tanggal_awal)->where('status_absen', 'R')->where('absen_masuk_kerja', '!=', null)->where('absen_pulang_kerja', null)->update([
+                        'status_absen' => 'TL'
                     ]);
-                    MasterDataAbsenKehadiran::where('enroll_id',$enroll_id)->where('tanggal_berjalan','<',$tanggal_resign)->where('tanggal_berjalan','>=',$tanggal_awal)->where('status_absen','R')->where('absen_masuk_kerja',null)->where('absen_pulang_kerja','!=',null)->update([
-                        'status_absen'=>'TL'
+                    MasterDataAbsenKehadiran::where('enroll_id', $enroll_id)->where('tanggal_berjalan', '<', $tanggal_resign)->where('tanggal_berjalan', '>=', $tanggal_awal)->where('status_absen', 'R')->where('absen_masuk_kerja', null)->where('absen_pulang_kerja', '!=', null)->update([
+                        'status_absen' => 'TL'
                     ]);
-                    MasterDataAbsenKehadiran::where('enroll_id',$enroll_id)->where('tanggal_berjalan','<',$tanggal_resign)->where('tanggal_berjalan','>=',$tanggal_awal)->where('status_absen','R')->where('absen_masuk_kerja',null)->where('absen_pulang_kerja',null)->update([
-                        'status_absen'=>'M'
+                    MasterDataAbsenKehadiran::where('enroll_id', $enroll_id)->where('tanggal_berjalan', '<', $tanggal_resign)->where('tanggal_berjalan', '>=', $tanggal_awal)->where('status_absen', 'R')->where('absen_masuk_kerja', null)->where('absen_pulang_kerja', null)->update([
+                        'status_absen' => 'M'
                     ]);
                     $tanggal_mulai_hapus = date('Y-m-') . '26'; // misal: 2025-08-26
 
@@ -1622,7 +1605,6 @@ class EmployeeAtrController extends AdminBaseController
                         ->whereDate('master_data_absen_kehadiran.tanggal_berjalan', '>=', $tanggal_mulai_hapus)
                         ->whereDate('employee_atribut.tanggal_resign', '<=', $tanggal_mulai_hapus)
                         ->delete();
-
                 }
             }
         } else {
@@ -1659,8 +1641,8 @@ class EmployeeAtrController extends AdminBaseController
                 'department_name' => $department_name->department_name,
                 'sub_dept_id' => $sub_dept_id,
                 'sub_dept_name' => $sub_dept_name->sub_dept_name,
-                'sewing_nonsewing'=>$sewing_nonsewing,
-                'direct_indirect'=>$direct_indirect,
+                'sewing_nonsewing' => $sewing_nonsewing,
+                'direct_indirect' => $direct_indirect,
                 'enroll_id' => $enroll_id,
                 'join_date' => $join_date,
                 'nik' => $nik,
@@ -1697,7 +1679,7 @@ class EmployeeAtrController extends AdminBaseController
                 'nomor_sim' => $nomor_sim,
                 'tanggal_expire_sim' => $tanggal_expire_sim,
                 'catatan' => $catatan,
-                'no_surat'=>$no_surat,
+                'no_surat' => $no_surat,
                 'lokasi_foto' => $lokasi_foto,
                 'operator' => $operator,
                 'tanggal_mulai_kontrak' => $tanggal_mulai_kontrak,
@@ -1718,204 +1700,201 @@ class EmployeeAtrController extends AdminBaseController
                 'updated_at' => $timestamp
             ]);
 
-            info('Karyawan dengan nama ' . $employee_name . ' dari departemen '. $sub_dept_name->sub_dept_name .' telah di tambah oleh '.$operator);
+            info('Karyawan dengan nama ' . $employee_name . ' dari departemen ' . $sub_dept_name->sub_dept_name . ' telah di tambah oleh ' . $operator);
 
-        $a=(new Kehadiran)->new_employee($enroll_id);
-
-
+            $a = (new Kehadiran)->new_employee($enroll_id);
         }
 
-           //menambah atau merubah tabel employee atribut history
-           $tanggal_hari_ini=date('Y-m-d');
-           $bulan_hari_ini=substr($tanggal_hari_ini,0,8).'26';
-           $bulan_sebelum_hari_ini=date('Y-m-d',strtotime( "-1 month", strtotime( $bulan_hari_ini ) ));
-           $bulan_setelah_hari_ini=date('Y-m-d',strtotime( "+1 month", strtotime( $bulan_hari_ini ) ));
-           if($tanggal_hari_ini>=$bulan_sebelum_hari_ini && $tanggal_hari_ini<$bulan_hari_ini){
-               $tanggal_awal_hari_ini=$bulan_sebelum_hari_ini;
-           }else if($tanggal_hari_ini>=$bulan_hari_ini && $tanggal_hari_ini<$bulan_setelah_hari_ini){
-               $tanggal_awal_hari_ini=$bulan_hari_ini;
-           }else{
-               $tanggal_awal_hari_ini='';
-           }
-           $tanggal_akhir_hari_ini=date('Y-m-25',strtotime("+1 month",strtotime($tanggal_awal_hari_ini)));
-           $periode_payroll_hari_ini=$tanggal_awal_hari_ini.' s/d '.$tanggal_akhir_hari_ini;
-           $history_dirubah=EmployeeAtributHistory::where('enroll_id',$enroll_id)->where('periode_payroll',$periode_payroll_hari_ini)->count();
-           if($history_dirubah<1){
-               EmployeeAtributHistory::create([
-                   'enroll_id'=>$enroll_id,
-                   'tanggal_dirubah'=>$tanggal_hari_ini,
-                   'periode_payroll'=>$periode_payroll_hari_ini,
-                   'employee_id' => $employee_id,
-                   'employee_name' => $employee_name,
-                   'jenis_kelamin' => $jenis_kelamin,
-                   'tempat_lahir' => $tempat_lahir,
-                   'tanggal_lahir' => $tanggal_lahir,
-                   'golongan_darah' => $golongan_darah,
-                   'email' => $email,
-                   'nomor_tlpn' => $nomor_tlpn,
-                   'agama' => $agama,
-                   'status_kawin' => $status_kawin,
-                   'npwp' => $npwp,
-                   'nomor_ktp' => $nomor_ktp,
-                   'nomor_kk' => $nomor_kk,
-                   'ptkp' => $ptkp,
-                   'pendidikan_terakhir' => $pendidikan_terakhir,
-                   'jurusan_pendidikan' => $jurusan_pendidikan,
-                   'nama_bank' => $nama_bank,
-                   'nomor_rekening_bank' => $nomor_rekening_bank,
-                   'ibu_kandung' => $ibu_kandung,
-                   'propinsi' => $propinsi,
-                   'kota_kab' => $kota_kab,
-                   'kecamatan' => $kecamatan,
-                   'kelurahan_desa' => $kelurahan_desa,
-                   'alamat_rumah' => $alamat_rumah,
-                   'alamat_sementara' => $alamat_sementara,
-                   'site_nirwana_id' => $site_nirwana_id,
-                   'site_nirwana_name' => $site_nirwana_name->site_nirwana_name,
-                   'department_id' => $department_id,
-                   'department_name' => $department_name->department_name,
-                   'sub_dept_id' => $sub_dept_id,
-                   'sub_dept_name' => $sub_dept_name->sub_dept_name,
-                   'sewing_nonsewing'=>$sewing_nonsewing,
-                   'direct_indirect'=>$direct_indirect,
-                   'enroll_id' => $enroll_id,
-                   'join_date' => $join_date,
-                   'nik' => $nik,
-                   'status_aktif' => $status_aktif,
-                   'status_jabatan' => $status_jabatan,
-                   'status_kontrak_tetap' => $status_kontrak_tetap,
-                   'status_staff' => $status_staff,
-                   'tanggal_resign' => $tanggal_resign,
-                   'sebab_resign' => $sebab_resign,
-                   'tunjangan' => $tunjangan,
-                   'kode_grade' => $kode_grade,
-                   'referensi' => $referensi,
-                   'employee_name_atasan' => $employee_name_atasan,
-                   'status_aktif_bpjs_tk' => $status_aktif_bpjs_tk,
-                   'tanggal_bpjs_ketenagakerjaan' => $tanggal_bpjs_ketenagakerjaan,
-                   'nomor_bpjs_ketenagakerjaan' => $nomor_bpjs_ketenagakerjaan,
-                   'status_aktif_bpjs_ks' => $status_aktif_bpjs_ks,
-                   'tanggal_bpjs_kesehatan' => $tanggal_bpjs_kesehatan,
-                   'nomor_bpjs_kesehatan' => $nomor_bpjs_kesehatan,
-                   'premi' => $premi,
-                   'pengalaman_bekerja' => $pengalaman_bekerja,
-                   'lokasi_file_cv' => $lokasi_file_cv,
-                   'nama_kerabat' => $nama_kerabat,
-                   'nomor_tlpn_kerabat' => $nomor_tlpn_kerabat,
-                   'hubungan_kerabat' => $hubungan_kerabat,
-                   'alamat_kerabat' => $alamat_kerabat,
-                   'tanggal_vaccine1' => $tanggal_vaccine1,
-                   'nama_vaksin1' => $nama_vaksin1,
-                   'tanggal_vaccine2' => $tanggal_vaccine2,
-                   'nama_vaksin2' => $nama_vaksin2,
-                   'tanggal_vaccine3' => $tanggal_vaccine3,
-                   'nama_vaksin3' => $nama_vaksin3,
-                   'golongan_sim' => $golongan_sim,
-                   'nomor_sim' => $nomor_sim,
-                   'tanggal_expire_sim' => $tanggal_expire_sim,
-                   'catatan' => $catatan,
-                   'no_surat'=>$no_surat,
-                   'lokasi_foto' => $lokasi_foto,
-                   'operator' => $operator,
-                   'tanggal_mulai_kontrak' => $tanggal_mulai_kontrak,
-                   'tanggal_akhir_kontrak' => $tanggal_akhir_kontrak,
-                   'catatan_kontrak' => $catatan_kontrak
-               ]);
-           }else{
-               EmployeeAtributHistory::where('enroll_id',$enroll_id)->where('periode_payroll',$periode_payroll_hari_ini)->update([
-                   'enroll_id'=>$enroll_id,
-                   'tanggal_dirubah'=>$tanggal_hari_ini,
-                   'periode_payroll'=>$periode_payroll_hari_ini,
-                   'employee_id' => $employee_id,
-                   'employee_name' => $employee_name,
-                   'jenis_kelamin' => $jenis_kelamin,
-                   'tempat_lahir' => $tempat_lahir,
-                   'tanggal_lahir' => $tanggal_lahir,
-                   'golongan_darah' => $golongan_darah,
-                   'email' => $email,
-                   'nomor_tlpn' => $nomor_tlpn,
-                   'agama' => $agama,
-                   'status_kawin' => $status_kawin,
-                   'npwp' => $npwp,
-                   'nomor_ktp' => $nomor_ktp,
-                   'nomor_kk' => $nomor_kk,
-                   'ptkp' => $ptkp,
-                   'pendidikan_terakhir' => $pendidikan_terakhir,
-                   'jurusan_pendidikan' => $jurusan_pendidikan,
-                   'nama_bank' => $nama_bank,
-                   'nomor_rekening_bank' => $nomor_rekening_bank,
-                   'ibu_kandung' => $ibu_kandung,
-                   'propinsi' => $propinsi,
-                   'kota_kab' => $kota_kab,
-                   'kecamatan' => $kecamatan,
-                   'kelurahan_desa' => $kelurahan_desa,
-                   'alamat_rumah' => $alamat_rumah,
-                   'alamat_sementara' => $alamat_sementara,
-                   'site_nirwana_id' => $site_nirwana_id,
-                   'site_nirwana_name' => $site_nirwana_name->site_nirwana_name,
-                   'department_id' => $department_id,
-                   'department_name' => $department_name->department_name,
-                   'sub_dept_id' => $sub_dept_id,
-                   'sub_dept_name' => $sub_dept_name->sub_dept_name,
-                   'sewing_nonsewing'=>$sewing_nonsewing,
-                   'direct_indirect'=>$direct_indirect,
-                   'enroll_id' => $enroll_id,
-                   'join_date' => $join_date,
-                   'nik' => $nik,
-                   'status_aktif' => $status_aktif,
-                   'status_jabatan' => $status_jabatan,
-                   'status_kontrak_tetap' => $status_kontrak_tetap,
-                   'status_staff' => $status_staff,
-                   'tanggal_resign' => $tanggal_resign,
-                   'sebab_resign' => $sebab_resign,
-                   'tunjangan' => $tunjangan,
-                   'kode_grade' => $kode_grade,
-                   'referensi' => $referensi,
-                   'employee_name_atasan' => $employee_name_atasan,
-                   'status_aktif_bpjs_tk' => $status_aktif_bpjs_tk,
-                   'tanggal_bpjs_ketenagakerjaan' => $tanggal_bpjs_ketenagakerjaan,
-                   'nomor_bpjs_ketenagakerjaan' => $nomor_bpjs_ketenagakerjaan,
-                   'status_aktif_bpjs_ks' => $status_aktif_bpjs_ks,
-                   'tanggal_bpjs_kesehatan' => $tanggal_bpjs_kesehatan,
-                   'nomor_bpjs_kesehatan' => $nomor_bpjs_kesehatan,
-                   'premi' => $premi,
-                   'pengalaman_bekerja' => $pengalaman_bekerja,
-                   'lokasi_file_cv' => $lokasi_file_cv,
-                   'nama_kerabat' => $nama_kerabat,
-                   'nomor_tlpn_kerabat' => $nomor_tlpn_kerabat,
-                   'hubungan_kerabat' => $hubungan_kerabat,
-                   'alamat_kerabat' => $alamat_kerabat,
-                   'tanggal_vaccine1' => $tanggal_vaccine1,
-                   'nama_vaksin1' => $nama_vaksin1,
-                   'tanggal_vaccine2' => $tanggal_vaccine2,
-                   'nama_vaksin2' => $nama_vaksin2,
-                   'tanggal_vaccine3' => $tanggal_vaccine3,
-                   'nama_vaksin3' => $nama_vaksin3,
-                   'golongan_sim' => $golongan_sim,
-                   'nomor_sim' => $nomor_sim,
-                   'tanggal_expire_sim' => $tanggal_expire_sim,
-                   'catatan' => $catatan,
-                   'no_surat'=>$no_surat,
-                   'lokasi_foto' => $lokasi_foto,
-                   'operator' => $operator,
-                   'tanggal_mulai_kontrak' => $tanggal_mulai_kontrak,
-                   'tanggal_akhir_kontrak' => $tanggal_akhir_kontrak,
-                   'catatan_kontrak' => $catatan_kontrak
-               ]);
-           }
+        //menambah atau merubah tabel employee atribut history
+        $tanggal_hari_ini = date('Y-m-d');
+        $bulan_hari_ini = substr($tanggal_hari_ini, 0, 8) . '26';
+        $bulan_sebelum_hari_ini = date('Y-m-d', strtotime("-1 month", strtotime($bulan_hari_ini)));
+        $bulan_setelah_hari_ini = date('Y-m-d', strtotime("+1 month", strtotime($bulan_hari_ini)));
+        if ($tanggal_hari_ini >= $bulan_sebelum_hari_ini && $tanggal_hari_ini < $bulan_hari_ini) {
+            $tanggal_awal_hari_ini = $bulan_sebelum_hari_ini;
+        } else if ($tanggal_hari_ini >= $bulan_hari_ini && $tanggal_hari_ini < $bulan_setelah_hari_ini) {
+            $tanggal_awal_hari_ini = $bulan_hari_ini;
+        } else {
+            $tanggal_awal_hari_ini = '';
+        }
+        $tanggal_akhir_hari_ini = date('Y-m-25', strtotime("+1 month", strtotime($tanggal_awal_hari_ini)));
+        $periode_payroll_hari_ini = $tanggal_awal_hari_ini . ' s/d ' . $tanggal_akhir_hari_ini;
+        $history_dirubah = EmployeeAtributHistory::where('enroll_id', $enroll_id)->where('periode_payroll', $periode_payroll_hari_ini)->count();
+        if ($history_dirubah < 1) {
+            EmployeeAtributHistory::create([
+                'enroll_id' => $enroll_id,
+                'tanggal_dirubah' => $tanggal_hari_ini,
+                'periode_payroll' => $periode_payroll_hari_ini,
+                'employee_id' => $employee_id,
+                'employee_name' => $employee_name,
+                'jenis_kelamin' => $jenis_kelamin,
+                'tempat_lahir' => $tempat_lahir,
+                'tanggal_lahir' => $tanggal_lahir,
+                'golongan_darah' => $golongan_darah,
+                'email' => $email,
+                'nomor_tlpn' => $nomor_tlpn,
+                'agama' => $agama,
+                'status_kawin' => $status_kawin,
+                'npwp' => $npwp,
+                'nomor_ktp' => $nomor_ktp,
+                'nomor_kk' => $nomor_kk,
+                'ptkp' => $ptkp,
+                'pendidikan_terakhir' => $pendidikan_terakhir,
+                'jurusan_pendidikan' => $jurusan_pendidikan,
+                'nama_bank' => $nama_bank,
+                'nomor_rekening_bank' => $nomor_rekening_bank,
+                'ibu_kandung' => $ibu_kandung,
+                'propinsi' => $propinsi,
+                'kota_kab' => $kota_kab,
+                'kecamatan' => $kecamatan,
+                'kelurahan_desa' => $kelurahan_desa,
+                'alamat_rumah' => $alamat_rumah,
+                'alamat_sementara' => $alamat_sementara,
+                'site_nirwana_id' => $site_nirwana_id,
+                'site_nirwana_name' => $site_nirwana_name->site_nirwana_name,
+                'department_id' => $department_id,
+                'department_name' => $department_name->department_name,
+                'sub_dept_id' => $sub_dept_id,
+                'sub_dept_name' => $sub_dept_name->sub_dept_name,
+                'sewing_nonsewing' => $sewing_nonsewing,
+                'direct_indirect' => $direct_indirect,
+                'enroll_id' => $enroll_id,
+                'join_date' => $join_date,
+                'nik' => $nik,
+                'status_aktif' => $status_aktif,
+                'status_jabatan' => $status_jabatan,
+                'status_kontrak_tetap' => $status_kontrak_tetap,
+                'status_staff' => $status_staff,
+                'tanggal_resign' => $tanggal_resign,
+                'sebab_resign' => $sebab_resign,
+                'tunjangan' => $tunjangan,
+                'kode_grade' => $kode_grade,
+                'referensi' => $referensi,
+                'employee_name_atasan' => $employee_name_atasan,
+                'status_aktif_bpjs_tk' => $status_aktif_bpjs_tk,
+                'tanggal_bpjs_ketenagakerjaan' => $tanggal_bpjs_ketenagakerjaan,
+                'nomor_bpjs_ketenagakerjaan' => $nomor_bpjs_ketenagakerjaan,
+                'status_aktif_bpjs_ks' => $status_aktif_bpjs_ks,
+                'tanggal_bpjs_kesehatan' => $tanggal_bpjs_kesehatan,
+                'nomor_bpjs_kesehatan' => $nomor_bpjs_kesehatan,
+                'premi' => $premi,
+                'pengalaman_bekerja' => $pengalaman_bekerja,
+                'lokasi_file_cv' => $lokasi_file_cv,
+                'nama_kerabat' => $nama_kerabat,
+                'nomor_tlpn_kerabat' => $nomor_tlpn_kerabat,
+                'hubungan_kerabat' => $hubungan_kerabat,
+                'alamat_kerabat' => $alamat_kerabat,
+                'tanggal_vaccine1' => $tanggal_vaccine1,
+                'nama_vaksin1' => $nama_vaksin1,
+                'tanggal_vaccine2' => $tanggal_vaccine2,
+                'nama_vaksin2' => $nama_vaksin2,
+                'tanggal_vaccine3' => $tanggal_vaccine3,
+                'nama_vaksin3' => $nama_vaksin3,
+                'golongan_sim' => $golongan_sim,
+                'nomor_sim' => $nomor_sim,
+                'tanggal_expire_sim' => $tanggal_expire_sim,
+                'catatan' => $catatan,
+                'no_surat' => $no_surat,
+                'lokasi_foto' => $lokasi_foto,
+                'operator' => $operator,
+                'tanggal_mulai_kontrak' => $tanggal_mulai_kontrak,
+                'tanggal_akhir_kontrak' => $tanggal_akhir_kontrak,
+                'catatan_kontrak' => $catatan_kontrak
+            ]);
+        } else {
+            EmployeeAtributHistory::where('enroll_id', $enroll_id)->where('periode_payroll', $periode_payroll_hari_ini)->update([
+                'enroll_id' => $enroll_id,
+                'tanggal_dirubah' => $tanggal_hari_ini,
+                'periode_payroll' => $periode_payroll_hari_ini,
+                'employee_id' => $employee_id,
+                'employee_name' => $employee_name,
+                'jenis_kelamin' => $jenis_kelamin,
+                'tempat_lahir' => $tempat_lahir,
+                'tanggal_lahir' => $tanggal_lahir,
+                'golongan_darah' => $golongan_darah,
+                'email' => $email,
+                'nomor_tlpn' => $nomor_tlpn,
+                'agama' => $agama,
+                'status_kawin' => $status_kawin,
+                'npwp' => $npwp,
+                'nomor_ktp' => $nomor_ktp,
+                'nomor_kk' => $nomor_kk,
+                'ptkp' => $ptkp,
+                'pendidikan_terakhir' => $pendidikan_terakhir,
+                'jurusan_pendidikan' => $jurusan_pendidikan,
+                'nama_bank' => $nama_bank,
+                'nomor_rekening_bank' => $nomor_rekening_bank,
+                'ibu_kandung' => $ibu_kandung,
+                'propinsi' => $propinsi,
+                'kota_kab' => $kota_kab,
+                'kecamatan' => $kecamatan,
+                'kelurahan_desa' => $kelurahan_desa,
+                'alamat_rumah' => $alamat_rumah,
+                'alamat_sementara' => $alamat_sementara,
+                'site_nirwana_id' => $site_nirwana_id,
+                'site_nirwana_name' => $site_nirwana_name->site_nirwana_name,
+                'department_id' => $department_id,
+                'department_name' => $department_name->department_name,
+                'sub_dept_id' => $sub_dept_id,
+                'sub_dept_name' => $sub_dept_name->sub_dept_name,
+                'sewing_nonsewing' => $sewing_nonsewing,
+                'direct_indirect' => $direct_indirect,
+                'enroll_id' => $enroll_id,
+                'join_date' => $join_date,
+                'nik' => $nik,
+                'status_aktif' => $status_aktif,
+                'status_jabatan' => $status_jabatan,
+                'status_kontrak_tetap' => $status_kontrak_tetap,
+                'status_staff' => $status_staff,
+                'tanggal_resign' => $tanggal_resign,
+                'sebab_resign' => $sebab_resign,
+                'tunjangan' => $tunjangan,
+                'kode_grade' => $kode_grade,
+                'referensi' => $referensi,
+                'employee_name_atasan' => $employee_name_atasan,
+                'status_aktif_bpjs_tk' => $status_aktif_bpjs_tk,
+                'tanggal_bpjs_ketenagakerjaan' => $tanggal_bpjs_ketenagakerjaan,
+                'nomor_bpjs_ketenagakerjaan' => $nomor_bpjs_ketenagakerjaan,
+                'status_aktif_bpjs_ks' => $status_aktif_bpjs_ks,
+                'tanggal_bpjs_kesehatan' => $tanggal_bpjs_kesehatan,
+                'nomor_bpjs_kesehatan' => $nomor_bpjs_kesehatan,
+                'premi' => $premi,
+                'pengalaman_bekerja' => $pengalaman_bekerja,
+                'lokasi_file_cv' => $lokasi_file_cv,
+                'nama_kerabat' => $nama_kerabat,
+                'nomor_tlpn_kerabat' => $nomor_tlpn_kerabat,
+                'hubungan_kerabat' => $hubungan_kerabat,
+                'alamat_kerabat' => $alamat_kerabat,
+                'tanggal_vaccine1' => $tanggal_vaccine1,
+                'nama_vaksin1' => $nama_vaksin1,
+                'tanggal_vaccine2' => $tanggal_vaccine2,
+                'nama_vaksin2' => $nama_vaksin2,
+                'tanggal_vaccine3' => $tanggal_vaccine3,
+                'nama_vaksin3' => $nama_vaksin3,
+                'golongan_sim' => $golongan_sim,
+                'nomor_sim' => $nomor_sim,
+                'tanggal_expire_sim' => $tanggal_expire_sim,
+                'catatan' => $catatan,
+                'no_surat' => $no_surat,
+                'lokasi_foto' => $lokasi_foto,
+                'operator' => $operator,
+                'tanggal_mulai_kontrak' => $tanggal_mulai_kontrak,
+                'tanggal_akhir_kontrak' => $tanggal_akhir_kontrak,
+                'catatan_kontrak' => $catatan_kontrak
+            ]);
+        }
 
         return $query;
-
     }
     public function creat_master_absen_26()
     {
-        $today=date('Y-m-d');
-        $employee=DB::select("select enroll_id from master_data_absen_kehadiran where tanggal_berjalan='2024-12-25' and status_absen='TL'");
-        $arrEmp=[];
-        foreach($employee as $emp){
-            $arrEmp[]=$emp->enroll_id;
+        $today = date('Y-m-d');
+        $employee = DB::select("select enroll_id from master_data_absen_kehadiran where tanggal_berjalan='2024-12-25' and status_absen='TL'");
+        $arrEmp = [];
+        foreach ($employee as $emp) {
+            $arrEmp[] = $emp->enroll_id;
         }
-        $string_absen_emp=implode(',', $arrEmp);
+        $string_absen_emp = implode(',', $arrEmp);
         dd($string_absen_emp);
         // foreach ($employee as $key => $value) {
         //     $staffnonstaff=$value->status_staff;
@@ -1986,7 +1965,8 @@ class EmployeeAtrController extends AdminBaseController
 
     }
 
-    public function add_cepet(){
+    public function add_cepet()
+    {
         $employee_id = time();
         EmployeeAtribut::create([
             'employee_id' => $employee_id,
@@ -1997,66 +1977,67 @@ class EmployeeAtrController extends AdminBaseController
             'join_date' => '2023-10-31',
             'nik' => 'NAG235885',
         ]);
-        dd('success : ',$employee_id);
+        dd('success : ', $employee_id);
     }
 
     public function import_employees(Request $request)
     {
-        $data=Excel::toArray([],$request->file('excel_file'));
-        $arrayEmployee=[];
-        for($i=5;$i<count($data[0]);$i++){
-            $department=DepartmentAll::where('status','AKTIF')->where('site_nirwana_id','NAG')->where('department_name',$data[0][$i][9])->where('sub_dept_name',$data[0][$i][11])->count();
-            $employee=EmployeeAtribut::where('enroll_id',$data[0][$i][1])->count();
+        $data = Excel::toArray([], $request->file('excel_file'));
+        $arrayEmployee = [];
+        for ($i = 5; $i < count($data[0]); $i++) {
+            $department = DepartmentAll::where('status', 'AKTIF')->where('site_nirwana_id', 'NAG')->where('department_name', $data[0][$i][9])->where('sub_dept_name', $data[0][$i][11])->count();
+            $employee = EmployeeAtribut::where('enroll_id', $data[0][$i][1])->count();
 
-            if($department==0 && ($employee==1 || $employee==0)){
-                $status_department='red';
-            }else{
-                if($employee==0){
-                    $status_department='lightblue';
-                }else{
-                    $status_department='white';
+            if ($department == 0 && ($employee == 1 || $employee == 0)) {
+                $status_department = 'red';
+            } else {
+                if ($employee == 0) {
+                    $status_department = 'lightblue';
+                } else {
+                    $status_department = 'white';
                 }
             }
-            if($data[0][$i][1]==''){
+            if ($data[0][$i][1] == '') {
                 continue;
             }
-            $arrayEmployee[$i]=[
-                'enroll_id'=>$data[0][$i][1],
-                'nik'=>$data[0][$i][2],
-                'nama_karyawan'=>$data[0][$i][3],
-                'jenis_kelamin'=>$data[0][$i][4],
-                'jabatan'=>$data[0][$i][7],
-                'department'=>$data[0][$i][9],
-                'bagian'=>$data[0][$i][11],
-                'status_aktif'=>$data[0][$i][14],
-                'tanggal_masuk'=>$data[0][$i][15],
-                'status_department'=>$status_department
+            $arrayEmployee[$i] = [
+                'enroll_id' => $data[0][$i][1],
+                'nik' => $data[0][$i][2],
+                'nama_karyawan' => $data[0][$i][3],
+                'jenis_kelamin' => $data[0][$i][4],
+                'jabatan' => $data[0][$i][7],
+                'department' => $data[0][$i][9],
+                'bagian' => $data[0][$i][11],
+                'status_aktif' => $data[0][$i][14],
+                'tanggal_masuk' => $data[0][$i][15],
+                'status_department' => $status_department
             ];
         }
-        $arrEmp=[];
-        $no=0;
-        foreach($arrayEmployee as $key=>$value){
+        $arrEmp = [];
+        $no = 0;
+        foreach ($arrayEmployee as $key => $value) {
             $no++;
-            $arrEmp[$no]=[
-                'enroll_id'=>$value['enroll_id'],
-                'nik'=>$value['nik'],
-                'nama_karyawan'=>$value['nama_karyawan'],
-                'jenis_kelamin'=>$value['jenis_kelamin'],
-                'jabatan'=>$value['jabatan'],
-                'department'=>$value['department'],
-                'bagian'=>$value['bagian'],
-                'status_aktif'=>$value['status_aktif'],
-                'tanggal_masuk'=>$value['tanggal_masuk'],
-                'status_department'=>$value['status_department']
+            $arrEmp[$no] = [
+                'enroll_id' => $value['enroll_id'],
+                'nik' => $value['nik'],
+                'nama_karyawan' => $value['nama_karyawan'],
+                'jenis_kelamin' => $value['jenis_kelamin'],
+                'jabatan' => $value['jabatan'],
+                'department' => $value['department'],
+                'bagian' => $value['bagian'],
+                'status_aktif' => $value['status_aktif'],
+                'tanggal_masuk' => $value['tanggal_masuk'],
+                'status_department' => $value['status_department']
             ];
         }
         return $arrEmp;
     }
 
-    public function import_employee_to_database(Request $request){
+    public function import_employee_to_database(Request $request)
+    {
         ini_set("max_execution_time", 0);
         ini_set("max_input_time", 0);
-        $data=Excel::toArray([],$request->file('excel_file'));
+        $data = Excel::toArray([], $request->file('excel_file'));
         Excel::import(new EmployeeImport, request()->file('excel_file'));
     }
 
@@ -2064,128 +2045,128 @@ class EmployeeAtrController extends AdminBaseController
     {
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '4000M');
-        $data=Excel::toArray([],$request->file('excel_file'));
-        $arrayData=[];
-        for($i=5;$i<count($data[0]);$i++){
-            if($data[0][$i][44]==null||$data[0][$i][44]=='NEW 2401'){
-                $tanggal_bpjs_ketenagakerjaan=null;
-            }else{
-                $tanggal_bpjs_ketenagakerjaan=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][44])->format('Y-m-d');
+        $data = Excel::toArray([], $request->file('excel_file'));
+        $arrayData = [];
+        for ($i = 5; $i < count($data[0]); $i++) {
+            if ($data[0][$i][44] == null || $data[0][$i][44] == 'NEW 2401') {
+                $tanggal_bpjs_ketenagakerjaan = null;
+            } else {
+                $tanggal_bpjs_ketenagakerjaan = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][44])->format('Y-m-d');
             }
-            if($data[0][$i][47]==null||$data[0][$i][47]=='NEW 2401'){
-                $tanggal_bpjs_kesehatan=null;
-            }else{
-                $tanggal_bpjs_kesehatan=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][47])->format('Y-m-d');
+            if ($data[0][$i][47] == null || $data[0][$i][47] == 'NEW 2401') {
+                $tanggal_bpjs_kesehatan = null;
+            } else {
+                $tanggal_bpjs_kesehatan = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][47])->format('Y-m-d');
             }
-            if($data[0][$i][11]==null){
-                $join_date=null;
-            }else{
-                $join_date=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][11])->format('Y-m-d');
+            if ($data[0][$i][11] == null) {
+                $join_date = null;
+            } else {
+                $join_date = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][11])->format('Y-m-d');
             }
-            if($data[0][$i][12]==null){
-                $tanggal_resign=null;
-            }else{
-                $tanggal_resign=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][12])->format('Y-m-d');
+            if ($data[0][$i][12] == null) {
+                $tanggal_resign = null;
+            } else {
+                $tanggal_resign = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][12])->format('Y-m-d');
             }
-            if($data[0][$i][54]==null){
-                $tanggal_vaccine1=null;
-            }else{
-                $tanggal_vaccine1=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][54])->format('Y-m-d');
+            if ($data[0][$i][54] == null) {
+                $tanggal_vaccine1 = null;
+            } else {
+                $tanggal_vaccine1 = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][54])->format('Y-m-d');
             }
-            if($data[0][$i][56]==null){
-                $tanggal_vaccine2=null;
-            }else{
-                $tanggal_vaccine2=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][56])->format('Y-m-d');
+            if ($data[0][$i][56] == null) {
+                $tanggal_vaccine2 = null;
+            } else {
+                $tanggal_vaccine2 = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][56])->format('Y-m-d');
             }
-            if($data[0][$i][58]==null){
-                $tanggal_vaccine3=null;
-            }else{
-                $tanggal_vaccine3=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][58])->format('Y-m-d');
+            if ($data[0][$i][58] == null) {
+                $tanggal_vaccine3 = null;
+            } else {
+                $tanggal_vaccine3 = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][58])->format('Y-m-d');
             }
-            if($data[0][$i][62]==null){
-                $tanggal_expire_sim=null;
-            }else{
-                $tanggal_expire_sim=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][62])->format('Y-m-d');
+            if ($data[0][$i][62] == null) {
+                $tanggal_expire_sim = null;
+            } else {
+                $tanggal_expire_sim = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][62])->format('Y-m-d');
             }
-            if($data[0][$i][64]==null){
-                $tanggal_mulai_kontrak=null;
-            }else{
-                $tanggal_mulai_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][64])->format('Y-m-d');
+            if ($data[0][$i][64] == null) {
+                $tanggal_mulai_kontrak = null;
+            } else {
+                $tanggal_mulai_kontrak = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][64])->format('Y-m-d');
             }
-            if($data[0][$i][65]==null){
-                $tanggal_akhir_kontrak=null;
-            }else{
-                $tanggal_akhir_kontrak=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][65])->format('Y-m-d');
+            if ($data[0][$i][65] == null) {
+                $tanggal_akhir_kontrak = null;
+            } else {
+                $tanggal_akhir_kontrak = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][65])->format('Y-m-d');
             }
-            if($data[0][$i][16]==null){
-                $tanggal_lahir=null;
-            }else{
-                $tanggal_lahir=\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][16])->format('Y-m-d');
+            if ($data[0][$i][16] == null) {
+                $tanggal_lahir = null;
+            } else {
+                $tanggal_lahir = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data[0][$i][16])->format('Y-m-d');
             }
-            EmployeeAtribut::where('enroll_id',$data[0][$i][1])->update([
-                'nik'=>$data[0][$i][2],
-                'employee_name'=>$data[0][$i][3],
-                'jenis_kelamin'=>$data[0][$i][4],
-                'status_jabatan'=>$data[0][$i][5],
-                'department_id'=>$data[0][$i][6],
-                'department_name'=>$data[0][$i][7],
-                'sub_dept_id'=>$data[0][$i][8],
-                'sub_dept_name'=>$data[0][$i][9],
-                'status_aktif'=>$data[0][$i][10],
-                'join_date'=>$join_date,
-                'tanggal_resign'=>$tanggal_resign,
-                'status_kontrak_tetap'=>$data[0][$i][13],
-                'status_staff'=>$data[0][$i][14],
-                'tempat_lahir'=>$data[0][$i][15],
-                'tanggal_lahir'=>$tanggal_lahir,
-                'agama'=>$data[0][$i][17],
-                'ibu_kandung'=>$data[0][$i][18],
-                'status_kawin'=>$data[0][$i][19],
-                'ptkp'=>$data[0][$i][20],
-                'npwp'=>$data[0][$i][21],
-                'nomor_ktp'=>$data[0][$i][22],
-                'nomor_kk'=>$data[0][$i][23],
-                'golongan_darah'=>$data[0][$i][24],
-                'nomor_tlpn'=>$data[0][$i][25],
-                'email'=>$data[0][$i][26],
-                'pendidikan_terakhir'=>$data[0][$i][27],
-                'jurusan_pendidikan'=>$data[0][$i][28],
-                'nama_bank'=>$data[0][$i][29],
-                'nomor_rekening_bank'=>$data[0][$i][30],
-                'alamat_rumah'=>$data[0][$i][31],
-                'propinsi'=>$data[0][$i][32],
-                'kota_kab'=>$data[0][$i][33],
-                'kecamatan'=>$data[0][$i][34],
-                'kelurahan_desa'=>$data[0][$i][35],
-                'alamat_sementara'=>$data[0][$i][36],
-                'tunjangan'=>$data[0][$i][37],
-                'kode_grade'=>$data[0][$i][38],
-                'referensi'=>$data[0][$i][41],
-                'employee_name_atasan'=>$data[0][$i][42],
-                'status_aktif_bpjs_tk'=>$data[0][$i][43],
-                'tanggal_bpjs_ketenagakerjaan'=>$tanggal_bpjs_ketenagakerjaan,
-                'nomor_bpjs_ketenagakerjaan'=>$data[0][$i][45],
-                'status_aktif_bpjs_ks'=>$data[0][$i][46],
-                'tanggal_bpjs_kesehatan'=>$tanggal_bpjs_kesehatan,
-                'nomor_bpjs_kesehatan'=>$data[0][$i][48],
-                'pengalaman_bekerja'=>$data[0][$i][49],
-                'nama_kerabat'=>$data[0][$i][50],
-                'nomor_tlpn_kerabat'=>$data[0][$i][51],
-                'hubungan_kerabat'=>$data[0][$i][52],
-                'alamat_kerabat'=>$data[0][$i][53],
-                'tanggal_vaccine1'=>$tanggal_vaccine1,
-                'nama_vaksin1'=>$data[0][$i][55],
-                'tanggal_vaccine2'=>$tanggal_vaccine2,
-                'nama_vaksin2'=>$data[0][$i][57],
-                'tanggal_vaccine3'=>$tanggal_vaccine3,
-                'nama_vaksin3'=>$data[0][$i][59],
-                'golongan_sim'=>$data[0][$i][60],
-                'nomor_sim'=>$data[0][$i][61],
-                'tanggal_expire_sim'=>$tanggal_expire_sim,
-                'catatan'=>$data[0][$i][63],
-                'tanggal_mulai_kontrak'=>$tanggal_mulai_kontrak,
-                'tanggal_akhir_kontrak'=>$tanggal_akhir_kontrak,
-                'catatan_kontrak'=>$data[0][$i][66],
+            EmployeeAtribut::where('enroll_id', $data[0][$i][1])->update([
+                'nik' => $data[0][$i][2],
+                'employee_name' => $data[0][$i][3],
+                'jenis_kelamin' => $data[0][$i][4],
+                'status_jabatan' => $data[0][$i][5],
+                'department_id' => $data[0][$i][6],
+                'department_name' => $data[0][$i][7],
+                'sub_dept_id' => $data[0][$i][8],
+                'sub_dept_name' => $data[0][$i][9],
+                'status_aktif' => $data[0][$i][10],
+                'join_date' => $join_date,
+                'tanggal_resign' => $tanggal_resign,
+                'status_kontrak_tetap' => $data[0][$i][13],
+                'status_staff' => $data[0][$i][14],
+                'tempat_lahir' => $data[0][$i][15],
+                'tanggal_lahir' => $tanggal_lahir,
+                'agama' => $data[0][$i][17],
+                'ibu_kandung' => $data[0][$i][18],
+                'status_kawin' => $data[0][$i][19],
+                'ptkp' => $data[0][$i][20],
+                'npwp' => $data[0][$i][21],
+                'nomor_ktp' => $data[0][$i][22],
+                'nomor_kk' => $data[0][$i][23],
+                'golongan_darah' => $data[0][$i][24],
+                'nomor_tlpn' => $data[0][$i][25],
+                'email' => $data[0][$i][26],
+                'pendidikan_terakhir' => $data[0][$i][27],
+                'jurusan_pendidikan' => $data[0][$i][28],
+                'nama_bank' => $data[0][$i][29],
+                'nomor_rekening_bank' => $data[0][$i][30],
+                'alamat_rumah' => $data[0][$i][31],
+                'propinsi' => $data[0][$i][32],
+                'kota_kab' => $data[0][$i][33],
+                'kecamatan' => $data[0][$i][34],
+                'kelurahan_desa' => $data[0][$i][35],
+                'alamat_sementara' => $data[0][$i][36],
+                'tunjangan' => $data[0][$i][37],
+                'kode_grade' => $data[0][$i][38],
+                'referensi' => $data[0][$i][41],
+                'employee_name_atasan' => $data[0][$i][42],
+                'status_aktif_bpjs_tk' => $data[0][$i][43],
+                'tanggal_bpjs_ketenagakerjaan' => $tanggal_bpjs_ketenagakerjaan,
+                'nomor_bpjs_ketenagakerjaan' => $data[0][$i][45],
+                'status_aktif_bpjs_ks' => $data[0][$i][46],
+                'tanggal_bpjs_kesehatan' => $tanggal_bpjs_kesehatan,
+                'nomor_bpjs_kesehatan' => $data[0][$i][48],
+                'pengalaman_bekerja' => $data[0][$i][49],
+                'nama_kerabat' => $data[0][$i][50],
+                'nomor_tlpn_kerabat' => $data[0][$i][51],
+                'hubungan_kerabat' => $data[0][$i][52],
+                'alamat_kerabat' => $data[0][$i][53],
+                'tanggal_vaccine1' => $tanggal_vaccine1,
+                'nama_vaksin1' => $data[0][$i][55],
+                'tanggal_vaccine2' => $tanggal_vaccine2,
+                'nama_vaksin2' => $data[0][$i][57],
+                'tanggal_vaccine3' => $tanggal_vaccine3,
+                'nama_vaksin3' => $data[0][$i][59],
+                'golongan_sim' => $data[0][$i][60],
+                'nomor_sim' => $data[0][$i][61],
+                'tanggal_expire_sim' => $tanggal_expire_sim,
+                'catatan' => $data[0][$i][63],
+                'tanggal_mulai_kontrak' => $tanggal_mulai_kontrak,
+                'tanggal_akhir_kontrak' => $tanggal_akhir_kontrak,
+                'catatan_kontrak' => $data[0][$i][66],
             ]);
         }
         return back()->with("success", 'Data berhasil di update');
@@ -2459,19 +2440,20 @@ class EmployeeAtrController extends AdminBaseController
         // info($operator.' telah mengimport data excel untuk menambah atau mengupdate data karyawan');
     }
 
-    public function export_excel(){
-        $random=rand();
-        return Excel::download(new newEmployeeExport, 'all_employee_'.$random.'.xlsx');
+    public function export_excel()
+    {
+        $random = rand();
+        return Excel::download(new newEmployeeExport, 'all_employee_' . $random . '.xlsx');
     }
 
     public function destroy(Request $request)
     {
         $enroll_id = $request->enroll_id;
 
-        $findDT = EmployeeAtribut::where('enroll_id','=', $enroll_id)->count();
+        $findDT = EmployeeAtribut::where('enroll_id', '=', $enroll_id)->count();
 
-        if($findDT > 0) {
-            $query = EmployeeAtribut::where('enroll_id','=',$enroll_id)->delete();
+        if ($findDT > 0) {
+            $query = EmployeeAtribut::where('enroll_id', '=', $enroll_id)->delete();
         } else {
             $query = false;
         }
@@ -2486,7 +2468,6 @@ class EmployeeAtrController extends AdminBaseController
 
         $fileName = 'DataKaryawan_' . time() . '.xlsx';
         return (new EmployeeAtrExport)->exportParams()->download($fileName);
-
     }
 
     //=============Andri====================
@@ -2498,104 +2479,103 @@ class EmployeeAtrController extends AdminBaseController
 
     public function import_grading(Request $request)
     {
-        try{
-            $data=Excel::toArray([],$request->file('file_import'));
-            $data_update=[];
-            $head=$data[0][0];
-            if($head[0]=='NO. ABSEN' && $head[1]=='NIP' && $head[2]=='NAMA KARYAWAN' && $head[3]=='PAY BPJS TK' && $head[4]=='PAY BPJS KS' &&
-                $head[5]=='NOMOR BPJS(TK)' && $head[6]=='TANGGAL KEPESERTAAN (TK)' && $head[7]=='NOMOR BPJS (KS)' && $head[8]=='TANGGAL KEPESERTAAN (KS)' &&
-                $head[9]=='KODE GRADE'){
+        try {
+            $data = Excel::toArray([], $request->file('file_import'));
+            $data_update = [];
+            $head = $data[0][0];
+            if (
+                $head[0] == 'NO. ABSEN' && $head[1] == 'NIP' && $head[2] == 'NAMA KARYAWAN' && $head[3] == 'PAY BPJS TK' && $head[4] == 'PAY BPJS KS' &&
+                $head[5] == 'NOMOR BPJS(TK)' && $head[6] == 'TANGGAL KEPESERTAAN (TK)' && $head[7] == 'NOMOR BPJS (KS)' && $head[8] == 'TANGGAL KEPESERTAAN (KS)' &&
+                $head[9] == 'KODE GRADE'
+            ) {
                 foreach ($data[0] as $key => $row) {
-                    if($key>0){
-                        $error=$key;
-                        if($row[6]!='-'&& $row[6]!=null && $row[6]!=''){
-                            $tgl_tk =$row[6];
+                    if ($key > 0) {
+                        $error = $key;
+                        if ($row[6] != '-' && $row[6] != null && $row[6] != '') {
+                            $tgl_tk = $row[6];
                             $tgl_tk = ($tgl_tk - 25569) * 86400;
                             $tgl_tk = 25569 + ($tgl_tk / 86400);
                             $tgl_tk = ($tgl_tk - 25569) * 86400;
-                            $tgl_kep_tk=date('Y-m-d', $tgl_tk);
+                            $tgl_kep_tk = date('Y-m-d', $tgl_tk);
+                        } else {
+                            $tgl_kep_tk = null;
                         }
-                        else{
-                            $tgl_kep_tk=null;
-                        }
-                        if($row[8]!='-' && $row[8]!=null){
-                            $tgl_ks =$row[8];
+                        if ($row[8] != '-' && $row[8] != null) {
+                            $tgl_ks = $row[8];
                             $tgl_ks = ($tgl_ks - 25569) * 86400;
                             $tgl_ks = 25569 + ($tgl_ks / 86400);
                             $tgl_ks = ($tgl_ks - 25569) * 86400;
-                            $tgl_kep_ks=date('Y-m-d', $tgl_ks);
+                            $tgl_kep_ks = date('Y-m-d', $tgl_ks);
+                        } else {
+                            $tgl_kep_ks = null;
                         }
-                        else{
-                            $tgl_kep_ks=null;
-                        }
-                        if($row[13]!='-' && $row[13]!=null){
-                            $tgl_resign =$row[13];
+                        if ($row[13] != '-' && $row[13] != null) {
+                            $tgl_resign = $row[13];
                             $tgl_resign = ($tgl_resign - 25569) * 86400;
                             $tgl_resign = 25569 + ($tgl_resign / 86400);
                             $tgl_resign = ($tgl_resign - 25569) * 86400;
-                            $tanggal_resign=date('Y-m-d', $tgl_resign);
+                            $tanggal_resign = date('Y-m-d', $tgl_resign);
+                        } else {
+                            $tanggal_resign = null;
                         }
-                        else{
-                            $tanggal_resign=null;
-                        }
-                        $data_update[]=[
-                            'enroll_id'=>$row[0],
-                            'tanggal_bpjs_ketenagakerjaan'=>$tgl_kep_tk,
-                            'nomor_bpjs_ketenagakerjaan'=>$row[5],
-                            'status_aktif_bpjs_tk'=>$row[3],
-                            'tanggal_bpjs_kesehatan'=>$tgl_kep_ks,
-                            'nomor_bpjs_kesehatan'=>$row[7],
-                            'status_aktif_bpjs_ks'=>$row[4],
-                            'kode_grade'=>$row[9],
-                            'nama_bank'=>$row[10],
-                            'nomor_rekening_bank'=>$row[11],
-                            'status_aktif'=>$row[12],
-                            'tanggal_resign'=>$tanggal_resign,
+                        $data_update[] = [
+                            'enroll_id' => $row[0],
+                            'tanggal_bpjs_ketenagakerjaan' => $tgl_kep_tk,
+                            'nomor_bpjs_ketenagakerjaan' => $row[5],
+                            'status_aktif_bpjs_tk' => $row[3],
+                            'tanggal_bpjs_kesehatan' => $tgl_kep_ks,
+                            'nomor_bpjs_kesehatan' => $row[7],
+                            'status_aktif_bpjs_ks' => $row[4],
+                            'kode_grade' => $row[9],
+                            'nama_bank' => $row[10],
+                            'nomor_rekening_bank' => $row[11],
+                            'status_aktif' => $row[12],
+                            'tanggal_resign' => $tanggal_resign,
                         ];
                     }
                 }
 
                 foreach ($data_update as $key1 => $value1) {
-                    $update=[
-                        'tanggal_bpjs_ketenagakerjaan'=>$value1['tanggal_bpjs_ketenagakerjaan'],
-                        'nomor_bpjs_ketenagakerjaan'=>$value1['nomor_bpjs_ketenagakerjaan'],
-                        'status_aktif_bpjs_tk'=>$value1['status_aktif_bpjs_tk'],
-                        'tanggal_bpjs_kesehatan'=>$value1['tanggal_bpjs_kesehatan'],
-                        'nomor_bpjs_kesehatan'=>$value1['nomor_bpjs_kesehatan'],
-                        'status_aktif_bpjs_ks'=>$value1['status_aktif_bpjs_ks'],
-                        'kode_grade'=>$value1['kode_grade'],
-                        'nama_bank'=>$value1['nama_bank'],
-                        'status_aktif'=>$value1['status_aktif'],
-                        'tanggal_resign'=>$value1['tanggal_resign'],
-                        'nomor_rekening_bank'=>$value1['nomor_rekening_bank']
+                    $update = [
+                        'tanggal_bpjs_ketenagakerjaan' => $value1['tanggal_bpjs_ketenagakerjaan'],
+                        'nomor_bpjs_ketenagakerjaan' => $value1['nomor_bpjs_ketenagakerjaan'],
+                        'status_aktif_bpjs_tk' => $value1['status_aktif_bpjs_tk'],
+                        'tanggal_bpjs_kesehatan' => $value1['tanggal_bpjs_kesehatan'],
+                        'nomor_bpjs_kesehatan' => $value1['nomor_bpjs_kesehatan'],
+                        'status_aktif_bpjs_ks' => $value1['status_aktif_bpjs_ks'],
+                        'kode_grade' => $value1['kode_grade'],
+                        'nama_bank' => $value1['nama_bank'],
+                        'status_aktif' => $value1['status_aktif'],
+                        'tanggal_resign' => $value1['tanggal_resign'],
+                        'nomor_rekening_bank' => $value1['nomor_rekening_bank']
 
                     ];
-                    EmployeeAtribut::where('enroll_id',$value1['enroll_id'])->update($update);
+                    EmployeeAtribut::where('enroll_id', $value1['enroll_id'])->update($update);
                 }
-                $count=count($data_update);
-                return back()->with("success", $count.' row berhasil di update');
+                $count = count($data_update);
+                return back()->with("success", $count . ' row berhasil di update');
+            } else {
+                return back()->with("error", 'gagal tersimpan format salah');
             }
-            else{
-                return back()->with("error",'gagal tersimpan format salah');
-            }
-        }catch(\Exception $e){
-            $error=$error+1;
-            return back()->with("error",'gagal tersimpan terdapat kesalah di row '.$error);
+        } catch (\Exception $e) {
+            $error = $error + 1;
+            return back()->with("error", 'gagal tersimpan terdapat kesalah di row ' . $error);
         }
     }
 
 
-    public function export_import(){
-        $tanggal=date('Y-m-d');
+    public function export_import()
+    {
+        $tanggal = date('Y-m-d');
         // $tanggal='2023-08-25';
 
-        $tgl=date('d',strtotime( $tanggal));
-        $bln_sekarang=date('M-Y',strtotime( $tanggal));
+        $tgl = date('d', strtotime($tanggal));
+        $bln_sekarang = date('M-Y', strtotime($tanggal));
         $date = strtotime($bln_sekarang);
-        $bulan_sebelum= strtotime("-1 month", $date);
-        $bulan_sesudah= strtotime("+1 month", $date);
-        $bulan_sebelum=date('M-Y', $bulan_sebelum);
-        $bulan_sesudah=date('M-Y', $bulan_sesudah);
+        $bulan_sebelum = strtotime("-1 month", $date);
+        $bulan_sesudah = strtotime("+1 month", $date);
+        $bulan_sebelum = date('M-Y', $bulan_sebelum);
+        $bulan_sesudah = date('M-Y', $bulan_sesudah);
 
         // if($tgl>=26){
         //     $tanggal_awal_periode=date('Y-m-d', strtotime('26-'.$bln_sekarang));
@@ -2604,14 +2584,78 @@ class EmployeeAtrController extends AdminBaseController
         //     $tanggal_awal_periode=date('Y-m-d', strtotime('26-'.$bulan_sebelum));
         // }
 
-        $tanggal_awal_periode=date('Y-m-d', strtotime('26-'.$bulan_sebelum));
+        $tanggal_awal_periode = date('Y-m-d', strtotime('26-' . $bulan_sebelum));
         //$karyawan=EmployeeAtribut::where('status_aktif','AKTIF')->ORwhere('tanggal_resign','>',$tanggal_awal_periode)->get();
-       	$karyawan = EmployeeAtribut::where('status_aktif', 'AKTIF')
-        ->orWhere('tanggal_resign', '>', $tanggal_awal_periode)
-        ->orderByRaw("CAST(enroll_id AS UNSIGNED)")
-        ->get();
-        return Excel::download(new FormatImportBPJSExport($karyawan),'format_import_bpjs'.time().'.xlsx');
+        $karyawan = EmployeeAtribut::where('status_aktif', 'AKTIF')
+            ->orWhere('tanggal_resign', '>', $tanggal_awal_periode)
+            ->orderByRaw("CAST(enroll_id AS UNSIGNED)")
+            ->get();
+        return Excel::download(new FormatImportBPJSExport($karyawan), 'format_import_bpjs' . time() . '.xlsx');
     }
 
+    public function employees(Request $request)
+    {
+        $query = EmployeeAtribut::query();
 
+        if ($request->filled('status_aktif')) {
+            $query->where('status_aktif', $request->get('status_aktif'));
+        }
+
+        if ($request->filled('department_id')) {
+            $query->where('department_id', $request->get('department_id'));
+        }
+
+        if ($request->filled('jenis_kelamin')) {
+            $query->where('jenis_kelamin', $request->get('jenis_kelamin'));
+        }
+        $query = $query->orderBy('employee_name')->get();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Employees Data',
+            'data' =>   $query
+        ]);
+    }
+
+    // public function search_employees(Request $request)
+    // {
+    //     dd($request);
+    //     $data = [];
+    //     if ($request->has('q')) {
+    //         $search = strtoupper($request->q);
+    //         $data = EmployeeAtribut::where('employee_name', 'LIKE', "%$search%")->orderby('employee_name')
+    //             ->get();
+    //     }
+    //     if ($request->has('isAll')) {
+    //         // dd($request->get('isAll'));
+    //         if ($request->get('isAll') == '0') {
+    //             $data->where('status_akti00f', 'AKTIF');
+    //         }
+    //     }
+
+    //     return response()->json($data);
+    // }
+
+    public function search_employees(Request $request)
+    {
+        $query = EmployeeAtribut::query();
+
+        // 🔍 Search filter
+        if ($request->filled('q')) {
+            $search = strtoupper($request->q);
+            $query->where(function ($q) use ($search) {
+                $q->where('employee_name', 'LIKE', "%$search%")
+                    ->orWhere('nik', 'LIKE', "%$search%");
+            });
+        }
+
+        // ✅ Status filter: only AKTIF if isAll = 0
+        if ($request->get('isAll') == 0) {
+            $query->where('status_aktif', 'AKTIF');
+        }
+
+        $data = $query->orderBy('employee_name')->limit(25)->get();
+
+        return response()->json($data);
+    }
 }

@@ -1,502 +1,548 @@
 @extends('admin.adminlayouts.adminlayout')
 
 @section('head')
-    <link href="{{ URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
-    <link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+<link href="{{ URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
+<link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
 
-	<!---Sweetalert Css-->
-	<link href="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.css')}}" rel="stylesheet" />
-	<link href="{{URL::asset('assets/plugins/sweet-alert/sweetalert.css')}}" rel="stylesheet" />
+<!---Sweetalert Css-->
+<link href="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.css')}}" rel="stylesheet" />
+<link href="{{URL::asset('assets/plugins/sweet-alert/sweetalert.css')}}" rel="stylesheet" />
 @stop
 <style>
- .timestamp {
-            display: inline-block;
-            background: #4CAF50;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            font-weight: bold;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-        }
-.is-invalid {
-    border: 2px solid red;
-    background-color: #ffe6e6;
-}
+    .timestamp {
+        display: inline-block;
+        background: #4CAF50;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        font-weight: bold;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    }
 
-/* Misalnya, modal edit memiliki z-index lebih tinggi daripada modal list */
-#ajax-modal-edit1 {
-    z-index: 1060 !important;
-}
-#ajax-modal-edit1 .modal-dialog {
-    z-index: 1070 !important;
-}
+    .is-invalid {
+        border: 2px solid red;
+        background-color: #ffe6e6;
+    }
 
-#entertaintTable thead th {
-    background-color: var(--primary);
-    color: white;
-}
-#table_detail_cuti_karyawan thead th {
-    background-color: var(--primary);
-    color: white;
-}
-#footer-primary {
-    background-color: var(--primary);
-    color: white;
-}
+    /* Misalnya, modal edit memiliki z-index lebih tinggi daripada modal list */
+    #ajax-modal-edit1 {
+        z-index: 1060 !important;
+    }
 
-.wrapper {
-  margin: auto;
-  text-align: center;
-}
+    #ajax-modal-edit1 .modal-dialog {
+        z-index: 1070 !important;
+    }
 
-h1 {
-  color: #130f40;
-  font-family: 'Varela Round', sans-serif;
-  letter-spacing: -.5px;
-  font-weight: 700;
-  padding-bottom: 10px;
-}
+    #entertaintTable thead th {
+        background-color: var(--primary);
+        color: white;
+    }
 
-.upload-container {
-  background-color: rgb(239, 239, 239);
-  border-radius: 6px;
-  padding: 10px;
-}
+    #table_detail_cuti_karyawan thead th {
+        background-color: var(--primary);
+        color: white;
+    }
 
-.border-container {
-  border: 2px dashed rgba(198, 198, 198, 0.65);
-  padding: 20px;
-}
+    #footer-primary {
+        background-color: var(--primary);
+        color: white;
+    }
 
-.border-container p {
-  color: #130f40;
-  font-weight: 600;
-  font-size: 1.1em;
-  letter-spacing: -1px;
-  margin-top: 10px;
-  margin-bottom: 0;
-  opacity: 0.65;
-}
+    .wrapper {
+        margin: auto;
+        text-align: center;
+    }
 
-#file-browser {
-  text-decoration: none;
-  color: rgb(22,42,255);
-  border-bottom: 3px dotted rgba(22, 22, 255, 0.85);
-}
+    h1 {
+        color: #130f40;
+        font-family: 'Varela Round', sans-serif;
+        letter-spacing: -.5px;
+        font-weight: 700;
+        padding-bottom: 10px;
+    }
 
-#file-browser:hover {
-  color: rgb(0, 0, 255);
-  border-bottom: 3px dotted rgba(0, 0, 255, 0.85);
-}
+    .upload-container {
+        background-color: rgb(239, 239, 239);
+        border-radius: 6px;
+        padding: 10px;
+    }
 
-.icons {
-  color: #95afc0;
-  opacity: 0.55;
-}
+    .border-container {
+        border: 2px dashed rgba(198, 198, 198, 0.65);
+        padding: 20px;
+    }
 
-.drag-over {
-    border: 2px dashed #007bff;
-    background-color: #f8f9fa;
-}
+    .border-container p {
+        color: #130f40;
+        font-weight: 600;
+        font-size: 1.1em;
+        letter-spacing: -1px;
+        margin-top: 10px;
+        margin-bottom: 0;
+        opacity: 0.65;
+    }
 
-#drop-zone {
-    border: 2px dashed #007bff;
-    padding: 20px;
-    text-align: center;
-    margin-bottom: 10px;
-    cursor: pointer;
-}
-.drag-over {
-    background-color: #f0f8ff;
-}
-.file-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    border: 1px solid #ccc;
-    margin: 5px 0;
-    border-radius: 5px;
-}
-.file-item img {
-    width: 50px;
-    height: 50px;
-    margin-right: 10px;
-}
-.file-name {
-    flex-grow: 1;
-}
-.remove-btn {
-    background: red;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 5px;
-}
+    #file-browser {
+        text-decoration: none;
+        color: rgb(22, 42, 255);
+        border-bottom: 3px dotted rgba(22, 22, 255, 0.85);
+    }
 
-#total-nominal {
-    font-weight: bold;
-}
-#table_detail_cuti_karyawan {
-    border-collapse: separate;
-    border-spacing: 0 2px;
-}
+    #file-browser:hover {
+        color: rgb(0, 0, 255);
+        border-bottom: 3px dotted rgba(0, 0, 255, 0.85);
+    }
 
+    .icons {
+        color: #95afc0;
+        opacity: 0.55;
+    }
 
+    .drag-over {
+        border: 2px dashed #007bff;
+        background-color: #f8f9fa;
+    }
+
+    #drop-zone {
+        border: 2px dashed #007bff;
+        padding: 20px;
+        text-align: center;
+        margin-bottom: 10px;
+        cursor: pointer;
+    }
+
+    .drag-over {
+        background-color: #f0f8ff;
+    }
+
+    .file-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin: 5px 0;
+        border-radius: 5px;
+    }
+
+    .file-item img {
+        width: 50px;
+        height: 50px;
+        margin-right: 10px;
+    }
+
+    .file-name {
+        flex-grow: 1;
+    }
+
+    .remove-btn {
+        background: red;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    #total-nominal {
+        font-weight: bold;
+    }
+
+    #table_detail_cuti_karyawan {
+        border-collapse: separate;
+        border-spacing: 0 2px;
+    }
 </style>
 @section('mainarea')
 <?php ini_set('date.timezone', 'Asia/Jakarta'); ?>
-    <div class="page-header shadow pr-2 m-0 pt-0 pb-0 pl-2">
-        <ol class="breadcrumb breadcrumb-arrow m-0 p-0">
-            <li><a href="{{route('entertaint_tamu.index')}}">Master Data</a></li>
-            <li class="active"><span>Cuti Tahunan</span></li>
-            <input type="hidden" value="{{$user}}" id="username_who_access">
-        </ol>
-        <div class="ml-auto">
-            <div class="input-group">
-                <a href="#" id="btn-refresh-data" class="btn btn-icon btn-secondary p-0 m-0" data-toggle="tooltip"
-                    title="" data-placement="bottom" data-original-title="Refresh Halaman">
-                    <span>
-                        <i class="fa fa-refresh"></i>
-                    </span>
-                </a>
-            </div>
+<div class="page-header shadow pr-2 m-0 pt-0 pb-0 pl-2">
+    <ol class="breadcrumb breadcrumb-arrow m-0 p-0">
+        <li><a href="{{route('entertaint_tamu.index')}}">Master Data</a></li>
+        <li class="active"><span>Cuti Tahunan</span></li>
+        <input type="hidden" value="{{$user}}" id="username_who_access">
+    </ol>
+    <div class="ml-auto">
+        <div class="input-group">
+            <a href="#" id="btn-refresh-data" class="btn btn-icon btn-secondary p-0 m-0" data-toggle="tooltip" title=""
+                data-placement="bottom" data-original-title="Refresh Halaman">
+                <span>
+                    <i class="fa fa-refresh"></i>
+                </span>
+            </a>
         </div>
     </div>
+</div>
 
 
-    <div class="row p-3">
-        <div class="col-md-12">
-            <div class="card card-primary card-outline tab-content">
-                    <div class="card-header bg-primary p-3">
-                        <div class="card-title">Cuti Tahunan</div>
+<div class="row p-3">
+    <div class="col-md-12">
+        <div class="card card-primary card-outline tab-content">
+            <div class="card-header bg-primary p-3">
+                <div class="card-title">Cuti Tahunan</div>
+            </div>
+            <div class="mt-4 ml-4 mr-5 mb-0">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="form-label">CARI DATA : </label>
+                            <select id="selectEmployeeID" name="selectEmployeeID[]" multiple
+                                class="form-control select2 select-employees">
+
+                            </select>
+                            {{-- <select id="selectEmployeeID" name="selectEmployeeID[]" multiple
+                                data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID">
+                                @foreach ($selectemployee as $r_empl)
+                                <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
+                                @endforeach
+                            </select> --}}
+                        </div>
                     </div>
-                        <div class="mt-4 ml-4 mr-5 mb-0">
-                            <div class="row">
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label class="form-label">CARI DATA : </label>
-                                        <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID">
-                                            @foreach ($selectemployee as $r_empl)
-                                            <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div clasl="" style="display: flex; justify-content: flex-start; align-items: center; gap: 10px;">
-                                        <div class="mt-5 p-0">
-                                            <button class="btn btn-primary w-100" onclick="searchData()"  data-toggle="tooltip" title="Cari Data" id="recap_labor_cost_2"><i class="fa fa-search" aria-hidden="true"></i> Cari</button>
-                                        </div>
-                                        <div class="mt-5 p-0">
-                                            <button id="btn-view_excel" class="btn btn-success w-100 text-white" data-toggle="tooltip" title="Preview by excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Excel</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label class="form-label">PILIH SKEMA : </label>
-                                        <div class="input-group">
-                                            <select id="skema_payroll" name="skema_payroll" class="form-control">
-                                                <option value='CUSTOM_RANGE'>CUSTOM RANGE</option>
-                                                <option value='MONTHLY'>MONTHLY</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">EXPORT DATA : </label>
-                                        <div class="input-group" id="data_range_export_cuti_select">
-                                            <div class="input-group-prepend">
-                                                <div class="input-group-text">
-                                                    <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
-                                                </div>
-                                            </div>
-                                            <input id="data_range_export_cuti" type="text" class="form-control data_range" required></input>
-                                        </div>
-
-
-                                        <div class="input-group" id="periode_month_cuti_select">
-                                            <select name="periode_month" id="periode_month" class="form-control" required>
-                                                <option value="01">Januari</option>
-                                                <option value="02">Februari</option>
-                                                <option value="03">Maret</option>
-                                                <option value="04">April</option>
-                                                <option value="05">Mei</option>
-                                                <option value="06">Juni</option>
-                                                <option value="07">Juli</option>
-                                                <option value="08">Agustus</option>
-                                                <option value="09">September</option>
-                                                <option value="10">Oktober</option>
-                                                <option value="11">November</option>
-                                                <option value="12">Desember</option>
-                                            </select>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div clasl="" style="display: flex; justify-content: flex-start; align-items: center; gap: 10px;">
-                                        <div class="mt-5 p-0">
-                                            <button id="btn_export_cuti_by_date" class="btn btn-success w-100 text-white" data-toggle="tooltip" title="Preview by excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Export Excel</button>
-                                        </div>
-                                    </div>
-                                    <div clasl="" style="display: flex; justify-content: space-between; align-items: center;">
-                                    </div>
-                                </div>
+                    <div class="col-md-3">
+                        <div style="display: flex; justify-content: flex-start; align-items: center; gap: 10px;">
+                            <div class="mt-5 p-0">
+                                <button class="btn btn-primary w-100" onclick="searchData()" data-toggle="tooltip"
+                                    title="Cari Data" id="recap_labor_cost_2"><i class="fa fa-search"
+                                        aria-hidden="true"></i> Cari</button>
+                            </div>
+                            <div class="mt-5 p-0">
+                                <button id="btn-view_excel" class="btn btn-success w-100 text-white"
+                                    data-toggle="tooltip" title="Preview by excel"><i class="fa fa-file-excel-o"
+                                        aria-hidden="true"></i> Export Excel</button>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="isAll">
+                                <label class="form-check-label" for="isAll">
+                                    Semua
+                                </label>
                             </div>
                         </div>
-                        <div class="m-0 p-0">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table id="entertaintTable" class="table table-bordered table-sm w-100 table-hover">
-                                        <thead class="table-primary">
-                                            <tr>
-                                                <th>No Absen</th>
-                                                <th>Nama</th>
-                                                <th>Department</th>
-                                                <th>Bagian</th>
-                                                <th>Status Aktif</th>
-                                                <th>Tanggal Masuk</th>
-                                                <th>Tanggal Resign</th>
-                                                <th>Awal Periode</th>
-                                                <th>Akhir Periode</th>
-                                                <th>Masa Kerja</th>
-                                                <th>Hak Cuti</th>
-                                                <th>Cuti Terpakai</th>
-                                                <th>Sisa Cuti</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="form-label">PILIH SKEMA : </label>
+                            <div class="input-group">
+                                <select id="skema_payroll" name="skema_payroll" class="form-control">
+                                    <option value='CUSTOM_RANGE'>CUSTOM RANGE</option>
+                                    <option value='MONTHLY'>MONTHLY</option>
+                                </select>
                             </div>
                         </div>
-            </div>
-        </div>
-    </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="form-label">EXPORT DATA : </label>
+                            <div class="input-group" id="data_range_export_cuti_select">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                    </div>
+                                </div>
+                                <input id="data_range_export_cuti" type="text" class="form-control data_range"
+                                    required></input>
+                            </div>
 
-    {{-- MODAL TAMBAH --}}
-    <div class="modal fade" id="ajax-modal-tambah"  role="dialog" data-backdrop="static" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document" style="max-width: 50%;">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="modal-content">
-                        <div class="modal-header bg-primary p-2">
-                            <h4 class="modal-title pl-2 font-weight-bold" id="title-modal-edit1">Buat Pengajuan Cuti</h4>
-                            <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
-                                <i class="fa fa-remove"></i>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">TANGGAL PENGAJUAN : </label>
-                                        <div class="input-group">
-                                            <p class="form-label">{{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                </div>
-                                <div class="col-md-4">
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">DIAJUKAN OLEH : </label>
-                                        <select id="diajukanOlehID" name="diajukanOlehID" style='width: 100%;' data-placeholder="Pilih karyawan" class="form-control create-control select2 select2-show-search EmployeeID">
-                                            @foreach ($selectemployee as $r_empl)
-                                                <option
-                                                    value="{{$r_empl->enroll_id}}"
-                                                    data-department_name="{{$r_empl->department_name}}"
-                                                    data-sub_dept_name="{{$r_empl->sub_dept_name}}"
-                                                    data-department_data_id="{{$r_empl->department_id}}"
-                                                    data-sub_dept_data_id="{{$r_empl->sub_dept_id}}"
-                                                >
-                                                    {{$r_empl->select_employee}}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        <small class="error-message text-danger"></small>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">DEPARTMENT : </label>
-                                        <input type="text" readonly value="" class="form-control create-control" id="department" name="department">
-                                        <input type="hidden" readonly value="" class="form-control create-control" id="department_id" name="department_id">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">BAGIAN : </label>
-                                        <input type="text" readonly value="" class="form-control create-control" id="bagian" name="bagian">
-                                        <input type="hidden" readonly value="" class="form-control create-control" id="sub_dept_id" name="sub_dept_id">
-                                    </div>
-                                </div>
 
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <p class="form-label">DENGAN INI BERMAKSUD UNTUK MENGAJUKAN CUTI : </p>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label class="form-label">JENIS PERIZINAN</label>
-                                        <select id="kode_absen_ijin" class="form-control" data-placeholder="-- PILIH JENIS PERIZINAN --">
-                                            <option value="">-- PILIH JENIS PERIZINAN --</option>
-                                            @foreach ($refabsenijin as $r_refabsenijin)
-                                                @php
-                                                    if (($r_refabsenijin->kode_absen_ijin <> 'IKS') && ($r_refabsenijin->kode_absen_ijin <> 'M')) {
-                                                @endphp
-                                                    <option value="{{$r_refabsenijin->kode_absen_ijin}}">{{$r_refabsenijin->kode_nama_absen_ijin}}</option>
-                                                @php
-                                                    }
-                                                @endphp
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label class="form-label">KETERANGAN :</label>
-                                        <input type="text" class="form-control keterangan" name="keterangan[]">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">TANGGAL MULAI IZIN : </label>
-                                        <div class="input-group">
-                                            <input type="date" readonly class="form-control create-control" id="tanggal_kedatangan_tamu" name="tanggal_kedatangan_tamu"
-                                            value="{{ date('Y-m-d') }}" onchange="">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group text-center align-self-center">
-                                        <p class="form-label pt-4 mt-4">SAMPAI </p>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="form-label">TANGGAL AKHIR IZIN : </label>
-                                        <div class="input-group">
-                                            <input type="date" readonly class="form-control create-control" id="tanggal_kedatangan_tamu" name="tanggal_kedatangan_tamu"
-                                            value="{{ date('Y-m-d') }}" onchange="">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <p class="form-label">MAKA SELAMA PELAKSANAAN CUTI TUGAS TUGAS SAYA, SAYA DELEGASIKAN KEPADA : </p>
-                                        <select id="pendampingTamuID" name="pendampingTamuID" data-placeholder="Pilih karyawan" class="form-control select2 select2-show-search EmployeeID" style="width: 100%;" required>
-                                            @foreach ($selectemployee as $r_empl)
-                                                <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
+                            <div class="input-group" id="periode_month_cuti_select">
+                                <select name="periode_month" id="periode_month" class="form-control" required>
+                                    <option value="01">Januari</option>
+                                    <option value="02">Februari</option>
+                                    <option value="03">Maret</option>
+                                    <option value="04">April</option>
+                                    <option value="05">Mei</option>
+                                    <option value="06">Juni</option>
+                                    <option value="07">Juli</option>
+                                    <option value="08">Agustus</option>
+                                    <option value="09">September</option>
+                                    <option value="10">Oktober</option>
+                                    <option value="11">November</option>
+                                    <option value="12">Desember</option>
+                                </select>
 
                             </div>
                         </div>
-                        <div class="modal-footer bg-primary p-1">
-                            <div class="btn-list">
-                                <button type="button" id="submit-form" class="btn btn-secondary btn-app">Simpan</button>
-                                <button type="button" id="btn-close_edit1" class="btn btn-warning btn-app" data-dismiss="modal">Tutup</button>
+                    </div>
+                    <div class="col-md-2">
+                        <div clasl=""
+                            style="display: flex; justify-content: flex-start; align-items: center; gap: 10px;">
+                            <div class="mt-5 p-0">
+                                <button id="btn_export_cuti_by_date" class="btn btn-success w-100 text-white"
+                                    data-toggle="tooltip" title="Preview by excel"><i class="fa fa-file-excel-o"
+                                        aria-hidden="true"></i> Export Excel</button>
                             </div>
+                        </div>
+                        <div clasl="" style="display: flex; justify-content: space-between; align-items: center;">
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-
-    {{-- MODAL DETAIL --}}
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-md modal-dialog-scrollable" style="max-width: 65%;">
-            <div class="modal-content">
-                <div class="modal-header bg-primary">
-                    <p class="modal-title   " style="font-size: 18px; font-weight: bold;" id="exampleModalLabel"></p>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">x</button>
-                </div>
-                <div style="height: 80vh; overflow-y: auto; over-flow-x:none;">
-                    <div class="row p-5 d-flex justify-content-between">
-                        <div class="col">
-                            <div class="d-flex mb-2">
-                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 14px;">Nama Karyawan</p>
-                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 14px;">:</p>
-                                <p class="mb-0" id="nama_karyawan_modal"></p>
-                                <input type="hidden" class="mb-0" id="enroll_id_karyawan_modal"/>
-                            </div>
-                            <div class="d-flex mb-2">
-                                <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 14px;">NIK</p>
-                                <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 14px;">:</p>
-                                <p class="mb-0" id="nik_karyawan_modal"></p>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="d-flex mb-2 justify-content-end">
-                                <button id="btn_export_cuti_by_user" class="btn btn-success w-25 text-white" data-toggle="tooltip" title="Preview by excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Download Rekap</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="px-5 pt-2">
-                        <div id="periodeTabs" class="nav nav-tabs mb-3" style="gap: 8px;" role="tablist">
-                            <!-- Button tabs akan di-generate via JavaScript -->
-                        </div>
-                    </div>
-                    <div class="table-responsive px-5">
-                        <table id="table_detail_cuti_karyawan" class="table table-striped table-sm w-100 table-hover">
+            <div class="m-0 p-0">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="entertaintTable" class="table table-bordered table-sm w-100 table-hover">
                             <thead class="table-primary">
                                 <tr>
-                                    <th>No</th>
-                                    <th>Tanggal Form</th>
-                                    <th>No Form</th>
-                                    <th>Tanggal Mulai</th>
-                                    <th>Tanggal Akhir</th>
-                                    <th>Kode Absen</th>
-                                    <th>Keterangan</th>
+                                    <th>No Absen</th>
+                                    <th>Nama</th>
+                                    <th>Department</th>
+                                    <th>Bagian</th>
+                                    <th>Status Aktif</th>
+                                    <th>Tanggal Masuk</th>
+                                    <th>Tanggal Resign</th>
+                                    <th>Awal Periode</th>
+                                    <th>Akhir Periode</th>
+                                    <th>Masa Kerja</th>
+                                    <th>Hak Cuti</th>
+                                    <th>Cuti Terpakai</th>
+                                    <th>Sisa Cuti</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="cutiTableBody">
-                                <!-- Data akan dimasukkan via JavaScript -->
-                            </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+{{-- MODAL TAMBAH --}}
+<div class="modal fade" id="ajax-modal-tambah" role="dialog" data-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document" style="max-width: 50%;">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary p-2">
+                        <h4 class="modal-title pl-2 font-weight-bold" id="title-modal-edit1">Buat Pengajuan Cuti</h4>
+                        <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal"
+                            aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom"
+                            data-original-title="Tutup Dialog">
+                            <i class="fa fa-remove"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">TANGGAL PENGAJUAN : </label>
+                                    <div class="input-group">
+                                        <p class="form-label">{{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                            </div>
+                            <div class="col-md-4">
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">DIAJUKAN OLEH : </label>
+                                    <select id="diajukanOlehID" name="diajukanOlehID" style='width: 100%;'
+                                        data-placeholder="Pilih karyawan"
+                                        class="form-control create-control select2 select2-show-search EmployeeID">
+                                        @foreach ($selectemployee as $r_empl)
+                                        <option value="{{$r_empl->enroll_id}}"
+                                            data-department_name="{{$r_empl->department_name}}"
+                                            data-sub_dept_name="{{$r_empl->sub_dept_name}}"
+                                            data-department_data_id="{{$r_empl->department_id}}"
+                                            data-sub_dept_data_id="{{$r_empl->sub_dept_id}}">
+                                            {{$r_empl->select_employee}}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                    <small class="error-message text-danger"></small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">DEPARTMENT : </label>
+                                    <input type="text" readonly value="" class="form-control create-control"
+                                        id="department" name="department">
+                                    <input type="hidden" readonly value="" class="form-control create-control"
+                                        id="department_id" name="department_id">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">BAGIAN : </label>
+                                    <input type="text" readonly value="" class="form-control create-control" id="bagian"
+                                        name="bagian">
+                                    <input type="hidden" readonly value="" class="form-control create-control"
+                                        id="sub_dept_id" name="sub_dept_id">
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <p class="form-label">DENGAN INI BERMAKSUD UNTUK MENGAJUKAN CUTI : </p>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label">JENIS PERIZINAN</label>
+                                    <select id="kode_absen_ijin" class="form-control"
+                                        data-placeholder="-- PILIH JENIS PERIZINAN --">
+                                        <option value="">-- PILIH JENIS PERIZINAN --</option>
+                                        @foreach ($refabsenijin as $r_refabsenijin)
+                                        @php
+                                        if (($r_refabsenijin->kode_absen_ijin <> 'IKS') &&
+                                            ($r_refabsenijin->kode_absen_ijin <> 'M')) {
+                                                @endphp
+                                                <option value="{{$r_refabsenijin->kode_absen_ijin}}">
+                                                    {{$r_refabsenijin->kode_nama_absen_ijin}}</option>
+                                                @php
+                                                }
+                                                @endphp
+                                                @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label">KETERANGAN :</label>
+                                    <input type="text" class="form-control keterangan" name="keterangan[]">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">TANGGAL MULAI IZIN : </label>
+                                    <div class="input-group">
+                                        <input type="date" readonly class="form-control create-control"
+                                            id="tanggal_kedatangan_tamu" name="tanggal_kedatangan_tamu"
+                                            value="{{ date('Y-m-d') }}" onchange="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group text-center align-self-center">
+                                    <p class="form-label pt-4 mt-4">SAMPAI </p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">TANGGAL AKHIR IZIN : </label>
+                                    <div class="input-group">
+                                        <input type="date" readonly class="form-control create-control"
+                                            id="tanggal_kedatangan_tamu" name="tanggal_kedatangan_tamu"
+                                            value="{{ date('Y-m-d') }}" onchange="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <p class="form-label">MAKA SELAMA PELAKSANAAN CUTI TUGAS TUGAS SAYA, SAYA
+                                        DELEGASIKAN KEPADA : </p>
+                                    <select id="pendampingTamuID" name="pendampingTamuID"
+                                        data-placeholder="Pilih karyawan"
+                                        class="form-control select2 select2-show-search EmployeeID" style="width: 100%;"
+                                        required>
+                                        @foreach ($selectemployee as $r_empl)
+                                        <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-primary p-1">
+                        <div class="btn-list">
+                            <button type="button" id="submit-form" class="btn btn-secondary btn-app">Simpan</button>
+                            <button type="button" id="btn-close_edit1" class="btn btn-warning btn-app"
+                                data-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{{-- MODAL DETAIL --}}
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-scrollable" style="max-width: 65%;">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <p class="modal-title   " style="font-size: 18px; font-weight: bold;" id="exampleModalLabel"></p>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">x</button>
+            </div>
+            <div style="height: 80vh; overflow-y: auto; over-flow-x:none;">
+                <div class="row p-5 d-flex justify-content-between">
+                    <div class="col">
+                        <div class="d-flex mb-2">
+                            <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 14px;">Nama Karyawan</p>
+                            <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 14px;">:</p>
+                            <p class="mb-0" id="nama_karyawan_modal"></p>
+                            <input type="hidden" class="mb-0" id="enroll_id_karyawan_modal" />
+                        </div>
+                        <div class="d-flex mb-2">
+                            <p class="mb-0 me-2 fw-bold" style="width: 150px; font-size: 14px;">NIK</p>
+                            <p class="mb-0 me-2 fw-bold" style="width: 15px; font-size: 14px;">:</p>
+                            <p class="mb-0" id="nik_karyawan_modal"></p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="d-flex mb-2 justify-content-end">
+                            <button id="btn_export_cuti_by_user" class="btn btn-success w-25 text-white"
+                                data-toggle="tooltip" title="Preview by excel"><i class="fa fa-file-excel-o"
+                                    aria-hidden="true"></i> Download Rekap</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-5 pt-2">
+                    <div id="periodeTabs" class="nav nav-tabs mb-3" style="gap: 8px;" role="tablist">
+                        <!-- Button tabs akan di-generate via JavaScript -->
+                    </div>
+                </div>
+                <div class="table-responsive px-5">
+                    <table id="table_detail_cuti_karyawan" class="table table-striped table-sm w-100 table-hover">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>No</th>
+                                <th>Tanggal Form</th>
+                                <th>No Form</th>
+                                <th>Tanggal Mulai</th>
+                                <th>Tanggal Akhir</th>
+                                <th>Kode Absen</th>
+                                <th>Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cutiTableBody">
+                            <!-- Data akan dimasukkan via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection
 @section('footerjs')
-    <!-- DataTables & Plugins -->
-    <script src="{{URL::asset('assets/js/script.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/dataTables.responsive.min.js') }}"></script>
-    <script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
-    <script src="{{URL::asset('assets/js/iziToast.min.js')}}"></script>
-    <script src="{{ asset('assets/plugins/html5-qrcode/html5-qrcode.min.js') }}"></script>
-    <script src="{{URL::asset('assets/js/timepicker.js') }}"></script>
-      <!-- Sweet alert js-->
-      <script src="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.js')}}"></script>
-      <script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
+<!-- DataTables & Plugins -->
+<script src="{{URL::asset('assets/js/script.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.js') }}"></script>
+<script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}"></script>
+<script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ URL::asset('assets/plugins/datatable/dataTables.responsive.min.js') }}"></script>
+<script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
+<script src="{{URL::asset('assets/js/iziToast.min.js')}}"></script>
+<script src="{{ asset('assets/plugins/html5-qrcode/html5-qrcode.min.js') }}"></script>
+<script src="{{URL::asset('assets/js/timepicker.js') }}"></script>
+<!-- Sweet alert js-->
+<script src="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
 
-    <style>
+<style>
     .checkbox-xl .form-check-input {
         scale: 1.5;
     }
-    </style>
+</style>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -524,9 +570,8 @@ h1 {
         skemaPayroll.dispatchEvent(new Event("change"));
     });
 </script>
-    <script>
-
-        $('.data_range').daterangepicker({
+<script>
+    $('.data_range').daterangepicker({
                     ranges: {
                         'Hari ini': [moment(), moment()],
                         'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -586,11 +631,11 @@ h1 {
             }
         });
 
-    </script>
+</script>
 
 
-    <script>
-      $(document).on('click', '[id^=open_detail_]', function () {
+<script>
+    $(document).on('click', '[id^=open_detail_]', function () {
             const enrollId = $(this).attr('id').replace('open_detail_', '');
 
 
@@ -763,10 +808,10 @@ h1 {
             }
 
         });
-    </script>
+</script>
 
-    <script>
-        function formatRupiah(angka) {
+<script>
+    function formatRupiah(angka) {
             return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         }
 
@@ -1161,6 +1206,7 @@ h1 {
 
         $('#btn-view_excel').click(function(e){
             var selectEmployeeID = $('#selectEmployeeID').val();
+            console.log('selectEmployeeID', selectEmployeeID);
             $('#btn-view_excel').addClass("btn-loading");
             $("#btn-view_excel").html('Please wait...');
             $("#btn-view_excel").attr("disabled", true);
@@ -1329,10 +1375,10 @@ h1 {
             var url = 'entertaint_tamu/export_realisasi_permintaan_kas?entertain_id='+entertain_id;
             window.open(url, '_blank');
         }
-    </script>
+</script>
 
-    <script>
-        $(function(){
+<script>
+    $(function(){
             'use strict';
 
             $('.select2').select2({
@@ -1404,6 +1450,42 @@ h1 {
             minimumResultsForSearch: Infinity // disabling search
             });
         });
-    </script>
+</script>
+
+<script>
+    $(document).ready(function() {
+        function initEmployees() {
+            $('.select-employees').select2({
+                placeholder: 'Pilih karyawan atau semua',
+                width: 'resolve',
+                allowClear: true,
+                ajax: {
+                    url: '{{ route("search_employees") }}',
+                    dataType: 'json',
+                    delay: 250, // prevent too many requests
+                    data: function (params) {
+                        return {
+                            q: params.term || '',   // search term
+                            isAll: $('#isAll').is(':checked') ? 1 : 0 // true if checkbox checked
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.enroll_id,                   // value sent to backend
+                                    text: item.enroll_id + ' - ' + item.nik + ' - ' + item. employee_name  // display text
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        }
+
+        initEmployees();
+    } );    
+</script>
 
 @endsection
