@@ -813,7 +813,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
             $potongan_insentif,
             $potongan_piutang,
             $nol,
-            abs($potongan_kehadiran_rupiah),
+            $potongan_kehadiran_rupiah,
             $rp_pot_jam,
             $upah_bruto_rupiah,
             $pph21,
