@@ -37,20 +37,20 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 
 use Auth;
 
-class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle,  WithColumnFormatting,WithColumnWidths
+class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle,  WithColumnFormatting, WithColumnWidths
 {
     use Exportable;
 
-    public function exportParams(string $periode_payroll, string $tgl_awal, $department_id, $sub_dept_id, $status_staff, $periode_umk,$enroll_id, $last_process_history)
+    public function exportParams(string $periode_payroll, string $tgl_awal, $department_id, $sub_dept_id, $status_staff, $periode_umk, $enroll_id, $last_process_history)
     {
         $this->periode_payroll = $periode_payroll;
         $this->tgl_awal = $tgl_awal;
-        $this->department_id=$department_id;
-        $this->sub_dept_id=$sub_dept_id;
-        $this->status_staff=$status_staff;
-        $this->periode_umk=$periode_umk;
-        $this->enroll_id=$enroll_id;
-        $this->last_process_history=$last_process_history;
+        $this->department_id = $department_id;
+        $this->sub_dept_id = $sub_dept_id;
+        $this->status_staff = $status_staff;
+        $this->periode_umk = $periode_umk;
+        $this->enroll_id = $enroll_id;
+        $this->last_process_history = $last_process_history;
 
         return $this;
     }
@@ -62,39 +62,39 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
     }
     public function query()
     {
-        $tgl_awal=$this->tgl_awal;
-        $department_id=$this->department_id;
-        $sub_dept_id=$this->sub_dept_id;
-        $status_staff=$this->status_staff;
-        $periode_umk=$this->periode_umk;
-        $enroll_ids=$this->enroll_id;
-        $inEnrollId='';
-        $inDepartmentId='';
-        $inSubDepartment='';
-        $inStatusStaff='';
-        $inPeriodeUMK='';
-        if($this->enroll_id!=''){
-            $inEnrollId=' AND enroll_id in ('.$enroll_ids.')';
+        $tgl_awal = $this->tgl_awal;
+        $department_id = $this->department_id;
+        $sub_dept_id = $this->sub_dept_id;
+        $status_staff = $this->status_staff;
+        $periode_umk = $this->periode_umk;
+        $enroll_ids = $this->enroll_id;
+        $inEnrollId = '';
+        $inDepartmentId = '';
+        $inSubDepartment = '';
+        $inStatusStaff = '';
+        $inPeriodeUMK = '';
+        if ($this->enroll_id != '') {
+            $inEnrollId = ' AND enroll_id in (' . $enroll_ids . ')';
         }
-        if($department_id){
-        $nama_department=DepartmentAll::select('department_name')->where('department_id',$this->department_id)->pluck('department_name')[0];
-        $inDepartmentId=' AND nama_department = "'.$nama_department.'"';
+        if ($department_id) {
+            $nama_department = DepartmentAll::select('department_name')->where('department_id', $this->department_id)->pluck('department_name')[0];
+            $inDepartmentId = ' AND nama_department = "' . $nama_department . '"';
         }
-        if($sub_dept_id){
-        $sub_department_name=DepartmentAll::select('sub_dept_name')->where('sub_dept_id',$sub_dept_id)->pluck('sub_dept_name')[0];
-        $inSubDepartment = ' AND nama_bagian = "' . $sub_department_name . '"';
+        if ($sub_dept_id) {
+            $sub_department_name = DepartmentAll::select('sub_dept_name')->where('sub_dept_id', $sub_dept_id)->pluck('sub_dept_name')[0];
+            $inSubDepartment = ' AND nama_bagian = "' . $sub_department_name . '"';
         }
-        if($status_staff){
-        $inStatusStaff='AND kategori_karyawan = "'.$status_staff.'"';
+        if ($status_staff) {
+            $inStatusStaff = 'AND kategori_karyawan = "' . $status_staff . '"';
         }
-        $periode_umk_title='';
-        if($periode_umk){
-            $inPeriodeUMK='AND periode_umk = "'.$periode_umk.'"';
-        }else{
-            $inPeriodeUMK='AND periode_umk IS NULL';
+        $periode_umk_title = '';
+        if ($periode_umk) {
+            $inPeriodeUMK = 'AND periode_umk = "' . $periode_umk . '"';
+        } else {
+            $inPeriodeUMK = 'AND periode_umk IS NULL';
         }
         $q =  RekapPerhitunganPayroll::query()
-                ->selectRaw('
+            ->selectRaw('
                     kode_rekap_payroll,
                     periode_kehadiran,
                     periode_early,
@@ -204,16 +204,16 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                     potongan_piutang
 
                 ')
-                ->whereRaw('
-                    CONCAT(periode_tahun_payroll, "-", periode_bulan_payroll) = "' . $this->periode_payroll . '"'.$inEnrollId.''.$inDepartmentId.''.$inSubDepartment.''.$inStatusStaff.''.$inPeriodeUMK.'
+            ->whereRaw('
+                    CONCAT(periode_tahun_payroll, "-", periode_bulan_payroll) = "' . $this->periode_payroll . '"' . $inEnrollId . '' . $inDepartmentId . '' . $inSubDepartment . '' . $inStatusStaff . '' . $inPeriodeUMK . '
                 ')
-                 ->where(function ($query) use ($tgl_awal) {
-                    $query->orWhereNull('tanggal_resign')
-                        ->orWhere('tanggal_resign', '>', $tgl_awal);
-                })
-                ->orderBy('employee_name','asc')
-                ->orderBy('periode_payroll','desc')
-                ->limit(1);
+            ->where(function ($query) use ($tgl_awal) {
+                $query->orWhereNull('tanggal_resign')
+                    ->orWhere('tanggal_resign', '>', $tgl_awal);
+            })
+            ->orderBy('employee_name', 'asc')
+            ->orderBy('periode_payroll', 'desc')
+            ->limit(1);
         return $q;
     }
 
@@ -228,109 +228,416 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         $enroll_id = $Data->enroll_id;
         $nik = $Data->nik;
         $employee_name = $Data->employee_name;
-        $kode_grade= $Data->kode_grade;
+        $kode_grade = $Data->kode_grade;
 
 
-        $join_date=$Data->join_date!=null?date('d-m-Y', strtotime($Data->join_date)):$Data->join_date;
+        $join_date = $Data->join_date != null ? date('d-m-Y', strtotime($Data->join_date)) : $Data->join_date;
         $site_nirwana_name = $Data->site_nirwana_name;
 
-        if($Data->kehadiran_iby == 0){ $kehadiran_iby = '0';} else { $kehadiran_iby = $Data->kehadiran_iby; }
-        if($Data->kehadiran_itb == 0){ $kehadiran_itb = '0';} else { $kehadiran_itb = $Data->kehadiran_itb; }
-        if($Data->kehadiran_m == 0){ $kehadiran_m = '0';} else { $kehadiran_m = $Data->kehadiran_m; }
-        if($Data->kehadiran_dt == 0){ $kehadiran_dt = '0';} else { $kehadiran_dt = $Data->kehadiran_dt; }
-        if($Data->kehadiran_pc == 0){ $kehadiran_pc = '0';} else { $kehadiran_pc = $Data->kehadiran_pc; }
-        if($Data->kehadiran_dtpc == 0){ $kehadiran_dtpc = '0';} else { $kehadiran_dtpc = $Data->kehadiran_dtpc; }
-        if($Data->kehadiran_lby == 0){ $kehadiran_lby = '0';} else { $kehadiran_lby = $Data->kehadiran_lby; }
-        if($Data->kehadiran_lsm == 0){ $kehadiran_lsm = '0';} else { $kehadiran_lsm = $Data->kehadiran_lsm; }
-        if($Data->kehadiran_r == 0){ $kehadiran_r = '0';} else { $kehadiran_r = $Data->kehadiran_r; }
-        if($Data->kehadiran_ok == 0){ $kehadiran_ok = '0';} else { $kehadiran_ok = $Data->kehadiran_ok; }
-        if($Data->kehadiran_tk == 0){ $kehadiran_tk = '0';} else { $kehadiran_tk = $Data->kehadiran_tk; }
-        if($Data->total_kehadiran == 0){ $total_kehadiran = '0';} else { $total_kehadiran = $Data->total_kehadiran; }
-        if($Data->total_kehadiran_net == 0){ $total_kehadiran_net = '0';} else { $total_kehadiran_net = $Data->total_kehadiran_net; }
+        if ($Data->kehadiran_iby == 0) {
+            $kehadiran_iby = '0';
+        } else {
+            $kehadiran_iby = $Data->kehadiran_iby;
+        }
+        if ($Data->kehadiran_itb == 0) {
+            $kehadiran_itb = '0';
+        } else {
+            $kehadiran_itb = $Data->kehadiran_itb;
+        }
+        if ($Data->kehadiran_m == 0) {
+            $kehadiran_m = '0';
+        } else {
+            $kehadiran_m = $Data->kehadiran_m;
+        }
+        if ($Data->kehadiran_dt == 0) {
+            $kehadiran_dt = '0';
+        } else {
+            $kehadiran_dt = $Data->kehadiran_dt;
+        }
+        if ($Data->kehadiran_pc == 0) {
+            $kehadiran_pc = '0';
+        } else {
+            $kehadiran_pc = $Data->kehadiran_pc;
+        }
+        if ($Data->kehadiran_dtpc == 0) {
+            $kehadiran_dtpc = '0';
+        } else {
+            $kehadiran_dtpc = $Data->kehadiran_dtpc;
+        }
+        if ($Data->kehadiran_lby == 0) {
+            $kehadiran_lby = '0';
+        } else {
+            $kehadiran_lby = $Data->kehadiran_lby;
+        }
+        if ($Data->kehadiran_lsm == 0) {
+            $kehadiran_lsm = '0';
+        } else {
+            $kehadiran_lsm = $Data->kehadiran_lsm;
+        }
+        if ($Data->kehadiran_r == 0) {
+            $kehadiran_r = '0';
+        } else {
+            $kehadiran_r = $Data->kehadiran_r;
+        }
+        if ($Data->kehadiran_ok == 0) {
+            $kehadiran_ok = '0';
+        } else {
+            $kehadiran_ok = $Data->kehadiran_ok;
+        }
+        if ($Data->kehadiran_tk == 0) {
+            $kehadiran_tk = '0';
+        } else {
+            $kehadiran_tk = $Data->kehadiran_tk;
+        }
+        if ($Data->total_kehadiran == 0) {
+            $total_kehadiran = '0';
+        } else {
+            $total_kehadiran = $Data->total_kehadiran;
+        }
+        if ($Data->total_kehadiran_net == 0) {
+            $total_kehadiran_net = '0';
+        } else {
+            $total_kehadiran_net = $Data->total_kehadiran_net;
+        }
         $ptkp = $Data->ptkp;
         $st = $Data->status_kawin;
-        if($Data->upah_per_bulan == 0){ $upah_per_bulan = '0';} else { $upah_per_bulan = $Data->upah_per_bulan; }
-        if($Data->upah_per_hari == 0){ $upah_per_hari = '0';} else { $upah_per_hari = $Data->upah_per_hari; }
-        if($Data->tunjangan_karyawan_rupiah == 0){ $tunjangan_karyawan_rupiah = '0'; $readOnlyTunjanganKaryawanRupiah = '0'; } else { $tunjangan_karyawan_rupiah = $Data->tunjangan_karyawan_rupiah; $readOnlyTunjanganKaryawanRupiah = $Data->tunjangan_karyawan_rupiah; }
-        if($Data->premi_karyawan == 0){ $premi_karyawan = '0';} else { $premi_karyawan = $Data->premi_karyawan; }
-        if($Data->insentif_jabatan == 0){ $insentif_jabatan = '0';} else { $insentif_jabatan = $Data->insentif_jabatan; }
+        if ($Data->upah_per_bulan == 0) {
+            $upah_per_bulan = '0';
+        } else {
+            $upah_per_bulan = $Data->upah_per_bulan;
+        }
+        if ($Data->upah_per_hari == 0) {
+            $upah_per_hari = '0';
+        } else {
+            $upah_per_hari = $Data->upah_per_hari;
+        }
+        if ($Data->tunjangan_karyawan_rupiah == 0) {
+            $tunjangan_karyawan_rupiah = '0';
+            $readOnlyTunjanganKaryawanRupiah = '0';
+        } else {
+            $tunjangan_karyawan_rupiah = $Data->tunjangan_karyawan_rupiah;
+            $readOnlyTunjanganKaryawanRupiah = $Data->tunjangan_karyawan_rupiah;
+        }
+        if ($Data->premi_karyawan == 0) {
+            $premi_karyawan = '0';
+        } else {
+            $premi_karyawan = $Data->premi_karyawan;
+        }
+        if ($Data->insentif_jabatan == 0) {
+            $insentif_jabatan = '0';
+        } else {
+            $insentif_jabatan = $Data->insentif_jabatan;
+        }
 
 
-        if($Data->koreksi_upah == 0){ $koreksi_upah = '0';} else { $koreksi_upah = $Data->koreksi_upah;}
-        if($Data->koreksi_lembur == 0){ $koreksi_lembur = '0';} else { $koreksi_lembur = $Data->koreksi_lembur; }
-        if($Data->koreksi_insentif == 0){ $koreksi_insentif = '0';} else { $koreksi_insentif = $Data->koreksi_insentif; }
-        if($Data->potongan_upah == 0){ $potongan_upah = '0';} else { $potongan_upah = $Data->potongan_upah; }
-        if($Data->potongan_lembur == 0){ $potongan_lembur = '0';} else { $potongan_lembur = $Data->potongan_lembur; }
-        if($Data->potongan_insentif == 0){ $potongan_insentif = '0';} else { $potongan_insentif = $Data->potongan_insentif; }
-        if($Data->potongan_piutang == 0){ $potongan_piutang = '0';} else { $potongan_piutang = $Data->potongan_piutang; }
+        if ($Data->koreksi_upah == 0) {
+            $koreksi_upah = '0';
+        } else {
+            $koreksi_upah = $Data->koreksi_upah;
+        }
+        if ($Data->koreksi_lembur == 0) {
+            $koreksi_lembur = '0';
+        } else {
+            $koreksi_lembur = $Data->koreksi_lembur;
+        }
+        if ($Data->koreksi_insentif == 0) {
+            $koreksi_insentif = '0';
+        } else {
+            $koreksi_insentif = $Data->koreksi_insentif;
+        }
+        if ($Data->potongan_upah == 0) {
+            $potongan_upah = '0';
+        } else {
+            $potongan_upah = $Data->potongan_upah;
+        }
+        if ($Data->potongan_lembur == 0) {
+            $potongan_lembur = '0';
+        } else {
+            $potongan_lembur = $Data->potongan_lembur;
+        }
+        if ($Data->potongan_insentif == 0) {
+            $potongan_insentif = '0';
+        } else {
+            $potongan_insentif = $Data->potongan_insentif;
+        }
+        if ($Data->potongan_piutang == 0) {
+            $potongan_piutang = '0';
+        } else {
+            $potongan_piutang = $Data->potongan_piutang;
+        }
 
-        if($Data->lembur_1 == 0){ $lembur_1 = '0';} else { $lembur_1 = $Data->lembur_1; }
-        if($Data->lembur_2 == 0){ $lembur_2 = '0';} else { $lembur_2 = $Data->lembur_2; }
-        if($Data->lembur_3 == 0){ $lembur_3 = '0';} else { $lembur_3 = $Data->lembur_3; }
-        if($Data->lembur_4 == 0){ $lembur_4 = '0';} else { $lembur_4 = $Data->lembur_4; }
-        if($Data->total_lembur_1234 == 0){ $total_lembur_1234 = '0';} else { $total_lembur_1234 = $Data->total_lembur_1234; }
-        if($Data->lembur1_rupiah == 0){ $lembur1_rupiah = '0';} else { $lembur1_rupiah = $Data->lembur1_rupiah; }
-        if($Data->lembur2_rupiah == 0){ $lembur2_rupiah = '0';} else { $lembur2_rupiah = $Data->lembur2_rupiah; }
-        if($Data->lembur3_rupiah == 0){ $lembur3_rupiah = '0';} else { $lembur3_rupiah = $Data->lembur3_rupiah; }
-        if($Data->lembur4_rupiah == 0){ $lembur4_rupiah = '0';} else { $lembur4_rupiah = $Data->lembur4_rupiah; }
-        if($Data->total_lembur_rupiah == 0){ $total_lembur_rupiah = '0';} else { $total_lembur_rupiah = $Data->total_lembur_rupiah; }
-        if($Data->koreksi_upah_rupiah == 0){ $koreksi_upah_rupiah = '0';} else { $koreksi_upah_rupiah = $Data->koreksi_upah_rupiah; }
-        if($Data->pendapatan_lainnya_rupiah == 0){ $pendapatan_lainnya_rupiah = '0';} else { $pendapatan_lainnya_rupiah = $Data->pendapatan_lainnya_rupiah; }
-        if($Data->koreksi_potongan_rupiah == 0){ $koreksi_potongan_rupiah = '0';} else { $koreksi_potongan_rupiah = $Data->koreksi_potongan_rupiah; }
-        if($Data->potongan_iks_menit == 0){ $potongan_iks_menit = '0';} else { $potongan_iks_menit = $Data->potongan_iks_menit; }
-        if($Data->potongan_dt_menit == 0){ $potongan_dt_menit = '0';} else { $potongan_dt_menit = $Data->potongan_dt_menit; }
-        if($Data->potongan_pc_menit == 0){ $potongan_pc_menit = '0';} else { $potongan_pc_menit = $Data->potongan_pc_menit; }
-        if($Data->potongan_iks_rupiah == 0){ $potongan_iks_rupiah = '0';} else { $potongan_iks_rupiah = $Data->potongan_iks_rupiah; }
-        if($Data->potongan_dt_rupiah == 0){ $potongan_dt_rupiah = '0';} else { $potongan_dt_rupiah = $Data->potongan_dt_rupiah; }
-        if($Data->potongan_pc_rupiah == 0){ $potongan_pc_rupiah = '0';} else { $potongan_pc_rupiah = $Data->potongan_pc_rupiah; }
-        if($Data->total_potongan_jam_rupiah == 0){ $total_potongan_jam_rupiah = '0';} else { $total_potongan_jam_rupiah = $Data->total_potongan_jam_rupiah; }
-        if($Data->potongan_kehadiran_rupiah == 0){ $potongan_kehadiran_rupiah = '0';} else { $potongan_kehadiran_rupiah = $Data->potongan_kehadiran_rupiah; }
-        if($Data->upah_bruto_rupiah == 0){ $upah_bruto_rupiah = '0';} else { $upah_bruto_rupiah = $Data->upah_bruto_rupiah; }
+        if ($Data->lembur_1 == 0) {
+            $lembur_1 = '0';
+        } else {
+            $lembur_1 = $Data->lembur_1;
+        }
+        if ($Data->lembur_2 == 0) {
+            $lembur_2 = '0';
+        } else {
+            $lembur_2 = $Data->lembur_2;
+        }
+        if ($Data->lembur_3 == 0) {
+            $lembur_3 = '0';
+        } else {
+            $lembur_3 = $Data->lembur_3;
+        }
+        if ($Data->lembur_4 == 0) {
+            $lembur_4 = '0';
+        } else {
+            $lembur_4 = $Data->lembur_4;
+        }
+        if ($Data->total_lembur_1234 == 0) {
+            $total_lembur_1234 = '0';
+        } else {
+            $total_lembur_1234 = $Data->total_lembur_1234;
+        }
+        if ($Data->lembur1_rupiah == 0) {
+            $lembur1_rupiah = '0';
+        } else {
+            $lembur1_rupiah = $Data->lembur1_rupiah;
+        }
+        if ($Data->lembur2_rupiah == 0) {
+            $lembur2_rupiah = '0';
+        } else {
+            $lembur2_rupiah = $Data->lembur2_rupiah;
+        }
+        if ($Data->lembur3_rupiah == 0) {
+            $lembur3_rupiah = '0';
+        } else {
+            $lembur3_rupiah = $Data->lembur3_rupiah;
+        }
+        if ($Data->lembur4_rupiah == 0) {
+            $lembur4_rupiah = '0';
+        } else {
+            $lembur4_rupiah = $Data->lembur4_rupiah;
+        }
+        if ($Data->total_lembur_rupiah == 0) {
+            $total_lembur_rupiah = '0';
+        } else {
+            $total_lembur_rupiah = $Data->total_lembur_rupiah;
+        }
+        if ($Data->koreksi_upah_rupiah == 0) {
+            $koreksi_upah_rupiah = '0';
+        } else {
+            $koreksi_upah_rupiah = $Data->koreksi_upah_rupiah;
+        }
+        if ($Data->pendapatan_lainnya_rupiah == 0) {
+            $pendapatan_lainnya_rupiah = '0';
+        } else {
+            $pendapatan_lainnya_rupiah = $Data->pendapatan_lainnya_rupiah;
+        }
+        if ($Data->koreksi_potongan_rupiah == 0) {
+            $koreksi_potongan_rupiah = '0';
+        } else {
+            $koreksi_potongan_rupiah = $Data->koreksi_potongan_rupiah;
+        }
+        if ($Data->potongan_iks_menit == 0) {
+            $potongan_iks_menit = '0';
+        } else {
+            $potongan_iks_menit = $Data->potongan_iks_menit;
+        }
+        if ($Data->potongan_dt_menit == 0) {
+            $potongan_dt_menit = '0';
+        } else {
+            $potongan_dt_menit = $Data->potongan_dt_menit;
+        }
+        if ($Data->potongan_pc_menit == 0) {
+            $potongan_pc_menit = '0';
+        } else {
+            $potongan_pc_menit = $Data->potongan_pc_menit;
+        }
+        if ($Data->potongan_iks_rupiah == 0) {
+            $potongan_iks_rupiah = '0';
+        } else {
+            $potongan_iks_rupiah = $Data->potongan_iks_rupiah;
+        }
+        if ($Data->potongan_dt_rupiah == 0) {
+            $potongan_dt_rupiah = '0';
+        } else {
+            $potongan_dt_rupiah = $Data->potongan_dt_rupiah;
+        }
+        if ($Data->potongan_pc_rupiah == 0) {
+            $potongan_pc_rupiah = '0';
+        } else {
+            $potongan_pc_rupiah = $Data->potongan_pc_rupiah;
+        }
+        if ($Data->total_potongan_jam_rupiah == 0) {
+            $total_potongan_jam_rupiah = '0';
+        } else {
+            $total_potongan_jam_rupiah = $Data->total_potongan_jam_rupiah;
+        }
+        // if ($Data->potongan_kehadiran_rupiah == 0) {
+        //     $potongan_kehadiran_rupiah = '0';
+        // } else {
+        //     $potongan_kehadiran_rupiah = $Data->potongan_kehadiran_rupiah;
+        // }
+        $potongan_kehadiran_rupiah = (int) ($Data->potongan_kehadiran_rupiah ?: 0);
+        if ($Data->upah_bruto_rupiah == 0) {
+            $upah_bruto_rupiah = '0';
+        } else {
+            $upah_bruto_rupiah = $Data->upah_bruto_rupiah;
+        }
         $pph21 = $Data->pph21;
-        if($Data->upah_neto_rupiah == 0){ $upah_neto_rupiah = '0';} else { $upah_neto_rupiah = $Data->upah_neto_rupiah; }
-        if($Data->total_bpjs_tk == 0){ $total_bpjs_tk = '0';} else { $total_bpjs_tk = $Data->total_bpjs_tk; }
-        if($Data->total_bpjs_ks == 0){ $total_bpjs_ks = '0';} else { $total_bpjs_ks = $Data->total_bpjs_ks; }
-        if($Data->iuran_serikat_rupiah == 0){ $iuran_serikat_rupiah = '0';} else { $iuran_serikat_rupiah = $Data->iuran_serikat_rupiah; }
-        if($Data->iuran_koperasi == 0){ $iuran_koperasi = '0';} else { $iuran_koperasi = $Data->iuran_koperasi; }
-        if($Data->jumlah_potongan_rupiah == 0){ $jumlah_potongan_rupiah = '0';} else { $jumlah_potongan_rupiah = $Data->jumlah_potongan_rupiah; }
-        if($Data->upah_bersih_rupiah == 0){ $upah_bersih_rupiah = '0';} else { $upah_bersih_rupiah = $Data->upah_bersih_rupiah; }
-        if($Data->potongan_kasbon_rupiah == 0){ $potongan_kasbon_rupiah = '0';} else { $potongan_kasbon_rupiah = $Data->potongan_kasbon_rupiah; }
-        if($Data->total_upah_thp_rupiah == 0){ $total_upah_thp_rupiah = '0';} else { $total_upah_thp_rupiah = $Data->total_upah_thp_rupiah; }
-        if($Data->total_upah_thp_rupiah_employee == 0){ $total_upah_thp_rupiah_employee = '0';} else { $total_upah_thp_rupiah_employee = $Data->total_upah_thp_rupiah_employee; }
-        if($Data->total_upah_thp_rupiah == 0){ $total_upah_thp_rupiah_pecahan = '0';} else { $total_upah_thp_rupiah_pecahan = $Data->total_upah_thp_rupiah; }
-        if($Data->bpjs_tk_jkm_perusahaan_rupiah == 0){ $bpjs_tk_jkm_perusahaan_rupiah = '0';} else { $bpjs_tk_jkm_perusahaan_rupiah = $Data->bpjs_tk_jkm_perusahaan_rupiah; }
-        if($Data->bpjs_tk_jkm_karyawan_rupiah == 0){ $bpjs_tk_jkm_karyawan_rupiah = '0';} else { $bpjs_tk_jkm_karyawan_rupiah = $Data->bpjs_tk_jkm_karyawan_rupiah; }
-        if($Data->bpjs_tk_jkm_rupiah == 0){ $bpjs_tk_jkm_rupiah = '0';} else { $bpjs_tk_jkm_rupiah = $Data->bpjs_tk_jkm_rupiah; }
-        if($Data->bpjs_tk_jkk_perusahaan_rupiah == 0){ $bpjs_tk_jkk_perusahaan_rupiah = '0';} else { $bpjs_tk_jkk_perusahaan_rupiah = $Data->bpjs_tk_jkk_perusahaan_rupiah; }
-        if($Data->bpjs_tk_jkk_karyawan_rupiah == 0){ $bpjs_tk_jkk_karyawan_rupiah = '0';} else { $bpjs_tk_jkk_karyawan_rupiah = $Data->bpjs_tk_jkk_karyawan_rupiah; }
-        if($Data->bpjs_tk_jkk_rupiah == 0){ $bpjs_tk_jkk_rupiah = '0';} else { $bpjs_tk_jkk_rupiah = $Data->bpjs_tk_jkk_rupiah; }
-        if($Data->bpjs_tk_jht_perusahaan_rupiah == 0){ $bpjs_tk_jht_perusahaan_rupiah = '0';} else { $bpjs_tk_jht_perusahaan_rupiah = $Data->bpjs_tk_jht_perusahaan_rupiah; }
-        if($Data->bpjs_tk_jht_karyawan_rupiah == 0){ $bpjs_tk_jht_karyawan_rupiah = '0';} else { $bpjs_tk_jht_karyawan_rupiah = $Data->bpjs_tk_jht_karyawan_rupiah; }
-        if($Data->bpjs_tk_jht_rupiah == 0){ $bpjs_tk_jht_rupiah = '0';} else { $bpjs_tk_jht_rupiah = $Data->bpjs_tk_jht_rupiah; }
-        if($Data->bpjs_tk_jpn_perusahaan_rupiah == 0){ $bpjs_tk_jpn_perusahaan_rupiah = '0';} else { $bpjs_tk_jpn_perusahaan_rupiah = $Data->bpjs_tk_jpn_perusahaan_rupiah; }
-        if($Data->bpjs_tk_jpn_karyawan_rupiah == 0){ $bpjs_tk_jpn_karyawan_rupiah = '0';} else { $bpjs_tk_jpn_karyawan_rupiah = $Data->bpjs_tk_jpn_karyawan_rupiah; }
-        if($Data->bpjs_tk_jpn_rupiah == 0){ $bpjs_tk_jpn_rupiah = '0';} else { $bpjs_tk_jpn_rupiah = $Data->bpjs_tk_jpn_rupiah; }
-        if($Data->bpjs_ks_jkn_perusahaan_rupiah == 0){ $bpjs_ks_jkn_perusahaan_rupiah = '0';} else { $bpjs_ks_jkn_perusahaan_rupiah = $Data->bpjs_ks_jkn_perusahaan_rupiah; }
-        if($Data->bpjs_ks_jkn_karyawan_rupiah == 0){ $bpjs_ks_jkn_karyawan_rupiah = '0';} else { $bpjs_ks_jkn_karyawan_rupiah = $Data->bpjs_ks_jkn_karyawan_rupiah; }
-        if($Data->bpjs_ks_jkn_rupiah == 0){ $bpjs_ks_jkn_rupiah = '0';} else { $bpjs_ks_jkn_rupiah = $Data->bpjs_ks_jkn_rupiah; }
+        if ($Data->upah_neto_rupiah == 0) {
+            $upah_neto_rupiah = '0';
+        } else {
+            $upah_neto_rupiah = $Data->upah_neto_rupiah;
+        }
+        if ($Data->total_bpjs_tk == 0) {
+            $total_bpjs_tk = '0';
+        } else {
+            $total_bpjs_tk = $Data->total_bpjs_tk;
+        }
+        if ($Data->total_bpjs_ks == 0) {
+            $total_bpjs_ks = '0';
+        } else {
+            $total_bpjs_ks = $Data->total_bpjs_ks;
+        }
+        if ($Data->iuran_serikat_rupiah == 0) {
+            $iuran_serikat_rupiah = '0';
+        } else {
+            $iuran_serikat_rupiah = $Data->iuran_serikat_rupiah;
+        }
+        if ($Data->iuran_koperasi == 0) {
+            $iuran_koperasi = '0';
+        } else {
+            $iuran_koperasi = $Data->iuran_koperasi;
+        }
+        if ($Data->jumlah_potongan_rupiah == 0) {
+            $jumlah_potongan_rupiah = '0';
+        } else {
+            $jumlah_potongan_rupiah = $Data->jumlah_potongan_rupiah;
+        }
+        if ($Data->upah_bersih_rupiah == 0) {
+            $upah_bersih_rupiah = '0';
+        } else {
+            $upah_bersih_rupiah = $Data->upah_bersih_rupiah;
+        }
+        if ($Data->potongan_kasbon_rupiah == 0) {
+            $potongan_kasbon_rupiah = '0';
+        } else {
+            $potongan_kasbon_rupiah = $Data->potongan_kasbon_rupiah;
+        }
+        if ($Data->total_upah_thp_rupiah == 0) {
+            $total_upah_thp_rupiah = '0';
+        } else {
+            $total_upah_thp_rupiah = $Data->total_upah_thp_rupiah;
+        }
+        if ($Data->total_upah_thp_rupiah_employee == 0) {
+            $total_upah_thp_rupiah_employee = '0';
+        } else {
+            $total_upah_thp_rupiah_employee = $Data->total_upah_thp_rupiah_employee;
+        }
+        if ($Data->total_upah_thp_rupiah == 0) {
+            $total_upah_thp_rupiah_pecahan = '0';
+        } else {
+            $total_upah_thp_rupiah_pecahan = $Data->total_upah_thp_rupiah;
+        }
+        if ($Data->bpjs_tk_jkm_perusahaan_rupiah == 0) {
+            $bpjs_tk_jkm_perusahaan_rupiah = '0';
+        } else {
+            $bpjs_tk_jkm_perusahaan_rupiah = $Data->bpjs_tk_jkm_perusahaan_rupiah;
+        }
+        if ($Data->bpjs_tk_jkm_karyawan_rupiah == 0) {
+            $bpjs_tk_jkm_karyawan_rupiah = '0';
+        } else {
+            $bpjs_tk_jkm_karyawan_rupiah = $Data->bpjs_tk_jkm_karyawan_rupiah;
+        }
+        if ($Data->bpjs_tk_jkm_rupiah == 0) {
+            $bpjs_tk_jkm_rupiah = '0';
+        } else {
+            $bpjs_tk_jkm_rupiah = $Data->bpjs_tk_jkm_rupiah;
+        }
+        if ($Data->bpjs_tk_jkk_perusahaan_rupiah == 0) {
+            $bpjs_tk_jkk_perusahaan_rupiah = '0';
+        } else {
+            $bpjs_tk_jkk_perusahaan_rupiah = $Data->bpjs_tk_jkk_perusahaan_rupiah;
+        }
+        if ($Data->bpjs_tk_jkk_karyawan_rupiah == 0) {
+            $bpjs_tk_jkk_karyawan_rupiah = '0';
+        } else {
+            $bpjs_tk_jkk_karyawan_rupiah = $Data->bpjs_tk_jkk_karyawan_rupiah;
+        }
+        if ($Data->bpjs_tk_jkk_rupiah == 0) {
+            $bpjs_tk_jkk_rupiah = '0';
+        } else {
+            $bpjs_tk_jkk_rupiah = $Data->bpjs_tk_jkk_rupiah;
+        }
+        if ($Data->bpjs_tk_jht_perusahaan_rupiah == 0) {
+            $bpjs_tk_jht_perusahaan_rupiah = '0';
+        } else {
+            $bpjs_tk_jht_perusahaan_rupiah = $Data->bpjs_tk_jht_perusahaan_rupiah;
+        }
+        if ($Data->bpjs_tk_jht_karyawan_rupiah == 0) {
+            $bpjs_tk_jht_karyawan_rupiah = '0';
+        } else {
+            $bpjs_tk_jht_karyawan_rupiah = $Data->bpjs_tk_jht_karyawan_rupiah;
+        }
+        if ($Data->bpjs_tk_jht_rupiah == 0) {
+            $bpjs_tk_jht_rupiah = '0';
+        } else {
+            $bpjs_tk_jht_rupiah = $Data->bpjs_tk_jht_rupiah;
+        }
+        if ($Data->bpjs_tk_jpn_perusahaan_rupiah == 0) {
+            $bpjs_tk_jpn_perusahaan_rupiah = '0';
+        } else {
+            $bpjs_tk_jpn_perusahaan_rupiah = $Data->bpjs_tk_jpn_perusahaan_rupiah;
+        }
+        if ($Data->bpjs_tk_jpn_karyawan_rupiah == 0) {
+            $bpjs_tk_jpn_karyawan_rupiah = '0';
+        } else {
+            $bpjs_tk_jpn_karyawan_rupiah = $Data->bpjs_tk_jpn_karyawan_rupiah;
+        }
+        if ($Data->bpjs_tk_jpn_rupiah == 0) {
+            $bpjs_tk_jpn_rupiah = '0';
+        } else {
+            $bpjs_tk_jpn_rupiah = $Data->bpjs_tk_jpn_rupiah;
+        }
+        if ($Data->bpjs_ks_jkn_perusahaan_rupiah == 0) {
+            $bpjs_ks_jkn_perusahaan_rupiah = '0';
+        } else {
+            $bpjs_ks_jkn_perusahaan_rupiah = $Data->bpjs_ks_jkn_perusahaan_rupiah;
+        }
+        if ($Data->bpjs_ks_jkn_karyawan_rupiah == 0) {
+            $bpjs_ks_jkn_karyawan_rupiah = '0';
+        } else {
+            $bpjs_ks_jkn_karyawan_rupiah = $Data->bpjs_ks_jkn_karyawan_rupiah;
+        }
+        if ($Data->bpjs_ks_jkn_rupiah == 0) {
+            $bpjs_ks_jkn_rupiah = '0';
+        } else {
+            $bpjs_ks_jkn_rupiah = $Data->bpjs_ks_jkn_rupiah;
+        }
         $jabatan_karyawan = $Data->jabatan_karyawan;
         $nama_bagian = $Data->nama_bagian;
-        $department_id='';
-        if(isset(DepartmentAll::select('department_id')->where('department_name',$Data->nama_department)->groupBy('department_id')->pluck('department_id')[0])){
-            $department_id = DepartmentAll::select('department_id')->where('department_name',$Data->nama_department)->groupBy('department_id')->pluck('department_id')[0];
+        $department_id = '';
+        if (isset(DepartmentAll::select('department_id')->where('department_name', $Data->nama_department)->groupBy('department_id')->pluck('department_id')[0])) {
+            $department_id = DepartmentAll::select('department_id')->where('department_name', $Data->nama_department)->groupBy('department_id')->pluck('department_id')[0];
         }
-        $sub_dept_id='';
-        if(isset(DepartmentAll::select('sub_dept_id')->where('department_name',$Data->nama_department)->where('sub_dept_name',$Data->nama_bagian)->pluck('sub_dept_id')[0])){
-            $sub_dept_id = DepartmentAll::select('sub_dept_id')->where('department_name',$Data->nama_department)->where('sub_dept_name',$Data->nama_bagian)->pluck('sub_dept_id')[0];
+        $sub_dept_id = '';
+        if (isset(DepartmentAll::select('sub_dept_id')->where('department_name', $Data->nama_department)->where('sub_dept_name', $Data->nama_bagian)->pluck('sub_dept_id')[0])) {
+            $sub_dept_id = DepartmentAll::select('sub_dept_id')->where('department_name', $Data->nama_department)->where('sub_dept_name', $Data->nama_bagian)->pluck('sub_dept_id')[0];
         }
         $nama_department = $Data->nama_department;
         $kategori_karyawan = $Data->kategori_karyawan;
         $aktif_karyawan = $Data->aktif_karyawan;
         $jenis_kelamin = $Data->jenis_kelamin;
-        if($Data->nama_bank==null){ $nama_bank = '-';} else { $nama_bank = $Data->nama_bank; }
+        if ($Data->nama_bank == null) {
+            $nama_bank = '-';
+        } else {
+            $nama_bank = $Data->nama_bank;
+        }
         //if($Data->nomor_rekening_bank == 0){ $nomor_rekening_bank = '-';} else { $nomor_rekening_bank = $Data->nomor_rekening_bank; }
-        if($Data->nomor_rekening_bank == 0|| $Data->nomor_rekening_bank == 'TRANSFER' ){ $nomor_rekening_bank = '-';} else { $nomor_rekening_bank = $Data->nomor_rekening_bank; }
-        if($Data->npwp == 0){ $npwp = '-';} else { $npwp = $Data->npwp; }
+        if ($Data->nomor_rekening_bank == 0 || $Data->nomor_rekening_bank == 'TRANSFER') {
+            $nomor_rekening_bank = '-';
+        } else {
+            $nomor_rekening_bank = $Data->nomor_rekening_bank;
+        }
+        if ($Data->npwp == 0) {
+            $npwp = '-';
+        } else {
+            $npwp = $Data->npwp;
+        }
 
         // $total_upah_thp_rupiah_pembulatan= ceil($total_upah_thp_rupiah / 100) * 100;
         // $pembulatan=$total_upah_thp_rupiah_pembulatan-$total_upah_thp_rupiah;
@@ -352,62 +659,94 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         // Hitung nilai pembulatan
         $pembulatan = $total_upah_thp_rupiah_pembulatan - $nilai_bersih;
 
-        $upah_per_jam=$upah_per_bulan/173;
+        $upah_per_jam = $upah_per_bulan / 173;
         $periode_kehadiran = $Data->periode_early ?? $Data->periode_kehadiran;
 
 
-        if($Data->year == 0){ $years = '0';} else { $years = $Data->year; }
-        if($Data->month == 0){ $months = '0';} else { $months = $Data->month; }
-        if($Data->day == 0){ $days = '0';} else { $days = $Data->day; }
-
-        $kosong=" ";
-        $nol='0';
-        $pot_hari_kerja=$kehadiran_itb+$kehadiran_m+$kehadiran_r;
-        $total_absen=$kehadiran_itb+$kehadiran_m+$kehadiran_r+$kehadiran_iby+$kehadiran_lby;
-        if($total_absen==0){
-            $total_absen='0';
-        }else{
-            $total_absen=$total_absen;
+        if ($Data->year == 0) {
+            $years = '0';
+        } else {
+            $years = $Data->year;
+        }
+        if ($Data->month == 0) {
+            $months = '0';
+        } else {
+            $months = $Data->month;
+        }
+        if ($Data->day == 0) {
+            $days = '0';
+        } else {
+            $days = $Data->day;
         }
 
-        $potongan_dtpc_rupiah=$Data->potongan_dtpc_rupiah;
-        $rp_pot_jam=$potongan_iks_rupiah+$potongan_dtpc_rupiah;
-
-        $total_potongan= $total_bpjs_tk+$total_bpjs_ks+$iuran_serikat_rupiah+$iuran_koperasi;
-        if($total_potongan==0){
-            $total_potongan='0';
+        $kosong = " ";
+        $nol = '0';
+        $pot_hari_kerja = $kehadiran_itb + $kehadiran_m + $kehadiran_r;
+        $total_absen = $kehadiran_itb + $kehadiran_m + $kehadiran_r + $kehadiran_iby + $kehadiran_lby;
+        if ($total_absen == 0) {
+            $total_absen = '0';
+        } else {
+            $total_absen = $total_absen;
         }
-        if($total_upah_thp_rupiah_pembulatan==0){$total_upah_thp_rupiah_pembulatan='0';}
-        if($total_upah_thp_rupiah_employee==0){$total_upah_thp_rupiah_employee='0';}
-        if($total_upah_thp_rupiah_pecahan==0){$total_upah_thp_rupiah_pecahan='0';}
-        if($pembulatan==0){$pembulatan='0';}
-        if($years==0){$years='0';}
-        if($months==0){$months='0';}
-        if($days==0){$days='0';}
-        if($rp_pot_jam==0){$rp_pot_jam='0';}
-        if($pph21==0){$pph21='0';}
-        if($pot_hari_kerja==0){$pot_hari_kerja='0';}
-        $gapok=$upah_per_bulan+$tunjangan_karyawan_rupiah;
 
-        if( $total_kehadiran_net<=0 && $koreksi_upah_rupiah==0 && $total_lembur_rupiah==0 && ($total_bpjs_tk!=0 || $total_bpjs_ks!=0)){
-            $tunjangan_karyawan_rupiah='0';
-            $gapok=$upah_per_bulan;
-            $upah_neto_rupiah='0';
-            $upah_bruto_rupiah='0';
-            $pembulatan='0';
-            $total_upah_thp_rupiah_pembulatan='0';
-            $total_upah_thp_rupiah_employee='0';
-            $total_upah_thp_rupiah_pecahan='0';
+        $potongan_dtpc_rupiah = $Data->potongan_dtpc_rupiah;
+        $rp_pot_jam = $potongan_iks_rupiah + $potongan_dtpc_rupiah;
+
+        $total_potongan = $total_bpjs_tk + $total_bpjs_ks + $iuran_serikat_rupiah + $iuran_koperasi;
+        if ($total_potongan == 0) {
+            $total_potongan = '0';
         }
-        if($total_kehadiran_net==0){
-            $tunjangan_karyawan_rupiah='0';
-            $gapok=$upah_per_bulan;
-            $upah_neto_rupiah='0';
-            $upah_bruto_rupiah='0';
-            $pembulatan='0';
-            $total_upah_thp_rupiah_pembulatan='0';
-            $total_upah_thp_rupiah_employee='0';
-            $total_upah_thp_rupiah_pecahan='0';
+        if ($total_upah_thp_rupiah_pembulatan == 0) {
+            $total_upah_thp_rupiah_pembulatan = '0';
+        }
+        if ($total_upah_thp_rupiah_employee == 0) {
+            $total_upah_thp_rupiah_employee = '0';
+        }
+        if ($total_upah_thp_rupiah_pecahan == 0) {
+            $total_upah_thp_rupiah_pecahan = '0';
+        }
+        if ($pembulatan == 0) {
+            $pembulatan = '0';
+        }
+        if ($years == 0) {
+            $years = '0';
+        }
+        if ($months == 0) {
+            $months = '0';
+        }
+        if ($days == 0) {
+            $days = '0';
+        }
+        if ($rp_pot_jam == 0) {
+            $rp_pot_jam = '0';
+        }
+        if ($pph21 == 0) {
+            $pph21 = '0';
+        }
+        if ($pot_hari_kerja == 0) {
+            $pot_hari_kerja = '0';
+        }
+        $gapok = $upah_per_bulan + $tunjangan_karyawan_rupiah;
+
+        if ($total_kehadiran_net <= 0 && $koreksi_upah_rupiah == 0 && $total_lembur_rupiah == 0 && ($total_bpjs_tk != 0 || $total_bpjs_ks != 0)) {
+            $tunjangan_karyawan_rupiah = '0';
+            $gapok = $upah_per_bulan;
+            $upah_neto_rupiah = '0';
+            $upah_bruto_rupiah = '0';
+            $pembulatan = '0';
+            $total_upah_thp_rupiah_pembulatan = '0';
+            $total_upah_thp_rupiah_employee = '0';
+            $total_upah_thp_rupiah_pecahan = '0';
+        }
+        if ($total_kehadiran_net == 0) {
+            $tunjangan_karyawan_rupiah = '0';
+            $gapok = $upah_per_bulan;
+            $upah_neto_rupiah = '0';
+            $upah_bruto_rupiah = '0';
+            $pembulatan = '0';
+            $total_upah_thp_rupiah_pembulatan = '0';
+            $total_upah_thp_rupiah_employee = '0';
+            $total_upah_thp_rupiah_pecahan = '0';
         }
         return [
             $kosong,
@@ -419,7 +758,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
             $nama_department,
             $sub_dept_id,
             $nama_bagian,
-            Date::stringToExcel( $join_date),
+            Date::stringToExcel($join_date),
             // $join_date,
             $years,
             $months,
@@ -811,149 +1150,155 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
 
 
     public function registerEvents(): array
-{
-    $counter = 1;
+    {
+        $counter = 1;
 
-    return [
-        AfterSheet::class => function (AfterSheet $event) use (&$counter) {
-            $sheet = $event->sheet->getDelegate();
+        return [
+            AfterSheet::class => function (AfterSheet $event) use (&$counter) {
+                $sheet = $event->sheet->getDelegate();
 
-            // Judul atas
-            $sheet->setCellValue('A1', 'PT NIRWANA ALABARE GARMENT');
-            $sheet->getStyle('A1')->getFont()->setSize(18);
-            $sheet->setCellValue('A2', 'Rekap Perhitungan Payroll Karyawan');
-            $sheet->getStyle('A2')->getFont()->setSize(16);
+                // Judul atas
+                $sheet->setCellValue('A1', 'PT NIRWANA ALABARE GARMENT');
+                $sheet->getStyle('A1')->getFont()->setSize(18);
+                $sheet->setCellValue('A2', 'Rekap Perhitungan Payroll Karyawan');
+                $sheet->getStyle('A2')->getFont()->setSize(16);
 
-            if($this->periode_umk){
-                if($this->periode_umk=='2023-10'){
-                    $tanggal='26 - 31 desember 2023';
-                }else if($this->periode_umk=='2024-01'){
-                    $tanggal='01 - 25 januari 2023';
-                }
-            }else{
-                setlocale(LC_ALL, 'id-ID', 'id_ID');
-                $datePeriode = explode("-", $this->periode_payroll);
-                $tanggal = strtoupper(date("F", mktime(0, 0, 0, $datePeriode[1], 10))) . ' ' . $datePeriode[0];
-            }
-
-            $sheet->setCellValue('A3', 'Periode  : ' . $tanggal);
-            $sheet->getStyle('A3')->getFont()->setSize(14);
-            $sheet->mergeCells('A1:D1');
-            $sheet->mergeCells('A2:D2');
-            $sheet->mergeCells('A3:D3');
-
-            // Header kolom baris 5–6
-            $headers = [
-                1 => ['label' => 'NO'],
-                2 => ['label' => 'PERUSAHAAN'],
-                3 => ['label' => 'ID'],
-                4 => ['label' => 'NIP'],
-                5 => ['label' => 'Nama Karyawan'],
-                6 => ['label' => 'ID Department'],
-                7 => ['label' => 'Department'],
-                8 => ['label' => 'ID Bagian'],
-                9 => ['label' => 'Bagian'],
-                10 => ['label' => 'Join Date'],
-                11 => ['label' => 'Masa Kerja', 'children' => ['T','B','H']], // merge 3 kolom
-                14 => ['label' => 'Staff /non Staff'],
-                15 => ['label' => 'Aktif / Tidak Aktif'],
-                16 => ['label' => 'Bank'],
-                17 => ['label' => 'Rekening'],
-                18 => ['label' => 'JK'],
-                19 => ['label' => 'ST'],
-                20 => ['label' => ''], // kosong
-                21 => ['label' => 'IBY'],
-                22 => ['label' => 'ITB'],
-                23 => ['label' => 'M'],
-                24 => ['label' => 'DT'],
-                25 => ['label' => 'PC'],
-                26 => ['label' => 'DTPC'],
-                27 => ['label' => 'LBY'],
-                28 => ['label' => 'LSM'],
-                29 => ['label' => 'R'],
-                30 => ['label' => 'OK'],
-                31 => ['label' => 'Hari Kerja'],
-                32 => ['label' => 'Pot. Hari Kerja'],
-                33 => ['label' => 'Total Absensi'],
-                34 => ['label' => 'Jam Lembur 1'],
-                35 => ['label' => 'Jam Lembur 2'],
-                36 => ['label' => 'Jam Lembur 3'],
-                37 => ['label' => 'Jam Lembur 4'],
-                38 => ['label' => 'Datang Terlambat'],
-                39 => ['label' => 'Pulang Cepat'],
-                40 => ['label' => 'Ijin Keluar Sementara'],
-                41 => ['label' => 'Sisa Cuti Tahunan'],
-                42 => ['label' => ''], // kosong
-                43 => ['label' => 'Upah/ Hari'],
-                44 => ['label' => 'Upah/ Jam'],
-                45 => ['label' => ''], // kosong
-                46 => ['label' => 'Gaji Pokok'],
-                47 => ['label' => 'Seniority Allowance'],
-                48 => ['label' => 'Insentif (Kehadiran)'],
-                49 => ['label' => 'Insentif (Jabatan)'],
-                50 => ['label' => 'Rp Lembur 1'],
-                51 => ['label' => 'Rp Lembur 2'],
-                52 => ['label' => 'Rp Lembur 3'],
-                53 => ['label' => 'Rp Lembur 4'],
-                54 => ['label' => 'Lain- Lain (Koreksi + -)', 'children' => [
-                    '+ Upah','+ Lembur','+ Insentif','- Upah','- Lembur','- Insentif','- Piutang'
-                ]],
-                61 => ['label' => 'Rp. Cuti Tahunan'],
-                62 => ['label' => 'Rp. Potongan Hari Kerja'],
-                63 => ['label' => 'Rp Pot. Jam (DT,PC,IKS)'],
-                64 => ['label' => 'Bruto'],
-                65 => ['label' => 'PPH'],
-                66 => ['label' => 'Netto'],
-                67 => ['label' => 'Bpjamsostek'],
-                68 => ['label' => 'BPJS Kesehatan'],
-                69 => ['label' => 'Serikat'],
-                70 => ['label' => 'Koperasi'],
-                71 => ['label' => 'Total Potongan'],
-                72 => ['label' => 'Pembulatan'],
-                73 => ['label' => 'Jumlah'],
-            ];
-
-            foreach ($headers as $index => $item) {
-                $col = Coordinate::stringFromColumnIndex($index);
-                if (isset($item['children'])) {
-                    $childCount = count($item['children']);
-                    $lastCol = Coordinate::stringFromColumnIndex($index + $childCount - 1);
-                    $sheet->mergeCells("{$col}5:{$lastCol}5");
-                    $sheet->setCellValue("{$col}5", $item['label']);
-                    foreach ($item['children'] as $i => $child) {
-                        $c = Coordinate::stringFromColumnIndex($index + $i);
-                        $sheet->setCellValue("{$c}6", $child);
+                if ($this->periode_umk) {
+                    if ($this->periode_umk == '2023-10') {
+                        $tanggal = '26 - 31 desember 2023';
+                    } else if ($this->periode_umk == '2024-01') {
+                        $tanggal = '01 - 25 januari 2023';
                     }
                 } else {
-                    $sheet->mergeCells("{$col}5:{$col}6");
-                    $sheet->setCellValue("{$col}5", $item['label']);
+                    setlocale(LC_ALL, 'id-ID', 'id_ID');
+                    $datePeriode = explode("-", $this->periode_payroll);
+                    $tanggal = strtoupper(date("F", mktime(0, 0, 0, $datePeriode[1], 10))) . ' ' . $datePeriode[0];
                 }
-            }
 
-            // kasih styling header
-            $lastCol = Coordinate::stringFromColumnIndex(max(array_keys($headers)));
-            $sheet->getStyle("A5:{$lastCol}6")->applyFromArray([
-                'font' => ['bold' => true],
-                'alignment' => [
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                    'vertical'   => Alignment::VERTICAL_CENTER,
-                ],
-                'borders' => [
-                    'allBorders' => [
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                $sheet->setCellValue('A3', 'Periode  : ' . $tanggal);
+                $sheet->getStyle('A3')->getFont()->setSize(14);
+                $sheet->mergeCells('A1:D1');
+                $sheet->mergeCells('A2:D2');
+                $sheet->mergeCells('A3:D3');
+
+                // Header kolom baris 5–6
+                $headers = [
+                    1 => ['label' => 'NO'],
+                    2 => ['label' => 'PERUSAHAAN'],
+                    3 => ['label' => 'ID'],
+                    4 => ['label' => 'NIP'],
+                    5 => ['label' => 'Nama Karyawan'],
+                    6 => ['label' => 'ID Department'],
+                    7 => ['label' => 'Department'],
+                    8 => ['label' => 'ID Bagian'],
+                    9 => ['label' => 'Bagian'],
+                    10 => ['label' => 'Join Date'],
+                    11 => ['label' => 'Masa Kerja', 'children' => ['T', 'B', 'H']], // merge 3 kolom
+                    14 => ['label' => 'Staff /non Staff'],
+                    15 => ['label' => 'Aktif / Tidak Aktif'],
+                    16 => ['label' => 'Bank'],
+                    17 => ['label' => 'Rekening'],
+                    18 => ['label' => 'JK'],
+                    19 => ['label' => 'ST'],
+                    20 => ['label' => ''], // kosong
+                    21 => ['label' => 'IBY'],
+                    22 => ['label' => 'ITB'],
+                    23 => ['label' => 'M'],
+                    24 => ['label' => 'DT'],
+                    25 => ['label' => 'PC'],
+                    26 => ['label' => 'DTPC'],
+                    27 => ['label' => 'LBY'],
+                    28 => ['label' => 'LSM'],
+                    29 => ['label' => 'R'],
+                    30 => ['label' => 'OK'],
+                    31 => ['label' => 'Hari Kerja'],
+                    32 => ['label' => 'Pot. Hari Kerja'],
+                    33 => ['label' => 'Total Absensi'],
+                    34 => ['label' => 'Jam Lembur 1'],
+                    35 => ['label' => 'Jam Lembur 2'],
+                    36 => ['label' => 'Jam Lembur 3'],
+                    37 => ['label' => 'Jam Lembur 4'],
+                    38 => ['label' => 'Datang Terlambat'],
+                    39 => ['label' => 'Pulang Cepat'],
+                    40 => ['label' => 'Ijin Keluar Sementara'],
+                    41 => ['label' => 'Sisa Cuti Tahunan'],
+                    42 => ['label' => ''], // kosong
+                    43 => ['label' => 'Upah/ Hari'],
+                    44 => ['label' => 'Upah/ Jam'],
+                    45 => ['label' => ''], // kosong
+                    46 => ['label' => 'Gaji Pokok'],
+                    47 => ['label' => 'Seniority Allowance'],
+                    48 => ['label' => 'Insentif (Kehadiran)'],
+                    49 => ['label' => 'Insentif (Jabatan)'],
+                    50 => ['label' => 'Rp Lembur 1'],
+                    51 => ['label' => 'Rp Lembur 2'],
+                    52 => ['label' => 'Rp Lembur 3'],
+                    53 => ['label' => 'Rp Lembur 4'],
+                    54 => ['label' => 'Lain- Lain (Koreksi + -)', 'children' => [
+                        '+ Upah',
+                        '+ Lembur',
+                        '+ Insentif',
+                        '- Upah',
+                        '- Lembur',
+                        '- Insentif',
+                        '- Piutang'
+                    ]],
+                    61 => ['label' => 'Rp. Cuti Tahunan'],
+                    62 => ['label' => 'Rp. Potongan Hari Kerja'],
+                    63 => ['label' => 'Rp Pot. Jam (DT,PC,IKS)'],
+                    64 => ['label' => 'Bruto'],
+                    65 => ['label' => 'PPH'],
+                    66 => ['label' => 'Netto'],
+                    67 => ['label' => 'Bpjamsostek'],
+                    68 => ['label' => 'BPJS Kesehatan'],
+                    69 => ['label' => 'Serikat'],
+                    70 => ['label' => 'Koperasi'],
+                    71 => ['label' => 'Total Potongan'],
+                    72 => ['label' => 'Pembulatan'],
+                    73 => ['label' => 'Jumlah'],
+                ];
+
+                foreach ($headers as $index => $item) {
+                    $col = Coordinate::stringFromColumnIndex($index);
+                    if (isset($item['children'])) {
+                        $childCount = count($item['children']);
+                        $lastCol = Coordinate::stringFromColumnIndex($index + $childCount - 1);
+                        $sheet->mergeCells("{$col}5:{$lastCol}5");
+                        $sheet->setCellValue("{$col}5", $item['label']);
+                        foreach ($item['children'] as $i => $child) {
+                            $c = Coordinate::stringFromColumnIndex($index + $i);
+                            $sheet->setCellValue("{$c}6", $child);
+                        }
+                    } else {
+                        $sheet->mergeCells("{$col}5:{$col}6");
+                        $sheet->setCellValue("{$col}5", $item['label']);
+                    }
+                }
+
+                // kasih styling header
+                $lastCol = Coordinate::stringFromColumnIndex(max(array_keys($headers)));
+                $sheet->getStyle("A5:{$lastCol}6")->applyFromArray([
+                    'font' => ['bold' => true],
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_CENTER,
+                        'vertical'   => Alignment::VERTICAL_CENTER,
                     ],
-                ],
-            ]);
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                        ],
+                    ],
+                ]);
 
-            // isi nomor urut di kolom A
-            $highestRow = $event->sheet->getHighestRow();
-            for ($row = 7; $row <= $highestRow; $row++) {
-                $event->sheet->setCellValue("A{$row}", $counter);
-                $counter++;
-            }
-        },
-    ];
-}
+                // isi nomor urut di kolom A
+                $highestRow = $event->sheet->getHighestRow();
+                for ($row = 7; $row <= $highestRow; $row++) {
+                    $event->sheet->setCellValue("A{$row}", $counter);
+                    $counter++;
+                }
+            },
+        ];
+    }
 
     public function properties(): array
     {
