@@ -466,12 +466,12 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         } else {
             $total_potongan_jam_rupiah = $Data->total_potongan_jam_rupiah;
         }
-        // if ($Data->potongan_kehadiran_rupiah == 0) {
-        //     $potongan_kehadiran_rupiah = '0';
-        // } else {
-        //     $potongan_kehadiran_rupiah = $Data->potongan_kehadiran_rupiah;
-        // }
-        $potongan_kehadiran_rupiah = (int) ($Data->potongan_kehadiran_rupiah ?: 0);
+        if ($Data->potongan_kehadiran_rupiah == 0 || $Data->potongan_kehadiran_rupiah == '') {
+            $potongan_kehadiran_rupiah = '0';
+        } else {
+            $potongan_kehadiran_rupiah = $Data->potongan_kehadiran_rupiah;
+        }
+        
         if ($Data->upah_bruto_rupiah == 0) {
             $upah_bruto_rupiah = '0';
         } else {
