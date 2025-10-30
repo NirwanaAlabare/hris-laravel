@@ -5086,7 +5086,7 @@ class ProsesPayrollController extends AdminBaseController
             }
         }
         $user = Auth::guard('admin')->user();
-        $receiver_email = ['fadli', 'mega@ptnag.com', 'rudy@ptnag.com', 'admin_01'];
+        $receiver_email = ['dev_hris', 'mega@ptnag.com', 'rudy@ptnag.com', 'admin_01'];
         $type = 'REKAP LEMBUR';
 
         // for ($i = 0; $i < count($receiver_email); $i++) {

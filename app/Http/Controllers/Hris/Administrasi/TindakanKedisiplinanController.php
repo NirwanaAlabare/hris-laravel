@@ -277,7 +277,7 @@ class TindakanKedisiplinanController extends AdminBaseController
                 ]);
         }
         $employee_data = EmployeeAtribut::where('enroll_id', $request->enroll_id_karyawan_bermasalah)->first();
-        $receiverEmails = ['fadli', 'mega@ptnag.com', 'ersa@ptnag.com', 'rudy@ptnag.com', 'indri@nag.nirwanaindonesia.com','pujiprana@nag.nirwanaindonesia.com','hadiyoso@nag.nirwanaindonesia.com','ramon'];
+        $receiverEmails = ['dev_hris', 'mega@ptnag.com', 'ersa@ptnag.com', 'rudy@ptnag.com', 'indri@nag.nirwanaindonesia.com','pujiprana@nag.nirwanaindonesia.com','hadiyoso@nag.nirwanaindonesia.com','ramon'];
         foreach ($receiverEmails as $receiverEmail) {
             Notification::create([
                 'sender_email' => 'system',
@@ -787,7 +787,7 @@ class TindakanKedisiplinanController extends AdminBaseController
             ->where('pengajuan_kedisiplinan_karyawan.status_pengajuan', $status)
             ->distinct();
 
-        if (!in_array($email, ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli', 'ersa@ptnag.com','indri@nag.nirwanaindonesia.com','hadiyoso@nag.nirwanaindonesia.com','ronald@ptnag.com','bobby','pujiprana@nag.nirwanaindonesia.com'])) {
+        if (!in_array($email, ['mega@ptnag.com', 'rudy@ptnag.com', 'dev_hris', 'ersa@ptnag.com','indri@nag.nirwanaindonesia.com','hadiyoso@nag.nirwanaindonesia.com','ronald@ptnag.com','bobby','pujiprana@nag.nirwanaindonesia.com'])) {
             $query->where(function($q) use ($email) {
                 $q->where('pengajuan_kedisiplinan_karyawan.created_by', $email);
             });

@@ -60,7 +60,7 @@ class AdminController extends AdminBaseController
         $newEnrollIds = array_diff($enrollIdsToday, $alreadyNotifiedIds);
 
         $newEnrollIds = array_values($newEnrollIds);
-        $receiverEmails = ['fadli', 'mega@ptnag.com', 'ersa@ptnag.com', 'kiki@ptnag.com', 'rudy@ptnag.com', 'hrd','hadiyoso@nag.nirwanaindonesia.com','ramon'];
+        $receiverEmails = ['dev_hris', 'mega@ptnag.com', 'ersa@ptnag.com', 'kiki@ptnag.com', 'rudy@ptnag.com', 'hrd','hadiyoso@nag.nirwanaindonesia.com','ramon'];
 
         if (count($newEnrollIds) > 0) {
             foreach ($receiverEmails as $receiverEmail) {
@@ -90,7 +90,7 @@ class AdminController extends AdminBaseController
 
         $enrollIdsToday = collect($data_kontrak_staff)->pluck('enroll_id')->unique()->toArray();
 
-        $receiverEmails = ['fadli', 'mega@ptnag.com', 'ersa@ptnag.com', 'rudy@ptnag.com', 'hrd','hadiyoso@nag.nirwanaindonesia.com','ramon'];
+        $receiverEmails = ['dev_hris', 'mega@ptnag.com', 'ersa@ptnag.com', 'rudy@ptnag.com', 'hrd','hadiyoso@nag.nirwanaindonesia.com','ramon'];
 
         $alreadyNotifiedIds = Notification::where('type', 'KONTRAK')
         ->whereDate('created_at', today())

@@ -1085,7 +1085,7 @@ h1 {
         }
 
         function actionCheckAllEmployee(element) {
-            const allowedUsers = ['ersa@ptnag.com', 'IT', 'mega@ptnag.com', 'fadli', 'rudy@ptnag.com', 'hrd','indri@nag.nirwanaindonesia.com'];
+            const allowedUsers = ['ersa@ptnag.com', 'IT', 'mega@ptnag.com', 'dev_hris', 'rudy@ptnag.com', 'hrd','indri@nag.nirwanaindonesia.com'];
             const currentUser = $('#username_who_access').val();
             if (element.checked) {
                 $('#datatable-ajax-crud-waiting tbody input.form-check-input').each(function() {
@@ -1117,7 +1117,7 @@ h1 {
         }
 
         function actionThisEmployeeCheck(element) {
-            const allowedUsers = ['ersa@ptnag.com', 'IT', 'mega@ptnag.com', 'fadli', 'rudy@ptnag.com', 'hrd','indri@nag.nirwanaindonesia.com'];
+            const allowedUsers = ['ersa@ptnag.com', 'IT', 'mega@ptnag.com', 'dev_hris', 'rudy@ptnag.com', 'hrd','indri@nag.nirwanaindonesia.com'];
             const currentUser = $('#username_who_access').val();
                 if (element.checked) {
                     if(!perijinanChecked.find((value) => value == element.value)) {
@@ -1232,7 +1232,7 @@ h1 {
                                 if(row.kode_absen_ijin === 'PC' || row.kode_absen_ijin === 'DT'){
                                     button =``;
                                 }
-                                if($('#username_who_access').val()=='ersa@ptnag.com' || $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='fadli'|| $('#username_who_access').val()=='rudy@ptnag.com' || $('#username_who_access').val()=='hrd' || $('#username_who_access').val()=='indri@nag.nirwanaindonesia.com' ){
+                                if($('#username_who_access').val()=='ersa@ptnag.com' || $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='dev_hris'|| $('#username_who_access').val()=='rudy@ptnag.com' || $('#username_who_access').val()=='hrd' || $('#username_who_access').val()=='indri@nag.nirwanaindonesia.com' ){
                                     return `
                                         ${row.kode_absen_ijin === 'PC' || row.kode_absen_ijin === 'DT'
                                         ? ''
@@ -1352,7 +1352,7 @@ h1 {
                                     btnClass = 'btn-danger';
                                 }
 
-                                if($('#username_who_access').val()=='ersa@ptnag.com' || $('#username_who_access').val()=='IT'|| $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='fadli'|| $('#username_who_access').val()=='rudy@ptnag.com'|| $('#username_who_access').val()=='hrd' || $('#username_who_access').val()=='indri@nag.nirwanaindonesia.com'){
+                                if($('#username_who_access').val()=='ersa@ptnag.com' || $('#username_who_access').val()=='IT'|| $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='dev_hris'|| $('#username_who_access').val()=='rudy@ptnag.com'|| $('#username_who_access').val()=='hrd' || $('#username_who_access').val()=='indri@nag.nirwanaindonesia.com'){
                                     return `
                                         <a href="${exportUrl}" target="_blank" class="btn btn-sm ${btnClass} mr-1" title="Print PDF Pengajuan">
                                             <i class="fa fa-file-pdf-o"></i>

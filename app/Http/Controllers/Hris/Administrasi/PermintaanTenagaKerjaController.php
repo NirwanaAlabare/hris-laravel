@@ -243,7 +243,7 @@ class PermintaanTenagaKerjaController extends AdminBaseController
         ]);
     }
 
-    $receiverEmails = ['fadli', 'mega@ptnag.com', 'ersa@ptnag.com', 'rudy@ptnag.com', 'hrd','hadiyoso@nag.nirwanaindonesia.com','ramon', 'ronald@ptnag.com', 'bobby', 'pujiprana@nag.nirwanaindonesia.com' ,'indri@nag.nirwanaindonesia.com'];
+    $receiverEmails = ['dev_hris', 'mega@ptnag.com', 'ersa@ptnag.com', 'rudy@ptnag.com', 'hrd','hadiyoso@nag.nirwanaindonesia.com','ramon', 'ronald@ptnag.com', 'bobby', 'pujiprana@nag.nirwanaindonesia.com' ,'indri@nag.nirwanaindonesia.com'];
     foreach ($receiverEmails as $receiverEmail) {
         Notification::create([
             'sender_email' => $logged_admin->email,
@@ -568,7 +568,7 @@ class PermintaanTenagaKerjaController extends AdminBaseController
         if (!in_array($email, [
             'mega@ptnag.com',
             'rudy@ptnag.com',
-            'fadli',
+            'dev_hris',
             'ersa@ptnag.com',
             'indri@nag.nirwanaindonesia.com',
             'hadiyoso@nag.nirwanaindonesia.com',

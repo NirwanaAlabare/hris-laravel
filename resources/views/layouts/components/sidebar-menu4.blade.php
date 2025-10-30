@@ -63,7 +63,7 @@
             </ul>
         </li>
     @php
-    if (($loggedAdmin->name == "HR") || ($loggedAdmin->name == "HRD")|| ($loggedAdmin->name == "GA") || ($loggedAdmin->email == 'mega@ptnag.com') || ($loggedAdmin->email == 'rudy@ptnag.com') || ($loggedAdmin->email == 'fadli') || ($loggedAdmin->email == 'indri@nag.nirwanaindonesia.com') || ($loggedAdmin->email == 'ersa@ptnag.com')) {
+    if (($loggedAdmin->name == "HR") || ($loggedAdmin->name == "HRD")|| ($loggedAdmin->name == "GA") || ($loggedAdmin->email == 'mega@ptnag.com') || ($loggedAdmin->email == 'rudy@ptnag.com') || ($loggedAdmin->email == 'dev_hris') || ($loggedAdmin->email == 'indri@nag.nirwanaindonesia.com') || ($loggedAdmin->email == 'ersa@ptnag.com')) {
         @endphp
     <li class="mt-4">
         <a class="btn btn-app w-100" style="background-color: #16a34a" data-toggle="tooltip" title="Export Rekap Overtime" href="{{ route('anggaran_makan.export_excel_overtime_recap2') }}"

@@ -149,7 +149,7 @@
                                 </select>
                             </div>
                         </div>
-                        @if($loggedAdmin->email=='mega@ptnag.com'  || $loggedAdmin->email=='rudy@ptnag.com' || $loggedAdmin->email=='fadli' || $loggedAdmin->email == 'ersa@ptnag.com' || $loggedAdmin->email=='willy@ptnag.com'  || $loggedAdmin->email=='alex.herdian@ptnag.com')
+                        @if($loggedAdmin->email=='mega@ptnag.com'  || $loggedAdmin->email=='rudy@ptnag.com' || $loggedAdmin->email=='dev_hris' || $loggedAdmin->email == 'ersa@ptnag.com' || $loggedAdmin->email=='willy@ptnag.com'  || $loggedAdmin->email=='alex.herdian@ptnag.com')
                         <div class="row text-white pt-4">
                             <div class="col-12">
                                 <a id="BtnProsesPayroll2" class="btn btn-app btn-sm btn-primary text-white BtnProsesPayroll2"><span><i class="fa fa-download"></i></span>PROSES REKAP LEMBUR</a>
@@ -213,7 +213,7 @@
                     </div>
                     <div class="row pt-2 text-white">
                         <div class="col-auto">
-                            @if($loggedAdmin->email=='mega@ptnag.com'  || $loggedAdmin->email=='rudy@ptnag.com' || $loggedAdmin->email=='fadli' || $loggedAdmin->email == 'ersa@ptnag.com')
+                            @if($loggedAdmin->email=='mega@ptnag.com'  || $loggedAdmin->email=='rudy@ptnag.com' || $loggedAdmin->email=='dev_hris' || $loggedAdmin->email == 'ersa@ptnag.com')
                                 <button id="BtnProsesPayroll4" type="button" class="btn btn-app btn-primary text-white"><span><i class="fa fa-download"></i></span> PROSES PAYROLL HARIAN</button>
                             @endif
                             @if($loggedAdmin->role_user=='superadmin')

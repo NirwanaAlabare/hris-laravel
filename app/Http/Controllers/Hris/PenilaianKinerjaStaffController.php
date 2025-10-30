@@ -82,7 +82,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
     public function get_employee_contract_staff(){
         $loggedAdmin = Auth::guard('admin')->user();
         $loggedEmail = $loggedAdmin->email;
-        $email = ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli'];
+        $email = ['mega@ptnag.com', 'rudy@ptnag.com', 'dev_hris'];
         $department_id = EmployeeAtribut::where('enroll_id', $loggedAdmin->enroll_id)->value('department_id');
         $inSearchVariable='';
         $inEnrollId='';
@@ -716,7 +716,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
     public function download_excel_penilaian_kinerja_nonstaff(){
         $loggedAdmin = Auth::guard('admin')->user();
         $loggedEmail = $loggedAdmin->email;
-        $email = ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli'];
+        $email = ['mega@ptnag.com', 'rudy@ptnag.com', 'dev_hris'];
 
         $inEnrollId='';
         $inStatusAktif='';
@@ -914,7 +914,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
     public function download_excel_rencana_adjustment_grade(){
         $loggedAdmin = Auth::guard('admin')->user();
         $loggedEmail = $loggedAdmin->email;
-        $email = ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli'];
+        $email = ['mega@ptnag.com', 'rudy@ptnag.com', 'dev_hris'];
 
         $inEnrollId='';
         $inStatusAktif='';
@@ -1065,7 +1065,7 @@ class PenilaianKinerjaStaffController extends AdminBaseController
     public function download_excel_rekap_penilaian(){
         $loggedAdmin = Auth::guard('admin')->user();
         $loggedEmail = $loggedAdmin->email;
-        $email = ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli'];
+        $email = ['mega@ptnag.com', 'rudy@ptnag.com', 'dev_hris'];
         $inEnrollId='';
         $inStatusAktif='';
         $inStatusStaff='AND z.status_staff = "STAFF"';

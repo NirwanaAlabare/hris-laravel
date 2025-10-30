@@ -745,7 +745,7 @@ h1 {
                                         <strong><span id="edit_employee_jabatan_bermasalah"></span></strong>
                                     </div>
                                 </div>
-                                @if ($user === 'fadli' || $user === 'mega@ptnag.com' || $user === 'rudy@ptnag.com' || $user === 'ersa@ptnag.com' || $user === 'indri@nag.nirwanaindonesia.com' || $user === 'pujiprana@nag.nirwanaindonesia.com')
+                                @if ($user === 'dev_hris' || $user === 'mega@ptnag.com' || $user === 'rudy@ptnag.com' || $user === 'ersa@ptnag.com' || $user === 'indri@nag.nirwanaindonesia.com' || $user === 'pujiprana@nag.nirwanaindonesia.com')
                                  <div id="section-tindakan-pendisiplinan" class="col-md-12" style="margin-top: 10px; margin-bottom: 10px; padding-top: 10px;">
                                     <h5 style="font-weight: bold;">Untuk diberikan tindakan pendisiplinan dalam bentuk :</h5>
                                 </div>
@@ -1261,7 +1261,7 @@ h1 {
                                 const uuidNo = encodeURIComponent(row.id);
                                 let exportUrl;
                                 let btnClass;
-                                const allowedEmails = ['mega@ptnag.com', 'fadli', 'rudy@ptnag.com','indri@nag.nirwanaindonesia.com','pujiprana@nag.nirwanaindonesia.com','ersa@ptnag.com','ronald@ptnag.com','bobby']; // daftarkan yang diizinkan
+                                const allowedEmails = ['mega@ptnag.com', 'dev_hris', 'rudy@ptnag.com','indri@nag.nirwanaindonesia.com','pujiprana@nag.nirwanaindonesia.com','ersa@ptnag.com','ronald@ptnag.com','bobby']; // daftarkan yang diizinkan
                                 const isAllowed = allowedEmails.includes(user_email);
                                     return `
                                          ${isAllowed ? `
@@ -1320,7 +1320,7 @@ h1 {
                                 const uuidNo = encodeURIComponent(row.id);
                                 let exportUrl;
                                 let btnClass;
-                                const allowedEmails = ['mega@ptnag.com', 'fadli', 'rudy@ptnag.com','indri@nag.nirwanaindonesia.com','pujiprana@nag.nirwanaindonesia.com','ersa@ptnag.com','ronald@ptnag.com','bobby']; // daftarkan yang diizinkan
+                                const allowedEmails = ['mega@ptnag.com', 'dev_hris', 'rudy@ptnag.com','indri@nag.nirwanaindonesia.com','pujiprana@nag.nirwanaindonesia.com','ersa@ptnag.com','ronald@ptnag.com','bobby']; // daftarkan yang diizinkan
                                 const isAllowed = allowedEmails.includes(user_email);
                                     return `
                                         <button class="btn btn-sm mr-1 btn-danger" onclick="printPengajuanPDF('${row.id}')" data-id="${row.id}" title="Print">
@@ -1595,7 +1595,7 @@ h1 {
                     swal("", "Harap isi karyawan bermasalah terlebih dahulu!", "info");
                     return;
                 }
-                if(!tindakan_pendisiplinan_edit && user_email === 'fadli' && user_email === 'mega@ptnag.com' && user_email === 'rudy@ptnag.com' && user_email === 'ersa@ptnag.com' && user_email === 'indri@nag.nirwanaindonesia.com' && user_email === 'pujiprana@nag.nirwanaindonesia.com'){
+                if(!tindakan_pendisiplinan_edit && user_email === 'dev_hris' && user_email === 'mega@ptnag.com' && user_email === 'rudy@ptnag.com' && user_email === 'ersa@ptnag.com' && user_email === 'indri@nag.nirwanaindonesia.com' && user_email === 'pujiprana@nag.nirwanaindonesia.com'){
                     swal("", "Harap isi permasalahan terlebih dahulu!", "info");
                     return;
                 }

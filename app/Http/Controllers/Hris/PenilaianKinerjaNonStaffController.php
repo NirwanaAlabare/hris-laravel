@@ -34,7 +34,7 @@ class PenilaianKinerjaNonStaffController extends AdminBaseController
 
     public function index(){
         $user = Auth::guard('admin')->user();
-        $email_allowed = ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli'];
+        $email_allowed = ['mega@ptnag.com', 'rudy@ptnag.com', 'dev_hris'];
         $selectEmployee =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')->groupby('enroll_id')->orderby('employee_name', 'asc')->get();
         $selectNoKTP = EmployeeAtribut::selectRaw('nomor_ktp')->groupby('nomor_ktp')->orderby('nomor_ktp', 'asc')->get();
         $department =DepartmentAll::select('department_name')->distinct()->orderBy('department_id')->groupBy('department_id')->get();
@@ -46,7 +46,7 @@ class PenilaianKinerjaNonStaffController extends AdminBaseController
     public function get_employee_contract_nonstaff(){
         $loggedAdmin = Auth::guard('admin')->user();
         $loggedEmail = $loggedAdmin->email;
-        $email = ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli'];
+        $email = ['mega@ptnag.com', 'rudy@ptnag.com', 'dev_hris'];
         $department_id = EmployeeAtribut::where('enroll_id', $loggedAdmin->enroll_id)->value('department_id');
         $inSearchVariable='';
         $inEnrollId='';
@@ -126,7 +126,7 @@ class PenilaianKinerjaNonStaffController extends AdminBaseController
     public function download_excel_penilaian_kinerja_nonstaff(){
         $loggedAdmin = Auth::guard('admin')->user();
         $loggedEmail = $loggedAdmin->email;
-        $email = ['mega@ptnag.com', 'rudy@ptnag.com', 'fadli'];
+        $email = ['mega@ptnag.com', 'rudy@ptnag.com', 'dev_hris'];
         $department_id = EmployeeAtribut::where('enroll_id', $loggedAdmin->enroll_id)->value('department_id');
 
         $inSearchVariable='';

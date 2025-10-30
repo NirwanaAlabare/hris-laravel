@@ -82,8 +82,8 @@
             $isSuperadmin = $loggedAdmin->role_user == "superadmin";
             $isAlex = $email == 'alex.herdian@ptnag.com';
             $isReza = $email == 'reza';
-            $isFadli = $email == 'fadli';
-            $showPayrollMenu = $isSuperadmin || $isAlex || $isReza || $isFadli;
+            $isDevHris = $email == 'dev_hris';
+            $showPayrollMenu = $isSuperadmin || $isAlex || $isReza || $isDevHris;
         @endphp
 
         @if ($showPayrollMenu)
@@ -107,7 +107,7 @@
                         <li><a class="slide-item" href="{{ route('hris.dataclosingpayroll.index') }}"><span> Closing Payroll</span></a></li>
                     @endif --}}
 
-                    {{-- @if ($isReza || $isFadli)
+                    {{-- @if ($isReza || $isDevHris)
                         <li><a class="slide-item" href="{{ route('hris.aktifitasperubahan.index') }}"><span> Aktifitas Perubahan</span></a></li>
                     @endif --}}
                 </ul>

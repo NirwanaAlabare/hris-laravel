@@ -418,7 +418,7 @@ class DataAbsenPerijinanController extends AdminBaseController
         info('Update Permohonan Perizinan by ' . $email);
         info('Nomor Form Perizinan : ' . request()->nomor_form_perizinan);
 
-        $allowedEmails = ['fadli', 'mega@ptnag.com', 'hrd', 'ersa@ptnag.com', 'rudy@ptnag.com','indri@nag.nirwanaindonesia.com'];
+        $allowedEmails = ['dev_hris', 'mega@ptnag.com', 'hrd', 'ersa@ptnag.com', 'rudy@ptnag.com','indri@nag.nirwanaindonesia.com'];
 
         if (in_array($email, $allowedEmails)) {
             $absen = DataAbsenPerijinan::where('uuid', request()->uuid)->first();
@@ -726,7 +726,7 @@ class DataAbsenPerijinanController extends AdminBaseController
         info('Update Permohonan Perizinan by ' . $email);
         info('Nomor Form Perizinan : ' . request()->nomor_form_perizinan);
 
-        $allowedEmails = ['fadli', 'mega@ptnag.com', 'hrd', 'ersa@ptnag.com', 'rudy@ptnag.com','indri@nag.nirwanaindonesia.com'];
+        $allowedEmails = ['dev_hris', 'mega@ptnag.com', 'hrd', 'ersa@ptnag.com', 'rudy@ptnag.com','indri@nag.nirwanaindonesia.com'];
 
         if (in_array($email, $allowedEmails)) {
             $absen = DataAbsenPerijinan::where('uuid', request()->uuid)->first();

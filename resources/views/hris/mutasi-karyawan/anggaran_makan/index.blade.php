@@ -40,7 +40,7 @@
                         <i class="fa fa-plus"></i>
                         Baru
                     </button>
-                    @if (Auth::guard('admin')->user()->email == 'indri@nag.nirwanaindonesia.com' || Auth::guard('admin')->user()->email =='ersa@ptnag.com' || Auth::guard('admin')->user()->email =='mega@ptnag.com' || Auth::guard('admin')->user()->email =='rudy@ptnag.com' || Auth::guard('admin')->user()->email =='fadli' || Auth::guard('admin')->user()->email =='GA'  || Auth::guard('admin')->user()->email =='tita')
+                    @if (Auth::guard('admin')->user()->email == 'indri@nag.nirwanaindonesia.com' || Auth::guard('admin')->user()->email =='ersa@ptnag.com' || Auth::guard('admin')->user()->email =='mega@ptnag.com' || Auth::guard('admin')->user()->email =='rudy@ptnag.com' || Auth::guard('admin')->user()->email =='dev_hris' || Auth::guard('admin')->user()->email =='GA'  || Auth::guard('admin')->user()->email =='tita')
                     <a onclick="export_excel_konsumsi()" class="btn btn-outline-success position-relative">
                         <i class="fa fa-file-excel"></i>
                         Estimasi Anggaran Makan
@@ -282,7 +282,7 @@
 
             // Set nilai ke input
             $('#tgl-awal-display').val(formattedDate);
-            if(logged_user!='INDRI FEBRIANTY' && logged_user!='GA' && logged_user!='Ersa Regina Nugraha' && logged_user!='rudy' && logged_user!='Gaga' && logged_user!='fadli'){
+            if(logged_user!='INDRI FEBRIANTY' && logged_user!='GA' && logged_user!='Ersa Regina Nugraha' && logged_user!='rudy' && logged_user!='Gaga' && logged_user!='dev_hris'){
                 if(stringSelectDate<stringCurrentDate){
                     $('#btn_new').attr('disabled','disabled');
                 }else if(stringCurrentDate==stringSelectDate){
@@ -451,7 +451,7 @@
                 {
                     targets: [6],
                     render: (data, type, row, meta) => {
-                        if(logged_user!='HR' && logged_user!='GA' && logged_user!='IT' && logged_user!='rudy' && logged_user!='Gaga' && logged_user!='fadli' && logged_user!='Ersa Regina Nugraha' && logged_user!='tita'){
+                        if(logged_user!='HR' && logged_user!='GA' && logged_user!='IT' && logged_user!='rudy' && logged_user!='Gaga' && logged_user!='dev_hris' && logged_user!='Ersa Regina Nugraha' && logged_user!='tita'){
                             if(stringSelectDate<stringCurrentDate){
                                 return `
                                 <button class='btn btn-warning btn-sm' disabled onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#editEstimationModal">
@@ -496,7 +496,7 @@
                                     <i class='fa fa-trash'></i>
                                 </button>`
                         }
-                        if((currentdate.getHours()>13 || selected_tanggal<currentdate)&&(logged_user!='HR' && logged_user!='GA' && logged_user!='IT' && logged_user!='rudy' && logged_user!='Gaga' && logged_user!='fadli' && logged_user!='Ersa Regina Nugraha' && logged_user!='tita')){
+                        if((currentdate.getHours()>13 || selected_tanggal<currentdate)&&(logged_user!='HR' && logged_user!='GA' && logged_user!='IT' && logged_user!='rudy' && logged_user!='Gaga' && logged_user!='dev_hris' && logged_user!='Ersa Regina Nugraha' && logged_user!='tita')){
                             return `
                                 <button class='btn btn-warning btn-sm' disabled onclick=edit_estimasi(`+row.id+`) data-toggle="modal" data-target="#editEstimationModal">
                                     <i class='fa fa-edit'></i>
@@ -521,7 +521,7 @@
             var selected_tanggals=$('#tgl-awal-display').val();
             var select_tanggal=new Date(selected_tanggals.substr(6,4)+'-'+selected_tanggals.substr(3,2)+'-'+selected_tanggals.substr(0,2));
             var stringSelectedDate=select_tanggal.getDate()+' '+select_tanggal.toLocaleString('default', { month: 'long' })+' '+select_tanggal.getFullYear();
-            if(logged_user!='HR' && logged_user!='GA' && logged_user!='IT' && logged_user!='rudy' && logged_user!='Gaga' && logged_user!='fadli' && logged_user!='Ersa Regina Nugraha' && logged_user!='tita'){
+            if(logged_user!='HR' && logged_user!='GA' && logged_user!='IT' && logged_user!='rudy' && logged_user!='Gaga' && logged_user!='dev_hris' && logged_user!='Ersa Regina Nugraha' && logged_user!='tita'){
                 if(stringSelectedDate<stringCurrentDate){
                     $('#btn_new').attr('disabled','disabled');
                 }else if(stringSelectedDate==stringCurrentDate){

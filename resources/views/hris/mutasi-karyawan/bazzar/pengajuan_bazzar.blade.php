@@ -583,7 +583,7 @@ function toggleOutside(source) {
             });
 
 
-            if ($('#username_who_access').val() === 'mega@ptnag.com' || $('#username_who_access').val() === 'rudy@ptnag.com' || $('#username_who_access').val() === 'fadli' || $('#username_who_access').val() === 'willy@ptnag.com') {
+            if ($('#username_who_access').val() === 'mega@ptnag.com' || $('#username_who_access').val() === 'rudy@ptnag.com' || $('#username_who_access').val() === 'dev_hris' || $('#username_who_access').val() === 'willy@ptnag.com') {
                         $(".btn_export").show();
                     } else {
                         $(".btn_export").hide();
@@ -624,7 +624,7 @@ function toggleOutside(source) {
                             </a>
                     `;
 
-                    if (username === 'mega@ptnag.com' || username === 'rudy@ptnag.com' || username === 'fadli' || username === 'willy@ptnag.com') {
+                    if (username === 'mega@ptnag.com' || username === 'rudy@ptnag.com' || username === 'dev_hris' || username === 'willy@ptnag.com') {
                         buttons += `
                             <a class="btn btn-gray btn-sm mt-1" style="color:white;" data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onClick="export_voucher_bagian('${row.sub_dept_id}','${row.tanggal_pengajuan}')">
                                 <i class="fa fa-print" aria-hidden="true"></i>
@@ -644,7 +644,7 @@ function toggleOutside(source) {
                                     </a>`;
                     }
 
-                    if(isApprove && (username === 'mega@ptnag.com' || username === 'rudy@ptnag.com' || username === 'fadli' || username === 'willy@ptnag.com')){
+                    if(isApprove && (username === 'mega@ptnag.com' || username === 'rudy@ptnag.com' || username === 'dev_hris' || username === 'willy@ptnag.com')){
                         buttons += `
                              <a class='btn btn-warning btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_pengajuan_bagian('${row.sub_dept_id}','${row.status}','${row.tanggal_pengajuan}')">
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
@@ -684,7 +684,7 @@ function toggleOutside(source) {
                 },
             ]);
 
-            if (isApprove && (username === 'mega@ptnag.com' || username === 'rudy@ptnag.com' || username === 'fadli' || username === 'willy@ptnag.com')) {
+            if (isApprove && (username === 'mega@ptnag.com' || username === 'rudy@ptnag.com' || username === 'dev_hris' || username === 'willy@ptnag.com')) {
                 columns.push({
                     title: 'Print',
                     data: 'id',
@@ -725,7 +725,7 @@ function toggleOutside(source) {
                 },
                 columns: columns,
                 initComplete: function(settings, json) {
-                    if ($('#username_who_access').val() === 'mega@ptnag.com' || $('#username_who_access').val() === 'rudy@ptnag.com' || $('#username_who_access').val() === 'fadli' || $('#username_who_access').val() === 'willy@ptnag.com') {
+                    if ($('#username_who_access').val() === 'mega@ptnag.com' || $('#username_who_access').val() === 'rudy@ptnag.com' || $('#username_who_access').val() === 'dev_hris' || $('#username_who_access').val() === 'willy@ptnag.com') {
                         $(".BtnVerifikasiOt").show();
                     } else {
                         $(".BtnVerifikasiOt").hide();
@@ -894,7 +894,7 @@ function toggleOutside(source) {
                         let username = $('#username_who_access').val();
                         let rowStr = encodeURIComponent(JSON.stringify(row));
 
-                        if (isApprove && username === 'mega@ptnag.com' || username === 'rudy@ptnag.com' || username === 'fadli' || username === 'willy@ptnag.com') {
+                        if (isApprove && username === 'mega@ptnag.com' || username === 'rudy@ptnag.com' || username === 'dev_hris' || username === 'willy@ptnag.com') {
                             pdfButton = `
                              <a class='btn btn-warning btn-sm' style='color:white;' data-toggle="tooltip" title="Export Data ke File Transfer PDF" id="recap_labor_cost_2" onclick="export_laporan_pengajuan(`+row.id+`, '` + status + `', '` + row.tanggal_pengajuan + `')">
                                         <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
@@ -909,7 +909,7 @@ function toggleOutside(source) {
                                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                             `;
                         }
-                        if(isPending || (isApprove && username === 'mega@ptnag.com' || username === 'rudy@ptnag.com' || username === 'fadli' || username === 'willy@ptnag.com')){
+                        if(isPending || (isApprove && username === 'mega@ptnag.com' || username === 'rudy@ptnag.com' || username === 'dev_hris' || username === 'willy@ptnag.com')){
                             editButton = `<a style="text-align:center" class='btn btn-primary btn-sm'
                                     onclick="edit_data('` + rowStr + `');">
                                     <i class='fa fa-edit text-white'></i>
@@ -919,7 +919,7 @@ function toggleOutside(source) {
                             <div>
                                 ${editButton}
                                 ${pdfButton}
-                                ${isPending || (isApprove && username === 'mega@ptnag.com' || username === 'rudy@ptnag.com' || username === 'fadli') ? `<a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapus('` + row.id + `');">
+                                ${isPending || (isApprove && username === 'mega@ptnag.com' || username === 'rudy@ptnag.com' || username === 'dev_hris') ? `<a style="text-align:center; color:white;" class='btn btn-danger btn-sm' onclick="hapus('` + row.id + `');">
                                                 <i class='fa fa-trash'></i>
                                                 </a>` : ''}
 
@@ -951,7 +951,7 @@ function toggleOutside(source) {
                 },
                 columns: columns,
                 initComplete: function(settings, json) {
-                    if ($('#username_who_access').val() === 'mega@ptnag.com' || $('#username_who_access').val() === 'rudy@ptnag.com' || $('#username_who_access').val() === 'fadli' || $('#username_who_access').val() === 'willy@ptnag.com') {
+                    if ($('#username_who_access').val() === 'mega@ptnag.com' || $('#username_who_access').val() === 'rudy@ptnag.com' || $('#username_who_access').val() === 'dev_hris' || $('#username_who_access').val() === 'willy@ptnag.com') {
                         $(".BtnVerifikasiOt").show();
                     } else {
                         $(".BtnVerifikasiOt").hide();
