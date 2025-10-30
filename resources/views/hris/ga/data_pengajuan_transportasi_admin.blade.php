@@ -16,13 +16,13 @@
             <a class="btn btn-white" style="background-color:rgb(228, 228, 228);" href="{{route('hris.ga.form_pengajuan_transportasi_2_admin')}}">Formulir</a>
         </li>
         <li class="nav-item">
-            @if ($id_user==4241 || $id_user==20 || $id_user==5321 || $id_user==6083 || $id_user==0 || $id_user==8590 || $id_user==109)
+            @if ($id_user==4241 || $id_user==20 || $id_user==5321 || $id_user==6083 || $id_user==0 || $id_user==8590 || $id_user==109 || $id_user==17)
                 <a class="btn btn-primary" style="background-color:rgb(228, 228, 228); position: relative; padding-right: 40px; padding-left: 40px" href="{{route('hris.ga.data_pengajuan_transportasi')}}">Data <span class="text-dark h-5 w-5" style="font-weight:bold; background-color:#d2eafc; border:1px solid #0091ff;font-size:10px; display: flex; justify-content: center; align-items: center;position: absolute; top: 7px; right: 10px; border-radius: 100%;">{{$pengajuan_transportasi}}</span></a>
             @else
             <a class="btn btn-primary" style="background-color:blue" href="{{route('hris.ga.data_pengajuan_transportasi_admin')}}">Data</a>
             @endif
         </li>
-        @if ($id_user==4241 || $id_user==20 || $id_user==5321 || $id_user==6083 || $id_user==0)
+        @if ($id_user==4241 || $id_user==20 || $id_user==5321 || $id_user==6083 || $id_user==0 || $id_user==8590 || $id_user==17)
         <li class="nav-item">
             <a class="btn btn-white" href="{{route('hris.ga.summary_driver_task')}}">Summary Driver</a>
         </li>
@@ -73,7 +73,7 @@
                     <div class="col-2 pl-6 pt-1">
                     </div>
                     <div class="col-3 pl-0">
-                        @if ($id_user==4241 || $id_user==20 || $id_user==5321 || $id_user==6083 || $id_user==0 || $id_user==8590 || $id_user==109)
+                        @if ($id_user==4241 || $id_user==20 || $id_user==5321 || $id_user==6083 || $id_user==0 || $id_user==8590 || $id_user==109 || $id_user==17)
                             <button class="btn btn-success py-1 my-1" id="export_excel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
                         @endif
                     </div>
@@ -747,7 +747,7 @@
                     if(row.alasan_status!==null){
                         alasan_status_alternative=row.alasan_status;
                     }
-                    if (row.user==4241 || row.user==20 || row.user==6083 || row.user==5321 || row.user== 8590 || row.user == 109){
+                    if (row.user==4241 || row.user==20 || row.user==6083 || row.user==5321 || row.user== 8590 || row.user == 109 || row.user==17){
                         if(row.created_by==row.user){
                             if(row.status==0){
                                 return `<button onclick="edit_detail(` + row.id + `)" class="btn btn-sm btn-block py-0 px-1 mb-1" style="font-size:9pt;background-color:orange;color:white">EDIT</button><button onclick="lihat_detail(` + row.id + `)" class="btn btn-primary btn-block btn-sm py-0 px-1 mb-1  mt-0" style="font-size:9pt">LIHAT DETAIL</button><button onclick="delete_detail(`+row.id+`)" class="btn btn-danger btn-block btn-sm py-0 px-1 mb-1  mt-0" style="font-size:9pt">DELETE</button>`;

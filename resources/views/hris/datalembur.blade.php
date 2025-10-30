@@ -165,7 +165,7 @@
                     <i class="fa fa-check" aria-hidden="true"></i>
                     Export Serah Terima Checked
                 </button>
-                @if(in_array($enroll_id_loggin, [8590, 4241, 20,6713,8083,1885]))
+                @if(in_array($enroll_id_loggin, [8590, 4241, 20,6713,8083,1885, 17]))
                     <button type="button" id="btn_buat_serah_terima"
                     class="btn btn-info btn-app"
                     data-dismiss="modal">
