@@ -94,31 +94,27 @@ class JurnalController extends AdminBaseController
             $gaji_umk = $payroll->sum('upah_per_bulan');
             $koreksi_upah = $payroll->sum('koreksi_upah');
             $potongan_upah = $payroll->sum('potongan_upah');
-            $pembulatan = $payroll->sum('pembulatan');
 
-            // if ($payroll->nama_bank == null) {
-            //     $nama_bank = '-';
-            // } else {
-            //     $nama_bank = $payroll->nama_bank;
-            // }
+            $total_gaji = 0;
 
-            // $tunai = strtoupper($nama_bank) === 'TUNAI'; // pastikan kapital
+            foreach ($payroll as $p) {
+                $nama_bank = $p->nama_bank ?? '-';
+                $tunai = strtoupper($nama_bank) === 'TUNAI';
 
-            // // Hitung nilai sebelum pembulatan (upah neto - potongan)
-            // $nilai_bersih = $payroll->upah_neto_rupiah - $payroll->jumlah_potongan_rupiah;
+                $nilai_bersih = $p->upah_neto_rupiah - $p->jumlah_potongan_rupiah;
 
-            // if ($tunai) {
-            //     // Jika tunai, pembulatan ke atas kelipatan 500
-            //     $total_upah_thp_rupiah_pembulatan = ceil($nilai_bersih / 500) * 500;
-            // } else {
-            //     // Jika non-tunai, pembulatan ke atas kelipatan 100 (ROUNDUP -2)
-            //     $total_upah_thp_rupiah_pembulatan = ceil($nilai_bersih / 100) * 100;
-            // }
+                if ($tunai) {
+                    // Pembulatan ke atas kelipatan 500
+                    $total_upah_thp_rupiah_pembulatan = ceil($nilai_bersih / 500) * 500;
+                } else {
+                    // Pembulatan ke atas kelipatan 100
+                    $total_upah_thp_rupiah_pembulatan = ceil($nilai_bersih / 100) * 100;
+                }
 
-            // // Hitung nilai pembulatan
-            // $pembulatan = $total_upah_thp_rupiah_pembulatan - $nilai_bersih;
-
-            $gaji = ($gaji_umk + $pembulatan + $koreksi_upah) - $potongan_upah;
+                $pembulatan = $total_upah_thp_rupiah_pembulatan - $nilai_bersih;
+                $total_gaji += ($p->upah_per_bulan + $pembulatan + $p->koreksi_upah) - $p->potongan_upah;
+            }
+            $gaji = $total_gaji;
             $insentif_jabatan = $payroll->sum('insentif_jabatan');
             $premi_karyawan = $payroll->sum('premi_karyawan');
             $tunjangan_karyawan_rupiah = ($payroll->sum('tunjangan_karyawan_rupiah') + $koreksi_insentif + $insentif_jabatan + $premi_karyawan);
