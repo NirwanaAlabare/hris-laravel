@@ -73,7 +73,8 @@
         <div class="card-footer bg-light m-0 p-1">
             <div class="text-white">
                 <div class="input-group-append">
-                    <button type="submit" id="btn-exportexcel" class="btn btn-app btn-primary mr-1 mt-0 mb-0" data-toggle="tooltip" title="Export Data ke File Excel"><i class="ion-ios7-download"></i> EXPORT</button>
+                    <button type="submit" id="btn-exportexcel" class="btn btn-app btn-success mr-3 ml-2 mt-0 mb-0" data-toggle="tooltip" title="Export Data ke File Excel"><i class="ion-ios7-download"></i> EXPORT</button>
+                    <button type="button" id="btn-update-jurnal" class="btn btn-app btn-primary mr-1 mt-0 mb-0" data-toggle="tooltip" title="Update Jurnal"><span><i class="fa fa-download"></i></span> UPDATE JURNAL</button>
                 </div>
                 <i><div class="text-left mt-1 mb-1 text-sm ml-1" style="color:black;">Terakhir diupdate : {{$latestData->updated_at}}</div></i>
             </div>
@@ -83,7 +84,7 @@
     {{-- </form> --}}
     {!! Form::close() !!}
     <!-- END FORM-->
-    
+
 @endsection
 
 @section('footerjs')
@@ -132,6 +133,46 @@
                 msg: "<b>Info:</b> Data sedang di proses, mohon menunggu",
                 type: "info"
             });
+        });
+        $('body').on('click', '#btn-update-jurnal', function (event) {
+              event.preventDefault();
+                const periode_payroll = $('#periode_payroll').val();
+                swal({
+                    title: 'Apakah Anda Yakin ?',
+                    text: 'Update Jurnal',
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: 'YES',
+                    cancelButtonText: 'NO'
+                },function(isConfirm){
+                    if(isConfirm) {
+                        $('#btn-update-jurnal').addClass("btn-loading");
+                        $("#btn-update-jurnal").html('Please wait...');
+                        $("#btn-update-jurnal").attr("disabled", true);
+
+                        $.ajax({
+                            data: {
+                                periode_payroll:periode_payroll
+                            },
+                            url: '{{ route("hris.jurnal.update_jurnal") }}',
+                            type: "post",
+                            success: function (data) {
+                            console.log(data);
+                                swal("", "Proses rekap lembur berhasil", "success");
+                                $('#btn-update-jurnal').removeClass("btn-loading");
+                                $("#btn-update-jurnal").html('<span><i class="fa fa-download"></i></span> UPDATE JURNAL');
+                                $("#btn-update-jurnal").attr("disabled", false);
+
+                            },
+                            error: function (xhr, status, error) {
+                                swal("", "Proses rekap lembur gagal", "error");
+                                $('#btn-update-jurnal').removeClass("btn-loading");
+                                $("#btn-update-jurnal").attr("disabled", false);
+                                $("#btn-update-jurnal").html('<span><i class="fa fa-download"></i></span> UPDATE JURNAL');
+                            }
+                        });
+                    }
+                });
         });
 
         $('body').on('click', '#btn-refresh-page', function (event) {

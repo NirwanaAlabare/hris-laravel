@@ -34,7 +34,7 @@ class JurnalController extends AdminBaseController
         $this->periode_payroll = $this->ajax_getperiodepayroll();
 
         $this->latestData = Jurnal::latest('updated_at')->first();
-        
+
         $this->loggedAdmin = Auth::guard('admin')->user();
         return View::make('hris/jurnal', $this->data);
     }
@@ -54,6 +54,11 @@ class JurnalController extends AdminBaseController
         $data=Jurnal::where('periode_payroll',$request->periode_payroll)->get();
 
         return Excel::download(new JurnalExport($data),'Data_jurnal'.time().'.xlsx');
+    }
+
+    public function update_jurnal(Request $request)
+    {
+        dd($request->periode_payroll);
     }
 
 }

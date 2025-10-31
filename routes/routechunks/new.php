@@ -69,6 +69,7 @@ Route::prefix('daily_labor')->middleware(['auth.admin', 'lock', 'role:all,attend
 Route::prefix('junal')->middleware(['auth.admin', 'lock', 'role:all,attendance_payroll'])->group(function() {
     Route::get('index', 'JurnalController@index')->name("hris.jurnal.index");
     Route::post('ajax_exportexcel', 'JurnalController@ajax_exportexcel')->name("hris.jurnal.export");
+    Route::post('update_jurnal', 'JurnalController@update_jurnal')->name("hris.jurnal.update_jurnal");
 
 });
 
