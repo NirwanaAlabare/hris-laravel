@@ -79,7 +79,7 @@ class JurnalController extends AdminBaseController
             $potongan_bazzar = $data_potongan->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_potongan', '3')->sum('jumlah_rp_potongan');
             $potongan_kasbon = $data_potongan->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_potongan', '6')->sum('jumlah_rp_potongan');
             $potongan_lain = $data_potongan->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_potongan', '5')->sum('jumlah_rp_potongan');
-            $koreksi_insentif = $data_koreksi->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_koreksi', '2')->sum('jumlah_rp_potongan');
+            // $koreksi_insentif = $data_koreksi->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_koreksi', '2')->sum('jumlah_rp_potongan');
             $payroll = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year)->where('periode_bulan_payroll', $month)->where('periode_umk', null)
                 ->where('kategori_karyawan', 'NON STAFF')->where('sub_dept_id', $value->sub_dept_id)
                 ->get();
@@ -96,6 +96,7 @@ class JurnalController extends AdminBaseController
             $potongan_upah = $payroll->sum('potongan_upah');
 
             $total_gaji = 0;
+            $total_tunjangan_karyawan = $payroll->sum('tunjangan_karyawan_rupiah');
 
             foreach ($payroll as $p) {
                 $nama_bank = $p->nama_bank ?? '-';
@@ -110,24 +111,36 @@ class JurnalController extends AdminBaseController
                     // Pembulatan ke atas kelipatan 100
                     $total_upah_thp_rupiah_pembulatan = ceil($nilai_bersih / 100) * 100;
                 }
-
                 $pembulatan = $total_upah_thp_rupiah_pembulatan - $nilai_bersih;
                 $total_gaji += ($p->upah_per_bulan + $pembulatan + $p->koreksi_upah) - $p->potongan_upah;
+
+                if ($p->total_kehadiran_net <= 0 && $p->koreksi_upah_rupiah == 0 && $p->total_lembur_rupiah == 0 && ($p->total_bpjs_tk != 0 || $p->total_bpjs_ks != 0)) {
+                    $total_tunjangan_karyawan = '0';
+                }
+                if ($p->total_kehadiran_net == 0) {
+                    $total_tunjangan_karyawan = '0';
+                }
             }
             $gaji = $total_gaji;
             $insentif_jabatan = $payroll->sum('insentif_jabatan');
             $premi_karyawan = $payroll->sum('premi_karyawan');
-            $tunjangan_karyawan_rupiah = ($payroll->sum('tunjangan_karyawan_rupiah') + $koreksi_insentif + $insentif_jabatan + $premi_karyawan);
+            $koreksi_insentif = $payroll->sum('koreksi_insentif');
+            $potongan_insentif = $payroll->sum('potongan_insentif');
+
+            $potongan_piutang = $payroll->sum('potongan_piutang');
+
+
+            $tunjangan_karyawan_rupiah = ($total_tunjangan_karyawan + $koreksi_insentif + $insentif_jabatan + $premi_karyawan) - $potongan_insentif;
             $total_lembur_rupiah = $payroll->sum('total_lembur_rupiah');
             $bonus = 0;
-            $piutang_karyawan = $potongan_kasbon;
+            $piutang_karyawan = $potongan_piutang;
             $piutang_bazzar = $potongan_bazzar;
             $bpjs_tk = $payroll->sum('total_bpjs_tk');
             $bpjs_ks = $payroll->sum('total_bpjs_ks');
             $potongan = $potongan_lain + $rp_cuti_tahuna + $potongan_kehadiran_rupiah + $rp_pot_jam + $iuran_serikat_rupiah + $iuran_koperasi;
             $gaji_note=($gaji+$tunjangan_karyawan_rupiah+$total_lembur_rupiah+$bonus)-
                         ($piutang_karyawan+$piutang_bazzar+$bpjs_tk+$bpjs_ks+$potongan);
-            $gaji_neto = $payroll->sum('total_upah_thp_rupiah') + $payroll->sum('pembulatan');
+            $gaji_neto = ($gaji + $tunjangan_karyawan_rupiah + $total_lembur_rupiah) - ($piutang_karyawan + $piutang_bazzar + $bpjs_tk + $bpjs_ks + $potongan);
 
             $data = [
                 'kode_bagian' => $value->sub_dept_id,
