@@ -158,14 +158,14 @@
                             type: "post",
                             success: function (data) {
                             console.log(data);
-                                swal("", "Proses rekap lembur berhasil", "success");
+                                swal("", "Proses rekap jurnal berhasil", "success");
                                 $('#btn-update-jurnal').removeClass("btn-loading");
                                 $("#btn-update-jurnal").html('<span><i class="fa fa-download"></i></span> UPDATE JURNAL');
                                 $("#btn-update-jurnal").attr("disabled", false);
 
                             },
                             error: function (xhr, status, error) {
-                                swal("", "Proses rekap lembur gagal", "error");
+                                swal("", "Proses rekap jurnal gagal", "error");
                                 $('#btn-update-jurnal').removeClass("btn-loading");
                                 $("#btn-update-jurnal").attr("disabled", false);
                                 $("#btn-update-jurnal").html('<span><i class="fa fa-download"></i></span> UPDATE JURNAL');

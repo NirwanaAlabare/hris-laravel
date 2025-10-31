@@ -60,6 +60,16 @@ class JurnalController extends AdminBaseController
 
     public function update_jurnal(Request $request)
     {
+        $periode_payroll = $request->periode_payroll;
+
+        // Ambil 4 karakter pertama dari kiri (tahun)
+        $year = substr($periode_payroll, 0, 4);
+
+        // Ambil 2 karakter terakhir dari kanan (bulan)
+        $month = substr($periode_payroll, -2);
+
+
+
         //rekap jurnal
         $departement = DepartmentAll::where('site_nirwana_id', 'NAG')->get();
         $data_potongan = $this->potongan($periode_payroll);
