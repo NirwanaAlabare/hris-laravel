@@ -69,9 +69,8 @@ class JurnalController extends AdminBaseController
         $month = substr($periode_payroll, -2);
 
 
-
         //rekap jurnal
-        $departement = DepartmentAll::where('site_nirwana_id', 'NAG')->get();
+        $departement = DepartmentAll::get();
         $data_potongan = $this->potongan($periode_payroll);
         $data_koreksi = $this->koreksi($periode_payroll);
         foreach ($departement as $key => $value) {
@@ -80,11 +79,10 @@ class JurnalController extends AdminBaseController
             $potongan_bazzar = $data_potongan->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_potongan', '3')->sum('jumlah_rp_potongan');
             $potongan_kasbon = $data_potongan->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_potongan', '6')->sum('jumlah_rp_potongan');
             $potongan_lain = $data_potongan->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_potongan', '5')->sum('jumlah_rp_potongan');
-            $koreksi_upah = $data_koreksi->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_koreksi', '1')->sum('jumlah_rp_potongan');
             $koreksi_insentif = $data_koreksi->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_koreksi', '2')->sum('jumlah_rp_potongan');
             $payroll = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year)->where('periode_bulan_payroll', $month)->where('periode_umk', null)
                 ->where('kategori_karyawan', 'NON STAFF')->where('sub_dept_id', $value->sub_dept_id)
-                ->where('total_kehadiran_net', '>', 0)->get();
+                ->get();
 
 
             $rp_cuti_tahuna = 0;
@@ -94,8 +92,33 @@ class JurnalController extends AdminBaseController
             $iuran_koperasi = $payroll->sum('iuran_koperasi');
 
             $gaji_umk = $payroll->sum('upah_per_bulan');
+            $koreksi_upah = $payroll->sum('koreksi_upah');
+            $potongan_upah = $payroll->sum('potongan_upah');
             $pembulatan = $payroll->sum('pembulatan');
-            $gaji = $gaji_umk + $pembulatan + $koreksi_upah;
+
+            // if ($payroll->nama_bank == null) {
+            //     $nama_bank = '-';
+            // } else {
+            //     $nama_bank = $payroll->nama_bank;
+            // }
+
+            // $tunai = strtoupper($nama_bank) === 'TUNAI'; // pastikan kapital
+
+            // // Hitung nilai sebelum pembulatan (upah neto - potongan)
+            // $nilai_bersih = $payroll->upah_neto_rupiah - $payroll->jumlah_potongan_rupiah;
+
+            // if ($tunai) {
+            //     // Jika tunai, pembulatan ke atas kelipatan 500
+            //     $total_upah_thp_rupiah_pembulatan = ceil($nilai_bersih / 500) * 500;
+            // } else {
+            //     // Jika non-tunai, pembulatan ke atas kelipatan 100 (ROUNDUP -2)
+            //     $total_upah_thp_rupiah_pembulatan = ceil($nilai_bersih / 100) * 100;
+            // }
+
+            // // Hitung nilai pembulatan
+            // $pembulatan = $total_upah_thp_rupiah_pembulatan - $nilai_bersih;
+
+            $gaji = ($gaji_umk + $pembulatan + $koreksi_upah) - $potongan_upah;
             $insentif_jabatan = $payroll->sum('insentif_jabatan');
             $premi_karyawan = $payroll->sum('premi_karyawan');
             $tunjangan_karyawan_rupiah = ($payroll->sum('tunjangan_karyawan_rupiah') + $koreksi_insentif + $insentif_jabatan + $premi_karyawan);
@@ -106,8 +129,8 @@ class JurnalController extends AdminBaseController
             $bpjs_tk = $payroll->sum('total_bpjs_tk');
             $bpjs_ks = $payroll->sum('total_bpjs_ks');
             $potongan = $potongan_lain + $rp_cuti_tahuna + $potongan_kehadiran_rupiah + $rp_pot_jam + $iuran_serikat_rupiah + $iuran_koperasi;
-            // $gaji_note=($gaji+$tunjangan_karyawan_rupiah+$total_lembur_rupiah+$bonus)-
-            //             ($piutang_karyawan+$piutang_bazzar+$bpjs_tk+$bpjs_ks+$potongan);
+            $gaji_note=($gaji+$tunjangan_karyawan_rupiah+$total_lembur_rupiah+$bonus)-
+                        ($piutang_karyawan+$piutang_bazzar+$bpjs_tk+$bpjs_ks+$potongan);
             $gaji_neto = $payroll->sum('total_upah_thp_rupiah') + $payroll->sum('pembulatan');
 
             $data = [
