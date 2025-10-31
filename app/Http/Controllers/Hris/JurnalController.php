@@ -96,7 +96,7 @@ class JurnalController extends AdminBaseController
             $potongan_upah = $payroll->sum('potongan_upah');
 
             $total_gaji = 0;
-            $total_tunjangan_karyawan = $payroll->sum('tunjangan_karyawan_rupiah');
+            $total_tunjangan_karyawan = 0;
 
             foreach ($payroll as $p) {
                 $nama_bank = $p->nama_bank ?? '-';
@@ -114,12 +114,15 @@ class JurnalController extends AdminBaseController
                 $pembulatan = $total_upah_thp_rupiah_pembulatan - $nilai_bersih;
                 $total_gaji += ($p->upah_per_bulan + $pembulatan + $p->koreksi_upah) - $p->potongan_upah;
 
-                // if ($p->total_kehadiran_net <= 0 && $p->koreksi_upah_rupiah == 0 && $p->total_lembur_rupiah == 0 && ($p->total_bpjs_tk != 0 || $p->total_bpjs_ks != 0)) {
-                //     $total_tunjangan_karyawan = '0';
-                // }
-                // if ($p->total_kehadiran_net == 0) {
-                //     $total_tunjangan_karyawan = '0';
-                // }
+                if ($p->total_kehadiran_net <= 0 && $p->koreksi_upah_rupiah == 0 && $p->total_lembur_rupiah == 0 && ($p->total_bpjs_tk != 0 || $p->total_bpjs_ks != 0)) {
+                    continue;
+                }
+
+                if ($p->total_kehadiran_net == 0) {
+                    continue;
+                }
+                // Kalau lolos kondisi di atas, baru tambahkan
+                $total_tunjangan_karyawan += $p->tunjangan_karyawan_rupiah;
             }
             $gaji = $total_gaji;
             $insentif_jabatan = $payroll->sum('insentif_jabatan');
