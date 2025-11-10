@@ -2809,8 +2809,8 @@
                     success: function(res){
                         if(res.length > 0){
                             nomor_urut=0;
-                            for(i=0;i<res.length;i++) {
-                                if (res[i].data_lembur.is_verifikasi==0) {
+                            for(let i = 0; i < res.length; i++) {
+                                if (res[i].data_lembur && res[i].data_lembur.is_verifikasi == 0) {
                                     console.log("res[i]", res[i]);
                                     nomor_urut=nomor_urut+1;
                                     var uuid = res[i].data_lembur.uuid
@@ -2913,9 +2913,9 @@
                             $("#subtitle-table1").append("Total data yang ditemukan ada: " + nomor_urut);
 
                             nomor_urut2= 0;
-                            for(i=0;i<res.length;i++) {
+                            for(let i = 0; i < res.length; i++) {
                                 // nomor_urut2=0;
-                                if (res[i].data_lembur.is_verifikasi==1) {
+                                if (res[i].data_lembur && res[i].data_lembur.is_verifikasi == 1) {
                                     var nomor_urut2 = nomor_urut2+1;
                                     var uuid = res[i].data_lembur.uuid
                                     var tanggal_lembur = moment(res[i].tanggal_berjalan).format('DD MMM YYYY');

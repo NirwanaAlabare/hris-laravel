@@ -192,6 +192,7 @@ class FormLemburSewingController extends AdminBaseController
             ");
 
             return DataTables::of($data_tmp)->toJson();
+Log::alert("message");
         }
     }
 
@@ -432,10 +433,10 @@ class FormLemburSewingController extends AdminBaseController
         $jam_lembur_akhir   = $request->to_lembur;
         $istirahat   = $request->txtistirahat;
 
-        $no = date('ymd_H:i');
+        $no = date('ymd');
         $tgl_pelaksana = date('dmY', strtotime($tgl_lembur));
         $kode = '_SPL_';
-        $kode_trans = $no . $kode . $line_fix . '_'  . $tgl_pelaksana;
+        $kode_trans = $no . '_' . $line_fix ;
 
         $JmlArray           = $_POST['cek_data'];
         $enroll_idArray     = $_POST['enroll_id'];
@@ -456,13 +457,23 @@ class FormLemburSewingController extends AdminBaseController
                 $konsumsi=0;
             }
             foreach ($JmlArray as $key => $value) {
+
                 if ($value != '') {
                     $txtqty         = $JmlArray[$key];
                     $txtenroll      = $enroll_idArray[$key];
-                    $txtstat        = $statArray[$key]; {
+                    $txtstat        = $statArray[$key];
+
+                    $sql_cek_det =DB::select("select * from mut_karyawan_input_form_lembur_det dt join mut_karyawan_input_form_lembur d on d.id = dt.id_det where enroll_id = '$txtenroll' and tgl_lembur ='$tgl_filter'");
+//                     var_dump($sql_cek_det);
+// die;
+                    if (count($sql_cek_det) == 0 )
+                    {
                         $insert_det =  DB::insert("
                     insert into mut_karyawan_input_form_lembur_det(no_form,enroll_id,jam_lembur_awal_rencana,jam_lembur_akhir_rencana,jam_lembur_istirahat,status,konsumsi,uuid_koreksi_upah,created_by,created_at,updated_at)
-                    values('$kode_trans','$txtenroll','$jam_lembur_awal','$jam_lembur_akhir','$istirahat','$txtstat','$konsumsi','','$user','$timestamp','$timestamp')");
+                    values('$kode_trans','$txtenroll','$jam_lembur_awal','$jam_lembur_akhir','$istirahat','$txtstat','$konsumsi','','$user','$timestamp','$timestamp')");}
+                    } else {
+                        // Log::warning("Data lembur untuk $txtenroll tanggal $tgl_lembur sudah ada, tidak di-insert ulang.");
+                        return redirect()->back()->with('success', 'Data gagal disimpan!');
                     }
                 }
             }

@@ -2257,7 +2257,7 @@ class DataLemburController extends AdminBaseController
         $formattedResults = [];
 
         foreach ($query as $row) {
-          if(!isset($row->data_lembur)){
+          if(isset($row->data_lembur)){
             $formattedResults[]=$row->data_lembur->uuid." - ".$row->uuid;
           }
         }
@@ -2268,6 +2268,7 @@ class DataLemburController extends AdminBaseController
 
     public function remove(Request $request)
     {
+
         $loggedAdmin = Auth::guard('admin')->user();
         session(['loggedAdmin' => $loggedAdmin]);
         $email = $loggedAdmin->email;
@@ -2275,6 +2276,7 @@ class DataLemburController extends AdminBaseController
         $tanggal_berjalan = $request->tanggal_berjalan;
         $enroll_id = $request->enroll_id;
         $nomor_form_lembur = $request->nomor_form_lembur;
+        $uuid_master = $request->uuid_master;
         $queryMaster = MasterDataAbsenKehadiran::whereRaw('
                 tanggal_berjalan = "' . $tanggal_berjalan . '"
                 AND enroll_id = "' . $enroll_id . '"
@@ -2286,12 +2288,26 @@ class DataLemburController extends AdminBaseController
             ]);
 
         if($queryMaster) {
-            $query = DataLembur::whereRaw('
-                        tanggal_berjalan = "' . $tanggal_berjalan . '"
-                        AND enroll_id = "' . $enroll_id . '"
-                        AND nomor_form_lembur = "' . $nomor_form_lembur . '"
-                    ')->delete();
-            $lembur =RekapPerhitunganLembur:: where('nomor_form_lembur',$nomor_form_lembur)->where('enroll_id',$enroll_id)->delete();
+            // $query = DataLembur::whereRaw('
+            //             tanggal_berjalan = "' . $tanggal_berjalan . '"
+            //             AND enroll_id = "' . $enroll_id . '"
+            //             AND nomor_form_lembur = "' . $nomor_form_lembur . '"
+            //         ')->delete();
+            // $lembur =RekapPerhitunganLembur:: where('nomor_form_lembur',$nomor_form_lembur)->where('enroll_id',$enroll_id)->delete();
+
+        //    dd($joinData);
+        //    var_dump($joinData);
+        //    die();
+
+        //    $query = DataLembur::whereRaw('uuid_master ="'. $uuid_master.'"')->delete();
+            $query = DataLembur::whereRaw('uuid_master', $uuid_master )->delete();
+            $joinData = DB::table('data_lembur as dl')
+                    ->join('rekap_perhitungan_lembur as rpl', 'rpl.enroll_id', '=', 'dl.enroll_id')
+                    ->where('dl.uuid_master', $uuid_master) ->where('rpl.nomor_form_lembur', $nomor_form_lembur)
+                    ->select('rpl.uuid as uuid_rpl') ->get();
+
+           $uuid_rpl = $joinData->pluck('uuid_rpl')->toArray();
+           $lembur = RekapPerhitunganLembur::whereIn('uuid', $uuid_rpl)->delete();
 
         }
 
