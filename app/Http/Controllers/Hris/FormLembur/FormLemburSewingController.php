@@ -456,6 +456,9 @@ Log::alert("message");
             if($jam_lembur_akhir=='18:00' && $jam_lembur_awal<='17:00' && $jam_lembur_awal>='15:00'){
                 $konsumsi=0;
             }
+
+        $sukses = [];
+        $gagal = [];
             foreach ($JmlArray as $key => $value) {
 
                 if ($value != '') {
@@ -463,19 +466,25 @@ Log::alert("message");
                     $txtenroll      = $enroll_idArray[$key];
                     $txtstat        = $statArray[$key];
 
-                    $sql_cek_det =DB::select("select * from mut_karyawan_input_form_lembur_det dt join mut_karyawan_input_form_lembur d on d.id = dt.id_det where enroll_id = '$txtenroll' and tgl_lembur ='$tgl_filter'");
+                    $sql_cek_det =DB::select("select * from mut_karyawan_input_form_lembur_det dt left join mut_karyawan_input_form_lembur d on d.no_form = dt.no_form where dt.enroll_id = '$txtenroll' and d.tgl_lembur ='$tgl_filter'");
 //                     var_dump($sql_cek_det);
 // die;
                     if (count($sql_cek_det) == 0 )
                     {
                         $insert_det =  DB::insert("
                     insert into mut_karyawan_input_form_lembur_det(no_form,enroll_id,jam_lembur_awal_rencana,jam_lembur_akhir_rencana,jam_lembur_istirahat,status,konsumsi,uuid_koreksi_upah,created_by,created_at,updated_at)
-                    values('$kode_trans','$txtenroll','$jam_lembur_awal','$jam_lembur_akhir','$istirahat','$txtstat','$konsumsi','','$user','$timestamp','$timestamp')");}
+                    values('$kode_trans','$txtenroll','$jam_lembur_awal','$jam_lembur_akhir','$istirahat','$txtstat','$konsumsi','','$user','$timestamp','$timestamp')");
+                     $sukses[] = $txtenroll;
                     } else {
-                        // Log::warning("Data lembur untuk $txtenroll tanggal $tgl_lembur sudah ada, tidak di-insert ulang.");
-                        return redirect()->back()->with('success', 'Data gagal disimpan!');
+                    $gagal[] = $txtenroll;
+                    // } else {
+                    //     // Log::warning("Data lembur untuk $txtenroll tanggal $tgl_lembur sudah ada, tidak di-insert ulang.");
+                    //    return redirect()->back()->with('error', "Data dengan ID {$txtenroll} sudah ada! Lembur untuk karyawan ini sudah tersimpan.");
+
+
                     }
                 }
+
             }
 
             if ($JmlArrayKet != '') {
@@ -507,14 +516,21 @@ Log::alert("message");
             //     "additional" => [],
             //     "redirect" => 'reload'
             // );
-             return redirect()->route('fls.index')->with('success', 'Data berhasil disimpan.');
-        } else {
-            return array(
-                "status" => 400,
-                "message" => 'Tidak ada Data',
-                "additional" => [],
-            );
-        }
+        //      return redirect()->route('fls.index')->with('success', 'Data berhasil disimpan.');
+        // } else {
+        //     return array(
+        //         "status" => 400,
+        //         "message" => 'Tidak ada Data',
+        //         "additional" => [],
+        //     );
+        // }
+         $pesan_sukses = count($sukses) ? 'Data berhasil disimpan untuk ID: ' . implode(', ', $sukses) . '. ' : '';
+        $pesan_gagal  = count($gagal) ? 'Data gagal disimpan karena sudah ada untuk ID: ' . implode(', ', $gagal) . '.' : '';
+        $pesan        = trim($pesan_sukses . ' ' . $pesan_gagal);
+
+        return redirect()->route('fls.index')
+            ->with(count($sukses) ? 'success' : 'error', $pesan ?: 'Tidak ada data yang disimpan!');
+    }
     }
 
     public function getdatakaryawanspl(Request $request)
