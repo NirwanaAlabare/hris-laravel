@@ -2277,6 +2277,7 @@ class DataLemburController extends AdminBaseController
         $enroll_id = $request->enroll_id;
         $nomor_form_lembur = $request->nomor_form_lembur;
         $uuid_master = $request->uuid_master;
+        $uuid=$request->uuid;
         $queryMaster = MasterDataAbsenKehadiran::whereRaw('
                 tanggal_berjalan = "' . $tanggal_berjalan . '"
                 AND enroll_id = "' . $enroll_id . '"
@@ -2295,93 +2296,112 @@ class DataLemburController extends AdminBaseController
             //         ')->delete();
             // $lembur =RekapPerhitunganLembur:: where('nomor_form_lembur',$nomor_form_lembur)->where('enroll_id',$enroll_id)->delete();
 
-        //    dd($joinData);
-        //    var_dump($joinData);
-        //    die();
 
-        //    $query = DataLembur::whereRaw('uuid_master ="'. $uuid_master.'"')->delete();
-            $query = DataLembur::whereRaw('uuid_master', $uuid_master )->delete();
-            $joinData = DB::table('data_lembur as dl')
-                    ->join('rekap_perhitungan_lembur as rpl', 'rpl.enroll_id', '=', 'dl.enroll_id')
-                    ->where('dl.uuid_master', $uuid_master) ->where('rpl.nomor_form_lembur', $nomor_form_lembur)
-                    ->select('rpl.uuid as uuid_rpl') ->get();
+$uuid_rpl = DB::table('rekap_perhitungan_lembur as rpl')
+            ->join('data_lembur as dl', 'rpl.enroll_id', '=', 'dl.enroll_id')
+            ->where('dl.uuid', $uuid)
+            ->where('rpl.nomor_form_lembur', $nomor_form_lembur)
+            ->where('dl.nomor_form_lembur', $nomor_form_lembur)
+            ->distinct() // <- hindari duplikasi
+            ->pluck('rpl.uuid')
+            ->toArray();
 
-           $uuid_rpl = $joinData->pluck('uuid_rpl')->toArray();
-           $lembur = RekapPerhitunganLembur::whereIn('uuid', $uuid_rpl)->delete();
+        // Debug: tampilkan UUID yang akan dihapus
+        \Log::info('UUID RPL yang akan dihapus: ', $uuid_rpl);
+        \Log::info('UUID DataLembur yang akan dihapus: ' . $uuid);
 
+        // Hapus data rekap terlebih dahulu
+        if (!empty($uuid_rpl)) {
+            $deletedRekap = RekapPerhitunganLembur::whereIn('uuid', $uuid_rpl)->delete();
+        } else {
+            $deletedRekap = 0;
         }
 
-        return Response()->json($query);
+        // Hapus DataLembur setelahnya
+        $deletedData = DataLembur::where('uuid', $uuid)->delete();
 
-    }
-
-    public function updatelembur(Request $request)
-    {
-        $loggedAdmin = Auth::guard('admin')->user();
-        $email = $loggedAdmin->email;
-
-        $enroll_id = $request->enroll_id;
-        $nomor_form_lembur = $request->nomor_form_lembur;
-
-        $mulai_jam_lembur = $request->mulai_jam_lembur;
-        $explodeMulaiLembur = explode(" ", $mulai_jam_lembur);
-        $tanggal_lembur = substr($explodeMulaiLembur[0], 6, 4) . '-' . substr($explodeMulaiLembur[0], 3, 2) . '-' . substr($explodeMulaiLembur[0], 0, 2);
-        $mulai_jam_lembur = substr($explodeMulaiLembur[0], 6, 4) . '-' . substr($explodeMulaiLembur[0], 3, 2) . '-' . substr($explodeMulaiLembur[0], 0, 2) . " " . $explodeMulaiLembur[1];
-
-        $tanggal_berjalan = $request->tanggal_berjalan;
-
-        $akhir_jam_lembur = $request->akhir_jam_lembur;
-        $explodeAkhirLembur = explode(" ", $akhir_jam_lembur);
-        $akhir_jam_lembur = substr($explodeAkhirLembur[0], 6, 4) . '-' . substr($explodeAkhirLembur[0], 3, 2) . '-' . substr($explodeAkhirLembur[0], 0, 2) . " " . $explodeAkhirLembur[1];
-
-        $jumlah_jam_lembur = $request->jumlah_jam_lembur;
-        $jumlah_jam_istirahat = $request->jumlah_jam_istirahat;
-        $catatan = $request->catatan;
-
-        MasterDataAbsenKehadiran::whereRaw('
-                    tanggal_berjalan = "' . $tanggal_berjalan . '"
-                    AND enroll_id = "' . $enroll_id . '"
-        ')
-        ->update([
-            'nomor_form_lembur' => null,
-            'catatan_hrd' => null,
-            'operator' => $email
+        return response()->json([
+            'status' => 'success',
+            'deleted_data_lembur' => $deletedData,
+            'deleted_rekap' => $deletedRekap,
+            'uuid_rpl' => $uuid_rpl,
         ]);
+    }
 
-        $queryDataLembur = DataLembur::whereRaw('
-                    tanggal_berjalan = "' . $tanggal_berjalan . '"
-                    AND enroll_id = "' . $enroll_id . '"
-                ')
-            ->update([
-                'tanggal_berjalan' => $tanggal_lembur,
-                'jumlah_jam_istirahat_lembur' => $jumlah_jam_istirahat,
-                'tanggal_absen' => $tanggal_lembur,
-                'mulai_jam_lembur' => $mulai_jam_lembur,
-                'akhir_jam_lembur' => $akhir_jam_lembur,
-                'jumlah_jam_lembur' => $jumlah_jam_lembur,
-                'catatan' => strtoupper($catatan),
-                'operator' => $email
-            ]);
-
-        $queryMaster = 0;
-
-        if($queryDataLembur) {
-
-            $queryMaster = MasterDataAbsenKehadiran::whereRaw('
-                    tanggal_berjalan = "' . $tanggal_lembur . '"
-                    AND enroll_id = "' . $enroll_id . '"
-                ')
-            ->update([
-                'nomor_form_lembur' => $nomor_form_lembur,
-                'catatan_hrd' => strtoupper($catatan),
-                'operator' => $email
-            ]);
+    return response()->json([
+        'status' => 'failed',
+        'message' => 'MasterDataAbsenKehadiran tidak ditemukan atau gagal update'
+    ]);
 
         }
 
-        return Response()->json($queryMaster);
+        public function updatelembur(Request $request)
+        {
+            $loggedAdmin = Auth::guard('admin')->user();
+            $email = $loggedAdmin->email;
 
-    }
+            $enroll_id = $request->enroll_id;
+            $nomor_form_lembur = $request->nomor_form_lembur;
+
+            $mulai_jam_lembur = $request->mulai_jam_lembur;
+            $explodeMulaiLembur = explode(" ", $mulai_jam_lembur);
+            $tanggal_lembur = substr($explodeMulaiLembur[0], 6, 4) . '-' . substr($explodeMulaiLembur[0], 3, 2) . '-' . substr($explodeMulaiLembur[0], 0, 2);
+            $mulai_jam_lembur = substr($explodeMulaiLembur[0], 6, 4) . '-' . substr($explodeMulaiLembur[0], 3, 2) . '-' . substr($explodeMulaiLembur[0], 0, 2) . " " . $explodeMulaiLembur[1];
+
+            $tanggal_berjalan = $request->tanggal_berjalan;
+
+            $akhir_jam_lembur = $request->akhir_jam_lembur;
+            $explodeAkhirLembur = explode(" ", $akhir_jam_lembur);
+            $akhir_jam_lembur = substr($explodeAkhirLembur[0], 6, 4) . '-' . substr($explodeAkhirLembur[0], 3, 2) . '-' . substr($explodeAkhirLembur[0], 0, 2) . " " . $explodeAkhirLembur[1];
+
+            $jumlah_jam_lembur = $request->jumlah_jam_lembur;
+            $jumlah_jam_istirahat = $request->jumlah_jam_istirahat;
+            $catatan = $request->catatan;
+
+            MasterDataAbsenKehadiran::whereRaw('
+                        tanggal_berjalan = "' . $tanggal_berjalan . '"
+                        AND enroll_id = "' . $enroll_id . '"
+            ')
+            ->update([
+                'nomor_form_lembur' => null,
+                'catatan_hrd' => null,
+                'operator' => $email
+            ]);
+
+            $queryDataLembur = DataLembur::whereRaw('
+                        tanggal_berjalan = "' . $tanggal_berjalan . '"
+                        AND enroll_id = "' . $enroll_id . '"
+                    ')
+                ->update([
+                    'tanggal_berjalan' => $tanggal_lembur,
+                    'jumlah_jam_istirahat_lembur' => $jumlah_jam_istirahat,
+                    'tanggal_absen' => $tanggal_lembur,
+                    'mulai_jam_lembur' => $mulai_jam_lembur,
+                    'akhir_jam_lembur' => $akhir_jam_lembur,
+                    'jumlah_jam_lembur' => $jumlah_jam_lembur,
+                    'catatan' => strtoupper($catatan),
+                    'operator' => $email
+                ]);
+
+            $queryMaster = 0;
+
+            if($queryDataLembur) {
+
+                $queryMaster = MasterDataAbsenKehadiran::whereRaw('
+                        tanggal_berjalan = "' . $tanggal_lembur . '"
+                        AND enroll_id = "' . $enroll_id . '"
+                    ')
+                ->update([
+                    'nomor_form_lembur' => $nomor_form_lembur,
+                    'catatan_hrd' => strtoupper($catatan),
+                    'operator' => $email
+                ]);
+
+            }
+
+            return Response()->json($queryMaster);
+
+        }
 
     public function updatelemburall(Request $request)
     {

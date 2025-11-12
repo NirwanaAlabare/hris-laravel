@@ -1882,7 +1882,7 @@
                         var nomor_form_lembur = splitHapusData[2];
                         var employee_name = splitHapusData[3];
                         var idBtn = splitHapusData[4];
-                        var idBtn = "#" + idBtn;
+                        var uuid = splitHapusData[5];
 
                         $(idBtn).addClass("btn-loading");
                         $(idBtn).html('...');
@@ -1915,6 +1915,7 @@
                                             enroll_id:enroll_id,
                                             nomor_form_lembur:nomor_form_lembur,
                                             uuid_master:uuid_master,
+                                            uuid:uuid,
                                         },
                                         dataType: 'json',
                                         success: function(res){
@@ -2857,7 +2858,7 @@
                                     if(!catatan) { catatan = ''; }
                                     if((kode_hari == 5) || (kode_hari == 6)) { bgwarna = 'style="background: yellow"'; }
                                     var editData = res[i].tanggal_berjalan + '|' + nomor_urut;
-                                    var hapusData = res[i].tanggal_berjalan + '|' + res[i].enroll_id + '|' + res[i].data_lembur.nomor_form_lembur + '|' + res[i].employee_atribut.employee_name + '|' + 'btn-remove_' + nomor_urut  + res[i].uuid_master;
+                                    var hapusData = res[i].tanggal_berjalan + '|' + res[i].enroll_id + '|' + res[i].data_lembur.nomor_form_lembur + '|' + res[i].employee_atribut.employee_name + '|' + 'btn-remove_' + nomor_urut + '|' + res[i].data_lembur.uuid;
 
                                     htmlTable = '' +
                                     '<tr ' + bgwarna + ' class="text-center">' +
