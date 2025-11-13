@@ -780,7 +780,8 @@ Log::alert("message");
         $no_form=request()->no_form;
         $sub_dept=DB::select("select line from mut_karyawan_input_form_lembur where no_form = '$no_form'")[0]->line;
         $dept=DB::select("select department_name from department_all where site_nirwana_id='NAG' and sub_dept_name = '$sub_dept'")[0]->department_name;
-        $tgl_lembur=Carbon::parse(substr($no_form,-4).'-'.substr($no_form,-6,2).'-'.substr($no_form,-8,2))->translatedFormat('d F Y');
+        // $tgl_lembur=Carbon::parse(substr($no_form,-4).'-'.substr($no_form,-6,2).'-'.substr($no_form,-8,2))->translatedFormat('d F Y');
+        $tgl_lembur=DB::select("select tgl_lembur from mut_karyawan_input_form_lembur where no_form = '$no_form'")[0]->tgl_lembur;
         $data = DB::select("select a.enroll_id,b.employee_name,a.uuid_koreksi_upah,d.ket,a.jam_lembur_awal_rencana,m.absen_pulang_kerja from mut_karyawan_input_form_lembur_det a
         inner join employee_atribut b on a.enroll_id=b.enroll_id
         inner join (select*from mut_karyawan_input_form_lembur_det_ket where no_form='$no_form' group by no_form)d on a.no_form=d.no_form
@@ -788,7 +789,8 @@ Log::alert("message");
         left join master_data_absen_kehadiran m on a.enroll_id=m.enroll_id and e.tgl_lembur=m.tanggal_berjalan
         where a.no_form='$no_form' and a.uuid_koreksi_upah!='' order by b.employee_name asc");
         $date_now=Carbon::now()->translatedFormat('d F Y');
-        $fileName=date('Ym').' Form Insentif '.' - '.substr_replace(substr($no_form,13),"",-9).' '.Carbon::parse(strtotime(substr($no_form,-4).'-'.substr($no_form,-6,2).'-'.substr($no_form,-8,2)))->translatedFormat('dmY');
+        $fileName = date('Ym') . ' Form Insentif ' . Carbon::now()->translatedFormat('dmY');
+        // $fileName=date('Ym').' Form Insentif '.' - '.substr_replace(substr($no_form,13),"",-9).' '.Carbon::parse(strtotime(substr($no_form,-4).'-'.substr($no_form,-6,2).'-'.substr($no_form,-8,2)))->translatedFormat('dmY');
         $pdf = PDF::loadView('hris.mutasi-karyawan.form-lembur-sewing.form_insentif_sewing',["data" => $data,"no_form"=>$no_form,"date_now"=>$date_now,"tgl_lembur"=>$tgl_lembur,"dept"=>$dept,"sub_dept"=>$sub_dept])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
         return $pdf;
     }
