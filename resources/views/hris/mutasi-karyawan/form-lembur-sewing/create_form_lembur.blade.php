@@ -259,79 +259,19 @@
 <script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
 <script src="{{URL::asset('assets/js/iziToast.min.js')}}"></script>
 <script src="{{ asset('assets/plugins/html5-qrcode/html5-qrcode.min.js') }}"></script>
-{{-- <script src="{{asset('//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js') }}"></script> --}}
+<script src="{{URL::asset('assets/js/timepicker.js') }}"></script>
 
     <style>
         .checkbox-xl .form-check-input {
             scale: 1.5;
         }
     </style>
-
     <script>
-        function submitForm(form, event) {
-            event.preventDefault();  // Prevent default form submission
-            // Disable the submit button while the form is being submitted
-            document.getElementById('submitBtn').disabled = true;
-
-            document.getElementById('submitBtn').innerText = 'Menyimpan...';  // Optional, you can update text
-
-            // Perform the form submission using fetch
-            fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form),
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // CSRF token
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 200) {
-                    // Menampilkan SweetAlert sukses
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Sukses!',
-                        html: data.message, // gunakan html agar <br> muncul
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        // Arahkan ke halaman index setelah sukses
-                        window.location.href = "{{ route('fls.index') }}"; // Redirect ke halaman index
-                    });
-                } else {
-                    // Menampilkan SweetAlert error
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal!',
-                        html: data.message || 'Terjadi kesalahan!',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        // Enable kembali tombol submit
-                        document.getElementById('submitBtn').disabled = false;
-                        document.getElementById('submitBtn').innerText = 'Simpan';  // Reset text
-                    });
-                }
-            })
-            .catch(error => {
-                // Tangani error jika terjadi
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal!',
-                    text: 'Terjadi kesalahan saat mengirim data!'
-                }).then(() => {
-                    // Enable kembali tombol submit
-                    document.getElementById('submitBtn').disabled = false;
-                    document.getElementById('submitBtn').innerText = 'Simpan';  // Reset text
-                });
-            });
+         function disableButton(btn) {
+            btn.disabled = true;
+            btn.innerHTML = 'Menyimpan...'; // Optional
+            btn.form.submit();
         }
-
-        //  function disableButton(btn) {
-        //     btn.disabled = true;
-
-        //     btn.innerHTML = 'Menyimpan...'; // Optional
-        //     btn.form.submit();
-        // }
-
-
         var html5QrcodeScanner = null;
 
         $("#from_lembur").timepicker({
@@ -553,7 +493,6 @@
                         d.cboline = $('#cboline').val();
                         d.tgl_filter = $('#tgl_filter').val();
                         d.tgl_lembur = $('#tgl_lembur').val();
-
                     },
                 },
                 "fnCreatedRow": function(row, data, index) {
