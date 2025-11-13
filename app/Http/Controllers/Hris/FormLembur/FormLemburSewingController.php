@@ -192,7 +192,6 @@ class FormLemburSewingController extends AdminBaseController
             ");
 
             return DataTables::of($data_tmp)->toJson();
-Log::alert("message");
         }
     }
 
@@ -420,6 +419,100 @@ Log::alert("message");
         $sql_cek_nomor = DB::select("select * from mut_karyawan_input_form_lembur_det where no_form = '$no_form' group by jam_lembur_awal_rencana order by created_at limit 1");
         return $sql_cek_nomor;
     }
+    // public function store(Request $request)
+    // {
+    //     $timestamp = Carbon::now();
+    //     $user               = Auth::guard('admin')->user()->name;
+    //     $tgl_lembur         = $request->tgl_lembur;
+    //     $tgl_filter         = $request->tgl_filter;
+    //     $line               = $request->cboline;
+    //     $line_fix           = str_replace(' ', '', $line);
+
+    //     $jam_lembur_awal    = $request->from_lembur;
+    //     $jam_lembur_akhir   = $request->to_lembur;
+    //     $istirahat   = $request->txtistirahat;
+
+    //     $no = date('ymd');
+    //     $tgl_pelaksana = date('dmY', strtotime($tgl_lembur));
+    //     $kode = '_SPL_';
+    //     $kode_trans = $no . '_' . $line_fix ;
+
+    //     $JmlArray           = $_POST['cek_data'];
+    //     $enroll_idArray     = $_POST['enroll_id'];
+    //     $statArray          = $_POST['stat'];
+    //     $JmlArrayKet        = $_POST['cboket'];
+
+    //     if ($JmlArray != '') {
+
+    //         $sql_cek_nomor = DB::select("select * from mut_karyawan_input_form_lembur where no_form = '$kode_trans'");
+    //         $cek_nomor     = $sql_cek_nomor ? $sql_cek_nomor[0]->no_form : null;
+    //         if ($cek_nomor == null) {
+
+    //             $insert_bppb =  DB::insert("
+    //         insert into mut_karyawan_input_form_lembur(no_form,tgl_filter,tgl_lembur,line,approve,created_by,created_at,updated_at)
+    //         values('$kode_trans','$tgl_filter','$tgl_lembur','$line','N','$user','$timestamp','$timestamp')");
+    //         //  var_dump($tgl_lembur,$tgl_filter);
+    //         //                                      die();
+    //         }
+    //         $konsumsi=1;
+    //         if($jam_lembur_akhir=='18:00' && $jam_lembur_awal<='17:00' && $jam_lembur_awal>='15:00'){
+    //             $konsumsi=0;
+    //         }
+
+    //     $sukses = [];
+    //     $gagal = [];
+    //         foreach ($JmlArray as $key => $value) {
+
+    //             if ($value != '') {
+    //                 $txtqty         = $JmlArray[$key];
+    //                 $txtenroll      = $enroll_idArray[$key];
+    //                 $txtstat        = $statArray[$key]; {
+    //                 $insert_det =  DB::insert("
+    //                 insert into mut_karyawan_input_form_lembur_det(no_form,enroll_id,jam_lembur_awal_rencana,jam_lembur_akhir_rencana,jam_lembur_istirahat,status,konsumsi,uuid_koreksi_upah,created_by,created_at,updated_at)
+    //                 values('$kode_trans','$txtenroll','$jam_lembur_awal','$jam_lembur_akhir','$istirahat','$txtstat','$konsumsi','','$user','$timestamp','$timestamp')");
+    //                 }
+    //             }
+
+    //         }
+
+    //         if ($JmlArrayKet != '') {
+    //             foreach ($JmlArrayKet as $key_ => $value_) {
+    //                 if ($value_ != '') {
+
+    //                     $txtket         = $JmlArrayKet[$key_]; {
+    //                         $sql_cek_data = DB::select("select * from mut_karyawan_input_form_lembur_det_ket where no_form = '$kode_trans' and ket = '$txtket'");
+    //                         $cek_data     = $sql_cek_data ? $sql_cek_data[0]->ket : null;
+    //                         if ($cek_data == null) {
+    //                             $insert_ket =  DB::insert("
+    //                             insert into mut_karyawan_input_form_lembur_det_ket(no_form,ket)
+    //                             values('$kode_trans','$txtket')");
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+
+    //         $delete_tmp =  DB::delete("
+    //                         delete from mut_karyawan_input_form_lembur_tmp_det where created_by = '$user'
+    //                         ");
+
+    //         // return array(
+    //         //     "status" => 200,
+    //         //     "message" => 'No Transaksi :
+    //         //      ' . $kode_trans . '
+    //         //      Sudah Terbuat',
+    //         //     "additional" => [],
+    //         //     "redirect" => 'reload'
+    //         // );
+    //          return redirect()->route('fls.index')->with('success', 'Data berhasil disimpan.');
+    //     } else {
+    //         return array(
+    //             "status" => 400,
+    //             "message" => 'Tidak ada Data',
+    //             "additional" => [],
+    //         );
+    //     }
+    // }
     public function store(Request $request)
     {
         $timestamp = Carbon::now();
@@ -433,21 +526,23 @@ Log::alert("message");
         $jam_lembur_akhir   = $request->to_lembur;
         $istirahat   = $request->txtistirahat;
 
-        $no = date('ymd');
-        $tgl_pelaksana = date('dmY', strtotime($tgl_lembur));
+        $no = date('ymd',strtotime($tgl_lembur) );
+        $tgl_forminput = date('ymd', strtotime($tgl_filter));
         $kode = '_SPL_';
-        $kode_trans = $no . '_' . $line_fix ;
+        $kode_trans = $no . '_' . $line_fix. '_' .$tgl_forminput ;
 
         $JmlArray           = $_POST['cek_data'];
         $enroll_idArray     = $_POST['enroll_id'];
         $statArray          = $_POST['stat'];
         $JmlArrayKet        = $_POST['cboket'];
 
+
         if ($JmlArray != '') {
 
-            $sql_cek_nomor = DB::select("select * from mut_karyawan_input_form_lembur where no_form = '$kode_trans'");
+            $sql_cek_nomor = DB::select("select * from mut_karyawan_input_form_lembur where no_form = '$kode_trans' and tgl_filter='$tgl_filter'");
             $cek_nomor     = $sql_cek_nomor ? $sql_cek_nomor[0]->no_form : null;
             if ($cek_nomor == null) {
+
                 $insert_bppb =  DB::insert("
             insert into mut_karyawan_input_form_lembur(no_form,tgl_filter,tgl_lembur,line,approve,created_by,created_at,updated_at)
             values('$kode_trans','$tgl_filter','$tgl_lembur','$line','N','$user','$timestamp','$timestamp')");
@@ -457,34 +552,44 @@ Log::alert("message");
                 $konsumsi=0;
             }
 
-        $sukses = [];
-        $gagal = [];
+        DB::beginTransaction();
+
+        $saved_ids = []; // array untuk menyimpan ID yang berhasil
+
+        try {
             foreach ($JmlArray as $key => $value) {
-
                 if ($value != '') {
-                    $txtqty         = $JmlArray[$key];
-                    $txtenroll      = $enroll_idArray[$key];
-                    $txtstat        = $statArray[$key];
 
-                    $sql_cek_det =DB::select("select * from mut_karyawan_input_form_lembur_det dt left join mut_karyawan_input_form_lembur d on d.no_form = dt.no_form where dt.enroll_id = '$txtenroll' and d.tgl_lembur ='$tgl_filter'");
-//                     var_dump($sql_cek_det);
-// die;
-                    if (count($sql_cek_det) == 0 )
-                    {
-                        $insert_det =  DB::insert("
-                    insert into mut_karyawan_input_form_lembur_det(no_form,enroll_id,jam_lembur_awal_rencana,jam_lembur_akhir_rencana,jam_lembur_istirahat,status,konsumsi,uuid_koreksi_upah,created_by,created_at,updated_at)
-                    values('$kode_trans','$txtenroll','$jam_lembur_awal','$jam_lembur_akhir','$istirahat','$txtstat','$konsumsi','','$user','$timestamp','$timestamp')");
-                     $sukses[] = $txtenroll;
-                    } else {
-                    $gagal[] = $txtenroll;
-                    // } else {
-                    //     // Log::warning("Data lembur untuk $txtenroll tanggal $tgl_lembur sudah ada, tidak di-insert ulang.");
-                    //    return redirect()->back()->with('error', "Data dengan ID {$txtenroll} sudah ada! Lembur untuk karyawan ini sudah tersimpan.");
+                    $txtqty    = $JmlArray[$key];
+                    $txtenroll = $enroll_idArray[$key];
+                    $txtstat   = $statArray[$key];
 
+                    $sql_cek_det = DB::select("SELECT * FROM mut_karyawan_input_form_lembur_det dt
+                                                LEFT JOIN mut_karyawan_input_form_lembur d
+                                                ON d.no_form = dt.no_form
+                                                WHERE dt.enroll_id = '$txtenroll' AND d.tgl_lembur ='$tgl_lembur'");
+                                                // var_dump($tgl_lembur,$tgl_filter,$txtenroll,$sql_cek_det);
+                                                // die();
 
+                    if (count($sql_cek_det) > 0) {
+                        throw new \Exception("Data untuk ID $txtenroll sudah ada");
                     }
-                }
 
+                    $insert_det = DB::insert("
+                        INSERT INTO mut_karyawan_input_form_lembur_det(
+                            no_form,enroll_id,jam_lembur_awal_rencana,jam_lembur_akhir_rencana,
+                            jam_lembur_istirahat,status,konsumsi,uuid_koreksi_upah,created_by,created_at,updated_at
+                        ) VALUES(
+                            '$kode_trans','$txtenroll','$jam_lembur_awal','$jam_lembur_akhir','$istirahat',
+                            '$txtstat','$konsumsi','','$user','$timestamp','$timestamp'
+                        )");
+
+                    if (!$insert_det) {
+                        throw new \Exception("Gagal insert ID $txtenroll");
+                    }
+
+                    $saved_ids[] = $txtenroll; // simpan ID yang berhasil
+                }
             }
 
             if ($JmlArrayKet != '') {
@@ -524,13 +629,26 @@ Log::alert("message");
         //         "additional" => [],
         //     );
         // }
-         $pesan_sukses = count($sukses) ? 'Data berhasil disimpan untuk ID: ' . implode(', ', $sukses) . '. ' : '';
-        $pesan_gagal  = count($gagal) ? 'Data gagal disimpan karena sudah ada untuk ID: ' . implode(', ', $gagal) . '.' : '';
-        $pesan        = trim($pesan_sukses . ' ' . $pesan_gagal);
+         DB::commit();
 
-        return redirect()->route('fls.index')
-            ->with(count($sukses) ? 'success' : 'error', $pesan ?: 'Tidak ada data yang disimpan!');
-    }
+        // Tampilkan semua ID yang berhasil
+         $pesan = "✅ Semua data berhasil disimpan untuk ID:<br>"
+             . implode('<br>', $saved_ids)
+             . "<br><br>📄 NO_form: <b>$kode_trans</b><br>📅 Tanggal Lembur: $tgl_lembur";
+
+            return response()->json([
+                'status' => 200,
+                'message' => $pesan
+            ]);
+
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => 400,
+                    'message' => "⚠️ Gagal menyimpan data. Error: " . $e->getMessage()."<br><br>📄 NO_form: <b>$kode_trans</b><br>📅 Tanggal Lembur: $tgl_lembur"
+                ]);
+            }
+        }
     }
 
     public function getdatakaryawanspl(Request $request)
