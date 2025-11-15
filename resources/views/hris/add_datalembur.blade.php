@@ -798,7 +798,8 @@
             var jam_lembur_istirahat = $("input[name='jam_lembur_istirahat[]']").map(function(){return $(this).val();}).get();
             var jam_lembur = $("input[name='total_lembur[]']").map(function(){return $(this).val();}).get();
             var keterangan = $("input[name='keterangan_lembur[]']").map(function(){return $(this).val();}).get();
-            // let no_form=$('#selectNoForm').val();
+            let no_form=$('#selectNoForm').val();
+
             $.ajax({
                 type:"POST",
                 url: "{{route('hris.datalembur.importkaryawanlembur')}}",
@@ -812,6 +813,7 @@
                     jam_lembur_istirahat:jam_lembur_istirahat,
                     jam_lembur:jam_lembur,
                     keterangan:keterangan,
+                    no_form:no_form,
                 },
                 success: function(data){
                     console.log(data);
