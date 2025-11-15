@@ -253,11 +253,66 @@
     }
     </style>
     <script>
-        function disableButton(btn) {
-            btn.disabled = true;
-            btn.innerHTML = 'Menyimpan...'; // Optional
-            btn.form.submit();
+        function submitForm(form, event) {
+            event.preventDefault();  // Prevent default form submission
+            // Disable the submit button while the form is being submitted
+            document.getElementById('submitBtn').disabled = true;
+
+            document.getElementById('submitBtn').innerText = 'Menyimpan...';  // Optional, you can update text
+
+            // Perform the form submission using fetch
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // CSRF token
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 200) {
+                    // Menampilkan SweetAlert sukses
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sukses!',
+                        html: data.message, // gunakan html agar <br> muncul
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        // Arahkan ke halaman index setelah sukses
+                        window.location.href = "{{ route('flns.index') }}"; // Redirect ke halaman index
+                    });
+                } else {
+                    // Menampilkan SweetAlert error
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: data.message || 'Terjadi kesalahan!',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        // Enable kembali tombol submit
+                        document.getElementById('submitBtn').disabled = false;
+                        document.getElementById('submitBtn').innerText = 'Simpan';  // Reset text
+                    });
+                }
+            })
+            .catch(error => {
+                // Tangani error jika terjadi
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Terjadi kesalahan saat mengirim data!'
+                }).then(() => {
+                    // Enable kembali tombol submit
+                    document.getElementById('submitBtn').disabled = false;
+                    document.getElementById('submitBtn').innerText = 'Simpan';  // Reset text
+                });
+            });
         }
+        // function disableButton(btn) {
+        //     btn.disabled = true;
+        //     btn.innerHTML = 'Menyimpan...'; // Optional
+        //     btn.form.submit();
+        // }
         // Scan QR Module :
         // Variable List :
         var html5QrcodeScanner = null;

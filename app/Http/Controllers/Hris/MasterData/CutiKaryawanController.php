@@ -804,6 +804,7 @@ class CutiKaryawanController extends AdminBaseController
     {
         $query =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, department_name,department_id,sub_dept_name, sub_dept_id, status_aktif,
                                            concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')
+                                    ->where('status_aktif', 'AKTIF')
                                     ->groupby('enroll_id')
                                     ->orderby('employee_name', 'asc')
                                     ->get();

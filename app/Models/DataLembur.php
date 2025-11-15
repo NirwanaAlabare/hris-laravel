@@ -42,6 +42,7 @@ class DataLembur extends \Eloquent
         'operator',
         'catatan',
         'nomor_form_lembur',
+        'no_form',
         'capai_target',
         'created_at',
         'updated_at',

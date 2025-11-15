@@ -100,6 +100,9 @@ class DataLemburController extends AdminBaseController
         $email = $loggedAdmin->email;
         $kodelembur = "SPL/HR";
         $thnbln = date("ym");
+        $no_form=request()->no_form;
+        // log($no_form);
+        // dd($no_form);
 
         // $getlastnomorform =  DataLembur::select('nomor_form_lembur')
         //                                     ->groupby('nomor_form_lembur')
@@ -209,6 +212,7 @@ class DataLemburController extends AdminBaseController
                     'operator' => $email,
                     'catatan' => request()->keterangan[$key],
                     'nomor_form_lembur'=>$nomor_form_lembur,
+                    'no_form'=> $no_form,
                     'is_verifikasi'=>0
                 ]);
                 MasterDataAbsenKehadiran::where('enroll_id',request()->enroll_id[$key])->where('tanggal_berjalan',$tanggal_lembur)->update([
