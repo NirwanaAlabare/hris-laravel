@@ -37,7 +37,7 @@
     <div class="page-header shadow pr-2 m-0 pt-0 pb-0 pl-2">
         <ol class="breadcrumb breadcrumb-arrow m-0 p-0">
             <li><a href="{{route('fls.index')}}">Form Lembur</a></li>
-            <li class="active"><span>Fowm Lembur Sewing</span></li>
+            <li class="active"><span>Form Lembur Sewing</span></li>
         </ol>
         <div class="ml-auto">
             <div class="input-group">

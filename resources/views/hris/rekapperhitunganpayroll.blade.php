@@ -1397,7 +1397,9 @@
 
                                         },
                                         error: function (xhr, status, error) {
-                                            console.log(error);
+                                            console.error('xhr', xhr);
+                                            console.error('status', status);
+                                            console.error('error', error);
                                             swal("", "Proses payroll gagal!", "error");
 
                                             $('#BtnProsesPayroll').removeClass("btn-loading");
