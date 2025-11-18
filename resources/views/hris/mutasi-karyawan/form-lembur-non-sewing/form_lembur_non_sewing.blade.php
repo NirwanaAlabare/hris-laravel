@@ -193,6 +193,12 @@ table.dataTable td {
                             <th>Total Karyawan</th>
                         </tr>
                     </thead>
+                        <tfoot>
+                            <tr>
+                                <th colspan="8" style="text-align:right">TOTAL KARYAWAN DEPT :</th>
+                                <th id="total_karyawan_dept"></th>
+                            </tr>
+                        </tfoot>
                 </table>
             </div>
         </div>
@@ -672,7 +678,18 @@ table.dataTable td {
                         }
                     }
                 }
-            ]
+            ],
+            footerCallback: function (row, data, start, end, display) {
+                var api = this.api();
+                var total = api
+                    .column(8, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return Number(a) + Number(b);
+                    }, 0);
+
+                $(api.column(8).footer()).html(total);
+            }
         });
         function dataTableReload() {
             datatable.ajax.reload();

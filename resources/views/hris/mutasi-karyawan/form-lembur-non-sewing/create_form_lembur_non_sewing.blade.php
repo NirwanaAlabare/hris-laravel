@@ -246,7 +246,7 @@
     <script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
     <script src="{{URL::asset('assets/js/iziToast.min.js')}}"></script>
     <script src="{{ asset('assets/plugins/html5-qrcode/html5-qrcode.min.js') }}"></script>
-    <script src="{{URL::asset('assets/js/timepicker.js') }}"></script>
+    {{-- <script src="{{URL::asset('assets/js/timepicker.js') }}"></script> --}}
     <style>
     .checkbox-xl .form-check-input {
         scale: 1.5;

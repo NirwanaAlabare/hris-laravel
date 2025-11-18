@@ -478,7 +478,28 @@ public function show_list_karyawan_non_sewing(Request $request)
         $no = date('ymd', strtotime($tgl_lembur));
         $tgl_pelaksana = date('ymd', strtotime($tgl_filter));
         $kode = '_SPL_';
-        $kode_trans = $no. '_' .$dept_fix. '_' .$tgl_pelaksana;
+        $kodeno = $no . "_" . $dept_fix . "_" ;
+
+    // Cek NO_FORM terakhir yang menggunakan prefix ini
+        $sql_last = DB::select("
+            SELECT no_form FROM mut_karyawan_input_non_sewing_form_lembur
+            WHERE no_form LIKE '{$kodeno}%'
+            ORDER BY no_form DESC
+            LIMIT 1
+        ");
+
+        if (!$sql_last) {
+            $urut = 1; // tidak ada - mulai dari 1
+        } else {
+            // ambil bagian terakhir dari NO_FORM
+            $last_noform = $sql_last[0]->no_form;
+            $explode = explode('_', $last_noform);
+            $last_urut = intval(end($explode));
+            $urut = $last_urut + 1;
+        }
+
+    // hasil akhir NO_FORM
+    $kode_trans = $kodeno . $urut;
 
         $keteranganArray    = $_POST['keterangan'];
         $JmlArray           = $_POST['cek_data'];
