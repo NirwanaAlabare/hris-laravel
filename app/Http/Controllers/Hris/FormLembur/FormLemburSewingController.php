@@ -165,7 +165,7 @@ class FormLemburSewingController extends AdminBaseController
             ) b on m.enroll_id = b.enroll_id
             left join
             (
-                select enroll_id from mut_karyawan_input_form_lembur a
+                select b.enroll_id, b.status AS status_lembur from mut_karyawan_input_form_lembur a
                 inner join mut_karyawan_input_form_lembur_det b on a.no_form = b.no_form
                 where a.tgl_lembur = '$tgl_lembur' and a.tgl_filter = '$tgl_filter'
             ) c on b.enroll_id = c.enroll_id
@@ -175,7 +175,7 @@ class FormLemburSewingController extends AdminBaseController
                 left join mut_karyawan_input_non_sewing_form_lembur_det b on a.no_form = b.no_form
                 where a.tgl_lembur = '$tgl_lembur'
             ) d on b.enroll_id = d.enroll_id
-            where c.enroll_id is null and d.enroll_id is null
+            where (c.enroll_id is null OR c.status_lembur = 'PINJAMAN' ) and d.enroll_id is null
 						UNION
 						select tmp.enroll_id ,emp.employee_name, emp.nik, emp.status_jabatan,null cek_stat,'PINJAMAN' stat
 						from mut_karyawan_input_form_lembur_tmp_det tmp
@@ -190,7 +190,7 @@ class FormLemburSewingController extends AdminBaseController
                   THEN 1
                ELSE 0 END ASC, nm_karyawan asc
             ");
-
+// dd($data_tmp);
             return DataTables::of($data_tmp)->toJson();
         }
     }
@@ -270,21 +270,54 @@ class FormLemburSewingController extends AdminBaseController
         delete from mut_karyawan_input_form_lembur_tmp_det where created_by = '$user'");
     }
 
-    public function del_karyawan(Request $request)
+    // public function del_karyawan(Request $request)
+    // {
+    //     $user = Auth::guard('admin')->user()->name;
+    //     $timestamp = Carbon::now();
+    //     $enroll_id = $request->id;
+    //     $no_form = $request->no_form;
+
+    //     $del_tmp =  DB::delete("
+    //     delete from mut_karyawan_input_form_lembur_det where enroll_id = '$enroll_id' and no_form = '$no_form'");
+
+    //     $ins =  DB::insert("
+    //     insert into mut_karyawan_input_form_lembur_tmp_det_log_del (enroll_id,no_form,created_by,created_at,updated_at)
+    //     VALUES ('$enroll_id','$no_form','$user','$timestamp','$timestamp')");
+    // }
+    public function del_karyawan(Request $request)    // aksi delelet data karyawan
     {
         $user = Auth::guard('admin')->user()->name;
-        $timestamp = Carbon::now();
-        $enroll_id = $request->id;
-        $no_form = $request->no_form;
+            $timestamp = Carbon::now();
+            $enroll_id = $request->id;
+            $no_form = $request->no_form;
+        $aksi = $request->aksi;  // delete / cancel
 
-        $del_tmp =  DB::delete("
-        delete from mut_karyawan_input_form_lembur_det where enroll_id = '$enroll_id' and no_form = '$no_form'");
+        if ($aksi == "delete") {               // aksi delete karyawan di form lembur
 
-        $ins =  DB::insert("
-        insert into mut_karyawan_input_form_lembur_tmp_det_log_del (enroll_id,no_form,created_by,created_at,updated_at)
-        VALUES ('$enroll_id','$no_form','$user','$timestamp','$timestamp')");
+            DB::delete("
+                DELETE FROM mut_karyawan_input_form_lembur_det
+                WHERE enroll_id = '$request->id' AND no_form = '$request->no_form'
+            ");
+
+            DB::insert("
+                INSERT INTO mut_karyawan_input_form_lembur_tmp_det_log_del
+                (enroll_id, no_form, created_by, created_at, updated_at)
+                VALUES ('$request->id', '$request->no_form', '$user', '$timestamp', '$timestamp')
+            ");
+
+        } else if ($aksi == "cancel") {                           // aksi cancel data di form lembur
+
+            DB::update("
+                UPDATE mut_karyawan_input_form_lembur_det
+                SET deleted_at = '$timestamp',
+                    updated_at = '$timestamp',
+                    created_by = '$user'
+                WHERE enroll_id = '$request->id' AND no_form = '$request->no_form'
+            ");
+        }
+
+        return response()->json(["status" => "success"]);
     }
-
     public function show_list_karyawan_tmp(Request $request)
     {
         $user = $request->user;
@@ -352,7 +385,7 @@ class FormLemburSewingController extends AdminBaseController
         }
         $no_form_lembur_det_array=implode("', '",$no_form);
 
-        $form_lembur_det=DB::select("select no_form from mut_karyawan_input_form_lembur_det where no_form in ('$no_form_lembur_det_array') and enroll_id='$enroll_id'");
+        $form_lembur_det=DB::select("select no_form from mut_karyawan_input_form_lembur_det where no_form in ('$no_form_lembur_det_array') and enroll_id='$enroll_id' and status ='PINJAMAN'");
         $form_lembur_det_tmp=DB::select("select * from mut_karyawan_input_form_lembur_tmp_det where enroll_id='$enroll_id' and created_by='$user'");
         if(!$form_lembur_det && !$form_lembur_det_tmp){
             $employee=DB::select("select a.enroll_id as enroll_id,a.employee_name as employee_name,a.nik as nik,a.status_jabatan as status_jabatan,a.sub_dept_name as sub_dept_name,a.sub_dept_name as sub_dept_name,m.absen_masuk_kerja as absen_in,m.enroll_id as id_absen,m.tanggal_berjalan as tanggal_berjalan,m.absen_masuk_kerja as absen_in,m.absen_pulang_kerja as absen_out from employee_atribut a left join (select*from master_data_absen_kehadiran where tanggal_berjalan='$tanggal_lembur')m on a.enroll_id=m.enroll_id where a.enroll_id = '$enroll_id'");
@@ -381,6 +414,7 @@ class FormLemburSewingController extends AdminBaseController
         $timestamp = Carbon::now();
         $jam=request()->jam_awal_lembur;
         $no_form=request()->id_c;
+
         $dept_id=DB::select("select*from mut_karyawan_input_form_lembur where no_form='$no_form'");
         $department_name=$dept_id[0]->line;
         $x=[];
@@ -513,6 +547,7 @@ class FormLemburSewingController extends AdminBaseController
     //         );
     //     }
     // }
+
     public function store(Request $request)
     {
         $timestamp = Carbon::now();
@@ -530,6 +565,28 @@ class FormLemburSewingController extends AdminBaseController
         $tgl_forminput = date('ymd', strtotime($tgl_filter));
         $kode = '_SPL_';
         $kode_trans = $no . '_' . $line_fix. '_' .$tgl_forminput ;
+    //     $kodeno = $no . "_" . $line_fix. "_" ;
+
+    // // Cek NO_FORM terakhir yang menggunakan prefix ini
+    //     $sql_last = DB::select("
+    //         SELECT no_form FROM mut_karyawan_input_form_lembur
+    //         WHERE no_form LIKE '{$kodeno}%'
+    //         ORDER BY no_form DESC
+    //         LIMIT 1
+    //     ");
+
+    //     if (!$sql_last) {
+    //         $urut = 1; // tidak ada - mulai dari 1
+    //     } else {
+    //         // ambil bagian terakhir dari NO_FORM
+    //         $last_noform = $sql_last[0]->no_form;
+    //         $explode = explode('_', $last_noform);
+    //         $last_urut = intval(end($explode));
+    //         $urut = $last_urut + 1;
+    //     }
+
+    // // hasil akhir NO_FORM
+    // $kode_trans = $kodeno . $urut;
 
         $JmlArray           = $_POST['cek_data'];
         $enroll_idArray     = $_POST['enroll_id'];
@@ -544,8 +601,8 @@ class FormLemburSewingController extends AdminBaseController
             if ($cek_nomor == null) {
 
                 $insert_bppb =  DB::insert("
-            insert into mut_karyawan_input_form_lembur(no_form,tgl_filter,tgl_lembur,line,approve,created_by,created_at,updated_at)
-            values('$kode_trans','$tgl_filter','$tgl_lembur','$line','N','$user','$timestamp','$timestamp')");
+                    insert into mut_karyawan_input_form_lembur(no_form,tgl_filter,tgl_lembur,line,approve,created_by,created_at,updated_at)
+                    values('$kode_trans','$tgl_filter','$tgl_lembur','$line','N','$user','$timestamp','$timestamp')");
             }
             $konsumsi=1;
             if($jam_lembur_akhir=='18:00' && $jam_lembur_awal<='17:00' && $jam_lembur_awal>='15:00'){
@@ -567,11 +624,11 @@ class FormLemburSewingController extends AdminBaseController
                     $sql_cek_det = DB::select("SELECT * FROM mut_karyawan_input_form_lembur_det dt
                                                 JOIN mut_karyawan_input_form_lembur d
                                                 ON d.no_form = dt.no_form
-                                                WHERE dt.enroll_id = '$txtenroll' AND d.tgl_lembur ='$tgl_lembur'");
+                                                WHERE dt.enroll_id = '$txtenroll' AND d.tgl_lembur ='$tgl_lembur'AND dt.status != 'PINJAMAN'");
                                                 // var_dump($tgl_lembur,$tgl_filter,$txtenroll,$sql_cek_det);
                                                 // die();
 
-                    if (count($sql_cek_det) > 0) {
+                    if (count($sql_cek_det) > 0) {       // cek apakah data yang di imput tersebut sudah ada atau belum
                         throw new \Exception("Data untuk ID $txtenroll sudah ada");
                     }
 
@@ -658,6 +715,7 @@ class FormLemburSewingController extends AdminBaseController
 
             $data_det_spl = DB::select("
             select
+            a.tgl_filter as created_at,
             tgl_lembur,
             DATE_FORMAT(tgl_lembur, '%d-%m-%Y') tgl_lembur_fix,
             a.no_form,
@@ -667,6 +725,7 @@ class FormLemburSewingController extends AdminBaseController
             b.id_det,
             b.uuid_koreksi_upah,
             b.konsumsi,
+            b.deleted_at,
             e.nik,
             e.employee_name,
             e.status_jabatan,
@@ -898,7 +957,10 @@ class FormLemburSewingController extends AdminBaseController
         $no_form=request()->no_form;
         $sub_dept=DB::select("select line from mut_karyawan_input_form_lembur where no_form = '$no_form'")[0]->line;
         $dept=DB::select("select department_name from department_all where site_nirwana_id='NAG' and sub_dept_name = '$sub_dept'")[0]->department_name;
+<<<<<<< Updated upstream
         // $tgl_lembur=Carbon::parse(substr($no_form,-4).'-'.substr($no_form,-6,2).'-'.substr($no_form,-8,2))->translatedFormat('d F Y');
+=======
+>>>>>>> Stashed changes
         $tgl_lembur=DB::select("select tgl_lembur from mut_karyawan_input_form_lembur where no_form = '$no_form'")[0]->tgl_lembur;
         $data = DB::select("select a.enroll_id,b.employee_name,a.uuid_koreksi_upah,d.ket,a.jam_lembur_awal_rencana,m.absen_pulang_kerja from mut_karyawan_input_form_lembur_det a
         inner join employee_atribut b on a.enroll_id=b.enroll_id
