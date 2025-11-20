@@ -2555,8 +2555,6 @@ class CutiKaryawanController extends AdminBaseController
         $tanggal_perizinan = $request->tanggal_perizinan;
         $nomor_form_perizinan = $request->nomor_form_perizinan;
         $enroll_id = $request->enroll_id;
-        $uuid = $request->uuid;
-         info('uuid : ' . $uuid);
         info('Tanggal Perizinan : ' . $tanggal_perizinan);
         info('Nomor Form Perizinan : ' . $nomor_form_perizinan);
         info('Nomor Absen : ' . $enroll_id);
@@ -2589,8 +2587,7 @@ class CutiKaryawanController extends AdminBaseController
             }
         }else{
             DataAbsenPerijinan::whereRaw('
-                uuid= "'.$uuid.'"
-                and tanggal_perizinan = "'. $tanggal_perizinan . '"
+                tanggal_perizinan = "'. $tanggal_perizinan . '"
                 and enroll_id = "'. $enroll_id . '"
             ')
             ->delete();
@@ -2608,7 +2605,6 @@ class CutiKaryawanController extends AdminBaseController
         $tanggal_perizinan = $request->tanggal_perizinan;
         $nomor_form_perizinan = $request->nomor_form_perizinan;
         $enroll_id = $request->enroll_id;
-        $uuid = $request->uuid;
         info('Tanggal Perizinan : ' . $tanggal_perizinan);
         info('Nomor Form Perizinan : ' . $nomor_form_perizinan);
         info('Nomor Absen : ' . $enroll_id);
@@ -2620,12 +2616,9 @@ class CutiKaryawanController extends AdminBaseController
                         ->delete();
         }else{
             $query = DataAbsenPerijinanDTPC::whereRaw('
-                            uuid = "'. $uuid . '"
-                            and tanggal_perizinan = "'. $tanggal_perizinan . '"
+                            tanggal_perizinan = "'. $tanggal_perizinan . '"
                             and enroll_id = "'. $enroll_id . '"
-
                         ')
-
                         ->delete();
         }
 
