@@ -876,44 +876,20 @@
                         }
                     },
                     {
-                        targets: [15], // delete dan cancel
+                        targets: [15],
                         render: (data, type, row, meta) => {
-
-                            const tglData = new Date(row.created_at);
-                            const today = new Date();
-                            const selisih = (today - tglData) / (1000 * 60 * 60 * 24);
-
-                            // Jika lebih dari 1 hari → cancel
-                            if (selisih >= 1) {
-                                return `
-                                    <div class='d-flex gap-1 justify-content-center'>
-                                        <a class='btn btn-warning btn-sm'
-                                        onclick="del_karyawan('`+row.enroll_id+`','`+row.no_form+`','cancel')">
-                                        <i class='fa fa-ban'></i> CANCEL
-                                        </a>
-                                    </div>
-                                `;
-                            }
-
-                            // Jika masih kurang dari 1 hari → DELETE
-                                return `
-                                    <div class='d-flex gap-1 justify-content-center'>
-                                        <a class='btn btn-danger btn-sm'
-                                        onclick="del_karyawan('`+row.enroll_id+`','`+row.no_form+`','delete')">
-                                        <i class='fa fa-trash'></i>
-                                        </a>
-                                    </div>
-                                `;
+                            return `
+                        <div class='d-flex gap-1 justify-content-center'>
+                            <a class='btn btn-danger btn-sm' onclick="del_karyawan(
+                                '` + row.enroll_id + `',
+                                '` + row.no_form + `');">
+                                <i class='fa fa-trash'></i>
+                            </a>
+                        </div>
+                    `
                         }
-                    },
-                    { data: 'deleted_at', name: 'deleted_at', visible: false }
-                ],
-                rowCallback: function(row, data) {          // untuk jika data sudah ada maka tulisaan nya akan merah
-                    if (data.deleted_at && data.deleted_at!== "") {
-                        $(row).addClass("text-danger");
-                    //    $(row).find('input, select, textarea, button').prop('disabled', true);     jika ingin ketika datanya sudah cancel ke disabel
                     }
-                },
+                ],
             });
         };
 
@@ -962,24 +938,24 @@
             });
         }
 
-        function del_karyawan(id, no_form, aksi) {
+        function del_karyawan(id, no_form) {
             $.ajax({
                 type: "post",
                 url: '{{ route('fls.del_karyawan') }}',
                 data: {
                     id: id,
-                    no_form: no_form,
-                    aksi: aksi,
+                    no_form: no_form
                 },
-                success: function(res) {
+                success: async function(res) {
                     iziToast.success({
-                        message: 'Berhasil diproses: ' + aksi.toUpperCase(),
+                        message: 'Data Berhasil Dihapus',
                         position: 'topCenter'
                     });
                     $('#datatable-modal').DataTable().ajax.reload();
                     dataTableReload();
                 }
             });
+
         }
         function checkbox_enroll_id(enroll_id){
             var checked=document.getElementById('checked_enroll_id_'+enroll_id).checked;

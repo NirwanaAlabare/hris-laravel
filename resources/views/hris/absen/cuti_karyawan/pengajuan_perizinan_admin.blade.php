@@ -236,8 +236,6 @@ h1 {
                                                                 </th>
 
                                                                 <th scope="col">Tanggal Pengajuan</th>
-                                                                <th scope="col">Tanggal Mulai Ijin</th>
-                                                                <th scope="col">Tanggal Akhir Ijin</th>
                                                                 <th scope="col">Nomor Form Perijinan</th>
                                                                 <th scope="col">NIP</th>
                                                                 <th scope="col">Nama Karyawan</th>
@@ -259,8 +257,6 @@ h1 {
                                                         <thead>
                                                             <tr class="text-center">
                                                                 <th scope="col">Tanggal Pengajuan</th>
-                                                                <th scope="col">Tanggal Mulai Ijin</th>
-                                                                <th scope="col">Tanggal Akhir Ijin</th>
                                                                 <th scope="col">Nomor Form Perijinan</th>
                                                                 <th scope="col">NIP</th>
                                                                 <th scope="col">Nama Karyawan</th>
@@ -1193,18 +1189,6 @@ h1 {
                             return moment(data).format('DD-MM-YYYY');  // Formatkan tanggal ke dmy
                         }
                     },
-                    {
-                        data:'tanggal_mulai_ijin',                             // menambah tabell data ijin
-                        render: function(data, type, row){
-                            return moment(data). format('DD-MM-YYYY');
-                        }
-                    },
-                     {
-                        data:'tanggal_akhir_ijin',
-                        render: function(data, type, row){
-                            return moment(data).format('DD-MM-YYYY');
-                        }
-                    },
                     { data: 'nomor_form_perizinan',
                         render: function (data, type, row) {
                             return '<p>-</p>';
@@ -1262,7 +1246,7 @@ h1 {
                                         <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.uuid}')" data-id="${row.uuid}" title="Edit">
                                             <i class="fa fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-sm mr-1 btn-danger" id="btn-remove"  data-uuid="${row.uuid}" data-kode-absen="${row.kode_absen_ijin}" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Delete">
+                                        <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-kode-absen="${row.kode_absen_ijin}" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Edit">
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     `;
@@ -1274,7 +1258,7 @@ h1 {
                                         <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.uuid}')" data-id="${row.uuid}" title="Edit">
                                             <i class="fa fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-uuid="${row.uuid}" data-kode-absen="${row.kode_absen_ijin}" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Delete">
+                                        <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-kode-absen="${row.kode_absen_ijin}" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Edit">
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     `;
@@ -1330,17 +1314,6 @@ h1 {
                       render: function(data, type, row) {
                             return moment(data).format('DD-MM-YYYY');  // Formatkan tanggal ke dmy
                         }
-                    },{
-                        data:'tanggal_mulai_ijin',                             // menambah tabell data ijin
-                        render: function(data, type, row){
-                            return moment(data). format('DD-MM-YYYY');
-                        }
-                    },
-                     {
-                        data:'tanggal_akhir_ijin',
-                        render: function(data, type, row){
-                            return moment(data).format('DD-MM-YYYY');
-                        }
                     },
                     { data: 'nomor_form_perizinan', width: '18%' },
                     { data: 'nik', width: '10%' },
@@ -1387,7 +1360,7 @@ h1 {
                                         <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.uuid}')" data-id="${row.uuid}" title="Edit">
                                             <i class="fa fa-edit"></i>
                                         </button>
-                                       <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-uuid="${row.uuid}" data-kode-absen="${row.kode_absen_ijin}" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Hapus">
+                                       <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-kode-absen="${row.kode_absen_ijin}" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Edit">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                     `;
@@ -1523,7 +1496,6 @@ h1 {
             $('body').on('click', '#btn-remove', function (event) {
                 var nomor_form_perizinan = $(this).data('nomor-form-perizinan');
                 var enroll_id = $(this).data('enroll_id');
-                var uuid = $(this).data('uuid');
                 var tanggal_periz = $(this).data('tanggal_perizinan');
                 var kode_absen_ijin = $(this).data('kode-absen');
 
@@ -1562,7 +1534,6 @@ h1 {
                                     tanggal_perizinan:tanggal_periz,
                                     nomor_form_perizinan:nomor_form_perizinan,
                                     enroll_id:enroll_id,
-                                    uuid:uuid,
                                 },
                                 dataType: 'json',
                                 success: function(res){
@@ -1641,7 +1612,6 @@ h1 {
                                                 tanggal_perizinan:tanggal_perizinan,
                                                 nomor_form_perizinan:nomor_form_perizinan,
                                                 enroll_id:enroll_id,
-                                                uuid:uuid,
                                             },
                                             dataType: 'json',
                                             success: function(res){
@@ -1672,9 +1642,9 @@ h1 {
                             }
 
                         },
-                        // error: function(res){
+                        error: function(res){
 
-                        // }
+                        }
                     });
                 }
 
@@ -1954,7 +1924,6 @@ h1 {
 
                             return false;
                         }
-
                         $.ajax({
                             type:"POST",
                             url: "{{route('hris.dataabsenperijinan.cekperizinan')}}",
@@ -1963,10 +1932,8 @@ h1 {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                             data: {
                                 enroll_id:enroll_id,
-                                tanggal_mulai_ijin:tanggal_mulai_ijin,
-                                tanggal_akhir_ijin:tanggal_mulai_ijin,
-                                tanggal_perizinan:tanggal_perizinan,
-                                kode_absen_ijin:kode_absen_ijin,
+                                tanggal_mulai_ijin:tanggal_mulai_ijin_before,
+                                tanggal_akhir_ijin:tanggal_akhir_ijin_before,
                             },
                             dataType: 'json',
                             success: function(res){
