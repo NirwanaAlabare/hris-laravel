@@ -907,7 +907,7 @@ class FormLemburSewingController extends AdminBaseController
         left join master_data_absen_kehadiran m on a.enroll_id=m.enroll_id and e.tgl_lembur=m.tanggal_berjalan
         where a.no_form='$no_form' and a.uuid_koreksi_upah!='' order by b.employee_name asc");
         $date_now=Carbon::now()->translatedFormat('d F Y');
-        $fileName = date('Ym') . ' Form Insentif ' . Carbon::now()->translatedFormat('dmY'); /// baru
+        $fileName = date('Ym') . ' Form Insentif ' . Carbon::now()->translatedFormat('dmY');
         // $fileName=date('Ym').' Form Insentif '.' - '.substr_replace(substr($no_form,13),"",-9).' '.Carbon::parse(strtotime(substr($no_form,-4).'-'.substr($no_form,-6,2).'-'.substr($no_form,-8,2)))->translatedFormat('dmY');
         $pdf = PDF::loadView('hris.mutasi-karyawan.form-lembur-sewing.form_insentif_sewing',["data" => $data,"no_form"=>$no_form,"date_now"=>$date_now,"tgl_lembur"=>$tgl_lembur,"dept"=>$dept,"sub_dept"=>$sub_dept])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
         return $pdf;
