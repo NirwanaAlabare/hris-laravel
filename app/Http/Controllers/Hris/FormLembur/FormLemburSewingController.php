@@ -957,10 +957,7 @@ class FormLemburSewingController extends AdminBaseController
         $no_form=request()->no_form;
         $sub_dept=DB::select("select line from mut_karyawan_input_form_lembur where no_form = '$no_form'")[0]->line;
         $dept=DB::select("select department_name from department_all where site_nirwana_id='NAG' and sub_dept_name = '$sub_dept'")[0]->department_name;
-<<<<<<< Updated upstream
         // $tgl_lembur=Carbon::parse(substr($no_form,-4).'-'.substr($no_form,-6,2).'-'.substr($no_form,-8,2))->translatedFormat('d F Y');
-=======
->>>>>>> Stashed changes
         $tgl_lembur=DB::select("select tgl_lembur from mut_karyawan_input_form_lembur where no_form = '$no_form'")[0]->tgl_lembur;
         $data = DB::select("select a.enroll_id,b.employee_name,a.uuid_koreksi_upah,d.ket,a.jam_lembur_awal_rencana,m.absen_pulang_kerja from mut_karyawan_input_form_lembur_det a
         inner join employee_atribut b on a.enroll_id=b.enroll_id
