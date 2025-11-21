@@ -804,6 +804,7 @@ class CutiKaryawanController extends AdminBaseController
     {
         $query =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, department_name,department_id,sub_dept_name, sub_dept_id, status_aktif,
                                            concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')
+                                    ->where('status_aktif', 'AKTIF')
                                     ->groupby('enroll_id')
                                     ->orderby('employee_name', 'asc')
                                     ->get();
@@ -2554,6 +2555,8 @@ class CutiKaryawanController extends AdminBaseController
         $tanggal_perizinan = $request->tanggal_perizinan;
         $nomor_form_perizinan = $request->nomor_form_perizinan;
         $enroll_id = $request->enroll_id;
+        $uuid = $request->uuid;
+         info('uuid : ' . $uuid);
         info('Tanggal Perizinan : ' . $tanggal_perizinan);
         info('Nomor Form Perizinan : ' . $nomor_form_perizinan);
         info('Nomor Absen : ' . $enroll_id);
@@ -2586,7 +2589,8 @@ class CutiKaryawanController extends AdminBaseController
             }
         }else{
             DataAbsenPerijinan::whereRaw('
-                tanggal_perizinan = "'. $tanggal_perizinan . '"
+                uuid= "'.$uuid.'"
+                and tanggal_perizinan = "'. $tanggal_perizinan . '"
                 and enroll_id = "'. $enroll_id . '"
             ')
             ->delete();
@@ -2604,6 +2608,7 @@ class CutiKaryawanController extends AdminBaseController
         $tanggal_perizinan = $request->tanggal_perizinan;
         $nomor_form_perizinan = $request->nomor_form_perizinan;
         $enroll_id = $request->enroll_id;
+        $uuid = $request->uuid;
         info('Tanggal Perizinan : ' . $tanggal_perizinan);
         info('Nomor Form Perizinan : ' . $nomor_form_perizinan);
         info('Nomor Absen : ' . $enroll_id);
@@ -2615,9 +2620,12 @@ class CutiKaryawanController extends AdminBaseController
                         ->delete();
         }else{
             $query = DataAbsenPerijinanDTPC::whereRaw('
-                            tanggal_perizinan = "'. $tanggal_perizinan . '"
+                            uuid = "'. $uuid . '"
+                            and tanggal_perizinan = "'. $tanggal_perizinan . '"
                             and enroll_id = "'. $enroll_id . '"
+
                         ')
+
                         ->delete();
         }
 

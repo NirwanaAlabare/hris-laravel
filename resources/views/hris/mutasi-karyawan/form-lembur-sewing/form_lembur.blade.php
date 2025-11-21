@@ -37,7 +37,7 @@
     <div class="page-header shadow pr-2 m-0 pt-0 pb-0 pl-2">
         <ol class="breadcrumb breadcrumb-arrow m-0 p-0">
             <li><a href="{{route('fls.index')}}">Form Lembur</a></li>
-            <li class="active"><span>Fowm Lembur Sewing</span></li>
+            <li class="active"><span>Form Lembur Sewing</span></li>
         </ol>
         <div class="ml-auto">
             <div class="input-group">
@@ -876,20 +876,44 @@
                         }
                     },
                     {
-                        targets: [15],
+                        targets: [15], // delete dan cancel
                         render: (data, type, row, meta) => {
-                            return `
-                        <div class='d-flex gap-1 justify-content-center'>
-                            <a class='btn btn-danger btn-sm' onclick="del_karyawan(
-                                '` + row.enroll_id + `',
-                                '` + row.no_form + `');">
-                                <i class='fa fa-trash'></i>
-                            </a>
-                        </div>
-                    `
+
+                            const tglData = new Date(row.created_at);
+                            const today = new Date();
+                            const selisih = (today - tglData) / (1000 * 60 * 60 * 24);
+
+                            // Jika lebih dari 1 hari → cancel
+                            if (selisih >= 1) {
+                                return `
+                                    <div class='d-flex gap-1 justify-content-center'>
+                                        <a class='btn btn-warning btn-sm'
+                                        onclick="del_karyawan('`+row.enroll_id+`','`+row.no_form+`','cancel')">
+                                        <i class='fa fa-ban'></i> CANCEL
+                                        </a>
+                                    </div>
+                                `;
+                            }
+
+                            // Jika masih kurang dari 1 hari → DELETE
+                                return `
+                                    <div class='d-flex gap-1 justify-content-center'>
+                                        <a class='btn btn-danger btn-sm'
+                                        onclick="del_karyawan('`+row.enroll_id+`','`+row.no_form+`','delete')">
+                                        <i class='fa fa-trash'></i>
+                                        </a>
+                                    </div>
+                                `;
                         }
-                    }
+                    },
+                    { data: 'deleted_at', name: 'deleted_at', visible: false }
                 ],
+                rowCallback: function(row, data) {          // untuk jika data sudah ada maka tulisaan nya akan merah
+                    if (data.deleted_at && data.deleted_at!== "") {
+                        $(row).addClass("text-danger");
+                    //    $(row).find('input, select, textarea, button').prop('disabled', true);     jika ingin ketika datanya sudah cancel ke disabel
+                    }
+                },
             });
         };
 
@@ -938,24 +962,24 @@
             });
         }
 
-        function del_karyawan(id, no_form) {
+        function del_karyawan(id, no_form, aksi) {
             $.ajax({
                 type: "post",
                 url: '{{ route('fls.del_karyawan') }}',
                 data: {
                     id: id,
-                    no_form: no_form
+                    no_form: no_form,
+                    aksi: aksi,
                 },
-                success: async function(res) {
+                success: function(res) {
                     iziToast.success({
-                        message: 'Data Berhasil Dihapus',
+                        message: 'Berhasil diproses: ' + aksi.toUpperCase(),
                         position: 'topCenter'
                     });
                     $('#datatable-modal').DataTable().ajax.reload();
                     dataTableReload();
                 }
             });
-
         }
         function checkbox_enroll_id(enroll_id){
             var checked=document.getElementById('checked_enroll_id_'+enroll_id).checked;

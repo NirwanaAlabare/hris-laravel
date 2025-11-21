@@ -90,9 +90,10 @@
             </tr>
             <tr>
                 <td colspan='2' class="border-left" style="height: 22px;vertical-align:bottom;padding-left:3px">TANGGAL</td>
-                <td class="borderless" colspan="4" style="height: 22px;vertical-align:bottom">
-                    : {{$tgl_lembur}}
-                </td>
+<td class="borderless" colspan="4" style="height: 22px; vertical-align: bottom">
+    : {{ \Carbon\Carbon::parse($tgl_lembur)->translatedFormat('d F Y') }}
+</td>
+
                 <td class="borderless" style="height: 22px;vertical-align:bottom">Target</td>
                 <td class="border-right" style="height: 22px;vertical-align:bottom">: </td>
             </tr>

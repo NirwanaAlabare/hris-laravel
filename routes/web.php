@@ -586,6 +586,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris', 'names
     Route::post('datalembur/create_serah_terima_lembur', ['as' => 'hris.datalembur.create_serah_terima_lembur', 'uses' => 'DataLemburController@create_serah_terima_lembur']);
     Route::post('datalembur/ajax_datalembur', ['as' => 'hris.datalembur.ajax_datalembur', 'uses' => 'DataLemburController@ajax_datalembur']);
     Route::post('datalembur/ajax_datalembur2', ['as' => 'hris.datalembur.ajax_datalembur2', 'uses' => 'DataLemburController@ajax_datalembur2']);
+    Route::post('datalembur/ajax_datalembur21', ['as' => 'hris.datalembur.ajax_datalembur21', 'uses' => 'DataLemburController@ajax_datalembur21']);
     Route::post('datalembur/verificating', ['as' => 'hris.datalembur.verificating', 'uses' => 'DataLemburController@verificating']);
     Route::post('datalembur/replace', ['as' => 'hris.datalembur.replace', 'uses' => 'DataLemburController@replace']);
     Route::post('datalembur/updatelembur', ['as' => 'hris.datalembur.updatelembur', 'uses' => 'DataLemburController@updatelembur']);
@@ -601,6 +602,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris', 'names
     Route::get('datalembur/get_last_nomor_form_lembur', ['as' => 'hris.datalembur.get_last_nomor_form_lembur', 'uses' => 'DataLemburController@get_last_nomor_form_lembur']);
     Route::get('datalembur/export_excel_tanda_terima_lembur', ['as' => 'hris.datalembur.export_excel_tanda_terima_lembur', 'uses' => 'DataLemburController@export_excel_tanda_terima_lembur']);
     Route::get('datalembur/export_excel_tanda_terima_lembur_all_date', ['as' => 'hris.datalembur.export_excel_tanda_terima_lembur_all_date', 'uses' => 'DataLemburController@export_excel_tanda_terima_lembur_all_date']);
+    Route::post('datalembur/delete21/', ['as' => 'hris.datalembur.delete21', 'uses' => 'DataLemburController@delete21']);
 
     Route::post('koreksi-upah/get_list_insentif', ['as' => 'hris.koreksi_upah.get_list_insentif', 'uses' => 'KoreksiUpahController@get_list_insentif']);
     Route::post('koreksi-upah/getkaryawanInsentif', ['as' => 'hris.koreksi_upah.getkaryawanInsentif', 'uses' => 'KoreksiUpahController@getkaryawanInsentif']);
