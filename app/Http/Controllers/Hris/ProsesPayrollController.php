@@ -2828,7 +2828,7 @@ class ProsesPayrollController extends AdminBaseController
                     'lembur_4' => $value->lembur_4,
                     'total_lembur_1234' => $value->total_lembur_1234,
                     'lembur1_rupiah' => (int)$value->lembur1_rupiah,
-                    'lembur2_rupiah' => (int)$value->lembur2_rupiah,SIGNED
+                    'lembur2_rupiah' => (int)$value->lembur2_rupiah,
                     'lembur3_rupiah' => (int)$value->lembur3_rupiah,
                     'lembur4_rupiah' => (int)$value->lembur4_rupiah,
                     'total_lembur_rupiah' => (int)$value->total_lembur_rupiah,
