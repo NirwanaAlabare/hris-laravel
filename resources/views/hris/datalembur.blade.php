@@ -172,6 +172,7 @@
                     <i class="ion-plus"></i> Serah Terima
                 </button>
                 @endif
+                <a href="javascript:void(0)" id="btn-data" class="btn btn-secondary mr-0 mt-0 mb-0" data-toggle="tooltip" title="Cari Data"><i class="ion-search"></i> Cek Data Double</a>
             </div>
         </div>
     </div>
@@ -236,6 +237,7 @@
                                             <th class="bg-primary w-5 align-middle" scope="col" width="50px">STAFF</th>
                                             <th class="bg-primary w-5 align-middle" scope="col" width="50px">TANGGAL<br>RESIGN</th>
                                             <th class="bg-primary w-5 align-middle" scope="col" width="50px">BAGIAN</th>
+                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">STATUS</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -284,6 +286,7 @@
                                         <th class="bg-primary w-5 align-middle" scope="col" width="50px">STAFF</th>
                                         <th class="bg-primary w-5 align-middle" scope="col" width="50px">TANGGAL<br>RESIGN</th>
                                         <th class="bg-primary w-5 align-middle" scope="col" width="50px">BAGIAN</th>
+                                        <th class="bg-primary w-5 align-middle" scope="col" width="50px">STATUS</th>
                                         <th class="bg-primary w-5 align-middle" scope="col" width="50px">APROVAL</th>
                                     </tr>
                                 </thead>
@@ -397,6 +400,109 @@
                                     </div>
                                     <div class="card-footer br-br-7 br-bl-7">
                                         Total Data :&nbsp;<label id="total_data"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- cek data lembur double  --}}
+    <div class="modal fade" id="ajax-modal-datalembur2" role="dialog" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog" style="max-width: 95%;" role="document">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success p-2">
+                            <h4 class="modal-title pl-2"><b>Data Lembur</b></h4>
+                            <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" title="Tutup Dialog">
+                                <i class="fa fa-remove"></i>
+                            </button>
+                        </div>
+
+                        <div class="modal-body p-2">
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="waiting-tab-data-lembur" data-toggle="tab" href="#waiting_data_lembur2" role="tab" aria-controls="waiting_data_lembur2" aria-selected="true">Semua</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="verifikasi-tab-data-lembur" data-toggle="tab" href="#datadouble_data_lembur" role="tab" aria-controls="datadouble_data_lembur" aria-selected="false">Double</a>
+                                </li>
+                            </ul>
+                            <div class="d-flex justify-content-end mb-2 mt-2">
+                                <input type="text" id="search-lembur" class="form-control form-control-sm w-auto" placeholder="Cari data...">
+                                <button id="btn-search-lembur" class="btn btn-sm btn-primary ml-2">Search</button>
+                            </div>
+                        </div>
+
+                        <!-- Tab Content -->
+                        <div class="modal-body p-0">
+                            <div class="tab-content" id="data-lembur-tabs">
+                                <!-- Tab Waiting -->
+                                <div class="tab-pane fade show active" id="waiting_data_lembur2" role="tabpanel" aria-labelledby="waiting-tab-data-lembur">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-striped table-bordered table-vcenter text-nowrap table-nowrap w-100 m-0 p-0">
+                                                <thead class="border text-center">
+                                                        <tr>
+                                                            <th class="bg-primary w-5 align-middle" scope="col">NOMOR<br>SPL</th>
+                                                            <th class="bg-primary w-5 align-middle" scope="col">Tanggal<br>Lembur</th>
+                                                            <th class="bg-primary w-5 align-middle" scope="col">Hari</th>
+                                                            <th class="bg-primary w-5 align-middle" scope="col">NOMOR<br>ABSEN</th>
+                                                            <th class="bg-primary w-5 align-middle" scope="col">NAMA KARYAWAN</th>
+                                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">JADWAL<br>KERJA (IN)</th>
+                                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">JADWAL<br>KERJA (OUT)</th>
+                                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">ABSEN<br>KERJA (IN)</th>
+                                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">ABSEN<br>KERJA (OUT)</th>
+                                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">WAKTU<br>LEMBUR (IN)</th>
+                                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">WAKTU<br>LEMBUR (OUT)</th>
+                                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">JUMLAH<br>JAM LEMBUR</th>
+                                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">JUMLAH<br>JAM ISTIRAHAT</th>
+                                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">AKSI</th>
+                                                        </tr>
+                                                    </thead>
+                                                <tbody id="cruddatalembur2"></tbody>
+                                            </table>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col">
+                                                Total Data: <label id="total_data_semua"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="datadouble_data_lembur" role="tabpanel" aria-labelledby="verifikasi-tab-data-lembur">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-striped table-bordered table-vcenter text-nowrap table-nowrap w-100 m-0 p-0">
+                                                <thead class="border text-center">
+                                                <tr>
+                                                    <th class="bg-primary w-5 align-middle" scope="col">NOMOR<br>SPL</th>
+                                                    <th class="bg-primary w-5 align-middle" scope="col">Tanggal<br>Lembur</th>
+                                                    <th class="bg-primary w-5 align-middle" scope="col">Hari</th>
+                                                    <th class="bg-primary w-5 align-middle" scope="col">NOMOR<br>ABSEN</th>
+                                                    <th class="bg-primary w-5 align-middle" scope="col">NAMA KARYAWAN</th>
+                                                    <th class="bg-primary w-5 align-middle" scope="col" width="50px">JADWAL<br>KERJA (IN)</th>
+                                                    <th class="bg-primary w-5 align-middle" scope="col" width="50px">JADWAL<br>KERJA (OUT)</th>
+                                                    <th class="bg-primary w-5 align-middle" scope="col" width="50px">ABSEN<br>KERJA (IN)</th>
+                                                    <th class="bg-primary w-5 align-middle" scope="col" width="50px">ABSEN<br>KERJA (OUT)</th>
+                                                    <th class="bg-primary w-5 align-middle" scope="col" width="50px">WAKTU<br>LEMBUR (IN)</th>
+                                                    <th class="bg-primary w-5 align-middle" scope="col" width="50px">WAKTU<br>LEMBUR (OUT)</th>
+                                                    <th class="bg-primary w-5 align-middle" scope="col" width="50px">JUMLAH<br>JAM LEMBUR</th>
+                                                    <th class="bg-primary w-5 align-middle" scope="col" width="50px">JUMLAH<br>JAM ISTIRAHAT</th>
+                                                    <th class="bg-primary w-5 align-middle" scope="col" width="50px">AKSI</th>
+                                                </tr>
+                                            </thead>
+                                                <tbody id="cruddatalemburDouble"></tbody>
+                                            </table>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col">
+                                                Total Data: <label id="total_data_duplicate"></label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1753,10 +1859,10 @@
                             sub_dept_name=data[i].employee_atribut.dept.sub_dept_name
                         }
 
-                        if (data[i].data_lembur.is_verifikasi==0) {
+                        if (data[i].is_verifikasi==0) {
                             htmlTable = '' +
                             '<tr class="text-center">' +
-                            '   <td class="text-nowrap text-center align-middle">' + data[i].data_lembur.nomor_form_lembur  + '</td>' +
+                            '   <td class="text-nowrap text-center align-middle">' + data[i].nomor_form_lembur  + '</td>' +
                             '   <td class="text-nowrap text-center align-middle">' + moment(data[i].tanggal_berjalan).format('DD MMM YYYY')  + '</td>' +
                             '   <td class="text-nowrap text-center align-middle">' + data[i].nama_hari  + '</td>' +
                             '   <td class="text-nowrap text-center align-middle">' + status_kerja  + '</td>' +
@@ -1781,7 +1887,7 @@
                         else{
                             htmlTable2 = '' +
                             '<tr class="text-center">' +
-                            '   <td class="text-nowrap text-center align-middle">' + data[i].data_lembur.nomor_form_lembur  + '</td>' +
+                            '   <td class="text-nowrap text-center align-middle">' + data[i].nomor_form_lembur  + '</td>' +
                             '   <td class="text-nowrap text-center align-middle">' + moment(data[i].tanggal_berjalan).format('DD MMM YYYY')  + '</td>' +
                             '   <td class="text-nowrap text-center align-middle">' + data[i].nama_hari  + '</td>' +
                             '   <td class="text-nowrap text-center align-middle">' + status_kerja  + '</td>' +
@@ -1808,6 +1914,140 @@
                     $('#all_uuid').val(text);
                 }
             });
+        });
+        // cek Data Lembur Double
+        moment.locale('id');
+        function loadData(periode_lembur = '', keyword = '') {
+            // Kosongkan tabel di kedua tab
+            $("#cruddatalembur2").empty();       // Tab Waiting
+            $("#cruddatalemburDouble").empty();  // Tab Verifikasi / Double
+
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('hris.datalembur.ajax_datalembur21') }}",
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    periode_lembur: periode_lembur,
+                    search: keyword
+                },
+                success: function(response) {
+                    console.log('AJAX Response:', response);
+
+                    let allData = response.all_data;
+                    let duplicateData = response.duplicate_data;
+
+
+                    if(allData.length === 0) {
+                        $('#cruddatalembur2').append('<tr><td colspan="13" class="text-center">Data tidak ditemukan</td></tr>');
+                    } else {
+                        allData.forEach(d => {
+                            let nama_hari = moment(d.tanggal_berjalan).format('dddd');
+                            let htmlTable = '<tr class="text-center" data-uuid="'+ d.uuid +'">' +
+                                '<td>' + (d.nomor_form_lembur ?? '') + '</td>' +
+                                '<td>' + moment(d.tanggal_berjalan).format('DD MMM YYYY') + '</td>' +
+                                '<td>' + nama_hari + '</td>' +
+                                '<td>' + (d.enroll_id ?? '') + '</td>' +
+                                '<td>' + (d.employee_name ?? '') + '</td>' +
+                                '<td>' + (d.mulai_jam_kerja?.substring(0,5) ?? '') + '</td>' +
+                                '<td>' + (d.akhir_jam_kerja?.substring(0,5) ?? '') + '</td>' +
+                                '<td>' + (d.absen_masuk_kerja?.substring(0,5) ?? '') + '</td>' +
+                                '<td>' + (d.absen_pulang_kerja?.substring(0,5) ?? '') + '</td>' +
+                                '<td>' + (d.mulai_jam_lembur ?? '') + '</td>' +
+                                '<td>' + (d.akhir_jam_lembur ?? '') + '</td>' +
+                                '<td>' + (d.jumlah_jam_lembur ?? '') + '</td>' +
+                                '<td>' + (d.jumlah_jam_istirahat_lembur ?? '') + '</td>' +
+                                '<td><button class="btn btn-sm btn-danger btn-delete-lembur2">Delete</button></td>' +
+                            '</tr>';
+                            $('#cruddatalembur2').append(htmlTable);
+                        });
+                    }
+
+                    if(duplicateData.length === 0) {
+                        $('#cruddatalemburDouble').append('<tr><td colspan="13" class="text-center">Data tidak ditemukan</td></tr>');
+                    } else {
+                        duplicateData.forEach(d => {
+                            let nama_hari = moment(d.tanggal_berjalan).format('dddd');
+                            let htmlTable = '<tr class="text-center" data-uuid="'+ d.uuid +'">' +
+                                '<td>' + (d.nomor_form_lembur ?? '') + '</td>' +
+                                '<td>' + moment(d.tanggal_berjalan).format('DD MMM YYYY') + '</td>' +
+                                '<td>' + nama_hari + '</td>' +
+                                '<td>' + (d.enroll_id ?? '') + '</td>' +
+                                '<td>' + (d.employee_name ?? '') + '</td>' +
+                                '<td>' + (d.mulai_jam_kerja?.substring(0,5) ?? '') + '</td>' +
+                                '<td>' + (d.akhir_jam_kerja?.substring(0,5) ?? '') + '</td>' +
+                                '<td>' + (d.absen_masuk_kerja?.substring(0,5) ?? '') + '</td>' +
+                                '<td>' + (d.absen_pulang_kerja?.substring(0,5) ?? '') + '</td>' +
+                                '<td>' + (d.mulai_jam_lembur ?? '') + '</td>' +
+                                '<td>' + (d.akhir_jam_lembur ?? '') + '</td>' +
+                                '<td>' + (d.jumlah_jam_lembur ?? '') + '</td>' +
+                                '<td>' + (d.jumlah_jam_istirahat_lembur ?? '') + '</td>' +
+                                '<td><button class="btn btn-sm btn-danger btn-delete-lembur2">Delete</button></td>' +
+                            '</tr>';
+                            $('#cruddatalemburDouble').append(htmlTable);
+                        });
+                    }
+
+
+                    $('#total_data_semua').text(allData.length);
+                    $('#total_data_duplicate').text(duplicateData.length);
+
+                    $("#ajax-modal-datalembur2").modal('show');
+                },
+                error: function(xhr, status, error){
+                    console.error('AJAX Error:', status, error);
+                    alert('Terjadi kesalahan saat memuat data.');
+                }
+            });
+        }
+
+
+
+        $('body').on('click', '#btn-data', function () {
+            var periode_lembur = $('#periode_lembur').val();
+            loadData(periode_lembur);
+        });
+
+
+        $('body').on('click', '#btn-search-lembur', function () {
+            var periode_lembur = $('#periode_lembur').val();
+            var keyword = $('#search-lembur').val();
+            loadData(periode_lembur, keyword);
+        });
+
+
+        $('#search-lembur').on('keyup', function() {
+            var periode_lembur = $('#periode_lembur').val();
+            var keyword = $(this).val();
+            loadData(periode_lembur, keyword);
+        });
+
+        $('body').on('click', '.btn-delete-lembur2', function() {
+            var tr = $(this).closest('tr');
+            var uuid = tr.data('uuid');
+        console.log(uuid);
+            if(confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+                $.ajax({
+                    url: "{{ route('hris.datalembur.delete21') }}",
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        uuid: uuid
+                    },
+                    success: function(response) {
+                        if(response > 0){
+                                alert('Data berhasil dihapus!');
+                            } else {
+                                alert('Data gagal dihapus.');
+                            }
+                        tr.remove(); // hapus baris dari tabel tanpa reload
+                        $('#total_data2').text($('#cruddatalembur2 tr').length);
+                    },
+                    error: function(err) {
+                        console.error(err);
+                        alert('Terjadi kesalahan saat menghapus data.');
+                    }
+                });
+            }
         });
 
         $('#datatable-ajax-crud tbody').on( 'click', 'tr', function () {
@@ -2840,6 +3080,7 @@
                                     var mulai_jam_lembur_edit1 = res[i].data_lembur.mulai_jam_lembur;
                                     var akhir_jam_lembur_edit1 = res[i].data_lembur.akhir_jam_lembur;
                                     var kode_hari = res[i].kode_hari;
+                                    var status_line = res[i].status_line ?? '-';
                                     var bgwarna = '';
                                     if(status_kerja == 'LIBUR') { bgwarna = 'style="background: yellow"'; }
                                     if(!tanggal_lembur) { bgwarna = 'style="background: red"'; tanggal_lembur = ''; }
@@ -2905,6 +3146,7 @@
                                     '   <td class="text-nowrap text-center align-middle">' + res[i].employee_atribut.status_staff  + '</td>' +
                                     '   <td class="text-nowrap text-center align-middle">' + tanggal_resign  + '</td>' +
                                     '   <td class="text-left align-middle">' + sub_dept_name  + '</td>' +
+                                    '   <td class="text-left align-middle">' + status_line  + '</td>' +
                                     '</tr>';
 
                                     $("#datatable-ajax-crud tbody").append(htmlTable);
@@ -2944,6 +3186,7 @@
                                     var mulai_jam_lembur_edit1 = res[i].mulai_jam_lembur;
                                     var akhir_jam_lembur_edit1 = res[i].akhir_jam_lembur;
                                     var kode_hari = res[i].kode_hari;
+                                    var status_line = res[i].status_line ?? '-';
                                     var bgwarna = '';
                                     if(status_kerja == 'LIBUR') { bgwarna = 'style="background: yellow"'; }
                                     if(!tanggal_lembur) { bgwarna = 'style="background: red"'; tanggal_lembur = ''; }
@@ -3000,6 +3243,7 @@
                                     '   <td class="text-nowrap text-center align-middle">' + res[i].employee_atribut.status_staff  + '</td>' +
                                     '   <td class="text-nowrap text-center align-middle">' + tanggal_resign  + '</td>' +
                                     '   <td class="text-left align-middle">' + sub_dept_name  + '</td>' +
+                                    '   <td class="text-left align-middle">' + status_line  + '</td>' +
                                     '   <td class="text-left align-middle">' + res[i].data_lembur.verifikasi_by  + '</td>' +
                                     '</tr>';
 
