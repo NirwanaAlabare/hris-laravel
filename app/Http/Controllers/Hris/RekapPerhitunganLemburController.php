@@ -377,7 +377,7 @@ class RekapPerhitunganLemburController extends AdminBaseController
             $pdo = DB::connection()->getPdo();
 
             // 2. Prepare the CALL statement string
-            $sql = 'CALL Used_CalculateFullOvertimeRekap(?, ?, ?, ?)';
+            $sql = 'CALL SP_CalculateOvertime(?, ?, ?, ?)';
 
             // 3. Prepare the statement and execute it
             $stmt = $pdo->prepare($sql);
