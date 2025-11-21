@@ -13,6 +13,8 @@
 
 use App\Events\TestEvent;
 use App\Http\Controllers\Hris\EmployeeAtrController;
+use App\Http\Controllers\Hris\RekapPerhitunganLemburController;
+use App\Http\Controllers\Hris\RekapPerhitunganPayrollController;
 use App\Models\EmployeeAtribut;
 use Illuminate\Support\Facades\Storage;
 
@@ -873,4 +875,10 @@ Route::get('/trigger', 'Admin\AdminController@trigger_event');
 // -------
 Route::get('/employees', [EmployeeAtrController::class, 'employees'])->name('employees');
 Route::get('search_employees', [EmployeeAtrController::class, 'search_employees'])->name('search_employees');
-    // NOTIFIKASI
+
+Route::post('/rekapperhitunganlembur/overtime-calculate', [RekapPerhitunganLemburController::class, 'get_overtime'])->name('overtime.calculate');
+// NOTIFIKASI
+
+// 
+Route::post('/hris/rekapperhitunganpayroll/recap-labor-cost-new', [RekapPerhitunganPayrollController::class, 'recapLaborCostNew'])
+    ->name('hris.rekapperhitunganpayroll.recap_labor_cost_new');
