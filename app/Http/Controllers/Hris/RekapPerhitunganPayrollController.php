@@ -2670,7 +2670,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
 
     public function recapLaborCostNew(Request $request)
     {
-        // dd($request);
+        ini_set('max_execution_time', 0);
         $daterange = $request->input('daterange');
         $enroll_id = $request->input('enroll_id');
 
