@@ -119,7 +119,7 @@
         <thead>
            <tr>
                 <td style="vertical-align: middle; font-size: 14pt; width:1%;"></td>
-                <td style="vertical-align: middle; font-size: 14pt; width:10%;">NPP</td>
+                <td style="vertical-align: middle; font-size: 14pt; width:10%;">NIP</td>
                 <td style="vertical-align: middle; font-size: 14pt; width:1%;">:</td>
                 <td style="vertical-align: middle; font-size: 14pt; width:50%;">{{$value->nik}}</td>
             </tr>
