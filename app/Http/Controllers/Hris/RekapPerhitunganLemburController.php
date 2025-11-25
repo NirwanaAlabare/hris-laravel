@@ -358,7 +358,7 @@ class RekapPerhitunganLemburController extends AdminBaseController
         $request->validate([
             'tanggal_awal' => 'required|date',
             'tanggal_akhir' => 'required|date',
-           
+
         ]);
 
         // 2. Data Retrieval and Setup
@@ -428,6 +428,40 @@ class RekapPerhitunganLemburController extends AdminBaseController
                 'status' => 'error',
                 'message' => 'Failed to process calculation. Database error occurred.'
             ], 500); // Return a 500 status code for server errors
+        }
+    }
+
+    public function export_overtime(Request $request)
+    {
+        ini_set('max_execution_time', 0);
+        $daterange = $request->input('daterange');
+        $enroll_id = $request->input('enroll_id');
+
+        // // Misal daterange formatnya "2025-11-01 - 2025-11-07"
+        [$tanggal_awal, $tanggal_akhir] = explode(' - ', $daterange);
+
+ 
+        $nodeUrl = "http://10.10.5.2:8080/api/getOvertimeReportExcel/";
+        $client = new Client();
+
+        try {
+            $response = $client->get($nodeUrl, [
+                'query' => [
+                    'tanggal_awal' => $tanggal_awal,
+                    'tanggal_akhir' => $tanggal_akhir,
+                    'daterange' => $daterange,
+                    'inEnrollId' => $enroll_id,
+                ],
+                'stream' => true,
+            ]);
+
+            return response($response->getBody(), 200)
+                ->header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                ->header('Content-Disposition', 'attachment; filename="overtime_export.xlsx"');
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Export failed: ' . $th->getMessage(),
+            ], 500);
         }
     }
 }

@@ -379,6 +379,7 @@
                         <button class="tab-link" onclick="openTab(event, 'Tab2')">📝 Ok Data</button>
                         <button class="tab-link" onclick="openTab(event, 'Tab3')">👤 Not Ok Data</button>
                         <button class="tab-link" onclick="openTab(event, 'Tab4')">📈 All Data</button>
+                        <button class="tab-link" id="export_overtime" onclick="export_data()">Export</button>
                     </div>
 
                     <div id="Tab1" class="tab-content active">
@@ -833,7 +834,6 @@
 </script>
 
 <script>
-   
     function formatRupiah(data, type, row) {
         if (type === 'display' || type === 'filter') {
             if (data === null || data === undefined || isNaN(data)) {
@@ -1108,6 +1108,44 @@
         if ($table.is(':visible')) {
             $table.DataTable().columns.adjust().draw();
         }
+    }
+
+    function export_data() {
+        let daterange = $('#daterange1').val();
+        let enroll_id = $('#selectEmployeeID2').val();
+        $('#export_overtime').addClass("btn-loading");
+        $("#export_overtime").html('Please wait...');
+        $("#export_overtime").attr("disabled", true);
+
+        console.log('daterange', daterange);
+
+        $.ajax({
+            type: 'POST',
+            url: '{{route('hris.rekapperhitunganlembur.export_overtime')}}',
+            data: {
+                daterange: daterange,
+                enroll_id: enroll_id
+            },
+            xhrFields: { responseType : 'blob' },
+            success:function(data){
+                var blob = new Blob([data]);
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                let file_name = daterange+' Recap Labor Cost New '+Math.ceil(Math.random()*1000000);
+                link.download = file_name+".xlsx";
+                link.click();
+                swal("", "Recap Labor Export Success", "success");
+                $('#export_overtime').removeClass("btn-loading");
+                $("#export_overtime").attr("disabled", false);
+                $("#export_overtime").html('Export');
+            },
+            error: function(res){
+                swal("", "Recap Labor Export Failed", "error");
+                $('#export_overtime').removeClass("btn-loading");
+                $("#export_overtime").attr("disabled", false);
+                $("#export_overtime").html('Export');
+            }
+        });
     }
 
     // Tab switching function
