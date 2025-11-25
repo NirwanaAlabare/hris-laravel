@@ -478,6 +478,7 @@
                                                             <th class="bg-primary w-5 align-middle" scope="col" width="50px">WAKTU<br>LEMBUR (OUT)</th>
                                                             <th class="bg-primary w-5 align-middle" scope="col" width="50px">JUMLAH<br>JAM LEMBUR</th>
                                                             <th class="bg-primary w-5 align-middle" scope="col" width="50px">JUMLAH<br>JAM ISTIRAHAT</th>
+                                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">APROVAL</th>
                                                             <th class="bg-primary w-5 align-middle" scope="col" width="50px">AKSI</th>
                                                         </tr>
                                                     </thead>
@@ -510,6 +511,7 @@
                                                     <th class="bg-primary w-5 align-middle" scope="col" width="50px">WAKTU<br>LEMBUR (OUT)</th>
                                                     <th class="bg-primary w-5 align-middle" scope="col" width="50px">JUMLAH<br>JAM LEMBUR</th>
                                                     <th class="bg-primary w-5 align-middle" scope="col" width="50px">JUMLAH<br>JAM ISTIRAHAT</th>
+                                                    <th class="bg-primary w-5 align-middle" scope="col" width="50px">APROVAL</th>
                                                     <th class="bg-primary w-5 align-middle" scope="col" width="50px">AKSI</th>
                                                 </tr>
                                             </thead>
@@ -1989,7 +1991,7 @@
             let html = "";
             dataset.forEach(d => {
                 html += `
-                    <tr>
+                   <tr data-uuid="${d.uuid}">
                         <td>${d.nomor_form_lembur || ''}</td>
                         <td>${moment(d.tanggal_berjalan).format('DD MMM YYYY')}</td>
                         <td>${moment(d.tanggal_berjalan).format('dddd')}</td>
@@ -2003,6 +2005,7 @@
                         <td>${d.akhir_jam_lembur || ''}</td>
                         <td>${d.jumlah_jam_lembur || ''}</td>
                         <td>${d.jumlah_jam_istirahat_lembur || ''}</td>
+                        <td>${d.verifikasi_by || ''}</td>
                         <td class ="text-center"><button class="btn btn-sm btn-danger btn-delete-lembur2">Delete</button></td>
                     </tr>
                 `;

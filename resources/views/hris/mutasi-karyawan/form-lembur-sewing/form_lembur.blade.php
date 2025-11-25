@@ -116,7 +116,7 @@
                                                 <th rowspan="2" class="align-middle">Status</th>
                                                 <th colspan="2" class="align-middle">Actual Absen</th>
                                                 <th colspan="4" class="align-middle">Rencana Lembur</th>
-                                                <th rowspan="2" class="align-middle" width="30px" style="padding-left: 2px;padding-right: 2px;color:rgb(255, 111, 0)"><i class="fa fa-utensils" aria-hidden="true"></i></th>
+                                                <th rowspan="2" class="align-middle" width="30px" style="padding-left: 2px;padding-right: 2px;color:rgb(255, 111, 0)"><i class="la la-utensils" aria-hidden="true">Konsumsi</i></th>
                                                 <th rowspan="2" class="align-middle" width="30px" style="padding-left: 2px;padding-right: 2px;color:rgb(255, 196, 0)"><i class="fa fa-star" aria-hidden="true"></i></th>
                                                 <th rowspan="2" class="align-middle" width="50px">Amount</th>
                                                 <th rowspan="2" class="align-middle">Act</th>
