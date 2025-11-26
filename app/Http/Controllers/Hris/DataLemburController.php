@@ -1135,7 +1135,6 @@ class DataLemburController extends AdminBaseController
                     FROM mut_karyawan_input_form_lembur a
                     INNER JOIN mut_karyawan_input_form_lembur_det b
                         ON a.no_form = b.no_form
-                        WHERE b.uuid_koreksi_upah = ''
                 ) mlb
                     ON mda.enroll_id = mlb.enroll_id AND mda.tanggal_berjalan = mlb.tgl_lembur
                 WHERE
@@ -2192,7 +2191,6 @@ class DataLemburController extends AdminBaseController
             $verification_status=$request->verificationStatus;
             $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept')
             ->where('nomor_form_lembur','!=',null)
-            ->where('mlb.jml_insentif','=','')
             ->where('tanggal_berjalan','>=',$awal_bulan)
             ->where('tanggal_berjalan','<=',$akhir_bulan)
             ->whereHas('data_lembur',function($query) use ($verification_status){
@@ -2230,7 +2228,6 @@ class DataLemburController extends AdminBaseController
         elseif ($selectNoSPL && $verification_status=='') {
             $selectNoSPL = $request->selectNoSPL;
             $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept')
-            ->where('mlb.jml_insentif','=','')
             ->where('tanggal_berjalan','>=',$awal_bulan)
             ->where('tanggal_berjalan','<=',$akhir_bulan)
             ->whereIn('nomor_form_lembur',$selectNoSPL)
@@ -2267,7 +2264,6 @@ class DataLemburController extends AdminBaseController
             $verification_status=$request->verificationStatus;
 
             $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept')
-             ->where('mlb.jml_insentif','=','')
             ->where('tanggal_berjalan','>=',$awal_bulan)
             ->where('tanggal_berjalan','<=',$akhir_bulan)
             ->where('nomor_form_lembur',$selectNoSPL)
@@ -2302,7 +2298,6 @@ class DataLemburController extends AdminBaseController
             ->get();
         }else{
             $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept')
-             ->where('mlb.jml_insentif','=','')
             ->where('nomor_form_lembur','!=',null)
             ->where('tanggal_berjalan','>=',$awal_bulan)
             ->where('tanggal_berjalan','<=',$akhir_bulan)
@@ -2378,7 +2373,7 @@ class DataLemburController extends AdminBaseController
             // $lembur =RekapPerhitunganLembur:: where('nomor_form_lembur',$nomor_form_lembur)->where('enroll_id',$enroll_id)->delete();
 
 
-        $uuid_rpl = DB::table('rekap_perhitungan_lembur as rpl')
+$uuid_rpl = DB::table('rekap_perhitungan_lembur as rpl')
             ->join('data_lembur as dl', 'rpl.enroll_id', '=', 'dl.enroll_id')
             ->where('dl.uuid', $uuid)
             ->where('rpl.nomor_form_lembur', $nomor_form_lembur)
