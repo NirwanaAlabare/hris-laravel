@@ -434,32 +434,54 @@
                 <div class="col-md-12">
                     <div class="modal-content">
                         <div class="modal-header bg-success p-2">
-                            <h4 class="modal-title pl-2"><b>Data Lembur</b></h4>
+                            <h4 class="modal-title pl-2"><b>Data Lembur Double</b></h4>
                             <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" title="Tutup Dialog">
                                 <i class="fa fa-remove"></i>
                             </button>
                         </div>
-
                         <div class="modal-body p-2">
                             <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active" id="waiting-tab-data-lembur" data-toggle="tab" href="#waiting_data_lembur2" role="tab" aria-controls="waiting_data_lembur2" aria-selected="true">Semua</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="verifikasi-tab-data-lembur" data-toggle="tab" href="#datadouble_data_lembur" role="tab" aria-controls="datadouble_data_lembur" aria-selected="false">Double</a>
-                                </li>
-                            </ul>
-                            {{-- <div class="d-flex justify-content-end mb-2 mt-2">
-                                <input type="text" id="search-lembur" class="form-control form-control-sm w-auto" placeholder="Cari data...">
-                                <button id="btn-search-lembur" class="btn btn-sm btn-primary ml-2">Search</button>
-                            </div> --}}
+                         <li class="nav-item"> <a class="nav-link active" id="verifikasi-tab-data-lembur" data-toggle="tab" href="#datadouble_data_lembur" role="tab" aria-controls="datadouble_data_lembur" aria-selected="true">Double</a> </li>
+                       </ul>
                         </div>
-
+                        <div class="modal-body p-2">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="tableDoubleLembur" class="table table-sm table-striped table-bordered table-vcenter text-nowrap table-nowrap w-100 m-0 p-0">
+                                        <thead class="border text-center">
+                                            <tr>
+                                                <th class="bg-primary">NOMOR<br>SPL</th>
+                                                <th class="bg-primary">Tanggal<br>Lembur</th>
+                                                <th class="bg-primary">Hari</th>
+                                                <th class="bg-primary">NOMOR<br>ABSEN</th>
+                                                <th class="bg-primary">NAMA KARYAWAN</th>
+                                                <th class="bg-primary">JADWAL<br>KERJA (IN)</th>
+                                                <th class="bg-primary">JADWAL<br>KERJA (OUT)</th>
+                                                <th class="bg-primary">ABSEN<br>KERJA (IN)</th>
+                                                <th class="bg-primary">ABSEN<br>KERJA (OUT)</th>
+                                                <th class="bg-primary">WAKTU<br>LEMBUR (IN)</th>
+                                                <th class="bg-primary">WAKTU<br>LEMBUR (OUT)</th>
+                                                <th class="bg-primary">JUMLAH<br>JAM LEMBUR</th>
+                                                <th class="bg-primary">JUMLAH<br>JAM ISTIRAHAT</th>
+                                                <th class="bg-primary">APROVAL</th>
+                                                <th class="bg-primary">AKSI</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="cruddatalemburDouble"></tbody>
+                                    </table>
+                                </div>
+                                <div class="row mt-2">
+                                            <div class="col">
+                                                Total Data: <label id="total_data_semua"></label>
+                                            </div>
+                                        </div>
+                            </div>
+                        </div>
                         <!-- Tab Content -->
-                        <div class="modal-body p-0">
-                            <div class="tab-content" id="data-lembur-tabs">
+                        {{-- <div class="modal-body p-0">
+                            <div class="tab-content" id="data-lembur-tabs"> --}}
                                 <!-- Tab Waiting -->
-                                <div class="tab-pane fade show active" id="waiting_data_lembur2" role="tabpanel" aria-labelledby="waiting-tab-data-lembur">
+                                {{-- <div class="tab-pane fade show active" id="waiting_data_lembur2" role="tabpanel" aria-labelledby="waiting-tab-data-lembur">
                                     <div class="card-body">
                                         <div class="table-responsive">
                                             <table id="tableSemuaLembur" class="table table-sm table-striped table-bordered table-vcenter text-nowrap table-nowrap w-100 m-0 p-0">
@@ -489,10 +511,10 @@
                                             <div class="col">
                                                 Total Data: <label id="total_data_semua"></label>
                                             </div>
-                                        </div> --}}
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="tab-pane fade" id="datadouble_data_lembur" role="tabpanel" aria-labelledby="verifikasi-tab-data-lembur">
+                                </div> --}}
+                                {{-- <div class="tab-pane fade" id="datadouble_data_lembur" role="tabpanel" aria-labelledby="verifikasi-tab-data-lembur">
                                     <div class="card-body">
                                         <div class="table-responsive">
                                            <table id="tableDoubleLembur" class="table table-sm table-striped table-bordered table-vcenter text-nowrap table-nowrap w-100 m-0 p-0">
@@ -517,21 +539,21 @@
                                             </thead>
                                                 <tbody id="cruddatalemburDouble"></tbody>
                                             </table>
-                                        </div>
+                                        </div> --}}
                                         {{-- <div class="row mt-2">
                                             <div class="col">
                                                 Total Data: <label id="total_data_duplicate"></label>
                                             </div>
                                         </div> --}}
-                                    </div>
+                                    {{-- </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </div> --}}
+    {{-- </div> --}}
     <div class="modal fade" id="verif_confirm" role="dialog" data-backdrop="static" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
             <div class="row">
@@ -1937,16 +1959,16 @@
         });
         // cek Data Lembur Double
         moment.locale('id');
-        let tableSemua = null;
+        // let tableSemua = null;
         let tableDouble = null;
 
         function loadData(periode_lembur = '', keyword = '') {
             // Reset DataTables jika sudah pernah ada
-            if (tableSemua) tableSemua.destroy();
+            // if (tableSemua) tableSemua.destroy();
             if (tableDouble) tableDouble.destroy();
 
-            $("#cruddatalembur2").empty();
-            $("#cruddatalemburDouble").empty();
+            // $("#cruddatalembur2").empty();
+            // $("#cruddatalemburDouble").empty().addClass("btn-loading");
 
             $.ajax({
                 type: 'POST',
@@ -1962,24 +1984,37 @@
                     let duplicateData = response.duplicate_data;
 
                     // Append semua data ke tbody
-                    renderTableData("#cruddatalembur2", allData);
+                    // renderTableData("#cruddatalembur2", allData);
                     renderTableData("#cruddatalemburDouble", duplicateData);
 
                     // Inisialisasi DataTables hanya sekali
-                    tableSemua = $("#tableSemuaLembur").DataTable({
-                        pageLength: 10
+                        // tableSemua = $("#tableSemuaLembur").DataTable({
+                        //     pageLength: 10
 
-                    });
-
-                    tableDouble = $("#tableDoubleLembur").DataTable({
-                        pageLength: 10
-                    });
-
-                    $('#total_data_semua').text(allData.length);
-                    $('#total_data_duplicate').text(duplicateData.length);
+                        // });
+                        $('#total_data_duplicate').text(duplicateData.length);
 
                     $("#ajax-modal-datalembur2").modal('show');
-                }
+
+
+                   if (duplicateData.length === 0) return;
+
+                    // ⬇️ Init DataTables hanya jika ada data
+                    tableDouble = $("#tableDoubleLembur").DataTable({
+                        pageLength: 10,
+                        searching: false,
+                        ordering: false
+                    });
+                    },
+                    error: function() {
+                        alert("Terjadi kesalahan saat mengambil data!");
+                    },
+                    complete: function() {
+                        $("#btn-data, #btn-search-lembur").prop("disabled", false).removeClass("btn-loading");
+                    }
+
+                    // $('#total_data_semua').text(allData.length);
+
             });
         }
 
@@ -1990,6 +2025,9 @@
             }
             let html = "";
             dataset.forEach(d => {
+                 let btnDelete = (!d.verifikasi_by || d.verifikasi_by === '')
+                    ? `<button class="btn btn-sm btn-danger btn-delete-lembur2">Delete</button>`
+                    : '';
                 html += `
                    <tr data-uuid="${d.uuid}">
                         <td>${d.nomor_form_lembur || ''}</td>
@@ -2006,7 +2044,7 @@
                         <td>${d.jumlah_jam_lembur || ''}</td>
                         <td>${d.jumlah_jam_istirahat_lembur || ''}</td>
                         <td>${d.verifikasi_by || ''}</td>
-                        <td class ="text-center"><button class="btn btn-sm btn-danger btn-delete-lembur2">Delete</button></td>
+                        <td class="text-center">${btnDelete}</td>
                     </tr>
                 `;
             });
