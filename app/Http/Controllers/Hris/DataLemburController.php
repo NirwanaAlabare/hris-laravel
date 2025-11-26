@@ -1135,6 +1135,7 @@ class DataLemburController extends AdminBaseController
                     FROM mut_karyawan_input_form_lembur a
                     INNER JOIN mut_karyawan_input_form_lembur_det b
                         ON a.no_form = b.no_form
+                        WHERE b.uuid_koreksi_upah = ''
                 ) mlb
                     ON mda.enroll_id = mlb.enroll_id AND mda.tanggal_berjalan = mlb.tgl_lembur
                 WHERE
@@ -2208,6 +2209,7 @@ class DataLemburController extends AdminBaseController
                     FROM mut_karyawan_input_form_lembur a
                     INNER JOIN mut_karyawan_input_form_lembur_det b
                         ON a.no_form = b.no_form
+                        WHERE b.uuid_koreksi_upah = ''
                 ) mlb"),
                 function($join) {
                     $join->on('master_data_absen_kehadiran.enroll_id', '=', 'mlb.enroll_id')
@@ -2242,6 +2244,7 @@ class DataLemburController extends AdminBaseController
                     FROM mut_karyawan_input_form_lembur a
                     INNER JOIN mut_karyawan_input_form_lembur_det b
                         ON a.no_form = b.no_form
+                        WHERE b.uuid_koreksi_upah = ''
                 ) mlb"),
                 function($join) {
                     $join->on('master_data_absen_kehadiran.enroll_id', '=', 'mlb.enroll_id')
@@ -2280,6 +2283,7 @@ class DataLemburController extends AdminBaseController
                     FROM mut_karyawan_input_form_lembur a
                     INNER JOIN mut_karyawan_input_form_lembur_det b
                         ON a.no_form = b.no_form
+                        WHERE b.uuid_koreksi_upah = ''
                 ) mlb"),
                 function($join) {
                     $join->on('master_data_absen_kehadiran.enroll_id', '=', 'mlb.enroll_id')
@@ -2312,6 +2316,7 @@ class DataLemburController extends AdminBaseController
                     FROM mut_karyawan_input_form_lembur a
                     INNER JOIN mut_karyawan_input_form_lembur_det b
                         ON a.no_form = b.no_form
+                        WHERE b.uuid_koreksi_upah = ''
                 ) mlb"),
                 function($join) {
                     $join->on('master_data_absen_kehadiran.enroll_id', '=', 'mlb.enroll_id')
