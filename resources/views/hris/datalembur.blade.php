@@ -28,7 +28,7 @@
             height:400px;
             overflow:scroll;
           }
-        #ajax-modal-datalembur2 .table-responsive,
+                  #ajax-modal-datalembur2 .table-responsive,
         #ajax-modal-datalembur2 .modal-body {
             height: auto !important;
             max-height: none !important;
@@ -51,7 +51,6 @@
             top: 0;
             z-index: 10;
           }
-
         th {
     white-space: normal !important;
     word-wrap: break-word;
@@ -255,7 +254,6 @@
                                             <th class="bg-primary w-5 align-middle" scope="col" width="50px">STAFF</th>
                                             <th class="bg-primary w-5 align-middle" scope="col" width="50px">TANGGAL<br>RESIGN</th>
                                             <th class="bg-primary w-5 align-middle" scope="col" width="50px">BAGIAN</th>
-                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">STATUS</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -304,7 +302,6 @@
                                         <th class="bg-primary w-5 align-middle" scope="col" width="50px">STAFF</th>
                                         <th class="bg-primary w-5 align-middle" scope="col" width="50px">TANGGAL<br>RESIGN</th>
                                         <th class="bg-primary w-5 align-middle" scope="col" width="50px">BAGIAN</th>
-                                        <th class="bg-primary w-5 align-middle" scope="col" width="50px">STATUS</th>
                                         <th class="bg-primary w-5 align-middle" scope="col" width="50px">APROVAL</th>
                                     </tr>
                                 </thead>
@@ -427,133 +424,6 @@
             </div>
         </div>
     </div>
-    {{-- cek data lembur double  --}}
-    <div class="modal fade" id="ajax-modal-datalembur2" role="dialog" data-backdrop="static" aria-hidden="true">
-        <div class="modal-dialog" style="max-width: 95%;" role="document">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="modal-content">
-                        <div class="modal-header bg-success p-2">
-                            <h4 class="modal-title pl-2"><b>Data Lembur Double</b></h4>
-                            <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" title="Tutup Dialog">
-                                <i class="fa fa-remove"></i>
-                            </button>
-                        </div>
-                        <div class="modal-body p-2">
-                            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                         <li class="nav-item"> <a class="nav-link active" id="verifikasi-tab-data-lembur" data-toggle="tab" href="#datadouble_data_lembur" role="tab" aria-controls="datadouble_data_lembur" aria-selected="true">Double</a> </li>
-                       </ul>
-                        </div>
-                        <div class="modal-body p-2">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table id="tableDoubleLembur" class="table table-sm table-striped table-bordered table-vcenter text-nowrap table-nowrap w-100 m-0 p-0">
-                                        <thead class="border text-center">
-                                            <tr>
-                                                <th class="bg-primary">NOMOR<br>SPL</th>
-                                                <th class="bg-primary">Tanggal<br>Lembur</th>
-                                                <th class="bg-primary">Hari</th>
-                                                <th class="bg-primary">NOMOR<br>ABSEN</th>
-                                                <th class="bg-primary">NAMA KARYAWAN</th>
-                                                <th class="bg-primary">JADWAL<br>KERJA (IN)</th>
-                                                <th class="bg-primary">JADWAL<br>KERJA (OUT)</th>
-                                                <th class="bg-primary">ABSEN<br>KERJA (IN)</th>
-                                                <th class="bg-primary">ABSEN<br>KERJA (OUT)</th>
-                                                <th class="bg-primary">WAKTU<br>LEMBUR (IN)</th>
-                                                <th class="bg-primary">WAKTU<br>LEMBUR (OUT)</th>
-                                                <th class="bg-primary">JUMLAH<br>JAM LEMBUR</th>
-                                                <th class="bg-primary">JUMLAH<br>JAM ISTIRAHAT</th>
-                                                <th class="bg-primary">APROVAL</th>
-                                                <th class="bg-primary">AKSI</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="cruddatalemburDouble"></tbody>
-                                    </table>
-                                </div>
-                                <div class="row mt-2">
-                                            <div class="col">
-                                                Total Data: <label id="total_data_semua"></label>
-                                            </div>
-                                        </div>
-                            </div>
-                        </div>
-                        <!-- Tab Content -->
-                        {{-- <div class="modal-body p-0">
-                            <div class="tab-content" id="data-lembur-tabs"> --}}
-                                <!-- Tab Waiting -->
-                                {{-- <div class="tab-pane fade show active" id="waiting_data_lembur2" role="tabpanel" aria-labelledby="waiting-tab-data-lembur">
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table id="tableSemuaLembur" class="table table-sm table-striped table-bordered table-vcenter text-nowrap table-nowrap w-100 m-0 p-0">
-                                                <thead class="border text-center">
-                                                        <tr>
-                                                            <th class="bg-primary w-5 align-middle" scope="col">NOMOR<br>SPL</th>
-                                                            <th class="bg-primary w-5 align-middle" scope="col">Tanggal<br>Lembur</th>
-                                                            <th class="bg-primary w-5 align-middle" scope="col">Hari</th>
-                                                            <th class="bg-primary w-5 align-middle" scope="col">NOMOR<br>ABSEN</th>
-                                                            <th class="bg-primary w-5 align-middle" scope="col">NAMA KARYAWAN</th>
-                                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">JADWAL<br>KERJA (IN)</th>
-                                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">JADWAL<br>KERJA (OUT)</th>
-                                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">ABSEN<br>KERJA (IN)</th>
-                                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">ABSEN<br>KERJA (OUT)</th>
-                                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">WAKTU<br>LEMBUR (IN)</th>
-                                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">WAKTU<br>LEMBUR (OUT)</th>
-                                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">JUMLAH<br>JAM LEMBUR</th>
-                                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">JUMLAH<br>JAM ISTIRAHAT</th>
-                                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">APROVAL</th>
-                                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">AKSI</th>
-                                                        </tr>
-                                                    </thead>
-                                                <tbody id="cruddatalembur2"></tbody>
-                                            </table>
-                                        </div>
-                                        {{-- <div class="row mt-2">
-                                            <div class="col">
-                                                Total Data: <label id="total_data_semua"></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> --}}
-                                {{-- <div class="tab-pane fade" id="datadouble_data_lembur" role="tabpanel" aria-labelledby="verifikasi-tab-data-lembur">
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                           <table id="tableDoubleLembur" class="table table-sm table-striped table-bordered table-vcenter text-nowrap table-nowrap w-100 m-0 p-0">
-                                                <thead class="border text-center">
-                                                <tr>
-                                                    <th class="bg-primary w-5 align-middle" scope="col">NOMOR<br>SPL</th>
-                                                    <th class="bg-primary w-5 align-middle" scope="col">Tanggal<br>Lembur</th>
-                                                    <th class="bg-primary w-5 align-middle" scope="col">Hari</th>
-                                                    <th class="bg-primary w-5 align-middle" scope="col">NOMOR<br>ABSEN</th>
-                                                    <th class="bg-primary w-5 align-middle" scope="col">NAMA KARYAWAN</th>
-                                                    <th class="bg-primary w-5 align-middle" scope="col" width="50px">JADWAL<br>KERJA (IN)</th>
-                                                    <th class="bg-primary w-5 align-middle" scope="col" width="50px">JADWAL<br>KERJA (OUT)</th>
-                                                    <th class="bg-primary w-5 align-middle" scope="col" width="50px">ABSEN<br>KERJA (IN)</th>
-                                                    <th class="bg-primary w-5 align-middle" scope="col" width="50px">ABSEN<br>KERJA (OUT)</th>
-                                                    <th class="bg-primary w-5 align-middle" scope="col" width="50px">WAKTU<br>LEMBUR (IN)</th>
-                                                    <th class="bg-primary w-5 align-middle" scope="col" width="50px">WAKTU<br>LEMBUR (OUT)</th>
-                                                    <th class="bg-primary w-5 align-middle" scope="col" width="50px">JUMLAH<br>JAM LEMBUR</th>
-                                                    <th class="bg-primary w-5 align-middle" scope="col" width="50px">JUMLAH<br>JAM ISTIRAHAT</th>
-                                                    <th class="bg-primary w-5 align-middle" scope="col" width="50px">APROVAL</th>
-                                                    <th class="bg-primary w-5 align-middle" scope="col" width="50px">AKSI</th>
-                                                </tr>
-                                            </thead>
-                                                <tbody id="cruddatalemburDouble"></tbody>
-                                            </table>
-                                        </div> --}}
-                                        {{-- <div class="row mt-2">
-                                            <div class="col">
-                                                Total Data: <label id="total_data_duplicate"></label>
-                                            </div>
-                                        </div> --}}
-                                    {{-- </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-    {{-- </div> --}}
     <div class="modal fade" id="verif_confirm" role="dialog" data-backdrop="static" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
             <div class="row">
@@ -940,6 +810,55 @@
             </div>
         </div>
     </div>
+     <div class="modal fade" id="ajax-modal-datalembur2" role="dialog" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog" style="max-width: 95%;" role="document">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success p-2">
+                            <h4 class="modal-title pl-2"><b>Data Lembur Double</b></h4>
+                            <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" title="Tutup Dialog">
+                                <i class="fa fa-remove"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body p-2">
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                         <li class="nav-item"> <a class="nav-link active" id="verifikasi-tab-data-lembur" data-toggle="tab" href="#datadouble_data_lembur" role="tab" aria-controls="datadouble_data_lembur" aria-selected="true">Double</a> </li>
+                       </ul>
+                        </div>
+                        <div class="modal-body p-2">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="tableDoubleLembur" class="table table-sm table-striped table-bordered table-vcenter text-nowrap table-nowrap w-100 m-0 p-0">
+                                        <thead class="border text-center">
+                                            <tr>
+                                                <th class="bg-primary">NOMOR<br>SPL</th>
+                                                <th class="bg-primary">Tanggal<br>Lembur</th>
+                                                <th class="bg-primary">Hari</th>
+                                                <th class="bg-primary">NOMOR<br>ABSEN</th>
+                                                <th class="bg-primary">NAMA KARYAWAN</th>
+                                                <th class="bg-primary">JADWAL<br>KERJA (IN)</th>
+                                                <th class="bg-primary">JADWAL<br>KERJA (OUT)</th>
+                                                <th class="bg-primary">ABSEN<br>KERJA (IN)</th>
+                                                <th class="bg-primary">ABSEN<br>KERJA (OUT)</th>
+                                                <th class="bg-primary">WAKTU<br>LEMBUR (IN)</th>
+                                                <th class="bg-primary">WAKTU<br>LEMBUR (OUT)</th>
+                                                <th class="bg-primary">JUMLAH<br>JAM LEMBUR</th>
+                                                <th class="bg-primary">JUMLAH<br>JAM ISTIRAHAT</th>
+                                                <th class="bg-primary">APROVAL</th>
+                                                <th class="bg-primary">AKSI</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="cruddatalemburDouble"></tbody>
+                                    </table>
+                                </div>
+                                <div class="row mt-2">
+                                            <div class="col">
+                                                Total Data: <label id="total_data_semua"></label>
+                                            </div>
+                                        </div>
+                            </div>
+                        </div>
 
 @endsection
 
@@ -2291,6 +2210,9 @@
                             $("#ajax-modal-edit1").modal('show');
 
                             var currentRow = $('#datatable-ajax-crud').find("tr:eq(" + rowid + ")");
+                                console.log("rowid =", rowid);
+    console.log("currentRow =", currentRow.html());
+    console.log("list_td =", currentRow.find("td"));
                             var nomor_form_lembur = currentRow.find("td:eq(2)").html();
                             var enroll_id = currentRow.find("td:eq(7)").html();
                             var nik = currentRow.find("td:eq(8)").html();
