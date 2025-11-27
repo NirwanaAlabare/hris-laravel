@@ -254,6 +254,7 @@
                                             <th class="bg-primary w-5 align-middle" scope="col" width="50px">STAFF</th>
                                             <th class="bg-primary w-5 align-middle" scope="col" width="50px">TANGGAL<br>RESIGN</th>
                                             <th class="bg-primary w-5 align-middle" scope="col" width="50px">BAGIAN</th>
+                                            <th class="bg-primary w-5 align-middle" scope="col" width="50px">STATUS LINE</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -302,6 +303,7 @@
                                         <th class="bg-primary w-5 align-middle" scope="col" width="50px">STAFF</th>
                                         <th class="bg-primary w-5 align-middle" scope="col" width="50px">TANGGAL<br>RESIGN</th>
                                         <th class="bg-primary w-5 align-middle" scope="col" width="50px">BAGIAN</th>
+                                        <th class="bg-primary w-5 align-middle" scope="col" width="50px">STATUS LINE</th>
                                         <th class="bg-primary w-5 align-middle" scope="col" width="50px">APROVAL</th>
                                     </tr>
                                 </thead>
