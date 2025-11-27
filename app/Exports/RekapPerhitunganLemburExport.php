@@ -145,6 +145,7 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
                     FROM mut_karyawan_input_form_lembur a
                     INNER JOIN mut_karyawan_input_form_lembur_det b
                         ON a.no_form = b.no_form
+                        WHERE b.uuid_koreksi_upah = ''
                 ) mlb"),
                 function($join) {
                     $join->on('mda.enroll_id', '=', 'mlb.enroll_id')
