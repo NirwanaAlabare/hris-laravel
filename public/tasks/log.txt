@@ -1,7 +1,7 @@
 
    Illuminate\Database\QueryException 
 
-  SQLSTATE[42S22]: Column not found: 1054 Unknown column 'mulai_jam_lembur' in 'WHERE' (SQL: select * from `master_data_absen_kehadiran` where `tanggal_berjalan` = 2025-11-21 and (`mulai_jam_kerja` > `akhir_jam_kerja` or (`nomor_form_lembur` is not null and SUBSTRING(mulai_jam_lembur, 11,  8) > SUBSTRING(akhir_jam_lembur, 11,  8) and `mulai_jam_kerja` is null)))
+  SQLSTATE[42S22]: Column not found: 1054 Unknown column 'mulai_jam_lembur' in 'WHERE' (SQL: select * from `master_data_absen_kehadiran` where `tanggal_berjalan` = 2025-11-18 and (`mulai_jam_kerja` > `akhir_jam_kerja` or (`nomor_form_lembur` is not null and SUBSTRING(mulai_jam_lembur, 11,  8) > SUBSTRING(akhir_jam_lembur, 11,  8) and `mulai_jam_kerja` is null)))
 
   at C:\xampp\htdocs\hris\vendor\laravel\framework\src\Illuminate\Database\Connection.php:712
     708|         // If an exception occurs when attempting to run a query, we'll format the error
