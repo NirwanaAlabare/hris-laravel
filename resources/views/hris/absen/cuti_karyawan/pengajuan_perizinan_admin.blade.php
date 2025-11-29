@@ -558,7 +558,20 @@ h1 {
                                                                         <i class="fa fa-clock-o tx-16 lh-0 op-6"></i>
                                                                     </div>
                                                                 </div><!-- input-group-prepend -->
-                                                                <input id="total_time_ijin" name="total_time_ijin" class="form-control" placeholder="0" type="text" maxlength="3" size="3">
+                                                                <input id="total_time_ijin" name="total_time_ijin" class="form-control" placeholder="0" type="text" maxlength="3" size="3" readonly>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">Potongan MENIT Istirahat</label>
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <div class="input-group-text">
+                                                                        <i class="fa fa-clock-o tx-16 lh-0 op-6"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <input id="potongan_istirahat" name="potongan_istirahat" class="form-control" placeholder="0" type="text" maxlength="3" size="3" readonly>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -857,7 +870,18 @@ h1 {
             var tm1 = new Date(tglform + " " + $('#time_mulai_ijin').val());
             var tm2 = new Date(tglform + " " + $('#time_akhir_ijin').val());
             var total_time_ijin = diff_minutes(tm1, tm2);
+            var istirahat = 0;
+            var breakStart = new Date(tglform + " 12:00");
+            var breakEnd   = new Date(tglform + " 13:00");
+
+            // Cek apakah melewati jam istirahat
+            if (tm1 < breakEnd && tm2 > breakStart) {
+                istirahat = 60; // tambah 60 menit
+            total_time_ijin -= istirahat; // potong 60 menit
+            if (total_time_ijin < 0) total_time_ijin = 0; // safety
+            }
             $('#total_time_ijin').val(total_time_ijin);
+            $('#potongan_istirahat').val(istirahat);
         };
 
         function diff_minutes(dt2, dt1)

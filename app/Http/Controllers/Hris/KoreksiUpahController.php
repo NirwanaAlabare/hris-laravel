@@ -672,10 +672,18 @@ class KoreksiUpahController extends AdminBaseController
         $tanggalKoreksi = Carbon::parse(request()->tanggal_lembur);
 
         // Tentukan awal periode (26 bulan lalu)
-        $start = $tanggalKoreksi->copy()->subMonth()->day(26);
+        // $start = $tanggalKoreksi->copy()->subMonth()->day(26);
 
-        // Tentukan akhir periode (25 bulan ini)
-        $end = $tanggalKoreksi->copy()->day(25);
+        // // Tentukan akhir periode (25 bulan ini)
+        // $end = $tanggalKoreksi->copy()->day(25);
+        if ($tanggalKoreksi->day >= 26) {
+            $start = $tanggalKoreksi->copy()->day(26);
+            $end   = $tanggalKoreksi->copy()->addMonth()->day(25);
+        } else {
+            // Jika tanggal < 26, payroll masih bulan ini
+            $start = $tanggalKoreksi->copy()->subMonth()->day(26);
+            $end   = $tanggalKoreksi->copy()->day(25);
+        }
 
         // Format ke MM/DD/YYYY
         $periode_tanggal_koreksi = $start->format('m/d/Y') . ' - ' . $end->format('m/d/Y');
