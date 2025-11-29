@@ -48,6 +48,8 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\App;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Log;
+use PDO;
 
 Carbon::setLocale('id');
 
@@ -2698,6 +2700,187 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             return response()->json([
                 'error' => 'Export failed: ' . $th->getMessage(),
             ], 500);
+        }
+    }
+
+    public function calculate_salary(Request $req)
+    {
+        ini_set('max_execution_time', 0);
+        if (request()->periode_payrols) {
+            $periode_payroll = request()->periode_payrols;
+        } else {
+            $periode_payroll = '2025-01';
+        }
+
+        $bulan_sekarang1 = strtotime(date($periode_payroll));
+        $tanggal_sekarang = date('Y-m-d');
+        $bulan_sebelum = strtotime("-1 month", $bulan_sekarang1);
+        $bulan_sekarang = date('Y-m-', $bulan_sekarang1);
+        $bulan_sebelum = date('Y-m-', $bulan_sebelum);
+        $tanggal_awal = $bulan_sebelum . '26';
+        $tanggal_akhir = $bulan_sekarang . '25';
+        $tahun = date('Y', $bulan_sekarang1);
+        $bulan = date('m', $bulan_sekarang1);
+
+
+        $start = $req->tanggal_awal;
+        $end   = $req->tanggal_akhir;
+
+        switch ($req->step) {
+
+            case 1:
+                $data = DB::select("CALL SP_CalculatePresence(?, ?, '')", [$start, $end]);
+                return response()->json([
+                    'step' => 1,
+                    'message' => 'Presence calculation completed',
+                    'data' => $data
+                ]);
+
+            case 2:
+                $data = DB::select("CALL SP_CalculateOvertime(?, ?, '', '')", [$start, $end]);
+                return response()->json([
+                    'step' => 2,
+                    'message' => 'Overtime calculation completed',
+                    'data' => $data
+                ]);
+
+            case 3:
+                $data = DB::select("CALL SP_CalculatePermission(?, ?)", [$start, $end]);
+                return response()->json([
+                    'step' => 3,
+                    'message' => 'Permission calculation completed',
+                    'data' => $data
+                ]);
+
+            case 4:
+                $data = DB::select("CALL SP_CalculateLate(?, ?, '')", [$start, $end]);
+                return response()->json([
+                    'step' => 4,
+                    'message' => 'Late calculation completed',
+                    'data' => $data
+                ]);
+
+            case 5:
+                $data = DB::select("CALL SP_CalculateBpjs(?, ?, 'operator@hris.com')", [$start, $end]);
+                return response()->json([
+                    'step' => 5,
+                    'message' => 'BPJS calculation completed',
+                    'data' => $data
+                ]);
+
+            case 6:
+                $data = DB::select("CALL SP_CalculateSalary(?, ?, '')", [$start, $end]);
+                return response()->json([
+                    'step' => 6,
+                    'message' => 'Salary calculation completed',
+                    'data' => $data
+                ]);
+        }
+    }
+
+    protected $steps = [
+        1 => ['proc' => "CALL SP_CalculatePresence(?, ?, ?)", 'label' => 'Presence'],
+        2 => ['proc' => "CALL SP_CalculateOvertime(?, ?, ?, ?)", 'label' => 'Overtime'],
+        3 => ['proc' => "CALL SP_CalculatePermission(?, ?)", 'label' => 'Permission'],
+        4 => ['proc' => "CALL SP_CalculateLate(?, ?, ?)", 'label' => 'Late'],
+        5 => ['proc' => "CALL SP_CalculateBpjs(?, ?, ?)", 'label' => 'BPJS'],
+        6 => ['proc' => "CALL SP_CalculateSalary(?, ?, ?)", 'label' => 'Salary'],
+    ];
+
+    public function runStep(Request $req)
+    {
+        ini_set('max_execution_time', 0);
+
+        $step = intval($req->step);
+
+        if (!isset($this->steps[$step])) {
+            return response()->json(['status' => 'error', 'message' => 'Unknown step'], 400);
+        }
+
+        $start  = $req->tanggal_awal;
+        $end    = $req->tanggal_akhir;
+        $enroll = $req->enroll_ids ?? '';
+        $email  = $req->operator_email ?? 'operator@hris.com';
+
+        $proc  = $this->steps[$step]['proc'];
+        $label = $this->steps[$step]['label'];
+
+        try {
+            $pdo = DB::connection()->getPdo();
+
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $pdo->setAttribute(PDO::MYSQL_ATTR_MULTI_STATEMENTS, true);
+            $pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+
+            // -------------------------------
+            // PARAMETER SELECTOR
+            // -------------------------------
+            switch ($step) {
+                case 1:
+                    $params = [$start, $end, ''];
+                    break;
+                case 2:
+                    $params = [$start, $end, $enroll, $email];
+                    break;
+                case 3:
+                    $params = [$start, $end];
+                    break;
+                case 4:
+                    $params = [$start, $end, ''];
+                    break;
+                case 5:
+                    $params = [$start, $end, $email];
+                    break;
+                case 6:
+                    $params = [$start, $end, ''];
+                    break;
+            }
+
+            $stmt = $pdo->prepare($proc);
+            $stmt->execute($params);
+
+            // -------------------------------
+            // MULTI RESULTSET READER (FIX)
+            // -------------------------------
+            $resultSets = [];
+            $idx = 0;
+
+            // -------------------------------
+            // MULTI RESULTSET READER - NO EXTRA RESULT
+            // -------------------------------
+            $resultSets = [];
+            $idx = 0;
+
+            while (true) {
+
+                $columns = $stmt->columnCount();
+
+                if ($columns > 0) {
+                    // SELECT → ambil
+                    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $resultSets["result_" . (++$idx)] = $rows;
+                }
+
+                // jika TIDAK ada rowset berikutnya → stop total
+                if (!$stmt->nextRowset()) {
+                    break;
+                }
+            }
+
+
+            // flush final
+            $stmt->closeCursor();
+
+            return response()->json([
+                'status' => 'ok',
+                'step' => $step,
+                'label' => $label,
+                'result_sets' => $resultSets
+            ]);
+        } catch (\Throwable $e) {
+
+            \Log::error("runStep step {$step} error: " . $e->getMessage());
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
 }

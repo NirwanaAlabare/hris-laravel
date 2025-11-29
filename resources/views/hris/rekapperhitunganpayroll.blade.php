@@ -59,8 +59,149 @@
         z-index: 3;
     }
 </style>
+
+<style>
+    /* ------------------------------
+    1. MAIN NAV TABS
+    ------------------------------ */
+    .custom-tabs {
+        border-bottom: 1px solid #dfe3e6;
+    }
+
+    .custom-tabs .nav-link {
+        font-weight: 600;
+        border-radius: 8px 8px 0 0;
+        padding: 11px 20px;
+        color: #555;
+        background: #f4f5f7;
+        border: 1px solid #e2e6ea;
+        margin-right: 6px;
+        transition: 0.25s ease-in-out;
+    }
+
+    .custom-tabs .nav-link:hover {
+        background: #fff;
+        color: #222;
+        border-color: #cfd4da;
+        transform: translateY(-1px);
+    }
+
+    /* ACTIVE TAB */
+    .custom-tabs .nav-link.active {
+        background: #fff !important;
+        color: #1a1a1a !important;
+        font-weight: 700;
+        border-bottom-color: transparent !important;
+        box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    /* ------------------------------
+    2. TAB CONTENT BOX
+    ------------------------------ */
+    .modern-tab-content {
+        border: 1px solid #e2e6ea;
+        border-top: none;
+        padding: 25px;
+        background: #ffffff;
+        border-radius: 0 10px 10px 10px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Container spacing */
+    .result-container {
+        padding: 10px 5px;
+    }
+
+    /* ------------------------------
+    3. RESULT BLOCKS
+    ------------------------------ */
+    .sp-result-block {
+        padding: 15px 0 25px 0;
+        border-bottom: 1px solid #eceff1;
+    }
+
+    .sp-result-block:last-child {
+        border-bottom: none;
+    }
+
+    .sp-result-block h5 {
+        background: linear-gradient(to right, #f5f6f7, #ffffff);
+        padding: 10px 16px;
+        border-left: 4px solid #0d6efd;
+        border-radius: 5px;
+        font-size: 15px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 12px;
+    }
+
+    /* ------------------------------
+   4. DATATABLES IMPROVED VISUALS
+------------------------------ */
+    table.dataTable {
+        width: 100% !important;
+        border-collapse: collapse !important;
+    }
+
+    table.dataTable thead th {
+        background: #f0f2f5;
+        font-weight: 700;
+        font-size: 13px;
+        padding: 10px 12px;
+        color: #333;
+        border-bottom: 2px solid #dce1e5;
+    }
+
+    table.dataTable tbody td {
+        font-size: 12.6px;
+        padding: 8px 10px;
+    }
+
+    table.dataTable tbody tr:hover {
+        background: #fafafa;
+    }
+
+    /* ------------------------------
+   5. NICE SCROLLBAR
+------------------------------ */
+    ::-webkit-scrollbar {
+        height: 8px;
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #c6c9cc;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #aeb2b7;
+    }
+</style>
+
 @stop
 @section('mainarea')
+
+<div class="modal fade" id="progressModal" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Processing...</h5>
+            </div>
+            <div class="modal-body">
+                <ul id="progressLog" style="max-height:240px; overflow:auto"></ul>
+            </div>
+            <div class="modal-footer">
+                <button id="closeProgressBtn" class="btn btn-secondary" style="display:none">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
 <!-- page-header -->
 <div class="page-header p-2 shadow">
     <ol class="breadcrumb breadcrumb-arrow mt-0">
@@ -170,6 +311,8 @@
                             <a id="BtnProsesPayroll"
                                 class="btn btn-app btn-sm btn-primary text-white BtnProsesPayroll"><span><i
                                         class="fa fa-download"></i></span> PROSES PAYROLL</a>
+                            {{-- <button id="runProcessBtn" class="btn btn-primary">Run Payroll Process</button> --}}
+                            <button id="runProcessBtn" class="btn btn-primary">Run All Steps</button>
                         </div>
                     </div>
                     <div class="row pt-4">
@@ -618,27 +761,90 @@
         </table>
     </div>
     {{-- @endif --}}
+
+
+
+
 </div>
 
+
+<div class="card shadow">
+    <div class="card-header bg-info py-2">
+        <div class="card" id="card-data" style="font-weight: bold; font-size:12pt"></div>
+        <div class="card-options ">
+            <a href="#" class="card-options-collapse mr-2" data-toggle="card-collapse"><i
+                    class="fe fe-chevron-up text-white"></i></a>
+        </div>
+    </div>
+    <div class="card-body py-3 px-4">
+
+
+        <!-- PROCESS TABS -->
+        <ul class="nav nav-tabs custom-tabs" id="processTabs">
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#tab1">Presence</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab2">Overtime</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab3">Permission</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab4">Late</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab5">BPJS</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab6">Salary</a></li>
+        </ul>
+
+        <!-- TAB CONTENT -->
+        <div class="tab-content modern-tab-content mt-3">
+
+            <div id="tab1" class="tab-pane fade show active">
+                <div id="container_1" class="result-container"></div>
+            </div>
+
+            <div id="tab2" class="tab-pane fade">
+                <div id="container_2" class="result-container"></div>
+            </div>
+
+            <div id="tab3" class="tab-pane fade">
+                <div id="container_3" class="result-container"></div>
+            </div>
+
+            <div id="tab4" class="tab-pane fade">
+                <div id="container_4" class="result-container"></div>
+            </div>
+
+            <div id="tab5" class="tab-pane fade">
+                <div id="container_5" class="result-container"></div>
+            </div>
+
+            <div id="tab6" class="tab-pane fade">
+                <div id="container_6" class="result-container"></div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
 @endsection
 
 @section('footerjs')
 
 <!--Jquery Sparkline js-->
-<script src="{{ URL::asset('assets/plugins/vendors/jquery.sparkline.min.js') }}"></script>
+<script src=" {{ URL::asset('assets/plugins/vendors/jquery.sparkline.min.js') }}"></script>
 
 <!-- INTERNAL Data tables -->
 <script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/buttons.bootstrap4.min.js') }}"></script>
+<script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}">
+</script>
+<script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}">
+</script>
+<script src="{{ URL::asset('assets/plugins/datatable/js/buttons.bootstrap4.min.js') }}">
+</script>
 <script src="{{ URL::asset('assets/plugins/datatable/js/jszip.min.js') }}"></script>
 <script src="{{ URL::asset('assets/plugins/datatable/js/vfs_fonts.js') }}"></script>
 <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.html5.min.js') }}"></script>
 <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.print.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/js/buttons.colVis.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/dataTables.responsive.min.js') }}"></script>
-<script src="{{ URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.js') }}"></script>
+<script src="{{ URL::asset('assets/plugins/datatable/js/buttons.colVis.min.js') }}">
+</script>
+<script src="{{ URL::asset('assets/plugins/datatable/dataTables.responsive.min.js') }}">
+</script>
+<script src="{{ URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.js') }}">
+</script>
 <script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
 
 <!-- Notifications js -->
@@ -653,7 +859,8 @@
 <script src="{{URL::asset('assets/plugins/input-mask/jquery.maskedinput.js')}}"></script>
 
 <!-- Sweet alert js-->
-<script src="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.js')}}">
+</script>
 <script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -1829,45 +2036,365 @@
 
 <script>
     $(document).ready(function() {
-            $('#btnRecap').click(function() {
-                let daterange = $('#daterange1').val();
-                let enroll_id = $('#selectEmployeeID2').val();
-                $('#btnRecap').addClass("btn-loading");
-                $("#btnRecap").html('Please wait...');
-                $("#btnRecap").attr("disabled", true);
+        $('#btnRecap').click(function() {
+            let daterange = $('#daterange1').val();
+            let enroll_id = $('#selectEmployeeID2').val();
+            $('#btnRecap').addClass("btn-loading");
+            $("#btnRecap").html('Please wait...');
+            $("#btnRecap").attr("disabled", true);
 
-                console.log('daterange', daterange);
+            console.log('daterange', daterange);
 
-                $.ajax({
-                    type: 'POST',
-                    url: '{{route('hris.rekapperhitunganpayroll.recap_labor_cost_new')}}',
-                    data: {
-                        daterange: daterange,
-                        enroll_id: enroll_id
-                    },
-                    xhrFields: { responseType : 'blob' },
-                    success:function(data){
-                        var blob = new Blob([data]);
-                        var link = document.createElement('a');
-                        link.href = window.URL.createObjectURL(blob);
-                        let file_name = daterange+' Recap Labor Cost New '+Math.ceil(Math.random()*1000000);
-                        link.download = file_name+".xlsx";
-                        link.click();
-                        swal("", "Recap Labor Export Success", "success");
-                        $('#btnRecap').removeClass("btn-loading");
-                        $("#btnRecap").attr("disabled", false);
-                        $("#btnRecap").html('DAILY LABOR COST NEW');
-                    },
-                    error: function(res){
-                        swal("", "Recap Labor Export Failed", "error");
-                        $('#btnRecap').removeClass("btn-loading");
-                        $("#btnRecap").attr("disabled", false);
-                        $("#btnRecap").html('DAILY LABOR COST NEW');
-                    }
-                });
+            $.ajax({
+                type: 'POST',
+                url: '{{route('hris.rekapperhitunganpayroll.recap_labor_cost_new')}}',
+                data: {
+                    daterange: daterange,
+                    enroll_id: enroll_id
+                },
+                xhrFields: { responseType : 'blob' },
+                success:function(data){
+                    var blob = new Blob([data]);
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    let file_name = daterange+' Recap Labor Cost New '+Math.ceil(Math.random()*1000000);
+                    link.download = file_name+".xlsx";
+                    link.click();
+                    swal("", "Recap Labor Export Success", "success");
+                    $('#btnRecap').removeClass("btn-loading");
+                    $("#btnRecap").attr("disabled", false);
+                    $("#btnRecap").html('DAILY LABOR COST NEW');
+                },
+                error: function(res){
+                    swal("", "Recap Labor Export Failed", "error");
+                    $('#btnRecap').removeClass("btn-loading");
+                    $("#btnRecap").attr("disabled", false);
+                    $("#btnRecap").html('DAILY LABOR COST NEW');
+                }
             });
+        });
 
-        })
+    })
 </script>
 
+
+<script>
+    // =====================================================
+    //  PROCESS RUNNER (PLAIN VERSION) + STEP DESCRIPTIONS
+    // =====================================================
+
+    $(document).ready(function () {
+
+        // -------------------------------------------------
+        // STEP DESCRIPTIONS (OPSI A)
+        // -------------------------------------------------
+        const STEP_DESC = {
+            1: "Load Presence",
+            2: "Load Overtime",
+            3: "Load Permission",
+            4: "Load Late",
+            5: "Load BPJS",
+            6: "Load Salary"
+        };
+
+        // -------------------------------------------------
+        // UI HELPERS
+        // -------------------------------------------------
+        function uid(prefix) {
+            return prefix + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function openProgressModal() {
+            $('#progressLog').empty();
+            $('#closeProgressBtn').hide();
+            $('#progressModal').modal('show');
+        }
+
+        function addLog(text) {
+            $('#progressLog').prepend(`<li>${text}</li>`);
+        }
+
+        function getFriendlyName(step, idx) {
+            const friendlyNamesStep1 = ['Kehadiran', 'Perhitungan Kehadiran', 'Anomalous'];
+            const friendlyNamesStep2 = ['OK', 'Anomalous', 'All Rows', 'Dashboard','Summary'];
+            const friendlyNamesStep6 = [
+                'Employee', 'Grading', 'Presence', 'Overtime',
+                'Koreksi Upah', 'Koreksi Potongan', 'BPJS',
+                'DTPC', 'IKS', 'Final Salary'
+            ];
+
+            if (step === 1) return friendlyNamesStep1[idx] ?? `Set ${idx + 1}`;
+            if (step === 2) return friendlyNamesStep2[idx] ?? `Set ${idx + 1}`;
+            if (step === 6) return friendlyNamesStep6[idx] ?? `Set ${idx + 1}`;
+            return `Set ${idx + 1}`;
+        }
+
+        // -------------------------------------------------
+        // DATATABLE RENDERER
+        // -------------------------------------------------
+        function renderDataTable(selector, data) {
+
+            const $table = $(selector);
+
+            // Cleanup DataTable lama
+            if ($.fn.DataTable.isDataTable(selector)) {
+                $table.DataTable().clear().destroy();
+            }
+            $table.empty();
+
+            // Jika kosong → tampilkan pesan simple
+            if (!data || data.length === 0) {
+                $table.append(`
+                    <thead><tr><th>No data</th></tr></thead>
+                    <tbody><tr><td>No data</td></tr></tbody>
+                `);
+                return;
+            }
+
+            // Ambil semua key dinamis
+            let keySet = new Set();
+            data.forEach(r => Object.keys(r).forEach(k => keySet.add(k)));
+            const keys = Array.from(keySet);
+
+            // Columns DataTable
+            const columns = keys.map(k => ({
+                data: k,
+                title: k.replace(/_/g, ' ').toUpperCase()
+            }));
+
+            // Init DataTable
+            const dt = $table.DataTable({
+                data: data.map(row => {
+                    const out = {};
+                    keys.forEach(k => out[k] = row[k] ?? '');
+                    return out;
+                }),
+                columns: columns,
+                scrollX: true,
+                pageLength: 10,
+                responsive: false,
+                autoWidth: false,
+                deferRender: true,
+                processing: true,
+                destroy: true,
+                dom: 'Blfrtip',
+                buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+
+                initComplete: function () {
+                    const api = this.api();
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            api.columns.adjust().draw(false);
+                            autoFormatNumericColumns($table);
+                        });
+                    });
+                }
+            });
+
+            // Safety adjust
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    dt.columns.adjust().draw(false);
+                });
+            });
+        }
+
+        // -------------------------------------------------
+        //   MAIN RUN BUTTON
+        // -------------------------------------------------
+        $('#runProcessBtn').on('click', function () {
+
+            const steps = [1, 2, 3, 4, 5, 6];
+            const tanggal_awal = '2025-10-26';
+            const tanggal_akhir = '2025-11-25';
+
+            openProgressModal();
+            addLog("Processing…");
+
+            // Bersihkan semua tab container
+            for (let s = 1; s <= 6; s++) {
+                $('#container_' + s).empty();
+            }
+
+            // MAIN EXECUTOR
+            (async function runSequence() {
+
+                for (let step of steps) {
+
+                    const desc = STEP_DESC[step] ?? "Unknown Step";
+
+                    // Log running
+                    addLog(`Running Step ${step} (${desc})...`);
+
+                    // Request AJAX
+                    let res;
+                    try {
+                        res = await $.ajax({
+                            url: '/run-process-step',
+                            method: 'POST',
+                            data: {
+                                step,
+                                tanggal_awal,
+                                tanggal_akhir,
+                                _token: $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                    } catch (err) {
+                        addLog(`Step ${step} FAILED: ${err.responseText || err.statusText}`);
+                        $('#closeProgressBtn').show();
+                        break;
+                    }
+
+                    // Validasi status
+                    if (res.status !== 'ok') {
+                        addLog(`Step ${step} ERROR: ${res.message}`);
+                        $('#closeProgressBtn').show();
+                        break;
+                    }
+
+                    // Log done
+                    addLog(`Step ${step} (${desc}) done. Rendering result sets...`);
+
+                    // Tab container target
+                    const container = $(`#container_${step}`);
+                    const rs = res.result_sets || {};
+
+                    // Sort keys
+                    let resultKeys = Object.keys(rs).sort((a, b) => {
+                        const A = parseInt(a.replace(/\D+/g, '')) || 0;
+                        const B = parseInt(b.replace(/\D+/g, '')) || 0;
+                        return A - B;
+                    });
+
+                    // Buang key kosong jika ada
+                    if (resultKeys.length && rs[resultKeys[resultKeys.length - 1]].length === 0) {
+                        resultKeys.pop();
+                    }
+
+                    if (resultKeys.length === 0) {
+                        container.append(`<div class="alert alert-info mt-3">No result sets returned.</div>`);
+                        continue;
+                    }
+
+                    // Build Sub Tabs
+                    const subTabId = 'stepTabs_' + step + '_' + uid('g');
+                    let navHtml = `<ul class="nav nav-tabs" id="${subTabId}_nav">`;
+                    let contentHtml = `<div class="tab-content" id="${subTabId}_content">`;
+
+                    resultKeys.forEach((key, idx) => {
+
+                        let rows = rs[key];
+                        if (!rows || rows.length === 0) rows = [{ info: "No data available" }];
+
+                        const friendly = getFriendlyName(step, idx);
+                        const active = idx === 0 ? 'active' : '';
+                        const paneId = `${subTabId}_pane_${idx}`;
+                        const tableId = `${subTabId}_tbl_${idx}`;
+
+                        navHtml += `
+                            <li class="nav-item">
+                                <a class="nav-link ${active}" data-toggle="tab" href="#${paneId}">
+                                    ${friendly}
+                                </a>
+                            </li>
+                        `;
+
+                        contentHtml += `
+                            <div id="${paneId}" class="tab-pane fade show ${active}">
+                                <h6 class="mt-3">${friendly} (${rows.length} rows)</h6>
+                                <table id="${tableId}" class="table table-bordered table-striped w-100"></table>
+                            </div>
+                        `;
+                    });
+
+                    navHtml += `</ul>`;
+                    contentHtml += `</div>`;
+
+                    container.append(`<div class="mt-3">${navHtml}${contentHtml}</div>`);
+
+                    // Render DataTables
+                    resultKeys.forEach((key, idx) => {
+                        const id = `#${subTabId}_tbl_${idx}`;
+                        requestAnimationFrame(() => {
+                            renderDataTable(id, rs[key]);
+                        });
+                    });
+
+                    // Auto pindah tab parent
+                    $(`a[href="#tab${step}"]`).tab('show');
+                }
+
+                addLog("All steps completed.");
+                $('#closeProgressBtn').show();
+
+            })();
+
+        });
+
+        // -------------------------------------------------
+        // FIX DATATABLE WHEN TAB SWITCHED
+        // -------------------------------------------------
+        // UNIVERSAL TAB EVENT HANDLER for Bootstrap 4 & 5
+        $(document).on('shown.bs.tab shown.bs.collapse', 'a[data-toggle="tab"], a[data-bs-toggle="tab"], [data-toggle="collapse"], [data-bs-toggle="collapse"]', function () {
+            setTimeout(() => {
+                $.fn.dataTable.tables({ visible: true, api: true })
+                    .columns.adjust()
+                    .draw(false);
+            }, 20); // small delay = very stable
+        });
+
+
+        function autoFormatNumericColumns(tableSelector) {
+            const table = $(tableSelector).DataTable();
+
+            table.rows().every(function () {
+                const rowData = this.data();
+                const newData = {};
+
+                for (let key in rowData) {
+                    const val = rowData[key];
+
+                    // numeric check tanpa menghapus string lain
+                    if (!isNaN(val) && val !== null && val !== "") {
+                        newData[key] = formatNumberNoRound(val);
+                    } else {
+                        newData[key] = val;
+                    }
+                }
+
+                this.data(newData);
+            });
+
+            table.draw(false);
+        }
+
+        function formatNumberNoRound(value) {
+            if (value === null || value === undefined || value === '') return value;
+
+            let num = Number(value);
+            if (isNaN(num)) return value;
+
+            const isInteger = Number.isInteger(num);
+
+            // Kurang dari 100 → tampil apa adanya, tanpa ribuan, tanpa rounding
+            if (Math.abs(num) < 100) {
+                return value.toString();
+            }
+
+            // Jika 100 atau lebih → format ribuan, tapi pertahankan decimal asli
+            let [intPart, decPart] = value.toString().split('.');
+
+            intPart = Number(intPart).toLocaleString("en-US"); // ribuan
+
+            return decPart ? `${intPart}.${decPart}` : intPart;
+        }
+
+        $(document).on('click', '#closeProgressBtn', function () {
+            $('#progressModal').modal('hide');
+        });
+
+    });
+
+
+</script>
 @endsection

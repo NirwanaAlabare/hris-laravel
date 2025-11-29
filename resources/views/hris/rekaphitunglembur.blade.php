@@ -379,7 +379,7 @@
                         <button class="tab-link" onclick="openTab(event, 'Tab2')">📝 Ok Data</button>
                         <button class="tab-link" onclick="openTab(event, 'Tab3')">👤 Not Ok Data</button>
                         <button class="tab-link" onclick="openTab(event, 'Tab4')">📈 All Data</button>
-                        <button class="tab-link" id="export_overtime" onclick="export_data()">Export</button>
+                        <button class="btn btn-primary" id="export_overtime" onclick="export_data()">Export</button>
                     </div>
 
                     <div id="Tab1" class="tab-content active">
@@ -1131,16 +1131,16 @@
                 var blob = new Blob([data]);
                 var link = document.createElement('a');
                 link.href = window.URL.createObjectURL(blob);
-                let file_name = daterange+' Recap Labor Cost New '+Math.ceil(Math.random()*1000000);
+                let file_name = daterange+' Recap Overtime Cost New '+Math.ceil(Math.random()*1000000);
                 link.download = file_name+".xlsx";
                 link.click();
-                swal("", "Recap Labor Export Success", "success");
+                swal("", "Recap Overtime Export Success", "success");
                 $('#export_overtime').removeClass("btn-loading");
                 $("#export_overtime").attr("disabled", false);
                 $("#export_overtime").html('Export');
             },
             error: function(res){
-                swal("", "Recap Labor Export Failed", "error");
+                swal("", "Recap Overtime Export Failed", "error");
                 $('#export_overtime').removeClass("btn-loading");
                 $("#export_overtime").attr("disabled", false);
                 $("#export_overtime").html('Export');
