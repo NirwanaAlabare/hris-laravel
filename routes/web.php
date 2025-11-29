@@ -886,4 +886,4 @@ Route::post('/hris/rekapperhitunganlembur/export_overtime', [RekapPerhitunganLem
 Route::post('/hris/rekapperhitunganpayroll/calculate_salary', [RekapPerhitunganPayrollController::class, 'calculate_salary'])
     ->name('hris.rekapperhitunganpayroll.calculate_salary');
 // routes/web.php or api.php
-Route::post('/run-process-step', [RekapPerhitunganPayrollController::class, 'runStep']);
+Route::post('/run-process-step', [RekapPerhitunganPayrollController::class, 'runStep'])->name('hris.rekapperhitunganpayroll.runStep');
