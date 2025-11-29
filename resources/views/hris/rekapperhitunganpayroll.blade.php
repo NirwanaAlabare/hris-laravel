@@ -312,7 +312,7 @@
                                 class="btn btn-app btn-sm btn-primary text-white BtnProsesPayroll"><span><i
                                         class="fa fa-download"></i></span> PROSES PAYROLL</a>
                             {{-- <button id="runProcessBtn" class="btn btn-primary">Run Payroll Process</button> --}}
-                            <button id="runProcessBtn" class="btn btn-primary">Run All Steps</button>
+                            <button id="runProcessBtn" class="btn btn-info">PROSES PAYROLL NEW</button>
                         </div>
                     </div>
                     <div class="row pt-4">
@@ -2230,7 +2230,8 @@
                     let res;
                     try {
                         res = await $.ajax({
-                            url: '/run-process-step',
+                            // url: '/run-process-step',
+                            url: '{{route('hris.rekapperhitunganpayroll.runStep')}}',
                             method: 'POST',
                             data: {
                                 step,
