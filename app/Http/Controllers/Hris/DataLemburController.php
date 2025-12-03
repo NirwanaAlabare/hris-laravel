@@ -53,6 +53,11 @@ class DataLemburController extends AdminBaseController
         $this->department = $this->ajax_getselectdepart();
         $this->selectemployee = $this->ajax_getallemployeeatribut();
         $this->periode_lembur = $this->ajax_gettanggallembur();
+        // $this->periode_lembur = DB::table('periode_payroll')
+        // ->selectRaw("CONCAT(tgl_mulai, ' s/d ', tgl_selesai) AS periode_payroll, tgl_mulai, tgl_selesai")
+        // ->where('tgl_mulai', '<=', now()) // periode ke depan tidak diambil
+        // ->orderBy('tgl_mulai', 'desc')
+        // ->get();
         $loggedAdmin = Auth::guard('admin')->user();
         $enroll_id = $loggedAdmin->enroll_id;
         $this->enroll_id_loggin = $enroll_id;
@@ -75,7 +80,7 @@ class DataLemburController extends AdminBaseController
     public function getnomorform()
     {
         $tanggal_lembur = request()->tanggal_lembur;
-        $datalembur=DB::select("select z.no_form,count(z.enroll_id) jumlah,z.dept from(select b.no_form,b.tgl_lembur,a.enroll_id,b.line dept from mut_karyawan_input_form_lembur_det a inner join mut_karyawan_input_form_lembur b on a.no_form=b.no_form where b.tgl_lembur='$tanggal_lembur'
+        $datalembur=DB::select("select z.no_form,count(z.enroll_id) jumlah,z.dept from(select b.no_form,b.tgl_lembur,a.enroll_id,b.line dept from mut_karyawan_input_form_lembur_det a inner join mut_karyawan_input_form_lembur b on a.no_form=b.no_form where b.tgl_lembur='$tanggal_lembur' and deleted_at is null
         union
         select b.no_form,b.tgl_lembur,a.enroll_id,b.dept dept from mut_karyawan_input_non_sewing_form_lembur_det a inner join mut_karyawan_input_non_sewing_form_lembur b on a.no_form=b.no_form where b.tgl_lembur='$tanggal_lembur')z group by no_form order by dept");
         return $datalembur;
@@ -85,9 +90,11 @@ class DataLemburController extends AdminBaseController
     {
         $tanggal_lembur=request()->tanggal_lembur;
         $no_form=request()->no_form;
-        $count=count(MutKaryawanInputFormLemburDet::where('no_form',$no_form)->get());
+        $count = MutKaryawanInputFormLemburDet::where('no_form', $no_form)
+            ->whereNull('deleted_at')
+            ->count();
         if($count>0){
-            $karyawanLembur=DB::select("select a.enroll_id,e.nik,e.employee_name,SUBSTR(m.absen_masuk_kerja,1,5) absen_masuk_kerja,SUBSTR(m.absen_pulang_kerja,1,5) absen_pulang_kerja,m.status_absen,m.nomor_form_lembur,SUBSTR(a.jam_lembur_awal_rencana,1,5) jam_lembur_awal_rencana,SUBSTR(a.jam_lembur_akhir_rencana,1,5) jam_lembur_akhir_rencana,a.jam_lembur_istirahat,GROUP_CONCAT(c.ket SEPARATOR ', ') ket from mut_karyawan_input_form_lembur_det a inner join mut_karyawan_input_form_lembur b on a.no_form=b.no_form inner join (select*from master_data_absen_kehadiran where tanggal_berjalan='$tanggal_lembur')m on a.enroll_id=m.enroll_id inner join employee_atribut e on a.enroll_id=e.enroll_id inner join mut_karyawan_input_form_lembur_det_ket c on b.no_form=c.no_form where a.no_form='$no_form'   group by enroll_id order by employee_name");
+            $karyawanLembur=DB::select("select a.enroll_id,e.nik,e.employee_name,SUBSTR(m.absen_masuk_kerja,1,5) absen_masuk_kerja,SUBSTR(m.absen_pulang_kerja,1,5) absen_pulang_kerja,m.status_absen,m.nomor_form_lembur,SUBSTR(a.jam_lembur_awal_rencana,1,5) jam_lembur_awal_rencana,SUBSTR(a.jam_lembur_akhir_rencana,1,5) jam_lembur_akhir_rencana,a.jam_lembur_istirahat,GROUP_CONCAT(c.ket SEPARATOR ', ') ket from mut_karyawan_input_form_lembur_det a inner join mut_karyawan_input_form_lembur b on a.no_form=b.no_form inner join (select*from master_data_absen_kehadiran where tanggal_berjalan='$tanggal_lembur')m on a.enroll_id=m.enroll_id inner join employee_atribut e on a.enroll_id=e.enroll_id inner join mut_karyawan_input_form_lembur_det_ket c on b.no_form=c.no_form where a.no_form='$no_form' and a.deleted_at is null group by enroll_id order by employee_name");
         }else{
             $karyawanLembur=DB::select("select a.enroll_id,e.nik,e.employee_name,SUBSTR(m.absen_masuk_kerja,1,5) absen_masuk_kerja,SUBSTR(m.absen_pulang_kerja,1,5) absen_pulang_kerja,m.status_absen,m.nomor_form_lembur,SUBSTR(a.jam_lembur_awal_rencana,1,5) jam_lembur_awal_rencana,SUBSTR(a.jam_lembur_akhir_rencana,1,5) jam_lembur_akhir_rencana,a.jam_lembur_istirahat,a.keterangan ket from mut_karyawan_input_non_sewing_form_lembur_det a inner join mut_karyawan_input_non_sewing_form_lembur b on a.no_form=b.no_form inner join (select*from master_data_absen_kehadiran where tanggal_berjalan='$tanggal_lembur')m on a.enroll_id=m.enroll_id inner join employee_atribut e on a.enroll_id=e.enroll_id where a.no_form='$no_form'   order by employee_name");
         }

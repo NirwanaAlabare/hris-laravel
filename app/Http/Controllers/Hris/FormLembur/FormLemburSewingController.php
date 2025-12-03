@@ -137,7 +137,7 @@ class FormLemburSewingController extends AdminBaseController
     public function cek_data_lembur(Request $request){
         $id=request()->id;
         $tgl_lembur=request()->tgl_lembur;
-        $no_form=DB::select("select no_form from mut_karyawan_input_non_sewing_form_lembur_det where enroll_id='$id' and no_form in (select no_form from mut_karyawan_input_non_sewing_form_lembur where tgl_lembur = '$tgl_lembur')");
+        $no_form=DB::select("select no_form from mut_karyawan_input_non_sewing_form_lembur_det where enroll_id='$id' and status ='-' and no_form in (select no_form from mut_karyawan_input_non_sewing_form_lembur where tgl_lembur = '$tgl_lembur')");
         return count($no_form);
     }
     public function show_list_karyawan(Request $request)
@@ -752,7 +752,7 @@ class FormLemburSewingController extends AdminBaseController
             ) k on a.no_form = k.no_form
             inner join employee_atribut e on b.enroll_id = e.enroll_id
             left join (select*from data_koreksi_upah) u on b.uuid_koreksi_upah=u.uuid
-            where a.no_form = '$no_form'
+            where a.no_form = '$no_form' and b.deleted_at is null
             order by  employee_name asc
             ");
             // date_FORMAT(SEC_TO_TIME((((TIMESTAMPDIFF(MINUTE,jam_lembur_awal_rencana,jam_lembur_akhir_rencana)) - jam_lembur_istirahat) * 60)),'%H:%i') total_jam
