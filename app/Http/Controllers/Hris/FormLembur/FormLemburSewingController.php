@@ -56,6 +56,7 @@ class FormLemburSewingController extends AdminBaseController
                 DATE_FORMAT(tgl_filter, '%d-%m-%Y') tgl_filter_fix,
                 line,
                 k.ket,
+                b.deleted_at,
                 count(b.enroll_id) jml_org,
                 count(IF(b.status='PINJAMAN',1,null)) jml_org_pinjam,
                 count(IF(b.status!='PINJAMAN',1,null)) jml_org_line,
@@ -66,7 +67,7 @@ class FormLemburSewingController extends AdminBaseController
                 (
                     select no_form,group_concat(ket order by ket asc SEPARATOR ', ') ket from mut_karyawan_input_form_lembur_det_ket group by no_form
                 ) k on a.no_form = k.no_form
-                where tgl_lembur >= '$tgl_awal' and tgl_lembur <= '$tgl_akhir' ".$additionalQuery."
+                where b.deleted_at is null and tgl_lembur >= '$tgl_awal' and tgl_lembur <= '$tgl_akhir' ".$additionalQuery."
                 group by no_form
                 order by tgl_lembur desc,line asc
                 ");
@@ -81,6 +82,7 @@ class FormLemburSewingController extends AdminBaseController
                 DATE_FORMAT(tgl_filter, '%d-%m-%Y') tgl_filter_fix,
                 line,
                 k.ket,
+                d.deleted_at,
                 count(b.enroll_id) jml_org,
                 count(IF(b.status='PINJAMAN',1,null)) jml_org_pinjam,
                 count(IF(b.status!='PINJAMAN',1,null)) jml_org_line,
@@ -91,7 +93,7 @@ class FormLemburSewingController extends AdminBaseController
                 (
                     select no_form,group_concat(ket order by ket asc SEPARATOR ', ') ket from mut_karyawan_input_form_lembur_det_ket group by no_form
                 ) k on a.no_form = k.no_form
-                where a.created_by='$user' and tgl_lembur >= '$tgl_awal' and tgl_lembur <= '$tgl_akhir' ".$additionalQuery."
+                where a.created_by='$user' and b.deleted_at is null and tgl_lembur >= '$tgl_awal' and tgl_lembur <= '$tgl_akhir' ".$additionalQuery."
                 group by no_form
                 order by tgl_lembur desc,line asc
                 ");
