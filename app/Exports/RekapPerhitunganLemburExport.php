@@ -138,14 +138,29 @@ class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormat
                     }
                 )
                 ->leftJoin(\DB::raw("(
-                    SELECT
-                        a.tgl_lembur,
-                        b.enroll_id,
-                        b.uuid_koreksi_upah AS jml_insentif
-                    FROM mut_karyawan_input_form_lembur a
-                    INNER JOIN mut_karyawan_input_form_lembur_det b
-                        ON a.no_form = b.no_form
-                        WHERE b.uuid_koreksi_upah = ''
+                  SELECT *
+                        FROM (
+                            SELECT
+                                a.tgl_lembur,
+                                b.enroll_id,
+                                b.uuid_koreksi_upah AS jml_insentif,
+                                b.status AS status_line,
+                                ROW_NUMBER() OVER (PARTITION BY b.enroll_id, a.tgl_lembur ORDER BY b.uuid_koreksi_upah DESC) AS rn
+                            FROM mut_karyawan_input_form_lembur a
+                            JOIN mut_karyawan_input_form_lembur_det b
+                                ON a.no_form = b.no_form
+                            WHERE b.uuid_koreksi_upah = ''
+                            AND (
+                                NOT EXISTS (
+                                    SELECT 1
+                                    FROM mut_karyawan_input_form_lembur_det b2
+                                    WHERE b2.no_form = b.no_form
+                                        AND b2.uuid_koreksi_upah != ''
+                                )
+                                OR b.status != 'PINJAMAN'
+                            )
+                        ) t
+                        WHERE t.rn = 1
                 ) mlb"),
                 function($join) {
                     $join->on('mda.enroll_id', '=', 'mlb.enroll_id')
