@@ -31,6 +31,9 @@ use App\Models\RekapKehadiranKaryawan;
 use \avadim\FastExcelLaravel\Excel as FastExcel;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+// use Spatie\Activitylog\Models\Activity;
+// use Spatie\Activitylog\Traits\LogsActivity;
+// use Spatie\Activitylog\Facades\Activity as ActivityLog;
 
 
 
@@ -96,7 +99,7 @@ class DataLemburController extends AdminBaseController
         if($count>0){
             $karyawanLembur=DB::select("select a.enroll_id,e.nik,e.employee_name,SUBSTR(m.absen_masuk_kerja,1,5) absen_masuk_kerja,SUBSTR(m.absen_pulang_kerja,1,5) absen_pulang_kerja,m.status_absen,m.nomor_form_lembur,SUBSTR(a.jam_lembur_awal_rencana,1,5) jam_lembur_awal_rencana,SUBSTR(a.jam_lembur_akhir_rencana,1,5) jam_lembur_akhir_rencana,a.jam_lembur_istirahat,GROUP_CONCAT(c.ket SEPARATOR ', ') ket from mut_karyawan_input_form_lembur_det a inner join mut_karyawan_input_form_lembur b on a.no_form=b.no_form inner join (select*from master_data_absen_kehadiran where tanggal_berjalan='$tanggal_lembur')m on a.enroll_id=m.enroll_id inner join employee_atribut e on a.enroll_id=e.enroll_id inner join mut_karyawan_input_form_lembur_det_ket c on b.no_form=c.no_form where a.no_form='$no_form' and a.deleted_at is null group by enroll_id order by employee_name");
         }else{
-            $karyawanLembur=DB::select("select a.enroll_id,e.nik,e.employee_name,SUBSTR(m.absen_masuk_kerja,1,5) absen_masuk_kerja,SUBSTR(m.absen_pulang_kerja,1,5) absen_pulang_kerja,m.status_absen,m.nomor_form_lembur,SUBSTR(a.jam_lembur_awal_rencana,1,5) jam_lembur_awal_rencana,SUBSTR(a.jam_lembur_akhir_rencana,1,5) jam_lembur_akhir_rencana,a.jam_lembur_istirahat,a.keterangan ket from mut_karyawan_input_non_sewing_form_lembur_det a inner join mut_karyawan_input_non_sewing_form_lembur b on a.no_form=b.no_form inner join (select*from master_data_absen_kehadiran where tanggal_berjalan='$tanggal_lembur')m on a.enroll_id=m.enroll_id inner join employee_atribut e on a.enroll_id=e.enroll_id where a.no_form='$no_form'   order by employee_name");
+            $karyawanLembur=DB::select("select a.enroll_id,e.nik,e.employee_name,SUBSTR(m.absen_masuk_kerja,1,5) absen_masuk_kerja,SUBSTR(m.absen_pulang_kerja,1,5) absen_pulang_kerja,m.status_absen,m.nomor_form_lembur,SUBSTR(a.jam_lembur_awal_rencana,1,5) jam_lembur_awal_rencana,SUBSTR(a.jam_lembur_akhir_rencana,1,5) jam_lembur_akhir_rencana,a.jam_lembur_istirahat,a.keterangan ket from mut_karyawan_input_non_sewing_form_lembur_det a inner join mut_karyawan_input_non_sewing_form_lembur b on a.no_form=b.no_form inner join (select*from master_data_absen_kehadiran where tanggal_berjalan='$tanggal_lembur')m on a.enroll_id=m.enroll_id inner join employee_atribut e on a.enroll_id=e.enroll_id where a.no_form='$no_form'  order by employee_name");
         }
         return $karyawanLembur;
     }
@@ -1135,14 +1138,29 @@ class DataLemburController extends AdminBaseController
                     mda.uuid = data_lembur.uuid_master
                 LEFT JOIN rekap_perhitungan_lembur rekap_lembur ON data_lembur.enroll_id = rekap_lembur.enroll_id AND data_lembur.tanggal_berjalan = rekap_lembur.tanggal_berjalan
                 LEFT JOIN (
-                    SELECT
-                        a.tgl_lembur,
-                        b.enroll_id,
-                        b.uuid_koreksi_upah AS jml_insentif
-                    FROM mut_karyawan_input_form_lembur a
-                    INNER JOIN mut_karyawan_input_form_lembur_det b
-                        ON a.no_form = b.no_form
-                        WHERE b.uuid_koreksi_upah = ''
+                   SELECT *
+                        FROM (
+                            SELECT
+                                a.tgl_lembur,
+                                b.enroll_id,
+                                b.uuid_koreksi_upah AS jml_insentif,
+                                b.status AS status_line,
+                                ROW_NUMBER() OVER (PARTITION BY b.enroll_id, a.tgl_lembur ORDER BY b.uuid_koreksi_upah DESC) AS rn
+                            FROM mut_karyawan_input_form_lembur a
+                            JOIN mut_karyawan_input_form_lembur_det b
+                                ON a.no_form = b.no_form
+                            WHERE b.uuid_koreksi_upah = ''
+                            AND (
+                                NOT EXISTS (
+                                    SELECT 1
+                                    FROM mut_karyawan_input_form_lembur_det b2
+                                    WHERE b2.no_form = b.no_form
+                                        AND b2.uuid_koreksi_upah != ''
+                                )
+                                OR b.status != 'PINJAMAN'
+                            )
+                        ) t
+                        WHERE t.rn = 1
                 ) mlb
                     ON mda.enroll_id = mlb.enroll_id AND mda.tanggal_berjalan = mlb.tgl_lembur
                 WHERE
@@ -2147,24 +2165,53 @@ class DataLemburController extends AdminBaseController
 
         $allData = $query->orderBy('data_lembur.tanggal_berjalan')->get();
 
-        $duplicateData = DataLembur::select('data_lembur.*', 'employee_atribut.employee_name')
+        // $duplicateData = DataLembur::select('data_lembur.*', 'employee_atribut.employee_name')
+        //     ->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'data_lembur.enroll_id')
+        //     ->whereBetween('data_lembur.tanggal_berjalan', [$awal_bulan, $akhir_bulan])
+        //     ->when($search, function($q) use ($search) {
+        //         $q->where(function($q2) use ($search) {
+        //             $q2->where('employee_atribut.employee_name', 'like', "%{$search}%")
+        //             ->orWhere('data_lembur.enroll_id', 'like', "%{$search}%");
+        //         });
+        //     })
+        //     ->whereIn(DB::raw('(employee_atribut.employee_name, data_lembur.tanggal_berjalan, data_lembur.enroll_id)'), function($query){
+        //         $query->select('employee_name', 'tanggal_berjalan','data_lembur.enroll_id')
+        //             ->from('data_lembur')
+        //             ->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'data_lembur.enroll_id')
+        //             ->groupBy('employee_name', 'tanggal_berjalan','enroll_id')
+        //             ->havingRaw('COUNT(*) > 1');
+        //     })
+        //     ->orderBy('data_lembur.tanggal_berjalan')
+        //     ->get();
+        $duplicateData = DataLembur::select(
+        'data_lembur.*',
+        'employee_atribut.employee_name',
+        'master_data_absen_kehadiran.mulai_jam_kerja',
+        'master_data_absen_kehadiran.akhir_jam_kerja',
+        'master_data_absen_kehadiran.absen_masuk_kerja',
+        'master_data_absen_kehadiran.absen_pulang_kerja'
+    )
+    ->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'data_lembur.enroll_id')
+    ->leftJoin('master_data_absen_kehadiran', function($join){
+        $join->on('master_data_absen_kehadiran.enroll_id', '=', 'data_lembur.enroll_id')
+             ->on('master_data_absen_kehadiran.tanggal_berjalan', '=', 'data_lembur.tanggal_berjalan');
+    })
+    ->whereBetween('data_lembur.tanggal_berjalan', [$awal_bulan, $akhir_bulan])
+    ->when($search, function($q) use ($search) {
+        $q->where(function($q2) use ($search) {
+            $q2->where('employee_atribut.employee_name', 'like', "%{$search}%")
+               ->orWhere('data_lembur.enroll_id', 'like', "%{$search}%");
+        });
+    })
+    ->whereIn(DB::raw('(employee_atribut.employee_name, data_lembur.tanggal_berjalan, data_lembur.enroll_id)'), function($query){
+        $query->select('employee_name', 'tanggal_berjalan', 'data_lembur.enroll_id')
+            ->from('data_lembur')
             ->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'data_lembur.enroll_id')
-            ->whereBetween('data_lembur.tanggal_berjalan', [$awal_bulan, $akhir_bulan])
-            ->when($search, function($q) use ($search) {
-                $q->where(function($q2) use ($search) {
-                    $q2->where('employee_atribut.employee_name', 'like', "%{$search}%")
-                    ->orWhere('data_lembur.enroll_id', 'like', "%{$search}%");
-                });
-            })
-            ->whereIn(DB::raw('(employee_atribut.employee_name, data_lembur.tanggal_berjalan, data_lembur.enroll_id)'), function($query){
-                $query->select('employee_name', 'tanggal_berjalan','data_lembur.enroll_id')
-                    ->from('data_lembur')
-                    ->leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'data_lembur.enroll_id')
-                    ->groupBy('employee_name', 'tanggal_berjalan','enroll_id')
-                    ->havingRaw('COUNT(*) > 1');
-            })
-            ->orderBy('data_lembur.tanggal_berjalan')
-            ->get();
+            ->groupBy('employee_name', 'tanggal_berjalan', 'data_lembur.enroll_id')
+            ->havingRaw('COUNT(*) > 1');
+    })
+    ->orderBy('data_lembur.tanggal_berjalan')
+    ->get();
         return response()->json([
             'all_data' => $allData,
             'duplicate_data' => $duplicateData
@@ -2208,15 +2255,29 @@ class DataLemburController extends AdminBaseController
             ->join('employee_atribut', 'master_data_absen_kehadiran.enroll_id', '=', 'employee_atribut.enroll_id')
             ->leftJoin(
                 DB::raw("(
-                    SELECT
-                        a.tgl_lembur,
-                        b.enroll_id,
-                        b.uuid_koreksi_upah AS jml_insentif,
-                        b.status AS status_line
-                    FROM mut_karyawan_input_form_lembur a
-                    INNER JOIN mut_karyawan_input_form_lembur_det b
-                        ON a.no_form = b.no_form
-                        WHERE b.uuid_koreksi_upah = ''
+                        SELECT *
+                            FROM (
+                                SELECT
+                                    a.tgl_lembur,
+                                    b.enroll_id,
+                                    b.uuid_koreksi_upah AS jml_insentif,
+                                    b.status AS status_line,
+                                    ROW_NUMBER() OVER (PARTITION BY b.enroll_id, a.tgl_lembur ORDER BY b.uuid_koreksi_upah DESC) AS rn
+                                FROM mut_karyawan_input_form_lembur a
+                                JOIN mut_karyawan_input_form_lembur_det b
+                                    ON a.no_form = b.no_form
+                                WHERE b.uuid_koreksi_upah = ''
+                                AND (
+                                    NOT EXISTS (
+                                        SELECT 1
+                                        FROM mut_karyawan_input_form_lembur_det b2
+                                        WHERE b2.no_form = b.no_form
+                                            AND b2.uuid_koreksi_upah != ''
+                                    )
+                                    OR b.status != 'PINJAMAN'
+                                )
+                            ) t
+                            WHERE t.rn = 1
                 ) mlb"),
                 function($join) {
                     $join->on('master_data_absen_kehadiran.enroll_id', '=', 'mlb.enroll_id')
@@ -2233,6 +2294,7 @@ class DataLemburController extends AdminBaseController
                 'mlb.status_line'
             )
             ->get();
+            // dd($query->toSql());
         }
         elseif ($selectNoSPL && $verification_status=='') {
             $selectNoSPL = $request->selectNoSPL;
@@ -2243,15 +2305,29 @@ class DataLemburController extends AdminBaseController
             ->join('employee_atribut', 'master_data_absen_kehadiran.enroll_id', '=', 'employee_atribut.enroll_id')
             ->leftJoin(
                 DB::raw("(
-                    SELECT
-                        a.tgl_lembur,
-                        b.enroll_id,
-                        b.uuid_koreksi_upah AS jml_insentif,
-                        b.status AS status_line
-                    FROM mut_karyawan_input_form_lembur a
-                    INNER JOIN mut_karyawan_input_form_lembur_det b
-                        ON a.no_form = b.no_form
-                        WHERE b.uuid_koreksi_upah = ''
+                        SELECT *
+                            FROM (
+                                SELECT
+                                    a.tgl_lembur,
+                                    b.enroll_id,
+                                    b.uuid_koreksi_upah AS jml_insentif,
+                                    b.status AS status_line,
+                                    ROW_NUMBER() OVER (PARTITION BY b.enroll_id, a.tgl_lembur ORDER BY b.uuid_koreksi_upah DESC) AS rn
+                                FROM mut_karyawan_input_form_lembur a
+                                JOIN mut_karyawan_input_form_lembur_det b
+                                    ON a.no_form = b.no_form
+                                WHERE b.uuid_koreksi_upah = ''
+                                AND (
+                                    NOT EXISTS (
+                                        SELECT 1
+                                        FROM mut_karyawan_input_form_lembur_det b2
+                                        WHERE b2.no_form = b.no_form
+                                            AND b2.uuid_koreksi_upah != ''
+                                    )
+                                    OR b.status != 'PINJAMAN'
+                                )
+                            ) t
+                            WHERE t.rn = 1
                 ) mlb"),
                 function($join) {
                     $join->on('master_data_absen_kehadiran.enroll_id', '=', 'mlb.enroll_id')
@@ -2268,6 +2344,7 @@ class DataLemburController extends AdminBaseController
                 'mlb.status_line'
             )
             ->get();
+            // dd($query->toSql());
 
         } elseif ($selectNoSPL && $verification_status!='') {
             $selectNoSPL = $request->selectNoSPL;
@@ -2282,15 +2359,29 @@ class DataLemburController extends AdminBaseController
             }) ->join('employee_atribut', 'master_data_absen_kehadiran.enroll_id', '=', 'employee_atribut.enroll_id')
             ->leftJoin(
                 DB::raw("(
-                    SELECT
-                        a.tgl_lembur,
-                        b.enroll_id,
-                        b.uuid_koreksi_upah AS jml_insentif,
-                        b.status AS status_line
-                    FROM mut_karyawan_input_form_lembur a
-                    INNER JOIN mut_karyawan_input_form_lembur_det b
-                        ON a.no_form = b.no_form
-                        WHERE b.uuid_koreksi_upah = ''
+                        SELECT *
+                            FROM (
+                                SELECT
+                                    a.tgl_lembur,
+                                    b.enroll_id,
+                                    b.uuid_koreksi_upah AS jml_insentif,
+                                    b.status AS status_line,
+                                    ROW_NUMBER() OVER (PARTITION BY b.enroll_id, a.tgl_lembur ORDER BY b.uuid_koreksi_upah DESC) AS rn
+                                FROM mut_karyawan_input_form_lembur a
+                                JOIN mut_karyawan_input_form_lembur_det b
+                                    ON a.no_form = b.no_form
+                                WHERE b.uuid_koreksi_upah = ''
+                                AND (
+                                    NOT EXISTS (
+                                        SELECT 1
+                                        FROM mut_karyawan_input_form_lembur_det b2
+                                        WHERE b2.no_form = b.no_form
+                                            AND b2.uuid_koreksi_upah != ''
+                                    )
+                                    OR b.status != 'PINJAMAN'
+                                )
+                            ) t
+                            WHERE t.rn = 1
                 ) mlb"),
                 function($join) {
                     $join->on('master_data_absen_kehadiran.enroll_id', '=', 'mlb.enroll_id')
@@ -2307,6 +2398,7 @@ class DataLemburController extends AdminBaseController
                 'mlb.status_line'
             )
             ->get();
+            // dd($query->toSql());
         }else{
             $query =  MasterDataAbsenKehadiran::with('employee_atribut','employee_atribut.dept')
             ->where('nomor_form_lembur','!=',null)
@@ -2315,15 +2407,29 @@ class DataLemburController extends AdminBaseController
             ->join('employee_atribut', 'master_data_absen_kehadiran.enroll_id', '=', 'employee_atribut.enroll_id')
             ->leftJoin(
                 DB::raw("(
-                    SELECT
-                        a.tgl_lembur,
-                        b.enroll_id,
-                        b.uuid_koreksi_upah AS jml_insentif,
-                        b.status AS status_line
-                    FROM mut_karyawan_input_form_lembur a
-                    INNER JOIN mut_karyawan_input_form_lembur_det b
-                        ON a.no_form = b.no_form
-                        WHERE b.uuid_koreksi_upah = ''
+                        SELECT *
+    FROM (
+        SELECT
+            a.tgl_lembur,
+            b.enroll_id,
+            b.uuid_koreksi_upah AS jml_insentif,
+            b.status AS status_line,
+            ROW_NUMBER() OVER (PARTITION BY b.enroll_id, a.tgl_lembur ORDER BY b.uuid_koreksi_upah DESC) AS rn
+        FROM mut_karyawan_input_form_lembur a
+        JOIN mut_karyawan_input_form_lembur_det b
+            ON a.no_form = b.no_form
+        WHERE b.uuid_koreksi_upah = ''
+          AND (
+              NOT EXISTS (
+                  SELECT 1
+                  FROM mut_karyawan_input_form_lembur_det b2
+                  WHERE b2.no_form = b.no_form
+                    AND b2.uuid_koreksi_upah != ''
+              )
+              OR b.status != 'PINJAMAN'
+          )
+    ) t
+    WHERE t.rn = 1
                 ) mlb"),
                 function($join) {
                     $join->on('master_data_absen_kehadiran.enroll_id', '=', 'mlb.enroll_id')
@@ -2340,6 +2446,7 @@ class DataLemburController extends AdminBaseController
                 'mlb.status_line'
             )
             ->get();
+            // dd($query->toSql());
 
         }
         $formattedResults = [];
@@ -2572,95 +2679,114 @@ $uuid_rpl = DB::table('rekap_perhitungan_lembur as rpl')
 
     }
 
-    public function tambahkaryawan(Request $request)
-    {
-        $loggedAdmin = Auth::guard('admin')->user();
-        session(['loggedAdmin' => $loggedAdmin]);
-        $email = $loggedAdmin->email;
-        $nomor_form_lembur = $request->nomor_form_lembur;
+        public function tambahkaryawan(Request $request)
+        {
+            $loggedAdmin = Auth::guard('admin')->user();
+            session(['loggedAdmin' => $loggedAdmin]);
+            $email = $loggedAdmin->email;
+            $nomor_form_lembur = $request->nomor_form_lembur;
 
-        $enroll_id_array = $request->selectEmp;
+            $enroll_id_array = $request->selectEmp;
 
-        $mulai_jam_lembur = $request->mulai_jam_lembur;
-        $explodeMulaiLembur = explode(" ", $mulai_jam_lembur);
-        $tanggal_lembur = substr($explodeMulaiLembur[0], 6, 4) . '-' . substr($explodeMulaiLembur[0], 3, 2) . '-' . substr($explodeMulaiLembur[0], 0, 2);
-        $mulai_jam_lembur = substr($explodeMulaiLembur[0], 6, 4) . '-' . substr($explodeMulaiLembur[0], 3, 2) . '-' . substr($explodeMulaiLembur[0], 0, 2) . " " . $explodeMulaiLembur[1];
+            $mulai_jam_lembur = $request->mulai_jam_lembur;
+            $explodeMulaiLembur = explode(" ", $mulai_jam_lembur);
+            $tanggal_lembur = substr($explodeMulaiLembur[0], 6, 4) . '-' . substr($explodeMulaiLembur[0], 3, 2) . '-' . substr($explodeMulaiLembur[0], 0, 2);
+            $mulai_jam_lembur = substr($explodeMulaiLembur[0], 6, 4) . '-' . substr($explodeMulaiLembur[0], 3, 2) . '-' . substr($explodeMulaiLembur[0], 0, 2) . " " . $explodeMulaiLembur[1];
 
-        $akhir_jam_lembur = $request->akhir_jam_lembur;
-        $explodeAkhirLembur = explode(" ", $akhir_jam_lembur);
-        $akhir_jam_lembur = substr($explodeAkhirLembur[0], 6, 4) . '-' . substr($explodeAkhirLembur[0], 3, 2) . '-' . substr($explodeAkhirLembur[0], 0, 2) . " " . $explodeAkhirLembur[1];
+            $akhir_jam_lembur = $request->akhir_jam_lembur;
+            $explodeAkhirLembur = explode(" ", $akhir_jam_lembur);
+            $akhir_jam_lembur = substr($explodeAkhirLembur[0], 6, 4) . '-' . substr($explodeAkhirLembur[0], 3, 2) . '-' . substr($explodeAkhirLembur[0], 0, 2) . " " . $explodeAkhirLembur[1];
 
-        $jumlah_jam_lembur = $request->jumlah_jam_lembur;
-        $jumlah_jam_istirahat = $request->jumlah_jam_istirahat;
-        $catatan = $request->catatan;
-        $queryMaster = 0;
-        if (!empty($enroll_id_array[0])) {
+            $jumlah_jam_lembur = $request->jumlah_jam_lembur;
+            $jumlah_jam_istirahat = $request->jumlah_jam_istirahat;
+            $catatan = $request->catatan;
+            $queryMaster = 0;
+            if (!empty($enroll_id_array[0])) {
 
-            foreach ($enroll_id_array as $key => $value) {
+                foreach ($enroll_id_array as $key => $value) {
 
-                $queryMaster =  MasterDataAbsenKehadiran::selectRaw('
-                                master_data_absen_kehadiran.uuid,
-                                master_data_absen_kehadiran.nomor_form_lembur,
-                                master_data_absen_kehadiran.tanggal_berjalan,
-                                master_data_absen_kehadiran.kode_hari,
-                                master_data_absen_kehadiran.nama_hari,
-                                master_data_absen_kehadiran.mulai_jam_kerja,
-                                master_data_absen_kehadiran.akhir_jam_kerja,
-                                master_data_absen_kehadiran.absen_masuk_kerja,
-                                master_data_absen_kehadiran.absen_pulang_kerja,
-                                master_data_absen_kehadiran.enroll_id,
-                                employee_atribut.nik,
-                                employee_atribut.employee_id,
-                                employee_atribut.employee_name,
-                                employee_atribut.site_nirwana_id,
-                                department_all.site_nirwana_name,
-                                employee_atribut.department_id,
-                                department_all.department_name,
-                                employee_atribut.sub_dept_id,
-                                department_all.sub_dept_name
-                            ')
-                            ->whereRaw('
-                                master_data_absen_kehadiran.enroll_id = "' . $value . '"
-                                AND master_data_absen_kehadiran.tanggal_berjalan = "' . $tanggal_lembur . '"
-                            ')
-                            ->join('employee_atribut', 'employee_atribut.enroll_id', '=', 'master_data_absen_kehadiran.enroll_id')
-                            ->leftJoin('department_all', 'department_all.sub_dept_id', '=', 'employee_atribut.sub_dept_id')
-                            ->orderBy('employee_atribut.employee_name','asc')
-                            ->get();
-                            info($value . " " . $tanggal_lembur);
-                foreach ($queryMaster as $key1 => $value1) {
+                    $queryMaster =  MasterDataAbsenKehadiran::selectRaw('
+                                    master_data_absen_kehadiran.uuid,
+                                    master_data_absen_kehadiran.nomor_form_lembur,
+                                    master_data_absen_kehadiran.tanggal_berjalan,
+                                    master_data_absen_kehadiran.kode_hari,
+                                    master_data_absen_kehadiran.nama_hari,
+                                    master_data_absen_kehadiran.mulai_jam_kerja,
+                                    master_data_absen_kehadiran.akhir_jam_kerja,
+                                    master_data_absen_kehadiran.absen_masuk_kerja,
+                                    master_data_absen_kehadiran.absen_pulang_kerja,
+                                    master_data_absen_kehadiran.enroll_id,
+                                    employee_atribut.nik,
+                                    employee_atribut.employee_id,
+                                    employee_atribut.employee_name,
+                                    employee_atribut.site_nirwana_id,
+                                    department_all.site_nirwana_name,
+                                    employee_atribut.department_id,
+                                    department_all.department_name,
+                                    employee_atribut.sub_dept_id,
+                                    department_all.sub_dept_name
+                                ')
+                                ->whereRaw('
+                                    master_data_absen_kehadiran.enroll_id = "' . $value . '"
+                                    AND master_data_absen_kehadiran.tanggal_berjalan = "' . $tanggal_lembur . '"
+                                ')
+                                ->join('employee_atribut', 'employee_atribut.enroll_id', '=', 'master_data_absen_kehadiran.enroll_id')
+                                ->leftJoin('department_all', 'department_all.sub_dept_id', '=', 'employee_atribut.sub_dept_id')
+                                ->orderBy('employee_atribut.employee_name','asc')
+                                ->get();
+                                info($value . " " . $tanggal_lembur);
+                    foreach ($queryMaster as $key1 => $value1) {
 
-                    $queryDataLembur = DataLembur::create([
-                        'uuid' => Str::uuid(),
-                        'uuid_master' => $value1['uuid'],
-                        'tanggal_berjalan' => $value1['tanggal_berjalan'],
-                        'tanggal_absen' => $value1['tanggal_berjalan'],
-                        'nomor_form_lembur' => $nomor_form_lembur,
-                        'enroll_id' => $value1['enroll_id'],
-                        'mulai_jam_lembur' => $mulai_jam_lembur,
-                        'akhir_jam_lembur' => $akhir_jam_lembur,
-                        'jumlah_jam_lembur' => $jumlah_jam_lembur,
-                        'jumlah_jam_istirahat_lembur' => $jumlah_jam_istirahat,
-                        'catatan' => strtoupper($catatan),
-                        'operator' => $email
-                    ]);
+                        $cekDataLembur = DataLembur::where('enroll_id', $value1['enroll_id'])     // menambah cek data untuk tambah data lembur
+                            ->where('tanggal_berjalan', $value1['tanggal_berjalan'])
+                            ->get(); // <- ambil datanya
 
-                    $queryMaster = MasterDataAbsenKehadiran::whereRaw('
-                            tanggal_berjalan = "' . $tanggal_lembur . '"
-                            AND enroll_id = "' . $value . '"
-                        ')
-                    ->update([
-                        'nomor_form_lembur' => $nomor_form_lembur,
-                        'catatan_hrd' => strtoupper($catatan),
-                        'operator' => $email
-                    ]);
+                        if ($cekDataLembur->count() > 0) {
+                            return response()->json([
+                                'status' => false,
+                                'cekDataLembur' => $cekDataLembur, // unutuk menampilkan data di alert javascript
+                                'message' => 'Data sudah ada pada nomor form ini, silakan hapus dulu data yang ada.'
+                            ], 200);
+                        }
+                        if ($cekDataLembur->count() == 0) {
+                        $queryDataLembur = DataLembur::create([  // aksi tambaha data lembur
+                            'uuid' => Str::uuid(),
+                            'uuid_master' => $value1['uuid'],
+                            'tanggal_berjalan' => $value1['tanggal_berjalan'],
+                            'tanggal_absen' => $value1['tanggal_berjalan'],
+                            'nomor_form_lembur' => $nomor_form_lembur,
+                            'enroll_id' => $value1['enroll_id'],
+                            'mulai_jam_lembur' => $mulai_jam_lembur,
+                            'akhir_jam_lembur' => $akhir_jam_lembur,
+                            'jumlah_jam_lembur' => $jumlah_jam_lembur,
+                            'jumlah_jam_istirahat_lembur' => $jumlah_jam_istirahat,
+                            'catatan' => strtoupper($catatan),
+                            'operator' => $email
+                        ]);
+                        $queryMaster = MasterDataAbsenKehadiran::whereRaw('
+                                tanggal_berjalan = "' . $tanggal_lembur . '"
+                                AND enroll_id = "' . $value . '"
+                            ')         // update ke master data absen kehadiran nomor form lembur
+                        ->update([
+                            'nomor_form_lembur' => $nomor_form_lembur,
+                            'catatan_hrd' => strtoupper($catatan),
+                            'operator' => $email
+                        ]);
+                        //  ActivityLog::causedBy(Auth::guard('admin')->user())
+                        //         ->performedOn($queryDataLembur) // model yang baru dibuat
+                        //         ->withProperties([
+                        //             'nomor_form_lembur' => $nomor_form_lembur,
+                        //             'tanggal_lembur' => $tanggal_lembur,
+                        //             'karyawan' => $value1['employee_name']
+                        //         ])
+                        //         ->log('Added overtime entry by :causer.name');
+                    }
                 }
             }
         }
 
-        return Response()->json($queryMaster);
-
-    }
+            return Response()->json($queryMaster);
+        }
 
     public function removenospl(Request $request)
     {

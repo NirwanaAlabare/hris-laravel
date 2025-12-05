@@ -22,6 +22,8 @@
 	<!---Sweetalert Css-->
 	<link href="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.css')}}" rel="stylesheet" />
 	<link href="{{URL::asset('assets/plugins/sweet-alert/sweetalert.css')}}" rel="stylesheet" />
+    {{-- Sweetalert2 --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         .table-responsive{
@@ -1903,7 +1905,7 @@
 
                     let allData = response.all_data;
                     let duplicateData = response.duplicate_data;
-
+                    console.log(duplicateData);
                     // Append semua data ke tbody
                     // renderTableData("#cruddatalembur2", allData);
                     renderTableData("#cruddatalemburDouble", duplicateData);
@@ -2848,11 +2850,26 @@
                     selectEmp:selectEmp,
                     nomor_form_lembur:nomor_form_lembur,
                     catatan:catatan,
+
                 },
-                dataType: 'json',
-                success: function(res){
+                dataType: 'json',    // menambahkan alert jika datanya sudah ada
+
+                success: function(res) {
+                    if(res.status === false){
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Oops!',
+                            html: "Data sudah ada pada nomor form <b>" + res.cekDataLembur[0].nomor_form_lembur + "<br></b> Pada Tanggal Lembur <b>" + res.cekDataLembur[0].tanggal_berjalan + "</b><br> Silakan hapus dulu data yang ada.",
+                            confirmButtonText: 'OK'
+                        });
+
+                        $("#btn-save2").removeClass("btn-loading");
+                        $("#btn-save2").html('Simpan');
+                        $("#btn-save2").attr("disabled", false);
+
+                    } else {
                         notif({
-                            msg: "<b>Success:</b> Data berhasil di simpan.",
+                            msg: "<b>Success:</b> Data berhasil disimpan.",
                             type: "success"
                         });
 
@@ -2861,12 +2878,13 @@
                         $("#btn-save2").attr("disabled", false);
 
                         $("#ajax-modal-pilih1").modal('hide');
-                        setTimeout(function myFunction() {
+                        setTimeout(function() {
                             location.reload();
-                          }, 3000);
-
-                    },
-                error: function(res){
+                        }, 3000);
+                    }
+                },
+                error: function(res) {
+                    // ini hanya untuk error teknis AJAX
                     notif({
                         msg: "<b>Oops!</b> Simpan data lembur gagal.",
                         type: "error",
@@ -2876,10 +2894,6 @@
                     $("#btn-save2").removeClass("btn-loading");
                     $("#btn-save2").html('Simpan');
                     $("#btn-save2").attr("disabled", false);
-
-                    setTimeout(function myFunction() {
-                            location.reload();
-                          }, 3000);
                 }
             });
         });
