@@ -182,8 +182,8 @@
                     <div class="col-md-2">
                         <label><small><b>Istirahat</b></small></label>
                         <div class="input-group mb-3">
-                            <input type="number" class="form-control " name="txtistirahat" id="txtistirahat"
-                                min = "0" oninput='sum()'>
+                            <input type="number" class="form-control " name="txtistirahat" id="txtistirahat" readonly
+                                min = "0" oninput='sum()' max ="60">
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="inputGroup-sizing-sm">Menit</span>
                             </div>
@@ -439,6 +439,18 @@
             $("#jml_lembur").val('');
             $("#txtistirahat").val(0);
             $("#cboket").val('').trigger('change');
+            $("#txtistirahat").on('input', function() {
+                let val = parseInt($(this).val());
+                if (val > 60) {
+                    $(this).val(60);
+                }
+                if (val < 0 || isNaN(val)) {
+                    $(this).val(0);
+                }
+
+                sum();
+            });
+
             del_tmp();
         })
 
@@ -494,20 +506,57 @@
                 },
             });
         };
-
-
         function autominute() {
-            let to_lembur = document.getElementById('to_lembur').value;
-            if (to_lembur >= '18:01' && to_lembur <= '23:59') {
-                $('#txtistirahat').val(30);
-            } else if (to_lembur >= '00:00' && to_lembur <= '06:59') {
-                $('#txtistirahat').val(30);
-            } else {
-                $('#txtistirahat').val(0);
-            }
-            sum();
-            console.log(to_lembur);
+        let from = document.getElementById('from_lembur').value; // waktu mulai
+        let to = document.getElementById('to_lembur').value; // waktu selesai
+
+        // Convert HH:MM ke menit
+        function toMinute(t) {
+            let [h, m] = t.split(':').map(Number);
+            return h * 60 + m;
         }
+
+        let start = toMinute(from);
+        let end = toMinute(to);
+
+        let istirahat = 0;
+
+        // Cek lewat jam 12:00 - 13:00
+        let IstirahatSiangStart = 12 * 60;
+        let IstirahatSiangEnd = 13 * 60;
+
+        if (end > IstirahatSiangStart && start < IstirahatSiangEnd) {
+            istirahat += 60;
+        }
+
+        // Cek lewat jam 18:00
+        let batasMaghrib = 18 * 60;
+        if (end > batasMaghrib) {
+            istirahat += 30;
+        }
+
+        $('#txtistirahat').val(istirahat);
+
+        sum();
+    }
+
+        // function autominute() {
+        //     let to_lembur = document.getElementById('to_lembur').value;
+        //     if (to_lembur >= '18:01' && to_lembur <= '23:59') {
+        //         $('#txtistirahat').val(30);
+        //     } else if (to_lembur >= '00:00' && to_lembur <= '06:59') {
+        //         $('#txtistirahat').val(30);
+        //     }else if (to_lembur >= '07:00' && to_lembur <= '15:00') {
+        //         $('#txtistirahat').val(60);
+        //     }else if (to_lembur >= '07:00' && to_lembur <= '23:59') {
+        //         $('#txtistirahat').val(90);
+        //     } else {
+        //         $('#txtistirahat').val(0);
+        //     }
+
+        //     sum();
+        //     console.log(to_lembur);
+        // }
 
         function sum() {
             const from = document.getElementById('from_lembur').value;
