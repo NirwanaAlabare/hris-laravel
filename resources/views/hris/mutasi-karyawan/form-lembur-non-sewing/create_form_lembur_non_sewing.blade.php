@@ -155,13 +155,13 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><small><b>Dari</b></small></label>
-                            <input class="form-control" id="from_lembur" name="from_lembur" type="text" onchange='sum();' required style="background-color: white; cursor:pointer;">
+                            <input class="form-control" id="from_lembur" name="from_lembur" type="time" onchange='sum();' required style="background-color: white; cursor:pointer;">
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><small><b>Sampai</b></small></label>
-                            <input class="form-control" id="to_lembur" name="to_lembur" type="text" onchange='sum();autominute();' required style="background-color: white; cursor:pointer;">
+                            <input class="form-control" id="to_lembur" name="to_lembur" type="time" onchange='sum();autominute();' required style="background-color: white; cursor:pointer;">
                         </div>
                     </div>
                     <div class="col-md-2">
