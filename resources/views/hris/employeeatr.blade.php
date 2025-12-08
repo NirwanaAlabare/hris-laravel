@@ -700,7 +700,7 @@
                                             <td>
                                                 <div class="input-group">
                                                     <input id="is_periksaenroll_id" type="hidden">
-                                                    <input id="enroll_id" type="text" class="form-control" placeholder="Nomor Absen" maxlength="4" size="4">
+                                                    <input id="enroll_id" type="text" class="form-control" placeholder="Nomor Absen" maxlength="5" size="5">
                                                     <span class="input-group-append">
                                                         <button id="btn-periksa_enroll_id" class="btn btn-primary pl-2 pr-2 pt-1 pb-1" type="button"><span><i class="fa fa-search"></i></span> Cek</button>
                                                     </span>
