@@ -237,7 +237,7 @@ class EmployeeAtrController extends AdminBaseController
         $enroll_id = request()->enroll_id;
         $nik = strtoupper($request->nik);
         $site_nirwana_id = preg_replace('/[^A-Z]/', '', substr($nik, 0, 3));
-        $enroll_id_nik = substr($nik, -4);
+        $enroll_id_nik = substr($nik, -5);
         $site_nirwana_array = DepartmentAll::groupBy('site_nirwana_id')->pluck('site_nirwana_id')->toArray();
         if (!in_array($site_nirwana_id, $site_nirwana_array) && $enroll_id != $enroll_id_nik) {
             return false;
