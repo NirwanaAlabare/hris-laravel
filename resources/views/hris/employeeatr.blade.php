@@ -718,7 +718,7 @@
                                             <td>
                                                 <div class="input-group">
                                                     <input id="is_periksanik" type="hidden">
-                                                    <input id="nik" type="text" class="form-control" placeholder="NIP" maxlength="9" size="9">
+                                                    <input id="nik" type="text" class="form-control" placeholder="NIP" maxlength="10" size="10">
                                                     <span class="input-group-append">
                                                         <button id="btn-periksa_nik" class="btn btn-primary pl-2 pr-2 pt-1 pb-1" type="button"><span><i class="fa fa-search"></i></span> Cek</button>
                                                     </span>
