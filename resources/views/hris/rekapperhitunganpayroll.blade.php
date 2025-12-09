@@ -2204,10 +2204,37 @@
         // -------------------------------------------------
         $('#runProcessBtn').on('click', function () {
 
-            const steps = [1, 2, 3, 4, 5, 6];
-            const tanggal_awal = '2025-10-26';
-            const tanggal_akhir = '2025-11-25';
+            const skema = $('#skema_payroll').val();
+            const periode = $("input[name='periode_payrols']").val(); // YYYY-MM
 
+            if (!periode || skema !== "MONTHLY_PAYROLL") {
+                alert("Silakan pilih skema MONTHLY PAYROLL dan periode terlebih dahulu!");
+                return;
+            }
+
+            const [year, month] = periode.split("-");
+            let intMonth = parseInt(month);
+
+            // Hitung bulan sebelumnya
+            let prevMonth = intMonth - 1;
+            let prevYear = year;
+
+            if (prevMonth === 0) {
+                prevMonth = 12;
+                prevYear = year - 1; // Tahun mundur
+            }
+
+            // Format bulan selalu 2 digit → 01–12
+            prevMonth = String(prevMonth).padStart(2, '0');
+
+            // Tanggal awal & akhir fix sesuai payroll
+            const steps = [1, 2, 3, 4, 5, 6];
+            const tanggal_awal = `${prevYear}-${prevMonth}-26`;
+            const tanggal_akhir = `${year}-${month}-25`;
+            // const tanggal_awal = '2025-10-26';
+            // const tanggal_akhir = '2025-11-25';
+            console.log("Tanggal Awal:", tanggal_awal);
+            console.log("Tanggal Akhir:", tanggal_akhir);
             openProgressModal();
             addLog("Processing…");
 
