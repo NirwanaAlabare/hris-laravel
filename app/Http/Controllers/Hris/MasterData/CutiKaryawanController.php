@@ -647,6 +647,128 @@ class CutiKaryawanController extends AdminBaseController
             ->make(true);
     }
 
+    // public function showing_list_year_period(Request $request)
+    // {
+    //     ini_set("max_execution_time", 5210);
+    //     ini_set('memory_limit', '5120000M');
+
+    //     $enrollId = $request->enroll_id;
+    //     $kodeAbsen = 'CT';
+
+    //     // Ambil join_date
+    //     $employee = DB::table('employee_atribut')
+    //         ->where('enroll_id', $enrollId)
+    //         ->first();
+
+    //     if (!$employee) {
+    //         return [];
+    //     }
+
+    //     $joinDate = Carbon::parse($employee->join_date);
+    //     $today = Carbon::now();
+
+    //     $results = [];
+    //     $currentStart = $joinDate->copy();
+    //     $periodeKe = 1;
+
+    //     while ($currentStart->lessThanOrEqualTo($today)) {
+    //         $currentEnd = $currentStart->copy()->addYear();
+
+    //         // Ambil data per periode
+    //         $data = DB::table('data_absen_perijinan as dap')
+    //             ->leftJoin('employee_atribut as ea', 'dap.enroll_id', '=', 'ea.enroll_id')
+    //             ->select(
+    //                 DB::raw('YEAR(dap.tanggal_mulai_ijin) as tahun'),
+    //                 'dap.enroll_id',
+    //                 'dap.kode_absen_ijin',
+    //                 'dap.tanggal_perizinan',
+    //                 'dap.nomor_form_perizinan',
+    //                 'dap.tanggal_mulai_ijin',
+    //                 'dap.tanggal_akhir_ijin',
+    //                 'dap.absen_alasan',
+    //                 'ea.join_date',
+    //                 DB::raw("'{$periodeKe}' as periode_ke"),
+    //                 DB::raw("'{$currentStart->toDateString()}' as periode_mulai"),
+    //                 DB::raw("'{$currentEnd->toDateString()}' as periode_selesai")
+    //             )
+    //             ->where('dap.enroll_id', $enrollId)
+    //             ->where('dap.kode_absen_ijin', $kodeAbsen)
+    //             ->where('dap.is_verifikasi', '1')
+    //             ->whereBetween('dap.tanggal_mulai_ijin', [$currentStart->toDateString(), $currentEnd->toDateString()])
+    //             ->get();
+
+    //         $formattedData = $data->map(function ($item) use ($currentStart, $currentEnd, $periodeKe, $employee) {
+    //             return [
+    //                 'tahun' => $item->tahun,
+    //                 'enroll_id' => $item->enroll_id,
+    //                 'kode_absen_ijin' => $item->kode_absen_ijin,
+    //                 'tanggal_perizinan' => Carbon::parse($item->tanggal_perizinan)->format('d-m-Y'),
+    //                 'nomor_form_perizinan' => $item->nomor_form_perizinan,
+    //                 'tanggal_mulai_ijin' => Carbon::parse($item->tanggal_mulai_ijin)->format('d-m-Y'),
+    //                 'tanggal_akhir_ijin' => Carbon::parse($item->tanggal_akhir_ijin)->format('d-m-Y'),
+    //                 'absen_alasan' => $item->absen_alasan,
+    //                 'join_date' => Carbon::parse($item->join_date)->format('d-m-Y'),
+    //                 'periode_ke' => $item->periode_ke,
+    //                 'periode_mulai' => Carbon::parse($item->periode_mulai)->format('d-m-Y'),
+    //                 'periode_selesai' => Carbon::parse($item->periode_selesai)->format('d-m-Y'),
+    //             ];
+    //         });
+
+    //         // Jika kurang dari 12, tambahkan cuti hangus
+    //         $jumlahSaatIni = $formattedData->count();
+    //         if ($jumlahSaatIni < 12) {
+    //             for ($i = $jumlahSaatIni; $i < 12; $i++) {
+    //                 $formattedData->push([
+    //                     'tahun' => null,
+    //                     'enroll_id' => $enrollId,
+    //                     'kode_absen_ijin' => '-',
+    //                     'tanggal_perizinan' => null,
+    //                     'nomor_form_perizinan' => '-',
+    //                     'tanggal_mulai_ijin' => '-',
+    //                     'tanggal_akhir_ijin' => '-',
+    //                     'absen_alasan' => 'CUTI HANGUS',
+    //                     'join_date' => Carbon::parse($employee->join_date)->format('d-m-Y'),
+    //                     'periode_ke' => $periodeKe,
+    //                     'periode_mulai' => $currentStart->format('d-m-Y'),
+    //                     'periode_selesai' => $currentEnd->format('d-m-Y'),
+    //                 ]);
+    //             }
+    //         }
+
+    //         $results[] = [
+    //             'periode' => $currentStart->format('d-m-Y') . ' - ' . $currentEnd->format('d-m-Y'),
+    //             'data' => $formattedData,
+    //         ];
+
+
+    //         $currentStart = $currentEnd;
+    //         $periodeKe++;
+    //     }
+
+    //     // Format ulang tanggal pada results
+    //     foreach ($results as &$periodeItem) {
+    //         foreach ($periodeItem['data'] as &$item) {
+    //             // Cek dan pastikan hanya tanggal yang valid yang diparsing
+    //             $item['tanggal_perizinan'] = ($item['tanggal_perizinan'] && $item['tanggal_perizinan'] !== '-')
+    //                                         ? Carbon::parse($item['tanggal_perizinan'])->format('d-m-Y')
+    //                                         : '-';
+    //             $item['tanggal_mulai_ijin'] = ($item['tanggal_mulai_ijin'] && $item['tanggal_mulai_ijin'] !== '-')
+    //                                           ? Carbon::parse($item['tanggal_mulai_ijin'])->format('d-m-Y')
+    //                                           : '-';
+    //             $item['tanggal_akhir_ijin'] = ($item['tanggal_akhir_ijin'] && $item['tanggal_akhir_ijin'] !== '-')
+    //                                           ? Carbon::parse($item['tanggal_akhir_ijin'])->format('d-m-Y')
+    //                                           : '-';
+    //             $item['join_date'] = ($item['join_date'] && $item['join_date'] !== '-')
+    //                                  ? Carbon::parse($item['join_date'])->format('d-m-Y')
+    //                                  : '-';
+    //             $item['periode_mulai'] = Carbon::parse($item['periode_mulai'])->format('d-m-Y');
+    //             $item['periode_selesai'] = Carbon::parse($item['periode_selesai'])->format('d-m-Y');
+    //         }
+    //     }
+
+    //     return response()->json($results);
+    // }
+
     public function showing_list_year_period(Request $request)
     {
         ini_set("max_execution_time", 5210);
@@ -697,22 +819,35 @@ class CutiKaryawanController extends AdminBaseController
                 ->whereBetween('dap.tanggal_mulai_ijin', [$currentStart->toDateString(), $currentEnd->toDateString()])
                 ->get();
 
-            $formattedData = $data->map(function ($item) use ($currentStart, $currentEnd, $periodeKe, $employee) {
-                return [
-                    'tahun' => $item->tahun,
-                    'enroll_id' => $item->enroll_id,
-                    'kode_absen_ijin' => $item->kode_absen_ijin,
-                    'tanggal_perizinan' => Carbon::parse($item->tanggal_perizinan)->format('d-m-Y'),
-                    'nomor_form_perizinan' => $item->nomor_form_perizinan,
-                    'tanggal_mulai_ijin' => Carbon::parse($item->tanggal_mulai_ijin)->format('d-m-Y'),
-                    'tanggal_akhir_ijin' => Carbon::parse($item->tanggal_akhir_ijin)->format('d-m-Y'),
-                    'absen_alasan' => $item->absen_alasan,
-                    'join_date' => Carbon::parse($item->join_date)->format('d-m-Y'),
-                    'periode_ke' => $item->periode_ke,
-                    'periode_mulai' => Carbon::parse($item->periode_mulai)->format('d-m-Y'),
-                    'periode_selesai' => Carbon::parse($item->periode_selesai)->format('d-m-Y'),
-                ];
-            });
+           $formattedData = collect();
+
+            foreach ($data as $item) {
+
+                $start = Carbon::parse($item->tanggal_mulai_ijin);
+                $end = Carbon::parse($item->tanggal_akhir_ijin);
+
+                $days = $end->diffInDays($start) + 1; // total hari izin
+
+                for ($i = 0; $i < $days; $i++) {
+
+                    $currentDay = $start->copy()->addDays($i);
+
+                    $formattedData->push([
+                        'tahun' => $item->tahun,
+                        'enroll_id' => $item->enroll_id,
+                        'kode_absen_ijin' => $item->kode_absen_ijin,
+                        'tanggal_perizinan' => Carbon::parse($item->tanggal_perizinan)->format('d-m-Y'),
+                        'nomor_form_perizinan' => $item->nomor_form_perizinan,
+                        'tanggal_mulai_ijin' => $currentDay->format('d-m-Y'),
+                        'tanggal_akhir_ijin' => $currentDay->format('d-m-Y'), // ditampilkan per hari
+                        'absen_alasan' => $item->absen_alasan,
+                        'join_date' => Carbon::parse($item->join_date)->format('d-m-Y'),
+                        'periode_ke' => $item->periode_ke,
+                        'periode_mulai' => Carbon::parse($item->periode_mulai)->format('d-m-Y'),
+                        'periode_selesai' => Carbon::parse($item->periode_selesai)->format('d-m-Y'),
+                    ]);
+                }
+            }
 
             // Jika kurang dari 12, tambahkan cuti hangus
             $jumlahSaatIni = $formattedData->count();

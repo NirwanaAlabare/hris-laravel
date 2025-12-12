@@ -206,13 +206,15 @@ class HRDController extends AdminBaseController
         // Format nomor form dinamis
         $from=request()->from;
         $to=request()->to;
+        // dd($kategori = request()->kategori);
+        $kategori1 = request()->kategori;
         $jumlah_hari_mangkir=request()->jumlah_hari_mangkir;
         $no_form_url=request()->no_form;
         $no_form = $no_form_url.'/HRD-NAC/EXT/' . $bulanRomawi[$bulan] . '/' . $tahun;
 
         $enroll_id=request()->enroll_id;
         $reason=request()->reason;
-        $fileName=request()->enroll_id.'_'.date('His');
+        $fileName=request()->enroll_id;
         $date_now = Carbon::parse(date('Y-m-d'))->translatedFormat('d F Y');
 
         $date = date('Y-m-d');
@@ -302,7 +304,7 @@ class HRDController extends AdminBaseController
                 $hasil[0]['kategori'] = 'RESIGNED';
             }
         }
-        $pdf = PDF::loadView('hris.sp_kehadiran_karyawan',["data" => $hasil[0],"no_form"=>$no_form,"from"=>$from,"to"=>$to,"jumlah_hari_mangkir"=>$jumlah_hari_mangkir])->setPaper('letter', 'fotrait')->stream($fileName.'.pdf');
+        $pdf = PDF::loadView('hris.sp_kehadiran_karyawan',["data" => $hasil[0],"no_form"=>$no_form,"from"=>$from,"to"=>$to,"jumlah_hari_mangkir"=>$jumlah_hari_mangkir])->setPaper('letter', 'fotrait')->stream($fileName.'_'.$nama . '_' . $kategori1.'.pdf');
         return $pdf;
     }
 

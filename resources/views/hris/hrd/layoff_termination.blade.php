@@ -163,6 +163,7 @@
                         <input id="mulai_mangkir_input" type="hidden">
                         <input id="sampai_mangkir_input" type="hidden">
                         <input id="jumlah_hari_mangkir_input" type="hidden">
+                        <input id="kategori_sp_input" type="hidden">
                         <div class="row">
                             <div class="col-md-12" style="margin-top: 1px; margin-bottom: 3px; padding-top: 10px;">
                                 <h6 style="font-weight: bold;">No Form :</h6>
@@ -323,7 +324,7 @@ $('#clear-daterange').on('click', function () {
             });
             return;
         }
-        export_sp_kerja($('#enroll_id_layoff').val(), edit_no_form);
+        export_sp_kerja($('#enroll_id_layoff').val(), edit_no_form,$('#kategori_sp_input').val());
     });
     $('body').on('click', '#btn-send-to-whatsapp', function (event) {
         var edit_no_form = $('#edit_no_form').val();
@@ -372,11 +373,12 @@ $('#clear-daterange').on('click', function () {
         });
     });
 
-    function openModalNomorForm(id, mulai, selesai, jumlah_hari_mangkir) {
+    function openModalNomorForm(id, mulai, selesai, jumlah_hari_mangkir,kategori) {
         $("#ajax-modal-no-form-pengajuan").modal('show');
         $("#enroll_id_layoff").val(id);
         $("#mulai_mangkir_input").val(mulai);
         $("#sampai_mangkir_input").val(selesai);
+        $('#kategori_sp_input').val(kategori);
         $("#jumlah_hari_mangkir_input").val(jumlah_hari_mangkir);
     }
     function closeModalNoForm() {
@@ -583,7 +585,7 @@ $('#clear-daterange').on('click', function () {
                         <div class="col text-center">
                            <button class='btn ${warnaBtn}'
                                 style='padding-top:0px;padding-bottom:0px; font-family:monospace; font-size:10pt'
-                                onclick="openModalNomorForm('${row.enroll_id} ','${row.mulai}' ,'${row.selesai}' ,'${row.jumlah_hari_mangkir}')"
+                                onclick="openModalNomorForm('${row.enroll_id} ','${row.mulai}' ,'${row.selesai}' ,'${row.jumlah_hari_mangkir}','${row.kategori}')"
                                 >
                                 ${row.kategori}
                             </button>
@@ -633,7 +635,10 @@ $('#clear-daterange').on('click', function () {
         var mulai = $("#mulai_mangkir_input").val();
         var selesai = $("#sampai_mangkir_input").val();
         var jumlah_hari_mangkir = $("#jumlah_hari_mangkir_input").val();
-        var url = 'export_sp_kehadiran_karyawan_adjustment?enroll_id='+enroll_id+ '&from=' + mulai + '&to=' + selesai + '&jumlah_hari_mangkir=' + jumlah_hari_mangkir + '&no_form=' + $('#edit_no_form').val();
+        var kategori = $("#kategori_sp_input").val();  // ← STRING
+
+    console.log("Kategori =", kategori);
+        var url = 'export_sp_kehadiran_karyawan_adjustment?enroll_id='+enroll_id+ '&from=' + mulai + '&to=' + selesai + '&jumlah_hari_mangkir=' + jumlah_hari_mangkir + '&no_form=' + $('#edit_no_form')+ '&kategori=' + $('#kategori_sp_input').val();
         window.open(url, '_blank');
     }
 
