@@ -61,6 +61,27 @@
 </style>
 
 <style>
+    .btn-excel-real {
+        display: none !important;
+    }
+
+    /* Loading Overlay */
+    #excelLoadingOverlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(3px);
+        z-index: 99999;
+        color: white;
+        font-size: 22px;
+        text-align: center;
+        padding-top: 20%;
+    }
+
     /* ------------------------------
     1. MAIN NAV TABS
     ------------------------------ */
@@ -200,6 +221,24 @@
 
 
 
+<div id="excelLoadingOverlay" style="
+        position: fixed;
+        top:0; left:0;
+        width:100%; height:100%;
+        background: rgba(0,0,0,0.55);
+        z-index:999999;
+        display:none;
+        color:white;
+        font-size:22px;
+        text-align:center;
+        padding-top:20%;
+        backdrop-filter: blur(2px);
+        user-select:none;
+        pointer-events: all;
+     ">
+    <div style="font-size:28px; font-weight:600">Generating Excel...</div>
+    <div>Please wait, do not refresh or close this page.</div>
+</div>
 
 
 <!-- page-header -->
@@ -2074,6 +2113,30 @@
             });
         });
 
+       
+
+        function getRecapPayroll(){
+            $.ajax({
+                type: 'POST',
+                url: '{{route('hris.rekapperhitunganpayroll.export_recap_payroll')}}',            
+                xhrFields: { responseType : 'blob' },
+                success:function(data){
+                    var blob = new Blob([data]);
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    let file_name = daterange+' Recap Salary '+Math.ceil(Math.random()*1000000);
+                    link.download = file_name+".xlsx";
+                    link.click();
+                    swal("", "Recap Salary Export Success", "success");
+             
+                },
+                error: function(res){
+                    swal("", "Recap Salary Export Failed", "error");
+              
+                }
+            });
+        }
+
     })
 </script>
 
@@ -2132,17 +2195,15 @@
         // -------------------------------------------------
         // DATATABLE RENDERER
         // -------------------------------------------------
-        function renderDataTable(selector, data) {
+        function renderDataTable(selector, data, friendlyName = "") {
 
             const $table = $(selector);
 
-            // Cleanup DataTable lama
             if ($.fn.DataTable.isDataTable(selector)) {
                 $table.DataTable().clear().destroy();
             }
             $table.empty();
 
-            // Jika kosong → tampilkan pesan simple
             if (!data || data.length === 0) {
                 $table.append(`
                     <thead><tr><th>No data</th></tr></thead>
@@ -2151,16 +2212,28 @@
                 return;
             }
 
-            // Ambil semua key dinamis
+            // Build columns
             let keySet = new Set();
             data.forEach(r => Object.keys(r).forEach(k => keySet.add(k)));
             const keys = Array.from(keySet);
 
-            // Columns DataTable
             const columns = keys.map(k => ({
                 data: k,
                 title: k.replace(/_/g, ' ').toUpperCase()
             }));
+
+            // Detect final salary
+            const isFinalSalary =
+                friendlyName.toLowerCase().includes("final") ||
+                friendlyName.toLowerCase().includes("salary");
+
+            let excelHeader = "";
+            if (isFinalSalary) {
+                excelHeader =
+                    'Final Salary Report\n' +
+                    'Generated at: ' + new Date().toLocaleString() + '\n' +
+                    '--------------------------------------------\n\n';
+            }
 
             // Init DataTable
             const dt = $table.DataTable({
@@ -2178,7 +2251,106 @@
                 processing: true,
                 destroy: true,
                 dom: 'Blfrtip',
-                buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+
+                // Buttons
+                buttons: [
+                    'copy',
+                    'csv',
+
+                    // ========= DUMMY BUTTON (SHOW LOADING FIRST) =========
+                    {
+                        text: 'Export Payrol',
+                        className: 'btn-excel-dummy',
+                        title: '',
+                        action: function () {
+                            const overlay = document.getElementById("excelLoadingOverlay");
+                            overlay.style.display = "block";
+
+                            // Give browser time to render overlay
+                            setTimeout(() => {
+                                getRecapPayroll();
+                                // $('.btn-excel-real').click();
+                            }, 150);
+                        }
+                    },
+
+                    // ========= REAL EXPORT BUTTON (HIDDEN) =========
+                    // {
+                    //     extend: 'excelHtml5',
+                    //     className: 'btn-excel-real',
+                    //     text: 'Download',
+                    //     title: 'Report',
+
+                    //     customize: function (xlsx) {
+
+                    //         if (!isFinalSalary) return;
+
+                    //         let sheet = xlsx.xl.worksheets['sheet1.xml'];
+                    //         let sheetData = sheet.getElementsByTagName('sheetData')[0];
+                    //         if (!sheetData) return;
+
+                    //         const lines = excelHeader.split("\n");
+
+                    //         // === SHIFT DATA ROWS DOWN 5 ROWS ===
+                    //         const SHIFT = 5;
+                    //         const allRows = sheetData.getElementsByTagName('row');
+
+                    //         for (let i = allRows.length - 1; i >= 0; i--) {
+                    //             let r = allRows[i];
+                    //             let oldIndex = parseInt(r.getAttribute("r"));
+                    //             let newIndex = oldIndex + SHIFT;
+
+                    //             r.setAttribute("r", newIndex);
+
+                    //             let cells = r.getElementsByTagName("c");
+                    //             for (let c = 0; c < cells.length; c++) {
+                    //                 let cell = cells[c];
+                    //                 const col = cell.getAttribute("r").replace(/[0-9]/g, "");
+                    //                 cell.setAttribute("r", col + newIndex);
+                    //             }
+                    //         }
+
+                    //         // === INSERT HEADER ===
+                    //         let insertIndex = 1;
+
+                    //         lines.forEach((txt) => {
+                    //             if (txt.trim() === "") return;
+
+                    //             let newRow = sheet.createElement('row');
+                    //             newRow.setAttribute("r", insertIndex);
+
+                    //             let newCell = sheet.createElement('c');
+                    //             newCell.setAttribute("r", "A" + insertIndex);
+                    //             newCell.setAttribute("t", "inlineStr");
+
+                    //             let isNode = sheet.createElement('is');
+                    //             let tNode = sheet.createElement('t');
+                    //             tNode.textContent = txt;
+
+                    //             isNode.appendChild(tNode);
+                    //             newCell.appendChild(isNode);
+                    //             newRow.appendChild(newCell);
+
+                    //             sheetData.insertBefore(newRow, sheetData.firstChild);
+
+                    //             insertIndex++;
+                    //         });
+                    //     },
+
+                    //     action: function (e, dt, node, config) {
+                    //         // Run original Excel action
+                    //         $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, node, config);
+
+                    //         // Hide loading after export is done
+                    //         setTimeout(() => {
+                    //             document.getElementById("excelLoadingOverlay").style.display = "none";
+                    //         }, 1200);
+                    //     }
+                    // },
+
+                    'pdf',
+                    'print'
+                ],
 
                 initComplete: function () {
                     const api = this.api();
@@ -2191,13 +2363,16 @@
                 }
             });
 
-            // Safety adjust
+            // Safe adjust
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     dt.columns.adjust().draw(false);
                 });
             });
+
         }
+
+
 
         // -------------------------------------------------
         //   MAIN RUN BUTTON
@@ -2308,13 +2483,14 @@
                     const subTabId = 'stepTabs_' + step + '_' + uid('g');
                     let navHtml = `<ul class="nav nav-tabs" id="${subTabId}_nav">`;
                     let contentHtml = `<div class="tab-content" id="${subTabId}_content">`;
-
+                    let friendlyList = [];
                     resultKeys.forEach((key, idx) => {
 
                         let rows = rs[key];
                         if (!rows || rows.length === 0) rows = [{ info: "No data available" }];
 
                         const friendly = getFriendlyName(step, idx);
+                        friendlyList[idx] = friendly;
                         const active = idx === 0 ? 'active' : '';
                         const paneId = `${subTabId}_pane_${idx}`;
                         const tableId = `${subTabId}_tbl_${idx}`;
@@ -2344,7 +2520,8 @@
                     resultKeys.forEach((key, idx) => {
                         const id = `#${subTabId}_tbl_${idx}`;
                         requestAnimationFrame(() => {
-                            renderDataTable(id, rs[key]);
+                            renderDataTable(id, rs[key], friendlyList[idx]);
+
                         });
                     });
 
@@ -2420,6 +2597,14 @@
         $(document).on('click', '#closeProgressBtn', function () {
             $('#progressModal').modal('hide');
         });
+
+        function showExportLoader() {
+            $('#exportLoading').show();
+        }
+
+        function hideExportLoader() {
+            $('#exportLoading').hide();
+        }
 
     });
 

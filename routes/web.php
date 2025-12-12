@@ -881,6 +881,8 @@ Route::get('search_employees', [EmployeeAtrController::class, 'search_employees'
 Route::post('/rekapperhitunganlembur/overtime-calculate', [RekapPerhitunganLemburController::class, 'get_overtime'])->name('overtime.calculate');
 Route::post('/hris/rekapperhitunganpayroll/recap-labor-cost-new', [RekapPerhitunganPayrollController::class, 'recapLaborCostNew'])
     ->name('hris.rekapperhitunganpayroll.recap_labor_cost_new');
+Route::post('/hris/rekapperhitunganpayroll/export_recap_payroll', [RekapPerhitunganPayrollController::class, 'export_recap_payroll'])
+    ->name('hris.rekapperhitunganpayroll.export_recap_payroll');
 Route::post('/hris/rekapperhitunganlembur/export_overtime', [RekapPerhitunganLemburController::class, 'export_overtime'])
     ->name('hris.rekapperhitunganlembur.export_overtime');
 Route::post('/hris/rekapperhitunganpayroll/calculate_salary', [RekapPerhitunganPayrollController::class, 'calculate_salary'])
