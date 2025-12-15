@@ -2112,30 +2112,8 @@
                 }
             });
         });
+      
 
-       
-
-        function getRecapPayroll(){
-            $.ajax({
-                type: 'POST',
-                url: '{{route('hris.rekapperhitunganpayroll.export_recap_payroll')}}',            
-                xhrFields: { responseType : 'blob' },
-                success:function(data){
-                    var blob = new Blob([data]);
-                    var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    let file_name = daterange+' Recap Salary '+Math.ceil(Math.random()*1000000);
-                    link.download = file_name+".xlsx";
-                    link.click();
-                    swal("", "Recap Salary Export Success", "success");
-             
-                },
-                error: function(res){
-                    swal("", "Recap Salary Export Failed", "error");
-              
-                }
-            });
-        }
 
     })
 </script>
@@ -2147,6 +2125,39 @@
     // =====================================================
 
     $(document).ready(function () {
+
+        function getRecapPayroll(){
+            $.ajax({
+                type: 'POST',
+                url: '{{route('hris.rekapperhitunganpayroll.export_recap_payroll')}}',            
+                xhrFields: { responseType : 'blob' },
+                success:function(data){
+                    console.log(data);                    
+                    var blob = new Blob([data]);
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    const now = new Date();
+                    const timestamp =
+                    now.getFullYear() +
+                    ('0' + (now.getMonth() + 1)).slice(-2) +
+                    ('0' + now.getDate()).slice(-2) + '_' +
+                    ('0' + now.getHours()).slice(-2) +
+                    ('0' + now.getMinutes()).slice(-2) +
+                    ('0' + now.getSeconds()).slice(-2);
+
+                    let file_name = 'Recap Salary ' + timestamp 
+  
+                    link.download = file_name+".xlsx";
+                    link.click();
+                    swal("", "Recap Salary Export Success", "success");
+             
+                },
+                error: function(res){
+                    swal("", "Recap Salary Export Failed", "error");
+              
+                }
+            });
+        }
 
         // -------------------------------------------------
         // STEP DESCRIPTIONS (OPSI A)
@@ -2256,98 +2267,75 @@
                 buttons: [
                     'copy',
                     'csv',
-
-                    // ========= DUMMY BUTTON (SHOW LOADING FIRST) =========
+                    
+                    // ========= EXCEL BUTTON (FIXED CONFIGURATION) =========
                     {
-                        text: 'Export Payrol',
+                        extend: 'excelHtml5', // ← TAMBAHKAN INI
+                        text: isFinalSalary ? 'Export Recap Payroll' : 'Excel',
                         className: 'btn-excel-dummy',
-                        title: '',
-                        action: function () {
+                        title: 'Data Export ' + friendlyName, // ← BERI JUDUL
+                        filename: function() {
+                            const date = new Date().toISOString().split('T')[0];
+                            return isFinalSalary ? `recap_payroll_${date}` : `export_${date}`;
+                        },
+                        exportOptions: {
+                            columns: ':visible', // Ekspor semua kolom yang terlihat
+                            format: {
+                                header: function(text) {
+                                    // Format header jika diperlukan
+                                    return text ? text.toString().trim() : '';
+                                }
+                            }
+                        },
+                        customize: function(xlsx) {
+                            // Optional: kustomisasi tambahan
+                            var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                            
+                            // Pastikan header memiliki style
+                            $('row:first c', sheet).attr('s', '2'); // Style bold untuk header
+                            
+                            // Atur lebar kolom otomatis
+                            $('col', sheet).each(function() {
+                                $(this).attr('width', 15);
+                            });
+                        },
+                        action: function (e, dt, node, config) {
                             const overlay = document.getElementById("excelLoadingOverlay");
                             overlay.style.display = "block";
 
                             // Give browser time to render overlay
                             setTimeout(() => {
-                                getRecapPayroll();
-                                // $('.btn-excel-real').click();
+                                if (isFinalSalary) {
+                                    getRecapPayroll(); // ← CALL FUNCTION
+                                } 
+                                else {
+                                    // Pastikan DataTable memiliki header yang benar
+                                    if (dt.context && dt.context[0]) {
+                                        // Force update header titles jika diperlukan
+                                        dt.columns().every(function(index) {
+                                            const column = this;
+                                            const header = $(column.header());
+                                            if (column.title && column.title() === '') {
+                                                const headerText = header.text().trim();
+                                                if (headerText) {
+                                                    // Update title dari teks header
+                                                    dt.context[0].aoColumns[index].sTitle = headerText;
+                                                }
+                                            }
+                                        });
+                                    }
+                                    
+                                    // Panggil action default
+                                    $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, node, config);
+                                }
                             }, 150);
+
+                            setTimeout(() => {
+                                document.getElementById("excelLoadingOverlay").style.display = "none";
+                            }, 1200);
                         }
                     },
-
-                    // ========= REAL EXPORT BUTTON (HIDDEN) =========
-                    // {
-                    //     extend: 'excelHtml5',
-                    //     className: 'btn-excel-real',
-                    //     text: 'Download',
-                    //     title: 'Report',
-
-                    //     customize: function (xlsx) {
-
-                    //         if (!isFinalSalary) return;
-
-                    //         let sheet = xlsx.xl.worksheets['sheet1.xml'];
-                    //         let sheetData = sheet.getElementsByTagName('sheetData')[0];
-                    //         if (!sheetData) return;
-
-                    //         const lines = excelHeader.split("\n");
-
-                    //         // === SHIFT DATA ROWS DOWN 5 ROWS ===
-                    //         const SHIFT = 5;
-                    //         const allRows = sheetData.getElementsByTagName('row');
-
-                    //         for (let i = allRows.length - 1; i >= 0; i--) {
-                    //             let r = allRows[i];
-                    //             let oldIndex = parseInt(r.getAttribute("r"));
-                    //             let newIndex = oldIndex + SHIFT;
-
-                    //             r.setAttribute("r", newIndex);
-
-                    //             let cells = r.getElementsByTagName("c");
-                    //             for (let c = 0; c < cells.length; c++) {
-                    //                 let cell = cells[c];
-                    //                 const col = cell.getAttribute("r").replace(/[0-9]/g, "");
-                    //                 cell.setAttribute("r", col + newIndex);
-                    //             }
-                    //         }
-
-                    //         // === INSERT HEADER ===
-                    //         let insertIndex = 1;
-
-                    //         lines.forEach((txt) => {
-                    //             if (txt.trim() === "") return;
-
-                    //             let newRow = sheet.createElement('row');
-                    //             newRow.setAttribute("r", insertIndex);
-
-                    //             let newCell = sheet.createElement('c');
-                    //             newCell.setAttribute("r", "A" + insertIndex);
-                    //             newCell.setAttribute("t", "inlineStr");
-
-                    //             let isNode = sheet.createElement('is');
-                    //             let tNode = sheet.createElement('t');
-                    //             tNode.textContent = txt;
-
-                    //             isNode.appendChild(tNode);
-                    //             newCell.appendChild(isNode);
-                    //             newRow.appendChild(newCell);
-
-                    //             sheetData.insertBefore(newRow, sheetData.firstChild);
-
-                    //             insertIndex++;
-                    //         });
-                    //     },
-
-                    //     action: function (e, dt, node, config) {
-                    //         // Run original Excel action
-                    //         $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, node, config);
-
-                    //         // Hide loading after export is done
-                    //         setTimeout(() => {
-                    //             document.getElementById("excelLoadingOverlay").style.display = "none";
-                    //         }, 1200);
-                    //     }
-                    // },
-
+                    
                     'pdf',
                     'print'
                 ],
@@ -2358,6 +2346,18 @@
                         requestAnimationFrame(() => {
                             api.columns.adjust().draw(false);
                             autoFormatNumericColumns($table);
+                            
+                            // Pastikan semua kolom memiliki title
+                            api.columns().every(function(index) {
+                                const column = this;
+                                const header = $(column.header());
+                                const headerText = header.text().trim();
+                                
+                                // Jika kolom tidak punya title, set dari header HTML
+                                if (!column.title() && headerText) {
+                                    api.context[0].aoColumns[index].sTitle = headerText;
+                                }
+                            });
                         });
                     });
                 }

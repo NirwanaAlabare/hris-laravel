@@ -2705,11 +2705,11 @@ class RekapPerhitunganPayrollController extends AdminBaseController
     public function export_recap_payroll(Request $request)
     {
         ini_set('max_execution_time', 0);
-        $daterange = $request->input('daterange');
-        $enroll_id = $request->input('enroll_id');
-
+        // $daterange = $request->input('daterange');
+        // $enroll_id = $request->input('enroll_id');
+        // dd($request);
         // Misal daterange formatnya "2025-11-01 - 2025-11-07"
-        [$tanggal_awal, $tanggal_akhir] = explode(' s/d ', $daterange);
+        // [$tanggal_awal, $tanggal_akhir] = explode(' s/d ', $daterange);
 
         $nodeUrl = "http://localhost:8080/api/getSalaryRecapExcel/";
         $client = new Client();
@@ -2719,6 +2719,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 'stream' => true,
             ]);
 
+            
             return response($response->getBody(), 200)
                 ->header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
                 ->header('Content-Disposition', 'attachment; filename="recap_labor_cost.xlsx"');
