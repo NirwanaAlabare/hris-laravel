@@ -2705,11 +2705,6 @@ class RekapPerhitunganPayrollController extends AdminBaseController
     public function export_recap_payroll(Request $request)
     {
         ini_set('max_execution_time', 0);
-        // $daterange = $request->input('daterange');
-        // $enroll_id = $request->input('enroll_id');
-        // dd($request);
-        // Misal daterange formatnya "2025-11-01 - 2025-11-07"
-        // [$tanggal_awal, $tanggal_akhir] = explode(' s/d ', $daterange);
 
         $nodeUrl = "http://10.10.5.2:8080/api/getSalaryRecapExcel/";
         $client = new Client();

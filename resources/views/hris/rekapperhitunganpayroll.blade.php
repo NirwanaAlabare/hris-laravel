@@ -2530,6 +2530,7 @@
                 }
 
                 addLog("All steps completed.");
+                swal("", "Payroll Recap Process Completed", "success");
                 $('#closeProgressBtn').show();
 
             })();
