@@ -265,6 +265,11 @@
 
                 <div class="row">
                     <div class="col">
+                            <button class="btn btn-primary mr-2 mb-2"
+                                    id="btn_update_kontrak"
+                                    onclick="updateEmployeeContract()">
+                                <i class="fa fa-reply"></i> Update Kontrak
+                            </button>
                         <div class="panel panel-primary  px-3 py-2 pt-5">
                             <div class="tab_wrapper first_tab">
                                 <ul class="tab_list">
@@ -3438,6 +3443,30 @@ function updateRange(start, end) {
             }
         }
         return roman;
+    }
+
+    function updateEmployeeContract() {                // update kontrak
+        if (!confirm('Yakin ingin update kontrak kerja?')) return;
+
+        fetch("{{ route('hris.hrd.update_kontrak_kerja') }}", {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "Accept": "application/json"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            window.location.href = window.location.href;
+
+            // jika pakai datatable
+            // $('#datatable').DataTable().ajax.reload();
+        })
+        .catch(error => {
+            console.error(error);
+            alert('Terjadi kesalahan saat update kontrak');
+        });
     }
 </script>
 

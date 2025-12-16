@@ -396,6 +396,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris', 'names
     Route::get('hrd/print_pdf_kontrak_2', ['as' => 'hris.hrd.print_pdf_kontrak_2', 'uses' => 'HRDController@print_pdf_kontrak_2']);
     Route::get('hrd/print_pdf_kompensasi_pkwt', ['as' => 'hris.hrd.print_pdf_kompensasi_pkwt', 'uses' => 'HRDController@print_pdf_kompensasi_pkwt']);
     Route::post('hrd/ajax_getemployeeidbyfilter', ['as' => 'hris.hrd.ajax_getemployeeidbyfilter', 'uses' => 'HRDController@ajax_getemployeeidbyfilter']);
+    Route::post('hrd/update_kontrak_kerja',['as' => 'hris.hrd.update_kontrak_kerja', 'uses' => 'HRDController@update_kontrak_kerja']); // update_kontrak_kerja kalau tanggal kontrak kerja nya tidak muncul
 
     Route::get('ga/form_pengajuan_transportasi', ['as' => 'hris.ga.form_pengajuan_transportasi', 'uses' => 'GAController@form_pengajuan_transportasi']);
     Route::get('ga/form_pengajuan_transportasi_2_admin', ['as' => 'hris.ga.form_pengajuan_transportasi_2_admin', 'uses' => 'GAController@form_pengajuan_transportasi_2_admin']);

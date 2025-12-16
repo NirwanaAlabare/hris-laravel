@@ -2036,4 +2036,25 @@ class HRDController extends AdminBaseController
         // ]);
 
     }
+    public function update_kontrak_kerja(){                  // update kontrak kerja
+        DB::insert("insert into employee_contract(enroll_id,contract,contract_end)
+            SELECT
+                ea.enroll_id,
+                ea.tanggal_mulai_kontrak AS contract,
+                ea.tanggal_akhir_kontrak AS contract_end
+            FROM
+                employee_atribut ea
+            LEFT JOIN
+                employee_contract ec
+                ON ea.enroll_id = ec.enroll_id
+            WHERE
+                ea.status_aktif = 'AKTIF'
+                AND ea.enroll_id != 2
+                AND ec.enroll_id IS NULL
+            ");
+            return response()->json([
+                'status' => true,
+                'message' => 'kontrak berhasil diupdate',
+            ]);
+    }
 }
