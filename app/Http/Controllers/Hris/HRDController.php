@@ -1440,11 +1440,13 @@ class HRDController extends AdminBaseController
             ) ec2 ON ec1.enroll_id = ec2.enroll_id AND ec1.contract = ec2.max_contract
         ) c ON a.enroll_id = c.enroll_id
          WHERE a.enroll_id IS NOT NULL $inDateRange $inEnrollId $inIbuKandung $inStatusAktif $inStatusStaff $inDepartment $inStatusKontrak
+         ORDER BY
+         COALESCE(b.contract, a.join_date) ASC
     ");
-    $tahun_umk = date('Y');
-    $tahun_umk = 'UMK '.$tahun_umk;
+    // $tahun_umk = date('Y');
+    // $tahun_umk = 'UMK '.$tahun_umk;
 
-    $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $tahun_umk)->first()->dasar_pot_bpjs_rupiah ?? 0;
+    // $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $tahun_umk)->first()->dasar_pot_bpjs_rupiah ?? 0;
        foreach ($data as $item) {
 
 
@@ -1466,9 +1468,38 @@ class HRDController extends AdminBaseController
             } else {
                 $tunjangan = 12500;
             }
-            //  Perhitungan masa kerja
-            $start = Carbon::createFromFormat('Y-m-d', $item->join_date);
-            $end = Carbon::today();
+
+            /* ===============================
+            * 🔴 TAMBAHKAN KODE UMK DI SINI
+            * =============================== */
+            $start = Carbon::parse($item->contract ?? $item->join_date);
+            $end   = Carbon::parse($item->contract_end ?? $item->tanggal_resign ?? now());
+
+            // Jika lintas tahun → pakai tahun akhir
+            if ($start->year < $end->year) {
+                $tahun_umk = $end->year;
+            } else {
+                $tahun_umk = $start->year;
+            }
+
+            // Ambil tahun UMK TERENDAH dari master
+            $tahun_umk_min = DasarPotBPJS::where('kode_dasar_pot_bpjs', 'LIKE', 'UMK %')
+                ->selectRaw("MIN(CAST(REPLACE(kode_dasar_pot_bpjs,'UMK ','') AS UNSIGNED)) as tahun")
+                ->value('tahun');
+
+            // Jika kontrak lebih lama dari data UMK → pakai UMK terendah
+            if ($tahun_umk < $tahun_umk_min) {
+                $tahun_umk = $tahun_umk_min;
+            }
+
+            // Ambil UMK
+            $kode_umk = 'UMK ' . $tahun_umk;
+
+            $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $kode_umk)
+                ->value('dasar_pot_bpjs_rupiah') ?? 0;
+
+            // $start = Carbon::createFromFormat('Y-m-d', $item->join_date);
+            // $end = Carbon::today();
 
             // Ubah jadi format tanggal (Y, m, d)
             $startY = (int) $start->format('Y');
@@ -1511,6 +1542,7 @@ class HRDController extends AdminBaseController
             $jumlah_bulan = $item->jumlah_bulan ? $item->jumlah_bulan : $jumlah_bulan_manual;
 
             $total_kompensasi = $total_penghasilan_bulanan * ($jumlah_bulan / 12);
+            $total_kompensasi = ceil($total_kompensasi / 100) * 100;
 
             // Simpan atau tampilkan hasil
             $item->umk = $umk;
