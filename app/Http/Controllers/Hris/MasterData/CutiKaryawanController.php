@@ -947,21 +947,31 @@ class CutiKaryawanController extends AdminBaseController
     }
 
 
+    // public function cek_dtpc(Request $request)
+    // {
+
+    //     $tanggal_perizinan = $request->tanggal_perizinan;
+    //     $enroll_id = $request->enroll_id;
+
+    //     $query =  DataAbsenPerijinanDTPC::whereRaw('
+    //                                 tanggal_perizinan = "'. $tanggal_perizinan . '"
+    //                                 and enroll_id = "'. $enroll_id . '"
+    //                              ')
+    //                              ->count();
+
+    //     return $query;
+
+    // }
     public function cek_dtpc(Request $request)
-    {
+{
+    $query = DataAbsenPerijinanDTPC::where('tanggal_perizinan', $request->tanggal_perizinan)
+                ->where('enroll_id', $request->enroll_id)
+                ->exists();
 
-        $tanggal_perizinan = $request->tanggal_perizinan;
-        $enroll_id = $request->enroll_id;
-
-        $query =  DataAbsenPerijinanDTPC::whereRaw('
-                                    tanggal_perizinan = "'. $tanggal_perizinan . '"
-                                    and enroll_id = "'. $enroll_id . '"
-                                 ')
-                                 ->count();
-
-        return $query;
-
-    }
+    return response()->json([
+        'exists' => $query
+    ]);
+}
 
     public function update_dtpc_menu(Request $request)
     {
