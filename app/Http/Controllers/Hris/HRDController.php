@@ -1472,31 +1472,29 @@ class HRDController extends AdminBaseController
             /* ===============================
             * 🔴 TAMBAHKAN KODE UMK DI SINI
             * =============================== */
-            $start = Carbon::parse($item->contract ?? $item->join_date);
+           $start = Carbon::parse($item->contract ?? $item->join_date);
             $end   = Carbon::parse($item->contract_end ?? $item->tanggal_resign ?? now());
 
-            // Jika lintas tahun → pakai tahun akhir
-            if ($start->year < $end->year) {
+            /* ===============================
+            * 1️⃣ Tentukan TAHUN UMK
+            * =============================== */
+
+            // Default → tahun kontrak mulai
+            $tahun_umk = $start->year;
+
+            // KHUSUS:
+            // Jika mulai bulan Desember & lintas tahun → pakai tahun akhir
+            if ($start->month == 12 && $start->year < $end->year) {
                 $tahun_umk = $end->year;
-            } else {
-                $tahun_umk = $start->year;
             }
 
-            // Ambil tahun UMK TERENDAH dari master
-            $tahun_umk_min = DasarPotBPJS::where('kode_dasar_pot_bpjs', 'LIKE', 'UMK %')
-                ->selectRaw("MIN(CAST(REPLACE(kode_dasar_pot_bpjs,'UMK ','') AS UNSIGNED)) as tahun")
-                ->value('tahun');
-
-            // Jika kontrak lebih lama dari data UMK → pakai UMK terendah
-            if ($tahun_umk < $tahun_umk_min) {
-                $tahun_umk = $tahun_umk_min;
-            }
-
-            // Ambil UMK
+            /* ===============================
+            * 2️⃣ Ambil UMK dari master
+            * =============================== */
             $kode_umk = 'UMK ' . $tahun_umk;
 
             $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $kode_umk)
-                ->value('dasar_pot_bpjs_rupiah') ?? 0;
+                ->value('dasar_pot_bpjs_rupiah');
 
             // $start = Carbon::createFromFormat('Y-m-d', $item->join_date);
             // $end = Carbon::today();
@@ -1541,8 +1539,12 @@ class HRDController extends AdminBaseController
             $total_penghasilan_bulanan = $umk + $tunjangan;
             $jumlah_bulan = $item->jumlah_bulan ? $item->jumlah_bulan : $jumlah_bulan_manual;
 
-            $total_kompensasi = $total_penghasilan_bulanan * ($jumlah_bulan / 12);
-            $total_kompensasi = ceil($total_kompensasi / 100) * 100;
+            $total_kompensasi = ($total_penghasilan_bulanan / 12) * $jumlah_bulan;
+
+            $total_kompensasi = ceil($total_kompensasi / 100)*100;
+
+            $total_kompensasi = (int) ceil($total_kompensasi / 100) * 100;
+
 
             // Simpan atau tampilkan hasil
             $item->umk = $umk;
@@ -1550,6 +1552,7 @@ class HRDController extends AdminBaseController
             $item->total_penghasilan_bulanan = $total_penghasilan_bulanan;
             $item->jumlah_bulan = $jumlah_bulan;
             $item->total_kompensasi = $total_kompensasi;
+            // dd($item->total_penghasilan_bulanan);
         }
 
         return Excel::download(new exportExcelKompensasiPKWT($data), 'Kompensasi PKWT.xlsx');
