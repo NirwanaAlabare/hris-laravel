@@ -60,10 +60,16 @@
                 <td style="text-align:center">{{ $data_pkwt->years }}</td>
                 <td style="text-align:center">{{ $data_pkwt->months }}</td>
                 <td style="text-align:center">{{ $data_pkwt->days }}</td>
-                <td>{{ $data_pkwt->contract ? \Carbon\Carbon::parse($data_pkwt->contract)->translatedFormat('l') : '' }}</td>
+                {{-- <td>{{ $data_pkwt->contract ? \Carbon\Carbon::parse($data_pkwt->contract)->translatedFormat('l') : '' }}</td> --}}
                 <td>
-                    {{ $data_pkwt->contract
-                        ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel(\Carbon\Carbon::parse($data_pkwt->contract))
+                    {{ $data_pkwt->contract_start_fixed
+                        ? \Carbon\Carbon::parse($data_pkwt->contract_start_fixed)->translatedFormat('l')
+                        : ''
+                    }}
+                </td>
+                <td>
+                    {{ $data_pkwt->contract_start_fixed
+                        ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel(\Carbon\Carbon::parse($data_pkwt->contract_start_fixed))
                         : ''
                     }}
                 </td>
