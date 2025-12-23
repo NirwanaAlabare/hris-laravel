@@ -1472,7 +1472,7 @@ class HRDController extends AdminBaseController
             /* ===============================
             * 🔴 TAMBAHKAN KODE UMK DI SINI
             * =============================== */
-           $start = Carbon::parse($item->contract ?? $item->join_date);
+            $start = Carbon::parse($item->contract ?? $item->join_date);
             $end   = Carbon::parse($item->contract_end ?? $item->tanggal_resign ?? now());
 
             /* ===============================
@@ -1618,9 +1618,9 @@ class HRDController extends AdminBaseController
                 GROUP BY a.enroll_id
             ");
 
-        $tahun_umk = date('Y', strtotime($contract_end));
-        $tahun_umk = 'UMK '.$tahun_umk;
-        $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $tahun_umk)->first()->dasar_pot_bpjs_rupiah ?? 0;
+        // $tahun_umk = date('Y', strtotime($contract_end));
+        // $tahun_umk = 'UMK '.$tahun_umk;
+        // $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $tahun_umk)->first()->dasar_pot_bpjs_rupiah ?? 0;
         $data = $data[0];
         $tanggal_masuk = $data->join_date;
         $tanggal_awal = $data->tanggal_resign ? $data->tanggal_resign : $data->contract_end;
@@ -1646,14 +1646,34 @@ class HRDController extends AdminBaseController
         $endDate = $data->tanggal_resign ? $data->tanggal_resign : $data->contract_end;
         $endDate = Carbon::parse($endDate);
 
-        $contract = $data->contract;
+
+        $contract = Carbon::parse($data->contract ?? $data->join_date);
+         $tahun_umk = $contract->year;
+
+            // KHUSUS:
+            // Jika mulai bulan Desember & lintas tahun → pakai tahun akhir
+            if ($contract->month == 12 && $contract->year < $endDate->year) {
+                $tahun_umk = $endDate->year;
+            }
+
+            /* ===============================
+            * 2️⃣ Ambil UMK dari master
+            * =============================== */
+            $kode_umk = 'UMK ' . $tahun_umk;
+
+            $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $kode_umk)
+                ->value('dasar_pot_bpjs_rupiah');
         // $endDate = '2025-02-20';
         $jumlah_bulan_manual = $this->hitungBulanKontrak($contract, $endDate);
+
 
         $total_penghasilan_bulanan = $umk + $tunjangan;
         $jumlah_bulan = $jumlah_bulan_manual;
         $total_kompensasi = $total_penghasilan_bulanan * ($jumlah_bulan / 12);
+        $total_kompensasi = ceil($total_kompensasi / 100)*100;
 
+        $total_kompensasi = (int) ceil($total_kompensasi / 100) * 100;
+        //  dd($total_kompensasi);
         $fileName='Kompensasi PKWT '.$data->employee_name.'('.request()->enroll_id.') '.$contract_end.' '.date('His');
         $pdf = PDF::loadView('hris.laporan.pdf_kompensasi_pkwt',["no_form"=>$no_form,"contract2"=>$contract,"contract_end2"=>$endDate,"data" => $data,"umk"=>$umk, "tunjangan"=>$tunjangan, "total_kompensasi"=>$total_kompensasi, "jumlah_bulan"=>$jumlah_bulan])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
         return $pdf;
