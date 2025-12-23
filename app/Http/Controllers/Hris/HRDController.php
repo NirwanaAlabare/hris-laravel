@@ -1440,11 +1440,13 @@ class HRDController extends AdminBaseController
             ) ec2 ON ec1.enroll_id = ec2.enroll_id AND ec1.contract = ec2.max_contract
         ) c ON a.enroll_id = c.enroll_id
          WHERE a.enroll_id IS NOT NULL $inDateRange $inEnrollId $inIbuKandung $inStatusAktif $inStatusStaff $inDepartment $inStatusKontrak
+         ORDER BY
+         COALESCE(b.contract, a.join_date) ASC
     ");
-    $tahun_umk = date('Y');
-    $tahun_umk = 'UMK '.$tahun_umk;
+    // $tahun_umk = date('Y');
+    // $tahun_umk = 'UMK '.$tahun_umk;
 
-    $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $tahun_umk)->first()->dasar_pot_bpjs_rupiah ?? 0;
+    // $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $tahun_umk)->first()->dasar_pot_bpjs_rupiah ?? 0;
        foreach ($data as $item) {
 
 
@@ -1466,9 +1468,36 @@ class HRDController extends AdminBaseController
             } else {
                 $tunjangan = 12500;
             }
-            //  Perhitungan masa kerja
-            $start = Carbon::createFromFormat('Y-m-d', $item->join_date);
-            $end = Carbon::today();
+
+            /* ===============================
+            * 🔴 TAMBAHKAN KODE UMK DI SINI
+            * =============================== */
+           $start = Carbon::parse($item->contract ?? $item->join_date);
+            $end   = Carbon::parse($item->contract_end ?? $item->tanggal_resign ?? now());
+
+            /* ===============================
+            * 1️⃣ Tentukan TAHUN UMK
+            * =============================== */
+
+            // Default → tahun kontrak mulai
+            $tahun_umk = $start->year;
+
+            // KHUSUS:
+            // Jika mulai bulan Desember & lintas tahun → pakai tahun akhir
+            if ($start->month == 12 && $start->year < $end->year) {
+                $tahun_umk = $end->year;
+            }
+
+            /* ===============================
+            * 2️⃣ Ambil UMK dari master
+            * =============================== */
+            $kode_umk = 'UMK ' . $tahun_umk;
+
+            $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $kode_umk)
+                ->value('dasar_pot_bpjs_rupiah');
+
+            // $start = Carbon::createFromFormat('Y-m-d', $item->join_date);
+            // $end = Carbon::today();
 
             // Ubah jadi format tanggal (Y, m, d)
             $startY = (int) $start->format('Y');
@@ -1510,7 +1539,12 @@ class HRDController extends AdminBaseController
             $total_penghasilan_bulanan = $umk + $tunjangan;
             $jumlah_bulan = $item->jumlah_bulan ? $item->jumlah_bulan : $jumlah_bulan_manual;
 
-            $total_kompensasi = $total_penghasilan_bulanan * ($jumlah_bulan / 12);
+            $total_kompensasi = ($total_penghasilan_bulanan / 12) * $jumlah_bulan;
+
+            $total_kompensasi = ceil($total_kompensasi / 100)*100;
+
+            $total_kompensasi = (int) ceil($total_kompensasi / 100) * 100;
+
 
             // Simpan atau tampilkan hasil
             $item->umk = $umk;
@@ -1518,6 +1552,7 @@ class HRDController extends AdminBaseController
             $item->total_penghasilan_bulanan = $total_penghasilan_bulanan;
             $item->jumlah_bulan = $jumlah_bulan;
             $item->total_kompensasi = $total_kompensasi;
+            // dd($item->total_penghasilan_bulanan);
         }
 
         return Excel::download(new exportExcelKompensasiPKWT($data), 'Kompensasi PKWT.xlsx');
@@ -2035,5 +2070,26 @@ class HRDController extends AdminBaseController
         //     'error'   => 'Sedang dalam perbaikan.'
         // ]);
 
+    }
+    public function update_kontrak_kerja(){                  // update kontrak kerja
+        DB::insert("insert into employee_contract(enroll_id,contract,contract_end)
+            SELECT
+                ea.enroll_id,
+                ea.tanggal_mulai_kontrak AS contract,
+                ea.tanggal_akhir_kontrak AS contract_end
+            FROM
+                employee_atribut ea
+            LEFT JOIN
+                employee_contract ec
+                ON ea.enroll_id = ec.enroll_id
+            WHERE
+                ea.status_aktif = 'AKTIF'
+                AND ea.enroll_id != 2
+                AND ec.enroll_id IS NULL
+            ");
+            return response()->json([
+                'status' => true,
+                'message' => 'kontrak berhasil diupdate',
+            ]);
     }
 }

@@ -2418,90 +2418,71 @@ h1 {
                 $.ajax({
                     type:"POST",
                     url: "{{route('cuti_karyawan.dataabsenperijinan.cek_dtpc')}}",
-                    dataType: 'json',
                     headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
                     data: {
-                        tanggal_perizinan:tanggal_perizinan,
-                        enroll_id:enroll_id,
+                        tanggal_perizinan: tanggal_perizinan,
+                        enroll_id: enroll_id,
                     },
                     dataType: 'json',
                     success: function(res){
-                        if (res > 0) {
-                            $.ajax({
-                                type:"POST",
-                                url: "{{route('cuti_karyawan.dataabsenperijinan.update_dtpc_menu')}}",
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                                data: {
-                                    uuid:uuid,
-                                    tanggal_perizinan:tanggal_perizinan,
-                                    nomor_form_perizinan:nomor_form_perizinan,
-                                    enroll_id:enroll_id,
-                                    nik:nik,
-                                    employee_name:employee_name,
-                                    kode_absen_ijin:kode_absen_ijin,
-                                    absen_alasan:absen_alasan,
-                                    time_mulai_ijin:time_mulai_ijin,
-                                    time_akhir_ijin:time_akhir_ijin,
-                                    total_time_ijin:total_time_ijin,
-                                    tanggal_mulai_ijin:tanggal_mulai_ijin,
-                                    tanggal_akhir_ijin:tanggal_akhir_ijin,
-                                },
-                                success: function(res){
-                                    notif({
-                                        msg: "<b>Info:</b> Data berhasil di simpan.",
-                                        type: "success"
-                                    });
-                                },
-                                error: function(res){
-                                    notif({
-                                        msg: "<b>Error:</b> Oops data gagal di simpan.",
-                                        type: "error"
-                                    });
-                                }
+
+                        // ====== IF ======
+                        if (res.exists) {
+                            notif({
+                                msg: "<b>Warning:</b> Data perizinan pada tanggal tersebut sudah ada.",
+                                type: "warning"
                             });
-                        } else {
-                            $.ajax({
-                                type:"POST",
-                                url: "{{route('cuti_karyawan.dataabsenperijinan.create_dtpc_menu')}}",
-                                dataType: 'json',
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                                data: {
-                                    uuid:uuid,
-                                    tanggal_perizinan:tanggal_perizinan,
-                                    nomor_form_perizinan:nomor_form_perizinan,
-                                    enroll_id:enroll_id,
-                                    nik:nik,
-                                    employee_name:employee_name,
-                                    kode_absen_ijin:kode_absen_ijin,
-                                    absen_alasan:absen_alasan,
-                                    time_mulai_ijin:time_mulai_ijin,
-                                    time_akhir_ijin:time_akhir_ijin,
-                                    total_time_ijin:total_time_ijin,
-                                    tanggal_mulai_ijin:tanggal_mulai_ijin,
-                                    tanggal_akhir_ijin:tanggal_akhir_ijin,
-                                },
-                                dataType: 'json',
-                                success: function(res){
-                                    notif({
-                                        msg: "<b>Info:</b> Data berhasil di simpan.",
-                                        type: "info"
-                                    });
-                                },
-                                error: function(res){
-                                    notif({
-                                        msg: "<b>Error:</b> Oops data gagal di simpan.",
-                                        type: "error"
-                                    });
-                                }
-                            });
+
+                            // HENTIKAN PROSES
+                            $('#btn-save-izin').removeClass("btn-loading");
+                            $("#btn-save-izin").html('<span><i class="fa fa-save"></i></span> Save');
+                            $("#btn-save-izin").prop("disabled", false);
+
+                            return false;
                         }
+
+                        // ====== ELSE ======
+                        // JIKA DATA BELUM ADA → SIMPAN
+                        $.ajax({
+                            type:"POST",
+                            url: "{{route('cuti_karyawan.dataabsenperijinan.create_dtpc_menu')}}",
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            data: {
+                                uuid: uuid,
+                                tanggal_perizinan: tanggal_perizinan,
+                                nomor_form_perizinan: nomor_form_perizinan,
+                                enroll_id: enroll_id,
+                                nik: nik,
+                                employee_name: employee_name,
+                                kode_absen_ijin: kode_absen_ijin,
+                                absen_alasan: absen_alasan,
+                                time_mulai_ijin: time_mulai_ijin,
+                                time_akhir_ijin: time_akhir_ijin,
+                                total_time_ijin: total_time_ijin,
+                                tanggal_mulai_ijin: tanggal_mulai_ijin,
+                                tanggal_akhir_ijin: tanggal_akhir_ijin,
+                            },
+                            success: function(res){
+                                notif({
+                                    msg: "<b>Info:</b> Data berhasil disimpan.",
+                                    type: "success"
+                                });
+                            },
+                            error: function(){
+                                notif({
+                                    msg: "<b>Error:</b> Gagal menyimpan data.",
+                                    type: "error"
+                                });
+                            }
+                        });
                     },
-                    error: function(res){
+                    error: function(){
                         notif({
-                            msg: "<b>Error:</b> Oops Cek Data Perizinan GAGAL.",
+                            msg: "<b>Error:</b> Cek data perizinan gagal.",
                             type: "error"
                         });
                     }
