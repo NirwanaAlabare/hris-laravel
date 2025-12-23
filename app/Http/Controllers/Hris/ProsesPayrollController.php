@@ -995,7 +995,11 @@ class ProsesPayrollController extends AdminBaseController
                 $kehadiran_m_estimasi = $value->kehadiran_m_estimasi;
                 $created_at = Carbon::now();
                 $updated_at = Carbon::now();
-                RekapKehadiranKaryawan::where('kode_rekap_kehadiran', $kode_rekap_kehadiran)->delete();
+                // RekapKehadiranKaryawan::where('kode_rekap_kehadiran', $kode_rekap_kehadiran)->delete();
+                RekapKehadiranKaryawan::where('kode_rekap_kehadiran', $kode_rekap_kehadiran)
+                    ->where('periode_payroll', $priode)
+                    ->where('enroll_id', $enroll_id)
+                    ->delete();
                 DB::insert("insert into rekap_kehadiran_karyawan (uuid, kode_rekap_kehadiran, periode_payroll, periode_tahun, periode_bulan, enroll_id, kehadiran_iby, kehadiran_itb, kehadiran_lby, kehadiran_lsm, kehadiran_dt, kehadiran_pc, kehadiran_dtpc, kehadiran_m, kehadiran_r, kehadiran_tk, kehadiran_ok, total_kehadiran, total_kehadiran_net, jumlah_hari, jumlah_hari_kerja, operator, created_at, updated_at, deleted_at, kehadiran_dl, kehadiran_cb, kehadiran_cbd, kehadiran_cg, kehadiran_ch, kehadiran_cm, kehadiran_cn, kehadiran_ct, kehadiran_ig, kehadiran_im, kehadiran_ka, kehadiran_km, kehadiran_kr, kehadiran_na, kehadiran_pp, kehadiran_i, kehadiran_lp, kehadiran_l, kehadiran_tl, kehadiran_iks, kehadiran_s, kehadiran_m_estimasi) VALUES ('$uuid', '$kode_rekap_kehadiran', '$priode', '$tahun', '$bulan', '$enroll_id', '$kehadiran_iby', '$kehadiran_itb', '$kehadiran_lby', '$kehadiran_lsm', '$kehadiran_dt', '$kehadiran_pc', '$kehadiran_dtpc', '$kehadiran_m', '$kehadiran_r', '$kehadiran_tk', '$kehadiran_ok', '$total_kehadiran', '$total_kehadiran_net', '$jumlah_hari','$jumlah_hari_kerja', '$email', '$created_at', '$updated_at', NULL, '$kehadiran_dl', '$kehadiran_cb', '$kehadiran_cbd', '$kehadiran_cg', '$kehadiran_ch', '$kehadiran_cm', '$kehadiran_cn', '$kehadiran_ct', '$kehadiran_ig', '$kehadiran_im', '$kehadiran_ka', '$kehadiran_km', '$kehadiran_kr', '$kehadiran_na', '$kehadiran_pp', '$kehadiran_i', '$kehadiran_lp', '$kehadiran_l', '$kehadiran_tl', '$kehadiran_iks', '$kehadiran_s', '$kehadiran_m_estimasi')");
             }
 
@@ -2069,7 +2073,11 @@ class ProsesPayrollController extends AdminBaseController
                 $kehadiran_m_estimasi = $value->kehadiran_m_estimasi;
                 $created_at = Carbon::now();
                 $updated_at = Carbon::now();
-                RekapKehadiranKaryawan::where('kode_rekap_kehadiran', $kode_rekap_kehadiran)->delete();
+                // RekapKehadiranKaryawan::where('kode_rekap_kehadiran', $kode_rekap_kehadiran)->delete();
+                RekapKehadiranKaryawan::where('kode_rekap_kehadiran', $kode_rekap_kehadiran)
+                    ->where('periode_payroll', $priode)
+                    ->where('enroll_id', $enroll_id)
+                    ->delete();
                 DB::insert("insert into rekap_kehadiran_karyawan (uuid, kode_rekap_kehadiran, periode_payroll, periode_tahun, periode_bulan, enroll_id, kehadiran_iby, kehadiran_itb, kehadiran_lby, kehadiran_lsm, kehadiran_dt, kehadiran_pc, kehadiran_dtpc, kehadiran_m, kehadiran_r, kehadiran_tk, kehadiran_ok, total_kehadiran, total_kehadiran_net, jumlah_hari, jumlah_hari_kerja, operator, created_at, updated_at, deleted_at, kehadiran_dl, kehadiran_cb, kehadiran_cbd, kehadiran_cg, kehadiran_ch, kehadiran_cm, kehadiran_cn, kehadiran_ct, kehadiran_ig, kehadiran_im, kehadiran_ka, kehadiran_km, kehadiran_kr, kehadiran_na, kehadiran_pp, kehadiran_i, kehadiran_lp, kehadiran_l, kehadiran_tl, kehadiran_iks, kehadiran_s, kehadiran_m_estimasi) VALUES ('$uuid', '$kode_rekap_kehadiran', '$priode', '$tahun', '$bulan', '$enroll_id', '$kehadiran_iby', '$kehadiran_itb', '$kehadiran_lby', '$kehadiran_lsm', '$kehadiran_dt', '$kehadiran_pc', '$kehadiran_dtpc', '$kehadiran_m', '$kehadiran_r', '$kehadiran_tk', '$kehadiran_ok', '$total_kehadiran', '$total_kehadiran_net', '$jumlah_hari','$jumlah_hari_kerja', '$email', '$created_at', '$updated_at', NULL, '$kehadiran_dl', '$kehadiran_cb', '$kehadiran_cbd', '$kehadiran_cg', '$kehadiran_ch', '$kehadiran_cm', '$kehadiran_cn', '$kehadiran_ct', '$kehadiran_ig', '$kehadiran_im', '$kehadiran_ka', '$kehadiran_km', '$kehadiran_kr', '$kehadiran_na', '$kehadiran_pp', '$kehadiran_i', '$kehadiran_lp', '$kehadiran_l', '$kehadiran_tl', '$kehadiran_iks', '$kehadiran_s', '$kehadiran_m_estimasi')");
             }
 
@@ -3222,7 +3230,11 @@ class ProsesPayrollController extends AdminBaseController
                     $unik = sprintf("%04d", $enroll_id);
                     $kode_rekap_kehadiran = $bulan_sekarang . $unik;
 
-                    RekapKehadiranKaryawan::where('kode_rekap_kehadiran', $kode_rekap_kehadiran)->where('periode_umk', $periode_umk)->delete();
+                    // RekapKehadiranKaryawan::where('kode_rekap_kehadiran', $kode_rekap_kehadiran)->where('periode_umk', $periode_umk)->delete();
+                    RekapKehadiranKaryawan::where('kode_rekap_kehadiran', $kode_rekap_kehadiran)
+                        ->where('periode_payroll', $priode)
+                        ->where('enroll_id', $enroll_id)
+                        ->delete();
                     DB::table('rekap_kehadiran_karyawan')->insert([
                         'uuid' => Str::uuid('uuid'),
                         'kode_rekap_kehadiran' => $kode_rekap_kehadiran,

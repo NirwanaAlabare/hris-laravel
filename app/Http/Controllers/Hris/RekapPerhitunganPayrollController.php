@@ -2804,7 +2804,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         1 => ['proc' => "CALL SP_CalculatePresence(?, ?, ?)", 'label' => 'Presence'],
         2 => ['proc' => "CALL SP_CalculateOvertime(?, ?, ?, ?)", 'label' => 'Overtime'],
         3 => ['proc' => "CALL SP_CalculatePermission(?, ?)", 'label' => 'Permission'],
-        4 => ['proc' => "CALL SP_CalculateLate(?, ?, ?)", 'label' => 'Late'],
+        4 => ['proc' => "CALL SP_CalculateLate(?, ?, ?)", 'label' => 'Late/Early '],
         5 => ['proc' => "CALL SP_CalculateBpjs(?, ?, ?)", 'label' => 'BPJS'],
         6 => ['proc' => "CALL SP_CalculateSalary(?, ?, ?)", 'label' => 'Salary'],
     ];

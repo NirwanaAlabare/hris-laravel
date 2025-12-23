@@ -350,7 +350,6 @@
                             <a id="BtnProsesPayroll"
                                 class="btn btn-app btn-sm btn-primary text-white BtnProsesPayroll"><span><i
                                         class="fa fa-download"></i></span> PROSES PAYROLL</a>
-                            {{-- <button id="runProcessBtn" class="btn btn-primary">Run Payroll Process</button> --}}
                             <button id="runProcessBtn" class="btn btn-info">PROSES PAYROLL NEW</button>
                         </div>
                     </div>
@@ -823,7 +822,7 @@
             <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#tab1">Presence</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab2">Overtime</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab3">Permission</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab4">Late</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab4">Late/Early</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab5">BPJS</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab6">Salary</a></li>
         </ul>
@@ -2073,9 +2072,17 @@
     });
 </script>
 
+
 <script>
-    $(document).ready(function() {
-        $('#btnRecap').click(function() {
+    // =====================================================
+    //  PROCESS RUNNER (PLAIN VERSION) + STEP DESCRIPTIONS
+    // =====================================================
+
+    $(document).ready(function () {
+
+
+        // Recap Labor Export
+         $('#btnRecap').click(function() {
             let daterange = $('#daterange1').val();
             let enroll_id = $('#selectEmployeeID2').val();
             $('#btnRecap').addClass("btn-loading");
@@ -2112,20 +2119,9 @@
                 }
             });
         });
-      
 
-
-    })
-</script>
-
-
-<script>
-    // =====================================================
-    //  PROCESS RUNNER (PLAIN VERSION) + STEP DESCRIPTIONS
-    // =====================================================
-
-    $(document).ready(function () {
-
+        // -------------------------------------------------
+        // RECAP PAYROLL EXPORT FUNCTION        
         function getRecapPayroll(){
             $.ajax({
                 type: 'POST',
@@ -2166,7 +2162,7 @@
             1: "Load Presence",
             2: "Load Overtime",
             3: "Load Permission",
-            4: "Load Late",
+            4: "Load Late/Early",
             5: "Load BPJS",
             6: "Load Salary"
         };
@@ -2372,11 +2368,9 @@
 
         }
 
-
-
         // -------------------------------------------------
-        //   MAIN RUN BUTTON
-        // -------------------------------------------------
+        // RECAP PAYROLL PROCESS HANDLER    
+     
         $('#runProcessBtn').on('click', function () {
 
             const skema = $('#skema_payroll').val();
@@ -2549,7 +2543,9 @@
             }, 20); // small delay = very stable
         });
 
-
+        // -------------------------------------------------
+        // AUTO FORMAT NUMERIC COLUMNS
+        // -------------------------------------------------
         function autoFormatNumericColumns(tableSelector) {
             const table = $(tableSelector).DataTable();
 
@@ -2595,6 +2591,9 @@
             return decPart ? `${intPart}.${decPart}` : intPart;
         }
 
+        // -------------------------------------------------
+        // MODAL CLOSE BUTTON HANDLER
+        // -------------------------------------------------
         $(document).on('click', '#closeProgressBtn', function () {
             $('#progressModal').modal('hide');
         });
