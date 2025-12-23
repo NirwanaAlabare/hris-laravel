@@ -1647,8 +1647,11 @@ class HRDController extends AdminBaseController
         $endDate = $data->tanggal_resign ? $data->tanggal_resign : $data->contract_end;
         $endDate = Carbon::parse($endDate);
 
-
+         $batasMulai = Carbon::create(2020, 11, 2);
         $contract = Carbon::parse($data->contract ?? $data->join_date);
+         if ($contract->lt($batasMulai)) {
+                $contract = $batasMulai;
+            }
          $tahun_umk = $contract->year;
 
             // KHUSUS:
@@ -1660,10 +1663,13 @@ class HRDController extends AdminBaseController
             /* ===============================
             * 2️⃣ Ambil UMK dari master
             * =============================== */
+             if ($tahun_umk <= 2020) {
+                $tahun_umk = 2021;
+            }
             $kode_umk = 'UMK ' . $tahun_umk;
-
-            $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $kode_umk)
-                ->value('dasar_pot_bpjs_rupiah');
+            $umk = GradingSalary::where('kode_grade', 'D')->where('periode_umk', $tahun_umk)->value('salary_bulanan');
+            // $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $kode_umk)
+            //     ->value('dasar_pot_bpjs_rupiah');
         // $endDate = '2025-02-20';
         $jumlah_bulan_manual = $this->hitungBulanKontrak($contract, $endDate);
 
