@@ -53,9 +53,15 @@
                         : ''
                     }}
                 </td>
-                <td>
+                {{-- <td>
                     {{ $data_pkwt->tanggal_resign
                         ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel(\Carbon\Carbon::parse($data_pkwt->tanggal_resign))
+                        : ''
+                    }}
+                </td> --}}
+                <td>
+                    {{ $data_pkwt->tanggal_resign
+                        ? \Carbon\Carbon::parse($data_pkwt->tanggal_resign)->format('d-m-Y')
                         : ''
                     }}
                 </td>
