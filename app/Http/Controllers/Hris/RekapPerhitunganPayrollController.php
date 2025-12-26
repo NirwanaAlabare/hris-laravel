@@ -2914,7 +2914,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
 
             // Memanggil Stored Procedure yang sudah dibuat
             // Gunakan DB::select untuk mendapatkan return berupa array of objects
-            $data = DB::select("CALL sp_get_payroll_department(?, ?)", [
+            $data = DB::select("CALL sp_GetPayrollPerDepartment(?, ?)", [
                 $periode,
                 $status
             ]);
