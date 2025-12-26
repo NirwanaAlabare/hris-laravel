@@ -2714,7 +2714,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 'stream' => true,
             ]);
 
-            
+
             return response($response->getBody(), 200)
                 ->header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
                 ->header('Content-Disposition', 'attachment; filename="recap_labor_cost.xlsx"');
@@ -2903,6 +2903,32 @@ class RekapPerhitunganPayrollController extends AdminBaseController
 
             \Log::error("runStep step {$step} error: " . $e->getMessage());
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getSalaryPerDepartment(Request $request)
+    {
+        try {
+            $periode = $request->periode_payroll; // Format: YYYY-MM
+            $status  = $request->status_staff ?? ''; // Contoh: STAFF / NON STAFF
+
+            // Memanggil Stored Procedure yang sudah dibuat
+            // Gunakan DB::select untuk mendapatkan return berupa array of objects
+            $data = DB::select("CALL sp_get_payroll_department(?, ?)", [
+                $periode,
+                $status
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'data' => $data,
+                'message' => 'Data berhasil diambil'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memproses data: ' . $e->getMessage()
+            ], 500);
         }
     }
 }

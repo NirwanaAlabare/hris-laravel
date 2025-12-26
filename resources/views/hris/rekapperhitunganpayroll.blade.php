@@ -825,6 +825,7 @@
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab4">Late/Early</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab5">BPJS</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab6">Salary</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab7">Per Department</a></li>
         </ul>
 
         <!-- TAB CONTENT -->
@@ -852,6 +853,31 @@
 
             <div id="tab6" class="tab-pane fade">
                 <div id="container_6" class="result-container"></div>
+            </div>
+            <div id="tab7" class="tab-pane fade">
+                <div class="table-responsive">
+                    <table id="table-payroll-dept" class="table table-bordered table-sm table-payroll"
+                        style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>DEPARTMENT</th>
+                                <th>JUMLAH KARYAWAN</th>
+                                <th>BRUTO</th>
+                                <th>PPH</th>
+                                <th>NETTO</th>
+                                <th>BPJS TK</th>
+                                <th>BPJS KS</th>
+                                <th>TOTAL POTONGAN</th>
+                                <th>JUMLAH</th>
+                                <th>JML KARYAWAN SEBELUMNYA</th>
+                                <th>JML GAJI SEBELUMNYA</th>
+                                <th>PENURUNAN/KENAIKAN JML KARYAWAN</th>
+                                <th>PENURUNAN/KENAIKAN GAJI</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
 
         </div>
@@ -2524,12 +2550,91 @@
                 }
 
                 addLog("All steps completed.");
+                getSalaryPerDepartment();
                 swal("", "Payroll Recap Process Completed", "success");
                 $('#closeProgressBtn').show();
 
             })();
 
         });
+
+        async function getSalaryPerDepartment() {
+            try {
+                // Cek jika DataTable sudah ada, hancurkan dulu agar bisa render ulang
+                if ($.fn.DataTable.isDataTable('#table-payroll-dept')) {
+                    $('#table-payroll-dept').DataTable().destroy();
+                }
+                const periode = $("input[name='periode_payrols']").val();
+                $('#table-payroll-dept').DataTable({
+                    processing: true,
+                    serverSide: false, // Set false karena data sudah diproses sekaligus di SP
+                    destroy: true,
+                    ordering: false,
+                    ajax: {
+                        url: '{{route("hris.rekapperhitunganpayroll.getSalaryPerDepartment")}}',
+                        method: 'POST',
+                        data: function(d) {
+                            d.periode_payroll = periode;
+                            d.status_staff = '';
+                            d._token = '{{csrf_token()}}';
+                        },
+                        dataSrc: 'data'
+                    },
+                    columns: [
+                        { data: 'nama_department' },
+                        { data: 'jumlah_karyawan', className: 'text-center' },
+                        { data: 'bruto', className: 'text-right' },
+                        { data: 'pph', className: 'text-right' },
+                        { data: 'upah_neto_rupiah', className: 'text-right' },
+                        { data: 'total_bpjs_tk', className: 'text-right' },
+                        { data: 'total_bpjs_ks', className: 'text-right' },
+                        { data: 'potongan', className: 'text-right' },
+                        { 
+                            data: 'jumlah', 
+                            className: 'text-right font-weight-bold' // Pindahkan font-weight ke class
+                        },
+                        { data: 'jumlah_karyawan_sebelum', className: 'text-center' },
+                        { data: 'jumlah_sebelum', className: 'text-right' },
+                        { 
+                            data: 'selisih_karyawan', 
+                            className: 'text-center',
+                            // render: function(data) {
+                            //     if (data == 0 || data == null) return '-';
+                            //     let color = data > 0 ? '#28a745' : '#dc3545'; // Warna hijau/merah sukses/danger
+                            //     let icon = data > 0 ? 'fa-arrow-up' : 'fa-arrow-down';
+                            //     return `<span style="color:${color}; font-weight:bold;"><i class="fas ${icon}"></i> ${Math.abs(data)}</span>`;
+                            // }
+                        },
+                        { 
+                            data: 'selisih_gaji', 
+                            className: 'text-right',
+                            // render: function(data) {
+                            //     if (data == 0 || data == null) return '-';
+                            //     let color = data > 0 ? '#28a745' : '#dc3545';
+                            //     let icon = data > 0 ? 'fa-arrow-up' : 'fa-arrow-down';
+                            //     let formatted = new Intl.NumberFormat('id-ID').format(Math.abs(data));
+                            //     return `<span style="color:${color}; font-weight:bold;"><i class="fas ${icon}"></i> ${formatted}</span>`;
+                            // }
+                        }
+                    ],
+                    columnDefs: [
+                        { targets: '_all', defaultContent: '-' }
+                    ],
+                    createdRow: function(row, data) {
+                        // Styling untuk Grand Total agar terlihat seperti di gambar
+                        if (data.nama_department === 'GRAND TOTAL') {
+                            $(row).css({
+                                'background-color': '#f8f9fa',
+                                'font-weight': 'bold',
+                                'border-top': '2px solid #dee2e6'
+                            });
+                        }
+                    }
+                });
+            } catch (err) {
+                console.error('Error fetching salary per department:', err);
+            }
+        }
 
         // -------------------------------------------------
         // FIX DATATABLE WHEN TAB SWITCHED

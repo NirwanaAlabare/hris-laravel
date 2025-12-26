@@ -890,3 +890,4 @@ Route::post('/hris/rekapperhitunganpayroll/calculate_salary', [RekapPerhitunganP
     ->name('hris.rekapperhitunganpayroll.calculate_salary');
 // routes/web.php or api.php
 Route::post('/run-process-step', [RekapPerhitunganPayrollController::class, 'runStep'])->name('hris.rekapperhitunganpayroll.runStep');
+Route::post('/getSalaryPerDepartment', [RekapPerhitunganPayrollController::class, 'getSalaryPerDepartment'])->name('hris.rekapperhitunganpayroll.getSalaryPerDepartment');
