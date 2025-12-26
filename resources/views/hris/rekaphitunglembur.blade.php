@@ -980,11 +980,7 @@
         let columns = [];
         // let displayKeys = dataArray.length > 0 ? Object.keys(dataArray[0]) : [];
 
-        // If data is empty for detail tables, we use a structural fallback
-        // if (displayKeys.length === 0 && tableId !== '#table1') {
-        //     // Fallback: Use the map keys for structure even if the data is empty
-        //     displayKeys = Object.keys(DETAIL_COLUMN_MAP);
-        // }
+     
 
         if (tableId !== '#table1') {
             // FIX: Prioritize column order from the map (for tables 2, 3, 4)
@@ -1009,7 +1005,16 @@
             columns = columnFunction(displayKeys); 
         }
 
-        // columns = columnFunction(displayKeys); // <-- 'columns' array is now populated!
+           // --- NEW: Add Checkbox Column for Tab 3 (#table3) ---
+        if (tableId === '#table3') {
+            columns.unshift({
+                title: '<input type="checkbox" class="select-all-checkbox">', // Header checkbox
+                data: null,
+                defaultContent: '',
+                orderable: false,
+                className: 'text-center'
+            });
+        }
         
         // 3. CRITICAL STEP: Replace the table's THEAD content
         const $thead = $table.find('thead');
@@ -1024,6 +1029,16 @@
         // 4. --- Dynamic Column Definitions (Formatting & Alignment) ---
         // (THIS BLOCK IS MOVED HERE, AFTER 'columns' IS DEFINED)
         let columnDefsArray = [];
+
+        // --- NEW: Define Checkbox Rendering for Tab 3 ---
+        if (tableId === '#table3') {
+            columnDefsArray.push({
+                targets: 0, // The first column we just unshifted
+                render: function (data, type, row) {
+                    return `<input type="checkbox" class="row-checkbox" value="${row.id || ''}">`;
+                }
+            });
+        }
         
         if (tableId !== '#table1') {
             
@@ -1077,6 +1092,52 @@
                 });
             }
         }
+
+        let tableButtons = ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis'];
+
+        // ... inside loadAndInitializeDataTable ...
+        if (tableId === '#table3') {
+            tableButtons.push({
+                text: 'Verify Selected',
+                className: 'btn-process disabled',
+                attr: { id: 'btn-process-table3' },
+                action: function (e, dt, node, config) {
+                    let uuids = [];
+                    let enrolls = [];
+                    let tanggals = [];
+
+                    $('#table3 tbody .row-checkbox:checked').each(function() {
+                        let rowData = dt.row($(this).closest('tr')).data();
+                        
+                        // Ambil data sesuai nama properti di rowData atau index kolom
+                        uuids.push(rowData.uuid || ""); // Jika uuid null, kirim string kosong
+                        enrolls.push(rowData.enroll_id); // Column 1
+                        tanggals.push(rowData.tanggal_berjalan); // Column 4
+                    });
+
+                    if (uuids.length === 0) return;
+
+                    if (!confirm(`Are you sure you want to verify ${uuids.length} records?`)) return;
+
+                    $.ajax({
+                        type: "POST",
+                        url: "{{route('hris.datalembur.verifikasi')}}",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            uuid: uuids,
+                            enroll_id: enrolls,
+                            tanggal_berjalan: tanggals
+                        },
+                        success: function(response) {
+                            notif({ msg: "<b>Info:</b> Data berhasil diverifikasi.", type: "info" });                    
+                        },
+                        error: function(xhr) {
+                            notif({ msg: "<b>Error:</b> Terjadi kesalahan.", type: "error" });
+                        }
+                    });
+                }
+            });
+        }
         
         // 5. Re-initialize DataTable
         $table.DataTable({
@@ -1091,9 +1152,7 @@
             "order": tableId === '#table1' ? [[0, 'asc']] : [[1, 'asc']], // Default ordering
             "columnDefs": columnDefsArray, // <-- Now uses the correctly generated array
             "dom": '<"row"<"col-sm-12 col-md-4"l><"col-sm-12 col-md-4 dt-buttons-center"B><"col-sm-12 col-md-4"f>><"row"<"col-sm-12"t>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-            "buttons": [
-                        'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
-                    ],
+            "buttons": tableButtons,
             "createdRow": function (row, data, dataIndex) {
                 if ((data['kode_hari'] == "5") || (data['kode_hari'] == "6") || (data['holiday_name'])) {
                     $(row).css('background', 'yellow'); 
@@ -1103,12 +1162,29 @@
                 }
             }
         });
+
+        function getSelectedRowsData() {
+            const table = $('#table3').DataTable();
+            const selectedData = [];
+
+            // Loop through each checked checkbox
+            $('#table3 tbody .row-checkbox:checked').each(function() {
+                // Get the closest <tr> element
+                const rowElement = $(this).closest('tr');
+                // Use DataTable API to get the full data object for that row
+                const rowData = table.row(rowElement).data();
+                selectedData.push(rowData);
+            });
+
+            return selectedData;
+        }
         
         // 6. Adjust columns if the table is currently visible
         if ($table.is(':visible')) {
             $table.DataTable().columns.adjust().draw();
         }
     }
+    
 
     function export_data() {
         let daterange = $('#daterange1').val();
@@ -1164,11 +1240,36 @@
     // --- Document Ready and AJAX Logic ---
 
     $(document).ready(function(){
-        // Initial setup: Initialize the first tab's table structure (starts empty)
-        // Since we are using loadAndInitializeDataTable after AJAX, 
-        // we can skip initial setup and rely on the AJAX call to load the first view.
-        // If you need a structural table on load, use:
-        // loadAndInitializeDataTable('#table1', [], getSummaryColumns); 
+        // 1. "Select All" Header Checkbox logic
+        // We use delegation on the table ID (#table3) to ensure it works after redraws
+        $('#table3').on('click', '.select-all-checkbox', function() {
+            // Get the checked status of the header checkbox
+            const isChecked = $(this).is(':checked');
+            
+            // Find all checkboxes in the table body and match their state
+            // Note: this only affects checkboxes currently in the DOM (current page)
+            $('#table3 tbody .row-checkbox').prop('checked', isChecked);
+        });
+
+        // 2. Individual Row Checkbox logic
+        // If a user unchecks one row, the "Select All" header should uncheck
+        $('#table3').on('click', '.row-checkbox', function() {
+            const totalCheckboxes = $('#table3 tbody .row-checkbox').length;
+            const totalChecked = $('#table3 tbody .row-checkbox:checked').length;
+            const headerCheckbox = $('#table3 thead .select-all-checkbox');
+
+            if (totalChecked === totalCheckboxes) {
+                headerCheckbox.prop('checked', true);
+                headerCheckbox.prop('indeterminate', false);
+            } else if (totalChecked === 0) {
+                headerCheckbox.prop('checked', false);
+                headerCheckbox.prop('indeterminate', false);
+            } else {
+                // Optional: Show a "dash" (indeterminate) state if some but not all are selected
+                headerCheckbox.prop('checked', false);
+                headerCheckbox.prop('indeterminate', true);
+            }
+        });
         
         
         // 1. Click handler for the calculation button
@@ -1250,6 +1351,37 @@
                 }
             });
         });
+
+        // Helper to toggle button state specifically for Table 3
+        function updateTable3ButtonState() {
+            // Count checkboxes only inside Table 3
+            const checkedCount = $('#table3 tbody .row-checkbox:checked').length;
+            
+            // Find the specific button for Table 3
+            // DataTables puts buttons in a container, we find ours by the class/ID
+            const $btn = $('#btn-process-table3');
+
+            if (checkedCount > 0) {
+                $btn.removeClass('disabled').prop('disabled', false).css('opacity', '1');
+                $btn.addClass('btn-primary'); // Make it look active
+            } else {
+                $btn.addClass('disabled').prop('disabled', true).css('opacity', '0.5');
+                $btn.removeClass('btn-primary');
+            }
+        }
+
+        // Listener for Table 3 Checkboxes
+        $('#table3').on('click', '.select-all-checkbox, .row-checkbox', function() {
+            // Short delay to allow the DOM 'checked' property to update
+            setTimeout(updateTable3ButtonState, 50);
+        });
+
+        // CRITICAL: Update state when changing pages or filtering on Table 3
+        $('#table3').on('draw.dt', function() {
+            updateTable3ButtonState();
+        });
+
+
     });
 </script>
 
