@@ -2598,23 +2598,23 @@
                         { 
                             data: 'selisih_karyawan', 
                             className: 'text-center',
-                            // render: function(data) {
-                            //     if (data == 0 || data == null) return '-';
-                            //     let color = data > 0 ? '#28a745' : '#dc3545'; // Warna hijau/merah sukses/danger
-                            //     let icon = data > 0 ? 'fa-arrow-up' : 'fa-arrow-down';
-                            //     return `<span style="color:${color}; font-weight:bold;"><i class="fas ${icon}"></i> ${Math.abs(data)}</span>`;
-                            // }
+                            render: function(data) {
+                                if (data == 0 || data == null) return '-';
+                                let color = data > 0 ? '#28a745' : '#dc3545'; // Warna hijau/merah sukses/danger
+                                let icon = data > 0 ? 'fa fa-arrow-up' : 'fa fa-arrow-down';
+                                return `<span style="color:${color}; font-weight:bold;"><i class="fas ${icon}"></i> ${Math.abs(data)}</span>`;
+                            }
                         },
                         { 
                             data: 'selisih_gaji', 
                             className: 'text-right',
-                            // render: function(data) {
-                            //     if (data == 0 || data == null) return '-';
-                            //     let color = data > 0 ? '#28a745' : '#dc3545';
-                            //     let icon = data > 0 ? 'fa-arrow-up' : 'fa-arrow-down';
-                            //     let formatted = new Intl.NumberFormat('id-ID').format(Math.abs(data));
-                            //     return `<span style="color:${color}; font-weight:bold;"><i class="fas ${icon}"></i> ${formatted}</span>`;
-                            // }
+                            render: function(data) {
+                                // if (data == 0 || data == null) return '-';
+                                let color = data > 0 ? '#28a745' : '#dc3545';
+                                let icon = data > 0 ? 'fa fa-arrow-up' : 'fa fa-arrow-down';
+                                let formatted = new Intl.NumberFormat('id-ID').format(Math.abs(data));
+                                return `<span style="color:${color}; font-weight:bold;"><i class="fas ${icon}"></i> ${data}</span>`;
+                            }
                         }
                     ],
                     columnDefs: [
