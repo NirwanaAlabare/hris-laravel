@@ -2334,15 +2334,20 @@
                                     // Pastikan DataTable memiliki header yang benar
                                     if (dt.context && dt.context[0]) {
                                         // Force update header titles jika diperlukan
+                                        const settings = api.settings()[0];
                                         dt.columns().every(function(index) {
                                             const column = this;
                                             const header = $(column.header());
-                                            if (column.title && column.title() === '') {
-                                                const headerText = header.text().trim();
-                                                if (headerText) {
-                                                    // Update title dari teks header
-                                                    dt.context[0].aoColumns[index].sTitle = headerText;
-                                                }
+                                            // if (column.title && column.title() === '') {
+                                            //     const headerText = header.text().trim();
+                                            //     if (headerText) {
+                                            //         // Update title dari teks header
+                                            //         dt.context[0].aoColumns[index].sTitle = headerText;
+                                            //     }
+                                            // }
+                                            const headerText = $(this.header()).text().trim();
+                                            if (!settings.aoColumns[index].sTitle && headerText) {
+                                                settings.aoColumns[index].sTitle = headerText;
                                             }
                                         });
                                     }
@@ -2368,7 +2373,7 @@
                         requestAnimationFrame(() => {
                             api.columns.adjust().draw(false);
                             autoFormatNumericColumns($table);
-                            
+                            const settings = api.settings()[0];
                             // Pastikan semua kolom memiliki title
                             api.columns().every(function(index) {
                                 const column = this;
@@ -2376,8 +2381,11 @@
                                 const headerText = header.text().trim();
                                 
                                 // Jika kolom tidak punya title, set dari header HTML
-                                if (!column.title() && headerText) {
-                                    api.context[0].aoColumns[index].sTitle = headerText;
+                                // if (!column.title() && headerText) {
+                                //     api.context[0].aoColumns[index].sTitle = headerText;
+                                // }
+                                if (!settings.aoColumns[index].sTitle && headerText) {
+                                    settings.aoColumns[index].sTitle = headerText;
                                 }
                             });
                         });
