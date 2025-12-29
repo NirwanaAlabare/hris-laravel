@@ -465,26 +465,60 @@ class GagalAbsenController extends AdminBaseController
             $total_DT=0;
         }
 
-        if( $jadwal_out !=null && $absen_out !=null && $absen_out<$jadwal_out){
-            $total_PC1 = $PC->i +($PC->h*60);
-            if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
-                if($absen_out <='12:00:00'){
-                    $total_PC=$total_PC1-60;
+        // if( $jadwal_out !=null && $absen_out !=null && $absen_out<$jadwal_out){
+        //     $total_PC1 = $PC->i +($PC->h*60);
+        //     if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
+        //         if($absen_out <='12:00:00'){
+        //             $total_PC=$total_PC1-60;
+        //         }
+        //         else if($absen_out >'12:00:00' && $absen_out <='13:00:00'){
+        //             $selisih_menit = strtotime('13:00:00') - strtotime($absen_out);
+        //             $selisih_menit = round($selisih_menit / 60);
+        //             $total_PC=$total_PC1-$selisih_menit;
+        //         }
+        //         else {
+        //             $total_PC=$total_PC1;
+        //         }
+        //     }else{
+        //             $total_PC=$total_PC1;
+        //     }
+        //     $total_PC = $total_PC < 480 ? $total_PC : 480;
+        //         }else{
+        //     $total_PC=0;
+        // }
+        if ($jadwal_out != null && $absen_out != null && $absen_out < $jadwal_out) {
+
+            $total_PC1 = $PC->i + ($PC->h * 60);
+            $absen_out_time = strtotime($absen_out);
+
+            // default
+            $total_PC = $total_PC1;
+
+            // SHIFT 07:00 & 07:30 (istirahat 12–13)
+            if ($jadwal_in == '07:00:00' || $jadwal_in == '07:30:00') {
+
+                if ($absen_out_time <= strtotime('12:00:00')) {
+                    $total_PC -= 60;
+                } else if ($absen_out_time > strtotime('12:00:00') && $absen_out_time < strtotime('13:00:00')) {
+                    $total_PC -= round((strtotime('13:00:00') - $absen_out_time) / 60);
                 }
-                else if($absen_out >'12:00:00' && $absen_out <='13:00:00'){
-                    $selisih_menit = strtotime('13:00:00') - strtotime($absen_out);
-                    $selisih_menit = round($selisih_menit / 60);
-                    $total_PC=$total_PC1-$selisih_menit;
-                }
-                else {
-                    $total_PC=$total_PC1;
-                }
-            }else{
-                    $total_PC=$total_PC1;
             }
-            $total_PC = $total_PC < 480 ? $total_PC : 480;
-                }else{
-            $total_PC=0;
+
+            // 🔥 SHIFT 06:00 (istirahat 10–11) — INI YANG HILANG
+            else if ($jadwal_in == '06:00:00') {
+
+                if ($absen_out_time <= strtotime('10:00:00')) {
+                    $total_PC -= 60;
+                } else if ($absen_out_time > strtotime('10:00:00') && $absen_out_time < strtotime('11:00:00')) {
+                    $total_PC -= round((strtotime('11:00:00') - $absen_out_time) / 60);
+                }
+            }
+
+            // pengaman
+            $total_PC = max(0, min($total_PC, 480));
+
+        } else {
+            $total_PC = 0;
         }
         $is_staff = EmployeeAtribut::where('enroll_id',$request->enroll_id)->pluck('status_staff')[0];
         if($is_staff=='STAFF' && $total_DT <= 10){
