@@ -43,13 +43,22 @@ class JurnalController extends AdminBaseController
     }
 
 
+    // public function ajax_getperiodepayroll()
+    // {
+    //     $query =  Jurnal::selectRaw('periode_payroll')
+    //         ->groupby('periode_payroll')
+    //         ->orderby('periode_payroll', 'desc')
+    //         // dd($query->toSql());
+    //         ->get();
+    //     return $query;
+    // }
     public function ajax_getperiodepayroll()
     {
-        $query =  Jurnal::selectRaw('periode_payroll')
-            ->groupby('periode_payroll')
-            ->orderby('periode_payroll', 'desc')
-            ->get();
-        return $query;
+    $query =  RekapPerhitunganPayroll::selectRaw('CONCAT(periode_tahun_payroll,"-",periode_bulan_payroll) periode_payroll')
+                ->groupby('periode_payroll')
+                ->orderby('periode_payroll', 'desc')
+                ->get();
+            return $query;
     }
     public function ajax_exportexcel(Request $request)
     {
@@ -103,6 +112,7 @@ class JurnalController extends AdminBaseController
                 $tunai = strtoupper($nama_bank) === 'TUNAI';
 
                 $nilai_bersih = $p->upah_neto_rupiah - $p->jumlah_potongan_rupiah;
+
 
                 if ($tunai) {
                     // Pembulatan ke atas kelipatan 500
