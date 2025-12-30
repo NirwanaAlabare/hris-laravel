@@ -1246,6 +1246,7 @@ class HRDController extends AdminBaseController
                     a.alamat_rumah,
                     a.tanggal_lahir,
                     a.no_surat,
+                    a.tanggal_mulai_kontrak,
                     b.contract,
                     b.contract_end,
                     c.max_contract,
@@ -1271,9 +1272,34 @@ class HRDController extends AdminBaseController
                     )
                     ) mda ON a.enroll_id = mda.enroll_id
                     WHERE  a.enroll_id=".$enroll_id." ORDER BY a.enroll_id, b.contract_end DESC");
-        $umk=DasarPotBPJS::orderBy('created_at','desc')->limit(1)->first()->dasar_pot_bpjs_rupiah;
+        foreach ($data as $item) {
+
+            $start = Carbon::parse($item->contract);
+            $end   = Carbon::parse($item->tanggal_resign ?? $item->contract_end ?? now());
+
+            $tahun_umk = $start->year;
+
+            if ($start->month == 12 && $start->year < $end->year) {
+                $tahun_umk = $end->year;
+            }
+
+            if ($tahun_umk <= 2020) {
+                $tahun_umk = 2021;
+            }
+
+            $grading = GradingSalary::where('kode_grade', 'D')
+                ->where('periode_umk', $tahun_umk)
+                ->first();
+
+            // SIMPAN KE DATA KONTRAK
+            $item->umk = $grading->salary_bulanan;
+            $item->umk_latin = $grading->salary_latin;
+        }
+
+
         $fileName='PKS ' .request()->enroll_id.' ' .$data[0]->employee_name.' '.Carbon::parse($data[0]->contract)->translatedFormat('d-m-Y').' ';
-        $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan',["no_form"=>$no_form,"data" => $data,"umk"=>$umk])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+        // $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan',["no_form"=>$no_form,"data" => $data,"umk"=>$umk])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+        $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan',["no_form"=>$no_form,"data" => $data])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
         return $pdf;
     }
     public function print_pdf_kontrak_2(){
@@ -1553,7 +1579,7 @@ class HRDController extends AdminBaseController
             $item->total_penghasilan_bulanan = $total_penghasilan_bulanan;
             $item->jumlah_bulan = $jumlah_bulan;
             $item->total_kompensasi = $total_kompensasi;
-                        // dd($start);
+                        // dd($contract_start);
         }
 
         return Excel::download(new exportExcelKompensasiPKWT($data), 'Kompensasi PKWT.xlsx');
