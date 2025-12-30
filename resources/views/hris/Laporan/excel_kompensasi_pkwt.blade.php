@@ -53,18 +53,19 @@
                         : ''
                     }}
                 </td>
-                {{-- <td>
+                <td>
                     {{ $data_pkwt->tanggal_resign
                         ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel(\Carbon\Carbon::parse($data_pkwt->tanggal_resign))
                         : ''
                     }}
-                </td> --}}
-                <td>
+                </td>
+
+                {{-- <td>
                     {{ $data_pkwt->tanggal_resign
                         ? \Carbon\Carbon::parse($data_pkwt->tanggal_resign)->format('d-m-Y')
                         : ''
                     }}
-                </td>
+                </td> --}}
                 <td style="text-align:center">{{ $data_pkwt->years }}</td>
                 <td style="text-align:center">{{ $data_pkwt->months }}</td>
                 <td style="text-align:center">{{ $data_pkwt->days }}</td>
@@ -77,18 +78,28 @@
                 </td>
                 <td>
                     {{ $data_pkwt->contract_start_fixed
-                        ? \Carbon\Carbon::parse($data_pkwt->contract_start_fixed)->format('d-m-Y')
+                        ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel(
+                            \Carbon\Carbon::parse($data_pkwt->contract_start_fixed)
+                        )
                         : ''
                     }}
                 </td>
 
                 <td>{{ $data_pkwt->contract_end ? \Carbon\Carbon::parse($data_pkwt->contract_end)->translatedFormat('l') : '' }}</td>
-                 <td>
+                <td>
+                    {{ $data_pkwt->contract_end
+                        ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel(
+                            \Carbon\Carbon::parse($data_pkwt->contract_end)
+                        )
+                        : ''
+                    }}
+                </td>
+                 {{-- <td>
                     {{ $data_pkwt->contract_end
                         ? \Carbon\Carbon::parse($data_pkwt->contract_end)->format('d-m-Y')
                         : ''
                     }}
-                </td>
+                </td> --}}
                 <td style="text-align:center">{{ $data_pkwt->jumlah_bulan }}</td>
                 <td style="text-align:center">{{number_format($data_pkwt->umk, 0, '.', '.');}}</td>
                 <td style="text-align:center">{{$data_pkwt->tunjangan, 0, '.', '.'}}</td>
