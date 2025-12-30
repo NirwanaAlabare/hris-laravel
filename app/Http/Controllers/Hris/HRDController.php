@@ -1829,14 +1829,41 @@ class HRDController extends AdminBaseController
             $data_final->push($item);
             $data_final->push($item); // push dua kali
         }
+        foreach ($data_final as $item) {
+
+            if (!$item->contract) {
+                $item->umk = 0;
+                $item->umk_latin = '';
+                continue;
+            }
+
+            // ACUAN TAHUN = TANGGAL KONTRAK TERAKHIR
+            $start = Carbon::parse($item->contract);
+            $end   = Carbon::parse($item->contract_end ?? now());
+
+            $tahun_umk = $start->year;
+
+            // Khusus 2020 ke bawah
+            if ($tahun_umk <= 2020) {
+                $tahun_umk = 2021;
+            }
+
+            $grading = GradingSalary::where('kode_grade', 'D')
+                ->where('periode_umk', $tahun_umk)
+                ->first();
+
+            $item->umk = $grading?->salary_bulanan ?? 0;
+            $item->umk_latin = ucwords(strtolower($grading?->salary_latin ?? ''));
+        }
+
 
         // UMK dan PDF
-        $umk = DasarPotBPJS::orderBy('created_at','desc')->first()->dasar_pot_bpjs_rupiah;
+        // $umk = DasarPotBPJS::orderBy('created_at','desc')->first()->dasar_pot_bpjs_rupiah;
         $fileName = 'Kontrak Kerja All ' . date('His');
 
         $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan', [
             "data" => $data_final,
-            "umk" => $umk,
+            // "umk" => $umk,
             "no_form" => $no_form
         ])->setPaper('A4', 'portrait')->stream($fileName . '.pdf');
 
