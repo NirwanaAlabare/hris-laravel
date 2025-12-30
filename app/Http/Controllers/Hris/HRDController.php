@@ -1279,9 +1279,9 @@ class HRDController extends AdminBaseController
 
             $tahun_umk = $start->year;
 
-            if ($start->month == 12 && $start->year < $end->year) {
-                $tahun_umk = $end->year;
-            }
+            // if ($start->month == 12 && $start->year < $end->year) {
+            //     $tahun_umk = $end->year;
+            // }
 
             if ($tahun_umk <= 2020) {
                 $tahun_umk = 2021;
@@ -1318,10 +1318,8 @@ class HRDController extends AdminBaseController
         //             )
         //             ) mda ON a.enroll_id = mda.enroll_id where a.enroll_id=".$enroll_id." group by a.enroll_id order by a.enroll_id, b.contract_end desc");
         $data = DB::select("
-                SELECT a.status_staff,
-                    c.max_contract,
-                    mda.*,
-                    c.max_contract_end,
+                 SELECT
+                    a.status_staff,
                     a.enroll_id,
                     a.nik,
                     a.employee_name,
@@ -1339,34 +1337,44 @@ class HRDController extends AdminBaseController
                     a.no_surat,
                     b.contract,
                     b.contract_end,
-                    c.max_contract,
-                    c.max_contract_end
+                    mda.*
                 FROM employee_atribut a
-                LEFT JOIN employee_contract b
+                INNER JOIN employee_contract b
                     ON a.enroll_id = b.enroll_id
+                    AND b.contract = '".$contract."'
+                    AND b.contract_end = '".$contract_end."'
                 LEFT JOIN (
-                    SELECT enroll_id,
-                        MAX(contract) max_contract,
-                        MAX(contract_end) max_contract_end
-                    FROM employee_contract
-                    GROUP BY enroll_id
-                ) c ON a.enroll_id = c.enroll_id
-                LEFT JOIN (
-                    SELECT mulai_jam_kerja,
-                        akhir_jam_kerja,
-                        tanggal_berjalan,
-                        enroll_id
+                    SELECT mulai_jam_kerja, akhir_jam_kerja, tanggal_berjalan, enroll_id
                     FROM master_data_absen_kehadiran
                     WHERE tanggal_berjalan = CURDATE()
                 ) mda ON a.enroll_id = mda.enroll_id
                 WHERE a.enroll_id = ".$enroll_id."
-                GROUP BY a.enroll_id
-                ORDER BY a.enroll_id, b.contract_end DESC
             ");
+            foreach ($data as $item) {   // agar sesua dengan kontrak dan enroll
 
-        $umk=DasarPotBPJS::orderBy('created_at','desc')->limit(1)->first()->dasar_pot_bpjs_rupiah;
+                // ACUAN TAHUN DARI KONTRAK YANG DIPILIH
+                $start = Carbon::parse($contract);
+                $end   = Carbon::parse($contract_end);
+
+                $tahun_umk = $start->year;
+
+                // Khusus 2020 ke bawah → pakai 2021
+                if ($tahun_umk <= 2020) {
+                    $tahun_umk = 2021;
+                }
+
+                $grading = GradingSalary::where('kode_grade', 'D')
+                    ->where('periode_umk', $tahun_umk)
+                    ->first();
+
+                $item->umk = $grading?->salary_bulanan ?? 0;
+                $item->umk_latin = ucwords(strtolower($grading?->salary_latin ?? ''));
+            }
+
+
+        // $umk=DasarPotBPJS::orderBy('created_at','desc')->limit(1)->first()->dasar_pot_bpjs_rupiah;
         $fileName='PKS ' .request()->enroll_id.' ' .$data[0]->employee_name.' '.Carbon::parse($contract)->translatedFormat('d-m-Y').' ';
-        $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan_2',["no_form"=>$no_form,"contract2"=>$contract,"contract_end2"=>$contract_end,"data" => $data,"umk"=>$umk])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+        $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan_2',["no_form"=>$no_form,"contract2"=>$contract,"contract_end2"=>$contract_end,"data" => $data])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
         return $pdf;
     }
 
