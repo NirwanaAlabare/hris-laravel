@@ -704,6 +704,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris', 'names
     Route::post('dataabsenperijinan/import_perizinan_to_database/', ['as' => 'hris.dataabsenperijinan.import_perizinan_to_database', 'uses' => 'DataAbsenPerijinanController@import_perizinan_to_database']);
     Route::post('dataabsenperijinan/get_last_nomor_form_perizinan/', ['as' => 'hris.dataabsenperijinan.get_last_nomor_form_perizinan', 'uses' => 'DataAbsenPerijinanController@get_last_nomor_form_perizinan']);
     Route::post('dataabsenperijinan/get_last_nomor_form_perizinan_iks/', ['as' => 'hris.dataabsenperijinan.get_last_nomor_form_perizinan_iks', 'uses' => 'DataAbsenPerijinanController@get_last_nomor_form_perizinan_iks']);
+    Route::post('dataabsenperijinan/updateijin/', ['as' => 'hris.dataabsenperijinan.updateijin', 'uses' => 'DataAbsenPerijinanController@updateijin']);
 
     Route::post('koreksiupah/ajax_datakoreksiupah', ['as' => 'hris.koreksiupah.ajax_datakoreksiupah', 'uses' => 'KoreksiUpahController@ajax_datakoreksiupah']);
     Route::post('koreksiupah/ajax_datainsjabatan', ['as' => 'hris.koreksiupah.ajax_datainsjabatan', 'uses' => 'KoreksiUpahController@ajax_datainsjabatan']);

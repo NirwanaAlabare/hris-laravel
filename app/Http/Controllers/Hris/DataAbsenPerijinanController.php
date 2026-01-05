@@ -975,6 +975,49 @@ class DataAbsenPerijinanController extends AdminBaseController
         return (new DataAbsenPerijinanIKSExport)->exportParams($daterange2)->download($fileName);
 
     }
+    public function updateijin(Request $request)
+    {
+
+        $daterange3 = $request->daterange3;
+        // $this->daterange2 = $daterange2;
+        $daterange3 = explode(" s/d ", $request->daterange3);
+        $tanggalMulai = date('Y-m-d', strtotime($daterange3[0]));
+        $tanggalSampai = date('Y-m-d', strtotime($daterange3[1]));
+        // dd($daterange3,$tanggalMulai,$tanggalSampai);
+        $update = MasterDataAbsenKehadiran::join('data_absen_perijinan', function ($join) {
+                $join->on(
+                    'master_data_absen_kehadiran.nomor_absen_ijin',
+                    '=',
+                    'data_absen_perijinan.nomor_form_perizinan'
+                );
+                $join->on(
+                    'master_data_absen_kehadiran.enroll_id',
+                    '=',
+                    'data_absen_perijinan.enroll_id'
+                );
+            })
+            ->whereBetween(
+                'master_data_absen_kehadiran.tanggal_berjalan',
+                [$tanggalMulai, $tanggalSampai]
+            )
+            ->where(function ($q) {
+                $q->whereNull('master_data_absen_kehadiran.status_absen')
+                ->orWhere('master_data_absen_kehadiran.status_absen', '');
+            })
+            ->update([
+                'master_data_absen_kehadiran.status_absen' =>
+                    DB::raw('data_absen_perijinan.kode_absen_ijin')
+            ]);
+
+        /* =========================
+        DEBUG KE INSPECT
+        ========================= */
+        return back()->with(
+                'success',
+                'Data ijin berhasil diupdate. Total data terupdate: ' . $update
+            );
+
+        }
 
     // --------------- Andri -----------------
     public function perijinan_verifikasi()

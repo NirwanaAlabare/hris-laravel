@@ -158,6 +158,12 @@
                 {{-- </form> --}}
                 {!! Form::close() !!}
                 <!-- END FORM-->
+                {!! Form::open(['route' => 'hris.dataabsenperijinan.updateijin', 'id' => 'formUpdateIjin', 'name' => 'formUpdateIjin','method'=>'post']) !!}
+                    <input type="hidden" id="daterange3" name="daterange3">
+                    <button type="submit" id="btn-update" class="btn btn-app btn-info mr-0 mt-0 mb-0" data-toggle="tooltip" title="Update Data Ijin"><i class="fa fa-refresh"></i> UPDATE IJIN</button>
+                {{-- </form> --}}
+                {!! Form::close() !!}
+                <!-- END FORM-->
 
             </div>
         </div>
@@ -1554,6 +1560,7 @@
             var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
             $('#daterange1').val(daterange1);
             $('#daterange2').val(daterange1);
+            $('#daterange3').val(daterange1);
         })
 
         $(document).ready(function() {
@@ -1567,6 +1574,7 @@
             $('#daterange-btn1').html(htmlDateRange);
             $('#daterange1').val(daterange1);
             $('#daterange2').val(daterange1);
+            $('#daterange3').val(daterange1);
 
             var table1 = $('#datatable-ajax-crud').DataTable({
                 processing: true,
