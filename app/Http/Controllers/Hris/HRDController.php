@@ -1528,7 +1528,7 @@ class HRDController extends AdminBaseController
             /* ===============================
             * 3️⃣ TENTUKAN TAHUN UMK
             * =============================== */
-            $tahun_umk = $start->year;
+           $tahun_umk = $end->year;
 
             // Khusus lintas tahun dari Desember
             if ($start->month == 12 && $start->year < $end->year) {
@@ -1686,7 +1686,7 @@ class HRDController extends AdminBaseController
          if ($contract->lt($batasMulai)) {
                 $contract = $batasMulai;
             }
-         $tahun_umk = $contract->year;
+         $tahun_umk = $endDate->year;
 
             // KHUSUS:
             // Jika mulai bulan Desember & lintas tahun → pakai tahun akhir
