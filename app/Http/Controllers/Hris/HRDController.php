@@ -1485,7 +1485,7 @@ class HRDController extends AdminBaseController
 foreach ($data as $item) {
 
     // ===============================
-    // 1️⃣ Hitung selisih tahun untuk tunjangan
+    // Hitung tunjangan berdasarkan masa kerja
     // ===============================
     $tanggal_masuk = $item->join_date;
     $tanggal_akhir = $item->tanggal_resign ?? $item->contract_end;
@@ -1507,45 +1507,45 @@ foreach ($data as $item) {
     }
 
     // ===============================
-    // 2️⃣ Ambil tanggal mulai & akhir kontrak
+    // Tentukan tanggal mulai dan akhir kontrak
     // ===============================
     $start = Carbon::parse($item->contract ?? $item->join_date);
     $contractEnd = Carbon::parse($item->contract_end);
     $resignDate  = $item->tanggal_resign ? Carbon::parse($item->tanggal_resign) : null;
 
-    // ===============================
-    // 3️⃣ Batasi data di bawah 02-11-2020
-    // ===============================
+    // PKS akhir default = contract_end
+    $pksAkhir = $contractEnd;
+
+    // Jika ada resign DAN resign terjadi sebelum kontrak habis
+    if ($resignDate && $resignDate->lt($contractEnd)) {
+        $pksAkhir = $resignDate;
+    }
+
+    // Batasi data lama
     $batasMulai = Carbon::create(2020, 11, 2);
     if ($start->lt($batasMulai)) {
         $start = $batasMulai;
     }
 
     // ===============================
-    // 4️⃣ Tentukan PKS akhir
-    // ===============================
-    $pksAkhir = $contractEnd; // default = contract_end
-    if ($resignDate && $resignDate->lt($contractEnd)) {
-        $pksAkhir = $resignDate;
-    }
-
-    // ===============================
-    // 5️⃣ Tentukan tahun UMK
+    // Tentukan tahun UMK
     // ===============================
     $tahun_umk = $pksAkhir->year;
+
     if ($start->month == 12 && $start->year < $pksAkhir->year) {
         $tahun_umk = $pksAkhir->year;
     }
+
     if ($tahun_umk <= 2020) {
         $tahun_umk = 2021;
     }
 
     $umk = GradingSalary::where('kode_grade', 'D')
         ->where('periode_umk', $tahun_umk)
-        ->value('salary_bulanan') ?? 0;
+        ->value('salary_bulanan');
 
     // ===============================
-    // 6️⃣ Hitung selisih tahun / bulan / hari
+    // Hitung masa kerja
     // ===============================
     $diff = $start->diff($pksAkhir);
     $item->years  = $diff->y;
@@ -1553,35 +1553,41 @@ foreach ($data as $item) {
     $item->days   = $diff->d;
 
     // ===============================
-    // 7️⃣ Hitung jumlah bulan secara akurat
+    // Hitung jumlah bulan kalender
     // ===============================
-    $diffDays = $start->diffInDays($pksAkhir); // total hari
-    $jumlah_bulan_manual = $diffDays / 27;     // 1 bulan = 30 hari
+    $jumlah_bulan_manual = $start->diffInMonths($pksAkhir);
 
-    if ($jumlah_bulan_manual < 1) {
-        $jumlah_bulan = 0; // kurang dari 1 bulan = 0 kompensasi
-    } else {
-        $jumlah_bulan = $item->jumlah_bulan ?: floor($jumlah_bulan_manual);
+    // Cek sisa hari, jika lebih dari setengah bulan, dibulatkan ke atas
+    $extra_days = $start->copy()->addMonths($jumlah_bulan_manual)->diffInDays($pksAkhir);
+    if ($extra_days >= 15) {
+        $jumlah_bulan_manual += 1;
     }
 
+    // Jika kurang dari 1 bulan → kompensasi = 0
+    if ($jumlah_bulan_manual < 1) {
+        $jumlah_bulan_manual = 0;
+    }
+
+    $jumlah_bulan = $item->jumlah_bulan ?: $jumlah_bulan_manual;
+
     // ===============================
-    // 8️⃣ Hitung kompensasi
+    // Hitung kompensasi
     // ===============================
     $total_penghasilan_bulanan = $umk + $tunjangan;
+
     $total_kompensasi = ($total_penghasilan_bulanan / 12) * $jumlah_bulan;
-    $total_kompensasi = (int) ceil($total_kompensasi / 100) * 100; // dibulatkan ke atas 100
+    $total_kompensasi = (int) ceil($total_kompensasi / 100) * 100;
 
     // ===============================
-    // 9️⃣ Simpan hasil ke object
+    // Simpan hasil
     // ===============================
-    $item->contract_start_fixed = $start;
-    $item->umk = $umk;
-    $item->tunjangan = $tunjangan;
-    $item->total_penghasilan_bulanan = $total_penghasilan_bulanan;
-    $item->jumlah_bulan = $jumlah_bulan;
-    $item->total_kompensasi = $total_kompensasi;
-    $item->pks_akhir_fixed = $pksAkhir;
-
+    $item->contract_start_fixed       = $start;
+    $item->umk                        = $umk;
+    $item->tunjangan                  = $tunjangan;
+    $item->total_penghasilan_bulanan  = $total_penghasilan_bulanan;
+    $item->jumlah_bulan                = $jumlah_bulan;
+    $item->total_kompensasi           = $total_kompensasi;
+    $item->pks_akhir_fixed            = $pksAkhir;
 }
 
 
