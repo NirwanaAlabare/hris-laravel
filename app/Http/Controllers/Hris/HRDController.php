@@ -1484,112 +1484,105 @@ class HRDController extends AdminBaseController
     // $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $tahun_umk)->first()->dasar_pot_bpjs_rupiah ?? 0;
 foreach ($data as $item) {
 
-    // ===============================
-    // Hitung tunjangan berdasarkan masa kerja
-    // ===============================
     $tanggal_masuk = $item->join_date;
-    $tanggal_akhir = $item->tanggal_resign ?? $item->contract_end;
+    $contractEnd   = Carbon::parse($item->contract_end);
+    $resignDate    = $item->tanggal_resign ? Carbon::parse($item->tanggal_resign) : null;
 
+    // Tentukan tanggal akhir untuk perhitungan durasi
+    $tanggal_akhir = $resignDate && $resignDate->lt($contractEnd) ? $resignDate : $contractEnd;
+
+    // Hitung selisih tahun untuk tunjangan
     $selisih_tahun = date_diff(date_create($tanggal_masuk), date_create($tanggal_akhir))->y;
 
-    if ($selisih_tahun < 1) {
+    // Jika karyawan resign lebih awal dari kontrak dan belum 1 tahun, tunjangan = 0
+    if ($resignDate && $resignDate->lt($contractEnd) && $selisih_tahun < 1) {
         $tunjangan = 0;
-    } elseif ($selisih_tahun < 3) {
-        $tunjangan = 2500;
-    } elseif ($selisih_tahun < 6) {
-        $tunjangan = 5000;
-    } elseif ($selisih_tahun < 9) {
-        $tunjangan = 7500;
-    } elseif ($selisih_tahun < 12) {
-        $tunjangan = 10000;
     } else {
-        $tunjangan = 12500;
-    }
-
-    // ===============================
-    // Tentukan tanggal mulai dan akhir kontrak
-    // ===============================
-    $start = Carbon::parse($item->contract ?? $item->join_date);
-    $contractEnd = Carbon::parse($item->contract_end);
-    $resignDate  = $item->tanggal_resign ? Carbon::parse($item->tanggal_resign) : null;
-
-    // PKS akhir default = contract_end
-    $pksAkhir = $contractEnd;
-
-    // Jika ada resign DAN resign terjadi sebelum kontrak habis
-    if ($resignDate && $resignDate->lt($contractEnd)) {
-        $pksAkhir = $resignDate;
+        if ($selisih_tahun < 1) {
+            $tunjangan = 0;
+        } elseif ($selisih_tahun < 3) {
+            $tunjangan = 2500;
+        } elseif ($selisih_tahun < 6) {
+            $tunjangan = 5000;
+        } elseif ($selisih_tahun < 9) {
+            $tunjangan = 7500;
+        } elseif ($selisih_tahun < 12) {
+            $tunjangan = 10000;
+        } else {
+            $tunjangan = 12500;
+        }
     }
 
     // Batasi data lama
     $batasMulai = Carbon::create(2020, 11, 2);
+
+    // Ambil tanggal awal & akhir
+    $start = Carbon::parse($item->contract ?? $item->join_date);
+    $end   = Carbon::parse($item->contract_end ?? $item->tanggal_resign ?? now());
+
     if ($start->lt($batasMulai)) {
         $start = $batasMulai;
     }
 
-    // ===============================
     // Tentukan tahun UMK
-    // ===============================
-    $tahun_umk = $pksAkhir->year;
-
-    if ($start->month == 12 && $start->year < $pksAkhir->year) {
-        $tahun_umk = $pksAkhir->year;
+    $tahun_umk = $end->year;
+    if ($start->month == 12 && $start->year < $end->year) {
+        $tahun_umk = $end->year;
     }
-
     if ($tahun_umk <= 2020) {
         $tahun_umk = 2021;
     }
 
+    // Ambil UMK
     $umk = GradingSalary::where('kode_grade', 'D')
-        ->where('periode_umk', $tahun_umk)
-        ->value('salary_bulanan');
+            ->where('periode_umk', $tahun_umk)
+            ->value('salary_bulanan');
 
-    // ===============================
-    // Hitung masa kerja
-    // ===============================
-    $diff = $start->diff($pksAkhir);
+    // Hitung selisih tahun/bulan/hari
+    $diff = $start->diff($end);
     $item->years  = $diff->y;
     $item->months = $diff->m;
     $item->days   = $diff->d;
 
-    // ===============================
-    // Hitung jumlah bulan kalender
-    // ===============================
-    $jumlah_bulan_manual = $start->diffInMonths($pksAkhir);
+    /* ===============================
+    * PKS AKHIR → untuk perhitungan jumlah bulan
+    * =============================== */
+    $contractEnd = Carbon::parse($item->contract_end);
+    $resignDate  = $item->tanggal_resign ? Carbon::parse($item->tanggal_resign) : null;
 
-    // Cek sisa hari, jika lebih dari setengah bulan, dibulatkan ke atas
-    $extra_days = $start->copy()->addMonths($jumlah_bulan_manual)->diffInDays($pksAkhir);
-    if ($extra_days >= 15) {
-        $jumlah_bulan_manual += 1;
+    $pksAkhir = $contractEnd; // default
+    if ($resignDate && $resignDate->lt($contractEnd)) {
+        $pksAkhir = $resignDate;
     }
 
-    // Jika kurang dari 1 bulan → kompensasi = 0
+    /* ===============================
+    * Hitung jumlah bulan berdasarkan PKS akhir yang sudah disesuaikan
+    * =============================== */
+    $contract_start = $start->format('Y-m-d');
+    $contract_end   = $pksAkhir->format('Y-m-d'); // gunakan PKS akhir
+    $jumlah_bulan_manual = $this->hitungBulanKontrak($contract_start, $contract_end);
+
+    // Jika kurang dari 1 bulan, kompensasi = 0
     if ($jumlah_bulan_manual < 1) {
-        $jumlah_bulan_manual = 0;
+        $jumlah_bulan = 0;
+    } else {
+        $jumlah_bulan = $item->jumlah_bulan ?: $jumlah_bulan_manual;
     }
 
-    $jumlah_bulan = $item->jumlah_bulan ?: $jumlah_bulan_manual;
-
-    // ===============================
     // Hitung kompensasi
-    // ===============================
     $total_penghasilan_bulanan = $umk + $tunjangan;
-
-    $total_kompensasi = ($total_penghasilan_bulanan / 12) * $jumlah_bulan;
+    $total_kompensasi = ($jumlah_bulan < 1) ? 0 : (($total_penghasilan_bulanan / 12) * $jumlah_bulan);
     $total_kompensasi = (int) ceil($total_kompensasi / 100) * 100;
 
-    // ===============================
     // Simpan hasil
-    // ===============================
-    $item->contract_start_fixed       = $start;
-    $item->umk                        = $umk;
-    $item->tunjangan                  = $tunjangan;
-    $item->total_penghasilan_bulanan  = $total_penghasilan_bulanan;
-    $item->jumlah_bulan                = $jumlah_bulan;
-    $item->total_kompensasi           = $total_kompensasi;
-    $item->pks_akhir_fixed            = $pksAkhir;
+    $item->contract_start_fixed      = $start;
+    $item->umk                       = $umk;
+    $item->tunjangan                 = $tunjangan;
+    $item->total_penghasilan_bulanan = $total_penghasilan_bulanan;
+    $item->jumlah_bulan              = $jumlah_bulan;
+    $item->total_kompensasi          = $total_kompensasi;
+    $item->pks_akhir_fixed           = $pksAkhir;
 }
-
 
 
         return Excel::download(new exportExcelKompensasiPKWT($data), 'Kompensasi PKWT.xlsx');
