@@ -86,14 +86,14 @@
                 </td>
 
                 <td>{{ $data_pkwt->contract_end ? \Carbon\Carbon::parse($data_pkwt->contract_end)->translatedFormat('l') : '' }}</td>
-                <td>
-                    {{ $data_pkwt->contract_end
-                        ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel(
-                            \Carbon\Carbon::parse($data_pkwt->contract_end)
-                        )
-                        : ''
-                    }}
-                </td>
+<td>
+    {{ $data_pkwt->pks_akhir_fixed
+        ? \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel(
+            \Carbon\Carbon::parse($data_pkwt->pks_akhir_fixed)
+        )
+        : ''
+    }}
+</td>
                  {{-- <td>
                     {{ $data_pkwt->contract_end
                         ? \Carbon\Carbon::parse($data_pkwt->contract_end)->format('d-m-Y')

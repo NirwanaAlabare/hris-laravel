@@ -1578,6 +1578,17 @@ class HRDController extends AdminBaseController
             $total_kompensasi = ($total_penghasilan_bulanan / 12) * $jumlah_bulan;
             $total_kompensasi = (int) ceil($total_kompensasi / 100) * 100;
 
+               $contractEnd = Carbon::parse($item->contract_end);
+                $resignDate  = $item->tanggal_resign ? Carbon::parse($item->tanggal_resign) : null;
+
+                // PKS akhir default = contract_end
+                $pksAkhir = $contractEnd;
+
+                // Hanya ubah ke tanggal resign jika kontrak terakhir dan ada resign
+                if ($resignDate && $resignDate->lt($contractEnd)) {
+                    $pksAkhir = $resignDate;
+                }
+
             /* ===============================
             * 8️⃣ SIMPAN HASIL
             * =============================== */
@@ -1587,6 +1598,8 @@ class HRDController extends AdminBaseController
             $item->total_penghasilan_bulanan = $total_penghasilan_bulanan;
             $item->jumlah_bulan = $jumlah_bulan;
             $item->total_kompensasi = $total_kompensasi;
+                $item->pks_akhir_fixed              = $pksAkhir;
+
                         // dd($contract_start);
         }
 
