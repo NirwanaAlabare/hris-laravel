@@ -101,9 +101,9 @@
                     }}
                 </td> --}}
                 <td style="text-align:center">{{ $data_pkwt->jumlah_bulan }}</td>
-                <td style="text-align:center">{{number_format($data_pkwt->umk, 0, '.', '.');}}</td>
-                <td style="text-align:center">{{$data_pkwt->tunjangan, 0, '.', '.'}}</td>
-                <td style="text-align:center">{{number_format($data_pkwt->total_penghasilan_bulanan, 0, ',', ',');}}</td>
+                <td style="text-align:center">{{$data_pkwt->umk}}</td>
+                <td style="text-align:center">{{$data_pkwt->tunjangan}}</td>
+                <td style="text-align:center">{{$data_pkwt->total_penghasilan_bulanan}}</td>
                 <td style="text-align:center">{{ $data_pkwt->total_kompensasi }}</td>
 
             </tr>

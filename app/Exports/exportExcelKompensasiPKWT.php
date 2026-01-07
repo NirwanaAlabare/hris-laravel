@@ -40,6 +40,7 @@ class exportExcelKompensasiPKWT implements FromView, WithEvents
                 $sheet->getStyle('J:J')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
                 $sheet->getStyle('O:O')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
                 $sheet->getStyle('Q:Q')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+                $sheet->getStyle('S:V')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
 
             },
         ];
