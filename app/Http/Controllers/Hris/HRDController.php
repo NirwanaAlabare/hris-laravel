@@ -1044,22 +1044,65 @@ class HRDController extends AdminBaseController
 
         return $updatedData->enroll_id;
     }
-    public function new_employee_contract(){
-        $timestamp = Carbon::now();
-        $enroll_id=request()->id;
-        $contract=request()->contract;
-        $end_contract=request()->end_contract;
-        DB::insert("insert into employee_contract (id, enroll_id, contract, contract_end, created_at, updated_at) VALUES ('','$enroll_id','$contract','$end_contract','$timestamp','$timestamp')");
-        $query = EmployeeAtribut::whereRaw('enroll_id = "' . $enroll_id . '"')
-            ->update([
-                'tanggal_mulai_kontrak' => $contract,
-                'tanggal_akhir_kontrak' => $end_contract,
-            ]);
-        DB::table('employee_contract')
-                        ->where('enroll_id', $enroll_id)
-                        ->update(['status_penilaian' => null]);
-        return $enroll_id;
+    // public function new_employee_contract(){
+    //     $timestamp = Carbon::now();
+    //     $enroll_id=request()->id;
+    //     $contract=request()->contract;
+    //     $end_contract=request()->end_contract;
+    //     DB::insert("insert into employee_contract (id, enroll_id, contract, contract_end, created_at, updated_at) VALUES ('','$enroll_id','$contract','$end_contract','$timestamp','$timestamp')");
+    //     $query = EmployeeAtribut::whereRaw('enroll_id = "' . $enroll_id . '"')
+    //         ->update([
+    //             'tanggal_mulai_kontrak' => $contract,
+    //             'tanggal_akhir_kontrak' => $end_contract,
+    //         ]);
+    //     DB::table('employee_contract')
+    //                     ->where('enroll_id', $enroll_id)
+    //                     ->update(['status_penilaian' => null]);
+    //     return $enroll_id;
+    // }
+public function new_employee_contract()
+{
+    $enroll_id    = request()->id;
+    $contract     = Carbon::parse(request()->contract);
+    $end_contract = Carbon::parse(request()->end_contract);
+    $timestamp    = Carbon::now();
+
+    // 🔎 Cek apakah tanggal mulai masih di dalam kontrak lama
+    $exists = DB::table('employee_contract')
+        ->where('enroll_id', $enroll_id)
+        ->whereDate('contract', '<=', $contract)
+        ->whereDate('contract_end', '>=', $contract)
+        ->exists();
+
+    if ($exists) {
+        return response()->json([
+            'message' => 'Tanggal mulai kontrak masih berada dalam periode kontrak sebelumnya.'
+        ], 422);
     }
+
+    // ✅ Simpan kontrak baru
+    DB::table('employee_contract')->insert([
+        'enroll_id'        => $enroll_id,
+        'contract'         => $contract,
+        'contract_end'     => $end_contract,
+        'status_penilaian' => null,
+        'created_at'       => $timestamp,
+        'updated_at'       => $timestamp,
+    ]);
+
+    // Update atribut employee
+    EmployeeAtribut::where('enroll_id', $enroll_id)
+        ->update([
+            'tanggal_mulai_kontrak' => $contract,
+            'tanggal_akhir_kontrak' => $end_contract,
+        ]);
+
+    return response()->json([
+        'message' => 'Kontrak berhasil dibuat',
+        'enroll_id' => $enroll_id
+    ]);
+}
+
     public function delete_employee_contract(){
         $id=request()->id;
         $data_contract = DB::table('employee_contract')->where('id', $id)->first();
@@ -1539,10 +1582,6 @@ foreach ($data as $item) {
             ->value('salary_bulanan');
 
     // Hitung selisih tahun/bulan/hari
-    $diff = $start->diff($end);
-    $item->years  = $diff->y;
-    $item->months = $diff->m;
-    $item->days   = $diff->d;
 
     /* ===============================
     * PKS AKHIR → untuk perhitungan jumlah bulan
@@ -1550,25 +1589,31 @@ foreach ($data as $item) {
     $contractEnd = Carbon::parse($item->contract_end);
     $resignDate  = $item->tanggal_resign ? Carbon::parse($item->tanggal_resign) : null;
 
-    $pksAkhir = $contractEnd; // default
+    // Tentukan PKS akhir (resign atau kontrak)
+    $pksAkhir = $contractEnd;
     if ($resignDate && $resignDate->lt($contractEnd)) {
         $pksAkhir = $resignDate;
     }
 
+    // Hitung selisih tahun/bulan/hari
+    $diff = $start->diff($pksAkhir);
+    $item->years  = $diff->y;
+    $item->months = $diff->m;
+    $item->days   = $diff->d;
+
     /* ===============================
-    * Hitung jumlah bulan berdasarkan PKS akhir yang sudah disesuaikan
+    * Hitung jumlah bulan sesuai kontrak
     * =============================== */
-    $contract_start = $start->format('Y-m-d');
-    $contract_end   = $pksAkhir->format('Y-m-d'); // gunakan PKS akhir
-    $jumlah_bulan_manual = $this->hitungBulanKontrak($contract_start, $contract_end);
+    $jumlah_bulan = $start->diffInMonths($pksAkhir); // bulan penuh
+    $sisa_hari    = $start->copy()->addMonths($jumlah_bulan)->diffInDays($pksAkhir);
 
-    // Jika kurang dari 1 bulan, kompensasi = 0
-    if ($jumlah_bulan_manual < 1) {
+    if ($jumlah_bulan == 0 && $sisa_hari < 28) {
+        // Masa kerja kurang dari 1 bulan
         $jumlah_bulan = 0;
-    } else {
-        $jumlah_bulan = $item->jumlah_bulan ?: $jumlah_bulan_manual;
+    } elseif ($sisa_hari > 0) {
+        // Jika ada sisa hari lebih dari 0 → hitung sebagai 1 bulan tambahan
+        $jumlah_bulan += 1;
     }
-
     // Hitung kompensasi
     $total_penghasilan_bulanan = $umk + $tunjangan;
     $total_kompensasi = ($jumlah_bulan < 1) ? 0 : (($total_penghasilan_bulanan / 12) * $jumlah_bulan);
@@ -1700,11 +1745,31 @@ foreach ($data as $item) {
             // $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $kode_umk)
             //     ->value('dasar_pot_bpjs_rupiah');
         // $endDate = '2025-02-20';
-        $jumlah_bulan_manual = $this->hitungBulanKontrak($contract, $endDate);
+        $contractEnd = Carbon::parse($data->contract_end);
+        $resignDate  = $data->tanggal_resign ? Carbon::parse($data->tanggal_resign) : null;
+
+        $pksAkhir = $contractEnd; // default
+        if ($resignDate && $resignDate->lt($contractEnd)) {
+            $pksAkhir = $resignDate;
+        }
+        $contract_start = $contract ->format('Y-m-d');
+        $contract_end   = $pksAkhir->format('Y-m-d'); // gunakan PKS akhir
+        $jumlah_bulan_manual = $this->hitungBulanKontrak($contract_start, $contract_end);
+
+        $diffDays = $contract->diffInDays($pksAkhir); // total hari
+        $jumlah_bulan_manual = $diffDays / 30;
+
+        // Jika kurang dari 1 bulan, kompensasi = 0
+        if ($jumlah_bulan_manual < 1) {
+            $jumlah_bulan = 0;
+        } else {
+            $jumlah_bulan =  $data->jumlah_bulan ?: floor($jumlah_bulan_manual);
+        }
+
 
 
         $total_penghasilan_bulanan = $umk + $tunjangan;
-        $jumlah_bulan = $jumlah_bulan_manual;
+        $data->jumlah_bulan              = $jumlah_bulan;
         $total_kompensasi = $total_penghasilan_bulanan * ($jumlah_bulan / 12);
         $total_kompensasi = ceil($total_kompensasi / 100)*100;
 
