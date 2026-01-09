@@ -1745,31 +1745,32 @@ foreach ($data as $item) {
             // $umk = DasarPotBPJS::where('kode_dasar_pot_bpjs', $kode_umk)
             //     ->value('dasar_pot_bpjs_rupiah');
         // $endDate = '2025-02-20';
-        $contractEnd = Carbon::parse($data->contract_end);
-        $resignDate  = $data->tanggal_resign ? Carbon::parse($data->tanggal_resign) : null;
-
-        $pksAkhir = $contractEnd; // default
-        if ($resignDate && $resignDate->lt($contractEnd)) {
-            $pksAkhir = $resignDate;
+         $pksAkhir =  $endDate;
+             $resignDate  = $data->tanggal_resign ? Carbon::parse($data->tanggal_resign) : null;
+            if ($resignDate && $resignDate->lt( $endDate)) {
+         $pksAkhir = $resignDate;
         }
-        $contract_start = $contract ->format('Y-m-d');
-        $contract_end   = $pksAkhir->format('Y-m-d'); // gunakan PKS akhir
-        $jumlah_bulan_manual = $this->hitungBulanKontrak($contract_start, $contract_end);
+           $diff = $contract->diff($pksAkhir);
+            $data->years  = $diff->y;
+            $data->months = $diff->m;
+            $data->days   = $diff->d;
 
-        $diffDays = $contract->diffInDays($pksAkhir); // total hari
-        $jumlah_bulan_manual = $diffDays / 30;
+        $jumlah_bulan = $contract->diffInMonths($pksAkhir);
+        $jumlah_bulan_manual = $this->hitungBulanKontrak($contract, $endDate);
+         $sisa_hari    = $contract->copy()->addMonths($jumlah_bulan)->diffInDays($pksAkhir);
+// dd($sisa_hari);
 
-        // Jika kurang dari 1 bulan, kompensasi = 0
-        if ($jumlah_bulan_manual < 1) {
+        if ($jumlah_bulan == 0 && $sisa_hari < 28) {
+            // Masa kerja kurang dari 1 bulan
             $jumlah_bulan = 0;
-        } else {
-            $jumlah_bulan =  $data->jumlah_bulan ?: floor($jumlah_bulan_manual);
+        } elseif ($sisa_hari > 0) {
+            // Jika ada sisa hari lebih dari 0 → hitung sebagai 1 bulan tambahan
+            $jumlah_bulan += 1;
         }
-
-
 
         $total_penghasilan_bulanan = $umk + $tunjangan;
-        $data->jumlah_bulan              = $jumlah_bulan;
+        $data->jumlah_bulan = $jumlah_bulan_manual;
+        // dd($jumlah_bulan);
         $total_kompensasi = $total_penghasilan_bulanan * ($jumlah_bulan / 12);
         $total_kompensasi = ceil($total_kompensasi / 100)*100;
 
