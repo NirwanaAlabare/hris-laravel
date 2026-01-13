@@ -257,6 +257,13 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris', 'names
     Route::get('/flns/export_excel_insentif_non_sewing', ['as' => 'flns.export_excel_insentif_non_sewing', 'uses' => 'FormLembur\FormLemburNonSewingController@export_excel_insentif_non_sewing']);
     Route::get('/flns/export_pdf_non_sewing_spl', ['as' => 'flns.export_pdf_non_sewing_spl', 'uses' => 'FormLembur\FormLemburNonSewingController@export_pdf_non_sewing_spl']);
 
+    Route::get('/flni', ['as' => 'flni.index', 'uses' => 'FormLembur\FormLemburNonIstirahatController@index']);
+    Route::get('/flni/ajax', ['as' => 'flni.ajax', 'uses' => 'FormLembur\FormLemburNonIstirahatController@getDatalembur']);
+    Route::post('/flni/hapusIstirahat', ['as' => 'flni.hapusIstirahat', 'uses' => 'FormLembur\FormLemburNonIstirahatController@hapusIstirahat']);
+    Route::get('/flni/printNonIstirahat', ['as' => 'flni.printNonIstirahat', 'uses' => 'FormLembur\FormLemburNonIstirahatController@printNonIstirahat']);
+    Route::get('/flni/dataNonIstirahat', ['as' => 'flni.dataNonIstirahat', 'uses' => 'FormLembur\FormLemburNonIstirahatController@get_dataLemburNonIstirahat']);
+
+
     // ESTIMASI ANGGARAN MAKAN
     Route::get('/anggaran-makan',  ['as' => 'anggaran_makan.index', 'uses' => 'FormLembur\AnggaranMakanController@index']);
     Route::get('/anggaran-makan/create',  ['as' => 'anggaran_makan.create', 'uses' => 'FormLembur\AnggaranMakanController@create']);
@@ -268,6 +275,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris', 'names
     Route::get('/anggaran-makan/export_excel_overtime_recap',  ['as' => 'anggaran_makan.export_excel_overtime_recap', 'uses' => 'FormLembur\AnggaranMakanController@export_excel_overtime_recap']);
     Route::get('/anggaran-makan/export_excel_overtime_recap2',  ['as' => 'anggaran_makan.export_excel_overtime_recap2', 'uses' => 'FormLembur\AnggaranMakanController@export_excel_overtime_recap2']);
     Route::get('/anggaran-makan/export_pdf_konsumsi', ['as' => 'anggaran_makan.export_pdf_konsumsi', 'uses' => 'FormLembur\AnggaranMakanController@export_pdf_konsumsi']);
+    Route::get('/anggaran-makan/get-estimasi',['as' => 'anggaran_makan.get_estimasi', 'uses' => 'FormLembur\AnggaranMakanController@getEstimasiMakan']);
 
     // BAZZAR
     Route::get('/bazzar', ['as' => 'bazzar.index', 'uses' => 'Bazzar\BazzarController@index']);

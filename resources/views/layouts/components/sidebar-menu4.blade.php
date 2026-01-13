@@ -23,6 +23,7 @@
         <ul class="slide-menu">
             <li><a href="{{route('fls.index')}}" class="slide-item"><span> Form Sewing</span></a></li>
             <li><a href="{{route('flns.index')}}" class="slide-item"><span> Form Non Sewing</span></a></li>
+            <li><a href="{{route('flni.index')}}" class="slide-item"><span> Form Lembur Non Istirahat</span></a></li>
         </ul>
 
     </li>

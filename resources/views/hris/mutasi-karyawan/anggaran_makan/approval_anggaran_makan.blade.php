@@ -135,6 +135,7 @@
         <tr>
             <td rowspan="2" width="13%" style="vertical-align: middle" class="boldtextblueBGKecil">Keterangan</td>
             <td rowspan="2" width="16%" style="vertical-align: middle" class="boldtextblueBGKecil">Department</td>
+             <td rowspan="2" width="16%" style="vertical-align: middle" class="boldtextblueBGKecil">bagian</td>
             <td colspan="3" align="center" class="boldtextblueBGKecil">NON STAFF</td>
             <td colspan="3" align="center" class="boldtextblueBGKecil">STAFF</td>
             <td colspan="2" align="center" class="boldtextblueBGKecil">GRAND TOTAL</td>
@@ -153,6 +154,7 @@
             <tr>
                 <td class="textkecil">@if($key==0)LEMBUR @endif</td>
                 <td class="textkecil">{{$value->department}}</td>
+                <td class="textkecil">{{$value->sub_dept_name}}</td>
                 <td class="textkecil" align="right">
                     @if(str_replace(',', '.', number_format($value->non_staff))!=0)
                     {{str_replace(',', '.', number_format($value->non_staff))}}
@@ -197,6 +199,7 @@
             <tr>
                 <td class="boldtextKecil">{{$value->shift}}</td>
                 <td class="boldtextKecil">{{$value->department}}</td>
+                <td class="boldtextKecil">{{$value->sub_dept_name}}</td>
                 <td class="boldtextKecil" align="right">{{$value->non_staff}}</td>
                 <td class="boldtextKecil" align="right">{{str_replace(',', '.', number_format($value->harga))}}</td>
                 <td class="boldtextKecil" align="right">{{str_replace(',', '.', number_format($value->jumlah))}}</td>
@@ -211,6 +214,7 @@
             <tr>
                 <td class="textkecil">@if($key==0)SHIFT MALAM @endif</td>
                 <td class="textkecil">{{$value->department}}</td>
+                <td class="boldtextKecil">{{$value->sub_dept_name}}</td>
                 <td class="textkecil" align="right">
                     @if(str_replace(',', '.', number_format($value->non_staff))!=0)
                     {{str_replace(',', '.', number_format($value->non_staff))}}
@@ -286,6 +290,7 @@
         <tr>
             <td rowspan="2" width="13%" style="vertical-align: middle" class="boldtextblueBG">Keterangan</td>
             <td rowspan="2" width="16%" style="vertical-align: middle" class="boldtextblueBG">Department</td>
+             <td rowspan="2" width="16%" style="vertical-align: middle" class="boldtextblueBG">bagian</td>
             <td colspan="3" align="center" class="boldtextblueBG">NON STAFF</td>
             <td colspan="3" align="center" class="boldtextblueBG">STAFF</td>
             <td colspan="2" align="center" class="boldtextblueBG">GRAND TOTAL</td>
@@ -304,6 +309,7 @@
             <tr>
                 <td>@if($key==0)LEMBUR @endif</td>
                 <td>{{$value->department}}</td>
+                <td>{{$value->sub_dept_name}}</td>
                 <td align="right">
                     @if(str_replace(',', '.', number_format($value->non_staff))!=0)
                     {{str_replace(',', '.', number_format($value->non_staff))}}
@@ -348,6 +354,8 @@
             <tr>
                 <td class="boldtext">{{$value->shift}}</td>
                 <td class="boldtext">{{$value->department}}</td>
+                {{-- <td class="boldtext">{{$value->sub_dept_name}}</td> --}}
+                <td></td>
                 <td class="boldtext" align="right">{{$value->non_staff}}</td>
                 <td class="boldtext" align="right">{{str_replace(',', '.', number_format($value->harga))}}</td>
                 <td class="boldtext" align="right">{{str_replace(',', '.', number_format($value->jumlah))}}</td>
@@ -362,6 +370,7 @@
             <tr>
                 <td>@if($key==0)SHIFT MALAM @endif</td>
                 <td>{{$value->department}}</td>
+                <td>{{$value->sub_dept_name}}</td>
                 <td align="right">
                     @if(str_replace(',', '.', number_format($value->non_staff))!=0)
                     {{str_replace(',', '.', number_format($value->non_staff))}}
@@ -406,6 +415,7 @@
             <tr>
                 <td class="boldtext">{{$value->shift}}</td>
                 <td class="boldtext">{{$value->department}}</td>
+                <td></td>
                 <td class="boldtext" align="right">{{$value->non_staff}}</td>
                 <td class="boldtext" align="right">{{str_replace(',', '.', number_format($value->harga))}}</td>
                 <td class="boldtext" align="right">{{str_replace(',', '.', number_format($value->jumlah))}}</td>
@@ -420,6 +430,7 @@
             <tr>
                 <td class="boldtextyellowBG">{{$value->shift}}</td>
                 <td class="boldtextyellowBG">{{$value->department}}</td>
+                <td class="boldtextyellowBG"></td>
                 <td class="boldtextyellowBG" align="right">{{$value->non_staff}}</td>
                 <td class="boldtextyellowBG" align="right">{{str_replace(',', '.', number_format($value->harga))}}</td>
                 <td class="boldtextyellowBG" align="right">{{str_replace(',', '.', number_format($value->jumlah))}}</td>
