@@ -83,7 +83,7 @@ class AnggaranMakanController extends AdminBaseController
                         a.created_by
                     FROM estimasi_anggaran_makan a
                     WHERE tanggal BETWEEN '$tgl_awal' AND '$tgl_akhir'
-                    ORDER BY a.id, a.tanggal");
+                    ORDER BY a.tanggal,sub_dept_name ASC");
 
                 // $data_input=DB::select("SELECT a.dept, d.department_name, DATE_FORMAT(a.tanggal, '%d %M %Y') AS tanggal_fix, a.keterangan, GROUP_CONCAT(DISTINCT a.created_by ORDER BY a.created_by SEPARATOR ', ') AS created_by, SUM(a.staff) AS staff, SUM(a.non_staff) AS non_staff from estimasi_anggaran_makan a INNER JOIN (SELECT department_id, department_name FROM department_all WHERE site_nirwana_id = 'NAG' AND status = 'AKTIF' GROUP BY department_id, department_name) d ON a.dept = d.department_id where tanggal  BETWEEN '$tgl_awal' AND '$tgl_akhir' GROUP BY a.dept, d.department_name, a.tanggal, a.keterangan order by a.updated_at desc");
                 // dd($data_input);
@@ -112,7 +112,7 @@ class AnggaranMakanController extends AdminBaseController
                         a.created_by
                     FROM estimasi_anggaran_makan a
                     WHERE tanggal BETWEEN '$tgl_awal' AND '$tgl_akhir' AND a.created_by='$user'
-                    ORDER BY a.id, a.tanggal");
+                    ORDER BY a.tanggal,sub_dept_name ASC");
                 // $data_input=DB::select("SELECT a.dept, d.department_name, DATE_FORMAT(a.tanggal, '%d %M %Y') AS tanggal_fix, a.keterangan, GROUP_CONCAT(DISTINCT a.created_by ORDER BY a.created_by SEPARATOR ', ') AS created_by, SUM(a.staff) AS staff, SUM(a.non_staff) AS non_staff from estimasi_anggaran_makan a INNER JOIN (SELECT department_id, department_name FROM department_all WHERE site_nirwana_id = 'NAG' AND status = 'AKTIF' GROUP BY department_id, department_name) d ON a.dept = d.department_id where tanggal BETWEEN '$tgl_awal' AND '$tgl_akhir' GROUP BY a.dept, d.department_name, a.tanggal, a.keterangan  order by a.updated_at desc");
                 return DataTables::of($data_input)->toJson();
             }
@@ -395,7 +395,7 @@ AND EXISTS (
     FROM department_all b
     WHERE b.department_id = a.dept
     AND b.site_nirwana_id IN ('NAG','NAK','NAGD')
-    AND b.status = 'AKTIF')");
+   )");
         $data4 = DB::select(" SELECT
     'SHIFT MALAM TOTAL' AS shift,
     '' AS department,
@@ -426,7 +426,7 @@ AND EXISTS (
     FROM department_all b
     WHERE b.department_id = a.dept
     AND b.site_nirwana_id IN ('NAG','NAK','NAGD')
-    AND b.status = 'AKTIF')");
+    )");
         $data5 = DB::select("SELECT
     'GRANT TOTAL' AS shift,
     '' AS department,
@@ -465,7 +465,7 @@ AND EXISTS (
     FROM department_all b
     WHERE b.department_id = a.dept
     AND b.site_nirwana_id IN ('NAG','NAK','NAGD')
-    AND b.status = 'AKTIF'
+    
 )");
             $fileName='Budgeting Makan '.$from.' '.rand();
         $pdf = PDF::loadView('hris/mutasi-karyawan/anggaran_makan/approval_anggaran_makan',["data" => $data,"data2"=>$data2,"data3"=>$data3,"data4"=>$data4,"data5"=>$data5,"tanggal"=>$from ,"tanggal2"=>$to])->setPaper('A4', 'potrait')->stream($fileName.'.pdf',array('Attachment'=>0));
