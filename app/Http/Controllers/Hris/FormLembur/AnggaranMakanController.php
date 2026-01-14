@@ -118,7 +118,7 @@ class AnggaranMakanController extends AdminBaseController
             }
         }
         // $dept=DB::select('select department_id,department_name from department_all where site_nirwana_id="NAG" group by department_id');
-        $dept=DB::select('select department_id,department_name,sub_dept_id,sub_dept_name from department_all where site_nirwana_id="NAG" ORDER BY department_name ASC,sub_dept_name ASC ');
+        $dept=DB::select('select department_id,department_name,sub_dept_id,sub_dept_name from department_all where site_nirwana_id="NAG" and status="AKTIF" ORDER BY department_name ASC,sub_dept_name ASC ');
         return view('hris/mutasi-karyawan/anggaran_makan/index', [
             'page' => 'dashboard-mut-karyawan',
             "subPageGroup" => "anggaran-makan",
@@ -138,19 +138,49 @@ class AnggaranMakanController extends AdminBaseController
     //     $created_by=Auth::guard('admin')->user()->name;
     //     DB::insert("insert into estimasi_anggaran_makan (tanggal,keterangan,dept,staff,non_staff,created_by,created_at,updated_at) values('$tanggal','$keterangan','$dept','$staff','$non_staff','$created_by','$timestamp','$timestamp')");
     // }
-        public function store(){
-        $this->_validation(request());
-        $tanggal=request()->tanggal;
-        $keterangan=request()->keterangan;
-        // $dept=request()->bagian;
-        [$department_id, $sub_dept_id] = explode('|', request()->bagian);
-        $staff=request()->staff;
-        $non_staff=request()->non_staff;
-        $timestamp=Carbon::now();
-        $created_by=Auth::guard('admin')->user()->name;
-        // dd($department_id,$sub_dept_id);
-        DB::insert("insert into estimasi_anggaran_makan (tanggal,keterangan,dept,sub_dept,staff,non_staff,created_by,created_at,updated_at) values('$tanggal','$keterangan','$department_id','$sub_dept_id','$staff','$non_staff','$created_by','$timestamp','$timestamp')");
-    }
+       public function store()
+        {
+            $this->_validation(request());
+
+            $tanggal = request()->tanggal;
+            $keterangan = request()->keterangan;
+            [$department_id, $sub_dept_id] = explode('|', request()->bagian);
+            $staff = request()->staff;
+            $non_staff = request()->non_staff;
+            $timestamp = Carbon::now();
+            $created_by = Auth::guard('admin')->user()->name;
+
+            $existingData = DB::table('estimasi_anggaran_makan')
+                ->where('tanggal', $tanggal)
+                ->where('dept', $department_id)
+                ->where('sub_dept', $sub_dept_id)
+                ->where('keterangan', $keterangan)
+                ->first();
+
+            if ($existingData) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Data untuk tanggal dan bagian ini sudah ada.'
+                ], 422);
+            }
+
+            DB::table('estimasi_anggaran_makan')->insert([
+                'tanggal' => $tanggal,
+                'keterangan' => $keterangan,
+                'dept' => $department_id,
+                'sub_dept' => $sub_dept_id,
+                'staff' => $staff,
+                'non_staff' => $non_staff,
+                'created_by' => $created_by,
+                'created_at' => $timestamp,
+                'updated_at' => $timestamp,
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil disimpan'
+            ]);
+        }
     private function _validation(){
         $validation=request()->validate([
             'tanggal'=>'required',
@@ -465,7 +495,7 @@ AND EXISTS (
     FROM department_all b
     WHERE b.department_id = a.dept
     AND b.site_nirwana_id IN ('NAG','NAK','NAGD')
-    
+
 )");
             $fileName='Budgeting Makan '.$from.' '.rand();
         $pdf = PDF::loadView('hris/mutasi-karyawan/anggaran_makan/approval_anggaran_makan',["data" => $data,"data2"=>$data2,"data3"=>$data3,"data4"=>$data4,"data5"=>$data5,"tanggal"=>$from ,"tanggal2"=>$to])->setPaper('A4', 'potrait')->stream($fileName.'.pdf',array('Attachment'=>0));

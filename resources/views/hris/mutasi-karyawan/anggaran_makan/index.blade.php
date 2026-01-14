@@ -10,6 +10,9 @@
 @stop
 
 @section('mainarea')
+<body>
+
+
     <div class="page-header shadow pr-2 m-0 pt-0 pb-0 pl-2">
         <ol class="breadcrumb breadcrumb-arrow m-0 p-0">
             <li><a href="{{route('fls.index')}}">Anggaran Makan</a></li>
@@ -161,7 +164,7 @@
                     </div>
                     <div class="row py-3 px-2">
                         <div class="col-12 text-center">
-                            <button onclick="save_estimation()" class="btn btn-success fs-1" id="save_estimation">SUBMIT</button>
+                            <button  class="btn btn-success fs-1" id="save_estimation">SUBMIT</button>
                         </div>
                     </div>
                 </div>
@@ -201,22 +204,22 @@
                         </div>
                     </div>
                     <div class="row bg-gradient-light py-3 px-2">
-    <div class="col-4">
-        <h6 class="modal-title fs-1">DEPARTMENT</h6>
-    </div>
-    <div class="col-8">
-        <input type="text" class="form-control" id="edit_department" readonly>
-    </div>
-</div>
+                        <div class="col-4">
+                            <h6 class="modal-title fs-1">DEPARTMENT</h6>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" id="edit_department" readonly>
+                        </div>
+                    </div>
 
-<div class="row py-3 px-2">
-    <div class="col-4">
-        <h6 class="modal-title fs-1">SUB DEPARTMENT</h6>
-    </div>
-    <div class="col-8">
-        <input type="text" class="form-control" id="edit_sub_dept" readonly>
-    </div>
-</div>
+                    <div class="row py-3 px-2">
+                        <div class="col-4">
+                            <h6 class="modal-title fs-1">SUB DEPARTMENT</h6>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" id="edit_sub_dept" readonly>
+                        </div>
+                    </div>
                     <div class="row py-3 px-2">
                         <div class="col-4">
                             <h6 class="modal-title fs-1">NON STAFF</h6>
@@ -270,6 +273,7 @@
             </div>
         </div>
     </div>
+</body>
 @endsection
 
 @section('footerjs')
@@ -288,7 +292,8 @@
  <script src="{{URL::asset('assets/plugins/spectrum-date-picker/spectrum.js')}}"></script>
  <script src="{{URL::asset('assets/plugins/spectrum-date-picker/jquery-ui.js')}}"></script>
  <script src="{{URL::asset('assets/plugins/input-mask/jquery.maskedinput.js')}}"></script>
-    <script>
+
+ <script>
         $('.fc-datepicker').datepicker({
                 showOtherMonths: true,
                 selectOtherMonths: true,
@@ -323,6 +328,14 @@
             }else{
                 $('#btn_new').removeAttr('disabled');
             }
+        });
+        $(document).ready(function () {
+            $('#bagian').select2({
+                placeholder: "Pilih Bagian",
+                tags: true,
+                allowClear: true,
+                dropdownParent: $('#newEstimationModal')
+            });
         });
 
         var currentdate = new Date();
@@ -799,6 +812,13 @@
                     closeModal('#newEstimationModal');
                     datatable.ajax.reload(null, false);
                     resetCreateForm();
+                },
+                error: function (xhr) {
+                    Swal.fire(
+                        'Gagal',
+                        xhr.responseJSON.message ?? 'Terjadi kesalahan',
+                        'error'
+                    );
                 }
             });
         });
@@ -905,5 +925,6 @@
     }
 
     // </script>
+
 
 @endsection
