@@ -240,6 +240,8 @@ class BiayaMakanKaryawanEstimasiData2 implements FromView, WithTitle, WithColumn
     public function view(): View
     {
         return view('hris/mutasi-karyawan/form-lembur-sewing/konsumsi_karyawan_estimasi_summary', [
+            'from' => $this->from,
+            'to' => $this->to,
             'dateFrom' => $this->dateFrom,
             'data_lembur1' => $this->dataLembur1,
             'data_lembur2' => $this->dataLembur2,

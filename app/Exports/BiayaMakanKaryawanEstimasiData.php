@@ -106,7 +106,7 @@ class BiayaMakanKaryawanEstimasiData implements FromView, WithTitle,WithColumnFo
 
                 FROM estimasi_anggaran_makan a
                 WHERE  a.tanggal BETWEEN '$from' AND '$to'
-                AND a.keterangan = 'LEMBUR'
+
 
                 UNION ALL
 
@@ -139,9 +139,9 @@ class BiayaMakanKaryawanEstimasiData implements FromView, WithTitle,WithColumnFo
 
                 FROM estimasi_anggaran_makan a
                 WHERE a.tanggal BETWEEN '$from' AND '$to'
-                AND a.keterangan = 'LEMBUR'
 
-                ORDER BY tanggal, department, sub_dept_name, staff_non_staff
+
+                ORDER BY  tanggal,shift,  department, sub_dept_name, staff_non_staff
 
                 ");
         // } elseif ($this->type === 'shift_malam') {
@@ -166,6 +166,8 @@ class BiayaMakanKaryawanEstimasiData implements FromView, WithTitle,WithColumnFo
     public function view(): View
     {
         return view('hris/mutasi-karyawan/form-lembur-sewing/konsumsi_karyawan_estimasi', [
+            'from' => $this->from,
+            'to' => $this->to,
             'data_lembur' => $this->dataLembur,
         ]);
     }

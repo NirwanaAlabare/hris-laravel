@@ -49,7 +49,10 @@
         <td>BIAYA MAKAN  KARYAWAN</td>
     </tr>
     <tr>
-        <td></td>
+        <td> Periode {{Carbon\Carbon::parse($from)->translatedFormat('l, j F Y')}} - {{Carbon\Carbon::parse($to)->translatedFormat('l, j F Y')}}</td>
+    </tr>
+     <tr>
+            <td></td>
     </tr>
     <tr>
         <td>Periode</td>
