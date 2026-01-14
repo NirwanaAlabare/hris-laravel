@@ -50,6 +50,8 @@ class BiayaMakanKaryawanEstimasiData2 implements FromView, WithTitle, WithColumn
         $this->dataLembur1 = DB::select("
             SELECT 'LEMBUR' shift,
                 a.tanggal,
+                a.dept,
+                a.sub_dept,
                     DATE_FORMAT(a.tanggal, '%d %M %Y') AS tanggal_fix,
                     COALESCE(
                         (SELECT d.department_name
@@ -83,6 +85,8 @@ class BiayaMakanKaryawanEstimasiData2 implements FromView, WithTitle, WithColumn
         $this->dataLembur2 = DB::select("
             SELECT 'SHIFT MALAM' shift,
                 a.tanggal,
+                a.dept,
+                a.sub_dept,
                     DATE_FORMAT(a.tanggal, '%d %M %Y') AS tanggal_fix,
 
                     -- Department (aman walau dept NULL)
@@ -226,7 +230,7 @@ class BiayaMakanKaryawanEstimasiData2 implements FromView, WithTitle, WithColumn
                     FROM department_all b
                     WHERE b.department_id = a.dept
                     AND b.site_nirwana_id IN ('NAG','NAK','NAGD')
-                    
+
                 )
         ");
     }
@@ -253,14 +257,14 @@ class BiayaMakanKaryawanEstimasiData2 implements FromView, WithTitle, WithColumn
     public function columnFormats(): array
     {
         return [
-            'C' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'D' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
-            'E' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
             'F' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
             'G' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
             'H' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
             'I' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
             'J' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+            'K' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+            'L' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+            'M' => '"Rp" #,##0',
         ];
     }
 }
