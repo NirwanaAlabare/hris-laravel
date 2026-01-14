@@ -59,7 +59,7 @@ class AnggaranMakanController extends AdminBaseController
 
 
         if ($request->ajax()) {
-            if(Auth::guard('admin')->user()->name=='HR' || Auth::guard('admin')->user()->name=='IT' || Auth::guard('admin')->user()->name=='GA' || Auth::guard('admin')->user()->email =='mega@ptnag.com' || Auth::guard('admin')->user()->email =='rudy@ptnag.com' || Auth::guard('admin')->user()->email =='dev_hris' || Auth::guard('admin')->user()->email =='ersa@ptnag.com' || Auth::guard('admin')->user()->email =='indri@nag.nirwanaindonesia.com'  || Auth::guard('admin')->user()->email =='tita'){
+            if(Auth::guard('admin')->user()->name=='HR' || Auth::guard('admin')->user()->name=='IT' || Auth::guard('admin')->user()->name=='GA' || Auth::guard('admin')->user()->email =='mega@ptnag.com' || Auth::guard('admin')->user()->email =='rudy@ptnag.com' || Auth::guard('admin')->user()->email =='dev_hris' || Auth::guard('admin')->user()->email =='ersa@ptnag.com' || Auth::guard('admin')->user()->email =='indri@nag.nirwanaindonesia.com'  || Auth::guard('admin')->user()->email =='tita'|| Auth::guard('admin')->user()->email =='willy@ptnag.com'|| Auth::guard('admin')->user()->email =='steven'){
                 $data_input=DB::select("SELECT
                         a.id,
                         a.keterangan,

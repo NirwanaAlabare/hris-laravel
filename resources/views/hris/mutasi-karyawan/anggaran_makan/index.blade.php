@@ -40,7 +40,7 @@
                         <i class="fa fa-plus"></i>
                         Baru
                     </button>
-                    @if (Auth::guard('admin')->user()->email == 'indri@nag.nirwanaindonesia.com' || Auth::guard('admin')->user()->email =='ersa@ptnag.com' || Auth::guard('admin')->user()->email =='mega@ptnag.com' || Auth::guard('admin')->user()->email =='rudy@ptnag.com' || Auth::guard('admin')->user()->email =='dev_hris' || Auth::guard('admin')->user()->email =='GA'  || Auth::guard('admin')->user()->email =='tita')
+                    @if (Auth::guard('admin')->user()->email == 'indri@nag.nirwanaindonesia.com' || Auth::guard('admin')->user()->email =='ersa@ptnag.com' || Auth::guard('admin')->user()->email =='mega@ptnag.com' || Auth::guard('admin')->user()->email =='rudy@ptnag.com' || Auth::guard('admin')->user()->email =='dev_hris' || Auth::guard('admin')->user()->email =='GA'  || Auth::guard('admin')->user()->email =='tita' || Auth::guard('admin')->user()->email =='willy@ptnag.com'|| Auth::guard('admin')->user()->email =='steven')
                     <a onclick="export_excel_konsumsi()" class="btn btn-outline-success position-relative">
                         <i class="fa fa-file-excel"></i>
                         Estimasi Anggaran Makan
