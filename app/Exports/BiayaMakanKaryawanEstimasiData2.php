@@ -151,7 +151,7 @@ class BiayaMakanKaryawanEstimasiData2 implements FromView, WithTitle, WithColumn
                     FROM department_all b
                     WHERE b.department_id = a.dept
                     AND b.site_nirwana_id IN ('NAG','NAK','NAGD')
-                    AND b.status = 'AKTIF')
+                    )
         ");
         $this->dataLembur4 = DB::select("
             SELECT
@@ -184,7 +184,7 @@ class BiayaMakanKaryawanEstimasiData2 implements FromView, WithTitle, WithColumn
                     FROM department_all b
                     WHERE b.department_id = a.dept
                     AND b.site_nirwana_id IN ('NAG','NAK','NAGD')
-                    AND b.status = 'AKTIF')
+                    )
         ");
         $this->dataLembur5 = DB::select("
             SELECT
@@ -226,7 +226,7 @@ class BiayaMakanKaryawanEstimasiData2 implements FromView, WithTitle, WithColumn
                     FROM department_all b
                     WHERE b.department_id = a.dept
                     AND b.site_nirwana_id IN ('NAG','NAK','NAGD')
-                    AND b.status = 'AKTIF'
+                    
                 )
         ");
     }
