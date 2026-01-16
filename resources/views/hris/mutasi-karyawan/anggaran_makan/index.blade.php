@@ -380,6 +380,29 @@
                 }
             }, setTanggal);
         });
+        $(document).on('click', '#btn_new', function() {
+            // Ambil tanggal dari filter daterange
+            const tglAwal = $('#tgl_awal').val(); // Format: YYYY-MM-DD
+            const tglAkhir = $('#tgl_akhir').val();
+
+            // Jika range tanggal sama (single date), gunakan tanggal tersebut
+            if (tglAwal === tglAkhir) {
+                // Konversi dari YYYY-MM-DD ke DD-MM-YYYY untuk datepicker
+                const parts = tglAwal.split('-');
+                const formattedDate = parts[2] + '-' + parts[1] + '-' + parts[0];
+
+                // Set nilai ke input tanggal di modal
+                $('#tanggal').datepicker('setDate', formattedDate);
+            } else {
+                // Jika range, gunakan tanggal awal
+                const parts = tglAwal.split('-');
+                const formattedDate = parts[2] + '-' + parts[1] + '-' + parts[0];
+                $('#tanggal').datepicker('setDate', formattedDate);
+            }
+
+            // Buka modal
+            $('#newEstimationModal').modal('show');
+        });
         function export_excel_konsumsi() {
                 let from = document.getElementById("tgl_awal").value;
                 let to   = document.getElementById("tgl_akhir").value;
@@ -712,6 +735,8 @@
 
 
         $('#delete_estimasi').click(function(){
+            let tanggal = $('#edit_tanggal').val();
+            sessionStorage.setItem('selectedTanggal', $('#edit_tanggal').val());
             var id_estimasi=$('#delete_id').val();
             $.ajax({
                 type:"POST",
@@ -719,17 +744,19 @@
                 data: {
                     id:id_estimasi,
                 },
-                success:function(res){
+               success: function (response) {
                     Swal.fire({
-                        title: 'Data Sudah Di Hapus!',
-                        icon: "success",
-                        showConfirmButton: true,
-                        allowOutsideClick: false
+                        title: 'Berhasil',
+                        text: response.message || 'Data berhasil dihapus',
+                        icon: 'success',
+                        timer: 1000,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    }).then(() => {
+                        closeModal('#deleteEstimationModal');
+                        location.reload();
                     });
-                    $('#deleteEstimationModal').modal('hide');
-                    $(".modal-backdrop").remove();
-                    $("body").removeClass("modal-open");
-                    dataTableReload();
                 }
             });
         });
@@ -793,9 +820,11 @@
         //     hitungEstimasiMakan();
         // });
        $('#save_estimation').click(function(){
-
             let tgl = $('#tanggal').val().split('-');
             let tanggal = `${tgl[2]}-${tgl[1]}-${tgl[0]}`;
+
+            // Simpan tanggal untuk direstore setelah reload
+            sessionStorage.setItem('selectedTanggal', $('#tanggal').val());
 
             $.ajax({
                 type: "POST",
@@ -807,26 +836,34 @@
                     staff: $('#staff').val(),
                     non_staff: $('#non_staff').val()
                 },
-                success: function(){
-                    Swal.fire('Sukses','Data berhasil disimpan','success');
-                    closeModal('#newEstimationModal');
-                    datatable.ajax.reload(null, false);
-                    resetCreateForm();
+                success: function(response){
+                    Swal.fire({
+                        title: 'Sukses',
+                        text: response.message || 'Data berhasil disimpan',
+                        icon: 'success',
+                        timer: 1000,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    }).then(() => {
+                            closeModal('#newEstimationModal');
+                            location.reload();
+                    });
                 },
                 error: function (xhr) {
                     Swal.fire(
                         'Gagal',
-                        xhr.responseJSON.message ?? 'Terjadi kesalahan',
+                        xhr.responseJSON?.message || 'Terjadi kesalahan',
                         'error'
                     );
                 }
             });
         });
-
         $('#update_estimation').click(function(){
 
             let id = $('#edit_id').val();
             let tanggal = $('#edit_tanggal').val(); // dd-mm-yyyy
+            sessionStorage.setItem('selectedTanggal', $('#edit_tanggal').val());
 
             let parts = tanggal.split('-');
             let formatBaru = parts[2] + '-' + parts[1] + '-' + parts[0]; // yyyy-mm-dd
@@ -842,28 +879,22 @@
                     staff: $('#edit_staff').val(),
                     non_staff: $('#edit_non_staff').val()
                 },
-                success: function(){
-                    Swal.fire({
-                        title: 'Data Berhasil Diupdate!',
-                        icon: 'success'
+               success: function (response) {
+                        Swal.fire({
+                            title: 'Berhasil',
+                            text: response.message || 'Data berhasil diupdate',
+                            icon: 'success',
+                            timer: 1000,
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false
+                        }).then(() => {
+                            closeModal('#editEstimationModal');
+                            location.reload();
+                        });
+                    }
                     });
-
-                    $('#editEstimationModal').modal('hide');
-                    $('.modal-backdrop').remove();
-                    $('body').removeClass('modal-open');
-
-                    dataTableReload();
-
-                    // reset form
-                    $('#edit_id').val('');
-                    $('#edit_tanggal').val('');
-                    $('#edit_keterangan').val('');
-                    $('#edit_bagian').val('').trigger('change');
-                    $('#edit_staff').val('');
-                    $('#edit_non_staff').val('');
-                }
-            });
-        });
+                });
     //     $('#update_estimation').click(function(){
     //         var id=$('#edit_id').val();
     //         var tanggal=$('#edit_tanggal').val();
@@ -923,6 +954,44 @@
         let p = tgl.split('-');
         return `${p[2]}-${p[1]}-${p[0]}`;
     }
+    $(document).ready(function() {
+    // Restore tanggal dari sessionStorage setelah reload
+    const savedTanggal = sessionStorage.getItem('selectedTanggal');
+
+    if (savedTanggal) {
+        // Set ke datepicker
+        $('#tanggal').datepicker('setDate', savedTanggal);
+
+        // Jika ada filter daterange, update juga
+        if (savedTanggal && $('#daterange-btn1').length) {
+            const parts = savedTanggal.split('-');
+            const yyyymmdd = parts[2] + '-' + parts[1] + '-' + parts[0];
+            const momentDate = moment(yyyymmdd);
+
+            // Update daterange filter
+            $('#daterange-btn1').data('daterangepicker').setStartDate(momentDate);
+            $('#daterange-btn1').data('daterangepicker').setEndDate(momentDate);
+
+            // Update hidden inputs
+            $('#tgl_awal').val(yyyymmdd);
+            $('#tgl_akhir').val(yyyymmdd);
+
+            // Update label
+            const label = momentDate.format("D MMM YYYY").toUpperCase();
+            $('#daterange-btn1').html(
+                '<span><i class="fa fa-calendar"></i> ' + label + '</span><i class="fa fa-angle-down ml-1"></i>'
+            );
+
+            // Reload datatable dengan tanggal baru
+            dataTableReload();
+        }
+
+        // Hapus sessionStorage setelah digunakan
+        setTimeout(() => {
+            sessionStorage.removeItem('selectedTanggal');
+        }, 100);
+    }
+});
 
     // </script>
 

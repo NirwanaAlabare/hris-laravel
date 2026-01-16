@@ -74,55 +74,55 @@
             <td colspan="2" class="text-bold">TUJUAN </td>
             <td colspan="12" text-bold class="bolder-cell">: HRD </td>
         </tr>
-        <tr>
+        {{-- <tr>
             <td colspan="14" class="text-bold tab-content" >TUJUAN  : {{ $firstRow ? $firstRow->nomor_form_lembur : '-'}} </td>
-            {{-- <td colspan="12" text-bold>: {{ $firstRow ? $firstRow->tanggal_berjalan : '-'}} </td> --}}
-        </tr>
+            <td colspan="12" text-bold>: {{ $firstRow ? $firstRow->tanggal_berjalan : '-'}} </td>
+        </tr> --}}
         </thead>
 
-        {{-- <tr>
+        <tr>
             <th style="width: 30px;">No</th>
             <th colspan="3">No Form</th>
             <th colspan="2">NIK</th>
             <th colspan="3">Nama Karyawan</th>
             <th colspan="3">Tanggal Lembur</th>
             <th colspan="2">Bagian</th>
-        </tr> --}}
-        <tr>
+        </tr>
+        {{-- <tr>
             <th style="width: 30px;">No</th>
             <th colspan="5">Nama Karyawan</th>
             <th colspan="4">NIK</th>
-            <th colspan="4">Bagian</th>
+            <th colspan="4">Bagian</th> --}}
             {{-- <th colspan="3">Tanggal Lembur</th>
             <th colspan="2">Bagian</th> --}}
-        </tr>
+        {{-- </tr> --}}
 
     </thead>
 
     <tbody>
         @php $no = 1; @endphp
-        {{-- @forelse($data as $row) --}}
-        {{-- <tr>
+        @forelse($data as $row)
+        <tr>
             <td class="text-center">{{ $no++ }}</td>
-            <td colspan="3">{{ $row->no_form_lembur }}</td>
+            <td colspan="3">{{ $row->nomor_form_lembur }}</td>
             <td colspan="2">{{ $row->nik }}</td>
             <td colspan="3">{{ $row->employee_name }}</td>
             <td colspan="3" class="text-center">
                 {{ \Carbon\Carbon::parse($row->tanggal_berjalan)->format('d-m-Y') }}
             </td>
             <td colspan="2">{{ $row->sub_dept_name }}</td>
-        </tr> --}}
-        @forelse($data as $row)
+        </tr>
+        {{-- @forelse($data as $row)
         <tr>
             <td class="text-center">{{ $no++ }}</td>
             <td colspan="5">{{ $row->employee_name  }}</td>
             <td colspan="4">{{ $row->nik }}</td>
             <td colspan="4">{{ $row->sub_dept_name }}</td>
-            {{-- <td colspan="3" class="text-center">
+         <td colspan="3" class="text-center">
                 {{ \Carbon\Carbon::parse($row->tanggal_berjalan)->format('d-m-Y') }}
             </td>
-            <td colspan="2">{{ $row->sub_dept_name }}</td> --}}
-        </tr>
+            <td colspan="2">{{ $row->sub_dept_name }}</td>
+        </tr> --}}
         @empty
         <tr>
             <td colspan="14" class="text-center">Data tidak ditemukan</td>
@@ -161,7 +161,7 @@
             <td colspan="4" class="text-center" style="text-decoration: underline;">&nbsp;</td>
             <td colspan="3" class="text-center" style="text-decoration: underline;"></td>
             <td colspan="3" class="text-center" style="text-decoration: underline;"></td>
-            <td colspan="4" class="text-center" style="text-decoration: underline;">HRD</td>
+            <td colspan="4" class="text-center" style="text-decoration: underline;"></td>
         </tr>
 
         <tr>

@@ -61,7 +61,7 @@
                 </div>
                 <div class="col-md-4">
                     <label><b>Search SPL</b></label>
-                    <input type="text" id="nomor_form_lembur" class="form-control" placeholder="Nama / ID">
+                    <input type="text" id="nomor_form_lembur" class="form-control" placeholder="Nomor SPL / ID">
                 </div>
             </div>
             <div class="table-responsive">
@@ -75,7 +75,9 @@
                             <th>Tanggal</th>
                             <th>Jam Istirahat</th>
                             <th>Jam Lembur</th>
-                            <th>Aksi</th>
+                            <th> AKSI
+                                <input type="checkbox" id="check-all" checked>
+                            </th>
                         </tr>
                     </thead>
                 </table>
@@ -350,6 +352,12 @@ $(document).ready(function(){
             }
         ]
     });
+    $('#check-all').on('click', function () {
+    let isChecked = $(this).prop('checked');
+
+    $('.cek-istirahat').prop('checked', isChecked);
+});
+
 
     // ===== DATATABLE BAWAH =====
     tableResult = $('#datatable2').DataTable({
@@ -372,8 +380,13 @@ $(document).ready(function(){
             {
                 data: null,
                 orderable: false,
-                render: function(){
-                    return `<span class="badge badge-success">Non Istirahat</span>`;
+                render: function(row){
+                    return `
+                        <button type="button"
+                            onclick="btnDelete('${row.enroll_id}', '${row.tanggal_berjalan}', '${row.mulai_jam_lembur}', '${row.akhir_jam_lembur}')"
+                            class="btn btn-danger btn-sm">
+                            <i class='fa fa-trash'></i>
+                        </button>`
                 }
             }
         ]
@@ -400,6 +413,7 @@ $(document).ready(function(){
     $('#nomor_form_lembur').on('keyup', function(){
         reloadAllTable();
     });
+
 
     // ===== SIMPAN ISTIRAHAT =====
     $('#btn-simpan-istirahat').on('click', function(){
@@ -429,9 +443,18 @@ $(document).ready(function(){
                 data: dataDiproses,
                 _token: '{{ csrf_token() }}'
             },
-            success: function(){
-                alert('Berhasil disimpan');
-                reloadAllTable();
+            success: function(res){
+
+                if (res.status === 'success') {
+                    alert('Berhasil disimpan');
+                    reloadAllTable();
+
+                } else if (res.status === 'warning') {
+                    alert(res.message);
+
+                } else {
+                    alert('Respon tidak dikenal');
+                }
             },
             error: function(){
                 alert('Gagal menyimpan data');
@@ -452,6 +475,28 @@ $(document).ready(function(){
     });
 
 });
+ function btnDelete(enroll_id, tanggal, mulai_jam, akhir_jam) {
+    if (!confirm('Yakin ingin membatalkan Non Istirahat?\nJam lembur: ' + mulai_jam + ' - ' + akhir_jam)) return;
+
+    $.ajax({
+        type: "POST",
+        url: "{{ route('flni.deleteNonIstirahat') }}", // PASTIKAN ROUTE INI BENAR
+        data: {
+            _token: "{{ csrf_token() }}",
+            enroll_id: enroll_id,
+            tanggal: tanggal,
+            mulai_jam: mulai_jam,
+            akhir_jam: akhir_jam
+        },
+        success: function(res) {
+            alert(res.message);
+            reloadAllTable();
+        },
+        error: function(xhr) {
+            alert('Gagal menghapus data: ' + (xhr.responseJSON?.message || 'Unknown error'));
+        }
+    });
+}
 </script>
 
 

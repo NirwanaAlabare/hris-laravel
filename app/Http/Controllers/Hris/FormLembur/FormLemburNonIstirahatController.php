@@ -60,7 +60,21 @@ class FormLemburNonIstirahatController extends AdminBaseController
             $query->where('dl.nomor_form_lembur', 'like', '%' . $request->nomor_form_lembur . '%');
         }
 
-         return DataTables::of($query)->toJson();}
+         return DataTables::of($query)
+            ->filter(function ($query) {
+                $search = request('search.value');
+
+                if ($search) {
+                    $query->where(function ($q) use ($search) {
+                        $q->orWhereRaw("CAST(dl.nomor_form_lembur AS CHAR) LIKE ?", ["%$search%"])
+                        ->orWhereRaw("CAST(e.employee_name AS CHAR) LIKE ?", ["%$search%"])
+                        ->orWhereRaw("CAST(e.enroll_id AS CHAR) LIKE ?", ["%$search%"])
+                        ->orWhereRaw("CAST(dl.tanggal_berjalan AS CHAR) LIKE ?", ["%$search%"])
+                        ->orWhereRaw("CAST(dl.jumlah_jam_lembur AS CHAR) LIKE ?", ["%$search%"]);
+                    });
+                }
+            })
+            ->make(true);}
 
         // Jika request bukan AJAX, tampilkan view
         return view('hris.mutasi-karyawan.lembur-non-istirahat.form_lembur_non_istirahat', [
@@ -71,41 +85,113 @@ class FormLemburNonIstirahatController extends AdminBaseController
         ], $this->data);
     }
 public function get_dataLemburNonIstirahat(Request $request)
+    {
+        $tgl_awal = $request->tanggal;
+        $nomor_form_lembur = $request->nomor_form_lembur;
+
+        $query = DB::table('data_lembur_tanpa_istirahart as lni')
+            ->join('employee_atribut as e', 'lni.enroll_id', '=', 'e.enroll_id')
+            ->join('data_lembur as l', function ($join) {
+                $join->on('lni.enroll_id', '=', 'l.enroll_id')
+                    ->on('lni.tanggal', '=', 'l.tanggal_berjalan');
+            })
+            ->select([
+                'l.nomor_form_lembur as no_form',
+                'lni.enroll_id',
+                'e.employee_name',
+                'l.tanggal_berjalan',
+                'l.jumlah_jam_istirahat_lembur',
+                'l.jumlah_jam_lembur',
+                'l.mulai_jam_lembur',
+                'l.akhir_jam_lembur'
+            ]);
+
+        // FILTER TANGGAL
+        if (!empty($tgl_awal)) {
+            $query->whereDate('l.tanggal_berjalan', $tgl_awal);
+        }
+
+        // FILTER SPL / NAMA
+        if (!empty($nomor_form_lembur)) {
+                $query->where(function ($q) use ($nomor_form_lembur) {
+                    $q->where('l.nomor_form_lembur', 'like', "%$nomor_form_lembur%")
+                    ->orWhere('e.employee_name', 'like', "%$nomor_form_lembur%");
+                });
+            }
+//  dd($query->toSql(), $query->getBindings());
+            return DataTables::of($query)
+                ->filter(function ($query) {
+                    $search = request('search.value');
+
+                    if ($search) {
+                        $query->where(function ($q) use ($search) {
+                            $q->orWhereRaw("CAST(l.nomor_form_lembur AS CHAR) LIKE ?", ["%$search%"])
+                            ->orWhereRaw("CAST(e.employee_name AS CHAR) LIKE ?", ["%$search%"])
+                            ->orWhereRaw("CAST(e.enroll_id AS CHAR) LIKE ?", ["%$search%"])
+                            ->orWhereRaw("CAST(l.tanggal_berjalan AS CHAR) LIKE ?", ["%$search%"])
+                            ->orWhereRaw("CAST(l.jumlah_jam_lembur AS CHAR) LIKE ?", ["%$search%"]);
+                        });
+                    }
+                })
+                ->make(true);
+    }
+    private function waktuKeMenit($waktu)
 {
-    $tgl_awal = $request->tanggal;
-    $nomor_form_lembur = $request->nomor_form_lembur;
-
-    $query = DB::table('data_lembur_tanpa_istirahart as lni')
-        ->join('employee_atribut as e', 'lni.enroll_id', '=', 'e.enroll_id')
-        ->join('data_lembur as l', function ($join) {
-            $join->on('lni.enroll_id', '=', 'l.enroll_id')
-                 ->on('lni.tanggal', '=', 'l.tanggal_berjalan');
-        })
-        ->select([
-            'l.nomor_form_lembur as no_form',
-            'lni.enroll_id',
-            'e.employee_name',
-            'l.tanggal_berjalan',
-            'l.jumlah_jam_istirahat_lembur',
-            'l.jumlah_jam_lembur'
-        ]);
-
-    // FILTER TANGGAL
-    if (!empty($tgl_awal)) {
-        $query->whereDate('l.tanggal_berjalan', $tgl_awal);
+    if (!$waktu) {
+        return 0;
     }
 
-    // FILTER SPL / NAMA
-    if (!empty($nomor_form_lembur)) {
-        $query->where(function ($q) use ($nomor_form_lembur) {
-            $q->where('l.nomor_form_lembur', 'like', "%$nomor_form_lembur%")
-              ->orWhere('e.employee_name', 'like', "%$nomor_form_lembur%");
-        });
-    }
+    // Pakai Carbon → AMAN untuk datetime & jam
+    $time = Carbon::parse($waktu);
 
-    return DataTables::of($query)->make(true);
+    return ($time->hour * 60) + $time->minute;
 }
 
+    private function hitungJamIstirahatBerdasarkanRentang($jam_mulai, $jam_akhir)
+{
+    // Konversi ke menit untuk perhitungan
+    $menit_mulai = $this->waktuKeMenit($jam_mulai);
+    $menit_akhir = $this->waktuKeMenit($jam_akhir);
+    // dd($menit_mulai, $menit_akhir);
+
+    // Jika melewati midnight (lembur malam)
+    if ($menit_akhir < $menit_mulai) {
+        $menit_akhir += 1440; // Tambah 24 jam (1440 menit)
+    }
+
+    // Rentang istirahat dalam menit
+    $istirahat_siang_mulai = $this->waktuKeMenit('12:00');
+    $istirahat_siang_akhir = $this->waktuKeMenit('13:00'); // 1 jam
+
+    $istirahat_sore_mulai = $this->waktuKeMenit('18:00');
+    $istirahat_sore_akhir = $this->waktuKeMenit('18:30'); // 0.4 jam (24 menit)
+
+    $total_istirahat_menit = 0;
+
+    // Cek overlap dengan istirahat siang
+    if ($menit_mulai < $istirahat_siang_akhir && $menit_akhir > $istirahat_siang_mulai) {
+        $overlap_start = max($menit_mulai, $istirahat_siang_mulai);
+        $overlap_end = min($menit_akhir, $istirahat_siang_akhir);
+
+        if ($overlap_start < $overlap_end) {
+            $total_istirahat_menit += ($overlap_end - $overlap_start);
+        }
+    }
+
+    // Cek overlap dengan istirahat sore
+    if ($menit_mulai < $istirahat_sore_akhir && $menit_akhir > $istirahat_sore_mulai) {
+        $overlap_start = max($menit_mulai, $istirahat_sore_mulai);
+        $overlap_end = min($menit_akhir, $istirahat_sore_akhir);
+
+        if ($overlap_start < $overlap_end) {
+            $total_istirahat_menit += ($overlap_end - $overlap_start);
+        }
+    }
+    // dd($total_istirahat_menit);
+
+    // Konversi menit ke jam (desimal)
+    return $total_istirahat_menit / 60;
+}
     // public function hapusIstirahat(Request $request){
     //     $user = Auth::guard('admin')->user()->name;
     //     $enroll_id = $request->enroll_id;
@@ -168,30 +254,60 @@ public function get_dataLemburNonIstirahat(Request $request)
         // dd($tanggal);
         DB::beginTransaction();
 
-        try {
+       try {
+            $processed = 0;
+
             foreach ($request->data as $row) {
 
-
-                // 1️⃣ Insert ke lembur tanpa istirahat
-                DB::table('data_lembur_tanpa_istirahart')->insert([
-                    'tanggal' => $row['tanggal_berjalan'],
-                    'enroll_id' => $row['enroll_id'],
-                    // 'created_at' => now()
-                ]);
-
-                // 2️⃣ Update data lembur
-                DB::table('data_lembur')
+                // 🔎 Ambil data REAL dari database
+                $lembur = DB::table('data_lembur')
                     ->where('tanggal_berjalan', $row['tanggal_berjalan'])
                     ->where('enroll_id', $row['enroll_id'])
+                    ->first();
+
+                // ❌ Jika tidak ada data atau jam istirahat sudah 0 → SKIP
+                if (!$lembur || $lembur->jumlah_jam_istirahat_lembur == 0) {
+                    continue;
+                }
+
+                // 🔎 Cek tabel tanpa istirahat
+                $exists = DB::table('data_lembur_tanpa_istirahart')
+                    ->where('tanggal', $row['tanggal_berjalan'])
+                    ->where('enroll_id', $row['enroll_id'])
+                    ->exists();
+
+                if (!$exists) {
+                    DB::table('data_lembur_tanpa_istirahart')->insert([
+                        'tanggal'   => $row['tanggal_berjalan'],
+                        'enroll_id' => $row['enroll_id'],
+                    ]);
+                }
+
+                // 🔄 UPDATE dan cek apakah benar-benar berubah
+                $updated = DB::table('data_lembur')
+                    ->where('tanggal_berjalan', $row['tanggal_berjalan'])
+                    ->where('enroll_id', $row['enroll_id'])
+                    ->where('jumlah_jam_istirahat_lembur', '>', 0) // ⬅️ penting
                     ->update([
                         'jumlah_jam_lembur' => DB::raw(
-                            'jumlah_jam_lembur + '.$row['jam_istirahat']
+                            'jumlah_jam_lembur + jumlah_jam_istirahat_lembur'
                         ),
                         'jumlah_jam_istirahat_lembur' => 0
                     ]);
+
+                if ($updated > 0) {
+                    $processed++;
+                }
             }
 
             DB::commit();
+
+            if ($processed === 0) {
+                return response()->json([
+                    'status'  => 'warning',
+                    'message' => 'Tidak ada data yang diproses. Jam istirahat sudah nol atau data sudah diproses sebelumnya.'
+                ]);
+            }
 
             return response()->json([
                 'status' => 'success'
@@ -205,6 +321,51 @@ public function get_dataLemburNonIstirahat(Request $request)
             ], 500);
         }
     }
+    public function deleteNonIstirahat(Request $request)
+{
+    $enroll_id = $request->enroll_id;
+    $tanggal = $request->tanggal;
+    $mulai_jam = $request->mulai_jam; // format: 2026-01-14 17:00:00
+    $akhir_jam = $request->akhir_jam; // format: 2026-01-14 19:00:00
+
+    // Hitung jumlah jam istirahat
+    $jam_istirahat = $this->hitungJamIstirahatBerdasarkanRentang($mulai_jam, $akhir_jam);
+    // dd($jam_istirahat);
+
+    try {
+        DB::beginTransaction();
+
+        // Update data_lembur (tambah jam istirahat)
+        DB::table('data_lembur')
+            ->where('enroll_id', $enroll_id)
+            ->where('tanggal_berjalan', $tanggal)
+            ->update(['jumlah_jam_lembur' => DB::raw(
+                            "jumlah_jam_lembur - $jam_istirahat"
+                        ),
+                'jumlah_jam_istirahat_lembur' => DB::raw("jumlah_jam_istirahat_lembur + $jam_istirahat")
+            ]);
+
+        // Hapus dari data_lembur_tanpa_istirahart
+        DB::table('data_lembur_tanpa_istirahart')
+            ->where('enroll_id', $enroll_id)
+            ->where('tanggal', $tanggal)
+            ->delete();
+
+        DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data berhasil dihapus. Jam istirahat ditambahkan: ' . $jam_istirahat . ' jam'
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ], 500);
+    }
+}
 public function printNonIstirahat(Request $request)
 {
     // dd($query);

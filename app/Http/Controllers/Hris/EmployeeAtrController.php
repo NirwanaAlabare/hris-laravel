@@ -1368,6 +1368,33 @@ class EmployeeAtrController extends AdminBaseController
         //     }
         // }
         $employee_contract_before = EmployeeAtribut::whereRaw('enroll_id = "' . $enroll_id . '"')->first();
+        // if ($tanggal_mulai_kontrak && $tanggal_akhir_kontrak) {
+
+        //     $tanggalMulaiBaru = Carbon::parse($tanggal_mulai_kontrak);
+        //     $contractId = $request->contract_id; // ID kontrak yg sedang diedit
+        //     dd($contractId);
+
+        //     // 🔍 Ambil kontrak SEBELUM kontrak ini
+        //     $previousContract = DB::table('employee_contract')
+        //         ->where('enroll_id', $enroll_id)
+        //         ->where('id', '!=', $contractId) // PENTING
+        //         ->where('contract_end', '<=', $tanggalMulaiBaru)
+        //         ->orderBy('contract_end', 'desc')
+        //         ->first();
+
+        //     if ($previousContract) {
+        //         $prevEnd = Carbon::parse($previousContract->contract_end);
+
+        //         // ❌ mulai tidak boleh sebelum kontrak sebelumnya berakhir
+        //         if ($tanggalMulaiBaru->lt($prevEnd)) {
+        //             return back()->withErrors([
+        //                 'tanggal_mulai_kontrak' =>
+        //                     'Tanggal mulai kontrak tidak boleh lebih kecil dari kontrak sebelumnya.'
+        //             ])->withInput();
+        //         }
+        //     }
+        // }
+
         // dd($employee_contract_before->tanggal_mulai_kontrak, $employee_contract_before->tanggal_akhir_kontrak);
         if ($employee_contract_before) {
             if ($tanggal_mulai_kontrak != '' && $tanggal_akhir_kontrak != '') {
@@ -1580,6 +1607,18 @@ class EmployeeAtrController extends AdminBaseController
                     $bulan_sekarang = date('Y-m-' . '25');
                     $bulan_sebelum = date('Y-m-d', strtotime("-1 month", strtotime($bulan_sekarang)));
                     $bulan_setelah = date('Y-m-d', strtotime("+1 month", strtotime($bulan_sekarang)));
+                    $tanggalResign = Carbon::parse($tanggal_resign);
+
+                    if ($tanggalResign->day < 26) {
+                        // masih periode bulan berjalan
+                        $tanggalMulaiHapus = $tanggalResign->copy()->day(26);
+                    } else {
+                        // sudah lewat cut-off, masuk periode bulan berikutnya
+                        $tanggalMulaiHapus = $tanggalResign->copy()->addMonth()->day(26);
+                    }
+
+                    $tanggalMulaiHapus = $tanggalMulaiHapus->format('Y-m-d');
+                    // dd($tanggal_resign,$tanggalMulaiHapus);
 
                     if ($tanggal_sekarang > $bulan_sebelum && $tanggal_sekarang <= $bulan_sekarang) {
                         $tanggal_awal = $bulan_sebelum;
@@ -1602,8 +1641,8 @@ class EmployeeAtrController extends AdminBaseController
 
                     MasterDataAbsenKehadiran::join('employee_atribut', 'master_data_absen_kehadiran.enroll_id', '=', 'employee_atribut.enroll_id')
                         ->where('employee_atribut.enroll_id', $enroll_id)
-                        ->whereDate('master_data_absen_kehadiran.tanggal_berjalan', '>=', $tanggal_mulai_hapus)
-                        ->whereDate('employee_atribut.tanggal_resign', '<=', $tanggal_mulai_hapus)
+                        ->whereDate('master_data_absen_kehadiran.tanggal_berjalan', '>=', $tanggalMulaiHapus)
+                        ->whereDate('employee_atribut.tanggal_resign', '<=', $tanggalMulaiHapus)
                         ->delete();
                 }
             }
