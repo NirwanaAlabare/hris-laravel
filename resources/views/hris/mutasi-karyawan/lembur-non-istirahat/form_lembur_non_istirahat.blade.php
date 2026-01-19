@@ -61,7 +61,7 @@
                 </div>
                 <div class="col-md-4">
                     <label><b>Search SPL</b></label>
-                    <input type="text" id="nomor_form_lembur" class="form-control" placeholder="Nomor SPL / ID">
+                    <input type="text" id="no_form" class="form-control" placeholder="Nomor SPL / ID">
                 </div>
             </div>
             <div class="table-responsive">
@@ -74,7 +74,6 @@
                             <th>Nama Karyawan</th>
                             <th>Tanggal</th>
                             <th>Jam Istirahat</th>
-                            <th>Jam Lembur</th>
                             <th> AKSI
                                 <input type="checkbox" id="check-all" checked>
                             </th>
@@ -107,7 +106,7 @@
                             <th>Nama Karyawan</th>
                             <th>Tanggal</th>
                             <th>Jam Istirahat</th>
-                            <th>Jam Lembur</th>
+
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -325,16 +324,15 @@ $(document).ready(function(){
             url: '{{ route("flni.index") }}',
             data: function(d){
                 d.tanggal = $('#tgl-awal').val();
-                d.nomor_form_lembur = $('#nomor_form_lembur').val();
+                d.no_form = $('#no_form').val();
             }
         },
         columns: [
             { data: 'no_form' },
             { data: 'enroll_id' },
             { data: 'employee_name' },
-            { data: 'tanggal_berjalan' },
-            { data: 'jumlah_jam_istirahat_lembur' },
-            { data: 'jumlah_jam_lembur' },
+            { data: 'tgl_lembur' },
+            { data: 'jam_lembur_istirahat' },
             {
                 data: null,
                 orderable: false,
@@ -345,8 +343,9 @@ $(document).ready(function(){
                             checked
                             data-enroll="${row.enroll_id}"
                             data-form="${row.no_form}"
-                            data-istirahat="${row.jumlah_jam_istirahat_lembur}"
-                            data-tanggal="${row.tanggal_berjalan}">
+                            data-istirahat="${row.jam_lembur_istirahat}"
+                            data-tanggal="${row.tgl_lembur}"
+                            data-jenis="${row.jenis}">
                     `;
                 }
             }
@@ -374,16 +373,16 @@ $(document).ready(function(){
             { data: 'no_form' },
             { data: 'enroll_id' },
             { data: 'employee_name' },
-            { data: 'tanggal_berjalan' },
-            { data: 'jumlah_jam_istirahat_lembur' },
-            { data: 'jumlah_jam_lembur' },
+            { data: 'tgl_lembur' },
+            { data: 'jam_lembur_istirahat' },
+
             {
                 data: null,
                 orderable: false,
                 render: function(row){
                     return `
                         <button type="button"
-                            onclick="btnDelete('${row.enroll_id}', '${row.tanggal_berjalan}', '${row.mulai_jam_lembur}', '${row.akhir_jam_lembur}')"
+                            onclick="btnDelete('${row.enroll_id}', '${row.no_form}', '${row.jam_lembur_awal_rencana}', '${row.jam_lembur_akhir_rencana}','${row.jenis}','${row.tgl_lembur}')"
                             class="btn btn-danger btn-sm">
                             <i class='fa fa-trash'></i>
                         </button>`
@@ -410,7 +409,7 @@ $(document).ready(function(){
     reloadAllTable();
 
     // ===== FILTER SPL =====
-    $('#nomor_form_lembur').on('keyup', function(){
+    $('#no_form').on('keyup', function(){
         reloadAllTable();
     });
 
@@ -419,15 +418,15 @@ $(document).ready(function(){
     $('#btn-simpan-istirahat').on('click', function(){
 
         let dataDiproses = [];
-
-        $('.cek-istirahat:not(:checked)').each(function(){
-            dataDiproses.push({
-                enroll_id: $(this).data('enroll'),
-                nomor_form_lembur: $(this).data('form'),
-                jam_istirahat: $(this).data('istirahat'),
-                tanggal_berjalan: $(this).data('tanggal')
-            });
+    $('.cek-istirahat:not(:checked)').each(function(){
+        dataDiproses.push({
+            enroll_id: $(this).data('enroll'),
+            no_form: $(this).data('form'),
+            jam_istirahat: $(this).data('istirahat'),
+            tgl_lembur: $(this).data('tanggal'),
+            jenis: $(this).data('jenis')
         });
+    });
 
         if(dataDiproses.length === 0){
             alert('Tidak ada jam istirahat yang dihapus');
@@ -465,18 +464,18 @@ $(document).ready(function(){
     // ===== PRINT =====
     $('#btn-print').on('click', function(){
         let tglAwal  = $('#tgl-awal').val();
-        let nomorForm = $('#nomor_form_lembur').val();
+        let nomorForm = $('#no_form').val();
 
         let url = "{{ route('flni.printNonIstirahat') }}"
             + "?tanggal=" + tglAwal
-            + "&nomor_form_lembur=" + nomorForm;
+            + "&no_form=" + nomorForm;
 
         window.open(url, '_blank');
     });
 
 });
- function btnDelete(enroll_id, tanggal, mulai_jam, akhir_jam) {
-    if (!confirm('Yakin ingin membatalkan Non Istirahat?\nJam lembur: ' + mulai_jam + ' - ' + akhir_jam)) return;
+ function btnDelete(enroll_id, no_form, jam_lembur_awal_rencana, jam_lembur_akhir_rencana,jenis,tgl_lembur) {
+    if (!confirm('Yakin ingin membatalkan Non Istirahat?\nJam lembur: ' + jam_lembur_awal_rencana + ' - ' + jam_lembur_akhir_rencana)) return;
 
     $.ajax({
         type: "POST",
@@ -484,9 +483,11 @@ $(document).ready(function(){
         data: {
             _token: "{{ csrf_token() }}",
             enroll_id: enroll_id,
-            tanggal: tanggal,
-            mulai_jam: mulai_jam,
-            akhir_jam: akhir_jam
+            no_form: no_form,
+            mulai_jam: jam_lembur_awal_rencana,
+            akhir_jam: jam_lembur_akhir_rencana,
+            jenis: jenis,
+            tanggal: tgl_lembur
         },
         success: function(res) {
             alert(res.message);

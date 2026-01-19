@@ -66,7 +66,7 @@
         @endphp
         <tr>
             <td colspan="2" class="text-bold">TANGGAL</td>
-           <td colspan="12">  : {{ $firstRow ? Carbon::parse($firstRow->tanggal_berjalan) ->locale('id')->translatedFormat('d F Y') : '-' }} </td> </tr>
+           <td colspan="12">  : {{ $firstRow ? Carbon::parse($firstRow->tgl_lembur) ->locale('id')->translatedFormat('d F Y') : '-' }} </td> </tr>
             {{-- <td colspan="5">: </td> --}}
         </tr>
 
@@ -82,11 +82,12 @@
 
         <tr>
             <th style="width: 30px;">No</th>
-            <th colspan="3">No Form</th>
+            <th colspan="2">No Form</th>
             <th colspan="2">NIK</th>
             <th colspan="3">Nama Karyawan</th>
-            <th colspan="3">Tanggal Lembur</th>
+            <th colspan="2">Tanggal Lembur</th>
             <th colspan="2">Bagian</th>
+             <th colspan="2">Tanda Tangan Realisasi</th>
         </tr>
         {{-- <tr>
             <th style="width: 30px;">No</th>
@@ -100,36 +101,65 @@
     </thead>
 
     <tbody>
-        @php $no = 1; @endphp
-        @forelse($data as $row)
+        @php
+            $no = 1;
+            $style = '';
+            $total = 1;
+            $rowCount = count($data);
+        @endphp
+
+        @forelse($data as $index => $row)
         <tr>
-            <td class="text-center">{{ $no++ }}</td>
-            <td colspan="3">{{ $row->nomor_form_lembur }}</td>
+            <td class="text-center">{{ $no }}</td>
+            <td colspan="2">{{ $row->nomor_form_lembur }}</td>
             <td colspan="2">{{ $row->nik }}</td>
             <td colspan="3">{{ $row->employee_name }}</td>
-            <td colspan="3" class="text-center">
-                {{ \Carbon\Carbon::parse($row->tanggal_berjalan)->format('d-m-Y') }}
+            <td colspan="2" class="text-center">
+                {{ \Carbon\Carbon::parse($row->tgl_lembur)->format('d-m-Y') }}
             </td>
             <td colspan="2">{{ $row->sub_dept_name }}</td>
+
+            {{-- Tampilkan kolom tanda tangan hanya pada baris ganjil (baris 1, 3, 5, dst) --}}
+            @if ($no % 2 == 1)
+                <td style="vertical-align: top;" rowspan="2">
+                    <span><small>{{ $total }}</small></span>
+                    @for ($i = 0; $i < 30; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+                <td style="vertical-align: top;" rowspan="2">
+                    <span><small>{{ $total + 1 }}</small></span>
+                    @for ($i = 0; $i < 30; $i++)
+                        &nbsp;
+                    @endfor
+                    @php
+                        $total += 2;
+                    @endphp
+                </td>
+            @endif
+
+            {{-- Increment no di akhir --}}
+            @php $no++; @endphp
         </tr>
-        {{-- @forelse($data as $row)
-        <tr>
-            <td class="text-center">{{ $no++ }}</td>
-            <td colspan="5">{{ $row->employee_name  }}</td>
-            <td colspan="4">{{ $row->nik }}</td>
-            <td colspan="4">{{ $row->sub_dept_name }}</td>
-         <td colspan="3" class="text-center">
-                {{ \Carbon\Carbon::parse($row->tanggal_berjalan)->format('d-m-Y') }}
-            </td>
-            <td colspan="2">{{ $row->sub_dept_name }}</td>
-        </tr> --}}
+
+        {{-- Jika ini adalah baris terakhir dan ganjil, tambahkan baris kosong untuk rowspan --}}
+        @if ($no > $rowCount && $no % 2 == 0)
+            <tr>
+                <td class="text-center">{{ $no }}</td>
+                <td colspan="2"></td>
+                <td colspan="2"></td>
+                <td colspan="3"></td>
+                <td colspan="2" class="text-center"></td>
+                <td colspan="2"></td>
+            </tr>
+        @endif
+
         @empty
         <tr>
             <td colspan="14" class="text-center">Data tidak ditemukan</td>
         </tr>
         @endforelse
     </tbody>
-
     <tfoot>
         <tr>
                 <td colspan="14" class="border-between">
