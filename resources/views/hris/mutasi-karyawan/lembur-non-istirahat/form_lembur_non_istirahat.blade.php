@@ -52,16 +52,19 @@
             <h5 class="mb-0"><i class="fas fa-clock"></i> Form Lembur Non Istirahat</h5>
         </div>
         <div class="card-body">
-            <div class="row mb-2">
+            <div class="row mb-2 align-items-end">
                 <div class="col-md-2">
                     <label><b>Tanggal Form</b></label>
                     <input type="text" id="daterange-btn1" class="form-control" readonly>
                     <input type="hidden" id="tgl-awal">
                     <input type="hidden" id="tgl-akhir">
                 </div>
+
                 <div class="col-md-4">
                     <label><b>Search SPL</b></label>
-                    <input type="text" id="no_form" class="form-control" placeholder="Nomor SPL / ID">
+                    <select class="form-control select2" id="no_form" name="no_form">
+                        <option value="">-- Pilih Nomor SPL --</option>
+                    </select>
                 </div>
             </div>
             <div class="table-responsive">
@@ -303,16 +306,56 @@ let tableResult;
 
 function reloadAllTable(){
     let tgl = $('#tgl-awal').val();
+    let spl = $('#no_form').val();
     if(!tgl) return;
 
     datatable.ajax.reload(null, false);
     tableResult.ajax.reload(null, false);
 }
+    $('#btn-cari').on('click', function () {
+        let tgl = $('#tgl-awal').val();
+        let spl = $('#no_form').val();
 
-function updateSingleDate(date){
-    $('#daterange-btn1').val(date.format('DD-MM-YYYY'));
-    $('#tgl-awal').val(date.format('YYYY-MM-DD'));
-}
+        if (!tgl) {
+            alert('Silakan pilih tanggal terlebih dahulu');
+            return;
+        }
+
+        if (!spl) {
+            alert('Silakan pilih Nomor SPL');
+            return;
+        }
+
+        datatable.ajax.reload(null, false);
+tableResult.ajax.reload(null, false); // 🔥 jalanin DataTable
+    });
+
+    function updateSingleDate(date){
+        $('#daterange-btn1').val(date.format('DD-MM-YYYY'));
+        $('#tgl-awal').val(date.format('YYYY-MM-DD'));
+
+        loadSPL();          // 🔥 ini kuncinya
+        reloadAllTable();
+    }
+    function loadSPL() {
+        let tgl = $('#tgl-awal').val();
+
+        $.ajax({
+            url: '{{ route("flni.getNoForm") }}',
+            data: { tanggal: tgl },
+            success: function(res){
+                let $spl = $('#no_form');
+                $spl.empty();
+                $spl.append(`<option value="">-- Pilih Nomor SPL --</option>`);
+
+                res.forEach(item => {
+                    $spl.append(`<option value="${item.no_form}">${item.no_form}</option>`);
+                });
+
+                $spl.trigger('change'); // refresh select2
+            }
+        });
+    }
 
 $(document).ready(function(){
 
@@ -320,6 +363,7 @@ $(document).ready(function(){
     datatable = $('#datatable').DataTable({
         processing: true,
         serverSide: true,
+        //  pageLength: 100,
         ajax: {
             url: '{{ route("flni.index") }}',
             data: function(d){
@@ -366,7 +410,7 @@ $(document).ready(function(){
             url: '{{ route("flni.dataNonIstirahat") }}',
             data: function(d){
                 d.tanggal = $('#tgl-awal').val();
-                d.nomor_form_lembur = $('#nomor_form_lembur').val();
+                d.no_form = $('#no_form').val();
             }
         },
         columns: [
@@ -382,7 +426,7 @@ $(document).ready(function(){
                 render: function(row){
                     return `
                         <button type="button"
-                            onclick="btnDelete('${row.enroll_id}', '${row.no_form}', '${row.jam_lembur_awal_rencana}', '${row.jam_lembur_akhir_rencana}','${row.jenis}','${row.tgl_lembur}')"
+                            onclick="btnDelete('${row.enroll_id}', '${row.no_form}', '${row.jam_lembur_awal_rencana}','${row.jam_lembur_akhir_rencana}','${row.jenis}','${row.tgl_lembur}')"
                             class="btn btn-danger btn-sm">
                             <i class='fa fa-trash'></i>
                         </button>`
@@ -409,9 +453,15 @@ $(document).ready(function(){
     reloadAllTable();
 
     // ===== FILTER SPL =====
-    $('#no_form').on('keyup', function(){
-        reloadAllTable();
-    });
+   $('#no_form').on('change', function () {
+    let tgl = $('#tgl-awal').val();
+    let spl = $(this).val();
+
+    if (!tgl || !spl) return;
+
+    datatable.ajax.reload(null, false);
+    tableResult.ajax.reload(null, false);
+});
 
 
     // ===== SIMPAN ISTIRAHAT =====

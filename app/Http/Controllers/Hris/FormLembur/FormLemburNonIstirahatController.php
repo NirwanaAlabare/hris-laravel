@@ -34,11 +34,15 @@ public function index(Request $request)
     $user_email = Auth::guard('admin')->user()->email;
 
     $tgl_awal = $request->tanggal ?? now()->format('Y-m-d');
+    $no_form = $request->no_form;
 
 
     if ($request->ajax()) {
 
     $tgl_awal = $request->tanggal ?? now()->format('Y-m-d');
+      if (empty($no_form)) {
+            return DataTables::of(collect())->make(true);
+        }
 
     // =======================
     // UNION QUERY
@@ -55,6 +59,7 @@ public function index(Request $request)
             DB::raw("'SEWING' as jenis")
         )
         ->whereDate('h.tgl_lembur', $tgl_awal)
+        ->where('h.no_form',$no_form)
 
         ->unionAll(
 
@@ -70,6 +75,7 @@ public function index(Request $request)
                     DB::raw("'NON SEWING' as jenis")
                 )
                 ->whereDate('h.tgl_lembur', $tgl_awal)
+                ->where('h.no_form',$no_form)
         );
 
     // =======================
@@ -80,9 +86,9 @@ public function index(Request $request)
     // =======================
     // FILTER SPL (FIX)
     // =======================
-    if ($request->no_form) {
-        $query->where('x.no_form', 'like', '%' . $request->no_form . '%');
-    }
+    // if ($request->no_form) {
+    //     $query->where('x.no_form', 'like', '%' . $request->no_form . '%');
+    // }
 
     return DataTables::of($query)
         ->filter(function ($query) {
@@ -160,17 +166,19 @@ public function get_dataLemburNonIstirahat(Request $request)
             'l.jam_lembur_awal_rencana',
             'l.jam_lembur_akhir_rencana',
             'l.jenis'
-        ]);
+        ])
+        ->whereDate('l.tgl_lembur', $tanggal)
+        ->where('l.no_form', $no_form);
 
     // 🔍 FILTER TANGGAL
-    if (!empty($tanggal)) {
-        $query->where('l.tgl_lembur', $tanggal);
-    }
+    // if (!empty($tanggal)) {
+    //     $query->where('l.tgl_lembur', $tanggal);
+    // }
 
-    // 🔍 FILTER NO FORM
-    if (!empty($no_form)) {
-        $query->where('l.no_form', $no_form);
-    }
+    // // 🔍 FILTER NO FORM
+    // if (!empty($no_form)) {
+    //     $query->where('l.no_form', $no_form);
+    // }
 
     // 🔎 DEBUG (kalau perlu)
     // dd($query->toSql(), $query->getBindings());
@@ -189,6 +197,27 @@ public function get_dataLemburNonIstirahat(Request $request)
             }
         })
         ->make(true);
+}
+public function getNoForm(Request $request)
+{
+    $tgl_awal = $request->tanggal;
+    $spl = DB::select("
+        SELECT DISTINCT no_form
+        FROM (
+            SELECT no_form
+            FROM mut_karyawan_input_form_lembur
+            WHERE DATE(tgl_lembur) = ?
+
+            UNION
+
+            SELECT no_form
+            FROM mut_karyawan_input_non_sewing_form_lembur
+            WHERE DATE(tgl_lembur) = ?
+        ) x
+        ORDER BY no_form
+    ", [$tgl_awal, $tgl_awal]);
+
+    return response()->json($spl);
 }
 
     private function waktuKeMenit($waktu)
@@ -440,7 +469,8 @@ public function hapusIstirahat(Request $request)
 public function printNonIstirahat(Request $request)
 {
     $tanggal = $request->tanggal;
-    $nomor_form_lembur = $request->nomor_form_lembur;
+    $nomor_form_lembur = $request->no_form;
+    // dd($nomor_form_lembur,$request->all());
 
     $subQuery = DB::raw("
         (
@@ -486,7 +516,7 @@ public function printNonIstirahat(Request $request)
     }
 
     if (!empty($nomor_form_lembur)) {
-        $query->where('l.no_form', 'like', "%$nomor_form_lembur%");
+        $query->where('l.no_form', $nomor_form_lembur);
     }
 
     $data = $query->get();
