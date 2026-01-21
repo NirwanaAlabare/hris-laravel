@@ -264,6 +264,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris', 'names
     Route::get('/flni/dataNonIstirahat', ['as' => 'flni.dataNonIstirahat', 'uses' => 'FormLembur\FormLemburNonIstirahatController@get_dataLemburNonIstirahat']);
     // Route::post('/flni/deleteNonIstirahat', ['as' => 'flni.deleteNonIstirahat', 'uses' => 'FormLembur\FormLemburNonIstirahatController@deleteNonIstirahat']);
     Route::post('/flni/deleteNonIstirahat', ['as' => 'flni.deleteNonIstirahat', 'uses' => 'FormLembur\FormLemburNonIstirahatController@deleteNonIstirahat']);
+    Route::get('/flni/getNoForm', ['as' => 'flni.getNoForm', 'uses' => 'FormLembur\FormLemburNonIstirahatController@getNoForm']);
 
 
     // ESTIMASI ANGGARAN MAKAN
