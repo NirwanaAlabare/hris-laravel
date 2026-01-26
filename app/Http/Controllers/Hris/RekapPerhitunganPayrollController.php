@@ -2806,7 +2806,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         2 => ['proc' => "CALL SP_CalculateOvertime(?, ?, ?, ?)", 'label' => 'Overtime'],
         3 => ['proc' => "CALL SP_CalculatePermission(?, ?,?)", 'label' => 'Permission'],
         4 => ['proc' => "CALL SP_CalculateLate(?, ?, ?,?)", 'label' => 'Late/Early '],
-        5 => ['proc' => "CALL SP_CalculateBpjs(?, ?, ?)", 'label' => 'BPJS'],
+        5 => ['proc' => "CALL SP_CalculateBpjs(?, ?, ?,?)", 'label' => 'BPJS'],
         6 => ['proc' => "CALL SP_CalculateSalary(?, ?, ?)", 'label' => 'Salary'],
     ];
 
@@ -2861,7 +2861,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     $params = [$start, $end, '', $enroll];
                     break;
                 case 5:
-                    $params = [$start, $end, $email];
+                    $params = [$start, $end, $email, $enroll];
                     break;
                 case 6:
                     $params = [$start, $end, ''];
