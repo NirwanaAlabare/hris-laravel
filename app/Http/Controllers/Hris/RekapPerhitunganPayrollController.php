@@ -2812,7 +2812,16 @@ class RekapPerhitunganPayrollController extends AdminBaseController
 
     public function runStep(Request $req)
     {
+        // Bypass limit (sementARA)
+        ini_set('memory_limit', '2048M'); // 2GB
         ini_set('max_execution_time', 0);
+        set_time_limit(0);
+
+        // optional tapi berguna kalau payload besar
+        ini_set('post_max_size', '512M');
+        ini_set('upload_max_filesize', '512M');
+
+
 
         $step = intval($req->step);
 
@@ -2846,7 +2855,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     $params = [$start, $end, $enroll, $email];
                     break;
                 case 3:
-                    $params = [$start, $end,$enroll];
+                    $params = [$start, $end, $enroll];
                     break;
                 case 4:
                     $params = [$start, $end, '', $enroll];
