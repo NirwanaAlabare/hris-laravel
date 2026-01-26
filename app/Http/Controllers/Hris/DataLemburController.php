@@ -282,7 +282,7 @@ class DataLemburController extends AdminBaseController
             return isset($match[1]) ? (int)$match[1] : 0;
         })->values();
 
-        return $sorted->take(1000);
+        return $sorted->take(10000);
     }
 
     public function ajax_getnomorspl_list(Request $request)

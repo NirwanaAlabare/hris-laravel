@@ -57,7 +57,7 @@
         <tr></tr> --}}
         <tr>
             <td colspan="2" class="text-center"><img height="40" src="{{ public_path('/assets/images/hrd/nag-logo.png') }}" alt="LOGO"></td>
-            <td colspan="12"class="text-center text-bold" >FORM PENGGESARAN WAKTU ISTIRAHAT</td>
+            <td colspan="12"class="text-center text-bold" >FORM PERGESERAN WAKTU ISTIRAHAT</td>
         </tr>
         <thead>
         @php

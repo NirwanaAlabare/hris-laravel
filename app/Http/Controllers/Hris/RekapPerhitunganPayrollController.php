@@ -1176,7 +1176,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
     public function export_excel_daily_labor()
     {
         ini_set('max_execution_time', 0);
-        ini_set('memory_limit', '1024M');
+        ini_set('memory_limit', '102400000000000M');
         $inEnrollId = '';
         $status_staff = request()->status_staff;
         $inStatusStaff = '';
@@ -1946,7 +1946,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
     public function proses_payroll_harian()
     {
         ini_set('max_execution_time', 0);
-        ini_set('memory_limit', '1024M');
+        ini_set('memory_limit', '10240000000000000000M');
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
         $ijin_bayar = RefAbsenIjin::where('kode_ijin_payroll', 'IBY')->get()->toArray();
@@ -2284,12 +2284,12 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $total_pembayaran = $jumlah + $bpjs_tk_company_total + $bpjs_ks_company_total + $thr_total + $thr_total + $uang_makan;
             } else {
                 $gaji_perhari = ($grading_salary->salary_bulanan) / $jumlah_hari_kerja;
-                $gaji_perhari_total = ($value->kode_hari != 5 && $value->kode_hari != 6) ? $gaji_perhari : 0;
+                $gaji_perhari_total = ( $value->kode_hari != 5 && $value->kode_hari != 6 && ($value->status_absen != 'LN' || ($value->status_absen == 'LN' && $value->nomor_form_lembur == null  ))) ? $gaji_perhari : 0;
                 $gaji_permenit = $gaji_perhari_total / 480;
                 $potongan_permenit = (($value->jumlah_menit_absen_dt + $value->jumlah_menit_absen_pc + $value->total_menit_permits) * $gaji_permenit);
                 $potongan_perhari = ((in_array($value->status_absen, $ITB) || $value->status_absen == 'M' || $value->status_absen == 'R') ? $gaji_perhari : 0);
                 $seniority_allowance = $tunjangan / $jumlah_hari_kerja;
-                $seniority_allowance_total = ($value->kode_hari != 5 && $value->kode_hari != 6) ? $tunjangan / $jumlah_hari_kerja : 0;
+                $seniority_allowance_total = ($value->kode_hari != 5 && $value->kode_hari != 6 && $value->status_absen != 'R') ? $tunjangan / $jumlah_hari_kerja : 0;
                 $bruto = ($value->kode_hari != 5 && $value->kode_hari != 6) ? (($gaji_perhari_total + $seniority_allowance_total + $insentif_kehadiran_total + $koreksi_upah + $insentif_jabatan_terpakai) - ($koreksi_potongan + $potongan_permenit + $potongan_perhari)) : (($potongan_permenit + $potongan_perhari));
                 $jumlah = $bruto - ($bpjs_tk_total + $bpjs_ks_total);
                 $pembulatan = (ceil($jumlah / 100) * 100) - $jumlah;
