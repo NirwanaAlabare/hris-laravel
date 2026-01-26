@@ -1130,7 +1130,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
     public function recap_labor_cost_2()
     {
         ini_set('max_execution_time', 0);
-        ini_set('memory_limit', '10240000000000000M');
+        ini_set('memory_limit', '1024M');
         $periode_kehadiran = request()->daterange;
         $arrperiode = explode(" s/d ", $periode_kehadiran);
         $tanggal_awal = $arrperiode[0];
@@ -1176,7 +1176,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
     public function export_excel_daily_labor()
     {
         ini_set('max_execution_time', 0);
-        ini_set('memory_limit', '10240000000000000000M');
+        ini_set('memory_limit', '1024M');
         $inEnrollId = '';
         $status_staff = request()->status_staff;
         $inStatusStaff = '';
@@ -1946,7 +1946,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
     public function proses_payroll_harian()
     {
         ini_set('max_execution_time', 0);
-        ini_set('memory_limit', '10240000000000000000M');
+        ini_set('memory_limit', '1024M');
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
         $ijin_bayar = RefAbsenIjin::where('kode_ijin_payroll', 'IBY')->get()->toArray();
@@ -2679,7 +2679,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         // Misal daterange formatnya "2025-11-01 - 2025-11-07"
         [$tanggal_awal, $tanggal_akhir] = explode(' s/d ', $daterange);
 
-        $nodeUrl = "http://10.10.5.2:8080/api/getLaborCostDaily/";
+        $nodeUrl = "http://localhost:8080/api/getLaborCostDaily/";
+        // $nodeUrl = "http://10.10.5.2:8080/api/getLaborCostDaily/";
         $client = new Client();
 
         try {
@@ -2845,10 +2846,10 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     $params = [$start, $end, $enroll, $email];
                     break;
                 case 3:
-                    $params = [$start, $end];
+                    $params = [$start, $end,$enroll];
                     break;
                 case 4:
-                    $params = [$start, $end, ''];
+                    $params = [$start, $end, '', $enroll];
                     break;
                 case 5:
                     $params = [$start, $end, $email];
