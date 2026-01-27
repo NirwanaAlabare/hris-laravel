@@ -271,19 +271,19 @@
             <div class="card-body pt-5 px-5 pb-7">
                 <form id="form_proses_payroll" method="post">
                     @csrf
-                    {{-- <div class="row">
+                    <div class="row">
                         <div class="col-3 pt-1">
                             <label class="form-label text-primary">PERIODE UMK</label>
                         </div>
                         <div class="col-4">
                             <select id="periode_umk" name="periode_umk" class="form-control PriodeUmk">
                                 <option value="" selected>PILIH PERIODE UMK</option>
-                                <option value="2024-01">UMK 2024 | 26 DES 2024 S/D 31 DES 2024</option>
-                                <option value="2025-01">UMK 2025 | 01 JAN 2025 S/D 25 JAN 2025</option>
-                                <option value="2024-2025">26 DES 2024 S/D 25 JAN 2025</option>
+                                <option value="2025-01">UMK 2025 | 26 DES 2025 S/D 31 DES 2025</option>
+                                <option value="2026-01">UMK 2026 | 01 JAN 2026 S/D 25 JAN 2026</option>
+                                <option value="2025-2026">26 DES 2025 S/D 25 JAN 2026</option>
                             </select>
                         </div>
-                    </div> --}}
+                    </div>
                     <div class="row pt-2">
                         <div class="col-3 pt-1">
                             <label class="form-label text-primary">SKEMA PAYROLL</label>
@@ -556,7 +556,7 @@
                     <select id="periode_umks" name="periode_umks" class="form-control form-control-sm">
                         <option value="">PERIODE UMK</option>
                         <option value="2024-01">UMK 2024</option>
-                        <option value="2025-12">UMK 2025</option>
+                        <option value="2025-01">UMK 2025</option>
                         <option value="2026-01">UMK 2026</option>
                     </select>
                 </div>

@@ -1164,7 +1164,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                 $sheet->getStyle('A2')->getFont()->setSize(16);
 
                 if ($this->periode_umk) {
-                    if ($this->periode_umk == '2025-12') {
+                    if ($this->periode_umk == '2025-01') {
                         $tanggal = '26 - 31 desember 2025';
                     } else if ($this->periode_umk == '2026-01') {
                         $tanggal = '01 - 25 januari 2026';
