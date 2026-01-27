@@ -3729,12 +3729,14 @@ $TanggalAkhir = $tanggal_akhir;
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ];
-                    $count = RekapPerhitunganIKS::where('tanggal_berjalan', $value->tanggal_berjalan)->where('periode_umk', $periode_umk)->where('enroll_id', $value->enroll_id)->count();
-                    if ($count) {
-                        RekapPerhitunganIKS::where('tanggal_berjalan', $value->tanggal_berjalan)->where('periode_umk', $periode_umk)->where('enroll_id', $value->enroll_id)->update($data_iks);
-                    } else {
-                        RekapPerhitunganIKS::create($data_iks);
-                    }
+                    RekapPerhitunganIKS::where('tanggal_berjalan', $value->tanggal_berjalan)->where('periode_umk', $periode_umk)->where('enroll_id', $value->enroll_id)->delete();
+                    DB::table('rekap_perhitungan_iks')->insert($data_iks);
+                    // $count = RekapPerhitunganIKS::where('tanggal_berjalan', $value->tanggal_berjalan)->where('periode_umk', $periode_umk)->where('enroll_id', $value->enroll_id)->count();
+                    // if ($count) {
+                    //     RekapPerhitunganIKS::where('tanggal_berjalan', $value->tanggal_berjalan)->where('periode_umk', $periode_umk)->where('enroll_id', $value->enroll_id)->update($data_iks);
+                    // } else {
+                    //     RekapPerhitunganIKS::create($data_iks);
+                    // }
                 }
 
                 //rekap dtpc
@@ -3780,7 +3782,7 @@ $TanggalAkhir = $tanggal_akhir;
                     $tunjangan_karyawan_2 = 0;
                     $premi_karyawan_insentif = 0;
                     if ($rekap_kehadiran != null) {
-                        $salary_bulanan_insentif = GradingSalary::where('kode_grade', $value->kode_grade)->where('periode_umk', '2024-01')->first()->insentif;
+                        $salary_bulanan_insentif = GradingSalary::where('kode_grade', $value->kode_grade)->where('periode_umk', '2025-12')->first()->insentif;
                         $premi_karyawan_insentif = ($salary_bulanan_insentif / 21) * ($rekap_kehadiran->kehadiran_ok + $rekap_kehadiran->kehadiran_dt + $rekap_kehadiran->kehadiran_pc + $rekap_kehadiran->kehadiran_dtpc);
                         // hitung selisih tahun antara tanggal masuk dan sekarang
                         $tanggal_masuk = $value->join_date;
@@ -3801,9 +3803,9 @@ $TanggalAkhir = $tanggal_akhir;
                         } else {
                             $tunjangan = 12500;
                         }
-                        if ($periode_umk == '2024-01') {
+                        if ($periode_umk == '2025-12') {
                             $tunjangan_karyawan_2 = 0;
-                        } else if ($periode_umk == '2025-01') {
+                        } else if ($periode_umk == '2026-01') {
                             $tunjangan_karyawan_2 = $tunjangan;
                             // $tunjangan_karyawan_2=(($tunjangan/($jumlah_hari_total-$jumlah_hari_sabtu_minggu_total))*($jumlah_hari-$jumlah_hari_sabtu_minggu));
                         }
