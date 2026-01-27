@@ -2679,8 +2679,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         // Misal daterange formatnya "2025-11-01 - 2025-11-07"
         [$tanggal_awal, $tanggal_akhir] = explode(' s/d ', $daterange);
 
-        $nodeUrl = "http://localhost:8080/api/getLaborCostDaily/";
-        // $nodeUrl = "http://10.10.5.2:8080/api/getLaborCostDaily/";
+        // $nodeUrl = "http://localhost:8080/api/getLaborCostDaily/";
+        $nodeUrl = "http://10.10.5.2:8080/api/getLaborCostDaily/";
         $client = new Client();
 
         try {
