@@ -556,7 +556,8 @@
                     <select id="periode_umks" name="periode_umks" class="form-control form-control-sm">
                         <option value="">PERIODE UMK</option>
                         <option value="2024-01">UMK 2024</option>
-                        <option value="2025-01">UMK 2025</option>
+                        <option value="2025-12">UMK 2025</option>
+                        <option value="2026-01">UMK 2026</option>
                     </select>
                 </div>
             </div>
@@ -1712,6 +1713,7 @@
                                     $("#BtnProsesPayroll").html('Please wait...');
                                     $("#BtnProsesPayroll").attr("disabled", true);
 
+
                                     $.ajax({
                                         data: $('#form_proses_payroll').serialize(),
                                         url: '{{ route("hris.proses.payroll.rekap") }}',
@@ -2147,14 +2149,14 @@
         });
 
         // -------------------------------------------------
-        // RECAP PAYROLL EXPORT FUNCTION        
+        // RECAP PAYROLL EXPORT FUNCTION
         function getRecapPayroll(){
             $.ajax({
                 type: 'POST',
-                url: '{{route('hris.rekapperhitunganpayroll.export_recap_payroll')}}',            
+                url: '{{route('hris.rekapperhitunganpayroll.export_recap_payroll')}}',
                 xhrFields: { responseType : 'blob' },
                 success:function(data){
-                    console.log(data);                    
+                    console.log(data);
                     var blob = new Blob([data]);
                     var link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
@@ -2167,16 +2169,16 @@
                     ('0' + now.getMinutes()).slice(-2) +
                     ('0' + now.getSeconds()).slice(-2);
 
-                    let file_name = 'Recap Salary ' + timestamp 
-  
+                    let file_name = 'Recap Salary ' + timestamp
+
                     link.download = file_name+".xlsx";
                     link.click();
                     swal("", "Recap Salary Export Success", "success");
-             
+
                 },
                 error: function(res){
                     swal("", "Recap Salary Export Failed", "error");
-              
+
                 }
             });
         }
@@ -2289,7 +2291,7 @@
                 buttons: [
                     'copy',
                     'csv',
-                    
+
                     // ========= EXCEL BUTTON (FIXED CONFIGURATION) =========
                     {
                         extend: 'excelHtml5', // ← TAMBAHKAN INI
@@ -2312,10 +2314,10 @@
                         customize: function(xlsx) {
                             // Optional: kustomisasi tambahan
                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                            
+
                             // Pastikan header memiliki style
                             $('row:first c', sheet).attr('s', '2'); // Style bold untuk header
-                            
+
                             // Atur lebar kolom otomatis
                             $('col', sheet).each(function() {
                                 $(this).attr('width', 15);
@@ -2329,7 +2331,7 @@
                             setTimeout(() => {
                                 if (isFinalSalary) {
                                     getRecapPayroll(); // ← CALL FUNCTION
-                                } 
+                                }
                                 else {
                                     // Pastikan DataTable memiliki header yang benar
                                     if (dt.context && dt.context[0]) {
@@ -2351,7 +2353,7 @@
                                             }
                                         });
                                     }
-                                    
+
                                     // Panggil action default
                                     $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, node, config);
                                 }
@@ -2362,7 +2364,7 @@
                             }, 1200);
                         }
                     },
-                    
+
                     'pdf',
                     'print'
                 ],
@@ -2379,7 +2381,7 @@
                                 const column = this;
                                 const header = $(column.header());
                                 const headerText = header.text().trim();
-                                
+
                                 // Jika kolom tidak punya title, set dari header HTML
                                 // if (!column.title() && headerText) {
                                 //     api.context[0].aoColumns[index].sTitle = headerText;
@@ -2403,8 +2405,8 @@
         }
 
         // -------------------------------------------------
-        // RECAP PAYROLL PROCESS HANDLER    
-     
+        // RECAP PAYROLL PROCESS HANDLER
+
         $('#runProcessBtn').on('click', function () {
 
             const skema = $('#skema_payroll').val();
@@ -2597,14 +2599,14 @@
                         { data: 'total_bpjs_tk', className: 'text-right' },
                         { data: 'total_bpjs_ks', className: 'text-right' },
                         { data: 'potongan', className: 'text-right' },
-                        { 
-                            data: 'jumlah', 
+                        {
+                            data: 'jumlah',
                             className: 'text-right font-weight-bold' // Pindahkan font-weight ke class
                         },
                         { data: 'jumlah_karyawan_sebelum', className: 'text-center' },
                         { data: 'jumlah_sebelum', className: 'text-right' },
-                        { 
-                            data: 'selisih_karyawan', 
+                        {
+                            data: 'selisih_karyawan',
                             className: 'text-center',
                             render: function(data) {
                                 if (data == 0 || data == null) return '-';
@@ -2613,8 +2615,8 @@
                                 return `<span style="color:${color}; font-weight:bold;"><i class="fas ${icon}"></i> ${Math.abs(data)}</span>`;
                             }
                         },
-                        { 
-                            data: 'selisih_gaji', 
+                        {
+                            data: 'selisih_gaji',
                             className: 'text-right',
                             render: function(data) {
                                 // if (data == 0 || data == null) return '-';
