@@ -3766,10 +3766,12 @@ public function index(Request $request)
                 }
 
                 //rekap payroll
-                $karyawan = EmployeeAtribut::selectRaw('employee_id,employee_name,jenis_kelamin,tempat_lahir,tanggal_lahir,golongan_darah,email,nomor_tlpn,agama,status_kawin,npwp,nomor_ktp,nomor_kk,ptkp,nama_sekolah_terakhir,pendidikan_terakhir,jurusan_pendidikan,nama_bank,nomor_rekening_bank,ibu_kandung,propinsi,kota_kab,kecamatan,kelurahan_desa,alamat_rumah,alamat_sementara,site_nirwana_id,site_nirwana_name,department_id,department_name,sub_dept_id,sub_dept_name,enroll_id,join_date,nik,status_aktif,status_jabatan,status_kontrak_tetap,status_staff,tanggal_resign,tunjangan,kode_grade,referensi,employee_name_atasan,status_aktif_bpjs_tk,tanggal_bpjs_ketenagakerjaan,nomor_bpjs_ketenagakerjaan,status_aktif_bpjs_ks,tanggal_bpjs_kesehatan,nomor_bpjs_kesehatan,pengalaman_bekerja,lokasi_file_cv,nama_kerabat,nomor_tlpn_kerabat,hubungan_kerabat,alamat_kerabat,tanggal_vaccine1,nama_vaksin1,tanggal_vaccine2,nama_vaksin2,tanggal_vaccine3,nama_vaksin3,golongan_sim,nomor_sim,tanggal_expire_sim,catatan,lokasi_foto,operator,tanggal_mulai_kontrak,tanggal_akhir_kontrak,catatan_kontrak,created_at,updated_at,deleted_at,shift_work_id,work_status,employee_status,posisi_name,hamlet,kode_pos,saudara_yang_bisa_dihubungi,allowance,pola_kerja')->whereRaw('((status_aktif="AKTIF" and join_date <= "' . $month_umk_last . '") or (tanggal_resign>"' . $tanggal_awal . '" and join_date <= "' . $month_umk_last . '" ))' . $inEnrollId . '')->get();
+                $karyawan = EmployeeAtribut::selectRaw('employee_id,MAX(employee_name) as employee_name,jenis_kelamin,tempat_lahir,tanggal_lahir,golongan_darah,email,nomor_tlpn,agama,status_kawin,npwp,nomor_ktp,nomor_kk,ptkp,nama_sekolah_terakhir,pendidikan_terakhir,jurusan_pendidikan,nama_bank,nomor_rekening_bank,ibu_kandung,propinsi,kota_kab,kecamatan,kelurahan_desa,alamat_rumah,alamat_sementara,site_nirwana_id,site_nirwana_name,department_id,department_name,sub_dept_id,sub_dept_name,enroll_id,join_date,nik,status_aktif,status_jabatan,status_kontrak_tetap,status_staff,tanggal_resign,tunjangan,kode_grade,referensi,employee_name_atasan,status_aktif_bpjs_tk,tanggal_bpjs_ketenagakerjaan,nomor_bpjs_ketenagakerjaan,status_aktif_bpjs_ks,tanggal_bpjs_kesehatan,nomor_bpjs_kesehatan,pengalaman_bekerja,lokasi_file_cv,nama_kerabat,nomor_tlpn_kerabat,hubungan_kerabat,alamat_kerabat,tanggal_vaccine1,nama_vaksin1,tanggal_vaccine2,nama_vaksin2,tanggal_vaccine3,nama_vaksin3,golongan_sim,nomor_sim,tanggal_expire_sim,catatan,lokasi_foto,operator,tanggal_mulai_kontrak,tanggal_akhir_kontrak,catatan_kontrak,created_at,updated_at,deleted_at,shift_work_id,work_status,employee_status,posisi_name,hamlet,kode_pos,saudara_yang_bisa_dihubungi,allowance,pola_kerja')->whereRaw('((status_aktif="AKTIF" and join_date <= "' . $month_umk_last . '") or (tanggal_resign>"' . $tanggal_awal . '" and join_date <= "' . $month_umk_last . '" ))' . $inEnrollId . '')
+                // dd($karyawan->toSql(), $karyawan->getBindings());
+                ->get();
                 foreach ($karyawan as $key => $value) {
                     $rekap_kehadiran = RekapPerhitunganKehadiranKaryawan::where('enroll_id', $value->enroll_id)->where('periode_payroll', $priode)->where('periode_umk', $periode_umk)->first();
-                    $rekap_lembur = RekapPerhitunganLembur::where('enroll_id', $value->enroll_id)->where('tanggal_berjalan', '>=', $month_umk_first)->where('tanggal_berjalan', '<=', $month_umk_last)->get();
+                    $rekap_lembur = RekapPerhitunganLembur::where('enroll_id', $value->enroll_id)->where('tanggal_berjalan', '>=', $month_umk_first)->where('tanggal_berjalan', '<=', $month_umk_last)->where('periode_umk', $periode_umk)->get();
                     $rekap_iks = RekapPerhitunganIKS::where('enroll_id', $value->enroll_id)->where('tanggal_berjalan', '>=', $month_umk_first)->where('tanggal_berjalan', '<=', $month_umk_last)->get();
                     $rekap_dtpc = RekapPerhitunganDTPC::where('enroll_id', $value->enroll_id)->where('tanggal_berjalan', '>=', $month_umk_first)->where('tanggal_berjalan', '<=', $month_umk_last)->get();
                     $Bpjs = EmployeeBpjs::where('enroll_id', $value->enroll_id)->where('periode_kehadiran', $priode)->first();
@@ -3908,7 +3910,7 @@ public function index(Request $request)
                         ];
                     }
                 }
-
+                // dd($data);
                 foreach ($data as $k => $v) {
                     $upah_per_bulan = $v['upah_per_hari'] * $v['jumlah_hari_kerja'];
                     $upah_bruto_rupiah = ($upah_per_bulan + $v['tunjangan_karyawan_rupiah'] + $v['premi_karyawan'] + $v['total_lembur_rupiah'] + $v['pendapatan_lainnya_rupiah'] + $v['koreksi_upah_rupiah']) - ($v['koreksi_potongan_rupiah'] + $v['potongan_iks_rupiah'] + $v['potongan_dtpc_rupiah'] + $v['potongan_kehadiran_rupiah']) - $v['pph21'];
@@ -4267,6 +4269,7 @@ public function index(Request $request)
                     $koreksi_potongan_rupiah_mandiri = $koreksi_potongan_mandiri->sum('jumlah_rp_potongan') ?? 0;
                     $potongan_iks_rupiah_mandiri = RekapPerhitunganPayroll::where('enroll_id', $value->enroll_id)->where('periode_tahun_payroll', '2026')->where('periode_umk', '!=', '')->where('periode_bulan_payroll', '01')->sum('potongan_iks_rupiah');
                     $potongan_dtpc_rupiah_mandiri = RekapPerhitunganPayroll::where('enroll_id', $value->enroll_id)->where('periode_tahun_payroll', '2026')->where('periode_umk', '!=', '')->where('periode_bulan_payroll', '01')->sum('potongan_dtpc_rupiah');
+                    $gajipokok = RekapPerhitunganPayroll::where('enroll_id', $value->enroll_id)->where('periode_tahun_payroll', '2026')->where('periode_umk', '!=', '')->where('periode_bulan_payroll', '01')->value('upah_per_bulan');
                     $potongan_kehadiran_rupiah_mandiri = RekapPerhitunganPayroll::where('enroll_id', $value->enroll_id)->where('periode_tahun_payroll', '2026')->where('periode_umk', '!=', '')->where('periode_bulan_payroll', '01')->sum('potongan_kehadiran_rupiah');
 
                     $upah_hari_kerja_total = $upah_hari_kerja_mandiri_1 + $upah_hari_kerja_mandiri_2;
@@ -4342,7 +4345,7 @@ public function index(Request $request)
                         'sub_dept_id' => $value->sub_dept_id,
                         'tunjangan_karyawan_rupiah' => $tunjangan_mandiri,
                         'premi_karyawan' => $value->premi_karyawan,
-                        'upah_per_bulan' => $upah_hari_kerja_total,
+                        'upah_per_bulan' => $gajipokok,
                         'upah_per_hari' => $value->upah_per_hari,
                         'upah_per_menit' => $value->upah_per_menit,
 
@@ -4383,7 +4386,7 @@ public function index(Request $request)
                         'potongan_iks_rupiah' => RekapPerhitunganPayroll::where('enroll_id', $value->enroll_id)->where('periode_tahun_payroll', '2026')->where('periode_umk', '!=', '')->where('periode_bulan_payroll', '01')->sum('potongan_iks_rupiah'),
                         'potongan_dt_menit' => RekapPerhitunganPayroll::where('enroll_id', $value->enroll_id)->where('periode_tahun_payroll', '2026')->where('periode_umk', '!=', '')->where('periode_bulan_payroll', '01')->sum('potongan_dt_menit'),
                         'potongan_dt_rupiah' => RekapPerhitunganPayroll::where('enroll_id', $value->enroll_id)->where('periode_tahun_payroll', '2026')->where('periode_umk', '!=', '')->where('periode_bulan_payroll', '01')->sum('potongan_dt_rupiah'),
-                        'potongan_pc_menit' => RekapPerhitunganPayroll::where('enroll_id', $value->enroll_id)->where('periode_tahun_payroll', '2026')->where('periode_umk', '!=', '')->where('periode_bulan_payroll', '01')->sum('potongan_pc_rupiah'),
+                        'potongan_pc_menit' => RekapPerhitunganPayroll::where('enroll_id', $value->enroll_id)->where('periode_tahun_payroll', '2026')->where('periode_umk', '!=', '')->where('periode_bulan_payroll', '01')->sum('potongan_pc_menit'),
                         'potongan_pc_rupiah' => RekapPerhitunganPayroll::where('enroll_id', $value->enroll_id)->where('periode_tahun_payroll', '2026')->where('periode_umk', '!=', '')->where('periode_bulan_payroll', '01')->sum('potongan_pc_rupiah'),
                         'potongan_dtpc_menit' => RekapPerhitunganPayroll::where('enroll_id', $value->enroll_id)->where('periode_tahun_payroll', '2026')->where('periode_umk', '!=', '')->where('periode_bulan_payroll', '01')->sum('potongan_dtpc_menit'),
                         'potongan_dtpc_rupiah' => RekapPerhitunganPayroll::where('enroll_id', $value->enroll_id)->where('periode_tahun_payroll', '2026')->where('periode_umk', '!=', '')->where('periode_bulan_payroll', '01')->sum('potongan_dtpc_rupiah'),
