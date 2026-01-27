@@ -471,7 +471,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         } else {
             $potongan_kehadiran_rupiah = $Data->potongan_kehadiran_rupiah;
         }
-        
+
         if ($Data->upah_bruto_rupiah == 0) {
             $upah_bruto_rupiah = '0';
         } else {
@@ -1164,10 +1164,10 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                 $sheet->getStyle('A2')->getFont()->setSize(16);
 
                 if ($this->periode_umk) {
-                    if ($this->periode_umk == '2023-10') {
-                        $tanggal = '26 - 31 desember 2023';
-                    } else if ($this->periode_umk == '2024-01') {
-                        $tanggal = '01 - 25 januari 2023';
+                    if ($this->periode_umk == '2025-12') {
+                        $tanggal = '26 - 31 desember 2025';
+                    } else if ($this->periode_umk == '2026-01') {
+                        $tanggal = '01 - 25 januari 2026';
                     }
                 } else {
                     setlocale(LC_ALL, 'id-ID', 'id_ID');
