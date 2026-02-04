@@ -329,6 +329,14 @@ function reloadAllTable(){
         datatable.ajax.reload(null, false);
 tableResult.ajax.reload(null, false); // 🔥 jalanin DataTable
     });
+        $(document).ready(function () {
+        $('#no_form').select2({
+            placeholder: '-- Pilih Nomor SPL --',
+            allowClear: true,
+            width: '100%'
+        });
+        loadSPL();
+    });
 
     function updateSingleDate(date){
         $('#daterange-btn1').val(date.format('DD-MM-YYYY'));
@@ -356,6 +364,7 @@ tableResult.ajax.reload(null, false); // 🔥 jalanin DataTable
             }
         });
     }
+
 
 $(document).ready(function(){
 

@@ -200,9 +200,13 @@ public function get_dataLemburNonIstirahat(Request $request)
 }
 public function getNoForm(Request $request)
 {
+    $user = Auth::guard('admin')->user()->name;
+    $user_email = Auth::guard('admin')->user()->email;
+    // dd($user_email,$user);
     $tgl_awal = $request->tanggal;
-    $spl = DB::select("
-        SELECT DISTINCT no_form
+     if($user=='HR' || $user=='IT' || $user_email == 'mega@ptnag.com' || $user_email == 'rudy@ptnag.com' || $user_email == 'dev_hris' || $user_email == 'indri@nag.nirwanaindonesia.com' || $user_email == 'ersa@ptnag.com'){
+        $spl = DB::select("
+            SELECT DISTINCT no_form
         FROM (
             SELECT no_form
             FROM mut_karyawan_input_form_lembur
@@ -216,6 +220,25 @@ public function getNoForm(Request $request)
         ) x
         ORDER BY no_form
     ", [$tgl_awal, $tgl_awal]);
+    }else{
+
+        $spl = DB::select("
+        SELECT DISTINCT no_form
+        FROM (
+            SELECT no_form
+            FROM mut_karyawan_input_form_lembur
+            WHERE created_by = ? AND DATE(tgl_lembur) = ?
+
+            UNION
+
+            SELECT no_form
+            FROM mut_karyawan_input_non_sewing_form_lembur
+            WHERE created_by = ? AND DATE(tgl_lembur) = ?
+        ) x
+        ORDER BY no_form
+    ", [$user_email,$tgl_awal,$user_email,$tgl_awal]);
+
+    }
 
     return response()->json($spl);
 }
