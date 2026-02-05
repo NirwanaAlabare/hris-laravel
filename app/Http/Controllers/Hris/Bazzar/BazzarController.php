@@ -127,7 +127,7 @@ class BazzarController extends AdminBaseController
             }
 
             // Hapus DataKoreksiPotongan
-            $periode_tanggal_koreksi = '02/26/2025 - 03/25/2025';
+            $periode_tanggal_koreksi = '02/26/2026 - 03/25/2026';
             DataKoreksiPotongan::whereIn('enroll_id', [$pengajuan->enroll_id])
                 ->where('jenis_potongan', 3)
                 ->where('periode_tanggal_koreksi', $periode_tanggal_koreksi)
@@ -163,7 +163,7 @@ class BazzarController extends AdminBaseController
         }
         if($request->status == 'approve'){
             VoucherBazzar::whereIn('id_pengajuan_bazzar', $data_tmp->pluck('id'))->delete();
-            $periode_tanggal_koreksi = '02/26/2025 - 03/25/2025';
+            $periode_tanggal_koreksi = '02/26/2026 - 03/25/2026';
             DataKoreksiPotongan::whereIn('enroll_id', $data_tmp->pluck('enroll_id'))->where('jenis_potongan', 3)->where('periode_tanggal_koreksi', $periode_tanggal_koreksi)->delete();
         }
         PengajuanBazzar::whereIn('id', $data_tmp->pluck('id'))->delete();
@@ -190,12 +190,18 @@ class BazzarController extends AdminBaseController
     }
     public function get_bazzar_detail(Request $request)
     {
+
+        // dd($request->all());
         $user = Auth::guard('admin')->user()->name;
         $user_email = Auth::guard('admin')->user()->email;
 
         if ($request->ajax()) {
             $status = $request->status;
             $search = $request->search; // Ambil input pencarian
+            if ($request->filled('tanggal_pengajuan')) {
+                $tahun = Carbon::parse($request->tanggal_pengajuan)->year;
+            }
+            // dd($tahun);
 
             if ($status === "waiting_list") {
                 $status = "pending";
@@ -215,7 +221,7 @@ class BazzarController extends AdminBaseController
                 'pengajuan_bazzar.sub_dept_id',
                 'pengajuan_bazzar.department_name'
             )
-            ->where('pengajuan_bazzar.status', $status)
+            ->where('pengajuan_bazzar.status', $status)->whereYear('pengajuan_bazzar.tanggal_pengajuan', $tahun)
             ->groupBy('pengajuan_bazzar.tanggal_pengajuan',  'pengajuan_bazzar.sub_dept_id')
             ->orderBy('pengajuan_bazzar.tanggal_pengajuan', 'ASC');
 
@@ -331,7 +337,7 @@ class BazzarController extends AdminBaseController
 
                     $nextVoucherNumber++;
                 }
-                $periode_tanggal_koreksi = '02/26/2025 - 03/25/2025';
+                $periode_tanggal_koreksi = '02/26/2026 - 03/25/2026';
 
                 $exists = DataKoreksiPotongan::where('enroll_id', $pengajuan->enroll_id)
                 ->where('periode_tanggal_koreksi', $periode_tanggal_koreksi)
@@ -441,7 +447,7 @@ class BazzarController extends AdminBaseController
                 return response()->json(['status' => 'error', 'message' => 'Anda tidak memiliki izin untuk mengedit data yang sudah di-approve']);
             }
 
-            $periode_tanggal_koreksi = '02/26/2025 - 03/25/2025';
+            $periode_tanggal_koreksi = '02/26/2026 - 03/25/2026';
             $dataKoreksi = DataKoreksiPotongan::where('enroll_id', $pengajuan->enroll_id)
             ->where('periode_tanggal_koreksi', $periode_tanggal_koreksi)
             ->where('jenis_potongan', 3)
@@ -545,7 +551,7 @@ class BazzarController extends AdminBaseController
                 ->orderBy('voucher_bazzar.enroll_id', 'ASC')
                 ->get();
             }else{
-                $data = VoucherBazzar::leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'voucher_bazzar.enroll_id')->leftJoin('pengajuan_bazzar', 'pengajuan_bazzar.enroll_id', '=', 'voucher_bazzar.enroll_id')->where('pengajuan_bazzar.sub_dept_id', request()->sub_dept_id)->where('pengajuan_bazzar.tanggal_pengajuan', request()->tanggal)
+                $data = VoucherBazzar::leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'voucher_bazzar.enroll_id')->leftJoin('pengajuan_bazzar', 'pengajuan_bazzar.enroll_id', '=', 'voucher_bazzar.enroll_id')->where('pengajuan_bazzar.sub_dept_id', request()->sub_dept_id)->where('pengajuan_bazzar.tanggal_pengajuan', request()->tanggal)->where('pengajuan_bazzar.status', 'approve')
                 ->orderBy('employee_atribut.employee_name', 'ASC')
                 ->get();
             }

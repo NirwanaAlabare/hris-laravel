@@ -119,7 +119,7 @@
                                 </a>
                             </div>
                             @endif
-                            @if ($modul=='general_affair, administrasi' || $modul=='all' || $modul == 'attendance_payroll_general_affair_administrasi')
+                            @if ($modul=='general_affair, administrasi' || $modul=='all' || $modul == 'attendance_payroll_general_affair_administrasi'||$email == 'steven')
                             <div class="col">
                                 <a href="{{route('hris.mutasi-karyawan.dashboard')}}">
                                 <div class="card card-4">

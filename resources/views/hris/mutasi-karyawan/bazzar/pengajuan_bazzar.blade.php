@@ -94,7 +94,8 @@
                     <div class="d-flex mb-4 align-items-end">
                         <div class="">
                             <label class="form-label"><small><b>Tanggal Pengajuan</b></small></label>
-                            <div class="col pl-0"><input value="{{ date('Y-m-d') }}" type="date" class="form-control form-control-md " readonly style="background-color:white"></div>
+                            <div class="col pl-0"><input id="tanggal_pengajuan"
+    name="tanggal_pengajuan" value="{{ date('Y-m-d') }}" type="date" class="form-control form-control-md " readonly style="background-color:white"></div>
                         </div>
                     </div>
                 </div>
@@ -720,6 +721,7 @@ function toggleOutside(source) {
                     dataSrc: "data",
                     data: function(d) {  // Kirim parameter tambahan ke backend
                         d.status = status;
+                        d.tanggal_pengajuan = $('#tanggal_pengajuan').val();
                         d.search = $('div.dataTables_filter input').val();
                     },
                 },

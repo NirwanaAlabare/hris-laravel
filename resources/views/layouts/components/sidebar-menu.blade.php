@@ -75,8 +75,12 @@
         }
         @endphp
         @php
+<<<<<<< HEAD
         if ($loggedAdmin->role_user == "absensi" || ($loggedAdmin->email != "reza" && $loggedAdmin->role_user ==
         "superadmin")) {
+=======
+        if ($loggedAdmin->role_user == "absensi" || ($loggedAdmin->email != "reza" && $loggedAdmin->role_user == "superadmin"  )|| $loggedAdmin->email == "steven") {
+>>>>>>> 08aaf6b09c2f2515607565927c2a1d9c4dd876f4
         @endphp
         <li class="slide">
             <a class="side-menu__item" data-toggle="slide" href="#">
