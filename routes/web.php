@@ -81,11 +81,11 @@ Route::prefix('hris')->group(function () {
     )->name('hris.attendance.ajaxEmployeeList');
 
     // delete dari mesin
-    // Route::post('/attendance/delete-employee-machine', [AttendancesController::class, 'deleteEmployeeFromMachine'])
-    //     ->name('hris.attendance.deleteEmployeeFromMachine');
+    Route::post('/attendance/delete-employee-machine', [AttendancesController::class, 'deleteEmployeeFromMachine'])
+        ->name('hris.attendance.deleteEmployeeFromMachine');
 
-    // Route::post('/attendance/check-employee-machine', [AttendancesController::class, 'checkEmployeeOnMachine'])
-    //     ->name('hris.attendance.checkEmployeeOnMachine');
+    Route::post('/attendance/check-employee-machine', [AttendancesController::class, 'checkEmployeeOnMachine'])
+        ->name('hris.attendance.checkEmployeeOnMachine');
 });
 
 
