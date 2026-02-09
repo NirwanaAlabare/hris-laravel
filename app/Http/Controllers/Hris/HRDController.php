@@ -1071,7 +1071,7 @@ public function new_employee_contract()
     $exists = DB::table('employee_contract')
         ->where('enroll_id', $enroll_id)
         ->whereDate('contract', '<=', $contract)
-        ->whereDate('contract_end', '>=', $contract)
+        ->whereDate('contract_end', '>', $contract)
         ->exists();
 
     if ($exists) {
@@ -1097,10 +1097,12 @@ public function new_employee_contract()
             'tanggal_akhir_kontrak' => $end_contract,
         ]);
 
-    return response()->json([
-        'message' => 'Kontrak berhasil dibuat',
-        'enroll_id' => $enroll_id
-    ]);
+         return $enroll_id;
+
+    // return response()->json([
+    //     'message' => 'Kontrak berhasil dibuat',
+    //     'enroll_id' => $enroll_id
+    // ]);
 }
 
     public function delete_employee_contract(){
@@ -1607,7 +1609,7 @@ foreach ($data as $item) {
     $jumlah_bulan = $start->diffInMonths($pksAkhir); // bulan penuh
     $sisa_hari    = $start->copy()->addMonths($jumlah_bulan)->diffInDays($pksAkhir);
 
-    if ($jumlah_bulan == 0 && $sisa_hari < 28) {
+    if ($jumlah_bulan == 0 && $sisa_hari < 25) {
         // Masa kerja kurang dari 1 bulan
         $jumlah_bulan = 0;
     } elseif ($sisa_hari > 0) {
