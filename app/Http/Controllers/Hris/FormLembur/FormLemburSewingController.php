@@ -804,9 +804,12 @@ class FormLemburSewingController extends AdminBaseController
         $bulan_sekarangs=substr($tanggal_sekarang,5,2);
         $tahun_sekarangs=substr($tanggal_sekarang,0,4);
         $bulan_sekarang=$tahun_sekarangs.'-'.$bulan_sekarangs.'-'.'26';
-        $bulan_sekarang=date('Y-'.$bulan_sekarangs.'-'.'26');
-        $bulan_sebelum=date('Y-m-d',strtotime( "-1 month", strtotime( $bulan_sekarang ) ));
-        $bulan_setelah=date('Y-m-d',strtotime( "+1 month", strtotime( $bulan_sekarang ) ));
+        // $bulan_sekarang=date('Y-'.$bulan_sekarangs.'-'.'26');
+        // $bulan_sebelum=date('Y-m-d',strtotime( "-1 month", strtotime( $bulan_sekarang ) ));
+        // $bulan_setelah=date('Y-m-d',strtotime( "+1 month", strtotime( $bulan_sekarang ) ));
+        $bulan_sekarang = $tahun_sekarangs.'-'.$bulan_sekarangs.'-26';
+        $bulan_sebelum  = date('Y-m-d', strtotime("-1 month", strtotime($bulan_sekarang)));
+        $bulan_setelah  = date('Y-m-d', strtotime("+1 month", strtotime($bulan_sekarang)));
         if($tanggal_sekarang>=$bulan_sekarang && $tanggal_sekarang<$bulan_setelah){
             $tanggal_awal=$bulan_sekarang;
         }else if($tanggal_sekarang>=$bulan_sebelum && $tanggal_sekarang<$bulan_sekarang){

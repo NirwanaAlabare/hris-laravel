@@ -1071,7 +1071,7 @@ public function new_employee_contract()
     $exists = DB::table('employee_contract')
         ->where('enroll_id', $enroll_id)
         ->whereDate('contract', '<=', $contract)
-        ->whereDate('contract_end', '>=', $contract)
+        ->whereDate('contract_end', '>', $contract)
         ->exists();
 
     if ($exists) {
@@ -1097,10 +1097,12 @@ public function new_employee_contract()
             'tanggal_akhir_kontrak' => $end_contract,
         ]);
 
-    return response()->json([
-        'message' => 'Kontrak berhasil dibuat',
-        'enroll_id' => $enroll_id
-    ]);
+         return $enroll_id;
+
+    // return response()->json([
+    //     'message' => 'Kontrak berhasil dibuat',
+    //     'enroll_id' => $enroll_id
+    // ]);
 }
 
     public function delete_employee_contract(){
@@ -1602,18 +1604,38 @@ foreach ($data as $item) {
     $item->days   = $diff->d;
 
     /* ===============================
-    * Hitung jumlah bulan sesuai kontrak
-    * =============================== */
-    $jumlah_bulan = $start->diffInMonths($pksAkhir); // bulan penuh
-    $sisa_hari    = $start->copy()->addMonths($jumlah_bulan)->diffInDays($pksAkhir);
+        * Hitung jumlah bulan sesuai kontrak
+        * =============================== */
+    $bulan_penuh = $start->diffInMonths($pksAkhir);
+    $after_month = $start->copy()->addMonths($bulan_penuh);
+    $sisa_hari   = $after_month->diffInDays($pksAkhir);
 
-    if ($jumlah_bulan == 0 && $sisa_hari < 28) {
-        // Masa kerja kurang dari 1 bulan
-        $jumlah_bulan = 0;
-    } elseif ($sisa_hari > 0) {
-        // Jika ada sisa hari lebih dari 0 → hitung sebagai 1 bulan tambahan
-        $jumlah_bulan += 1;
-    }
+    /*
+    |--------------------------------------------------------------------------
+    | LOGIKA FINAL JUMLAH BULAN
+    |--------------------------------------------------------------------------
+    | - Ada resign + sisa < 30 hari  => 0
+    | - Tidak resign                => pembulatan normal
+    | - sisa >= 30 hari             => +1 bulan
+    */
+
+    if ($resignDate && $resignDate->lt($contractEnd)) {
+        // KARYAWAN RESIGN
+        if ($sisa_hari < 30) {
+            $jumlah_bulan = $bulan_penuh;
+        } else {
+            $jumlah_bulan = $bulan_penuh + 1;
+        }
+    } else {
+        // TIDAK RESIGN (kontrak normal)
+        if ($bulan_penuh == 0 && $sisa_hari > 0) {
+            $jumlah_bulan = 1;
+        } elseif ($bulan_penuh > 0 && $sisa_hari > 0) {
+            $jumlah_bulan = $bulan_penuh + 1;
+        } else {
+            $jumlah_bulan = $bulan_penuh;
+        }
+        }
     // Hitung kompensasi
     $total_penghasilan_bulanan = $umk + $tunjangan;
     $total_kompensasi = ($jumlah_bulan < 1) ? 0 : (($total_penghasilan_bulanan / 12) * $jumlah_bulan);

@@ -45,6 +45,11 @@ class KoreksiUpahController extends AdminBaseController
 
     public function index()
     {
+        // $this->periode_payroll = DB::table('periode_payroll')
+        //     ->selectRaw("CONCAT(tgl_mulai, ' s/d ', tgl_selesai) AS periode_payroll, tgl_mulai, tgl_selesai")
+        //     ->where('tgl_mulai', '<=', now()) // periode ke depan tidak diambil
+        //     ->orderBy('tgl_mulai', 'desc')
+        //     ->get();
         $this->periode_payroll = $this->ajax_getperiode();
         $departments=DepartmentAll::where('site_nirwana_id','NAG')->where('status','AKTIF')->groupBy('department_name')->get();
         $data_priode=DataKoreksiUpah::groupBy('periode_tanggal_koreksi')->orderBy('tanggal_koreksi', 'desc')->get();
@@ -505,7 +510,7 @@ class KoreksiUpahController extends AdminBaseController
                 from mut_karyawan_input_form_lembur_det a
                 inner join mut_karyawan_input_form_lembur b
                     on a.no_form = b.no_form
-                where b.tgl_lembur = '$tanggal_lembur'
+                where b.tgl_lembur = '$tanggal_lembur' and a.deleted_at is null
 
                 union all
 
@@ -569,6 +574,7 @@ class KoreksiUpahController extends AdminBaseController
                     m.nomor_form_lembur,
                     m.status_absen,
                     m.absen_pulang_kerja
+
                 from mut_karyawan_input_form_lembur_det a
                 inner join mut_karyawan_input_form_lembur b
                     on a.no_form = b.no_form
@@ -582,6 +588,7 @@ class KoreksiUpahController extends AdminBaseController
                 left join mut_karyawan_input_non_sewing_form_lembur_det ns on b.no_form = ns.no_form
                 where b.tgl_lembur = '$tanggal_lembur'
                 and b.no_form = '$no_form'
+                and a.deleted_at is null
                 and a.uuid_koreksi_upah is not null
                 and a.uuid_koreksi_upah != ''
 
