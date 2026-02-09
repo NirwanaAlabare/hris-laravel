@@ -101,6 +101,7 @@ class EmployeeAtribut extends \Eloquent
         'rt',
         'rw',
         'no_fptk',
+        'isDeletedInMachine',
     ];
     protected $guarded = ['employee_id'];
 

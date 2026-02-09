@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Jmrashed\Zkteco\Lib\ZKTeco;
 
 
@@ -34,7 +35,7 @@ use Jmrashed\Zkteco\Lib\ZKTeco;
 class AttendancesController extends AdminBaseController
 {
 
-
+    private $zkApi = 'http://10.10.5.60:1122';
     public function __construct()
     {
         parent::__construct();
@@ -273,7 +274,14 @@ class AttendancesController extends AdminBaseController
 
     public function ajaxEmployeeList(Request $request)
     {
-        $query = EmployeeAtribut::query(); // Ganti dengan Model Anda
+        $query = EmployeeAtribut::select([
+            'employee_id',
+            'enroll_id',
+            'employee_name',
+            'department_name',
+            'status_aktif',
+            'isDeletedInMachine'
+        ]);
 
         // Logika Filter
         if ($request->has('department') && $request->department != '') {
@@ -301,7 +309,7 @@ class AttendancesController extends AdminBaseController
         if (!$conn) abort(500, 'ODBC connection failed');
 
         $machines = [];
-        $sql = "SELECT  ID, MachineAlias, IP FROM Machines ";
+        $sql = "SELECT  ID, MachineAlias, IP FROM Machines -- where ip='192.168.0.245'";
         $query = \odbc_exec($conn, $sql);
 
         ini_set('max_execution_time', 0);
@@ -314,12 +322,12 @@ class AttendancesController extends AdminBaseController
             // $zk = new ZKTeco($ip, 4370);
             // $status = @$zk->connect();
 
-            // Coba Method 2: Jika Library gagal, cek via UDP Socket manual
+            // // Coba Method 2: Jika Library gagal, cek via UDP Socket manual
             // if (!$status) {
             //     $status = $this->checkUdpStatus($ip);
             // }
 
-            // Coba Method 3: Jika masih gagal, cek via ICMP (Ping)
+            // // Coba Method 3: Jika masih gagal, cek via ICMP (Ping)
             // if (!$status) {
             $status = $this->pingMachine($ip);
             // }
@@ -395,7 +403,7 @@ class AttendancesController extends AdminBaseController
         return $result !== false;
     }
 
-    public function deleteEmployeeFromMachine(Request $request)
+    public function _deleteEmployeeFromMachine(Request $request)
     {
         $request->validate([
             'enroll_ids' => 'required|array',
@@ -405,6 +413,7 @@ class AttendancesController extends AdminBaseController
         $enrollIds = $request->enroll_ids;
         $ips = $request->machine_ids;
         $results = [];
+        $successEnrollIds = [];
 
         // --- BAGIAN 1: HAPUS DI DATABASE ODBC ---
         $conn = @\odbc_connect("att_hris", "server", "alabare");
@@ -443,8 +452,11 @@ class AttendancesController extends AdminBaseController
                 if ($zk->connect()) {
                     $zk->disableDevice();
                     foreach ($enrollIds as $enrollId) {
-                        $zk->removeUser($enrollId); // Hapus User & Finger di mesin
+                        //$zk->removeUser($enrollId); // Hapus User & Finger di mesin
                         // Note: clearAttendance() hanya jika ingin hapus SEMUA log di mesin
+                        if ($zk->removeUser($enrollId)) {
+                            $successEnrollIds[] = $enrollId; // Tandai untuk update DB Laravel
+                        }
                     }
                     $zk->enableDevice();
                     $zk->disconnect();
@@ -457,11 +469,625 @@ class AttendancesController extends AdminBaseController
             }
         }
 
+        if (!empty($successEnrollIds)) {
+            // Hapus duplikasi ID jika ada
+            $uniqueIds = array_unique($successEnrollIds);
+
+            // Update kolom isDeletedInMachine di tabel Laravel
+            // Asumsi kolom enroll_id di tabel adalah mapping dari Badgenumber
+            EmployeeAtribut::whereIn('enroll_id', $uniqueIds)
+                ->update(['isDeletedInMachine' => true]);
+        }
+
         // dd($results);
         return response()->json([
             'status' => true,
             'message' => 'Karyawan dihapus dari Database dan Mesin',
             'details' => $results
         ]);
+    }
+    public function adeleteEmployeeFromMachine(Request $request)
+    {
+        // -----------------------
+        // 1. Validasi input
+        // -----------------------
+        $request->validate([
+            'enroll_ids'  => 'required|array',
+            'machine_ids' => 'required|array',
+        ]);
+
+        $enrollIds = $request->enroll_ids;
+        $machineIps = $request->machine_ids;
+
+        // -----------------------
+        // 2. Mapping MachineAlias dari ODBC
+        // -----------------------
+        $conn = @\odbc_connect("att_hris", "server", "alabare");
+        $machineMap = [];
+        if ($conn) {
+            $sql = "SELECT IP, MachineAlias FROM Machines";
+            $query = \odbc_exec($conn, $sql);
+            while ($row = \odbc_fetch_array($query)) {
+                $machineMap[$row['IP']] = $row['MachineAlias'];
+            }
+            \odbc_close($conn);
+        }
+
+        $results = [];
+
+        // -----------------------
+        // 3. Hapus di ODBC Attendance (CHECKINOUT, TEMPLATE, USERINFO)
+        // -----------------------
+        if ($conn = @\odbc_connect("att_hris", "server", "alabare")) {
+            foreach ($enrollIds as $enrollId) {
+                $sqlLookup = "SELECT USERID FROM USERINFO WHERE Badgenumber = '$enrollId'";
+                $queryLookup = \odbc_exec($conn, $sqlLookup);
+                $row = \odbc_fetch_array($queryLookup);
+
+                if ($row) {
+                    $internalId = $row['USERID'];
+                    \odbc_exec($conn, "DELETE FROM CHECKINOUT WHERE USERID = $internalId");
+                    \odbc_exec($conn, "DELETE FROM TEMPLATE WHERE USERID = $internalId");
+                    \odbc_exec($conn, "DELETE FROM USERINFO WHERE USERID = $internalId");
+
+                    $results[] = [
+                        'enroll_id' => $enrollId,
+                        'db_status' => 'Full Wipe Success'
+                    ];
+                } else {
+                    $results[] = [
+                        'enroll_id' => $enrollId,
+                        'db_status' => 'Not found in ODBC'
+                    ];
+                }
+            }
+            \odbc_close($conn);
+        }
+
+        // -----------------------
+        // 4. Hapus di Mesin via Python API
+        // -----------------------
+        foreach ($enrollIds as $enrollId) {
+            $statusPerMachine = [];
+
+            foreach ($machineIps as $ip) {
+                // Panggil Python API untuk hapus user di mesin
+                $response = Http::timeout(120)->post($this->zkApi . '/delete-user', [
+                    'ip' => [$ip],       // Python API butuh array
+                    'enroll_id' => $enrollId
+                ]);
+
+                $status = 'failed';
+                if ($response->ok()) {
+                    $json = $response->json();
+                    // Python API: result per IP di json['result'][0]
+                    $status = $json['result'][0] ?? 'failed';
+                }
+
+                $statusPerMachine[$ip] = $status;
+
+                $results[] = [
+                    'machine_ip' => ($machineMap[$ip] ?? null) . " ($ip)",
+                    'machine_alias' => $machineMap[$ip] ?? null,
+                    'enroll_id' => $enrollId,
+                    'status' => $status
+                ];
+            }
+
+            // -----------------------
+            // 5. Update Employee (JSON + isDeletedInMachine)
+            // -----------------------
+            $this->updateEmployeeAfterDelete($enrollId, $statusPerMachine);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Delete finished',
+            'data' => $results
+        ]);
+    }
+
+    public function bdeleteEmployeeFromMachine(Request $request)
+    {
+        // 1. Validasi input
+        $request->validate([
+            'enroll_ids'  => 'required|array',
+            'machine_ids' => 'required|array',
+        ]);
+
+        $enrollIds = $request->enroll_ids;
+        $machineIps = $request->machine_ids;
+        $results = [];
+
+        // 2. Ambil Mapping Mesin (Langsung di sini agar tidak error)
+        $machineMap = [];
+        $connOdbc = @\odbc_connect("att_hris", "server", "alabare");
+        if ($connOdbc) {
+            $q = \odbc_exec($connOdbc, "SELECT IP, MachineAlias FROM Machines");
+            while ($r = \odbc_fetch_array($q)) {
+                $machineMap[$r['IP']] = $r['MachineAlias'];
+            }
+            \odbc_close($connOdbc);
+        }
+
+        foreach ($enrollIds as $enrollId) {
+            $logActions = []; // Untuk mencatat detail aksi per user
+            $internalUid = null;
+
+            // --- AKSI A: OPERASI DATABASE ODBC ---
+            try {
+                $connOdbc = @\odbc_connect("att_hris", "server", "alabare");
+                if (!$connOdbc) throw new \Exception("Koneksi ODBC Gagal");
+
+                // Step 1: Cari USERID
+                $sqlLookup = "SELECT USERID FROM USERINFO WHERE Badgenumber = '$enrollId'";
+                $queryLookup = \odbc_exec($connOdbc, $sqlLookup);
+                $row = \odbc_fetch_array($queryLookup);
+
+                if ($row) {
+                    $internalUid = $row['USERID'];
+                    $logActions[] = [
+                        'step' => 'ODBC_LOOKUP',
+                        'action' => "Mencari UID untuk Badge $enrollId",
+                        'status' => 'SUCCESS',
+                        'detail' => "UID ditemukan: $internalUid"
+                    ];
+
+                    // Step 2: Hapus data di 3 tabel
+                    @\odbc_exec($connOdbc, "DELETE FROM CHECKINOUT WHERE USERID = $internalUid");
+                    @\odbc_exec($connOdbc, "DELETE FROM TEMPLATE WHERE USERID = $internalUid");
+                    @\odbc_exec($connOdbc, "DELETE FROM USERINFO WHERE USERID = $internalUid");
+
+                    $logActions[] = [
+                        'step' => 'ODBC_WIPE',
+                        'action' => "Membersihkan tabel CHECKINOUT, TEMPLATE, USERINFO",
+                        'status' => 'SUCCESS'
+                    ];
+                } else {
+                    $logActions[] = [
+                        'step' => 'ODBC_LOOKUP',
+                        'action' => "Cari UID",
+                        'status' => 'NOT_FOUND',
+                        'detail' => "Badge $enrollId tidak ada di DB ODBC"
+                    ];
+                }
+                \odbc_close($connOdbc);
+            } catch (\Exception $e) {
+                $logActions[] = [
+                    'step' => 'ODBC_ERROR',
+                    'action' => 'Database Operation',
+                    'status' => 'FAILED',
+                    'detail' => $e->getMessage()
+                ];
+            }
+
+            // --- AKSI B: OPERASI MESIN ---
+            $statusForLaravelDb = [];
+            foreach ($machineIps as $ip) {
+                $machineSteps = [];
+                $targetId = $enrollId;
+
+                try {
+                    $machineSteps[] = [
+                        'step' => 'PREPARE_API',
+                        'action' => "Target ID: $targetId",
+                        'method' => $internalUid ? 'UID_MODE' : 'BADGE_MODE'
+                    ];
+
+                    $response = Http::timeout(45)->post($this->zkApi . '/delete-user', [
+                        'ip' => [$ip],
+                        'enroll_id' => $targetId
+                    ]);
+
+                    if ($response->ok()) {
+                        $json = $response->json();
+                        $rawResult = $json['result'][0] ?? 'No response';
+
+                        // Cek sukses/gagal dari string response
+                        $isSuccess = (str_contains(strtolower((string)$rawResult), 'success') || str_contains(strtolower((string)$rawResult), 'deleted'));
+
+                        $machineSteps[] = [
+                            'step' => 'EXECUTE_DELETE',
+                            'action' => "Hapus di mesin $ip",
+                            'status' => $isSuccess ? 'SUCCESS' : 'FAILED',
+                            'raw' => $rawResult
+                        ];
+                    } else {
+                        $machineSteps[] = [
+                            'step' => 'API_COMMUNICATION',
+                            'status' => 'HTTP_ERROR',
+                            'detail' => "Code: " . $response->status()
+                        ];
+                    }
+                } catch (\Exception $e) {
+                    $machineSteps[] = [
+                        'step' => 'CONNECTION',
+                        'status' => 'CRITICAL_ERROR',
+                        'detail' => $e->getMessage()
+                    ];
+                }
+
+                // Gabungkan semua histori aksi ke dalam satu log per IP
+                $finalEntry = [
+                    'timestamp' => now()->toDateTimeString(),
+                    'user_id' => $enrollId,
+                    'odbc_history' => $logActions,
+                    'machine_history' => $machineSteps,
+                    'is_clean' => (isset($isSuccess) && $isSuccess)
+                ];
+
+                $statusForLaravelDb[$ip][] = $finalEntry;
+
+                $results[] = [
+                    'enroll_id' => $enrollId,
+                    'machine' => ($machineMap[$ip] ?? $ip),
+                    'status' => (isset($isSuccess) && $isSuccess) ? 'Success' : 'Failed'
+                ];
+            }
+
+            // Simpan ke kolom isDeletedInMachine di database Laravel
+            $this->updateEmployeeAfterDelete($enrollId, $statusForLaravelDb);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Proses selesai',
+            'results' => $results
+        ]);
+    }
+
+    /**
+     * Menghapus Karyawan secara menyeluruh (Audit Trail Ready).
+     * Proses mencakup:
+     * 1. Mapping IP ke Nama Mesin (ODBC)
+     * 2. Pembersihan Tabel Database (ODBC)
+     * 3. Penghapusan User di Hardware (API Python)
+     * * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteEmployeeFromMachine(Request $request)
+    {
+        // 1. Validasi Input Dasar
+        $request->validate([
+            'enroll_ids'  => 'required|array',
+            'machine_ids' => 'required|array',
+        ]);
+
+        $enrollIds = $request->enroll_ids;
+        $machineIps = $request->machine_ids;
+        $results = [];
+
+        // 2. Inisialisasi Koneksi ODBC & Mapping Mesin (Internal Lookup)
+        $machineMap = [];
+        $dsn = "att_hris";
+        $user = "server";
+        $pass = "alabare";
+
+        $connOdbc = @\odbc_connect($dsn, $user, $pass);
+        if ($connOdbc) {
+            $q = \odbc_exec($connOdbc, "SELECT IP, MachineAlias FROM Machines");
+            while ($r = \odbc_fetch_array($q)) {
+                $machineMap[$r['IP']] = $r['MachineAlias'];
+            }
+            // Jangan ditutup dulu karena akan dipakai untuk hapus USERINFO nanti
+        }
+
+        foreach ($enrollIds as $enrollId) {
+            // Objek Audit Trail Utama
+            $auditTrail = [
+                'meta' => [
+                    'executed_by' => auth()->user()->id ?? 'System',
+                    'actor_name'  => auth()->user()->name ?? 'System',
+                    'timestamp'   => now()->format('Y-m-d H:i:s.u'),
+                ],
+                'database_logs' => [],
+                'machine_logs'  => []
+            ];
+
+            $internalUid = null;
+
+            // --- TAHAP 1: EKSEKUSI DATABASE ODBC ---
+            try {
+                if (!$connOdbc) {
+                    throw new \Exception("Koneksi ODBC tidak tersedia saat proses penghapusan.");
+                }
+
+                // Cari USERID (Internal UID di MS Access/SQL Server ZK)
+                $sqlLookup = "SELECT USERID FROM USERINFO WHERE Badgenumber = '$enrollId'";
+                $queryLookup = \odbc_exec($connOdbc, $sqlLookup);
+                $userRow = \odbc_fetch_array($queryLookup);
+
+                if ($userRow) {
+                    $internalUid = $userRow['USERID'];
+
+                    // Daftar tabel yang harus dibersihkan
+                    $tables = ['CHECKINOUT', 'TEMPLATE', 'USERINFO'];
+                    foreach ($tables as $table) {
+                        $sqlDelete = "DELETE FROM $table WHERE USERID = $internalUid";
+                        $exec = @\odbc_exec($connOdbc, $sqlDelete);
+
+                        $auditTrail['database_logs'][] = [
+                            'table'  => $table,
+                            'query'  => $sqlDelete,
+                            'status' => $exec ? 'SUCCESS' : 'FAILED',
+                            'error'  => $exec ? null : \odbc_errormsg($connOdbc)
+                        ];
+                    }
+                } else {
+                    $auditTrail['database_logs'][] = [
+                        'status' => 'NOT_FOUND',
+                        'detail' => "Badge $enrollId tidak ditemukan di database ODBC."
+                    ];
+                }
+            } catch (\Exception $e) {
+                $auditTrail['database_logs'][] = [
+                    'status' => 'CRITICAL_ERROR',
+                    'detail' => $e->getMessage()
+                ];
+            }
+
+            // --- TAHAP 2: EKSEKUSI MESIN FINGERPRINT ---
+            foreach ($machineIps as $ip) {
+                $isSuccess = false;
+                $deviceName = $machineMap[$ip] ?? $ip;
+
+                try {
+                    // Request ke API Python Proxy
+                    $response = Http::timeout(45)->post($this->zkApi . '/delete-user', [
+                        'ip' => [$ip],
+                        'enroll_id' => $enrollId
+                    ]);
+
+                    if ($response->ok()) {
+                        $data = $response->json();
+                        $rawResult = $data['result'][0] ?? 'No Response';
+
+                        // PENANGANAN AMAN: Cek tipe data agar tidak "Array to String Conversion"
+                        if (is_array($rawResult)) {
+                            $isSuccess = ($rawResult['deleted'] ?? false) === true;
+                            $apiDetail = $rawResult; // Tetap simpan sebagai array (JSON)
+                        } else {
+                            $isSuccess = str_contains(strtolower((string)$rawResult), 'success');
+                            $apiDetail = (string)$rawResult;
+                        }
+
+                        $auditTrail['machine_logs'][] = [
+                            'ip'           => $ip,
+                            'device_name'  => $deviceName,
+                            'status'       => $isSuccess ? 'SUCCESS' : 'FAILED',
+                            'raw_response' => $apiDetail,
+                            'http_code'    => $response->status()
+                        ];
+                    } else {
+                        throw new \Exception("HTTP Error " . $response->status());
+                    }
+                } catch (\Exception $e) {
+                    $auditTrail['machine_logs'][] = [
+                        'ip'          => $ip,
+                        'device_name' => $deviceName,
+                        'status'      => 'ERROR',
+                        'detail'      => $e->getMessage()
+                    ];
+                }
+
+                // Catat hasil ringkas untuk response frontend
+                $results[] = [
+                    'enroll_id' => $enrollId,
+                    'machine'   => $deviceName,
+                    'status'    => $isSuccess ? 'Success' : 'Failed'
+                ];
+            }
+
+            // --- TAHAP 3: PERSISTENSI LOG ---
+            // Simpan log lengkap ke database Laravel (Audit Trail per karyawan)
+            // Laravel akan otomatis mengkonversi array $auditTrail ke JSON
+            $this->updateEmployeeAfterDelete($enrollId, $auditTrail);
+        }
+
+        // Tutup koneksi ODBC di akhir loop
+        if ($connOdbc) {
+            @\odbc_close($connOdbc);
+        }
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Batch delete processed',
+            'results' => $results
+        ]);
+    }
+    /**
+     * Update Employee JSON deleted_in_machines + isDeletedInMachine
+     */
+
+    protected function updateEmployeeAfterDelete(string $enrollId, array $statusPerMachine)
+    {
+        // $statusPerMachine = [
+        //     '192.168.1.100' => 'Deleted Successfully',
+        //     '192.168.1.101' => 'Connection Timeout'
+        // ];
+        // Ambil Employee
+        $employee = EmployeeAtribut::where('enroll_id', $enrollId)->first();
+        if (!$employee) {
+            \Log::warning("Employee not found: {$enrollId}");
+            return;
+        }
+        // Ambil JSON lama
+        $oldData = json_decode($employee->isDeletedInMachine ?? '[]', true) ?: [];
+
+        $oldData = json_decode($employee->isDeletedInMachine ?? '[]', true) ?: [];
+
+        foreach ($statusPerMachine as $ip => $status) {
+            $oldData[$ip][] = [
+                'status' => $status,
+                'time' => now()->toDateTimeString()
+            ];
+        }
+
+        DB::table('employee_atribut')
+            ->where('employee_id', $employee->employee_id)
+            ->where('enroll_id', $employee->enroll_id)
+            ->update([
+                'isDeletedInMachine' => json_encode($oldData)
+            ]);
+    }
+
+
+
+
+
+    public function _checkEmployeeOnMachine(Request $request)
+    {
+        // Hindari timeout PHP karena proses penarikan data user cukup berat
+        set_time_limit(0);
+
+        $request->validate([
+            'enroll_ids' => 'required|array',
+            'machine_ids' => 'required|array'
+        ]);
+
+        $results = [];
+        $enrollIds = $request->enroll_ids;
+
+        foreach ($request->machine_ids as $ip) {
+            \Log::info("=== Checking Machine: $ip ===");
+
+            // 1. Pre-check: Fast TCP Scan (Port 4370)
+            $fp = @fsockopen($ip, 4370, $errno, $errstr, 1);
+            if (!$fp) {
+                \Log::warning("Machine $ip is Offline (Port 4370 Closed)");
+                foreach ($enrollIds as $enrollId) {
+                    $results[] = [
+                        'enroll_id' => $enrollId,
+                        'machine_ip' => $ip,
+                        'exists' => false,
+                        'error' => "Offline: $errstr"
+                    ];
+                }
+                continue;
+            }
+            fclose($fp);
+
+            try {
+                $zk = new ZKTeco($ip, 4370);
+
+                \Log::info("Attempting ZK Connection to $ip...");
+                // Menggunakan @ untuk meredam output error/notice dari library
+                if (@$zk->connect()) {
+                    \Log::info("Connected to $ip. Fetching user list...");
+                    $zk->disableDevice();
+                    $users = @$zk->getUser();
+                    $zk->enableDevice();
+                    @$zk->disconnect();
+
+                    $userCollection = collect($users);
+                    \Log::info("Fetched " . $userCollection->count() . " users from $ip.");
+
+                    foreach ($enrollIds as $enrollId) {
+                        $exists = $userCollection->contains(function ($user) use ($enrollId) {
+                            return (isset($user['userid']) && (string)$user['userid'] === (string)$enrollId) ||
+                                (isset($user['badgenumber']) && (string)$user['badgenumber'] === (string)$enrollId);
+                        });
+
+                        $results[] = [
+                            'enroll_id' => $enrollId,
+                            'machine_ip' => $ip,
+                            'exists' => $exists
+                        ];
+                    }
+                } else {
+                    \Log::error("ZK Connection Failed to $ip (Handshake Rejected)");
+                    throw new \Exception("Handshake Failed. Check Comm Key/Network.");
+                }
+            } catch (\Throwable $e) {
+                \Log::error("Error on Machine $ip: " . $e->getMessage());
+                foreach ($enrollIds as $enrollId) {
+                    $results[] = [
+                        'enroll_id' => $enrollId, // Pastikan variabel ini benar
+                        'machine_ip' => $ip,
+                        'exists' => false,
+                        'error' => "Internal Error: " . $e->getMessage()
+                    ];
+                }
+            }
+        }
+        dd($results);
+        return response()->json(['data' => $results]);
+    }
+
+    public function checkEmployeeOnMachine(Request $request)
+    {
+        $conn = \odbc_connect("att_hris", "server", "alabare");
+        if (!$conn) abort(500, 'ODBC connection failed');
+
+        $request->validate([
+            'enroll_ids' => 'required|array',
+            'machine_ids' => 'required|array'
+        ]);
+
+        $response = Http::timeout(60)->post($this->zkApi . '/check-users', [
+            'ip' => $request->machine_ids,
+            'enroll_ids' => $request->enroll_ids
+        ]);
+
+        if (!$response->ok()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'ZK API error',
+                'raw' => $response->body()
+            ], 500);
+        }
+
+        $json = $response->json();
+
+        // ✅ ambil data dengan aman
+        $data = $json['data'] ?? [];
+
+        if (!is_array($data)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid API response',
+                'raw' => $json
+            ], 500);
+        }
+
+        // ✅ Data sudah berupa array of objects dari API Python, langsung gunakan
+
+        // --- Ambil mapping MachineAlias dari database ODBC ---
+        $conn = @\odbc_connect("att_hris", "server", "alabare");
+        $machineMap = [];
+        if ($conn) {
+            $sql = "SELECT IP, MachineAlias FROM Machines";
+            $query = \odbc_exec($conn, $sql);
+            while ($row = \odbc_fetch_array($query)) {
+                $machineMap[$row['IP']] = $row['MachineAlias'];
+            }
+            \odbc_close($conn);
+        }
+
+
+        $results = [];
+        foreach ($data as $item) {
+            $machine_ip = $item['machine_ip'] ?? null;
+            $machineAlias = $machineMap[$machine_ip] ?? null;
+            $results[] = [
+                'machine_ip' => $machineAlias . " (" . $item['machine_ip'] . ")",
+                'enroll_id' => $item['enroll_id'] ?? null,
+                'exists' => isset($item['exists']) ? (bool)$item['exists'] : false
+            ];
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => $results
+        ]);
+    }
+
+
+
+    private function fillError(&$results, $ids, $ip, $msg)
+    {
+        foreach ($ids as $id) {
+            $results[] = ['enroll_id' => $id, 'machine_ip' => $ip, 'exists' => false, 'error' => $msg];
+        }
     }
 }

@@ -120,8 +120,6 @@
         border-radius: 8px;
         border: 1px solid #e3e6f0;
     }
-
-  
 </style>
 </style>
 @stop
@@ -166,6 +164,9 @@
         <div class="card-header">
             <span><i class="fa fa-users"></i> Daftar Karyawan</span>
 
+            <button class="btn btn-danger btn-sm" id="btnCheckEmployee" disabled>
+                <i class="fa fa-trash"></i> Check Employee
+            </button>
             <button class="btn btn-danger btn-sm" id="btnDeleteFromMachine" disabled>
                 <i class="fa fa-trash"></i> Hapus dari Mesin
             </button>
@@ -181,11 +182,41 @@
                         <th>enroll_id</th>
                         <th>Nama</th>
                         <th>Department</th>
-                        <th>Status</th>
+                        <th>Status Aktif</th>
+                        <th>Status di Mesin</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
+        </div>
+    </div>
+
+    {{-- ================= MODAL HASIL CHECK ================= --}}
+    <div class="modal fade" id="checkResultModal">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h4 class="modal-title"><i class="fa fa-search"></i> Hasil Pengecekan Mesin</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Enroll ID</th>
+                                    <th>Mesin</th>
+                                    <th>Status di Mesin</th>
+                                </tr>
+                            </thead>
+                            <tbody id="checkResultBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -296,7 +327,7 @@
 <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap4.min.js"></script>
 <script>
     let selectedUsers = [];
-
+    let currentAction = 'delete';
 $(function () {
 
     // ================= DATATABLE =================
@@ -305,7 +336,9 @@ $(function () {
         serverSide: true,
         autoWidth: false,
         scrollX: true,
-      
+        paginate: false,
+        scrollY: "400px",
+        scrollCollapse: true,
         ajax: {
             url: "{{ route('hris.attendance.ajaxEmployeeList') }}",
             data: function (d) {
@@ -318,7 +351,77 @@ $(function () {
             {data: 'enroll_id'},
             {data: 'employee_name'},
             {data: 'department_name'},
-            {data: 'status_aktif'}
+            {data: 'status_aktif'},
+            { 
+                data: 'isDeletedInMachine',
+                render: function(data, type, row) {
+                    if (!data || data === '[]' || data === '{}') return '-';
+                    
+                    let logData = data;
+                    if (typeof data === 'string') {
+                        try {
+                            // Decode HTML entities jika ada (biasanya dari Laravel response)
+                            let doc = new DOMParser().parseFromString(data, 'text/html');
+                            logData = JSON.parse(doc.documentElement.textContent);
+                            if (typeof logData === 'string') logData = JSON.parse(logData);
+                        } catch(e) { return '-'; }
+                    }
+
+                    // Cek apakah machine_logs ada
+                    if (!logData.machine_logs || !Array.isArray(logData.machine_logs)) return '-';
+
+                    let html = '<div class="d-flex flex-wrap gap-1" style="max-width: 500px; line-height: 1;">';
+                    let found = false;
+
+                    // Ambil entry terbaru dari machine_logs (asumsi index terakhir adalah yang terbaru)
+                    let latestLogEntry = logData.machine_logs[logData.machine_logs.length - 1];
+                    let machineStatusArray = latestLogEntry.status || [];
+
+                    machineStatusArray.forEach(item => {
+                        found = true;
+                        let ip = item.ip || '0.0.0.0';
+                        let status = item.status; // SUCCESS, FAILED, atau ERROR
+                        let raw = item.raw_response || {};
+                        let isDeleted = raw.deleted === true;
+                        let isNotFound = raw.error === 'NOT_FOUND';
+                        
+                        // Penentuan Warna
+                        let badgeColor = '#dc3545'; // Default Merah (Failed)
+                        let bgColor = '#ffeef3';
+                        
+                        if (isDeleted) {
+                            badgeColor = '#28a745'; // Hijau (Success)
+                            bgColor = '#e8fadf';
+                        } else if (isNotFound) {
+                            badgeColor = '#fd7e14'; // Orange atau Biru (Not Found)
+                            bgColor = '#fff5eb';
+                        }
+
+                        let shortIp = ip.split('.').pop(); 
+                        let tooltip = `IP: ${ip} | Device: ${item.device_name} | Result: ${isNotFound ? 'Not Found' : status} | Time: ${latestLogEntry.time}`;
+
+                        html += `
+                            <span title="${tooltip}" 
+                                style="
+                                    background: ${bgColor};
+                                    color: ${badgeColor};
+                                    border: 1px solid ${badgeColor}44;
+                                    padding: 2px 6px;
+                                    border-radius: 4px;
+                                    font-size: 10px;
+                                    font-weight: bold;
+                                    cursor: help;
+                                    white-space: nowrap;
+                                    display: inline-block;
+                                    margin-bottom: 2px;
+                                ">
+                                .${shortIp} ${isNotFound ? '∅' : ''}
+                            </span>`;
+                    });
+                    
+                    return found ? html + '</div>' : '-';
+                }
+            }
         ],
         language: {
             // Menyesuaikan teks pagination jika ingin lebih rapi
@@ -334,42 +437,61 @@ $(function () {
         table.draw();
     });
 
-    // ================= CHECKBOX USER =================
-    $(document).on('change', '.row-check', function () {
-        selectedUsers = $('.row-check:checked').map(function () {
-            return $(this).data('enroll_id');
-        }).get();
+$('#btnCheckEmployee').click(function() {
+    currentAction = 'check';
+    $('#machineModal').modal('show');
+});
 
-        $('#btnDeleteFromMachine').prop('disabled', selectedUsers.length === 0);
-    });
+    // ================= CHECKBOX USER =================
+$(document).on('change', '.row-check', function () {
+    selectedUsers = $('.row-check:checked').map(function () {
+        return $(this).data('enroll_id');
+    }).get();
+
+    let isDisabled = selectedUsers.length === 0;
+    $('#btnDeleteFromMachine').prop('disabled', isDisabled);
+    $('#btnCheckEmployee').prop('disabled', isDisabled); // Aktifkan tombol check
+});
 
     $('#checkAll').on('change', function () {
         $('.row-check').prop('checked', this.checked).trigger('change');
     });
 
     // ================= FLOW =================
-    $('#btnDeleteFromMachine').click(() => $('#machineModal').modal('show'));
+$('#btnDeleteFromMachine').click(function() {
+    currentAction = 'delete';
+    $('#machineModal').modal('show');
+});
 
     $('#selectAllMachine').change(function () {
-        $('.machine-check').prop('checked', this.checked);
+        $('.machine-check:not(:disabled)').prop('checked', this.checked);
     });
 
-    $('#btnReview').click(function () {
+$('#btnReview').click(function () {
+    let machineIds = $('.machine-check:checked').map(function () {
+        return $(this).val();
+    }).get();
 
+    if (machineIds.length === 0) {
+        alert('Pilih minimal satu mesin');
+        return;
+    }
+
+    if (currentAction === 'delete') {
+        // Tampilkan Modal Konfirmasi Hapus (Existing Logic)
         $('#reviewEmployees').empty();
         $('#reviewMachines').empty();
-
-        selectedUsers.forEach(id => {
-            $('#reviewEmployees').append(`<li>enroll_id ${id}</li>`);
-        });
-
+        selectedUsers.forEach(id => $('#reviewEmployees').append(`<li>enroll_id ${id}</li>`));
         $('.machine-check:checked').each(function () {
             $('#reviewMachines').append(`<li>${$(this).data('name')}</li>`);
         });
-
         $('#machineModal').modal('hide');
         $('#reviewModal').modal('show');
-    });
+    } else {
+        // Jalankan Proses Check Langsung
+        executeCheck(machineIds);
+    }
+});
 
     $('#btnExecute').click(function () {
 
@@ -420,6 +542,49 @@ $(function () {
             }
         });
     });
+
+function executeCheck(machineIds) {
+    let btn = $('#btnReview');
+    btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Checking...');
+
+    $.ajax({
+        url: "{{ route('hris.attendance.checkEmployeeOnMachine') }}", // Anda perlu buat route ini
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            enroll_ids: selectedUsers,
+            machine_ids: machineIds
+        },
+        success: function (res) {
+            $('#machineModal').modal('hide');
+            $('#checkResultBody').empty();
+            console.log(res);
+            
+            // Asumsi response 'res.data' berisi array object {enroll_id, machine_name, exists}
+            res.data.forEach(item => {
+                let statusBadge = item.exists 
+                    ? '<span class="badge badge-success">Ditemukan</span>' 
+                    : '<span class="badge badge-danger">Tidak Ada</span>';
+                
+                $('#checkResultBody').append(`
+                    <tr>
+                        <td>${item.enroll_id}</td>
+                        <td>${item.machine_ip}</td>
+                        <td class="text-center">${statusBadge}</td>
+                    </tr>
+                `);
+            });
+
+            $('#checkResultModal').modal('show');
+        },
+        error: function (xhr) {
+            alert(xhr.responseJSON?.message || 'Gagal mengecek mesin');
+        },
+        complete: function () {
+            btn.prop('disabled', false).html('Lanjut');
+        }
+    });
+}
 
 
 });
