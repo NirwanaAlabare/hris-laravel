@@ -37,7 +37,7 @@ class AttendancesController extends AdminBaseController
 
     private $zkApi = 'http://10.10.5.60:1122';
     // private $zkApi = 'http://127.0.0.1:1122';
-    
+
     public function __construct()
     {
         parent::__construct();
@@ -832,17 +832,52 @@ class AttendancesController extends AdminBaseController
             foreach ($machineIps as $ip) {
                 $isSuccess = false;
                 $deviceName = $machineMap[$ip] ?? $ip;
+                $apiDetail = null;
+                $httpCode = null;
 
                 try {
+                    // DEBUG: Log the request
+                    \Log::info("Sending delete request to ZK API", [
+                        'url' => $this->zkApi . '/delete-users',
+                        'payload' => [
+                            'ip' => [$ip],
+                            'enroll_ids' => [$enrollId]
+                        ]
+                    ]);
+
                     // Request ke API Python Proxy
                     $response = Http::timeout(45)->post($this->zkApi . '/delete-users', [
                         'ip' => [$ip],
                         'enroll_ids' => [$enrollId]
                     ]);
 
+                    $httpCode = $response->status();
+
+                    // DEBUG: Log full response
+                    \Log::info("ZK API Response", [
+                        'status_code' => $httpCode,
+                        'body' => $response->body()
+                    ]);
+
                     if ($response->ok()) {
                         $data = $response->json();
-                        $rawResult = $data['results'][0] ?? 'No Response';
+
+                        // FIX 1: Find the result for THIS specific IP
+                        $rawResult = null;
+                        foreach ($data['results'] ?? [] as $result) {
+                            if (($result['machine_ip'] ?? '') === $ip) {
+                                $rawResult = $result;
+                                break;
+                            }
+                        }
+
+                        // FIX 2: If no result found, check why
+                        if (!$rawResult) {
+                            $rawResult = [
+                                'error' => 'No result found for this IP',
+                                'available_results' => $data['results'] ?? []
+                            ];
+                        }
 
                         // PENANGANAN AMAN: Cek tipe data agar tidak "Array to String Conversion"
                         if (is_array($rawResult)) {
@@ -858,10 +893,15 @@ class AttendancesController extends AdminBaseController
                             'device_name'  => $deviceName,
                             'status'       => $isSuccess ? 'SUCCESS' : 'FAILED',
                             'raw_response' => $apiDetail,
-                            'http_code'    => $response->status()
+                            'http_code'    => $httpCode
                         ];
                     } else {
-                        throw new \Exception("HTTP Error " . $response->status());
+                        // FIX 3: Get the actual error message from response
+                        $errorBody = $response->body();
+                        $errorJson = json_decode($errorBody, true);
+                        $errorMessage = $errorJson['detail'] ?? $errorBody;
+
+                        throw new \Exception("HTTP Error {$httpCode}: {$errorMessage}");
                     }
                 } catch (\Exception $e) {
                     $auditTrail['machine_logs'][] = [
