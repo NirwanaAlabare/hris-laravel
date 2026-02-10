@@ -869,7 +869,7 @@ class AttendancesController extends AdminBaseController
                                 $rawResult = $result;
                                 break;
                             }
-                        }
+                        }                       
 
                         // FIX 2: If no result found, check why
                         if (!$rawResult) {
