@@ -35,7 +35,8 @@ use Jmrashed\Zkteco\Lib\ZKTeco;
 class AttendancesController extends AdminBaseController
 {
 
-    private $zkApi = 'http://10.10.5.60:1122';
+    // private $zkApi = 'http://10.10.5.60:1122';
+    private $zkApi = 'http://127.0.0.1:1122';
     public function __construct()
     {
         parent::__construct();
@@ -833,14 +834,14 @@ class AttendancesController extends AdminBaseController
 
                 try {
                     // Request ke API Python Proxy
-                    $response = Http::timeout(45)->post($this->zkApi . '/delete-user', [
+                    $response = Http::timeout(45)->post($this->zkApi . '/delete-users', [
                         'ip' => [$ip],
-                        'enroll_id' => $enrollId
+                        'enroll_ids' => [$enrollId]
                     ]);
 
                     if ($response->ok()) {
                         $data = $response->json();
-                        $rawResult = $data['result'][0] ?? 'No Response';
+                        $rawResult = $data['results'][0] ?? 'No Response';
 
                         // PENANGANAN AMAN: Cek tipe data agar tidak "Array to String Conversion"
                         if (is_array($rawResult)) {
@@ -930,9 +931,6 @@ class AttendancesController extends AdminBaseController
                 'isDeletedInMachine' => json_encode($oldData)
             ]);
     }
-
-
-
 
 
     public function _checkEmployeeOnMachine(Request $request)
@@ -1040,7 +1038,7 @@ class AttendancesController extends AdminBaseController
         $json = $response->json();
 
         // ✅ ambil data dengan aman
-        $data = $json['data'] ?? [];
+        $data = $json['results'] ?? [];
 
         if (!is_array($data)) {
             return response()->json([
