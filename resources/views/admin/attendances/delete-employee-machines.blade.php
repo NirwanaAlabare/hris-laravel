@@ -335,10 +335,10 @@ $(function () {
         processing: true,
         serverSide: true,
         autoWidth: false,
-        scrollX: true,
-        paginate: false,
-        scrollY: "400px",
-        scrollCollapse: true,
+        // scrollX: true,
+        // paginate: false,
+        // scrollY: "400px",
+        // scrollCollapse: true,
         ajax: {
             url: "{{ route('hris.attendance.ajaxEmployeeList') }}",
             data: function (d) {
