@@ -35,8 +35,9 @@ use Jmrashed\Zkteco\Lib\ZKTeco;
 class AttendancesController extends AdminBaseController
 {
 
-    // private $zkApi = 'http://10.10.5.60:1122';
-    private $zkApi = 'http://127.0.0.1:1122';
+    private $zkApi = 'http://10.10.5.60:1122';
+    // private $zkApi = 'http://127.0.0.1:1122';
+    
     public function __construct()
     {
         parent::__construct();
