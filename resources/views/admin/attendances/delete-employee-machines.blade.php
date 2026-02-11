@@ -694,10 +694,13 @@ let pollInterval;
 function startPollingResults(type) {
     // Clear any existing timer
     if (pollInterval) clearInterval(pollInterval);
+    
+    let apiUrl = "{{ url('api/zk-get-results') }}?type=CHECK";
+    // Ini akan otomatis menghasilkan: http://10.10.5.111/hris/public/api/zk-get-results?type=CHECK
 
     pollInterval = setInterval(function() {
         $.ajax({
-            url: "/api/zk-get-results",
+            url: apiUrl,
             type: "GET",
             data: { type: type }, 
             success: function(res) {
