@@ -1988,12 +1988,13 @@ h1 {
                             data: {
                                 enroll_id:enroll_id,
                                 tanggal_mulai_ijin:tanggal_mulai_ijin,
-                                tanggal_akhir_ijin:tanggal_mulai_ijin,
+                                tanggal_akhir_ijin:tanggal_akhir_ijin,
                                 tanggal_perizinan:tanggal_perizinan,
                                 kode_absen_ijin:kode_absen_ijin,
                             },
                             dataType: 'json',
                             success: function(res){
+                                console.log(res);
                                 if (res.length > 0) {
                                     var uuid_res=res[0].uuid;
                                     var nomor_form_res=res[0].nomor_form_perizinan;

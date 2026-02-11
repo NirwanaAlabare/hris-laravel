@@ -997,6 +997,7 @@ class FormLemburSewingController extends AdminBaseController
             date_FORMAT(jam_lembur_akhir_rencana,'%H:%i')jam_lembur_akhir_rencana,
             b.jam_lembur_istirahat,
             b.status,
+            b.deleted_at,
             date_FORMAT(SEC_TO_TIME(jam_lembur_istirahat*60),'%H:%i') istirahat,
             date_FORMAT(SEC_TO_TIME((((TIMESTAMPDIFF(MINUTE,jam_lembur_awal_rencana,jam_lembur_akhir_rencana)) - jam_lembur_istirahat) * 60)),'%H:%i') total_jam,
             date_FORMAT(m.absen_masuk_kerja,'%H:%i')absen_masuk_kerja,
@@ -1007,7 +1008,7 @@ class FormLemburSewingController extends AdminBaseController
             left join (select * from master_data_absen_kehadiran where tanggal_berjalan = (select tgl_lembur from mut_karyawan_input_form_lembur where no_form = '$no_form')) m on b.enroll_id = m.enroll_id
             left join (select no_form,group_concat(ket order by ket asc SEPARATOR ', ') ket from mut_karyawan_input_form_lembur_det_ket group by no_form) k on a.no_form = k.no_form
             inner join employee_atribut e on b.enroll_id = e.enroll_id
-            where a.id = '$request->id' and b.jam_lembur_awal_rencana!=b.jam_lembur_akhir_rencana
+            where a.id = '$request->id' and b.jam_lembur_awal_rencana!=b.jam_lembur_akhir_rencana and b.deleted_at is null
             order by  employee_name asc
         ");
         $fileName=$no_form.'_'.date('His');
@@ -1318,6 +1319,7 @@ class FormLemburSewingController extends AdminBaseController
             date_FORMAT(jam_lembur_akhir_rencana,'%H:%i')jam_lembur_akhir_rencana,
             b.jam_lembur_istirahat,
             b.status,
+            b.deleted_at,
             date_FORMAT(SEC_TO_TIME(jam_lembur_istirahat*60),'%H:%i') istirahat,
             date_FORMAT(SEC_TO_TIME((((TIMESTAMPDIFF(MINUTE,jam_lembur_awal_rencana,jam_lembur_akhir_rencana)) - jam_lembur_istirahat) * 60)),'%H:%i') total_jam,
             date_FORMAT(m.absen_masuk_kerja,'%H:%i')absen_masuk_kerja,
@@ -1328,7 +1330,7 @@ class FormLemburSewingController extends AdminBaseController
             left join (select * from master_data_absen_kehadiran where tanggal_berjalan = (select tgl_lembur from mut_karyawan_input_form_lembur where no_form = '$no_form')) m on b.enroll_id = m.enroll_id
             left join (select no_form,group_concat(ket order by ket asc SEPARATOR ', ') ket from mut_karyawan_input_form_lembur_det_ket group by no_form) k on a.no_form = k.no_form
             inner join employee_atribut e on b.enroll_id = e.enroll_id
-            where a.id = '$request->id' and b.jam_lembur_awal_rencana!=b.jam_lembur_akhir_rencana
+            where a.id = '$request->id' and b.jam_lembur_awal_rencana!=b.jam_lembur_akhir_rencana and b.deleted_at is null
             order by  employee_name asc
         ");
 

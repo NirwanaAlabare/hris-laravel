@@ -114,10 +114,21 @@
         table {
             border-collapse: collapse;
         }
+                thead {
+                    display: table-header-group;
+                }
+
+                tfoot {
+                    display: table-footer-group;
+                }
+
+                tr {
+                    page-break-inside: avoid;
+                }
     </style>
 </head>
 <body>
-    <table>
+    <!-- <table>
         <thead>
             <tr>
                 <td class="borderless">PT. NIRWANA ALABARE GARMENT</td>
@@ -129,13 +140,33 @@
                 <td class="borderless3">Hari / Tanggal : {{Carbon\Carbon::parse($tanggal)->translatedFormat('l, j F Y')}}</td>
             </tr>
         </thead>
-    </table>
+    </table> -->
     @if (count($data)+count($data2)>13)
     <table width="700px">
+        <thead>
         <tr>
-            <td rowspan="2" width="13%" style="vertical-align: middle" class="boldtextblueBGKecil">Keterangan</td>
-            <td rowspan="2" width="16%" style="vertical-align: middle" class="boldtextblueBGKecil">Department</td>
-             <td rowspan="2" width="16%" style="vertical-align: middle" class="boldtextblueBGKecil">bagian</td>
+            <td colspan="9" class="borderless">
+                PT. NIRWANA ALABARE GARMENT
+            </td>
+        </tr>
+        <tr>
+            <td colspan="9" class="borderless2">
+                Laporan Makan Harian
+            </td>
+        </tr>
+        <tr>
+            <td colspan="9" class="borderless3">
+                Hari / Tanggal :
+                {{ Carbon\Carbon::parse($tanggal)->translatedFormat('l, j F Y') }}
+            </td>
+        </tr>
+
+        <tr>
+            <!-- <td rowspan="2" width="13%" style="vertical-align: middle" class="boldtextblueBGKecil">Keterangan</td> -->
+            <!-- <td rowspan="2" width="16%" style="vertical-align: middle" class="boldtextblueBGKecil">Department</td> -->
+             <!-- <td rowspan="2" width="16%" style="vertical-align: middle" class="boldtextblueBGKecil">bagian</td> -->
+            <td rowspan="2" width="29%" style="vertical-align: middle" class="boldtextblueBGKecil">Bagian</td>
+
             <td colspan="3" align="center" class="boldtextblueBGKecil">NON STAFF</td>
             <td colspan="3" align="center" class="boldtextblueBGKecil">STAFF</td>
             <td colspan="2" align="center" class="boldtextblueBGKecil">GRAND TOTAL</td>
@@ -150,10 +181,11 @@
             <td width="7%" align="center" class="boldtextblueBGKecil">Jumlah Karyawan</td>
             <td width="8%" align="center" class="boldtextblueBGKecil">Total</td>
         </tr>
+        </thead>
         @foreach ($data as $key=>$value)
             <tr>
-                <td class="textkecil">@if($key==0)LEMBUR @endif</td>
-                <td class="textkecil">{{$value->department}}</td>
+                <!-- <td class="textkecil">@if($key==0)LEMBUR @endif</td> -->
+                <!-- <td class="textkecil">{{$value->department}}</td> -->
                 <td class="textkecil">{{$value->sub_dept_name}}</td>
                 <td class="textkecil" align="right">
                     @if(str_replace(',', '.', number_format($value->non_staff))!=0)
@@ -198,8 +230,8 @@
         @foreach ($data3 as $key=>$value)
             <tr>
                 <td class="boldtextKecil">{{$value->shift}}</td>
-                <td class="boldtextKecil">{{$value->department}}</td>
-                <td class="boldtextKecil">{{$value->sub_dept_name}}</td>
+                <!-- <td class="boldtextKecil">{{$value->department}}</td> -->
+                <!-- <td class="boldtextKecil"></td> -->
                 <td class="boldtextKecil" align="right">{{$value->non_staff}}</td>
                 <td class="boldtextKecil" align="right">{{str_replace(',', '.', number_format($value->harga))}}</td>
                 <td class="boldtextKecil" align="right">{{str_replace(',', '.', number_format($value->jumlah))}}</td>
@@ -212,9 +244,9 @@
         @endforeach
         @foreach ($data2 as $key=>$value)
             <tr>
-                <td class="textkecil">@if($key==0)SHIFT MALAM @endif</td>
-                <td class="textkecil">{{$value->department}}</td>
-                <td class="boldtextKecil">{{$value->sub_dept_name}}</td>
+                <!-- <td class="textkecil">@if($key==0)SHIFT MALAM @endif</td> -->
+                <!-- <td class="textkecil">{{$value->department}}</td> -->
+                <td class="textkecil">{{$value->sub_dept_name}}</td>
                 <td class="textkecil" align="right">
                     @if(str_replace(',', '.', number_format($value->non_staff))!=0)
                     {{str_replace(',', '.', number_format($value->non_staff))}}
@@ -258,7 +290,8 @@
         @foreach ($data4 as $value)
             <tr>
                 <td class="boldtextKecil">{{$value->shift}}</td>
-                <td class="boldtextKecil">{{$value->department}}</td>
+                <!-- <td class="boldtextKecil">{{$value->department}}</td> -->
+                <!-- <td class="boldtextKecil"></td> -->
                 <td class="boldtextKecil" align="right">{{$value->non_staff}}</td>
                 <td class="boldtextKecil" align="right">{{str_replace(',', '.', number_format($value->harga))}}</td>
                 <td class="boldtextKecil" align="right">{{str_replace(',', '.', number_format($value->jumlah))}}</td>
@@ -272,7 +305,8 @@
         @foreach ($data5 as $value)
             <tr>
                 <td class="boldtextyellowBGKecil">{{$value->shift}}</td>
-                <td class="boldtextyellowBGKecil">{{$value->department}}</td>
+                <!-- <td class="boldtextyellowBGKecil">{{$value->department}}</td> -->
+                <!-- <td class="boldtextyellowBGKecil"></td> -->
                 <td class="boldtextyellowBGKecil" align="right">{{$value->non_staff}}</td>
                 <td class="boldtextyellowBGKecil" align="right">{{str_replace(',', '.', number_format($value->harga))}}</td>
                 <td class="boldtextyellowBGKecil" align="right">{{str_replace(',', '.', number_format($value->jumlah))}}</td>
@@ -287,10 +321,28 @@
     @else
 
     <table width="700px">
+        <thead>
+          <thead>
         <tr>
-            <td rowspan="2" width="13%" style="vertical-align: middle" class="boldtextblueBG">Keterangan</td>
-            <td rowspan="2" width="16%" style="vertical-align: middle" class="boldtextblueBG">Department</td>
-             <td rowspan="2" width="16%" style="vertical-align: middle" class="boldtextblueBG">bagian</td>
+            <td colspan="10" class="borderless">
+                PT. NIRWANA ALABARE GARMENT
+            </td>
+        </tr>
+        <tr>
+            <td colspan="10" class="borderless2">
+                Laporan Makan Harian
+            </td>
+        </tr>
+        <tr>
+            <td colspan="10" class="borderless3">
+                Hari / Tanggal :
+                {{ Carbon\Carbon::parse($tanggal)->translatedFormat('l, j F Y') }}
+            </td>
+        </tr>
+        <tr>
+            <!-- <td rowspan="2" width="13%" style="vertical-align: middle" class="boldtextblueBG">Keterangan</td> -->
+            <!-- <td rowspan="2" width="16%" style="vertical-align: middle" class="boldtextblueBG">Department</td> -->
+             <td rowspan="2" width="29%" style="vertical-align: middle" class="boldtextblueBG">bagian</td>
             <td colspan="3" align="center" class="boldtextblueBG">NON STAFF</td>
             <td colspan="3" align="center" class="boldtextblueBG">STAFF</td>
             <td colspan="2" align="center" class="boldtextblueBG">GRAND TOTAL</td>
@@ -305,6 +357,7 @@
             <td width="7%" align="center" class="boldtextblueBG">Jumlah Karyawan</td>
             <td width="8%" align="center" class="boldtextblueBG">Total</td>
         </tr>
+        </thead>
         @foreach ($data as $key=>$value)
             <tr>
                 <td>@if($key==0)LEMBUR @endif</td>
@@ -443,20 +496,20 @@
         @endforeach
     </table>
     @endif
-    <table width="700px" style="margin-top: 20">
+<table width="700px" style="margin-top: 20">
         <tr>
-            <td colspan="6" class="borderless"></td>
+            <td colspan="7" class="borderless"></td>
         </tr>
         <tr>
-            <td colspan="3" class="boldtextKecil2" align="center">PERSETUJUAN PERMINTAAN</td>
+            <td colspan="4" class="boldtextKecil2" align="center">PERSETUJUAN PERMINTAAN</td>
             <td colspan="3" class="boldtextKecil2" align="center">PEMBAYARAN</td>
         </tr>
         <tr>
-            <td width="17%" class="boldtext" class="boldtextKecil2" align="center">PEMOHON</td>
-            <td width="34%" class="boldtext" class="boldtextKecil2" colspan="2" align="center">DISETUJUI</td>
-            <td width="17%" class="boldtext" class="boldtextKecil2" align="center">KASIR</td>
-            <td width="16%" class="boldtext" class="boldtextKecil2" align="center">FIN & ACC MANAGER</td>
-            <td width="16%" class="boldtext" class="boldtextKecil2" align="center">PENERIMA</td>
+            <td width="15%" class="boldtext" class="boldtextKecil2" align="center">PEMOHON</td>
+            <td width="40%" class="boldtext" class="boldtextKecil2" colspan="3" align="center">DISETUJUI</td>
+            <td width="15%" class="boldtext" class="boldtextKecil2" align="center">KASIR</td>
+            <td width="15%" class="boldtext" class="boldtextKecil2" align="center">FIN & ACC MANAGER</td>
+            <td width="15%" class="boldtext" class="boldtextKecil2" align="center">PENERIMA</td>
         </tr>
         <tr>
             <td style="height: 50"></td>
@@ -465,14 +518,16 @@
             <td></td>
             <td></td>
             <td></td>
+            <td></td>
         </tr>
         <tr>
-            <td style="font-size: 9pt">Nama&nbsp;&nbsp;&nbsp;&nbsp;: Mega F.H.<br>Tanggal&nbsp;:</td>
-            <td style="font-size: 9pt">Nama&nbsp;&nbsp;&nbsp;&nbsp;: Bobby T.<br>Tanggal&nbsp;:</td>
-            <td style="font-size: 9pt">Nama&nbsp;&nbsp;&nbsp;&nbsp;: Ronald H.<br>Tanggal&nbsp;:</td>
-            <td style="font-size: 9pt">Nama&nbsp;&nbsp;&nbsp;&nbsp;:<br>Tanggal&nbsp;:</td>
-            <td style="font-size: 9pt">Nama&nbsp;&nbsp;&nbsp;&nbsp;:<br>Tanggal&nbsp;:</td>
-            <td style="font-size: 9pt">Nama&nbsp;&nbsp;&nbsp;&nbsp;:<br>Tanggal&nbsp;:</td>
+            <td style="font-size: 9pt">Nama&nbsp;: Mega <br>Tanggal&nbsp;:</td>
+            <td style="font-size: 9pt">Nama&nbsp;:  Tedy  <br>Tanggal&nbsp;:</td>
+            <td style="font-size: 9pt">Nama&nbsp;: Bobby <br>Tanggal&nbsp;:</td>
+            <td style="font-size: 9pt">Nama&nbsp;: Ronald <br>Tanggal&nbsp;:</td>
+            <td style="font-size: 9pt">Nama&nbsp;:<br>Tanggal&nbsp;:</td>
+            <td style="font-size: 9pt">Nama&nbsp;:<br>Tanggal&nbsp;:</td>
+            <td style="font-size: 9pt">Nama&nbsp;:<br>Tanggal&nbsp;:</td>
         </tr>
     </table>
 </body>
