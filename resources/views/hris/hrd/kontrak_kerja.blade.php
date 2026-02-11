@@ -3362,6 +3362,7 @@ function updateRange(start, end) {
                             timeout:1300,
                         });
                         getDetail(res);
+                        datatable.ajax.reload();
                     }
                 });
             }

@@ -883,29 +883,32 @@ class TindakanKedisiplinanController extends AdminBaseController
     }
 
     // ===== Handle Order dari DataTables =====
-    $columns = [
-        0 => 'employee_atribut.nik',
-        1 => 'employee_atribut.employee_name',
-        2 => 'employee_atribut.sub_dept_name',
-        3 => 'employee_atribut.department_name',
-        4 => 'surat_peringatan_karyawan.surat_peringatan',
-        5 => 'surat_peringatan_karyawan.kode_pasal',
-        6 => 'surat_peringatan_karyawan.tanggal_mulai',
-        7 => 'surat_peringatan_karyawan.tanggal_sampai',
-    ];
+    // $columns = [
+    //     0 => 'employee_atribut.nik',
+    //     1 => 'employee_atribut.employee_name',
+    //     2 => 'employee_atribut.sub_dept_name',
+    //     3 => 'employee_atribut.department_name',
+    //     4 => 'surat_peringatan_karyawan.surat_peringatan',
+    //     5 => 'surat_peringatan_karyawan.kode_pasal',
+    //     6 => 'surat_peringatan_karyawan.tanggal_mulai',
+    //     7 => 'surat_peringatan_karyawan.tanggal_sampai',
+    //     8 => 'surat_peringatan_karyawan.created_at',
+    // ];
 
-    $orderColIndex = $request->input('order.0.column');
-    $orderDir = $request->input('order.0.dir', 'asc');
+    // $orderColIndex = $request->input('order.8.column');
+    // $orderDir = $request->input('order.8.dir', 'desc');
 
-    if (isset($columns[$orderColIndex])) {
-        $query->orderBy($columns[$orderColIndex], $orderDir);
-    } else {
-        $query->orderBy('surat_peringatan_karyawan.tanggal_mulai', 'asc');
-    }
+    // if (isset($columns[$orderColIndex])) {
+    //     $query->orderBy($columns[$orderColIndex], $orderDir);
+    // } else {
+    //     $query->orderBy('surat_peringatan_karyawan.created_at', 'desc');
+    // }
 
     // pagination
     $start = $request->input('start', 0);
     $length = $request->input('length', 10);
+
+    $query->orderBy('surat_peringatan_karyawan.created_at', 'desc');
 
     $totalFiltered = $query->count();
     $data = $query->skip($start)->take($length)->get();

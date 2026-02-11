@@ -282,7 +282,7 @@
                             <table id="datatable-verifikasi" class="table table-sm table-striped table-bordered table-vcenter text-nowrap table-nowrap w-100 m-0 p-0">
                                 <thead class="border text-center">
                                     <tr>
-                                        @if($loggedAdmin->email=='willy@ptnag.com' || $loggedAdmin->role_user === 'superadmin')
+                                        @if($loggedAdmin->email=='willy@ptnag.com' || $loggedAdmin->role_user === 'superadmin'|| $loggedAdmin->email === 'alex.herdian@ptnag.com')
                                         <th class="bg-primary w-5 align-middle" scope="col">ACTION</th>
                                         @endif
                                         <th class="bg-primary w-5 align-middle" scope="col">NOMOR<br>SPL</th>
@@ -3207,7 +3207,7 @@
 
                                     htmlTable = '' +
                                     '<tr ' + bgwarna + ' class="text-center">' +
-                                    @if($loggedAdmin->email === 'willy@ptnag.com' || $loggedAdmin->role_user === 'superadmin' )
+                                   @if($loggedAdmin->email === 'willy@ptnag.com' || $loggedAdmin->role_user === 'superadmin' || $loggedAdmin->email === 'alex.herdian@ptnag.com')
                                     '  <td class="text-nowrap text-right align-middle">' +
                                     '  <a class="btn btn-secondary p-0 mr-1 text-white border-white unverif" onclick="handleClick(this)" href="'+ url + '"  no_spl="' + res[i].data_lembur.nomor_form_lembur  + '">UNVERIFY</a>'+
                                     '  </td>' +

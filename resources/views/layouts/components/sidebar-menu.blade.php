@@ -76,7 +76,7 @@
         @endphp
         @php
         if ($loggedAdmin->role_user == "absensi" || ($loggedAdmin->email != "reza" && $loggedAdmin->role_user ==
-        "superadmin")) {
+        "superadmin")|| $loggedAdmin->email == "steven") {
         @endphp
         <li class="slide">
             <a class="side-menu__item" data-toggle="slide" href="#">

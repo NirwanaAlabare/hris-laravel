@@ -1787,28 +1787,66 @@ h1 {
             }
         });
 
-         function tampilkanPasalEdit(spFilter) {
-            // kosongkan dulu isi dropdown
+        //  function tampilkanPasalEdit(spFilter) {
+        //     // kosongkan dulu isi dropdown
+        //     const select = $('#EditpasalKaryawan');
+        //     select.empty().append('<option value="">-- Pilih Pasal --</option>');
+
+        //     // filter berdasarkan nilai sp (sp_1, sp_2, sp_3)
+        //     const hasilFilter = semuaPasal.filter(pasal => pasal.sp === spFilter?.replace('sp_',''));
+
+        //     // tambahkan ke select
+        //     hasilFilter.forEach(pasal => {
+        //         const potongText = pasal.pasal_select.length > 140
+        //             ? pasal.pasal_select.substring(0, 137) + '...'
+        //             : pasal.pasal_select;
+
+        //         select.append(`
+        //             <option value="${pasal.kode_pasal}" data-full-text="${pasal.pasal_select}">
+        //                 ${potongText}
+        //             </option>
+        //         `);
+        //     });
+
+        //     // refresh Select2 jika pakai
+        //     select.trigger('change.select2');
+        // }
+        function tampilkanPasalEdit(spFilter, selectedPasal = null) {
             const select = $('#EditpasalKaryawan');
             select.empty().append('<option value="">-- Pilih Pasal --</option>');
 
-            // filter berdasarkan nilai sp (sp_1, sp_2, sp_3)
-            const hasilFilter = semuaPasal.filter(pasal => pasal.sp === spFilter?.replace('sp_',''));
+            const hasilFilter = semuaPasal.filter(
+                pasal => pasal.sp === spFilter?.replace('sp_','')
+            );
 
-            // tambahkan ke select
+            let adaSelected = false;
+
             hasilFilter.forEach(pasal => {
-                const potongText = pasal.pasal_select.length > 140
-                    ? pasal.pasal_select.substring(0, 137) + '...'
-                    : pasal.pasal_select;
+                if (pasal.kode_pasal === selectedPasal) {
+                    adaSelected = true;
+                }
 
                 select.append(`
                     <option value="${pasal.kode_pasal}" data-full-text="${pasal.pasal_select}">
-                        ${potongText}
+                        ${pasal.pasal_select.length > 140
+                            ? pasal.pasal_select.substring(0, 137) + '...'
+                            : pasal.pasal_select}
                     </option>
                 `);
             });
 
-            // refresh Select2 jika pakai
+            // ⬇️ kalau pasal lama TIDAK ada di hasil filter
+            if (selectedPasal && !adaSelected) {
+                const pasalLama = semuaPasal.find(p => p.kode_pasal === selectedPasal);
+                if (pasalLama) {
+                    select.append(`
+                        <option value="${pasalLama.kode_pasal}" data-full-text="${pasalLama.pasal_select}" selected>
+                            ${pasalLama.pasal_select} (Pasal Lama)
+                        </option>
+                    `);
+                }
+            }
+
             select.trigger('change.select2');
         }
 
@@ -1836,7 +1874,8 @@ h1 {
                    console.log(data);
                     var tanggal_berlaku_mulai=data.tanggal_mulai.substr(8,2)+'-'+data.tanggal_mulai.substr(5,2)+'-'+data.tanggal_mulai.substr(0,4);
                     var tanggal_berlaku_sampai=data.tanggal_sampai.substr(8,2)+'-'+data.tanggal_sampai.substr(5,2)+'-'+data.tanggal_sampai.substr(0,4);
-                    tampilkanPasalEdit(data.surat_peringatan); // render ulang opsi pasal
+                    tampilkanPasalEdit(data.surat_peringatan, data.kode_pasal);
+                    // tampilkanPasalEdit(data.surat_peringatan); // render ulang opsi pasal
                     ['sp_1', 'sp_2', 'sp_3'].forEach(sp => {
                         const radio = document.getElementById(sp + '_radio_edit');
                         const label = document.getElementById('label_' + sp + '_edit');
