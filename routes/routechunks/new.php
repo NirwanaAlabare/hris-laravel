@@ -5,11 +5,11 @@ Route::prefix('datalembur')->group(function() {
     Route::get('unverifikasi/{uuid}', 'DataLemburController@unverifikasi')->name("hris.datalembur.unverifikasi");
     Route::post('create','DataLemburController@CreateSpl')->name("hris.datalembur.create");
 });
-Route::prefix('verifikasi_insentif_lembur')->group(function() {
-    Route::post('verifikasi', 'VerifikasiInsentifLemburController@verifikasi')->name("hris.verifikasi_insentif_lembur.verifikasi");
-    Route::get('unverifikasi/{uuid}', 'VerifikasiInsentifLemburController@unverifikasi')->name("hris.verifikasi_insentif_lembur.unverifikasi");
-    Route::post('create','VerifikasiInsentifLemburController@CreateSpl')->name("hris.verifikasi_insentif_lembur.create");
-});
+// Route::prefix('verifikasi_insentif_lembur')->group(function() {
+//     Route::post('verifikasi', 'VerifikasiInsentifLemburController@verifikasi')->name("hris.verifikasi_insentif_lembur.verifikasi");
+//     Route::get('unverifikasi/{uuid}', 'VerifikasiInsentifLemburController@unverifikasi')->name("hris.verifikasi_insentif_lembur.unverifikasi");
+//     Route::post('create','VerifikasiInsentifLemburController@CreateSpl')->name("hris.verifikasi_insentif_lembur.create");
+// });
 
 Route::prefix('employeeatr')->group(function() {
     //Route::get('format-import', 'EmployeeAtrController@format_import_grading')->name("hris.employeeatr.format");

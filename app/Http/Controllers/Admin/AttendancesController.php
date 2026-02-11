@@ -747,7 +747,7 @@ class AttendancesController extends AdminBaseController
      * * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function deleteEmployeeFromMachine(Request $request)
+    public function cdeleteEmployeeFromMachine(Request $request)
     {
         // 1. Validasi Input Dasar
         $request->validate([
@@ -869,7 +869,7 @@ class AttendancesController extends AdminBaseController
                                 $rawResult = $result;
                                 break;
                             }
-                        }                       
+                        }
 
                         // FIX 2: If no result found, check why
                         if (!$rawResult) {
@@ -937,6 +937,112 @@ class AttendancesController extends AdminBaseController
             'results' => $results
         ]);
     }
+    public function deleteEmployeeFromMachine(Request $request)
+    {
+        // 1. Validasi Input Dasar
+        $request->validate([
+            'enroll_ids'  => 'required|array',
+            'machine_ids' => 'required|array',
+        ]);
+
+        $enrollIds = $request->enroll_ids;
+        $machineIps = $request->machine_ids;
+        $results = [];
+
+        // 2. Inisialisasi Koneksi ODBC & Mapping Mesin
+        $machineMap = [];
+        $dsn = "att_hris";
+        $user = "server";
+        $pass = "alabare";
+
+        $connOdbc = @\odbc_connect($dsn, $user, $pass);
+        if ($connOdbc) {
+            $q = \odbc_exec($connOdbc, "SELECT IP, MachineAlias FROM Machines");
+            while ($r = \odbc_fetch_array($q)) {
+                $machineMap[$r['IP']] = $r['MachineAlias'];
+            }
+        }
+
+        // --- TAHAP 1: EKSEKUSI DATABASE ODBC (Keep this as is) ---
+        foreach ($enrollIds as $enrollId) {
+            $auditTrail = [
+                'meta' => [
+                    'executed_by' => auth()->user()->id ?? 'System',
+                    'actor_name'  => auth()->user()->name ?? 'System',
+                    'timestamp'   => now()->format('Y-m-d H:i:s.u'),
+                ],
+                'database_logs' => [],
+                'machine_logs'  => []
+            ];
+
+            try {
+                if ($connOdbc) {
+                    $sqlLookup = "SELECT USERID FROM USERINFO WHERE Badgenumber = '$enrollId'";
+                    $queryLookup = \odbc_exec($connOdbc, $sqlLookup);
+                    $userRow = \odbc_fetch_array($queryLookup);
+
+                    if ($userRow) {
+                        $internalUid = $userRow['USERID'];
+                        $tables = ['CHECKINOUT', 'TEMPLATE', 'USERINFO'];
+                        foreach ($tables as $table) {
+                            $sqlDelete = "DELETE FROM $table WHERE USERID = $internalUid";
+                            $exec = @\odbc_exec($connOdbc, $sqlDelete);
+                            $auditTrail['database_logs'][] = [
+                                'table'  => $table,
+                                'status' => $exec ? 'SUCCESS' : 'FAILED'
+                            ];
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+                $auditTrail['database_logs'][] = ['status' => 'CRITICAL_ERROR', 'detail' => $e->getMessage()];
+            }
+
+            // --- TAHAP 2: EKSEKUSI MESIN (BATCH OPTIMIZED) ---
+            // INSTEAD OF LOOPING HERE, WE SEND EVERYTHING TO PYTHON ONCE
+            // BUT TO KEEP YOUR $results FORMAT, WE PRE-POPULATE THEM
+            foreach ($machineIps as $ip) {
+                $deviceName = $machineMap[$ip] ?? $ip;
+                $results[] = [
+                    'enroll_id' => $enrollId,
+                    'machine'   => $deviceName,
+                    'status'    => 'Processing' // We change status to 'Processing' since it's now Async
+                ];
+
+                // Add a placeholder log to audit trail
+                $auditTrail['machine_logs'][] = [
+                    'ip' => $ip,
+                    'status' => 'QUEUED',
+                    'detail' => 'Command sent to background worker'
+                ];
+            }
+
+            // Save Audit Trail
+            $this->updateEmployeeAfterDelete($enrollId, $auditTrail);
+        }
+
+        // --- SEND ONE BIG BATCH TO PYTHON ---
+        try {
+            // This request will return in milliseconds because Python is now Async
+            Http::timeout(5)->post($this->zkApi . '/delete-users', [
+                'ip' => $machineIps,          // Pass all IPs
+                'enroll_ids' => $enrollIds    // Pass all IDs
+            ]);
+        } catch (\Exception $e) {
+            \Log::error("Failed to trigger ZK Background Worker: " . $e->getMessage());
+        }
+
+        if ($connOdbc) {
+            @\odbc_close($connOdbc);
+        }
+
+        // Response remains exactly as you requested
+        return response()->json([
+            'status'  => true,
+            'message' => 'Batch delete processed',
+            'results' => $results
+        ]);
+    }
     /**
      * Update Employee JSON deleted_in_machines + isDeletedInMachine
      */
@@ -954,8 +1060,6 @@ class AttendancesController extends AdminBaseController
             return;
         }
         // Ambil JSON lama
-        $oldData = json_decode($employee->isDeletedInMachine ?? '[]', true) ?: [];
-
         $oldData = json_decode($employee->isDeletedInMachine ?? '[]', true) ?: [];
 
         foreach ($statusPerMachine as $ip => $status) {
@@ -1128,5 +1232,55 @@ class AttendancesController extends AdminBaseController
         foreach ($ids as $id) {
             $results[] = ['enroll_id' => $id, 'machine_ip' => $ip, 'exists' => false, 'error' => $msg];
         }
+    }
+
+    public function handleHardwareCallback(Request $request)
+    {
+        $type = $request->input('type'); // "CHECK" or "DELETE"
+        $allResults = $request->input('data');
+
+        \Log::info("ZK Webhook Received: $type");
+
+        if (is_array($allResults)) {
+
+            // --- 1. HANDLE DATABASE UPDATES (For DELETE only) ---
+            if ($type === 'DELETE') {
+                $groupedResults = [];
+                foreach ($allResults as $item) {
+                    $enrollId = $item['enroll_id'];
+                    $ip = $item['machine_ip'];
+                    $status = ($item['deleted'] ?? false) ? 'SUCCESS' : 'FAILED';
+
+                    $groupedResults[$enrollId][$ip] = $status;
+                }
+
+                foreach ($groupedResults as $enrollId => $statusMap) {
+                    $this->updateEmployeeAfterDelete($enrollId, $statusMap);
+                }
+            }
+
+            // --- 2. HANDLE LIVE FEEDBACK (For both CHECK and DELETE) ---
+            // This is what your JavaScript is waiting for!
+            \Cache::put("zk_results_{$type}", $allResults, 300);
+
+            \Log::info("Data for $type stored in Cache for Frontend Polling.");
+        }
+
+        return response()->json(['message' => 'Callback processed successfully'], 200);
+    }
+
+    public function getLatestResults(Request $request)
+    {
+        $type = $request->query('type', 'CHECK'); // Default to CHECK if not specified
+        $cacheKey = "zk_results_{$type}";
+
+        $data = \Cache::get($cacheKey);
+
+        if ($data) {
+            \Cache::forget($cacheKey);
+            return response()->json(['status' => 'ready', 'data' => $data]);
+        }
+
+        return response()->json(['status' => 'waiting']);
     }
 }

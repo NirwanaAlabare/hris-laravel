@@ -89,6 +89,7 @@ Route::prefix('hris')->group(function () {
 });
 
 
+
 Route::fallback(function () {
     return response()->view('errors.403', [], 404);
 });

@@ -355,72 +355,94 @@ $(function () {
             { 
                 data: 'isDeletedInMachine',
                 render: function(data, type, row) {
-                    if (!data || data === '[]' || data === '{}') return '-';
-                    
-                    let logData = data;
-                    if (typeof data === 'string') {
-                        try {
-                            // Decode HTML entities jika ada (biasanya dari Laravel response)
-                            let doc = new DOMParser().parseFromString(data, 'text/html');
-                            logData = JSON.parse(doc.documentElement.textContent);
-                            if (typeof logData === 'string') logData = JSON.parse(logData);
-                        } catch(e) { return '-'; }
-                    }
+    if (!data || data === '[]' || data === '{}') return '-';
+    
+    let logData = data;
+    if (typeof data === 'string') {
+        try {
+            let doc = new DOMParser().parseFromString(data, 'text/html');
+            logData = JSON.parse(doc.documentElement.textContent);
+            if (typeof logData === 'string') logData = JSON.parse(logData);
+        } catch(e) { return '-'; }
+    }
 
-                    // Cek apakah machine_logs ada
-                    if (!logData.machine_logs || !Array.isArray(logData.machine_logs)) return '-';
+    if (!logData.machine_logs || !Array.isArray(logData.machine_logs)) return '-';
 
-                    let html = '<div class="d-flex flex-wrap gap-1" style="max-width: 500px; line-height: 1;">';
-                    let found = false;
+    let html = '<div class="d-flex flex-wrap gap-1" style="max-width: 500px; line-height: 1;">';
+    let found = false;
 
-                    // Ambil entry terbaru dari machine_logs (asumsi index terakhir adalah yang terbaru)
-                    let latestLogEntry = logData.machine_logs[logData.machine_logs.length - 1];
-                    let machineStatusArray = latestLogEntry.status || [];
+    let latestLogEntry = logData.machine_logs[logData.machine_logs.length - 1];
+    let machineStatusArray = latestLogEntry.status || [];
 
-                    machineStatusArray.forEach(item => {
-                        found = true;
-                        let ip = item.ip || '0.0.0.0';
-                        let status = item.status; // SUCCESS, FAILED, atau ERROR
-                        let raw = item.raw_response || {};
-                        let isDeleted = raw.deleted === true;
-                        let isNotFound = raw.error === 'NOT_FOUND';
-                        
-                        // Penentuan Warna
-                        let badgeColor = '#dc3545'; // Default Merah (Failed)
-                        let bgColor = '#ffeef3';
-                        
-                        if (isDeleted) {
-                            badgeColor = '#28a745'; // Hijau (Success)
-                            bgColor = '#e8fadf';
-                        } else if (isNotFound) {
-                            badgeColor = '#fd7e14'; // Orange atau Biru (Not Found)
-                            bgColor = '#fff5eb';
-                        }
+    machineStatusArray.forEach(item => {
+        found = true;
+        let ip = item.ip || '0.0.0.0';
+        
+        // --- LOGIC FIX START ---
+        // 1. Start with the status from machine_logs (usually 'QUEUED')
+        let currentStatus = item.status; 
+        let logTime = latestLogEntry.time;
 
-                        let shortIp = ip.split('.').pop(); 
-                        let tooltip = `IP: ${ip} | Device: ${item.device_name} | Result: ${isNotFound ? 'Not Found' : status} | Time: ${latestLogEntry.time}`;
+        // 2. Check if there is an update keyed by the IP at the root level
+        if (logData[ip] && Array.isArray(logData[ip]) && logData[ip].length > 0) {
+            let ipSpecificLogs = logData[ip];
+            let latestIpUpdate = ipSpecificLogs[ipSpecificLogs.length - 1];
+            
+            // Override the status if the IP-specific log says SUCCESS
+            if (latestIpUpdate.status === 'SUCCESS') {
+                currentStatus = 'SUCCESS';
+                logTime = latestIpUpdate.time;
+            }
+        }
+        // --- LOGIC FIX END ---
 
-                        html += `
-                            <span title="${tooltip}" 
-                                style="
-                                    background: ${bgColor};
-                                    color: ${badgeColor};
-                                    border: 1px solid ${badgeColor}44;
-                                    padding: 2px 6px;
-                                    border-radius: 4px;
-                                    font-size: 10px;
-                                    font-weight: bold;
-                                    cursor: help;
-                                    white-space: nowrap;
-                                    display: inline-block;
-                                    margin-bottom: 2px;
-                                ">
-                                .${shortIp} ${isNotFound ? '∅' : ''}
-                            </span>`;
-                    });
-                    
-                    return found ? html + '</div>' : '-';
-                }
+        let raw = item.raw_response || {};
+        let isSuccess = currentStatus === 'SUCCESS' || raw.deleted === true;
+        let isNotFound = raw.error === 'NOT_FOUND' || currentStatus === 'NOT_FOUND';
+        let isQueued = currentStatus === 'QUEUED';
+
+        // Styling based on final determined status
+        let badgeColor = '#dc3545'; // Default Red (Failed)
+        let bgColor = '#ffeef3';
+        let symbol = '✕';
+
+        if (isSuccess) {
+            badgeColor = '#28a745'; // Green
+            bgColor = '#e8fadf';
+            symbol = '✓';
+        } else if (isNotFound) {
+            badgeColor = '#fd7e14'; // Orange
+            bgColor = '#fff5eb';
+            symbol = '∅';
+        } else if (isQueued) {
+            badgeColor = '#007bff'; // Blue
+            bgColor = '#e7f3ff';
+            symbol = '...';
+        }
+
+        let shortIp = ip.split('.').pop(); 
+        let tooltip = `IP: ${ip} | Status: ${currentStatus} | Last Update: ${logTime}`;
+
+        html += `
+            <span title="${tooltip}" 
+                style="
+                    background: ${bgColor};
+                    color: ${badgeColor};
+                    border: 1px solid ${badgeColor}44;
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                    font-size: 10px;
+                    font-weight: bold;
+                    cursor: help;
+                    display: inline-block;
+                    margin-bottom: 2px;
+                ">
+                .${shortIp} ${symbol}
+            </span>`;
+    });
+    
+    return found ? html + '</div>' : '-';
+}
             }
         ],
         language: {
@@ -493,100 +515,289 @@ $('#btnReview').click(function () {
     }
 });
 
-    $('#btnExecute').click(function () {
+    // $('#btnExecute').click(function () {
 
-        let machineIds = $('.machine-check:checked').map(function () {
-            return $(this).val();
-        }).get();
+    //     let machineIds = $('.machine-check:checked').map(function () {
+    //         return $(this).val();
+    //     }).get();
 
-        if (selectedUsers.length === 0 || machineIds.length === 0) {
-            alert('User dan mesin harus dipilih');
-            return;
-        }
+    //     if (selectedUsers.length === 0 || machineIds.length === 0) {
+    //         alert('User dan mesin harus dipilih');
+    //         return;
+    //     }
 
-        // 🔥 loading state
-        $(this).prop('disabled', true).html(
-            '<span class="spinner-border spinner-border-sm"></span> Processing...'
-        );
+    //     // 🔥 loading state
+    //     $(this).prop('disabled', true).html(
+    //         '<span class="spinner-border spinner-border-sm"></span> Processing...'
+    //     );
 
-        $.ajax({
-            url: "{{ route('hris.attendance.deleteEmployeeFromMachine') }}",
-            type: "POST",
-            data: {
-                _token: "{{ csrf_token() }}",
-                enroll_ids: selectedUsers,
-                machine_ids: machineIds
-            },
-            success: function (res) {
+    //     $.ajax({
+    //         url: "{{ route('hris.attendance.deleteEmployeeFromMachine') }}",
+    //         type: "POST",
+    //         data: {
+    //             _token: "{{ csrf_token() }}",
+    //             enroll_ids: selectedUsers,
+    //             machine_ids: machineIds
+    //         },
+    //         success: function (res) {
 
-                $('#reviewModal').modal('hide');
+    //             $('#reviewModal').modal('hide');
 
-                // reset
-                selectedUsers = [];
-                $('#checkAll').prop('checked', false);
-                $('#btnDeleteFromMachine').prop('disabled', true);
+    //             // reset
+    //             selectedUsers = [];
+    //             $('#checkAll').prop('checked', false);
+    //             $('#btnDeleteFromMachine').prop('disabled', true);
 
-                // reload datatable
-                $('#employeeTable').DataTable().ajax.reload(null, false);
+    //             // reload datatable
+    //             $('#employeeTable').DataTable().ajax.reload(null, false);
 
-                // feedback
-                alert(res.message || 'Berhasil dihapus');
-            },
-            error: function (xhr) {
-                alert(xhr.responseJSON?.message || 'Terjadi kesalahan');
-            },
-            complete: function () {
-                $('#btnExecute')
-                    .prop('disabled', false)
-                    .html('<i class="bi bi-trash"></i> Execute Delete');
-            }
-        });
-    });
+    //             // feedback
+    //             alert(res.message || 'Berhasil dihapus');
+    //         },
+    //         error: function (xhr) {
+    //             alert(xhr.responseJSON?.message || 'Terjadi kesalahan');
+    //         },
+    //         complete: function () {
+    //             $('#btnExecute')
+    //                 .prop('disabled', false)
+    //                 .html('<i class="bi bi-trash"></i> Execute Delete');
+    //         }
+    //     });
+    // });
 
-function executeCheck(machineIds) {
-    let btn = $('#btnReview');
-    btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Checking...');
+// function executeCheck(machineIds) {
+//     let btn = $('#btnReview');
+//     btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Checking...');
+
+//     $.ajax({
+//         url: "{{ route('hris.attendance.checkEmployeeOnMachine') }}", // Anda perlu buat route ini
+//         type: "POST",
+//         data: {
+//             _token: "{{ csrf_token() }}",
+//             enroll_ids: selectedUsers,
+//             machine_ids: machineIds
+//         },
+//         success: function (res) {
+//             $('#machineModal').modal('hide');
+//             $('#checkResultBody').empty();
+//             console.log(res);
+            
+//             // Asumsi response 'res.data' berisi array object {enroll_id, machine_name, exists}
+//             res.data.forEach(item => {
+//                 let statusBadge = item.exists 
+//                     ? '<span class="badge badge-success">Ditemukan</span>' 
+//                     : '<span class="badge badge-danger">Tidak Ada</span>';
+                
+//                 $('#checkResultBody').append(`
+//                     <tr>
+//                         <td>${item.enroll_id}</td>
+//                         <td>${item.machine_ip}</td>
+//                         <td class="text-center">${statusBadge}</td>
+//                     </tr>
+//                 `);
+//             });
+
+//             $('#checkResultModal').modal('show');
+//         },
+//         error: function (xhr) {
+//             alert(xhr.responseJSON?.message || 'Gagal mengecek mesin');
+//         },
+//         complete: function () {
+//             btn.prop('disabled', false).html('Lanjut');
+//         }
+//     });
+// }
+
+$('#btnExecute').click(function () {
+    let machineIds = $('.machine-check:checked').map(function () {
+        return $(this).val();
+    }).get();
+
+    if (selectedUsers.length === 0 || machineIds.length === 0) {
+        alert('User dan mesin harus dipilih');
+        return;
+    }
+
+    // 1. Loading state
+    // let btn = $(this);
+    // btn.prop('disabled', true).html(
+    //     '<span class="spinner-border spinner-border-sm"></span> Processing...'
+    // );
+    startTimer('#btnExecute');
 
     $.ajax({
-        url: "{{ route('hris.attendance.checkEmployeeOnMachine') }}", // Anda perlu buat route ini
+        url: "{{ route('hris.attendance.deleteEmployeeFromMachine') }}",
         type: "POST",
         data: {
             _token: "{{ csrf_token() }}",
             enroll_ids: selectedUsers,
             machine_ids: machineIds
         },
-        success: function (res) {
-            $('#machineModal').modal('hide');
-            $('#checkResultBody').empty();
-            console.log(res);
-            
-            // Asumsi response 'res.data' berisi array object {enroll_id, machine_name, exists}
-            res.data.forEach(item => {
-                let statusBadge = item.exists 
-                    ? '<span class="badge badge-success">Ditemukan</span>' 
-                    : '<span class="badge badge-danger">Tidak Ada</span>';
-                
-                $('#checkResultBody').append(`
-                    <tr>
-                        <td>${item.enroll_id}</td>
-                        <td>${item.machine_ip}</td>
-                        <td class="text-center">${statusBadge}</td>
-                    </tr>
-                `);
-            });
+        success: function (res) {          
 
-            $('#checkResultModal').modal('show');
+            // 3. Instead of a simple alert, start polling for real confirmation
+            // This will look for 'zk_results_DELETE' in the Cache
+            startPollingResults('DELETE');
+
+            // 4. Cleanup UI
+            $('#checkAll').prop('checked', false);
+            $('#btnDeleteFromMachine').prop('disabled', true);
+            $('#employeeTable').DataTable().ajax.reload(null, false);
+            
+            // Note: selectedUsers = []; is moved to the render function 
+            // if you want to keep the IDs for the polling check
         },
         error: function (xhr) {
-            alert(xhr.responseJSON?.message || 'Gagal mengecek mesin');
+            alert(xhr.responseJSON?.message || 'Terjadi kesalahan');
+            // btn.prop('disabled', false).html('<i class="bi bi-trash"></i> Execute Delete');
+            stopTimer('#btnExecute', '<i class="bi bi-trash"></i> Ya, Hapus Sekarang');
+        }
+        // Removed 'complete' logic here because startPollingResults 
+        // will handle resetting the button state once the data arrives.
+    });
+});
+
+function executeCheck(machineIds) {
+    // let btn = $('#btnReview');
+    
+    // UI Feedback: Disable button and show spinner
+    // btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Processing...');
+    startTimer('#btnReview');
+
+    $.ajax({
+        url: "{{ route('hris.attendance.checkEmployeeOnMachine') }}",
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            enroll_ids: selectedUsers, // Ensure this variable exists in your script
+            machine_ids: machineIds
         },
-        complete: function () {
-            btn.prop('disabled', false).html('Lanjut');
+        success: function (res) {
+            // Python has been triggered! 
+            // Now we start the "Watchman" to look for results in the Cache
+            startPollingResults('CHECK');
+        },
+        error: function (xhr) {
+            // btn.prop('disabled', false).html('Lanjut');
+            stopTimer('#btnReview', 'Lanjut');
+            alert(xhr.responseJSON?.message || 'Failed to start check');
         }
     });
 }
 
+let pollInterval;
 
+/**
+ * Main function to start polling the Cache
+ * @param {string} type - Either 'CHECK' or 'DELETE'
+ */
+function startPollingResults(type) {
+    // Clear any existing timer
+    if (pollInterval) clearInterval(pollInterval);
+
+    pollInterval = setInterval(function() {
+        $.ajax({
+            url: "/api/zk-get-results",
+            type: "GET",
+            data: { type: type }, 
+            success: function(res) {
+                if (res.status === 'ready') {
+                    clearInterval(pollInterval);
+                    
+                    // Route the data to the correct UI renderer
+                    if (type === 'CHECK') {
+                        renderCheckTable(res.data);
+                    } else if (type === 'DELETE') {
+                        renderDeleteSummary(res.data);
+                    }
+                }
+            },
+            error: function() {
+                console.error("Polling failed. System will try again in 2s.");
+            }
+        });
+    }, 2000); 
+}
+
+/**
+ * Renders the CHECK results (Found/Not Found)
+ */
+function renderCheckTable(data) {
+    $('#checkResultBody').empty();
+    
+    data.forEach(item => {
+        let statusBadge = item.exists 
+            ? '<span class="badge badge-success">Ditemukan</span>' 
+            : '<span class="badge badge-danger">Tidak Ada</span>';
+        
+        $('#checkResultBody').append(`
+            <tr>
+                <td>${item.enroll_id}</td>
+                <td>${item.machine_ip}</td>
+                <td class="text-center">${statusBadge}</td>
+            </tr>
+        `);
+    });
+    $('#machineModal').modal('hide');
+    $('#checkResultModal').modal('show');
+    // $('#btnReview').prop('disabled', false).html('Lanjut');
+    stopTimer('#btnReview', 'Lanjut');
+}
+
+/**
+ * Renders the DELETE results (Success/Failed)
+ */
+function renderDeleteSummary(data) {
+    // 1. Calculate the results from the data sent by Python
+    let successCount = data.filter(i => i.deleted).length;
+    let failCount = data.length - successCount;
+
+    // 2. Clear the selection now that the process is finished
+    selectedUsers = []; 
+    console.log("Delete results received:", data);
+    
+    // 3. Simple Alert feedback (replacing Swal)
+    if (failCount === 0) {
+        alert(`Berhasil! Semua user (${successCount}) telah dihapus dari mesin.`);
+    } else {
+        alert(`Penghapusan selesai dengan catatan: ${successCount} Berhasil, ${failCount} Gagal. Silahkan cek koneksi mesin.`);
+    }
+
+    // 4. Reset the button state so it can be used again
+    $('#btnExecute')
+        .prop('disabled', false)
+        .html('<i class="bi bi-trash"></i> Ya, Hapus Sekarang');
+    table.ajax.reload(null, false);
+    // 2. Hide the selection modal
+    $('#reviewModal').modal('hide');
+    stopTimer('#btnExecute', '<i class="bi bi-trash"></i> Ya, Hapus Sekarang');
+}
+
+let startTime;
+let timerInterval;
+
+function startTimer(btnId) {
+    let seconds = 0;
+    let btn = $(btnId);
+    btn.prop('disabled', true); // Kunci tombol agar tidak diklik dua kali
+    
+    startTime = Date.now();
+    
+    timerInterval = setInterval(function() {
+        seconds++;
+        let mins = Math.floor(seconds / 60);
+        let secs = seconds % 60;
+        let timeString = mins.toString().padStart(2, '0') + ':' + secs.toString().padStart(2, '0');
+        
+        // Update teks tombol
+        btn.html(`<i class="fa fa-spinner fa-spin"></i> Processing (${timeString})`);
+    }, 1000);
+}
+
+function stopTimer(btnId, originalText) {
+    clearInterval(timerInterval);
+    $(btnId).prop('disabled', false).html(originalText);
+}
 });
 </script>
 @stop
