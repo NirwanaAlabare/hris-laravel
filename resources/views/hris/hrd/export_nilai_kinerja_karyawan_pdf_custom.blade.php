@@ -57,6 +57,7 @@
         border-radius: 50%;
         }
 
+
     .container {
       position: relative;
       width: 900px;
@@ -132,37 +133,87 @@
         align-items: center;
         margin: 4px 0;
     }
+    table {
+        border-collapse: collapse;
+        width: 98,5%;
+    }
 
-    @page { margin: 20px 20px 40px 20px; }
-    </style>
+    .document-box {
+        border: 1px solid #000;
+    }
+
+
+@page {
+    margin: 15px 20px 40px 20px;
+}
+
+  </style>
 </head>
+<body >
+    {{-- <div class="box-id-karyawan">
+    <strong>{{ $data_karyawan->enroll_id }}</strong>
+</div> --}}
+<table width="100%">
+    <tr>
+        <td width="80%"></td>
+        <td width="20%" align="right" style="text-align:right;">
+            {{ $data_karyawan->enroll_id }}
+        </td>
+    </tr>
+</table>
+ <div class="document-box">
+   <table width="100%" style="border-collapse: collapse;">
+    <!-- BARIS ID KARYAWAN -->
+    {{-- <tr>
+        <td colspan="10"></td>
+        <td colspan="5"
+            style="
+                font-size:7.5pt;
+                text-align:center;
+                padding:4px;
+            ">
+            {{ $data_karyawan->enroll_id }}
+        </td>
+    </tr> --}}
 
-<body style="border: 1px solid;">
-    <table width="100%">
-        <thead>
-            <tr>
-                <td width="100px" style="vertical-align: middle; text-align: center;border-bottom: 1px solid;" colspan="2" rowspan="4">
-                    <img height="60" src="{{ public_path('assets/images/brand/nirwana logo.jpg') }}" alt="">
-                </td>
-                <td style="vertical-align: middle; font-size: 12pt; text-align: center; font-weight: 800;border-bottom: 1px solid; border-left: 1px solid;" colspan="8" rowspan="4">FORMULIR PENILAIAN KINERJA
-                    KARYAWAN</td>
-                <td colspan="2" class="border-left" style="border-left: 1px solid; font-size: 7.5pt; height: 18px;">Kode Dokumen</td>
-                <td colspan="3" class="border-right" style="border-left: 1px solid; font-size: 7.5pt;">: F.16.HR.NAG.P-03.F-01.01</td>
-            </tr>
-            <tr>
-                <td colspan="2" class="border-left" style="border: 1px solid; font-size: 7.5pt; height: 18px;">Revisi</td>
-                <td colspan="3" class="border-right" style="border: 1px solid; font-size: 7.5pt;">: 1</td>
-            </tr>
-            <tr>
-                <td colspan="2" class="border-left" style="border: 1px solid; font-size: 7.5pt; height: 18px;">Tanggal Revisi</td>
-                <td colspan="3" class="border-right" style="border: 1px solid; font-size: 7.5pt;">: 14 Desember 2023</td>
-            </tr>
-            <tr>
-                <td colspan="2" class="border-left" style="border: 1px solid;border-bottom: 1px solid; font-size: 7.5pt; height: 18px;">Tanggal Berlaku</td>
-                <td colspan="3" class="border-right" style="border: 1px solid; border-bottom: 1px solid; font-size: 7.5pt;">: 18 Desember 2023</td>
-            </tr>
-        </thead>
-    </table>
+    <!-- BARIS LOGO + JUDUL -->
+    <tr>
+        <td rowspan="4" colspan="2" style="border:1px solid #000; text-align:center;">
+            <img height="60" src="{{ public_path('assets/images/brand/nirwana logo.jpg') }}">
+        </td>
+
+        <td rowspan="4" colspan="8"
+            style="
+                border:1px solid #000;
+                font-size:12pt;
+                font-weight:bold;
+                text-align:center;
+                vertical-align:middle;
+            ">
+            FORMULIR PENILAIAN KINERJA<br>KARYAWAN
+        </td>
+
+        <td colspan="2" style="border:1px solid #000; font-size:7.5pt;">Kode Dokumen</td>
+        <td colspan="3" style="border:1px solid #000; font-size:7.5pt;">
+            : F.16.HR.NAG.P-03.F-01.01
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="2" style="border:1px solid #000; font-size:7.5pt;">Revisi</td>
+        <td colspan="3" style="border:1px solid #000; font-size:7.5pt;">: 1</td>
+    </tr>
+
+    <tr>
+        <td colspan="2" style="border:1px solid #000; font-size:7.5pt;">Tanggal Revisi</td>
+        <td colspan="3" style="border:1px solid #000; font-size:7.5pt;">: 14 Desember 2023</td>
+    </tr>
+
+    <tr>
+        <td colspan="2" style="border:1px solid #000; font-size:7.5pt;">Tanggal Berlaku</td>
+        <td colspan="3" style="border:1px solid #000; font-size:7.5pt;">: 18 Desember 2023</td>
+    </tr>
+</table>
     <table width="100%" style="border-bottom:1px solid black; border-top:0px; letter-spacing: 1px;">
         <thead>
             <tr>
@@ -536,6 +587,7 @@
             </tr>
         </thead>
     </table>
+
     <script type="text/javascript">
         $(document).ready(function () {
 
@@ -582,5 +634,6 @@
                  }
          });
      </script>
+      </div>
 </body>
 </html>
