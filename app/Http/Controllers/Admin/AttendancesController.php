@@ -299,42 +299,55 @@ class AttendancesController extends AdminBaseController
 
         // Logika Filter Status Mesin (PHP Level)
         if ($request->has('status_machine') && $request->status_machine != '') {
-            $statusCari = $request->status_machine; // 'DELETED' atau 'NOT DELETED'
+            $statusCari = $request->status_machine;
 
             $employees = $employees->filter(function ($row) use ($statusCari) {
                 $logData = json_decode($row->isDeletedInMachine, true);
                 if (!$logData) return $statusCari == 'NOT DELETED';
 
-                // 1. Ambil SEMUA IP unik yang pernah masuk ke antrian (machine_logs)
-                // Ini memastikan tidak ada IP yang "ketinggalan" dari batch lama
+                $machineLogs = $logData['machine_logs'] ?? [];
+
+                // LOGIKA 1: Kumpulkan semua IP dari SELURUH BATCH (Dinamis)
+                // Ini menangani Employee C yang IP-nya hilang di batch terbaru
                 $allTargetIps = [];
-                foreach ($logData['machine_logs'] ?? [] as $batch) {
+                foreach ($machineLogs as $batch) {
                     $ipsInBatch = array_column($batch['status'] ?? [], 'ip');
                     $allTargetIps = array_unique(array_merge($allTargetIps, $ipsInBatch));
                 }
 
                 if (empty($allTargetIps)) return $statusCari == 'NOT DELETED';
 
-                // 2. Validasi: Apakah SETIAP IP yang pernah di-queue sudah berstatus SUCCESS?
                 $isFullyDeleted = true;
+
                 foreach ($allTargetIps as $ip) {
-                    // Cek laporan sukses di root JSON
-                    $hasSuccess = false;
+                    $ipFoundSuccess = false;
+
+                    // LOGIKA 2: Cek di Root (Menangani Employee A)
                     if (isset($logData[$ip])) {
-                        // Ambil laporan terbaru untuk IP tersebut
-                        $latestStatus = end($logData[$ip]);
-                        if ($latestStatus['status'] === 'SUCCESS') {
-                            $hasSuccess = true;
+                        $lastEntry = end($logData[$ip]);
+                        if (($lastEntry['status'] ?? '') === 'SUCCESS') {
+                            $ipFoundSuccess = true;
                         }
                     }
 
-                    if (!$hasSuccess) {
+                    // LOGIKA 3: Cek di dalam Machine Logs (Menangani Employee B)
+                    if (!$ipFoundSuccess) {
+                        foreach ($machineLogs as $log) {
+                            foreach ($log['status'] ?? [] as $s) {
+                                if (($s['ip'] ?? '') === $ip && ($s['status'] ?? '') === 'SUCCESS') {
+                                    $ipFoundSuccess = true;
+                                    break 2; // Berhenti cari IP ini, lanjut ke IP berikutnya
+                                }
+                            }
+                        }
+                    }
+
+                    if (!$ipFoundSuccess) {
                         $isFullyDeleted = false;
                         break;
                     }
                 }
 
-                // 3. Filter berdasarkan request
                 return ($statusCari == 'DELETED') ? $isFullyDeleted : !$isFullyDeleted;
             });
         }
