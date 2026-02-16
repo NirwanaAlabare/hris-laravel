@@ -158,7 +158,9 @@
                         <select id="filterStatusMachine" class="form-control">
                             <option value="">-- Semua Status --</option>
                             <option value="DELETED">DELETED</option>
+                            <option value="QUEUED">QUEUED</option>
                             <option value="NOT DELETED">NOT DELETED</option>
+
                         </select>
                     </div>
                 </div>

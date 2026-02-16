@@ -299,56 +299,69 @@ class AttendancesController extends AdminBaseController
 
         // Logika Filter Status Mesin (PHP Level)
         if ($request->has('status_machine') && $request->status_machine != '') {
-            $statusCari = $request->status_machine;
+            $statusCari = $request->status_machine; // 'DELETED', 'NOT DELETED', atau 'QUEUED'
 
             $employees = $employees->filter(function ($row) use ($statusCari) {
                 $logData = json_decode($row->isDeletedInMachine, true);
+
+                // Jika data kosong
                 if (!$logData) return $statusCari == 'NOT DELETED';
 
                 $machineLogs = $logData['machine_logs'] ?? [];
 
-                // LOGIKA 1: Kumpulkan semua IP dari SELURUH BATCH (Dinamis)
-                // Ini menangani Employee C yang IP-nya hilang di batch terbaru
+                // 1. Kumpulkan semua IP unik yang pernah masuk antrian
                 $allTargetIps = [];
+                $anyQueueFound = false;
+
                 foreach ($machineLogs as $batch) {
-                    $ipsInBatch = array_column($batch['status'] ?? [], 'ip');
-                    $allTargetIps = array_unique(array_merge($allTargetIps, $ipsInBatch));
+                    foreach ($batch['status'] ?? [] as $s) {
+                        $allTargetIps[] = $s['ip'];
+                        if (($s['status'] ?? '') === 'QUEUED') {
+                            $anyQueueFound = true;
+                        }
+                    }
                 }
+                $allTargetIps = array_unique($allTargetIps);
 
                 if (empty($allTargetIps)) return $statusCari == 'NOT DELETED';
 
-                $isFullyDeleted = true;
-
+                // 2. Cek status SUCCESS untuk setiap IP
+                $successCount = 0;
                 foreach ($allTargetIps as $ip) {
-                    $ipFoundSuccess = false;
+                    $found = false;
 
-                    // LOGIKA 2: Cek di Root (Menangani Employee A)
-                    if (isset($logData[$ip])) {
-                        $lastEntry = end($logData[$ip]);
-                        if (($lastEntry['status'] ?? '') === 'SUCCESS') {
-                            $ipFoundSuccess = true;
-                        }
+                    // Lapis 1: Root
+                    if (isset($logData[$ip]) && end($logData[$ip])['status'] === 'SUCCESS') {
+                        $found = true;
                     }
 
-                    // LOGIKA 3: Cek di dalam Machine Logs (Menangani Employee B)
-                    if (!$ipFoundSuccess) {
+                    // Lapis 2: Nested di logs
+                    if (!$found) {
                         foreach ($machineLogs as $log) {
                             foreach ($log['status'] ?? [] as $s) {
                                 if (($s['ip'] ?? '') === $ip && ($s['status'] ?? '') === 'SUCCESS') {
-                                    $ipFoundSuccess = true;
-                                    break 2; // Berhenti cari IP ini, lanjut ke IP berikutnya
+                                    $found = true;
+                                    break 2;
                                 }
                             }
                         }
                     }
 
-                    if (!$ipFoundSuccess) {
-                        $isFullyDeleted = false;
-                        break;
-                    }
+                    if ($found) $successCount++;
                 }
 
-                return ($statusCari == 'DELETED') ? $isFullyDeleted : !$isFullyDeleted;
+                // 3. Penentuan Status Final
+                $isFullyDeleted = ($successCount === count($allTargetIps));
+                $isQueued = (!$isFullyDeleted && $anyQueueFound);
+
+                if ($statusCari == 'DELETED') {
+                    return $isFullyDeleted;
+                } elseif ($statusCari == 'QUEUED') {
+                    return $isQueued;
+                } else { // NOT DELETED
+                    // Not Deleted berarti tidak sedang di-queue DAN belum sukses semua
+                    return !$isFullyDeleted && !$anyQueueFound;
+                }
             });
         }
 
