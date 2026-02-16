@@ -153,6 +153,14 @@
                             <option value="TIDAK AKTIF">TIDAK AKTIF</option>
                         </select>
                     </div>
+                    <div class="col-md-4">
+                        <label class="font-weight-bold">Status di Mesin</label>
+                        <select id="filterStatusMachine" class="form-control">
+                            <option value="">-- Semua Status --</option>
+                            <option value="DELETED">DELETED</option>
+                            <option value="NOT DELETED">NOT DELETED</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -344,6 +352,7 @@ $(function () {
             data: function (d) {
                 d.department = $('#filterDept').val();
                 d.status = $('#filterStatus').val();
+                d.status_machine = $('#filterStatusMachine').val();
             }
         },
         columns: [
@@ -352,97 +361,204 @@ $(function () {
             {data: 'employee_name'},
             {data: 'department_name'},
             {data: 'status_aktif'},
-            { 
+            // { 
+            //     data: 'isDeletedInMachine',
+            //     render: function(data, type, row) {
+            //         if (!data || data === '[]' || data === '{}') return '-';
+                    
+            //         let logData = data;
+            //         if (typeof data === 'string') {
+            //             try {
+            //                 let doc = new DOMParser().parseFromString(data, 'text/html');
+            //                 logData = JSON.parse(doc.documentElement.textContent);
+            //                 if (typeof logData === 'string') logData = JSON.parse(logData);
+            //             } catch(e) { return '-'; }
+            //         }
+
+            //         if (!logData.machine_logs || !Array.isArray(logData.machine_logs)) return '-';
+
+            //         let html = '<div class="d-flex flex-wrap gap-1" style="max-width: 500px; line-height: 1;">';
+            //         let found = false;
+
+            //         let latestLogEntry = logData.machine_logs[logData.machine_logs.length - 1];
+            //         let machineStatusArray = latestLogEntry.status || [];
+
+            //         machineStatusArray.forEach(item => {
+            //             found = true;
+            //             let ip = item.ip || '0.0.0.0';
+                        
+            //             // --- LOGIC FIX START ---
+            //             // 1. Start with the status from machine_logs (usually 'QUEUED')
+            //             let currentStatus = item.status; 
+            //             let logTime = latestLogEntry.time;
+
+            //             // 2. Check if there is an update keyed by the IP at the root level
+            //             if (logData[ip] && Array.isArray(logData[ip]) && logData[ip].length > 0) {
+            //                 let ipSpecificLogs = logData[ip];
+            //                 let latestIpUpdate = ipSpecificLogs[ipSpecificLogs.length - 1];
+                            
+            //                 // Override the status if the IP-specific log says SUCCESS
+            //                 if (latestIpUpdate.status === 'SUCCESS') {
+            //                     currentStatus = 'SUCCESS';
+            //                     logTime = latestIpUpdate.time;
+            //                 }
+            //             }
+            //             // --- LOGIC FIX END ---
+
+            //             let raw = item.raw_response || {};
+            //             let isSuccess = currentStatus === 'SUCCESS' || raw.deleted === true;
+            //             let isNotFound = raw.error === 'NOT_FOUND' || currentStatus === 'NOT_FOUND';
+            //             let isQueued = currentStatus === 'QUEUED';
+
+            //             // Styling based on final determined status
+            //             let badgeColor = '#dc3545'; // Default Red (Failed)
+            //             let bgColor = '#ffeef3';
+            //             let symbol = '✕';
+
+            //             if (isSuccess) {
+            //                 badgeColor = '#28a745'; // Green
+            //                 bgColor = '#e8fadf';
+            //                 symbol = '✓';
+            //             } else if (isNotFound) {
+            //                 badgeColor = '#fd7e14'; // Orange
+            //                 bgColor = '#fff5eb';
+            //                 symbol = '∅';
+            //             } else if (isQueued) {
+            //                 badgeColor = '#007bff'; // Blue
+            //                 bgColor = '#e7f3ff';
+            //                 symbol = '...';
+            //             }
+
+            //             let shortIp = ip.split('.').pop(); 
+            //             let tooltip = `IP: ${ip} | Status: ${currentStatus} | Last Update: ${logTime}`;
+
+            //             html += `
+            //                 <span title="${tooltip}" 
+            //                     style="
+            //                         background: ${bgColor};
+            //                         color: ${badgeColor};
+            //                         border: 1px solid ${badgeColor}44;
+            //                         padding: 2px 6px;
+            //                         border-radius: 4px;
+            //                         font-size: 10px;
+            //                         font-weight: bold;
+            //                         cursor: help;
+            //                         display: inline-block;
+            //                         margin-bottom: 2px;
+            //                     ">
+            //                     .${shortIp} ${symbol}
+            //                 </span>`;
+            //         });
+                    
+            //         return found ? html + '</div>' : '-';
+            //     }
+            // }
+            {
                 data: 'isDeletedInMachine',
                 render: function(data, type, row) {
-    if (!data || data === '[]' || data === '{}') return '-';
-    
-    let logData = data;
-    if (typeof data === 'string') {
-        try {
-            let doc = new DOMParser().parseFromString(data, 'text/html');
-            logData = JSON.parse(doc.documentElement.textContent);
-            if (typeof logData === 'string') logData = JSON.parse(logData);
-        } catch(e) { return '-'; }
-    }
+                    // 1. Validasi awal
+                    if (!data || data === '[]' || data === '{}') return '<span class="text-muted">-</span>';
 
-    if (!logData.machine_logs || !Array.isArray(logData.machine_logs)) return '-';
+                    let logData = data;
+                    if (typeof data === 'string') {
+                        try {
+                            let doc = new DOMParser().parseFromString(data, 'text/html');
+                            let cleanJson = doc.documentElement.textContent;
+                            logData = JSON.parse(cleanJson);
+                            if (typeof logData === 'string') logData = JSON.parse(logData);
+                        } catch (e) {
+                            return '<span class="text-danger">Error Data</span>';
+                        }
+                    }
 
-    let html = '<div class="d-flex flex-wrap gap-1" style="max-width: 500px; line-height: 1;">';
-    let found = false;
+                    // 2. Kumpulkan semua IP unik dan status terbarunya
+                    let uniqueIps = new Map();
+                    if (logData.machine_logs && Array.isArray(logData.machine_logs)) {
+                        logData.machine_logs.forEach(entry => {
+                            if (entry.status && Array.isArray(entry.status)) {
+                                entry.status.forEach(item => {
+                                    uniqueIps.set(item.ip, {
+                                        status: item.status || 'QUEUED',
+                                        time: entry.time,
+                                        raw: item.raw_response || {}
+                                    });
+                                });
+                            }
+                        });
+                    }
 
-    let latestLogEntry = logData.machine_logs[logData.machine_logs.length - 1];
-    let machineStatusArray = latestLogEntry.status || [];
+                    // Tambahkan CSS Animation ke dokumen (hanya sekali)
+                    if (!document.getElementById('style-queued-blink')) {
+                        let style = document.createElement('style');
+                        style.id = 'style-queued-blink';
+                        style.innerHTML = `
+                            @keyframes queuedPulse {
+                                0% { opacity: 1; transform: scale(1); }
+                                50% { opacity: 0.6; transform: scale(0.95); }
+                                100% { opacity: 1; transform: scale(1); }
+                            }
+                            .badge-queued {
+                                animation: queuedPulse 1.5s infinite ease-in-out;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
 
-    machineStatusArray.forEach(item => {
-        found = true;
-        let ip = item.ip || '0.0.0.0';
-        
-        // --- LOGIC FIX START ---
-        // 1. Start with the status from machine_logs (usually 'QUEUED')
-        let currentStatus = item.status; 
-        let logTime = latestLogEntry.time;
+                    let html = '<div class="d-flex flex-wrap gap-1" style="max-width: 500px; line-height: 1.2;">';
+                    let found = false;
 
-        // 2. Check if there is an update keyed by the IP at the root level
-        if (logData[ip] && Array.isArray(logData[ip]) && logData[ip].length > 0) {
-            let ipSpecificLogs = logData[ip];
-            let latestIpUpdate = ipSpecificLogs[ipSpecificLogs.length - 1];
-            
-            // Override the status if the IP-specific log says SUCCESS
-            if (latestIpUpdate.status === 'SUCCESS') {
-                currentStatus = 'SUCCESS';
-                logTime = latestIpUpdate.time;
-            }
-        }
-        // --- LOGIC FIX END ---
+                    uniqueIps.forEach((val, ip) => {
+                        found = true;
+                        let currentStatus = val.status;
+                        let logTime = val.time;
 
-        let raw = item.raw_response || {};
-        let isSuccess = currentStatus === 'SUCCESS' || raw.deleted === true;
-        let isNotFound = raw.error === 'NOT_FOUND' || currentStatus === 'NOT_FOUND';
-        let isQueued = currentStatus === 'QUEUED';
+                        // --- LOGIC OVERRIDE ---
+                        if (logData[ip] && Array.isArray(logData[ip]) && logData[ip].length > 0) {
+                            let latestUpdate = logData[ip][logData[ip].length - 1];
+                            if (latestUpdate.status === 'SUCCESS') {
+                                currentStatus = 'SUCCESS';
+                                logTime = latestUpdate.time;
+                            }
+                        }
 
-        // Styling based on final determined status
-        let badgeColor = '#dc3545'; // Default Red (Failed)
-        let bgColor = '#ffeef3';
-        let symbol = '✕';
+                        // 3. Styling dan Animasi
+                        let color = '#dc3545'; // Default Fail (Merah)
+                        let bg = '#ffeef3';
+                        let symbol = '✕';
+                        let extraClass = '';
 
-        if (isSuccess) {
-            badgeColor = '#28a745'; // Green
-            bgColor = '#e8fadf';
-            symbol = '✓';
-        } else if (isNotFound) {
-            badgeColor = '#fd7e14'; // Orange
-            bgColor = '#fff5eb';
-            symbol = '∅';
-        } else if (isQueued) {
-            badgeColor = '#007bff'; // Blue
-            bgColor = '#e7f3ff';
-            symbol = '...';
-        }
+                        if (currentStatus === 'SUCCESS') {
+                            color = '#28a745'; bg = '#e8fadf'; symbol = '✓';
+                        } else if (currentStatus === 'NOT_FOUND') {
+                            color = '#fd7e14'; bg = '#fff5eb'; symbol = '∅';
+                        } else if (currentStatus === 'QUEUED') {
+                            color = '#007bff'; bg = '#e7f3ff'; symbol = '...';
+                            extraClass = 'badge-queued'; // Tambahkan class animasi
+                        }
 
-        let shortIp = ip.split('.').pop(); 
-        let tooltip = `IP: ${ip} | Status: ${currentStatus} | Last Update: ${logTime}`;
+                        let shortIp = ip.split('.').pop();
+                        let tooltip = `IP: ${ip} | Status: ${currentStatus} | Update: ${logTime}`;
 
-        html += `
-            <span title="${tooltip}" 
-                style="
-                    background: ${bgColor};
-                    color: ${badgeColor};
-                    border: 1px solid ${badgeColor}44;
-                    padding: 2px 6px;
-                    border-radius: 4px;
-                    font-size: 10px;
-                    font-weight: bold;
-                    cursor: help;
-                    display: inline-block;
-                    margin-bottom: 2px;
-                ">
-                .${shortIp} ${symbol}
-            </span>`;
-    });
-    
-    return found ? html + '</div>' : '-';
-}
+                        html += `
+                            <span title="${tooltip}" class="${extraClass}"
+                                style="
+                                    background: ${bg};
+                                    color: ${color};
+                                    border: 1px solid ${color}44;
+                                    padding: 3px 6px;
+                                    border-radius: 4px;
+                                    font-size: 10px;
+                                    font-weight: bold;
+                                    cursor: help;
+                                    display: inline-block;
+                                    margin-bottom: 2px;
+                                ">
+                                .${shortIp} ${symbol}
+                            </span>`;
+                    });
+
+                    return found ? html + '</div>' : '<span class="text-muted">-</span>';
+                }
             }
         ],
         language: {
@@ -455,7 +571,7 @@ $(function () {
     });
 
     // Trigger filter
-    $('#filterDept, #filterStatus').on('change', function () {
+    $('#filterDept, #filterStatus, #filterStatusMachine').on('change', function () {
         table.draw();
     });
 

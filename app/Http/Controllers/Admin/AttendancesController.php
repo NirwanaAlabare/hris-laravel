@@ -285,7 +285,7 @@ class AttendancesController extends AdminBaseController
             'isDeletedInMachine'
         ]);
 
-        // Logika Filter
+        // Logika Filter Biasa (Database Level)
         if ($request->has('department') && $request->department != '') {
             $query->where('department_name', $request->department);
         }
@@ -294,7 +294,45 @@ class AttendancesController extends AdminBaseController
             $query->where('status_aktif', $request->status);
         }
 
-        return DataTables::of($query)
+        // Ambil data menjadi Collection agar bisa dilooping PHP
+        $employees = $query->get();
+
+        // Logika Filter Status Mesin (PHP Level)
+        if ($request->has('status_machine') && $request->status_machine != '') {
+            $statusCari = $request->status_machine; // 'DELETED' atau 'NOT DELETED'
+
+            $employees = $employees->filter(function ($row) use ($statusCari) {
+                $logData = json_decode($row->isDeletedInMachine, true);
+                if (!$logData) return $statusCari == 'NOT DELETED';
+
+                // 1. Ambil antrian mesin yang paling baru (paling bawah di machine_logs)
+                $machineLogs = $logData['machine_logs'] ?? [];
+                if (empty($machineLogs)) return $statusCari == 'NOT DELETED';
+
+                $latestBatch = end($machineLogs);
+                $targetIps = array_column($latestBatch['status'] ?? [], 'ip');
+
+                // 2. Validasi: Apakah SEMUA IP di antrian terbaru itu sudah ada SUCCESS-nya di root?
+                $isFullyDeleted = true;
+                foreach ($targetIps as $ip) {
+                    // Cek apakah key IP tersebut ada di root JSON dan entri terakhirnya SUCCESS
+                    if (!isset($logData[$ip]) || end($logData[$ip])['status'] !== 'SUCCESS') {
+                        $isFullyDeleted = false;
+                        break;
+                    }
+                }
+
+                // 3. Kembalikan hasil sesuai filter user
+                if ($statusCari == 'DELETED') {
+                    return $isFullyDeleted;
+                } else {
+                    return !$isFullyDeleted;
+                }
+            });
+        }
+
+        // Gunakan DataTables::of() dengan Collection ($employees)
+        return DataTables::of($employees)
             ->addColumn('checkbox', function ($row) {
                 return '<input type="checkbox" class="row-check" data-enroll_id="' . $row->enroll_id . '">';
             })
