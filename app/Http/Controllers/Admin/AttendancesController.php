@@ -305,29 +305,37 @@ class AttendancesController extends AdminBaseController
                 $logData = json_decode($row->isDeletedInMachine, true);
                 if (!$logData) return $statusCari == 'NOT DELETED';
 
-                // 1. Ambil antrian mesin yang paling baru (paling bawah di machine_logs)
-                $machineLogs = $logData['machine_logs'] ?? [];
-                if (empty($machineLogs)) return $statusCari == 'NOT DELETED';
+                // 1. Ambil SEMUA IP unik yang pernah masuk ke antrian (machine_logs)
+                // Ini memastikan tidak ada IP yang "ketinggalan" dari batch lama
+                $allTargetIps = [];
+                foreach ($logData['machine_logs'] ?? [] as $batch) {
+                    $ipsInBatch = array_column($batch['status'] ?? [], 'ip');
+                    $allTargetIps = array_unique(array_merge($allTargetIps, $ipsInBatch));
+                }
 
-                $latestBatch = end($machineLogs);
-                $targetIps = array_column($latestBatch['status'] ?? [], 'ip');
+                if (empty($allTargetIps)) return $statusCari == 'NOT DELETED';
 
-                // 2. Validasi: Apakah SEMUA IP di antrian terbaru itu sudah ada SUCCESS-nya di root?
+                // 2. Validasi: Apakah SETIAP IP yang pernah di-queue sudah berstatus SUCCESS?
                 $isFullyDeleted = true;
-                foreach ($targetIps as $ip) {
-                    // Cek apakah key IP tersebut ada di root JSON dan entri terakhirnya SUCCESS
-                    if (!isset($logData[$ip]) || end($logData[$ip])['status'] !== 'SUCCESS') {
+                foreach ($allTargetIps as $ip) {
+                    // Cek laporan sukses di root JSON
+                    $hasSuccess = false;
+                    if (isset($logData[$ip])) {
+                        // Ambil laporan terbaru untuk IP tersebut
+                        $latestStatus = end($logData[$ip]);
+                        if ($latestStatus['status'] === 'SUCCESS') {
+                            $hasSuccess = true;
+                        }
+                    }
+
+                    if (!$hasSuccess) {
                         $isFullyDeleted = false;
                         break;
                     }
                 }
 
-                // 3. Kembalikan hasil sesuai filter user
-                if ($statusCari == 'DELETED') {
-                    return $isFullyDeleted;
-                } else {
-                    return !$isFullyDeleted;
-                }
+                // 3. Filter berdasarkan request
+                return ($statusCari == 'DELETED') ? $isFullyDeleted : !$isFullyDeleted;
             });
         }
 
