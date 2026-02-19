@@ -354,6 +354,7 @@ class AnggaranMakanController extends AdminBaseController
             FROM estimasi_anggaran_makan a
             WHERE a.tanggal BETWEEN '$from' AND '$to'
             and a.keterangan ='LEMBUR'
+            AND (COALESCE(a.staff,0) > 0 OR COALESCE(a.non_staff,0) > 0)
             ORDER BY department, sub_dept_name");
             // dd( $data);
         $data2 = DB::select("SELECT 'SHIFT MALAM' shift,
@@ -393,6 +394,7 @@ class AnggaranMakanController extends AdminBaseController
             FROM estimasi_anggaran_makan a
             WHERE a.tanggal BETWEEN '$from' AND '$to'
             and a.keterangan ='SHIFT MALAM'
+            AND (COALESCE(a.staff,0) > 0 OR COALESCE(a.non_staff,0) > 0)
                 ORDER BY department, sub_dept_name");
         $data6 = DB::select("SELECT 'TAKJIL' shift,
             a.tanggal,
@@ -423,6 +425,7 @@ class AnggaranMakanController extends AdminBaseController
             + (COALESCE(a.non_staff,0) * 5000) AS total
             FROM estimasi_anggaran_makan a
             WHERE a.tanggal BETWEEN '$from' AND '$to'
+            AND (COALESCE(a.staff,0) > 0 OR COALESCE(a.non_staff,0) > 0)
             and a.keterangan ='TAKJIL'
             ORDER BY department, sub_dept_name");
         $data3 = DB::select("SELECT
@@ -591,6 +594,9 @@ class AnggaranMakanController extends AdminBaseController
                 AND b.site_nirwana_id IN ('NAG','NAK','NAGD')
             )
         ");
+        $data3 = array_filter($data3, fn($r) => $r->total > 0);
+        $data4 = array_filter($data4, fn($r) => $r->total > 0);
+        $data7 = array_filter($data7, fn($r) => $r->total > 0);
 
             $fileName='Budgeting Makan '.$from.' '.rand();
         $pdf = PDF::loadView('hris/mutasi-karyawan/anggaran_makan/approval_anggaran_makan',["data" => $data,"data2"=>$data2,"data3"=>$data3,"data4"=>$data4,"data6"=>$data6,"data7"=>$data7,"data4"=>$data4,"data5"=>$data5,"tanggal"=>$from ,"tanggal2"=>$to])->setPaper('A4', 'potrait')->stream($fileName.'.pdf',array('Attachment'=>0));
