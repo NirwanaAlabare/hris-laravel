@@ -120,7 +120,7 @@
                                 <option value="">PILIH KETERANGAN</option>
                                 <option value="LEMBUR">LEMBUR</option>
                                 <option value="SHIFT MALAM">SHIFT MALAM</option>
-                                <option value="TAKJIL">Takjil</option>
+                                <option value="TAKJIL">TAKJIL</option>
 
                             </select>
                         </div>
@@ -201,7 +201,7 @@
                                 <option value="">PILIH KETERANGAN</option>
                                 <option value="LEMBUR">LEMBUR</option>
                                 <option value="SHIFT MALAM">SHIFT MALAM</option>
-                                <option value="TAKJIL">Takjil</option>
+                                <option value="TAKJIL">TAKJIL</option>
                             </select>
 
                         </div>
