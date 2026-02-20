@@ -49,9 +49,9 @@
                 <td style="width:10.5cm; height:7.425cm; vertical-align:top; position:relative; box-sizing: border-box;">
                     <div class="parent">
                         <img class="image1" width="100%" src="{{ public_path('/assets/images/hrd/voucher bazar.png') }}">
-                        <h6 class="text1"><span style="color:red;font-size:8pt">{{$value->nomor_voucher}}</span></h6>
+                        <h6 class="text1"><span style="color:rgb(18, 66, 41);font-size:8pt ;background-color:rgb(251, 244, 147)">{{$value->nomor_voucher}}</span></h6>
                     </div>
-                    <div class="barcode" style="display: flex; margin-top: 15px; position: absolute; bottom: -6px; left: 14px;">
+                    <div class="barcode" style="color:rgb(255, 255, 255) ;display: flex; margin-top: 15px; position: absolute; bottom: 2px; left: 80px;">
                             <h6>{{$value->employee->sub_dept_name}}</h6>
                     </div>
                     <div class="barcode" style="display: flex; margin-top: 1px;  position: absolute; bottom: -6px; right: 0px;">
