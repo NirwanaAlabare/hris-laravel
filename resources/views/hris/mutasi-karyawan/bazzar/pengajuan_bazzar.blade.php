@@ -1294,9 +1294,11 @@ function toggleOutside(source) {
                     $("#ajax-modal-edit1").modal('hide');
                     dataTableReload();
                     dataTableDepartmentReload();
-                    setTimeout(function myFunction() {
-                            location.reload();
-                          }, 3000);
+                    $('#datatable_pending').DataTable().ajax.reload(null, false);
+                    //  resetButton();
+                    // setTimeout(function myFunction() {
+                    //         location.reload();
+                    //       }, 3000);
                 },
                 error: function(res){
                     notif({
