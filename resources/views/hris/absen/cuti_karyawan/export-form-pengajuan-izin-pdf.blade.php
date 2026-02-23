@@ -36,15 +36,15 @@
             </tr>
             <tr>
                 <td colspan="2" class="border-left" style="border: 1px solid; font-size: 9pt;">Revisi</td>
-                <td colspan="3" class="border-right" style="border: 1px solid; font-size: 9pt;">: Rev 1</td>
+                <td colspan="3" class="border-right" style="border: 1px solid; font-size: 9pt;">: Rev 2</td>
             </tr>
             <tr>
                 <td colspan="2" class="border-left" style="border: 1px solid; font-size: 9pt;">Tanggal Revisi</td>
-                <td colspan="3" class="border-right" style="border: 1px solid; font-size: 9pt;">: 05 Maret 2024</td>
+                <td colspan="3" class="border-right" style="border: 1px solid; font-size: 9pt;">: 26 Februari 2026</td>
             </tr>
             <tr>
                 <td colspan="2" class="border-left" style="border: 1px solid;border-bottom: 1px solid; font-size: 9pt;">Tanggal Efektif</td>
-                <td colspan="3" class="border-right" style="border: 1px solid; border-bottom: 1px solid; font-size: 9pt;">: 05 Maret 2024</td>
+                <td colspan="3" class="border-right" style="border: 1px solid; border-bottom: 1px solid; font-size: 9pt;">: 26 Februari 2026</td>
             </tr>
         </thead>
     </table>
@@ -67,7 +67,7 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top;"></td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:10px;" colspan="6"></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:3pt;vertical-align:top; height:4px;" colspan="6"></td>
             </tr>
             <tr>
                 <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">NIP</td>
@@ -81,8 +81,23 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
             </tr>
+             <tr>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:3pt;vertical-align:top; height:4px;" colspan="6"></td>
+            </tr>
+             <tr>
+                <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">Jabatan</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">:</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; text-transform: uppercase; line-height: normal;">{{ $data->status_jabatan }}
+                    <div style="border-bottom: 1px solid #000; width: 100%; margin-top: 0px;">
+                    <span style="display: block; height: 1px;"></span>
+                </div>
+                </td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
+            </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:10px;" colspan="6"></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:3pt;vertical-align:top; height:4px;" colspan="6"></td>
             </tr>
             <tr>
                 <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top;width:150px">Bagian</td>
@@ -97,7 +112,7 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:10px;" colspan="6"></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:3pt;vertical-align:top; height:4px;" colspan="6"></td>
             </tr>
             <tr>
                 <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">Department</td>
@@ -111,12 +126,12 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; height:10px;" colspan="6"></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:3pt;vertical-align:top; height:4px;" colspan="6"></td>
             </tr>
             <tr>
                 <td style="padding-left: 10px !important; font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">Nomor Form</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; text-transform: uppercase;"> {{ $data->is_verifikasi_pengajuan_admin === 1 ? $data->nomor_form_perizinan : "-" }}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top; text-transform: uppercase;"> {{ $data->is_verifikasi_pengajuan_admin === 1 ? $data->nomor_form_perizinan : "" }}</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:8pt;vertical-align:top"></td>
