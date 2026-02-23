@@ -51,10 +51,10 @@
                         <img class="image1" width="100%" src="{{ public_path('/assets/images/hrd/voucher bazar.png') }}">
                         <h6 class="text1"><span style="color:rgb(2, 2, 2);font-size:8pt ;">{{$value->nomor_voucher}}</span></h6>
                     </div>
-                    <div class="text1" style="display: flex; margin-top: 25px; position: absolute; bottom: 5px; left: 30px;">
+                    <div class="barcode" style="display: flex; margin-top: 15px; position: absolute; bottom: 5px; left: 30px;">
                             <h6>{{$value->employee->sub_dept_name}}</h6>
                     </div>
-                    <div class="barcode" style="display: flex; margin-top: 1px;  position: absolute; bottom: -6px; right: 0px;">
+                    <div class="barcode" style="display: flex; margin-top: 1px;  position: absolute; bottom: -6px; right: 0px; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">
                         <div align="right">
                             <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . $value->nomor_voucher  . '&type=VOUCHER', 'QRCODE') }}" alt="barcode" style="width: 53px; height: 53px;background-color:white" />
                         </div>
