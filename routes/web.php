@@ -671,6 +671,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris', 'names
     Route::post('employeeatr/ajax_getemployeeatr3/', ['as' => 'hris.employeeatr.ajax_getemployeeatr3', 'uses' => 'EmployeeAtrController@ajax_getemployeeatr3']);
     Route::post('employeeatr/ajax_getemployeeatr4/', ['as' => 'hris.employeeatr.ajax_getemployeeatr4', 'uses' => 'EmployeeAtrController@ajax_getemployeeatr4']);
     Route::post('employeeatr/ajax_getemployeeids/', ['as' => 'hris.employeeatr.ajax_getemployeeids', 'uses' => 'EmployeeAtrController@ajax_getemployeeids']);
+    Route::post('employeeatr/synchemployees/', ['as' => 'hris.employeeatr.synchemployees', 'uses' => 'EmployeeAtrController@synchemployees']);
     Route::post('employeeatr/ajax_getemployeeid/', ['as' => 'hris.employeeatr.ajax_getemployeeid', 'uses' => 'EmployeeAtrController@ajax_getemployeeid']);
     Route::post('employeeatr/ajax_getcheckedemployee/', ['as' => 'hris.employeeatr.ajax_getcheckedemployee', 'uses' => 'EmployeeAtrController@ajax_getcheckedemployee']);
     Route::post('employeeatr/ajax_getempatr/', ['as' => 'hris.employeeatr.ajax_getempatr', 'uses' => 'EmployeeAtrController@ajax_getempatr']);

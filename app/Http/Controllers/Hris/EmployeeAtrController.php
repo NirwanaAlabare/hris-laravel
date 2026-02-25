@@ -2697,4 +2697,206 @@ class EmployeeAtrController extends AdminBaseController
 
         return response()->json($data);
     }
+
+
+    function asynchemployees()
+    {
+        // ODBC Connection parameters
+        $dsn = "att_hris";
+        $user = "server";
+        $pass = "alabare";
+
+        // Connect to ODBC
+        $connOdbc = @odbc_connect($dsn, $user, $pass);
+
+        if (!$connOdbc) {
+            Log::error('ODBC Connection failed');
+            return response()->json(['error' => 'Connection failed'], 500);
+        }
+
+        try {
+            // Fetch data from MySQL
+            $mysqlDepartments = DB::connection('mysql')
+                ->table('department_all')
+                ->select('department_id', 'department_name')
+                ->groupBy('department_id', 'department_name')
+                ->get();
+
+            $inserted = 0;
+            $skipped = 0;
+            $errors = 0;
+
+            foreach ($mysqlDepartments as $department) {
+                $deptName = trim($department->department_name);
+
+                if (empty($deptName)) {
+                    continue; // Skip empty department names
+                }
+
+                // Check if department name already exists
+                $checkSql = "SELECT COUNT(*) as count FROM DEPARTMENTS_copy WHERE DEPTNAME = ?";
+                $checkStmt = odbc_prepare($connOdbc, $checkSql);
+                odbc_execute($checkStmt, [$deptName]);
+
+                $row = odbc_fetch_array($checkStmt);
+
+                if ($row['count'] == 0) {
+                    // Get next DEPTID
+                    $maxIdSql = "SELECT ISNULL(MAX(DEPTID), 0) + 1 as next_id FROM DEPARTMENTS_copy";
+                    $maxIdStmt = odbc_exec($connOdbc, $maxIdSql);
+                    $maxIdRow = odbc_fetch_array($maxIdStmt);
+                    $nextId = $maxIdRow['next_id'];
+
+                    // Insert new department
+                    $insertSql = "INSERT INTO DEPARTMENTS_copy (DEPTNAME, SUPDEPTID) VALUES (?, 1)";
+
+                    $insertStmt = odbc_prepare($connOdbc, $insertSql);
+                    $result = odbc_execute($insertStmt, [$deptName]);
+
+                    if ($result) {
+                        $inserted++;
+                        Log::info("Inserted department: " . $deptName . " with ID: " . $nextId);
+                    } else {
+                        $errors++;
+                        Log::error("Failed to insert department: " . $deptName);
+                    }
+                } else {
+                    $skipped++;
+                    Log::info("Department already exists: " . $deptName);
+                }
+            }
+
+            odbc_close($connOdbc);
+
+            return response()->json([
+                'message' => 'Sync completed',
+                'inserted' => $inserted,
+                'skipped' => $skipped,
+                'errors' => $errors
+            ]);
+        } catch (\Exception $e) {
+            odbc_close($connOdbc);
+            Log::error('Sync error: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function synchemployees()
+    {
+        set_time_limit(600);
+        ini_set('max_execution_time', 600);
+
+        $connOdbc = @odbc_connect("att_hris", "server", "alabare");
+
+        if (!$connOdbc) {
+            return response()->json(['error' => 'ODBC Connection failed'], 500);
+        }
+
+        try {
+
+            odbc_exec($connOdbc, "BEGIN TRANSACTION");
+            odbc_exec($connOdbc, "SET NOCOUNT ON");
+
+            // ===================================
+            // TEMP TABLE
+            // ===================================
+            odbc_exec($connOdbc, "
+            CREATE TABLE #TempEmp (
+                Badgenumber NVARCHAR(50) PRIMARY KEY,
+                DeptName NVARCHAR(150),
+                EmpName NVARCHAR(150)
+            );
+        ");
+
+            // ===================================
+            // LOAD MYSQL DATA
+            // ===================================
+            DB::connection('mysql')
+                ->table('employee_atribut')
+                ->join('department_all', 'department_all.department_id', '=', 'employee_atribut.department_id')
+                ->select(
+                    'employee_atribut.enroll_id',
+                    'employee_atribut.employee_name',
+                    'department_all.department_name'
+                )
+                ->distinct()
+                ->orderBy('employee_atribut.enroll_id')
+                ->chunk(1000, function ($rows) use ($connOdbc) {
+
+                    $values = [];
+
+                    foreach ($rows as $row) {
+
+                        $badge = trim($row->enroll_id);
+                        $dept  = trim($row->department_name);
+                        $name  = trim($row->employee_name);
+
+                        if (!$badge || !$dept) continue;
+
+                        $badge = str_replace("'", "''", $badge);
+                        $dept  = str_replace("'", "''", $dept);
+                        $name  = str_replace("'", "''", $name);
+
+                        $values[] = "('$badge', '$dept', '$name')";
+                    }
+
+                    if (!empty($values)) {
+                        odbc_exec(
+                            $connOdbc,
+                            "INSERT INTO #TempEmp (Badgenumber, DeptName, EmpName) VALUES "
+                                . implode(",", $values)
+                        );
+                    }
+                });
+
+            // ===================================
+            // MERGE DEPARTMENT (insert dept baru saja)
+            // ===================================
+            odbc_exec($connOdbc, "
+            MERGE DEPARTMENTS AS target
+            USING (SELECT DISTINCT DeptName FROM #TempEmp) AS source
+            ON target.DEPTNAME = source.DeptName
+            WHEN NOT MATCHED THEN
+                INSERT (DEPTNAME, SUPDEPTID)
+                VALUES (source.DeptName, 1);
+        ");
+
+            // ===================================
+            // UPDATE ONLY EXISTING USER
+            // ===================================
+            $result = odbc_exec($connOdbc, "
+            UPDATE U
+            SET 
+                U.Name = T.EmpName,
+                U.DEFAULTDEPTID = D.DEPTID
+            FROM USERINFO U
+            JOIN #TempEmp T ON T.Badgenumber = U.Badgenumber
+            JOIN DEPARTMENTS D ON D.DEPTNAME = T.DeptName
+            WHERE 
+                ISNULL(U.Name,'') <> T.EmpName
+                OR ISNULL(U.DEFAULTDEPTID,0) <> D.DEPTID;
+
+            SELECT @@ROWCOUNT AS UpdatedCount;
+        ");
+
+            $row = odbc_fetch_array($result);
+            $updatedCount = $row ? $row['UpdatedCount'] : 0;
+
+            odbc_exec($connOdbc, "COMMIT");
+            odbc_close($connOdbc);
+
+            return response()->json([
+                'status' => 'SUCCESS',
+                'updated_users' => $updatedCount
+            ]);
+        } catch (\Exception $e) {
+
+            odbc_exec($connOdbc, "ROLLBACK");
+            odbc_close($connOdbc);
+
+            return response()->json([
+                'status' => 'FAILED',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

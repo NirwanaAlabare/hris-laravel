@@ -1,1160 +1,1337 @@
 @extends('admin.adminlayouts.adminlayout')
 
 @section('head')
-    <!-- Data table css -->
-    <link href="{{ URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
-    <link href="{{ URL::asset('assets/plugins/datatable/css/buttons.bootstrap4.min.css') }}" rel="stylesheet">
-    <link href="{{ URL::asset('assets/plugins/datatable/responsivebootstrap4.min.css') }}" rel="stylesheet" />
+<!-- Data table css -->
+<link href="{{ URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
+<link href="{{ URL::asset('assets/plugins/datatable/css/buttons.bootstrap4.min.css') }}" rel="stylesheet">
+<link href="{{ URL::asset('assets/plugins/datatable/responsivebootstrap4.min.css') }}" rel="stylesheet" />
 
-    <!-- Select2 css -->
-    <link href="{{ URL::asset('assets/plugins/select2/select2.min.css') }}" rel="stylesheet" />
+<!-- Select2 css -->
+<link href="{{ URL::asset('assets/plugins/select2/select2.min.css') }}" rel="stylesheet" />
 
-	<!-- Notifications  css -->
-	<link href="{{URL::asset('assets/plugins/notify-growl/css/jquery.growl.css')}}" rel="stylesheet" />
-	<link href="{{URL::asset('assets/plugins/notify-growl/css/notifIt.css')}}" rel="stylesheet" />
+<!-- Notifications  css -->
+<link href="{{URL::asset('assets/plugins/notify-growl/css/jquery.growl.css')}}" rel="stylesheet" />
+<link href="{{URL::asset('assets/plugins/notify-growl/css/notifIt.css')}}" rel="stylesheet" />
 
-    <!-- Time picker css-->
-    <link href="{{URL::asset('assets/plugins/time-picker/jquery.timepicker.css')}}" rel="stylesheet" />
+<!-- Time picker css-->
+<link href="{{URL::asset('assets/plugins/time-picker/jquery.timepicker.css')}}" rel="stylesheet" />
 
-    <!-- Date Picker css-->
-    <link href="{{URL::asset('assets/plugins/spectrum-date-picker/spectrum.css')}}" rel="stylesheet" />
+<!-- Date Picker css-->
+<link href="{{URL::asset('assets/plugins/spectrum-date-picker/spectrum.css')}}" rel="stylesheet" />
 
-    <!--Mutipleselect css-->
-    <link rel="stylesheet" href="{{URL::asset('assets/plugins/multipleselect/multiple-select.css')}}">
+<!--Mutipleselect css-->
+<link rel="stylesheet" href="{{URL::asset('assets/plugins/multipleselect/multiple-select.css')}}">
 
-	<!---Sweetalert Css-->
-	<link href="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.css')}}" rel="stylesheet" />
-	<link href="{{URL::asset('assets/plugins/sweet-alert/sweetalert.css')}}" rel="stylesheet" />
+<!---Sweetalert Css-->
+<link href="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.css')}}" rel="stylesheet" />
+<link href="{{URL::asset('assets/plugins/sweet-alert/sweetalert.css')}}" rel="stylesheet" />
 
-	<!-- Tabs css-->
-	<link href="{{URL::asset('assets/plugins/tabs/tabs-style.css')}}" rel="stylesheet" />
+<!-- Tabs css-->
+<link href="{{URL::asset('assets/plugins/tabs/tabs-style.css')}}" rel="stylesheet" />
 
 @stop
 @section('mainarea')
-    <!-- page-header -->
-    <div class="page-header p-2 shadow">
+<!-- page-header -->
+<div class="page-header p-2 shadow">
 
-        <ol class="breadcrumb breadcrumb-arrow mt-0">
-            <li><a href="#">Master Data</a></li>
-            <li class="active"><span>Karyawan</span></li>
-        </ol>
-        <div class="ml-auto">
-            <div class="input-group">
+    <ol class="breadcrumb breadcrumb-arrow mt-0">
+        <li><a href="#">Master Data</a></li>
+        <li class="active"><span>Karyawan</span></li>
+    </ol>
+    <div class="ml-auto">
+        <div class="input-group">
 
-                @php
-                    if (($loggedAdmin->role_user == "admin") || ($loggedAdmin->role_user == "superadmin") || ($loggedAdmin->role_user == "absensi")){
-                @endphp
+            @php
+            if (($loggedAdmin->role_user == "admin") || ($loggedAdmin->role_user == "superadmin") ||
+            ($loggedAdmin->role_user == "absensi")){
+            @endphp
 
-                <div class="text-white">
-                    @if($loggedAdmin->email=='mega@ptnag.com' || $loggedAdmin->email=='rudy@ptnag.com' || $loggedAdmin->email=='ersa@ptnag.com' || $loggedAdmin->email=='dev_hris')
-                    <button type="button" class="btn btn-icon btn-success text-white p-2 mr-1"  data-target="#import_employees" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Karyawan</button>
-                    @endif
-                    <a href="{{route('hris.employeeatr.format')}}" id="btn-examimport" class="btn btn-icon btn-orange text-white p-2 mr-1" data-toggle="tooltip" title="" data-original-title="Format File Excel"><i class="fa fa-file-excel-o mr-1"></i>Format File </a>
-                    <button type="button" id="btn-import" class="btn btn-icon btn-warning text-white p-2 mr-1"  data-target="#import_grade" data-toggle="modal" title="" data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import Data</button>
-                </div>
-                    <!-- modal -->
+            <div class="text-white">
+                @if($loggedAdmin->email=='mega@ptnag.com' || $loggedAdmin->email=='rudy@ptnag.com' ||
+                $loggedAdmin->email=='ersa@ptnag.com' || $loggedAdmin->email=='dev_hris')
+                <button type="button" class="btn btn-icon btn-primary text-white p-2 mr-1" onclick="synchEmployees()"
+                    id="synchemployee"><i class="fa fa-file-excel-o"></i> Synch Karyawan</button>
+                <button type="button" class="btn btn-icon btn-success text-white p-2 mr-1"
+                    data-target="#import_employees" data-toggle="modal" title=""
+                    data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import
+                    Karyawan</button>
+                @endif
+                <a href="{{route('hris.employeeatr.format')}}" id="btn-examimport"
+                    class="btn btn-icon btn-orange text-white p-2 mr-1" data-toggle="tooltip" title=""
+                    data-original-title="Format File Excel"><i class="fa fa-file-excel-o mr-1"></i>Format File </a>
+                <button type="button" id="btn-import" class="btn btn-icon btn-warning text-white p-2 mr-1"
+                    data-target="#import_grade" data-toggle="modal" title=""
+                    data-original-title="Import Data Dari File Excel"><i class="fa fa-file-excel-o"></i> Import
+                    Data</button>
+            </div>
+            <!-- modal -->
 
-                    <form id="upload" name="custForm" action="{{route ('hris.employeeatr.import.grading')}}" method="post" enctype="multipart/form-data">
-                        @csrf
-                        <div class="modal fade" id="import_grade" role="dialog" data-backdrop="static" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="modal-content">
-                                            <div class="modal-header bg-primary p-2">
-                                                <h4 class="modal-title pl-2 font-weight-bold" >Import Grading & BPJS</h4>
-                                                <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
-                                                    <i class="fa fa-remove"></i>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <label class="form-label">file import : </label>
-                                                            <input type="file" class='form-control' name='excel_file' accept=".xlsx, .xls, .csv" required>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer bg-primary p-1">
-                                                <div class="btn-list">
-                                                    <button type="submit" id="export_grade_bpjs" class="btn btn-secondary btn-app">Simpan</button>
-                                                    <!-- <button type="button" id="" class="btn btn-warning btn-app" data-dismiss="modal">Tutup</button> -->
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                        <div class="modal fade" id="import_employee" role="dialog" data-backdrop="static" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="modal-content">
-                                            <form method="POST" action="{{route('hris.employeeatr.import_employee_excel')}}" enctype='multipart/form-data'>
-                                                {{csrf_field()}}
-                                                <div class="modal-header bg-primary p-2">
-                                                    <h4 class="modal-title pl-2 font-weight-bold" >Import Employee</h4>
-                                                    <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
-                                                        <i class="fa fa-remove"></i>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="form-group">
-                                                                <label class="form-label">file import : </label>
-                                                                <input class="form-control" name="excel_file" type="file" accept=".xlsx, .xls, .csv" required>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer bg-primary p-1">
-                                                    <div class="btn-list">
-                                                        <button type="submit" class="btn btn-light">Import</button>
-                                                        <!-- <button type="button" id="" class="btn btn-warning btn-app" data-dismiss="modal">Tutup</button> -->
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal fade" id="uploadFoto" role="dialog" aria-hidden="true">
-                            <div class="modal-dialog" role="document" style="max-width: 430px">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="modal-content">
-                                            <div class="modal-header bg-primary" style="font-weight:bold;font-size:13pt">
-                                                UPLOAD PHOTO
-                                            </div>
-                                            <div class="modal-body px-3 pb-0">
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <input type="file" id="choose_photo" class="form-control">
-                                                    </div>
-                                                </div>
-                                                <div class="row pb-2 justify-content-center">
-                                                    <div class="col-10 text-center" id="image_preview">
-
-                                                    </div>
-                                                </div>
-                                                <div class="row py-2 justify-content-center">
-                                                    <button class="btn btn-primary py-0" id="upload_image">UPLOAD</button>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer py-2 bg-primary">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal fade" id="import_employees" role="dialog" aria-hidden="true">
-                            <div class="modal-dialog" role="document" style="max-width: 1330px">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="modal-content">
-                                            <div class="modal-header bg-primary p-2">
-                                                <h4 class="modal-title pl-2 font-weight-bold" >Import Employee</h4>
-                                                <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
-                                                    <i class="fa fa-remove"></i>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body p-5">
-                                                <div class="row">
-                                                    <div class="col-12">
-                                                        <input class="form-control" ref="excel_filess" name="excel_filess" id="excel_filess" type="file" accept=".xlsx, .xls, .csv" required>
-                                                    </div>
-                                                </div>
-                                                <div class="row pt-2" id="row_tabler">
-                                                    <div class="col-12">
-                                                        <table class="table table-bordered" style="overflow-x:auto">
-                                                            <thead id="head_karyawan">
-                                                                <tr>
-                                                                    <td width="68px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ID</td>
-                                                                    <td width="120px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NIK</td>
-                                                                    <td width="250px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NAMA KARYAWAN</td>
-                                                                    <td width="150px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">JENIS KELAMIN</td>
-                                                                    <td width="150px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">JABATAN</td>
-                                                                    <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">DEPARTMENT</td>
-                                                                    <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">BAGIAN</td>
-                                                                    <td width="120px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">AKTIF/NON</td>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody id="tabel_karyawan">
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                    <div class="col-12 text-center">
-                                                        <div id="loading_karyawan">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row" id="row_error_handle" style="visibility: hidden">
-                                                    <div class="col-4">
-                                                        <table>
-                                                            <tr>
-                                                                <td width="70" style="font-weight: bold">Length : </td>
-                                                                <td id="length_karyawan"></td>
-                                                                <td width="50"></td>
-                                                                <td width="100" style="font-weight: bold">Correct Data :</td>
-                                                                <td id="correct_data"></td>
-                                                            </tr>
-                                                        </table>
-                                                    </div>
-                                                    <div class="col-4 text-center">
-                                                        <button type="button" id="employeeImportButton" class="btn btn-primary py-1" style="visibility: hidden"><i class="fa fa-upload" aria-hidden="true"></i> IMPORT</button>
-                                                    </div>
-                                                    <div class="col-4 text-right">
-                                                        <div class="row">
-                                                            <div class="col-6">
-                                                            </div>
-                                                            <div class="col-6 pl-6">
-                                                                <table>
-                                                                    <tr>
-                                                                        <td valign="top" width="150px" style="background-color: red;font-size:9pt;font-weight:bold; color:white;padding-left:4px;border:1px solid grey">
-                                                                            <i class="fa fa-times"></i>&nbsp;DEPARTMENT/SUB &nbsp;&nbsp;
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td valign="top" style="background-color:lightblue;black;font-size:9pt;font-weight:bold;padding-left:4px;border:1px solid grey">
-                                                                            <i class="fa fa-check"></i>&nbsp;NEW EMPLOYEE &nbsp;&nbsp;
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td valign="top" style="background-color:rgb(255, 255, 255);font-size:9pt;font-weight:bold;padding-left:4px;border:1px solid grey">
-                                                                            <i class="fa fa-check"></i>&nbsp;UPDATE EMPLOYEE&nbsp;&nbsp;
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer py-2 bg-primary"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal fade" id="select_employee" role="dialog" aria-hidden="true">
-                            <div class="modal-dialog modal-lg" role="document" style="max-width: 1330px">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="modal-content">
-                                            <div class="modal-header bg-primary">
-                                                <h4 class="modal-title font-weight-bold" >Select Employee</h4>
-                                                <button type="button" id="btn-close" class="close text-white ml-1" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Tutup Dialog">
-                                                    <i class="fa fa-remove"></i>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="row" id="row_employee">
-                                                    <div class="col">
-                                                        <table class="table table-bordered" style="overflow-x:auto">
-                                                            <thead id="head_employees">
-                                                                <tr>
-                                                                    <td width="10px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px"><input type="checkbox" style="width: 20px;height:20px" onClick="toggle(this)"></td>
-                                                                    <td width="68px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">ID</td>
-                                                                    <td width="120px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NIK</td>
-                                                                    <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">NAMA KARYAWAN</td>
-                                                                    <td width="150px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">JENIS KELAMIN</td>
-                                                                    <td width="150px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">JABATAN</td>
-                                                                    <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">DEPARTMENT</td>
-                                                                    <td width="200px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">BAGIAN</td>
-                                                                    <td width="120px" style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">AKTIF/NON</td>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody id="selected_employees">
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    // <div class="col text-center">
-                                                    //     <a href="#" id="btndownloadselectedid" class="py-1" style="background-color: #f23535;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a>
-                                                    // </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer py-3 bg-primary">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    <!-- end modal -->
-
-                <!-- BEGIN FORM-->
-                {!! Form::open(['route' => 'hris.employeeatr.ajax_exportexcel', 'id' => 'formExport', 'name' => 'formExport','method'=>'post']) !!}
-
+            <form id="upload" name="custForm" action="{{route ('hris.employeeatr.import.grading')}}" method="post"
+                enctype="multipart/form-data">
                 @csrf
-                <button type="submit" id="btn-exportexcel" class="btn btn-icon btn-primary text-white p-2 mr-1" data-toggle="tooltip"
-                title="" data-placement="bottom" data-original-title="Export Data to Excel"><i class="fa fa-file-excel-o"></i></button>
+                <div class="modal fade" id="import_grade" role="dialog" data-backdrop="static" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary p-2">
+                                        <h4 class="modal-title pl-2 font-weight-bold">Import Grading & BPJS</h4>
+                                        <button type="button" id="btn-close" class="close text-white ml-1"
+                                            data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title=""
+                                            data-placement="bottom" data-original-title="Tutup Dialog">
+                                            <i class="fa fa-remove"></i>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">file import : </label>
+                                                    <input type="file" class='form-control' name='excel_file'
+                                                        accept=".xlsx, .xls, .csv" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer bg-primary p-1">
+                                        <div class="btn-list">
+                                            <button type="submit" id="export_grade_bpjs"
+                                                class="btn btn-secondary btn-app">Simpan</button>
+                                            <!-- <button type="button" id="" class="btn btn-warning btn-app" data-dismiss="modal">Tutup</button> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="modal fade" id="import_employee" role="dialog" data-backdrop="static" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="modal-content">
+                                <form method="POST" action="{{route('hris.employeeatr.import_employee_excel')}}"
+                                    enctype='multipart/form-data'>
+                                    {{csrf_field()}}
+                                    <div class="modal-header bg-primary p-2">
+                                        <h4 class="modal-title pl-2 font-weight-bold">Import Employee</h4>
+                                        <button type="button" id="btn-close" class="close text-white ml-1"
+                                            data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title=""
+                                            data-placement="bottom" data-original-title="Tutup Dialog">
+                                            <i class="fa fa-remove"></i>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">file import : </label>
+                                                    <input class="form-control" name="excel_file" type="file"
+                                                        accept=".xlsx, .xls, .csv" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer bg-primary p-1">
+                                        <div class="btn-list">
+                                            <button type="submit" class="btn btn-light">Import</button>
+                                            <!-- <button type="button" id="" class="btn btn-warning btn-app" data-dismiss="modal">Tutup</button> -->
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="uploadFoto" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document" style="max-width: 430px">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary" style="font-weight:bold;font-size:13pt">
+                                    UPLOAD PHOTO
+                                </div>
+                                <div class="modal-body px-3 pb-0">
+                                    <div class="row">
+                                        <div class="col">
+                                            <input type="file" id="choose_photo" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row pb-2 justify-content-center">
+                                        <div class="col-10 text-center" id="image_preview">
+
+                                        </div>
+                                    </div>
+                                    <div class="row py-2 justify-content-center">
+                                        <button class="btn btn-primary py-0" id="upload_image">UPLOAD</button>
+                                    </div>
+                                </div>
+                                <div class="modal-footer py-2 bg-primary">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="import_employees" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document" style="max-width: 1330px">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary p-2">
+                                    <h4 class="modal-title pl-2 font-weight-bold">Import Employee</h4>
+                                    <button type="button" id="btn-close" class="close text-white ml-1"
+                                        data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title=""
+                                        data-placement="bottom" data-original-title="Tutup Dialog">
+                                        <i class="fa fa-remove"></i>
+                                    </button>
+                                </div>
+                                <div class="modal-body p-5">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <input class="form-control" ref="excel_filess" name="excel_filess"
+                                                id="excel_filess" type="file" accept=".xlsx, .xls, .csv" required>
+                                        </div>
+                                    </div>
+                                    <div class="row pt-2" id="row_tabler">
+                                        <div class="col-12">
+                                            <table class="table table-bordered" style="overflow-x:auto">
+                                                <thead id="head_karyawan">
+                                                    <tr>
+                                                        <td width="68px"
+                                                            style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">
+                                                            ID</td>
+                                                        <td width="120px"
+                                                            style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">
+                                                            NIK</td>
+                                                        <td width="250px"
+                                                            style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">
+                                                            NAMA KARYAWAN</td>
+                                                        <td width="150px"
+                                                            style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">
+                                                            JENIS KELAMIN</td>
+                                                        <td width="150px"
+                                                            style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">
+                                                            JABATAN</td>
+                                                        <td width="200px"
+                                                            style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">
+                                                            DEPARTMENT</td>
+                                                        <td width="200px"
+                                                            style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">
+                                                            BAGIAN</td>
+                                                        <td width="120px"
+                                                            style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">
+                                                            AKTIF/NON</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tabel_karyawan">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-12 text-center">
+                                            <div id="loading_karyawan">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="row_error_handle" style="visibility: hidden">
+                                        <div class="col-4">
+                                            <table>
+                                                <tr>
+                                                    <td width="70" style="font-weight: bold">Length : </td>
+                                                    <td id="length_karyawan"></td>
+                                                    <td width="50"></td>
+                                                    <td width="100" style="font-weight: bold">Correct Data :</td>
+                                                    <td id="correct_data"></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="col-4 text-center">
+                                            <button type="button" id="employeeImportButton" class="btn btn-primary py-1"
+                                                style="visibility: hidden"><i class="fa fa-upload"
+                                                    aria-hidden="true"></i> IMPORT</button>
+                                        </div>
+                                        <div class="col-4 text-right">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                </div>
+                                                <div class="col-6 pl-6">
+                                                    <table>
+                                                        <tr>
+                                                            <td valign="top" width="150px"
+                                                                style="background-color: red;font-size:9pt;font-weight:bold; color:white;padding-left:4px;border:1px solid grey">
+                                                                <i class="fa fa-times"></i>&nbsp;DEPARTMENT/SUB
+                                                                &nbsp;&nbsp;
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td valign="top"
+                                                                style="background-color:lightblue;black;font-size:9pt;font-weight:bold;padding-left:4px;border:1px solid grey">
+                                                                <i class="fa fa-check"></i>&nbsp;NEW EMPLOYEE
+                                                                &nbsp;&nbsp;
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td valign="top"
+                                                                style="background-color:rgb(255, 255, 255);font-size:9pt;font-weight:bold;padding-left:4px;border:1px solid grey">
+                                                                <i class="fa fa-check"></i>&nbsp;UPDATE
+                                                                EMPLOYEE&nbsp;&nbsp;
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer py-2 bg-primary"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="select_employee" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document" style="max-width: 1330px">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary">
+                                    <h4 class="modal-title font-weight-bold">Select Employee</h4>
+                                    <button type="button" id="btn-close" class="close text-white ml-1"
+                                        data-dismiss="modal" aria-label="Close" data-toggle="tooltip" title=""
+                                        data-placement="bottom" data-original-title="Tutup Dialog">
+                                        <i class="fa fa-remove"></i>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row" id="row_employee">
+                                        <div class="col">
+                                            <table class="table table-bordered" style="overflow-x:auto">
+                                                <thead id="head_employees">
+                                                    <tr>
+                                                        <td width="10px"
+                                                            style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">
+                                                            <input type="checkbox" style="width: 20px;height:20px"
+                                                                onClick="toggle(this)">
+                                                        </td>
+                                                        <td width="68px"
+                                                            style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">
+                                                            ID</td>
+                                                        <td width="120px"
+                                                            style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">
+                                                            NIK</td>
+                                                        <td width="200px"
+                                                            style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">
+                                                            NAMA KARYAWAN</td>
+                                                        <td width="150px"
+                                                            style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">
+                                                            JENIS KELAMIN</td>
+                                                        <td width="150px"
+                                                            style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">
+                                                            JABATAN</td>
+                                                        <td width="200px"
+                                                            style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">
+                                                            DEPARTMENT</td>
+                                                        <td width="200px"
+                                                            style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">
+                                                            BAGIAN</td>
+                                                        <td width="120px"
+                                                            style="background-color: rgba(255, 255, 255, 0.6);font-weight:bold;padding-top:8px;padding-bottom:8px">
+                                                            AKTIF/NON</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="selected_employees">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        // <div class="col text-center">
+                                            // <a href="#" id="btndownloadselectedid" class="py-1"
+                                                style="background-color: #f23535;color:white;padding-left:10px;padding-right:10px; border-radius:3px"
+                                                data-toggle="tooltip" title="" data-placement="bottom"
+                                                data-original-title="Download Id Card"><i
+                                                    class="fa fa-download mr-1"></i>ID Card</a>
+                                            // </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer py-3 bg-primary">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end modal -->
+
+            <!-- BEGIN FORM-->
+            {!! Form::open(['route' => 'hris.employeeatr.ajax_exportexcel', 'id' => 'formExport', 'name' =>
+            'formExport','method'=>'post']) !!}
+
+            @csrf
+            <button type="submit" id="btn-exportexcel" class="btn btn-icon btn-primary text-white p-2 mr-1"
+                data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Export Data to Excel"><i
+                    class="fa fa-file-excel-o"></i></button>
+            {{-- </form> --}}
+            {!! Form::close() !!}
+            <!-- END FORM-->
+            @php
+            }
+            @endphp
+
+            <a href="#" id="btn-refresh-page" class="btn btn-secondary p-0 mr-0 text-white btn-icon"
+                style="display:flex; justify-content:center; align-items:center;" data-toggle="tooltip" title=""
+                data-placement="bottom" data-original-title="Refresh Page">
+                <span>
+                    <i class="fa fa-refresh"></i>
+                </span>
+            </a>
+        </div>
+    </div>
+</div>
+<!-- End page-header -->
+
+<!-- row -->
+<div class="row">
+    <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
+        <!-- Begin Form Edit Absen Karyawan -->
+
+        <div id="data-gagal-absen" class="card shadow" id="datatable-data-karyawan">
+            <div class="card-header bg-primary p-3">
+                <div class="card-title">CARI DATA</div>
+                <div class="card-options ">
+                    <a href="#" class="card-options-collapse mr-2" data-toggle="card-collapse"><i
+                            class="fe fe-chevron-up text-white"></i></a>
+                </div>
+            </div>
+            <div class="card-body m-0 pt-3">
+                <div class="row">
+                    <div class="col-4">
+                        <label class="form-label text-primary pt-1">Department</label>
+                    </div>
+                    <div class="col-6">
+                        <select id="selectDepartment" name="selectDepartment" class="form-control form-control-sm">
+                            <option value="">Filter Department</option>
+                            @foreach ($department as $r_department)
+                            <option value="{{$r_department->department_name}}">{{$r_department->department_name}}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="row pt-2">
+                    <div class="col-4">
+                        <label class="form-label text-primary pt-1">Sub Department</label>
+                    </div>
+                    <div class="col-6">
+                        <select class="form-control form-control-sm" id="pilih_department">
+                        </select>
+                    </div>
+                </div>
+                <div class="row pt-2">
+                    <div class="col-4">
+                        <label class="form-label text-primary pt-1">Opsi Print</label>
+                    </div>
+                    <div class="col-6">
+                        <select class="form-control form-control-sm" id="print_by">
+                            <option value="department">Department</option>
+                            <option value="bagian">Bagian</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row py-2 mt-3 px-0">
+                    <div class="col-4">
+                    </div>
+                    <div class="col-6">
+                        {{-- <a href="#" id="btndownloadiddept" class="py-1"
+                            style="background-color: #f23535;color:white;padding-left:10px;padding-right:10px; border-radius:3px"
+                            data-toggle="tooltip" title="" data-placement="bottom"
+                            data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a> --}}
+                        {{-- <a href="#" id="btnselectemployee" class="py-1"
+                            style="background-color: #15b22d;color:white;padding-left:10px;padding-right:10px; border-radius:3px"
+                            data-target="#select_employee" data-toggle="modal" title="" data-placement="bottom"
+                            data-original-title="Download Id Card"><i class="fa fa-check-circle mr-1"></i>Pilih
+                            Karyawan</a> --}}
+                        <a href="#" id="btndownloadselectedids" class="py-1"
+                            style="background-color: #f23535;color:white;padding-left:10px;padding-right:10px; border-radius:3px"
+                            data-toggle="tooltip" title="" data-placement="bottom"
+                            data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a>
+                        {{-- <a href="#" id="btnselectemployee" class="py-1"
+                            style="background-color: #15b22d;color:white;padding-left:10px;padding-right:10px; border-radius:3px"
+                            data-target="#select_employee" data-toggle="modal" title="" data-placement="bottom"
+                            data-original-title="Download Id Card" onclick="actionCheckedEmployee()"><i
+                                class="fa fa-check-circle mr-1"></i>Pilih Karyawan</a> --}}
+                    </div>
+                </div>
+                <table id="datatable-ajax-crud" class="table table-sm table-striped table-hover table-bordered w-100">
+                    <thead>
+                        <tr class="text-center">
+                            <th scope="col">
+                                <input type="checkbox" id="checkAllEmployee" onchange="actionCheckAllEmployee(this)">
+                            </th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                {{-- <p class="my-3">
+                    Selected : <span id="checked-employee-count" class="fw-bold">0</span>
+                </p> --}}
+            </div>
+            <div class="card-footer bg-primary br-br-7 br-bl-7">
+                <div class="text-white"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
+        <!-- Begin Form Edit Absen Karyawan -->
+        <div id="data-gagal-absen" class="card shadow" id="datatable-data-karyawan">
+            <div class="card-header p-0">
+                @if (Session::has('status'))
+                <div class="alert alert-success">
+                    {{ Session::get('status') }}
+                    <button type="button" style="background-color: transparent; border:none;" data-dismiss="alert"
+                        aria-label="Close">
+                        <i class="fa fa-remove"></i>
+                    </button>
+                </div>
+                @endif
+            </div>
+            <div class="card-header bg-primary p-2">
+                <div class="card-title">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle pl-1 pt-0 pb-0 pr-1 mr-1 text-sm"
+                            data-toggle="dropdown">
+                            <i class="fa fa-navicon"></i>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="javascript:void(0)" id="btn-print"><i class="fa fa-print"></i> Print</a></li>
+                            <li><a href="javascript:void(0)" id="btn-add"><i class="fa fa-plus"></i> Tambah</a></li>
+                            <li><a href="javascript:void(0)" id="btn-edit"><i class="fa fa-edit"></i> Edit</a></li>
+                            <!-- <li><a href="javascript:void(0)" id="btn-remove"><i class="fa fa-trash"></i> Hapus</a></li> -->
+                        </ul>
+                    </div>
+                    DATA KARYAWAN
+                </div>
+
+
+
+                <div class="card-options ">
+                    <a href="#" class="card-options-collapse mr-2" data-toggle="card-collapse"><i
+                            class="fe fe-chevron-up text-white"></i></a>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- BEGIN FORM-->
+                {!! Form::open(['route' => 'hris.employeeatr.replace', 'id' => 'form1', 'name' => 'form1',
+                'method'=>'post']) !!}
+                @csrf
+
+                <div class="panel panel-primary">
+                    <div class="tab_wrapper first_tab">
+                        <ul class="tab_list">
+                            <li class="text-sm">Biodata</li>
+                            <li class="text-sm">Data HRD</li>
+                            <li class="text-sm">Riwayat</li>
+                            <li class="text-sm">Kerabat</li>
+                            <li class="text-sm">Lainnya</li>
+                            <li class="text-sm">Kontrak</li>
+                        </ul>
+                        <div class="content_wrapper">
+                            <div class="tab_content active">
+                                <table class="table table-striped table-sm mb-0">
+                                    <tr>
+                                        <td rowspan=4>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 text-center">
+                                                <div class="userpic" id="profile_photo">
+
+                                                </div>
+                                                <div class="form-group text-center">
+                                                    <a href="#" id="btnupload" class="btn btn-primary mt-3 p-1 text-sm"
+                                                        data-placement="bottom" data-original-title="Upload Foto"><i
+                                                            class="fa fa-upload mr-1"></i>Upload</a>
+                                                    <a href="#" id="btndownloadFoto"
+                                                        class="btn btn-secondary mt-3 p-1 text-sm" data-toggle="tooltip"
+                                                        title="" data-placement="bottom"
+                                                        data-original-title="Download Foto"><i
+                                                            class="fa fa-download mr-1"></i>Download</a>
+                                                    <a href="#" id="btndownloadid"
+                                                        class="btn btn-danger mt-3 p-1 text-sm" data-toggle="tooltip"
+                                                        title="" data-placement="bottom"
+                                                        data-original-title="Download Id Card"><i
+                                                            class="fa fa-download mr-1"></i>ID Card</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <th>Nama Lengkap</th>
+                                        <th>Jenis Kelamin</th>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="employee_name"></td>
+                                        <td>
+                                            <select id="jenis_kelamin" class="form-control">
+                                                <option value="">-- PILIH JENIS KELAMIN --</option>
+                                                <option value="LAKI-LAKI">LAKI-LAKI</option>
+                                                <option value="PEREMPUAN">PEREMPUAN</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Tempat</th>
+                                        <th>Tanggal Lahir</th>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="tempat_lahir"></td>
+                                        <td>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text">
+                                                        <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                                    </div>
+                                                </div><input id="tanggal_lahir" class="form-control fc-datepicker"
+                                                    placeholder="DD-MM-YYYY" type="text">
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th class="w-35">Golongan Darah</th>
+                                        <th class="w-35">Email</th>
+                                        <th class="w-35">Nomor Telepon</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <select id="golongan_darah" class="form-control">
+                                                <option value="">-- PILIH GOLONGAN DARAH --</option>
+                                                <option value="A">A</option>
+                                                <option value="B">B</option>
+                                                <option value="AB">AB</option>
+                                                <option value="O">O</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="text" class="form-control" id="email"></td>
+                                        <td><input type="text" class="form-control" id="nomor_tlpn"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Agama</th>
+                                        <th>Status Pernikahan</th>
+                                        <th>NPWP</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <select id="agama" class="form-control">
+                                                <option value="">-- PILIH AGAMA --</option>
+                                                <option value="ISLAM">ISLAM</option>
+                                                <option value="KRISTEN">KRISTEN</option>
+                                                <option value="PROTESTAN">KRISTEN PROTESTAN</option>
+                                                <option value="KATOLIK">KRISTEN KATOLIK</option>
+                                                <option value="HINDU">HINDU</option>
+                                                <option value="BUDHA">BUDHA</option>
+                                                <option value="KONGHUCU">KONGHUCU</option>
+                                                <option value="LAINNYA">LAINNYA</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select id="status_kawin" class="form-control">
+                                                <option value="">-- PILIH KAWIN --</option>
+                                                <option value="TIDAK KAWIN">TIDAK KAWIN</option>
+                                                <option value="KAWIN">KAWIN</option>
+                                                <option value="CERAI HIDUP">CERAI HIDUP</option>
+                                                <option value="CERAI MATI">CERAI MATI</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="text" class="form-control" id="npwp"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Nomor KTP</th>
+                                        <th>Nomor KK</th>
+                                        <th>PTKP</th>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="nomor_ktp"></td>
+                                        <td><input type="text" class="form-control" id="nomor_kk"></td>
+                                        <td>
+                                            <select id="ptkp" class="form-control">
+                                                <option value="">-- PILIH PTKP --</option>
+                                                <optgroup label="K/">
+                                                    <option value="K/0">K/0</option>
+                                                    <option value="K/1">K/1</option>
+                                                    <option value="K/2">K/2</option>
+                                                    <option value="K/3">K/3</option>
+                                                    <option value="K/4">K/4</option>
+                                                    <option value="K/5">K/5</option>
+                                                </optgroup>
+                                                <optgroup label="TK/">
+                                                    <option value="TK/0">TK/0</option>
+                                                    <option value="TK/1">TK/1</option>
+                                                    <option value="TK/2">TK/2</option>
+                                                    <option value="TK/3">TK/3</option>
+                                                    <option value="TK/4">TK/4</option>
+                                                    <option value="TK/5">TK/5</option>
+                                                </optgroup>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Jenjang Pend. Terakhir</th>
+                                        <th colspan=2>Jurusan Pend. Terakhir</th>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="pendidikan_terakhir"></td>
+                                        <td colspan=2><input type="text" class="form-control" id="jurusan_pendidikan">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Bank</th>
+                                        <th>No Rekening</th>
+                                        <th>Nama Ibu Kandung</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <select id="nama_bank" class="form-control">
+                                                <option value="">-- PILIH NAMA BANK --</option>
+                                                <option value="TUNAI" selected>TUNAI</option>
+                                                <option value="BCA">BCA</option>
+                                                <option value="BNI">BNI</option>
+                                                <option value="CIMB NIAGA">CIMB NIAGA</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="text" class="form-control" id="nomor_rekening_bank"></td>
+                                        <td><input type="text" class="form-control" id="ibu_kandung"></td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2">Alamat (Nama Jalan)</th>
+                                        <th>RT / RW</th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <input type="text" class="form-control" id="alamat_jalan">
+                                        </td>
+                                        <td>
+                                            <div style="display: flex; gap: 5px;">
+                                                <input type="text" class="form-control" id="rt" placeholder="RT"
+                                                    style="width: 50%;">
+                                                <input type="text" class="form-control" id="rw" placeholder="RW"
+                                                    style="width: 50%;">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Kelurahan/Desa</th>
+                                        <th>Kecamatan</th>
+                                        <th>Kab/Kota</th>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="kelurahan_desa"></td>
+                                        <td><input type="text" class="form-control" id="kecamatan"></td>
+                                        <td><input type="text" class="form-control" id="kota_kab"></td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2">Propinsi</th>
+                                        <th>Kode Pos</th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"><input type="text" class="form-control" id="propinsi"></td>
+                                        <td><input type="text" class="form-control" id="kode_pos"></td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan=3>Alamat (KTP)</th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan=3>
+                                            <textarea type="text" class="form-control" id="alamat_rumah"
+                                                rows="3"></textarea>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan=3>Alamat Sementara</th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan=3>
+                                            <textarea type="text" class="form-control" id="alamat_sementara"
+                                                rows="3"></textarea>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="tab_content">
+                                <table class="table table-striped table-sm mb-0">
+                                    <tr>
+                                        <th class="w-35">Divisi</th>
+                                        <th class="w-35">Department</th>
+                                        <th class="w-35">Bagian</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <select id="site_nirwana_id" name="site_nirwana_id" class="form-control">
+                                                <option value="">-- PILIH DIVISI --</option>
+                                                @foreach ($divisi as $r_div)
+                                                <option value="{{$r_div->site_nirwana_id}}" {{ $r_div->
+                                                    site_nirwana_id=='NAG' ? 'selected' :
+                                                    ''}}>{{$r_div->site_nirwana_name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select id="department_id" name="department_id" class="form-control">
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select id="sub_dept_id" name="sub_dept_id" class="form-control">
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="w-35">Sewing / Nonsewing</th>
+                                        <th class="w-35">Direct / Indirect</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <select id="sewing_nonsewing" name="sewing_nonsewing" class="form-control">
+                                                <option value="">-- SEWING / NON SEWING --</option>
+                                                <option value="SEWING">SEWING</option>
+                                                <option value="NON SEWING">NON SEWING</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select id="direct_indirect" name="direct_indirect" class="form-control">
+                                                <option value="">-- DIRECT / INDIRECT --</option>
+                                                <option value="DIRECT">DIRECT</option>
+                                                <option value="INDIRECT">INDIRECT</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Nomor Absen</th>
+                                        <th>Tanggal Masuk</th>
+                                        <th>NIP</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="input-group">
+                                                <input id="is_periksaenroll_id" type="hidden">
+                                                <input id="enroll_id" type="text" class="form-control"
+                                                    placeholder="Nomor Absen" maxlength="5" size="5">
+                                                <span class="input-group-append">
+                                                    <button id="btn-periksa_enroll_id"
+                                                        class="btn btn-primary pl-2 pr-2 pt-1 pb-1"
+                                                        type="button"><span><i class="fa fa-search"></i></span>
+                                                        Cek</button>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text">
+                                                        <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                                    </div>
+                                                </div><input id="join_date" class="form-control fc-datepicker"
+                                                    placeholder="DD-MM-YYYY" type="text">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input id="is_periksanik" type="hidden">
+                                                <input id="nik" type="text" class="form-control" placeholder="NIP"
+                                                    maxlength="10" size="10">
+                                                <span class="input-group-append">
+                                                    <button id="btn-periksa_nik"
+                                                        class="btn btn-primary pl-2 pr-2 pt-1 pb-1"
+                                                        type="button"><span><i class="fa fa-search"></i></span>
+                                                        Cek</button>
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Aktif / Non Aktif</th>
+                                        <th>Jabatan</th>
+                                        <th>Kontrak / Tetap</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <select id="status_aktif" name="status_aktif" class="form-control"
+                                                data-placeholder="-- Pilih Aktif/NonAktif --">
+                                                <option value="">-- PILIH AKTIF --</option>
+                                                <option value="AKTIF" selected>AKTIF</option>
+                                                <option value="TIDAK AKTIF">TIDAK AKTIF</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select id="status_jabatan" class="form-control"
+                                                data-placeholder="-- Pilih Jabatan --">
+                                                <option value="">-- PILIH JABATAN --</option>
+                                                @foreach($jabatan as $j)
+                                                <option value="{{$j}}">{{$j}}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select id="status_kontrak_tetap" class="form-control"
+                                                data-placeholder="-- Pilih Status Karyawan --">
+                                                <option value="">-- PILIH KONTRAK/TETAP --</option>
+                                                <option value="KONTRAK" selected>KONTRAK</option>
+                                                <option value="TETAP">TETAP</option>
+                                                <option value="HARIAN LEPAS">HARIAN LEPAS</option>
+                                                <option value="MAGANG">MAGANG</option>
+                                                <option value="PERCOBAAN">PERCOBAAN</option>
+                                                <option value="NON KARYAWAN">NON KARYAWAN</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Staff / Non Staff</th>
+                                        <th>Tanggal Resign</th>
+                                        <th>Nomor Surat</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <select id="status_staff" class="form-control"
+                                                data-placeholder="-- Pilih Staff / Non Staff --">
+                                                <option value="">-- PILIH STAFF/NONSTAFF --</option>
+                                                <option value="NON STAFF" selected>NON STAFF</option>
+                                                <option value="STAFF">STAFF</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text">
+                                                        <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                                    </div>
+                                                </div><input id="tanggal_resign" class="form-control fc-datepicker"
+                                                    placeholder="DD-MM-YYYY" type="text">
+                                            </div>
+                                        </td>
+                                        {{-- <td><input type="text" class="form-control" id="tunjangan" maxlength="80"
+                                                size="80"></td> --}}
+                                        <td><input type="text" class="form-control" id="no_surat" maxlength="80"
+                                                size="80"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Sebab Resign</th>
+                                        <th>Referensi</th>
+                                        <th>Atasan Langsung</th>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="text" class="form-control" id="sebab_resign" maxlength="80"
+                                                size="80"></td>
+                                        <td><input type="text" class="form-control" id="referensi" maxlength="80"
+                                                size="80"></td>
+                                        <td><input type="text" class="form-control" id="employee_name_atasan"
+                                                maxlength="80" size="80"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Grade</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <select id="kode_grade" class="form-control"
+                                                data-placeholder="-- Pilih Grade --">
+                                                <option value="">-- PILIH GRADE --</option>
+                                                <option value="A">A</option>
+                                                <option value="B">B</option>
+                                                <option value="C">C</option>
+                                                <option value="D">D</option>
+                                                <option value="E">E</option>
+                                                <option value="F">F</option>
+                                                <option value="G" selected>G</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Status BPJS TK</th>
+                                        <th>Tanggal Reg BPJS TK</th>
+                                        <th>Nomor BPJS TK</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <select id="status_aktif_bpjs_tk" class="form-control"
+                                                data-placeholder="-- Pilih Aktif / Tidak Aktif --">
+                                                <option value="">-- PILIH AKTIF/TIDAK AKTIF --</option>
+                                                <option value="AKTIF">AKTIF</option>
+                                                <option value="TIDAK AKTIF" selected>TIDAK AKTIF</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text">
+                                                        <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                                    </div>
+                                                </div><input id="tanggal_bpjs_ketenagakerjaan"
+                                                    class="form-control fc-datepicker" placeholder="DD-MM-YYYY"
+                                                    type="text">
+                                            </div>
+                                        </td>
+                                        <td><input type="text" class="form-control" id="nomor_bpjs_ketenagakerjaan">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Status BPJS KS</th>
+                                        <th>Tanggal Reg BPJS KS</th>
+                                        <th>Nomor BPJS KS</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <select id="status_aktif_bpjs_ks" class="form-control"
+                                                data-placeholder="-- Pilih Aktif / Tidak Aktif --">
+                                                <option value="">-- PILIH AKTIF/TIDAK AKTIF --</option>
+                                                <option value="AKTIF">AKTIF</option>
+                                                <option value="TIDAK AKTIF" selected>TIDAK AKTIF</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text">
+                                                        <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                                    </div>
+                                                </div><input id="tanggal_bpjs_kesehatan"
+                                                    class="form-control fc-datepicker" placeholder="DD-MM-YYYY"
+                                                    type="text">
+                                            </div>
+                                        </td>
+                                        <td><input type="text" class="form-control" id="nomor_bpjs_kesehatan"></td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div class="tab_content">
+                                <table class="table table-striped table-sm mb-0">
+                                    <tr>
+                                        <th colspan=3>Pengalaman Bekerja</th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan=3>
+                                            <a href="#" id="btndownloadcv" class="btn btn-primary"><i
+                                                    class="fe fe-download  mr-1"></i>Download CV</a>
+                                            <a href="#" id="btnuploadcv" class="btn btn-primary"><i
+                                                    class="fe fe-upload  mr-1"></i>Upload CV</a>
+                                            <input type="hidden" class="form-control" id="lokasi_file_cv">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan=3>
+                                            <textarea type="text" class="form-control" id="pengalaman_bekerja"
+                                                rows="15"></textarea>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div class="tab_content">
+                                <table class="table table-striped table-sm mb-0">
+                                    <tr>
+                                        <th class="w-30">Nama Kerabat</th>
+                                        <td class="w-5">:</td>
+                                        <td class="w-65"><input type="text" class="form-control" id="nama_kerabat"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Nomor Telepon</th>
+                                        <td>:</td>
+                                        <td><input type="text" class="form-control" id="nomor_tlpn_kerabat"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Hubungan</th>
+                                        <td>:</td>
+                                        <td><input type="text" class="form-control" id="hubungan_kerabat"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Alamat</th>
+                                        <td>:</td>
+                                        <td>
+                                            <textarea type="text" class="form-control" id="alamat_kerabat"
+                                                rows="3"></textarea>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div class="tab_content">
+                                <table class="table table-striped table-sm mb-0">
+                                    <tr>
+                                        <th colspan=3>Vaksin Ke 1</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text">
+                                                        <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                                    </div>
+                                                </div><input id="tanggal_vaccine1" class="form-control fc-datepicker"
+                                                    placeholder="DD-MM-YYYY" type="text">
+                                            </div>
+                                        </td>
+                                        <td colspan=2><input type="text" class="form-control" id="nama_vaksin1"></td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan=3>Vaksin Ke 2</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text">
+                                                        <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                                    </div>
+                                                </div><input id="tanggal_vaccine2" class="form-control fc-datepicker"
+                                                    placeholder="DD-MM-YYYY" type="text">
+                                            </div>
+                                        </td>
+                                        <td colspan=2><input type="text" class="form-control" id="nama_vaksin2"></td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan=3>Vaksin Ke 3</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text">
+                                                        <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                                    </div>
+                                                </div><input readonly id="tanggal_vaccine3"
+                                                    class="form-control fc-datepicker" placeholder="DD-MM-YYYY"
+                                                    type="text">
+                                            </div>
+                                        </td>
+                                        <td colspan=2><input type="text" class="form-control" id="nama_vaksin3"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Golongan SIM</th>
+                                        <th>Nomor SIM</th>
+                                        <th>Tanggal Berakhir SIM</th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <select id="golongan_sim" class="form-control"
+                                                data-placeholder="-- Pilih --">
+                                                <option value="">-- PILIH GOLONGAN SIM --</option>
+                                                <option value="A">SIM A</option>
+                                                <option value="B1">SIM B1</option>
+                                                <option value="B2">SIM B2</option>
+                                                <option value="C">SIM C</option>
+                                                <option value="C1">SIM C1</option>
+                                                <option value="C2">SIM C2</option>
+                                            </select>
+                                        </td>
+                                        <td><input type="text" class="form-control" id="nomor_sim"></td>
+                                        <td>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text">
+                                                        <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                                    </div>
+                                                </div><input id="tanggal_expire_sim" class="form-control fc-datepicker"
+                                                    placeholder="DD-MM-YYYY" type="text">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan=3>Catatan Karyawan</th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan=3>
+                                            <textarea type="text" class="form-control" id="catatan"
+                                                rows="15"></textarea>
+                                            <input type="hidden" class="form-control" id="lokasi_foto">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Operator</th>
+                                        <th>Tanggal Dibuat</th>
+                                        <th>Tanggal Diupdate</th>
+                                    </tr>
+                                    <tr>
+                                        <td><input readonly type="text" class="form-control" id="operator"></td>
+                                        <td>
+                                            <input readonly id="created_at" class="form-control"
+                                                placeholder="YYYY-MM-DD HH:MM:SS" type="text">
+                                        </td>
+                                        <td>
+                                            <input readonly id="updated_at" class="form-control"
+                                                placeholder="YYYY-MM-DD HH:MM:SS" type="text">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div class="tab_content">
+                                <table class="table table-striped table-sm mb-0">
+                                    <tr>
+                                        <th>Dari Tanggal</th>
+                                        <th>Sampai Tanggal</th>
+                                        <th></th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text">
+                                                        <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                                    </div>
+                                                </div><input id="tanggal_mulai_kontrak"
+                                                    class="form-control fc-datepicker" placeholder="DD-MM-YYYY"
+                                                    type="text">
+                                                <div id="tanggal_mulai_kontrak_string"></div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text">
+                                                        <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                                    </div>
+                                                </div><input id="tanggal_akhir_kontrak"
+                                                    class="form-control fc-datepicker" placeholder="DD-MM-YYYY"
+                                                    type="text">
+                                                <div id="tanggal_akhir_kontrak_string"></div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan=3>Catatan Kontrak</th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan=3>
+                                            <textarea type="text" class="form-control" id="catatan_kontrak"
+                                                rows="6"></textarea>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {{-- </form> --}}
                 {!! Form::close() !!}
                 <!-- END FORM-->
-                @php
-                    }
-                @endphp
-
-                <a href="#" id="btn-refresh-page" class="btn btn-secondary p-0 mr-0 text-white btn-icon" style="display:flex; justify-content:center; align-items:center;" data-toggle="tooltip"
-                    title="" data-placement="bottom" data-original-title="Refresh Page">
-                    <span>
-                        <i class="fa fa-refresh"></i>
-                    </span>
-                </a>
+            </div>
+            <div class="progress progress-xs mb-0">
+                <div id="progress-show-1" class="progress-bar progress-bar-indeterminate bg-green"></div>
+                <div id="progress-hide-1" class="progress-bar"></div>
+            </div>
+            <div class="card-footer bg-primary pl-2 pt-1 pb-2">
+                <button id="btn-save" class="btn btn-secondary btn-app mt-1">
+                    <span><i class="fa fa-save"></i></span> Save</button>
+                <button id="btn-reset" class="btn btn-info btn-app  mt-1">
+                    <span><i class="fa fa-undo"></i></span> Reset</button>
+                <button id="btn-cancel" class="btn btn-warning btn-app  mt-1">
+                    <span><i class="fa fa-close"></i></span> Cancel</button>
             </div>
         </div>
     </div>
-    <!-- End page-header -->
-
-    <!-- row -->
-    <div class="row">
-        <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4">
-            <!-- Begin Form Edit Absen Karyawan -->
-
-            <div id="data-gagal-absen" class="card shadow" id="datatable-data-karyawan">
-                <div class="card-header bg-primary p-3">
-                    <div class="card-title">CARI DATA</div>
-                    <div class="card-options ">
-                        <a href="#" class="card-options-collapse mr-2" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
-                    </div>
-                </div>
-                <div class="card-body m-0 pt-3">
-                    <div class="row">
-                        <div class="col-4">
-                            <label class="form-label text-primary pt-1">Department</label>
-                        </div>
-                        <div class="col-6">
-                            <select id="selectDepartment" name="selectDepartment" class="form-control form-control-sm">
-                                <option value="">Filter Department</option>
-                                @foreach ($department as $r_department)
-                                    <option value="{{$r_department->department_name}}">{{$r_department->department_name}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row pt-2">
-                        <div class="col-4">
-                            <label class="form-label text-primary pt-1">Sub Department</label>
-                        </div>
-                        <div class="col-6">
-                            <select class="form-control form-control-sm" id="pilih_department">
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row pt-2">
-                        <div class="col-4">
-                            <label class="form-label text-primary pt-1">Opsi Print</label>
-                        </div>
-                        <div class="col-6">
-                            <select class="form-control form-control-sm" id="print_by">
-                                <option value="department">Department</option>
-                                <option value="bagian">Bagian</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row py-2 mt-3 px-0">
-                        <div class="col-4">
-                        </div>
-                        <div class="col-6">
-                            {{-- <a href="#" id="btndownloadiddept" class="py-1" style="background-color: #f23535;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a> --}}
-                            {{-- <a href="#" id="btnselectemployee" class="py-1" style="background-color: #15b22d;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-target="#select_employee" data-toggle="modal" title="" data-placement="bottom" data-original-title="Download Id Card"><i class="fa fa-check-circle mr-1"></i>Pilih Karyawan</a> --}}
-                            <a href="#" id="btndownloadselectedids" class="py-1" style="background-color: #f23535;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a>
-                            {{-- <a href="#" id="btnselectemployee" class="py-1" style="background-color: #15b22d;color:white;padding-left:10px;padding-right:10px; border-radius:3px" data-target="#select_employee" data-toggle="modal" title="" data-placement="bottom" data-original-title="Download Id Card" onclick="actionCheckedEmployee()"><i class="fa fa-check-circle mr-1"></i>Pilih Karyawan</a> --}}
-                        </div>
-                    </div>
-                        <table id="datatable-ajax-crud" class="table table-sm table-striped table-hover table-bordered w-100">
-                            <thead>
-                                <tr class="text-center">
-                                    <th scope="col">
-                                        <input type="checkbox" id="checkAllEmployee" onchange="actionCheckAllEmployee(this)">
-                                    </th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                        {{-- <p class="my-3">
-                            Selected : <span id="checked-employee-count" class="fw-bold">0</span>
-                        </p> --}}
-                </div>
-                <div class="card-footer bg-primary br-br-7 br-bl-7">
-                    <div class="text-white"></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
-            <!-- Begin Form Edit Absen Karyawan -->
-            <div id="data-gagal-absen" class="card shadow" id="datatable-data-karyawan">
-                <div class="card-header p-0">
-                    @if (Session::has('status'))
-                        <div class="alert alert-success">
-                            {{ Session::get('status') }}
-                            <button type="button" style="background-color: transparent; border:none;" data-dismiss="alert" aria-label="Close">
-                                <i class="fa fa-remove"></i>
-                            </button>
-                        </div>
-                    @endif
-                </div>
-                <div class="card-header bg-primary p-2">
-                    <div class="card-title">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle pl-1 pt-0 pb-0 pr-1 mr-1 text-sm" data-toggle="dropdown">
-                                <i class="fa fa-navicon"></i>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="javascript:void(0)" id="btn-print"><i class="fa fa-print"></i> Print</a></li>
-                                <li><a href="javascript:void(0)" id="btn-add"><i class="fa fa-plus"></i> Tambah</a></li>
-                                <li><a href="javascript:void(0)" id="btn-edit"><i class="fa fa-edit"></i> Edit</a></li>
-                                <!-- <li><a href="javascript:void(0)" id="btn-remove"><i class="fa fa-trash"></i> Hapus</a></li> -->
-                            </ul>
-                        </div>
-                        DATA KARYAWAN
-                    </div>
-
-
-
-                    <div class="card-options ">
-                        <a href="#" class="card-options-collapse mr-2" data-toggle="card-collapse"><i class="fe fe-chevron-up text-white"></i></a>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <!-- BEGIN FORM-->
-                    {!! Form::open(['route' => 'hris.employeeatr.replace', 'id' => 'form1', 'name' => 'form1', 'method'=>'post']) !!}
-                    @csrf
-
-                    <div class="panel panel-primary">
-                        <div class="tab_wrapper first_tab">
-                            <ul class="tab_list">
-                                <li class="text-sm">Biodata</li>
-                                <li class="text-sm">Data HRD</li>
-                                <li class="text-sm">Riwayat</li>
-                                <li class="text-sm">Kerabat</li>
-                                <li class="text-sm">Lainnya</li>
-                                <li class="text-sm">Kontrak</li>
-                            </ul>
-                            <div class="content_wrapper">
-                                <div class="tab_content active">
-                                    <table class="table table-striped table-sm mb-0">
-                                        <tr>
-                                            <td rowspan=4>
-                                                <div class="col-xl-12 col-lg-12 col-md-12 text-center">
-                                                    <div class="userpic" id="profile_photo">
-
-                                                    </div>
-                                                    <div class="form-group text-center">
-                                                        <a href="#" id="btnupload" class="btn btn-primary mt-3 p-1 text-sm" data-placement="bottom" data-original-title="Upload Foto"><i class="fa fa-upload mr-1"></i>Upload</a>
-                                                        <a href="#" id="btndownloadFoto" class="btn btn-secondary mt-3 p-1 text-sm" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Download Foto"><i class="fa fa-download mr-1"></i>Download</a>
-                                                        <a href="#" id="btndownloadid" class="btn btn-danger mt-3 p-1 text-sm" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <th>Nama Lengkap</th>
-                                            <th>Jenis Kelamin</th>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="text" class="form-control" id="employee_name"></td>
-                                            <td>
-                                                <select id="jenis_kelamin" class="form-control">
-                                                    <option value="">-- PILIH JENIS KELAMIN --</option>
-                                                    <option value="LAKI-LAKI">LAKI-LAKI</option>
-                                                    <option value="PEREMPUAN">PEREMPUAN</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Tempat</th>
-                                            <th>Tanggal Lahir</th>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="text" class="form-control" id="tempat_lahir"></td>
-                                            <td>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <div class="input-group-text">
-                                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
-                                                        </div>
-                                                    </div><input id="tanggal_lahir" class="form-control fc-datepicker" placeholder="DD-MM-YYYY"  type="text">
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <th class="w-35">Golongan Darah</th>
-                                            <th class="w-35">Email</th>
-                                            <th class="w-35">Nomor Telepon</th>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <select id="golongan_darah" class="form-control">
-                                                    <option value="">-- PILIH GOLONGAN DARAH --</option>
-                                                    <option value="A">A</option>
-                                                    <option value="B">B</option>
-                                                    <option value="AB">AB</option>
-                                                    <option value="O">O</option>
-                                                </select>
-                                            </td>
-                                            <td><input type="text" class="form-control" id="email"></td>
-                                            <td><input type="text" class="form-control" id="nomor_tlpn"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Agama</th>
-                                            <th>Status Pernikahan</th>
-                                            <th>NPWP</th>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <select id="agama" class="form-control">
-                                                    <option value="">-- PILIH AGAMA --</option>
-                                                    <option value="ISLAM">ISLAM</option>
-                                                    <option value="KRISTEN">KRISTEN</option>
-                                                    <option value="PROTESTAN">KRISTEN PROTESTAN</option>
-                                                    <option value="KATOLIK">KRISTEN KATOLIK</option>
-                                                    <option value="HINDU">HINDU</option>
-                                                    <option value="BUDHA">BUDHA</option>
-                                                    <option value="KONGHUCU">KONGHUCU</option>
-                                                    <option value="LAINNYA">LAINNYA</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select id="status_kawin" class="form-control">
-                                                    <option value="">-- PILIH KAWIN --</option>
-                                                    <option value="TIDAK KAWIN">TIDAK KAWIN</option>
-                                                    <option value="KAWIN">KAWIN</option>
-                                                    <option value="CERAI HIDUP">CERAI HIDUP</option>
-                                                    <option value="CERAI MATI">CERAI MATI</option>
-                                                </select>
-                                            </td>
-                                            <td><input type="text" class="form-control" id="npwp"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Nomor KTP</th>
-                                            <th>Nomor KK</th>
-                                            <th>PTKP</th>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="text" class="form-control" id="nomor_ktp"></td>
-                                            <td><input type="text" class="form-control" id="nomor_kk"></td>
-                                            <td>
-                                                <select id="ptkp" class="form-control">
-                                                    <option value="">-- PILIH PTKP --</option>
-                                                    <optgroup  label="K/">
-                                                        <option value="K/0">K/0</option>
-                                                        <option value="K/1">K/1</option>
-                                                        <option value="K/2">K/2</option>
-                                                        <option value="K/3">K/3</option>
-                                                        <option value="K/4">K/4</option>
-                                                        <option value="K/5">K/5</option>
-                                                    </optgroup>
-                                                    <optgroup  label="TK/">
-                                                        <option value="TK/0">TK/0</option>
-                                                        <option value="TK/1">TK/1</option>
-                                                        <option value="TK/2">TK/2</option>
-                                                        <option value="TK/3">TK/3</option>
-                                                        <option value="TK/4">TK/4</option>
-                                                        <option value="TK/5">TK/5</option>
-                                                    </optgroup>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Jenjang Pend. Terakhir</th>
-                                            <th colspan=2>Jurusan Pend. Terakhir</th>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="text" class="form-control" id="pendidikan_terakhir"></td>
-                                            <td colspan=2><input type="text" class="form-control" id="jurusan_pendidikan"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Bank</th>
-                                            <th>No Rekening</th>
-                                            <th>Nama Ibu Kandung</th>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <select id="nama_bank" class="form-control">
-                                                    <option value="">-- PILIH NAMA BANK --</option>
-                                                    <option value="TUNAI" selected >TUNAI</option>
-                                                    <option value="BCA">BCA</option>
-                                                    <option value="BNI">BNI</option>
-                                                    <option value="CIMB NIAGA">CIMB NIAGA</option>
-                                                </select>
-                                            </td>
-                                            <td><input type="text" class="form-control" id="nomor_rekening_bank"></td>
-                                            <td><input type="text" class="form-control" id="ibu_kandung"></td>
-                                        </tr>
-                                        <tr>
-                                            <th colspan="2">Alamat (Nama Jalan)</th>
-                                            <th>RT / RW</th>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">
-                                                <input type="text" class="form-control" id="alamat_jalan">
-                                            </td>
-                                            <td>
-                                                <div style="display: flex; gap: 5px;">
-                                                    <input type="text" class="form-control" id="rt" placeholder="RT" style="width: 50%;">
-                                                    <input type="text" class="form-control" id="rw" placeholder="RW" style="width: 50%;">
-                                                </div>
-                                            </td>
-                                        </tr>
-                                         <tr>
-                                            <th>Kelurahan/Desa</th>
-                                            <th>Kecamatan</th>
-                                            <th>Kab/Kota</th>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="text" class="form-control" id="kelurahan_desa"></td>
-                                            <td><input type="text" class="form-control" id="kecamatan"></td>
-                                            <td><input type="text" class="form-control" id="kota_kab"></td>
-                                        </tr>
-                                        <tr>
-                                            <th colspan="2">Propinsi</th>
-                                            <th >Kode Pos</th>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2"><input type="text" class="form-control" id="propinsi"></td>
-                                            <td><input type="text" class="form-control" id="kode_pos"></td>
-                                        </tr>
-                                        <tr>
-                                            <th colspan=3>Alamat (KTP)</th>
-                                        </tr>
-                                        <tr>
-                                            <td colspan=3>
-                                                <textarea type="text" class="form-control" id="alamat_rumah" rows="3"></textarea>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th colspan=3>Alamat Sementara</th>
-                                        </tr>
-                                        <tr>
-                                            <td colspan=3>
-                                                <textarea type="text" class="form-control" id="alamat_sementara" rows="3"></textarea>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div class="tab_content">
-                                    <table class="table table-striped table-sm mb-0">
-                                        <tr>
-                                            <th class="w-35">Divisi</th>
-                                            <th class="w-35">Department</th>
-                                            <th class="w-35">Bagian</th>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <select id="site_nirwana_id" name="site_nirwana_id" class="form-control">
-                                                    <option value="">-- PILIH DIVISI --</option>
-                                                    @foreach ($divisi as $r_div)
-                                                        <option value="{{$r_div->site_nirwana_id}}" {{ $r_div->site_nirwana_id=='NAG' ? 'selected' : ''}}>{{$r_div->site_nirwana_name}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select id="department_id" name="department_id" class="form-control">
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select id="sub_dept_id" name="sub_dept_id" class="form-control">
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th class="w-35">Sewing / Nonsewing</th>
-                                            <th class="w-35">Direct / Indirect</th>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <select id="sewing_nonsewing" name="sewing_nonsewing" class="form-control">
-                                                    <option value="">-- SEWING / NON SEWING --</option>
-                                                    <option value="SEWING">SEWING</option>
-                                                    <option value="NON SEWING">NON SEWING</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select id="direct_indirect" name="direct_indirect" class="form-control">
-                                                    <option value="">-- DIRECT / INDIRECT --</option>
-                                                    <option value="DIRECT">DIRECT</option>
-                                                    <option value="INDIRECT">INDIRECT</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Nomor Absen</th>
-                                            <th>Tanggal Masuk</th>
-                                            <th>NIP</th>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="input-group">
-                                                    <input id="is_periksaenroll_id" type="hidden">
-                                                    <input id="enroll_id" type="text" class="form-control" placeholder="Nomor Absen" maxlength="5" size="5">
-                                                    <span class="input-group-append">
-                                                        <button id="btn-periksa_enroll_id" class="btn btn-primary pl-2 pr-2 pt-1 pb-1" type="button"><span><i class="fa fa-search"></i></span> Cek</button>
-                                                    </span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <div class="input-group-text">
-                                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
-                                                        </div>
-                                                    </div><input id="join_date" class="form-control fc-datepicker"  placeholder="DD-MM-YYYY" type="text">
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="input-group">
-                                                    <input id="is_periksanik" type="hidden">
-                                                    <input id="nik" type="text" class="form-control" placeholder="NIP" maxlength="10" size="10">
-                                                    <span class="input-group-append">
-                                                        <button id="btn-periksa_nik" class="btn btn-primary pl-2 pr-2 pt-1 pb-1" type="button"><span><i class="fa fa-search"></i></span> Cek</button>
-                                                    </span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Aktif / Non Aktif</th>
-                                            <th>Jabatan</th>
-                                            <th>Kontrak / Tetap</th>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <select id="status_aktif" name="status_aktif" class="form-control" data-placeholder="-- Pilih Aktif/NonAktif --" >
-                                                    <option value="">-- PILIH AKTIF --</option>
-                                                    <option value="AKTIF" selected >AKTIF</option>
-                                                    <option value="TIDAK AKTIF">TIDAK AKTIF</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select id="status_jabatan" class="form-control" data-placeholder="-- Pilih Jabatan --">
-                                                    <option value="">-- PILIH JABATAN --</option>
-                                                    @foreach($jabatan as $j)
-                                                    <option value="{{$j}}">{{$j}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select id="status_kontrak_tetap" class="form-control" data-placeholder="-- Pilih Status Karyawan --">
-                                                    <option value="">-- PILIH KONTRAK/TETAP --</option>
-                                                    <option value="KONTRAK" selected >KONTRAK</option>
-                                                    <option value="TETAP">TETAP</option>
-                                                    <option value="HARIAN LEPAS">HARIAN LEPAS</option>
-                                                    <option value="MAGANG">MAGANG</option>
-                                                    <option value="PERCOBAAN">PERCOBAAN</option>
-                                                    <option value="NON KARYAWAN">NON KARYAWAN</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Staff / Non Staff</th>
-                                            <th>Tanggal Resign</th>
-                                            <th>Nomor Surat</th>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <select id="status_staff" class="form-control" data-placeholder="-- Pilih Staff / Non Staff --">
-                                                    <option value="">-- PILIH STAFF/NONSTAFF --</option>
-                                                    <option value="NON STAFF" selected >NON STAFF</option>
-                                                    <option value="STAFF">STAFF</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <div class="input-group-text">
-                                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
-                                                        </div>
-                                                    </div><input id="tanggal_resign" class="form-control fc-datepicker"  placeholder="DD-MM-YYYY" type="text">
-                                                </div>
-                                            </td>
-                                            {{-- <td><input type="text" class="form-control" id="tunjangan" maxlength="80" size="80"></td> --}}
-                                            <td><input type="text" class="form-control" id="no_surat" maxlength="80" size="80"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Sebab Resign</th>
-                                            <th>Referensi</th>
-                                            <th>Atasan Langsung</th>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="text" class="form-control" id="sebab_resign" maxlength="80" size="80"></td>
-                                            <td><input type="text" class="form-control" id="referensi" maxlength="80" size="80"></td>
-                                            <td><input type="text" class="form-control" id="employee_name_atasan" maxlength="80" size="80"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Grade</th>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <select id="kode_grade" class="form-control" data-placeholder="-- Pilih Grade --">
-                                                    <option value="">-- PILIH GRADE --</option>
-                                                    <option value="A">A</option>
-                                                    <option value="B">B</option>
-                                                    <option value="C">C</option>
-                                                    <option value="D">D</option>
-                                                    <option value="E">E</option>
-                                                    <option value="F">F</option>
-                                                    <option value="G" selected>G</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Status BPJS TK</th>
-                                            <th>Tanggal Reg BPJS TK</th>
-                                            <th>Nomor BPJS TK</th>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <select id="status_aktif_bpjs_tk" class="form-control" data-placeholder="-- Pilih Aktif / Tidak Aktif --">
-                                                    <option value="">-- PILIH AKTIF/TIDAK AKTIF --</option>
-                                                    <option value="AKTIF">AKTIF</option>
-                                                    <option value="TIDAK AKTIF" selected>TIDAK AKTIF</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <div class="input-group-text">
-                                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
-                                                        </div>
-                                                    </div><input id="tanggal_bpjs_ketenagakerjaan" class="form-control fc-datepicker"  placeholder="DD-MM-YYYY" type="text">
-                                                </div>
-                                            </td>
-                                            <td><input type="text" class="form-control" id="nomor_bpjs_ketenagakerjaan"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Status BPJS KS</th>
-                                            <th>Tanggal Reg BPJS KS</th>
-                                            <th>Nomor BPJS KS</th>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <select id="status_aktif_bpjs_ks" class="form-control" data-placeholder="-- Pilih Aktif / Tidak Aktif --">
-                                                    <option value="">-- PILIH AKTIF/TIDAK AKTIF --</option>
-                                                    <option value="AKTIF">AKTIF</option>
-                                                    <option value="TIDAK AKTIF" selected>TIDAK AKTIF</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <div class="input-group-text">
-                                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
-                                                        </div>
-                                                    </div><input id="tanggal_bpjs_kesehatan" class="form-control fc-datepicker"  placeholder="DD-MM-YYYY" type="text">
-                                                </div>
-                                            </td>
-                                            <td><input type="text" class="form-control" id="nomor_bpjs_kesehatan"></td>
-                                        </tr>
-                                    </table>
-                                </div>
-
-                                <div class="tab_content">
-                                    <table class="table table-striped table-sm mb-0">
-                                        <tr>
-                                            <th colspan=3>Pengalaman Bekerja</th>
-                                        </tr>
-                                        <tr>
-                                            <td colspan=3>
-                                                <a href="#" id="btndownloadcv" class="btn btn-primary"><i class="fe fe-download  mr-1"></i>Download CV</a>
-                                                <a href="#" id="btnuploadcv" class="btn btn-primary"><i class="fe fe-upload  mr-1"></i>Upload CV</a>
-                                                <input type="hidden" class="form-control" id="lokasi_file_cv">
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan=3>
-                                                <textarea type="text" class="form-control" id="pengalaman_bekerja" rows="15"></textarea>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-
-                                <div class="tab_content">
-                                    <table class="table table-striped table-sm mb-0">
-                                        <tr>
-                                            <th class="w-30">Nama Kerabat</th>
-                                            <td class="w-5">:</td>
-                                            <td class="w-65"><input type="text" class="form-control" id="nama_kerabat"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Nomor Telepon</th>
-                                            <td>:</td>
-                                            <td><input type="text" class="form-control" id="nomor_tlpn_kerabat"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Hubungan</th>
-                                            <td>:</td>
-                                            <td><input type="text" class="form-control" id="hubungan_kerabat"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Alamat</th>
-                                            <td>:</td>
-                                            <td>
-                                                <textarea type="text" class="form-control" id="alamat_kerabat" rows="3"></textarea>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-
-                                <div class="tab_content">
-                                    <table class="table table-striped table-sm mb-0">
-                                        <tr>
-                                            <th colspan=3>Vaksin Ke 1</th>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <div class="input-group-text">
-                                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
-                                                        </div>
-                                                    </div><input id="tanggal_vaccine1" class="form-control fc-datepicker"  placeholder="DD-MM-YYYY" type="text">
-                                                </div>
-                                            </td>
-                                            <td colspan=2><input type="text" class="form-control" id="nama_vaksin1"></td>
-                                        </tr>
-                                        <tr>
-                                            <th colspan=3>Vaksin Ke 2</th>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <div class="input-group-text">
-                                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
-                                                        </div>
-                                                    </div><input id="tanggal_vaccine2" class="form-control fc-datepicker"  placeholder="DD-MM-YYYY" type="text">
-                                                </div>
-                                            </td>
-                                            <td colspan=2><input type="text" class="form-control" id="nama_vaksin2"></td>
-                                        </tr>
-                                        <tr>
-                                            <th colspan=3>Vaksin Ke 3</th>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <div class="input-group-text">
-                                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
-                                                        </div>
-                                                    </div><input readonly id="tanggal_vaccine3" class="form-control fc-datepicker"  placeholder="DD-MM-YYYY" type="text">
-                                                </div>
-                                            </td>
-                                            <td colspan=2><input type="text" class="form-control" id="nama_vaksin3"></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Golongan SIM</th>
-                                            <th>Nomor SIM</th>
-                                            <th>Tanggal Berakhir SIM</th>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <select id="golongan_sim" class="form-control" data-placeholder="-- Pilih --">
-                                                    <option value="">-- PILIH GOLONGAN SIM --</option>
-                                                    <option value="A">SIM A</option>
-                                                    <option value="B1">SIM B1</option>
-                                                    <option value="B2">SIM B2</option>
-                                                    <option value="C">SIM C</option>
-                                                    <option value="C1">SIM C1</option>
-                                                    <option value="C2">SIM C2</option>
-                                                </select>
-                                            </td>
-                                            <td><input type="text" class="form-control" id="nomor_sim"></td>
-                                            <td>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <div class="input-group-text">
-                                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
-                                                        </div>
-                                                    </div><input id="tanggal_expire_sim" class="form-control fc-datepicker"  placeholder="DD-MM-YYYY" type="text">
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th colspan=3>Catatan Karyawan</th>
-                                        </tr>
-                                        <tr>
-                                            <td colspan=3>
-                                                <textarea type="text" class="form-control" id="catatan" rows="15"></textarea>
-                                                <input type="hidden" class="form-control" id="lokasi_foto">
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Operator</th>
-                                            <th>Tanggal Dibuat</th>
-                                            <th>Tanggal Diupdate</th>
-                                        </tr>
-                                        <tr>
-                                            <td><input readonly type="text" class="form-control" id="operator"></td>
-                                            <td>
-                                                <input readonly id="created_at" class="form-control" placeholder="YYYY-MM-DD HH:MM:SS" type="text">
-                                            </td>
-                                            <td>
-                                                <input readonly id="updated_at" class="form-control" placeholder="YYYY-MM-DD HH:MM:SS" type="text">
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-
-                                <div class="tab_content">
-                                    <table class="table table-striped table-sm mb-0">
-                                        <tr>
-                                            <th>Dari Tanggal</th>
-                                            <th>Sampai Tanggal</th>
-                                            <th></th>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <div class="input-group-text">
-                                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
-                                                        </div>
-                                                    </div><input id="tanggal_mulai_kontrak" class="form-control fc-datepicker"  placeholder="DD-MM-YYYY" type="text"><div id="tanggal_mulai_kontrak_string"></div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <div class="input-group-text">
-                                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
-                                                        </div>
-                                                    </div><input id="tanggal_akhir_kontrak" class="form-control fc-datepicker"  placeholder="DD-MM-YYYY" type="text"><div id="tanggal_akhir_kontrak_string"></div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th colspan=3>Catatan Kontrak</th>
-                                        </tr>
-                                        <tr>
-                                            <td colspan=3>
-                                                <textarea type="text" class="form-control" id="catatan_kontrak" rows="6"></textarea>
-                                            </td>
-                                        </tr>
-
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- </form> --}}
-                    {!! Form::close() !!}
-                    <!-- END FORM-->
-                </div>
-                <div class="progress progress-xs mb-0">
-                    <div id="progress-show-1" class="progress-bar progress-bar-indeterminate bg-green"></div>
-                    <div id="progress-hide-1" class="progress-bar"></div>
-                </div>
-                <div class="card-footer bg-primary pl-2 pt-1 pb-2">
-                    <button id="btn-save" class="btn btn-secondary btn-app mt-1">
-                        <span><i class="fa fa-save"></i></span> Save</button>
-                    <button id="btn-reset" class="btn btn-info btn-app  mt-1">
-                        <span><i class="fa fa-undo"></i></span> Reset</button>
-                    <button id="btn-cancel" class="btn btn-warning btn-app  mt-1">
-                        <span><i class="fa fa-close"></i></span> Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- row end -->
+</div>
+<!-- row end -->
 </div>
 
 @endsection
 
 @section('footerjs')
 
-    <!--Jquery Sparkline js-->
-    <script src="{{ URL::asset('assets/plugins/vendors/jquery.sparkline.min.js') }}"></script>
+<!--Jquery Sparkline js-->
+<script src="{{ URL::asset('assets/plugins/vendors/jquery.sparkline.min.js') }}"></script>
 
-    <!-- Chart Circle js-->
-    <script src="{{ URL::asset('assets/plugins/vendors/circle-progress.min.js') }}"></script>
+<!-- Chart Circle js-->
+<script src="{{ URL::asset('assets/plugins/vendors/circle-progress.min.js') }}"></script>
 
-    <!--Select2 js -->
-    <script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
+<!--Select2 js -->
+<script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
 
-    <!--Time Counter js-->
-    <script src="{{URL::asset('assets/plugins/counters/jquery.missofis-countdown.js')}}"></script>
-    <script src="{{URL::asset('assets/plugins/counters/counter.js')}}"></script>
+<!--Time Counter js-->
+<script src="{{URL::asset('assets/plugins/counters/jquery.missofis-countdown.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/counters/counter.js')}}"></script>
 
-    <!-- Timepicker js -->
-    <script src="{{URL::asset('assets/plugins/time-picker/jquery.timepicker.js')}}"></script>
-    <script src="{{URL::asset('assets/plugins/time-picker/toggles.min.js')}}"></script>
+<!-- Timepicker js -->
+<script src="{{URL::asset('assets/plugins/time-picker/jquery.timepicker.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/time-picker/toggles.min.js')}}"></script>
 
-    <!-- Datepicker js -->
-    <script src="{{URL::asset('assets/plugins/spectrum-date-picker/spectrum.js')}}"></script>
-    <script src="{{URL::asset('assets/plugins/spectrum-date-picker/jquery-ui.js')}}"></script>
-    <script src="{{URL::asset('assets/plugins/input-mask/jquery.maskedinput.js')}}"></script>
+<!-- Datepicker js -->
+<script src="{{URL::asset('assets/plugins/spectrum-date-picker/spectrum.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/spectrum-date-picker/jquery-ui.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/input-mask/jquery.maskedinput.js')}}"></script>
 
-    <!-- INTERNAL Data tables -->
-    <script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.bootstrap4.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/jszip.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/vfs_fonts.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.html5.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.print.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/js/buttons.colVis.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.js') }}"></script>
+<!-- INTERNAL Data tables -->
+<script src="{{ URL::asset('assets/plugins/datatable/js/jquery.dataTables.js') }}"></script>
+<script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.bootstrap4.js') }}"></script>
+<script src="{{ URL::asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ URL::asset('assets/plugins/datatable/js/buttons.bootstrap4.min.js') }}"></script>
+<script src="{{ URL::asset('assets/plugins/datatable/js/jszip.min.js') }}"></script>
+<script src="{{ URL::asset('assets/plugins/datatable/js/vfs_fonts.js') }}"></script>
+<script src="{{ URL::asset('assets/plugins/datatable/js/buttons.html5.min.js') }}"></script>
+<script src="{{ URL::asset('assets/plugins/datatable/js/buttons.print.min.js') }}"></script>
+<script src="{{ URL::asset('assets/plugins/datatable/js/buttons.colVis.min.js') }}"></script>
+<script src="{{ URL::asset('assets/plugins/datatable/dataTables.responsive.min.js') }}"></script>
+<script src="{{ URL::asset('assets/plugins/datatable/responsive.bootstrap4.min.js') }}"></script>
 
-    <!-- Popover js -->
-    <script src="{{URL::asset('assets/js/popover.js')}}"></script>
+<!-- Popover js -->
+<script src="{{URL::asset('assets/js/popover.js')}}"></script>
 
-    <!-- Notifications js -->
-    <script src="{{URL::asset('assets/plugins/notify-growl/js/rainbow.js')}}"></script>
-    <script src="{{URL::asset('assets/plugins/notify-growl/js/sample.js')}}"></script>
-    <script src="{{URL::asset('assets/plugins/notify-growl/js/jquery.growl.js')}}"></script>
-    <script src="{{URL::asset('assets/plugins/notify-growl/js/notifIt.js')}}"></script>
+<!-- Notifications js -->
+<script src="{{URL::asset('assets/plugins/notify-growl/js/rainbow.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/notify-growl/js/sample.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/notify-growl/js/jquery.growl.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/notify-growl/js/notifIt.js')}}"></script>
 
-    <!--MutipleSelect js-->
-    <script src="{{URL::asset('assets/plugins/multipleselect/multiple-select.js')}}"></script>
-    <script src="{{URL::asset('assets/plugins/multipleselect/multi-select.js')}}"></script>
+<!--MutipleSelect js-->
+<script src="{{URL::asset('assets/plugins/multipleselect/multiple-select.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/multipleselect/multi-select.js')}}"></script>
 
-    <!-- Sweet alert js-->
-    <script src="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.js')}}"></script>
-    <script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
+<!-- Sweet alert js-->
+<script src="{{URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/sweet-alert/sweetalert.min.js')}}"></script>
 
-    <!---Tabs js-->
-    <script src="{{URL::asset('assets/plugins/tabs/jquery.multipurpose_tabcontent.js')}}"></script>
-    <script src="{{URL::asset('assets/plugins/tabs/tabs.js')}}"></script>
-    <style>
-        #head_karyawan, #tabel_karyawan { display: block; }
-        #head_employees, #selected_employees { display: block; }
+<!---Tabs js-->
+<script src="{{URL::asset('assets/plugins/tabs/jquery.multipurpose_tabcontent.js')}}"></script>
+<script src="{{URL::asset('assets/plugins/tabs/tabs.js')}}"></script>
+<style>
+    #head_karyawan,
+    #tabel_karyawan {
+        display: block;
+    }
 
-        #tabel_karyawan {
-            height: 1px;       /* Just for the demo          */
-            overflow-y: auto;    /* Trigger vertical scroll    */
-            overflow-x: hidden;
-            font-size: 9pt; /* Hide the horizontal scroll */
-        }
-        .dataTables_filter {
-            float: left !important;
-        }
-        #selected_employees {
-            height: 1px;       /* Just for the demo          */
-            overflow-y: auto;    /* Trigger vertical scroll    */
-            overflow-x: hidden;
-            font-size: 9pt; /* Hide the horizontal scroll */
-        }
-    </style>
+    #head_employees,
+    #selected_employees {
+        display: block;
+    }
 
-    <script>
+    #tabel_karyawan {
+        height: 1px;
+        /* Just for the demo          */
+        overflow-y: auto;
+        /* Trigger vertical scroll    */
+        overflow-x: hidden;
+        font-size: 9pt;
+        /* Hide the horizontal scroll */
+    }
+
+    .dataTables_filter {
+        float: left !important;
+    }
+
+    #selected_employees {
+        height: 1px;
+        /* Just for the demo          */
+        overflow-y: auto;
+        /* Trigger vertical scroll    */
+        overflow-x: hidden;
+        font-size: 9pt;
+        /* Hide the horizontal scroll */
+    }
+</style>
+
+<script>
     function updateAlamatRumah() {
         let jalan = $('#alamat_jalan').val();
         let rt = $('#rt').val();
@@ -1183,7 +1360,7 @@
     });
 </script>
 
-    <script type="text/javascript">
+<script type="text/javascript">
     let initialNomorRekening = null;
     $('#nomor_rekening_bank').on('input', function() {
         const currentVal = $(this).val();
@@ -1476,9 +1653,8 @@
     });
 </script>
 
-    <script type="text/javascript">
-
-        $('.fc-datepicker').datepicker({
+<script type="text/javascript">
+    $('.fc-datepicker').datepicker({
             showOtherMonths: true,
             selectOtherMonths: true,
             dateFormat: 'dd-mm-yy'
@@ -3074,11 +3250,10 @@
             }
         });
 
-    </script>
+</script>
 
-    <script>
-
-        $('#export_grade_bpjs').click(function() {
+<script>
+    $('#export_grade_bpjs').click(function() {
             notif({
                 msg: "<b>Info:</b> Data sedang di PROSES, mohon di tunggu.",
                 type: "info"
@@ -3103,6 +3278,37 @@
             });
         @endif
 
-    </script>
+</script>
 
+
+<script>
+    function synchEmployees() {
+        notif({
+            msg: "<b>Info:</b> Data sedang di PROSES, mohon di tunggu.",
+            type: "info"
+        });
+
+        $("#synchemployee").addClass("btn-loading");
+        $("#synchemployee").html('Loading...');
+
+        $.ajax({
+            type:"POST",
+            url: "{{route('hris.employeeatr.synchemployees')}}",
+            dataType: 'json',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },      
+            success: function(res){
+                console.log(res);
+                notif({
+                        msg: "<b>Info:</b> " + res.message,
+                        type: res.status
+                    });
+                $("#synchemployee").removeClass("btn-loading");
+                $("#synchemployee").html('<i class="fa fa-file-excel-o"></i> Synch Karyawan');
+                $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+               
+            }
+        });
+    }
+</script>
 @endsection
