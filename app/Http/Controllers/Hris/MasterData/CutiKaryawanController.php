@@ -1094,13 +1094,13 @@ class CutiKaryawanController extends AdminBaseController
     public function export_form_pengajuan_izin_pdf(Request $request) {
         $uuid = $request->input('uuid');
 
-        $data = DataAbsenPerijinan::select('employee_atribut.employee_name', 'employee_atribut.department_name','employee_atribut.sub_dept_name', 'employee_atribut.nik', 'data_absen_perijinan.*', 'ref_absen_ijin.nama_absen_ijin')
+        $data = DataAbsenPerijinan::select('employee_atribut.employee_name', 'employee_atribut.department_name','employee_atribut.sub_dept_name', 'employee_atribut.nik','employee_atribut.status_jabatan', 'data_absen_perijinan.*', 'ref_absen_ijin.nama_absen_ijin')
             ->leftJoin('employee_atribut', 'data_absen_perijinan.enroll_id', '=', 'employee_atribut.enroll_id')
             ->leftJoin('ref_absen_ijin', 'data_absen_perijinan.kode_absen_ijin', '=', 'ref_absen_ijin.kode_absen_ijin')
             ->where('data_absen_perijinan.uuid', $uuid)
             ->first();
         if (!$data) {
-            $data = DataAbsenPerijinanDTPC::select('employee_atribut.employee_name', 'employee_atribut.department_name','employee_atribut.sub_dept_name', 'employee_atribut.nik', 'data_absen_perijinan_dtpc.*', 'ref_absen_ijin.nama_absen_ijin')
+            $data = DataAbsenPerijinanDTPC::select('employee_atribut.employee_name', 'employee_atribut.department_name','employee_atribut.sub_dept_name', 'employee_atribut.nik','employee_atribut.status_jabatan', 'data_absen_perijinan_dtpc.*', 'ref_absen_ijin.nama_absen_ijin')
                 ->leftJoin('employee_atribut', 'data_absen_perijinan_dtpc.enroll_id', '=', 'employee_atribut.enroll_id')
                 ->leftJoin('ref_absen_ijin', 'data_absen_perijinan_dtpc.kode_absen_ijin', '=', 'ref_absen_ijin.kode_absen_ijin')
                 ->where('data_absen_perijinan_dtpc.uuid', $uuid)
@@ -3058,6 +3058,7 @@ class CutiKaryawanController extends AdminBaseController
 
      public function update_iks_menu_admin(Request $request)
     {
+        // dd($request->all());
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
         $tanggal_mulai_ijin = request()->tanggal_mulai_ijin;
@@ -3190,6 +3191,7 @@ class CutiKaryawanController extends AdminBaseController
 
     public function update_iks_menu_for_hr(Request $request)
     {
+        // dd(request()->nomor_form_perizinan);
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
         $tanggal_mulai_ijin = request()->tanggal_mulai_ijin;
@@ -3201,7 +3203,7 @@ class CutiKaryawanController extends AdminBaseController
             tanggal_berjalan = "' . $tanggal_perizinan . '"
             and enroll_id = "' . request()->enroll_id . '"
             ')->where('status_absen','!=','LN')->update([
-                'nomor_absen_ijin' => request()->nomor_form_perizinan,
+
                 'status_absen' => request()->kode_absen_ijin,
                 'operator' => $email,
                 'updated_absen_ijin' => now()

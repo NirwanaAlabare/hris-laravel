@@ -782,7 +782,7 @@ function toggleOutside(source) {
             let activeTab = $(e.target).attr("id").replace("-tab", "");
 
             // Kosongkan input pencarian tanpa menambah elemen baru
-            $("div.dataTables_filter input").val("").trigger("input");
+            // $("div.dataTables_filter input").val("").trigger("input");
 
             // Reload DataTable jika sudah ada, atau inisialisasi ulang
             if ($.fn.DataTable.isDataTable("#datatable_" + activeTab)) {
@@ -792,9 +792,21 @@ function toggleOutside(source) {
             }
 
             // Pastikan search bar tetap ada di .data_search
-            moveDataTableFilter();
+            // moveDataTableFilter();
         });
+        $(document).on('input', '.data_search input', function () {
+            // let keyword = this.value;
 
+            let activeTab = $(".nav-tabs .list.active").attr("id")
+                ?.replace("-tab", "");
+
+            if ($.fn.DataTable.isDataTable("#datatable_" + activeTab)) {
+                $("#datatable_" + activeTab)
+                    .DataTable()
+                    .search(keyword)
+                    .draw();
+            }
+        });
 
 
         function dataTableReload(status, id) {
@@ -937,7 +949,7 @@ function toggleOutside(source) {
             $(tableId).DataTable({
                 processing: true,
                 paging: false,
-                searching: false,
+                searching: true,
                 ordering: false,
                 destroy: true,
                 ajax: {
@@ -1294,9 +1306,11 @@ function toggleOutside(source) {
                     $("#ajax-modal-edit1").modal('hide');
                     dataTableReload();
                     dataTableDepartmentReload();
-                    setTimeout(function myFunction() {
-                            location.reload();
-                          }, 3000);
+                    $('#datatable_pending').DataTable().ajax.reload(null, false);
+                    //  resetButton();
+                    // setTimeout(function myFunction() {
+                    //         location.reload();
+                    //       }, 3000);
                 },
                 error: function(res){
                     notif({

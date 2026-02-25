@@ -142,6 +142,14 @@
 </head>
 @foreach ($data as $key=>$value)
 <body>
+    <table width="100%">
+        <tr>
+            <td width="80%"></td>
+            <td width="20%" align="right" style="text-align:right;">
+                {{ $value->enroll_id }}
+            </td>
+        </tr>
+    </table>
     <table width="100%" style="border-top: 1px solid; border-left: 1px solid;">
         <thead>
             <tr>

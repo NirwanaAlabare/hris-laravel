@@ -547,11 +547,11 @@ class BazzarController extends AdminBaseController
         $email = Auth::guard('admin')->user()->email;
         if($email == 'dev_hris' || $email == 'mega@ptnag.com' || $email == 'rudy@ptnag.com' || $email == 'willy@ptnag.com'){
             if(request()->id){
-                $data = VoucherBazzar::leftJoin('pengajuan_bazzar', 'pengajuan_bazzar.enroll_id', '=', 'voucher_bazzar.enroll_id')->where('pengajuan_bazzar.tanggal_pengajuan', request()->tanggal)->where('id_pengajuan_bazzar', request()->id)
+                $data = VoucherBazzar::leftJoin('pengajuan_bazzar', 'pengajuan_bazzar.id', '=', 'voucher_bazzar.id_pengajuan_bazzar')->where('pengajuan_bazzar.tanggal_pengajuan', request()->tanggal)->where('id_pengajuan_bazzar', request()->id)
                 ->orderBy('voucher_bazzar.enroll_id', 'ASC')
                 ->get();
             }else{
-                $data = VoucherBazzar::leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'voucher_bazzar.enroll_id')->leftJoin('pengajuan_bazzar', 'pengajuan_bazzar.enroll_id', '=', 'voucher_bazzar.enroll_id')->where('pengajuan_bazzar.sub_dept_id', request()->sub_dept_id)->where('pengajuan_bazzar.tanggal_pengajuan', request()->tanggal)->where('pengajuan_bazzar.status', 'approve')
+                $data = VoucherBazzar::leftJoin('employee_atribut', 'employee_atribut.enroll_id', '=', 'voucher_bazzar.enroll_id')->leftJoin('pengajuan_bazzar', 'pengajuan_bazzar.id', '=', 'voucher_bazzar.id_pengajuan_bazzar')->where('pengajuan_bazzar.sub_dept_id', request()->sub_dept_id)->where('pengajuan_bazzar.tanggal_pengajuan', request()->tanggal)->where('pengajuan_bazzar.status', 'approve')
                 ->orderBy('employee_atribut.employee_name', 'ASC')
                 ->get();
             }
