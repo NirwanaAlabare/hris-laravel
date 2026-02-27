@@ -102,6 +102,7 @@ class DepartmentAllController extends AdminBaseController
         $department_id = $request->department_id;
 
         $query =  DepartmentAll::where('department_name','=',$department_id)
+                    ->whereIn('site_nirwana_id', ['NAG', 'NAGD','NAK'])
                     ->groupBy('sub_dept_name')
                     ->orderBy('sub_dept_name','asc')
                     ->get();
