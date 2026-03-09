@@ -865,21 +865,42 @@ h1 {
         });
 
         function hitungtotaljam() {
-            var tanggal_periz = $('#tanggal_perijinan').val();
-            var tglform=tanggal_periz.substr(6, 4)+'-'+tanggal_periz.substr(3,2)+'-'+tanggal_periz.substr(0,2);
+            var tanggal_periz = $('#tanggal_mulai_ijin_iks').val();
+
+            var tglform = tanggal_periz.substr(6,4)+'-'+tanggal_periz.substr(3,2)+'-'+tanggal_periz.substr(0,2);
+
+            console.log(tglform);
+
             var tm1 = new Date(tglform + " " + $('#time_mulai_ijin').val());
             var tm2 = new Date(tglform + " " + $('#time_akhir_ijin').val());
+
+            console.log(tm1, tm2);
+
             var total_time_ijin = diff_minutes(tm1, tm2);
             var istirahat = 0;
-            var breakStart = new Date(tglform + " 12:00");
-            var breakEnd   = new Date(tglform + " 13:00");
 
-            // Cek apakah melewati jam istirahat
-            if (tm1 < breakEnd && tm2 > breakStart) {
-                istirahat = 60; // tambah 60 menit
-            total_time_ijin -= istirahat; // potong 60 menit
-            if (total_time_ijin < 0) total_time_ijin = 0; // safety
+            // cek hari
+            var hari = new Date(tglform).getDay(); // 5 = Jumat
+
+            var breakStart;
+            var breakEnd;
+
+            // jika hari jumat
+            if (hari === 5) {
+                breakStart = new Date(tglform + " 11:30");
+                breakEnd   = new Date(tglform + " 12:30");
+            } else {
+                breakStart = new Date(tglform + " 12:00");
+                breakEnd   = new Date(tglform + " 13:00");
             }
+
+            // cek apakah melewati jam istirahat
+            if (tm1 < breakEnd && tm2 > breakStart) {
+                istirahat = 60;
+                total_time_ijin -= istirahat;
+                if (total_time_ijin < 0) total_time_ijin = 0;
+            }
+
             $('#total_time_ijin').val(total_time_ijin);
             $('#potongan_istirahat').val(istirahat);
         };
