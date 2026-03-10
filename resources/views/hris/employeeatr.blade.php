@@ -3296,6 +3296,7 @@
             url: "{{route('hris.employeeatr.synchemployees')}}",
             dataType: 'json',
             headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             success: function(res){
                 console.log(res);
                 notif({
@@ -3305,6 +3306,7 @@
                 $("#synchemployee").removeClass("btn-loading");
                 $("#synchemployee").html('<i class="fa fa-file-excel-o"></i> Synch Karyawan');
                 $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
+
             }
         });
     }
