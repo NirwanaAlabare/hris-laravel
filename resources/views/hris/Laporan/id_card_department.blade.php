@@ -1,7 +1,7 @@
 
 <table>
     <tr>
-        @if (count($employee) <= 4)
+        @if ($type == 'employee')
             <?php $counter=3;?>
             @foreach($employee as $value)
             <?php $counter++;?>
@@ -48,7 +48,7 @@
                 </div>
             </td>
             @endforeach
-        @elseif(count($employee)>4)
+        @elseif($type == 'department')
             <?php $counter=-1;?>
             @foreach($employee as $value)
             <?php $counter++;?>
@@ -86,7 +86,7 @@
                             {{$formattedName}}
                         </div>
                         <div class="col">
-                            {{$value->status_jabatan}} {{$value->department_name}}
+                            {{$value->sub_dept_name}} {{$value->department_name}}
                         </div>
                         <div class="col">
                             <img src="data:image/png;base64,{{\DNS2D::getBarcodePNG(''.$value->enroll_id, 'QRCODE',)}}" alt="barcode" style="width: 88px; height: 88px; margin:2px; margin-top:5px; margin-right:15px; padding:2px;background-color:white" />
@@ -111,7 +111,7 @@
         left: 5;
         width: 300px;
     }
-   
+
     .image2 {
         position: absolute;
         bottom: -10px;

@@ -82,13 +82,10 @@ class EmployeeAtrController extends AdminBaseController
         if (request()->sub_department) {
             $inSubDepartment = ' AND sub_dept_id = "' . request()->sub_department . '"';
         }
-        $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . $inSubDepartment . '')->where(function ($query) {
-            $query->where('status_aktif', 'AKTIF')
-                ->orWhere(function ($queryes) {
-                    $queryes->where('status_aktif', 'TIDAK AKTIF');
-                });
-        })->get();
-        $pdf = PDF::loadView('hris.Laporan.id_card_department', ["employee" => $employee, "print_by" => $print_by])->setPaper('letter', 'landscape')->stream('Id card karyawan department' . '.pdf', array('Attachment' => 0));
+$employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . $inSubDepartment . '')
+            ->where('status_aktif', 'AKTIF')
+        ->get();
+        $pdf = PDF::loadView('hris.Laporan.id_card_department', ["employee" => $employee, "print_by" => $print_by,"type" => "department" ])->setPaper('letter', 'landscape')->stream('Id card karyawan department' . '.pdf', array('Attachment' => 0));
         return $pdf;
     }
 
@@ -97,7 +94,7 @@ class EmployeeAtrController extends AdminBaseController
         $print_by = request()->print_by;
         $employees = explode(",", request()->employee);
         $employee = EmployeeAtribut::whereIn('enroll_id', $employees)->get();
-        $pdf = PDF::loadView('hris.Laporan.id_card_department', ["employee" => $employee,  "print_by" => $print_by])
+        $pdf = PDF::loadView('hris.Laporan.id_card_department', ["employee" => $employee,  "print_by" => $print_by,"type" => "employee" ])
             ->setPaper('letter', 'landscape')
             ->setOptions([
                 'margin-top' => 0,

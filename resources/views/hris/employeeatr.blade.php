@@ -445,10 +445,10 @@
                     <div class="col-4">
                     </div>
                     <div class="col-6">
-                        {{-- <a href="#" id="btndownloadiddept" class="py-1"
-                            style="background-color: #f23535;color:white;padding-left:10px;padding-right:10px; border-radius:3px"
+                        <a href="#" id="btndownloadiddept" class="py-1"
+                            style="background-color: #15b22d;color:white;padding-left:10px;padding-right:10px; border-radius:3px"
                             data-toggle="tooltip" title="" data-placement="bottom"
-                            data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a> --}}
+                            data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card Department</a>
                         {{-- <a href="#" id="btnselectemployee" class="py-1"
                             style="background-color: #15b22d;color:white;padding-left:10px;padding-right:10px; border-radius:3px"
                             data-target="#select_employee" data-toggle="modal" title="" data-placement="bottom"
