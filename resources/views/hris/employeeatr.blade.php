@@ -445,19 +445,19 @@
                     <div class="col-4">
                     </div>
                     <div class="col-6">
-                        <a href="#" id="btndownloadiddept" class="py-1"
-                            style="background-color:  #15b22d;color:white;padding-left:10px;padding-right:10px; border-radius:3px"
+                        {{-- <a href="#" id="btndownloadiddept" class="py-1"
+                            style="background-color: #f23535;color:white;padding-left:10px;padding-right:10px; border-radius:3px"
                             data-toggle="tooltip" title="" data-placement="bottom"
-                            data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card Department</a>
+                            data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a> --}}
                         {{-- <a href="#" id="btnselectemployee" class="py-1"
                             style="background-color: #15b22d;color:white;padding-left:10px;padding-right:10px; border-radius:3px"
                             data-target="#select_employee" data-toggle="modal" title="" data-placement="bottom"
                             data-original-title="Download Id Card"><i class="fa fa-check-circle mr-1"></i>Pilih
                             Karyawan</a> --}}
-                        {{-- <a href="#" id="btndownloadselectedids" class="py-1"
+                        <a href="#" id="btndownloadselectedids" class="py-1"
                             style="background-color: #f23535;color:white;padding-left:10px;padding-right:10px; border-radius:3px"
                             data-toggle="tooltip" title="" data-placement="bottom"
-                            data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a> --}}
+                            data-original-title="Download Id Card"><i class="fa fa-download mr-1"></i>ID Card</a>
                         {{-- <a href="#" id="btnselectemployee" class="py-1"
                             style="background-color: #15b22d;color:white;padding-left:10px;padding-right:10px; border-radius:3px"
                             data-target="#select_employee" data-toggle="modal" title="" data-placement="bottom"
@@ -3295,8 +3295,7 @@
             type:"POST",
             url: "{{route('hris.employeeatr.synchemployees')}}",
             dataType: 'json',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             success: function(res){
                 console.log(res);
                 notif({
@@ -3306,7 +3305,6 @@
                 $("#synchemployee").removeClass("btn-loading");
                 $("#synchemployee").html('<i class="fa fa-file-excel-o"></i> Synch Karyawan');
                 $('#datatable-ajax-crud').DataTable().ajax.reload(null, false);
-
             }
         });
     }
