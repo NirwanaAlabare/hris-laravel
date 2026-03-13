@@ -123,7 +123,7 @@
                     <div class="text-white"></div>
                 </div>
             </div>
-        </div>        
+        </div>
     </div>
     <!-- row end -->
 </div>
@@ -175,6 +175,9 @@
 
         //Date range as a button
         $('#daterange1').daterangepicker({
+            locale: {
+                format: 'DD-MMM-YYYY'
+            },
             ranges: {
                 'Hari ini': [moment(), moment()],
                 'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -326,15 +329,15 @@
                     {
                         "targets": [1],
                         "className": "text-center",
-                    },                    
+                    },
                     {
                         "targets": [4,5,6,7,8],
                         "className": "text-nowrap",
-                    },                    
+                    },
                     {
                         "targets": [8,9,10,11,12,13,14,15,16],
                         "className": "w-10 text-right",
-                    },                    
+                    },
                 ],
                 order: [
                     [4, 'asc']
@@ -348,12 +351,12 @@
                 var row = table1.row(tr);
 
                 var data = row.data();
-        
+
                 $("#datatable-ajax-crud tbody tr").removeClass('bg-cyan');
                 $(this).addClass('bg-cyan');
 
              });
-               
+
 
         });
 

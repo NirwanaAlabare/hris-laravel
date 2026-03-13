@@ -70,7 +70,7 @@ class RekapPerhitunganDtpcExport implements FromQuery, WithMapping, ShouldAutoSi
                     IFNULL(SUM(rekap_perhitungan_dtpc.potongan_dtpc_rupiah), 0) potongan_dtpc_rupiah
                 ')
                 ->whereRaw('
-                    rekap_perhitungan_dtpc.tanggal_berjalan BETWEEN "' .$this->tanggalMulai . '" and "' . $this->tanggalSampai . '"                
+                    rekap_perhitungan_dtpc.tanggal_berjalan BETWEEN "' .$this->tanggalMulai . '" and "' . $this->tanggalSampai . '"
                 ')
                 ->leftJoin('employee_atribut','employee_atribut.enroll_id','=','rekap_perhitungan_dtpc.enroll_id')
                 ->leftJoin('department_all','department_all.sub_dept_id','=','employee_atribut.sub_dept_id')
@@ -83,7 +83,7 @@ class RekapPerhitunganDtpcExport implements FromQuery, WithMapping, ShouldAutoSi
                 ->orderBy('employee_atribut.employee_name','asc')
                 ->orderBy('rekap_perhitungan_dtpc.tanggal_berjalan','asc')
                 ->limit(1);
-       
+
         return $q;
     }
 
@@ -94,7 +94,9 @@ class RekapPerhitunganDtpcExport implements FromQuery, WithMapping, ShouldAutoSi
 
     public function map($Data): array
     {
-        $tanggal_berjalan = $Data->tanggal_berjalan;
+        $tanggal_berjalan = Carbon::parse($Data->tanggal_berjalan)->format('d-m-Y');
+        // dd($tanggal_berjalan);
+        // $tanggal_berjalan = $Data->tanggal_berjalan;
         $enroll_id = $Data->enroll_id;
         $nik = $Data->nik;
         $employee_name = $Data->employee_name;
@@ -151,7 +153,7 @@ class RekapPerhitunganDtpcExport implements FromQuery, WithMapping, ShouldAutoSi
                 $sheet->mergeCells('A1:D1');
                 $sheet->mergeCells('A2:D2');
                 $sheet->mergeCells('A3:D3');
-    
+
                 $sheet->setCellValue('A5', 'Tanggal');
                 $sheet->setCellValue('B5', 'Nomor Absen');
                 $sheet->setCellValue('C5', 'NIK');
