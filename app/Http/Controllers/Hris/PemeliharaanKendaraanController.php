@@ -702,24 +702,24 @@ class PemeliharaanKendaraanController extends AdminBaseController
             $query = EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, department_name,department_id,sub_dept_name, sub_dept_id, status_aktif,
                                            concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')
                                     // ->where('status_aktif', 'AKTIF')
-                                    ->groupby('enroll_id')
-                                    ->where(function ($q) {
+                                      ->where(function ($q) {
                                         $q->where('status_aktif', 'AKTIF')
                                         ->orWhereNull('tanggal_resign')
                                         ->orWhereDate('tanggal_resign', '>=', now());
                                     })
+                                    ->groupby('enroll_id')
                                     ->orderby('employee_name', 'asc')
                                     ->get();
         }else{
             $query = EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, department_name,department_id,sub_dept_name, sub_dept_id, status_aktif,
                                            concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')
                                     // ->where('status_aktif', 'AKTIF')
-                                    ->where(function ($q) {
+                                     ->whereIn('sub_dept_id', $bagian)
+                                      ->where(function ($q) {
                                         $q->where('status_aktif', 'AKTIF')
                                         ->orWhereNull('tanggal_resign')
                                         ->orWhereDate('tanggal_resign', '>=', now());
                                     })
-                                    ->whereIn('sub_dept_id', $bagian)
                                     ->groupby('enroll_id')
                                     ->orderby('employee_name', 'asc')
                                     ->get();
