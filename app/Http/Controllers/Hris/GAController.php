@@ -383,16 +383,24 @@ class GAController extends AdminBaseController
             }
 
             $query = EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, concat(enroll_id, " - ", nik, " - ", employee_name) as select_employee')
-                ->where('status_aktif', 'AKTIF')
+                // ->where('status_aktif', 'AKTIF')
                 ->where('site_nirwana_id', 'NAG')
                 ->whereIn('department_id', $allowedDepartments)
+                 ->where(function ($q) {
+                $q->where('status_aktif', 'AKTIF')
+                  ->orWhereDate('tanggal_resign', '>=', now());
+            })
                 ->groupBy('enroll_id', 'nik', 'employee_name')
                 ->orderBy('employee_name', 'asc')
                 ->get();
         } elseif ($site_nirwana_id == 'NAK') {
             $query = EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, concat(enroll_id, " - ", nik, " - ", employee_name) as select_employee')
-                ->where('status_aktif', 'AKTIF')
+                // ->where('status_aktif', 'AKTIF')
                 ->where('site_nirwana_id', 'NAK')
+                 ->where(function ($q) {
+                $q->where('status_aktif', 'AKTIF')
+                  ->orWhereDate('tanggal_resign', '>=', now());
+            })
                 ->groupBy('enroll_id', 'nik', 'employee_name')
                 ->orderBy('employee_name', 'asc')
                 ->get();
