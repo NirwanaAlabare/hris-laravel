@@ -64,7 +64,13 @@ class BazzarController extends AdminBaseController
     public function ajax_getallemployeeatribut()
     {
         $query =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, jenis_kelamin, employee_status, department_name, sub_dept_name, status_aktif, status_staff,
-                                           concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')->where('status_aktif', 'aktif')
+                                           concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')
+                                          //    ->where('status_aktif', 'aktif')
+                                         ->where(function ($q) {
+                                            $q->where('status_aktif', 'AKTIF')
+                                            ->orWhereNull('tanggal_resign')
+                                            ->orWhereDate('tanggal_resign', '>=', now());
+                                    })
                                     ->groupby('enroll_id')
                                     ->orderby('employee_name', 'asc')
                                     ->get();
