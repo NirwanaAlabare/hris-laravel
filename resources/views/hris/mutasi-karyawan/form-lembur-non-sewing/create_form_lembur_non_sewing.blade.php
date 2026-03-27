@@ -582,6 +582,8 @@
                     url: '{{ route('flns.show_list_karyawan_non_sewing') }}',
                     data: function(d) {
                         d.cbodept = $('#cbodept').val();
+                        d.tgl_lembur = $('#tgl_lembur').val();
+                        console.log(cbodept);
                     },
                 },
                 "fnCreatedRow": function(row, data, index) {

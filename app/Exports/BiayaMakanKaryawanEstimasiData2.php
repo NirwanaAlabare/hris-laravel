@@ -9,13 +9,19 @@ use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Sheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Style\Conditional;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Color;
+
 use DB;
 
 Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
     $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
 });
 
-class BiayaMakanKaryawanEstimasiData2 implements FromView, WithTitle, WithColumnFormatting
+class BiayaMakanKaryawanEstimasiData2 implements FromView, WithTitle, WithColumnFormatting,WithEvents
 {
     use Exportable;
     protected $dateFrom;
@@ -24,6 +30,38 @@ class BiayaMakanKaryawanEstimasiData2 implements FromView, WithTitle, WithColumn
     protected $dataLembur3;
     protected $dataLembur4;
     protected $dataLembur5;
+    protected $dataLembur6;
+    protected $dataLembur7;
+ public function registerEvents(): array
+{
+    return [
+        AfterSheet::class => function (AfterSheet $event) {
+
+            $sheet = $event->sheet->getDelegate();
+            $highestRow = $sheet->getHighestRow();
+
+            for ($row = 1; $row <= $highestRow; $row++) {
+
+                $keterangan = $sheet->getCell("A{$row}")->getValue();
+                $total      = $sheet->getCell("M{$row}")->getValue();
+
+                if (
+                    in_array($keterangan, [
+                        'LEMBUR TOTAL',
+                        'SHIFT MALAM TOTAL',
+                        'TAKJIL TOTAL'
+                    ]) &&
+                    ($total === 0 || $total === '0' || $total === null)
+                ) {
+                    // 🔥 HIDE BARIS
+                    $sheet->getRowDimension($row)->setVisible(false);
+                }
+            }
+        }
+    ];
+}
+
+
     // public function __construct($dateFrom)
     // {
     //     $this->dateFrom = $dateFrom ? $dateFrom : date('Y-m-d');
@@ -124,6 +162,41 @@ class BiayaMakanKaryawanEstimasiData2 implements FromView, WithTitle, WithColumn
                 and a.keterangan ='SHIFT MALAM'
                 ORDER BY department, sub_dept_name
         ");
+        $this->dataLembur6 = DB::select("
+            SELECT 'TAKJIL' shift,
+                a.tanggal,
+                a.dept,
+                a.sub_dept,
+                    DATE_FORMAT(a.tanggal, '%d %M %Y') AS tanggal_fix,
+                    COALESCE(
+                        (SELECT d.department_name
+                        FROM department_all d
+                        WHERE d.department_id = a.dept
+                        LIMIT 1),
+                        'Unknown'
+                    ) AS department,
+                    COALESCE(
+                        (SELECT d.sub_dept_name
+                        FROM department_all d
+                        WHERE d.department_id = a.dept
+                        AND d.sub_dept_id = a.sub_dept
+                        LIMIT 1),
+                        'No Sub Dept'
+                    ) AS sub_dept_name,
+                COALESCE(a.non_staff,0) AS non_staff,
+                IF(COALESCE(a.non_staff,0) > 0, 5000, 0) AS harga,
+                COALESCE(a.non_staff,0) * 5000 AS jumlah,
+                COALESCE(a.staff,0) AS staff,
+                IF(COALESCE(a.staff,0) > 0, 5000, 0) AS harga2,
+                COALESCE(a.staff,0) * 5000 AS jumlah2,
+                (COALESCE(a.staff,0) + COALESCE(a.non_staff,0)) AS jumlah_karyawan,
+                (COALESCE(a.staff,0) * 5000)
+                + (COALESCE(a.non_staff,0) * 5000) AS total
+                FROM estimasi_anggaran_makan a
+                WHERE a.tanggal BETWEEN '$from' AND '$to'
+                and a.keterangan ='TAKJIL'
+                ORDER BY department, sub_dept_name
+        ");
         $this->dataLembur3 = DB::select("
             SELECT
                     'LEMBUR TOTAL' AS shift,
@@ -190,49 +263,128 @@ class BiayaMakanKaryawanEstimasiData2 implements FromView, WithTitle, WithColumn
                     AND b.site_nirwana_id IN ('NAG','NAK','NAGD')
                     )
         ");
-        $this->dataLembur5 = DB::select("
+        $this->dataLembur7 = DB::select("
             SELECT
-                    'GRANT TOTAL' AS shift,
+                    'TAKJIL TOTAL' AS shift,
                     '' AS department,
 
                     SUM(COALESCE(a.non_staff, 0)) AS non_staff,
-                                COUNT(DISTINCT CASE
+                    COUNT(DISTINCT CASE
                     WHEN COALESCE(a.non_staff,0) > 0
-                    THEN CONCAT(
-                        COALESCE(NULLIF(a.sub_dept, ''), a.dept),
-                        '-',
-                        a.keterangan
-                    )
-                END) * 8000 AS harga,
-                    SUM(COALESCE(a.non_staff, 0)) * 8000 AS jumlah,
+                    THEN COALESCE(NULLIF(a.sub_dept, ''), a.dept)
+                END) * 5000 AS harga,
+                    SUM(COALESCE(a.non_staff, 0)) * 5000 AS jumlah,
 
                     SUM(COALESCE(a.staff, 0)) AS staff,
-                    COUNT(DISTINCT CASE
+                COUNT(DISTINCT CASE
                     WHEN COALESCE(a.staff,0) > 0
-                    THEN CONCAT(
-                        COALESCE(NULLIF(a.sub_dept, ''), a.dept),
-                        '-',
-                        a.keterangan
-                    )
-                    END) * 10000 AS harga2,
-
-                    SUM(COALESCE(a.staff, 0)) * 10000 AS jumlah2,
+                    THEN COALESCE(NULLIF(a.sub_dept, ''), a.dept)
+                END) * 5000 AS harga2,
+                    SUM(COALESCE(a.staff, 0)) * 5000 AS jumlah2,
 
                     SUM(COALESCE(a.staff, 0) + COALESCE(a.non_staff, 0)) AS jumlah_karyawan,
 
-                    (SUM(COALESCE(a.non_staff, 0)) * 8000)
-                    + (SUM(COALESCE(a.staff, 0)) * 10000) AS total
+                    (SUM(COALESCE(a.non_staff, 0)) * 5000)
+                    + (SUM(COALESCE(a.staff, 0)) * 5000) AS total
                 FROM estimasi_anggaran_makan a
                 WHERE a.tanggal BETWEEN '$from' AND '$to'
-
+                AND a.keterangan = 'TAKJIL'
                 AND EXISTS (
                     SELECT 1
                     FROM department_all b
                     WHERE b.department_id = a.dept
                     AND b.site_nirwana_id IN ('NAG','NAK','NAGD')
-
-                )
+                    )
         ");
+        $this->dataLembur5 = DB::select("
+SELECT
+    'GRAND TOTAL' AS shift,
+    '' AS department,
+
+    SUM(non_staff) AS non_staff,
+    SUM(harga) AS harga,
+    SUM(jumlah) AS jumlah,
+
+    SUM(staff) AS staff,
+    SUM(harga2) AS harga2,
+    SUM(jumlah2) AS jumlah2,
+
+    SUM(jumlah_karyawan) AS jumlah_karyawan,
+    SUM(total) AS total
+
+FROM (
+    SELECT
+        a.keterangan,
+
+        SUM(COALESCE(a.non_staff,0)) AS non_staff,
+
+        COUNT(DISTINCT CASE
+            WHEN COALESCE(a.non_staff,0) > 0 THEN
+                CONCAT(
+                    COALESCE(NULLIF(a.sub_dept,''), a.dept),
+                    '-',
+                    a.keterangan
+                )
+        END)
+        *
+        CASE
+            WHEN a.keterangan = 'TAKJIL' THEN 5000
+            ELSE 8000
+        END AS harga,
+
+        SUM(COALESCE(a.non_staff,0))
+        *
+        CASE
+            WHEN a.keterangan = 'TAKJIL' THEN 5000
+            ELSE 8000
+        END AS jumlah,
+
+        SUM(COALESCE(a.staff,0)) AS staff,
+
+        COUNT(DISTINCT CASE
+            WHEN COALESCE(a.staff,0) > 0 THEN
+                CONCAT(
+                    COALESCE(NULLIF(a.sub_dept,''), a.dept),
+                    '-',
+                    a.keterangan
+                )
+        END)
+        *
+        CASE
+            WHEN a.keterangan = 'TAKJIL' THEN 5000
+            ELSE 10000
+        END AS harga2,
+
+        SUM(COALESCE(a.staff,0))
+        *
+        CASE
+            WHEN a.keterangan = 'TAKJIL' THEN 5000
+            ELSE 10000
+        END AS jumlah2,
+
+        SUM(COALESCE(a.staff,0) + COALESCE(a.non_staff,0)) AS jumlah_karyawan,
+
+        SUM(
+            CASE
+                WHEN a.keterangan = 'TAKJIL'
+                    THEN (COALESCE(a.staff,0) + COALESCE(a.non_staff,0)) * 5000
+                ELSE (COALESCE(a.non_staff,0) * 8000)
+                   + (COALESCE(a.staff,0) * 10000)
+            END
+        ) AS total
+
+    FROM estimasi_anggaran_makan a
+    WHERE a.tanggal BETWEEN '$from' AND '$to'
+    AND EXISTS (
+        SELECT 1
+        FROM department_all b
+        WHERE b.department_id = a.dept
+        AND b.site_nirwana_id IN ('NAG','NAK','NAGD')
+    )
+    GROUP BY a.keterangan
+) x
+");
+
     }
 
 
@@ -252,6 +404,8 @@ class BiayaMakanKaryawanEstimasiData2 implements FromView, WithTitle, WithColumn
             'data_lembur3' => $this->dataLembur3,
             'data_lembur4' => $this->dataLembur4,
             'data_lembur5' => $this->dataLembur5,
+            'data_lembur6' => $this->dataLembur6,
+            'data_lembur7' => $this->dataLembur7,
         ]);
     }
     public function columnFormats(): array

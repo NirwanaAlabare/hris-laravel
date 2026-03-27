@@ -57,9 +57,13 @@
           <?php
             $value=$man[$i];
           ?>
-          <td style="font-weight:bold;border:1px solid black;background-color:#ffecdc">
-            {{$ab->where('tanggal_berjalan',$date_r)->first()[$value]}}
-          </td>
+          @php
+    $row = $ab->where('tanggal_berjalan', $date_r)->first();
+@endphp
+
+<td>
+    {{ $row[$value] ?? 0 }}
+</td>
         @endfor
         @endforeach
       </tr>

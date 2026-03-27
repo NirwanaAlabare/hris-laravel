@@ -858,39 +858,31 @@ class ProsesPayrollController extends AdminBaseController
         return true;
     }
 
-    public function early_closing_payroll_bulanan(Request $request)
+        public function early_closing_payroll_bulanan(Request $request)
     {
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '3000000M');
-// dd($request->all());
+
         $loggedAdmin = Auth::guard('admin')->user();
         $email = $loggedAdmin->email;
         $selectedEnrollId = $request->selectEmployeeID;
         $periode_umk = $request->periode_umk;
-        $daterange = explode(' s/d ', $request->daterange2);
-
-    // ambil tanggal awal
-    $tanggal_awal_early = $daterange[0]; // 2025-12-26
-
-    // periode payroll dari tanggal awal
-    $periode_payroll1 = date('Y-m', strtotime($tanggal_awal_early));
-
-        if ($periode_payroll1) {
-            $periode_payroll = $periode_payroll1;
+        if (request()->periode_payrols) {
+            $periode_payroll = request()->periode_payrols;
         } else {
-            $periode_payroll = '2025-04';
+            $periode_payroll = '2026-02';
         }
-        // dd($periode_payroll);
+        $daterange1 = $request->daterange2;
+        [$tanggal_awal, $tanggal_akhir] = explode(' s/d ', $daterange1);
+        // dd($tanggal_awal, $tanggal_akhir);
         $bulan_sekarang1 = strtotime(date($periode_payroll));
         $tanggal_sekarang = date('Y-m-d');
         $bulan_sebelum = strtotime("-1 month", $bulan_sekarang1);
-        $bulan_sesudah = strtotime("+1 month", $bulan_sekarang1);
         $bulan_sekarang = date('Y-m-', $bulan_sekarang1);
         $bulan_sebelum = date('Y-m-', $bulan_sebelum);
-        $tanggal_awal1 = $bulan_sebelum.'26' ;
+        $tanggal_awal1 = $bulan_sebelum . '26';
 
-
-$tanggal_akhir1 = date('Y-m-', $bulan_sekarang1) . '25';
+        $tanggal_akhir1 = $bulan_sekarang . '25';
         if ($request->has('daterange2')) {
             $daterange = explode(" s/d ", $request->daterange2);
             $tanggal_awal_early = date('Y-m-d', strtotime($daterange[0]));
@@ -899,28 +891,21 @@ $tanggal_akhir1 = date('Y-m-', $bulan_sekarang1) . '25';
         }
         $tahun = date('Y', $bulan_sekarang1);
         $bulan = date('m', $bulan_sekarang1);
-        $daterange1 = $request->daterange2;
-// "2025-12-26 s/d 2025-12-31"
-
-[$tanggal_awal, $tanggal_akhir] = explode(' s/d ', $daterange1);
-
-// hasil:
-$TanggalAwal = $tanggal_awal; // 2025-12-26
-$TanggalAkhir = $tanggal_akhir;
 
         $timestamp1 = strtotime($tanggal_awal1);
         $timestamp2 = strtotime($tanggal_akhir1);
         $jumlah_hari_total = (abs($timestamp2 - $timestamp1) / (60 * 60 * 24) + 1);
         $jumlah_hari_sabtu_minggu_total = 0;
         $security = EmployeeAtribut::where('sub_dept_id', 'DEP08SUB005')->where('jenis_kelamin', 'LAKI-LAKI')->where('enroll_id', '!=', 7445)->get();
-        for ($i = strtotime($tanggal_awal1); $i <= strtotime($tanggal_akhir1); $i += 86400) {
+        for ($i = strtotime($tanggal_awal); $i <= strtotime($tanggal_akhir); $i += 86400) {
             if ((date('N', $i) == 6) || (date('N', $i) == 7)) {
                 $jumlah_hari_sabtu_minggu_total++;
             }
         }
 
-        $priode = date('d-m-Y', strtotime($tanggal_awal1)) . ' s/d ' . date('d-m-Y', strtotime($tanggal_akhir1));
+        $priode = '2026-01-26 s/d 2026-02-25';
         $priode_early_closing = date('d-m-Y', strtotime($tanggal_awal)) . ' s/d ' . date('d-m-Y', strtotime($tanggal_akhir));
+        // dd($priode_early_closing);
         $inEnrollId = '';
         $inEnrollId1 = '';
         $inEnrollId2 = '';
@@ -943,22 +928,22 @@ $TanggalAkhir = $tanggal_akhir;
         $inAllITB = ' AND status_absen IN  ' . $allITB . '';
         //update bpjs variable
         $kode_bpjs =  BpjsSetting::orderBy('kode_periode_bpjs', 'desc')->limit(1)->first();
-        $periode_payroll_bpjs = $tanggal_awal1 . ' s/d ' . $tanggal_akhir1;
+        $periode_payroll_bpjs = $tanggal_awal . ' s/d ' . $tanggal_akhir;
         $explodePeriodePayroll = explode(" s/d ", $periode_payroll_bpjs);
         $periodePayroll = substr($explodePeriodePayroll[1], 0, 4) . substr($explodePeriodePayroll[1], 5, 2);
         $explodeKode = explode("-", $kode_bpjs->kode_periode_bpjs);
         $kode_periode_bpjs = $explodeKode[0] . $explodeKode[1];
-        $sqlKodePeriodeBPJS = 'concat("' . $periodePayroll . '", lpad(enroll_id, 5, 0))';
+        $sqlKodePeriodeBPJS = 'concat("' . $periodePayroll . '", lpad(enroll_id, 6, 0))';
 
         //rekap payroll variable
-        $tanggal_awal_baru = date('m/d/Y', strtotime($tanggal_awal1));
-        $tanggal_akhir_baru = date('m/d/Y', strtotime($tanggal_akhir1));
-        $periode_payroll2 = $tanggal_awal_baru . ' - ' . $tanggal_akhir_baru;// menggunakan -
-        // $periode_payroll2 = '03/26/2025 - 04/25/2025';
+        $tanggal_awal_baru = date('m/d/Y', strtotime($tanggal_awal));
+        $tanggal_akhir_baru = date('m/d/Y', strtotime($tanggal_akhir));
+        // $periode_payroll2 = $tanggal_awal_baru . ' - ' . $tanggal_akhir_baru;// menggunakan -
+        $periode_payroll2 = '01/26/2026 - 02/25/2026';
         //update tanggal resign variable
         list($year, $month) = explode('-', $periode_payroll);
         $jumlah_hari_kerja = $jumlah_hari_total - $jumlah_hari_sabtu_minggu_total;
-        //  dd($periode_payroll, $jumlah_hari_kerja,$jumlah_hari_total ,$jumlah_hari_sabtu_minggu_total,$tanggal_akhir ,$tanggal_awal,$priode, $bulan,$tahun,$periode_payroll2,$explodePeriodePayroll,$sqlKodePeriodeBPJS);
+        // dd($jumlah_hari_kerja);
 
         //rekap kehadiran
         $jumlah_hari = '';
@@ -1062,18 +1047,30 @@ $TanggalAkhir = $tanggal_akhir;
 
                         -- Potongan Kehadiran
                         CASE
-                            WHEN b.sub_dept_id = 'DEP08SUB005'
-                                AND b.jenis_kelamin = 'LAKI-LAKI'
-                            THEN
-                                (c.salary_bulanan / 25) * a.kehadiran_itb
-                            ELSE
-                                (c.salary_bulanan / a.jumlah_hari_kerja) *
-                                CASE
-                                    WHEN a.kehadiran_r = 0
-                                    THEN GREATEST((a.jumlah_hari_kerja - (a.total_kehadiran_net)), 0)
-                                    ELSE GREATEST((a.jumlah_hari_kerja - a.total_kehadiran_net), 0)
-                                END
-                        END AS potongan_kehadiran_rupiah
+                        WHEN b.sub_dept_id = 'DEP08SUB005'
+                            AND b.jenis_kelamin = 'LAKI-LAKI'
+                        THEN
+                            (c.salary_bulanan / 25) * a.kehadiran_itb
+                        ELSE
+                            (c.salary_bulanan / a.jumlah_hari_kerja) *
+                            CASE
+                                WHEN a.kehadiran_r = 0 THEN
+                                    GREATEST(
+                                        a.jumlah_hari_kerja -
+                                        (
+                                            a.total_kehadiran_net +
+                                            CASE
+                                                WHEN b.tanggal_resign IS NOT NULL
+                                                    AND b.tanggal_resign < '2026-02-25'
+                                                THEN 0       -- resign sebelum akhir → +2 HILANG
+                                                ELSE 2       -- masih aktif / resign setelah → +2
+                                            END
+                                        ),
+                                    0)
+                                ELSE
+                                    GREATEST((a.jumlah_hari_kerja - a.total_kehadiran_net), 0)
+                            END
+                    END AS potongan_kehadiran_rupiah
 
                     FROM (
                         SELECT *
@@ -1105,9 +1102,7 @@ $TanggalAkhir = $tanggal_akhir;
                         END) = c.kode_grade
             ");
 
-
             foreach ($rekap_kehadiran_karyawan as $key => $value) {
-
                 $uuid2 = Str::uuid('uuid');
                 $periode = $value->periode_payroll;
                 $enroll_id = $value->enroll_id;
@@ -1300,7 +1295,9 @@ $TanggalAkhir = $tanggal_akhir;
                     data_absen_perijinan.total_time_ijin
                     ')
                 ->leftJoin('data_absen_perijinan', function ($leftjoin) {
-                    $leftjoin->on("master_data_absen_kehadiran.tanggal_berjalan", "=", "data_absen_perijinan.tanggal_perizinan")->on("master_data_absen_kehadiran.enroll_id", "=", "data_absen_perijinan.enroll_id");
+                    $leftjoin->on("master_data_absen_kehadiran.tanggal_berjalan", "=", "data_absen_perijinan.tanggal_perizinan")
+                        ->on("master_data_absen_kehadiran.nomor_absen_ijin", "=", "data_absen_perijinan.nomor_form_perizinan")
+                        ->on("master_data_absen_kehadiran.enroll_id", "=", "data_absen_perijinan.enroll_id");
                 })
                 ->whereRaw('master_data_absen_kehadiran.tanggal_berjalan >= "' . $tanggal_awal . '" and master_data_absen_kehadiran.tanggal_berjalan <= "' . $tanggal_akhir . '" and data_absen_perijinan.total_time_ijin>0' . $MDAinEnrollId . '')
                 ->get();
@@ -1403,7 +1400,7 @@ $TanggalAkhir = $tanggal_akhir;
             //update bpjs
             $queryEmpAtr =  EmployeeAtribut::selectRaw('uuid() uuid,
                 concat(SUBSTR(DATE_ADD( LAST_DAY( DATE_SUB( MAX("' . $explodePeriodePayroll[1] . '"), INTERVAL 1 MONTH )), INTERVAL 25 DAY ), 1, 4),
-                SUBSTR(DATE_ADD( LAST_DAY( DATE_SUB( MAX("' . $explodePeriodePayroll[1] . '"), INTERVAL 1 MONTH )), INTERVAL 25 DAY ), 6, 2), lpad(enroll_id, 5, 0)) kode_bpjs,
+                SUBSTR(DATE_ADD( LAST_DAY( DATE_SUB( MAX("' . $explodePeriodePayroll[1] . '"), INTERVAL 1 MONTH )), INTERVAL 25 DAY ), 6, 2), lpad(enroll_id, 6, 0)) kode_bpjs,
                 substr("' . $explodePeriodePayroll[1] . '", 1, 4) periode_bpjs,
                 CONCAT(DATE_ADD( LAST_DAY( DATE_SUB( MAX("' . $explodePeriodePayroll[1] . '"), INTERVAL 2 MONTH )), INTERVAL 26 DAY ), " s/d ",
                 DATE_ADD( LAST_DAY( DATE_SUB( MAX("' . $explodePeriodePayroll[1] . '"), INTERVAL 1 MONTH )), INTERVAL 25 DAY ))  periode_kehadiran,
@@ -1415,10 +1412,11 @@ $TanggalAkhir = $tanggal_akhir;
                 enroll_id is not null
                 AND (tanggal_resign is null OR tanggal_resign = "0000-00-00" OR
                     NOT tanggal_resign < DATE_ADD( LAST_DAY( DATE_SUB( "' . $explodePeriodePayroll[1] . '", INTERVAL 2 MONTH )), INTERVAL 26 DAY ))
-                AND join_date <= "' . $explodePeriodePayroll[1] . '"
+                AND join_date <= "' . $explodePeriodePayroll[1] . '"' . $inEnrollId . '
             ')
                 ->groupBy('enroll_id')
                 ->groupBy('employee_name')
+                // dd($queryEmpAtr ->toSql(), $queryEmpAtr->get());
                 ->get();
             foreach ($queryEmpAtr as $key => $value) {
 
@@ -1533,7 +1531,6 @@ $TanggalAkhir = $tanggal_akhir;
 
             $kode_periode_bpjs = $query[0]->kode_periode_bpjs;
             $kode_dasar_pot_bpjs = $query[0]->kode_dasar_pot_bpjs;
-            // dd($kode_dasar_pot_bpjs);
             $dasar_pot_bpjs_rupiah_gapok = $query[0]->dasar_pot_bpjs_rupiah;
             $bpjs_tk_jkm_persen = $query[0]->bpjs_tk_jkm_persen;
             $bpjs_tk_jkm_perusahaan_persen = $query[0]->bpjs_tk_jkm_perusahaan_persen;
@@ -1555,7 +1552,7 @@ $TanggalAkhir = $tanggal_akhir;
 
             foreach ($EmpBpjs as $key3 => $value3) {
                 $dasar_pot_bpjs_rupiah = $dasar_pot_bpjs_rupiah_gapok + $value3->tmk;
-                // dd($priode);
+                // dd($dasar_pot_bpjs_rupiah);
                 $queryEmpBpjs = DB::update('update employee_bpjs set
                     kode_periode_bpjs = "' . $kode_periode_bpjs . '",
                     kode_dasar_pot_bpjs = "' . $kode_dasar_pot_bpjs . '",
@@ -1586,188 +1583,19 @@ $TanggalAkhir = $tanggal_akhir;
                     bpjs_tk_jpn_neto_persen = "' . $bpjs_tk_jpn_karyawan_persen . '",
                     bpjs_ks_jkn_neto_persen = "' . $bpjs_ks_jkn_karyawan_persen . '",
                     operator = "' . $email . '"
-                where enroll_id = "' . $value3->enroll_id . '" and periode_kehadiran = "' . $periode . '"');
+                where enroll_id = "' . $value3->enroll_id . '"');
             }
 
             //rekap payroll
-            // $all_karyawan = DB::select("select a.enroll_id,a.nik,if(emp_hist.kode_grade is not null,emp_hist.kode_grade,a.kode_grade) kode_grade,a.join_date,a.employee_name,a.tanggal_resign,if(emp_hist.ptkp is not null,emp_hist.ptkp,a.ptkp) ptkp,if(emp_hist.npwp is not null,emp_hist.npwp,a.npwp) npwp,if(emp_hist.status_jabatan is not null,emp_hist.status_jabatan,a.status_jabatan) jabatan_karyawan,if(emp_hist.sub_dept_name is not null,emp_hist.sub_dept_name,a.sub_dept_name) nama_bagian,if(emp_hist.department_name is not null,emp_hist.department_name,a.department_name) nama_department,if(emp_hist.status_staff is not null,emp_hist.status_staff,a.status_staff) kategori_karyawan,if(emp_hist.status_aktif is not null,emp_hist.status_aktif,a.status_aktif) aktif_karyawan,a.jenis_kelamin,a.status_kawin,if(emp_hist.site_nirwana_name is not null,emp_hist.site_nirwana_name,a.site_nirwana_name) site_nirwana_name, case when if(emp_hist.nama_bank is not null, emp_hist.nama_bank, a.nama_bank) is null or if(emp_hist.nama_bank is not null, emp_hist.nama_bank, a.nama_bank) = '' or if(emp_hist.nama_bank is not null, emp_hist.nama_bank, a.nama_bank) ='-' then 'TUNAI' else if(emp_hist.nama_bank is not null, emp_hist.nama_bank, a.nama_bank) end nama_bank,if(emp_hist.nomor_rekening_bank is not null, emp_hist.nomor_rekening_bank, a.nomor_rekening_bank) nomor_rekening_bank,if(emp_hist.sub_dept_id is not null, emp_hist.sub_dept_id, a.sub_dept_id) sub_dept_id,c.insentif,d.periode_payroll,d.kode_rekap,d.periode_tahun_bulan,d.kehadiran_iby,d.kehadiran_itb,d.kehadiran_m,d.kehadiran_lby,d.kehadiran_lsm,d.kehadiran_r,d.kehadiran_tk,d.total_kehadiran,d.total_kehadiran_net,d.kehadiran_m_estimasi,d.kehadiran_ok,d.kehadiran_dt,d.kehadiran_pc,d.kehadiran_dtpc,d.gaji_pokok,d.gaji_harian,d.gaji_menit,d.potongan_kehadiran_rupiah,e.lembur_1,e.lembur_2,e.lembur_3,e.lembur_4,e.total_lembur_1234,e.lembur1_rupiah,e.lembur2_rupiah, e.lembur3_rupiah, e.lembur4_rupiah,e.total_lembur_rupiah,f.koreksi_upah_rupiah,f.insentif_jabatan,g.koreksi_potongan,iks.potongan_iks_menit,iks.potongan_iks_rupiah,dtpc.potongan_dt_menit,dtpc.potongan_pc_menit,dtpc.potongan_dtpc_menit,dtpc.potongan_dt_rupiah,dtpc.potongan_pc_rupiah,dtpc.potongan_dtpc_rupiah,bpjs.bpjs_tk_jkm_bruto_rupiah,bpjs.bpjs_tk_jkm_neto_rupiah,bpjs.bpjs_tk_jkk_bruto_rupiah,bpjs.bpjs_tk_jkk_neto_rupiah,bpjs.bpjs_tk_jht_bruto_rupiah,bpjs.bpjs_tk_jht_neto_rupiah,bpjs.bpjs_tk_jpn_bruto_rupiah,bpjs.bpjs_tk_jpn_neto_rupiah,bpjs.bpjs_ks_jkn_bruto_rupiah,bpjs.bpjs_ks_jkn_neto_rupiah from (select*from employee_atribut where (status_aktif='AKTIF' or tanggal_resign>'$tanggal_awal') and join_date<='$tanggal_akhir'$inEnrollId2) a left join (select*from employee_atribut_histories where periode_payroll='$priode' AND updated_at = (SELECT MAX(updated_at)
-            //            FROM employee_atribut_histories
-            //            WHERE enroll_id = employee_atribut_histories.enroll_id
-            //              AND periode_payroll = '$priode')) emp_hist on a.enroll_id=emp_hist.enroll_id left join (select*from grading_salary where SUBSTRING(periode_umk,1,4)='$tahun') c on if(emp_hist.kode_grade is not null,emp_hist.kode_grade,a.kode_grade)=c.kode_grade inner join (select*from rekap_perhitungan_kehadiran_karyawan where periode_payroll='$priode')d on a.enroll_id=d.enroll_id left join (select enroll_id,sum(lembur_1) lembur_1,sum(lembur_2) lembur_2,sum(lembur_3) lembur_3,sum(lembur_4) lembur_4,sum(total_lembur_1234) total_lembur_1234,sum(lembur1_rupiah)lembur1_rupiah,sum(lembur2_rupiah) lembur2_rupiah,sum(lembur3_rupiah) lembur3_rupiah,sum(lembur4_rupiah) lembur4_rupiah,sum(total_lembur_rupiah) total_lembur_rupiah from rekap_perhitungan_lembur where tanggal_berjalan>='$tanggal_awal' and tanggal_berjalan<='$tanggal_akhir' group by enroll_id) e on a.enroll_id=e.enroll_id left join (select enroll_id, SUM(case when jenis_koreksi != 2 or jenis_koreksi is null THEN jumlah_rp_potongan else 0 end) koreksi_upah_rupiah, SUM(case when jenis_koreksi = 2 THEN jumlah_rp_potongan else 0 end) insentif_jabatan from data_koreksi_upah where periode_tanggal_koreksi='$periode_payroll2' group by enroll_id) f on a.enroll_id=f.enroll_id left join (select enroll_id,sum(jumlah_rp_potongan) koreksi_potongan from data_koreksi_potongan where periode_tanggal_koreksi='$periode_payroll2' group by enroll_id) g on a.enroll_id=g.enroll_id left join (select*from employee_bpjs where periode_kehadiran='$priode') bpjs on a.enroll_id=bpjs.enroll_id left join (select enroll_id,sum(jumlah_menit_absen_dt) potongan_dt_menit,sum(jumlah_menit_absen_pc) potongan_pc_menit,sum(jumlah_menit_absen_dtpc) potongan_dtpc_menit,sum(potongan_dt_rupiah) potongan_dt_rupiah,sum(potongan_pc_rupiah) potongan_pc_rupiah, sum(potongan_dtpc_rupiah) potongan_dtpc_rupiah from rekap_perhitungan_dtpc where tanggal_berjalan>='$tanggal_awal' and tanggal_berjalan<='$tanggal_akhir' group by enroll_id) dtpc on a.enroll_id=dtpc.enroll_id left join (select enroll_id,sum(lama_ijin_menit) potongan_iks_menit,sum(potongan_iks_rupiah) potongan_iks_rupiah from rekap_perhitungan_iks where tanggal_berjalan>='$tanggal_awal' and tanggal_berjalan<='$tanggal_akhir' group by enroll_id) iks on a.enroll_id=iks.enroll_id");
-            $all_karyawan = DB::select("SELECT
-                            a.enroll_id,
-                            a.nik,
-                            a.kode_grade kode_grade,
-                            a.join_date,
-                            a.employee_name,
-                            a.tanggal_resign,
-                            a.ptkp ptkp,
-                            a.npwp npwp,
-                            a.status_jabatan jabatan_karyawan,
-                            a.sub_dept_name nama_bagian,
-                            a.department_name nama_department,
-                            a.status_staff kategori_karyawan,
-                            a.status_aktif aktif_karyawan,
-                            a.jenis_kelamin,
-                            a.status_kawin,
-                            a.site_nirwana_name site_nirwana_name,
-                        CASE
-
-                                WHEN a.nama_bank IS NULL
-                                OR a.nama_bank = ''
-                                OR a.nama_bank = '-' THEN
-                                    'TUNAI' ELSE a.nama_bank
-                                END nama_bank,
-                            a.nomor_rekening_bank nomor_rekening_bank,
-                            a.sub_dept_id sub_dept_id,
-                            c.insentif,
-                            d.periode_payroll,
-                            d.kode_rekap,
-                            d.periode_tahun_bulan,
-                            d.kehadiran_iby,
-                            d.kehadiran_itb,
-                            d.kehadiran_m,
-                            d.kehadiran_lby,
-                            d.kehadiran_lsm,
-                            d.kehadiran_r,
-                            d.kehadiran_tk,
-                            d.total_kehadiran,
-                            d.total_kehadiran_net,
-                            d.kehadiran_m_estimasi,
-                            d.kehadiran_ok,
-                            d.kehadiran_dt,
-                            d.kehadiran_pc,
-                            d.kehadiran_dtpc,
-                            d.gaji_pokok,
-                            d.gaji_harian,
-                            d.gaji_menit,
-                            d.potongan_kehadiran_rupiah,
-                            e.lembur_1,
-                            e.lembur_2,
-                            e.lembur_3,
-                            e.lembur_4,
-                            e.total_lembur_1234,
-                            e.lembur1_rupiah,
-                            e.lembur2_rupiah,
-                            e.lembur3_rupiah,
-                            e.lembur4_rupiah,
-                            e.total_lembur_rupiah,
-                            f.koreksi_upah,
-                            f.insentif_jabatan,
-                            f.koreksi_insentif,
-                            f.koreksi_lembur,
-                            f.koreksi_upah_rupiah,
-                            g.potongan_piutang,
-                            g.potongan_insentif,
-                            g.potongan_upah,
-                            g.potongan_lembur,
-                            g.koreksi_potongan,
-                            iks.potongan_iks_menit,
-                            iks.potongan_iks_rupiah,
-                            dtpc.potongan_dt_menit,
-                            dtpc.potongan_pc_menit,
-                            dtpc.potongan_dtpc_menit,
-                            dtpc.potongan_dt_rupiah,
-                            dtpc.potongan_pc_rupiah,
-                            dtpc.potongan_dtpc_rupiah,
-                            bpjs.bpjs_tk_jkm_bruto_rupiah,
-                            bpjs.bpjs_tk_jkm_neto_rupiah,
-                            bpjs.bpjs_tk_jkk_bruto_rupiah,
-                            bpjs.bpjs_tk_jkk_neto_rupiah,
-                            bpjs.bpjs_tk_jht_bruto_rupiah,
-                            bpjs.bpjs_tk_jht_neto_rupiah,
-                            bpjs.bpjs_tk_jpn_bruto_rupiah,
-                            bpjs.bpjs_tk_jpn_neto_rupiah,
-                            bpjs.bpjs_ks_jkn_bruto_rupiah,
-                            bpjs.bpjs_ks_jkn_neto_rupiah
-                        FROM
-                            ( SELECT * FROM employee_atribut WHERE ( status_aktif = 'AKTIF' OR tanggal_resign > '$tanggal_awal' ) AND join_date <= '$tanggal_akhir' $inEnrollId2 ) a
-                            LEFT JOIN ( SELECT * FROM grading_salary WHERE SUBSTRING( periode_umk, 1, 4 )= '$tahun' ) c ON a.kode_grade = c.kode_grade
-                            INNER JOIN ( SELECT * FROM rekap_perhitungan_kehadiran_karyawan WHERE periode_payroll = '$priode' ) d ON a.enroll_id = d.enroll_id
-                            LEFT JOIN (
-                            SELECT
-                                enroll_id,
-                                sum( lembur_1 ) lembur_1,
-                                sum( lembur_2 ) lembur_2,
-                                sum( lembur_3 ) lembur_3,
-                                sum( lembur_4 ) lembur_4,
-                                sum( total_lembur_1234 ) total_lembur_1234,
-                                sum( lembur1_rupiah ) lembur1_rupiah,
-                                sum( lembur2_rupiah ) lembur2_rupiah,
-                                sum( lembur3_rupiah ) lembur3_rupiah,
-                                sum( lembur4_rupiah ) lembur4_rupiah,
-                                sum( total_lembur_rupiah ) total_lembur_rupiah
-                            FROM
-                                rekap_perhitungan_lembur
-                            WHERE
-                                tanggal_berjalan >= '$tanggal_awal'
-                                AND tanggal_berjalan <= '$tanggal_akhir'
-                            GROUP BY
-                                enroll_id
-                            ) e ON a.enroll_id = e.enroll_id
-                            LEFT JOIN (
-                            SELECT
-                                enroll_id,
-                                SUM( CASE WHEN jenis_koreksi = 1 THEN jumlah_rp_potongan ELSE 0 END ) AS koreksi_upah,
+            $all_karyawan = DB::select("select a.enroll_id,a.nik,if(emp_hist.kode_grade is not null,emp_hist.kode_grade,a.kode_grade) kode_grade,a.join_date,a.employee_name,a.tanggal_resign,if(emp_hist.ptkp is not null,emp_hist.ptkp,a.ptkp) ptkp,if(emp_hist.npwp is not null,emp_hist.npwp,a.npwp) npwp,if(emp_hist.status_jabatan is not null,emp_hist.status_jabatan,a.status_jabatan) jabatan_karyawan,if(emp_hist.sub_dept_name is not null,emp_hist.sub_dept_name,a.sub_dept_name) nama_bagian,if(emp_hist.department_name is not null,emp_hist.department_name,a.department_name) nama_department,if(emp_hist.status_staff is not null,emp_hist.status_staff,a.status_staff) kategori_karyawan,if(emp_hist.status_aktif is not null,emp_hist.status_aktif,a.status_aktif) aktif_karyawan,a.jenis_kelamin,a.status_kawin,if(emp_hist.site_nirwana_name is not null,emp_hist.site_nirwana_name,a.site_nirwana_name) site_nirwana_name, case when if(emp_hist.nama_bank is not null, emp_hist.nama_bank, a.nama_bank) is null or if(emp_hist.nama_bank is not null, emp_hist.nama_bank, a.nama_bank) = '' or if(emp_hist.nama_bank is not null, emp_hist.nama_bank, a.nama_bank) ='-' then 'TUNAI' else if(emp_hist.nama_bank is not null, emp_hist.nama_bank, a.nama_bank) end nama_bank,if(emp_hist.nomor_rekening_bank is not null, emp_hist.nomor_rekening_bank, a.nomor_rekening_bank) nomor_rekening_bank,if(emp_hist.sub_dept_id is not null, emp_hist.sub_dept_id, a.sub_dept_id) sub_dept_id,c.insentif,d.periode_payroll,d.kode_rekap,d.periode_tahun_bulan,d.kehadiran_iby,d.kehadiran_itb,d.kehadiran_m,d.kehadiran_lby,d.kehadiran_lsm,d.kehadiran_r,d.kehadiran_tk,d.total_kehadiran,d.total_kehadiran_net,d.kehadiran_m_estimasi,d.kehadiran_ok,d.kehadiran_dt,d.kehadiran_pc,d.kehadiran_dtpc,d.gaji_pokok,d.gaji_harian,d.gaji_menit,d.potongan_kehadiran_rupiah,e.lembur_1,e.lembur_2,e.lembur_3,e.lembur_4,e.total_lembur_1234,e.lembur1_rupiah,e.lembur2_rupiah, e.lembur3_rupiah, e.lembur4_rupiah,e.total_lembur_rupiah,f.koreksi_upah_rupiah,f.insentif_jabatan,f.koreksi_lembur,f.koreksi_insentif,f.koreksi_upah,g.koreksi_potongan,iks.potongan_iks_menit,iks.potongan_iks_rupiah,dtpc.potongan_dt_menit,dtpc.potongan_pc_menit,dtpc.potongan_dtpc_menit,dtpc.potongan_dt_rupiah,dtpc.potongan_pc_rupiah,dtpc.potongan_dtpc_rupiah,bpjs.bpjs_tk_jkm_bruto_rupiah,bpjs.bpjs_tk_jkm_neto_rupiah,bpjs.bpjs_tk_jkk_bruto_rupiah,bpjs.bpjs_tk_jkk_neto_rupiah,bpjs.bpjs_tk_jht_bruto_rupiah,bpjs.bpjs_tk_jht_neto_rupiah,bpjs.bpjs_tk_jpn_bruto_rupiah,bpjs.bpjs_tk_jpn_neto_rupiah,bpjs.bpjs_ks_jkn_bruto_rupiah,bpjs.bpjs_ks_jkn_neto_rupiah from (select*from employee_atribut where (status_aktif='AKTIF' or tanggal_resign>'$tanggal_awal') and join_date<='$tanggal_akhir'$inEnrollId2) a left join (select*from employee_atribut_histories where periode_payroll='$priode' AND updated_at = (SELECT MAX(updated_at)
+                       FROM employee_atribut_histories
+                       WHERE enroll_id = employee_atribut_histories.enroll_id
+                         AND periode_payroll = '$priode')) emp_hist on a.enroll_id=emp_hist.enroll_id left join (select*from grading_salary where SUBSTRING(periode_umk,1,4)='$tahun') c on if(emp_hist.kode_grade is not null,emp_hist.kode_grade,a.kode_grade)=c.kode_grade inner join (select*from rekap_perhitungan_kehadiran_karyawan where periode_payroll='$priode')d on a.enroll_id=d.enroll_id left join (select enroll_id,sum(lembur_1) lembur_1,sum(lembur_2) lembur_2,sum(lembur_3) lembur_3,sum(lembur_4) lembur_4,sum(total_lembur_1234) total_lembur_1234,sum(lembur1_rupiah)lembur1_rupiah,sum(lembur2_rupiah) lembur2_rupiah,sum(lembur3_rupiah) lembur3_rupiah,sum(lembur4_rupiah) lembur4_rupiah,sum(total_lembur_rupiah) total_lembur_rupiah from rekap_perhitungan_lembur where tanggal_berjalan>='$tanggal_awal' and tanggal_berjalan<='$tanggal_akhir' group by enroll_id) e on a.enroll_id=e.enroll_id left join (select enroll_id, SUM(case when jenis_koreksi != 2 or jenis_koreksi is null THEN jumlah_rp_potongan else 0 end) koreksi_upah_rupiah, SUM( CASE WHEN jenis_koreksi = 1 THEN jumlah_rp_potongan ELSE 0 END ) AS koreksi_upah,
                                 SUM( CASE WHEN jenis_koreksi = 2 THEN jumlah_rp_potongan ELSE 0 END) insentif_jabatan,
                                 SUM( CASE WHEN jenis_koreksi = 3 THEN jumlah_rp_potongan ELSE 0 END ) AS koreksi_lembur,
-                                SUM( CASE WHEN jenis_koreksi = 4 THEN jumlah_rp_potongan ELSE 0 END ) AS koreksi_insentif,
-                                SUM( CASE WHEN jenis_koreksi != 2 or jenis_koreksi IS NULL THEN jumlah_rp_potongan ELSE 0 END) koreksi_upah_rupiah
-                            FROM
-                                data_koreksi_upah
-                            WHERE
-                                periode_tanggal_koreksi = '$periode_payroll2'
-                            GROUP BY
-                                enroll_id
-                            ) f ON a.enroll_id = f.enroll_id
+                                SUM( CASE WHEN jenis_koreksi = 4 THEN jumlah_rp_potongan ELSE 0 END ) AS koreksi_insentif from data_koreksi_upah where periode_tanggal_koreksi='$periode_payroll2' group by enroll_id) f on a.enroll_id=f.enroll_id left join (select enroll_id,sum(jumlah_rp_potongan) koreksi_potongan from data_koreksi_potongan where periode_tanggal_koreksi='$periode_payroll2' group by enroll_id) g on a.enroll_id=g.enroll_id left join (select*from employee_bpjs where periode_kehadiran='$priode') bpjs on a.enroll_id=bpjs.enroll_id left join (select enroll_id,sum(jumlah_menit_absen_dt) potongan_dt_menit,sum(jumlah_menit_absen_pc) potongan_pc_menit,sum(jumlah_menit_absen_dtpc) potongan_dtpc_menit,sum(potongan_dt_rupiah) potongan_dt_rupiah,sum(potongan_pc_rupiah) potongan_pc_rupiah, sum(potongan_dtpc_rupiah) potongan_dtpc_rupiah from rekap_perhitungan_dtpc where tanggal_berjalan>='$tanggal_awal' and tanggal_berjalan<='$tanggal_akhir' group by enroll_id) dtpc on a.enroll_id=dtpc.enroll_id left join (select enroll_id,sum(lama_ijin_menit) potongan_iks_menit,sum(potongan_iks_rupiah) potongan_iks_rupiah from rekap_perhitungan_iks where tanggal_berjalan>='$tanggal_awal' and tanggal_berjalan<='$tanggal_akhir' group by enroll_id) iks on a.enroll_id=iks.enroll_id");
 
-                            LEFT JOIN (
-                            SELECT enroll_id,
-                                 SUM(CASE WHEN jenis_potongan IN (4, 6) THEN jumlah_rp_potongan ELSE 0
-                                    END
-                                ) AS potongan_piutang,
-                                SUM(CASE WHEN jenis_potongan = 5 THEN jumlah_rp_potongan ELSE 0 END) AS potongan_insentif,
-                                SUM(CASE WHEN jenis_potongan = 7 THEN jumlah_rp_potongan ELSE 0 END) AS potongan_upah,
-                                SUM(CASE WHEN jenis_potongan = 8 THEN jumlah_rp_potongan ELSE 0 END) AS potongan_lembur,
-                                sum(jumlah_rp_potongan) koreksi_potongan
-                            FROM data_koreksi_potongan
-                            WHERE
-                            periode_tanggal_koreksi = '$periode_payroll2'
-                            GROUP BY
-                            enroll_id
-                            ) g ON a.enroll_id = g.enroll_id
-                            LEFT JOIN ( SELECT * FROM employee_bpjs WHERE periode_kehadiran = '$priode' ) bpjs ON a.enroll_id = bpjs.enroll_id
-                            LEFT JOIN (
-                            SELECT
-                                enroll_id,
-                                sum( jumlah_menit_absen_dt ) potongan_dt_menit,
-                                sum( jumlah_menit_absen_pc ) potongan_pc_menit,
-                                sum( jumlah_menit_absen_dtpc ) potongan_dtpc_menit,
-                                sum( potongan_dt_rupiah ) potongan_dt_rupiah,
-                                sum( potongan_pc_rupiah ) potongan_pc_rupiah,
-                                sum( potongan_dtpc_rupiah ) potongan_dtpc_rupiah
-                            FROM
-                                rekap_perhitungan_dtpc
-                            WHERE
-                                tanggal_berjalan >= '$tanggal_awal'
-                                AND tanggal_berjalan <= '$tanggal_akhir'
-                            GROUP BY
-                                enroll_id
-                            ) dtpc ON a.enroll_id = dtpc.enroll_id
-                            LEFT JOIN (
-                            SELECT
-                                enroll_id,
-                                sum( lama_ijin_menit ) potongan_iks_menit,
-                                sum( potongan_iks_rupiah ) potongan_iks_rupiah
-                            FROM
-                                rekap_perhitungan_iks
-                            WHERE
-                                tanggal_berjalan >= '$tanggal_awal'
-                                AND tanggal_berjalan <= '$tanggal_akhir'
-                            GROUP BY
-                            enroll_id
-                            ) iks ON a.enroll_id = iks.enroll_id");
-
+            // dd($all_karyawan);
             $data_payroll = [];
             foreach ($all_karyawan as $key => $value) {
                 $premi_karyawan = 0;
@@ -1865,6 +1693,10 @@ $TanggalAkhir = $tanggal_akhir;
                     'total_lembur_rupiah' => (int)$value->total_lembur_rupiah,
 
                     'pendapatan_lainnya_rupiah' => 0,
+                    'koreksi_upah' => (int)$value->koreksi_upah,
+                    'koreksi_insentif' => (int)$value->koreksi_insentif,
+                    'koreksi_lembur' => (int)$value->koreksi_lembur,
+                            // 'insentif_jabatan' => $insentif_jabatan_rupiah_mandiri1,
 
                     'koreksi_upah_rupiah' => (int)$value->koreksi_upah_rupiah,
                     'insentif_jabatan' => (int)$value->insentif_jabatan,
@@ -1980,7 +1812,10 @@ $TanggalAkhir = $tanggal_akhir;
                     'total_lembur_rupiah' => $v['total_lembur_rupiah'],
 
                     'pendapatan_lainnya_rupiah' => $v['pendapatan_lainnya_rupiah'],
-
+                    
+                    'koreksi_upah' => $v['koreksi_upah'],
+                    'koreksi_insentif' => $v['koreksi_insentif'],
+                    'koreksi_lembur' => $v['koreksi_lembur'],
                     'koreksi_upah_rupiah' => $v['koreksi_upah_rupiah'],
                     'insentif_jabatan' => $v['insentif_jabatan'],
                     'koreksi_potongan_rupiah' => $v['koreksi_potongan_rupiah'],
@@ -2069,66 +1904,66 @@ $TanggalAkhir = $tanggal_akhir;
             }
 
             //rekap jurnal
-            $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG', 'NAK'])->get();
-            $data_potongan = $this->potongan($periode_payroll);
-            $data_koreksi = $this->koreksi($periode_payroll);
-            foreach ($departement as $key => $value) {
-                $potongan_bpjs_tk = $data_potongan->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_potongan', '1')->sum('jumlah_rp_potongan');
-                $potongan_bpjs_ks = $data_potongan->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_potongan', '2')->sum('jumlah_rp_potongan');
-                $potongan_bazzar = $data_potongan->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_potongan', '3')->sum('jumlah_rp_potongan');
-                $potongan_kasbon = $data_potongan->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_potongan', '4')->sum('jumlah_rp_potongan');
-                $potongan_lain = $data_potongan->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_potongan', '5')->sum('jumlah_rp_potongan');
-                $koreksi_upah = $data_koreksi->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_koreksi', '1')->sum('jumlah_rp_potongan');
-                $koreksi_insentif = $data_koreksi->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_koreksi', '2')->sum('jumlah_rp_potongan');
-                $payroll = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year)->where('periode_bulan_payroll', $month)->where('periode_umk', null)
-                    ->where('kategori_karyawan', 'NON STAFF')->where('sub_dept_id', $value->sub_dept_id)
-                    ->whereHas('employee_atribut', function ($query) use ($tanggal_awal) {
-                        $query->where('tanggal_resign', null)
-                            ->orWhere('tanggal_resign', '>', $tanggal_awal);
-                    })->get();
-                $rp_cuti_tahuna = 0;
-                $potongan_kehadiran_rupiah = $payroll->sum('potongan_kehadiran_rupiah');
-                $rp_pot_jam = $payroll->sum('potongan_iks_rupiah') + $payroll->sum('potongan_dtpc_rupiah');
-                $iuran_serikat_rupiah = $payroll->sum('iuran_serikat_rupiah');
-                $iuran_koperasi = $payroll->sum('iuran_koperasi');
+            // $departement = DepartmentAll::whereIn('site_nirwana_id', ['NAG', 'NAK'])->get();
+            // $data_potongan = $this->potongan($periode_payroll);
+            // $data_koreksi = $this->koreksi($periode_payroll);
+            // foreach ($departement as $key => $value) {
+            //     $potongan_bpjs_tk = $data_potongan->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_potongan', '1')->sum('jumlah_rp_potongan');
+            //     $potongan_bpjs_ks = $data_potongan->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_potongan', '2')->sum('jumlah_rp_potongan');
+            //     $potongan_bazzar = $data_potongan->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_potongan', '3')->sum('jumlah_rp_potongan');
+            //     $potongan_kasbon = $data_potongan->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_potongan', '4')->sum('jumlah_rp_potongan');
+            //     $potongan_lain = $data_potongan->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_potongan', '5')->sum('jumlah_rp_potongan');
+            //     $koreksi_upah = $data_koreksi->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_koreksi', '1')->sum('jumlah_rp_potongan');
+            //     $koreksi_insentif = $data_koreksi->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_koreksi', '2')->sum('jumlah_rp_potongan');
+            //     $payroll = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year)->where('periode_bulan_payroll', $month)->where('periode_umk', null)
+            //         ->where('kategori_karyawan', 'NON STAFF')->where('sub_dept_id', $value->sub_dept_id)
+            //         ->whereHas('employee_atribut', function ($query) use ($tanggal_awal) {
+            //             $query->where('tanggal_resign', null)
+            //                 ->orWhere('tanggal_resign', '>', $tanggal_awal);
+            //         })->get();
+            //     $rp_cuti_tahuna = 0;
+            //     $potongan_kehadiran_rupiah = $payroll->sum('potongan_kehadiran_rupiah');
+            //     $rp_pot_jam = $payroll->sum('potongan_iks_rupiah') + $payroll->sum('potongan_dtpc_rupiah');
+            //     $iuran_serikat_rupiah = $payroll->sum('iuran_serikat_rupiah');
+            //     $iuran_koperasi = $payroll->sum('iuran_koperasi');
 
-                $gaji_umk = $payroll->sum('upah_per_bulan');
-                $pembulatan = $payroll->sum('pembulatan');
-                $gaji = $gaji_umk + $pembulatan + $koreksi_upah;
-                $tunjangan_karyawan_rupiah = $payroll->sum('tunjangan_karyawan_rupiah') + $koreksi_insentif;
-                $total_lembur_rupiah = $payroll->sum('total_lembur_rupiah');
-                $bonus = 0;
-                $piutang_karyawan = $potongan_kasbon;
-                $piutang_bazzar = $potongan_bazzar;
-                $bpjs_tk = $payroll->sum('total_bpjs_tk');
-                $bpjs_ks = $payroll->sum('total_bpjs_ks');
-                $potongan = $potongan_lain + $rp_cuti_tahuna + $potongan_kehadiran_rupiah + $rp_pot_jam + $iuran_serikat_rupiah + $iuran_koperasi;
-                $gaji_neto = $payroll->sum('total_upah_thp_rupiah') + $payroll->sum('pembulatan');
+            //     $gaji_umk = $payroll->sum('upah_per_bulan');
+            //     $pembulatan = $payroll->sum('pembulatan');
+            //     $gaji = $gaji_umk + $pembulatan + $koreksi_upah;
+            //     $tunjangan_karyawan_rupiah = $payroll->sum('tunjangan_karyawan_rupiah') + $koreksi_insentif;
+            //     $total_lembur_rupiah = $payroll->sum('total_lembur_rupiah');
+            //     $bonus = 0;
+            //     $piutang_karyawan = $potongan_kasbon;
+            //     $piutang_bazzar = $potongan_bazzar;
+            //     $bpjs_tk = $payroll->sum('total_bpjs_tk');
+            //     $bpjs_ks = $payroll->sum('total_bpjs_ks');
+            //     $potongan = $potongan_lain + $rp_cuti_tahuna + $potongan_kehadiran_rupiah + $rp_pot_jam + $iuran_serikat_rupiah + $iuran_koperasi;
+            //     $gaji_neto = $payroll->sum('total_upah_thp_rupiah') + $payroll->sum('pembulatan');
 
-                $data = [
-                    'kode_bagian' => $value->sub_dept_id,
-                    'nama_bagian' => $value->sub_dept_name,
-                    'gaji' => $gaji,
-                    'tunjangan_karyawan_rupiah' => $tunjangan_karyawan_rupiah,
-                    'total_lembur_rupiah' => $total_lembur_rupiah,
-                    'bonus' => $bonus,
-                    'piutang_karyawan' => $piutang_karyawan,
-                    'piutang_bazzar' => $piutang_bazzar,
-                    'bpjs_tk' => $bpjs_tk,
-                    'bpjs_ks' => $bpjs_ks,
-                    'potongan' => $potongan,
-                    'gaji_neto' => $gaji_neto,
-                    'jumlah_karyawn' => $payroll->count(),
-                    'periode_payroll' => $periode_payroll,
-                ];
-                $count = Jurnal::where('kode_bagian', $value->sub_dept_id)->where('periode_payroll', $periode_payroll)->count();
+            //     $data = [
+            //         'kode_bagian' => $value->sub_dept_id,
+            //         'nama_bagian' => $value->sub_dept_name,
+            //         'gaji' => $gaji,
+            //         'tunjangan_karyawan_rupiah' => $tunjangan_karyawan_rupiah,
+            //         'total_lembur_rupiah' => $total_lembur_rupiah,
+            //         'bonus' => $bonus,
+            //         'piutang_karyawan' => $piutang_karyawan,
+            //         'piutang_bazzar' => $piutang_bazzar,
+            //         'bpjs_tk' => $bpjs_tk,
+            //         'bpjs_ks' => $bpjs_ks,
+            //         'potongan' => $potongan,
+            //         'gaji_neto' => $gaji_neto,
+            //         'jumlah_karyawn' => $payroll->count(),
+            //         'periode_payroll' => $periode_payroll,
+            //     ];
+            //     $count = Jurnal::where('kode_bagian', $value->sub_dept_id)->where('periode_payroll', $periode_payroll)->count();
 
-                if ($count) {
-                    Jurnal::where('kode_bagian', $value->sub_dept_id)->where('periode_payroll', $periode_payroll)->update($data);
-                } else {
-                    Jurnal::create($data);
-                }
-            }
+            //     if ($count) {
+            //         Jurnal::where('kode_bagian', $value->sub_dept_id)->where('periode_payroll', $periode_payroll)->update($data);
+            //     } else {
+            //         Jurnal::create($data);
+            //     }
+            // }
 
             HistoryProsesPayroll::create([
                 'last_periode' => $priode,
@@ -2138,7 +1973,7 @@ $TanggalAkhir = $tanggal_akhir;
     }
 
     // CODE PAYROLL BULANAN TANPA EARLY CLOSING
-public function index(Request $request)
+    public function index(Request $request)
     {
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '3000000M');
@@ -2202,7 +2037,9 @@ public function index(Request $request)
         $periodePayroll = substr($explodePeriodePayroll[1], 0, 4) . substr($explodePeriodePayroll[1], 5, 2);
         $explodeKode = explode("-", $kode_bpjs->kode_periode_bpjs);
         $kode_periode_bpjs = $explodeKode[0] . $explodeKode[1];
-        $sqlKodePeriodeBPJS = 'concat("' . $periodePayroll . '", lpad(enroll_id, 5, 0))';
+        // $sqlKodePeriodeBPJS = 'concat("' . $periodePayroll . '", lpad(enroll_id, 5, 0))';
+        $sqlKodePeriodeBPJS = 'concat("' . $periodePayroll . '", lpad(enroll_id, 6, 0))';
+
 
         //rekap payroll variable
         $tanggal_awal_baru = date('m/d/Y', strtotime($tanggal_awal));
@@ -2217,8 +2054,8 @@ public function index(Request $request)
         $jumlah_hari_sabtu_minggu = 0;
         $security = EmployeeAtribut::where('sub_dept_id', 'DEP08SUB005')->where('jenis_kelamin', 'LAKI-LAKI')->where('enroll_id', '!=', 7445)->get();
         // dd(request()->periode_payrols);
-        // if (request()->periode_payrols) {
-        if (request()->periode_payrols == null) {
+        if (request()->periode_payrols) {
+        // if (request()->periode_payrols == null) {
             $employees = DB::select("select a.enroll_id,b.nik,b.employee_name, b.site_nirwana_id site_nirwana_id, b.site_nirwana_name site_nirwana_name, b.department_id department_id, b.department_name department_name, b.sub_dept_id sub_dept_id, b.sub_dept_name sub_dept_name, b.join_date join_date,b.tanggal_resign tanggal_resign,b.status_aktif status_aktif, b.status_staff status_staff,count(if(c.kode_ijin_payroll='IBY',1,null)) kehadiran_iby,count(if(c.kode_ijin_payroll='ITB',1,null)) kehadiran_itb,count(if(a.status_absen='LN' and a.kode_hari not in (5,6),1,null)) kehadiran_lby, case when b.sub_dept_id='DEP08SUB005' and b.jenis_kelamin='LAKI-LAKI' and b.enroll_id != 7445 then count(if(c.kode_ijin_payroll='IBY',1,null))+count(if(a.mulai_jam_kerja is null and status_absen='M',1,null)) else count(if(a.kode_hari in (5,6),1,null)) end lsm, count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc=0 and status_absen is null,1,null)) kehadiran_dt, count(if(a.jumlah_menit_absen_dt=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null)) kehadiran_pc, count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null)) kehadiran_dtpc, case when b.sub_dept_id='DEP08SUB005' and b.jenis_kelamin='LAKI-LAKI' and b.enroll_id != 7445 then count(if(a.status_absen='M' and a.mulai_jam_kerja is not null,1,null))+count(if(a.status_absen='TL' and a.mulai_jam_kerja is not null,1,null)) else count(if(a.status_absen in ('M'),1,null))+count(if(a.status_absen='TL' and a.mulai_jam_kerja is not null,1,null)) end kehadiran_m, count(if(a.status_absen='R',1,null)) kehadiran_r, case when b.sub_dept_id='DEP08SUB005' and b.jenis_kelamin='LAKI-LAKI' and b.enroll_id != 7445 then count(if((a.status_absen is null or a.status_absen='') and a.mulai_jam_kerja is not null and jumlah_menit_absen_dtpc=0,1,null))+count(if(a.status_absen='IKS' and a.mulai_jam_kerja is not null,1,null)) else count(if((a.status_absen is null or a.status_absen='') and jumlah_menit_absen_dtpc=0 and kode_hari not in(5,6),1,null))+count(if(a.status_absen='IKS' and a.mulai_jam_kerja is not null,1,null)) end kehadiran_ok, case when b.sub_dept_id='DEP08SUB005' and b.jenis_kelamin='LAKI-LAKI' and b.enroll_id != 7445 then count(if((a.status_absen is null or a.status_absen='') and a.mulai_jam_kerja is not null and jumlah_menit_absen_dtpc=0,1,null))+count(if(a.status_absen='IKS' and a.mulai_jam_kerja is not null,1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(a.status_absen='LN' and a.kode_hari not in (5,6),1,null))+count(if(c.kode_ijin_payroll='IBY',1,null)) else count(if((a.status_absen is null or a.status_absen='') and jumlah_menit_absen_dtpc=0 and kode_hari not in(5,6),1,null))+count(if(a.status_absen='IKS' and a.mulai_jam_kerja is not null,1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(a.status_absen='LN' and a.kode_hari not in (5,6),1,null))+count(if(c.kode_ijin_payroll='IBY',1,null)) end total_kehadiran_net, case when b.sub_dept_id='DEP08SUB005' and b.jenis_kelamin='LAKI-LAKI' and b.enroll_id != 7445 then count(if((a.status_absen is null or a.status_absen='') and a.mulai_jam_kerja is not null and jumlah_menit_absen_dtpc=0,1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(c.kode_ijin_payroll='ITB',1,null))+count(if(a.status_absen='LN' and a.kode_hari not in (5,6),1,null))+count(if(c.kode_ijin_payroll='IBY',1,null))+count(if(a.mulai_jam_kerja is null and status_absen='M',1,null))+count(if(a.status_absen='M' and a.mulai_jam_kerja is not null,1,null))+count(if(a.status_absen='TL' and a.mulai_jam_kerja is not null,1,null))+count(if(a.status_absen='R',1,null)) else count(if((a.status_absen is null or a.status_absen='') and a.mulai_jam_kerja is not null and jumlah_menit_absen_dtpc=0,1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(c.kode_ijin_payroll='ITB',1,null))+count(if(a.status_absen='LN' and a.kode_hari not in (5,6),1,null))+count(if(c.kode_ijin_payroll='IBY',1,null))+count(if(a.kode_hari in (5,6),1,null))+count(if(a.status_absen in ('M'),1,null))+count(if(a.status_absen='TL' and a.mulai_jam_kerja is not null,1,null))+count(if(a.status_absen='R',1,null)) end kehadiran_tk, case when b.sub_dept_id='DEP08SUB005' and b.jenis_kelamin='LAKI-LAKI' and b.enroll_id != 7445 then count(if(c.kode_ijin_payroll='IBY',1,null))+count(if(c.kode_ijin_payroll='ITB',1,null))+count(if(a.mulai_jam_kerja is null and status_absen='M',1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(a.status_absen='M' and a.mulai_jam_kerja is not null,1,null))+count(if(a.status_absen='R',1,null))+count(if((a.status_absen is null or a.status_absen='') and a.mulai_jam_kerja is not null and jumlah_menit_absen_dtpc=0,1,null))+count(if(a.status_absen='LN' and a.kode_hari not in (5,6),1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(a.status_absen='TL' and a.mulai_jam_kerja is not null,1,null)) else count(if((a.status_absen is null or a.status_absen='') and a.mulai_jam_kerja is not null and jumlah_menit_absen_dtpc=0,1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(c.kode_ijin_payroll='ITB',1,null))+count(if(a.status_absen='LN' and a.kode_hari not in (5,6),1,null))+count(if(c.kode_ijin_payroll='IBY',1,null))+count(if(a.kode_hari in (5,6),1,null))+count(if(a.status_absen in ('M'),1,null))+count(if(a.status_absen='TL' and a.mulai_jam_kerja is not null,1,null))+count(if(a.status_absen='R',1,null))+count(if(a.status_absen='IKS' and mulai_jam_kerja is not null,1,null)) end total_kehadiran, count(if(a.status_absen ='DL',1,null)) kehadiran_dl, count(if(a.status_absen ='CB',1,null)) kehadiran_cb, count(if(a.status_absen ='CBD',1,null)) kehadiran_cbd, count(if(a.status_absen ='CG',1,null)) kehadiran_cg, count(if(a.status_absen ='CH',1,null)) kehadiran_ch, count(if(a.status_absen ='CM',1,null)) kehadiran_cm, count(if(a.status_absen ='CN',1,null)) kehadiran_cn, count(if(a.status_absen ='CT',1,null)) kehadiran_ct, count(if(a.status_absen ='IG',1,null)) kehadiran_ig, count(if(a.status_absen ='IM',1,null)) kehadiran_im, count(if(a.status_absen ='KA',1,null)) kehadiran_ka, count(if(a.status_absen ='KM',1,null)) kehadiran_km, count(if(a.status_absen ='KR',1,null)) kehadiran_kr, count(if(a.status_absen ='NA',1,null)) kehadiran_na, count(if(a.status_absen ='PP',1,null)) kehadiran_pp, count(if(a.status_absen ='I',1,null)) kehadiran_i, count(if(a.status_absen ='LP',1,null)) kehadiran_lp, count(if(a.status_absen ='L',1,null)) kehadiran_l, count(if(a.status_absen ='TL',1,null)) kehadiran_tl, count(if(a.status_absen ='IKS',1,null)) kehadiran_iks, count(if(a.status_absen ='S',1,null)) kehadiran_s, count(if(a.status_absen ='TL' and a.tanggal_berjalan>=curdate() and a.mulai_jam_kerja is not null,1,null))+count(if(a.status_absen ='M' and a.tanggal_berjalan>=curdate(),1,null)) kehadiran_m_estimasi from master_data_absen_kehadiran a inner join (select*from employee_atribut where status_aktif='AKTIF' or (status_aktif='TIDAK AKTIF' and tanggal_resign>='" . $tanggal_awal . "')) b on a.enroll_id=b.enroll_id left join (select * from ref_absen_ijin where kode_absen_ijin not in('M','IKS')) c on a.status_absen=c.kode_absen_ijin where a.tanggal_berjalan>='" . $tanggal_awal . "' and a.tanggal_berjalan<='" . $tanggal_akhir . "'" . $inEnrollId1 . " group by a.enroll_id order by a.enroll_id");
             foreach ($employees as $key => $value) {
                 if ($security->where('enroll_id', $value->enroll_id)->count()) {
@@ -2581,7 +2418,7 @@ public function index(Request $request)
             //update bpjs
             $queryEmpAtr =  EmployeeAtribut::selectRaw('uuid() uuid,
                 concat(SUBSTR(DATE_ADD( LAST_DAY( DATE_SUB( MAX("' . $explodePeriodePayroll[1] . '"), INTERVAL 1 MONTH )), INTERVAL 25 DAY ), 1, 4),
-                SUBSTR(DATE_ADD( LAST_DAY( DATE_SUB( MAX("' . $explodePeriodePayroll[1] . '"), INTERVAL 1 MONTH )), INTERVAL 25 DAY ), 6, 2), lpad(enroll_id, 5, 0)) kode_bpjs,
+                SUBSTR(DATE_ADD( LAST_DAY( DATE_SUB( MAX("' . $explodePeriodePayroll[1] . '"), INTERVAL 1 MONTH )), INTERVAL 25 DAY ), 6, 2), lpad(enroll_id, 6, 0)) kode_bpjs,
                 substr("' . $explodePeriodePayroll[1] . '", 1, 4) periode_bpjs,
                 CONCAT(DATE_ADD( LAST_DAY( DATE_SUB( MAX("' . $explodePeriodePayroll[1] . '"), INTERVAL 2 MONTH )), INTERVAL 26 DAY ), " s/d ",
                 DATE_ADD( LAST_DAY( DATE_SUB( MAX("' . $explodePeriodePayroll[1] . '"), INTERVAL 1 MONTH )), INTERVAL 25 DAY ))  periode_kehadiran,
@@ -3412,6 +3249,8 @@ public function index(Request $request)
                 }
 
                 $x = DB::select("select a.enroll_id,b.nik,b.employee_name,b.site_nirwana_id site_nirwana_id,b.site_nirwana_name site_nirwana_name,b.department_id department_id,b.department_name department_name,b.sub_dept_id sub_dept_id,b.sub_dept_name sub_dept_name,b.join_date join_date,b.tanggal_resign tanggal_resign,b.status_aktif status_aktif, b.status_staff status_staff,count(if(c.kode_ijin_payroll='IBY',1,null)) kehadiran_iby,count(if(c.kode_ijin_payroll='ITB',1,null)) kehadiran_itb,count(if(a.status_absen='LN' and a.kode_hari not in (5,6),1,null)) kehadiran_lby, case when b.sub_dept_id='DEP08SUB005' and b.jenis_kelamin='LAKI-LAKI' and b.enroll_id != 7445 then count(if(c.kode_ijin_payroll='IBY',1,null))+count(if(a.mulai_jam_kerja is null,1,null)) else count(if(a.kode_hari in (5,6),1,null)) end lsm, count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc=0 and status_absen is null,1,null)) kehadiran_dt, count(if(a.jumlah_menit_absen_dt=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null)) kehadiran_pc, count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null)) kehadiran_dtpc, case when b.sub_dept_id='DEP08SUB005' and b.jenis_kelamin='LAKI-LAKI' and b.enroll_id != 7445 then count(if(a.status_absen='M' and a.mulai_jam_kerja is not null,1,null))+count(if(a.status_absen='TL' and a.mulai_jam_kerja is not null,1,null)) else count(if(a.status_absen in ('M'),1,null))+count(if(a.status_absen='TL' and a.mulai_jam_kerja is not null,1,null)) end kehadiran_m, count(if(a.status_absen='R',1,null)) kehadiran_r, case when b.sub_dept_id='DEP08SUB005' and b.jenis_kelamin='LAKI-LAKI' and b.enroll_id != 7445 then count(if((a.status_absen is null or a.status_absen='') and a.mulai_jam_kerja is not null and jumlah_menit_absen_dtpc=0,1,null))+count(if(a.status_absen='IKS' and a.mulai_jam_kerja is not null,1,null)) else count(if((a.status_absen is null or a.status_absen='') and jumlah_menit_absen_dtpc=0 and kode_hari not in(5,6),1,null))+count(if(a.status_absen='IKS' and a.mulai_jam_kerja is not null,1,null)) end kehadiran_ok, case when b.sub_dept_id='DEP08SUB005' and b.jenis_kelamin='LAKI-LAKI' and b.enroll_id != 7445 then count(if((a.status_absen is null or a.status_absen='') and a.mulai_jam_kerja is not null and jumlah_menit_absen_dtpc=0,1,null))+count(if(a.status_absen='IKS' and a.mulai_jam_kerja is not null,1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(a.status_absen='LN' and a.kode_hari not in (5,6),1,null))+count(if(c.kode_ijin_payroll='IBY',1,null)) else count(if((a.status_absen is null or a.status_absen='') and jumlah_menit_absen_dtpc=0 and kode_hari not in(5,6),1,null))+count(if(a.status_absen='IKS' and a.mulai_jam_kerja is not null,1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(a.status_absen='LN' and a.kode_hari not in (5,6),1,null))+count(if(c.kode_ijin_payroll='IBY',1,null)) end total_kehadiran_net, case when b.sub_dept_id='DEP08SUB005' and b.jenis_kelamin='LAKI-LAKI' and b.enroll_id != 7445 then count(if((a.status_absen is null or a.status_absen='') and a.mulai_jam_kerja is not null and jumlah_menit_absen_dtpc=0,1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(c.kode_ijin_payroll='ITB',1,null))+count(if(a.status_absen='LN' and a.kode_hari not in (5,6),1,null))+count(if(c.kode_ijin_payroll='IBY',1,null))+count(if(a.mulai_jam_kerja is null and status_absen='M',1,null))+count(if(a.status_absen='M' and a.mulai_jam_kerja is not null,1,null))+count(if(a.status_absen='TL' and a.mulai_jam_kerja is not null,1,null))+count(if(a.status_absen='R',1,null)) else count(if((a.status_absen is null or a.status_absen='') and a.mulai_jam_kerja is not null and jumlah_menit_absen_dtpc=0,1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(c.kode_ijin_payroll='ITB',1,null))+count(if(a.status_absen='LN' and a.kode_hari not in (5,6),1,null))+count(if(c.kode_ijin_payroll='IBY',1,null))+count(if(a.kode_hari in (5,6),1,null))+count(if(a.status_absen in ('M'),1,null))+count(if(a.status_absen='TL' and a.mulai_jam_kerja is not null,1,null))+count(if(a.status_absen='R',1,null)) end kehadiran_tk, case when b.sub_dept_id='DEP08SUB005' and b.jenis_kelamin='LAKI-LAKI' and b.enroll_id != 7445 then count(if(c.kode_ijin_payroll='IBY',1,null))+count(if(c.kode_ijin_payroll='ITB',1,null))+count(if(a.mulai_jam_kerja is null and status_absen='M',1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(a.status_absen='M' and a.mulai_jam_kerja is not null,1,null))+count(if(a.status_absen='R',1,null))+count(if((a.status_absen is null or a.status_absen='') and a.mulai_jam_kerja is not null and jumlah_menit_absen_dtpc=0,1,null))+count(if(a.status_absen='LN' and a.kode_hari not in (5,6),1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(a.status_absen='TL' and a.mulai_jam_kerja is not null,1,null)) else count(if((a.status_absen is null or a.status_absen='') and a.mulai_jam_kerja is not null and jumlah_menit_absen_dtpc=0,1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(a.jumlah_menit_absen_dt!=0 and a.jumlah_menit_absen_pc!=0 and status_absen is null,1,null))+count(if(c.kode_ijin_payroll='ITB',1,null))+count(if(a.status_absen='LN' and a.kode_hari not in (5,6),1,null))+count(if(c.kode_ijin_payroll='IBY',1,null))+count(if(a.kode_hari in (5,6),1,null))+count(if(a.status_absen in ('M'),1,null))+count(if(a.status_absen='TL' and a.mulai_jam_kerja is not null,1,null))+count(if(a.status_absen='R',1,null))+count(if(a.status_absen='IKS' and mulai_jam_kerja is not null,1,null)) end total_kehadiran, count(if(a.status_absen ='DL',1,null)) kehadiran_dl, count(if(a.status_absen ='CB',1,null)) kehadiran_cb, count(if(a.status_absen ='CBD',1,null)) kehadiran_cbd, count(if(a.status_absen ='CG',1,null)) kehadiran_cg, count(if(a.status_absen ='CH',1,null)) kehadiran_ch, count(if(a.status_absen ='CM',1,null)) kehadiran_cm, count(if(a.status_absen ='CN',1,null)) kehadiran_cn, count(if(a.status_absen ='CT',1,null)) kehadiran_ct, count(if(a.status_absen ='IG',1,null)) kehadiran_ig, count(if(a.status_absen ='IM',1,null)) kehadiran_im, count(if(a.status_absen ='KA',1,null)) kehadiran_ka, count(if(a.status_absen ='KM',1,null)) kehadiran_km, count(if(a.status_absen ='KR',1,null)) kehadiran_kr, count(if(a.status_absen ='NA',1,null)) kehadiran_na, count(if(a.status_absen ='PP',1,null)) kehadiran_pp, count(if(a.status_absen ='I',1,null)) kehadiran_i, count(if(a.status_absen ='LP',1,null)) kehadiran_lp, count(if(a.status_absen ='L',1,null)) kehadiran_l, count(if(a.status_absen ='TL',1,null)) kehadiran_tl, count(if(a.status_absen ='IKS',1,null)) kehadiran_iks, count(if(a.status_absen ='S',1,null)) kehadiran_s, count(if(a.status_absen ='TL' and a.tanggal_berjalan>=curdate() and a.mulai_jam_kerja is not null,1,null))+count(if(a.status_absen ='M' and a.tanggal_berjalan>=curdate(),1,null)) kehadiran_m_estimasi from master_data_absen_kehadiran a inner join (select*from employee_atribut where status_aktif='AKTIF' or (status_aktif='TIDAK AKTIF' and tanggal_resign>='" . $tanggal_awal . "')) b on a.enroll_id=b.enroll_id left join (select * from ref_absen_ijin where kode_absen_ijin not in('M','IKS')) c on a.status_absen=c.kode_absen_ijin where a.tanggal_berjalan>='" . $month_umk_first . "' and a.tanggal_berjalan<='" . $month_umk_last . "'" . $inEnrollId1 . " group by a.enroll_id order by a.enroll_id");
+                // $lsm = DB::select("select count(*) from master_data_absen_kehadiran where tanggal_berjalan>='" . $month_umk_first . "' and tanggal_berjalan<='" . $month_umk_last . "' and mulai_jam_kerja is null and akhir_jam_kerja is null and status_absen != 'LN'" . $inEnrollId2 . " group by enroll_id");
+                // dd($lsm);
 
                 // rekap kehadiran
                 foreach ($x as $key => $value) {
@@ -3454,7 +3293,7 @@ public function index(Request $request)
                         'kehadiran_tk' => $value->kehadiran_tk,
                         'total_kehadiran' => $value->total_kehadiran,
                         'jumlah_hari' => $jumlah_hari_fix,
-                        'jumlah_hari_kerja' => $security->where('enroll_id', $value->enroll_id)->count() ?: $jumlah_hari_fix - $value->lsm,
+                        'jumlah_hari_kerja' =>  $jumlah_hari_fix - $value->lsm ,
                         'operator' => $email,
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now(),
@@ -3483,7 +3322,7 @@ public function index(Request $request)
                         'kehadiran_m_estimasi' => $value->kehadiran_m_estimasi
                     ]);
                 }
-
+                // dd($jumlah_hari_fix - $value->lsm -2);
                 // rekap perhitungan kehadiran karyawan
                 $rekap_kehadiran_karyawan = DB::select("select a.enroll_id,a.periode_payroll,concat(a.periode_tahun,'-',a.periode_bulan) periode_tahun_bulan,b.kode_grade kode_grade,a.kehadiran_iby,a.kehadiran_itb,a.kehadiran_lby,a.kehadiran_lsm,a.kehadiran_dt,a.kehadiran_pc,a.kehadiran_dtpc,a.kehadiran_m,a.kehadiran_m_estimasi,a.kehadiran_r,a.kehadiran_tk,a.kehadiran_ok,a.total_kehadiran,a.total_kehadiran_net,a.jumlah_hari,a.jumlah_hari_kerja,c.salary_bulanan gaji_pokok,c.salary_bulanan/a.jumlah_hari_kerja gaji_harian, (c.salary_bulanan/a.jumlah_hari_kerja)/case when b.sub_dept_id='DEP08SUB005' and b.jenis_kelamin='LAKI-LAKI' and b.enroll_id != 7445 then 420 else 480 end gaji_menit, case when b.sub_dept_id='DEP08SUB005' and b.jenis_kelamin='LAKI-LAKI' and b.enroll_id != 7445 then (c.salary_bulanan/25)*(GREATEST((25-a.total_kehadiran_net),0)) else (c.salary_bulanan/a.jumlah_hari_kerja)*(GREATEST((a.jumlah_hari_kerja-a.total_kehadiran_net),0)) end potongan_kehadiran_rupiah from (select*from rekap_kehadiran_karyawan where periode_bulan='$bulan' and periode_tahun='$tahun' and periode_umk='$periode_umk'" . $inEnrollId . ")a inner join (select*from employee_atribut where status_aktif='AKTIF' or (status_aktif='TIDAK AKTIF' and tanggal_resign>'$tanggal_awal')) b on a.enroll_id=b.enroll_id left join (select*from grading_salary where periode_umk='$periode_umk' group by kode_grade) c on b.kode_grade=c.kode_grade");
                 foreach ($rekap_kehadiran_karyawan as $key => $value) {
@@ -3494,10 +3333,12 @@ public function index(Request $request)
                     $kode_rekap = date('Ymd', strtotime(substr($kode, 0, 8))) . date('Ymd', strtotime(substr($kode, 11, 8))) . substr($kode, 19);
                     $hari_potongan = max($value->jumlah_hari_kerja - $value->total_kehadiran_net, 0);
                     $hari_potongan_security = max($value->kehadiran_m + $value->kehadiran_r + $value->kehadiran_itb, 0);
+                  
+                    // dd($value->jumlah_hari_kerja,$value->total_kehadiran_net);
                     $hp = '';
                     if ($security->where('enroll_id', $value->enroll_id)->count()) {
                         $jh = 25;
-                        $hp = $hari_potongan_security;
+                        $hp = $hari_potongan;
                         $jumlah_menit_kerja = 420;
                         $jumlah_hari_payroll = $value->jumlah_hari;
                     } else {
@@ -3540,6 +3381,7 @@ public function index(Request $request)
                         'updated_at' => Carbon::now(),
                         'kehadiran_m_estimasi' => $value->kehadiran_m_estimasi,
                     ];
+                    // dd($rekap_kehadiran_data);
                     RekapPerhitunganKehadiranKaryawan::where('kode_rekap', $kode_rekap)->where('periode_umk', $periode_umk)->delete();
                     // if($count_rekap){
                     //     RekapPerhitunganKehadiranKaryawan::where('kode_rekap',$kode_rekap)->where('periode_umk',$periode_umk)->update();
@@ -3735,7 +3577,7 @@ public function index(Request $request)
 
                 //rekap dtpc
 
-                $c = MasterDataAbsenKehadiran::selectRaw('uuid,tanggal_berjalan,tanggal_absen,shift_work_id,kode_hari,nama_hari,time_table_name,mulai_jam_kerja,akhir_jam_kerja,jam_kerja,jumlah_jam_kerja,jumlah_menit_kerja,mulai_jam_istirahat,akhir_jam_istirahat,jumlah_jam_istirahat,jumlah_menit_istirahat,absen_masuk_kerja,absen_pulang_kerja,enroll_id,nik,status_absen,nomor_absen_ijin,jumlah_menit_absen_dt,jumlah_menit_absen_pc,jumlah_menit_absen_dtpc,jumlah_absen_menit_kerja,holiday_id,holiday_name,operator,catatan_hrd,nomor_form_perubahan_absen,nomor_form_lembur,updated_absen_cekinout,updated_absen_ijin,updated_absen_dtpc,created_at,updated_at,deleted_at')->whereRaw('tanggal_berjalan >= "' . $month_umk_first . '" and tanggal_berjalan <= "' . $month_umk_last . '" and jumlah_menit_absen_dtpc != 0 AND (status_absen != "TL" OR status_absen IS NULL)' . $inEnrollId . '')->get();
+                $c = MasterDataAbsenKehadiran::selectRaw('uuid,tanggal_berjalan,tanggal_absen,shift_work_id,kode_hari,nama_hari,time_table_name,mulai_jam_kerja,akhir_jam_kerja,jam_kerja,jumlah_jam_kerja,jumlah_menit_kerja,mulai_jam_istirahat,akhir_jam_istirahat,jumlah_jam_istirahat,jumlah_menit_istirahat,absen_masuk_kerja,absen_pulang_kerja,enroll_id,nik,status_absen,nomor_absen_ijin,jumlah_menit_absen_dt,jumlah_menit_absen_pc,jumlah_menit_absen_dtpc,jumlah_absen_menit_kerja,holiday_id,holiday_name,operator,catatan_hrd,nomor_form_perubahan_absen,nomor_form_lembur,updated_absen_cekinout,updated_absen_ijin,updated_absen_dtpc,created_at,updated_at,deleted_at')->whereRaw('tanggal_berjalan >= "' . $month_umk_first . '" and tanggal_berjalan <= "' . $month_umk_last . '" and jumlah_menit_absen_dtpc != 0 AND ((status_absen != "TL"  and status_absen !="LN")OR status_absen IS NULL )' . $inEnrollId . '')->get();
                 // rekap dtpc
 
                 DB::delete("delete from rekap_perhitungan_dtpc where tanggal_berjalan >= '$month_umk_first' and tanggal_berjalan <= '$month_umk_last' $inEnrollId");
@@ -3766,7 +3608,7 @@ public function index(Request $request)
                 }
 
                 //rekap payroll
-                $karyawan = EmployeeAtribut::selectRaw('employee_id,MAX(employee_name) as employee_name,jenis_kelamin,tempat_lahir,tanggal_lahir,golongan_darah,email,nomor_tlpn,agama,status_kawin,npwp,nomor_ktp,nomor_kk,ptkp,nama_sekolah_terakhir,pendidikan_terakhir,jurusan_pendidikan,nama_bank,nomor_rekening_bank,ibu_kandung,propinsi,kota_kab,kecamatan,kelurahan_desa,alamat_rumah,alamat_sementara,site_nirwana_id,site_nirwana_name,department_id,department_name,sub_dept_id,sub_dept_name,enroll_id,join_date,nik,status_aktif,status_jabatan,status_kontrak_tetap,status_staff,tanggal_resign,tunjangan,kode_grade,referensi,employee_name_atasan,status_aktif_bpjs_tk,tanggal_bpjs_ketenagakerjaan,nomor_bpjs_ketenagakerjaan,status_aktif_bpjs_ks,tanggal_bpjs_kesehatan,nomor_bpjs_kesehatan,pengalaman_bekerja,lokasi_file_cv,nama_kerabat,nomor_tlpn_kerabat,hubungan_kerabat,alamat_kerabat,tanggal_vaccine1,nama_vaksin1,tanggal_vaccine2,nama_vaksin2,tanggal_vaccine3,nama_vaksin3,golongan_sim,nomor_sim,tanggal_expire_sim,catatan,lokasi_foto,operator,tanggal_mulai_kontrak,tanggal_akhir_kontrak,catatan_kontrak,created_at,updated_at,deleted_at,shift_work_id,work_status,employee_status,posisi_name,hamlet,kode_pos,saudara_yang_bisa_dihubungi,allowance,pola_kerja')->whereRaw('((status_aktif="AKTIF" and join_date <= "' . $month_umk_last . '") or (tanggal_resign>"' . $tanggal_awal . '" and join_date <= "' . $month_umk_last . '" ))' . $inEnrollId . '')
+                $karyawan = EmployeeAtribut::selectRaw('employee_id,employee_name,jenis_kelamin,tempat_lahir,tanggal_lahir,golongan_darah,email,nomor_tlpn,agama,status_kawin,npwp,nomor_ktp,nomor_kk,ptkp,nama_sekolah_terakhir,pendidikan_terakhir,jurusan_pendidikan,nama_bank,nomor_rekening_bank,ibu_kandung,propinsi,kota_kab,kecamatan,kelurahan_desa,alamat_rumah,alamat_sementara,site_nirwana_id,site_nirwana_name,department_id,department_name,sub_dept_id,sub_dept_name,enroll_id,join_date,nik,status_aktif,status_jabatan,status_kontrak_tetap,status_staff,tanggal_resign,tunjangan,kode_grade,referensi,employee_name_atasan,status_aktif_bpjs_tk,tanggal_bpjs_ketenagakerjaan,nomor_bpjs_ketenagakerjaan,status_aktif_bpjs_ks,tanggal_bpjs_kesehatan,nomor_bpjs_kesehatan,pengalaman_bekerja,lokasi_file_cv,nama_kerabat,nomor_tlpn_kerabat,hubungan_kerabat,alamat_kerabat,tanggal_vaccine1,nama_vaksin1,tanggal_vaccine2,nama_vaksin2,tanggal_vaccine3,nama_vaksin3,golongan_sim,nomor_sim,tanggal_expire_sim,catatan,lokasi_foto,operator,tanggal_mulai_kontrak,tanggal_akhir_kontrak,catatan_kontrak,created_at,updated_at,deleted_at,shift_work_id,work_status,employee_status,posisi_name,hamlet,kode_pos,saudara_yang_bisa_dihubungi,allowance,pola_kerja')->whereRaw('((status_aktif="AKTIF" and join_date <= "' . $month_umk_last . '") or (tanggal_resign>"' . $tanggal_awal . '" and join_date <= "' . $month_umk_last . '" ))' . $inEnrollId . '')
                 // dd($karyawan->toSql(), $karyawan->getBindings());
                 ->get();
                 foreach ($karyawan as $key => $value) {
@@ -3775,6 +3617,19 @@ public function index(Request $request)
                     $rekap_iks = RekapPerhitunganIKS::where('enroll_id', $value->enroll_id)->where('tanggal_berjalan', '>=', $month_umk_first)->where('tanggal_berjalan', '<=', $month_umk_last)->get();
                     $rekap_dtpc = RekapPerhitunganDTPC::where('enroll_id', $value->enroll_id)->where('tanggal_berjalan', '>=', $month_umk_first)->where('tanggal_berjalan', '<=', $month_umk_last)->get();
                     $Bpjs = EmployeeBpjs::where('enroll_id', $value->enroll_id)->where('periode_kehadiran', $priode)->first();
+                    $koreksi_upah_mandiri1 = DataKoreksiUpah::where('enroll_id', $value->enroll_id)->where('periode_tanggal_koreksi', $periode_payroll2)->where('tanggal_koreksi', '>=', $month_umk_first)->where('tanggal_koreksi', '<=', $month_umk_last) ->where(function ($query) {
+                        $query->where('jenis_koreksi', '!=', 2)
+                            ->orWhere('jenis_koreksi', null);
+                    })->get();
+                    $insentif_jabatan_mandiri1 = DataKoreksiUpah::where('enroll_id', $value->enroll_id)->where('periode_tanggal_koreksi', $periode_payroll2)->where('jenis_koreksi', 2)->where('tanggal_koreksi', '>=', $month_umk_first)->where('tanggal_koreksi', '<=', $month_umk_last)->get();
+                    $insentif_jabatan_upah = DataKoreksiUpah::where('enroll_id', $value->enroll_id)->where('periode_tanggal_koreksi', $periode_payroll2)->where('jenis_koreksi', 1)->where('tanggal_koreksi', '>=', $month_umk_first)->where('tanggal_koreksi', '<=', $month_umk_last)->get();
+                    $insentif_jabatan_lembur = DataKoreksiUpah::where('enroll_id', $value->enroll_id)->where('periode_tanggal_koreksi', $periode_payroll2)->where('jenis_koreksi', 4)->where('tanggal_koreksi', '>=', $month_umk_first)->where('tanggal_koreksi', '<=', $month_umk_last)->get();
+                    $koreksi_potongan_mandiri1 = DataKoreksiPotongan::where('enroll_id', $value->enroll_id)->where('periode_tanggal_koreksi', $periode_payroll2)->where('tanggal_koreksi', '>=', $month_umk_first)->where('tanggal_koreksi', '<=', $month_umk_last)->get();
+                    $koreksi_upah_rupiah_mandiri1 = $koreksi_upah_mandiri1->sum('jumlah_rp_potongan') ?? 0;
+                    $koreksi_upah_rupiah_mandiri2 = $insentif_jabatan_upah->sum('jumlah_rp_potongan') ?? 0;
+                    $koreksi_lembur_rupiah_mandiri1 = $insentif_jabatan_lembur->sum('jumlah_rp_potongan') ?? 0;
+                    $insentif_jabatan_rupiah_mandiri1 = $insentif_jabatan_mandiri1->sum('jumlah_rp_potongan') ?? 0;
+                    $koreksi_potongan_rupiah_mandiri1 = $koreksi_potongan_mandiri1->sum('jumlah_rp_potongan') ?? 0;
                     $tunjangan_karyawan_2 = 0;
                     $premi_karyawan_insentif = 0;
                     if ($rekap_kehadiran != null) {
@@ -3875,9 +3730,11 @@ public function index(Request $request)
                             'lembur4_rupiah' => $rekap_lembur->sum('lembur4_rupiah') ?? 0,
                             'total_lembur_rupiah' => $rekap_lembur->sum('total_lembur_rupiah') ?? 0,
                             'pendapatan_lainnya_rupiah' => 0,
-                            'koreksi_upah_rupiah' => 0,
-                            'insentif_jabatan' => 0,
-                            'koreksi_potongan_rupiah' => 0,
+                            'koreksi_upah' => $koreksi_upah_rupiah_mandiri2,
+                            'koreksi_insentif' => $koreksi_lembur_rupiah_mandiri1,
+                            'koreksi_upah_rupiah' => $koreksi_upah_rupiah_mandiri1,
+                            'insentif_jabatan' => $insentif_jabatan_rupiah_mandiri1,
+                            'koreksi_potongan_rupiah' => $koreksi_potongan_rupiah_mandiri1,
                             'potongan_iks_menit' => $rekap_iks->sum('lama_ijin_menit') ?? 0,
                             'potongan_iks_rupiah' => $rekap_iks->sum('potongan_iks_rupiah') ?? 0,
                             'potongan_dt_menit' => $rekap_dtpc->sum('jumlah_menit_absen_dt') ?? 0,
@@ -3910,13 +3767,18 @@ public function index(Request $request)
                         ];
                     }
                 }
-                // dd($data);
+                //  dd($koreksi_upah_rupiah_mandiri1);
                 foreach ($data as $k => $v) {
-                    $upah_per_bulan = $v['upah_per_hari'] * $v['jumlah_hari_kerja'];
-                    $upah_bruto_rupiah = ($upah_per_bulan + $v['tunjangan_karyawan_rupiah'] + $v['premi_karyawan'] + $v['total_lembur_rupiah'] + $v['pendapatan_lainnya_rupiah'] + $v['koreksi_upah_rupiah']) - ($v['koreksi_potongan_rupiah'] + $v['potongan_iks_rupiah'] + $v['potongan_dtpc_rupiah'] + $v['potongan_kehadiran_rupiah']) - $v['pph21'];
-                    $upah_neto_rupiah = ($upah_per_bulan + $v['tunjangan_karyawan_rupiah'] + $v['premi_karyawan'] + $v['total_lembur_rupiah'] + $v['pendapatan_lainnya_rupiah'] + $v['koreksi_upah_rupiah']) - ($v['koreksi_potongan_rupiah'] + $v['potongan_iks_rupiah'] + $v['potongan_dtpc_rupiah'] + $v['potongan_kehadiran_rupiah']) - $v['pph21'];
-                    $upah_bersih_rupiah = $upah_neto_rupiah;
-                    $total_upah_thp_rupiah = $upah_neto_rupiah;
+                  
+                    $upah_per_bulan = $v['upah_per_hari'] * ($v['jumlah_hari_kerja']);
+                    // dd($upah_per_bulan);
+                    $upah_bruto_rupiah = ($upah_per_bulan + $v['tunjangan_karyawan_rupiah'] + $v['premi_karyawan'] + $v['total_lembur_rupiah'] + $v['pendapatan_lainnya_rupiah'] + $v['koreksi_upah_rupiah']+$v['insentif_jabatan']) - ($v['koreksi_potongan_rupiah'] + $v['potongan_iks_rupiah'] + $v['potongan_dtpc_rupiah'] + $v['potongan_kehadiran_rupiah']) - $v['pph21'];
+                    $upah_neto_rupiah = ($upah_per_bulan + $v['tunjangan_karyawan_rupiah'] + $v['premi_karyawan'] + $v['total_lembur_rupiah'] + $v['pendapatan_lainnya_rupiah'] + $v['koreksi_upah_rupiah']+$v['insentif_jabatan']) - ($v['koreksi_potongan_rupiah'] + $v['potongan_iks_rupiah'] + $v['potongan_dtpc_rupiah'] + $v['potongan_kehadiran_rupiah']) - $v['pph21'];
+                    // $upah_bruto_rupiah = ($upah_per_bulan + $v['tunjangan_karyawan_rupiah'] + $v['premi_karyawan'] + $v['total_lembur_rupiah'] + $v['pendapatan_lainnya_rupiah'] + $v['koreksi_upah_rupiah']) - ($v['koreksi_potongan_rupiah'] + $v['potongan_iks_rupiah'] + $v['potongan_dtpc_rupiah'] + $v['potongan_kehadiran_rupiah']) - $v['pph21'];
+                    // $upah_neto_rupiah = ($upah_per_bulan + $v['tunjangan_karyawan_rupiah'] + $v['premi_karyawan'] + $v['total_lembur_rupiah'] + $v['pendapatan_lainnya_rupiah'] + $v['koreksi_upah_rupiah']) - ($v['koreksi_potongan_rupiah'] + $v['potongan_iks_rupiah'] + $v['potongan_dtpc_rupiah'] + $v['potongan_kehadiran_rupiah']) - $v['pph21'];
+                    $upah_bersih_rupiah = $upah_neto_rupiah ;
+                    $total_upah_thp_rupiah = $upah_neto_rupiah - ($v['total_bpjs_tk'] + $v['total_bpjs_ks']);
+                    //   $total_upah_thp_rupiah = $upah_neto_rupiah - ($v['total_bpjs_tk'] + $v['total_bpjs_ks']);
                     $jumlah_potongan_rupiah = 0;
 
                     $records = [
@@ -3967,6 +3829,8 @@ public function index(Request $request)
                         'total_lembur_rupiah' => $v['total_lembur_rupiah'],
 
                         'pendapatan_lainnya_rupiah' => $v['pendapatan_lainnya_rupiah'],
+                        'koreksi_upah' => $v['koreksi_upah'],
+                        'koreksi_insentif' => $v['koreksi_insentif'],
 
                         'koreksi_upah_rupiah' => $v['koreksi_upah_rupiah'],
                         'insentif_jabatan' => $v['insentif_jabatan'],
@@ -3992,23 +3856,40 @@ public function index(Request $request)
                         'iuran_serikat_rupiah' => $v['iuran_serikat_rupiah'], // dari mana?
                         'iuran_koperasi' => $v['iuran_koperasi'], // dari mana?
                         'potongan_kasbon_rupiah' => $v['potongan_kasbon_rupiah'], // dari mana?
-                        'bpjs_tk_jkm_rupiah' => 0,
-                        'bpjs_tk_jkm_perusahaan_rupiah' => 0,
-                        'bpjs_tk_jkm_karyawan_rupiah' => 0,
-                        'bpjs_tk_jkk_rupiah' => 0,
-                        'bpjs_tk_jkk_perusahaan_rupiah' => 0,
-                        'bpjs_tk_jkk_karyawan_rupiah' => 0,
-                        'bpjs_tk_jht_rupiah' => 0,
-                        'bpjs_tk_jht_perusahaan_rupiah' => 0,
-                        'bpjs_tk_jht_karyawan_rupiah' => 0,
-                        'bpjs_tk_jpn_rupiah' => 0,
-                        'bpjs_tk_jpn_perusahaan_rupiah' => 0,
-                        'bpjs_tk_jpn_karyawan_rupiah' => 0,
-                        'bpjs_ks_jkn_rupiah' => 0,
-                        'bpjs_ks_jkn_perusahaan_rupiah' => 0,
-                        'bpjs_ks_jkn_karyawan_rupiah' => 0,
-                        'total_bpjs_tk' => 0,
-                        'total_bpjs_ks' => 0,
+                        'bpjs_tk_jkm_rupiah' =>$v['bpjs_tk_jkm_rupiah'] ?? 0,
+                        'bpjs_tk_jkm_perusahaan_rupiah' => $v['bpjs_tk_jkm_perusahaan_rupiah'] ?? 0,
+                        'bpjs_tk_jkm_karyawan_rupiah' => $v['bpjs_tk_jkm_karyawan_rupiah'] ?? 0,
+                        'bpjs_tk_jkk_rupiah' => $v['bpjs_tk_jkk_rupiah'] ?? 0,
+                        'bpjs_tk_jkk_perusahaan_rupiah' => $v['bpjs_tk_jkk_perusahaan_rupiah'] ?? 0,
+                        'bpjs_tk_jkk_karyawan_rupiah' => $v['bpjs_tk_jkk_karyawan_rupiah'] ?? 0,
+                        'bpjs_tk_jht_rupiah' => $v['bpjs_tk_jht_rupiah'] ?? 0,
+                        'bpjs_tk_jht_perusahaan_rupiah' => $v['bpjs_tk_jht_perusahaan_rupiah'] ?? 0,
+                        'bpjs_tk_jht_karyawan_rupiah' => $v['bpjs_tk_jht_karyawan_rupiah'] ?? 0,
+                        'bpjs_tk_jpn_rupiah' => $v['bpjs_tk_jpn_rupiah'] ?? 0,
+                        'bpjs_tk_jpn_perusahaan_rupiah' => $v['bpjs_tk_jpn_perusahaan_rupiah'] ?? 0,
+                        'bpjs_tk_jpn_karyawan_rupiah' => $v['bpjs_tk_jpn_karyawan_rupiah'] ?? 0,
+                        'bpjs_ks_jkn_rupiah' => $v['bpjs_ks_jkn_rupiah'] ?? 0,
+                        'bpjs_ks_jkn_perusahaan_rupiah' => $v['bpjs_ks_jkn_perusahaan_rupiah'] ?? 0,
+                        'bpjs_ks_jkn_karyawan_rupiah' => $v['bpjs_ks_jkn_karyawan_rupiah'] ?? 0,
+                        'total_bpjs_tk' => $v['total_bpjs_tk'] ?? 0,
+                        'total_bpjs_ks' => $v['total_bpjs_ks'] ?? 0,
+                        // 'bpjs_tk_jkm_rupiah' => 0,
+                        // 'bpjs_tk_jkm_perusahaan_rupiah' => 0,
+                        // 'bpjs_tk_jkm_karyawan_rupiah' =>  0,
+                        // 'bpjs_tk_jkk_rupiah' =>  0,
+                        // 'bpjs_tk_jkk_perusahaan_rupiah' =>  0,
+                        // 'bpjs_tk_jkk_karyawan_rupiah' =>  0,
+                        // 'bpjs_tk_jht_rupiah' => 0,
+                        // 'bpjs_tk_jht_perusahaan_rupiah' => 0,
+                        // 'bpjs_tk_jht_karyawan_rupiah' =>  0,
+                        // 'bpjs_tk_jpn_rupiah' => 0,
+                        // 'bpjs_tk_jpn_perusahaan_rupiah' => 0,
+                        // 'bpjs_tk_jpn_karyawan_rupiah' => 0,
+                        // 'bpjs_ks_jkn_rupiah' =>  0,
+                        // 'bpjs_ks_jkn_perusahaan_rupiah' => 0,
+                        // 'bpjs_ks_jkn_karyawan_rupiah' =>  0,
+                        // 'total_bpjs_tk' => 0,
+                        // 'total_bpjs_ks' => 0,
                         'status_kawin' => $v['status_kawin'],
                         'jabatan_karyawan' => $v['jabatan_karyawan'],
                         'nama_bagian' => $v['nama_bagian'],
@@ -4244,6 +4125,8 @@ public function index(Request $request)
                         $query->where('jenis_koreksi', '!=', 2)
                             ->orWhere('jenis_koreksi', null);
                     })->get();
+                    $insentif_jabatan_upah = DataKoreksiUpah::where('enroll_id', $value->enroll_id)->where('periode_tanggal_koreksi', $periode_payroll2)->where('jenis_koreksi', 1)->get();
+                    $insentif_jabatan_lembur = DataKoreksiUpah::where('enroll_id', $value->enroll_id)->where('periode_tanggal_koreksi', $periode_payroll2)->where('jenis_koreksi', 4)->get();
                     $insentif_jabatan_mandiri = DataKoreksiUpah::where('enroll_id', $value->enroll_id)->where('periode_tanggal_koreksi', $periode_payroll2)->where('jenis_koreksi', 2)->get();
                     $koreksi_potongan_mandiri = DataKoreksiPotongan::where('enroll_id', $value->enroll_id)->where('periode_tanggal_koreksi', $periode_payroll2)->get();
                     $upah_per_hari_mandiri = RekapPerhitunganPayroll::where('enroll_id', $value->enroll_id)->where('periode_tahun_payroll', '2026')->where('periode_umk', '!=', '')->where('periode_bulan_payroll', '01')->orderBy('periode_umk', 'desc')->pluck('upah_per_hari');
@@ -4265,6 +4148,8 @@ public function index(Request $request)
 
                     $pendapatan_lainnya_rupiah_mandiri = RekapPerhitunganPayroll::where('enroll_id', $value->enroll_id)->where('periode_tahun_payroll', '2026')->where('periode_umk', '!=', '')->where('periode_bulan_payroll', '01')->sum('pendapatan_lainnya_rupiah');
                     $koreksi_upah_rupiah_mandiri = $koreksi_upah_mandiri->sum('jumlah_rp_potongan') ?? 0;
+                    $koreksi_upah_rupiah_mandiri2 = $insentif_jabatan_upah->sum('jumlah_rp_potongan') ?? 0;
+                    $koreksi_lembur_rupiah_mandiri1 = $insentif_jabatan_lembur->sum('jumlah_rp_potongan') ?? 0;
                     $insentif_jabatan_rupiah_mandiri = $insentif_jabatan_mandiri->sum('jumlah_rp_potongan') ?? 0;
                     $koreksi_potongan_rupiah_mandiri = $koreksi_potongan_mandiri->sum('jumlah_rp_potongan') ?? 0;
                     $potongan_iks_rupiah_mandiri = RekapPerhitunganPayroll::where('enroll_id', $value->enroll_id)->where('periode_tahun_payroll', '2026')->where('periode_umk', '!=', '')->where('periode_bulan_payroll', '01')->sum('potongan_iks_rupiah');
@@ -4273,11 +4158,11 @@ public function index(Request $request)
                     $potongan_kehadiran_rupiah_mandiri = RekapPerhitunganPayroll::where('enroll_id', $value->enroll_id)->where('periode_tahun_payroll', '2026')->where('periode_umk', '!=', '')->where('periode_bulan_payroll', '01')->sum('potongan_kehadiran_rupiah');
 
                     $upah_hari_kerja_total = $upah_hari_kerja_mandiri_1 + $upah_hari_kerja_mandiri_2;
-                    $tunjangan_mandiri = TunjanganKaryawan::where('enroll_id', $value->join_date)->where('periode_payroll', $priode)->first();
+                    $tunjangan_mandiri = TunjanganKaryawan::where('enroll_id', $value->enroll_id)->where('periode_payroll', $priode)->first();
                     $premi_kehadiran_karyawan_mandiri = RekapPerhitunganPayroll::where('enroll_id', $value->enroll_id)->where('periode_tahun_payroll', '2026')->where('periode_umk', '!=', '')->where('periode_bulan_payroll', '01')->sum('premi_karyawan');
                     $selisih_tahun = date_diff(date_create($value->join_date), date_create($tanggal_awal))->y;
                     // tentukan besaran tunjangan berdasarkan masa kerja
-                    if ($value->tanggal_resign >= '2026-01-01') {
+                    // if ($value->tanggal_resign >= '2026-01-01') {
                         if ($selisih_tahun < 1) {
                             $tunjangan_mandiri = 0;
                         } elseif ($selisih_tahun < 3) {
@@ -4291,7 +4176,7 @@ public function index(Request $request)
                         } else {
                             $tunjangan_mandiri = 12500;
                         }
-                    }
+                    // }
 
                     $upah_bruto_rupiah_mandiri = ($upah_hari_kerja_total + $tunjangan_mandiri + $premi_kehadiran_karyawan_mandiri + $total_lembur_rupiah_mandiri + $pendapatan_lainnya_rupiah_mandiri + $koreksi_upah_rupiah_mandiri + $insentif_jabatan_rupiah_mandiri) - ($koreksi_potongan_rupiah_mandiri + $potongan_iks_rupiah_mandiri + $potongan_dtpc_rupiah_mandiri + $potongan_kehadiran_rupiah_mandiri);
                     $upah_neto_rupiah_mandiri = ($upah_hari_kerja_total + $tunjangan_mandiri + $premi_kehadiran_karyawan_mandiri + $total_lembur_rupiah_mandiri + $pendapatan_lainnya_rupiah_mandiri + $koreksi_upah_rupiah_mandiri + $insentif_jabatan_rupiah_mandiri) - ($koreksi_potongan_rupiah_mandiri + $potongan_iks_rupiah_mandiri + $potongan_dtpc_rupiah_mandiri + $potongan_kehadiran_rupiah_mandiri) - $value->pph21;
@@ -4345,7 +4230,7 @@ public function index(Request $request)
                         'sub_dept_id' => $value->sub_dept_id,
                         'tunjangan_karyawan_rupiah' => $tunjangan_mandiri,
                         'premi_karyawan' => $value->premi_karyawan,
-                        'upah_per_bulan' => $gajipokok,
+                        'upah_per_bulan' => 0,
                         'upah_per_hari' => $value->upah_per_hari,
                         'upah_per_menit' => $value->upah_per_menit,
 
@@ -4377,7 +4262,9 @@ public function index(Request $request)
                         'total_lembur_rupiah' => RekapPerhitunganPayroll::where('enroll_id', $value->enroll_id)->where('periode_tahun_payroll', '2026')->where('periode_umk', '!=', '')->where('periode_bulan_payroll', '01')->sum('total_lembur_rupiah'),
 
                         'pendapatan_lainnya_rupiah' => RekapPerhitunganPayroll::where('enroll_id', $value->enroll_id)->where('periode_tahun_payroll', '2026')->where('periode_umk', '!=', '')->where('periode_bulan_payroll', '01')->sum('pendapatan_lainnya_rupiah'),
-
+                        
+                        'koreksi_upah' => $koreksi_upah_rupiah_mandiri2,
+                        'koreksi_insentif' => $koreksi_lembur_rupiah_mandiri1,
                         'koreksi_upah_rupiah' => $koreksi_upah_rupiah_mandiri,
                         'insentif_jabatan' => $insentif_jabatan_rupiah_mandiri,
                         'koreksi_potongan_rupiah' => $koreksi_potongan_rupiah_mandiri,

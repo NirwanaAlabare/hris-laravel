@@ -320,9 +320,9 @@
                 if(stringSelectDate<stringCurrentDate){
                     $('#btn_new').attr('disabled','disabled');
                 }else if(stringCurrentDate==stringSelectDate){
-                    if(currentdate.getHours()>12){
+                    if(currentdate.getHours()>16){
                         $('#btn_new').attr('disabled','disabled');
-                    }else if(currentdate.getHours()<13){
+                    }else if(currentdate.getHours()<16){
                         $('#btn_new').removeAttr('disabled');
                     }
                 }else{

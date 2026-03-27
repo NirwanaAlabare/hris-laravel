@@ -249,16 +249,16 @@ public function show_list_karyawan_non_sewing(Request $request)
                 IF(e.sub_dept_id = '$dept','-','PINJAMAN') AS status
             FROM employee_atribut e
             LEFT JOIN (
-                SELECT b.enroll_id
+                SELECT b.enroll_id , b.status AS status_lembur
                 FROM mut_karyawan_input_non_sewing_form_lembur a
                 INNER JOIN mut_karyawan_input_non_sewing_form_lembur_det b ON a.no_form = b.no_form
-                WHERE a.tgl_filter = '$tgl_lembur'
+                WHERE a.tgl_lembur = '$tgl_lembur' and b.status is not null
             ) AS sudah_input ON e.enroll_id = sudah_input.enroll_id
             LEFT JOIN mut_karyawan_input_non_sewing_form_lembur_tmp_det tmp
                 ON e.enroll_id = tmp.enroll_id AND tmp.sub_dept_id = '$dept'
             WHERE e.sub_dept_id = '$dept'
-            AND e.status_aktif = 'AKTIF'
-            AND sudah_input.enroll_id IS NULL
+            AND (e.status_aktif = 'AKTIF' OR (e.status_aktif = 'TIDAK AKTIF' AND e.tanggal_resign >= '$tgl_lembur'))
+            AND (sudah_input.enroll_id IS NULL OR sudah_input.status_lembur ='PINJAMAN')
             UNION
             SELECT DISTINCT
                 e.enroll_id,
@@ -271,7 +271,7 @@ public function show_list_karyawan_non_sewing(Request $request)
             FROM mut_karyawan_input_non_sewing_form_lembur_tmp_det tmp
             INNER JOIN employee_atribut e ON tmp.enroll_id = e.enroll_id
             WHERE tmp.sub_dept_id = '$dept'
-            AND e.status_aktif = 'AKTIF';
+            AND (e.status_aktif = 'AKTIF'OR (e.status_aktif = 'TIDAK AKTIF' AND e.tanggal_resign >= '$tgl_lembur'));
             ");
 
             return DataTables::of($data_tmp)->toJson();

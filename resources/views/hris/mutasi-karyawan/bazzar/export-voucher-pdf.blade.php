@@ -27,6 +27,7 @@
         .text1 {
             position: absolute;
             top: 206px;
+            left: 80px;
             left: 57px;
             font-weight: bold;
             font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;

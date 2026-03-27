@@ -341,7 +341,7 @@ class FormLemburSewingController extends AdminBaseController
             from
             (select * from mut_karyawan_input_form_lembur_tmp_det where created_by = '$user' and line = '$line') tmp
             left join (
-            select * from employee_atribut e where status_aktif = 'aktif'
+            select * from employee_atribut e where status_aktif = 'aktif' OR (status_aktif = 'TIDAK AKTIF' AND tanggal_resign >= '$tgl_lembur')
             ) e on tmp.enroll_id = e.enroll_id
             left join (
             select enroll_id, line from (

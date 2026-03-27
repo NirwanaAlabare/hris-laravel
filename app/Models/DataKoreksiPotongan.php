@@ -30,7 +30,8 @@ class DataKoreksiPotongan extends \Eloquent
         'is_verifikasi_acc',
         'nomor_form_koreksi_potongan',
     ];
-    protected $guarded = ['kode_koreksi'];
+    // protected $guarded = ['kode_koreksi'];
+    protected $guarded = [];
 
     protected $hidden = [''];
 
@@ -67,7 +68,8 @@ class DataKoreksiPotongan extends \Eloquent
     protected $appends = [];
     public $incrementing = false;
     // public $primaryKey = null;
-    public $primaryKey = 'kode_koreksi';
+    public $primaryKey = 'kode_koreksi_potongan';
+// public $incrementing = false;
 
     public function atribut(){
         return $this->belongsTo('App\Models\EmployeeAtribut', 'enroll_id','enroll_id');

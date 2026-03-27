@@ -74,76 +74,98 @@ class BiayaMakanKaryawanEstimasiData implements FromView, WithTitle,WithColumnFo
         // $this->type = $type;
         // dd($this->from = $from, $this->to = $to, $this->type = $type);
         // if ($this->type === 'lembur') {
-            $this->dataLembur = DB::select("
-                SELECT
-                    SUBSTR(a.tanggal,1,7) AS periode,
-                    a.tanggal,
+           $this->dataLembur = DB::select("
+    SELECT
+        SUBSTR(a.tanggal,1,7) AS periode,
+        a.tanggal,
 
-                    -- department AMAN
-                    COALESCE(
-                        (SELECT d.department_name
-                        FROM department_all d
-                        WHERE d.department_id = a.dept
-                        LIMIT 1),
-                        'Unknown'
-                    ) AS department,
+        -- department
+        COALESCE(
+            (SELECT d.department_name
+             FROM department_all d
+             WHERE d.department_id = a.dept
+             LIMIT 1),
+            'Unknown'
+        ) AS department,
 
-                    -- sub dept AMAN
-                    COALESCE(
-                        (SELECT d.sub_dept_name
-                        FROM department_all d
-                        WHERE d.department_id = a.dept
-                        AND d.sub_dept_id = a.sub_dept
-                        LIMIT 1),
-                        'No Sub Dept'
-                    ) AS sub_dept_name,
+        -- sub dept
+        COALESCE(
+            (SELECT d.sub_dept_name
+             FROM department_all d
+             WHERE d.department_id = a.dept
+             AND d.sub_dept_id = a.sub_dept
+             LIMIT 1),
+            'No Sub Dept'
+        ) AS sub_dept_name,
 
-                    'NON STAFF' AS staff_non_staff,
-                    COALESCE(a.non_staff,0) AS jumlah_karyawan,
-                    8000 AS harga,
-                    COALESCE(a.non_staff,0) * 8000 AS jumlah,
-                    a.keterangan AS shift
+        'NON STAFF' AS staff_non_staff,
+        COALESCE(a.non_staff,0) AS jumlah_karyawan,
 
-                FROM estimasi_anggaran_makan a
-                WHERE  a.tanggal BETWEEN '$from' AND '$to'
+        -- HARGA NON STAFF
+        CASE
+            WHEN a.keterangan = 'TAKJIL' THEN 5000
+            ELSE 8000
+        END AS harga,
 
+        -- JUMLAH NON STAFF
+        COALESCE(a.non_staff,0) *
+        CASE
+            WHEN a.keterangan = 'TAKJIL' THEN 5000
+            ELSE 8000
+        END AS jumlah,
 
-                UNION ALL
+        a.keterangan AS shift
 
-                SELECT
-                    SUBSTR(a.tanggal,1,7) AS periode,
-                    a.tanggal,
+    FROM estimasi_anggaran_makan a
+    WHERE a.tanggal BETWEEN '$from' AND '$to'
 
-                    COALESCE(
-                        (SELECT d.department_name
-                        FROM department_all d
-                        WHERE d.department_id = a.dept
-                        LIMIT 1),
-                        'Unknown'
-                    ) AS department,
+    UNION ALL
 
-                    COALESCE(
-                        (SELECT d.sub_dept_name
-                        FROM department_all d
-                        WHERE d.department_id = a.dept
-                        AND d.sub_dept_id = a.sub_dept
-                        LIMIT 1),
-                        'No Sub Dept'
-                    ) AS sub_dept_name,
+    SELECT
+        SUBSTR(a.tanggal,1,7) AS periode,
+        a.tanggal,
 
-                    'STAFF' AS staff_non_staff,
-                    COALESCE(a.staff,0) AS jumlah_karyawan,
-                    10000 AS harga,
-                    COALESCE(a.staff,0) * 10000 AS jumlah,
-                    a.keterangan AS shift
+        COALESCE(
+            (SELECT d.department_name
+             FROM department_all d
+             WHERE d.department_id = a.dept
+             LIMIT 1),
+            'Unknown'
+        ) AS department,
 
-                FROM estimasi_anggaran_makan a
-                WHERE a.tanggal BETWEEN '$from' AND '$to'
+        COALESCE(
+            (SELECT d.sub_dept_name
+             FROM department_all d
+             WHERE d.department_id = a.dept
+             AND d.sub_dept_id = a.sub_dept
+             LIMIT 1),
+            'No Sub Dept'
+        ) AS sub_dept_name,
 
+        'STAFF' AS staff_non_staff,
+        COALESCE(a.staff,0) AS jumlah_karyawan,
 
-                ORDER BY  tanggal,shift,  department, sub_dept_name, staff_non_staff
+        -- HARGA STAFF
+        CASE
+            WHEN a.keterangan = 'TAKJIL' THEN 5000
+            ELSE 10000
+        END AS harga,
 
-                ");
+        -- JUMLAH STAFF
+        COALESCE(a.staff,0) *
+        CASE
+            WHEN a.keterangan = 'TAKJIL' THEN 5000
+            ELSE 10000
+        END AS jumlah,
+
+        a.keterangan AS shift
+
+    FROM estimasi_anggaran_makan a
+    WHERE a.tanggal BETWEEN '$from' AND '$to'
+
+    ORDER BY tanggal, shift, department, sub_dept_name, staff_non_staff
+");
+
         // } elseif ($this->type === 'shift_malam') {
         //     $this->dataLembur = DB::select("SELECT x.periode,x.tanggal,x.department,x.sub_dept_name,x.staff_non_staff,x.jumlah_karyawan,x.harga,x.jumlah,x.shift,x.created_by FROM ( SELECT SUBSTR(a.tanggal,1,7) AS periode,a.tanggal,d.department_name AS department, d.sub_dept_name as sub_dept_name,'STAFF' AS staff_non_staff,SUM(a.staff) AS jumlah_karyawan,10000 AS harga,SUM(a.staff) * 10000 AS jumlah,a.keterangan AS shift,GROUP_CONCAT(DISTINCT a.created_by ORDER BY a.created_by SEPARATOR ', ') AS created_by FROM estimasi_anggaran_makan a INNER JOIN (SELECT department_id, department_name ,sub_dept_id, sub_dept_name FROM department_all WHERE site_nirwana_id IN ('NAG','NAK','NAGD') AND status = 'AKTIF' ) d ON a.dept = d.department_id and a.sub_dept=d.sub_dept_id WHERE a.tanggal BETWEEN '$from' AND '$to' GROUP BY  a.dept, d.department_name, a.tanggal, a.keterangan
         // UNION ALL

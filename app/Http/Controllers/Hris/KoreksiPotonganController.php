@@ -353,6 +353,15 @@ class KoreksiPotonganController extends AdminBaseController
 
     public function list_verifikasi_koreksi (Request $request)
     {
+        $periode = $request->periode_lembur;
+        $range = explode(' s/d ', $periode);
+
+        if (count($range) === 2) {
+            $tanggal_awal  = date('m/d/Y', strtotime($range[0]));
+            $tanggal_akhir = date('m/d/Y', strtotime($range[1]));
+
+            $periode_format = $tanggal_awal . ' - ' . $tanggal_akhir;
+        }
         if (!$request->ajax()) {
             return response()->json([]);
         }
@@ -413,6 +422,7 @@ class KoreksiPotonganController extends AdminBaseController
         ')
         ->leftJoin('employee_atribut','data_koreksi_potongan.enroll_id','=','employee_atribut.enroll_id')
         ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
+         ->where('data_koreksi_potongan.periode_tanggal_koreksi', $periode_format)
         ->orderBy('employee_atribut.employee_name', 'ASC');
 
         // ====================
@@ -475,7 +485,7 @@ class KoreksiPotonganController extends AdminBaseController
 
 
         // Sort by updated_at descending
-        $sorted = $merged->sortByDesc('updated_at')->values();
+        $sorted = $merged->sortBy('employee_name')->values();
 
         // Hitung total sebelum pagination
         $totalData = $sorted->count();
@@ -538,6 +548,15 @@ class KoreksiPotonganController extends AdminBaseController
 
     public function export_verifikasi_koreksi (Request $request)
     {
+        $periode = $request->periode_lembur;
+        $range = explode(' s/d ', $periode);
+
+        if (count($range) === 2) {
+            $tanggal_awal  = date('m/d/Y', strtotime($range[0]));
+            $tanggal_akhir = date('m/d/Y', strtotime($range[1]));
+
+            $periode_format = $tanggal_awal . ' - ' . $tanggal_akhir;
+        }
         if (!$request->ajax()) {
             return response()->json([]);
         }
@@ -556,6 +575,7 @@ class KoreksiPotonganController extends AdminBaseController
                 employee_atribut.enroll_id,
                 employee_atribut.nik,
                 employee_atribut.employee_name,
+                employee_atribut.status_staff,
                 department_all.sub_dept_name,
                 department_all.department_name,
                 data_koreksi_upah.jumlah_rp_potongan,
@@ -583,6 +603,7 @@ class KoreksiPotonganController extends AdminBaseController
                 employee_atribut.enroll_id,
                 employee_atribut.nik,
                 employee_atribut.employee_name,
+                employee_atribut.status_staff,
                 department_all.sub_dept_name,
                 department_all.department_name,
                 data_koreksi_potongan.jumlah_rp_potongan,
@@ -596,7 +617,9 @@ class KoreksiPotonganController extends AdminBaseController
                 "POTONGAN" AS sumber
             ')
             ->leftJoin('employee_atribut','data_koreksi_potongan.enroll_id','=','employee_atribut.enroll_id')
-            ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id');
+            ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
+            ->where('data_koreksi_potongan.periode_tanggal_koreksi', $periode_format);
+        
 
         // ====================
         // Filter (jika ada search)
@@ -606,7 +629,7 @@ class KoreksiPotonganController extends AdminBaseController
             $tanggal_awal = date('Y-m-d', strtotime($daterange[0]));
             $tanggal_akhir = date('Y-m-d', strtotime($daterange[1]));
             $upahQuery->whereBetween('data_koreksi_upah.tanggal_koreksi', [$tanggal_awal, $tanggal_akhir]);
-            $potonganQuery->whereBetween('data_koreksi_potongan.tanggal_koreksi', [$tanggal_awal, $tanggal_akhir]);
+            // $potonganQuery->whereBetween('data_koreksi_potongan.tanggal_koreksi', [$tanggal_awal, $tanggal_akhir]);
         }
 
         if ($request->nomor_form_koreksi_upah) {
@@ -614,7 +637,6 @@ class KoreksiPotonganController extends AdminBaseController
             $upahQuery->whereIn('data_koreksi_upah.nomor_form_koreksi_upah', $nomor_form_koreksi_upah);
             $potonganQuery->whereIn('data_koreksi_potongan.nomor_form_koreksi_potongan', $nomor_form_koreksi_upah);
         }
-
 
         // ====================
         // Ambil Data
@@ -643,6 +665,7 @@ class KoreksiPotonganController extends AdminBaseController
                 'enroll_id' => $q->enroll_id,
                 'nik' => $q->nik,
                 'employee_name' => $q->employee_name,
+                'status_staff' => $q->status_staff,
                 'department_name' => $q->department_name,
                 'sub_dept_name' => $q->sub_dept_name,
                 'jumlah_rp_potongan' => $q->jumlah_rp_potongan,

@@ -93,6 +93,36 @@
             <td style="vertical-align: middle;font-weight:bold;background-color:#fffc04;border:1px solid black;">{{$data->total}}</td>
         </tr>
         @endforeach
+        @foreach($data_lembur6 as $data)
+        <tr>
+            <td style="vertical-align: middle;border:1px solid black;word-wrap:break-word;" width="14">{{$data->shift}}</td>
+            <td style="vertical-align: middle;border:1px solid black;word-wrap:break-word;" width="23">{{$data->department}}</td>
+            <td style="vertical-align: middle;border:1px solid black;word-wrap:break-word;" width="23">{{$data->dept}}</td>
+            <td style="vertical-align: middle;border:1px solid black;word-wrap:break-word;" width="23">{{$data->sub_dept_name}}</td>
+            <td style="vertical-align: middle;border:1px solid black;word-wrap:break-word;" width="23">{{$data->sub_dept}}</td>
+            <td style="vertical-align: middle;border:1px solid black;word-wrap:break-word;" width="13">{{$data->non_staff}}</td>
+            <td style="vertical-align: middle;border:1px solid black;word-wrap:break-word;" width="13">{{$data->harga}}</td>
+            <td style="vertical-align: middle;border:1px solid black;word-wrap:break-word;" width="13">{{$data->jumlah}}</td>
+            <td style="vertical-align: middle;border:1px solid black;word-wrap:break-word;" width="13">{{$data->staff}}</td>
+            <td style="vertical-align: middle;border:1px solid black;word-wrap:break-word;" width="13">{{$data->harga2}}</td>
+            <td style="vertical-align: middle;border:1px solid black;word-wrap:break-word;" width="13">{{$data->jumlah2}}</td>
+            <td style="vertical-align: middle;border:1px solid black;word-wrap:break-word;" width="13">{{$data->jumlah_karyawan}}</td>
+            <td style="vertical-align: middle;border:1px solid black;word-wrap:break-word;" width="13">{{$data->total}}</td>
+        </tr>
+        @endforeach
+        @foreach($data_lembur7 as $data)
+        <tr>
+            <td style="vertical-align: middle;font-weight:bold;background-color:#fffc04;border:1px solid black;" colspan="5">{{$data->shift}}</td>
+            <td style="vertical-align: middle;font-weight:bold;background-color:#fffc04;border:1px solid black;">{{$data->non_staff}}</td>
+            <td style="vertical-align: middle;font-weight:bold;background-color:#fffc04;border:1px solid black;">{{$data->harga}}</td>
+            <td style="vertical-align: middle;font-weight:bold;background-color:#fffc04;border:1px solid black;">{{$data->jumlah}}</td>
+            <td style="vertical-align: middle;font-weight:bold;background-color:#fffc04;border:1px solid black;">{{$data->staff}}</td>
+            <td style="vertical-align: middle;font-weight:bold;background-color:#fffc04;border:1px solid black;">{{$data->harga2}}</td>
+            <td style="vertical-align: middle;font-weight:bold;background-color:#fffc04;border:1px solid black;">{{$data->jumlah2}}</td>
+            <td style="vertical-align: middle;font-weight:bold;background-color:#fffc04;border:1px solid black;">{{$data->jumlah_karyawan}}</td>
+            <td style="vertical-align: middle;font-weight:bold;background-color:#fffc04;border:1px solid black;">{{$data->total}}</td>
+        </tr>
+        @endforeach
         @foreach($data_lembur5 as $data)
         <tr>
             <td style="vertical-align: middle;font-weight:bold;background-color:#ffc404;border:1px solid black;" colspan="5">{{$data->shift}}</td>

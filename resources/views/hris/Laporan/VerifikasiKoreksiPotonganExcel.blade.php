@@ -45,6 +45,7 @@
                 <col style="width: 100px;">  <!-- Enroll ID -->
                 <col style="width: 100px;">  <!-- NIK -->
                 <col style="width: 150px;">  <!-- Name -->
+                <col style="width: 150px;">  <!-- Name -->
                 <col style="width: 150px;">  <!-- Department -->
                 <col style="width: 150px;">  <!-- Sub Dept -->
                 <col style="width: 150px;">  <!-- Sub Dept -->
@@ -64,6 +65,7 @@
             <th style="font-weight:bold;text-align:center;background-color:#C0C0C0;">ID</th>
             <th style="font-weight:bold;text-align:center;background-color:#C0C0C0;">NIK</th>
             <th style="font-weight:bold;text-align:center;background-color:#C0C0C0;">Nama</th>
+            <th style="font-weight:bold;text-align:center;background-color:#C0C0C0;">Kategori</th>
             <th style="font-weight:bold;text-align:center;background-color:#C0C0C0;">Departement</th>
             <th style="font-weight:bold;text-align:center;background-color:#C0C0C0;">Bagian</th>
             <th style="font-weight:bold;text-align:center;background-color:#C0C0C0;">Jenis Koreksi</th>
@@ -102,6 +104,7 @@
               <td>{{$value['enroll_id']}}</td>
               <td>{{$value['nik'] }}</td>
               <td>{{$value['employee_name'] }}</td>
+              <td>{{$value['status_staff'] }}</td>
               <td>{{$value['department_name']}}</td>
               <td>{{$value['sub_dept_name']}}</td>
               <td>{{$value['sumber']}}</td>

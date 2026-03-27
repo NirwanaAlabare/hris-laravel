@@ -350,7 +350,7 @@
                             <a id="BtnProsesPayroll"
                                 class="btn btn-app btn-sm btn-primary text-white BtnProsesPayroll"><span><i
                                         class="fa fa-download"></i></span> PROSES PAYROLL</a>
-                            <button id="runProcessBtn" class="btn btn-info">PROSES PAYROLL NEW</button>
+                            <!-- <button id="runProcessBtn" class="btn btn-info">PROSES PAYROLL NEW</button> -->
                         </div>
                     </div>
                     <div class="row pt-4">
@@ -425,7 +425,7 @@
                         <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip"
                             title="Export Data ke File Transfer Excel" id="recap_labor_cost_2"><i
                                 class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST</a>
-                        <button class="btn btn-info" id="btnRecap">DAILY LABOR COST NEW</button>
+                        <!-- <button class="btn btn-info" id="btnRecap">DAILY LABOR COST NEW</button> -->
                         @endif
                     </div>
                 </div>

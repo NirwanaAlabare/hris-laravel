@@ -792,10 +792,10 @@ function toggleOutside(source) {
             }
 
             // Pastikan search bar tetap ada di .data_search
-            // moveDataTableFilter();
+            moveDataTableFilter();
         });
         $(document).on('input', '.data_search input', function () {
-            // let keyword = this.value;
+            let keyword = this.value;
 
             let activeTab = $(".nav-tabs .list.active").attr("id")
                 ?.replace("-tab", "");
@@ -806,6 +806,7 @@ function toggleOutside(source) {
                     .search(keyword)
                     .draw();
             }
+            
         });
 
 

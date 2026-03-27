@@ -1086,10 +1086,92 @@ class RekapPerhitunganPayrollController extends AdminBaseController
 
         $this->latestData = RekapPerhitunganPayroll::latest('updated_at')->first();
         $this->loggedAdmin = Auth::guard('admin')->user();
-        $rekap_payroll = RekapPerhitunganPayroll::where('periode_kehadiran', $this->latestData->periode_kehadiran)->orderBy('enroll_id')->get();
+        $rekap_payroll = RekapPerhitunganPayroll::where('periode_kehadiran', $this->latestData->periode_kehadiran)->orderBy('enroll_id')->limit(1)->get();
         $department_id = DepartmentAll::orderBy('department_id')->groupBy('department_id')->get();
         return View::make('hris/rekapperhitunganpayroll', compact('rekap_payroll', 'department_id', 'minMonth'), $this->data);
     }
+//     public function index()
+//     {
+//         // =========================
+//         // 1. AUTH DULU
+//         // =========================
+//         $this->loggedAdmin = Auth::guard('admin')->user();
+//         if (!$this->loggedAdmin) {
+//             return redirect()->route('admin.login');
+//         }
+
+//         // =========================
+//         // 2. DATA MASTER (SAFE)
+//         // =========================
+//         try {
+//             $this->periode_payroll   = $this->ajax_getperiodepayroll();
+//             $this->periode_kehadiran = $this->ajax_getperiodekehadiran();
+//             $this->selectemployee    = $this->ajax_getallemployeeatribut();
+//         } catch (\Throwable $e) {
+//             Log::error('Load master payroll gagal', [
+//                 'error' => $e->getMessage()
+//             ]);
+
+//             $this->periode_payroll   = collect();
+//             $this->periode_kehadiran = collect();
+//             $this->selectemployee    = collect();
+//         }
+
+//         // =========================
+//         // 3. BULAN
+//         // =========================
+//         $month = date('Y-m');
+//         $today = date('d');
+
+//         $minMonth = ($today >= 27)
+//             ? date('Y-m', strtotime($month . '-01 +1 month'))
+//             : $month;
+
+//         // =========================
+//         // 4. DATA TERAKHIR (SAFE)
+//         // =========================
+//         $latestData = RekapPerhitunganPayroll::latest('updated_at')->first();
+
+//         if (!$latestData) {
+//             return View::make(
+//                 'hris/rekapperhitunganpayroll',
+//                 [
+//                     'rekap_payroll' => collect(),
+//                     'department_id' => DepartmentAll::select('department_id')
+//                         ->groupBy('department_id')
+//                         ->orderBy('department_id')
+//                         ->get(),
+//                     'minMonth' => $minMonth
+//                 ],
+//                 $this->data
+//             );
+//         }
+
+//         // =========================
+//         // 5. DATA REKAP
+//         // =========================
+//     $rekap_payroll = RekapPerhitunganPayroll::where(
+//     'periode_kehadiran',
+//     $latestData->periode_kehadiran
+// )
+// ->orderBy('enroll_id')
+// ->limit(50)
+// ->get();
+
+//         // =========================
+//         // 6. DEPARTMENT
+//         // =========================
+//         $department_id = DepartmentAll::orderBy('department_id')->groupBy('department_id')->get();
+
+//         // =========================
+//         // 7. VIEW
+//         // =========================
+//         return View::make(
+//             'hris/rekapperhitunganpayroll',
+//             compact('rekap_payroll', 'department_id', 'minMonth'),
+//             $this->data
+//         );
+//     }
     public function get_last_update_proses_payroll()
     {
         $last_update = DB::select('select * from rekap_perhitungan_payroll order by updated_at desc limit 1');
@@ -1130,7 +1212,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
     public function recap_labor_cost_2()
     {
         ini_set('max_execution_time', 0);
-        ini_set('memory_limit', '1024M');
+        ini_set('memory_limit', '1024000000000000M');
         $periode_kehadiran = request()->daterange;
         $arrperiode = explode(" s/d ", $periode_kehadiran);
         $tanggal_awal = $arrperiode[0];
@@ -1155,7 +1237,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
     public function recap_labor_cost()
     {
         ini_set('max_execution_time', 0);
-        ini_set('memory_limit', '1024M');
+        ini_set('memory_limit', '102400000000000000M');
         $periode_kehadiran = request()->daterange;
         $arrperiode = explode(" s/d ", $periode_kehadiran);
         $tanggal_awal = $arrperiode[0];
@@ -1176,7 +1258,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
     public function export_excel_daily_labor()
     {
         ini_set('max_execution_time', 0);
-        ini_set('memory_limit', '102400000000000M');
+        ini_set('memory_limit', '1024000000000000000000M');
         $inEnrollId = '';
         $status_staff = request()->status_staff;
         $inStatusStaff = '';
@@ -2587,6 +2669,16 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             ->get();
         return $query;
     }
+//     public function ajax_getallemployeeatribut()
+// {
+//     return EmployeeAtribut::selectRaw(
+//         'enroll_id, nik, employee_name,
+//          concat(enroll_id, " - ", nik, " - ", employee_name) as select_employee'
+//     )
+//     ->groupBy('enroll_id', 'nik', 'employee_name') // ⬅️ INI WAJIB
+//     ->orderBy('employee_name', 'asc')
+//     ->get();
+// }
     public function get_sub_dept_name($id)
     {
         $sub_dept_names = DepartmentAll::where('department_id', $id)->get();
@@ -2600,6 +2692,17 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             ->get();
         return $query;
     }
+//         public function ajax_getperiodepayroll()
+// {
+//     return RekapPerhitunganPayroll::selectRaw(
+//         'periode_tahun_payroll, periode_bulan_payroll,
+//          CONCAT(periode_tahun_payroll,"-",periode_bulan_payroll) as periode_payroll'
+//     )
+//     ->groupBy('periode_tahun_payroll', 'periode_bulan_payroll')
+//     ->orderBy('periode_tahun_payroll', 'desc')
+//     ->orderBy('periode_bulan_payroll', 'desc')
+//     ->get();
+// }
 
     public function ajax_getperiodekehadiran()
     {

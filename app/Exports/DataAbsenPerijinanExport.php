@@ -74,18 +74,7 @@ class DataAbsenPerijinanExport implements WithColumnFormatting, FromQuery, WithM
                                     ->leftJoin('ref_absen_ijin', 'master_data_absen_kehadiran.status_absen', '=', 'ref_absen_ijin.kode_absen_ijin')
                                     ->leftJoin('employee_atribut', 'master_data_absen_kehadiran.enroll_id', '=', 'employee_atribut.enroll_id')
                                     ->leftJoin('department_all', 'employee_atribut.sub_dept_id', '=', 'department_all.sub_dept_id')
-                                    ->leftJoin('data_absen_perijinan', function ($join) {
-                                        $join->on(
-                                            'master_data_absen_kehadiran.nomor_absen_ijin',
-                                            '=',
-                                            'data_absen_perijinan.nomor_form_perizinan'
-                                        )
-                                        ->on(
-                                            'master_data_absen_kehadiran.enroll_id',
-                                            '=',
-                                            'data_absen_perijinan.enroll_id'
-                                        );
-                                    })
+                                    ->leftJoin('data_absen_perijinan', 'master_data_absen_kehadiran.nomor_absen_ijin', '=', 'data_absen_perijinan.nomor_form_perizinan')
                                     ->whereBetween('master_data_absen_kehadiran.tanggal_berjalan', [$tanggalMulai, $tanggalSampai])
                                     ->whereNotNull('master_data_absen_kehadiran.status_absen')
                                     ->whereNotNull('master_data_absen_kehadiran.nomor_absen_ijin')

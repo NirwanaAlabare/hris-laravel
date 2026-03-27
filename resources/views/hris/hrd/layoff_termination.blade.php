@@ -638,7 +638,7 @@ $('#clear-daterange').on('click', function () {
         var kategori = $("#kategori_sp_input").val();  // ← STRING
 
     console.log("Kategori =", kategori);
-        var url = 'export_sp_kehadiran_karyawan_adjustment?enroll_id='+enroll_id+ '&from=' + mulai + '&to=' + selesai + '&jumlah_hari_mangkir=' + jumlah_hari_mangkir + '&no_form=' + $('#edit_no_form')+ '&kategori=' + $('#kategori_sp_input').val();
+        var url = 'export_sp_kehadiran_karyawan_adjustment?enroll_id='+enroll_id+ '&from=' + mulai + '&to=' + selesai + '&jumlah_hari_mangkir=' + jumlah_hari_mangkir + '&no_form=' + $('#edit_no_form').val()+ '&kategori=' + $('#kategori_sp_input').val();
         window.open(url, '_blank');
     }
 

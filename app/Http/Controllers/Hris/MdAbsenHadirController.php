@@ -969,7 +969,23 @@ class MdAbsenHadirController extends AdminBaseController
                 ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
                 ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
                 ->leftJoin('ref_absen_ijin','master_data_absen_kehadiran.status_absen','ref_absen_ijin.kode_absen_ijin')
-                ->leftJoin('data_absen_perijinan','master_data_absen_kehadiran.nomor_absen_ijin','data_absen_perijinan.nomor_form_perizinan')
+                ->leftJoin('data_absen_perijinan', function ($join) {
+                    $join->on(
+                        'master_data_absen_kehadiran.nomor_absen_ijin',
+                        '=',
+                        'data_absen_perijinan.nomor_form_perizinan'
+                    )
+                    ->on(
+                        'master_data_absen_kehadiran.enroll_id',
+                        '=',
+                        'data_absen_perijinan.enroll_id'
+                    )
+                    ->whereRaw("
+                        master_data_absen_kehadiran.tanggal_berjalan
+                        BETWEEN data_absen_perijinan.tanggal_mulai_ijin
+                        AND data_absen_perijinan.tanggal_akhir_ijin
+                    ");
+                })
                 ->leftJoin('log_data_gagal_absen','master_data_absen_kehadiran.uuid','log_data_gagal_absen.uuid_master')
                 ->leftJoin('data_lembur','master_data_absen_kehadiran.uuid','data_lembur.uuid_master')
                 ->offset($start)
@@ -1047,7 +1063,23 @@ class MdAbsenHadirController extends AdminBaseController
                 ->leftJoin('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
                 ->leftJoin('department_all','employee_atribut.sub_dept_id','=','department_all.sub_dept_id')
                 ->leftJoin('ref_absen_ijin','master_data_absen_kehadiran.status_absen','ref_absen_ijin.kode_absen_ijin')
-                ->leftJoin('data_absen_perijinan','master_data_absen_kehadiran.nomor_absen_ijin','data_absen_perijinan.nomor_form_perizinan')
+                ->leftJoin('data_absen_perijinan', function ($join) {
+                    $join->on(
+                        'master_data_absen_kehadiran.nomor_absen_ijin',
+                        '=',
+                        'data_absen_perijinan.nomor_form_perizinan'
+                    )
+                    ->on(
+                        'master_data_absen_kehadiran.enroll_id',
+                        '=',
+                        'data_absen_perijinan.enroll_id'
+                    )
+                    ->whereRaw("
+                        master_data_absen_kehadiran.tanggal_berjalan
+                        BETWEEN data_absen_perijinan.tanggal_mulai_ijin
+                        AND data_absen_perijinan.tanggal_akhir_ijin
+                    ");
+                })
                 ->leftJoin('data_lembur','master_data_absen_kehadiran.uuid','data_lembur.uuid_master')
                 ->leftJoin('log_data_gagal_absen','master_data_absen_kehadiran.uuid','log_data_gagal_absen.uuid_master')
                 ->offset($start)
@@ -2072,6 +2104,34 @@ class MdAbsenHadirController extends AdminBaseController
                     CONVERT ( VARCHAR ( 10 ), a.CHECKTIME, 126 ),
                     b.Badgenumber
             ") );
+            // DB::raw("
+            //     SELECT
+            //             CONVERT(VARCHAR(10), a.CHECKTIME, 126) AS tanggal_absen,
+            //             b.Badgenumber AS enroll_id,
+
+            //             MIN(CASE WHEN a.CHECKTYPE = 'I'
+            //                 THEN CONVERT(VARCHAR(5), a.CHECKTIME, 114) END) AS absen_in,
+
+            //             MAX(CASE WHEN a.CHECKTYPE = 'O'
+            //                 THEN CONVERT(VARCHAR(5), a.CHECKTIME, 114) END) AS absen_out,
+
+            //             CASE
+            //                  WHEN
+            //                    MIN(CASE WHEN a.CHECKTYPE = 'I' THEN 1 END) IS NULL
+            //                    OR
+            //                    MIN(CASE WHEN a.CHECKTYPE = 'O' THEN 1 END) IS NULL
+            //                     THEN 'TL'
+            //                 ELSE NULL
+            //             END AS status_absen
+
+            //         FROM CHECKINOUT a
+            //         JOIN USERINFO b ON a.USERID = b.USERID
+            //         WHERE
+            //             a.CHECKTIME >=  '" . $tanggal_awal . "' and CONVERT ( VARCHAR ( 10 ), a.CHECKTIME, 126 ) <= '".$tanggal_akhir."'".$inEnrollId."
+            //         GROUP BY
+            //             CONVERT(VARCHAR(10), a.CHECKTIME, 126),
+            //             b.Badgenumber
+            // ") );
             $arr_list = [];
             $data_update_1 = [];
             $data_update_2 = [];
@@ -2097,7 +2157,7 @@ class MdAbsenHadirController extends AdminBaseController
                 })
                 ->get();
                 foreach($kehardiran_arr as $val) {
-                    $countEditedData=DataKehadiranInOutEdited::where('tanggal_absen', $val->tanggal_absen)->where('enroll_id','=', $val["enroll_id"])->count();
+                    $countEditedData=DataKehadiranInOutEdited::where('tanggal_absen', $val->tanggal_absen)->where('enroll_id','=', $val["enroll_id"])->whereNotNull('absen_masuk_kerja')->count();
                     $count=LogDataGagalAbsen::where('tanggal_absen',$val->tanggal_absen)->where('enroll_id',$val["enroll_id"])->count();
                     if($countEditedData<1 && $count<1){
                         if($val["operator"]=='system' || $val["operator"]=='system_injek_lebaran') {
@@ -2392,7 +2452,7 @@ class MdAbsenHadirController extends AdminBaseController
 
             $today=date('Y-m-d');
             foreach ($masterAbsen as $k => $v) {
-                $countEditedData1=DataKehadiranInOutEdited::where('tanggal_absen', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->count();
+                $countEditedData1=DataKehadiranInOutEdited::where('tanggal_absen', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->whereNotNull('absen_masuk_kerja')->count();
                 $count1=LogDataGagalAbsen::where('tanggal_absen', $v->tanggal_berjalan)->where('enroll_id', $v->enroll_id)->count();
                 if($countEditedData1<1 && $count1<1){
                     $jadwal_in=$v->mulai_jam_kerja;
@@ -3265,7 +3325,7 @@ class MdAbsenHadirController extends AdminBaseController
                 $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
             })->get();
             foreach($setClearMTL as $value) {
-                $countEditedData2=DataKehadiranInOutEdited::where('tanggal_absen','=', $value->tanggal_absen)->where('enroll_id','=', $value->enroll_id)->count();
+                $countEditedData2=DataKehadiranInOutEdited::where('tanggal_absen','=', $value->tanggal_absen)->where('enroll_id','=', $value->enroll_id)->whereNotNull('absen_masuk_kerja')->count();
                 $count2=LogDataGagalAbsen::where('tanggal_absen',$value->tanggal_absen)->where('enroll_id','=', $value->enroll_id)->count();
 
                 if($countEditedData2<1 && $count2<1){
@@ -3292,7 +3352,7 @@ class MdAbsenHadirController extends AdminBaseController
             })->get();
 
             foreach($setSetTL as $value) {
-                $countEditedData3=DataKehadiranInOutEdited::where('tanggal_absen', $value->tanggal_absen)->where('enroll_id', $value->enroll_id)->count();
+                $countEditedData3=DataKehadiranInOutEdited::where('tanggal_absen', $value->tanggal_absen)->where('enroll_id', $value->enroll_id)->whereNotNull('absen_masuk_kerja')->count();
                 $count3=LogDataGagalAbsen::where('tanggal_absen', $value->tanggal_absen)->where('enroll_id', $value->enroll_id)->count();
 
                 if($countEditedData3<1 && $count3<1){
@@ -3326,7 +3386,7 @@ class MdAbsenHadirController extends AdminBaseController
                 ") );
 
             foreach($checkinoutAtt as $value) {
-                $countEditedData4=DataKehadiranInOutEdited::where('tanggal_absen', $value->tanggal_absen)->where('enroll_id', $value->enroll_id)->count();
+                $countEditedData4=DataKehadiranInOutEdited::where('tanggal_absen', $value->tanggal_absen)->where('enroll_id', $value->enroll_id)->whereNotNull('absen_masuk_kerja')->count();
                 $count4=LogDataGagalAbsen::where('tanggal_absen', $value->tanggal_absen)->where('enroll_id', $value->enroll_id)->count();
                 if($countEditedData4<1 && $count4<1){
                     $checkinoutAttCount = CheckInOut::whereRaw("
@@ -3404,7 +3464,7 @@ class MdAbsenHadirController extends AdminBaseController
                 }
             }
             foreach ($kehadiran as $key4 => $value4) {
-                $countEditedData=DataKehadiranInOutEdited::where('tanggal_absen','=', $value4->tanggal_berjalan)->where('enroll_id','=', $value4->enroll_id)->count();
+                $countEditedData=DataKehadiranInOutEdited::where('tanggal_absen','=', $value4->tanggal_berjalan)->where('enroll_id','=', $value4->enroll_id)->whereNotNull('absen_masuk_kerja')->count();
                 $count=LogDataGagalAbsen::where('tanggal_absen', $value4->tanggal_berjalan)->where('enroll_id',$value4->enroll_id)->count();
                 if($countEditedData<1 && $count<1){
                     // if((($value4->operator=='system') || ($value4->operator=='system_lintashari') || ($value4->operator=='system_injek_lebaran') )) {
@@ -3656,7 +3716,7 @@ class MdAbsenHadirController extends AdminBaseController
             $kehadiran2=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->whereRaw('tanggal_berjalan is not null'.$inEnrollId)->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')->with('employee_atribut')->get();
             $data_update=[];
             foreach ($kehadiran2 as $k => $v) {
-                $countEditedData2=DataKehadiranInOutEdited::where('tanggal_absen','=',  $v->tanggal_berjalan)->where('enroll_id','=', $v->enroll_id)->count();
+                $countEditedData2=DataKehadiranInOutEdited::where('tanggal_absen','=',  $v->tanggal_berjalan)->where('enroll_id','=', $v->enroll_id)->whereNotNull('absen_masuk_kerja')->count();
                 $count2=LogDataGagalAbsen::where('tanggal_absen', $v->tanggal_berjalan)->where('enroll_id',$v->enroll_id)->count();
                 if($countEditedData2<1 && $count2<1){
                     $status_staff=$v->employee_atribut->status_staff;

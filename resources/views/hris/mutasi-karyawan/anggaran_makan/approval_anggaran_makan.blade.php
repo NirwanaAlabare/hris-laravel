@@ -111,6 +111,10 @@
             font-weight: bold;
             font-family: Arial, Helvetica, sans-serif
         }
+        .signature-table {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
         table {
             border-collapse: collapse;
         }
@@ -182,6 +186,10 @@
             <td width="8%" align="center" class="boldtextblueBGKecil">Total</td>
         </tr>
         </thead>
+        @if(count($data))
+        <tr>
+            <td colspan="9" class="boldtextyellowBG" >LEMBUR</td>
+        </tr>
         @foreach ($data as $key=>$value)
             <tr>
                 <!-- <td class="textkecil">@if($key==0)LEMBUR @endif</td> -->
@@ -242,6 +250,11 @@
                 <td class="boldtextKecil" align="right">{{str_replace(',', '.', number_format($value->total))}}</td>
             </tr>
         @endforeach
+        @endif
+        @if(count($data2))
+        <tr>
+            <td colspan="9" class="boldtextyellowBG" >SHIFT MALAM</td>
+        </tr>
         @foreach ($data2 as $key=>$value)
             <tr>
                 <!-- <td class="textkecil">@if($key==0)SHIFT MALAM @endif</td> -->
@@ -302,6 +315,73 @@
                 <td class="boldtextKecil" align="right">{{str_replace(',', '.', number_format($value->total))}}</td>
             </tr>
         @endforeach
+        @endif
+        @if(count($data6))
+        <tr>
+            <td colspan="9" class="boldtextyellowBG" >TAKJIL</td>
+        </tr>
+         @foreach ($data6 as $key=>$value)
+            <tr>
+                <!-- <td>@if($key==0)TAKJIL @endif</td>
+                <td>{{$value->department}}</td> -->
+                <td>{{$value->sub_dept_name}}</td>
+                <td align="right">
+                    @if(str_replace(',', '.', number_format($value->non_staff))!=0)
+                    {{str_replace(',', '.', number_format($value->non_staff))}}
+                    @else
+                    @endif
+                </td>
+                <td align="right">
+                    @if(str_replace(',', '.', number_format($value->harga))!=0)
+                    {{str_replace(',', '.', number_format($value->harga))}}
+                    @else
+                    @endif
+                </td>
+                <td align="right">
+                    @if(str_replace(',', '.', number_format($value->jumlah))!=0)
+                    {{str_replace(',', '.', number_format($value->jumlah))}}
+                    @else
+                    @endif
+                </td>
+                <td align="right">
+                    @if(str_replace(',', '.', number_format($value->staff))!=0)
+                    {{str_replace(',', '.', number_format($value->staff))}}
+                    @else
+                    @endif
+                </td>
+                <td align="right">
+                    @if(str_replace(',', '.', number_format($value->harga2))!=0)
+                    {{str_replace(',', '.', number_format($value->harga2))}}
+                    @else
+                    @endif
+                </td>
+                <td align="right">
+                    @if(str_replace(',', '.', number_format($value->jumlah2))!=0)
+                    {{str_replace(',', '.', number_format($value->jumlah2))}}
+                    @else
+                    @endif
+                </td>
+                <td align="right">{{$value->jumlah_karyawan}}</td>
+                <td align="right">{{str_replace(',', '.', number_format($value->total))}}</td>
+            </tr>
+        @endforeach
+        @foreach ($data7 as $key=>$value)
+            <tr>
+                <td class="boldtext">{{$value->shift}}</td>
+                <!-- <td class="boldtext">{{$value->department}}</td>
+                {{-- <td class="boldtext">{{$value->sub_dept_name}}</td> --}}
+                <td></td> -->
+                <td class="boldtext" align="right">{{$value->non_staff}}</td>
+                <td class="boldtext" align="right">{{str_replace(',', '.', number_format($value->harga))}}</td>
+                <td class="boldtext" align="right">{{str_replace(',', '.', number_format($value->jumlah))}}</td>
+                <td class="boldtext" align="right">{{$value->staff}}</td>
+                <td class="boldtext" align="right">{{str_replace(',', '.', number_format($value->harga2))}}</td>
+                <td class="boldtext" align="right">{{str_replace(',', '.', number_format($value->jumlah2))}}</td>
+                <td class="boldtext" align="right">{{$value->jumlah_karyawan}}</td>
+                <td class="boldtext" align="right">{{str_replace(',', '.', number_format($value->total))}}</td>
+            </tr>
+        @endforeach
+        @endif
         @foreach ($data5 as $value)
             <tr>
                 <td class="boldtextyellowBGKecil">{{$value->shift}}</td>
@@ -324,25 +404,25 @@
         <thead>
           <thead>
         <tr>
-            <td colspan="10" class="borderless">
+            <td colspan="9" class="borderless">
                 PT. NIRWANA ALABARE GARMENT
             </td>
         </tr>
         <tr>
-            <td colspan="10" class="borderless2">
+            <td colspan="9" class="borderless2">
                 Laporan Makan Harian
             </td>
         </tr>
         <tr>
-            <td colspan="10" class="borderless3">
+            <td colspan="9" class="borderless3">
                 Hari / Tanggal :
                 {{ Carbon\Carbon::parse($tanggal)->translatedFormat('l, j F Y') }}
             </td>
-        </tr>
+        </tr>  
         <tr>
             <!-- <td rowspan="2" width="13%" style="vertical-align: middle" class="boldtextblueBG">Keterangan</td> -->
             <!-- <td rowspan="2" width="16%" style="vertical-align: middle" class="boldtextblueBG">Department</td> -->
-             <td rowspan="2" width="29%" style="vertical-align: middle" class="boldtextblueBG">bagian</td>
+             <td rowspan="2" width="29%" style="vertical-align: middle" class="boldtextblueBG">Bagian</td>
             <td colspan="3" align="center" class="boldtextblueBG">NON STAFF</td>
             <td colspan="3" align="center" class="boldtextblueBG">STAFF</td>
             <td colspan="2" align="center" class="boldtextblueBG">GRAND TOTAL</td>
@@ -358,10 +438,14 @@
             <td width="8%" align="center" class="boldtextblueBG">Total</td>
         </tr>
         </thead>
+        @if(count($data))
+        <tr>
+            <td colspan="9" class="boldtextyellowBG" >LEMBUR</td>
+        </tr>
         @foreach ($data as $key=>$value)
             <tr>
-                <td>@if($key==0)LEMBUR @endif</td>
-                <td>{{$value->department}}</td>
+                <!-- <td>@if($key==0)LEMBUR @endif</td>
+                <td>{{$value->department}}</td> -->
                 <td>{{$value->sub_dept_name}}</td>
                 <td align="right">
                     @if(str_replace(',', '.', number_format($value->non_staff))!=0)
@@ -406,9 +490,9 @@
         @foreach ($data3 as $key=>$value)
             <tr>
                 <td class="boldtext">{{$value->shift}}</td>
-                <td class="boldtext">{{$value->department}}</td>
+                <!-- <td class="boldtext">{{$value->department}}</td>
                 {{-- <td class="boldtext">{{$value->sub_dept_name}}</td> --}}
-                <td></td>
+                <td></td> -->
                 <td class="boldtext" align="right">{{$value->non_staff}}</td>
                 <td class="boldtext" align="right">{{str_replace(',', '.', number_format($value->harga))}}</td>
                 <td class="boldtext" align="right">{{str_replace(',', '.', number_format($value->jumlah))}}</td>
@@ -419,10 +503,15 @@
                 <td class="boldtext" align="right">{{str_replace(',', '.', number_format($value->total))}}</td>
             </tr>
         @endforeach
+        @endif
+        @if(count($data2))
+        <tr>
+            <td colspan="9" class="boldtextyellowBG" >SHIFT MALAM</td>
+        </tr>
         @foreach ($data2 as $key=>$value)
             <tr>
-                <td>@if($key==0)SHIFT MALAM @endif</td>
-                <td>{{$value->department}}</td>
+                <!-- <td>@if($key==0)SHIFT MALAM @endif</td>
+                <td>{{$value->department}}</td> -->
                 <td>{{$value->sub_dept_name}}</td>
                 <td align="right">
                     @if(str_replace(',', '.', number_format($value->non_staff))!=0)
@@ -467,8 +556,8 @@
         @foreach ($data4 as $value)
             <tr>
                 <td class="boldtext">{{$value->shift}}</td>
-                <td class="boldtext">{{$value->department}}</td>
-                <td></td>
+                <!-- <td class="boldtext">{{$value->department}}</td>
+                <td></td> -->
                 <td class="boldtext" align="right">{{$value->non_staff}}</td>
                 <td class="boldtext" align="right">{{str_replace(',', '.', number_format($value->harga))}}</td>
                 <td class="boldtext" align="right">{{str_replace(',', '.', number_format($value->jumlah))}}</td>
@@ -479,11 +568,78 @@
                 <td class="boldtext" align="right">{{str_replace(',', '.', number_format($value->total))}}</td>
             </tr>
         @endforeach
+        @endif
+        @if(count($data6))
+        <tr>
+            <td colspan="9" class="boldtextyellowBG" >TAKJIL</td>
+        </tr>
+        @foreach ($data6 as $key=>$value)
+            <tr>
+                <!-- <td>@if($key==0)TAKJIL @endif</td>
+                <td>{{$value->department}}</td> -->
+                <td>{{$value->sub_dept_name}}</td>
+                <td align="right">
+                    @if(str_replace(',', '.', number_format($value->non_staff))!=0)
+                    {{str_replace(',', '.', number_format($value->non_staff))}}
+                    @else
+                    @endif
+                </td>
+                <td align="right">
+                    @if(str_replace(',', '.', number_format($value->harga))!=0)
+                    {{str_replace(',', '.', number_format($value->harga))}}
+                    @else
+                    @endif
+                </td>
+                <td align="right">
+                    @if(str_replace(',', '.', number_format($value->jumlah))!=0)
+                    {{str_replace(',', '.', number_format($value->jumlah))}}
+                    @else
+                    @endif
+                </td>
+                <td align="right">
+                    @if(str_replace(',', '.', number_format($value->staff))!=0)
+                    {{str_replace(',', '.', number_format($value->staff))}}
+                    @else
+                    @endif
+                </td>
+                <td align="right">
+                    @if(str_replace(',', '.', number_format($value->harga2))!=0)
+                    {{str_replace(',', '.', number_format($value->harga2))}}
+                    @else
+                    @endif
+                </td>
+                <td align="right">
+                    @if(str_replace(',', '.', number_format($value->jumlah2))!=0)
+                    {{str_replace(',', '.', number_format($value->jumlah2))}}
+                    @else
+                    @endif
+                </td>
+                <td align="right">{{$value->jumlah_karyawan}}</td>
+                <td align="right">{{str_replace(',', '.', number_format($value->total))}}</td>
+            </tr>
+        @endforeach
+        @foreach ($data7 as $key=>$value)
+            <tr>
+                <td class="boldtext">{{$value->shift}}</td>
+                <!-- <td class="boldtext">{{$value->department}}</td>
+                {{-- <td class="boldtext">{{$value->sub_dept_name}}</td> --}}
+                <td></td> -->
+                <td class="boldtext" align="right">{{$value->non_staff}}</td>
+                <td class="boldtext" align="right">{{str_replace(',', '.', number_format($value->harga))}}</td>
+                <td class="boldtext" align="right">{{str_replace(',', '.', number_format($value->jumlah))}}</td>
+                <td class="boldtext" align="right">{{$value->staff}}</td>
+                <td class="boldtext" align="right">{{str_replace(',', '.', number_format($value->harga2))}}</td>
+                <td class="boldtext" align="right">{{str_replace(',', '.', number_format($value->jumlah2))}}</td>
+                <td class="boldtext" align="right">{{$value->jumlah_karyawan}}</td>
+                <td class="boldtext" align="right">{{str_replace(',', '.', number_format($value->total))}}</td>
+            </tr>
+        @endforeach
+        @endif
         @foreach ($data5 as $value)
             <tr>
                 <td class="boldtextyellowBG">{{$value->shift}}</td>
-                <td class="boldtextyellowBG">{{$value->department}}</td>
-                <td class="boldtextyellowBG"></td>
+                <!-- <td class="boldtextyellowBG">{{$value->department}}</td>
+                <td class="boldtextyellowBG"></td> -->
                 <td class="boldtextyellowBG" align="right">{{$value->non_staff}}</td>
                 <td class="boldtextyellowBG" align="right">{{str_replace(',', '.', number_format($value->harga))}}</td>
                 <td class="boldtextyellowBG" align="right">{{str_replace(',', '.', number_format($value->jumlah))}}</td>
@@ -496,7 +652,7 @@
         @endforeach
     </table>
     @endif
-<table width="700px" style="margin-top: 20">
+        <table width="700px" class="signature-table" style="margin-top:20px;">
         <tr>
             <td colspan="7" class="borderless"></td>
         </tr>
@@ -524,7 +680,7 @@
             <td style="font-size: 9pt">Nama&nbsp;: Mega <br>Tanggal&nbsp;:</td>
             <td style="font-size: 9pt">Nama&nbsp;:  Tedy  <br>Tanggal&nbsp;:</td>
             <td style="font-size: 9pt">Nama&nbsp;: Bobby <br>Tanggal&nbsp;:</td>
-            <td style="font-size: 9pt">Nama&nbsp;: Ronald <br>Tanggal&nbsp;:</td>
+            <td style="font-size: 9pt">Nama&nbsp;: Ronald H.<br>Tanggal&nbsp;:</td>
             <td style="font-size: 9pt">Nama&nbsp;:<br>Tanggal&nbsp;:</td>
             <td style="font-size: 9pt">Nama&nbsp;:<br>Tanggal&nbsp;:</td>
             <td style="font-size: 9pt">Nama&nbsp;:<br>Tanggal&nbsp;:</td>

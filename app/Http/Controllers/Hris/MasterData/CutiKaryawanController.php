@@ -815,7 +815,7 @@ class CutiKaryawanController extends AdminBaseController
                 )
                 ->where('dap.enroll_id', $enrollId)
                 ->where('dap.kode_absen_ijin', $kodeAbsen)
-                ->where('dap.is_verifikasi', '1')
+                // ->where('dap.is_verifikasi', '1')
                 ->whereBetween('dap.tanggal_mulai_ijin', [$currentStart->toDateString(), $currentEnd->toDateString()])
                 ->get();
 
@@ -939,7 +939,11 @@ class CutiKaryawanController extends AdminBaseController
     {
         $query =  EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, department_name,department_id,sub_dept_name, sub_dept_id, status_aktif,
                                            concat(enroll_id, " - ", nik, " - ", employee_name) select_employee')
-                                    ->where('status_aktif', 'AKTIF')
+                                    // ->where('status_aktif', 'AKTIF')
+                                    ->where(function($q){
+                                        $q->whereNull('tanggal_resign')
+                                        ->orWhere('tanggal_resign', '>=', date('Y-m-d'));
+                                    })
                                     ->groupby('enroll_id')
                                     ->orderby('employee_name', 'asc')
                                     ->get();

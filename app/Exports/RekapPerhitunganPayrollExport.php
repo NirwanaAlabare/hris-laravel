@@ -201,7 +201,8 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
                     potongan_upah,
                     potongan_lembur,
                     potongan_insentif,
-                    potongan_piutang
+                    potongan_piutang,
+                    sub_dept_id
 
                 ')
             ->whereRaw('
@@ -225,6 +226,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
 
     public function map($Data): array
     {
+        //  dd($Data);
         $enroll_id = $Data->enroll_id;
         $nik = $Data->nik;
         $employee_name = $Data->employee_name;
@@ -338,7 +340,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         if ($Data->koreksi_lembur == 0) {
             $koreksi_lembur = '0';
         } else {
-            $koreksi_lembur = $Data->koreksi_lembur;
+            $koreksi_lembur = '0';
         }
         if ($Data->koreksi_insentif == 0) {
             $koreksi_insentif = '0';
@@ -508,11 +510,11 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         } else {
             $jumlah_potongan_rupiah = $Data->jumlah_potongan_rupiah;
         }
-        if ($Data->upah_bersih_rupiah == 0) {
-            $upah_bersih_rupiah = '0';
-        } else {
-            $upah_bersih_rupiah = $Data->upah_bersih_rupiah;
-        }
+        // if ($Data->upah_bersih_rupiah == 0) {
+        //     $upah_bersih_rupiah = '0';
+        // } else {
+        //     $upah_bersih_rupiah = $Data->upah_bersih_rupiah;
+        // }
         if ($Data->potongan_kasbon_rupiah == 0) {
             $potongan_kasbon_rupiah = '0';
         } else {
@@ -611,13 +613,14 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         $jabatan_karyawan = $Data->jabatan_karyawan;
         $nama_bagian = $Data->nama_bagian;
         $department_id = '';
-        if (isset(DepartmentAll::select('department_id')->where('department_name', $Data->nama_department)->groupBy('department_id')->pluck('department_id')[0])) {
-            $department_id = DepartmentAll::select('department_id')->where('department_name', $Data->nama_department)->groupBy('department_id')->pluck('department_id')[0];
+        if (isset(DepartmentAll::select('department_id')->where('sub_dept_id', $Data->sub_dept_id)->groupBy('department_id')->pluck('department_id')[0])) {
+            $department_id = DepartmentAll::select('department_id')->where('sub_dept_id', $Data->sub_dept_id)->groupBy('department_id')->pluck('department_id')[0];
         }
-        $sub_dept_id = '';
-        if (isset(DepartmentAll::select('sub_dept_id')->where('department_name', $Data->nama_department)->where('sub_dept_name', $Data->nama_bagian)->pluck('sub_dept_id')[0])) {
-            $sub_dept_id = DepartmentAll::select('sub_dept_id')->where('department_name', $Data->nama_department)->where('sub_dept_name', $Data->nama_bagian)->pluck('sub_dept_id')[0];
-        }
+        // $sub_dept_id = '';
+        // if (isset(DepartmentAll::select('sub_dept_id')->where('department_name', $Data->nama_department)->where('sub_dept_name', $Data->nama_bagian)->pluck('sub_dept_id')[0])) {
+        //     $sub_dept_id = DepartmentAll::select('sub_dept_id')->where('department_name', $Data->nama_department)->where('sub_dept_name', $Data->nama_bagian)->pluck('sub_dept_id')[0];
+        // }
+        $sub_dept_id = $Data->sub_dept_id;
         $nama_department = $Data->nama_department;
         $kategori_karyawan = $Data->kategori_karyawan;
         $aktif_karyawan = $Data->aktif_karyawan;
@@ -648,16 +651,32 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         // Hitung nilai sebelum pembulatan (upah neto - potongan)
         $nilai_bersih = $Data->upah_neto_rupiah - $Data->jumlah_potongan_rupiah;
 
+        // if ($tunai) {
+        //     // Jika tunai, pembulatan ke atas kelipatan 500
+        //     $total_upah_thp_rupiah_pembulatan = ceil($nilai_bersih / 500) * 500;
+        // } else {
+        //     // Jika non-tunai, pembulatan ke atas kelipatan 100 (ROUNDUP -2)
+        //     $total_upah_thp_rupiah_pembulatan = ceil($nilai_bersih / 100) * 100;
+        // }
         if ($tunai) {
             // Jika tunai, pembulatan ke atas kelipatan 500
-            $total_upah_thp_rupiah_pembulatan = ceil($nilai_bersih / 500) * 500;
+            $total_upah_thp_rupiah_pembulatan = ceil($total_upah_thp_rupiah_pecahan / 500) * 500;
         } else {
             // Jika non-tunai, pembulatan ke atas kelipatan 100 (ROUNDUP -2)
-            $total_upah_thp_rupiah_pembulatan = ceil($nilai_bersih / 100) * 100;
+            $total_upah_thp_rupiah_pembulatan = ceil($total_upah_thp_rupiah_pecahan / 100) * 100;
         }
+        
+        // dd($total_upah_thp_rupiah_pembulatan);
 
         // Hitung nilai pembulatan
-        $pembulatan = $total_upah_thp_rupiah_pembulatan - $nilai_bersih;
+        $pembulatan = $total_upah_thp_rupiah_pembulatan - $total_upah_thp_rupiah_pecahan;
+         if ($sub_dept_id === 'DEP08SUB005') {
+                $jumlah_potongan_hari = 25 - $total_kehadiran_net;
+            } else {
+                $jumlah_potongan_hari = 21 - $total_kehadiran_net;
+            }
+
+            $potongan = $upah_per_hari * $jumlah_potongan_hari;
 
         $upah_per_jam = $upah_per_bulan / 173;
         $periode_kehadiran = $Data->periode_early ?? $Data->periode_kehadiran;
@@ -811,7 +830,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
             $potongan_upah,
             $potongan_lembur,
             $potongan_insentif,
-            $potongan_piutang,
+            $koreksi_potongan_rupiah,
             $nol,
             $potongan_kehadiran_rupiah,
             $rp_pot_jam,
