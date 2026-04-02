@@ -1311,7 +1311,7 @@ public function new_employee_contract()
                     SELECT mulai_jam_kerja, akhir_jam_kerja, tanggal_berjalan, enroll_id
                     FROM master_data_absen_kehadiran
                     WHERE (enroll_id, tanggal_berjalan) IN (
-                        SELECT enroll_id, MAX(tanggal_berjalan)
+                        SELECT enroll_id, MIN(tanggal_berjalan)
                         FROM master_data_absen_kehadiran
                         GROUP BY enroll_id
                     )
@@ -1880,7 +1880,7 @@ public function new_employee_contract()
         ->keyBy('enroll_id');
       $absen = DB::table('master_data_absen_kehadiran as m1')
         ->select('m1.enroll_id', 'm1.mulai_jam_kerja', 'm1.akhir_jam_kerja', 'm1.tanggal_berjalan')
-        ->join(DB::raw('(SELECT enroll_id, MAX(tanggal_berjalan) as latest_date
+        ->join(DB::raw('(SELECT enroll_id, MIN(tanggal_berjalan) as latest_date
                         FROM master_data_absen_kehadiran
                         GROUP BY enroll_id) as m2'), function($join) {
             $join->on('m1.enroll_id', '=', 'm2.enroll_id');

@@ -1156,6 +1156,8 @@ class MdAbsenHadirController extends AdminBaseController
                                         $kode_ijin_payroll='PC';
                                     }else if($q->jumlah_menit_absen_dt!=0 && $q->jumlah_menit_absen_pc!=0){
                                         $kode_ijin_payroll='DTPC';
+                                    }else if($q->kode_hari==5 || $q->kode_hari==6){
+                                        $kode_ijin_payroll='LSM';
                                     }else{
                                         $kode_ijin_payroll='OK';
                                     }
@@ -1661,6 +1663,8 @@ class MdAbsenHadirController extends AdminBaseController
                             $kode_ijin_payroll='PC';
                         }else if($Kehadiran->jumlah_menit_absen_dt!=0 && $Kehadiran->jumlah_menit_absen_pc!=0){
                             $kode_ijin_payroll='DTPC';
+                        }else if($Kehadiran->kode_hari==5 || $Kehadiran->kode_hari==6){
+                                        $kode_ijin_payroll='LSM';
                         }else{
                             $kode_ijin_payroll='OK';
                         }

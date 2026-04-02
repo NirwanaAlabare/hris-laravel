@@ -281,7 +281,8 @@
             </tr>
         </thead>
     </table>
-    <table width="100%" style="width: 90%; margin-left:30px; font-family: 'Times New Roman', Times, serif; font-size: 11pt;">
+    <table width="100%" style="width: 90%; margin-left:30px; font-family: 'Times New Roman', Times, serif; font-size: 11pt; border-collapse:separate;
+border-spacing:20px 0px;">
         <thead>
             <tr style="height: 65px; vertical-align: bottom;">
                 <!-- Nama + Garis kiri -->
@@ -298,6 +299,18 @@
                         </div>
                     </td>
                 @endforeach
+                <?php if ($value->status_jabatan == 'MANAGER') { ?>
+                <td style="text-align: left;">
+                    <div style="width:200px; border-bottom: 1px solid #000; text-align: center;">
+                        RONALD HARSANTO
+                    </div>
+                </td>
+                <?php } ?>
+                 <!-- <td style="text-align: left;">
+                    <div style="width:200px; border-bottom: 1px solid #000; text-align: center;">
+                        RONALD HARSANTO 
+                    </div>
+                </td> -->
 
                 <!-- Nama + Garis kanan -->
                 <td style="text-align: center;">
@@ -307,13 +320,19 @@
                 </td>
             </tr>
             <!-- Jabatan -->
-            <tr style="height: 25px;">
-                <td style="text-align: left;">Manager HRGA-Compliance</td>
-                @foreach ($approval_list as $approver)
-                    <td style="text-align: center;">{{ Str::title(strtolower($approver->status_jabatan)) }}</td>
-                @endforeach
-                <td style="text-align: center;">Karyawan</td>
-            </tr>
+           <tr style="height:10px;">
+    <td style="text-align:left; white-space:nowrap;">Manager HRGA-Compliance</td>
+    @foreach ($approval_list as $approver)
+        <td style="text-align:center; white-space:nowrap;;">
+            {{ Str::title(strtolower($approver->status_jabatan)) }}
+        </td>
+    @endforeach
+         <?php if ($value->status_jabatan == 'MANAGER') { ?>
+    <td style="text-align:center; white-space:nowrap;">Chief Operational Officer</td>>
+    <?php } ?>
+    <!-- <td style="text-align:center; white-space:nowrap;">Chief Operational Officer</td> -->
+    <td style="text-align:center; white-space:nowrap;">Karyawan</td>
+</tr>
         </thead>
     </table>
         <table width="40%" style="border: 2px solid #747474; position: absolute; left: 0; bottom: 10px;">

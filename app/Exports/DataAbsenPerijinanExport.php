@@ -65,9 +65,9 @@ class DataAbsenPerijinanExport implements WithColumnFormatting, FromQuery, WithM
                                         employee_atribut.status_staff,
                                         master_data_absen_kehadiran.nama_hari,
                                         data_absen_perijinan.absen_alasan,
-                                        ref_absen_ijin.nama_ijin_payroll,
+                                        COALESCE(ref_absen_ijin.nama_ijin_payroll,"DI BAYAR") as nama_ijin_payroll,
                                         ref_absen_ijin.nama_absen_ijin,
-                                        master_data_absen_kehadiran.status_absen,
+                                        COALESCE(master_data_absen_kehadiran.status_absen,"OK") as status_absen,
                                         data_absen_perijinan.tanggal_mulai_ijin,
                                         data_absen_perijinan.tanggal_akhir_ijin
                                     ')
@@ -76,9 +76,13 @@ class DataAbsenPerijinanExport implements WithColumnFormatting, FromQuery, WithM
                                     ->leftJoin('department_all', 'employee_atribut.sub_dept_id', '=', 'department_all.sub_dept_id')
                                     ->leftJoin('data_absen_perijinan', 'master_data_absen_kehadiran.nomor_absen_ijin', '=', 'data_absen_perijinan.nomor_form_perizinan')
                                     ->whereBetween('master_data_absen_kehadiran.tanggal_berjalan', [$tanggalMulai, $tanggalSampai])
-                                    ->whereNotNull('master_data_absen_kehadiran.status_absen')
+                                    // ->whereNotNull('master_data_absen_kehadiran.status_absen')
                                     ->whereNotNull('master_data_absen_kehadiran.nomor_absen_ijin')
-                                    ->whereNotIn('master_data_absen_kehadiran.status_absen', ['IKS','M','TL'])
+                                    // ->whereNotIn('master_data_absen_kehadiran.status_absen', ['IKS','M','TL'])
+                                    ->where(function($q){
+                                        $q->whereNotIn('master_data_absen_kehadiran.status_absen', ['IKS','M','TL'])
+                                        ->orWhereNull('master_data_absen_kehadiran.status_absen');
+                                    })
                                     ->groupBy('master_data_absen_kehadiran.tanggal_berjalan', 'employee_atribut.enroll_id')
                                     ->orderBy('master_data_absen_kehadiran.nomor_absen_ijin', 'asc')
                                     ->orderBy('employee_atribut.employee_name', 'asc')

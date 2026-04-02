@@ -2733,7 +2733,7 @@ class ProsesPayrollController extends AdminBaseController
 
                             LEFT JOIN (
                             SELECT enroll_id,
-                                 SUM(CASE WHEN jenis_potongan IN (4, 6) THEN jumlah_rp_potongan ELSE 0
+                                 SUM(CASE WHEN jenis_potongan IN (3,4, 6) THEN jumlah_rp_potongan ELSE 0
                                     END
                                 ) AS potongan_piutang,
                                 SUM(CASE WHEN jenis_potongan = 5 THEN jumlah_rp_potongan ELSE 0 END) AS potongan_insentif,
