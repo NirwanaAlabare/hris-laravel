@@ -634,7 +634,12 @@ class MdAbsenHadirController extends AdminBaseController
             }
 
             //update dtpc
-            $masterAbsen=MasterDataAbsenKehadiran::where('enroll_id',$value['enroll_id'])->where('tanggal_berjalan',$value['tanggal_berjalan'])->get();
+            // $masterAbsen=MasterDataAbsenKehadiran::where('enroll_id',$value['enroll_id'])->where('tanggal_berjalan',$value['tanggal_berjalan'])->get();
+            $masterAbsen = MasterDataAbsenKehadiran::select('employee_atribut.status_staff','master_data_absen_kehadiran.*')
+            ->join('employee_atribut','master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
+            ->where('master_data_absen_kehadiran.enroll_id',$value['enroll_id'])
+            ->where('master_data_absen_kehadiran.tanggal_berjalan',$value['tanggal_berjalan'])
+            ->get();
             foreach ($masterAbsen as $k => $v) {
                 $jadwal_in=$v->mulai_jam_kerja;
                 $jadwal_out=$v->akhir_jam_kerja;
@@ -649,6 +654,10 @@ class MdAbsenHadirController extends AdminBaseController
                 $PC = date_diff(date_create($jadwal_out),date_create($absen_out));
                 if( $jadwal_in!=null && $absen_in!=null && $absen_in>$jadwal_in && $v->status_absen==null){
                     $total_DT1 = $DT->i +($DT->h*60);
+                    // toleransi 10 menit untuk STAFF
+                    if($v->status_staff == 'STAFF' && $total_DT1 <= 10){
+                        $total_DT = 0;
+                    }else{
                     if($jadwal_in=='07:00:00' || $jadwal_in=='07:30:00'){
                         if($absen_in >'13:00:00'){
                             $total_DT=$total_DT1-60;
@@ -673,6 +682,7 @@ class MdAbsenHadirController extends AdminBaseController
                         }
                     }else{
                         $total_DT=$total_DT1;
+                    }
                     }
                     $total_DT = $total_DT < 480 ? $total_DT : 480;
                 }else{

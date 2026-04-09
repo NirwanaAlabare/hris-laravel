@@ -505,7 +505,7 @@ class KoreksiUpahController extends AdminBaseController
                 from mut_karyawan_input_form_lembur_det a
                 inner join mut_karyawan_input_form_lembur b
                     on a.no_form = b.no_form
-                where b.tgl_lembur = '$tanggal_lembur'
+                where b.tgl_lembur = '$tanggal_lembur' and a.deleted_at is null
 
                 union all
 
