@@ -782,6 +782,11 @@ class CutiKaryawanController extends AdminBaseController
             ->where('enroll_id', $enrollId)
             ->first();
 
+        $master = DB::table('master_data_absen_kehadiran')
+        ->where('enroll_id', $enrollId)
+        ->get()
+        ->keyBy('tanggal_berjalan');
+
         if (!$employee) {
             return [];
         }
@@ -816,6 +821,7 @@ class CutiKaryawanController extends AdminBaseController
                 ->where('dap.enroll_id', $enrollId)
                 ->where('dap.kode_absen_ijin', $kodeAbsen)
                 // ->where('dap.is_verifikasi', '1')
+                ->where('dap.nomor_form_perizinan', '!=', null)
                 ->whereBetween('dap.tanggal_mulai_ijin', [$currentStart->toDateString(), $currentEnd->toDateString()])
                 ->get();
 
@@ -830,7 +836,24 @@ class CutiKaryawanController extends AdminBaseController
 
                 for ($i = 0; $i < $days; $i++) {
 
-                    $currentDay = $start->copy()->addDays($i);
+                   $currentDay = $start->copy()->addDays($i);
+                    $tanggal_berjalan = $currentDay->format('Y-m-d');
+
+                    // cek data master kehadiran
+                    $masterData = $master[$tanggal_berjalan] ?? null;
+
+                    if ($masterData) {
+
+                        // skip jika sabtu atau minggu
+                        if ($masterData->kode_hari == 5 || $masterData->kode_hari == 6) {
+                            continue;
+                        }
+
+                        // skip jika status LN
+                        if ($masterData->status_absen == 'LN') {
+                            continue;
+                        }
+                    }
 
                     $formattedData->push([
                         'tahun' => $item->tahun,
