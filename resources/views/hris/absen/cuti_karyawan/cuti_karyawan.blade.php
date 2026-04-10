@@ -673,78 +673,94 @@
                     const tableBody = document.getElementById('cutiTableBody');
                     tabsContainer.innerHTML = '';
                     tableBody.innerHTML = '';
+                  
+                    
+                  
 
                     function renderTable(rawdata) {
-                        const data = rawdata.slice().sort((a, b) => {
-                            if (!a.tanggal_mulai_ijin) return 1;
-                            if (!b.tanggal_mulai_ijin) return -1;
-                            
-                            return new Date(a.tanggal_mulai_ijin) - new Date(b.tanggal_mulai_ijin);
-                        });
-                        
-                        tableBody.innerHTML = '';
 
-                        let totalDipakai = 0;
-                        let totalHangus = 0;
+                          const data = rawdata.slice().sort((a, b) => {
+                                if (!a.tanggal_mulai_ijin) return 1;
+                                if (!b.tanggal_mulai_ijin) return -1;
 
-                        // Jika data kosong, buat 12 baris CUTI HANGUS
-                        if (data.length === 0) {
-                            for (let i = 0; i < 12; i++) {
-                                totalHangus++;
-                                const row = `
-                                    <tr style="background-color: #f8d7da; color: #721c24;">
-                                        <td>${i + 1}</td>
-                                        <td colspan="6" class="text-center fw-bold">CUTI HANGUS</td>
-                                    </tr>`;
-                                tableBody.innerHTML += row;
-                            }
-                        } else {
-                            data.forEach((item, index) => {
-                                let row = '';
+                                // Ubah DD-MM-YYYY menjadi objek Date agar bisa dibandingkan
+                                const [dayA, monthA, yearA] = a.tanggal_mulai_ijin.split('-');
+                                const [dayB, monthB, yearB] = b.tanggal_mulai_ijin.split('-');
 
-                                if (item.absen_alasan === 'CUTI HANGUS') {
-                                    totalHangus++;
-                                    row = `
-                                        <tr style="background-color: #DDDFE2;">
-                                            <td>${index + 1}</td>
-                                            <td colspan="6" class="text-center fw-bold fs-1">-</td>
-                                        </tr>`;
-                                } else {
-                                    const days = countWorkingDaysBetween(item.tanggal_mulai_ijin, item.tanggal_akhir_ijin);
-                                    totalDipakai += days;
-                                    row = `
-                                        <tr>
-                                            <td>${index + 1}</td>
-                                            <td>${item.tanggal_perizinan ?? '-'}</td>
-                                            <td>${item.nomor_form_perizinan}</td>
-                                            <td>${item.tanggal_mulai_ijin}</td>
-                                            <td>${item.tanggal_akhir_ijin}</td>
-                                            <td>${item.kode_absen_ijin}</td>
-                                            <td>${item.absen_alasan}</td>
-                                        </tr>`;
-                                }
+                                // Buat objek date dengan urutan (year, monthIndex, day)
+                                // Note: monthIndex dimulai dari 0 (Januari = 0)
+                                const dateA = new Date(yearA, monthA - 1, dayA);
+                                const dateB = new Date(yearB, monthB - 1, dayB);
 
-                                tableBody.innerHTML += row;
+                                return dateA - dateB; // Gunakan (dateB - dateA) jika ingin dari yang terbaru
                             });
+                           
+                            tableBody.innerHTML = '';
+
+                            let totalDipakai = 0;
+                            let totalHangus = 0;
+
+                            // Jika data kosong, buat 12 baris CUTI HANGUS
+                            if (data.length === 0) {
+                                for (let i = 0; i < 12; i++) {
+                                    totalHangus++;
+                                    const row = `
+                                        <tr style="background-color: #f8d7da; color: #721c24;">
+                                            <td>${i + 1}</td>
+                                            <td colspan="6" class="text-center fw-bold">CUTI HANGUS</td>
+                                        </tr>`;
+                                    tableBody.innerHTML += row;
+                                }
+                            } else {
+                                data.forEach((item, index) => {
+                                    let row = '';
+
+                                    if (item.absen_alasan === 'CUTI HANGUS') {
+                                        totalHangus++;
+                                        row = `
+                                            <tr style="background-color: #DDDFE2;">
+                                                <td>${index + 1}</td>
+                                                <td colspan="6" class="text-center fw-bold fs-1">-</td>
+                                            </tr>`;
+                                    } else {
+                                        const days = countWorkingDaysBetween(item.tanggal_mulai_ijin, item.tanggal_akhir_ijin);
+                                        totalDipakai += days;
+                                        row = `
+                                            <tr>
+                                                <td>${index + 1}</td>
+                                                <td>${item.tanggal_perizinan ?? '-'}</td>
+                                                <td>${item.nomor_form_perizinan}</td>
+                                                <td>${item.tanggal_mulai_ijin}</td>
+                                                <td>${item.tanggal_akhir_ijin}</td>
+                                                <td>${item.kode_absen_ijin}</td>
+                                                <td>${item.absen_alasan}</td>
+                                            </tr>`;
+                                    }
+
+                                    tableBody.innerHTML += row;
+                                });
+                            }
+
+                            // Bersihkan footer sebelumnya (jika ada)
+                            const tfoot = document.querySelector('#table_detail_cuti_karyawan tfoot');
+                            if (tfoot) tfoot.remove();
+
+                            // Tambahkan baris total di bawah tabel
+                            const footer = document.createElement('tfoot');
+                            const jatahCuti = 12;
+                            const sisaCuti = Math.max(jatahCuti - totalDipakai, 0);
+                            footer.innerHTML = `
+                               <tr id="footer-primary" class="fw-bold">
+                                    <td colspan="7" class="text-end">
+                                        Total Cuti Dipakai: ${totalDipakai} &nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp; Cuti Hangus / Tidak Terpakai: ${sisaCuti}
+                                    </td>
+                                </tr>
+                            `;
+                            document.querySelector('#table_detail_cuti_karyawan').appendChild(footer);
                         }
 
-                        // Bersihkan footer sebelumnya (jika ada)
-                        const tfoot = document.querySelector('#table_detail_cuti_karyawan tfoot');
-                        if (tfoot) tfoot.remove();
 
-                        // Tambahkan baris total di bawah tabel
-                        const footer = document.createElement('tfoot');
-                        const jatahCuti = 12;
-                        const sisaCuti = Math.max(jatahCuti - totalDipakai, 0);
-                        footer.innerHTML = `
-                            <tr id="footer-primary" class="fw-bold">
-                                <td colspan="7" class="text-end">
-                                    Total Cuti Dipakai: ${totalDipakai} &nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp; Cuti Hangus / Tidak Terpakai: ${sisaCuti}
-                                </td>
-                            </tr>
-                        `;
-                        document.querySelector('#table_detail_cuti_karyawan').appendChild(footer);
-                    }
+
 
                     // Buat tab untuk tiap periode
                     data.forEach((periodeObj, index) => {
