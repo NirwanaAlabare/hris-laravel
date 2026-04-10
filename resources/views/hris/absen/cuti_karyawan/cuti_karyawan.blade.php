@@ -222,18 +222,6 @@
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label class="form-label">STATUS AKTIF : </label>
-                            <div class="input-group">
-                                <select id="selectStatus" name="selectStatus" class="form-control">
-                                    <option value='SEMUA'>SEMUA</option>
-                                    <option value='AKTIF'>AKTIF</option>
-                                    <option value='TIDAK AKTIF'>TIDAK AKTIF</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
                             <label class="form-label">PILIH SKEMA : </label>
                             <div class="input-group">
                                 <select id="skema_payroll" name="skema_payroll" class="form-control">
@@ -243,7 +231,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="col-md-3">
                         <div class="form-group">
                             <label class="form-label">EXPORT DATA : </label>
@@ -673,28 +660,8 @@
                     const tableBody = document.getElementById('cutiTableBody');
                     tabsContainer.innerHTML = '';
                     tableBody.innerHTML = '';
-                  
-                    
-                  
 
-                    function renderTable(rawdata) {
-
-                          const data = rawdata.slice().sort((a, b) => {
-                                if (!a.tanggal_mulai_ijin) return 1;
-                                if (!b.tanggal_mulai_ijin) return -1;
-
-                                // Ubah DD-MM-YYYY menjadi objek Date agar bisa dibandingkan
-                                const [dayA, monthA, yearA] = a.tanggal_mulai_ijin.split('-');
-                                const [dayB, monthB, yearB] = b.tanggal_mulai_ijin.split('-');
-
-                                // Buat objek date dengan urutan (year, monthIndex, day)
-                                // Note: monthIndex dimulai dari 0 (Januari = 0)
-                                const dateA = new Date(yearA, monthA - 1, dayA);
-                                const dateB = new Date(yearB, monthB - 1, dayB);
-
-                                return dateA - dateB; // Gunakan (dateB - dateA) jika ingin dari yang terbaru
-                            });
-                           
+                    function renderTable(data) {
                             tableBody.innerHTML = '';
 
                             let totalDipakai = 0;
@@ -1234,14 +1201,12 @@
         }
         function searchData() {
             var selectEmployeeID = $('#selectEmployeeID').val();
-            var selectStatus = $('#selectStatus').val();
             $('#entertaintTable').DataTable().ajax.reload();
         }
 
         $('#btn-view_excel').click(function(e){
             var selectEmployeeID = $('#selectEmployeeID').val();
-            var selectStatus = $('#selectStatus').val();
-     
+            console.log('selectEmployeeID', selectEmployeeID);
             $('#btn-view_excel').addClass("btn-loading");
             $("#btn-view_excel").html('Please wait...');
             $("#btn-view_excel").attr("disabled", true);
@@ -1380,7 +1345,6 @@
                     url: '{{ route('cuti_karyawan.show') }}',
                     data: function(d) {
                         d.selectEmployeeID = $('#selectEmployeeID').val();
-                        d.selectStatus = $('#selectStatus').val();
                     }
                 },
                 columns: [
