@@ -2008,8 +2008,8 @@ h1 {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                             data: {
                                 enroll_id:enroll_id,
-                                tanggal_mulai_ijin:tanggal_mulai_ijin,
-                                tanggal_akhir_ijin:tanggal_akhir_ijin,
+                                tanggal_mulai_ijin:tanggal_mulai_ijin_before,
+                                tanggal_akhir_ijin:tanggal_akhir_ijin_before,
                                 tanggal_perizinan:tanggal_perizinan,
                                 kode_absen_ijin:kode_absen_ijin,
                             },

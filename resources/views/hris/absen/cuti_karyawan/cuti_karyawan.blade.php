@@ -222,6 +222,18 @@
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
+                            <label class="form-label">STATUS AKTIF : </label>
+                            <div class="input-group">
+                                <select id="selectStatus" name="selectStatus" class="form-control">
+                                    <option value='SEMUA'>SEMUA</option>
+                                    <option value='AKTIF'>AKTIF</option>
+                                    <option value='TIDAK AKTIF'>TIDAK AKTIF</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
                             <label class="form-label">PILIH SKEMA : </label>
                             <div class="input-group">
                                 <select id="skema_payroll" name="skema_payroll" class="form-control">
@@ -231,6 +243,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-md-3">
                         <div class="form-group">
                             <label class="form-label">EXPORT DATA : </label>
@@ -661,73 +674,77 @@
                     tabsContainer.innerHTML = '';
                     tableBody.innerHTML = '';
 
-                    function renderTable(data) {
-                            tableBody.innerHTML = '';
+                    function renderTable(rawdata) {
+                        const data = rawdata.slice().sort((a, b) => {
+                            if (!a.tanggal_mulai_ijin) return 1;
+                            if (!b.tanggal_mulai_ijin) return -1;
+                            
+                            return new Date(a.tanggal_mulai_ijin) - new Date(b.tanggal_mulai_ijin);
+                        });
+                        
+                        tableBody.innerHTML = '';
 
-                            let totalDipakai = 0;
-                            let totalHangus = 0;
+                        let totalDipakai = 0;
+                        let totalHangus = 0;
 
-                            // Jika data kosong, buat 12 baris CUTI HANGUS
-                            if (data.length === 0) {
-                                for (let i = 0; i < 12; i++) {
-                                    totalHangus++;
-                                    const row = `
-                                        <tr style="background-color: #f8d7da; color: #721c24;">
-                                            <td>${i + 1}</td>
-                                            <td colspan="6" class="text-center fw-bold">CUTI HANGUS</td>
-                                        </tr>`;
-                                    tableBody.innerHTML += row;
-                                }
-                            } else {
-                                data.forEach((item, index) => {
-                                    let row = '';
-
-                                    if (item.absen_alasan === 'CUTI HANGUS') {
-                                        totalHangus++;
-                                        row = `
-                                            <tr style="background-color: #DDDFE2;">
-                                                <td>${index + 1}</td>
-                                                <td colspan="6" class="text-center fw-bold fs-1">-</td>
-                                            </tr>`;
-                                    } else {
-                                        const days = countWorkingDaysBetween(item.tanggal_mulai_ijin, item.tanggal_akhir_ijin);
-                                        totalDipakai += days;
-                                        row = `
-                                            <tr>
-                                                <td>${index + 1}</td>
-                                                <td>${item.tanggal_perizinan ?? '-'}</td>
-                                                <td>${item.nomor_form_perizinan}</td>
-                                                <td>${item.tanggal_mulai_ijin}</td>
-                                                <td>${item.tanggal_akhir_ijin}</td>
-                                                <td>${item.kode_absen_ijin}</td>
-                                                <td>${item.absen_alasan}</td>
-                                            </tr>`;
-                                    }
-
-                                    tableBody.innerHTML += row;
-                                });
+                        // Jika data kosong, buat 12 baris CUTI HANGUS
+                        if (data.length === 0) {
+                            for (let i = 0; i < 12; i++) {
+                                totalHangus++;
+                                const row = `
+                                    <tr style="background-color: #f8d7da; color: #721c24;">
+                                        <td>${i + 1}</td>
+                                        <td colspan="6" class="text-center fw-bold">CUTI HANGUS</td>
+                                    </tr>`;
+                                tableBody.innerHTML += row;
                             }
+                        } else {
+                            data.forEach((item, index) => {
+                                let row = '';
 
-                            // Bersihkan footer sebelumnya (jika ada)
-                            const tfoot = document.querySelector('#table_detail_cuti_karyawan tfoot');
-                            if (tfoot) tfoot.remove();
+                                if (item.absen_alasan === 'CUTI HANGUS') {
+                                    totalHangus++;
+                                    row = `
+                                        <tr style="background-color: #DDDFE2;">
+                                            <td>${index + 1}</td>
+                                            <td colspan="6" class="text-center fw-bold fs-1">-</td>
+                                        </tr>`;
+                                } else {
+                                    const days = countWorkingDaysBetween(item.tanggal_mulai_ijin, item.tanggal_akhir_ijin);
+                                    totalDipakai += days;
+                                    row = `
+                                        <tr>
+                                            <td>${index + 1}</td>
+                                            <td>${item.tanggal_perizinan ?? '-'}</td>
+                                            <td>${item.nomor_form_perizinan}</td>
+                                            <td>${item.tanggal_mulai_ijin}</td>
+                                            <td>${item.tanggal_akhir_ijin}</td>
+                                            <td>${item.kode_absen_ijin}</td>
+                                            <td>${item.absen_alasan}</td>
+                                        </tr>`;
+                                }
 
-                            // Tambahkan baris total di bawah tabel
-                            const footer = document.createElement('tfoot');
-                            const jatahCuti = 12;
-                            const sisaCuti = Math.max(jatahCuti - totalDipakai, 0);
-                            footer.innerHTML = `
-                               <tr id="footer-primary" class="fw-bold">
-                                    <td colspan="7" class="text-end">
-                                        Total Cuti Dipakai: ${totalDipakai} &nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp; Cuti Hangus / Tidak Terpakai: ${sisaCuti}
-                                    </td>
-                                </tr>
-                            `;
-                            document.querySelector('#table_detail_cuti_karyawan').appendChild(footer);
+                                tableBody.innerHTML += row;
+                            });
                         }
 
+                        // Bersihkan footer sebelumnya (jika ada)
+                        const tfoot = document.querySelector('#table_detail_cuti_karyawan tfoot');
+                        if (tfoot) tfoot.remove();
 
-
+                        // Tambahkan baris total di bawah tabel
+                        const footer = document.createElement('tfoot');
+                        const jatahCuti = 12;
+                        const sisaCuti = Math.max(jatahCuti - totalDipakai, 0);
+                        footer.innerHTML = `
+                            <tr id="footer-primary" class="fw-bold">
+                                <td colspan="7" class="text-end">
+                                    Total Cuti Dipakai: ${totalDipakai} &nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp; Cuti Hangus / Tidak Terpakai: ${sisaCuti}
+                                </td>
+                            </tr>
+                        `;
+                        document.querySelector('#table_detail_cuti_karyawan').appendChild(footer);
+                    }
 
                     // Buat tab untuk tiap periode
                     data.forEach((periodeObj, index) => {
@@ -1201,12 +1218,14 @@
         }
         function searchData() {
             var selectEmployeeID = $('#selectEmployeeID').val();
+            var selectStatus = $('#selectStatus').val();
             $('#entertaintTable').DataTable().ajax.reload();
         }
 
         $('#btn-view_excel').click(function(e){
             var selectEmployeeID = $('#selectEmployeeID').val();
-            console.log('selectEmployeeID', selectEmployeeID);
+            var selectStatus = $('#selectStatus').val();
+     
             $('#btn-view_excel').addClass("btn-loading");
             $("#btn-view_excel").html('Please wait...');
             $("#btn-view_excel").attr("disabled", true);
@@ -1345,6 +1364,7 @@
                     url: '{{ route('cuti_karyawan.show') }}',
                     data: function(d) {
                         d.selectEmployeeID = $('#selectEmployeeID').val();
+                        d.selectStatus = $('#selectStatus').val();
                     }
                 },
                 columns: [
