@@ -360,55 +360,123 @@ class GAController extends AdminBaseController
 
     // }
 
-    public function ajax_getallemployeeatribut()
-    {
-        $loggedAdmin = Auth::guard('admin')->user();
-        $id_user = $loggedAdmin->enroll_id;
+    // public function ajax_getallemployeeatribut()
+    // {
+    //     $loggedAdmin = Auth::guard('admin')->user();
+    //     $id_user = $loggedAdmin->enroll_id;
 
-        $site_nirwana_id = EmployeeAtribut::where('enroll_id', $id_user)->first()->site_nirwana_id;
-        $department_id = EmployeeAtribut::where('enroll_id', $id_user)->first()->department_id;
-       if ($site_nirwana_id == 'NAG') {
-            if (in_array($department_id, ['DEP13', 'DEP07', 'DEP23'])) {
-                $allowedDepartments = ['DEP13', 'DEP07', 'DEP23'];
-            } elseif (in_array($department_id, ['DEP03', 'DEP04', 'DEP01', 'DEP14'])) {
-                $allowedDepartments = ['DEP03', 'DEP04', 'DEP01', 'DEP14'];
-            } elseif (in_array($department_id, ['DEP17', 'DEP18'])) {
-                $allowedDepartments = ['DEP17', 'DEP18'];
-            } elseif (in_array($department_id, ['DEP22', 'DEP19'])) {
-                $allowedDepartments = ['DEP22', 'DEP19'];
-            } elseif ($department_id == 'DEP08') {
-                $allowedDepartments = ['DEP08', 'DEP02'];
-            } else {
-                $allowedDepartments = [$department_id];
-            }
+    //     $site_nirwana_id = EmployeeAtribut::where('enroll_id', $id_user)->first()->site_nirwana_id;
+    //     $department_id = EmployeeAtribut::where('enroll_id', $id_user)->first()->department_id;
+    //    if ($site_nirwana_id == 'NAG') {
+    //         if (in_array($department_id, ['DEP13', 'DEP07', 'DEP23'])) {
+    //             $allowedDepartments = ['DEP13', 'DEP07', 'DEP23'];
+    //         } elseif (in_array($department_id, ['DEP03', 'DEP04', 'DEP01', 'DEP14'])) {
+    //             $allowedDepartments = ['DEP03', 'DEP04', 'DEP01', 'DEP14'];
+    //         } elseif (in_array($department_id, ['DEP17', 'DEP18'])) {
+    //             $allowedDepartments = ['DEP17', 'DEP18'];
+    //         } elseif (in_array($department_id, ['DEP22', 'DEP19'])) {
+    //             $allowedDepartments = ['DEP22', 'DEP19'];
+    //         } elseif ($department_id == 'DEP08') {
+    //             $allowedDepartments = ['DEP08', 'DEP02'];
+    //         } else {
+    //             $allowedDepartments = [$department_id];
+    //         }
 
-            $query = EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, concat(enroll_id, " - ", nik, " - ", employee_name) as select_employee')
-                // ->where('status_aktif', 'AKTIF')
-                ->where('site_nirwana_id', 'NAG')
-                ->whereIn('department_id', $allowedDepartments)
-                 ->where(function ($q) {
-                $q->where('status_aktif', 'AKTIF')
-                  ->orWhereDate('tanggal_resign', '>=', now());
-            })
-                ->groupBy('enroll_id', 'nik', 'employee_name')
-                ->orderBy('employee_name', 'asc')
-                ->get();
-        } elseif ($site_nirwana_id == 'NAK') {
-            $query = EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, concat(enroll_id, " - ", nik, " - ", employee_name) as select_employee')
-                // ->where('status_aktif', 'AKTIF')
-                ->where('site_nirwana_id', 'NAK')
-                 ->where(function ($q) {
-                $q->where('status_aktif', 'AKTIF')
-                  ->orWhereDate('tanggal_resign', '>=', now());
-            })
-                ->groupBy('enroll_id', 'nik', 'employee_name')
-                ->orderBy('employee_name', 'asc')
-                ->get();
-        }
+    //         $query = EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, concat(enroll_id, " - ", nik, " - ", employee_name) as select_employee')
+    //             // ->where('status_aktif', 'AKTIF')
+    //             ->where('site_nirwana_id', 'NAG')
+    //             ->whereIn('department_id', $allowedDepartments)
+    //              ->where(function ($q) {
+    //             $q->where('status_aktif', 'AKTIF')
+    //               ->orWhereDate('tanggal_resign', '>=', now());
+    //         })
+    //             ->groupBy('enroll_id', 'nik', 'employee_name')
+    //             ->orderBy('employee_name', 'asc')
+    //             ->get();
+    //     } elseif ($site_nirwana_id == 'NAK') {
+    //         $query = EmployeeAtribut::selectRaw('enroll_id, nik, employee_name, concat(enroll_id, " - ", nik, " - ", employee_name) as select_employee')
+    //             // ->where('status_aktif', 'AKTIF')
+    //             ->where('site_nirwana_id', 'NAK')
+    //              ->where(function ($q) {
+    //             $q->where('status_aktif', 'AKTIF')
+    //               ->orWhereDate('tanggal_resign', '>=', now());
+    //         })
+    //             ->groupBy('enroll_id', 'nik', 'employee_name')
+    //             ->orderBy('employee_name', 'asc')
+    //             ->get();
+    //     }
+
+    //     return $query;
+    // }
+   public function ajax_getallemployeeatribut()
+{
+    $loggedAdmin = Auth::guard('admin')->user();
+    $id_user = $loggedAdmin->enroll_id;
+
+    // Ambil data employee login (sekali saja)
+    $employee = EmployeeAtribut::where('enroll_id', $id_user)->first();
+
+    $site_nirwana_id = $employee->site_nirwana_id;
+    $department_id   = $employee->department_id;
+    $status_jabatan  = $employee->status_jabatan;
+
+    // Base query
+    $baseQuery = EmployeeAtribut::selectRaw('
+        enroll_id,
+        nik,
+        employee_name,
+        concat(enroll_id, " - ", nik, " - ", employee_name) as select_employee
+    ')
+    ->where('site_nirwana_id', $site_nirwana_id)
+    ->where(function ($q) {
+        $q->where('status_aktif', 'AKTIF')
+          ->orWhereDate('tanggal_resign', '>=', now());
+    });
+
+    // 🔥 Jika MANAGER → lihat semua karyawan dalam 1 site
+    if ($status_jabatan == 'MANAGER') {
+        $query = $baseQuery
+            ->groupBy('enroll_id', 'nik', 'employee_name')
+            ->orderBy('employee_name', 'asc')
+            ->get();
 
         return $query;
     }
 
+    // 🔽 Jika bukan manager
+    if ($site_nirwana_id == 'NAG') {
+
+        if (in_array($department_id, ['DEP13', 'DEP07', 'DEP23'])) {
+            $allowedDepartments = ['DEP13', 'DEP07', 'DEP23'];
+        } elseif (in_array($department_id, ['DEP03', 'DEP04', 'DEP01', 'DEP14'])) {
+            $allowedDepartments = ['DEP03', 'DEP04', 'DEP01', 'DEP14'];
+        } elseif (in_array($department_id, ['DEP17', 'DEP18'])) {
+            $allowedDepartments = ['DEP17', 'DEP18'];
+        } elseif (in_array($department_id, ['DEP22', 'DEP19'])) {
+            $allowedDepartments = ['DEP22', 'DEP19'];
+        } elseif ($department_id == 'DEP08') {
+            $allowedDepartments = ['DEP08', 'DEP02'];
+        } else {
+            $allowedDepartments = [$department_id];
+        }
+
+        $query = $baseQuery
+            ->whereIn('department_id', $allowedDepartments)
+            ->groupBy('enroll_id', 'nik', 'employee_name')
+            ->orderBy('employee_name', 'asc')
+            ->get();
+
+    } elseif ($site_nirwana_id == 'NAK') {
+
+        // NAK tidak pakai filter department
+        $query = $baseQuery
+            ->groupBy('enroll_id', 'nik', 'employee_name')
+            ->orderBy('employee_name', 'asc')
+            ->get();
+    }
+
+    return $query;
+}
     public function get_province(){
         $province = DB::select("select*from provinces order by prov_id");
         return $province;
