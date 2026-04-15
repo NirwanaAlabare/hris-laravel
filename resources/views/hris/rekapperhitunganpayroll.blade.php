@@ -592,7 +592,7 @@
         </div>
     </div>
     @if($loggedAdmin->role_user=='superadmin' || $loggedAdmin->email=='firmansyah@nirwanaindonesia.com' ||
-    $loggedAdmin->email=='willy@ptnag.com' || $loggedAdmin->email=='ronald@ptnag.com' )
+    $loggedAdmin->email=='willy@ptnag.com' || $loggedAdmin->email=='ronald@ptnag.com'|| $loggedAdmin->email=='mandy@ptnag.com'|| $loggedAdmin->email == "Gabby" )
     @if($loggedAdmin->email=='firmansyah@nirwanaindonesia.com' || $loggedAdmin->email=='ronald@ptnag.com' ||
     $loggedAdmin->email=='willy@ptnag.com' )
     <div class="card-header bg-primary py-1 pl-1">

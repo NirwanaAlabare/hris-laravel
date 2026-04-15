@@ -76,7 +76,7 @@
         @endphp
         @php
         if ($loggedAdmin->role_user == "absensi" || ($loggedAdmin->email != "reza" && $loggedAdmin->role_user ==
-        "superadmin")|| $loggedAdmin->email == "steven") {
+        "superadmin")|| $loggedAdmin->email == "steven"|| $loggedAdmin->email == "mandy@ptnag.com"|| $loggedAdmin->email == "Gabby") {
         @endphp
         <li class="slide">
             <a class="side-menu__item" data-toggle="slide" href="#">
@@ -85,21 +85,25 @@
                 <span class="side-menu__label">Perhitungan</span><i class="angle fa fa-angle-right"></i>
             </a>
             <ul class="slide-menu">
+                @if ($loggedAdmin->email != "mandy@ptnag.com" && $loggedAdmin->email != "Gabby")
                 <li><a class="slide-item" href="{{route('hris.rekapperhitunganlembur.index')}}"><span> Lembur
                             Karyawan</span></a></li>
                 <li><a class="slide-item" href="{{route('hris.rekapperhitungandtpc.index')}}"><span> DTPC
                             Karyawan</span></a></li>
                 <li><a class="slide-item" href="{{route('hris.rekapperhitunganiks.index')}}"><span> IKS
                             Karyawan</span></a></li>
+                @endif
                 <li><a class="slide-item" href="{{route('hris.estimasinilaipayroll.index')}}"><span> Estimasi Nilai
                             Payroll</span></a></li>
+
                 @if($loggedAdmin->email === 'willy@ptnag.com' || $loggedAdmin->role_user === 'superadmin' )
                 <li><a class="slide-item" href="{{route('hris.nilaipayrollperhari.index')}}"><span> Nilai Payroll Per
                             Hari</span></a></li>
                 @endif
-
+                 @if ($loggedAdmin->email != "mandy@ptnag.com"
+                 && $loggedAdmin->email != "Gabby")
                 <li><a class="slide-item" href="{{route('hris.jurnal.index')}}"><span> Jurnal</span></a></li>
-
+                @endif
             </ul>
 
         </li>
@@ -112,26 +116,30 @@
         $isAlex = $email == 'alex.herdian@ptnag.com';
         $isReza = $email == 'reza';
         $isDevHris = $email == 'dev_hris';
-        $showPayrollMenu = $isSuperadmin || $isAlex || $isReza || $isDevHris;
+        $ismandy= $email == 'mandy@ptnag.com';
+        $isGabby= $email == 'Gabby';
+        $showPayrollMenu = $isSuperadmin || $isAlex || $isReza || $isDevHris  || $ismandy || $isGabby ;
         @endphp
 
-        @if ($showPayrollMenu)
+        @if ($showPayrollMenu )
         <li class="slide">
             <a class="side-menu__item" data-toggle="slide" href="#">
                 <i class="side-menu__icon fa fa-credit-card" aria-hidden="true"></i>
                 <span class="side-menu__label">Payroll</span><i class="angle fa fa-angle-right"></i>
             </a>
             <ul class="slide-menu">
-                @if (!$isReza)
+                @if (!$isReza && !$ismandy && !$isGabby)
                 <li><a class="slide-item" href="{{ route('hris.gradingsalary.index') }}"><span> Grading
                             Salary</span></a></li>
                 {{-- <li><a class="slide-item" href="{{ route('hris.employeegrading.index') }}"><span> Salary
                             Karyawan</span></a></li> --}}
                 <li><a class="slide-item" href="{{ route('hris.tunjangankaryawan.index') }}"><span> Tunjangan
                             Karyawan</span></a></li>
+                 {{-- <li><a class="slide-item" href="{{ route('hris.employeegradingbaru.index') }}"><span> Grading
+                            Karyawan baru</span></a></li> --}}
                 @endif
 
-                @if ($showPayrollMenu)
+                @if ($showPayrollMenu )
                 <li><a class="slide-item" href="{{ route('hris.rekapperhitunganpayroll.index') }}"><span> Laporan
                             Payroll</span></a></li>
                 @endif
