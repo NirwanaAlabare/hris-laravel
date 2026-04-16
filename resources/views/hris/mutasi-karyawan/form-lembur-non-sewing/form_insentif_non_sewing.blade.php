@@ -105,12 +105,19 @@
                 <td class="border-right">: </td>
             </tr>
             <tr>
-                <td colspan='2' class="border-left" style="height: 25px;vertical-align:top;padding-left:3px">DEPARTMENT</td>
-                <td colspan='4'class="borderless" style="height: 25px;vertical-align:top">
+                <td colspan='2' class="border-left" style="padding-left:3px">DEPARTMENT</td>
+                <td colspan='4'class="borderless" >
                     : {{ucwords(strtolower($dept))}}
                 </td>
-                <td class="borderless"></td>
-                <td class="border-right"></td>
+                <td class="borderless" >Buyer</td>
+                <td class="border-right" >: </td>
+            </tr>
+            <tr>
+                <td colspan='2' class="border-left" style="height: 25px;vertical-align:top;padding-left:3px"></td>
+                <td colspan='4'class="borderless" style="height: 25px;vertical-align:top">
+                </td>
+                <td class="borderless" style="height: 25px;vertical-align:top">Style</td>
+                <td class="border-right" style="height: 25px;vertical-align:top">: </td>
             </tr>
             <tr>
                 <th>No</th>
