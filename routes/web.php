@@ -116,6 +116,7 @@ Route::group(['middleware' => ['auth.admin', 'lock', 'role:all,attendance_payrol
     Route::get('dashboard/index', ['as' => 'hris.dashboard.index', 'uses' => 'DashboardController@index']);
     Route::get('gradingsalary/index', ['as' => 'hris.gradingsalary.index', 'uses' => 'GradingSalaryController@index']);
     Route::get('employeegrading/index', ['as' => 'hris.employeegrading.index', 'uses' => 'EmployeeGradingController@index']);
+    Route::get('employeegradingbaru/index', ['as' => 'hris.employeegradingbaru.index', 'uses' => 'EmployeeGradingbaruController@index']);
     Route::get('tunjangankaryawan/index', ['as' => 'hris.tunjangankaryawan.index', 'uses' => 'TunjanganKaryawanController@index']);
     Route::get('rekapperhitungandtpc/index', ['as' => 'hris.rekapperhitungandtpc.index', 'uses' => 'RekapPerhitunganDtpcController@index']);
     Route::get('rekapperhitunganiks/index', ['as' => 'hris.rekapperhitunganiks.index', 'uses' => 'RekapPerhitunganIksController@index']);
@@ -158,6 +159,7 @@ Route::group(['middleware' => ['auth.admin', 'lock', 'role:all'], 'prefix' => 'h
     Route::get('hrd/index', ['as' => 'hris.hrd.index', 'uses' => 'HRDController@index']);
     Route::get('hrd/kontrak_kerja', ['as' => 'hris.hrd.kontrak_kerja', 'uses' => 'HRDController@kontrak_kerja']);
     Route::get('hrd/layoff_termination', ['as' => 'hris.hrd.layoff_termination', 'uses' => 'HRDController@layoff_termination']);
+    Route::get('hrd/baru', ['as' => 'hris.hrd.baru', 'uses' => 'HRDController@baru1']);
 });
 
 Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris', 'namespace' => 'Hris'], function () {
@@ -177,10 +179,14 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris', 'names
     Route::get('hrd/sp_hadir', ['as' => 'hris.hrd.sp_hadir', 'uses' => 'HRDController@sp_hadir']);
     Route::post('hrd/tandai_sp_kerja', ['as' => 'hris.hrd.tandai_sp_kerja', 'uses' => 'HRDController@tandai_sp_kerja']);
     Route::post('hrd/send_to_whatsapp_laporan_pemanggilan', ['as' => 'hris.hrd.send_to_whatsapp_laporan_pemanggilan', 'uses' => 'HRDController@send_to_whatsapp_laporan_pemanggilan']);
+    Route::post('hrd/preview_pemanggilan', ['as' => 'hris.hrd.preview_pemanggilan', 'uses' => 'HRDController@preview_pemanggilan']);
     Route::get('hrd/sp_hadir_adjustment', ['as' => 'hris.hrd.sp_hadir_adjustment', 'uses' => 'HRDController@sp_hadir_adjustment']);
+    Route::get('hrd/sp_hadir_adjustment11', ['as' => 'hris.hrd.sp_hadir_adjustment11', 'uses' => 'HRDController@sp_hadir_adjustment11']);
+    Route::get('hrd/cek_pengajuan_resigned', ['as' => 'hris.hrd.cek_pengajuan_resigned', 'uses' => 'HRDController@cek_pengajuan_resigned']);
     Route::get('hrd/export_sp_kehadiran_karyawan', ['as' => 'hris.hrd.export_sp_kehadiran_karyawan', 'uses' => 'HRDController@export_sp_kehadiran_karyawan']);
     Route::get('hrd/export_sp_kehadiran_karyawan_adjustment', ['as' => 'hris.hrd.export_sp_kehadiran_karyawan_adjustment', 'uses' => 'HRDController@export_sp_kehadiran_karyawan_adjustment']);
     Route::get('hrd/export_rekap_hadir_layoff', ['as' => 'hris.hrd.export_rekap_hadir_layoff', 'uses' => 'HRDController@export_rekap_hadir_layoff']);
+    Route::get('hrd/export_baru', ['as' => 'hris.hrd.export_baru', 'uses' => 'HRDController@export_baru']);
     Route::get('hrd/export_pdf_sk_kerja', ['as' => 'hris.hrd.export_pdf_sk_kerja', 'uses' => 'HRDController@export_pdf_sk_kerja']);
     Route::get('hrd/export_pdf_paklaring', ['as' => 'hris.hrd.export_pdf_paklaring', 'uses' => 'HRDController@export_pdf_paklaring']);
 
@@ -799,6 +805,13 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris', 'names
     Route::post('gradingsalary/replace', ['as' => 'hris.gradingsalary.replace', 'uses' => 'GradingSalaryController@replace']);
     Route::post('gradingsalary/destroy', ['as' => 'hris.gradingsalary.destroy', 'uses' => 'GradingSalaryController@destroy']);
 
+    Route::post('gradingsalarybaru/ajax_data', ['as' => 'hris.gradingsalarybaru.ajax_data', 'uses' => 'EmployeeGradingbaruController@ajax_gradinghistory']);
+    Route::post('gradingsalarybaru/create', ['as' => 'hris.gradingsalarybaru.create', 'uses' => 'EmployeeGradingbaruController@create_grading']);
+    Route::post('gradingsalarybaru/acc', ['as' => 'hris.gradingsalarybaru.get_detail_grading', 'uses' => 'EmployeeGradingbaruController@get_detail_grading']);
+    Route::post('gradingsalary/approve', ['as' => 'hris.gradingsalarybaru.approve_grading', 'uses' => 'EmployeeGradingbaruController@approve_grading']);
+    Route::post('gradingsalary/delete', ['as' => 'hris.gradingsalarybaru.delete_pengajuan_grading', 'uses' => 'EmployeeGradingbaruController@delete_pengajuan_grading']);
+    Route::post('gradingsalary/edit', ['as' => 'hris.gradingsalarybaru.edit_pengajuan_grading', 'uses' => 'EmployeeGradingbaruController@edit_pengajuan_grading']);
+    Route::post('gradingsalary/inport', ['as' => 'hris.gradingsalarybaru.import', 'uses' => 'EmployeeGradingbaruController@inport']);
 
 
 

@@ -135,8 +135,8 @@
                             Karyawan</span></a></li> --}}
                 <li><a class="slide-item" href="{{ route('hris.tunjangankaryawan.index') }}"><span> Tunjangan
                             Karyawan</span></a></li>
-                 {{-- <li><a class="slide-item" href="{{ route('hris.employeegradingbaru.index') }}"><span> Grading
-                            Karyawan baru</span></a></li> --}}
+                 <li><a class="slide-item" href="{{ route('hris.employeegradingbaru.index') }}"><span> Grading
+                            Karyawan baru</span></a></li>
                 @endif
 
                 @if ($showPayrollMenu )
