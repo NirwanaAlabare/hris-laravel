@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminBaseController;
 use Illuminate\Support\Facades\View;
 use DB;
 use PDF;
+use App\Exports\GradingHistoryExport;
 use Dompdf\Dompdf;
 use App\Models\EmployeeAtributHistory;
 use App\Models\MutKaryawan;
@@ -49,6 +50,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use App\Exports\RekapCutiKaryawanKaryawanAll;
 use \avadim\FastExcelLaravel\Excel as FastExcel;
 use App\Models\Notification;
+
 
 
 class EmployeeGradingbaruController extends AdminBaseController
@@ -209,8 +211,8 @@ public function inport(Request $request)
         if ($index == 0) continue; // skip header
 
         $enroll_id = $row[0];
-        $kode_grade_lama = $row[1];
-        $kode_grade_baru = $row[2];
+        $kode_grade_lama = $row[3];
+        $kode_grade_baru = $row[4];
 
         // Cek duplikasi
         $exists = Gradinghistory::where('enroll_id', $enroll_id)
@@ -229,8 +231,14 @@ public function inport(Request $request)
             'kode_grade_baru' => $kode_grade_baru,
             'periode_payroll' => $periode1,
             'operator' => auth()->guard('admin')->user()->email,
-            'verifikasi' => 0
+            'verifikasi' => 1
         ]);
+        EmployeeAtribut::where('enroll_id', $enroll_id)
+            ->update([
+                'kode_grade' => $kode_grade_baru,
+                'operator' => auth()->guard('admin')->user()->email,
+                'updated_at' => now()
+            ]);
 
         $success++;
     }
@@ -321,23 +329,60 @@ return response()->json([
 
         // dd($request->all());
         $logged_admin = Auth::guard('admin')->user();
+//         dd(
+//     $request->id,
+//     Gradinghistory::where('id_grade', $request->id)->toSql(),
+//     Gradinghistory::where('id_grade', $request->id)->get()
+// );
         $grading = Gradinghistory::where('id_grade', $request->id)->first();
-        // dd($grading);
-// ?        dd($grading);
+        //  dd($grading);
+        $enroll_id = $grading->enroll_id;
+        $kode_grade_lama = $grading->kode_grade_lama;
+    // dd($grading);
         if($grading){
+             EmployeeAtribut::where('enroll_id', $enroll_id)
+            ->update([
+                'kode_grade' => $kode_grade_lama,
+                'operator' => auth()->guard('admin')->user()->email,
+                'updated_at' => now()
+            ]);
+            ActivityLog::create([
+                'action_by_id' => $logged_admin->id,
+                'action_by_name' => $logged_admin->name,
+                'log_name'=> 'Hapus Permintaan Grading',
+                'table_name' => 'grading_history',
+                'record_id' => $enroll_id,
+                'action' => 'delete',
+                'old_data'=> json_encode($grading),
+            ]);
             Gradinghistory::where('id_grade', $request->id)->delete();
-            // ActivitiLog::create([
-            //     'action_by_id' => $logged_admin->id,
-            //     'action_by_name' => $logged_admin->name,
-            //     'log_name'=> 'Hapus Permintaan Grading',
-            //     'table_name' => 'grading_history',
-            //     'record_id' => $request->id,
-            //     'action' => 'delete',
-            //     'old_data'=> json_encode($grading),
-            // ]);
 
         }
         return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil dihapus.']);
+    }
+
+    public function export(Request $request){
+        // dd($request->all());
+        $periode = $request->periode;
+        $verif = $request->verifikasi;
+        // dd(request()->fullUrl());
+        // pisahin tanggal
+        [$start, $end] = explode(' s/d ', $periode);
+
+        // format ke Indonesia
+        $startFormat = Carbon::parse($start)->translatedFormat('d F Y');
+        $endFormat   = Carbon::parse($end)->translatedFormat('d F Y');
+
+        // gabung lagi
+        $periodeFormatted = $startFormat . ' s/d ' . $endFormat;
+
+        $data = Gradinghistory::select('b.enroll_id','b.nik','b.employee_name','grading_history.kode_grade_lama','grading_history.kode_grade_baru','grading_history.periode_payroll')
+        ->join('employee_atribut as b', 'grading_history.enroll_id', '=', 'b.enroll_id')
+        ->where('periode_payroll', $periode)
+        ->where('verifikasi', $verif)
+        ->get();
+        // dd($data->toSql(), $periode);
+        return Excel::download(new GradingHistoryExport($data, $periodeFormatted), 'grading_history.xlsx');
     }
   public function ajax_gradinghistory(Request $request)
 {
@@ -398,269 +443,269 @@ return response()->json([
 }
 
 
-    public function update_permintaan_tk(Request $request){
-         PengajuanPermintaanTk::where('id', $request->id)->update([
-            'status_permintaan' => $request->status_permintaan,
-            'diajukan_oleh_id' => $request->diajukanOlehID,
-        ]);
-         foreach ($request->kualifikasi as $item) {
-            SubPengajuanPermintaanTk::where('id', $item['id_kualifikasi'])->update([
-                'department_kode'     => $item['selectDepartment'],
-                'bagian_kode'         => $item['selectBagian'],
-                'tanggal_kebutuhan'   => $item['tanggal_kebutuhan'],
-                'jumlah_kebutuhan'    => $item['jumlah_kebutuhan'],
-                'rencana_jabatan'     => $item['rencana_jabatan'],
-                'rencana_jurusan'     => $item['rencana_jurusan'],
-                'pend_minimal'        => $item['pend_minimal'],
-                'pengalaman_kerja'    => $item['pengalaman_kerja'],
-                'waktu_pengalaman'    => $item['waktu_pengalaman'],
-                'besaran_gaji'        => $item['besaran_gaji'],
-                'fasilitas'           => $item['fasilitas'],
-                'jangka_waktu_kontrak'=> $item['jangka_waktu_kontrak'],
-                'keterangan_tambahan' => $item['keterangan_tambahan'],
-                'uraian_tugas'        => array_filter($item['uraianTugas']),
-            ]);
-        }
-        return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil diupdate.']);
-    }
+    // public function update_permintaan_tk(Request $request){
+    //      PengajuanPermintaanTk::where('id', $request->id)->update([
+    //         'status_permintaan' => $request->status_permintaan,
+    //         'diajukan_oleh_id' => $request->diajukanOlehID,
+    //     ]);
+    //      foreach ($request->kualifikasi as $item) {
+    //         SubPengajuanPermintaanTk::where('id', $item['id_kualifikasi'])->update([
+    //             'department_kode'     => $item['selectDepartment'],
+    //             'bagian_kode'         => $item['selectBagian'],
+    //             'tanggal_kebutuhan'   => $item['tanggal_kebutuhan'],
+    //             'jumlah_kebutuhan'    => $item['jumlah_kebutuhan'],
+    //             'rencana_jabatan'     => $item['rencana_jabatan'],
+    //             'rencana_jurusan'     => $item['rencana_jurusan'],
+    //             'pend_minimal'        => $item['pend_minimal'],
+    //             'pengalaman_kerja'    => $item['pengalaman_kerja'],
+    //             'waktu_pengalaman'    => $item['waktu_pengalaman'],
+    //             'besaran_gaji'        => $item['besaran_gaji'],
+    //             'fasilitas'           => $item['fasilitas'],
+    //             'jangka_waktu_kontrak'=> $item['jangka_waktu_kontrak'],
+    //             'keterangan_tambahan' => $item['keterangan_tambahan'],
+    //             'uraian_tugas'        => array_filter($item['uraianTugas']),
+    //         ]);
+    //     }
+    //     return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil diupdate.']);
+    // }
 
-    public function approve_permintaan_tk(Request $request){
-        $logged_admin = Auth::guard('admin')->user();
-        PengajuanPermintaanTk::where('id', $request->id)->update([
-            'status_pengajuan' => 'approved',
-            'status_pengajuan_realisasi' => 'pending',
-            'verifikator_by' => $logged_admin->email,
-        ]);
-        return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil di approve.']);
-    }
-    public function reject_permintaan_tk(Request $request){
-        $logged_admin = Auth::guard('admin')->user();
-        PengajuanPermintaanTk::where('id', $request->id)->update([
-            'status_pengajuan' => 'cancel',
-            'verifikator_by' => $logged_admin->email,
-        ]);
-        return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil ditolak.']);
-    }
-
-
-    public function print_pengajuan_tk_pdf(Request $request)
-    {
-        $pengajuan_id = $request->route('id');
-        $data = DB::select("
-            SELECT
-                pengajuan_permintaan_tk.*,
-                employee_atribut.employee_name,
-                employee_atribut.department_name,
-                employee_atribut.sub_dept_name,
-                employee_atribut.department_id,
-                employee_atribut.sub_dept_id,
-                employee_atribut.nik,
-                (
-                    SELECT COUNT(*)
-                    FROM employee_atribut
-                    WHERE employee_atribut.no_fptk = pengajuan_permintaan_tk.no_permintaan
-                ) AS jumlah_karyawan
-            FROM pengajuan_permintaan_tk
-            LEFT JOIN employee_atribut ON pengajuan_permintaan_tk.diajukan_oleh_id = employee_atribut.enroll_id
-            WHERE pengajuan_permintaan_tk.id = ?
-        ", [$pengajuan_id]);
-
-        $kualifikasi = DB::table('sub_pengajuan_permintaan_tk')
-            ->leftJoin('department_all', 'sub_pengajuan_permintaan_tk.department_kode', '=', 'department_all.department_id')
-            ->leftJoin('department_all as department_all2', 'sub_pengajuan_permintaan_tk.bagian_kode', '=', 'department_all2.sub_dept_id')
-            ->where('sub_pengajuan_permintaan_tk.no_permintaan_id', $data[0]->no_permintaan)
-            ->select(
-                'sub_pengajuan_permintaan_tk.*',
-                'department_all.department_name as kode_dept_name',
-                'department_all2.sub_dept_name as kode_bagian_name'
-            )
-            ->distinct()
-            ->get();
-
-        foreach ($kualifikasi as $item) {
-            $item->department_name = $data[0]->department_name ?? null;
-            $item->diajukan_oleh = $data[0]->employee_name ?? null;
-            $item->jumlah_karyawan = $data[0]->jumlah_karyawan ?? 0;
-            $item->no_permintaan = $data[0]->no_permintaan ?? null;
-            $item->status_permintaan = $data[0]->status_permintaan ?? null;
-            $item->tanggal_pengajuan = $data[0]->tanggal_pengajuan ?? null;
-            $item->employee_name = $data[0]->employee_name ?? null;
-            $item->nik = $data[0]->nik ?? null;
-            $item->sub_dept_name = $data[0]->sub_dept_name ?? null;
-            $item->status_pengajuan_realisasi = $data[0]->status_pengajuan_realisasi ?? null;
-            $item->status_pengajuan = $data[0]->status_pengajuan ?? null;
-
-        }
-        $pdf = PDF::loadview('hris/permintaan_tenaga_kerja/export_permintaan_tenaga_kerja_pdf',['data'=>$kualifikasi]);
-        $date_bulan = date('ym');
-        return $pdf->stream(' FPTK '.$date_bulan.' '.$data[0]->sub_dept_name.' .pdf');
-    }
-    public function get_employee_fptk(Request $request)
-    {
-        $enroll_id = $request->enroll_id;
-        $data = DB::table('employee_atribut')
-            ->where('enroll_id', $enroll_id)
-            ->first();
-        if($data == null){
-                return response()->json(['data' => $data, 'success' => false]);
-        }
-        return response()->json(['data' => $data, 'success' => true]);
-    }
+    // public function approve_permintaan_tk(Request $request){
+    //     $logged_admin = Auth::guard('admin')->user();
+    //     PengajuanPermintaanTk::where('id', $request->id)->update([
+    //         'status_pengajuan' => 'approved',
+    //         'status_pengajuan_realisasi' => 'pending',
+    //         'verifikator_by' => $logged_admin->email,
+    //     ]);
+    //     return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil di approve.']);
+    // }
+    // public function reject_permintaan_tk(Request $request){
+    //     $logged_admin = Auth::guard('admin')->user();
+    //     PengajuanPermintaanTk::where('id', $request->id)->update([
+    //         'status_pengajuan' => 'cancel',
+    //         'verifikator_by' => $logged_admin->email,
+    //     ]);
+    //     return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil ditolak.']);
+    // }
 
 
-   public function simpan_no_fptk_karyawan(Request $request)
-    {
-        $karyawan = $request->karyawan;
-        $no_fptk = $request->no_fptk;
+    // public function print_pengajuan_tk_pdf(Request $request)
+    // {
+    //     $pengajuan_id = $request->route('id');
+    //     $data = DB::select("
+    //         SELECT
+    //             pengajuan_permintaan_tk.*,
+    //             employee_atribut.employee_name,
+    //             employee_atribut.department_name,
+    //             employee_atribut.sub_dept_name,
+    //             employee_atribut.department_id,
+    //             employee_atribut.sub_dept_id,
+    //             employee_atribut.nik,
+    //             (
+    //                 SELECT COUNT(*)
+    //                 FROM employee_atribut
+    //                 WHERE employee_atribut.no_fptk = pengajuan_permintaan_tk.no_permintaan
+    //             ) AS jumlah_karyawan
+    //         FROM pengajuan_permintaan_tk
+    //         LEFT JOIN employee_atribut ON pengajuan_permintaan_tk.diajukan_oleh_id = employee_atribut.enroll_id
+    //         WHERE pengajuan_permintaan_tk.id = ?
+    //     ", [$pengajuan_id]);
 
-        if (!$no_fptk) {
-            return response()->json(['success' => false, 'message' => 'Data tidak valid.']);
-        }
-        if (empty($karyawan)) {
-            DB::table('employee_atribut')
-                ->where('no_fptk', $no_fptk)
-                ->update(['no_fptk' => null]);
-            return response()->json(['success' => true, 'message' => 'karyawan berhasil dihapus dari FPTK.']);
-        }
-        $enroll_ids_dikirim = collect($karyawan)->pluck('enroll_id')->toArray();
-        DB::table('employee_atribut')
-            ->where('no_fptk', $no_fptk)
-            ->whereNotIn('enroll_id', $enroll_ids_dikirim)
-            ->update(['no_fptk' => null]);
-        $invalid_karyawan = [];
+    //     $kualifikasi = DB::table('sub_pengajuan_permintaan_tk')
+    //         ->leftJoin('department_all', 'sub_pengajuan_permintaan_tk.department_kode', '=', 'department_all.department_id')
+    //         ->leftJoin('department_all as department_all2', 'sub_pengajuan_permintaan_tk.bagian_kode', '=', 'department_all2.sub_dept_id')
+    //         ->where('sub_pengajuan_permintaan_tk.no_permintaan_id', $data[0]->no_permintaan)
+    //         ->select(
+    //             'sub_pengajuan_permintaan_tk.*',
+    //             'department_all.department_name as kode_dept_name',
+    //             'department_all2.sub_dept_name as kode_bagian_name'
+    //         )
+    //         ->distinct()
+    //         ->get();
 
-        // Langkah 1: Validasi semua dulu
-        foreach ($karyawan as $item) {
-            $enroll_id = $item['enroll_id'];
+    //     foreach ($kualifikasi as $item) {
+    //         $item->department_name = $data[0]->department_name ?? null;
+    //         $item->diajukan_oleh = $data[0]->employee_name ?? null;
+    //         $item->jumlah_karyawan = $data[0]->jumlah_karyawan ?? 0;
+    //         $item->no_permintaan = $data[0]->no_permintaan ?? null;
+    //         $item->status_permintaan = $data[0]->status_permintaan ?? null;
+    //         $item->tanggal_pengajuan = $data[0]->tanggal_pengajuan ?? null;
+    //         $item->employee_name = $data[0]->employee_name ?? null;
+    //         $item->nik = $data[0]->nik ?? null;
+    //         $item->sub_dept_name = $data[0]->sub_dept_name ?? null;
+    //         $item->status_pengajuan_realisasi = $data[0]->status_pengajuan_realisasi ?? null;
+    //         $item->status_pengajuan = $data[0]->status_pengajuan ?? null;
 
-            $existing = DB::table('employee_atribut')
-                ->where('enroll_id', $enroll_id)
-                ->whereNotNull('no_fptk')
-                ->where('no_fptk', '!=', $no_fptk)
-                ->first();
+    //     }
+    //     $pdf = PDF::loadview('hris/permintaan_tenaga_kerja/export_permintaan_tenaga_kerja_pdf',['data'=>$kualifikasi]);
+    //     $date_bulan = date('ym');
+    //     return $pdf->stream(' FPTK '.$date_bulan.' '.$data[0]->sub_dept_name.' .pdf');
+    // }
+    // public function get_employee_fptk(Request $request)
+    // {
+    //     $enroll_id = $request->enroll_id;
+    //     $data = DB::table('employee_atribut')
+    //         ->where('enroll_id', $enroll_id)
+    //         ->first();
+    //     if($data == null){
+    //             return response()->json(['data' => $data, 'success' => false]);
+    //     }
+    //     return response()->json(['data' => $data, 'success' => true]);
+    // }
 
-            if ($existing) {
-                $invalid_karyawan[] = [
-                    'enroll_id' => $enroll_id,
-                    'employee_name' => $existing->employee_name ?? '(tidak diketahui)',
-                    'no_fptk_lain' => $existing->no_fptk,
-                ];
-            }
-        }
 
-        // Langkah 2: Jika ada yang invalid, hentikan proses
-        if (!empty($invalid_karyawan)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Beberapa karyawan sudah terdaftar di FPTK lain.',
-                'data' => $invalid_karyawan
-            ]);
-        }
+//    public function simpan_no_fptk_karyawan(Request $request)
+//     {
+//         $karyawan = $request->karyawan;
+//         $no_fptk = $request->no_fptk;
 
-        // Langkah 3: Jika semua valid, lakukan update
-        foreach ($karyawan as $item) {
-            DB::table('employee_atribut')
-                ->where('enroll_id', $item['enroll_id'])
-                ->update(['no_fptk' => $no_fptk]);
-        }
-        // Hitung jumlah karyawan dengan no_fptk untuk proses penyelesaian permintaan
-        $count_data = DB::table('employee_atribut')
-                ->where('no_fptk', $no_fptk)
-                ->count();
-        $jumlah_pengajuan = DB::table('sub_pengajuan_permintaan_tk')
-        ->where('no_permintaan_id', $no_fptk)
-        ->sum('jumlah_kebutuhan');
-        if($count_data == $jumlah_pengajuan){
-            DB::table('pengajuan_permintaan_tk')
-                ->where('no_permintaan', $no_fptk)
-                ->update(['status_pengajuan_realisasi' => 'done', 'verifikator_by' => Auth::guard('admin')->user()->email]);
-        }
-        return response()->json(['success' => true, 'message' => 'Data berhasil diperbarui.']);
-    }
-   public function simpan_selesai_no_fptk_karyawan(Request $request)
-    {
-        $karyawan = $request->karyawan;
-        $no_fptk = $request->no_fptk;
-        if (!$no_fptk) {
-            return response()->json(['success' => false, 'message' => 'Data tidak valid.']);
-        }
-        if (empty($karyawan)) {
-            DB::table('employee_atribut')
-                ->where('no_fptk', $no_fptk)
-                ->update(['no_fptk' => null]);
-            return response()->json(['success' => true, 'message' => 'karyawan berhasil dihapus dari FPTK.']);
-        }
-        $enroll_ids_dikirim = collect($karyawan)->pluck('enroll_id')->toArray();
+//         if (!$no_fptk) {
+//             return response()->json(['success' => false, 'message' => 'Data tidak valid.']);
+//         }
+//         if (empty($karyawan)) {
+//             DB::table('employee_atribut')
+//                 ->where('no_fptk', $no_fptk)
+//                 ->update(['no_fptk' => null]);
+//             return response()->json(['success' => true, 'message' => 'karyawan berhasil dihapus dari FPTK.']);
+//         }
+//         $enroll_ids_dikirim = collect($karyawan)->pluck('enroll_id')->toArray();
+//         DB::table('employee_atribut')
+//             ->where('no_fptk', $no_fptk)
+//             ->whereNotIn('enroll_id', $enroll_ids_dikirim)
+//             ->update(['no_fptk' => null]);
+//         $invalid_karyawan = [];
 
-        DB::table('employee_atribut')
-            ->where('no_fptk', $no_fptk)
-            ->whereNotIn('enroll_id', $enroll_ids_dikirim)
-            ->update(['no_fptk' => null]);
-        $invalid_karyawan = [];
+//         // Langkah 1: Validasi semua dulu
+//         foreach ($karyawan as $item) {
+//             $enroll_id = $item['enroll_id'];
 
-        // Langkah 1: Validasi semua dulu
-        foreach ($karyawan as $item) {
-            $enroll_id = $item['enroll_id'];
+//             $existing = DB::table('employee_atribut')
+//                 ->where('enroll_id', $enroll_id)
+//                 ->whereNotNull('no_fptk')
+//                 ->where('no_fptk', '!=', $no_fptk)
+//                 ->first();
 
-            $existing = DB::table('employee_atribut')
-                ->where('enroll_id', $enroll_id)
-                ->whereNotNull('no_fptk')
-                ->where('no_fptk', '!=', $no_fptk)
-                ->first();
+//             if ($existing) {
+//                 $invalid_karyawan[] = [
+//                     'enroll_id' => $enroll_id,
+//                     'employee_name' => $existing->employee_name ?? '(tidak diketahui)',
+//                     'no_fptk_lain' => $existing->no_fptk,
+//                 ];
+//             }
+//         }
 
-            if ($existing) {
-                $invalid_karyawan[] = [
-                    'enroll_id' => $enroll_id,
-                    'employee_name' => $existing->employee_name ?? '(tidak diketahui)',
-                    'no_fptk_lain' => $existing->no_fptk,
-                ];
-            }
-        }
+//         // Langkah 2: Jika ada yang invalid, hentikan proses
+//         if (!empty($invalid_karyawan)) {
+//             return response()->json([
+//                 'success' => false,
+//                 'message' => 'Beberapa karyawan sudah terdaftar di FPTK lain.',
+//                 'data' => $invalid_karyawan
+//             ]);
+//         }
 
-        // Langkah 2: Jika ada yang invalid, hentikan proses
-        if (!empty($invalid_karyawan)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Beberapa karyawan sudah terdaftar di FPTK lain.',
-                'data' => $invalid_karyawan
-            ]);
-        }
+//         // Langkah 3: Jika semua valid, lakukan update
+//         foreach ($karyawan as $item) {
+//             DB::table('employee_atribut')
+//                 ->where('enroll_id', $item['enroll_id'])
+//                 ->update(['no_fptk' => $no_fptk]);
+//         }
+//         // Hitung jumlah karyawan dengan no_fptk untuk proses penyelesaian permintaan
+//         $count_data = DB::table('employee_atribut')
+//                 ->where('no_fptk', $no_fptk)
+//                 ->count();
+//         $jumlah_pengajuan = DB::table('sub_pengajuan_permintaan_tk')
+//         ->where('no_permintaan_id', $no_fptk)
+//         ->sum('jumlah_kebutuhan');
+//         if($count_data == $jumlah_pengajuan){
+//             DB::table('pengajuan_permintaan_tk')
+//                 ->where('no_permintaan', $no_fptk)
+//                 ->update(['status_pengajuan_realisasi' => 'done', 'verifikator_by' => Auth::guard('admin')->user()->email]);
+//         }
+//         return response()->json(['success' => true, 'message' => 'Data berhasil diperbarui.']);
+//     }
+//    public function simpan_selesai_no_fptk_karyawan(Request $request)
+//     {
+//         $karyawan = $request->karyawan;
+//         $no_fptk = $request->no_fptk;
+//         if (!$no_fptk) {
+//             return response()->json(['success' => false, 'message' => 'Data tidak valid.']);
+//         }
+//         if (empty($karyawan)) {
+//             DB::table('employee_atribut')
+//                 ->where('no_fptk', $no_fptk)
+//                 ->update(['no_fptk' => null]);
+//             return response()->json(['success' => true, 'message' => 'karyawan berhasil dihapus dari FPTK.']);
+//         }
+//         $enroll_ids_dikirim = collect($karyawan)->pluck('enroll_id')->toArray();
 
-        // Langkah 3: Jika semua valid, lakukan update
-        foreach ($karyawan as $item) {
-            DB::table('employee_atribut')
-                ->where('enroll_id', $item['enroll_id'])
-                ->update(['no_fptk' => $no_fptk]);
-        }
-        // Selesaikan proses penyelesaian permintaan
-        DB::table('pengajuan_permintaan_tk')
-            ->where('no_permintaan', $no_fptk)
-            ->update(['status_pengajuan_realisasi' => 'done', 'verifikator_by' => Auth::guard('admin')->user()->email]);
+//         DB::table('employee_atribut')
+//             ->where('no_fptk', $no_fptk)
+//             ->whereNotIn('enroll_id', $enroll_ids_dikirim)
+//             ->update(['no_fptk' => null]);
+//         $invalid_karyawan = [];
 
-        return response()->json(['success' => true, 'message' => 'Data berhasil diperbarui.']);
-    }
+//         // Langkah 1: Validasi semua dulu
+//         foreach ($karyawan as $item) {
+//             $enroll_id = $item['enroll_id'];
 
-    public function set_to_pending_no_fptk_karyawan(Request $request){
-        $no_fptk = $request->no_fptk;
+//             $existing = DB::table('employee_atribut')
+//                 ->where('enroll_id', $enroll_id)
+//                 ->whereNotNull('no_fptk')
+//                 ->where('no_fptk', '!=', $no_fptk)
+//                 ->first();
 
-        if (!$no_fptk) {
-            return response()->json(['success' => false, 'message' => 'Data tidak valid.']);
-        }
-        DB::table('pengajuan_permintaan_tk')
-            ->where('no_permintaan', $no_fptk)
-            ->update(['status_pengajuan_realisasi' => 'pending', 'verifikator_by' => Auth::guard('admin')->user()->email]);
-        return response()->json(['success' => true, 'message' => 'Data berhasil diperbarui.']);
-    }
-    public function move_to_pending_permintaan(Request $request){
-        $no_fptk = $request->no_fptk;
-        if (!$no_fptk) {
-            return response()->json(['success' => false, 'message' => 'Data tidak valid.']);
-        }
-        DB::table('pengajuan_permintaan_tk')
-            ->where('no_permintaan', $no_fptk)
-            ->update(['status_pengajuan_realisasi' => null, 'verifikator_by' => Auth::guard('admin')->user()->email, 'status_pengajuan' => 'waiting_approval']);
-        return response()->json(['success' => true, 'message' => 'Data berhasil diperbarui.']);
-    }
+//             if ($existing) {
+//                 $invalid_karyawan[] = [
+//                     'enroll_id' => $enroll_id,
+//                     'employee_name' => $existing->employee_name ?? '(tidak diketahui)',
+//                     'no_fptk_lain' => $existing->no_fptk,
+//                 ];
+//             }
+//         }
+
+//         // Langkah 2: Jika ada yang invalid, hentikan proses
+//         if (!empty($invalid_karyawan)) {
+//             return response()->json([
+//                 'success' => false,
+//                 'message' => 'Beberapa karyawan sudah terdaftar di FPTK lain.',
+//                 'data' => $invalid_karyawan
+//             ]);
+//         }
+
+//         // Langkah 3: Jika semua valid, lakukan update
+//         foreach ($karyawan as $item) {
+//             DB::table('employee_atribut')
+//                 ->where('enroll_id', $item['enroll_id'])
+//                 ->update(['no_fptk' => $no_fptk]);
+//         }
+//         // Selesaikan proses penyelesaian permintaan
+//         DB::table('pengajuan_permintaan_tk')
+//             ->where('no_permintaan', $no_fptk)
+//             ->update(['status_pengajuan_realisasi' => 'done', 'verifikator_by' => Auth::guard('admin')->user()->email]);
+
+//         return response()->json(['success' => true, 'message' => 'Data berhasil diperbarui.']);
+//     }
+
+    // public function set_to_pending_no_fptk_karyawan(Request $request){
+    //     $no_fptk = $request->no_fptk;
+
+    //     if (!$no_fptk) {
+    //         return response()->json(['success' => false, 'message' => 'Data tidak valid.']);
+    //     }
+    //     DB::table('pengajuan_permintaan_tk')
+    //         ->where('no_permintaan', $no_fptk)
+    //         ->update(['status_pengajuan_realisasi' => 'pending', 'verifikator_by' => Auth::guard('admin')->user()->email]);
+    //     return response()->json(['success' => true, 'message' => 'Data berhasil diperbarui.']);
+    // }
+    // public function move_to_pending_permintaan(Request $request){
+    //     $no_fptk = $request->no_fptk;
+    //     if (!$no_fptk) {
+    //         return response()->json(['success' => false, 'message' => 'Data tidak valid.']);
+    //     }
+    //     DB::table('pengajuan_permintaan_tk')
+    //         ->where('no_permintaan', $no_fptk)
+    //         ->update(['status_pengajuan_realisasi' => null, 'verifikator_by' => Auth::guard('admin')->user()->email, 'status_pengajuan' => 'waiting_approval']);
+    //     return response()->json(['success' => true, 'message' => 'Data berhasil diperbarui.']);
+    // }
 
 
 

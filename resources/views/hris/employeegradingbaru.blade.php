@@ -280,8 +280,9 @@ h1 {
 
                                             <select id="filter_periode" class="form-control" style="width:200px;">
                                                 <option value="">-- Pilih Periode --</option>
-                                                @foreach ($periode_payroll as $r_periode_payroll)
-                                                    <option value="{{$r_periode_payroll->periode_kehadiran}}">
+                                                @foreach ($periode_payroll as $index => $r_periode_payroll)
+                                                    <option value="{{$r_periode_payroll->periode_kehadiran}}"
+                                                        {{$index == 0 ? 'selected' : ''}}>
                                                         {{$r_periode_payroll->periode_kehadiran}}
                                                     </option>
                                                 @endforeach
@@ -292,7 +293,9 @@ h1 {
                                             </button>
                                             <!-- Hidden file input -->
                                             <input type="file" id="file-excel" accept=".xlsx,.xls" style="display:none;">
-
+                                            <button class="btn btn-app btn-warning" id="btn-export-excel">
+                                                <i class="fa fa-file-excel-o"></i> Export Excel
+                                            </button>
                                         </div>
 
 
@@ -339,12 +342,12 @@ h1 {
                                                     <table id="datatable-ajax-crud-verifikasi" class="table table-sm table-striped table-hover table-bordered w-100">
                                                         <thead>
                                                             <tr class="text-center">
-                                                                <th scope="col">No Permintaan</th>
+                                                                <th scope="col">NIK</th>
                                                                 <th scope="col">Tanggal Pengajuan</th>
                                                                 <th scope="col">Nama Karyawan</th>
                                                                 <th scope="col">Kode Grade lama</th>
                                                                 <th scope="col">kode grade baru</th>
-                                                                <th scope="col">Perioden</th>
+                                                                <th scope="col">Periode</th>
                                                                 <th scope="col">operator</th>
                                                                 <th scope="col">Aksi</th>
                                                             </tr>
@@ -712,6 +715,7 @@ h1 {
     </style>
 
     <script>
+
 $('#btn-import-excel').click(function () {
     $('#file-excel').click();
 });
@@ -743,7 +747,7 @@ $('#file-excel').change(function () {
         },
         success: function (res) {
            swal("", res.message, "success");
-
+            location.reload();
             tableVerifikasi.ajax.reload();
             tableWaiting.ajax.reload();
             tableReject.ajax.reload();
@@ -753,6 +757,7 @@ $('#file-excel').change(function () {
 
     if (xhr.responseJSON && xhr.responseJSON.message) {
         message = xhr.responseJSON.message;
+        // location.reload();
     } else if (xhr.responseText) {
         try {
             let res = JSON.parse(xhr.responseText);
@@ -763,6 +768,7 @@ $('#file-excel').change(function () {
     }
 
     swal("", message, "error");
+    location.reload();
 }
     });
 });
@@ -868,7 +874,7 @@ $('#file-excel').change(function () {
         // });
     </script>
 
-    <script>
+    {{-- <script>
         $('body').on('change', '#selectDepartment', function () {
                 var department_id = $('#selectDepartment').val();
 
@@ -897,47 +903,47 @@ $('#file-excel').change(function () {
                     });
                 }
         });
-    </script>
+    </script> --}}
 
-    <script>
+    {{-- <script>
          $('.fc-datepicker').datepicker({
             showOtherMonths: true,
             selectOtherMonths: true,
             dateFormat: 'dd-mm-yy'
         });
-    </script>
+    </script> --}}
 
 
     <script>
 
-         $('body').on('change', '.select-department-update', function () {
-                let department_id = $(this).val();
-                let parent = $(this).closest('.container-kualifikasi-update');
-                let bagianSelect = parent.find('.select-bagian-update');
-                bagianSelect.html('<option value="">Loading...</option>');
-                if(department_id){
-                    $.ajax({
-                        type:"POST",
-                        url: "{{route('hris.departmentall.getDepartmentName')}}",
-                        dataType: 'json',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                        data: {
-                            id:department_id,
-                        },
-                        dataType: 'json',
-                        success: function(res){
-                            if(res){
-                            let html = '<option value="">--Pilih Bagian--</option>';
-                            res.forEach(bagian => {
-                                html += `<option value="${bagian.sub_dept_id}">${bagian.sub_dept_name}</option>`;
-                            });
-                            bagianSelect.html(html);
-                            }
-                        }
-                    });
-                }
-        });
+        //  $('body').on('change', '.select-department-update', function () {
+        //         let department_id = $(this).val();
+        //         let parent = $(this).closest('.container-kualifikasi-update');
+        //         let bagianSelect = parent.find('.select-bagian-update');
+        //         bagianSelect.html('<option value="">Loading...</option>');
+        //         if(department_id){
+        //             $.ajax({
+        //                 type:"POST",
+        //                 url: "{{route('hris.departmentall.getDepartmentName')}}",
+        //                 dataType: 'json',
+        //                 headers: {
+        //                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        //                 data: {
+        //                     id:department_id,
+        //                 },
+        //                 dataType: 'json',
+        //                 success: function(res){
+        //                     if(res){
+        //                     let html = '<option value="">--Pilih Bagian--</option>';
+        //                     res.forEach(bagian => {
+        //                         html += `<option value="${bagian.sub_dept_id}">${bagian.sub_dept_name}</option>`;
+        //                     });
+        //                     bagianSelect.html(html);
+        //                     }
+        //                 }
+        //             });
+        //         }
+        // });
 
 
         $("#diajukanOlehID").select2().on("select2:select", function() {
@@ -1461,7 +1467,7 @@ $('#file-excel').change(function () {
                 columns: [
                 { data: 'nik', name: 'employee_atribut.nik' },
                 { data: 'tanggal_pengajuan', name: 'grading_history.tanggal_pengajuan',
-                render: function(data) { return data ? moment(data).format('ll') : '-'; }
+                render: function(data) {return data ? moment(data).format('DD MMMM YYYY') : '-'; }
                 },
                 { data: 'employee_name', name: 'employee_atribut.employee_name' },
                 { data: 'kode_grade_lama', name: 'grading_history.kode_grade_lama' },
@@ -1534,7 +1540,7 @@ $('#file-excel').change(function () {
                 columns: [
                      { data: 'nik', name: 'employee_atribut.nik' },
                 { data: 'tanggal_pengajuan', name: 'grading_history.tanggal_pengajuan',
-                render: function(data) { return data ? moment(data).format('ll') : '-'; }
+                 render: function(data) {return data ? moment(data).format('DD MMMM YYYY') : '-'; }
                 },
                 { data: 'employee_name', name: 'employee_atribut.employee_name' },
                 { data: 'kode_grade_lama', name: 'grading_history.kode_grade_lama' },
@@ -1554,8 +1560,9 @@ $('#file-excel').change(function () {
                                 let exportUrl;
                                 let btnClass;
                                     return `
-                                        <button class="btn btn-sm mr-1 btn-danger" onclick="printPengajuanPDF('${row.id}')" data-id="${row.id}" title="Print">
-                                            <i class="fa fa-file-pdf-o"></i>
+
+                                        <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-id_grade="${row.id_grade}">
+                                            <i class="fa fa-trash"></i>
                                         </button>
                                     `;
                         }
@@ -1684,6 +1691,36 @@ $('#file-excel').change(function () {
                     tableReject.ajax.reload();
                 }
             });
+          var currentVerifikasi = 0;
+
+$('#tab-waiting').click(function () {
+    currentVerifikasi = 0;
+});
+
+$('#tab-verifikasi').click(function () {
+    currentVerifikasi = 1;
+});
+
+$('#tab-reject').click(function () {
+    currentVerifikasi = 2;
+});
+
+          $('#btn-export-excel').click(function () {
+    let periode = $('#filter_periode').val();
+
+    if (!periode) {
+        swal("", "Harap pilih periode terlebih dahulu!", "warning");
+        return;
+    }
+
+    console.log("VERIF:", currentVerifikasi);
+
+    let url = "{{ route('hris.gradingsalarybaru.export') }}"
+        + "?periode=" + encodeURIComponent(periode)
+        + "&verifikasi=" + currentVerifikasi;
+
+    window.location.href = url;
+});
 
             $(document).on('click', '.btn-lihat', function () {
                 let uuid = $(this).data('id');
@@ -1795,12 +1832,13 @@ $('#file-excel').change(function () {
                     success: function (res) {
 
                         notif({ msg: "<b>Info:</b> Data berhasil disimpan.", type: "info" });
-
+                        $("#ajax-modal-tambah").modal('hide');
                         tableVerifikasi.ajax.reload();
                         tableWaiting.ajax.reload();
                         tableReject.ajax.reload();
+                        location.reload();
 
-                        $("#ajax-modal-tambah").modal('hide');
+                        //
 
                     },
                     error: function (xhr) {
@@ -1812,6 +1850,9 @@ $('#file-excel').change(function () {
                         }
 
                         swal("", message, "warning");
+                         tableVerifikasi.ajax.reload();
+                        tableWaiting.ajax.reload();
+                        tableReject.ajax.reload();
                     }
                 });
 
@@ -1969,6 +2010,12 @@ $('#file-excel').change(function () {
         }
         function closeModalApprovePengajuan() {
            $("#ajax-modal-approve-pengajuan").modal('hide');
+
+    modal.modal('hide');
+
+    // reset semua input
+    modal.find('input').val('');
+    modal.find('select').val('').trigger('change');
            $("#btn-approve-permintaan").hide();
            $("#btn-reject-permintaan").hide();
            $("#btn-update-permintaan").hide();

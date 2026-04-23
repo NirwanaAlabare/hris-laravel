@@ -812,6 +812,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris', 'names
     Route::post('gradingsalary/delete', ['as' => 'hris.gradingsalarybaru.delete_pengajuan_grading', 'uses' => 'EmployeeGradingbaruController@delete_pengajuan_grading']);
     Route::post('gradingsalary/edit', ['as' => 'hris.gradingsalarybaru.edit_pengajuan_grading', 'uses' => 'EmployeeGradingbaruController@edit_pengajuan_grading']);
     Route::post('gradingsalary/inport', ['as' => 'hris.gradingsalarybaru.import', 'uses' => 'EmployeeGradingbaruController@inport']);
+    Route::get('gradingsalary/export', ['as' => 'hris.gradingsalarybaru.export', 'uses' => 'EmployeeGradingbaruController@export']);
 
 
 
