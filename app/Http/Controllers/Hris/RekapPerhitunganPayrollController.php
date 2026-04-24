@@ -1278,6 +1278,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $last_date = $arrperiode[1];
 
         $query = DB::select("select a.tanggal_berjalan,a.kode_hari,a.nama_hari,b.nik,a.enroll_id,b.employee_name,b.status_staff,b.status_jabatan,b.sub_dept_name,b.department_name,c.group_department,a.mulai_jam_kerja,a.akhir_jam_kerja,a.absen_masuk_kerja,a.absen_pulang_kerja,dap.time_mulai_ijin permits_dari_pukul,dap.time_akhir_ijin permits_sampai_pukul,dap.total_time_ijin total_menit_permits,a.jumlah_menit_absen_dt,a.jumlah_menit_absen_pc,a.jumlah_menit_absen_dtpc,a.status_absen,dap.absen_alasan,h.kode_ijin_payroll,d.catatan,d.nomor_form_lembur,d.mulai_jam_lembur,d.akhir_jam_lembur,d.jumlah_jam_istirahat_lembur jumlah_jam_istirahat,d.jumlah_jam_lembur,e.final_mulai_jam_lembur,e.final_selesai_jam_lembur,e.final_jam_istirahat_lembur,e.final_total_jam_lembur,bpjs.dasar_pot_bpjs_rupiah upah_umk,c.gaji_perhari,c.gaji_permenit,c.iby,c.itb,c.m,c.dt,c.pc,c.dtpc,c.lby,c.lsm,c.r,c.ok,c.hari_kerja,c.pot_hari_kerja,c.total_absen,e.lembur_1,e.lembur_2,e.lembur_3,e.lembur_4,b.kode_grade,i.salary_bulanan,c.seniority_allowance,c.insentif_kehadiran,c.insentif_jabatan,e.lembur1_rupiah,e.lembur2_rupiah,e.lembur3_rupiah,e.lembur4_rupiah,if(f.jenis_koreksi=1,f.jumlah_rp_potongan,0) koreksi_upah,if(f.jenis_koreksi=3,f.jumlah_rp_potongan,0) koreksi_lembur,if(f.jenis_koreksi=4,f.jumlah_rp_potongan,0) koreksi_insentif,if(g.jenis_potongan=7,g.jumlah_rp_potongan,0) potongan_upah,if(g.jenis_potongan=8,g.jumlah_rp_potongan,0) potongan_lembur,if(g.jenis_potongan=5,g.jumlah_rp_potongan,0) potongan_insentif,if(g.jenis_potongan=4,g.jumlah_rp_potongan,0) potongan_piutang,c.rp_pot_hari_kerja,c.rp_pot_jam,c.bruto,c.bpjs_tk,c.bpjs_ks,c.total_potongan,c.pembulatan,c.jumlah,c.bpjs_tk_company,c.bpjs_ks_company,c.kompensasi,c.thr,c.konsumsi,c.total_pembayaran from master_data_absen_kehadiran a inner join employee_atribut b on a.enroll_id=b.enroll_id left join daily_labor_costs c on a.enroll_id=c.enroll_id and a.tanggal_berjalan=c.tanggal_berjalan left join data_lembur d on a.enroll_id=d.enroll_id and a.tanggal_berjalan=d.tanggal_berjalan left join rekap_perhitungan_lembur e on a.enroll_id=e.enroll_id and a.tanggal_berjalan=e.tanggal_berjalan left join data_koreksi_upah f on a.enroll_id=f.enroll_id and a.tanggal_berjalan=f.tanggal_koreksi left join data_koreksi_potongan g on a.enroll_id=g.enroll_id and a.tanggal_berjalan=g.tanggal_koreksi left join ref_absen_ijin h on a.status_absen=h.kode_absen_ijin left join data_absen_perijinan dap on a.nomor_absen_ijin=dap.nomor_form_perizinan left join (select*from grading_salary where substring(periode_umk,1,4)=substring(a.tanggal_berjalan,1,4)) i on b.kode_grade=i.kode_grade inner join dasar_pot_bpjs bpjs on REGEXP_SUBSTR(bpjs.kode_dasar_pot_bpjs, '[0-9]+')=substring(a.tanggal_berjalan,1,4) where a.tanggal_berjalan>='" . $first_date . "' and a.tanggal_berjalan<='" . $last_date . "'" . $inEnrollId . $inStatusStaff);
+        // dd($query->toSql(), $query->getBindings());
 
         $excel = FastExcel::create('query');
         $sheet = $excel->getSheet();
@@ -2038,51 +2039,229 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         $arrperiode = explode(" s/d ", request()->daterange1);
         $first_date = $arrperiode[0];
         $last_date = $arrperiode[1];
+        // dd($first_date, $last_date);
         $inEnrollId = '';
+        $inRnrollid1 = '';
+        $enroll_id = '';
         if (request()->enroll_id) {
             $enroll_id = request()->enroll_id;
             $enroll_id_string = implode(',', $enroll_id);
             $inEnrollId = 'AND enroll_id in (' . $enroll_id_string . ')';
+            $inRnrollid1 = 'AND a.enroll_id in (' . $enroll_id_string . ')';
+            $inRnrollid2 = '  (' . $enroll_id_string . ')';
         }
-        $master_absen = MasterDataAbsenKehadiran::whereBetween('tanggal_berjalan', [$first_date, $last_date])
-            ->whereRaw('enroll_id is not null ' . $inEnrollId)
-            ->with(['rekap_lembur' => function ($query) use ($first_date, $last_date) {
-                $query->whereBetween('tanggal_berjalan', [$first_date, $last_date]);
-            }])
-            ->with('employee_atribut.grading_salary')
-            ->with('employee_atribut', 'employee_atribut.employee_bpjs', 'koreksi_upah', 'koreksi_potongan', 'employee_atribut.group_department')
-            ->get();
+    $master_absen = MasterDataAbsenKehadiran::from('master_data_absen_kehadiran as a')
 
+        // JOIN employee_atribut (biar bisa dipakai di COALESCE)
+        ->join('employee_atribut as c', 'a.enroll_id', '=', 'c.enroll_id')
+
+        // 🔥 JOIN grading_history
+        ->leftJoin('grading_history as gh', function ($join) {
+            $join->on('a.enroll_id', '=', 'gh.enroll_id')
+                ->whereRaw("
+                    a.tanggal_berjalan BETWEEN
+                    STR_TO_DATE(SUBSTRING_INDEX(gh.periode_payroll,' s/d ',1),'%Y-%m-%d')
+                    AND
+                    STR_TO_DATE(SUBSTRING_INDEX(gh.periode_payroll,' s/d ',-1),'%Y-%m-%d')
+                ");
+        })
+
+        // 🔥 JOIN rekap_perhitungan_payroll
+        ->leftJoin('rekap_perhitungan_payroll as rp', function ($join) {
+            $join->on('a.enroll_id', '=', 'rp.enroll_id')
+                ->whereRaw("
+                    a.tanggal_berjalan BETWEEN
+                    STR_TO_DATE(SUBSTRING_INDEX(rp.periode_kehadiran,' s/d ',1),'%Y-%m-%d')
+                    AND
+                    STR_TO_DATE(SUBSTRING_INDEX(rp.periode_kehadiran,' s/d ',-1),'%Y-%m-%d')
+                ");
+        })
+
+        // 🔥 JOIN grading_salary (COALESCE)
+        ->leftJoin('grading_salary as d', function ($join) {
+            $join->whereRaw("
+                d.kode_grade = COALESCE(gh.kode_grade_baru, rp.kode_grade, c.kode_grade)
+            ")
+            ->whereRaw("
+                YEAR(a.tanggal_berjalan) = SUBSTR(d.periode_umk, 1, 4)
+            ");
+        })
+
+        // FILTER
+        ->whereBetween('a.tanggal_berjalan', [$first_date, $last_date])
+        ->when(!empty($enroll_id), function ($query) use ($enroll_id) {
+        $query->whereIn('a.enroll_id', $enroll_id);
+        })
+
+        // 🔥 SELECT TAMBAHAN
+        ->select(
+            'a.*',
+            'd.kode_grade as final_grade',
+            'd.salary_bulanan'
+        )
+
+        // 🔥 RELASI ELOQUENT (INI YANG KAMU MAU)
+        ->with([
+            'rekap_lembur' => function ($query) use ($first_date, $last_date) {
+                $query->whereBetween('tanggal_berjalan', [$first_date, $last_date]);
+            },
+            'employee_atribut',
+            'employee_atribut.employee_bpjs',
+            'employee_atribut.group_department',
+            'koreksi_upah',
+            'koreksi_potongan'
+        ])
+        // dd($master_absen->get());
+
+        ->get();
         $z = [];
+        // $master_absen = MasterDataAbsenKehadiran::whereBetween('tanggal_berjalan', [$first_date, $last_date])
+        //     ->whereRaw('enroll_id is not null ' . $inEnrollId)
+        //     ->with(['rekap_lembur' => function ($query) use ($first_date, $last_date) {
+        //         $query->whereBetween('tanggal_berjalan', [$first_date, $last_date]);
+        //     }])
+        //     ->with('employee_atribut.grading_salary')
+        //     ->with('employee_atribut', 'employee_atribut.employee_bpjs', 'koreksi_upah', 'koreksi_potongan', 'employee_atribut.group_department');
+        //     dd($master_absen->toSql(), $master_absen->get());
+        //     // ->get();
+
+        // $z = [];
         $security = EmployeeAtribut::where('sub_dept_id', 'DEP08SUB005')->where('jenis_kelamin', 'LAKI-LAKI')->where('enroll_id', '!=', 7445)->get();
 
-        $rekap_lembur_gabungan = DB::select("select rekap_4.tanggal_berjalan,rekap_4.capai_target,rekap_4.kode_hari,rekap_4.mulai_jam_kerja,rekap_4.akhir_jam_kerja,rekap_4.status_absen,rekap_4.nomor_form_lembur,rekap_4.kode_grade,rekap_4.salary_bulanan,rekap_4.enroll_id,rekap_4.finish_in,rekap_4.finish_out,rekap_4.absen_masuk_kerja,rekap_4.absen_pulang_kerja,FLOOR(rekap_4.selisih_detik/3600) selisih_jam,FLOOR(MOD(rekap_4.selisih_detik,3600)/60) selisih_menit,MOD(MOD(rekap_4.selisih_detik,3600),60) selisih_detik,CONCAT(LPAD(FLOOR(rekap_4.selisih_detik/3600), 2, '0'),':',LPAD(FLOOR(MOD(rekap_4.selisih_detik,3600)/60), 2, '0'),':',LPAD(MOD(MOD(rekap_4.selisih_detik,3600),60),2,'0')) final_total,rekap_4.jumlah_jam_lembur,rekap_4.jumlah_jam_istirahat_lembur from (select rekap_3.tanggal_berjalan,rekap_3.capai_target,rekap_3.kode_hari,rekap_3.mulai_jam_kerja,rekap_3.akhir_jam_kerja,rekap_3.status_absen,rekap_3.nomor_form_lembur,rekap_3.kode_grade,rekap_3.salary_bulanan,rekap_3.enroll_id,rekap_3.finish_in,rekap_3.finish_out,rekap_3.absen_masuk_kerja,rekap_3.absen_pulang_kerja,rekap_3.jam_1,rekap_3.jam_2,
-        case when (rekap_3.jumlah_menit_absen_pc!=0 AND rekap_3.mulai_jam_lembur >= rekap_3.akhir_jam_kerja) or rekap_3.absen_masuk_kerja is null or rekap_3.absen_pulang_kerja is null then 0 else GREATEST(rekap_3.jam_2-rekap_3.jam_1,0) end selisih_detik,rekap_3.jumlah_jam_lembur,rekap_3.jumlah_jam_istirahat_lembur, rekap_3.mulai_jam_lembur from (select rekap_2.tanggal_berjalan,rekap_2.capai_target,rekap_2.kode_hari,rekap_2.mulai_jam_kerja,rekap_2.akhir_jam_kerja,rekap_2.status_absen,rekap_2.nomor_form_lembur,rekap_2.kode_grade,rekap_2.salary_bulanan,rekap_2.enroll_id,rekap_2.finish_in,rekap_2.finish_out,rekap_2.absen_masuk_kerja,rekap_2.absen_pulang_kerja,rekap_2.jam_1,case when rekap_2.jam_2<rekap_2.jam_1 then jam_2+86400 else jam_2 end jam_2,rekap_2.jumlah_menit_absen_pc,rekap_2.jumlah_jam_lembur,rekap_2.jumlah_jam_istirahat_lembur,rekap_2.mulai_jam_lembur from (select rekap_1.capai_target, rekap_1.tanggal_berjalan,rekap_1.kode_hari,rekap_1.mulai_jam_kerja,rekap_1.akhir_jam_kerja,rekap_1.status_absen,rekap_1.nomor_form_lembur,rekap_1.kode_grade,rekap_1.salary_bulanan,rekap_1.enroll_id,rekap_1.finish_in,rekap_1.finish_out,TIME_TO_SEC(rekap_1.finish_in) jam_1,TIME_TO_SEC(rekap_1.finish_out) jam_2,rekap_1.absen_masuk_kerja,rekap_1.absen_pulang_kerja,rekap_1.jumlah_menit_absen_pc,rekap_1.jumlah_jam_lembur,rekap_1.jumlah_jam_istirahat_lembur, rekap_1.mulai_jam_lembur from (select a.enroll_id,a.tanggal_berjalan,a.kode_hari,a.mulai_jam_kerja,a.akhir_jam_kerja,a.status_absen,a.jumlah_menit_absen_pc,b.nomor_form_lembur,if(emp_hist.kode_grade is not null, emp_hist.kode_grade,c.kode_grade) kode_grade,d.salary_bulanan,
-        case when
-                a.mulai_jam_kerja is null then
-                    GREATEST(
-                    STR_TO_DATE(SUBSTRING(a.absen_masuk_kerja, 1, 5), '%H:%i'),
-                    STR_TO_DATE(SUBSTRING(b.mulai_jam_lembur, 12, 5), '%H:%i')
-                )
-                else
-                    case when STR_TO_DATE(SUBSTRING(b.mulai_jam_lembur, 12, 5), '%H:%i')<=STR_TO_DATE(SUBSTRING(a.mulai_jam_kerja, 1, 5), '%H:%i') 		then
-                        GREATEST(
-                                STR_TO_DATE(SUBSTRING(b.mulai_jam_lembur, 12, 5), '%H:%i'),
-                                STR_TO_DATE(SUBSTRING(a.absen_masuk_kerja, 1, 5), '%H:%i')
-                        )
-                    else
-                        GREATEST(
-                                STR_TO_DATE(SUBSTRING(a.akhir_jam_kerja, 1, 5), '%H:%i'),
-                                STR_TO_DATE(SUBSTRING(b.mulai_jam_lembur, 12, 5), '%H:%i'),
-                                STR_TO_DATE(SUBSTRING(a.absen_masuk_kerja, 1, 5), '%H:%i')
-                        )
-                    end
-            end finish_in,
-            LEAST(
-                STR_TO_DATE(SUBSTRING(b.akhir_jam_lembur, 12, 5), '%H:%i'),
-                STR_TO_DATE(SUBSTRING(a.absen_pulang_kerja, 1, 5), '%H:%i')
-            ) finish_out,
-        a.absen_masuk_kerja,a.absen_pulang_kerja,b.jumlah_jam_lembur,b.jumlah_jam_istirahat_lembur,b.mulai_jam_lembur, b.capai_target from (select*from master_data_absen_kehadiran where tanggal_berjalan>='$first_date' and tanggal_berjalan<='$last_date' and nomor_form_lembur is not null " . $inEnrollId . ") a inner join (select*from data_lembur where tanggal_berjalan>='$first_date' and tanggal_berjalan<='$last_date') b on a.enroll_id=b.enroll_id and a.tanggal_berjalan=b.tanggal_berjalan inner join employee_atribut c on a.enroll_id=c.enroll_id left join employee_atribut_histories emp_hist on a.enroll_id=emp_hist.enroll_id and a.tanggal_berjalan between SUBSTRING(emp_hist.periode_payroll,1,10) and SUBSTRING(emp_hist.periode_payroll,16,10) left join grading_salary d on substring(a.tanggal_berjalan,1,4)=substring(d.periode_umk,1,4) and case when emp_hist.kode_grade is not null then emp_hist.kode_grade else c.kode_grade end=d.kode_grade)rekap_1)rekap_2)rekap_3)rekap_4");
+        // $rekap_lembur_gabungan = DB::select("select rekap_4.tanggal_berjalan,rekap_4.capai_target,rekap_4.kode_hari,rekap_4.mulai_jam_kerja,rekap_4.akhir_jam_kerja,rekap_4.status_absen,rekap_4.nomor_form_lembur,rekap_4.kode_grade,rekap_4.salary_bulanan,rekap_4.enroll_id,rekap_4.finish_in,rekap_4.finish_out,rekap_4.absen_masuk_kerja,rekap_4.absen_pulang_kerja,FLOOR(rekap_4.selisih_detik/3600) selisih_jam,FLOOR(MOD(rekap_4.selisih_detik,3600)/60) selisih_menit,MOD(MOD(rekap_4.selisih_detik,3600),60) selisih_detik,CONCAT(LPAD(FLOOR(rekap_4.selisih_detik/3600), 2, '0'),':',LPAD(FLOOR(MOD(rekap_4.selisih_detik,3600)/60), 2, '0'),':',LPAD(MOD(MOD(rekap_4.selisih_detik,3600),60),2,'0')) final_total,rekap_4.jumlah_jam_lembur,rekap_4.jumlah_jam_istirahat_lembur from (select rekap_3.tanggal_berjalan,rekap_3.capai_target,rekap_3.kode_hari,rekap_3.mulai_jam_kerja,rekap_3.akhir_jam_kerja,rekap_3.status_absen,rekap_3.nomor_form_lembur,rekap_3.kode_grade,rekap_3.salary_bulanan,rekap_3.enroll_id,rekap_3.finish_in,rekap_3.finish_out,rekap_3.absen_masuk_kerja,rekap_3.absen_pulang_kerja,rekap_3.jam_1,rekap_3.jam_2,
+        // case when (rekap_3.jumlah_menit_absen_pc!=0 AND rekap_3.mulai_jam_lembur >= rekap_3.akhir_jam_kerja) or rekap_3.absen_masuk_kerja is null or rekap_3.absen_pulang_kerja is null then 0 else GREATEST(rekap_3.jam_2-rekap_3.jam_1,0) end selisih_detik,rekap_3.jumlah_jam_lembur,rekap_3.jumlah_jam_istirahat_lembur, rekap_3.mulai_jam_lembur from (select rekap_2.tanggal_berjalan,rekap_2.capai_target,rekap_2.kode_hari,rekap_2.mulai_jam_kerja,rekap_2.akhir_jam_kerja,rekap_2.status_absen,rekap_2.nomor_form_lembur,rekap_2.kode_grade,rekap_2.salary_bulanan,rekap_2.enroll_id,rekap_2.finish_in,rekap_2.finish_out,rekap_2.absen_masuk_kerja,rekap_2.absen_pulang_kerja,rekap_2.jam_1,case when rekap_2.jam_2<rekap_2.jam_1 then jam_2+86400 else jam_2 end jam_2,rekap_2.jumlah_menit_absen_pc,rekap_2.jumlah_jam_lembur,rekap_2.jumlah_jam_istirahat_lembur,rekap_2.mulai_jam_lembur from (select rekap_1.capai_target, rekap_1.tanggal_berjalan,rekap_1.kode_hari,rekap_1.mulai_jam_kerja,rekap_1.akhir_jam_kerja,rekap_1.status_absen,rekap_1.nomor_form_lembur,rekap_1.kode_grade,rekap_1.salary_bulanan,rekap_1.enroll_id,rekap_1.finish_in,rekap_1.finish_out,TIME_TO_SEC(rekap_1.finish_in) jam_1,TIME_TO_SEC(rekap_1.finish_out) jam_2,rekap_1.absen_masuk_kerja,rekap_1.absen_pulang_kerja,rekap_1.jumlah_menit_absen_pc,rekap_1.jumlah_jam_lembur,rekap_1.jumlah_jam_istirahat_lembur, rekap_1.mulai_jam_lembur from (select a.enroll_id,a.tanggal_berjalan,a.kode_hari,a.mulai_jam_kerja,a.akhir_jam_kerja,a.status_absen,a.jumlah_menit_absen_pc,b.nomor_form_lembur,if(emp_hist.kode_grade is not null, emp_hist.kode_grade,c.kode_grade) kode_grade,d.salary_bulanan,
+        // case when
+        //         a.mulai_jam_kerja is null then
+        //             GREATEST(
+        //             STR_TO_DATE(SUBSTRING(a.absen_masuk_kerja, 1, 5), '%H:%i'),
+        //             STR_TO_DATE(SUBSTRING(b.mulai_jam_lembur, 12, 5), '%H:%i')
+        //         )
+        //         else
+        //             case when STR_TO_DATE(SUBSTRING(b.mulai_jam_lembur, 12, 5), '%H:%i')<=STR_TO_DATE(SUBSTRING(a.mulai_jam_kerja, 1, 5), '%H:%i') 		then
+        //                 GREATEST(
+        //                         STR_TO_DATE(SUBSTRING(b.mulai_jam_lembur, 12, 5), '%H:%i'),
+        //                         STR_TO_DATE(SUBSTRING(a.absen_masuk_kerja, 1, 5), '%H:%i')
+        //                 )
+        //             else
+        //                 GREATEST(
+        //                         STR_TO_DATE(SUBSTRING(a.akhir_jam_kerja, 1, 5), '%H:%i'),
+        //                         STR_TO_DATE(SUBSTRING(b.mulai_jam_lembur, 12, 5), '%H:%i'),
+        //                         STR_TO_DATE(SUBSTRING(a.absen_masuk_kerja, 1, 5), '%H:%i')
+        //                 )
+        //             end
+        //     end finish_in,
+        //     LEAST(
+        //         STR_TO_DATE(SUBSTRING(b.akhir_jam_lembur, 12, 5), '%H:%i'),
+        //         STR_TO_DATE(SUBSTRING(a.absen_pulang_kerja, 1, 5), '%H:%i')
+        //     ) finish_out,
+        // a.absen_masuk_kerja,a.absen_pulang_kerja,b.jumlah_jam_lembur,b.jumlah_jam_istirahat_lembur,b.mulai_jam_lembur, b.capai_target from (select*from master_data_absen_kehadiran where tanggal_berjalan>='$first_date' and tanggal_berjalan<='$last_date' and nomor_form_lembur is not null " . $inEnrollId . ") a inner join (select*from data_lembur where tanggal_berjalan>='$first_date' and tanggal_berjalan<='$last_date') b on a.enroll_id=b.enroll_id and a.tanggal_berjalan=b.tanggal_berjalan inner join employee_atribut c on a.enroll_id=c.enroll_id left join employee_atribut_histories emp_hist on a.enroll_id=emp_hist.enroll_id and a.tanggal_berjalan between SUBSTRING(emp_hist.periode_payroll,1,10) and SUBSTRING(emp_hist.periode_payroll,16,10) left join grading_salary d on substring(a.tanggal_berjalan,1,4)=substring(d.periode_umk,1,4) and case when emp_hist.kode_grade is not null then emp_hist.kode_grade else c.kode_grade end=d.kode_grade)rekap_1)rekap_2)rekap_3)rekap_4");
+        $rekap_lembur_gabungan = DB::select("SELECT r4.tanggal_berjalan,r4.capai_target,r4.kode_hari,r4.mulai_jam_kerja,r4.akhir_jam_kerja,r4.status_absen,r4.nomor_form_lembur,r4.kode_grade,r4.salary_bulanan,
+                                                    r4.enroll_id,r4.finish_in,r4.finish_out,r4.absen_masuk_kerja,r4.absen_pulang_kerja,
+                                                    FLOOR(r4.selisih_detik/3600) selisih_jam,
+                                                    FLOOR(MOD(r4.selisih_detik,3600)/60) selisih_menit,
+                                                    MOD(MOD(r4.selisih_detik,3600),60) selisih_detik,
+                                                        CONCAT(
+                                                            LPAD(FLOOR(r4.selisih_detik/3600),2,'0'),':',
+                                                            LPAD(FLOOR(MOD(r4.selisih_detik,3600)/60),2,'0'),':',
+                                                            LPAD(MOD(MOD(r4.selisih_detik,3600),60),2,'0')
+                                                        ) AS final_total,
+                                                    r4.jumlah_jam_lembur,
+                                                    r4.jumlah_jam_istirahat_lembur
+                                            FROM ( SELECT r3.*,
+                                                            CASE
+                                                                WHEN (r3.jumlah_menit_absen_pc != 0
+                                                                    AND r3.mulai_jam_lembur >= r3.akhir_jam_kerja)
+                                                                    OR r3.absen_masuk_kerja IS NULL
+                                                                    OR r3.absen_pulang_kerja IS NULL
+                                                                THEN 0
+                                                                ELSE GREATEST(r3.jam_2 - r3.jam_1,0)
+                                                            END AS selisih_detik
+                                            FROM ( SELECT r2.*,
+                                                            CASE
+                                                                WHEN r2.jam_2_raw < r2.jam_1
+                                                                THEN r2.jam_2_raw + 86400
+                                                                ELSE r2.jam_2_raw
+                                                            END AS jam_2
+                                            FROM ( SELECT r1.*,
+                                                    TIME_TO_SEC(r1.finish_in)  AS jam_1,
+                                                    TIME_TO_SEC(r1.finish_out) AS jam_2_raw
+                                            FROM ( SELECT
+                                                            a.enroll_id,
+                                                            a.tanggal_berjalan,
+                                                            a.kode_hari,
+                                                            a.mulai_jam_kerja,
+                                                            a.akhir_jam_kerja,
+                                                            a.status_absen,
+                                                            a.jumlah_menit_absen_pc,
+
+                                                            b.nomor_form_lembur,
+                                                            b.capai_target,
+
+                                                            /* ============================= */
+                                                            /* PENENTUAN KODE GRADE BARU */
+                                                            /* ============================= */
+                                                            -- if(gh.kode_grade_baru is not null, gh.kode_grade_baru,c.kode_grade) kode_grade,
+                                                            COALESCE(
+																																		gh.kode_grade_baru,
+																																		rp.kode_grade,
+																																		c.kode_grade
+																																) AS kode_grade,
+
+                                                            d.salary_bulanan,
+
+                                                            CASE
+                                                                WHEN a.mulai_jam_kerja IS NULL
+                                                                THEN GREATEST(
+                                                                    STR_TO_DATE(SUBSTRING(a.absen_masuk_kerja,1,5),'%H:%i'),
+                                                                    STR_TO_DATE(SUBSTRING(b.mulai_jam_lembur,12,5),'%H:%i')
+                                                                )
+                                                                ELSE
+                                                                CASE
+                                                                    WHEN STR_TO_DATE(SUBSTRING(b.mulai_jam_lembur,12,5),'%H:%i')
+                                                                        <= STR_TO_DATE(SUBSTRING(a.mulai_jam_kerja,1,5),'%H:%i')
+                                                                    THEN GREATEST(
+                                                                        STR_TO_DATE(SUBSTRING(b.mulai_jam_lembur,12,5),'%H:%i'),
+                                                                        STR_TO_DATE(SUBSTRING(a.absen_masuk_kerja,1,5),'%H:%i')
+                                                                    )
+                                                                    ELSE GREATEST(
+                                                                        STR_TO_DATE(SUBSTRING(a.akhir_jam_kerja,1,5),'%H:%i'),
+                                                                        STR_TO_DATE(SUBSTRING(b.mulai_jam_lembur,12,5),'%H:%i'),
+                                                                        STR_TO_DATE(SUBSTRING(a.absen_masuk_kerja,1,5),'%H:%i')
+                                                                    )
+                                                                END
+                                                            END AS finish_in,
+                                                            LEAST(
+                                                                STR_TO_DATE(SUBSTRING(b.akhir_jam_lembur,12,5),'%H:%i'),
+                                                                STR_TO_DATE(SUBSTRING(a.absen_pulang_kerja,1,5),'%H:%i')
+                                                            ) AS finish_out,
+                                                            a.absen_masuk_kerja,
+                                                            a.absen_pulang_kerja,
+                                                            b.jumlah_jam_lembur,
+                                                            b.jumlah_jam_istirahat_lembur,
+                                                            b.mulai_jam_lembur
+                                            FROM master_data_absen_kehadiran a
+                                            INNER JOIN data_lembur b
+                                                ON a.enroll_id=b.enroll_id
+                                                AND a.tanggal_berjalan=b.tanggal_berjalan $inRnrollid1
+                                            INNER JOIN employee_atribut c
+                                                ON a.enroll_id=c.enroll_id
+                                            /* ============================= */
+                                            /* JOIN KE GRADING HISTORY */
+                                            /* ============================= */
+                                            LEFT JOIN grading_history gh
+                                                ON a.enroll_id = gh.enroll_id AND a.tanggal_berjalan BETWEEN STR_TO_DATE(SUBSTRING_INDEX(gh.periode_payroll,' s/d ',1),'%Y-%m-%d') AND
+												STR_TO_DATE(SUBSTRING_INDEX(gh.periode_payroll,' s/d ',-1),'%Y-%m-%d')
+											left join rekap_perhitungan_payroll rp on a.enroll_id = rp.enroll_id and a.tanggal_berjalan BETWEEN STR_TO_DATE(SUBSTRING_INDEX(rp.periode_kehadiran,' s/d ',1),'%Y-%m-%d')
+											AND STR_TO_DATE(SUBSTRING_INDEX(rp.periode_kehadiran,' s/d ',-1),'%Y-%m-%d')
+											right join grading_salary d on d.kode_grade = COALESCE(gh.kode_grade_baru,rp.kode_grade,c.kode_grade) and YEAR(a.tanggal_berjalan) = SUBSTR( d.periode_umk, 1, 4 )
+                                            WHERE
+                                                a.tanggal_berjalan BETWEEN '$first_date' AND '$last_date'
+                                                AND a.nomor_form_lembur IS NOT NULL
+                                                        ) r1
+                                                    ) r2
+                                                ) r3
+                                            ) r4;");
+        // dd($rekap_lembur_gabungan);
         foreach ($rekap_lembur_gabungan as $key => $value) {
             if ($value->selisih_menit <= 15) {
                 $konveri_jam = 0;
@@ -2172,10 +2351,47 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 'deleted_at' => null
             ]);
         }
+         $map_grade = [];
+        foreach ($rekap_lembur_gabungan as $row) {
+            $key = $row->enroll_id . '_' . $row->tanggal_berjalan;
+            $map_grade[$key] = [
+                'kode_grade' => $row->kode_grade,
+                'salary_bulanan' => $row->salary_bulanan
+            ];
+        }
 
         foreach ($master_absen as $key => $value) {
             $enroll_id_karyawan = $value->enroll_id;
             $nomor_form_lembur = $value->nomor_form_lembur;
+
+            // $map_key = $enroll_id_karyawan . '_' . $value->tanggal_berjalan;
+
+            // $salary_bulanan = 0;
+            $kode_grade = $value->final_grade;
+
+            // if (isset($map_grade[$map_key])) {
+
+            //     // ambil dari grading history
+            //     $salary_bulanan = $map_grade[$map_key]['salary_bulanan'];
+            //     $kode_grade = $map_grade[$map_key]['kode_grade'];
+
+            // } else {
+
+            //     // fallback ke employee_atribut
+            //     $tahun_berjalan = substr($value->tanggal_berjalan, 0, 4);
+
+            //     $grading_salary = $value->employee_atribut->grading_salary
+            //         ->filter(function ($item) use ($tahun_berjalan) {
+            //             return substr($item->periode_umk, 0, 4) == $tahun_berjalan;
+            //         })
+            //         ->first();
+
+            //     if ($grading_salary) {
+            //         $salary_bulanan = $grading_salary->salary_bulanan;
+            //         $kode_grade = $grading_salary->kode_grade ?? null;
+            //     }
+
+            // }
 
             $group_department = 'SUPPORTING PRODUCTION';
             if ($value->employee_atribut->group_department != null) {
@@ -2229,10 +2445,17 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $koreksi_upah = 0;
             $koreksi_potongan = 0;
             $tahun_berjalan = substr($value->tanggal_berjalan, 0, 4);
-            $grading_salary = $value->employee_atribut->grading_salary->filter(function ($item) use ($tahun_berjalan) {
-                return substr($item->periode_umk, 0, 4) == $tahun_berjalan;
-            })->first();
+            // $grading_salary = $value->employee_atribut->grading_salary->filter(function ($item) use ($tahun_berjalan) {
+            //     return substr($item->periode_umk, 0, 4) == $tahun_berjalan;
+            // })->first();
 
+            // if ($grading_salary && $grading_salary->insentif) {
+            //     $insentif_kehadiran = $grading_salary->insentif / 21;
+            // }
+            $grading_salary = GradingSalary::where('kode_grade', $kode_grade)
+                ->whereRaw('LEFT(periode_umk, 4) = ?', [$tahun_berjalan])
+                ->first();
+            // dd($kode_grade,$tahun_berjalan,$grading_salary->insentif/21);
             if ($grading_salary && $grading_salary->insentif) {
                 $insentif_kehadiran = $grading_salary->insentif / 21;
             }
@@ -2309,11 +2532,11 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             }
             $thr = 0;
             if ($selisih_hari > 30) {
-                $grading_salary = $value->employee_atribut->grading_salary->filter(function ($item) use ($tahun_berjalan) {
-                    return substr($item->periode_umk, 0, 4) == $tahun_berjalan;
-                })->first();
+                // $grading_salary = $value->grading_history->grading_salary->filter(function ($item) use ($tahun_berjalan) {
+                //     return substr($item->periode_umk, 0, 4) == $tahun_berjalan;
+                // })->first();
 
-                $thr = $grading_salary->salary_bulanan / 12 / $jumlah_hari_kerja;
+                $thr =  $value->salary_bulanan / 12 / $jumlah_hari_kerja;
             }
             $bpjs_tk_total = ($value->kode_hari != 5 && $value->kode_hari != 6) ? $bpjs_tk : 0;
             $bpjs_ks_total = ($value->kode_hari != 5 && $value->kode_hari != 6) ? $bpjs_ks : 0;
@@ -2346,12 +2569,12 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             } else {
                 $uang_makan = 0;
             }
-            $grading_salary = $value->employee_atribut->grading_salary->filter(function ($item) use ($tahun_berjalan) {
-                return substr($item->periode_umk, 0, 4) == $tahun_berjalan;
-            })->first();
+            // $grading_salary = $value->grading_history->grading_salary->filter(function ($item) use ($tahun_berjalan) {
+            //     return substr($item->periode_umk, 0, 4) == $tahun_berjalan;
+            // })->first();
 
             if ($security->where('enroll_id', $value->enroll_id)->count()) {
-                $gaji_perhari = ($grading_salary->salary_bulanan) / 25;
+                $gaji_perhari =   $value->salary_bulanan / 25;
 
                 $gaji_perhari_total = ($value->mulai_jam_kerja != null) ? $gaji_perhari : 0;
                 $gaji_permenit = $gaji_perhari_total / 420;
@@ -2365,7 +2588,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $pembulatan = (ceil($jumlah / 100) * 100) - $jumlah;
                 $total_pembayaran = $jumlah + $bpjs_tk_company_total + $bpjs_ks_company_total + $thr_total + $thr_total + $uang_makan;
             } else {
-                $gaji_perhari = ($grading_salary->salary_bulanan) / $jumlah_hari_kerja;
+                $gaji_perhari =  $value->salary_bulanan / $jumlah_hari_kerja;
                 $gaji_perhari_total = ( $value->kode_hari != 5 && $value->kode_hari != 6 && ($value->status_absen != 'LN' || ($value->status_absen == 'LN' && $value->nomor_form_lembur == null  ))) ? $gaji_perhari : 0;
                 $gaji_permenit = $gaji_perhari_total / 480;
                 $potongan_permenit = (($value->jumlah_menit_absen_dt + $value->jumlah_menit_absen_pc + $value->total_menit_permits) * $gaji_permenit);
@@ -2376,6 +2599,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $jumlah = $bruto - ($bpjs_tk_total + $bpjs_ks_total);
                 $pembulatan = (ceil($jumlah / 100) * 100) - $jumlah;
                 $total_pembayaran = $jumlah + $bpjs_tk_company_total + $bpjs_ks_company_total + $thr_total + $thr_total + $uang_makan;
+                // dd( $gaji_perhari_total);
             }
             $z[] = [
                 'tanggal_berjalan' => $value->tanggal_berjalan,
@@ -2395,6 +2619,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 'hari_kerja' => ((($value->status_absen == null || $value->status_absen == 'IKS'  || $value->status_absen == 'TL') && $value->mulai_jam_kerja != null) || (in_array($value->status_absen, $IBY)) || ($value->status_absen == 'LN' && $value->kode_hari != 5 && $value->kode_hari != 6)) ? 1 : 0,
                 'pot_hari_kerja' => (in_array($value->status_absen, $ITB) || $value->status_absen == 'M' || $value->status_absen == 'R') ? 1 : 0,
                 'total_absen' => (in_array($value->status_absen, $ITB) || $value->status_absen == 'M' || $value->status_absen == 'R' || in_array($value->status_absen, $IBY) || ($value->status_absen == 'LN' && $value->kode_hari != 5 && $value->kode_hari != 6)) ? 1 : 0,
+                'kode_grade' => $value->final_grade,
                 'gaji_perhari' => $gaji_perhari_total,
                 'gaji_permenit' => $gaji_permenit,
                 'total_lembur_rupiah' => $total_lembur_rupiah,
@@ -2417,6 +2642,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 'total_pembayaran' => $total_pembayaran,
             ];
         }
+        // dd($z);
         $datest = DB::transaction(function () use ($z) {
             $tanggalBerjalanList = collect($z)->pluck('tanggal_berjalan')->unique();
             $enrollIdList = collect($z)->pluck('enroll_id')->unique();
@@ -2445,6 +2671,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     'hari_kerja' => $item['hari_kerja'],
                     'pot_hari_kerja' => $item['pot_hari_kerja'],
                     'total_absen' => $item['total_absen'],
+                    'kode_grade' => $item['kode_grade'],
                     'gaji_perhari' => $item['gaji_perhari'],
                     'gaji_permenit' => $item['gaji_permenit'],
                     'total_lembur_rupiah' => $item['total_lembur_rupiah'],
