@@ -41,8 +41,8 @@ class GradingHistoryExport implements
     public function headings(): array
     {
         return [
+            'NO',
             'ID',
-            'ENROLL ID',
             'NIP',
             'NAMA KARYAWAN',
             'KODE GRADE LAMA',
