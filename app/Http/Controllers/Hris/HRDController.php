@@ -783,13 +783,13 @@ class HRDController extends AdminBaseController
         $department =DepartmentAll::select('department_name')->distinct()->orderBy('department_id')->groupBy('department_id')->get();
         return View::make('hris/hrd/kontrak_kerja',compact('selectEmployee','selectNoKTP','department'), $this->data);
     }
-    public function get_employee_contract(){
+    public function get_employee_contract(){ // pks kontrak kerja
         $inSearchVariable='';
         $inEnrollId='';
         $inIbuKandung='';
         $inNoKTP='';
         $inStatusStaff='';
-        $statusPenilaian="AND y.status_penilaian IS NULL";
+        $statusPenilaian='';
         $status_kontrak=request()->status_kontrak;
         $compare='';
 
