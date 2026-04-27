@@ -281,9 +281,16 @@ h1 {
                                             <select id="filter_periode" class="form-control" style="width:200px;">
                                                 <option value="">-- Pilih Periode --</option>
                                                 @foreach ($periode_payroll as $index => $r_periode_payroll)
+                                                    @php
+                                                        [$start, $end] = explode(' s/d ', $r_periode_payroll->periode_kehadiran);
+
+                                                        $startFormat = \Carbon\Carbon::parse($start)->translatedFormat('d F Y');
+                                                        $endFormat = \Carbon\Carbon::parse($end)->translatedFormat('d F Y');
+                                                    @endphp
+
                                                     <option value="{{$r_periode_payroll->periode_kehadiran}}"
                                                         {{$index == 0 ? 'selected' : ''}}>
-                                                        {{$r_periode_payroll->periode_kehadiran}}
+                                                        {{ $startFormat }} s/d {{ $endFormat }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -500,8 +507,18 @@ h1 {
                                             <label class="form-label">Periode : </label>
                                             <select id="periode" name="periode" class="form-control">
                                                 <option value="">--periode --</option>
-                                                @foreach ($periode_payroll as $r_periode_payroll)
-                                                    <option value="{{$r_periode_payroll->periode_kehadiran}}">{{$r_periode_payroll->periode_kehadiran}}</option>
+                                               @foreach ($periode_payroll as $index => $r_periode_payroll)
+                                                    @php
+                                                        [$start, $end] = explode(' s/d ', $r_periode_payroll->periode_kehadiran);
+
+                                                        $startFormat = \Carbon\Carbon::parse($start)->translatedFormat('d F Y');
+                                                        $endFormat = \Carbon\Carbon::parse($end)->translatedFormat('d F Y');
+                                                    @endphp
+
+                                                    <option value="{{$r_periode_payroll->periode_kehadiran}}"
+                                                        {{$index == 0 ? 'selected' : ''}}>
+                                                        {{ $startFormat }} s/d {{ $endFormat }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -915,6 +932,7 @@ $('#file-excel').change(function () {
 
 
     <script>
+        let isResetting = false;
 
         //  $('body').on('change', '.select-department-update', function () {
         //         let department_id = $(this).val();
@@ -947,28 +965,31 @@ $('#file-excel').change(function () {
 
 
         $("#diajukanOlehID").select2().on("select2:select", function() {
-            var selectedOption = $('#diajukanOlehID').find(':selected');
-            var department = selectedOption.data('department_name');
-            var department_id = selectedOption.data('department_data_id');
-            var subDept = selectedOption.data('sub_dept_name');
-            var subDeptID = selectedOption.data('sub_dept_data_id');
-            var kodegrade = selectedOption.data('kode_grade');
 
-            if(department != null){
-                document.getElementById('enroll_id').value = selectedOption.val();
-                document.getElementById('department').value = department;
-                document.getElementById('bagian').value = subDept;
-                document.getElementById('department_id').value = department_id;
-                document.getElementById('sub_dept_id').value = subDeptID;
-                document.getElementById('kode_grade').value = kodegrade;
-            }
+        if (isResetting) return; // ⛔ penting
+
+        var selectedOption = $('#diajukanOlehID').find(':selected');
+        var department = selectedOption.data('department_name');
+        var department_id = selectedOption.data('department_data_id');
+        var subDept = selectedOption.data('sub_dept_name');
+        var subDeptID = selectedOption.data('sub_dept_data_id');
+        var kodegrade = selectedOption.data('kode_grade');
+
+        if(department != null){
+            $('#enroll_id').val(selectedOption.val());
+            $('#department').val(department);
+            $('#bagian').val(subDept);
+            $('#department_id').val(department_id);
+            $('#sub_dept_id').val(subDeptID);
+            $('#kode_grade').val(kodegrade);
+        }
         });
-        $("#didelegasikanID").select2().on("select2:select", function() {
-            var selectedOption = $('#didelegasikanID').find(':selected');
-            if(selectedOption.val()){
-                document.getElementById('didelegasikan_enroll_id').value = selectedOption.val();
-            }
-        });
+            // $("#didelegasikanID").select2().on("select2:select", function() {
+            //     var selectedOption = $('#didelegasikanID').find(':selected');
+            //     if(selectedOption.val()){
+            //         document.getElementById('didelegasikan_enroll_id').value = selectedOption.val();
+            //     }
+            // });
 
         function printPengajuanPDF(id) {
             var url = "{{ route('permintaan_tenaga_kerja.print_pengajuan_tk_pdf', ':id') }}";
@@ -1441,6 +1462,31 @@ $('#file-excel').change(function () {
         var perijinanChecked = [];
         var currentPageCheck = 0;
         $(document).ready(function() {
+            $('#ajax-modal-tambah').on('hidden.bs.modal', function () {
+
+            isResetting = true;
+
+            // reset semua input
+            $(this).find('input').val('');
+
+            // reset select biasa
+            $(this).find('select').val(null);
+
+            // reset select2
+            $(this).find('.select2').val(null).trigger('change.select2');
+
+            // reset field manual
+            $('#department').val('');
+            $('#bagian').val('');
+            $('#department_id').val('');
+            $('#sub_dept_id').val('');
+            $('#kode_grade').val('');
+
+            setTimeout(() => {
+                isResetting = false;
+            }, 100);
+
+        });
             var start = moment().subtract(29, 'days');
             var end = moment();
             var htmlDateRange = '<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>'
@@ -1692,53 +1738,48 @@ $('#file-excel').change(function () {
                 }
             });
           var currentVerifikasi = 0;
+            $('#tab-waiting').click(function () {
+                currentVerifikasi = 0;
+            });
 
-$('#tab-waiting').click(function () {
-    currentVerifikasi = 0;
-});
+            $('#tab-verifikasi').click(function () {
+                currentVerifikasi = 1;
+            });
 
-$('#tab-verifikasi').click(function () {
-    currentVerifikasi = 1;
-});
+            $('#tab-reject').click(function () {
+                currentVerifikasi = 2;
+            });
 
-$('#tab-reject').click(function () {
-    currentVerifikasi = 2;
-});
+                    $('#btn-export-excel').click(function () {
+                let periode = $('#filter_periode').val();
 
-          $('#btn-export-excel').click(function () {
-    let periode = $('#filter_periode').val();
+                if (!periode) {
+                    swal("", "Harap pilih periode terlebih dahulu!", "warning");
+                    return;
+                }
 
-    if (!periode) {
-        swal("", "Harap pilih periode terlebih dahulu!", "warning");
-        return;
-    }
+                console.log("VERIF:", currentVerifikasi);
 
-    console.log("VERIF:", currentVerifikasi);
+                let url = "{{ route('hris.gradingsalarybaru.export') }}"
+                    + "?periode=" + encodeURIComponent(periode)
+                    + "&verifikasi=" + currentVerifikasi;
 
-    let url = "{{ route('hris.gradingsalarybaru.export') }}"
-        + "?periode=" + encodeURIComponent(periode)
-        + "&verifikasi=" + currentVerifikasi;
-
-    window.location.href = url;
-});
-
+                window.location.href = url;
+            });
             $(document).on('click', '.btn-lihat', function () {
                 let uuid = $(this).data('id');
                 // Lakukan sesuatu, misal tampilkan modal detail
             });
-
             $(document).on('click', '.btn-edit', function () {
                 let uuid = $(this).data('id');
                 // Redirect atau tampilkan form edit
             });
-
             $(document).on('click', '.btn-delete', function () {
                 let uuid = $(this).data('id');
                 if (confirm("Yakin ingin menghapus?")) {
                     // Kirim AJAX delete ke server
                 }
             });
-
             $('body').on('click', '#btn-approve-permintaan', function (event) {
                 let id = $('#id').val();
                 $.ajax({
@@ -1761,7 +1802,6 @@ $('#tab-reject').click(function () {
                     }
                 });
             })
-
             $('body').on('click', '#btn-reject-permintaan', function (event) {
                 let id = $('#id_modal_permintaan').val();
                 $.ajax({
@@ -1784,7 +1824,6 @@ $('#tab-reject').click(function () {
                     }
                 });
             });
-
             $('body').on('click', '#btn-simpan-permintaan', function (event) {
 
                 var tanggal_pengajuan = $('#tanggal_pengajuan').val();
@@ -1832,7 +1871,7 @@ $('#tab-reject').click(function () {
                     success: function (res) {
 
                         notif({ msg: "<b>Info:</b> Data berhasil disimpan.", type: "info" });
-                        $("#ajax-modal-tambah").modal('hide');
+                        // $("#ajax-modal-tambah").modal('hide');
                         tableVerifikasi.ajax.reload();
                         tableWaiting.ajax.reload();
                         tableReject.ajax.reload();
@@ -1956,20 +1995,20 @@ $('#tab-reject').click(function () {
     </script>
 
     <script>
-         $("#diajukanOlehID").select2().on("select2:select", function() {
-            var selectedOption = $('#diajukanOlehID').find(':selected');
-            var department = selectedOption.data('department_name');
-            var department_id = selectedOption.data('department_data_id');
-            var subDept = selectedOption.data('sub_dept_name');
-            var subDeptID = selectedOption.data('sub_dept_data_id');
-            if(department != null){
-                document.getElementById('enroll_id').value = selectedOption.val();
-                document.getElementById('department').value = department;
-                document.getElementById('bagian').value = subDept;
-                document.getElementById('department_id').value = department_id;
-                document.getElementById('sub_dept_id').value = subDeptID;
-            }
-        });
+        //  $("#diajukanOlehID").select2().on("select2:select", function() {
+        //     var selectedOption = $('#diajukanOlehID').find(':selected');
+        //     var department = selectedOption.data('department_name');
+        //     var department_id = selectedOption.data('department_data_id');
+        //     var subDept = selectedOption.data('sub_dept_name');
+        //     var subDeptID = selectedOption.data('sub_dept_data_id');
+        //     if(department != null){
+        //         document.getElementById('enroll_id').value = selectedOption.val();
+        //         document.getElementById('department').value = department;
+        //         document.getElementById('bagian').value = subDept;
+        //         document.getElementById('department_id').value = department_id;
+        //         document.getElementById('sub_dept_id').value = subDeptID;
+        //     }
+        // });
          $("#diajukanOlehIDModalApprove").select2().on("select2:select", function() {
             var selectedOption = $('#diajukanOlehIDModalApprove').find(':selected');
             var department = selectedOption.data('department_name_pengajuan');
@@ -2000,22 +2039,14 @@ $('#tab-reject').click(function () {
 
     <script>
         function closeModalBuatPengajuan() {
-            $("#ajax-modal-tambah").modal('hide');
-            $('#title-modal-create').text('Buat Form Permintaan Tenaga Kerja');
-            $('#tanggal_pengajuan').val('');
-            $('#tanggal_mulai_ijin').val('');
-            $('#tanggal_akhir_ijin').val('');
-            $("#uuid_master").val(null);
-            $("#didelegasikan_enroll_id").val(null);
-        }
+    $("#ajax-modal-tambah").modal('hide');
+}
         function closeModalApprovePengajuan() {
            $("#ajax-modal-approve-pengajuan").modal('hide');
-
-    modal.modal('hide');
-
-    // reset semua input
-    modal.find('input').val('');
-    modal.find('select').val('').trigger('change');
+            modal.modal('hide');
+            // reset semua input
+            modal.find('input').val('');
+            modal.find('select').val('').trigger('change');
            $("#btn-approve-permintaan").hide();
            $("#btn-reject-permintaan").hide();
            $("#btn-update-permintaan").hide();
