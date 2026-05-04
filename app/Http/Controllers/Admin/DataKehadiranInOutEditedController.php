@@ -550,7 +550,9 @@ class DataKehadiranInOutEditedController extends AdminBaseController
             //andri
             MasterDataAbsenKehadiran::where('enroll_id',$enroll_id)->where('tanggal_berjalan',$tanggal_berjalan)->update([
                 'mulai_jam_kerja'=>$mulai_jam_kerja,
-                'akhir_jam_kerja'=>$akhir_jam_kerja
+                'akhir_jam_kerja'=>$akhir_jam_kerja,
+                'status_absen' => $status_absen,
+                'operator' => $operator
             ]);
             $query=MasterDataAbsenKehadiran::where('tanggal_berjalan',$tanggal_berjalan)
                 ->where('enroll_id','=', $enroll_id)->with('employee_atribut')->first();
