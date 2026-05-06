@@ -1318,6 +1318,9 @@ h1 {
             var rentan_posisi = $('#rentan_posisi').val();
             var selectDepartment = $('#selectDepartment').val();
             var daterange1 = $('#daterange1').val();
+            if (!daterange1 || daterange1.trim() === "") {
+                daterange1 = null;
+            }
             $.ajax({
                 type: "get",
                 url: '{{ route('tindakan_kedisiplinan.export_excel_surat_peringatan') }}',
@@ -1993,16 +1996,13 @@ h1 {
         }
 
         $(document).ready(function() {
-            var start = moment().subtract(29, 'days');
-            var end = moment();
-            var htmlDateRange = '<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>'
-            var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
-            var dateUpdateKehadiran = end.format("DD-MM-YYYY");
-            $('#daterange-btn1').html(htmlDateRange);
-            $('#daterange1').val(daterange1);
 
+            // Kosongkan dulu
+            $('#daterange1').val('');
+            $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i> Pilih Tanggal</span><i class="fa fa-angle-down ml-1"></i>');
 
             $('#daterange-btn1').daterangepicker({
+                autoUpdateInput: false, // 🔥 ini penting
                 ranges: {
                     'Hari ini': [moment(), moment()],
                     'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -2010,15 +2010,23 @@ h1 {
                     '30 Hari Kemarin': [moment().subtract(29, 'days'), moment()],
                     'Bulan Sekarang': [moment().startOf('month'), moment().endOf('month')],
                     'Bulan Kemarin': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                },
-                startDate: moment().subtract(29, 'days'),
-                endDate: moment()
+                }
             }, function(start, end) {
-                $('#daterange-btn1').html('<span><i class="fa fa-calendar"></i> ' + start.format("D MMM YYYY").toUpperCase() + ' s/d ' + end.format("D MMM YYYY").toUpperCase() + '</span><i class="fa fa-angle-down ml-1"></i>');
+
+                $('#daterange-btn1').html(
+                    '<span><i class="fa fa-calendar"></i> '
+                    + start.format("D MMM YYYY").toUpperCase()
+                    + ' s/d '
+                    + end.format("D MMM YYYY").toUpperCase()
+                    + '</span><i class="fa fa-angle-down ml-1"></i>'
+                );
+
                 var daterange1 = start.format("YYYY-MM-DD") + " s/d " + end.format("YYYY-MM-DD");
                 $('#daterange1').val(daterange1);
+
                 tableWaiting.ajax.reload();
             });
+
 
             var tableWaiting = $('#datatable-ajax-crud-waiting').DataTable({
                 ajax: {
