@@ -1892,6 +1892,11 @@
 
             if (enroll_id.length > 0) {
                 $("#form1 :input").prop("disabled", false);
+                // $("#kode_grade").prop("disabled", true);
+                $("#enroll_id").attr("readonly", true);
+                $("#btn-periksa_enroll_id").attr("disabled", true);
+                $("#nik").attr("readonly", true);
+                $("#btn-periksa_nik").attr("disabled", true);
                 $("#btn-save").prop("disabled", false);
                 $("#btn-reset").prop("disabled", true);
                 $("#btn-cancel").prop("disabled", false);
@@ -2395,6 +2400,7 @@
 
         $('body').on('click', '#btn-periksa_enroll_id', function () {
             var enroll_id = $('#enroll_id').val();
+            var nik = $('#nik').val();
             var is_periksaenroll_id = $('#is_periksaenroll_id').val();
             $('#btn-periksa_enroll_id').addClass("btn-loading");
             $("#btn-periksa_enroll_id").html('Please wait...');
@@ -2405,39 +2411,54 @@
                     $.ajax({
                         type:"POST",
                         url: "{{route('hris.employeeatr.ajax_periksaenroll_id')}}",
-                        dataType: 'json',
                         headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
                         data: {
-                            enroll_id:enroll_id,
+                            enroll_id: enroll_id,
+                            nik: nik,
                         },
                         dataType: 'json',
                         success: function(res){
+
+                            // =========================
+                            // JIKA GAGAL
+                            // =========================
+                            if(res.status == false){
+
+                                notif({
+                                    msg: "<b>Error:</b> " + res.message,
+                                    type: "error"
+                                });
+
+                                $("#btn-periksa_enroll_id").attr("disabled", false);
+                                $("#enroll_id").attr("readonly", false);
+
+                                $('#is_periksaenroll_id').val(0);
+
+                                return false;
+                            }
+
+                            // =========================
+                            // JIKA BERHASIL
+                            // =========================
                             notif({
-                                msg: "<b>Info:</b> Nomor Absen BISA DIGUNAKAN.",
+                                msg: "<b>Info:</b> " + res.message,
                                 type: "info"
                             });
                             $("#btn-periksa_enroll_id").attr("disabled", true);
                             $("#enroll_id").attr("readonly", true);
                             $('#is_periksaenroll_id').val(1);
                         },
-                        error: function(res){
+                        error: function(){
                             notif({
-                                msg: "<b>Error:</b> Nomor Absen SUDAH ADA.",
+                                msg: "<b>Error:</b> res.message.",
                                 type: "error"
                             });
                             $("#btn-periksa_enroll_id").attr("disabled", false);
                             $("#enroll_id").attr("readonly", false);
                         }
                     });
-                } else {
-                    notif({
-                        msg: "<b>Info:</b> Nomor Absen BISA DIGUNAKAN.",
-                        type: "info"
-                    });
-                    $("#btn-periksa_enroll_id").attr("disabled", true);
-                    $("#enroll_id").attr("readonly", true);
-                    $('#is_periksaenroll_id').val(1);
                 }
             } else {
                 notif({
@@ -2536,6 +2557,7 @@
             var nik = $('#nik').val();
             var status_aktif = $('#status_aktif').val();
             var status_staff = $('#status_staff').val();
+            var nik_enroll = nik.substring(5);
 
             var alamat_jalan = $('#alamat_jalan').val();
             var rt = $('#rt').val();
@@ -2733,6 +2755,26 @@
 
                 return false;
             }
+            if(nik_enroll != enroll_id)
+                {
+                    notif({
+                        msg: "<b>Error:</b> Nomor Absen harus sama dengan NIP karakter ke-6 dan seterusnya.",
+                        type: "error"
+                    });
+                    $("#enroll_id").attr("readonly", false);
+                    $("#btn-periksa_enroll_id").attr("disabled", false);
+                    $("#nik").attr("readonly", false);
+                    $("#btn-periksa_nik").attr("disabled", false);
+
+                    // reset status cek
+                    $('#is_periksaenroll_id').val(0);
+
+                    $("#nik").addClass('border-danger');
+                    $("#enroll_id").addClass('border-danger');
+
+                    return false;
+
+                }
 
             if(!status_aktif)
             {

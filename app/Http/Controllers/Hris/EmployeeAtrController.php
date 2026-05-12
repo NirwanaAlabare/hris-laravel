@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Datatables;
 use Illuminate\Support\Str;
 use App\Exports\EmployeeAtrExport;
+use App\Models\ActivityLog;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Reader\Exception;
@@ -214,47 +215,159 @@ $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . 
 
         return $query;
     }
-
     public function ajax_periksaenroll_id(Request $request)
     {
         $enroll_id = $request->enroll_id;
+        $nik = strtoupper($request->nik);
 
-        $query =  EmployeeAtribut::where('enroll_id', '=', $enroll_id)
-            ->count();
+
+        // ambil karakter ke-6 dst
+        $enroll_id_nik = substr($nik, 5);
+    //  dd($request,$nik, $enroll_id_nik);
+        // =========================
+        // VALIDASI PERBANDINGAN
+        // =========================
+
+        // kalau enroll dan nik sama-sama diisi
+        if (!empty($enroll_id) && !empty($nik)) {
+
+            if ($enroll_id != $enroll_id_nik) {
+
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Nomor Absen dan NIK tidak sama'
+                ]);
+            }
+        }
+
+        // =========================
+        // CEK ENROLL SUDAH ADA
+        // =========================
+
+        $query = EmployeeAtribut::where('enroll_id', $enroll_id)->count();
 
         if ($query > 0) {
-            return false;
-        } else {
-            return true;
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Nomor Absen sudah ada'
+            ]);
         }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Nomor Absen bisa digunakan'
+        ]);
     }
 
+    // public function ajax_periksaenroll_id(Request $request)
+    // {
+    //     $enroll_id = $request->enroll_id;
+
+    //     $query =  EmployeeAtribut::where('enroll_id', '=', $enroll_id)
+    //         ->count();
+
+    //     if ($query > 0) {
+    //         return false;
+    //     } else {
+    //         return true;
+    //     }
+    // }
+
+    //  public function ajax_periksanik(Request $request)
+    // {
+    //     $enroll_id = request()->enroll_id;
+    //     $nik = strtoupper($request->nik);
+    //     $site_nirwana_id = preg_replace('/[^A-Z]/', '', substr($nik, 0, 3));
+    //     $enroll_id_nik = substr($nik, 5);
+    //     $site_nirwana_array = DepartmentAll::groupBy('site_nirwana_id')->pluck('site_nirwana_id')->toArray();
+    //   if (!in_array($site_nirwana_id, $site_nirwana_array) ) {
+    //         if ($site_nirwana_id = 'SGT') {
+    //             return true;
+    //         } else {
+    //             return false;
+    //         }
+    //     } else {
+    //         $query =  EmployeeAtribut::where('nik', '=', $nik)->count();
+    //         if ($query > 0) {
+    //             return false;
+    //         } else {
+    //             return true;
+    //         }
+    //     }
+    // }
     public function ajax_periksanik(Request $request)
-    {
-        $enroll_id = request()->enroll_id;
-        $nik = strtoupper($request->nik);
-        $site_nirwana_id = preg_replace('/[^A-Z]/', '', substr($nik, 0, 3));
-        $enroll_id_nik = substr($nik, 5);
-        $site_nirwana_array = DepartmentAll::groupBy('site_nirwana_id')->pluck('site_nirwana_id')->toArray();
-        if (!in_array($site_nirwana_id, $site_nirwana_array) && $enroll_id != $enroll_id_nik) {
-            return false;
-        } else if (in_array($site_nirwana_id, $site_nirwana_array) && $enroll_id != $enroll_id_nik) {
-            return false;
-        } else if (!in_array($site_nirwana_id, $site_nirwana_array) && $enroll_id == $enroll_id_nik) {
-            if ($site_nirwana_id = 'SGT') {
+{
+    $enroll_id = $request->enroll_id;
+    $nik = strtoupper($request->nik);
+    $site_nirwana_id = preg_replace('/[^A-Z]/', '', substr($nik, 0, 3));
+
+    // ambil karakter ke-6 dst
+    $enroll_id_nik = substr($nik, 5);
+
+    // =========================
+    // VALIDASI PERBANDINGAN
+    // =========================
+    $site_nirwana_array = DepartmentAll::groupBy('site_nirwana_id')->pluck('site_nirwana_id')->toArray();
+
+     if (!in_array($site_nirwana_id, $site_nirwana_array) ) {
+            if ($site_nirwana_id == 'SGT') {
                 return true;
             } else {
                 return false;
             }
-        } else {
-            $query =  EmployeeAtribut::where('nik', '=', $nik)->count();
+        }
+
+    // kalau enroll dan nik sama-sama diisi
+    if (!empty($enroll_id) && !empty($nik)) {
+
+
+        if ($enroll_id != $enroll_id_nik) {
+            // dd($enroll_id, $enroll_id_nik);
+
+            return false;
+        }
+    }
+
+    // =========================
+    // CEK NIK SUDAH ADA / BELUM
+    // =========================
+
+    $query =  EmployeeAtribut::where('nik', '=', $nik)->orwhere('enroll_id', '=', $enroll_id_nik)->count();
+    // dd($query->toSql(), $query->getBindings());
             if ($query > 0) {
                 return false;
             } else {
                 return true;
             }
         }
-    }
+
+    // public function ajax_periksanik(Request $request)
+    // {
+    //     $enroll_id = request()->enroll_id;
+    //     $nik = strtoupper($request->nik);
+    //     $site_nirwana_id = preg_replace('/[^A-Z]/', '', substr($nik, 0, 3));
+    //     $enroll_id_nik = substr($nik, 5);
+    //     $site_nirwana_array = DepartmentAll::groupBy('site_nirwana_id')->pluck('site_nirwana_id')->toArray();
+    //     if (!in_array($site_nirwana_id, $site_nirwana_array) && $enroll_id != $enroll_id_nik) {
+    //         return false;
+    //     } else if (in_array($site_nirwana_id, $site_nirwana_array) && $enroll_id != $enroll_id_nik) {
+    //         return false;
+    //     } else if (!in_array($site_nirwana_id, $site_nirwana_array) && $enroll_id == $enroll_id_nik) {
+    //         if ($site_nirwana_id = 'SGT') {
+    //             return true;
+    //         } else {
+    //             return false;
+    //         }
+    //     } else {
+    //         $query =  EmployeeAtribut::where('nik', '=', $nik)->count();
+    //         if ($query > 0) {
+    //             return false;
+    //         } else {
+    //             return true;
+    //         }
+    //     }
+    // }
 
 
     public function ajax_getemployeeatr(Request $request)
@@ -1497,6 +1610,15 @@ $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . 
                     'rw' => $rw,
                     'kode_pos' => $kode_pos
                 ]);
+                ActivityLog::create([
+                    'action_by_id' => $loggedAdmin->id,
+                    'action_by_name' => $operator,
+                    'action' => 'update',
+                    'table_name' => 'employee_atribut',
+                    'record_id' => $enroll_id,
+                    'old_data' => null,
+                    'new_data' => json_encode($request->all()),
+                ]);
 
 
             info('Karyawan dengan nama ' . $employee_name . ' dari departemen ' . $sub_dept_name->sub_dept_name . ' telah di update oleh ' . $operator . ' dengan tanggal resign ' . $tanggal_resign);
@@ -2203,6 +2325,20 @@ $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . 
                 'tanggal_mulai_kontrak' => $tanggal_mulai_kontrak,
                 'tanggal_akhir_kontrak' => $tanggal_akhir_kontrak,
                 'catatan_kontrak' => $data[0][$i][66],
+            ]);
+            ActivityLog::create([
+                'action_by_id' => auth()->id(),
+                'action_by_name' => auth()->user()->name ?? 'System',
+                'log_name' => 'bulk update employee',
+                'table_name' => 'employee_atribut',
+                'record_id' => $data[0][$i][1],
+                'action' => 'update',
+                'old_data' => null,
+                'new_data' => json_encode([
+                    'nik' => $data[0][$i][2],
+                    'employee_name' => $data[0][$i][3],
+                    // dst
+                ]),
             ]);
         }
         return back()->with("success", 'Data berhasil di update');
