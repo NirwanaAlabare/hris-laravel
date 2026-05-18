@@ -1940,6 +1940,44 @@ h1 {
                 });
                 return false;
             }
+        if(['CT','KA','CM','CN','NA'].includes(kode_absen_ijin)){
+
+            let tglPengajuan = new Date(tanggal_perizinan);
+            let tglIzin = new Date(tanggal_mulai_ijin);
+
+            tglPengajuan.setHours(0,0,0,0);
+            tglIzin.setHours(0,0,0,0);
+
+            let hariKerja = 0;
+
+            // looping tanggal
+            let currentDate = new Date(tglPengajuan);
+
+            while(currentDate < tglIzin){
+
+                currentDate.setDate(currentDate.getDate() + 1);
+
+                // 0 = Minggu
+                // 6 = Sabtu
+                let day = currentDate.getDay();
+
+                // hitung hanya senin-jumat
+                if(day != 5 && day != 6){
+                    hariKerja++;
+                }
+            }
+
+            // minimal 5 hari kerja
+            if(hariKerja < 5){
+
+                notif({
+                    msg: "<b>Warning:</b> Pengajuan CUTI harus minimal 5 hari kerja sebelum tanggal izin.",
+                    type: "warning"
+                });
+
+                return false;
+            }
+        }
 
             if (kode_absen_ijin !== "DL" && kode_absen_ijin !== "I" && kode_absen_ijin !== "S") {
                 if (!didelegasikan_enroll_id) {
