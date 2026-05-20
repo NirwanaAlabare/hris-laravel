@@ -1940,8 +1940,13 @@ h1 {
                 });
                 return false;
             }
-        if(['CT','KA','CM','CN','NA'].includes(kode_absen_ijin)){
+       let bypassEnroll = ['4241','20'];
 
+            if(
+                ['CT','KA','CN','NA'].includes(kode_absen_ijin)
+                &&
+                !bypassEnroll.includes(enroll_id)
+            ){
             let tglPengajuan = new Date(tanggal_perizinan);
             let tglIzin = new Date(tanggal_mulai_ijin);
 

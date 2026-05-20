@@ -2466,6 +2466,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             if (count($value->koreksi_upah->where('tanggal_koreksi', $value->tanggal_berjalan)->where('jenis_koreksi', '!=', 2)) > 0) {
                 $koreksi_upah = $value->koreksi_upah->where('tanggal_koreksi', $value->tanggal_berjalan)->where('jenis_koreksi', '!=', 2)->sum('jumlah_rp_potongan');
             }
+            // dd($value->koreksi_upah,$koreksi_upah,$value->tanggal_berjalan);
             if ($value->koreksi_potongan->where('tanggal_koreksi', $value->tanggal_berjalan)->where('jenis_potongan', '!=', 3)->count() > 0) {
                 $koreksi_potongan = $value->koreksi_potongan
                     ->where('tanggal_koreksi', $value->tanggal_berjalan)
@@ -2596,6 +2597,7 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $seniority_allowance = $tunjangan / $jumlah_hari_kerja;
                 $seniority_allowance_total = ($value->kode_hari != 5 && $value->kode_hari != 6 && $value->status_absen != 'R') ? $tunjangan / $jumlah_hari_kerja : 0;
                 $bruto = ($value->kode_hari != 5 && $value->kode_hari != 6) ? (($gaji_perhari_total + $seniority_allowance_total + $insentif_kehadiran_total + $koreksi_upah + $insentif_jabatan_terpakai) - ($koreksi_potongan + $potongan_permenit + $potongan_perhari)) : (($potongan_permenit + $potongan_perhari));
+                // dd($bruto,$koreksi_upah,$insentif_jabatan_terpakai,$koreksi_potongan,$potongan_permenit,$potongan_perhari);
                 $jumlah = $bruto - ($bpjs_tk_total + $bpjs_ks_total);
                 $pembulatan = (ceil($jumlah / 100) * 100) - $jumlah;
                 $total_pembayaran = $jumlah + $bpjs_tk_company_total + $bpjs_ks_company_total + $thr_total + $thr_total + $uang_makan;

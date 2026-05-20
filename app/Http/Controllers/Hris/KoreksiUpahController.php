@@ -582,6 +582,7 @@ class KoreksiUpahController extends AdminBaseController
                 left join mut_karyawan_input_non_sewing_form_lembur_det ns on b.no_form = ns.no_form
                 where b.tgl_lembur = '$tanggal_lembur'
                 and b.no_form = '$no_form'
+                and a.deleted_at is null
                 and a.uuid_koreksi_upah is not null
                 and a.uuid_koreksi_upah != ''
 

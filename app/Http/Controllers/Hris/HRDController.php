@@ -789,7 +789,7 @@ class HRDController extends AdminBaseController
         $inIbuKandung='';
         $inNoKTP='';
         $inStatusStaff='';
-        $statusPenilaian='';
+        $statusPenilaian='AND y.status_penilaian IS NULL';
         $status_kontrak=request()->status_kontrak;
         $compare='';
 
