@@ -12,116 +12,141 @@
 @stop
 @section('mainarea')
 <div class="">
-    <div class="card-header mt-7 pt-1 pb-0">
-        <ul class="nav nav-tabs">
-            <li class="nav-item">
-                <a class="btn btn-primary" style="background-color:blue" href="{{route('hris.ga.form_pengajuan_transportasi')}}">Formulir</a>
-            </li>
-            <li class="nav-item">
-                @if ($id_user==4241 || $id_user==20 || $id_user==8590 || $id_user==6083 || $id_user==17)
-                <a class="btn btn-white" style="background-color:rgb(228, 228, 228); position: relative; padding-right: 40px; padding-left: 40px" href="{{route('hris.ga.data_pengajuan_transportasi_admin')}}">Data <span class="text-dark h-5 w-5" style="font-weight:bold; background-color:#d2eafc; border:1px solid #0091ff;font-size:10px; display: flex; justify-content: center; align-items: center;position: absolute; top: 7px; right: 10px; border-radius: 100%;">{{$pengajuan_transportasi}}</span></a>
-                @else
-                    <a class="btn btn-white" href="{{route('hris.ga.data_pengajuan_transportasi_admin')}}">Data</a>
-                @endif
-            </li>
-        </ul>
-    </div>
+  <div class="card-header mt-7 pt-1 pb-0">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="btn btn-primary" style="background-color:blue"
+          href="{{route('hris.ga.form_pengajuan_transportasi')}}">Formulir</a>
+      </li>
+      <li class="nav-item">
+        @if ($id_user==4241 || $id_user==20 || $id_user==8590 || $id_user==6083 || $id_user==17)
+        <a class="btn btn-white"
+          style="background-color:rgb(228, 228, 228); position: relative; padding-right: 40px; padding-left: 40px"
+          href="{{route('hris.ga.data_pengajuan_transportasi_admin')}}">Data <span class="text-dark h-5 w-5"
+            style="font-weight:bold; background-color:#d2eafc; border:1px solid #0091ff;font-size:10px; display: flex; justify-content: center; align-items: center;position: absolute; top: 7px; right: 10px; border-radius: 100%;">{{$pengajuan_transportasi}}</span></a>
+        @else
+        <a class="btn btn-white" href="{{route('hris.ga.data_pengajuan_transportasi_admin')}}">Data</a>
+        @endif
+      </li>
+    </ul>
+  </div>
 
-    <div class="card-body pl-6 py-4" style="border: 1px solid #d8d4dc">
+  <div class="card-body pl-6 py-4" style="border: 1px solid #d8d4dc">
+    <div class="row">
+      <div class="col-2 pt-1">
+        <label class="form-label"> Nama Karyawan</label>
+      </div>
+      <div class="col-4">
+        <input type="hidden" value="{{$id_user}}" id="user">
+        <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan"
+          class="form-control select2oneSelect EmployeeID col-11" onchange="karyawanChange(this.value)">
+          @foreach ($selectemployee as $r_empl)
+          <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
+          @endforeach
+        </select>
+        <h6 id="warning_employee" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
+      </div>
+    </div>
+    <div class="row pb-2 pt-1">
+      <div class="col-2 pt-1">
+        <label class="form-label"> Keberangkatan Awal</label>
+      </div>
+      <div class="col-4 pt-2">
+        <a href="#" onclick="change_initial_destination(12,161,2196,30109)" style="text-decoration-line: underline">PT.
+          NAG</a><img src="{{URL::asset('assets/images/brand/shortcut.png')}}" width="18">
+      </div>
+    </div>
+    <div class="row px-1 pt-3">
+      <div class="col-12">
         <div class="row">
-            <div class="col-2 pt-1">
-                <label class="form-label"> Nama Karyawan</label>
-            </div>
-            <div class="col-4">
-                <input type="hidden" value="{{$id_user}}" id="user">
-                <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2oneSelect EmployeeID col-11" onchange="karyawanChange(this.value)">
-                    @foreach ($selectemployee as $r_empl)
-                        <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
-                    @endforeach
-                </select>
-                <h6 id="warning_employee" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
-            </div>
+          <div class="col-2 pr-0">
+            <label class="form-label">Provinsi</label>
+          </div>
+          <div class="col-2 px-1">
+            <label class="form-label">Kabupaten/Kota</label>
+          </div>
+          <div class="col-2 px-1">
+            <label class="form-label">Kecamatan</label>
+          </div>
+          <div class="col-2 px-1">
+            <label class="form-label">Desa</label>
+          </div>
+          <div class="col-2 px-1">
+            <label class="form-label">Detail Alamat</label>
+          </div>
+          <div class="col-2 pl-1">
+            <label class="form-label">Waktu Pemberangkatan</label>
+          </div>
         </div>
-        <div class="row pb-2 pt-1">
-            <div class="col-2 pt-1">
-                <label class="form-label"> Keberangkatan Awal</label>
-            </div>
-            <div class="col-4 pt-2">
-                <a href="#" onclick="change_initial_destination(12,161,2196,30109)" style="text-decoration-line: underline">PT. NAG</a><img src="{{URL::asset('assets/images/brand/shortcut.png')}}" width="18">
-            </div>
-        </div>
-        <div class="row px-1 pt-3">
-          <div class="col-12">
+        <div class="row">
+          <div class="col-2 pr-0">
+            <select id="provinsi" name="selectProvinsi[]" multiple data-placeholder="Pilih Provinsi"
+              class="form-control select2oneSelect" onchange="change_city(this.value)">
+              @foreach($provincies as $prov)
+              <option value="{{$prov->prov_id}}">{{$prov->prov_name}}</option>
+              @endforeach
+            </select>
+            <h6 id="warning_provinsi" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
+          </div>
+          <div class="col-2 px-1">
+            <select id="cities" name="selectCity[]" multiple data-placeholder="Pilih Kota"
+              class="form-control select2oneSelect" style="background-color: white"
+              onchange="change_district(this.value)">
+            </select>
+            <h6 id="warning_kota" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
+          </div>
+          <div class="col-2 px-1">
+            <select id="districts" name="selectDistrict[]" multiple data-placeholder="Pilih Kecamatan"
+              class="form-control select2oneSelect" style="background-color: white"
+              onchange="change_subdistrict(this.value)">
+            </select>
+            <h6 id="warning_kecamatan" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
+          </div>
+          <div class="col-2 px-1">
+            <select id="sub_districts" name="selectSubdistrict[]" multiple data-placeholder="Pilih Desa"
+              class="form-control select2oneSelect" style="background-color: white"
+              onchange="subdistrict_change(this.value)">
+            </select>
+            <h6 id="warning_desa" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
+          </div>
+          <div class="col-2 px-1">
+            <input id="instansi" class="form-control" style="background-color: white" placeholder="Instansi">
+            <input id="detail_alamat" class="form-control mt-1" style="background-color: white"
+              placeholder="Nama Gedung, Jalan atau Blok" onchange="detail_alamat_change(this.value)">
+          </div>
+          <div class="col-2 pl-1">
             <div class="row">
-              <div class="col-2 pr-0">
-                <label class="form-label">Provinsi</label>
+              <div class="col-7 pr-0">
+                <input type="date" id="tanggal_pemberangkatan" class="form-control"
+                  style="background-color: white;cursor:pointer" readonly
+                  onchange="tanggal_pemberangkatan_change(this.value)">
               </div>
-              <div class="col-2 px-1">
-                <label class="form-label">Kabupaten/Kota</label>
-              </div>
-              <div class="col-2 px-1">
-                <label class="form-label">Kecamatan</label>
-              </div>
-              <div class="col-2 px-1">
-                <label class="form-label">Desa</label>
-              </div>
-              <div class="col-2 px-1">
-                <label class="form-label">Detail Alamat</label>
-              </div>
-              <div class="col-2 pl-1">
-                <label class="form-label">Waktu Pemberangkatan</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-2 pr-0">
-                <select id="provinsi" name="selectProvinsi[]" multiple data-placeholder="Pilih Provinsi" class="form-control select2oneSelect" onchange="change_city(this.value)">
-                    @foreach($provincies as $prov)
-                        <option value="{{$prov->prov_id}}">{{$prov->prov_name}}</option>
-                    @endforeach
-                </select>
-                <h6 id="warning_provinsi" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
-              </div>
-              <div class="col-2 px-1">
-                <select id="cities" name="selectCity[]" multiple data-placeholder="Pilih Kota" class="form-control select2oneSelect" style="background-color: white" onchange="change_district(this.value)">
-                </select>
-                <h6 id="warning_kota" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
-              </div>
-              <div class="col-2 px-1">
-                <select id="districts" name="selectDistrict[]" multiple data-placeholder="Pilih Kecamatan" class="form-control select2oneSelect" style="background-color: white"onchange="change_subdistrict(this.value)">
-                </select>
-                <h6 id="warning_kecamatan" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
-              </div>
-              <div class="col-2 px-1">
-                <select id="sub_districts" name="selectSubdistrict[]" multiple data-placeholder="Pilih Desa" class="form-control select2oneSelect" style="background-color: white" onchange="subdistrict_change(this.value)">
-                </select>
-                <h6 id="warning_desa" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
-              </div>
-              <div class="col-2 px-1">
-                <input id="instansi" class="form-control" style="background-color: white" placeholder="Instansi">
-                <input id="detail_alamat" class="form-control mt-1" style="background-color: white" placeholder="Nama Gedung, Jalan atau Blok" onchange="detail_alamat_change(this.value)">
-              </div>
-              <div class="col-2 pl-1">
-                <div class="row">
-                    <div class="col-7 pr-0">
-                        <input type="date" id="tanggal_pemberangkatan" class="form-control" style="background-color: white;cursor:pointer" readonly onchange="tanggal_pemberangkatan_change(this.value)">
-                    </div>
-                    <div class="col-5 pl-0">
-                        <input class="form-control" id="jam_pemberangkatan" name="jam_pemberangkatan" type="text" style="background-color: white; cursor:pointer;"  onchange="jam_pemberangkatan_change(this.value)">
-                    </div>
-                </div>
+              <div class="col-5 pl-0">
+                <input class="form-control" id="jam_pemberangkatan" name="jam_pemberangkatan" autocomplete="off"
+                  autofill="off" type="text" style="background-color: white; cursor:pointer;"
+                  onchange="jam_pemberangkatan_change(this.value)">
               </div>
             </div>
           </div>
         </div>
-        <div id="tujuan_advanced">
-
-        </div>
-        <div class="row pt-2">
-            <div class="col-12 text-center">
-                <button class="btn btn-success" onclick="saveChanges()"><i class="fa fa-send"></i> SEND REQUEST</button>
-            </div>
-        </div>
+      </div>
     </div>
+    <div class="row mt-2">
+      <div class="col-12">
+        <button type="button" class="btn" style="background-color:#18445c;color:yellow" onclick="add_array_item()">
+          <i class="fa fa-plus"></i> Tambah
+        </button>
+      </div>
+    </div>
+    <div id="tujuan_advanced">
+
+    </div>
+    <div class="row pt-2">
+      <div class="col-12 text-center">
+        <button class="btn btn-success" onclick="saveChanges()"><i class="fa fa-send"></i> SEND REQUEST</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 @endsection
@@ -138,7 +163,7 @@
 <script src="{{URL::asset('assets/js/script2.js') }}"></script>
 <script src="{{ URL::asset('assets/js/jquery-ui/jquery-ui.min.js') }}"></script>
 <script>
-(function($){
+  (function($){
   // return 0-padded number as string whose length is 'length'
   function _padDigit(num, length){
     var num_s = num.toString();
@@ -1411,7 +1436,7 @@
 
 </script>
 <script>
-    $(function(){
+  $(function(){
         'use strict';
 
         $('.select2').select2({
@@ -1437,7 +1462,7 @@
     });
 </script>
 <script>
-    $('input[type=date]').each(function (index, element) {
+  $('input[type=date]').each(function (index, element) {
         $(this).attr("type", "text");
 
         /* Create a hidden clone, which will contain the actual value */
@@ -1460,7 +1485,7 @@
     });
 </script>
 <script>
-    var array_provinsi=[];
+  var array_provinsi=[];
     var array_kota=[];
     var array_kecamatan=[];
     var array_desa=[];
@@ -1607,7 +1632,7 @@
                               </div>\
                           </td>\
                           <td style="vertical-align:top">\
-                              <a style="cursor:pointer;background-color:#18445c;color:yellow;padding:5px" onclick="add_array_item()"><i class="fa fa-plus"></i></a>\
+                              
                           </td>\
                         </tr>\
                         <tr>
@@ -1822,11 +1847,7 @@
                                       </div>\
                                   </td>\
                                   <td style="vertical-align:top">\
-                                    <div class="row">
-                                      <div class="col-12">
-                                        <a style="cursor:pointer;background-color:#18445c;color:yellow;padding:5px" onclick="add_array_item()"><i class="fa fa-plus"></i></a>
-                                      </div>
-                                    </div>
+                               
                                     <div class="row">
                                       <div class="col-12 pt-2">
                                         <a style="color: white;cursor:pointer;background-color:red;padding:5px" onclick="delete_item(`+key+`)"><i class="fa fa-minus"></i></a>
@@ -2485,6 +2506,8 @@
     }
     function changeCity(key,value){
         array_provinsi[key]=value;
+        console.log(array_provinsi);
+        
         $.ajax({
             type:"POST",
             url: "{{route('hris.ga.get_cities')}}",
@@ -2986,7 +3009,16 @@
                 jQuery.each(res, function(k,v){
                     $('#provinsi_yang_ke_'+key).append('<option value="'+ v['prov_id'] +'">'+ v['prov_name'] +'</option>');
                 });
-                $('#provinsi_yang_ke_'+key+' option[value="' + val + '"]').prop('selected',true);
+                
+                // Cek apakah parameter 'val' ada dan tidak kosong
+                if(val && val != ''){
+                    // Jika ada value dari parameter, gunakan itu
+                    $('#provinsi_yang_ke_'+key+' option[value="' + val + '"]').prop('selected',true);
+                } else {
+                    // Jika belum terisi (val kosong/null/undefined), set default ke 12
+                    $('#provinsi_yang_ke_'+key+' option[value="12"]').prop('selected',true);
+                    changeCity(key,12)
+                }
             },
             error: function(res){
                 swal({
@@ -2996,6 +3028,7 @@
                 });
             }
         });
+
         $.ajax({
             type:"POST",
             url: "{{route('hris.ga.get_cities')}}",

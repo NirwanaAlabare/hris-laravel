@@ -32,9 +32,11 @@
             </div>
             <div class="col-4">
                 <input type="hidden" value="{{$id_user}}" id="user">
-                <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2oneSelect EmployeeID col-11" onchange="karyawanChange(this.value)">
+                <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan"
+                    class="form-control select2oneSelect EmployeeID col-11" onchange="karyawanChange(this.value)">
                     @foreach ($selectemployee as $r_empl)
-                        <option value="{{$r_empl->enroll_id}}" {{ ($r_empl->enroll_id === $value->enroll_id) ? 'selected' : '' }}>{{$r_empl->select_employee}}</option>
+                    <option value="{{$r_empl->enroll_id}}" {{ ($r_empl->enroll_id === $value->enroll_id) ? 'selected' :
+                        '' }}>{{$r_empl->select_employee}}</option>
                     @endforeach
                 </select>
                 <h6 id="warning_employee" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
@@ -45,7 +47,9 @@
                 <label class="form-label"> Keberangkatan Awal</label>
             </div>
             <div class="col-4 pt-2">
-                <a href="#" onclick="change_initial_destination(12,161,2196,30109)" style="text-decoration-line: underline">PT. NAG</a><img src="{{URL::asset('assets/images/brand/shortcut.png')}}" width="18">
+                <a href="#" onclick="change_initial_destination(12,161,2196,30109)"
+                    style="text-decoration-line: underline">PT. NAG</a><img
+                    src="{{URL::asset('assets/images/brand/shortcut.png')}}" width="18">
             </div>
         </div>
         <div class="row pb-2 pt-1">
@@ -62,39 +66,51 @@
                     <tr>
                         <th width="16%" style="padding:6px;vertical-align:top">
                             <input type="hidden" value="{{$value->id}}" id="id_pengajuan">
-                            <select id="provinsi" name="selectProvinsi[]" multiple data-placeholder="Pilih Provinsi" class="form-control select2oneSelect" onchange=" change_city(this.value)">
+                            <select id="provinsi" name="selectProvinsi[]" multiple data-placeholder="Pilih Provinsi"
+                                class="form-control select2oneSelect" onchange=" change_city(this.value)">
                                 @foreach($provincies as $prov)
-                                    <option value="{{$prov->prov_id}}" {{ ($prov->prov_id === $value->prov_id) ? 'selected' : '' }}>{{$prov->prov_name}}</option>
+                                <option value="{{$prov->prov_id}}" {{ ($prov->prov_id === $value->prov_id) ? 'selected'
+                                    : '' }}>{{$prov->prov_name}}</option>
                                 @endforeach
                             </select>
                             <h6 id="warning_provinsi" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
                         </th>
                         <th width="16%" style="padding:6px;vertical-align:top">
-                            <select id="cities" name="selectCity[]" multiple data-placeholder="Pilih Kota" class="form-control select2oneSelect" style="background-color: white" onchange=" change_district(this.value)">
+                            <select id="cities" name="selectCity[]" multiple data-placeholder="Pilih Kota"
+                                class="form-control select2oneSelect" style="background-color: white"
+                                onchange=" change_district(this.value)">
                             </select>
                             <h6 id="warning_kota" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
                         </th>
                         <th width="16%" style="padding:6px;vertical-align:top">
-                            <select id="districts" name="selectDistrict[]" multiple data-placeholder="Pilih Kecamatan" class="form-control select2oneSelect" style="background-color: white" onchange=" change_subdistrict(this.value)">
+                            <select id="districts" name="selectDistrict[]" multiple data-placeholder="Pilih Kecamatan"
+                                class="form-control select2oneSelect" style="background-color: white"
+                                onchange=" change_subdistrict(this.value)">
                             </select>
                             <h6 id="warning_kecamatan" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
                         </th>
                         <th width="16%" style="padding:6px;vertical-align:top">
-                            <select id="sub_districts" name="selectSubdistrict[]" multiple data-placeholder="Pilih Desa" class="form-control select2oneSelect" style="background-color: white" onchange="subdistrict_change(this.value)">
+                            <select id="sub_districts" name="selectSubdistrict[]" multiple data-placeholder="Pilih Desa"
+                                class="form-control select2oneSelect" style="background-color: white"
+                                onchange="subdistrict_change(this.value)">
                             </select>
                             <h6 id="warning_desa" style="margin-bottom: 0px;padding-top:2px;color:red"></h6>
                         </th>
                         <th width="18%" style="padding:6px;vertical-align:top">
-                            <input id="instansi" class="form-control" style="background-color: white" placeholder="Instansi">
-                            <input id="detail_alamat" class="form-control mt-1" style="background-color: white" placeholder="Nama Gedung, Jalan atau Blok" onchange="detail_alamat_change(this.value)">
+                            <input id="instansi" class="form-control" style="background-color: white"
+                                placeholder="Instansi">
+                            <input id="detail_alamat" class="form-control mt-1" style="background-color: white"
+                                placeholder="Nama Gedung, Jalan atau Blok" onchange="detail_alamat_change(this.value)">
                         </th>
                         <th width="18%" style="padding:6px;vertical-align:top">
                             <div class="row">
                                 <div class="col-7 pr-0">
-                                    <input type="date" id="tanggal_pemberangkatan" class="form-control" style="background-color: white;cursor:pointer" readonly>
+                                    <input type="date" id="tanggal_pemberangkatan" class="form-control"
+                                        style="background-color: white;cursor:pointer" readonly>
                                 </div>
                                 <div class="col-5 pl-0">
-                                    <input class="form-control" id="jam_pemberangkatan" name="jam_pemberangkatan" type="text" style="background-color: white; cursor:pointer;" >
+                                    <input class="form-control" id="jam_pemberangkatan" name="jam_pemberangkatan"
+                                        type="text" style="background-color: white; cursor:pointer;">
                                 </div>
                             </div>
                         </th>
@@ -102,12 +118,21 @@
                 </table>
             </div>
         </div>
+        <div class="row mt-2">
+            <div class="col-12">
+                <button type="button" class="btn" style="background-color:#18445c;color:yellow"
+                    onclick="add_array_item()">
+                    <i class="fa fa-plus"></i> Tambah
+                </button>
+            </div>
+        </div>
         <div id="tujuan_advanced">
-            
+
         </div>
         <div class="row pt-2">
             <div class="col-12 text-center">
-                <button class="btn btn-success" onclick="saveChanges()"><i class="fa fa-save" style="font-size:11pt"></i> UPDATE REQUEST</button>
+                <button class="btn btn-success" onclick="saveChanges()"><i class="fa fa-save"
+                        style="font-size:11pt"></i> UPDATE REQUEST</button>
             </div>
         </div>
     </div>
@@ -1906,27 +1931,34 @@
         show_destination_list();
         get_all_destination_history();
     }
-    function delete_item(key){
-        array_provinsi.splice(key,1);
-        array_kota.splice(key,1);
-        array_kecamatan.splice(key,1);
-        array_desa.splice(key,1);
-        array_instansi.splice(key,1);
-        array_detail_alamat.splice(key,1);
-        array_tanggal_pemberangkatan.splice(key,1);
-        array_jam_pemberangkatan.splice(key,1);
-        array_tujuan_pemberangkatan.splice(key,1);
-        array_jarak_tempuh.splice(key,1);
-        array_jenis_barang.splice(key,1);
-        array_quantity.splice(key,1);
-        array_satuan.splice(key,1);
-        array_nama_penerima.splice(key,1);
-        array_keterangan_barang.splice(key,1);
-        array_nama_tamu.splice(key,1);
-        array_nomor_hp_tamu.splice(key,1);
-        array_karyawan_dinas_luar.splice(key,1);
-        show_destination_list();
-        get_all_destination_history();
+    function delete_item(key) {
+        // Show confirmation dialog
+        const isConfirmed = confirm("Are you sure you want to delete this item?");
+
+        // Only proceed if the user clicked "OK"
+        if (isConfirmed) {
+            array_provinsi.splice(key, 1);
+            array_kota.splice(key, 1);
+            array_kecamatan.splice(key, 1);
+            array_desa.splice(key, 1);
+            array_instansi.splice(key, 1);
+            array_detail_alamat.splice(key, 1);
+            array_tanggal_pemberangkatan.splice(key, 1);
+            array_jam_pemberangkatan.splice(key, 1);
+            array_tujuan_pemberangkatan.splice(key, 1);
+            array_jarak_tempuh.splice(key, 1);
+            array_jenis_barang.splice(key, 1);
+            array_quantity.splice(key, 1);
+            array_satuan.splice(key, 1);
+            array_nama_penerima.splice(key, 1);
+            array_keterangan_barang.splice(key, 1);
+            array_nama_tamu.splice(key, 1);
+            array_nomor_hp_tamu.splice(key, 1);
+            array_karyawan_dinas_luar.splice(key, 1);
+            
+            show_destination_list();
+            get_all_destination_history();
+        }
     }
     function show_destination_list(){
         $('#tujuan_advanced').empty();
@@ -1988,7 +2020,7 @@
                                         </div>
                                     </td>
                                     <td style="vertical-align:top">
-                                        <a style="cursor:pointer;background-color:#18445c;color:yellow;padding:5px" onclick="add_array_item()"><i class="fa fa-plus"></i></a>
+                                        
                                     </td>
                                 </tr>
                                 <tr>
@@ -2205,7 +2237,7 @@
                                     <td style="vertical-align:top">
                                         <div class="row">
                                             <div class="col-12">
-                                                <a style="cursor:pointer;background-color:#18445c;color:yellow;padding:5px" onclick="add_array_item()"><i class="fa fa-plus"></i></a>
+                                                
                                             </div>
                                         </div>
                                         <div class="row">
@@ -2662,6 +2694,7 @@
             minimumResultsForSearch: Infinity,
         });
     }
+
     function setValueToDropdown(key,val){
         $.ajax({
             type:"POST",
@@ -2749,6 +2782,7 @@
             }
         });
     }
+    
     function changeCity(key,value){
         array_provinsi[key]=value;
         $.ajax({
