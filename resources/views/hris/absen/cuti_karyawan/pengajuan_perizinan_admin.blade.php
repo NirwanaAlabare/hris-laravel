@@ -1773,7 +1773,12 @@ h1 {
                         uuid:uuid,
                     },
                     success: function(res){
-                        swal("", "approve perizinan berhasil", "success");
+                        // swal("", "approve perizinan berhasil", "success");
+                        swal({
+                            title: "Approve Berhasil",
+                            text: "Nomor Form : " + res.nomor_form_perizinan,
+                            icon: "success",
+                        });
                         $('#uuid_modal').val(null);
                         $('#uuid_master_modal').val(null);
                         $('#enroll_id_modal').val(null);
@@ -1940,12 +1945,18 @@ h1 {
                 });
                 return false;
             }
-       let bypassEnroll = ['4241','20'];
+            let bypassEnroll = ['4241','20'];
+            let login_email = "{{ Auth::guard('admin')->user()->email }}".toLowerCase();
+            // console.log("Login Email:", login_email);
+            let bypassEmail = [
+                'mega@ptnag.com',
+                'rudy@ptnag.com'
+            ];
 
             if(
                 ['CT','KA','CN','NA'].includes(kode_absen_ijin)
                 &&
-                !bypassEnroll.includes(enroll_id)
+                !bypassEmail.includes(login_email)
             ){
             let tglPengajuan = new Date(tanggal_perizinan);
             let tglIzin = new Date(tanggal_mulai_ijin);
@@ -1967,7 +1978,7 @@ h1 {
                 let day = currentDate.getDay();
 
                 // hitung hanya senin-jumat
-                if(day != 5 && day != 6){
+                if(day != 0 && day != 6){
                     hariKerja++;
                 }
             }

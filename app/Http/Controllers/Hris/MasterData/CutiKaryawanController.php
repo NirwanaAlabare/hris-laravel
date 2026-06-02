@@ -2783,7 +2783,8 @@ class CutiKaryawanController extends AdminBaseController
                         ]);
                 }
             }
-            return response()->json(['message' => 'Pengajuan berhasil disetujui']);
+            return response()->json(['message' => 'Pengajuan berhasil disetujui','nomor_form_perizinan' => $nomor_form_perizinan]);
+            // return response()->json(['message' => 'Pengajuan berhasil disetujui']);
         }
     }
     public function approve_iks(Request $request)

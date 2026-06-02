@@ -1608,8 +1608,19 @@
                     },
                     {
                         title: 'Tanggal Perizinan',
-                        data: 'tanggal_perizinan',
-                        name: 'tanggal_perizinan'
+                        data: 'tanggal_mulai_ijin',
+                        name: 'tanggal_mulai_ijin',
+                        render: function(data) {
+                            if (!data) return '';
+
+                            let date = new Date(data);
+
+                            let day = String(date.getDate()).padStart(2, '0');
+                            let month = String(date.getMonth() + 1).padStart(2, '0');
+                            let year = date.getFullYear();
+
+                            return `${day}-${month}-${year}`;
+                        }
                     },
                     {
                         title: 'Nomor Form Perizinan',

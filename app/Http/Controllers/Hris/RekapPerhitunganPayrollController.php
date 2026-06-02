@@ -269,27 +269,43 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             if ($status_staff) {
                 $payroll = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year)->where('periode_bulan_payroll', $month)
                     ->where('kategori_karyawan', $status_staff)->where('nama_department', $value->department_name)->where('periode_umk', null)
-                    ->where('total_kehadiran_net', '>', 0)
+                    // ->where('total_kehadiran_net', '>', 0)
+                     ->where(function ($query) {
+                        $query->where('total_kehadiran_net', '>', 0)
+                            ->orWhere('koreksi_upah_rupiah', '!=', 0);
+                    })
                     ->whereHas('employee_atribut', function ($query) use ($tanggal_awal) {
                         $query->where('tanggal_resign', null)
                             ->orWhere('tanggal_resign', '>', $tanggal_awal);
                     })->get();
                 $payroll_before = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year_before)->where('periode_bulan_payroll', $month_before)
                     ->where('kategori_karyawan', $status_staff)->where('nama_department', $value->department_name)->where('periode_umk', null)
-                    ->where('total_kehadiran_net', '>', 0)
+                    // ->where('total_kehadiran_net', '>', 0)
+                     ->where(function ($query) {
+                        $query->where('total_kehadiran_net', '>', 0)
+                            ->orWhere('koreksi_upah_rupiah', '!=', 0);
+                    })
                     ->whereHas('employee_atribut', function ($query) use ($tanggal_awal2) {
                         $query->where('tanggal_resign', null)
                             ->orWhere('tanggal_resign', '>', $tanggal_awal2);
                     })->get();
             } else {
                 $payroll = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year)->where('periode_bulan_payroll', $month)->where('nama_department', $value->department_name)
-                    ->where('total_kehadiran_net', '>', 0)
+                    // ->where('total_kehadiran_net', '>', 0)
+                     ->where(function ($query) {
+                        $query->where('total_kehadiran_net', '>', 0)
+                            ->orWhere('koreksi_upah_rupiah', '!=', 0);
+                    })
                     ->where('periode_umk', null)->whereHas('employee_atribut', function ($query) use ($tanggal_awal) {
                         $query->where('tanggal_resign', null)
                             ->orWhere('tanggal_resign', '>', $tanggal_awal);
                     })->get();
                 $payroll_before = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year_before)->where('periode_bulan_payroll', $month_before)->where('nama_department', $value->department_name)->where('periode_umk', null)
-                    ->where('total_kehadiran_net', '>', 0)
+                    // ->where('total_kehadiran_net', '>', 0)
+                     ->where(function ($query) {
+                        $query->where('total_kehadiran_net', '>', 0)
+                            ->orWhere('koreksi_upah_rupiah', '!=', 0);
+                    })
                     ->whereHas('employee_atribut', function ($query) use ($tanggal_awal2) {
                         $query->where('tanggal_resign', null)
                             ->orWhere('tanggal_resign', '>', $tanggal_awal2);
@@ -632,13 +648,21 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 // ->where('total_kehadiran_net','>',0)->get();
                 $payroll = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year)->where('periode_bulan_payroll', $month)
                     ->where('kategori_karyawan', $status_staff)->where('nama_department', $value->department_name)->where('periode_umk', null)
-                    ->where('total_kehadiran_net', '>', 0)
+                    // ->where('total_kehadiran_net', '>', 0)
+                     ->where(function ($query) {
+                        $query->where('total_kehadiran_net', '>', 0)
+                            ->orWhere('koreksi_upah_rupiah', '!=', 0);
+                    })
                     ->whereHas('employee_atribut', function ($query) use ($tanggal_awal) {
                         $query->where('tanggal_resign', null)
                             ->orWhere('tanggal_resign', '>', $tanggal_awal);
                     })->get();
                 $payroll_before = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year_before)->where('periode_bulan_payroll', $month_before)
-                    ->where('total_kehadiran_net', '>', 0)
+                    // ->where('total_kehadiran_net', '>', 0)
+                     ->where(function ($query) {
+                        $query->where('total_kehadiran_net', '>', 0)
+                            ->orWhere('koreksi_upah_rupiah', '!=', 0);
+                    })
                     ->where('kategori_karyawan', $status_staff)->where('nama_department', $value->department_name)->where('periode_umk', null)
                     ->whereHas('employee_atribut', function ($query) use ($tanggal_awal2) {
                         $query->where('tanggal_resign', null)
@@ -651,7 +675,11 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 // })->get();
 
                 $payroll_bni = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year)->where('periode_bulan_payroll', $month)
-                    ->where('total_kehadiran_net', '>', 0)
+                    // ->where('total_kehadiran_net', '>', 0)
+                     ->where(function ($query) {
+                        $query->where('total_kehadiran_net', '>', 0)
+                            ->orWhere('koreksi_upah_rupiah', '!=', 0);
+                    })
                     ->where('kategori_karyawan', $status_staff)->where('nama_department', $value->department_name)->where('periode_umk', null)
                     ->where('nama_bank', 'BNI')
                     ->whereHas('employee_atribut', function ($query) use ($tanggal_awal) {
@@ -659,7 +687,11 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                             ->orWhere('tanggal_resign', '>', $tanggal_awal);
                     })->get();
                 $payroll_cimb = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year)->where('periode_bulan_payroll', $month)
-                    ->where('total_kehadiran_net', '>', 0)
+                    // ->where('total_kehadiran_net', '>', 0)
+                     ->where(function ($query) {
+                        $query->where('total_kehadiran_net', '>', 0)
+                            ->orWhere('koreksi_upah_rupiah', '!=', 0);
+                    })
                     ->where('kategori_karyawan', $status_staff)->where('nama_department', $value->department_name)->where('periode_umk', null)
                     ->where('nama_bank', 'CIMB NIAGA')
                     ->whereHas('employee_atribut', function ($query) use ($tanggal_awal) {
@@ -673,7 +705,11 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 //     $query->where('tanggal_resign',null)->orWhere('tanggal_resign','>',$tgl_awal);
                 // })->get();
                 $payroll_other = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year)->where('periode_bulan_payroll', $month)
-                    ->where('total_kehadiran_net', '>', 0)
+                    // ->where('total_kehadiran_net', '>', 0)
+                     ->where(function ($query) {
+                        $query->where('total_kehadiran_net', '>', 0)
+                            ->orWhere('koreksi_upah_rupiah', '!=', 0);
+                    })
                     ->where('kategori_karyawan', $status_staff)->where('nama_department', $value->department_name)->where('periode_umk', null)
                     ->whereNotIn('nama_bank', ['BNI', 'CIMB NIAGA'])
                     ->whereHas('employee_atribut', function ($query) use ($tanggal_awal) {
@@ -692,14 +728,22 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 // ->where('total_kehadiran_net','>',0)->get();
 
                 $payroll = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year)->where('periode_bulan_payroll', $month)
-                    ->where('total_kehadiran_net', '>', 0)
+                    // ->where('total_kehadiran_net', '>', 0)
+                     ->where(function ($query) {
+                        $query->where('total_kehadiran_net', '>', 0)
+                            ->orWhere('koreksi_upah_rupiah', '!=', 0);
+                    })
                     ->where('nama_department', $value->department_name)->where('periode_umk', null)
                     ->whereHas('employee_atribut', function ($query) use ($tanggal_awal) {
                         $query->where('tanggal_resign', null)
                             ->orWhere('tanggal_resign', '>', $tanggal_awal);
                     })->get();
                 $payroll_before = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year_before)->where('periode_bulan_payroll', $month_before)
-                    ->where('total_kehadiran_net', '>', 0)
+                    // ->where('total_kehadiran_net', '>', 0)
+                     ->where(function ($query) {
+                        $query->where('total_kehadiran_net', '>', 0)
+                            ->orWhere('koreksi_upah_rupiah', '!=', 0);
+                    })
                     ->where('nama_department', $value->department_name)->where('periode_umk', null)
                     ->whereHas('employee_atribut', function ($query) use ($tanggal_awal2) {
                         $query->where('tanggal_resign', null)
@@ -707,7 +751,11 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                     })->get();
 
                 $payroll_bni = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year)->where('periode_bulan_payroll', $month)
-                    ->where('total_kehadiran_net', '>', 0)
+                    // ->where('total_kehadiran_net', '>', 0)
+                     ->where(function ($query) {
+                        $query->where('total_kehadiran_net', '>', 0)
+                            ->orWhere('koreksi_upah_rupiah', '!=', 0);
+                    })
                     ->where('nama_department', $value->department_name)->where('periode_umk', null)
                     ->where('nama_bank', 'BNI')
                     ->whereHas('employee_atribut', function ($query) use ($tanggal_awal) {
@@ -715,7 +763,11 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                             ->orWhere('tanggal_resign', '>', $tanggal_awal);
                     })->get();
                 $payroll_cimb = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year)->where('periode_bulan_payroll', $month)
-                    ->where('total_kehadiran_net', '>', 0)
+                    // ->where('total_kehadiran_net', '>', 0)
+                     ->where(function ($query) {
+                        $query->where('total_kehadiran_net', '>', 0)
+                            ->orWhere('koreksi_upah_rupiah', '!=', 0);
+                    })
                     ->where('nama_department', $value->department_name)->where('periode_umk', null)
                     ->where('nama_bank', 'CIMB NIAGA')
                     ->whereHas('employee_atribut', function ($query) use ($tanggal_awal) {
@@ -723,7 +775,11 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                             ->orWhere('tanggal_resign', '>', $tanggal_awal);
                     })->get();
                 $payroll_other = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year)->where('periode_bulan_payroll', $month)
-                    ->where('total_kehadiran_net', '>', 0)
+                    // ->where('total_kehadiran_net', '>', 0)
+                     ->where(function ($query) {
+                        $query->where('total_kehadiran_net', '>', 0)
+                            ->orWhere('koreksi_upah_rupiah', '!=', 0);
+                    })
                     ->where('nama_department', $value->department_name)->where('periode_umk', null)
                     ->whereNotIn('nama_bank', ['BNI', 'CIMB NIAGA'])
                     ->whereHas('employee_atribut', function ($query) use ($tanggal_awal) {

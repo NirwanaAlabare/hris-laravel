@@ -237,7 +237,15 @@
                 <thead >
                     <tr>
                         <td style="border-bottom:1px solid black;" width="85%"></td>
-                        <td rowspan="2"><img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($no_form)  . '&type=PAKLARING', 'QRCODE') }}"  alt="barcode" style="width: 60px; height: 60px;background-color:white" /></td>
+                        @php
+                        $link_qr = 'http://nag.ddns.net:81/hris/public/index.php/hris/identity/card_employee_form_identity'
+                            . '?enroll_id=' . $value->enroll_id
+                            . '&no_form=' . urlencode($no_form)
+                            . '&type=PAKLARING';
+                        @endphp
+
+                        <img src="data:image/png;base64,{{\DNS2D::getBarcodePNG($link_qr, 'QRCODE')}}"alt="barcode"style="width: 60px; height: 60px; background-color:white" />
+                        <!-- <td rowspan="2"><img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($no_form)  . '&type=PAKLARING', 'QRCODE') }}"  alt="barcode" style="width: 60px; height: 60px;background-color:white" /></td> -->
                     </tr>
 
                     <tr>

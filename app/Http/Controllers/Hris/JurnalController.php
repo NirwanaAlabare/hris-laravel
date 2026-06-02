@@ -235,10 +235,20 @@ class JurnalController extends AdminBaseController
             $potongan_lain = $data_potongan->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_potongan', '5')->sum('jumlah_rp_potongan');
             // $koreksi_insentif = $data_koreksi->where('sub_dept_id', $value->sub_dept_id)->where('status_jabatan', 'NON STAFF')->where('jenis_koreksi', '2')->sum('jumlah_rp_potongan');
             $payroll = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year)->where('periode_bulan_payroll', $month)->where('periode_umk', null)
-                ->where('kategori_karyawan', 'NON STAFF')->where('sub_dept_id', $value->sub_dept_id)->where('total_kehadiran_net', '>', 0)
+                ->where('kategori_karyawan', 'NON STAFF')->where('sub_dept_id', $value->sub_dept_id)
+                // ->where('total_kehadiran_net', '>', 0)
+                 ->where(function ($query) {
+                        $query->where('total_kehadiran_net', '>', 0)
+                            ->orWhere('koreksi_upah_rupiah', '!=', 0);
+                    })
                 ->get();
             $payroll1 = RekapPerhitunganPayroll::where('periode_tahun_payroll', $year)->where('periode_bulan_payroll', $month)->where('periode_umk', '=', '2026-01')
-                ->where('kategori_karyawan', 'NON STAFF')->where('sub_dept_id', $value->sub_dept_id)->where('total_kehadiran_net', '>', 0)
+                ->where('kategori_karyawan', 'NON STAFF')->where('sub_dept_id', $value->sub_dept_id)
+                // ->where('total_kehadiran_net', '>', 0)
+                 ->where(function ($query) {
+                        $query->where('total_kehadiran_net', '>', 0)
+                            ->orWhere('koreksi_upah_rupiah', '!=', 0);
+                    })
                  ->get();
             $gapok = $payroll1->sum('upah_per_bulan');
 

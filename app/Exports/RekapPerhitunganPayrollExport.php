@@ -645,7 +645,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
         // $total_upah_thp_rupiah_pembulatan= ceil($total_upah_thp_rupiah / 100) * 100;
         // $pembulatan=$total_upah_thp_rupiah_pembulatan-$total_upah_thp_rupiah;
 
-
+        
         $tunai = strtoupper($nama_bank) === 'TUNAI'; // pastikan kapital
 
         // Hitung nilai sebelum pembulatan (upah neto - potongan)
@@ -757,7 +757,7 @@ class RekapPerhitunganPayrollExport implements FromQuery, WithMapping, ShouldAut
             $total_upah_thp_rupiah_employee = '0';
             $total_upah_thp_rupiah_pecahan = '0';
         }
-        if ($total_kehadiran_net == 0) {
+        if ($total_kehadiran_net == 0 && $koreksi_upah_rupiah == 0 && $koreksi_insentif == 0 ) {
             $tunjangan_karyawan_rupiah = '0';
             $gapok = $upah_per_bulan;
             $upah_neto_rupiah = '0';

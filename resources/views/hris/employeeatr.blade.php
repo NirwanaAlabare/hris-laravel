@@ -2557,7 +2557,7 @@
             var nik = $('#nik').val();
             var status_aktif = $('#status_aktif').val();
             var status_staff = $('#status_staff').val();
-            var nik_enroll = nik.substring(5);
+            var nik_enroll = parseInt(nik.substring(5));
 
             var alamat_jalan = $('#alamat_jalan').val();
             var rt = $('#rt').val();

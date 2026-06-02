@@ -481,10 +481,17 @@ public function show_list_karyawan_non_sewing(Request $request)
         $kodeno = $no . "_" . $dept_fix . "_" ;
 
     // Cek NO_FORM terakhir yang menggunakan prefix ini
+        // $sql_last = DB::select("
+        //     SELECT no_form FROM mut_karyawan_input_non_sewing_form_lembur
+        //     WHERE no_form LIKE '{$kodeno}%'
+        //     ORDER BY no_form DESC
+        //     LIMIT 1
+        // ");
         $sql_last = DB::select("
-            SELECT no_form FROM mut_karyawan_input_non_sewing_form_lembur
+            SELECT no_form
+            FROM mut_karyawan_input_non_sewing_form_lembur
             WHERE no_form LIKE '{$kodeno}%'
-            ORDER BY no_form DESC
+            ORDER BY CAST(SUBSTRING_INDEX(no_form, '_', -1) AS UNSIGNED) DESC
             LIMIT 1
         ");
 
