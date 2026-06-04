@@ -11,6 +11,7 @@ use App\Models\Attendance;
 use App\Models\Employee;
 use App\Models\Holiday;
 use App\Exports\AttendanceExport;
+use App\Exports\AttendanceLogExport;
 use App\Models\AttMachine;
 use App\Models\EmployeeAtribut;
 use App\Models\Setting;
@@ -26,6 +27,7 @@ use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Jmrashed\Zkteco\Lib\ZKTeco;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 /**
@@ -37,6 +39,8 @@ class AttendancesController extends AdminBaseController
 
     private $zkApi = 'http://10.10.5.60:1122';
     // private $zkApi = 'http://127.0.0.1:1122';
+    // private $garmentApi = 'http://localhost:8080';
+    private $garmentApi = 'http://10.10.5.2:8080';
 
     public function __construct()
     {
@@ -1355,4 +1359,191 @@ class AttendancesController extends AdminBaseController
 
         return response()->json(['status' => 'waiting']);
     }
+
+    public function indexAttendanceLogs()
+    {
+        $conn = \odbc_connect("att_hris", "server", "alabare");
+        if (!$conn) abort(500, 'ODBC connection failed');
+
+        $machines = [];
+        $sql = "SELECT  ID, MachineAlias, IP FROM Machines -- where ip='192.168.0.245'";
+        $query = \odbc_exec($conn, $sql);
+
+        ini_set('max_execution_time', 0);
+        set_time_limit(0);
+
+        while ($row = \odbc_fetch_array($query)) {
+            $ip = $row['IP'];
+            $status = $this->pingMachine($ip);
+            $row['is_online'] = $status;
+            $machines[] = $row;
+        }
+
+        \odbc_close($conn);
+
+        $setting = Setting::firstOrFail();
+        $pageTitle = 'Attendance Logs';
+        $loggedAdmin = Auth::guard('admin')->user();
+        $departments = EmployeeAtribut::select('department_name')
+            ->whereNotNull('department_name')
+            ->distinct()
+            ->orderBy('department_name', 'asc')
+            ->get();
+        // dd($machines);
+        return view(
+            'admin.attendances.attendance-logs',
+            compact('machines', 'setting', 'pageTitle', 'loggedAdmin', 'departments')
+        );
+    }
+
+    public function getLogEmployeeFromMachine(Request $request)
+    {
+        $request->validate([
+            'machine_ids' => 'required|array'
+        ]);
+
+        $allResults = [];
+        $errors = [];
+        $totalRecords = 0;
+
+        foreach ($request->machine_ids as $machineId) {
+            try {
+                $response = Http::timeout(60)->post($this->garmentApi . '/api/getAttLogs', [
+                    'ip' => $machineId,
+                ]);
+
+                if (!$response->ok()) {
+                    $errors[] = [
+                        'machine_ip' => $machineId,
+                        'status' => false,
+                        'message' => 'Garment API error',
+                        'raw' => $response->body()
+                    ];
+                    continue;
+                }
+
+                $json = $response->json();
+
+                // Check if response has success status
+                if (isset($json['status']) && $json['status'] === 'success') {
+                    $records = $json['data'] ?? [];
+
+                    if (is_array($records)) {
+                        $totalRecords += count($records);
+
+                        // Add machine_ip to each record for traceability
+                        foreach ($records as $record) {
+                            $allResults[] = array_merge($record, [
+                                'source_machine_ip' => $machineId
+                            ]);
+                        }
+                    }
+
+                    // Optional: Log success message from API
+                    if (isset($json['message'])) {
+                        // You can log this or store in success summary
+                    }
+                } else {
+                    // API returned error status
+                    $errors[] = [
+                        'machine_ip' => $machineId,
+                        'status' => false,
+                        'message' => $json['message'] ?? 'Unknown error from API',
+                        'raw' => $json
+                    ];
+                }
+            } catch (\Exception $e) {
+                $errors[] = [
+                    'machine_ip' => $machineId,
+                    'status' => false,
+                    'message' => 'Exception: ' . $e->getMessage()
+                ];
+            }
+        }
+
+        return response()->json([
+            'status' => empty($errors) || !empty($allResults),
+            'message' => $errors
+                ? "Synced {$totalRecords} records from " . (count($request->machine_ids) - count($errors)) . " out of " . count($request->machine_ids) . " machines"
+                : "Successfully synced {$totalRecords} records from all machines",
+            'data' => $allResults,
+            'errors' => $errors,
+            'summary' => [
+                'total_machines' => count($request->machine_ids),
+                'successful_machines' => count($request->machine_ids) - count($errors),
+                'failed_machines' => count($errors),
+                'total_records' => $totalRecords
+            ]
+        ]);
+    }
+
+    public function ajaxEmployeeListAttendace(Request $request)
+    {
+        $query = DB::table('v_att')
+            ->select('enroll_id', 'Nama', 'department_name', 'Tanggal', 'Jam_Masuk', 'Jam_Pulang')
+            ->whereNotNull('enroll_id');
+
+        // Apply filters
+        if ($request->filled('department')) {
+            $query->where('department_name', $request->department);
+        }
+
+        // Handle search from DataTables
+        if ($request->filled('search') && !empty($request->search['value'])) {
+            $searchValue = $request->search['value'];
+            $query->where(function ($q) use ($searchValue) {
+                $q->where('enroll_id', 'LIKE', "%{$searchValue}%")
+                    ->orWhere('Nama', 'LIKE', "%{$searchValue}%")
+                    ->orWhere('department_name', 'LIKE', "%{$searchValue}%");
+            });
+        }
+
+        return DataTables::of($query)
+            ->addColumn('Jam_Masuk', function ($row) {
+                return $row->Jam_Masuk ? date('H:i:s', strtotime($row->Jam_Masuk)) : '-';
+            })
+            ->addColumn('Jam_Pulang', function ($row) {
+                return $row->Jam_Pulang ? date('H:i:s', strtotime($row->Jam_Pulang)) : '-';
+            })
+            ->make(true);
+    }
+
+    public function exportRawLogs(Request $request)
+    {
+        try {
+            $allResults = [];
+            $errors = [];
+
+            $query = DB::table('attendance_logs');          
+
+            // Count total records before export
+            $totalRecords = $query->count();
+
+            if ($totalRecords == 0) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No records found to export'
+                ], 404);
+            }
+
+            // For large datasets, use chunking to avoid memory issues
+            if ($totalRecords > 10000) {
+                // Stream the export for large datasets
+                return $this->streamLargeExport($query, $totalRecords);
+            }
+
+            // For smaller datasets, get all records
+            $allResults = $query->get()->toArray();
+
+            // Export to Excel using Laravel-Excel
+            return Excel::download(new AttendanceLogExport($allResults), 'attendance_logs_' . date('Y-m-d_His') . '.xlsx');
+        } catch (\Exception $e) {
+            \Log::error('Export failed: ' . $e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Export failed: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
 }

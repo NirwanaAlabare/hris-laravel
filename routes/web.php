@@ -86,6 +86,22 @@ Route::prefix('hris')->group(function () {
 
     Route::post('/attendance/check-employee-machine', [AttendancesController::class, 'checkEmployeeOnMachine'])
         ->name('hris.attendance.checkEmployeeOnMachine');
+
+    Route::get(
+        '/attendance-logs',
+        [AttendancesController::class, 'indexAttendanceLogs']
+    )->name('hris.attendance.attendance_logs');
+
+    Route::get(
+        '/attendance/ajax/employee-list-attendace',
+        [AttendancesController::class, 'ajaxEmployeeListAttendace']
+    )->name('hris.attendance.ajaxEmployeeListAttendace');
+
+    Route::post('/attendance/get-logs', [AttendancesController::class, 'getLogEmployeeFromMachine'])
+        ->name('hris.attendance.getLogEmployeeFromMachine');
+
+    Route::get('/attendance/export-raw-logs', [AttendancesController::class, 'exportRawLogs'])
+        ->name('hris.attendance.export_raw_logs');  
 });
 
 
