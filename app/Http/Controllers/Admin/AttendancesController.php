@@ -1482,7 +1482,7 @@ class AttendancesController extends AdminBaseController
     {
         // dd($request->all());
         $query = DB::table('v_att')
-            ->select('enroll_id', 'Nama', 'department_name', 'Tanggal', 'Jam_Masuk', 'Jam_Pulang','created_at')
+            ->select('enroll_id', 'Nama', 'department_name', 'Tanggal', 'Jam_Masuk', 'Jam_Pulang', 'created_at')
             ->whereNotNull('enroll_id');
 
         // Apply filters
@@ -1518,13 +1518,21 @@ class AttendancesController extends AdminBaseController
             });
         }
 
-        return DataTables::of($query)
+        // ** IMPORTANT: Get the latest created_at from the filtered query **
+        // Clone the query to avoid interfering with pagination
+        $latestCreatedAt = (clone $query)->max('created_at');
+
+        // Process DataTables
+        $dataTable = DataTables::of($query);
+
+        return $dataTable
             ->addColumn('Jam_Masuk', function ($row) {
                 return $row->Jam_Masuk ? date('H:i:s', strtotime($row->Jam_Masuk)) : '-';
             })
             ->addColumn('Jam_Pulang', function ($row) {
                 return $row->Jam_Pulang ? date('H:i:s', strtotime($row->Jam_Pulang)) : '-';
             })
+            ->with('latestCreatedAt', $latestCreatedAt) // Kirim latest created_at ke frontend
             ->make(true);
     }
 
@@ -1610,18 +1618,18 @@ class AttendancesController extends AdminBaseController
 
             $query->orderBy('department_name', 'asc')->orderBy('Nama', 'asc')->orderBy('PunchDate', 'asc');
 
-             // Count total records before export
-             $totalRecords = $query->count();
+            // Count total records before export
+            $totalRecords = $query->count();
 
-             if ($totalRecords == 0) {
-                 return response()->json([
-                     'status' => false,
-                     'message' => 'No records found to export'
-                 ], 404);
-             }
+            if ($totalRecords == 0) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No records found to export'
+                ], 404);
+            }
             // For smaller datasets, get all records
             $allResults = $query->get()->toArray();
-            
+
             // Export to Excel using Laravel-Excel
             return Excel::download(new AttendanceLogFormattedExport($allResults), 'attendance_logs_Formatted' . date('Y-m-d_His') . '.xlsx');
         } catch (\Exception $e) {

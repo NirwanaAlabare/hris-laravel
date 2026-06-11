@@ -289,6 +289,7 @@
             <table class="table table-striped table-bordered" id="employeeTable" style="width:100%">
                 <thead>
                     <tr>
+                        <th>No/th>
                         <th>Enroll ID</th>
                         <th>Nama</th>
                         <th>Department</th>
@@ -408,7 +409,7 @@
         pageLength: 50,
         lengthMenu: [[25, 50, 100, 250, 500], [25, 50, 100, 250, 500]],
         pagingType: 'full_numbers',
-        dom: 'Bfrtip',
+        dom: 'lBfrtip',
         buttons: [
             { extend: 'copy', className: 'btn-sm' },
             { extend: 'csv', className: 'btn-sm' },
@@ -433,9 +434,29 @@
             error: function(xhr, status, error) {
                 console.error('DataTables Error:', error);
                 alert('Failed to load data. Please refresh the page.');
+            },
+            dataSrc: function(json) {
+                // Update latest date from server metadata (across all filtered records)
+                console.log('AJAX Response Metadata:', json);
+                if (json.latestCreatedAt) {
+                    let formattedDate = moment(json.latestCreatedAt).format('DD-MM-YYYY HH:mm:ss');
+                    $('#latestCreatedDate').text(`Latest Update: ${formattedDate}`);
+                }
+                return json.data;
             }
         },
         columns: [
+            { 
+                data: null, 
+                name: 'no', 
+                title: 'No.',
+                render: function(data, type, row, meta) {
+                    return meta.row + 1 + (meta.settings._iDisplayStart || 0);
+                },
+                orderable: false,
+                searchable: false,
+                className: 'text-center'
+            },
             { data: 'enroll_id', name: 'enroll_id' },
             { data: 'Nama', name: 'Nama' },
             { data: 'department_name', name: 'department_name' },
@@ -443,7 +464,7 @@
             { data: 'Jam_Masuk', name: 'Jam_Masuk', searchable: false },
             { data: 'Jam_Pulang', name: 'Jam_Pulang', searchable: false }
         ],
-        order: [[0, 'asc']],
+        order: false,
         searching: true,
         language: {
             processing: '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>',
@@ -463,22 +484,7 @@
         },
         stateSave: true,
         stateDuration: 7200,
-        // Add initComplete callback
-        initComplete: function(settings, json) {
-            console.log('DataTables initialized with data:', json);
-            if (json && json.data && json.data.length > 0) {
-                // Get all created_dates, find the latest
-                let latestDate = json.data
-                    .map(item => item.created_at)
-                    .filter(date => date) // Remove null/undefined
-                    .sort((a, b) => new Date(b) - new Date(a))[0];
-                
-                if (latestDate) {
-                    let formattedDate = moment(latestDate).format('DD-MM-YYYY HH:mm:ss');
-                    $('#latestCreatedDate').text(`Latest Data: ${formattedDate}`);
-                }
-            }
-        }
+  
     });
 
     // Fix search input - only search on Enter key
@@ -508,6 +514,12 @@
     function applyFilters() {
         table.ajax.reload();
     }
+
+    // Reset 
+    setInterval(function() {
+        applyFilters();
+        console.log('Auto-refreshing data...');
+    }, 1000 * 60 * 5); // Auto-refresh every 5 minutes
 
     function resetFilters() {
         $('#filterDept').val('');
