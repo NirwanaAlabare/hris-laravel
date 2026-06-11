@@ -12,6 +12,7 @@ use App\Models\Employee;
 use App\Models\Holiday;
 use App\Exports\AttendanceExport;
 use App\Exports\AttendanceLogExport;
+use App\Exports\AttendanceLogFormattedExport;
 use App\Models\AttMachine;
 use App\Models\EmployeeAtribut;
 use App\Models\Setting;
@@ -1479,13 +1480,32 @@ class AttendancesController extends AdminBaseController
 
     public function ajaxEmployeeListAttendace(Request $request)
     {
+        // dd($request->all());
         $query = DB::table('v_att')
-            ->select('enroll_id', 'Nama', 'department_name', 'Tanggal', 'Jam_Masuk', 'Jam_Pulang')
+            ->select('enroll_id', 'Nama', 'department_name', 'Tanggal', 'Jam_Masuk', 'Jam_Pulang','created_at')
             ->whereNotNull('enroll_id');
 
         // Apply filters
         if ($request->filled('department')) {
             $query->where('department_name', $request->department);
+        }
+
+        if ($request->filled('date_type')) {
+            switch ($request->date_type) {
+                case 'daily':
+                    $query->whereRaw('date_format(PunchDate, "%Y-%m-%d") = ?', [$request->start_date]);
+                    break;
+                case 'yearly':
+                    $query->whereRaw('YEAR(PunchDate) = ?', [$request->year]);
+                    break;
+                case 'monthly':
+                    $query->whereRaw('MONTH(PunchDate) = ?', [$request->month])
+                        ->whereRaw('YEAR(PunchDate) = ?', [$request->year]);
+                    break;
+                case 'range':
+                    $query->whereRaw('date_format(PunchDate, "%Y-%m-%d") BETWEEN ? AND ?', [$request->start_date, $request->end_date]);
+                    break;
+            }
         }
 
         // Handle search from DataTables
@@ -1514,7 +1534,7 @@ class AttendancesController extends AdminBaseController
             $allResults = [];
             $errors = [];
 
-            $query = DB::table('attendance_logs');          
+            $query = DB::table('attendance_logs');
 
             // Count total records before export
             $totalRecords = $query->count();
@@ -1536,7 +1556,7 @@ class AttendancesController extends AdminBaseController
             $allResults = $query->get()->toArray();
 
             // Export to Excel using Laravel-Excel
-            return Excel::download(new AttendanceLogExport($allResults), 'attendance_logs_' . date('Y-m-d_His') . '.xlsx');
+            return Excel::download(new AttendanceLogExport($allResults), 'attendance_logs_Raw' . date('Y-m-d_His') . '.xlsx');
         } catch (\Exception $e) {
             \Log::error('Export failed: ' . $e->getMessage());
             return response()->json([
@@ -1545,5 +1565,71 @@ class AttendancesController extends AdminBaseController
             ], 500);
         }
     }
+    public function exportFormattedLogs(Request $request)
+    {
+        try {
+            $allResults = [];
+            $errors = [];
 
+            $query = DB::table('v_att')
+                ->select('*')
+                ->whereNotNull('enroll_id');
+
+            // Apply filters
+            if ($request->filled('department')) {
+                $query->where('department_name', $request->department);
+            }
+
+            if ($request->filled('date_type')) {
+                switch ($request->date_type) {
+                    case 'daily':
+                        $query->whereRaw('date_format(PunchDate, "%Y-%m-%d") = ?', [$request->start_date]);
+                        break;
+                    case 'yearly':
+                        $query->whereRaw('YEAR(PunchDate) = ?', [$request->year]);
+                        break;
+                    case 'monthly':
+                        $query->whereRaw('MONTH(PunchDate) = ?', [$request->month])
+                            ->whereRaw('YEAR(PunchDate) = ?', [$request->year]);
+                        break;
+                    case 'range':
+                        $query->whereRaw('date_format(PunchDate, "%Y-%m-%d") BETWEEN ? AND ?', [$request->start_date, $request->end_date]);
+                        break;
+                }
+            }
+
+            // Handle search from DataTables
+            if ($request->filled('search') && !empty($request->search['value'])) {
+                $searchValue = $request->search['value'];
+                $query->where(function ($q) use ($searchValue) {
+                    $q->where('enroll_id', 'LIKE', "%{$searchValue}%")
+                        ->orWhere('Nama', 'LIKE', "%{$searchValue}%")
+                        ->orWhere('department_name', 'LIKE', "%{$searchValue}%");
+                });
+            }
+
+            $query->orderBy('department_name', 'asc')->orderBy('Nama', 'asc')->orderBy('PunchDate', 'asc');
+
+             // Count total records before export
+             $totalRecords = $query->count();
+
+             if ($totalRecords == 0) {
+                 return response()->json([
+                     'status' => false,
+                     'message' => 'No records found to export'
+                 ], 404);
+             }
+            // For smaller datasets, get all records
+            $allResults = $query->get()->toArray();
+            
+            // Export to Excel using Laravel-Excel
+            return Excel::download(new AttendanceLogFormattedExport($allResults), 'attendance_logs_Formatted' . date('Y-m-d_His') . '.xlsx');
+        } catch (\Exception $e) {
+            \Log::error('Export failed: ' . $e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Export failed: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

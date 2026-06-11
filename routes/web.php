@@ -102,6 +102,9 @@ Route::prefix('hris')->group(function () {
 
     Route::get('/attendance/export-raw-logs', [AttendancesController::class, 'exportRawLogs'])
         ->name('hris.attendance.export_raw_logs');  
+
+    Route::get('/attendance/export-formatted-logs', [AttendancesController::class, 'exportFormattedLogs'])
+        ->name('hris.attendance.export_formatted_logs');  
 });
 
 
