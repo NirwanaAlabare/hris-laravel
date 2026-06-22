@@ -610,8 +610,34 @@
         });
     }
 
-    $('#btnExportRawLogs').click(function() {
-        location.href = "{{ route('hris.attendance.export_raw_logs') }}";
+    // $('#btnExportRawLogs').click(function() {
+    //     location.href = "{{ route('hris.attendance.export_raw_logs') }}";
+    // });
+    $('#btnExportRawLogs').click(function(e) {
+        e.preventDefault();
+        
+        let $btn = $(this);
+        let originalText = $btn.html();
+        $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Exporting...');
+        
+        $.ajax({
+            url: "{{ route('hris.attendance.export_raw_logs') }}",
+            type: "GET",
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function(response) {
+                let link = document.createElement('a');
+                link.href = window.URL.createObjectURL(response);
+                link.download = 'attendance_logs.xlsx';
+                link.click();
+                $btn.prop('disabled', false).html(originalText);
+            },
+            error: function(xhr) {
+                alert('Export failed: ' + (xhr.responseJSON?.message || 'Unknown error'));
+                $btn.prop('disabled', false).html(originalText);
+            }
+        });
     });
 
     $('#btnExportFormattedLogs').click(function() {

@@ -1542,7 +1542,7 @@ class AttendancesController extends AdminBaseController
             $allResults = [];
             $errors = [];
 
-            $query = DB::table('attendance_logs');
+            $query = DB::table('attendance_logs')->orderBy('id', 'asc'); // ← ADD THIS LINE;
 
             // Count total records before export
             $totalRecords = $query->count();
@@ -1572,6 +1572,46 @@ class AttendancesController extends AdminBaseController
                 'message' => 'Export failed: ' . $e->getMessage()
             ], 500);
         }
+    }
+    /**
+     * Handle large exports by streaming CSV
+     */
+    private function streamLargeExport($query, $totalRecords)
+    {
+        $fileName = 'attendance_logs_' . date('Y-m-d_His') . '.csv';
+    
+        return response()->streamDownload(function () use ($query) {
+            $handle = fopen('php://output', 'w');
+
+            // Add CSV headers (UTF-8 with BOM for Excel compatibility)
+            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            // Headers
+            fputcsv($handle, [
+                'Enroll ID',
+                'Machine IP',
+                'Timestamp',
+                'Created At',
+            ]);
+
+            // Chunk the results to avoid memory issues
+            $query->select('id', 'user_id', 'ip', 'timestamp', 'created_at')
+                ->chunk(1000, function ($chunks) use ($handle) {
+                    foreach ($chunks as $log) {
+                        fputcsv($handle, [
+                            $log->user_id,
+                            $log->ip,
+                            $log->timestamp,
+                            $log->created_at,
+                        ]);
+                    }
+                });
+
+            fclose($handle);
+        }, $fileName, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ]);
     }
     public function exportFormattedLogs(Request $request)
     {

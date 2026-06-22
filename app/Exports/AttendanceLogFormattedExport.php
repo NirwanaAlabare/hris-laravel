@@ -76,17 +76,17 @@ class AttendanceLogFormattedExport implements FromCollection, WithHeadings, With
                 // $sheet->setCellValue('A4', 'STAFF / NON STAFF : SEMUA KARYAWAN');
 
                 // Merge cells for header rows
-                $sheet->mergeCells('A1:G1');
-                $sheet->mergeCells('A2:G2');
-                $sheet->mergeCells('A3:G3');
-                $sheet->mergeCells('A4:G4');
+                $sheet->mergeCells('A1:H1');
+                $sheet->mergeCells('A2:H2');
+                $sheet->mergeCells('A3:H3');
+                $sheet->mergeCells('A4:H4');
 
                 // Style the header
                 $sheet->getStyle('A1:A4')->getFont()->setBold(true);
                 $sheet->getStyle('A1')->getFont()->setSize(14);
                 $sheet->getStyle('A2')->getFont()->setSize(12);
                 $sheet->getStyle('A3')->getFont()->setSize(11);
-                $sheet->getStyle('A4')->getFont()->setSize(11);
+                // $sheet->getStyle('A4')->getFont()->setSize(11);
 
                 // Center align headers
                 $sheet->getStyle('A1:A4')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
@@ -102,16 +102,16 @@ class AttendanceLogFormattedExport implements FromCollection, WithHeadings, With
 
         // Use the variables to format the date range display
         if ($datetype == 'monthly') {
-            $date = date('F Y', strtotime("$year-$month-01"));
-            return "TANGGAL ABSENSI : BULAN " . strtoupper($date);
+            $date = date('M Y', strtotime("$year-$month-01"));
+            return "PERIODE ABSENSI : BULAN " . strtoupper($date);
         } elseif ($datetype == 'yearly') {
-            return "TANGGAL ABSENSI : TAHUN " . strtoupper($year);
+            return "PERIODE ABSENSI : TAHUN " . strtoupper($year);
         } else {
             $startDate = request()->start_date ?? date('Y-m-d');
             $endDate = request()->end_date ?? date('Y-m-d');
             $startFormatted = date('d M Y', strtotime($startDate));
             $endFormatted = date('d M Y', strtotime($endDate));
-            return "TANGGAL ABSENSI : " . strtoupper($startFormatted) . " S/D " . strtoupper($endFormatted);
+            return "PERIODE ABSENSI : " . strtoupper($startFormatted) . " S/D " . strtoupper($endFormatted);
         }
     }
 }
