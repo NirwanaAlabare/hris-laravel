@@ -56,7 +56,7 @@
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7pt;text-align:justify;padding-top:8px">
                     Perjanjian ini adalah antara :<br>
-                    <b>MEGA FITRIANA HARYONO</b> dalam hal ini bertindak atas <b>HR & GA DEPARTMENT  PT. NIRWANA ALABARE GARMENT</b>, sebuah perusahaan berbentuk badan hukum perseroan terbatas yang melakukan kegiatan usaha industri pembuatan pakaian jadi, didirikan berdasarkan Akta Pendirian nomor 68.- dan telah mendapatkan pengesahan dari Menteri Hukum dan Hak Asasi Manusia Republik Indonesia nomor AHU-2465410.AH.01.01 Tahun 2015 dalam hal ini disebut <b>PIHAK PERTAMA</b>.
+                    <b>MEGA FITRIANA HARYONO</b> dalam hal ini bertindak atas <b>HR & GA DEPARTMENT  PT. NIRWANA ALABARE GARMENT</b>, sebuah perusahaan berbentuk badan hukum perseroan terbatas yang melakukan kegiatan usaha industri pembuatan pakaian jadi, didirikan berdasarkan Akta Pendirian nomor 87.- dan telah mendapatkan pengesahan dari Menteri Hukum dan Hak Asasi Manusia Republik Indonesia nomor AHU-2465410.AH.01.01 Tahun 2015 dalam hal ini disebut <b>PIHAK PERTAMA</b>.
                 </td>
             </tr>
         </thead>
@@ -102,7 +102,7 @@
                     <li>Waktu dan Jam kerja di Perusahaan 5 (lima) hari kerja dalam seminggu, dengan ketentuan 8 (delapan) jam sehari dan/atau 40 (empat puluh) jam seminggu serta hari Sabtu dan Minggu merupakan hari libur/istirahat mingguan.</li>
                     <li><b>PIHAK PERTAMA</b> akan membayar Upah/Gaji pokok kepada <b>PIHAK KEDUA</b> sebesar <b>Rp. {{number_format($value->umk, 2, ',', '.');}}</b> <i><b>({{ ucwords(strtolower($value->umk_latin)) }})</b></i>, yang perhitungannya dipengaruhi oleh penilaian tingkat kemampuan, kehadiran, serta jenis pekerjaan yang dilakukan. Pembayaran upah / gaji akan dilaksanakan pada tanggal 1 (satu) setiap bulannya.</li>
                     <li><b>PIHAK PERTAMA</b> berhak melakukan perubahan sistem pengupahan dengan metode pengupahan berdasarkan satuan hasil atau pengupahan dengan sistem per jam sesuai dengan kondisi dan situasi perusahaan.</li>
-                    <li><b>PIHAK PERTAMA</b> memberikan kompensasi PKWT kepada <b>PIHAK KEDUA</b> dengan besaran, metode dan waktu yang akan diatir dalam prosedur yang berlaku.</li>
+                    <li><b>PIHAK PERTAMA</b> memberikan kompensasi PKWT kepada <b>PIHAK KEDUA</b> dengan besaran, metode dan waktu yang akan diatur dalam prosedur yang berlaku.</li>
                     <li><b>PIHAK KEDUA</b> wajib mematuhi Peraturan Perusahaan yang berlaku dan menjaga ketertiban, kedisiplinan, produktivitas kerja, kerjasama dan kebersihan di lingkungan kerjanya serta merawat peralatan kerja, mesin produksi, dan barang inventaris yang menjadi tanggung jawabnya.</li>
                     <li><b>PIHAK KEDUA</b> wajib memberitahukan melalui telepon, lisan atau tertulis jika berhalangan hadir dan memberikan alasan dengan jelas kepada pimpinan/atasannya, dan <u>bila mana 5 (lima) hari tidak masuk kerja</u> tanpa ada alasan yang sah dan tidak dapat dipertanggungjawabkan, serta sudah mendapatkan 2 Kali panggilan dari HRD maka dianggap mengundurkan diri atas permintaan sendiri.</li>
                     <li><b>PIHAK PERTAMA</b> berhak untuk mengakhiri hubungan kerja sebelum berakhirnya tanggal perjanjian kerja dengan teknis pelaksanaan yang diatur dalam peraturan perusahaan dan atau prosedur yang berlaku.</li>

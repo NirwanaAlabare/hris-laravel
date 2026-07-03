@@ -421,7 +421,7 @@
                         <button id="BtnProsesPayroll4" type="button" class="btn btn-app btn-primary text-white"><span><i
                                     class="fa fa-download"></i></span> PROSES PAYROLL HARIAN</button>
                         @endif
-                        @if($loggedAdmin->role_user=='superadmin')
+                        @if($loggedAdmin->role_user=='superadmin' || $loggedAdmin->email == 'steven')
                         <a class="btn btn-app" style="background-color: #13b023" data-toggle="tooltip"
                             title="Export Data ke File Transfer Excel" id="recap_labor_cost_2"><i
                                 class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST</a>
@@ -1070,7 +1070,7 @@
                 },
                 dataType: "json",
                 success: function(response) {
-                    // console.log("response", response);
+                    console.log("response", response);
                 },
                 error: function(res) {
                     // console.log("error",res);

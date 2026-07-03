@@ -250,11 +250,14 @@
                         <div class="col-md-8">
                             <div class="form-group">
                                 <label class="form-label">CARI DATA : </label>
-                                <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID">
+                                <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan"
+                                    class="form-control select2 select-employees">
+                                </select>
+                                <!-- <select id="selectEmployeeID" name="selectEmployeeID[]" multiple data-placeholder="Pilih karyawan" class="form-control select2 EmployeeID">
                                     @foreach ($selectemployee as $r_empl)
                                         <option value="{{$r_empl->enroll_id}}">{{$r_empl->select_employee}}</option>
                                     @endforeach
-                                </select>
+                                </select> -->
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -2231,5 +2234,41 @@
             });
         });
     </script>
+     <script>
+    $(document).ready(function() {
+        function initEmployees() {
+            $('.select-employees').select2({
+                placeholder: 'Pilih karyawan atau semua tess',
+                width: 'resolve',
+                allowClear: true,
+                ajax: {
+                    url: '{{ route("search_employees") }}',
+                    dataType: 'json',
+                    delay: 250, // prevent too many requests
+                    data: function (params) {
+                        return {
+                            q: params.term || '',   // search term
+                            isAll: $('#isAll') ? 1 : 0 // true if checkbox checked
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.enroll_id,                   // value sent to backend
+                                    text: item.enroll_id + ' - ' + item.nik + ' - ' + item. employee_name  // display text
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        }
+
+        initEmployees();
+    } );
+</script>
+
 
 @endsection

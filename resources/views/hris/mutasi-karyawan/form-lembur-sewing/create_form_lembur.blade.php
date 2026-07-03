@@ -3,7 +3,9 @@
 @section('head')
     <link href="{{ URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
     <link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+    {{-- <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css"> --}}
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
 @stop
 @section('mainarea')
 <?php ini_set('date.timezone', 'Asia/Jakarta'); ?>
@@ -151,8 +153,21 @@
                             </select>
                         </div>
                     </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label><small><b>Jenis</b></small></label>
+                            <select class='form-control select2' style='width: 100%;' name='cbojenis' id='cbojenis'>
+                                <option selected="selected" value="" disabled="true">Pilih Jenis</option>
+                                {{-- @foreach ($data_line as $dataline) --}}
+                                    <option value="1">insentif</option>
+                                    <option value="0">lembur</option>
+                                {{-- @endforeach --}}
+                            </select>
+                        </div>
+                    </div>
 
-                    <div class="col-md-5">
+
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label><small><b>Keterangan</b></small></label>
                             <select class='form-control select2' multiple style='width: 100%;' name='cboket[]' id='cboket'
@@ -170,13 +185,13 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><small><b>Dari</b></small></label>
-                            <input class="form-control" id="from_lembur" name="from_lembur" type="time" onchange='sum();' required style="background-color: white; cursor:pointer;" >
+                            <input class="form-control" id="from_lembur" name="from_lembur" type="text" placeholder="--:--"  autocomplete="off" onchange='sum();' required style="background-color: white; cursor:pointer;">
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><small><b>Sampai</b></small></label>
-                            <input class="form-control" id="to_lembur" name="to_lembur" type="time" onchange='sum();autominute();' required style="background-color: white; cursor:pointer;" >
+                            <input class="form-control" id="to_lembur" name="to_lembur"type="text" placeholder="--:--" autocomplete="off" onchange='sum();autominute();' required style="background-color: white; cursor:pointer;">
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -260,12 +275,26 @@
 <script src="{{URL::asset('assets/js/iziToast.min.js')}}"></script>
 <script src="{{ asset('assets/plugins/html5-qrcode/html5-qrcode.min.js') }}"></script>
 {{-- <script src="{{asset('//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js') }}"></script> --}}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <style>
         .checkbox-xl .form-check-input {
             scale: 1.5;
         }
     </style>
+    <script>
+        $('#cbojenis').on('change', function () {
+            let jenis = $(this).val();
+
+            if (jenis == '1') { // insentif
+                $('#from_lembur').val('16:00');
+                $('#from_lembur').prop('readonly', true);
+            } else { // lembur
+                $('#from_lembur').val('');
+                $('#from_lembur').prop('readonly', false);
+            }
+        });
+    </script>
 
     <script>
         function submitForm(form, event) {
@@ -333,13 +362,29 @@
 
 
         var html5QrcodeScanner = null;
+                flatpickr("#from_lembur", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true,
+            minuteIncrement: 1,
+            allowInput: false
+        });
+        flatpickr("#to_lembur", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true,
+            minuteIncrement: 1,
+            allowInput: false
+        });
 
-        $("#from_lembur").timepicker({
-          timeFormat: "%H:%i"
-        });
-        $("#to_lembur").timepicker({
-          timeFormat: "%H:%i"
-        });
+        // $("#from_lembur").timepicker({
+        //   timeFormat: "%H:%i"
+        // });
+        // $("#to_lembur").timepicker({
+        //   timeFormat: "%H:%i"
+        // });
 
             async function initScan() {
                 if (document.getElementById("reader")) {

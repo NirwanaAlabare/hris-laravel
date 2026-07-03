@@ -2567,39 +2567,68 @@ class ProsesPayrollController extends AdminBaseController
             $EmpBpjs = EmployeeBpjs::where('periode_kehadiran', $priode)->get();
 
             foreach ($EmpBpjs as $key3 => $value3) {
-                $dasar_pot_bpjs_rupiah = $dasar_pot_bpjs_rupiah_gapok + $value3->tmk;
-                // dd($dasar_pot_bpjs_rupiah);
-                $queryEmpBpjs = DB::update('update employee_bpjs set
-                    kode_periode_bpjs = "' . $kode_periode_bpjs . '",
-                    kode_dasar_pot_bpjs = "' . $kode_dasar_pot_bpjs . '",
-                    dasar_pot_bpjs_rupiah = "' . $dasar_pot_bpjs_rupiah . '",
-                    bpjs_tk_jkm_bruto_rupiah = IF(status_aktif_bpjs_tk = "AKTIF", (' . $dasar_pot_bpjs_rupiah . ' * (' . $bpjs_tk_jkm_perusahaan_persen . '/100)), 0),
-                    bpjs_tk_jkk_bruto_rupiah = IF(status_aktif_bpjs_tk = "AKTIF", (' . $dasar_pot_bpjs_rupiah . ' * (' . $bpjs_tk_jkk_perusahaan_persen . '/100)), 0),
-                    bpjs_tk_jht_bruto_rupiah = IF(status_aktif_bpjs_tk = "AKTIF", (' . $dasar_pot_bpjs_rupiah . ' * (' . $bpjs_tk_jht_perusahaan_persen . '/100)), 0),
-                    bpjs_tk_jpn_bruto_rupiah = IF(status_aktif_bpjs_tk = "AKTIF", (' . $dasar_pot_bpjs_rupiah . ' * (' . $bpjs_tk_jpn_perusahaan_persen . '/100)), 0),
-                    bpjs_ks_jkn_bruto_rupiah = IF(status_aktif_bpjs_ks = "AKTIF", (' . $dasar_pot_bpjs_rupiah . ' * (' . $bpjs_ks_jkn_perusahaan_persen . '/100)), 0),
-                    bpjs_tk_jkm_neto_rupiah = IF(status_aktif_bpjs_tk = "AKTIF", (' . $dasar_pot_bpjs_rupiah . ' * (' . $bpjs_tk_jkm_karyawan_persen . '/100)), 0),
-                    bpjs_tk_jkk_neto_rupiah = IF(status_aktif_bpjs_tk = "AKTIF", (' . $dasar_pot_bpjs_rupiah . ' * (' . $bpjs_tk_jkk_karyawan_persen . '/100)), 0),
-                    bpjs_tk_jht_neto_rupiah = IF(status_aktif_bpjs_tk = "AKTIF", (' . $dasar_pot_bpjs_rupiah . ' * (' . $bpjs_tk_jht_karyawan_persen . '/100)), 0),
-                    bpjs_tk_jpn_neto_rupiah = IF(status_aktif_bpjs_tk = "AKTIF", (' . $dasar_pot_bpjs_rupiah . ' * (' . $bpjs_tk_jpn_karyawan_persen . '/100)), 0),
-                    bpjs_ks_jkn_neto_rupiah = IF(status_aktif_bpjs_ks = "AKTIF", (' . $dasar_pot_bpjs_rupiah . ' * (' . $bpjs_ks_jkn_karyawan_persen . '/100)), 0),
-                    bpjs_tk_jkm_persen = "' . $bpjs_tk_jkm_persen . '",
-                    bpjs_tk_jkk_persen = "' . $bpjs_tk_jkk_persen . '",
-                    bpjs_tk_jht_persen = "' . $bpjs_tk_jht_persen . '",
-                    bpjs_tk_jpn_persen = "' . $bpjs_tk_jpn_persen . '",
-                    bpjs_ks_jkn_persen = "' . $bpjs_ks_jkn_persen . '",
-                    bpjs_tk_jkm_bruto_persen = "' . $bpjs_tk_jkm_perusahaan_persen . '",
-                    bpjs_tk_jkk_bruto_persen = "' . $bpjs_tk_jkk_perusahaan_persen . '",
-                    bpjs_tk_jht_bruto_persen = "' . $bpjs_tk_jht_perusahaan_persen . '",
-                    bpjs_tk_jpn_bruto_persen = "' . $bpjs_tk_jpn_perusahaan_persen . '",
-                    bpjs_ks_jkn_bruto_persen = "' . $bpjs_ks_jkn_perusahaan_persen . '",
-                    bpjs_tk_jkm_neto_persen = "' . $bpjs_tk_jkm_karyawan_persen . '",
-                    bpjs_tk_jkk_neto_persen = "' . $bpjs_tk_jkk_karyawan_persen . '",
-                    bpjs_tk_jht_neto_persen = "' . $bpjs_tk_jht_karyawan_persen . '",
-                    bpjs_tk_jpn_neto_persen = "' . $bpjs_tk_jpn_karyawan_persen . '",
-                    bpjs_ks_jkn_neto_persen = "' . $bpjs_ks_jkn_karyawan_persen . '",
-                    operator = "' . $email . '"
-                where enroll_id = "' . $value3->enroll_id . '" and periode_kehadiran = "' . $periode . '"');
+                $enroll_id = $value3->enroll_id;
+                // default
+                $dasar_pot_bpjs_tk = $dasar_pot_bpjs_rupiah_gapok + $value3->tmk;
+                $dasar_pot_bpjs_ks = $dasar_pot_bpjs_tk;
+                $jpn_perusahaan = $bpjs_tk_jpn_perusahaan_persen;
+                $jpn_karyawan   = $bpjs_tk_jpn_karyawan_persen;
+                // khsuss enroll tertentu
+                if (in_array($enroll_id, [8760,10631,10632,10633,10669])) {
+                    $dasar_pot_bpjs_tk = 7200000;
+                    $dasar_pot_bpjs_ks = 7200000;
+                    // JP tidak dihitung
+                    $jpn_perusahaan = 0;
+                    $jpn_karyawan   = 0;
+                }
+                // khsuss enroll tertentu
+                if ($enroll_id == 92) {
+                    // TK normal
+                    $dasar_pot_bpjs_tk = $dasar_pot_bpjs_rupiah_gapok + $value3->tmk;
+                    // KS khusus
+                    $dasar_pot_bpjs_ks = 4200000;
+                    // JP tidak dihitung
+                    $jpn_perusahaan = 0;
+                    $jpn_karyawan   = 0;
+                }
+                DB::update("
+                    UPDATE employee_bpjs SET
+                    kode_periode_bpjs = '".$kode_periode_bpjs."',
+                    kode_dasar_pot_bpjs = '".$kode_dasar_pot_bpjs."',
+                    dasar_pot_bpjs_rupiah = '".$dasar_pot_bpjs_tk."',
+                    bpjs_tk_jkm_bruto_rupiah = IF(status_aktif_bpjs_tk='AKTIF',(".$dasar_pot_bpjs_tk." * (".$bpjs_tk_jkm_perusahaan_persen."/100)),0),
+                    bpjs_tk_jkk_bruto_rupiah = IF(status_aktif_bpjs_tk='AKTIF',(".$dasar_pot_bpjs_tk." * (".$bpjs_tk_jkk_perusahaan_persen."/100)),0),
+                    bpjs_tk_jht_bruto_rupiah = IF(status_aktif_bpjs_tk='AKTIF',(".$dasar_pot_bpjs_tk." * (".$bpjs_tk_jht_perusahaan_persen."/100)),0),
+                    bpjs_tk_jpn_bruto_rupiah = IF(status_aktif_bpjs_tk='AKTIF',(".$dasar_pot_bpjs_tk." * (".$jpn_perusahaan."/100)),0),
+                    bpjs_ks_jkn_bruto_rupiah = IF(status_aktif_bpjs_ks='AKTIF',(".$dasar_pot_bpjs_ks." * (".$bpjs_ks_jkn_perusahaan_persen."/100)),0),
+                    bpjs_tk_jkm_neto_rupiah = IF(status_aktif_bpjs_tk='AKTIF',(".$dasar_pot_bpjs_tk." * (".$bpjs_tk_jkm_karyawan_persen."/100)),0),
+                    bpjs_tk_jkk_neto_rupiah = IF(status_aktif_bpjs_tk='AKTIF',(".$dasar_pot_bpjs_tk." * (".$bpjs_tk_jkk_karyawan_persen."/100)),0),
+                    bpjs_tk_jht_neto_rupiah = IF(status_aktif_bpjs_tk='AKTIF',(".$dasar_pot_bpjs_tk." * (".$bpjs_tk_jht_karyawan_persen."/100)),0),
+                    bpjs_tk_jpn_neto_rupiah = IF(status_aktif_bpjs_tk='AKTIF',(".$dasar_pot_bpjs_tk." * (".$jpn_karyawan."/100)),0),
+                    bpjs_ks_jkn_neto_rupiah = IF(status_aktif_bpjs_ks='AKTIF',(".$dasar_pot_bpjs_ks." * (".$bpjs_ks_jkn_karyawan_persen."/100)),0),
+
+                    bpjs_tk_jkm_persen = '".$bpjs_tk_jkm_persen."',
+                    bpjs_tk_jkk_persen = '".$bpjs_tk_jkk_persen."',
+                    bpjs_tk_jht_persen = '".$bpjs_tk_jht_persen."',
+                    bpjs_tk_jpn_persen = '".$bpjs_tk_jpn_persen."',
+                    bpjs_ks_jkn_persen = '".$bpjs_ks_jkn_persen."',
+
+                    bpjs_tk_jkm_bruto_persen = '".$bpjs_tk_jkm_perusahaan_persen."',
+                    bpjs_tk_jkk_bruto_persen = '".$bpjs_tk_jkk_perusahaan_persen."',
+                    bpjs_tk_jht_bruto_persen = '".$bpjs_tk_jht_perusahaan_persen."',
+                    bpjs_tk_jpn_bruto_persen = '".$jpn_perusahaan."',
+                    bpjs_ks_jkn_bruto_persen = '".$bpjs_ks_jkn_perusahaan_persen."',
+
+                    bpjs_tk_jkm_neto_persen = '".$bpjs_tk_jkm_karyawan_persen."',
+                    bpjs_tk_jkk_neto_persen = '".$bpjs_tk_jkk_karyawan_persen."',
+                    bpjs_tk_jht_neto_persen = '".$bpjs_tk_jht_karyawan_persen."',
+                    bpjs_tk_jpn_neto_persen = '".$jpn_karyawan."',
+                    bpjs_ks_jkn_neto_persen = '".$bpjs_ks_jkn_karyawan_persen."',
+
+                    operator = '".$email."'
+
+                    WHERE enroll_id = '".$enroll_id."'
+                ");
             }
 
             //rekap payroll

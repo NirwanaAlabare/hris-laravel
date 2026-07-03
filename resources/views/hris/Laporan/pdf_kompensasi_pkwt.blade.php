@@ -45,19 +45,30 @@
             <td>{{$data->department_name}}</td>
         </tr>
         <tr>
-            <td>Ket : Perpanjangan Kontrak</td>
-        </tr>
+    <td>
+        Ket :
+        @if(is_null($data->tanggal_resign))
+            Perpanjangan Kontrak
+        @else
+            Penyelesaian PKS
+        @endif
+    </td>
+</tr>
 
         </tr>
     </table>
     <div style=" display: flex; flex-direction: column; justify-content: center; align-items: center; margin-left:200px;">
         <table width="100%" style="margin-top: 0px;">
             <tr>
-                <td align="left">Awal Kontrak</td>
+                 <td align="left">
+                    {{ is_null($data->tanggal_resign) ? 'Awal Kontrak' : 'Awal PKS' }}
+                </td>
                 <td align="right">{{Carbon\Carbon::parse($contract2)->translatedFormat('d F Y')}}</td>
             </tr>
             <tr>
-                <td align="left">Akhir Kontrak</td>
+                <td align="left">
+                    {{ is_null($data->tanggal_resign) ? 'Akhir Kontrak' : 'Tanggal Penyelesaian PKS' }}
+                </td>
                 <td align="right">{{Carbon\Carbon::parse($contract_end2)->translatedFormat('d F Y')}}</td>
             </tr>
             <tr>

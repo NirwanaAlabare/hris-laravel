@@ -188,6 +188,7 @@ table.dataTable td {
                             <th>Tgl. Pengajuan</th>
                             <th>Dept</th>
                             <th>Keterangan</th>
+                            <th>jenis</th>
                             <th>Karyawan Dept</th>
                             <th>Karyawan Pinjaman</th>
                             <th>Total Karyawan</th>
@@ -632,6 +633,9 @@ table.dataTable td {
                     data: 'ket'
                 },
                 {
+                    data: 'jenis'
+                },
+                {
                     data: 'jml_org_ttp'
                 },
                 {
@@ -670,7 +674,10 @@ table.dataTable td {
                                     onclick="getdetail('` + row.no_form + `','` + row.dept + `','` + row.ket + `');">
                                     <i class='fa fa-search'></i>
                                     </a>
-                                    <a class='btn btn-secondary btn-sm' onclick="export_spl(` + row.id + `,'` + row.no_form + `')">
+                                   <a class='btn ${
+                                        row.jenis == "Insentif" ? "btn-danger" : "btn-success"
+                                    } btn-sm'
+                                    onclick="export_spl(` + row.id + `,'` + row.no_form + `')">
                                         <i class='fa fa-print'></i>
                                     </a>
                                 </div>
@@ -884,46 +891,62 @@ table.dataTable td {
                     {
                         targets: [14],
                         render: (data, type, row, meta) => {
-                            if(row.uuid_koreksi_upah!=''){
-                                return `
-                                    <div class='d-flex gap-1 justify-content-center'>
-                                        <div class="form-check">
-                                            <input class="form-check-input" name="award[` + row.enroll_id + `]" type="checkbox" value="" style='width: 20px; height: 20px;' id="checked_enroll_id_` + row.enroll_id + `" onchange="checkbox_enroll_id('` + row.enroll_id + `')" checked >
-                                        </div>
-                                    </div>
-                                `
-                            }else{
-                                return `
-                                    <div class='d-flex gap-1 justify-content-center'>
-                                        <div class="form-check">
-                                            <input class="form-check-input" name="award[` + row.enroll_id + `]" type="checkbox" value="" style='width: 20px; height: 20px;' id="checked_enroll_id_` + row.enroll_id + `" onchange="checkbox_enroll_id('` + row.enroll_id + `')" >
-                                        </div>
-                                    </div>
-                                `
-                            }
 
+                            const checked =
+                                row.jenis == '1' ||
+                                (row.uuid_koreksi_upah && row.uuid_koreksi_upah != '');
+
+                            const disabled = checked ? 'disabled' : '';
+
+                            return `
+                                <div class='d-flex gap-1 justify-content-center'>
+                                    <div class="form-check">
+                                        <input
+                                            class="form-check-input"
+                                            name="award[${row.enroll_id}]"
+                                            type="checkbox"
+                                            style="width:20px;height:20px;"
+                                            id="checked_enroll_id_${row.enroll_id}"
+                                            onchange="checkbox_enroll_id('${row.enroll_id}')"
+                                            ${checked ? 'checked' : ''}
+                                            ${disabled}
+                                        >
+                                    </div>
+                                </div>
+                            `;
                         }
                     },
                     {
                         targets: [15],
                         render: (data, type, row, meta) => {
-                            if(row.uuid_koreksi_upah!=''){
-                                return `
-                                    <div class='d-flex gap-1 justify-content-center'>
-                                        <div class="form-check pl-0">
-                                            <input style="width: 100px; height:35px" size="4" class="form-control form-control-sm amount_input" type="number" style='font-size:9pt' name="amounts[` + row.enroll_id + `]" id="amount_` + row.enroll_id + `" value="` + row.uuid_koreksi_upah + `" onchange="input_amount(this,'` + row.enroll_id + `')" >\
-                                        </div>
-                                    </div>
-                                `
-                            }else{
-                                return `
-                                    <div class='d-flex gap-1 justify-content-center'>
-                                        <div class="form-check pl-0">
-                                            <input style="width: 100px; height:35px" size="4"  class="form-control form-control-sm amount_input" type="number" style='font-size:9pt' name="amounts[` + row.enroll_id + `]" id="amount_` + row.enroll_id + `" value="` + row.uuid_koreksi_upah + `" onkeyup="input_amount(this,'` + row.enroll_id + `')" onchange="input_amount(this,'` + row.enroll_id + `')" disabled>
-                                        </div>
-                                    </div>
-                                `
+
+                            // tampil jika jenis=1 atau ada koreksi upah
+                            const tampil =
+                                row.jenis == '1' ||
+                                (row.uuid_koreksi_upah && row.uuid_koreksi_upah != '');
+
+                            if (!tampil) {
+                                return '';
                             }
+
+                            let nominal = null;
+
+                            // Prioritas: koreksi upah
+                            if (row.uuid_koreksi_upah && row.uuid_koreksi_upah != '') {
+                                nominal = row.uuid_koreksi_upah;
+                            } else {
+                                nominal = row.nominal_lembur;
+                            }
+
+                            if (
+                                nominal === null ||
+                                nominal === '' ||
+                                nominal === undefined
+                            ) {
+                                return '';
+                            }
+
+                            return 'Rp ' + new Intl.NumberFormat('id-ID').format(nominal);
                         }
                     },
                     {

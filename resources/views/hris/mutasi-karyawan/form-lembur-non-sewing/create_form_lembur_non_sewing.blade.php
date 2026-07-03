@@ -4,7 +4,10 @@
     <link href="{{ URL::asset('assets/plugins/datatable/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
     <link href="{{URL::asset('assets/plugins/select2/select2.min.css')}}" rel="stylesheet" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css"> --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 @stop
+
 @section('mainarea')
 <?php ini_set('date.timezone', 'Asia/Jakarta'); ?>
     <div class="page-header shadow pr-2 m-0 pt-0 pb-0 pl-2">
@@ -143,7 +146,19 @@
                                 autocomplete="off">
                         </div>
                     </div>
-                    <div class="col-md-5">
+                     <div class="col-md-2">
+                        <div class="form-group">
+                            <label><small><b>Jenis</b></small></label>
+                            <select class='form-control select2' style='width: 100%;' name='cbojenis' id='cbojenis' required>
+                                <option selected="selected" value="" disabled="true">Pilih Jenis</option>
+                                {{-- @foreach ($data_line as $dataline) --}}
+                                    <option value="1">insentif</option>
+                                    <option value="0">lembur</option>
+                                {{-- @endforeach --}}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
                         <div class="form-group mb-0">
                             <label><small><b>Keterangan</b></small></label>
                             <input type="text" class="form-control" id="txtket" name="txtket" autocomplete="off">
@@ -155,13 +170,13 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><small><b>Dari</b></small></label>
-                            <input class="form-control" id="from_lembur" name="from_lembur" type="time" onchange='sum();' required style="background-color: white; cursor:pointer;">
+                            <input class="form-control" id="from_lembur" name="from_lembur" type="text" placeholder="--:--"  autocomplete="off" onchange='sum();' required style="background-color: white; cursor:pointer;">
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><small><b>Sampai</b></small></label>
-                            <input class="form-control" id="to_lembur" name="to_lembur" type="time" onchange='sum();autominute();' required style="background-color: white; cursor:pointer;">
+                            <input class="form-control" id="to_lembur" name="to_lembur"type="text" placeholder="--:--" autocomplete="off" onchange='sum();autominute();' required style="background-color: white; cursor:pointer;">
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -246,6 +261,8 @@
     <script src="{{URL::asset('assets/plugins/select2/select2.full.min.js')}}"></script>
     <script src="{{URL::asset('assets/js/iziToast.min.js')}}"></script>
     <script src="{{ asset('assets/plugins/html5-qrcode/html5-qrcode.min.js') }}"></script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script> --}}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     {{-- <script src="{{URL::asset('assets/js/timepicker.js') }}"></script> --}}
     <style>
     .checkbox-xl .form-check-input {
@@ -253,10 +270,53 @@
     }
     </style>
     <script>
+        $('#cbojenis').on('change', function () {
+            let jenis = $(this).val();
+
+            if (jenis == '1') { // insentif
+                $('#from_lembur').val('16:00');
+                $('#from_lembur').prop('readonly', true);
+            } else { // lembur
+                $('#from_lembur').val('');
+                $('#from_lembur').prop('readonly', false);
+            }
+        });
+    </script>
+    <script>
         function submitForm(form, event) {
             event.preventDefault();  // Prevent default form submission
             // Disable the submit button while the form is being submitted
-            document.getElementById('submitBtn').disabled = true;
+        const formData = new FormData(form);
+
+            let adaKosong = false;
+
+            for (let [key, value] of formData.entries()) {
+
+                if (key.startsWith('cek_data[')) {
+
+                    // ambil ID dari cek_data[6084]
+                    let id = key.match(/\[(.*?)\]/)[1];
+
+                    let ket = formData.get(`keterangan[${id}]`);
+
+                    console.log('ID:', id, 'Keterangan:', ket);
+
+                    if (!ket || ket.trim() === '') {
+                        adaKosong = true;
+                        break;
+                    }
+                }
+            }
+
+            if (adaKosong) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Peringatan',
+                    text: 'Keterangan karyawan yang dipilih tidak boleh kosong!'
+                });
+                return;
+            }
+          document.getElementById('submitBtn').disabled = true;
 
             document.getElementById('submitBtn').innerText = 'Menyimpan...';  // Optional, you can update text
 
@@ -317,12 +377,47 @@
         // Variable List :
         var html5QrcodeScanner = null;
 
-        $("#from_lembur").timepicker({
-          timeFormat: "%H:%i"
+        flatpickr("#from_lembur", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true,
+            minuteIncrement: 1,
+            allowInput: false
         });
-        $("#to_lembur").timepicker({
-          timeFormat: "%H:%i"
+        flatpickr("#to_lembur", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true,
+            minuteIncrement: 1,
+            allowInput: false
         });
+
+        // $(document).ready(function () {
+        //     $('#from_lembur').timepicker({
+        //         timeFormat: 'HH:mm', // format 24 jam tanpa AM/PM
+        //         interval: 1, // menit 01 - 59 bisa dipilih
+        //         minTime: '00:00',
+        //         maxTime: '23:59',
+        //         defaultTime: null,
+        //         startTime: '00:00',
+        //         dynamic: true,
+        //         dropdown: true,
+        //         scrollbar: true
+        //     });
+        //     $('#to_lembur').timepicker({
+        //         timeFormat: 'HH:mm', // format 24 jam
+        //         interval: 1,
+        //         minTime: '00:00',
+        //         maxTime: '23:59',
+        //         defaultTime: null,
+        //         startTime: '00:00',
+        //         dynamic: true,
+        //         dropdown: true,
+        //         scrollbar: true
+        //     });
+        // });
         // Function List :
         // -Initialize Scanner-
         async function initScan() {

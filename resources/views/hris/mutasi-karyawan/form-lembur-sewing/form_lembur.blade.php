@@ -117,7 +117,7 @@
                                                 <th colspan="2" class="align-middle">Actual Absen</th>
                                                 <th colspan="4" class="align-middle">Rencana Lembur</th>
                                                 <th rowspan="2" class="align-middle" width="30px" style="padding-left: 2px;padding-right: 2px;color:rgb(255, 111, 0)"><i class="la la-utensils" aria-hidden="true">Konsumsi</i></th>
-                                                <th rowspan="2" class="align-middle" width="30px" style="padding-left: 2px;padding-right: 2px;color:rgb(255, 196, 0)"><i class="fa fa-star" aria-hidden="true"></i></th>
+                                                <th rowspan="2" class="align-middle" width="30px" style="padding-left: 2px;padding-right: 2px;color:rgb(255, 196, 0)"><i class="fa fa-star" aria-hidden="true">insentif</i></th>
                                                 <th rowspan="2" class="align-middle" width="50px">Amount</th>
                                                 <th rowspan="2" class="align-middle">Act</th>
                                             </tr>
@@ -189,6 +189,7 @@
                             <th>Tgl. Pengajuan</th>
                             <th>Line</th>
                             <th>Keterangan</th>
+                            <th>Jenis</th>
                             <th>Karyawan Line</th>
                             <th>Karyawan Pinjaman</th>
                             <th>Total Karyawan</th>
@@ -610,6 +611,9 @@
                     data: 'ket'
                 },
                 {
+                    data: 'jenis'
+                },
+                {
                     data: 'jml_org_line'
                 },
                 {
@@ -650,8 +654,13 @@
                                         getket('` + row.no_form + `');">
                                                 <i class='fa fa-search'></i>
                                     </a>
-                                    <a class='btn btn-secondary btn-sm' onclick="export_spl(` + row.id + `,'` + row.no_form + `')">
-                                                <i class='fa fa-print'></i>
+                                   <a class='btn ${
+                                        row.jenis && row.jenis.trim() === "Insentif"
+                                            ? "btn-danger"
+                                            : "btn-success"
+                                    } btn-sm'
+                                    onclick="export_spl(` + row.id + `,'` + row.no_form + `')">
+                                        <i class='fa fa-print'></i>
                                     </a>
                                 </div>
                             `
@@ -833,47 +842,55 @@
                     {
                         targets: [13],
                         render: (data, type, row, meta) => {
-                            if(row.uuid_koreksi_upah!=''){
-                                return `
-                                    <div class='d-flex gap-1 justify-content-center'>
-                                        <div class="form-check">
-                                            <input class="form-check-input" name="award[` + row.enroll_id + `]" type="checkbox" value="" style='width: 20px; height: 20px;' id="checked_enroll_id_` + row.enroll_id + `" onchange="checkbox_enroll_id('` + row.enroll_id + `')" checked >
-                                        </div>
-                                    </div>
-                                `
-                            }else{
-                                return `
-                                    <div class='d-flex gap-1 justify-content-center'>
-                                        <div class="form-check">
-                                            <input class="form-check-input" name="award[` + row.enroll_id + `]" type="checkbox" value="" style='width: 20px; height: 20px;' id="checked_enroll_id_` + row.enroll_id + `" onchange="checkbox_enroll_id('` + row.enroll_id + `')" >
-                                        </div>
-                                    </div>
-                                `
-                            }
 
+                            const checked =
+                                row.jenis == '1' ||
+                                (row.uuid_koreksi_upah && row.uuid_koreksi_upah != '');
+
+                            return `
+                                <div class='d-flex gap-1 justify-content-center'>
+                                    <div class="form-check">
+                                        <input
+                                            class="form-check-input"
+                                            name="award[${row.enroll_id}]"
+                                            type="checkbox"
+                                            style="width:20px;height:20px;"
+                                            id="checked_enroll_id_${row.enroll_id}"
+                                            onchange="checkbox_enroll_id('${row.enroll_id}')"
+                                            ${checked ? 'checked' : '' }
+                                        >
+                                    </div>
+                                </div>
+                            `;
                         }
                     },
-                    {
+                                    {
                         targets: [14],
                         render: (data, type, row, meta) => {
-                            if(row.uuid_koreksi_upah!=''){
-                                return `
-                                    <div class='d-flex gap-1 justify-content-center'>
-                                        <div class="form-check pl-0">
-                                            <input style="width: 100px; height:35px" class="form-control form-control-sm" type="number" style='font-size:9pt' name="amounts[` + row.enroll_id + `]" id="amount_` + row.enroll_id + `" value="` + row.uuid_koreksi_upah + `" >
-                                        </div>
-                                    </div>
-                                `
-                            }else{
-                                return `
-                                    <div class='d-flex gap-1 justify-content-center'>
-                                        <div class="form-check pl-0">
-                                            <input style="width: 100px; height:35px" class="form-control form-control-sm" type="number" style='font-size:9pt' name="amounts[` + row.enroll_id + `]" id="amount_` + row.enroll_id + `" value="` + row.uuid_koreksi_upah + `" disabled>
-                                        </div>
-                                    </div>
-                                `
+
+                            const aktif =
+                                row.jenis == '1' ||
+                                (row.uuid_koreksi_upah && row.uuid_koreksi_upah != '');
+
+                            // Jika ada koreksi upah pakai nilainya
+                            let nominal = '';
+
+                            if (row.uuid_koreksi_upah && row.uuid_koreksi_upah != '') {
+                                nominal = row.uuid_koreksi_upah;
+                            } else if (row.jenis == '1') {
+                                nominal = row.nominal_lembur || '';
                             }
-                        }
+
+                             if (
+                                nominal === null ||
+                                nominal === '' ||
+                                nominal === undefined
+                            ) {
+                                return '';
+                            }
+
+                            return 'Rp ' + new Intl.NumberFormat('id-ID').format(nominal);
+                    }
                     },
                     {
                         targets: [15], // delete dan cancel

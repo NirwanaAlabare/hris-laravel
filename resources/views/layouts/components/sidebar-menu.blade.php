@@ -118,7 +118,8 @@
         $isDevHris = $email == 'dev_hris';
         $ismandy= $email == 'mandy@ptnag.com';
         $isGabby= $email == 'Gabby';
-        $showPayrollMenu = $isSuperadmin || $isAlex || $isReza || $isDevHris  || $ismandy || $isGabby ;
+        $isSteven = $email == 'steven';
+        $showPayrollMenu = $isSuperadmin || $isAlex || $isReza || $isDevHris  || $ismandy || $isGabby || $isSteven;
         @endphp
 
         @if ($showPayrollMenu )
@@ -128,7 +129,7 @@
                 <span class="side-menu__label">Payroll</span><i class="angle fa fa-angle-right"></i>
             </a>
             <ul class="slide-menu">
-                @if (!$isReza && !$ismandy && !$isGabby)
+                @if (!$isReza && !$ismandy && !$isGabby && !$isSteven)
                 <li><a class="slide-item" href="{{ route('hris.gradingsalary.index') }}"><span> Grading
                             Salary</span></a></li>
                 {{-- <li><a class="slide-item" href="{{ route('hris.employeegrading.index') }}"><span> Salary

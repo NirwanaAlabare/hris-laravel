@@ -236,7 +236,7 @@ public function getNoForm(Request $request)
             WHERE created_by = ? AND DATE(tgl_lembur) = ?
         ) x
         ORDER BY no_form
-    ", [$user_email,$tgl_awal,$user_email,$tgl_awal]);
+    ", [$user,$tgl_awal,$user,$tgl_awal]);
 
     }
 

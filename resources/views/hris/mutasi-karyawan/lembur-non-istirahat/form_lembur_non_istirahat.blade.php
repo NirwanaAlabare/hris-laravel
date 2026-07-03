@@ -521,13 +521,13 @@ $(document).ready(function(){
     });
 
     // ===== PRINT =====
-    $('#btn-print').on('click', function(){
-        let tglAwal  = $('#tgl-awal').val();
+       $('#btn-print').on('click', function() {
+        let tglAwal = $('#tgl-awal').val();
         let nomorForm = $('#no_form').val();
 
         let url = "{{ route('flni.printNonIstirahat') }}"
-            + "?tanggal=" + tglAwal
-            + "&no_form=" + nomorForm;
+            + "?tanggal=" + encodeURIComponent(tglAwal)
+            + "&no_form=" + encodeURIComponent(nomorForm);
 
         window.open(url, '_blank');
     });

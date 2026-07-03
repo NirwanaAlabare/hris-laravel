@@ -74,7 +74,13 @@
             </td>
             <td style="vertical-align: middle; font-size: 15px; text-align: center; font-weight: 800;" colspan="7" rowspan="4">FORM PERSETUJUAN LEMBUR</td>
             <td colspan="2" class="border-left" style="border-top: 1px solid;">Kode Dokumen</td>
-            <td colspan="4" class="border-right" style="border-top: 1px solid;">: F.16.HR.NAG.P-03.F-01.01</td>
+            <td colspan="4" class="border-right" style="border-top: 1px solid;">
+                @if($jenis == 1)
+                    : KP.26.HR.NAG.P.03.KP.01.01
+                @else
+                    : F.16.HR.NAG.P-03.F-02.01
+                @endif
+            </td>
         </tr>
         <tr>
             <td colspan="2" class="border-left" style="border-top: 1px solid;">Revisi</td>
@@ -161,8 +167,14 @@
                     </td>
                 @endif
                 <td style="text-align: center;">{{ $item->jam_lembur_awal_rencana }}</td>
-                <td style="text-align: center;"></td>
-                <td style="text-align: center"></td>
+                @if($jenis == 1)
+                    <td style="text-align: center;">{{ $item->absen_pulang_kerja }}</td>
+                    <td style="text-align: center">{{ $item->total_jam }}</td>
+                @else
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center"></td>
+                @endif
+
                 @if ($no % 2 == 0)
                     <td style="vertical-align: top;" rowspan="2">
                         <span><small>{{ $total - 2 }}</small></span>
@@ -227,6 +239,95 @@
                 $dept == 'INFORMATION TECHNOLOGY' ||
                 $dept == 'INDUSTRIAL ENGINEERING' ||
                 $dept == 'MECHANIC')
+              @if ($jenis == 1 )
+            <tr>
+                <td colspan="2"  width="16%" class=" text-center border-left" style="border-top: 1px solid;">Diajukan Oleh</td>
+                <td colspan="2"  width="16%" class="borderless text-center" style="border-top: 1px solid;">Diketahui</td>
+                <td colspan="3"  width="16%" class="borderless text-center" style="border-top: 1px solid;">Diketahui</td>
+                <td colspan="3"  width="18%" class="borderless text-center" style="border-top: 1px solid;">Disetujui</td>
+                <td colspan="3"  width="18%" class="borderless text-center" style="border-top: 1px solid;">Disetujui</td>
+                <td colspan="2"  width="16%" class="text-center border-right" style="border-top: 1px solid;">Approval Realisasi</td>
+            </tr>
+            <tr>
+                <td colspan="15" class="border-between">&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="15" class="border-between">&nbsp;</td>
+            </tr>
+             <tr>
+                 <td colspan="2" class="border-left text-center" style="text-decoration: underline;">
+                    @for ($i = 0; $i < 15; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+                 <td colspan="2" class="borderless text-center" style="text-decoration: underline;">
+                    @for ($i = 0; $i < 15; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+                 <td colspan="3" class="borderless text-center" style="text-decoration: underline;">
+                    @for ($i = 0; $i < 15; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+                <td colspan="3" class="borderless text-center" style="text-decoration: underline;">Bobby Tangnga</td>
+                <td colspan="3" class="borderless text-center" style="text-decoration: underline;">Ronald Harsanto</td>
+                <td colspan="2" class="border-right text-center" style="text-decoration: underline;">
+                    @for ($i = 0; $i < 15; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+            </tr>
+            {{-- <tr>
+                <td colspan="2" class="border-left text-center" style="text-decoration: underline;">
+                    @for ($i = 0; $i < 15; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+                <td colspan="2" class="borderless text-center" style="text-decoration: underline;">
+                    @for ($i = 0; $i < 15; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+                <td colspan="3" class="borderless text-center" style="text-decoration: underline;">
+                    @for ($i = 0; $i < 15; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+                <td colspan="3" class="borderless text-center" style="text-decoration: underline;">
+                    @for ($i = 0; $i < 15; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+                <td colspan="3" class="borderless text-center" style="text-decoration: underline;">
+                    @for ($i = 0; $i < 15; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+                <td colspan="2" class="border-right text-center" style="text-decoration: underline;">
+                    @for ($i = 0; $i < 15; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+            </tr> --}}
+            <tr>
+             <tr>
+                <td colspan="2" class="border-left text-center"
+                    style="vertical-align: top; height: 20px; border-bottom: 1px solid;"></td>
+                <td colspan="2" class="borderless text-center"
+                    style="vertical-align: top; height: 20px; border-bottom: 1px solid;">SPV/ Chief</td>
+                <td colspan="3" class="borderless text-center"
+                    style="vertical-align: top; height: 20px; border-bottom: 1px solid;">Manager</td>
+                <td colspan="3" class="borderless text-center"
+                    style="vertical-align: top; height: 20px; border-bottom: 1px solid;">General Manager</td>
+                <td colspan="3" class="borderless text-center"
+                    style="vertical-align: top; height: 20px; border-bottom: 1px solid;">COO PT NAG</td>
+                <td colspan="2" class="border-right text-center"
+                    style="vertical-align: top; height: 20px; border-bottom: 1px solid;">HRD</td>
+            </tr>
+            </tr>
+
+            @else
             <tr>
                 <td colspan="3" class="text-center border-left" style="border-top: 1px solid;">Diajukan Oleh</td>
                 <td colspan="3" class="borderless text-center" style="border-top: 1px solid;">Diketahui</td>
@@ -257,9 +358,7 @@
                     @endfor
                 </td>
                 <td colspan="3" class="borderless text-center" style="text-decoration: underline;">
-                    @for ($i = 0; $i < 15; $i++)
-                        &nbsp;
-                    @endfor
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bobby Tangnga &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </td>
                 <td colspan="3" class="border-right text-center" style="text-decoration: underline;">
                     @for ($i = 0; $i < 15; $i++)
@@ -281,7 +380,97 @@
                     style="vertical-align: top; height: 20px; border-bottom: 1px solid;"></td>
             </tr>
             </tr>
+            @endif
         @else
+              @if ($jenis == 1 )
+            <tr>
+                <td colspan="2"  width="16%" class=" text-center border-left" style="border-top: 1px solid;">Diajukan Oleh</td>
+                <td colspan="2"  width="16%" class="borderless text-center" style="border-top: 1px solid;">Diketahui</td>
+                <td colspan="3"  width="16%" class="borderless text-center" style="border-top: 1px solid;">Diketahui</td>
+                <td colspan="3"  width="18%" class="borderless text-center" style="border-top: 1px solid;">Disetujui</td>
+                <td colspan="3"  width="18%" class="borderless text-center" style="border-top: 1px solid;">Disetujui</td>
+                <td colspan="2"  width="16%" class="text-center border-right" style="border-top: 1px solid;">Approval Realisasi</td>
+            </tr>
+            <tr>
+                <td colspan="15" class="border-between">&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="15" class="border-between">&nbsp;</td>
+            </tr>
+             <tr>
+                 <td colspan="2" class="border-left text-center" style="text-decoration: underline;">
+                    @for ($i = 0; $i < 15; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+                 <td colspan="2" class="borderless text-center" style="text-decoration: underline;">
+                    @for ($i = 0; $i < 15; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+                 <td colspan="3" class="borderless text-center" style="text-decoration: underline;">
+                    @for ($i = 0; $i < 15; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+                <td colspan="3" class="borderless text-center" style="text-decoration: underline;">Bobby Tangnga</td>
+                <td colspan="3" class="borderless text-center" style="text-decoration: underline;">Ronald Harsanto</td>
+                <td colspan="2" class="border-right text-center" style="text-decoration: underline;">
+                    @for ($i = 0; $i < 15; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+            </tr>
+            {{-- <tr>
+                <td colspan="2" class="border-left text-center" style="text-decoration: underline;">
+                    @for ($i = 0; $i < 15; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+                <td colspan="2" class="borderless text-center" style="text-decoration: underline;">
+                    @for ($i = 0; $i < 15; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+                <td colspan="3" class="borderless text-center" style="text-decoration: underline;">
+                    @for ($i = 0; $i < 15; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+                <td colspan="3" class="borderless text-center" style="text-decoration: underline;">
+                    @for ($i = 0; $i < 15; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+                <td colspan="3" class="borderless text-center" style="text-decoration: underline;">
+                    @for ($i = 0; $i < 15; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+                <td colspan="2" class="border-right text-center" style="text-decoration: underline;">
+                    @for ($i = 0; $i < 15; $i++)
+                        &nbsp;
+                    @endfor
+                </td>
+            </tr> --}}
+            <tr>
+             <tr>
+                <td colspan="2" class="border-left text-center"
+                    style="vertical-align: top; height: 20px; border-bottom: 1px solid;"></td>
+                <td colspan="2" class="borderless text-center"
+                    style="vertical-align: top; height: 20px; border-bottom: 1px solid;">SPV/ Chief</td>
+                <td colspan="3" class="borderless text-center"
+                    style="vertical-align: top; height: 20px; border-bottom: 1px solid;">Manager</td>
+                <td colspan="3" class="borderless text-center"
+                    style="vertical-align: top; height: 20px; border-bottom: 1px solid;">General Manager</td>
+                <td colspan="3" class="borderless text-center"
+                    style="vertical-align: top; height: 20px; border-bottom: 1px solid;">COO PT NAG</td>
+                <td colspan="2" class="border-right text-center"
+                    style="vertical-align: top; height: 20px; border-bottom: 1px solid;">HRD</td>
+            </tr>
+            </tr>
+
+            @else
         <tr>
                 <td colspan="2" class="text-center border-left" style="border-top: 1px solid;">Diajukan Oleh</td>
                 <td colspan="2" class="borderless text-center" style="border-top: 1px solid;">Diketahui</td>
@@ -319,9 +508,7 @@
                     @endfor
                 </td>
                 <td colspan="3" class="borderless text-center" style="text-decoration: underline;">
-                    @for ($i = 0; $i < 15; $i++)
-                        &nbsp;
-                    @endfor
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bobby Tangnga &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </td>
                 <td colspan="2" class="border-right text-center" style="text-decoration: underline;">
                     @for ($i = 0; $i < 15; $i++)
@@ -344,6 +531,7 @@
                 <td colspan="2" class="border-right text-center"
                     style="vertical-align: top; height: 20px; border-bottom: 1px solid;"></td>
             </tr>
+            @endif
         @endif
         </tfoot>
     </table>

@@ -2223,11 +2223,13 @@ public function new_employee_contract()
         // Kirim ke API WhatsApp
         $response = Http::withHeaders([
                     'Authorization' => 'Bearer SECRET_API_KEY_123',
-                ])->attach(
+                ])->
+                attach(
                 'file',
                 Storage::get('public/' . $fileName),
                 $fileName
-            )->post('http://10.10.5.111:3000/send-document', [
+            )->
+            post('http://10.10.5.111:3000/send-document', [
                 'nomor' => $nomor_tlpn, // Ganti sesuai kebutuhan
                 'caption' => $caption
             ]);

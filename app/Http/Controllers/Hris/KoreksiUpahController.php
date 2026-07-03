@@ -483,17 +483,23 @@ class KoreksiUpahController extends AdminBaseController
         return $query;
     }
 
-     public function get_list_insentif()
+      public function get_list_insentif()
     {
+
         $tanggal_lembur = request()->tanggal_lembur;
         $datalembur = DB::select("
-            select
+             select
                 z.no_form,
                 count(z.enroll_id) as jumlah,
                 z.dept,
-                -- jumlah yang punya insentif
-                count(if(z.uuid_koreksi_upah != '', 1, null)) as jml_insentif,
-                -- list enroll_id yang punya insentif (dipisahkan koma)
+               count(
+                        if(
+                            (z.uuid_koreksi_upah is not null and z.uuid_koreksi_upah != '')
+                            OR z.jenis = '1',
+                            1,
+                            null
+                        )
+                    ) as jml_insentif,
                 group_concat(distinct if(z.uuid_koreksi_upah != '', z.enroll_id, null) order by z.enroll_id) as enroll_id_insentif
             from (
                 select
@@ -501,7 +507,8 @@ class KoreksiUpahController extends AdminBaseController
                     b.tgl_lembur,
                     a.enroll_id,
                     b.line as dept,
-                    a.uuid_koreksi_upah
+                    a.uuid_koreksi_upah,
+                    a.jenis
                 from mut_karyawan_input_form_lembur_det a
                 inner join mut_karyawan_input_form_lembur b
                     on a.no_form = b.no_form
@@ -514,7 +521,8 @@ class KoreksiUpahController extends AdminBaseController
                     b.tgl_lembur,
                     a.enroll_id,
                     b.dept as dept,
-                    a.uuid_koreksi_upah
+                    a.uuid_koreksi_upah,
+                    a.jenis
                 from mut_karyawan_input_non_sewing_form_lembur_det a
                 inner join mut_karyawan_input_non_sewing_form_lembur b
                     on a.no_form = b.no_form
@@ -531,6 +539,9 @@ class KoreksiUpahController extends AdminBaseController
     {
         $tanggal_lembur=request()->tanggal_lembur;
         $no_form=request()->no_form;
+        $gaji = DB::select("select salary_bulanan from grading_salary where kode_grade ='D' and periode_umk ='2026-01'");
+        $upah_per_jam = ceil((1 / 173) * $gaji[0]->salary_bulanan);
+        // dd($upah_per_jam);
 
         $jenis_koreksi = '4'; // contoh value, bisa request()->jenis_koreksi
 
@@ -562,9 +573,56 @@ class KoreksiUpahController extends AdminBaseController
                     coalesce(c.ket, ns.keterangan) as ket,
                     SUBSTR(a.jam_lembur_awal_rencana,1,5) as jam_lembur_awal_rencana,
                     SUBSTR(a.jam_lembur_akhir_rencana,1,5) as jam_lembur_akhir_rencana,
+                     CAST(
+                        CASE
+                            WHEN a.uuid_koreksi_upah IS NOT NULL
+                                AND a.uuid_koreksi_upah != ''
+                            THEN a.uuid_koreksi_upah
+
+                            WHEN a.jenis = '1'
+                            THEN (
+                                (
+                                    IF (
+                                        a.jam_lembur_awal_rencana < a.jam_lembur_akhir_rencana,
+                                        (
+                                            TIMESTAMPDIFF(
+                                                MINUTE,
+                                                a.jam_lembur_awal_rencana,
+                                                a.jam_lembur_akhir_rencana
+                                            ) - a.jam_lembur_istirahat
+                                        ),
+                                        (
+                                            TIMESTAMPDIFF(
+                                                MINUTE,
+                                                CONCAT(b.tgl_lembur,' ',a.jam_lembur_awal_rencana),
+                                                CONCAT(
+                                                    DATE_ADD(b.tgl_lembur, INTERVAL 1 DAY),
+                                                    ' ',
+                                                    a.jam_lembur_akhir_rencana
+                                                )
+                                            ) - a.jam_lembur_istirahat
+                                        )
+                                    ) / 60
+                                ) *
+                                (
+
+                                    CASE
+                                        WHEN e.status_jabatan = 'Staff' THEN 25542
+                                        WHEN e.status_jabatan = 'SPV' THEN 25542
+                                        WHEN e.status_jabatan = 'Leader' THEN 25542
+                                        WHEN e.status_jabatan = 'Chief' THEN 29378
+                                        WHEN e.status_jabatan = 'Asst. Manager' THEN 38475
+                                        WHEN e.status_jabatan = 'Manager' THEN 43353
+                                        ELSE $upah_per_jam
+                                    END
+
+                                )
+                            )
+
+                            ELSE NULL
+                    END  AS UNSIGNED) AS jml_insentif,
                     a.jam_lembur_istirahat,
                     b.line as dept,
-                    a.uuid_koreksi_upah as jml_insentif,
                     m.absen_masuk_kerja,
                     m.nomor_form_lembur,
                     m.status_absen,
@@ -582,9 +640,10 @@ class KoreksiUpahController extends AdminBaseController
                 left join mut_karyawan_input_non_sewing_form_lembur_det ns on b.no_form = ns.no_form
                 where b.tgl_lembur = '$tanggal_lembur'
                 and b.no_form = '$no_form'
-                and a.deleted_at is null
-                and a.uuid_koreksi_upah is not null
-                and a.uuid_koreksi_upah != ''
+                and (
+                        (a.uuid_koreksi_upah is not null and a.uuid_koreksi_upah != '')
+                        OR a.jenis = '1'
+                    )
 
                 union all
 
@@ -598,9 +657,56 @@ class KoreksiUpahController extends AdminBaseController
                     a.keterangan as ket,
                     SUBSTR(a.jam_lembur_awal_rencana,1,5) as jam_lembur_awal_rencana,
                     SUBSTR(a.jam_lembur_akhir_rencana,1,5) as jam_lembur_akhir_rencana,
+                     CAST(
+                        CASE
+                            WHEN a.uuid_koreksi_upah IS NOT NULL
+                                AND a.uuid_koreksi_upah != ''
+                            THEN a.uuid_koreksi_upah
+
+                            WHEN a.jenis = '1'
+                            THEN (
+                                (
+                                    IF (
+                                        a.jam_lembur_awal_rencana < a.jam_lembur_akhir_rencana,
+                                        (
+                                            TIMESTAMPDIFF(
+                                                MINUTE,
+                                                a.jam_lembur_awal_rencana,
+                                                a.jam_lembur_akhir_rencana
+                                            ) - a.jam_lembur_istirahat
+                                        ),
+                                        (
+                                            TIMESTAMPDIFF(
+                                                MINUTE,
+                                                CONCAT(b.tgl_lembur,' ',a.jam_lembur_awal_rencana),
+                                                CONCAT(
+                                                    DATE_ADD(b.tgl_lembur, INTERVAL 1 DAY),
+                                                    ' ',
+                                                    a.jam_lembur_akhir_rencana
+                                                )
+                                            ) - a.jam_lembur_istirahat
+                                        )
+                                    ) / 60
+                                ) *
+                                (
+
+                                    CASE
+                                        WHEN e.status_jabatan = 'Staff' THEN 25542
+                                        WHEN e.status_jabatan = 'SPV' THEN 25542
+                                        WHEN e.status_jabatan = 'Leader' THEN 25542
+                                        WHEN e.status_jabatan = 'Chief' THEN 29378
+                                        WHEN e.status_jabatan = 'Asst. Manager' THEN 38475
+                                        WHEN e.status_jabatan = 'Manager' THEN 43353
+                                        ELSE $upah_per_jam
+                                    END
+
+                                )
+                            )
+
+                            ELSE NULL
+                    END  AS UNSIGNED) AS jml_insentif,
                     a.jam_lembur_istirahat as jam_lembur_istirahat,
                     b.dept as dept,
-                    a.uuid_koreksi_upah as jml_insentif,
                     m.absen_masuk_kerja,
                     m.nomor_form_lembur,
                     m.status_absen,
@@ -618,8 +724,11 @@ class KoreksiUpahController extends AdminBaseController
                 left join mut_karyawan_input_non_sewing_form_lembur_det ns on b.no_form = ns.no_form
                 where b.tgl_lembur = '$tanggal_lembur'
                 and b.no_form = '$no_form'
-                and a.uuid_koreksi_upah is not null
-                and a.uuid_koreksi_upah != ''
+                and (
+                        (a.uuid_koreksi_upah is not null and a.uuid_koreksi_upah != '')
+                        OR a.jenis = '1'
+                    )
+
             ) z
             left join data_koreksi_upah dku
                 on dku.enroll_id = z.enroll_id

@@ -82,9 +82,9 @@ class DataLemburController extends AdminBaseController
     public function getnomorform()
     {
         $tanggal_lembur = request()->tanggal_lembur;
-        $datalembur = DB::select("select z.no_form,count(z.enroll_id) jumlah,z.dept from(select b.no_form,b.tgl_lembur,a.enroll_id,b.line dept from mut_karyawan_input_form_lembur_det a inner join mut_karyawan_input_form_lembur b on a.no_form=b.no_form where b.tgl_lembur='$tanggal_lembur' and deleted_at is null
+        $datalembur = DB::select("select z.no_form,count(z.enroll_id) jumlah,z.dept from(select b.no_form,b.tgl_lembur,a.enroll_id,b.line dept from mut_karyawan_input_form_lembur_det a inner join mut_karyawan_input_form_lembur b on a.no_form=b.no_form where b.tgl_lembur='$tanggal_lembur' and deleted_at is null and COALESCE(jenis,'0') != '1'
         union
-        select b.no_form,b.tgl_lembur,a.enroll_id,b.dept dept from mut_karyawan_input_non_sewing_form_lembur_det a inner join mut_karyawan_input_non_sewing_form_lembur b on a.no_form=b.no_form where b.tgl_lembur='$tanggal_lembur')z group by no_form order by dept");
+        select b.no_form,b.tgl_lembur,a.enroll_id,b.dept dept from mut_karyawan_input_non_sewing_form_lembur_det a inner join mut_karyawan_input_non_sewing_form_lembur b on a.no_form=b.no_form where b.tgl_lembur='$tanggal_lembur' and COALESCE(jenis,'0') != '1')z group by no_form order by dept");
         return $datalembur;
     }
 

@@ -1995,7 +1995,7 @@ h1 {
             }
         }
 
-            if (kode_absen_ijin !== "DL" && kode_absen_ijin !== "I" && kode_absen_ijin !== "S") {
+            if (kode_absen_ijin !== "DL" && kode_absen_ijin !== "I" && kode_absen_ijin !== "S" && kode_absen_ijin !== "CT" && kode_absen_ijin !== "CM") {
                 if (!didelegasikan_enroll_id) {
                     notif({
                         msg: "<b>Warning:</b> Anda belum memilih karyawan untuk didelegasikan.",

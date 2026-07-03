@@ -1041,7 +1041,7 @@ class DataAbsenPerijinanController extends AdminBaseController
 
         $get_verifikasi =  DataAbsenPerijinan::
         whereRaw('tanggal_perizinan BETWEEN "' . $awal_bulan . '" AND "' . $akhir_bulan . '"
-                    AND is_verifikasi=1
+                    AND is_verifikasi=1 and kode_absen_ijin != "LP"
                 ')
                 ->leftJoin('employee_atribut','data_absen_perijinan.enroll_id','=','employee_atribut.enroll_id')
                 ->get();

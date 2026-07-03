@@ -58,6 +58,11 @@ class FormLemburNonSewingController extends AdminBaseController
                 DATE_FORMAT(tgl_filter, '%d-%m-%Y') tgl_filter_fix,
                 dept,
                 b.keterangan ket,
+                CASE
+                    WHEN b.jenis = 1 THEN 'Insentif'
+                    WHEN b.jenis = 0 THEN 'Lembur'
+                    ELSE '-'
+                END as jenis,
                 count(b.enroll_id) jml_org,
                 count(IF(b.status='PINJAMAN',1,null)) jml_org_pinjam,
                 count(IF(b.status='-',1,null)) jml_org_ttp,
@@ -79,6 +84,11 @@ class FormLemburNonSewingController extends AdminBaseController
                 DATE_FORMAT(tgl_filter, '%d-%m-%Y') tgl_filter_fix,
                 dept,
                 b.keterangan ket,
+                CASE
+                    WHEN b.jenis = 1 THEN 'Insentif'
+                    WHEN b.jenis = 0 THEN 'Lembur'
+                    ELSE '-'
+                END as jenis,
                 count(b.enroll_id) jml_org,
                 count(IF(b.status='PINJAMAN',1,null)) jml_org_pinjam,
                 count(IF(b.status='-',1,null)) jml_org_ttp,
@@ -100,6 +110,11 @@ class FormLemburNonSewingController extends AdminBaseController
                 DATE_FORMAT(tgl_filter, '%d-%m-%Y') tgl_filter_fix,
                 dept,
                 b.keterangan ket,
+                CASE
+                    WHEN b.jenis = 1 THEN 'Insentif'
+                    WHEN b.jenis = 0 THEN 'Lembur'
+                    ELSE '-'
+                END as jenis,
                 count(b.enroll_id) jml_org,
                 count(IF(b.status='PINJAMAN',1,null)) jml_org_pinjam,
                 count(IF(b.status='-',1,null)) jml_org_ttp,
@@ -121,6 +136,11 @@ class FormLemburNonSewingController extends AdminBaseController
                 DATE_FORMAT(tgl_filter, '%d-%m-%Y') tgl_filter_fix,
                 dept,
                 b.keterangan ket,
+                CASE
+                    WHEN b.jenis = 1 THEN 'Insentif'
+                    WHEN b.jenis = 0 THEN 'Lembur'
+                    ELSE '-'
+                END as jenis,
                 count(b.enroll_id) jml_org,
                 count(IF(b.status='PINJAMAN',1,null)) jml_org_pinjam,
                 count(IF(b.status='-',1,null)) jml_org_ttp,
@@ -142,6 +162,11 @@ class FormLemburNonSewingController extends AdminBaseController
                 DATE_FORMAT(tgl_filter, '%d-%m-%Y') tgl_filter_fix,
                 dept,
                 b.keterangan ket,
+                CASE
+                    WHEN b.jenis = 1 THEN 'Insentif'
+                    WHEN b.jenis = 0 THEN 'Lembur'
+                    ELSE '-'
+                END as jenis,
                 count(b.enroll_id) jml_org,
                 count(IF(b.status='PINJAMAN',1,null)) jml_org_pinjam,
                 count(IF(b.status='-',1,null)) jml_org_ttp,
@@ -382,10 +407,12 @@ public function show_list_karyawan_non_sewing(Request $request)
         $sql_cek_nomor = DB::select("select * from mut_karyawan_input_non_sewing_form_lembur_det where no_form = '$no_form' group by jam_lembur_awal_rencana order by created_at limit 1");
         return $sql_cek_nomor;
     }
-    public function store_tambahan_data_karyawan_lembur(){
+        public function store_tambahan_data_karyawan_lembur(){
         $timestamp = Carbon::now();
         $jam=request()->jam_awal_lembur;
         $no_form=request()->id_c;
+        $jenis1=DB::select("select jenis from mut_karyawan_input_non_sewing_form_lembur_det where no_form='$no_form'");
+        $jenis=$jenis1[0]->jenis;
         $dept_id=DB::select("select*from mut_karyawan_input_non_sewing_form_lembur where no_form='$no_form'");
         $department_name=$dept_id[0]->dept;
         $x=[];
@@ -414,8 +441,8 @@ public function show_list_karyawan_non_sewing(Request $request)
                 $konsumsi=0;
             }
             if(!$tidak_ada){
-                DB::insert("insert into mut_karyawan_input_non_sewing_form_lembur_det(no_form,enroll_id,jam_lembur_awal_rencana,jam_lembur_akhir_rencana,jam_lembur_istirahat,status,konsumsi,uuid_koreksi_upah,created_by,created_at,updated_at)
-                values('$no_form','$enroll_id','$jam_awal','$jam_akhir','$jam_istirahat','$status','$konsumsi','','$user','$timestamp','$timestamp')");
+                DB::insert("insert into mut_karyawan_input_non_sewing_form_lembur_det(no_form,enroll_id,jam_lembur_awal_rencana,jam_lembur_akhir_rencana,jam_lembur_istirahat,status,konsumsi,uuid_koreksi_upah,created_by,created_at,updated_at,jenis)
+                values('$no_form','$enroll_id','$jam_awal','$jam_akhir','$jam_istirahat','$status','$konsumsi','','$user','$timestamp','$timestamp','$jenis')");
             }
         }
     }
@@ -462,36 +489,33 @@ public function show_list_karyawan_non_sewing(Request $request)
     }
     public function store(Request $request)
     {
+        // dd($request->all());
         $timestamp = Carbon::now();
         $user               = Auth::guard('admin')->user()->name;
         $tgl_lembur         = $request->tgl_lembur;
         $tgl_filter         = $request->tgl_filter;
         $dept               = $request->cbodept_name;
+        $jenis              = $request->cbojenis;
         $dept_fix           = str_replace(' ', '', $dept);
         $ket                = $request->txtket;
         // $ket                = strtoupper($request->txtket);
 
         $jam_lembur_awal    = $request->from_lembur;
         $jam_lembur_akhir   = $request->to_lembur;
+        // dd($jam_lembur_akhir, $jam_lembur_awal );
         $istirahat   = $request->txtistirahat;
 
         $no = date('ymd', strtotime($tgl_lembur));
         $tgl_pelaksana = date('ymd', strtotime($tgl_filter));
         $kode = '_SPL_';
         $kodeno = $no . "_" . $dept_fix . "_" ;
+        // dd($kodeno);
 
     // Cek NO_FORM terakhir yang menggunakan prefix ini
-        // $sql_last = DB::select("
-        //     SELECT no_form FROM mut_karyawan_input_non_sewing_form_lembur
-        //     WHERE no_form LIKE '{$kodeno}%'
-        //     ORDER BY no_form DESC
-        //     LIMIT 1
-        // ");
         $sql_last = DB::select("
-            SELECT no_form
-            FROM mut_karyawan_input_non_sewing_form_lembur
+            SELECT no_form FROM mut_karyawan_input_non_sewing_form_lembur
             WHERE no_form LIKE '{$kodeno}%'
-            ORDER BY CAST(SUBSTRING_INDEX(no_form, '_', -1) AS UNSIGNED) DESC
+            ORDER BY no_form DESC
             LIMIT 1
         ");
 
@@ -531,10 +555,21 @@ public function show_list_karyawan_non_sewing(Request $request)
             insert into mut_karyawan_input_non_sewing_form_lembur(no_form,tgl_filter,tgl_lembur,dept,approve,created_by,created_at,updated_at)
             values('$kode_trans','$tgl_filter','$tgl_lembur','$dept','N','$user','$timestamp','$timestamp')");
             }
-            $konsumsi=1;
-            if($jam_lembur_akhir=='18:00' && $jam_lembur_awal<='17:00' && $jam_lembur_awal>='15:00'){
-                $konsumsi=0;
+           $konsumsi = 1;
+
+            // Jika jenis insentif
+            if ($jenis == 1) {
+                $konsumsi = 0;
             }
+            // Jika lembur biasa
+            elseif (
+                $jam_lembur_akhir == '18:00' &&
+                $jam_lembur_awal <= '17:00' &&
+                $jam_lembur_awal >= '15:00'
+            ) {
+                $konsumsi = 0;
+            }
+            // dd($konsumsi);
             DB::beginTransaction();
 
             $saved_ids = []; // array untuk menyimpan ID yang berhasil
@@ -547,6 +582,25 @@ public function show_list_karyawan_non_sewing(Request $request)
                     $txtenroll      = $enroll_idArray[$key];
                     $txtstat         = $statusArray[$key];
                     $keterangan         = $keteranganArray[$key];
+                if ($jenis == 1) {
+
+                    $cek_absen = DB::select("
+                        SELECT *
+                        FROM master_data_absen_kehadiran
+                        WHERE enroll_id = '$txtenroll'
+                        AND tanggal_berjalan = '$tgl_lembur'
+                        AND absen_masuk_kerja IS NOT NULL
+                        AND absen_pulang_kerja IS NOT NULL
+                    ");
+                            if (count($cek_absen) == 0) {
+
+                            throw new \Exception(
+                                "Karyawan ID $txtenroll belum memiliki absen masuk / keluar pada tanggal $tgl_lembur"
+                            );
+                        }
+                    }
+
+
                     $sql_cek_det =DB::select(" SELECT * from mut_karyawan_input_non_sewing_form_lembur_det dnt
                                                 join mut_karyawan_input_non_sewing_form_lembur ln
                                                 on ln.no_form = dnt.no_form
@@ -556,8 +610,8 @@ public function show_list_karyawan_non_sewing(Request $request)
                         throw new \Exception("Data untuk ID $txtenroll sudah ada");
                     }
                          $insert_det = DB::insert("
-                        insert into mut_karyawan_input_non_sewing_form_lembur_det(no_form,enroll_id,jam_lembur_awal_rencana,jam_lembur_akhir_rencana,jam_lembur_istirahat,status,konsumsi,uuid_koreksi_upah,keterangan,created_by,created_at,updated_at)
-                    values('$kode_trans','$txtenroll','$jam_lembur_awal','$jam_lembur_akhir','$istirahat','$txtstat','$konsumsi','','$keterangan','$user','$timestamp','$timestamp')");
+                        insert into mut_karyawan_input_non_sewing_form_lembur_det(no_form,enroll_id,jam_lembur_awal_rencana,jam_lembur_akhir_rencana,jam_lembur_istirahat,status,konsumsi,uuid_koreksi_upah,keterangan,created_by,created_at,updated_at,jenis)
+                        values('$kode_trans','$txtenroll','$jam_lembur_awal','$jam_lembur_akhir','$istirahat','$txtstat','$konsumsi','','$keterangan','$user','$timestamp','$timestamp','$jenis')");
 
                     if (!$insert_det) {
                         throw new \Exception("Gagal insert ID $txtenroll");
@@ -635,6 +689,17 @@ public function show_list_karyawan_non_sewing(Request $request)
 
     public function getdatakaryawanspl_non_sewing(Request $request)
     {
+        $gaji = DB::select('
+            select salary_bulanan
+            from grading_salary
+            where kode_grade = "D"
+            and periode_umk = "2026-01"
+        ');
+
+        $salaryBulanan = $gaji[0]->salary_bulanan;
+        $gajiharian = round($salaryBulanan / 173);
+
+        // dd($salaryBulanan, $gajiharian);
         $no_form = $request->no_form;
         if ($request->ajax()) {
 
@@ -652,6 +717,7 @@ public function show_list_karyawan_non_sewing(Request $request)
             e.status_jabatan,
             e.sub_dept_name,
             b.konsumsi,
+            b.jenis,
             b.uuid_koreksi_upah,
             b.status,
             substr(m.absen_masuk_kerja,1,5) as absen_masuk_kerja,
@@ -664,7 +730,37 @@ public function show_list_karyawan_non_sewing(Request $request)
             if (jam_lembur_awal_rencana < jam_lembur_akhir_rencana,
             date_FORMAT(SEC_TO_TIME((((TIMESTAMPDIFF(MINUTE,jam_lembur_awal_rencana,jam_lembur_akhir_rencana)) - jam_lembur_istirahat) * 60)),'%H:%i') ,
             date_format(sec_to_time((TIMESTAMPDIFF(minute,concat(tgl_lembur, ' ', jam_lembur_awal_rencana),concat(DATE_ADD(tgl_lembur, interval 1 day), ' ', jam_lembur_akhir_rencana)) - jam_lembur_istirahat) * 60),'%H:%i')
-            ) total_jam
+            ) total_jam,
+            (
+                IF (
+                    jam_lembur_awal_rencana < jam_lembur_akhir_rencana,
+                    (
+                        TIMESTAMPDIFF(
+                            MINUTE,
+                            jam_lembur_awal_rencana,
+                            jam_lembur_akhir_rencana
+                        ) - jam_lembur_istirahat
+                    ),
+                    (
+                        TIMESTAMPDIFF(
+                            MINUTE,
+                            CONCAT(tgl_lembur,' ',jam_lembur_awal_rencana),
+                            CONCAT(DATE_ADD(tgl_lembur, INTERVAL 1 DAY),' ',jam_lembur_akhir_rencana)
+                        ) - jam_lembur_istirahat
+                    )
+                ) / 60
+            ) *
+            (
+                CASE e.status_jabatan
+                    WHEN 'Staff' THEN 25542
+                    WHEN 'SPV' THEN 25542
+                    WHEN 'Leader' THEN 25542
+                    WHEN 'Chief' THEN 29378
+                    WHEN 'Asst. Manager' THEN 38475
+                    WHEN 'Manager' THEN 43353
+                    ELSE $gajiharian
+                END
+            ) AS nominal_lembur
             from mut_karyawan_input_non_sewing_form_lembur a
             inner join mut_karyawan_input_non_sewing_form_lembur_det b on a.no_form = b.no_form
             left join (
@@ -919,8 +1015,8 @@ public function show_list_karyawan_non_sewing(Request $request)
             return json_encode($ket[0]);
         }
     }
-
-    public function export_pdf_non_sewing_spl(Request $request){
+    public function export_pdf_non_sewing_spl(Request $request)
+    {
         $master_dept = DB::select(
             "SELECT dept, tgl_lembur,no_form from mut_karyawan_input_non_sewing_form_lembur
             where id = '$request->id'"
@@ -928,6 +1024,7 @@ public function show_list_karyawan_non_sewing(Request $request)
         $dept = $master_dept[0]->dept;
         $tgl_lembur = $master_dept[0]->tgl_lembur;
         $no_form = $master_dept[0]->no_form;
+        $sub_dept=DB::select("select dept from mut_karyawan_input_non_sewing_form_lembur where no_form = '$no_form'")[0]->dept;
         $data = DB::select("
         select
         tgl_lembur,
@@ -956,11 +1053,79 @@ public function show_list_karyawan_non_sewing(Request $request)
         where a.id = '$request->id' and b.jam_lembur_awal_rencana!=b.jam_lembur_akhir_rencana
         order by  employee_name asc
         ");
+        $jenis = DB::table('mut_karyawan_input_non_sewing_form_lembur_det')
+            ->where('no_form', $no_form)
+            ->value('jenis');
+
+        Pdf::setOption([
+            'dpi' => 150,
+            'defaultFont' => 'sans-serif'
+        ]);
         $date_now=Carbon::now()->translatedFormat('d F Y');
         $fileName=$no_form.'_'.date('His');
-        $pdf = PDF::loadView('hris.mutasi-karyawan.form-lembur-non-sewing.export-spl-pdf',["data" => $data,"id"=>$request->id,"tgl_lembur"=>$tgl_lembur,"no_form"=>$no_form,"dept"=>$dept])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
+        $pdf = PDF::loadView('hris.mutasi-karyawan.form-lembur-non-sewing.export-spl-pdf',["data" => $data,"id"=>$request->id,"tgl_lembur"=>$tgl_lembur,"no_form"=>$no_form,"dept"=>$dept,"jenis"=>$jenis])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
         return $pdf;
+
+        // JIKA INSENTIF
+        // if ($jenis == 1) {
+
+        //     $date_now=Carbon::now()->translatedFormat('d F Y');
+        // $fileName = date('Ym') . ' Form Insentif ' . Carbon::now()->translatedFormat('dmY');
+        // // $fileName=date('Ym').' Form Insentif '.' - '.substr_replace(substr($no_form,13),"",-9).' '.Carbon::parse(strtotime(substr($no_form,-4).'-'.substr($no_form,-6,2).'-'.substr($no_form,-8,2)))->translatedFormat('dmY');
+        // $pdf = PDF::loadView('hris.mutasi-karyawan.form-lembur-non-sewing.form_insentif_non_sewing',["data" => $data,"no_form"=>$no_form,"date_now"=>$date_now,"tgl_lembur"=>$tgl_lembur,"dept"=>$dept,"sub_dept"=>$sub_dept])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
+        // return $pdf;
+
+        // } else {
+
+        //     // JIKA SPL
+        //    $date_now=Carbon::now()->translatedFormat('d F Y');
+        // $fileName=$no_form.'_'.date('His');
+        // $pdf = PDF::loadView('hris.mutasi-karyawan.form-lembur-non-sewing.export-spl-pdf',["data" => $data,"id"=>$request->id,"tgl_lembur"=>$tgl_lembur,"no_form"=>$no_form,"dept"=>$dept])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
+        // return $pdf;
+        // }
     }
+    // public function export_pdf_non_sewing_spl(Request $request){
+    //     $master_dept = DB::select(
+    //         "SELECT dept, tgl_lembur,no_form from mut_karyawan_input_non_sewing_form_lembur
+    //         where id = '$request->id'"
+    //     );
+    //     // dd($master_dept,$request->id);
+    //     $dept = $master_dept[0]->dept;
+    //     $tgl_lembur = $master_dept[0]->tgl_lembur;
+    //     $no_form = $master_dept[0]->no_form;
+    //     $data = DB::select("
+    //     select
+    //     tgl_lembur,
+    //     DATE_FORMAT(tgl_lembur, '%d-%m-%Y') tgl_lembur_fix,
+    //     a.no_form,
+    //     dept,
+    //     b.keterangan,
+    //     b.enroll_id,
+    //     e.nik,
+    //     e.employee_name,
+    //     e.status_jabatan,
+    //     date_FORMAT(jam_lembur_awal_rencana,'%H:%i')jam_lembur_awal_rencana,
+    //     date_FORMAT(jam_lembur_akhir_rencana,'%H:%i')jam_lembur_akhir_rencana,
+    //     substr(m.absen_masuk_kerja,1,5) as absen_masuk_kerja,
+    //     substr(m.absen_pulang_kerja,1,5) as absen_pulang_kerja,
+    //     b.jam_lembur_istirahat,
+    //     date_FORMAT(SEC_TO_TIME(jam_lembur_istirahat*60),'%H:%i') istirahat,
+    //     if (jam_lembur_awal_rencana < jam_lembur_akhir_rencana,
+    //     date_FORMAT(SEC_TO_TIME((((TIMESTAMPDIFF(MINUTE,jam_lembur_awal_rencana,jam_lembur_akhir_rencana)) - jam_lembur_istirahat) * 60)),'%H:%i') ,
+    //     date_format(sec_to_time((TIMESTAMPDIFF(minute,concat(tgl_lembur, ' ', jam_lembur_awal_rencana),concat(DATE_ADD(tgl_lembur, interval 1 day), ' ', jam_lembur_akhir_rencana)) - jam_lembur_istirahat) * 60),'%H:%i')
+    //     ) total_jam
+    //     from mut_karyawan_input_non_sewing_form_lembur a
+    //     inner join mut_karyawan_input_non_sewing_form_lembur_det b on a.no_form = b.no_form
+    //     inner join employee_atribut e on b.enroll_id = e.enroll_id
+    //     left join (select * from master_data_absen_kehadiran where tanggal_berjalan = (select tgl_lembur from mut_karyawan_input_non_sewing_form_lembur where no_form = '$no_form')) m on b.enroll_id = m.enroll_id
+    //     where a.id = '$request->id' and b.jam_lembur_awal_rencana!=b.jam_lembur_akhir_rencana
+    //     order by  employee_name asc
+    //     ");
+    //     $date_now=Carbon::now()->translatedFormat('d F Y');
+    //     $fileName=$no_form.'_'.date('His');
+    //     $pdf = PDF::loadView('hris.mutasi-karyawan.form-lembur-non-sewing.export-spl-pdf',["data" => $data,"id"=>$request->id,"tgl_lembur"=>$tgl_lembur,"no_form"=>$no_form,"dept"=>$dept])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf',array('Attachment'=>0));
+    //     return $pdf;
+    // }
     public function export_spl_non_sewing(Request $request)
     {
         $master_dept = DB::select(

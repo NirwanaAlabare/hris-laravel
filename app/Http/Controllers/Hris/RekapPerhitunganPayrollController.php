@@ -363,8 +363,9 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 $jumlah = $payroll->map(function ($item) {
                     if ($item->total_kehadiran_net <= 0 && $item->koreksi_upah_rupiah == 0 && $item->total_lembur_rupiah == 0 && ($item->total_bpjs_tk != 0 || $item->total_bpjs_ks != 0)) {
                         return 0;
-                    }
-                    $nilai_bersih = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+                     }
+                    $nilai_bersih1 = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+                    $nilai_bersih = $item->total_upah_thp_rupiah;
 
                     // Ambil nama bank dari data payroll
                     $tunai = strtoupper($item->nama_bank) === 'TUNAI';
@@ -384,9 +385,10 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 if ($item->total_kehadiran_net <= 0 && $item->koreksi_upah_rupiah == 0 && $item->total_lembur_rupiah == 0 && ($item->total_bpjs_tk != 0 || $item->total_bpjs_ks != 0)) {
                     return 0;
                 }
+                $nilai_bersih = $item->total_upah_thp_rupiah;
 
                 // Hitung nilai bersih (neto - potongan)
-                $nilai_bersih = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+                $nilai_bersih1 = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
 
                 // Ambil nama bank dari data payroll
                 $tunai = strtoupper($item->nama_bank) === 'TUNAI';
@@ -405,7 +407,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 }
 
                 // Hitung nilai bersih (neto - potongan)
-                $nilai_bersih = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+                $nilai_bersih1 = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+                $nilai_bersih = $item->total_upah_thp_rupiah;
 
                 // Ambil nama bank dari data payroll
                 $tunai = strtoupper($item->nama_bank) === 'TUNAI';
@@ -528,11 +531,22 @@ class RekapPerhitunganPayrollController extends AdminBaseController
         } else {
             $pph = number_format($pph, 2, ',', '.');
         }
+        // $upah_neto_rupiah_int_total = array_sum(array_column($arrayData, 'upah_neto_rupiah_int'));
+        // if ($upah_neto_rupiah_int_total == 0) {
+        //     $upah_neto_rupiah_int_total = 0;
+        // } else {
+        //     $upah_neto_rupiah_int_total = ceil($upah_neto_rupiah_int_total / 100) * 100;
+        // }
         $upah_neto_rupiah_int_total = array_sum(array_column($arrayData, 'upah_neto_rupiah_int'));
+
         if ($upah_neto_rupiah_int_total == 0) {
-            $upah_neto_rupiah_int_total = 0;
+            $upah_neto_rupiah = 0;
         } else {
+            // tetap dibulatkan ke 100 jika memang aturan payroll
             $upah_neto_rupiah_int_total = ceil($upah_neto_rupiah_int_total / 100) * 100;
+
+            // buat tampilan yang sudah diformat
+            $upah_neto_rupiah = number_format($upah_neto_rupiah_int_total, 2, ',', '.');
         }
         $total_bpjs_tk_total = array_sum(array_column($arrayData, 'total_bpjs_tk_int'));
         if ($total_bpjs_tk_total == 0) {
@@ -582,8 +596,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             'bruto_int' => '',
             'pph' => $pph,
             'pph_int' => '',
-            'upah_neto_rupiah' => $upah_neto_rupiah_int_total,
-            'upah_neto_rupiah_int' => '',
+            'upah_neto_rupiah' => $upah_neto_rupiah,
+            'upah_neto_rupiah_int' => $upah_neto_rupiah_int_total,
             'total_bpjs_tk' => $total_bpjs_tk_total,
             'total_bpjs_tk_int' => '',
             'total_bpjs_ks' => $total_bpjs_ks_total,
@@ -851,7 +865,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 }
 
                 // Hitung nilai bersih (neto - potongan)
-                $nilai_bersih = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+                $nilai_bersih1 = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+                $nilai_bersih = $item->total_upah_thp_rupiah;
 
                 // Ambil nama bank dari data payroll
                 $tunai = strtoupper($item->nama_bank) === 'TUNAI';
@@ -870,7 +885,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 }
 
                 // Hitung nilai bersih (neto - potongan)
-                $nilai_bersih = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+                $nilai_bersih1 = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+                $nilai_bersih = $item->total_upah_thp_rupiah;
 
                 // Ambil nama bank dari data payroll
                 $tunai = strtoupper($item->nama_bank) === 'TUNAI';
@@ -910,14 +926,16 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 if ($item->total_kehadiran_net <= 0 && $item->koreksi_upah_rupiah == 0 && $item->total_lembur_rupiah == 0 && ($item->total_bpjs_tk != 0 || $item->total_bpjs_ks != 0)) {
                     return 0;
                 }
-                $nilai_bersih = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+                $nilai_bersih1 = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+                $nilai_bersih = $item->total_upah_thp_rupiah;
                 return ceil($nilai_bersih / 100) * 100;
             })->sum();
             $gaji_cimb = $payroll_cimb->map(function ($item) {
                 if ($item->total_kehadiran_net <= 0 && $item->koreksi_upah_rupiah == 0 && $item->total_lembur_rupiah == 0 && ($item->total_bpjs_tk != 0 || $item->total_bpjs_ks != 0)) {
                     return 0;
                 }
-                $nilai_bersih = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+                $nilai_bersih1 = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+                $nilai_bersih = $item->total_upah_thp_rupiah;
                 return ceil($nilai_bersih / 100) * 100;
             })->sum();
 
@@ -925,7 +943,8 @@ class RekapPerhitunganPayrollController extends AdminBaseController
                 if ($item->total_kehadiran_net <= 0 && $item->koreksi_upah_rupiah == 0 && $item->total_lembur_rupiah == 0 && ($item->total_bpjs_tk != 0 || $item->total_bpjs_ks != 0)) {
                     return 0;
                 }
-                $nilai_bersih = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+                $nilai_bersih1 = $item->upah_neto_rupiah - $item->jumlah_potongan_rupiah;
+                $nilai_bersih = $item->total_upah_thp_rupiah;
                 return ceil($nilai_bersih / 500) * 500;
             })->sum();
 
