@@ -2248,7 +2248,8 @@
                     data: function (params) {
                         return {
                             q: params.term || '',   // search term
-                            isAll: $('#isAll') ? 1 : 0 // true if checkbox checked
+                            isAll: 1, // 1 = Semmua, 0 = Karyawan Aktif
+                            department: $('#selectDepartment').val() || '', // optional filter by department
                         };
                     },
                     processResults: function (data) {

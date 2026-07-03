@@ -2826,6 +2826,10 @@ $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . 
             $query->where('status_aktif', 'AKTIF');
         }
 
+        if ($request->get('department')) {
+            $query->where('department_name', $request->get('department'));
+        }
+
         $data = $query->orderBy('employee_name')->limit(25)->get();
 
         return response()->json($data);
