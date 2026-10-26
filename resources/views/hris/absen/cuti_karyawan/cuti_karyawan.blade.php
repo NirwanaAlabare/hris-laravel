@@ -585,6 +585,9 @@
 </script>
 <script>
     $('.data_range').daterangepicker({
+                 locale: {
+                                format: 'DD/MM/YYYY'
+                            },
                     ranges: {
                         'Hari ini': [moment(), moment()],
                         'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],

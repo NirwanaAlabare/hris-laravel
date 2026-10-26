@@ -55,7 +55,7 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt" align="center"><b><u>SURAT PERJANJIAN KERJA WAKTU TERTENTU</u></b></td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt" align="center"><b>No.{{$value->enroll_id}}/{{$no_form}}</b></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7pt" align="center"><b>No.{{$value->enroll_id}}/{{$value->no_form}}</b></td>
             </tr>
         </thead>
     </table>
@@ -166,7 +166,7 @@
             <tr>
                 <td style="border-bottom:1px solid black;" width="88%"></td>
                 <td rowspan="2">
-                    <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($no_form) . '&type=SK_KERJA', 'QRCODE') }}" alt="barcode" style="width: 60px; height: 60px;background-color:white" />
+                    <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($value->no_form) . '&type=SK_KERJA', 'QRCODE') }}" alt="barcode" style="width: 60px; height: 60px;background-color:white" />
                 </td>
             </tr>
         </thead>
@@ -209,7 +209,7 @@
                 <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7.3pt;padding-top:3px" align="center"><b><u>SURAT PERJANJIAN KERJA WAKTU TERTENTU</u></b></td>
             </tr>
             <tr>
-                <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7.3pt" align="center">No.{{$value->enroll_id}}/{{$no_form}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;vertical-align:top;font-size:7.3pt" align="center">No.{{$value->enroll_id}}/{{$value->no_form}}</td>
             </tr>
         </thead>
     </table>
@@ -227,12 +227,12 @@
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top" width="20%">Nama</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top" width="1%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;font-weight:bold;vertical-align:top">{{$value->status_jabatan == 'MANAGER' ? "BOBBY TANGNGA" : "RUDY ARISTIAN FAJAR"}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;font-weight:bold;vertical-align:top">{{ in_array($value->status_jabatan, ['MANAGER', 'CHIEF']) ? 'BOBBY TANGNGA' : 'RUDY ARISTIAN FAJAR' }}</td>
             </tr>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top">Jabatan</td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top" width="1%">:</td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;font-weight:bold;vertical-align:top">{{$value->status_jabatan == 'MANAGER' ? "GENERAL MANAGER" : "HR & GA DEPARTMENT"}}</td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;font-weight:bold;vertical-align:top">{{in_array($value->status_jabatan, ['MANAGER', 'CHIEF']) ? "GENERAL MANAGER" : "HR & GA DEPARTMENT"}}</td>
             </tr>
             <tr>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;text-align:justify;vertical-align:top">Alamat</td>
@@ -340,7 +340,7 @@
             </tr>
             <tr>
                 <td></td>
-                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;font-weight:bold;padding-top:55px"><b><u>{{$value->status_jabatan == 'MANAGER' ? "BOBBY TANGNGA" : "RUDY ARISTIAN FAJAR"}}</u></b></td>
+                <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;font-weight:bold;padding-top:55px"><b><u>{{ in_array($value->status_jabatan, ['MANAGER', 'CHIEF']) ? 'BOBBY TANGNGA' : 'RUDY ARISTIAN FAJAR' }}</u></b></td>
                 <td style="font-family:Arial, Helvetica, sans-serif;font-size:7.3pt;font-weight:bold;padding-top:55px"><b><u>{{$value->employee_name}}</u></b></td>
             </tr>
             <tr>
@@ -365,12 +365,12 @@
                     @php
                     $link_qr = 'http://nag.ddns.net:81/hris/public/index.php/hris/identity/card_employee_form_identity'
                         . '?enroll_id=' . $value->enroll_id
-                        . '&no_form=' . urlencode($no_form)
+                        . '&no_form=' . urlencode($value->no_form)
                         . '&type=SK_KERJA';
                     @endphp
 
                     <img src="data:image/png;base64,{{\DNS2D::getBarcodePNG($link_qr, 'QRCODE')}}"alt="barcode"style="width: 60px; height: 60px; background-color:white" />
-                    <!-- <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($no_form) . '&type=SK_KERJA', 'QRCODE') }}" alt="barcode" style="width: 60px; height: 60px;background-color:white" /> -->
+                    <!-- <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($value->no_form) . '&type=SK_KERJA', 'QRCODE') }}" alt="barcode" style="width: 60px; height: 60px;background-color:white" /> -->
                 </td>
             </tr>
         </thead>

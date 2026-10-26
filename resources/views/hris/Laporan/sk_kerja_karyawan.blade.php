@@ -67,12 +67,31 @@
             <td colspan="4" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Yang bertanda tangan di bawah ini :</td>
             <td></td>
         </tr>
+        @if($value->status_aktif == 'AKTIF' && $value->status_staff == 'STAFF')
         <tr>
             <td width="10%"></td>
             <td width="5%"></td>
             <td width="31%" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Nama</td>
             <td width="3%">:</td>
+            <td width="56%" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">RUDY ARISTIAN FAJAR</td>
+            <td width="10%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;"></td>
+            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top">Jabatan</td>
+            <td style="vertical-align:top">:</td>
+            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top">Manager HR & GA - Compliance</td>
+            <td></td>
+        </tr>
+         @else
+         <tr>
+            <td width="10%"></td>
+            <td width="5%"></td>
+            <td width="31%" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Nama</td>
+            <td width="3%">:</td>
             <td width="56%" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Mega Fitriana Haryono</td>
+
             <td width="10%"></td>
         </tr>
         <tr>
@@ -83,6 +102,7 @@
             <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top">Chief HRD</td>
             <td></td>
         </tr>
+          @endif
         <tr>
             <td colspan="6" style="height: 10"></td>
         </tr>
@@ -110,6 +130,46 @@
         <tr>
             <td></td>
             <td></td>
+            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">NIK</td>
+            <td>:</td>
+            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{$value->nomor_ktp}}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Jabatan</td>
+            <td>:</td>
+            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{$value->status_jabatan}}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Departemen</td>
+            <td>:</td>
+            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{$value->department_name}}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Status Karyawan</td>
+            <td>:</td>
+            @if ($value->status_aktif == 'AKTIF')
+             @if ($value->status_kontrak_tetap == 'KONTRAK')
+                    <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">PKWT</td>
+                    @else
+                    <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Tetap</td>
+            @endif
+            @else
+             <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">TIDAK AKTIF</td>
+            @endif
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
             <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top">Alamat</td>
             <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top">:</td>
             <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;vertical-align:top">{{$value->alamat_rumah}}</td>
@@ -132,7 +192,7 @@
             <td></td>
         </tr>
         <tr>
-            <td colspan="6" style="height:100"></td>
+            <td colspan="4" style="height:50"></td>
         </tr>
         <tr>
             <td></td>
@@ -147,28 +207,48 @@
         <tr>
             <td colspan="6" style="height:80"></td>
         </tr>
-        <tr>
-            <td></td>
-            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;text-align:justify" colspan="4"><b><u>Mega Fitriana Haryono</u></b></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;text-align:justify" colspan="4"><b>Chief HRD</b></td>
-            <td></td>
-        </tr>
+        @if($value->status_aktif == 'AKTIF'  && $value->status_staff == 'STAFF')
+            <tr>
+                <td></td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;text-align:justify" colspan="4"><b><u>RUDY ARISTIAN FAJAR</u></b></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;text-align:justify" colspan="4"><b>Manager HR & GA - Compliance</b></td>
+                <td></td>
+            </tr>
+        @else
+            <tr>
+                <td></td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;text-align:justify" colspan="4"><b><u>Mega Fitriana Haryono</u></b></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;text-align:justify" colspan="4"><b>Chief HRD</b></td>
+                <td></td>
+            </tr>
+        @endif
+
         <table width="562">
             <thead >
                 <tr>
                     <td style="border-bottom:1px solid black;" width="80%"></td>
-                    @php
+                @php
                     $link_qr = 'http://nag.ddns.net:81/hris/public/index.php/hris/identity/card_employee_form_identity'
                         . '?enroll_id=' . $value->enroll_id
                         . '&no_form=' . urlencode($no_form)
                         . '&type=SK_KERJA';
-                    @endphp
-                    <img src="data:image/png;base64,{{\DNS2D::getBarcodePNG($link_qr, 'QRCODE')}}"alt="barcode"style="width: 60px; height: 60px; background-color:white" />
-                    <!-- <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($no_form) . '&type=SK_KERJA', 'QRCODE') }}" alt="barcode" style="width: 60px; height: 60px;background-color:white" /> -->
+                @endphp
+
+                <img src="data:image/png;base64,{{
+                    \DNS2D::getBarcodePNG($link_qr, 'QRCODE')
+                }}"
+                alt="barcode"
+                style="width: 60px; height: 60px; background-color:white" />
+
+                    {{-- <img src="data:image/png;base64,{{ \DNS2D::getBarcodePNG(url('hris/identity/card_employee_form_identity') . '?enroll_id=' . $value->enroll_id . '&no_form=' . urlencode($no_form) . '&type=SK_KERJA', 'QRCODE') }}" alt="barcode" style="width: 60px; height: 60px;background-color:white" /> --}}
                 </tr>
                 <tr>
                     <td style="height:24px"></td>

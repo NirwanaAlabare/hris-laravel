@@ -339,7 +339,38 @@
                             </select>
                         </div>
                     </div>
-                    @if($loggedAdmin->email=='mega@ptnag.com' || $loggedAdmin->email=='rudy@ptnag.com' ||
+                      <div class="row text-white pt-4">
+                        <div class="col-12">
+                            @if($loggedAdmin->email=='mega@ptnag.com' || $loggedAdmin->email=='rudy@ptnag.com' ||
+                                $loggedAdmin->email=='dev_hris' || $loggedAdmin->email == 'ersa@ptnag.com' ||
+                                $loggedAdmin->email=='willy@ptnag.com' || $loggedAdmin->email=='alex.herdian@ptnag.com'|| $loggedAdmin->email=='riana')
+                            <a id="BtnProsesPayroll2"
+                                class="btn btn-app btn-sm btn-primary text-white BtnProsesPayroll2"><span><i
+                                        class="fa fa-download"></i></span>PROSES REKAP LEMBUR</a>
+                            @endif
+                             @if($loggedAdmin->email=='mega@ptnag.com' || $loggedAdmin->email=='rudy@ptnag.com' ||
+                                $loggedAdmin->email=='dev_hris' || $loggedAdmin->email == 'ersa@ptnag.com' ||
+                                $loggedAdmin->email=='willy@ptnag.com' || $loggedAdmin->email=='alex.herdian@ptnag.com')
+                            <a id="BtnProsesPayroll"
+                                class="btn btn-app btn-sm btn-primary text-white BtnProsesPayroll"><span><i
+                                        class="fa fa-download"></i></span> PROSES PAYROLL</a>
+                            <!-- <button id="runProcessBtn" class="btn btn-info">PROSES PAYROLL NEW</button> -->
+                            @endif
+                        </div>
+                    </div>
+                    <div class="row pt-4">
+                        <div class="col-12">
+                            <label id="last_periode_payroll" style="color: black"></label>
+                            <label id="last_update" style="color: black"></label>
+                            <span class="fa fa-refresh" onclick="get_last_update()"
+                                style="cursor: pointer;color:rgb(0, 0, 206)"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+                    <!-- @if($loggedAdmin->email=='mega@ptnag.com' || $loggedAdmin->email=='rudy@ptnag.com' ||
                     $loggedAdmin->email=='dev_hris' || $loggedAdmin->email == 'ersa@ptnag.com' ||
                     $loggedAdmin->email=='willy@ptnag.com' || $loggedAdmin->email=='alex.herdian@ptnag.com')
                     <div class="row text-white pt-4">
@@ -349,9 +380,9 @@
                                         class="fa fa-download"></i></span>PROSES REKAP LEMBUR</a>
                             <a id="BtnProsesPayroll"
                                 class="btn btn-app btn-sm btn-primary text-white BtnProsesPayroll"><span><i
-                                        class="fa fa-download"></i></span> PROSES PAYROLL</a>
+                                        class="fa fa-download"></i></span> PROSES PAYROLL</a> -->
                             <!-- <button id="runProcessBtn" class="btn btn-info">PROSES PAYROLL NEW</button> -->
-                        </div>
+                        <!-- </div>
                     </div>
                     <div class="row pt-4">
                         <div class="col-12">
@@ -365,7 +396,7 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <div class="col-md-6">
         <div class="card shadow">
@@ -1572,43 +1603,99 @@
             }
         });
     })
-
     $('#recap_labor_cost_2').click(function(e){
-        var daterange = $('#daterange1').val();
-        var status_staff = $('#status_staff2').val();
-        var enroll_id=$('#selectEmployeeID2').val();
-        $('#recap_labor_cost_2').addClass("btn-loading");
-        $("#recap_labor_cost_2").html('Please wait...');
-        $("#recap_labor_cost_2").attr("disabled", true);
-        $.ajax({
-            type: 'POST',
-            url: '{{route('hris.rekapperhitunganpayroll.recap_labor_cost_2')}}',
-            data: {
-                daterange:daterange,
-                enroll_id:enroll_id,
-                status_staff:status_staff
-            },
-            xhrFields: { responseType : 'blob' },
-            success:function(data){
-                var blob = new Blob([data]);
-                var link = document.createElement('a');
-                link.href = window.URL.createObjectURL(blob);
-                let file_name = daterange+' Recap Labor Cost 2 '+Math.ceil(Math.random()*1000000);
-                link.download = file_name+".xlsx";
-                link.click();
-                swal("", "Recap Labor Export Success", "success");
-                $('#recap_labor_cost_2').removeClass("btn-loading");
-                $("#recap_labor_cost_2").attr("disabled", false);
-                $("#recap_labor_cost_2").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST');
-            },
-            error: function(res){
-                swal("", "Recap Labor Export Failed", "error");
-                $('#recap_labor_cost_2').removeClass("btn-loading");
-                $("#recap_labor_cost_2").attr("disabled", false);
-                $("#recap_labor_cost_2").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST');
-            }
-        });
-    })
+                e.preventDefault();
+
+                var daterange = $('#daterange1').val();
+                var status_staff = $('#status_staff2').val();
+                var enroll_id = $('#selectEmployeeID2').val();
+                // $('#recap_labor_cost_2').addClass("btn-loading");
+
+                // Buat element Form sementara
+                var form = $('<form>', {
+                    'method': 'POST',
+                    'action': '{{ route("hris.rekapperhitunganpayroll.recap_labor_cost_2") }}'
+                });
+
+                // Tambahkan CSRF Token bawaan Laravel
+                form.append($('<input>', {
+                    'type': 'hidden',
+                    'name': '_token',
+                    'value': '{{ csrf_token() }}'
+                }));
+
+                // Tambahkan Input Parameters
+                form.append($('<input>', {
+                    'type': 'hidden',
+                    'name': 'daterange',
+                    'value': daterange
+                }));
+
+                form.append($('<input>', {
+                    'type': 'hidden',
+                    'name': 'status_staff',
+                    'value': status_staff
+                }));
+
+                // Handle jika enroll_id berupa array (Multiple Select)
+                if (Array.isArray(enroll_id)) {
+                    $.each(enroll_id, function(i, id) {
+                        form.append($('<input>', {
+                            'type': 'hidden',
+                            'name': 'enroll_id[]',
+                            'value': id
+                        }));
+                    });
+                } else if (enroll_id) {
+                    form.append($('<input>', {
+                        'type': 'hidden',
+                        'name': 'enroll_id',
+                        'value': enroll_id
+                    }));
+                }
+
+                // Append ke body, submit, lalu hapus form
+                $('body').append(form);
+                form.submit();
+                form.remove();
+            });
+
+    // $('#recap_labor_cost_2').click(function(e){
+    //     var daterange = $('#daterange1').val();
+    //     var status_staff = $('#status_staff2').val();
+    //     var enroll_id=$('#selectEmployeeID2').val();
+    //     $('#recap_labor_cost_2').addClass("btn-loading");
+    //     $("#recap_labor_cost_2").html('Please wait...');
+    //     $("#recap_labor_cost_2").attr("disabled", true);
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: '{{route('hris.rekapperhitunganpayroll.recap_labor_cost_2')}}',
+    //         data: {
+    //             daterange:daterange,
+    //             enroll_id:enroll_id,
+    //             status_staff:status_staff
+    //         },
+    //         xhrFields: { responseType : 'blob' },
+    //         success:function(data){
+    //             var blob = new Blob([data]);
+    //             var link = document.createElement('a');
+    //             link.href = window.URL.createObjectURL(blob);
+    //             let file_name = daterange+' Recap Labor Cost 2 '+Math.ceil(Math.random()*1000000);
+    //             link.download = file_name+".xlsx";
+    //             link.click();
+    //             swal("", "Recap Labor Export Success", "success");
+    //             $('#recap_labor_cost_2').removeClass("btn-loading");
+    //             $("#recap_labor_cost_2").attr("disabled", false);
+    //             $("#recap_labor_cost_2").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST');
+    //         },
+    //         error: function(res){
+    //             swal("", "Recap Labor Export Failed", "error");
+    //             $('#recap_labor_cost_2').removeClass("btn-loading");
+    //             $("#recap_labor_cost_2").attr("disabled", false);
+    //             $("#recap_labor_cost_2").html('<i class="fa fa-file-excel-o" aria-hidden="true"></i> DAILY LABOR COST');
+    //         }
+    //     });
+    // })
 
     jQuery(document).ready(function($) {
             const BtnProsesPayroll = document.getElementsByClassName('BtnProsesPayroll')[0];

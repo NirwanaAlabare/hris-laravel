@@ -208,9 +208,23 @@ h1 {
                                             title="" data-placement="bottom"  placeholder="PILIH TANGGAL" data-original-title="Klik di sini untuk pilih tanggal kehadiran">
                                             </input>
                                         </div>
-                                        <div class="mt-5 p-0 w-50">
-                                            <button type="button" class="btn btn-secondary ml-2" id="clear-daterange">Clear</button>
+                                        @if($user == 'mega@ptnag.com' || $user == 'dev_hris' || $user == 'ersa@ptnag.com' || $user == 'rudy@ptnag.com' || $user == 'indri@nag.nirwanaindonesia.com' || $user == 'pujiprana@nag.nirwanaindonesia.com')
+                                            <div class="d-flex mt-3">
+                                                <button type="button" class="btn btn-secondary mr-2" id="clear-daterange">
+                                                    Clear
+                                                </button>
+
+                                                <button type="button" class="btn btn-success" id="btn-export">
+                                                    Export
+                                                </button>
+                                            </div>
+                                            @else
+                                            <div class="d-flex mt-3">
+                                            <button type="button" class="btn btn-secondary mr-2" id="clear-daterange">
+                                                Clear
+                                            </button>
                                         </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -223,6 +237,8 @@ h1 {
                                             <li class="text-sm" id="tab-waiting">Menunggu Verifikasi</li>
                                             <li class="text-sm" id="tab-verifikasi">Verifikasi</li>
                                             <li class="text-sm" id="tab-reject">Reject</li>
+                                            <li class="text-sm" id="tab-dtpc">DT/PC</li>
+                                            <li class="text-sm" id="tab-iks">IKS</li>
                                         </ul>
                                         <div class="content_wrapper">
                                             <!-- Tab Waiting -->
@@ -287,6 +303,44 @@ h1 {
                                                                 <th scope="col">Nama Absen Ijin</th>
                                                                 <th scope="col">Alasan Absen</th>
                                                                 <th scope="col">Keterangan Reject</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="tab_content" id="tab-content-dtpc">
+                                                <div class="table-responsive">
+                                                    <table id="datatable-ajax-crud-dtpc" class="table table-sm table-striped table-hover table-bordered w-100">
+                                                        <thead>
+                                                            <tr class="text-center">
+                                                                <th scope="col">Tanggal Pengajuan</th>
+                                                                <th scope="col">Nomor Form Perijinan</th>
+                                                                <th scope="col">NIP</th>
+                                                                <th scope="col">Nama Karyawan</th>
+                                                                <th scope="col">Nama Absen Ijin</th>
+                                                                <th scope="col">Alasan Absen</th>
+                                                                <th scope="col">Aksi</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="tab_content" id="tab-content-iks">
+                                                <div class="table-responsive">
+                                                    <table id="datatable-ajax-crud-iks" class="table table-sm table-striped table-hover table-bordered w-100">
+                                                        <thead>
+                                                            <tr class="text-center">
+                                                                <th scope="col">Tanggal Pengajuan</th>
+                                                                <th scope="col">Nomor Form Perijinan</th>
+                                                                <th scope="col">NIP</th>
+                                                                <th scope="col">Nama Karyawan</th>
+                                                                <th scope="col">Nama Absen Ijin</th>
+                                                                <th scope="col">Alasan Absen</th>
+                                                                <th scope="col">Aksi</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -1497,6 +1551,235 @@ h1 {
                     }
                 ]
             });
+            var tableDtpc = $('#datatable-ajax-crud-dtpc').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: '{{ route('cuti_karyawan.dataabsenperijinan.ajax_dataabsenperizinan') }}',
+                    type: 'POST',
+                    data: function (d) {
+                        d.is_verifikasi_pengajuan_admin = 0;
+                        d.kode_absen_ijin = ['DT', 'PC']; // atau variabel dtpc
+                    }
+                },
+                columns: [
+                    {
+                        data: 'tanggal_perizinan',
+                        width: '6%',
+                        render: function (data) {
+                            return moment(data).format('DD-MM-YYYY');
+                        }
+                    },
+                    {
+                        data: 'nomor_form_perizinan',
+                        width: '10%',
+                        render: function (data) {
+                            return data ?? '-';
+                        }
+                    },
+                    {
+                        data: 'nik',
+                        width: '10%'
+                    },
+                    {
+                        data: 'employee_name',
+                        width: '20%'
+                    },
+                    {
+                        data: 'nama_absen_ijin',
+                        width: '10%',
+                        render: function (data, type, row) {
+                            let value = data ?? row.kode_absen_ijin;
+
+                            switch (value) {
+                                case 'PC':
+                                    return 'PULANG CEPAT';
+                                case 'DT':
+                                    return 'DATANG TERLAMBAT';
+                                default:
+                                    return value || '-';
+                            }
+                        }
+                    },
+                    {
+                        data: 'absen_alasan',
+                        width: '20%'
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        searchable: false,
+                        className: "text-center",
+                        render: function (data, type, row) {
+                                const uuidNo = encodeURIComponent(row.uuid);
+                                let exportUrl;
+                                let btnClass;
+
+                                if (row.kode_absen_ijin === 'IKS' || row.kode_absen_ijin === 'PC' || row.kode_absen_ijin === 'DT'  || row.kode_absen_ijin === 'DL'  || row.kode_absen_ijin === 'S' || row.kode_absen_ijin === 'I') {
+                                    exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_izin_pdf?uuid=${uuidNo}`;
+                                    btnClass = 'btn-warning';
+                                } else {
+                                    exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_cuti_pdf?uuid=${uuidNo}`;
+                                    btnClass = 'btn-danger';
+                                }
+                                if(row.kode_absen_ijin === 'PC' || row.kode_absen_ijin === 'DT'){
+                                    button =``;
+                                }
+                                if($('#username_who_access').val()=='ersa@ptnag.com' || $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='dev_hris'|| $('#username_who_access').val()=='rudy@ptnag.com' || $('#username_who_access').val()=='hrd' || $('#username_who_access').val()=='indri@nag.nirwanaindonesia.com' ){
+                                    return `
+                                        ${row.kode_absen_ijin === 'PC' || row.kode_absen_ijin === 'DT'
+                                        ? ''
+                                        : `<button onclick="openModalApprovePengajuan('${row.uuid}')" data-id="${row.uuid}" target="_blank" class="btn btn-sm btn-success mr-1" title="Approve Pengajuan">
+                                                <i class="fa fa-check"></i>
+                                            </button>`
+                                        }
+                                        <a href="${exportUrl}" target="_blank" class="btn btn-sm ${btnClass} mr-1" title="Print PDF Pengajuan">
+                                            <i class="fa fa-file-pdf-o"></i>
+                                        </a>
+                                        <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.uuid}')" data-id="${row.uuid}" title="Edit">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm mr-1 btn-danger" id="btn-remove"  data-uuid="${row.uuid}" data-kode-absen="${row.kode_absen_ijin}" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Delete">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    `;
+                                }else{
+                                    return `
+                                        <a href="${exportUrl}" target="_blank" class="btn btn-sm ${btnClass} mr-1" title="Print PDF Pengajuan">
+                                            <i class="fa fa-file-pdf-o"></i>
+                                        </a>
+                                        <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.uuid}')" data-id="${row.uuid}" title="Edit">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-uuid="${row.uuid}" data-kode-absen="${row.kode_absen_ijin}" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Delete">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    `;
+                                }
+                        }
+                    }
+                ]
+            });
+            var tableIks = $('#datatable-ajax-crud-iks').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: '{{ route('cuti_karyawan.dataabsenperijinan.ajax_dataabsenperizinan') }}',
+                    type: 'POST',
+                    data: function (d) {
+                        d.is_verifikasi_pengajuan_admin = 1;
+                        d.kode_absen_ijin = 'IKS'; // atau variabel dtpc
+                    }
+                },
+                columns: [
+                    {
+                        data: 'tanggal_perizinan',
+                        width: '6%',
+                        render: function (data) {
+                            return moment(data).format('DD-MM-YYYY');
+                        }
+                    },
+                    {
+                        data: 'nomor_form_perizinan',
+                        width: '10%',
+                        render: function (data) {
+                            return data ?? '-';
+                        }
+                    },
+                    {
+                        data: 'nik',
+                        width: '10%'
+                    },
+                    {
+                        data: 'employee_name',
+                        width: '20%'
+                    },
+                    {
+                        data: 'nama_absen_ijin',
+                        width: '10%',
+                        render: function (data, type, row) {
+                            let value = data ?? row.kode_absen_ijin;
+
+                            switch (value) {
+                                case 'PC':
+                                    return 'PULANG CEPAT';
+                                case 'DT':
+                                    return 'DATANG TERLAMBAT';
+                                default:
+                                    return value || '-';
+                            }
+                        }
+                    },
+                    {
+                        data: 'absen_alasan',
+                        width: '20%'
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        searchable: false,
+                        className: "text-center",
+                        render: function (data, type, row) {
+                                const uuidNo = encodeURIComponent(row.uuid);
+                                let exportUrl;
+                                let btnClass;
+
+                                if (row.kode_absen_ijin === 'IKS' || row.kode_absen_ijin === 'PC' || row.kode_absen_ijin === 'DT'  || row.kode_absen_ijin === 'DL'  || row.kode_absen_ijin === 'S' || row.kode_absen_ijin === 'I') {
+                                    exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_izin_pdf?uuid=${uuidNo}`;
+                                    btnClass = 'btn-warning';
+                                } else {
+                                    exportUrl = `/hris/cuti_karyawan/export_form_pengajuan_cuti_pdf?uuid=${uuidNo}`;
+                                    btnClass = 'btn-danger';
+                                }
+
+                                if($('#username_who_access').val()=='ersa@ptnag.com' || $('#username_who_access').val()=='IT'|| $('#username_who_access').val()=='mega@ptnag.com'|| $('#username_who_access').val()=='dev_hris'|| $('#username_who_access').val()=='rudy@ptnag.com'|| $('#username_who_access').val()=='hrd' || $('#username_who_access').val()=='indri@nag.nirwanaindonesia.com'){
+                                    return `
+                                        <a href="${exportUrl}" target="_blank" class="btn btn-sm ${btnClass} mr-1" title="Print PDF Pengajuan">
+                                            <i class="fa fa-file-pdf-o"></i>
+                                        </a>
+                                        <button class="btn btn-sm mr-1 btn-primary" onclick="openModalEditPengajuan('${row.uuid}')" data-id="${row.uuid}" title="Edit">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                       <button class="btn btn-sm mr-1 btn-danger" id="btn-remove" data-uuid="${row.uuid}" data-kode-absen="${row.kode_absen_ijin}" data-nomor-form-perizinan="${row.nomor_form_perizinan}" data-enroll_id="${row.enroll_id}" data-tanggal_perizinan="${row.tanggal_perizinan}" title="Hapus">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                    `;
+                                }else{
+                                    return ` <a href="${exportUrl}" target="_blank" class="btn btn-sm ${btnClass} mr-1" title="Print PDF Pengajuan">
+                                            <i class="fa fa-file-pdf-o"></i>
+                                        </a>`;
+                                }
+                        }
+                    }
+                ]
+            });
+            $('#btn-export').on('click', function () {
+
+                let param = {
+                    tanggal_range: $('#daterange1').val()
+                };
+
+                if ($('#tab-waiting').hasClass('active')) {
+                    param.is_verifikasi_pengajuan_admin = 0;
+
+                } else if ($('#tab-verifikasi').hasClass('active')) {
+                    param.is_verifikasi_pengajuan_admin = 1;
+
+                } else if ($('#tab-reject').hasClass('active')) {
+                    param.is_verifikasi_pengajuan_admin = 2;
+
+                } else if ($('#tab-dtpc').hasClass('active')) {
+                    param.is_verifikasi_pengajuan_admin = 0;
+                    param.kode_absen_ijin = ['DT', 'PC'];
+
+                } else if ($('#tab-iks').hasClass('active')) {
+                    param.is_verifikasi_pengajuan_admin = 0;
+                    param.kode_absen_ijin = 'IKS';
+                }
+
+                window.location.href =
+                    "{{ route('cuti_karyawan.dataabsenperijinan.export_dataabsenperizinan') }}?" + $.param(param);
+            });
 
 
 
@@ -1736,6 +2019,10 @@ h1 {
                     tableWaiting.ajax.reload();
                 } else if (target === "#tab-content-reject") {
                     tableReject.ajax.reload();
+                } else if (target === "#tab-content-dtpc") {
+                    tableDtpc.ajax.reload();
+                } else if (target === "#tab-content-Iks") {
+                    tableIks.ajax.reload();
                 }
             });
 
@@ -1795,6 +2082,8 @@ h1 {
                         tableVerifikasi.ajax.reload();
                         tableWaiting.ajax.reload();
                         tableReject.ajax.reload();
+                        tableDtpc.ajax.reload();
+                        tableIks.ajax.reload();
                     },
                     error: function(res){
                         swal("", "approve perizinan gagal", "error");
@@ -1850,6 +2139,8 @@ h1 {
                         tableVerifikasi.ajax.reload();
                         tableWaiting.ajax.reload();
                         tableReject.ajax.reload();
+                        tableDtpc.ajax.reload();
+                        tableIks.ajax.reload();
                     },
                     error: function(res){
                         swal("", "Reject perizinan gagal", "error");
@@ -1878,6 +2169,8 @@ h1 {
                 tableVerifikasi.ajax.reload();
                 tableWaiting.ajax.reload();
                 tableReject.ajax.reload();
+                tableDtpc.ajax.reload();
+                tableIks.ajax.reload();
             });
 
 
@@ -1885,6 +2178,19 @@ h1 {
     </script>
 
     <script>
+         $('#ajax-modal-tambah').on('show.bs.modal', function () {
+        $('#btn-save-izin')
+            .removeClass('btn-loading')
+            .html('<i class="fa fa-save"></i> Add')
+            .prop('disabled', false);
+
+        $('#btn-save-iks')
+            .removeClass('btn-loading')
+            .html('<i class="fa fa-save"></i> Update')
+            .prop('disabled', false);
+
+        $('#btn-cancel-izin, #btn-cancel-iks').prop('disabled', false);
+    });
         $('body').on('click', '#btn-save-izin', function (event) {
             var uuid = $('#uuid').val();
             var uuid_master = $('#uuid_master').val();
@@ -1950,7 +2256,8 @@ h1 {
             // console.log("Login Email:", login_email);
             let bypassEmail = [
                 'mega@ptnag.com',
-                'rudy@ptnag.com'
+                'rudy@ptnag.com',
+                'dev_hris'
             ];
 
             if(
@@ -1995,7 +2302,7 @@ h1 {
             }
         }
 
-            if (kode_absen_ijin !== "DL" && kode_absen_ijin !== "I" && kode_absen_ijin !== "S" && kode_absen_ijin !== "CT" && kode_absen_ijin !== "CM") {
+            if (kode_absen_ijin !== "DL" && kode_absen_ijin !== "I" && kode_absen_ijin !== "S" && kode_absen_ijin !== "CT" && kode_absen_ijin !== "CM" && kode_absen_ijin !== "KA"&& kode_absen_ijin !== "CN"&& kode_absen_ijin !== "NA") {
                 if (!didelegasikan_enroll_id) {
                     notif({
                         msg: "<b>Warning:</b> Anda belum memilih karyawan untuk didelegasikan.",
@@ -2242,7 +2549,8 @@ h1 {
                     }
 
                     setTimeout(function myFunction() {
-                            location.reload();
+                             $('#datatable-ajax-crud-waiting').DataTable().ajax.reload(null, false);
+                   $('#ajax-modal-tambah').modal('hide');
                     }, 3000);
 
                 },

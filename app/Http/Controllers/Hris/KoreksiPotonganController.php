@@ -434,7 +434,7 @@ class KoreksiPotonganController extends AdminBaseController
             $tanggal_awal = date('Y-m-d', strtotime($daterange[0]));
             $tanggal_akhir = date('Y-m-d', strtotime($daterange[1]));
             $upahQuery->whereBetween('data_koreksi_upah.tanggal_koreksi', [$tanggal_awal, $tanggal_akhir]);
-            $potonganQuery->whereBetween('data_koreksi_potongan.tanggal_koreksi', [$tanggal_awal, $tanggal_akhir]);
+            // $potonganQuery->whereBetween('data_koreksi_potongan.tanggal_koreksi', [$tanggal_awal, $tanggal_akhir]);
         }
 
         if (!empty($search)) {

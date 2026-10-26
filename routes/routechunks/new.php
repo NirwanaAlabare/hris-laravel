@@ -57,6 +57,14 @@ Route::prefix('payroll')->group(function() {
 
 
 });
+Route::prefix('payroll_baru')->group(function() {
+    Route::post('proses-rekap', 'ProsesPayrollControllerbaru@index')->name("hris.proses.payroll_baru.rekap");
+    Route::post('proses-rekap-early-payroll', 'ProsesPayrollControllerbaru@early_closing_payroll_bulanan')->name("hris.proses.payroll_baru.rekap_early");
+    Route::post('proses-rekap2', 'ProsesPayrollControllerbaru@index2')->name("hris.proses.payroll_baru.rekap2");
+    Route::post('proses-rekap3', 'ProsesPayrollControllerbaru@index3')->name("hris.proses.payroll_baru.rekap3");
+
+
+});
 Route::prefix('estimasi')->middleware(['auth.admin', 'lock', 'role:all,attendance_payroll'])->group(function() {
     Route::get('index', 'EstimasiPayrollController@index')->name("hris.estimasinilaipayroll.index");
     Route::post('ajax_exportexcel', 'EstimasiPayrollController@ajax_exportexcel')->name("hris.estimasinilaipayroll.export");
@@ -70,6 +78,10 @@ Route::prefix('junal')->middleware(['auth.admin', 'lock', 'role:all,attendance_p
     Route::get('index', 'JurnalController@index')->name("hris.jurnal.index");
     Route::post('ajax_exportexcel', 'JurnalController@ajax_exportexcel')->name("hris.jurnal.export");
     Route::post('update_jurnal', 'JurnalController@update_jurnal')->name("hris.jurnal.update_jurnal");
+    Route::get('jurnalakhir', 'JurnalController@jurnalakhir')->name("hris.jurnal.jurnalakhir");
+    Route::post('ajax_exportexcel_jurnalakhir', 'JurnalController@ajax_exportexcel_jurnalakhir')->name("hris.jurnal_akhir.export");
+    Route::post('update_jurnal_akhir', 'JurnalController@update_jurnal_akhir')->name("hris.jurnal.update_jurnal_akhir");
+
 
 });
 

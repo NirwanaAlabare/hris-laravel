@@ -139,6 +139,7 @@ Route::group(['middleware' => ['auth.admin', 'lock', 'role:all,attendance_payrol
     Route::get('tunjangankaryawan/index', ['as' => 'hris.tunjangankaryawan.index', 'uses' => 'TunjanganKaryawanController@index']);
     Route::get('rekapperhitungandtpc/index', ['as' => 'hris.rekapperhitungandtpc.index', 'uses' => 'RekapPerhitunganDtpcController@index']);
     Route::get('rekapperhitunganiks/index', ['as' => 'hris.rekapperhitunganiks.index', 'uses' => 'RekapPerhitunganIksController@index']);
+    Route::get('rekapperhitunganpayroll_baru/index', ['as' => 'hris.rekapperhitunganpayroll_baru.index', 'uses' => 'RekapPerhitunganPayrollController_baru@index']);
     Route::get('rekapperhitunganpayroll/index', ['as' => 'hris.rekapperhitunganpayroll.index', 'uses' => 'RekapPerhitunganPayrollController@index']);
     Route::get('dataclosingpayroll/index', ['as' => 'hris.dataclosingpayroll.index', 'uses' => 'DataClosingPayrollController@index']);
     Route::get('aktifitasperubahan/index', ['as' => 'hris.aktifitasperubahan.index', 'uses' => 'AktifitasPerubahan@index']);
@@ -170,6 +171,10 @@ Route::group(['middleware' => ['auth.admin', 'lock', 'role:all'], 'prefix' => 'h
     Route::get('/get-dokumen-legal/{id}', ['as' => 'dokumen_legal.get_edit_dokumen_legal', 'uses' => 'LicensePermit\LicensePermitController@getDokumenLegal']);
     Route::post('/update-dokumen-legal', ['as' => 'dokumen_legal.update_dokumen_legal', 'uses' => 'LicensePermit\LicensePermitController@updateDokumenLegal']);
     Route::get('/download_watermark/{id}', ['as' => 'dokumen_legal.download_watermark', 'uses' => 'LicensePermit\LicensePermitController@download_watermark']);
+    Route::get('/rename-dokumen-lama', [
+    \App\Http\Controllers\Hris\LicensePermit\LicensePermitController::class,
+    'renameFileLama'
+]);
 });
 
 // KEPERSONALIAAN / PENILAIAN KINERJA
@@ -391,6 +396,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris', 'names
     Route::post('/permintaan_tenaga_kerja/set_to_pending_no_fptk_karyawan', ['as' => 'permintaan_tenaga_kerja.set_to_pending_no_fptk_karyawan', 'uses' => 'Administrasi\PermintaanTenagaKerjaController@set_to_pending_no_fptk_karyawan']);
     Route::post('/permintaan_tenaga_kerja/move_to_pending_permintaan', ['as' => 'permintaan_tenaga_kerja.move_to_pending_permintaan', 'uses' => 'Administrasi\PermintaanTenagaKerjaController@move_to_pending_permintaan']);
 
+    Route::get('/permintaan_tenaga_kerja/export_pengajuan_tk_excel', ['as' => 'permintaan_tenaga_kerja.export_exel_pengajuan_tk', 'uses' => 'Administrasi\PermintaanTenagaKerjaController@export_exel_pengajuan_tk']);
+
     // TINDAKAN KEDISIPLINAN
     Route::get('/tindakan_kedisiplinan/index', ['as' => 'tindakan_kedisiplinan.tindakan_kedisiplinan', 'uses' => 'Administrasi\TindakanKedisiplinanController@index']);
     Route::post('/tindakan_kedisiplinan/get_surat_peringatan', ['as' => 'tindakan_kedisiplinan.get_surat_peringatan', 'uses' => 'Administrasi\TindakanKedisiplinanController@get_surat_peringatan']);
@@ -433,6 +440,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris', 'names
     Route::post('cuti_karyawan/destroy', ['as' => 'cuti_karyawan.dataabsenperijinan.destroy', 'uses' => 'MasterData\CutiKaryawanController@destroy']);
     Route::post('cuti_karyawan/destroy_dtpc', ['as' => 'cuti_karyawan.dataabsenperijinan.destroy_dtpc', 'uses' => 'MasterData\CutiKaryawanController@destroy_dtpc']);
     Route::post('cuti_karyawan/approve_perijinan_all', ['as' => 'cuti_karyawan.dataabsenperijinan.approve_perijinan_all', 'uses' => 'MasterData\CutiKaryawanController@approve_perijinan_all']);
+    Route::get('cuti_karyawan/export_dataabsenperizinan', ['as' => 'cuti_karyawan.dataabsenperijinan.export_dataabsenperizinan', 'uses' => 'MasterData\CutiKaryawanController@export_dataabsenperizinan']);
 
     Route::get('hrd/export_pdf_sk_bni', ['as' => 'hris.hrd.export_pdf_sk_bni', 'uses' => 'HRDController@export_pdf_sk_bni']);
     Route::post('hrd/export_pdf_print_sk', ['as' => 'hris.hrd.export_pdf_print_sk', 'uses' => 'HRDController@export_pdf_print_sk']);
@@ -440,6 +448,7 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris', 'names
     Route::post('hrd/get_employee_contract2', ['as' => 'hris.hrd.get_employee_contract2', 'uses' => 'HRDController@get_employee_contract2']);
     Route::post('hrd/update_employee_contract', ['as' => 'hris.hrd.update_employee_contract', 'uses' => 'HRDController@update_employee_contract']);
     Route::post('hrd/new_employee_contract', ['as' => 'hris.hrd.new_employee_contract', 'uses' => 'HRDController@new_employee_contract']);
+    Route::post('hrd/new_employee_contract1', ['as' => 'hris.hrd.new_employee_contract1', 'uses' => 'HRDController@new_employee_contract1']);
     Route::post('hrd/delete_employee_contract', ['as' => 'hris.hrd.delete_employee_contract', 'uses' => 'HRDController@delete_employee_contract']);
     Route::post('hrd/import_kontrak_kerja', ['as' => 'hris.hrd.import_kontrak_kerja', 'uses' => 'HRDController@import_kontrak_kerja']);
     Route::post('hrd/import_kontrak_kerja_to_database', ['as' => 'hris.hrd.import_kontrak_kerja_to_database', 'uses' => 'HRDController@import_kontrak_kerja_to_database']);
@@ -856,6 +865,8 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris', 'names
 
 
     Route::post('rekapperhitunganpayroll/ajax_exportexcel/', ['as' => 'hris.rekapperhitunganpayroll.ajax_exportexcel', 'uses' => 'RekapPerhitunganPayrollController@ajax_exportexcel']);
+    Route::post('rekapperhitunganpayrollbaru/ajax_exportexcel/', ['as' => 'hris.rekapperhitunganpayrollbaru.ajax_exportexcel', 'uses' => 'RekapPerhitunganPayrollController_baru@ajax_exportexcel']);
+
 
     Route::get('rekapperhitunganpayrollcutoff/index', ['as' => 'hris.rekapperhitunganpayrollcutoff.index', 'uses' => 'RekapPerhitunganPayrollCutOffController@index']);
     Route::post('rekapperhitunganpayrollcutoff/ajax_exportexcel/', ['as' => 'hris.rekapperhitunganpayrollcutoff.ajax_exportexcel', 'uses' => 'RekapPerhitunganPayrollCutOffController@ajax_exportexcel']);
@@ -863,10 +874,13 @@ Route::group(['middleware' => ['auth.admin', 'lock'], 'prefix' => 'hris', 'names
 
     Route::get('rekapperhitunganpayroll/export_excel_transfer', ['as' => 'hris.rekapperhitunganpayroll.export_excel_transfer', 'uses' => 'ProsesPayrollController@export_excel_transfer']);
     Route::post('rekapperhitunganpayroll/ajax_data/', ['as' => 'hris.rekapperhitunganpayroll.ajax_data', 'uses' => 'RekapPerhitunganPayrollController@ajax_data']);
+    Route::post('rekapperhitunganpayroll/ajax_databaru/', ['as' => 'hris.rekapperhitunganpayrollbaru.ajax_data', 'uses' => 'RekapPerhitunganPayrollController_baru@ajax_data']);
     Route::post('rekapperhitunganpayroll/get_payroll_department/', ['as' => 'hris.rekapperhitunganpayroll.get_payroll_department', 'uses' => 'RekapPerhitunganPayrollController@get_payroll_department']);
     Route::get('rekapperhitunganpayroll/get_sub_dept_name/{id}', ['as' => 'hris.rekapperhitunganpayroll.get_sub_dept_name', 'uses' => 'RekapPerhitunganPayrollController@get_sub_dept_name']);
     Route::get('rekapperhitunganpayroll/export_excel_summary_department', ['as' => 'hris.rekapperhitunganpayroll.export_excel_summary_department', 'uses' => 'RekapPerhitunganPayrollController@export_excel_summary_department']);
+    Route::get('rekapperhitunganpayroll/export_excel_summary_department_baru', ['as' => 'hris.rekapperhitunganpayroll_baru.export_excel_summary_department_baru', 'uses' => 'RekapPerhitunganPayrollController_baru@export_excel_summary_department']);
     Route::get('rekapperhitunganpayroll/get_last_update_proses_payroll', ['as' => 'hris.rekapperhitunganpayroll.get_last_update_proses_payroll', 'uses' => 'RekapPerhitunganPayrollController@get_last_update_proses_payroll']);
+    Route::get('rekapperhitunganpayroll/get_last_update_proses_payroll_baru', ['as' => 'hris.rekapperhitunganpayroll_baru.get_last_update_proses_payroll', 'uses' => 'RekapPerhitunganPayrollController_baru@get_last_update_proses_payroll']);
     Route::get('rekapperhitunganpayroll/get_last_update_labor', ['as' => 'hris.rekapperhitunganpayroll.get_last_update_labor', 'uses' => 'RekapPerhitunganPayrollController@get_last_update_labor']);
     Route::post('rekapperhitunganpayroll/export_excel_daily_labor', ['as' => 'hris.rekapperhitunganpayroll.export_excel_daily_labor', 'uses' => 'RekapPerhitunganPayrollController@export_excel_daily_labor']);
     Route::post('rekapperhitunganpayroll/proses_payroll_harian', ['as' => 'hris.rekapperhitunganpayroll.proses_payroll_harian', 'uses' => 'RekapPerhitunganPayrollController@proses_payroll_harian']);

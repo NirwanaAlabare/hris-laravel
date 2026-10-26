@@ -78,53 +78,126 @@ class GagalAbsenController extends AdminBaseController
         } else {
             if(empty($searchData))
             {
-                $query =  MasterDataAbsenKehadiran::selectRaw('
-                            master_data_absen_kehadiran.uuid,
-                            employee_atribut.employee_id,
-                            master_data_absen_kehadiran.nomor_form_perubahan_absen,
-                            employee_atribut.nik,
-                            master_data_absen_kehadiran.enroll_id,
-                            employee_atribut.employee_name,
-                            master_data_absen_kehadiran.tanggal_berjalan,
-                            master_data_absen_kehadiran.kode_hari,
-                            master_data_absen_kehadiran.nama_hari,
-                            master_data_absen_kehadiran.mulai_jam_kerja,
-                            master_data_absen_kehadiran.akhir_jam_kerja,
-                            master_data_absen_kehadiran.absen_masuk_kerja,
-                            master_data_absen_kehadiran.absen_pulang_kerja,
-                            master_data_absen_kehadiran.status_absen,
-                            master_data_absen_kehadiran.holiday_name,
-                            data_absen_perijinan.absen_alasan
-                        ')
-                        // ->whereRaw('
-                        //     ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
-                        //     AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                        //     AND master_data_absen_kehadiran.status_absen IN ("M","TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
-                        //     AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                        //     AND master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
-                        //     OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
-                        //     AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                        //     AND master_data_absen_kehadiran.mulai_jam_kerja is null AND master_data_absen_kehadiran.akhir_jam_kerja is null AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
-                        // ')
-                        ->whereRaw('
-                              ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
-                                AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                                AND master_data_absen_kehadiran.status_absen IN ("M","TL","LP")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
-                                AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                                AND master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is 														null) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
-                                AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                                AND master_data_absen_kehadiran.status_absen IN ("LP") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is 														null)
-                                OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
-                                AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                                AND master_data_absen_kehadiran.mulai_jam_kerja is null AND master_data_absen_kehadiran.akhir_jam_kerja is null AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
-                        ')
-                        ->leftJoin('employee_atribut', 'master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
-                        ->leftJoin('data_absen_perijinan','master_data_absen_kehadiran.nomor_absen_ijin','data_absen_perijinan.nomor_form_perizinan')
-                        ->orderBy('tanggal_berjalan','desc')
-                        ->orderBy('employee_name','asc')
+                $query = DB::query()
+                ->fromSub(function ($sub) use ($tanggalMulai, $tanggalSampai, $start, $limit) {
+                    $sub->from('master_data_absen_kehadiran as m')
+                        ->leftJoin('employee_atribut as ea', 'm.enroll_id', '=', 'ea.enroll_id')
+                        ->select([
+                            'm.uuid', 'ea.employee_id', 'm.nomor_form_perubahan_absen', 'ea.nik',
+                            'm.enroll_id', 'ea.employee_name', 'm.tanggal_berjalan', 'm.kode_hari',
+                            'm.nama_hari', 'm.mulai_jam_kerja', 'm.akhir_jam_kerja',
+                            'm.absen_masuk_kerja', 'm.absen_pulang_kerja',
+                            'm.status_absen as status_asli', 'm.holiday_name', 'm.nomor_absen_ijin',
+                        ])
+                        ->whereBetween('m.tanggal_berjalan', [$tanggalMulai, $tanggalSampai])
+                        ->whereNotNull('m.enroll_id')
+                        ->where(function ($w) {
+                            $w->whereIn('m.status_absen', ['M', 'TL', 'LP'])
+                            ->orWhere(function ($x) {
+                                $x->whereNotNull('m.absen_masuk_kerja')
+                                    ->whereNull('m.absen_pulang_kerja')
+                                    ->where(function ($y) {
+                                        $y->where('m.status_absen', 'LN')
+                                        ->orWhere(function ($z) {
+                                            $z->whereNull('m.mulai_jam_kerja')
+                                                ->whereNull('m.akhir_jam_kerja');
+                                        });
+                                    });
+                            });
+                        })
+                        ->orderBy('m.tanggal_berjalan', 'desc')
+                        ->orderBy('ea.employee_name', 'asc')
                         ->offset($start)
-                        ->limit($limit)
-                        ->get();
+                        ->limit($limit);
+                }, 't')
+                ->leftJoin('data_absen_perijinan as ijin_biasa', 't.nomor_absen_ijin', '=', 'ijin_biasa.nomor_form_perizinan')
+                ->leftJoin('data_absen_perijinan as ijin_dl', function ($join) {
+                    $join->where('ijin_dl.kode_absen_ijin', '=', 'DL')
+                        ->whereColumn('ijin_dl.enroll_id', 't.enroll_id')
+                        ->whereColumn('t.tanggal_berjalan', '>=', 'ijin_dl.tanggal_mulai_ijin')
+                        ->whereColumn('t.tanggal_berjalan', '<=', 'ijin_dl.tanggal_akhir_ijin');
+                })
+                ->selectRaw("
+                    t.uuid, t.employee_id, t.nomor_form_perubahan_absen, t.nik,
+                    t.enroll_id, t.employee_name, t.tanggal_berjalan, t.kode_hari,
+                    t.nama_hari, t.mulai_jam_kerja, t.akhir_jam_kerja,
+                    t.absen_masuk_kerja, t.absen_pulang_kerja,
+                    coalesce(
+                        nullif(ijin_dl.kode_absen_ijin, ''),
+                        nullif(ijin_biasa.kode_absen_ijin, ''),
+                        t.status_asli
+                    ) as status_absen,
+                    t.holiday_name,
+                    coalesce(ijin_dl.kode_absen_ijin, ijin_biasa.kode_absen_ijin) as kode_absen_ijin,
+                    coalesce(ijin_dl.absen_alasan, ijin_biasa.absen_alasan) as absen_alasan
+                ")
+                ->orderBy('t.tanggal_berjalan', 'desc')
+                ->orderBy('t.employee_name', 'asc')
+                ->get();
+                // $query =  MasterDataAbsenKehadiran::selectRaw('
+                //             master_data_absen_kehadiran.uuid,
+                //             employee_atribut.employee_id,
+                //             master_data_absen_kehadiran.nomor_form_perubahan_absen,
+                //             employee_atribut.nik,
+                //             master_data_absen_kehadiran.enroll_id,
+                //             employee_atribut.employee_name,
+                //             master_data_absen_kehadiran.tanggal_berjalan,
+                //             master_data_absen_kehadiran.kode_hari,
+                //             master_data_absen_kehadiran.nama_hari,
+                //             master_data_absen_kehadiran.mulai_jam_kerja,
+                //             master_data_absen_kehadiran.akhir_jam_kerja,
+                //             master_data_absen_kehadiran.absen_masuk_kerja,
+                //             master_data_absen_kehadiran.absen_pulang_kerja,
+                //             CASE
+                //                 WHEN data_absen_perijinan.kode_absen_ijin IS NULL
+                //                 OR data_absen_perijinan.kode_absen_ijin = ""
+                //                 THEN master_data_absen_kehadiran.status_absen
+                //                 ELSE data_absen_perijinan.kode_absen_ijin
+                //             END AS status_absen,
+                //             master_data_absen_kehadiran.holiday_name,
+                //             data_absen_perijinan.absen_alasan
+                //         ')
+                //         // ->whereRaw('
+                //         //     ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                //         //     AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                //         //     AND master_data_absen_kehadiran.status_absen IN ("M","TL")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                //         //     AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                //         //     AND master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
+                //         //     OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                //         //     AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                //         //     AND master_data_absen_kehadiran.mulai_jam_kerja is null AND master_data_absen_kehadiran.akhir_jam_kerja is null AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
+                //         // ')
+                //         ->whereRaw('
+                //               ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                //                 AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                //                 AND master_data_absen_kehadiran.status_absen IN ("M","TL","LP")) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                //                 AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                //                 AND master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is 														null) OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                //                 AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                //                 AND master_data_absen_kehadiran.status_absen IN ("LP") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is 														null)
+                //                 OR ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
+                //                 AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                //                 AND master_data_absen_kehadiran.mulai_jam_kerja is null AND master_data_absen_kehadiran.akhir_jam_kerja is null AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
+                //         ')
+                //         ->leftJoin('employee_atribut', 'master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
+                //         ->leftJoin('data_absen_perijinan', function ($join) {
+                //             $join->on(function ($q) {
+                //                 // DL: cocokkan lewat enroll_id + rentang tanggal
+                //                 $q->where('data_absen_perijinan.kode_absen_ijin', '=', 'DL')
+                //                 ->whereColumn('data_absen_perijinan.enroll_id', 'master_data_absen_kehadiran.enroll_id')
+                //                 ->whereColumn('master_data_absen_kehadiran.tanggal_berjalan', '>=', 'data_absen_perijinan.tanggal_mulai_ijin')
+                //                 ->whereColumn('master_data_absen_kehadiran.tanggal_berjalan', '<=', 'data_absen_perijinan.tanggal_akhir_ijin');
+                //             })->orOn(function ($q) {
+                //                 // Selain DL: tetap lewat nomor form
+                //                 $q->where('data_absen_perijinan.kode_absen_ijin', '<>', 'DL')
+                //                 ->whereColumn('master_data_absen_kehadiran.nomor_absen_ijin', 'data_absen_perijinan.nomor_form_perizinan');
+                //             });
+                //         })
+                //         ->orderBy('tanggal_berjalan','desc')
+                //         ->orderBy('employee_name','asc')
+                //         ->offset($start)
+                //         ->limit($limit)
+                //         ->get();
 
                 $totalData = MasterDataAbsenKehadiran::whereRaw('
                             ((master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '"
@@ -141,71 +214,157 @@ class GagalAbsenController extends AdminBaseController
                 $totalFiltered = $totalData;
 
             } else {
+                $like = '%' . $searchData . '%';
 
-                $query =  MasterDataAbsenKehadiran::selectRaw('
-                            master_data_absen_kehadiran.uuid,
-                            employee_atribut.employee_id,
-                            master_data_absen_kehadiran.nomor_form_perubahan_absen,
-                            employee_atribut.nik,
-                            master_data_absen_kehadiran.enroll_id,
-                            employee_atribut.employee_name,
-                            master_data_absen_kehadiran.tanggal_berjalan,
-                            master_data_absen_kehadiran.kode_hari,
-                            master_data_absen_kehadiran.nama_hari,
-                            master_data_absen_kehadiran.mulai_jam_kerja,
-                            master_data_absen_kehadiran.akhir_jam_kerja,
-                            master_data_absen_kehadiran.absen_masuk_kerja,
-                            master_data_absen_kehadiran.absen_pulang_kerja,
-                            master_data_absen_kehadiran.status_absen,
-                            master_data_absen_kehadiran.holiday_name,
-                            data_absen_perijinan.absen_alasan
-                        ')
-                        ->whereRaw('
-                            (
-                                (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '" AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                                AND master_data_absen_kehadiran.status_absen IN ("M","TL","LP")
-                                AND
-                                (
-                                    upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
-                                    OR upper(master_data_absen_kehadiran.nama_hari) LIKE "%' . $searchData . '%"
-                                    OR upper(master_data_absen_kehadiran.status_absen) LIKE "%' . $searchData . '%"
-                                    OR upper(employee_atribut.employee_name) LIKE "%' . $searchData . '%"
-                                    OR upper(employee_atribut.nik) LIKE "%' . $searchData . '%"
-                                )
-                            ) OR
-                            (
-                                (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '" AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                                AND
-                                (master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
-                                AND
-                                (
-                                    upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
-                                    OR upper(master_data_absen_kehadiran.nama_hari) LIKE "%' . $searchData . '%"
-                                    OR upper(master_data_absen_kehadiran.status_absen) LIKE "%' . $searchData . '%"
-                                    OR upper(employee_atribut.employee_name) LIKE "%' . $searchData . '%"
-                                    OR upper(employee_atribut.nik) LIKE "%' . $searchData . '%"
-                                )
-                            ) OR
-                             (
-                                (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '" AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
-                                AND
-                                (master_data_absen_kehadiran.mulai_jam_kerja is not null AND master_data_absen_kehadiran.akhir_jam_kerja is not null AND ((master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null) OR (
-                                master_data_absen_kehadiran.absen_masuk_kerja is null AND master_data_absen_kehadiran.absen_pulang_kerja is not null)) AND master_data_absen_kehadiran.status_absen = "LP" )
-                                AND
-                                (
-                                    upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
-                                    OR upper(master_data_absen_kehadiran.nama_hari) LIKE "%' . $searchData . '%"
-                                    OR upper(master_data_absen_kehadiran.status_absen) LIKE "%' . $searchData . '%"
-                                    OR upper(employee_atribut.employee_name) LIKE "%' . $searchData . '%"
-                                    OR upper(employee_atribut.nik) LIKE "%' . $searchData . '%"
-                                )
-                             )
-                        ')
-                        ->leftJoin('employee_atribut', 'master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
-                        ->leftJoin('data_absen_perijinan','master_data_absen_kehadiran.nomor_absen_ijin','data_absen_perijinan.nomor_form_perizinan')
-                        ->offset($start)
-                        ->limit($limit)
-                        ->get();
+                $query = DB::query()
+                    ->fromSub(function ($sub) use ($tanggalMulai, $tanggalSampai, $like, $start, $limit) {
+                        $sub->from('master_data_absen_kehadiran as m')
+                            ->leftJoin('employee_atribut as ea', 'm.enroll_id', '=', 'ea.enroll_id')
+                            ->select([
+                                'm.uuid', 'ea.employee_id', 'm.nomor_form_perubahan_absen', 'ea.nik',
+                                'm.enroll_id', 'ea.employee_name', 'm.tanggal_berjalan', 'm.kode_hari',
+                                'm.nama_hari', 'm.mulai_jam_kerja', 'm.akhir_jam_kerja',
+                                'm.absen_masuk_kerja', 'm.absen_pulang_kerja',
+                                'm.status_absen as status_asli', 'm.holiday_name', 'm.nomor_absen_ijin',
+                            ])
+                            ->whereBetween('m.tanggal_berjalan', [$tanggalMulai, $tanggalSampai])
+                            ->whereNotNull('m.enroll_id')
+                            ->where(function ($w) {
+                                // Kondisi 1: M, TL, LP
+                                $w->whereIn('m.status_absen', ['M', 'TL', 'LP'])
+                                // Kondisi 2: LN, masuk ada, pulang kosong
+                                ->orWhere(function ($x) {
+                                    $x->where('m.status_absen', 'LN')
+                                        ->whereNotNull('m.absen_masuk_kerja')
+                                        ->whereNull('m.absen_pulang_kerja');
+                                })
+                                // Kondisi 3: tanpa jam kerja, masuk ada, pulang kosong
+                                ->orWhere(function ($x) {
+                                    $x->whereNull('m.mulai_jam_kerja')
+                                        ->whereNull('m.akhir_jam_kerja')
+                                        ->whereNotNull('m.absen_masuk_kerja')
+                                        ->whereNull('m.absen_pulang_kerja');
+                                });
+                            })
+                            // Pencarian
+                            ->where(function ($s) use ($like) {
+                                $s->whereRaw('upper(m.enroll_id) like ?', [$like])
+                                ->orWhereRaw('upper(m.nama_hari) like ?', [$like])
+                                ->orWhereRaw('upper(m.status_absen) like ?', [$like])
+                                ->orWhereRaw('upper(ea.employee_name) like ?', [$like])
+                                ->orWhereRaw('upper(ea.nik) like ?', [$like]);
+                            })
+                            ->orderBy('m.tanggal_berjalan', 'desc')
+                            ->orderBy('ea.employee_name', 'asc')
+                            ->offset($start)
+                            ->limit($limit);
+                    }, 't')
+                    ->leftJoin('data_absen_perijinan as ijin_biasa', 't.nomor_absen_ijin', '=', 'ijin_biasa.nomor_form_perizinan')
+                    ->leftJoin('data_absen_perijinan as ijin_dl', function ($join) {
+                        $join->where('ijin_dl.kode_absen_ijin', '=', 'DL')
+                            ->whereColumn('ijin_dl.enroll_id', 't.enroll_id')
+                            ->whereColumn('t.tanggal_berjalan', '>=', 'ijin_dl.tanggal_mulai_ijin')
+                            ->whereColumn('t.tanggal_berjalan', '<=', 'ijin_dl.tanggal_akhir_ijin');
+                    })
+                    ->selectRaw("
+                        t.uuid, t.employee_id, t.nomor_form_perubahan_absen, t.nik,
+                        t.enroll_id, t.employee_name, t.tanggal_berjalan, t.kode_hari,
+                        t.nama_hari, t.mulai_jam_kerja, t.akhir_jam_kerja,
+                        t.absen_masuk_kerja, t.absen_pulang_kerja,
+                        coalesce(
+                            nullif(ijin_dl.kode_absen_ijin, ''),
+                            nullif(ijin_biasa.kode_absen_ijin, ''),
+                            t.status_asli
+                        ) as status_absen,
+                        t.holiday_name,
+                        coalesce(ijin_dl.kode_absen_ijin, ijin_biasa.kode_absen_ijin) as kode_absen_ijin,
+                        coalesce(ijin_dl.absen_alasan, ijin_biasa.absen_alasan) as absen_alasan
+                    ")
+                    ->orderBy('t.tanggal_berjalan', 'desc')
+                    ->orderBy('t.employee_name', 'asc')
+                    ->get();
+
+                // $query =  MasterDataAbsenKehadiran::selectRaw('
+                //             master_data_absen_kehadiran.uuid,
+                //             employee_atribut.employee_id,
+                //             master_data_absen_kehadiran.nomor_form_perubahan_absen,
+                //             employee_atribut.nik,
+                //             master_data_absen_kehadiran.enroll_id,
+                //             employee_atribut.employee_name,
+                //             master_data_absen_kehadiran.tanggal_berjalan,
+                //             master_data_absen_kehadiran.kode_hari,
+                //             master_data_absen_kehadiran.nama_hari,
+                //             master_data_absen_kehadiran.mulai_jam_kerja,
+                //             master_data_absen_kehadiran.akhir_jam_kerja,
+                //             master_data_absen_kehadiran.absen_masuk_kerja,
+                //             master_data_absen_kehadiran.absen_pulang_kerja,
+                //             CASE
+                //                 WHEN data_absen_perijinan.kode_absen_ijin IS NULL
+                //                 OR data_absen_perijinan.kode_absen_ijin = ""
+                //                 THEN master_data_absen_kehadiran.status_absen
+                //                 ELSE data_absen_perijinan.kode_absen_ijin
+                //             END AS status_absen,
+                //             master_data_absen_kehadiran.holiday_name,
+                //             data_absen_perijinan.absen_alasan
+                //         ')
+                //         ->whereRaw('
+                //             (
+                //                 (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '" AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                //                 AND master_data_absen_kehadiran.status_absen IN ("M","TL","LP")
+                //                 AND
+                //                 (
+                //                     upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
+                //                     OR upper(master_data_absen_kehadiran.nama_hari) LIKE "%' . $searchData . '%"
+                //                     OR upper(master_data_absen_kehadiran.status_absen) LIKE "%' . $searchData . '%"
+                //                     OR upper(employee_atribut.employee_name) LIKE "%' . $searchData . '%"
+                //                     OR upper(employee_atribut.nik) LIKE "%' . $searchData . '%"
+                //                 )
+                //             ) OR
+                //             (
+                //                 (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '" AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                //                 AND
+                //                 (master_data_absen_kehadiran.status_absen IN ("LN") AND master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null)
+                //                 AND
+                //                 (
+                //                     upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
+                //                     OR upper(master_data_absen_kehadiran.nama_hari) LIKE "%' . $searchData . '%"
+                //                     OR upper(master_data_absen_kehadiran.status_absen) LIKE "%' . $searchData . '%"
+                //                     OR upper(employee_atribut.employee_name) LIKE "%' . $searchData . '%"
+                //                     OR upper(employee_atribut.nik) LIKE "%' . $searchData . '%"
+                //                 )
+                //             ) OR
+                //              (
+                //                 (master_data_absen_kehadiran.tanggal_berjalan BETWEEN "' . $tanggalMulai . '" and "' . $tanggalSampai . '" AND master_data_absen_kehadiran.enroll_id IS NOT NULL)
+                //                 AND
+                //                 (master_data_absen_kehadiran.mulai_jam_kerja is not null AND master_data_absen_kehadiran.akhir_jam_kerja is not null AND ((master_data_absen_kehadiran.absen_masuk_kerja is not null AND master_data_absen_kehadiran.absen_pulang_kerja is null) OR (
+                //                 master_data_absen_kehadiran.absen_masuk_kerja is null AND master_data_absen_kehadiran.absen_pulang_kerja is not null)) AND master_data_absen_kehadiran.status_absen = "LP" )
+                //                 AND
+                //                 (
+                //                     upper(master_data_absen_kehadiran.enroll_id) LIKE "%' . $searchData . '%"
+                //                     OR upper(master_data_absen_kehadiran.nama_hari) LIKE "%' . $searchData . '%"
+                //                     OR upper(master_data_absen_kehadiran.status_absen) LIKE "%' . $searchData . '%"
+                //                     OR upper(employee_atribut.employee_name) LIKE "%' . $searchData . '%"
+                //                     OR upper(employee_atribut.nik) LIKE "%' . $searchData . '%"
+                //                 )
+                //              )
+                //         ')
+                //         ->leftJoin('employee_atribut', 'master_data_absen_kehadiran.enroll_id','=','employee_atribut.enroll_id')
+                //        ->leftJoin('data_absen_perijinan', function ($join) {
+                //             $join->on(function ($q) {
+                //                 // DL: cocokkan lewat enroll_id + rentang tanggal
+                //                 $q->where('data_absen_perijinan.kode_absen_ijin', '=', 'DL')
+                //                 ->whereColumn('data_absen_perijinan.enroll_id', 'master_data_absen_kehadiran.enroll_id')
+                //                 ->whereColumn('master_data_absen_kehadiran.tanggal_berjalan', '>=', 'data_absen_perijinan.tanggal_mulai_ijin')
+                //                 ->whereColumn('master_data_absen_kehadiran.tanggal_berjalan', '<=', 'data_absen_perijinan.tanggal_akhir_ijin');
+                //             })->orOn(function ($q) {
+                //                 // Selain DL: tetap lewat nomor form
+                //                 $q->where('data_absen_perijinan.kode_absen_ijin', '<>', 'DL')
+                //                 ->whereColumn('master_data_absen_kehadiran.nomor_absen_ijin', 'data_absen_perijinan.nomor_form_perizinan');
+                //             });
+                //         })
+                //         ->offset($start)
+                //         ->limit($limit)
+                //         ->get();
 
                 $totalData = MasterDataAbsenKehadiran::whereRaw('
                                 (

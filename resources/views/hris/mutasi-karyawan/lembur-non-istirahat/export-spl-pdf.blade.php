@@ -6,7 +6,7 @@
 
     <style>
         * {
-            font-size: 9px;
+            font-size: 8px;
             font-family: Arial, Helvetica, sans-serif;
         }
 

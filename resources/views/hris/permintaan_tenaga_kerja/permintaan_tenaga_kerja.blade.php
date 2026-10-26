@@ -494,8 +494,20 @@ h1 {
                                     <div class="col-md-12">
                                         <div class="radio-container">
                                             <label class="radio-wrapper">
+                                                <input type="radio" name="rencana_jabatan[0]" value="GENERALMANAGER" checked class="mr-2">
+                                                <span>GENERAL MANAGER</span>
+                                            </label>
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="rencana_jabatan[0]" value="FACTORYMANAGER" checked class="mr-2">
+                                                <span>FACTORY MANAGER</span>
+                                            </label>
+                                            <label class="radio-wrapper">
                                                 <input type="radio" name="rencana_jabatan[0]" value="manager" checked class="mr-2">
                                                 <span>Manager</span>
+                                            </label>
+                                            <label class="radio-wrapper">
+                                                <input type="radio" name="rencana_jabatan[0]" value="ASST.MANAGER" checked class="mr-2">
+                                                <span>ASST. MANAGER</span>
                                             </label>
                                             <label class="radio-wrapper">
                                                 <input type="radio" name="rencana_jabatan[0]" value="chief" class="mr-2">
@@ -512,6 +524,10 @@ h1 {
                                             <label class="radio-wrapper">
                                                 <input type="radio" name="rencana_jabatan[0]" value="staff" class="mr-2">
                                                 <span>Staff</span>
+                                            </label>
+                                             <label class="radio-wrapper">
+                                                <input type="radio" name="rencana_jabatan[0]" value="ADMINISTRASI" class="mr-2">
+                                                <span>ADMINISTRASI</span>
                                             </label>
                                             <label class="radio-wrapper">
                                                 <input type="radio" name="rencana_jabatan[0]" value="operator" class="mr-2">
@@ -1126,7 +1142,7 @@ h1 {
                 </div>
                 <div class="col-md-12">
                    <div class="radio-container">
-                    ${['manager','chief','spv','leader','staff','operator'].map(jabatan => `
+                    ${['manager','chief','spv','leader','staff','operator','GENERALMANAGER','FACTORYMANAGER','ASST.MANAGER','ADMINISTRASI'].map(jabatan => `
                     <label class="radio-wrapper">
                                 <input type="radio" name="rencana_jabatan[${index}]" value="${jabatan}" ${data.rencana_jabatan == jabatan ? 'checked' : ''}>
                                 <span>

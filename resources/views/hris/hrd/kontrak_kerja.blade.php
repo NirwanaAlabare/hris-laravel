@@ -114,7 +114,7 @@
                                 </div>
                                 <div class="col-3 pr-0">
                                     <select class="form-control" id="status_staff">
-                                        <option value="">Pilih Status Staff</option>
+                                        <option value="">Pilih Semua</option>
                                         <option value="STAFF">Staff</option>
                                         <option value="NON STAFF">Non Staff</option>
                                     </select>
@@ -289,8 +289,12 @@
                                                         <th rowspan="2" style="vertical-align: middle;font-weight:bold">ID</th>
                                                         <th rowspan="2" style="vertical-align: middle;font-weight:bold">NIK</th>
                                                         <th rowspan="2" style="vertical-align: middle;font-weight:bold">Employee Name</th>
-                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">Department</th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">Jabatan</th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">Departemen</th>
                                                         <th rowspan="2" style="vertical-align: middle;font-weight:bold">Bagian</th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">join date</th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">resign date</th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">masa kerja</th>
                                                         <th colspan="2" style="vertical-align: middle;font-weight:bold">Kontrak</th>
                                                         <th rowspan="2" style="vertical-align: middle;font-weight:bold;border:1px solid rgb(195, 195, 195)"><span class="fa fa-cog"></span></th>
                                                     </tr>
@@ -315,8 +319,12 @@
                                                         <th rowspan="2" style="vertical-align: middle;font-weight:bold">ID</th>
                                                         <th rowspan="2" style="vertical-align: middle;font-weight:bold">NIK</th>
                                                         <th rowspan="2" style="vertical-align: middle;font-weight:bold">Employee Name</th>
-                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">Department</th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">Jabatan</th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">Departemen</th>
                                                         <th rowspan="2" style="vertical-align: middle;font-weight:bold">Bagian</th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">join date</th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">resign date</th>
+                                                        <th rowspan="2" style="vertical-align: middle;font-weight:bold">masa kerja</th>
                                                         <th colspan="2" style="vertical-align: middle;font-weight:bold">Kontrak</th>
                                                         <th rowspan="2" style="vertical-align: middle;font-weight:bold;border:1px solid rgb(195, 195, 195)"><span class="fa fa-cog"></span></th>
                                                     </tr>
@@ -2053,10 +2061,46 @@ function updateRange(start, end) {
                 data: 'employee_name'
             },
             {
+                data: 'status_jabatan'
+            },
+            {
                 data: 'department_name'
             },
             {
                 data: 'sub_dept_name'
+            },
+           {
+                data: 'join_date',
+                render: function (data, type, row) {
+                    if (!data) return '-'; // Antisipasi jika data kosong
+
+                    let date = new Date(data);
+
+                    // Menggunakan format lokal Indonesia
+                    return date.toLocaleDateString('id-ID', {
+                        // weekday: 'long', // Menampilkan nama hari secara lengkap (Senin, Selasa, dst)
+                        day: '2-digit',  // Tanggal 2 digit (01, 02, dst)
+                        month: 'long',   // Nama bulan lengkap (Januari, Februari, dst)
+                        year: 'numeric'  // Tahun angka lengkap (2026)
+                    });
+                }
+            },
+            {
+                data: 'tanggal_resign',
+                render: function (data, type, row) {
+                    if (!data) return '-';
+
+                    let date = new Date(data);
+
+                    return date.toLocaleDateString('id-ID', {
+                        day: '2-digit',
+                        month: 'long',
+                        year: 'numeric'
+                    });
+                }
+            },
+            {
+                data: 'masa_kerja'
             },
             {
                 data: 'enroll_id'
@@ -2084,7 +2128,7 @@ function updateRange(start, end) {
                 }
             },
             {
-                targets: [6],
+                targets: [10],
                 render: (data, type, row, meta) => {
                     var options = { weekday: 'long',  year: 'numeric', month: 'long', day: 'numeric' };
                     var tes=new Date(row.contract);
@@ -2096,7 +2140,7 @@ function updateRange(start, end) {
                 }
             },
             {
-                targets: [7],
+                targets: [11],
                 render: (data, type, row, meta) => {
                     var options = { weekday: 'long',  year: 'numeric', month: 'long', day: 'numeric' };
                     var tes=new Date(row.contract_end);
@@ -2108,7 +2152,7 @@ function updateRange(start, end) {
                 }
             },
             {
-                targets: [8],
+                targets: [12],
                 render: (data, type, row, meta) => {
                     return `
                         <div class='d-flex gap-1'>
@@ -2191,10 +2235,47 @@ function updateRange(start, end) {
                 data: 'employee_name'
             },
             {
+                data: 'status_jabatan'
+            },
+            {
                 data: 'department_name'
             },
             {
                 data: 'sub_dept_name'
+            },
+            {
+                data: 'join_date',
+                render: function (data, type, row) {
+                    if (!data) return '-'; // Antisipasi jika data kosong
+
+                    let date = new Date(data);
+
+                    // Menggunakan format lokal Indonesia
+                    return date.toLocaleDateString('id-ID', {
+                        // weekday: 'long', // Menampilkan nama hari secara lengkap (Senin, Selasa, dst)
+                        day: '2-digit',  // Tanggal 2 digit (01, 02, dst)
+                        month: 'long',   // Nama bulan lengkap (Januari, Februari, dst)
+                        year: 'numeric'  // Tahun angka lengkap (2026)
+                    });
+                }
+            },
+            {
+                data: 'tanggal_resign',
+                render: function (data, type, row) {
+                    if (!data) return '-';
+
+                    let date = new Date(data);
+
+                    return date.toLocaleDateString('id-ID', {
+                        // weekday: 'long',
+                        day: '2-digit',
+                        month: 'long',
+                        year: 'numeric'
+                    });
+                }
+            },
+            {
+                data: 'masa_kerja'
             },
             {
                 data: 'enroll_id'
@@ -2222,7 +2303,7 @@ function updateRange(start, end) {
                 }
             },
             {
-                targets: [6],
+                targets: [10],
                 render: (data, type, row, meta) => {
                     var options = { weekday: 'long',  year: 'numeric', month: 'long', day: 'numeric' };
                     var tes=new Date(row.contract);
@@ -2234,7 +2315,7 @@ function updateRange(start, end) {
                 }
             },
             {
-                targets: [7],
+                targets: [11],
                 render: (data, type, row, meta) => {
                     var options = { weekday: 'long',  year: 'numeric', month: 'long', day: 'numeric' };
                     var tes=new Date(row.contract_end);
@@ -2246,7 +2327,7 @@ function updateRange(start, end) {
                 }
             },
             {
-                targets: [8],
+                targets: [12],
                 render: (data, type, row, meta) => {
                     return `
                         <div class='d-flex gap-1'>
@@ -2840,6 +2921,7 @@ function updateRange(start, end) {
                                 <a href='#' class='btn btn-sm btn-success py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' id='editButtonEdit-"+res[i].id+"' onClick='editContract(" + res[i]['enroll_id'] + "," +"\"" + res[i]['contract'] + "\"," +"\"" + res[i]['contract_end'] + "\"," +"\"" + res[i]['id'] + "\"" +");'>&nbsp;<span class='fa fa-edit' style='font-size:9pt'></span></a>\
                                  <a href='#' class='btn btn-sm btn-warning text-dark py-0 px-2 border border-body' style='font-weight:bold;font-size:9pt;font-family:Arial; display:none;' id='cancelButtonEdit-"+res[i].id+"'  onClick='cancelEditContract("+res[i]['id']+");'><i class='fa fa-times-circle' style='font-size:9pt'></i> Cancel</a>\
                                         <a href='#' class='btn btn-sm btn-warning text-dark border border-body py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial; display:none;' id='saveButtonEdit-"+res[i].id+"' onClick='saveEditContract("+res[i]['id']+");'><i class='fa fa-arrow-circle-down' style='font-size:9pt'></i> Save</a>\
+                                <a href='#' class='btn btn-sm btn-success py-0 px-2 ml-1' style='font-weight:bold;font-size:9pt;font-family:Arial' onClick='insertContract(" + res[i]['enroll_id'] + "," + res[i]['id'] + ")'>  Tambah </a>\
                                 <a href='#' class='btn btn-sm btn-danger py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' id='printButton-"+res[i].id+"' onClick='printContract("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Print (PKS)&nbsp;&nbsp;</a>\
                                 <a href='#' class='btn btn-sm btn-primary py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' id='penilaianButton-"+res[i].id+"' onClick='exportPenilaian("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-file-pdf-o' style='font-size:9pt'></span> Form Penilaian&nbsp;&nbsp;</a>\
                                 <a href='#' class='btn btn-sm btn-warning py-0 px-2' style='font-weight:bold;font-size:9pt;font-family:Arial' id='nilaiButton-"+res[i].id+"' onClick='editPenilaianKinerja("+res[i]['enroll_id']+","+"\""+res[i]['contract']+"\""+","+"\""+res[i]['contract_end']+"\""+");'>&nbsp;<span class='fa fa-edit' style='font-size:9pt'></span> Isi Penilaian&nbsp;&nbsp;</a>\
@@ -2853,6 +2935,122 @@ function updateRange(start, end) {
         });
     }
     let currentlyEditingId = null;
+    function insertContract(enroll_id, contractId) {
+
+            // kalau sudah ada form, hapus dulu
+            $("#insertRow").remove();
+
+            const today = new Date();
+
+            const formattedStart =
+                ("0" + today.getDate()).slice(-2) + "-" +
+                ("0" + (today.getMonth() + 1)).slice(-2) + "-" +
+                today.getFullYear();
+
+                const html = `
+                <div class="row px-3" id="insertRow">
+                    <div class="col-2 pt-1 border border-body bg-success text-white font-weight-bold">
+                        New Contract
+                    </div>
+
+                    <div class="col-2 pt-1 border border-body">
+                        <input type="text"
+                            class="form-control form-control-sm fc-datepicker"
+                            id="new_start_contract"
+                            value="${formattedStart}">
+                    </div>
+
+                    <div class="col-2 pt-1 border border-body">
+                        <input type="text"
+                            class="form-control form-control-sm fc-datepicker"
+                            id="new_end_contract">
+
+                        <h6 id="warning_fill2"
+                            style="display:none;color:red">
+                            Please fill this
+                        </h6>
+                    </div>
+
+                    <div class="col-6 pt-1 border border-body">
+                        <button class="btn btn-warning btn-sm"
+                            onclick="cancelInsert()">
+                            Cancel
+                        </button>
+
+                        <button class="btn btn-primary btn-sm"
+                            onclick="saveInsert(${enroll_id},${contractId})">
+                            Save
+                        </button>
+                    </div>
+                </div>`;
+
+                // sisipkan tepat sebelum baris kontrak yang dipilih
+                $("#deleteButton-"+contractId)
+                    .closest(".row")
+                    .before(html);
+
+                $('.fc-datepicker').datepicker({
+                    showOtherMonths: true,
+                    selectOtherMonths: true,
+                    dateFormat: 'dd-mm-yy'
+                });
+            }
+        function cancelInsert(){
+            $("#insertRow").remove();
+        }
+        function saveInsert(enroll_id, contractId) {
+
+        var start = $("#new_start_contract").val();
+        var end   = $("#new_end_contract").val();
+
+        if(start == ""){
+            alert("Tanggal mulai harus diisi");
+            return;
+        }
+
+        if(end == ""){
+            $("#warning_fill2").show();
+            return;
+        }else{
+            $("#warning_fill2").hide();
+        }
+
+        $.ajax({
+            url: "{{ route('hris.hrd.new_employee_contract1') }}", // sesuaikan route
+            type: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                id: enroll_id,
+                contract: start,
+                end_contract: end
+            },
+            beforeSend: function () {
+                $(".btn-primary").prop("disabled", true).text("Saving...");
+            },
+            success: function (res) {
+
+                alert("Contract berhasil ditambahkan");
+
+                $("#insertRow").remove();
+
+                // kalau punya fungsi reload kontrak
+                // loadContract(enroll_id);
+
+                // atau
+                getDetail(enroll_id);
+                datatable.ajax.reload();
+                table_on_process.ajax.reload();
+            },
+            error: function (xhr) {
+                alert("Terjadi kesalahan");
+                console.log(xhr.responseText);
+            },
+            complete: function () {
+                $(".btn-primary").prop("disabled", false).text("Save");
+            }
+        });
+    }
+
 
     function editContract(enroll_id, kontrak_awal, kontrak_akhir, contractId) {
         // Jika sedang mengedit baris lain, kembalikan tampilannya

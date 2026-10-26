@@ -217,6 +217,7 @@ $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . 
     }
     public function ajax_periksaenroll_id(Request $request)
     {
+        // dd( $request->enroll_id,$request->enroll_id_old);
         $enroll_id = $request->enroll_id;
         $nik = strtoupper($request->nik);
 
@@ -298,8 +299,10 @@ $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . 
     // }
     public function ajax_periksanik(Request $request)
 {
+    // dd($request->enroll_id, $request->nik,$request->nik_old);
     $enroll_id = $request->enroll_id;
     $nik = strtoupper($request->nik);
+    $nik_old = strtoupper($request->nik_old);
     $site_nirwana_id = preg_replace('/[^A-Z]/', '', substr($nik, 0, 3));
 
     // ambil karakter ke-6 dst
@@ -333,7 +336,7 @@ $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . 
     // CEK NIK SUDAH ADA / BELUM
     // =========================
 
-    $query =  EmployeeAtribut::where('nik', '=', $nik)->orwhere('enroll_id', '=', $enroll_id_nik)->count();
+    $query =  EmployeeAtribut::where('nik', '=', $nik)->orwhere('enroll_id', '=', $enroll_id_nik)->where('nik', '!=', $nik_old)->count();
     // dd($query->toSql(), $query->getBindings());
             if ($query > 0) {
                 return false;
@@ -417,6 +420,7 @@ $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . 
 
                 $query =  EmployeeAtribut::whereRaw('status_aktif is not null' . $inDepartment . '' . $inSubDepartment . '')->where(function ($query) use ($search) {
                     $query->where('employee_id', 'LIKE', $search)
+                        ->orWhereRaw('SUBSTRING(nik, 4) LIKE ?', ["%{$search}%"])
                         ->orWhere('nik', $search)
                         ->orWhere('enroll_id', $search)
                         ->orWhere('employee_name', 'LIKE', "%{$search}%")
@@ -444,6 +448,7 @@ $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . 
 
                 $totalData = EmployeeAtribut::whereRaw('status_aktif is not null' . $inDepartment . '' . $inSubDepartment . '')->where(function ($query) use ($search) {
                     $query->where('employee_id', $search)
+                        ->orWhereRaw('SUBSTRING(nik, 4) LIKE ?', ["%{$search}%"])
                         ->orWhere('nik', $search)
                         ->orWhere('enroll_id', $search)
                         ->orWhere('employee_name', 'LIKE', "%{$search}%")
@@ -642,6 +647,7 @@ $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . 
 
                 $query =  EmployeeAtribut::whereRaw('status_aktif is not null' . $inSearchData . '' . $inSearchNoKTP . '' . $inSearchIbuKandung . '')->where(function ($query) use ($search) {
                     $query->where('employee_id', $search)
+                        ->orWhereRaw('SUBSTRING(nik, 4) LIKE ?', ["%{$search}%"])
                         ->orWhere('nik', $search)
                         ->orWhere('enroll_id', $search)
                         ->orWhere('employee_name', 'LIKE', "%{$search}%")
@@ -659,6 +665,7 @@ $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . 
 
                 $totalData = EmployeeAtribut::whereRaw('status_aktif is not null' . $inSearchData . '' . $inSearchNoKTP . '' . $inSearchIbuKandung . '')->where(function ($query) use ($search) {
                     $query->where('employee_id', 'LIKE', "%{$search}%")
+                        ->orWhereRaw('SUBSTRING(nik, 4) LIKE ?', ["%{$search}%"])
                         ->orWhere('nik', $search)
                         ->orWhere('enroll_id', $search)
                         ->orWhere('employee_name', 'LIKE', "%{$search}%")
@@ -824,6 +831,7 @@ $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . 
                 $search = $request->input('search.value');
                 $query =  EmployeeAtribut::whereIn('enroll_id', $request->checked_employees)->where(function ($query) use ($search) {
                     $query->where('employee_id', 'LIKE', $search)
+                        ->orWhereRaw('SUBSTRING(nik, 4) LIKE ?', ["%{$search}%"])
                         ->orWhere('nik', $search)
                         ->orWhere('enroll_id', $search)
                         ->orWhere('employee_name', 'LIKE', "%{$search}%")
@@ -839,6 +847,7 @@ $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . 
 
                 $totalData = EmployeeAtribut::whereIn('enroll_id', $request->checked_employees)->where(function ($query) use ($search) {
                     $query->where('employee_id', $search)
+                        ->orWhereRaw('SUBSTRING(nik, 4) LIKE ?', ["%{$search}%"])
                         ->orWhere('nik', $search)
                         ->orWhere('enroll_id', $search)
                         ->orWhere('employee_name', 'LIKE', "%{$search}%")
@@ -1055,6 +1064,7 @@ $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . 
 
                 $query =  EmployeeAtribut::whereRaw('status_aktif is not null' . $inSearchData . '' . $inSearchNoKTP . '' . $inSearchIbuKandung . '')->where(function ($query) use ($search) {
                     $query->where('employee_id', $search)
+                        ->orWhereRaw('SUBSTRING(nik, 4) LIKE ?', ["%{$search}%"])
                         ->orWhere('nik', $search)
                         ->orWhere('enroll_id', $search)
                         ->orWhere('employee_name', 'LIKE', "%{$search}%")
@@ -1072,6 +1082,7 @@ $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . 
 
                 $totalData = EmployeeAtribut::whereRaw('status_aktif is not null' . $inSearchData . '' . $inSearchNoKTP . '' . $inSearchIbuKandung . '')->where(function ($query) use ($search) {
                     $query->where('employee_id', 'LIKE', "%{$search}%")
+                        ->orWhereRaw('SUBSTRING(nik, 4) LIKE ?', ["%{$search}%"])
                         ->orWhere('nik', $search)
                         ->orWhere('enroll_id', $search)
                         ->orWhere('employee_name', 'LIKE', "%{$search}%")
@@ -1441,6 +1452,9 @@ $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . 
         $rt = $request->rt;
         $rw = $request->rw;
         $kode_pos = $request->kode_pos;
+        $enroll_id_old = $request->enroll_id_old;
+         $hasil = $enroll_id - $enroll_id_old;
+        //  dd($hasil);
 
         $timestamp = Carbon::now();
         $site_nirwana_name =  DepartmentAll::select('site_nirwana_name')
@@ -1462,9 +1476,9 @@ $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . 
             ->first();
 
 
-        $query = EmployeeAtribut::whereRaw('enroll_id = "' . $enroll_id . '"')->count();
-        MasterDataAbsenKehadiran::where('enroll_id', $enroll_id)->update([
-            'nik' => $request->nik
+        $query = EmployeeAtribut::whereRaw('enroll_id = "' . $enroll_id_old . '"')->count();
+        MasterDataAbsenKehadiran::where('enroll_id',  $enroll_id_old)->update([
+            'nik' => $request->nik , 'enroll_id' => $request->enroll_id
         ]);
         //update master
         // $kontrak_awal=DB::select("select max(contract) contract from employee_contract where enroll_id='$enroll_id'")[0]->contract;
@@ -1529,7 +1543,7 @@ $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . 
         }
 
         if ($query > 0) {
-            $query = EmployeeAtribut::whereRaw('enroll_id = "' . $enroll_id . '"')
+            $query = EmployeeAtribut::whereRaw('enroll_id = "' . $enroll_id_old . '"')
                 ->update([
                     'employee_name' => $employee_name,
                     'jenis_kelamin' => $jenis_kelamin,
@@ -1619,6 +1633,23 @@ $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . 
                     'old_data' => null,
                     'new_data' => json_encode($request->all()),
                 ]);
+                // dd($enroll_id,$enroll_id_old);
+
+                // $hasil =
+                if ($hasil != 0) {
+
+                    DB::table('employee_contract')
+
+                                            ->where('enroll_id', $enroll_id_old)
+                                            ->update([
+                                                'enroll_id' => $enroll_id,
+                                                'updated_at' => $timestamp
+                                            ]);
+
+                    }
+
+// dd('TIDAK MASUK IF');
+                // dd($hasil);
 
 
             info('Karyawan dengan nama ' . $employee_name . ' dari departemen ' . $sub_dept_name->sub_dept_name . ' telah di update oleh ' . $operator . ' dengan tanggal resign ' . $tanggal_resign);
@@ -2143,7 +2174,7 @@ $employee = EmployeeAtribut::whereRaw('status_aktif!=""' . $inDepartment . '' . 
         $data = Excel::toArray([], $request->file('excel_file'));
         $arrayEmployee = [];
         for ($i = 5; $i < count($data[0]); $i++) {
-            $department = DepartmentAll::where('status', 'AKTIF')->where('site_nirwana_id', 'NAG')->where('department_name', $data[0][$i][9])->where('sub_dept_name', $data[0][$i][11])->count();
+            $department = DepartmentAll::where('status', 'AKTIF')->whereIn('site_nirwana_id', ['NAG','NAK'])->where('department_name', $data[0][$i][9])->where('sub_dept_name', $data[0][$i][11])->count();
             $employee = EmployeeAtribut::where('enroll_id', $data[0][$i][1])->count();
 
             if ($department == 0 && ($employee == 1 || $employee == 0)) {

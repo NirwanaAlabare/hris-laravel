@@ -114,7 +114,7 @@
                             <div class="form-group">
                                 <label><small><b>Tanggal Lembur</b></small></label>
                                 <input type="date" class="form-control" id="tgl_lembur" name="tgl_lembur"
-                                    value="{{ date('Y-m-d') }}" onchange="dataTableReload()">
+                                    value="{{ date('Y-m-d') }}" onchange="cekTanggalLembur();dataTableReload()">
                                 <input type="hidden" class="form-control" id="tgl_filter" name="tgl_filter"
                                     value="{{ date('Y-m-d') }}" onchange="dataTableReload()" readonly>
                                 <input type="hidden" class="form-control" id="user" name="user"
@@ -283,16 +283,62 @@
         }
     </style>
     <script>
+         function cekTanggalLembur() {
+            const loginUser = "{{ $user }}";
+
+            if (loginUser === 'dev_hris' || loginUser === 'Gaga' || loginUser === 'Rudy Aristian Fajar') {
+                return true;
+            }
+
+            let tglLembur = new Date($("#tgl_lembur").val());
+            tglLembur.setHours(0, 0, 0, 0);
+
+            // Hari ini
+            let hariIni = new Date();
+            hariIni.setHours(0, 0, 0, 0);
+
+            let minTanggal = new Date(hariIni);
+
+            if (hariIni.getDay() === 1) {
+                // Jika hari ini Senin, boleh sampai Jumat kemarin
+                minTanggal.setDate(minTanggal.getDate() - 4);
+            } else {
+                // Selain Senin, maksimal 2 hari ke belakang
+                minTanggal.setDate(minTanggal.getDate() - 2);
+            }
+
+            if (tglLembur < minTanggal) {
+                alert(
+                    hariIni.getDay() === 1
+                        ? "MAAF UNTUK TANGGAL INI SUDAH TIDAK BISA DIINPUT."
+                        : "MAAF UNTUK TANGGAL INI SUDAH TIDAK BISA DIINPUT."
+                );
+
+                $("#tgl_lembur").val(hariIni.toISOString().split("T")[0]);
+                return false;
+            }
+
+            return true;
+        }
         $('#cbojenis').on('change', function () {
             let jenis = $(this).val();
 
-            if (jenis == '1') { // insentif
-                $('#from_lembur').val('16:00');
-                $('#from_lembur').prop('readonly', true);
-            } else { // lembur
-                $('#from_lembur').val('');
-                $('#from_lembur').prop('readonly', false);
+            if (jenis == '1') {
+                fpFrom.setDate("16:00", true);
+
+                $("#from_lembur").css("pointer-events", "none");
+            } else {
+                fpFrom.clear();
+
+                $("#from_lembur").css("pointer-events", "auto");
             }
+            // if (jenis == '1') { // insentif
+            //     $('#from_lembur').val('16:00');
+            //     $('#from_lembur').prop('readonly', true);
+            // } else { // lembur
+            //     $('#from_lembur').val('');
+            //     $('#from_lembur').prop('readonly', false);
+            // }
         });
     </script>
 
@@ -362,7 +408,7 @@
 
 
         var html5QrcodeScanner = null;
-                flatpickr("#from_lembur", {
+        var fpFrom = flatpickr("#from_lembur", {
             enableTime: true,
             noCalendar: true,
             dateFormat: "H:i",

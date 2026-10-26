@@ -1231,7 +1231,12 @@ class DataAbsenPerijinanController extends AdminBaseController
         $email = $loggedAdmin->email;
         info('START REPLACE IZIN');
         info('Import Permohonan Perizinan by ' . $email);
-        $data=Excel::toArray([],request()->file('excel_file'));
+          $data = Excel::toArray([], request()->file('excel_file'));
+
+            // Samakan kolom index 6 menjadi null jika tidak ada
+            foreach ($data[0] as $key => $row) {
+                $data[0][$key][6] = $row[6] ?? null;
+            }
         $arrayPerizinan=[];
         for($i=4;$i<count($data[0]);$i++){
             if(count(EmployeeAtribut::where('enroll_id',$data[0][$i][1])->get())<1){

@@ -268,6 +268,18 @@ h1 {
                     <div class="card-header bg-primary p-3">
                         <div class="card-title">Permintaan Tenaga Kerja</div>
                     </div>
+                    <div class="mt-4 ml-4 mr-5 mb-0">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div clasl="" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                                        <div class="mt-5 p-0 d-flex">
+                                            <button class="btn btn-success" onclick="exportExcel()"><i class="fa fa-file-excel"></i> Baru Excel </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
                         <div class="m-0 p-0">
                             <div class="card-body m-0">
                                 <div class="panel panel-primary  px-3 py-2 pt-5">
@@ -470,27 +482,43 @@ h1 {
                                 <div class="col-md-12">
                                      <div class="radio-container">
                                         <label class="radio-wrapper">
-                                            <input type="radio" name="rencana_jabatan" value="manager" checked class="mr-2">
+                                            <input type="radio" name="rencana_jabatan" value="General Manager" checked class="mr-2">
+                                            <span>GENERAL MANAGER</span>
+                                        </label>
+                                        <label class="radio-wrapper">
+                                            <input type="radio" name="rencana_jabatan" value="Factory Manager" class="mr-2">
+                                            <span>FACTORY MANAGER</span>
+                                        </label>
+                                        <label class="radio-wrapper">
+                                            <input type="radio" name="rencana_jabatan" value="Manager" checked class="mr-2">
                                             <span>Manager</span>
                                         </label>
                                         <label class="radio-wrapper">
-                                            <input type="radio" name="rencana_jabatan" value="chief" class="mr-2">
+                                            <input type="radio" name="rencana_jabatan" value="Asst.Manager" class="mr-2">
+                                            <span>ASSISTANT MANAGER</span>
+                                        </label>
+                                        <label class="radio-wrapper">
+                                            <input type="radio" name="rencana_jabatan" value="Chief" class="mr-2">
                                             <span>Chief</span>
                                         </label>
                                         <label class="radio-wrapper">
-                                            <input type="radio" name="rencana_jabatan" value="spv" class="mr-2">
+                                            <input type="radio" name="rencana_jabatan" value="SPV" class="mr-2">
                                             <span>SPV</span>
                                         </label>
                                         <label class="radio-wrapper">
-                                            <input type="radio" name="rencana_jabatan" value="leader" class="mr-2">
+                                            <input type="radio" name="rencana_jabatan" value="Leader" class="mr-2">
                                             <span>Leader</span>
                                         </label>
                                         <label class="radio-wrapper">
-                                            <input type="radio" name="rencana_jabatan" value="staff" class="mr-2">
+                                            <input type="radio" name="rencana_jabatan" value="Staff" class="mr-2">
                                             <span>Staff</span>
                                         </label>
                                         <label class="radio-wrapper">
-                                            <input type="radio" name="rencana_jabatan" value="operator" class="mr-2">
+                                            <input type="radio" name="rencana_jabatan" value="Administrasi" class="mr-2">
+                                            <span>ADMINISTRASI</span>
+                                        </label>
+                                        <label class="radio-wrapper">
+                                            <input type="radio" name="rencana_jabatan" value="Operator" class="mr-2">
                                             <span>Operator</span>
                                         </label>
                                     </div>
@@ -1302,7 +1330,7 @@ h1 {
                 </div>
                 <div class="col-md-12">
                    <div class="radio-container">
-                    ${['manager','chief','spv','leader','staff','operator'].map(jabatan => `
+                    ${['General Manager','Factory Manager','Asst.Manager','Manager','Chief','SPV','Leader','Staff','Administrasi','Operator'].map(jabatan => `
                     <label class="radio-wrapper">
                                 <input type="radio" name="rencana_jabatan[${index}]" value="${jabatan}" ${data.rencana_jabatan == jabatan ? 'checked' : ''}>
                                 <span>
@@ -1775,7 +1803,8 @@ h1 {
                 },
                 processing: true,
                 serverSide: true,
-                ordering: false,
+                ordering: true,
+                order: [[0, 'desc']],
                 columns: [
                     { data: 'no_permintaan' },
                     { data: 'tanggal_pengajuan',
@@ -2573,6 +2602,55 @@ h1 {
             $("#uuid_master").val(null);
             $("#didelegasikan_enroll_id").val(null);
         }
+        function exportExcel() {
+             let status = "waiting_approval";
+
+            if ($("#tab-verifikasi").hasClass("active")) {
+                status = "approved";
+            } else if ($("#tab-reject").hasClass("active")) {
+                status = "cancel";
+            }
+           $.ajax({
+                url: "{{ route('permintaan_tenaga_kerja.export_exel_pengajuan_tk') }}",
+                type: "GET",
+                data: {
+                    status: status
+                },
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                beforeSend: function () {
+                    Swal.showLoading();
+                },
+                success: function (data, status, xhr) {
+
+                    Swal.close();
+
+                    let filename = "Permintaan_TK.xlsx";
+
+                    let disposition = xhr.getResponseHeader('Content-Disposition');
+                    if (disposition && disposition.indexOf('filename=') !== -1) {
+                        filename = disposition.split('filename=')[1].replace(/"/g, '');
+                    }
+
+                    let blob = new Blob([data]);
+                    let link = document.createElement('a');
+
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = filename;
+                    document.body.appendChild(link);
+
+                    link.click();
+
+                    document.body.removeChild(link);
+                },
+                error: function () {
+                    Swal.close();
+                    Swal.fire('Gagal', 'Export Excel gagal.', 'error');
+                }
+            });
+
+         }
         function searchData() {
             var selectEmployeeID = $('#selectEmployeeID').val();
         }

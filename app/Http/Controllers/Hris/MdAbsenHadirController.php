@@ -997,7 +997,18 @@ class MdAbsenHadirController extends AdminBaseController
                     ");
                 })
                 ->leftJoin('log_data_gagal_absen','master_data_absen_kehadiran.uuid','log_data_gagal_absen.uuid_master')
-                ->leftJoin('data_lembur','master_data_absen_kehadiran.uuid','data_lembur.uuid_master')
+                // ->leftJoin('data_lembur','master_data_absen_kehadiran.uuid','data_lembur.uuid_master')
+                 ->leftJoin('data_lembur', function ($join) {
+                    $join->on(
+                        'master_data_absen_kehadiran.nomor_form_lembur',
+                        '=',
+                        'data_lembur.nomor_form_lembur'
+                    )
+                    ->on(
+                        'master_data_absen_kehadiran.enroll_id',
+                        '=',
+                        'data_lembur.enroll_id'
+                    ); })
                 ->offset($start)
                 ->limit($limit)
                 ->orderBy('master_data_absen_kehadiran.tanggal_berjalan','asc')
@@ -1090,7 +1101,18 @@ class MdAbsenHadirController extends AdminBaseController
                         AND data_absen_perijinan.tanggal_akhir_ijin
                     ");
                 })
-                ->leftJoin('data_lembur','master_data_absen_kehadiran.uuid','data_lembur.uuid_master')
+                // ->leftJoin('data_lembur','master_data_absen_kehadiran.uuid','data_lembur.uuid_master')
+                 ->leftJoin('data_lembur', function ($join) {
+                    $join->on(
+                        'master_data_absen_kehadiran.nomor_form_lembur',
+                        '=',
+                        'data_lembur.nomor_form_lembur'
+                    )
+                    ->on(
+                        'master_data_absen_kehadiran.enroll_id',
+                        '=',
+                        'data_lembur.enroll_id'
+                    ); })
                 ->leftJoin('log_data_gagal_absen','master_data_absen_kehadiran.uuid','log_data_gagal_absen.uuid_master')
                 ->offset($start)
                 ->limit($limit)
@@ -2082,14 +2104,26 @@ class MdAbsenHadirController extends AdminBaseController
         $selectedEnrollId=$request->enroll_id;
         $inEnrollId='';
         $inEnrollsId='';
-        if($selectedEnrollId){
-            $enroll_id = implode(", ", $selectedEnrollId);
-            $allEnroll_id= '('.$enroll_id.')';
-            $inEnrollId = ' AND b.BadgeNumber IN '.$allEnroll_id.'';
-            $enrolls_id = implode(", ", $selectedEnrollId);
-            $allEnrolls_id= '('.$enroll_id.')';
-            $inEnrollsId = ' AND enroll_id IN '.$allEnroll_id.'';
+        // if($selectedEnrollId){
+        //     $enroll_id = implode(", ", $selectedEnrollId);
+        //     // $allEnroll_id= "('$enroll_id')";
+        //     $allEnroll_id = "('" . str_replace(',', "','", $enroll_id) . "')";
+        //     $inEnrollId = ' AND b.BadgeNumber IN '.$allEnroll_id.'';
+        //     $enrolls_id = implode(", ", $selectedEnrollId);
+        //     $allEnrolls_id= '('.$enroll_id.')';
+        //     $inEnrollsId = ' AND enroll_id IN '.$allEnroll_id.'';
+        // }
+        if ($selectedEnrollId) {
+            $ids = array_map(function ($id) {
+                return "'" . str_replace("'", "''", trim($id)) . "'";
+            }, (array) $selectedEnrollId);
+
+            $allEnroll_id = '(' . implode(',', $ids) . ')';
+
+            $inEnrollId  = ' AND b.BadgeNumber IN ' . $allEnroll_id;
+            $inEnrollsId = ' AND enroll_id IN ' . $allEnroll_id;
         }
+        // dd($tanggal_awal, $tanggal_akhir, $inEnrollId, $inEnrollsId,$allEnroll_id);
         $adaData = "ADA";
         $countData = MasterDataAbsenKehadiran::whereRaw("tanggal_berjalan >= '" . $tanggal_awal."' and tanggal_berjalan <= '".$tanggal_akhir."'".$inEnrollsId.'')->where(function($query){
             $query->whereColumn('mulai_jam_kerja','<','akhir_jam_kerja')->orWhereNull('mulai_jam_kerja');
@@ -3445,15 +3479,18 @@ class MdAbsenHadirController extends AdminBaseController
         $inEnrollsId='';
         if($enroll_id){
             $implodeEnrollId=implode(",", $enroll_id);
-            $allEnroll_id= '('.$implodeEnrollId.')';
+            // $allEnroll_id= "('$implodeEnrollId')";
+            $allEnroll_id = "('" . str_replace(',', "','", $implodeEnrollId) . "')";
             $inEnrollId = ' AND enroll_id IN '.$allEnroll_id.'';
             $inEnrollsId = ' AND b.Badgenumber IN '.$allEnroll_id.'';
         }
+        // dd($inEnrollsId);
         $kehadiran=MasterDataAbsenKehadiran::where('tanggal_berjalan','>=',$tanggal_awal)->where('tanggal_berjalan','<=',$tanggal_akhir)->whereRaw('tanggal_berjalan is not null'.$inEnrollId)
         ->where(function($query){
             $query->whereColumn('mulai_jam_kerja','>','akhir_jam_kerja')
             ->orWhereNull('mulai_jam_kerja');
-        })->get();
+        })
+        ->get();
         if(count($kehadiran) > 0 ) {
             $query = DB::connection('sqlsrv2')->table('CHECKINOUT as a')
             ->selectRaw("CONVERT(VARCHAR(10), a.CHECKTIME, 126) AS tanggal_absen,
@@ -3714,8 +3751,8 @@ class MdAbsenHadirController extends AdminBaseController
                         }
 
                         $z=[
-                            'enroll_id'=>$value4->enroll_id,
-                            'tanggal_berjalan'=> $value4->tanggal_berjalan,
+                            // 'enroll_id'=>$value4->enroll_id,
+                            // 'tanggal_berjalan'=> $value4->tanggal_berjalan,
                             'absen_masuk_kerja' => $absenIn,
                             'absen_pulang_kerja' => $absenOut,
                             'status_absen' => $status_absen,

@@ -667,6 +667,16 @@ class PenilaianKinerjaStaffController extends AdminBaseController
         }
         $periode = $date->format('ym'); // format yymm
         $judul_export = 'PA ' . $data_karyawan->employee_name . ' ' . $periode;
+         $joinDate = Carbon::parse($data_karyawan->join_date);
+        $contractEnd = Carbon::parse($contract_end);
+
+        $masaKerja = $joinDate->diff($contractEnd);
+
+        $data_penilaian->masa_kerja = [
+            'tahun' => $masaKerja->y,
+            'bulan' => $masaKerja->m,
+            'hari' => $masaKerja->d,
+        ];
 
         try {
             $pdf = PDF::loadview('hris/hrd/export_nilai_kinerja_karyawan_pdf_custom', [
@@ -1399,6 +1409,17 @@ class PenilaianKinerjaStaffController extends AdminBaseController
             $enroll_id = $karyawan->enroll_id;
             $contract = $karyawan->contract;
             $contract_end = $karyawan->contract_end;
+            $joinDate = Carbon::parse($karyawan->join_date);
+            //  dd($joinDate);
+            $contractEnd = Carbon::parse($contract_end);
+
+            $masaKerja = $joinDate->diff($contractEnd);
+
+            $karyawan->masa_kerja = [
+                'tahun' => $masaKerja->y,
+                'bulan' => $masaKerja->m,
+                'hari' => $masaKerja->d,
+            ];
             $surat_peringatan = SuratPeringatanKaryawan::where('enroll_id', $enroll_id)
             ->where(function ($query) use ($contract, $contract_end) {
                 $query->where('tanggal_mulai', '<=', $contract_end)

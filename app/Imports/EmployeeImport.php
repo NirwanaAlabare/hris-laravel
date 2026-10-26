@@ -26,12 +26,35 @@ class EmployeeImport implements ToModel, WithStartRow, WithCalculatedFormulas
     }
     public function model(array $row)
     {
-        $arrayDeptName=DepartmentAll::where('site_nirwana_id','NAG')->pluck('department_name')->toArray();
-        $arraySubDeptName=DepartmentAll::where('site_nirwana_id','NAG')->pluck('sub_dept_name')->toArray();
+        // dd($row);
+        $arrayDeptName=DepartmentAll::wherein('site_nirwana_id', ['NAG','NAK'])->pluck('department_name')->toArray();
+        $arraySubDeptName=DepartmentAll::wherein('site_nirwana_id', ['NAG','NAK'])->pluck('sub_dept_name')->toArray();
         $arrayEnrollId=EmployeeAtribut::pluck('enroll_id')->toArray();
         $dataArray=[];
-        $department=DepartmentAll::where('status','AKTIF')->where('site_nirwana_id','NAG')->where('department_name',$row[9])->where('sub_dept_name',$row[11])->count();
+        $department=DepartmentAll::where('status','AKTIF')->wherein('site_nirwana_id', ['NAG','NAK'])->where('department_name',$row[9])->where('sub_dept_name',$row[11])->count();
         $employee=EmployeeAtribut::where('enroll_id',$row[1])->count();
+        // $site_nirwana_id = strtoupper(substr($row[2], 0, 3));
+        // $site = [
+        //     'NAG' => 'PT. NIRWANA ALABARE GARMENT',
+        //     'NAK' => 'PT. NIRWANA ALABARE KNITTING',
+        // ];
+
+        // $site_nirwana_name = $site[$site_nirwana_id] ?? null;
+        $site_nirwana_name = $row[0];
+        $site = [
+                'PT. NIRWANA ALABARE GARMENT' => 'NAG' ,
+                'PT. NIRWANA ALABARE KNITTING' => 'NAK' ,
+                'PT. NIRWANA ALABARE GARMENT - DAGO' => 'NAGD',
+            ];
+
+        // $site_nirwana_id = strtoupper(preg_replace('/[0-9]+/', '', $row[2]));
+
+        // $site_nirwana_id = array_key_exists($site_nirwana_id, $site)
+        //     ? $site_nirwana_id
+        //     : 'NAG';
+
+        $site_nirwana_id = $site[$site_nirwana_name];
+        //  dd($site_nirwana_name,$site_nirwana_id);
         if($department==0 && ($employee==1 || $employee==0)){
             $status_department='red';
         }else{
@@ -41,12 +64,12 @@ class EmployeeImport implements ToModel, WithStartRow, WithCalculatedFormulas
                 $status_department='white';
             }
         }
-        $site_nirwana_id=preg_replace('/[0-9]+/', '', $row[2]);
+        // $site_nirwana_id=preg_replace('/[0-9]+/', '', $row[2]);
         $department_id='';
         $sub_dept_id='';
-        if(count(DepartmentAll::where('status','AKTIF')->where('site_nirwana_id','NAG')->where('department_name',$row[9])->where('sub_dept_name',$row[11])->get())>0){
-            $department_id=DepartmentAll::where('status','AKTIF')->where('site_nirwana_id','NAG')->where('department_name',$row[9])->where('sub_dept_name',$row[11])->pluck('department_id')[0];
-            $sub_dept_id=DepartmentAll::where('status','AKTIF')->where('site_nirwana_id','NAG')->where('department_name',$row[9])->where('sub_dept_name',$row[11])->pluck('sub_dept_id')[0];
+        if(count(DepartmentAll::where('status','AKTIF')->wherein('site_nirwana_id', ['NAG','NAK'])->where('department_name',$row[9])->where('sub_dept_name',$row[11])->get())>0){
+            $department_id=DepartmentAll::where('status','AKTIF')->wherein('site_nirwana_id', ['NAG','NAK'])->where('department_name',$row[9])->where('sub_dept_name',$row[11])->pluck('department_id')[0];
+            $sub_dept_id=DepartmentAll::where('status','AKTIF')->wherein('site_nirwana_id', ['NAG','NAK'])->where('department_name',$row[9])->where('sub_dept_name',$row[11])->pluck('sub_dept_id')[0];
         }
         if($row[15]==''|| $row[15]=='-'){
             $join_date=null;
@@ -126,8 +149,8 @@ class EmployeeImport implements ToModel, WithStartRow, WithCalculatedFormulas
             'status_kontrak_tetap'=>$row[5],
             'status_staff'=>$row[6],
             'status_jabatan'=>$row[7],
-            'site_nirwana_id'=>'NAG',
-            'site_nirwana_name'=>'PT. NIRWANA ALABARE GARMENT',
+            'site_nirwana_id'   => $site_nirwana_id,
+            'site_nirwana_name' => $site_nirwana_name,
             'department_id'=>$department_id,
             'department_name'=>$row[9],
             'sub_dept_id'=>$sub_dept_id,

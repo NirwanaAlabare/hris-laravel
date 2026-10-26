@@ -1286,8 +1286,10 @@ class RekapPerhitunganPayrollController extends AdminBaseController
 
     public function recap_labor_cost_2()
     {
-        ini_set('max_execution_time', 0);
-        ini_set('memory_limit', '1024000000000000M');
+        set_time_limit(0); 
+    
+    // Gunakan -1 untuk unlimited RAM, atau misal '2048M' (2GB)
+    ini_set('memory_limit', '-1');
         $periode_kehadiran = request()->daterange;
         $arrperiode = explode(" s/d ", $periode_kehadiran);
         $tanggal_awal = $arrperiode[0];
@@ -1306,7 +1308,19 @@ class RekapPerhitunganPayrollController extends AdminBaseController
             $inStatusStaff = ' AND  (b.status_staff = "' . $status_staff . '")';
             $staffnonstaff = $status_staff;
         }
-        return Excel::download(new RecapDailyLaborCostExport($tanggal_awal, $tanggal_akhir, $staffnonstaff, $inEnrollId, $inStatusStaff), 'Laporan_Penerimaan FG_Stok.xlsx');
+
+        $timeAkhir = strtotime($tanggal_akhir);
+
+        $tahunBulan = date('ym', $timeAkhir); // Contoh: 2609
+        $tglAkhir   = date('d', $timeAkhir); // Contoh: 24
+
+        // Hasil nama file: "2609 labor cost - 24.xlsx" (Aman dari karakter '/')
+        $fileName = $tahunBulan . ' labor cost - ' . $tglAkhir . '.xlsx';
+
+        return Excel::download(
+            new RecapDailyLaborCostExport($tanggal_awal, $tanggal_akhir, $staffnonstaff, $inEnrollId, $inStatusStaff), 
+            $fileName
+        );
     }
 
     public function recap_labor_cost()

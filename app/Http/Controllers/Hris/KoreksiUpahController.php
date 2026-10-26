@@ -331,7 +331,7 @@ class KoreksiUpahController extends AdminBaseController
         $format_tanggal = \Carbon\Carbon::createFromFormat('m/d/Y', $tanggal_awal)->format('Y-m-d');
 
 
-         $findDT = DataKoreksiUpah::where('enroll_id',$request->enroll_id)->where('periode_tanggal_koreksi',$request->periode_tanggal_koreksi)
+         $findDT = DataKoreksiUpah::where('enroll_id',$request->enroll_id)->where('periode_tanggal_koreksi',$request->periode_tanggal_koreksi)->where('tanggal_koreksi',$request->tanggal_koreksi)
             ->where('jenis_koreksi',$request->jenis_koreksi)->count();
             if($findDT > 0) {
             $query = false;

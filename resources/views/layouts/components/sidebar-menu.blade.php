@@ -104,6 +104,10 @@
                  && $loggedAdmin->email != "Gabby")
                 <li><a class="slide-item" href="{{route('hris.jurnal.index')}}"><span> Jurnal</span></a></li>
                 @endif
+                 @if ($loggedAdmin->email != "mandy@ptnag.com"
+                 && $loggedAdmin->email != "Gabby")
+                <li><a class="slide-item" href="{{route('hris.jurnal.jurnalakhir')}}"><span> Jurnal akhir</span></a></li>
+                @endif
             </ul>
 
         </li>
@@ -115,11 +119,16 @@
         $isSuperadmin = $loggedAdmin->role_user == "superadmin";
         $isAlex = $email == 'alex.herdian@ptnag.com';
         $isReza = $email == 'reza';
+        $isRiana = $email == 'riana';
         $isDevHris = $email == 'dev_hris';
         $ismandy= $email == 'mandy@ptnag.com';
         $isGabby= $email == 'Gabby';
         $isSteven = $email == 'steven';
-        $showPayrollMenu = $isSuperadmin || $isAlex || $isReza || $isDevHris  || $ismandy || $isGabby || $isSteven;
+        $isCompliance = $email == 'hrdc';
+        $ismega = $email == 'mega';
+        $isWilly = $email == 'willy';
+        $showPayrollCompliance =  $isCompliance || $ismega || $isWilly;
+        $showPayrollMenu = $isSuperadmin || $isAlex || $isReza || $isDevHris  || $ismandy || $isGabby || $isSteven|| $isRiana;
         @endphp
 
         @if ($showPayrollMenu )
@@ -129,7 +138,7 @@
                 <span class="side-menu__label">Payroll</span><i class="angle fa fa-angle-right"></i>
             </a>
             <ul class="slide-menu">
-                @if (!$isReza && !$ismandy && !$isGabby && !$isSteven)
+                @if (!$isReza && !$ismandy && !$isGabby && !$isSteven && !$isRiana)
                 <li><a class="slide-item" href="{{ route('hris.gradingsalary.index') }}"><span> Grading
                             Salary</span></a></li>
                 {{-- <li><a class="slide-item" href="{{ route('hris.employeegrading.index') }}"><span> Salary
@@ -140,7 +149,7 @@
                             Karyawan baru</span></a></li>
                 @endif
 
-                @if ($showPayrollMenu )
+                @if ($showPayrollMenu && !$showPayrollCompliance)
                 <li><a class="slide-item" href="{{ route('hris.rekapperhitunganpayroll.index') }}"><span> Laporan
                             Payroll</span></a></li>
                 @endif
@@ -154,6 +163,10 @@
                 <li><a class="slide-item" href="{{ route('hris.aktifitasperubahan.index') }}"><span> Aktifitas
                             Perubahan</span></a></li>
                 @endif --}}
+                @if ($showPayrollCompliance)
+                <li><a class="slide-item" href="{{ route('hris.rekapperhitunganpayroll_baru.index') }}"><span> Laporan
+                            Payroll</span></a></li>
+                @endif
             </ul>
         </li>
         @endif

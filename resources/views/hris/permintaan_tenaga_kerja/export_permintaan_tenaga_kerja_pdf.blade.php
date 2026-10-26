@@ -299,24 +299,27 @@
         </thead>
     </table>
     @php
-        $jabatanList = ['Manager', 'Chief', 'SPV', 'Leader', 'Staff', 'Operator'];
-    @endphp
+    $jabatanList = ['General Manager','Factory Manager','Manager','Asst.Manager', 'Chief', 'SPV', 'Leader', 'Staff', 'Operator', 'Administrasi'];
+    // Bagi daftar jabatan menjadi 2 baris (maksimal 5 item per baris)
+    $rows = array_chunk($jabatanList, 5);
+@endphp
 
-    <table width="100%">
-        <thead>
-            <tr>
-                <td style="vertical-align: middle; font-size: 8pt; border-bottom: 1px solid ; border-right: 1px solid; border-left: 1px solid; text-align: center; border-right: 1px solid; width:5%; height: 20px; font-weight: 800;"> 5</td>
-                <td style="vertical-align: middle; font-size: 8pt; border-bottom: 1px solid ; border-right: 1px solid; border-left: 1px solid; width:20%; padding-left:5px; font-weight: 800;">Rencana Jabatan</td>
-                <td style="vertical-align: middle; font-size: 8pt; border-bottom: 1px solid ; border-right: 1px solid; border-left: 1px solid; padding-left:5px;">
-                    <table width="100%">
+<table width="100%">
+    <thead>
+        <tr>
+            <td style="vertical-align: middle; font-size: 8pt; border-bottom: 1px solid ; border-right: 1px solid; border-left: 1px solid; text-align: center; width:5%; height: 20px; font-weight: 800;">5</td>
+            <td style="vertical-align: middle; font-size: 8pt; border-bottom: 1px solid ; border-right: 1px solid; border-left: 1px solid; width:20%; padding-left:5px; font-weight: 800;">Rencana Jabatan</td>
+            <td style="vertical-align: middle; font-size: 8pt; border-bottom: 1px solid ; border-right: 1px solid; border-left: 1px solid; padding: 3px 5px;">
+                <table width="100%" cellpading="0" cellspacing="0">
+                    @foreach($rows as $row)
                         <tr>
-                            @foreach($jabatanList as $jabatan)
-                                <td style="width: 16.66%; text-align: left;">
-                                    <table>
+                            @foreach($row as $jabatan)
+                                <td style="padding: 2px 4px;">
+                                    <table cellpading="0" cellspacing="0">
                                         <tr>
                                             <td style="font-size: 8pt; white-space: nowrap;">{{ $jabatan }}</td>
                                             <td style="padding-left: 3px;">
-                                                <div style="height: 17px; width: 17px; border: 2px solid black; text-align: center; font-size: 15px; line-height: 15px;">
+                                                <div style="height: 14px; width: 14px; border: 1px solid black; text-align: center; font-size: 11px; line-height: 12px;">
                                                     @if(strtolower($value->rencana_jabatan) == strtolower($jabatan))
                                                         ✔
                                                     @endif
@@ -327,11 +330,12 @@
                                 </td>
                             @endforeach
                         </tr>
-                    </table>
-                </td>
-            </tr>
-        </thead>
-    </table>
+                    @endforeach
+                </table>
+            </td>
+        </tr>
+    </thead>
+</table>
 
 <table width="100%" style="border-collapse: collapse;">
     <thead>

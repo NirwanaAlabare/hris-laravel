@@ -195,6 +195,14 @@
                             <th>Total Karyawan</th>
                         </tr>
                     </thead>
+                     <tfoot>
+                            <tr>
+                                <th colspan="9" style="text-align:right">
+                                    TOTAL KARYAWAN :
+                                </th>
+                                <th id="total_karyawan_dept"></th>
+                            </tr>
+                        </tfoot>
                 </table>
             </div>
         </div>
@@ -578,7 +586,7 @@
             paging: true,
             searching: true,
             destroy: true,
-            scrollX: true,
+            scrollX: false,
             ajax: {
                 url: '{{ route('fls.index') }}',
                 data: function(d) {
@@ -667,7 +675,22 @@
                         }
                     }
                 }
-            ]
+
+             ],
+            footerCallback: function () {
+                var api = this.api();
+
+                // Mengambil data dari kolom ke-10 (indeks 9: 'jml_org') pada halaman aktif
+                var total = api
+                    .column(9, { page: 'current' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return Number(a) + Number(b);
+                    }, 0);
+
+                // Menampilkan hasilnya ke tag <th id="total_karyawan_dept">
+                $('#total_karyawan_dept').html(total);
+            }
         });
 
         function dataTableReload() {

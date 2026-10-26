@@ -495,20 +495,36 @@ class GAController extends AdminBaseController
             }
 
             $query = $baseQuery
-                ->whereIn('department_id', $allowedDepartments)
-                ->groupBy('enroll_id', 'nik', 'employee_name')
-                ->orderBy('employee_name', 'asc')
-                ->get();
-        } elseif ($site_nirwana_id == 'NAK') {
+            ->where(function ($q) use ($allowedDepartments, $department_id) {
 
-            // NAK tidak pakai filter department
-            $query = $baseQuery
-                ->groupBy('enroll_id', 'nik', 'employee_name')
-                ->orderBy('employee_name', 'asc')
-                ->get();
-        }
+                // Filter berdasarkan department normal
+                $q->whereIn('department_id', $allowedDepartments);
 
-        return $query;
+                // Khusus ketika memilih DEP23,
+                // tambahkan karyawan dengan NIK SGT259962
+                if ($department_id == 'DEPNK02') {
+                    $q->orWhere('enroll_id', '9962');
+                }
+            })
+            ->groupBy('enroll_id', 'nik', 'employee_name')
+            ->orderBy('employee_name', 'asc')
+            // dd($query->toSql(), $query->getBindings());
+            ->get();
+
+    } elseif ($site_nirwana_id == 'NAK') {
+
+        // NAK tidak pakai filter department
+        $query = $baseQuery
+            ->when($department_id == 'DEPNK02', function ($q) {
+                 $q->orWhereIn('enroll_id', ['9962', '8738']);
+            })
+            ->groupBy('enroll_id', 'nik', 'employee_name')
+            ->orderBy('employee_name', 'asc')
+            ->get();
+    }
+
+    return $query;
+
     }
     public function get_province()
     {

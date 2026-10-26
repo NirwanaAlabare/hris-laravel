@@ -38,6 +38,16 @@ class ExportInsentifSewing_All implements FromView, WithEvents, ShouldAutoSize, 
     }
     public function view(): View
     {
+         $gaji = DB::select('
+            select salary_bulanan
+            from grading_salary
+            where kode_grade = "D"
+            and periode_umk = "2026-01"
+        ');
+
+        $salaryBulanan = $gaji[0]->salary_bulanan;
+        $gajiharian = round($salaryBulanan / 173);
+
         $data = DB::select("
         select
         tgl_lembur,
@@ -50,8 +60,28 @@ class ExportInsentifSewing_All implements FromView, WithEvents, ShouldAutoSize, 
         e.employee_name,
         e.status_staff,
         e.status_jabatan,
-        b.uuid_koreksi_upah as insentif,
+       (
+            (
+                TIMESTAMPDIFF(
+                    MINUTE,
+                    jam_lembur_awal_rencana,
+                    jam_lembur_akhir_rencana
+                ) - jam_lembur_istirahat
+            ) / 60
+        ) *
+        (
+            CASE
+                WHEN e.status_jabatan = 'Staff' THEN 25542
+                WHEN e.status_jabatan = 'SPV' THEN 25542
+                WHEN e.status_jabatan = 'Leader' THEN 25542
+                WHEN e.status_jabatan = 'Chief' THEN 29378
+                WHEN e.status_jabatan = 'Asst. Manager' THEN 38475
+                WHEN e.status_jabatan = 'Manager' THEN 43353
+                ELSE $gajiharian
+            END
+        ) AS insentif,
         a.line as bagian,
+        b.jenis,
         d.department_name as department,
         date_FORMAT(jam_lembur_awal_rencana,'%H:%i')jam_lembur_awal_rencana,
         date_FORMAT(jam_lembur_akhir_rencana,'%H:%i')jam_lembur_akhir_rencana,
@@ -70,7 +100,7 @@ class ExportInsentifSewing_All implements FromView, WithEvents, ShouldAutoSize, 
         inner join employee_atribut e on b.enroll_id = e.enroll_id
 	    inner join (select * from master_data_absen_kehadiran where tanggal_berjalan >= '$this->from' and tanggal_berjalan <= '$this->to') m on b.enroll_id = m.enroll_id and a.tgl_lembur = m.tanggal_berjalan
         inner join (select * from department_all where status='AKTIF' and site_nirwana_id IN ('NAG','NAK','NAGD'))d on a.line=d.sub_dept_name
-        where b.uuid_koreksi_upah!=''
+        where b.jenis ='1'
         order by tgl_lembur asc,line asc, employee_name asc
         ");
 
@@ -105,19 +135,18 @@ class ExportInsentifSewing_All implements FromView, WithEvents, ShouldAutoSize, 
         //     ->setHorizontal('center')
         //     ->setVertical('center');
     }
-
-    public function columnWidths(): array
+   public function columnWidths(): array
     {
         return [
-            'E' => 28,
-            'H' => 20,
+            'F' => 28,
+            'I' => 20,
         ];
     }
     public function columnFormats(): array
     {
         return [
             'A' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'G' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+            'H' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
         ];
     }
 }

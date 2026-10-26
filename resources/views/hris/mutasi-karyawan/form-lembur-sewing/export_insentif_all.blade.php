@@ -25,6 +25,7 @@
     <thead>
         <tr>
             <th style="border:1px solid black;font-weight:bold" align="center">Tanggal</th>
+            <th style="border:1px solid black;font-weight:bold" align="center">No Form</th>
             <th style="border:1px solid black;font-weight:bold" align="center">ID</th>
             <th style="border:1px solid black;font-weight:bold" align="center">STAFF/NON STAFF</th>
             <th style="border:1px solid black;font-weight:bold" align="center">NIK</th>
@@ -38,6 +39,7 @@
         @foreach ($data as $item)
             <tr>
                 <td style="border:1px solid black">{{PhpOffice\PhpSpreadsheet\Shared\Date::stringToExcel($item->tgl_lembur)}}</td>
+                <td style="border:1px solid black" align="center">{{ $item->no_form }}</td>
                 <td style="border:1px solid black" align="center">{{ $item->enroll_id }}</td>
                 <td style="border:1px solid black" align="center">{{ $item->status_staff }}</td>
                 <td style="border:1px solid black">{{ $item->nik }}</td>

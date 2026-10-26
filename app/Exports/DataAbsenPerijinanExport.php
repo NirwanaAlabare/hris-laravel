@@ -78,6 +78,7 @@ class DataAbsenPerijinanExport implements WithColumnFormatting, FromQuery, WithM
                                     ->whereBetween('master_data_absen_kehadiran.tanggal_berjalan', [$tanggalMulai, $tanggalSampai])
                                     // ->whereNotNull('master_data_absen_kehadiran.status_absen')
                                     ->whereNotNull('master_data_absen_kehadiran.nomor_absen_ijin')
+                                    ->where('master_data_absen_kehadiran.nomor_absen_ijin', 'not like', 'IKS/%')
                                     // ->whereNotIn('master_data_absen_kehadiran.status_absen', ['IKS','M','TL'])
                                     ->where(function($q){
                                         $q->whereNotIn('master_data_absen_kehadiran.status_absen', ['IKS','M','TL'])
@@ -106,7 +107,7 @@ class DataAbsenPerijinanExport implements WithColumnFormatting, FromQuery, WithM
         $nik = $Data->nik;
         $employee_name = $Data->employee_name;
         $status_staff = $Data->status_staff;
-        $nama_hari = $Data->nama_hari;
+        $nama_hari = Carbon::parse($Data->tanggal_berjalan)->locale('id')->translatedFormat('l');
         $absen_alasan = $Data->absen_alasan;
         $nama_ijin_payroll = $Data->nama_ijin_payroll;
         $nama_absen_ijin = $Data->nama_absen_ijin;

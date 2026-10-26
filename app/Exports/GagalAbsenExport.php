@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\DB;
 
 use Auth;
 
-class GagalAbsenExport implements FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle
+class GagalAbsenExport implements FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle,WithColumnFormatting
 {
     use Exportable;
 
@@ -153,7 +153,7 @@ class GagalAbsenExport implements FromQuery, WithMapping, ShouldAutoSize, WithEv
         $status_absen = $Kehadiran->status_absen;
 
         return [
-            \Carbon\Carbon::parse($Kehadiran->tanggal_berjalan)->format('d-m-Y'),
+            Date::dateTimeToExcel(\Carbon\Carbon::parse($Kehadiran->tanggal_berjalan)),
             $Kehadiran->nama_hari,
             $Kehadiran->nik,
             $Kehadiran->enroll_id,
@@ -194,7 +194,9 @@ class GagalAbsenExport implements FromQuery, WithMapping, ShouldAutoSize, WithEv
                 $sheet->mergeCells('A1:D1');
                 $sheet->mergeCells('A2:D2');
                 $sheet->mergeCells('A3:D3');
-                $sheet->getStyle('A6:A1000')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+                // $sheet->getStyle('A6:A1000')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+                $highestRow = $sheet->getHighestRow();
+                $sheet->getStyle("A7:A{$highestRow}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
                 $sheet->setCellValue('A5', 'TANGGAL');
                 $sheet->setCellValue('B5', 'HARI');
                 $sheet->setCellValue('C5', 'NIP');
@@ -229,6 +231,12 @@ class GagalAbsenExport implements FromQuery, WithMapping, ShouldAutoSize, WithEv
                 $sheet->mergeCells('N5:N6');
 
             },
+        ];
+    }
+    public function columnFormats(): array
+    {
+        return [
+            'A' => NumberFormat::FORMAT_DATE_DDMMYYYY,
         ];
     }
 

@@ -118,7 +118,7 @@ class AnggaranMakanController extends AdminBaseController
             }
         }
         // $dept=DB::select('select department_id,department_name from department_all where site_nirwana_id="NAG" group by department_id');
-        $dept=DB::select('select department_id,department_name,sub_dept_id,sub_dept_name from department_all where site_nirwana_id="NAG" and status="AKTIF" ORDER BY department_name ASC,sub_dept_name ASC ');
+        $dept=DB::select('select department_id,department_name,sub_dept_id,sub_dept_name from department_all where(site_nirwana_id  ="NAG" or department_id ="DEPNK01") and status="AKTIF" ORDER BY department_name ASC,sub_dept_name ASC ');
         return view('hris/mutasi-karyawan/anggaran_makan/index', [
             'page' => 'dashboard-mut-karyawan',
             "subPageGroup" => "anggaran-makan",
@@ -354,6 +354,7 @@ class AnggaranMakanController extends AdminBaseController
             FROM estimasi_anggaran_makan a
             WHERE a.tanggal BETWEEN '$from' AND '$to'
             and a.keterangan ='LEMBUR'
+            AND a.dept NOT LIKE 'DEPNK%'
             AND (COALESCE(a.staff,0) > 0 OR COALESCE(a.non_staff,0) > 0)
             ORDER BY department, sub_dept_name");
             // dd( $data);
@@ -394,6 +395,7 @@ class AnggaranMakanController extends AdminBaseController
             FROM estimasi_anggaran_makan a
             WHERE a.tanggal BETWEEN '$from' AND '$to'
             and a.keterangan ='SHIFT MALAM'
+            AND a.dept NOT LIKE 'DEPNK%'
             AND (COALESCE(a.staff,0) > 0 OR COALESCE(a.non_staff,0) > 0)
                 ORDER BY department, sub_dept_name");
         $data6 = DB::select("SELECT 'TAKJIL' shift,
@@ -427,6 +429,7 @@ class AnggaranMakanController extends AdminBaseController
             WHERE a.tanggal BETWEEN '$from' AND '$to'
             AND (COALESCE(a.staff,0) > 0 OR COALESCE(a.non_staff,0) > 0)
             and a.keterangan ='TAKJIL'
+            AND a.dept NOT LIKE 'DEPNK%'
             ORDER BY department, sub_dept_name");
         $data3 = DB::select("SELECT
                 'LEMBUR TOTAL' AS shift,
@@ -454,6 +457,7 @@ class AnggaranMakanController extends AdminBaseController
             FROM estimasi_anggaran_makan a
             WHERE a.tanggal BETWEEN '$from' AND '$to'
             AND a.keterangan = 'LEMBUR'
+            AND a.dept NOT LIKE 'DEPNK%'
             AND EXISTS (
                 SELECT 1
                 FROM department_all b
@@ -486,6 +490,7 @@ class AnggaranMakanController extends AdminBaseController
             FROM estimasi_anggaran_makan a
             WHERE a.tanggal BETWEEN '$from' AND '$to'
             AND a.keterangan = 'SHIFT MALAM'
+            AND a.dept NOT LIKE 'DEPNK%'
             AND EXISTS (
                 SELECT 1
                 FROM department_all b
@@ -518,6 +523,7 @@ class AnggaranMakanController extends AdminBaseController
             FROM estimasi_anggaran_makan a
             WHERE a.tanggal BETWEEN '$from' AND '$to'
             AND a.keterangan = 'TAKJIL'
+            AND a.dept NOT LIKE 'DEPNK%'
             AND EXISTS (
                 SELECT 1
                 FROM department_all b
@@ -526,6 +532,354 @@ class AnggaranMakanController extends AdminBaseController
                 )");
 
                 $data5 = DB::select("SELECT
+                'TOTAL ALABARE' AS shift,
+                '' AS department,
+
+                SUM(COALESCE(a.non_staff,0)) AS non_staff,
+
+                /* ===== HARGA NON STAFF ===== */
+                SUM(
+                    CASE
+                        WHEN COALESCE(a.non_staff,0) > 0 THEN
+                            CASE
+                                WHEN a.keterangan = 'TAKJIL' THEN 5000
+                                ELSE 8000
+                            END
+                        ELSE 0
+                    END
+                ) AS harga,
+
+                /* ===== JUMLAH NON STAFF ===== */
+                SUM(
+                    CASE
+                        WHEN a.keterangan = 'TAKJIL' THEN 5000
+                        ELSE 8000
+                    END * COALESCE(a.non_staff,0)
+                ) AS jumlah,
+
+                SUM(COALESCE(a.staff,0)) AS staff,
+
+                /* ===== HARGA STAFF ===== */
+                SUM(
+                    CASE
+                        WHEN COALESCE(a.staff,0) > 0 THEN
+                            CASE
+                                WHEN a.keterangan = 'TAKJIL' THEN 5000
+                                ELSE 10000
+                            END
+                        ELSE 0
+                    END
+                ) AS harga2,
+
+                /* ===== JUMLAH STAFF ===== */
+                SUM(
+                    CASE
+                        WHEN a.keterangan = 'TAKJIL' THEN 5000
+                        ELSE 10000
+                    END * COALESCE(a.staff,0)
+                ) AS jumlah2,
+
+                SUM(COALESCE(a.staff,0) + COALESCE(a.non_staff,0)) AS jumlah_karyawan,
+
+                /* ===== TOTAL ===== */
+                SUM(
+                    CASE
+                        WHEN a.keterangan = 'TAKJIL'
+                            THEN (COALESCE(a.staff,0) + COALESCE(a.non_staff,0)) * 5000
+                        ELSE (COALESCE(a.non_staff,0) * 8000)
+                        + (COALESCE(a.staff,0) * 10000)
+                    END
+                ) AS total
+
+            FROM estimasi_anggaran_makan a
+            WHERE a.tanggal BETWEEN '$from' AND '$to'
+            AND a.dept NOT LIKE 'DEPNK%'
+            AND EXISTS (
+                SELECT 1
+                FROM department_all b
+                WHERE b.department_id = a.dept
+                AND b.site_nirwana_id IN ('NAG','NAK','NAGD')
+            )
+        ");
+
+       $dataknitting = DB::select("SELECT 'LEMBUR' shift,
+            a.tanggal,
+                DATE_FORMAT(a.tanggal, '%d %M %Y') AS tanggal_fix,
+                COALESCE(
+                    (SELECT d.department_name
+                    FROM department_all d
+                    WHERE d.department_id = a.dept
+                    LIMIT 1),
+                    'Unknown'
+                ) AS department,
+                COALESCE(
+                    (SELECT d.sub_dept_name
+                    FROM department_all d
+                    WHERE d.department_id = a.dept
+                    AND d.sub_dept_id = a.sub_dept
+                    LIMIT 1),
+                    'No Sub Dept'
+                ) AS sub_dept_name,
+            COALESCE(a.non_staff,0) AS non_staff,
+            IF(COALESCE(a.non_staff,0) > 0, 8000, 0) AS harga,
+            COALESCE(a.non_staff,0) * 8000 AS jumlah,
+            COALESCE(a.staff,0) AS staff,
+            IF(COALESCE(a.staff,0) > 0, 10000, 0) AS harga2,
+            COALESCE(a.staff,0) * 10000 AS jumlah2,
+            (COALESCE(a.staff,0) + COALESCE(a.non_staff,0)) AS jumlah_karyawan,
+            (COALESCE(a.staff,0) * 10000)
+            + (COALESCE(a.non_staff,0) * 8000) AS total
+            FROM estimasi_anggaran_makan a
+            WHERE a.tanggal BETWEEN '$from' AND '$to'
+            and a.keterangan ='LEMBUR'
+            AND a.dept LIKE 'DEPNK%'
+            AND (COALESCE(a.staff,0) > 0 OR COALESCE(a.non_staff,0) > 0)
+            ORDER BY department, sub_dept_name");
+            // dd( $data);
+        $dataknitting2 = DB::select("SELECT 'SHIFT MALAM' shift,
+            a.tanggal,
+                DATE_FORMAT(a.tanggal, '%d %M %Y') AS tanggal_fix,
+
+                -- Department (aman walau dept NULL)
+                COALESCE(
+                    (SELECT d.department_name
+                    FROM department_all d
+                    WHERE d.department_id = a.dept
+                    LIMIT 1),
+                    'Unknown'
+                ) AS department,
+
+                -- Sub Department (aman walau sub_dept NULL)
+                COALESCE(
+                    (SELECT d.sub_dept_name
+                    FROM department_all d
+                    WHERE d.department_id = a.dept
+                    AND d.sub_dept_id = a.sub_dept
+                    LIMIT 1),
+                    'No Sub Dept'
+                ) AS sub_dept_name,
+            COALESCE(a.non_staff,0) AS non_staff,
+            IF(COALESCE(a.non_staff,0) > 0, 8000, 0) AS harga,
+            COALESCE(a.non_staff,0) * 8000 AS jumlah,
+
+            COALESCE(a.staff,0) AS staff,
+            IF(COALESCE(a.staff,0) > 0, 10000, 0) AS harga2,
+            COALESCE(a.staff,0) * 10000 AS jumlah2,
+
+            (COALESCE(a.staff,0) + COALESCE(a.non_staff,0)) AS jumlah_karyawan,
+            (COALESCE(a.staff,0) * 10000)
+            + (COALESCE(a.non_staff,0) * 8000) AS total
+
+            FROM estimasi_anggaran_makan a
+            WHERE a.tanggal BETWEEN '$from' AND '$to'
+            and a.keterangan ='SHIFT MALAM'
+            AND a.dept LIKE 'DEPNK%'
+            AND (COALESCE(a.staff,0) > 0 OR COALESCE(a.non_staff,0) > 0)
+                ORDER BY department, sub_dept_name");
+        $dataknitting6 = DB::select("SELECT 'TAKJIL' shift,
+            a.tanggal,
+                DATE_FORMAT(a.tanggal, '%d %M %Y') AS tanggal_fix,
+                COALESCE(
+                    (SELECT d.department_name
+                    FROM department_all d
+                    WHERE d.department_id = a.dept
+                    LIMIT 1),
+                    'Unknown'
+                ) AS department,
+                COALESCE(
+                    (SELECT d.sub_dept_name
+                    FROM department_all d
+                    WHERE d.department_id = a.dept
+                    AND d.sub_dept_id = a.sub_dept
+                    LIMIT 1),
+                    'No Sub Dept'
+                ) AS sub_dept_name,
+            COALESCE(a.non_staff,0) AS non_staff,
+            IF(COALESCE(a.non_staff,0) > 0, 5000, 0) AS harga,
+            COALESCE(a.non_staff,0) * 5000 AS jumlah,
+            COALESCE(a.staff,0) AS staff,
+            IF(COALESCE(a.staff,0) > 0, 5000, 0) AS harga2,
+            COALESCE(a.staff,0) * 5000 AS jumlah2,
+            (COALESCE(a.staff,0) + COALESCE(a.non_staff,0)) AS jumlah_karyawan,
+            (COALESCE(a.staff,0) * 5000)
+            + (COALESCE(a.non_staff,0) * 5000) AS total
+            FROM estimasi_anggaran_makan a
+            WHERE a.tanggal BETWEEN '$from' AND '$to'
+            AND (COALESCE(a.staff,0) > 0 OR COALESCE(a.non_staff,0) > 0)
+            and a.keterangan ='TAKJIL'
+            AND a.dept LIKE 'DEPNK%'
+            ORDER BY department, sub_dept_name");
+        $dataknitting3 = DB::select("SELECT
+                'LEMBUR TOTAL' AS shift,
+                '' AS department,
+
+
+                SUM(COALESCE(a.non_staff, 0)) AS non_staff,
+            COUNT(DISTINCT CASE
+                WHEN COALESCE(a.non_staff,0) > 0
+                THEN COALESCE(NULLIF(a.sub_dept, ''), a.dept)
+            END) * 8000 AS harga,
+                SUM(COALESCE(a.non_staff, 0)) * 8000 AS jumlah,
+
+                SUM(COALESCE(a.staff, 0)) AS staff,
+                COUNT(DISTINCT CASE
+                WHEN COALESCE(a.staff,0) > 0
+                THEN COALESCE(NULLIF(a.sub_dept, ''), a.dept)
+            END) * 10000 AS harga2,
+                SUM(COALESCE(a.staff, 0)) * 10000 AS jumlah2,
+
+                SUM(COALESCE(a.staff, 0) + COALESCE(a.non_staff, 0)) AS jumlah_karyawan,
+
+                (SUM(COALESCE(a.non_staff, 0)) * 8000)
+                + (SUM(COALESCE(a.staff, 0)) * 10000) AS total
+            FROM estimasi_anggaran_makan a
+            WHERE a.tanggal BETWEEN '$from' AND '$to'
+            AND a.keterangan = 'LEMBUR'
+            AND a.dept LIKE 'DEPNK%'
+            AND EXISTS (
+                SELECT 1
+                FROM department_all b
+                WHERE b.department_id = a.dept
+                AND b.site_nirwana_id IN ('NAG','NAK','NAGD')
+        )");
+        $dataknitting4 = DB::select(" SELECT
+                'SHIFT MALAM TOTAL' AS shift,
+                '' AS department,
+
+                SUM(COALESCE(a.non_staff, 0)) AS non_staff,
+                COUNT(DISTINCT CASE
+                WHEN COALESCE(a.non_staff,0) > 0
+                THEN COALESCE(NULLIF(a.sub_dept, ''), a.dept)
+            END) * 8000 AS harga,
+                SUM(COALESCE(a.non_staff, 0)) * 8000 AS jumlah,
+
+                SUM(COALESCE(a.staff, 0)) AS staff,
+            COUNT(DISTINCT CASE
+                WHEN COALESCE(a.staff,0) > 0
+                THEN COALESCE(NULLIF(a.sub_dept, ''), a.dept)
+            END) * 10000 AS harga2,
+                SUM(COALESCE(a.staff, 0)) * 10000 AS jumlah2,
+
+                SUM(COALESCE(a.staff, 0) + COALESCE(a.non_staff, 0)) AS jumlah_karyawan,
+
+                (SUM(COALESCE(a.non_staff, 0)) * 8000)
+                + (SUM(COALESCE(a.staff, 0)) * 10000) AS total
+
+            FROM estimasi_anggaran_makan a
+            WHERE a.tanggal BETWEEN '$from' AND '$to'
+            AND a.keterangan = 'SHIFT MALAM'
+            AND a.dept LIKE 'DEPNK%'
+            AND EXISTS (
+                SELECT 1
+                FROM department_all b
+                WHERE b.department_id = a.dept
+                AND b.site_nirwana_id IN ('NAG','NAK','NAGD')
+                )");
+        $dataknitting7 = DB::select(" SELECT
+                'TAKJIL TOTAL' AS shift,
+                '' AS department,
+
+                SUM(COALESCE(a.non_staff, 0)) AS non_staff,
+                COUNT(DISTINCT CASE
+                WHEN COALESCE(a.non_staff,0) > 0
+                THEN COALESCE(NULLIF(a.sub_dept, ''), a.dept)
+            END) * 5000 AS harga,
+                SUM(COALESCE(a.non_staff, 0)) * 5000 AS jumlah,
+
+                SUM(COALESCE(a.staff, 0)) AS staff,
+            COUNT(DISTINCT CASE
+                WHEN COALESCE(a.staff,0) > 0
+                THEN COALESCE(NULLIF(a.sub_dept, ''), a.dept)
+            END) * 5000 AS harga2,
+                SUM(COALESCE(a.staff, 0)) * 5000 AS jumlah2,
+
+                SUM(COALESCE(a.staff, 0) + COALESCE(a.non_staff, 0)) AS jumlah_karyawan,
+
+                (SUM(COALESCE(a.non_staff, 0)) * 5000)
+                + (SUM(COALESCE(a.staff, 0)) * 5000) AS total
+
+            FROM estimasi_anggaran_makan a
+            WHERE a.tanggal BETWEEN '$from' AND '$to'
+            AND a.keterangan = 'TAKJIL'
+            AND a.dept LIKE 'DEPNK%'
+            AND EXISTS (
+                SELECT 1
+                FROM department_all b
+                WHERE b.department_id = a.dept
+                AND b.site_nirwana_id IN ('NAG','NAK','NAGD')
+                )");
+
+                $dataknitting5 = DB::select("SELECT
+                'TOTAL KNITTING' AS shift,
+                '' AS department,
+
+                SUM(COALESCE(a.non_staff,0)) AS non_staff,
+
+                /* ===== HARGA NON STAFF ===== */
+                SUM(
+                    CASE
+                        WHEN COALESCE(a.non_staff,0) > 0 THEN
+                            CASE
+                                WHEN a.keterangan = 'TAKJIL' THEN 5000
+                                ELSE 8000
+                            END
+                        ELSE 0
+                    END
+                ) AS harga,
+
+                /* ===== JUMLAH NON STAFF ===== */
+                SUM(
+                    CASE
+                        WHEN a.keterangan = 'TAKJIL' THEN 5000
+                        ELSE 8000
+                    END * COALESCE(a.non_staff,0)
+                ) AS jumlah,
+
+                SUM(COALESCE(a.staff,0)) AS staff,
+
+                /* ===== HARGA STAFF ===== */
+                SUM(
+                    CASE
+                        WHEN COALESCE(a.staff,0) > 0 THEN
+                            CASE
+                                WHEN a.keterangan = 'TAKJIL' THEN 5000
+                                ELSE 10000
+                            END
+                        ELSE 0
+                    END
+                ) AS harga2,
+
+                /* ===== JUMLAH STAFF ===== */
+                SUM(
+                    CASE
+                        WHEN a.keterangan = 'TAKJIL' THEN 5000
+                        ELSE 10000
+                    END * COALESCE(a.staff,0)
+                ) AS jumlah2,
+
+                SUM(COALESCE(a.staff,0) + COALESCE(a.non_staff,0)) AS jumlah_karyawan,
+
+                /* ===== TOTAL ===== */
+                SUM(
+                    CASE
+                        WHEN a.keterangan = 'TAKJIL'
+                            THEN (COALESCE(a.staff,0) + COALESCE(a.non_staff,0)) * 5000
+                        ELSE (COALESCE(a.non_staff,0) * 8000)
+                        + (COALESCE(a.staff,0) * 10000)
+                    END
+                ) AS total
+
+            FROM estimasi_anggaran_makan a
+            WHERE a.tanggal BETWEEN '$from' AND '$to'
+            AND a.dept LIKE 'DEPNK%'
+            AND EXISTS (
+                SELECT 1
+                FROM department_all b
+                WHERE b.department_id = a.dept
+                AND b.site_nirwana_id IN ('NAG','NAK','NAGD')
+            )
+        ");
+        $datatotal = DB::select("SELECT
                 'GRAND TOTAL' AS shift,
                 '' AS department,
 
@@ -592,14 +946,17 @@ class AnggaranMakanController extends AdminBaseController
                 FROM department_all b
                 WHERE b.department_id = a.dept
                 AND b.site_nirwana_id IN ('NAG','NAK','NAGD')
-            )
-        ");
+            ) ");
         $data3 = array_filter($data3, fn($r) => $r->total > 0);
         $data4 = array_filter($data4, fn($r) => $r->total > 0);
         $data7 = array_filter($data7, fn($r) => $r->total > 0);
+        $dataknitting3 = array_filter($dataknitting3, fn($r) => $r->total > 0);
+        $dataknitting4 = array_filter($dataknitting4, fn($r) => $r->total > 0);
+        $dataknitting7 = array_filter($dataknitting7, fn($r) => $r->total > 0);
+         $dataknitting5 = array_filter($dataknitting5, fn($r) => $r->total > 0);
 
             $fileName='Budgeting Makan '.$from.' '.rand();
-        $pdf = PDF::loadView('hris/mutasi-karyawan/anggaran_makan/approval_anggaran_makan',["data" => $data,"data2"=>$data2,"data3"=>$data3,"data4"=>$data4,"data6"=>$data6,"data7"=>$data7,"data4"=>$data4,"data5"=>$data5,"tanggal"=>$from ,"tanggal2"=>$to])->setPaper('A4', 'potrait')->stream($fileName.'.pdf',array('Attachment'=>0));
+        $pdf = PDF::loadView('hris/mutasi-karyawan/anggaran_makan/approval_anggaran_makan',["data" => $data,"data2"=>$data2,"data3"=>$data3,"data4"=>$data4,"data6"=>$data6,"data7"=>$data7,"data4"=>$data4,"data5"=>$data5,"dataknitting" => $dataknitting,"dataknitting2"=>$dataknitting2,"dataknitting3"=>$dataknitting3,"dataknitting4"=>$dataknitting4,"dataknitting6"=>$dataknitting6,"dataknitting7"=>$dataknitting7,"dataknitting4"=>$dataknitting4,"dataknitting5"=>$dataknitting5,"datatotal"=>$datatotal,"tanggal"=>$from ,"tanggal2"=>$to])->setPaper('A4', 'potrait')->stream($fileName.'.pdf',array('Attachment'=>0));
         return $pdf;
     }
     public function getEstimasiMakan(Request $request)

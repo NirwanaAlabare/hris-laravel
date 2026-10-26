@@ -1007,14 +1007,31 @@ h1 {
           function closeModalBuatPengajuanFormCoaching() {
             $("#ajax-modal-tambah-form-coaching").modal('hide');
         }
-
          function openModalBuatPengajuanFormCoaching() {
+
             $("#ajax-modal-tambah-form-coaching").modal('show');
+
             $('#title-ajax-modal-tambah-form-coaching').text('Buat Form Coaching');
+
             $('#btn-simpan-form-coaching')
-            .text('Simpan')
-            .data('mode', 'add')
-            .data('id', null);
+                .text('Simpan')
+                .data('mode','add')
+                .removeData('id');
+
+            // reset select2
+            $('#karyawanCoachingID')
+                .val(null)
+                .trigger('change');
+
+            // reset hidden input
+            $('#enroll_id_karyawan_coaching').val('');
+
+            // reset informasi karyawan
+            $('#create_coaching_employee_name').text('');
+            $('#create_coaching_employee_nik').text('');
+            $('#create_coaching_employee_sub_dept').text('');
+            $('#create_coaching_employee_department').text('');
+            $('#create_coaching_employee_jabatan').text('');
 
             var today = new Date();
             var dd = String(today.getDate()).padStart(2, '0');
@@ -1028,7 +1045,34 @@ h1 {
             $('#tanggal_akhir_ijin').val(today);
             $("#uuid_master").val(null);
             $("#didelegasikan_enroll_id").val(null);
+            // reset textarea
+            $('#deskripsi_coaching').val('');
+
+            // reset nomor form
+            $('#no_form_coaching').val('');
         }
+
+        //  function openModalBuatPengajuanFormCoaching() {
+        //     $("#ajax-modal-tambah-form-coaching").modal('show');
+        //     $('#title-ajax-modal-tambah-form-coaching').text('Buat Form Coaching');
+        //     $('#btn-simpan-form-coaching')
+        //     .text('Simpan')
+        //     .data('mode', 'add')
+        //     .data('id', null);
+
+        //     var today = new Date();
+        //     var dd = String(today.getDate()).padStart(2, '0');
+        //     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        //     var yyyy = today.getFullYear();
+
+        //     today = dd + '-' + mm + '-' + yyyy;
+
+        //     $('#tanggal_pengajuan').val(today);
+        //     $('#tanggal_mulai_ijin').val(today);
+        //     $('#tanggal_akhir_ijin').val(today);
+        //     $("#uuid_master").val(null);
+        //     $("#didelegasikan_enroll_id").val(null);
+        // }
 
        $('body').on('click', '#btn-simpan-form-coaching', function (event) {
             const mode = $(this).data('mode'); // 'add' atau 'edit'

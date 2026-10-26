@@ -792,6 +792,16 @@ class TindakanKedisiplinanController extends AdminBaseController
                 $q->where('pengajuan_kedisiplinan_karyawan.created_by', $email);
             });
         }
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('data_diajukan.employee_name', 'like', "%{$search}%")
+                ->orWhere('data_diajukan.nik', 'like', "%{$search}%")
+                ->orWhere('data_karyawan_bermasalah.employee_name', 'like', "%{$search}%")
+                ->orWhere('data_karyawan_bermasalah.nik', 'like', "%{$search}%")
+                ->orWhere('data_karyawan_bermasalah.department_name', 'like', "%{$search}%")
+                ->orWhere('data_karyawan_bermasalah.sub_dept_name', 'like', "%{$search}%");
+            });
+        }
 
         $data = $query->get();
         // Format response untuk DataTables
@@ -945,7 +955,7 @@ class TindakanKedisiplinanController extends AdminBaseController
             $q->where('employee_atribut.employee_name', 'like', '%' . $search . '%')
               ->orWhere('employee_atribut.nik', 'like', '%' . $search . '%');
         })
-        ->orderBy('pengajuan_coaching_karyawan.enroll_id_karyawan_coaching', 'ASC');
+        ->orderBy('pengajuan_coaching_karyawan.tanggal_pengajuan_coaching', 'DESC');
 
         $start = $request->input('start', 0);
         $length = $request->input('length', 10);

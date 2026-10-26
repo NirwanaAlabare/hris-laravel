@@ -196,7 +196,7 @@ table.dataTable td {
                     </thead>
                         <tfoot>
                             <tr>
-                                <th colspan="8" style="text-align:right">TOTAL KARYAWAN DEPT :</th>
+                                <th colspan="9" style="text-align:right">TOTAL KARYAWAN DEPT :</th>
                                 <th id="total_karyawan_dept"></th>
                             </tr>
                         </tfoot>
@@ -600,7 +600,7 @@ table.dataTable td {
             paging: true,
             searching: true,
             destroy: true,
-            scrollX: true,
+            scrollX: false,
             ajax: {
                 url: '{{ route('flns.index') }}',
                 data: function(d) {
@@ -686,16 +686,17 @@ table.dataTable td {
                     }
                 }
             ],
-            footerCallback: function (row, data, start, end, display) {
+             footerCallback: function () {
                 var api = this.api();
+
                 var total = api
-                    .column(8, { page: 'current' })
+                    .column(9, { page: 'current' })
                     .data()
                     .reduce(function (a, b) {
                         return Number(a) + Number(b);
                     }, 0);
 
-                $(api.column(8).footer()).html(total);
+                $('#total_karyawan_dept').html(total);
             }
         });
         function dataTableReload() {

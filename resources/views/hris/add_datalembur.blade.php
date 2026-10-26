@@ -136,7 +136,7 @@
         <div class="card-footer bg-primary m-0 p-1">
             <div class="text-white">
                 <button type="submit" id="btn-examimport" class="btn btn-app btn-orange mr-0 mt-0 mb-0" data-toggle="tooltip" title="Format File Excel"><i class="fa fa-file-excel-o"></i> Format Import</button>
-                <button type="button" class="btn btn-app btn-success mr-0 mt-0 mb-0" data-target="#import_data_lembur" data-toggle="modal"><i class="fa fa-file-excel-o"></i> Import</button>
+                <button type="button" class="btn btn-app btn-success mr-0 mt-0 mb-0" data-target="#import_data_lembur" data-toggle="modal"><i class="fa fa-file-excel-o"></i> Import Excel</button>
                 @if($loggedAdmin->email=='mega@ptnag.com' || $loggedAdmin->email=='indri@nag.nirwanaindonesia.com' || $loggedAdmin->email=='ersa@ptnag.com' || $loggedAdmin->email == 'dev_hris' || $loggedAdmin->email == 'rudy@ptnag.com')
                 <button type="button" class="btn btn-app btn-success mr-0 mt-0 mb-0" data-target="#import_data_lembur_from_nds" data-toggle="modal"><i class="fa fa-database"></i> Import HRIS</button>
                 @endif
@@ -817,7 +817,7 @@
                 },
                 success: function(data){
                     console.log(data);
-                    swal("", "Data lembur berhasil di import", "success");
+                    // swal("", "Data lembur berhasil di import", "success");
                     $('#tabel_overtime_from_nds').empty();
                     document.getElementById('tabel_overtime_from_nds').style.height='1px';
                     document.getElementById('import_data_lembur_button').style.visibility='hidden';
@@ -831,6 +831,13 @@
                     document.getElementById('btn-icon-refresh_new_form_lembur').style.visibility='hidden';
                     $('#new_nomor_form_lembur').val('');
                     document.getElementById('data_ada_dan_tidak').style.visibility='hidden';
+                    swal({
+                        title: "",
+                        text: "Data lembur berhasil di import",
+                        type: "success"
+                    }, function () {
+                        location.reload();
+                    });
                 },
                 error: function (xhr, status, error) {
                     swal("", "Data lembur gagal di import", "error");

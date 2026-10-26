@@ -45,6 +45,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use App\Exports\RekapCutiKaryawanKaryawanAll;
 use \avadim\FastExcelLaravel\Excel as FastExcel;
 use App\Models\Notification;
+use App\Exports\PermintaanTenagaKerja;
 
 
 class PermintaanTenagaKerjaController extends AdminBaseController
@@ -310,7 +311,7 @@ class PermintaanTenagaKerjaController extends AdminBaseController
         if($data_pengajuan){
             EmployeeAtribut::where('no_fptk', $data_pengajuan->no_permintaan)->update(['no_fptk' => null]);
             PengajuanPermintaanTk::where('id', $request->id_pengajuan)->delete();
-            SubPengajuanPermintaanTk::where('permintaan_tk_id', $request->no_permintaan)->delete();
+            SubPengajuanPermintaanTk::where('permintaan_tk_id', $data_pengajuan->no_permintaan)->delete();
         }
         return response()->json(['message' => 'Permintaan Tenaga Kerja berhasil dihapus.']);
     }
@@ -535,7 +536,7 @@ class PermintaanTenagaKerjaController extends AdminBaseController
     }
 
 
-    public function ajax_data_permintaan_tk(Request $request)
+        public function ajax_data_permintaan_tk(Request $request)
     {
         $email = Auth::guard('admin')->user()->email;
         $status = $request->input('status_pengajuan');
@@ -561,8 +562,7 @@ class PermintaanTenagaKerjaController extends AdminBaseController
             ->leftJoin('department_all as department_all2', function($join) {
                 $join->on(DB::raw('(SELECT bagian_kode FROM sub_pengajuan_permintaan_tk WHERE sub_pengajuan_permintaan_tk.no_permintaan_id = pengajuan_permintaan_tk.no_permintaan LIMIT 1)'), '=', 'department_all2.sub_dept_id');
             })
-            ->where('pengajuan_permintaan_tk.status_pengajuan', $status)
-            ->orderBy('pengajuan_permintaan_tk.created_at', 'asc')->distinct();
+            ->where('pengajuan_permintaan_tk.status_pengajuan', $status)->distinct();
 
 
         if (!in_array($email, [
@@ -600,10 +600,31 @@ class PermintaanTenagaKerjaController extends AdminBaseController
             ->count();
 
         // ambil data dengan limit
+        $orderColumnIndex = $request->input('order.0.column', null);
+        $orderDirection   = $request->input('order.0.dir', 'desc');
+
+        $columns = [
+            0 => 'pengajuan_permintaan_tk.no_permintaan',
+            1 => 'pengajuan_permintaan_tk.tanggal_pengajuan',
+            2 => 'employee_atribut.employee_name',
+            3 => 'department_all.department_name',
+            4 => 'department_all2.sub_dept_name',
+            5 => DB::raw('(SELECT SUM(jumlah_kebutuhan)
+                            FROM sub_pengajuan_permintaan_tk
+                            WHERE sub_pengajuan_permintaan_tk.no_permintaan_id = pengajuan_permintaan_tk.no_permintaan)'),
+            6 => DB::raw('(SELECT MIN(tanggal_kebutuhan)
+                            FROM sub_pengajuan_permintaan_tk
+                            WHERE sub_pengajuan_permintaan_tk.no_permintaan_id = pengajuan_permintaan_tk.no_permintaan)')
+        ];
+
+        if (isset($columns[$orderColumnIndex])) {
+            $baseQuery->orderBy($columns[$orderColumnIndex], $orderDirection);
+        } else {
+            $baseQuery->orderBy('pengajuan_permintaan_tk.created_at', 'desc');
+        }
         $start  = $request->input('start', 0);
         $length = $request->input('length', 10);
         $data = (clone $baseQuery)
-            ->orderBy('pengajuan_permintaan_tk.created_at', 'asc')
             ->skip($start)
             ->take($length)
             ->get();
@@ -617,6 +638,12 @@ class PermintaanTenagaKerjaController extends AdminBaseController
         'recordsFiltered' => $recordsFiltered,
         'data' => $data
     ]);
+    }
+    public function export_exel_pengajuan_tk (Request $request)
+    {
+        $status = $request->status;
+        // dd($status);
+        return Excel::download(new PermintaanTenagaKerja($status), 'Permintaan_Tenaga_Kerja.xlsx');
     }
 
 

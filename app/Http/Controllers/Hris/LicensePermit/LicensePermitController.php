@@ -91,24 +91,106 @@ class LicensePermitController extends AdminBaseController
             'dokumen_url'         => null,
         ]);
 
-        if ($request->hasFile('dokumen_file')) {
-                $file = $request->file('dokumen_file');
-                $filePath = $file->store('dokumen_legal', 'public');
-                $fileUrl = asset('storage/' . $filePath);
-                $pengajuan->update([
-                    'dokumen_url' => $fileUrl
-                ]);
-        }
-
+                // if ($request->hasFile('dokumen_file')) {
+        //         $file = $request->file('dokumen_file');
+        //         $filePath = $file->store('dokumen_legal', 'public');
+        //         $fileUrl = asset('storage/' . $filePath);
+        //         $pengajuan->update([
+        //             'dokumen_url' => $fileUrl
+        //         ]);
+        // }
+    if ($request->hasFile('dokumen_file')) {
+    $file = $request->file('dokumen_file');
+    // Ambil nama dokumen
+    $namaDokumen = $request->nama_dokumen;
+    // Ubah spasi dan karakter aneh jadi underscore
+    $namaFile = preg_replace('/[^A-Za-z0-9\-]/', '_', $namaDokumen);
+    // Ambil ekstensi file
+    $extension = $file->getClientOriginalExtension();
+    // Nama file final
+    $namaFileFinal = $namaFile . '.' . $extension;
+    // Jika file dengan nama sama sudah ada
+    if (Storage::disk('public')->exists('dokumen_legal/' . $namaFileFinal)) {
+        $namaFileFinal = $namaFile . '_' . time() . '.' . $extension;
+    }
+    // Simpan file
+    $filePath = $file->storeAs('dokumen_legal', $namaFileFinal, 'public');
+    // Simpan URL ke database
+    $fileUrl = asset('storage/' . $filePath);
+    $pengajuan->update([
+        'dokumen_url' => $fileUrl
+    ]);
+}
         // Simpan ke database dalam format JSON
-
         return response()->json([
             'message' => 'Pengajuan dokumen berhasil disimpan!',
             'data'    => $pengajuan
         ], 201);
 
     }
+public function renameFileLama()
+{
+    $dokumens = PengajuanDokumenLegal::all();
 
+    $berhasil = 0;
+    $gagal = 0;
+    $log = [];
+
+    foreach ($dokumens as $dokumen) {
+
+        if (!$dokumen->dokumen_url) {
+            continue;
+        }
+
+        // Nama file lama dari URL
+        $namaLama = basename($dokumen->dokumen_url);
+
+        // Nama file baru dari nama dokumen
+        $namaBaru = preg_replace('/[^A-Za-z0-9\-]/', '_', $dokumen->nama_dokumen);
+
+        // Ambil ekstensi file lama
+        $extension = pathinfo($namaLama, PATHINFO_EXTENSION);
+
+        $namaFileBaru = $namaBaru . '.' . $extension;
+
+        // Path fisik file
+        $pathLama = storage_path('app/public/dokumen_legal/' . $namaLama);
+        $pathBaru = storage_path('app/public/dokumen_legal/' . $namaFileBaru);
+
+        // Cek file lama ada atau tidak
+        if (!file_exists($pathLama)) {
+            $gagal++;
+            $log[] = "ID {$dokumen->id} gagal: file lama tidak ditemukan";
+            continue;
+        }
+
+        // Jika nama baru sudah ada, tambahkan timestamp
+        if (file_exists($pathBaru)) {
+            $namaFileBaru = $namaBaru . '_' . time() . '.' . $extension;
+            $pathBaru = storage_path('app/public/dokumen_legal/' . $namaFileBaru);
+        }
+
+        // Rename file
+        if (rename($pathLama, $pathBaru)) {
+
+            // Update URL di database
+            $dokumen->dokumen_url = asset('storage/dokumen_legal/' . $namaFileBaru);
+            $dokumen->save();
+
+            $berhasil++;
+            $log[] = "ID {$dokumen->id}: {$namaLama} -> {$namaFileBaru}";
+        } else {
+            $gagal++;
+            $log[] = "ID {$dokumen->id} gagal rename";
+        }
+    }
+
+    return response()->json([
+        'berhasil' => $berhasil,
+        'gagal' => $gagal,
+        'detail' => $log
+    ]);
+}
     public function get_dokumen_legal(Request $request)
 {
     if ($request->ajax()) {

@@ -142,7 +142,7 @@
                 <td style="text-align: left;padding-left:2px;word-wrap:break-all">{{ $item->employee_name }}</td>
                 <td style="text-align: center;padding-left:2px">{{ $item->nik }}</td>
                 <td style="text-align: center;padding-left:2px">{{ $item->status_jabatan }}</td>
-                <td style="text-align: left;padding-left:2px">{{ $item->keterangan }}</td>
+                <td style="text-align: left;padding-left:2px">{{ \Illuminate\Support\Str::limit($item->keterangan, 50, '...') }}</td>
                 <td style="text-align: center;padding-left:2px">{{ $item->jam_lembur_awal_rencana }}</td>
                 <td style="text-align: center;padding-left:2px">{{ $item->jam_lembur_akhir_rencana }}</td>
                 <td style="text-align: center;padding-left:2px">{{ $item->total_jam }}</td>
@@ -237,6 +237,7 @@
                 $dept == 'GENERAL AFFAIR' ||
                 $dept == 'COMPLIANCE' ||
                 $dept == 'INFORMATION TECHNOLOGY' ||
+                $dept == 'IT SUPPORT' ||
                 $dept == 'INDUSTRIAL ENGINEERING' ||
                 $dept == 'MECHANIC')
               @if ($jenis == 1 )

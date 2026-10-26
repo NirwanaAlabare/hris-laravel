@@ -28,7 +28,9 @@
               <th style="font-weight:bold;text-align:center;width:20px;background-color:#C0C0C0;">Piutang Karyawan Bazzar</th>
               <th style="font-weight:bold;text-align:center;width:20px;background-color:#C0C0C0;">BPJS TK</th>
               <th style="font-weight:bold;text-align:center;width:20px;background-color:#C0C0C0;">BPJS KS</th>
-              <th style="font-weight:bold;text-align:center;width:20px;background-color:#C0C0C0;">Potongan</th>
+              <th style="font-weight:bold;text-align:center;width:20px;background-color:#C0C0C0;">Potongan Gaji</th>
+              <th style="font-weight:bold;text-align:center;width:20px;background-color:#C0C0C0;">Potongan Insentif</th>
+              <th style="font-weight:bold;text-align:center;width:20px;background-color:#C0C0C0;">Potongan Lembur</th>
               <th style="font-weight:bold;text-align:center;width:20px;background-color:#C0C0C0;">Gaji Neto</th>
               <th style="font-weight:bold;text-align:center;width:20px;background-color:#C0C0C0;">Jumlah Karyawan</th>
             </tr>
@@ -47,6 +49,8 @@
               <td>{{$value->bpjs_tk}}</td>
               <td>{{$value->bpjs_ks}}</td>
               <td>{{$value->potongan}}</td>
+              <td>{{$value->potongan_insentif}}</td>
+              <td>{{$value->potongan_lembur}}</td>
               <td>{{$value->gaji_neto}}</td>
               <td>{{$value->jumlah_karyawn}}</td>
             </tr>

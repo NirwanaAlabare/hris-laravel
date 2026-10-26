@@ -307,18 +307,19 @@ class EmployeeAtrExport extends DefaultValueBinder implements WithColumnWidths, 
         $kode_pos=$Data->kode_pos;
         $site_nirwana_name = $Data->site_nirwana_name;
 
-        if($site_nirwana_name=="PT. NIRWANA ALABARE GARMENT"){
-            $site_nirwana_name="GARMENT";
-        }elseif($site_nirwana_name=="PT. NIRWANA ALABARE KNITTING"){
-            $site_nirwana_name="KNITTING";
-        }elseif($site_nirwana_name=="PT. NIRWANA ALABARE GARMENT - DAGO"){
-            $site_nirwana_name="DAGO";
-        }else{
-            $site_nirwana_name=$site_nirwana_name;
-        }
+        // if($site_nirwana_name=="PT. NIRWANA ALABARE GARMENT"){
+        //     $site_nirwana_name="GARMENT";
+        // }elseif($site_nirwana_name=="PT. NIRWANA ALABARE KNITTING"){
+        //     $site_nirwana_name="KNITTING";
+        // }elseif($site_nirwana_name=="PT. NIRWANA ALABARE GARMENT - DAGO"){
+        //     $site_nirwana_name="DAGO";
+        // }else{
+        //     $site_nirwana_name=$site_nirwana_name;
+        // }
 
         return [
-            (string)$site_nirwana_name,
+            // (string)$site_nirwana_name,
+            $site_nirwana_name,
             $enroll_id,
             $nik,
             $employee_name,

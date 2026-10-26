@@ -208,11 +208,18 @@ public function inport(Request $request)
 
     foreach ($rows as $index => $row) {
 
-        if ($index == 0) continue; // skip header
+               if ($index < 4) {
+        continue;
+    }
 
-        $enroll_id = $row[0];
-        $kode_grade_lama = $row[3];
-        $kode_grade_baru = $row[4];
+    // Lewati baris kosong
+    if (empty($row[1])) {
+        continue;
+    }
+
+    $enroll_id = $row[1];
+    $kode_grade_lama = $row[4];
+    $kode_grade_baru = $row[5];
 
         // Cek duplikasi
         $exists = Gradinghistory::where('enroll_id', $enroll_id)

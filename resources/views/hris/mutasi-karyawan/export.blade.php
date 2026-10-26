@@ -14,7 +14,9 @@
             <th style="background-color: yellow">Enroll ID</th>
             <th style="background-color: yellow">NIP</th>
             <th style="background-color: yellow">Nama Karyawan</th>
+            <th style="background-color: yellow">Staff / Non staff</th>
             <th style="background-color: yellow">Kategori</th>
+            <th style="background-color: yellow">Jabatan</th>
             <th style="background-color: yellow">Line Sekarang</th>
             <th style="background-color: yellow">Line Asal</th>
             <th style="background-color: yellow">Tgl. Pindah</th>
@@ -45,7 +47,9 @@
                 <td style="background-color: {{ $style }}">{{ preg_replace('/[^\x20-\x7E]/', '', $item->enroll_id) ?? '-' }}</td>
                 <td style="background-color: {{ $style }}">{{ $item->nik }}</td>
                 <td style="background-color: {{ $style }}">{{ $item->nm_karyawan }}</td>
+                <td style="background-color: {{ $style }}">{{ $item->status_staff }}</td>
                 <td style="background-color: {{ $style }}">{{ $item->sewing_nonsewing }}</td>
+                <td style="background-color: {{ $style }}">{{ $item->status_jabatan }}</td>
                 <td style="background-color: {{ $style }}">{{ $item->line }}</td>
                 <td style="background-color: {{ $style }}">{{ $item->line_asal }}</td>
                 <td style="background-color: {{ $style }}">{{ date('d-M-Y', strtotime($item->tgl_pindah)) }}</td>

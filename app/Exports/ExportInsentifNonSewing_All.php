@@ -34,6 +34,15 @@ class ExportInsentifNonSewing_All implements FromView, WithEvents, ShouldAutoSiz
     public function view(): View
 
     {
+        $gaji = DB::select('
+            select salary_bulanan
+            from grading_salary
+            where kode_grade = "D"
+            and periode_umk = "2026-01"
+        ');
+
+        $salaryBulanan = $gaji[0]->salary_bulanan;
+        $gajiharian = round($salaryBulanan / 173);
        $data = DB::select("
         SELECT DISTINCT
             DATE_FORMAT(a.tgl_lembur, '%d-%m-%Y') AS tgl_lembur_fix,
@@ -42,11 +51,31 @@ class ExportInsentifNonSewing_All implements FromView, WithEvents, ShouldAutoSiz
             e.employee_name,
             e.status_staff,
             d.department_name AS department,
-            b.uuid_koreksi_upah AS insentif,
+            (
+            (
+                TIMESTAMPDIFF(
+                    MINUTE,
+                    jam_lembur_awal_rencana,
+                    jam_lembur_akhir_rencana
+                ) - jam_lembur_istirahat
+            ) / 60
+        ) *
+        (
+            CASE
+                WHEN e.status_jabatan = 'Staff' THEN 25542
+                WHEN e.status_jabatan = 'SPV' THEN 25542
+                WHEN e.status_jabatan = 'Leader' THEN 25542
+                WHEN e.status_jabatan = 'Chief' THEN 29378
+                WHEN e.status_jabatan = 'Asst. Manager' THEN 38475
+                WHEN e.status_jabatan = 'Manager' THEN 43353
+                ELSE $gajiharian
+            END
+        ) AS insentif,
             'Insentif' AS keterangan,
             a.no_form,
             a.ket,
             a.dept AS bagian,
+            b.jenis,
             DATE_FORMAT(a.tgl_lembur, '%Y-%m-%d') AS tgl_lembur,
             DATE_FORMAT(jam_lembur_awal_rencana, '%H:%i') AS jam_lembur_awal_rencana,
             DATE_FORMAT(jam_lembur_akhir_rencana, '%H:%i') AS jam_lembur_akhir_rencana,
@@ -71,7 +100,7 @@ class ExportInsentifNonSewing_All implements FromView, WithEvents, ShouldAutoSiz
             AND m.tanggal_berjalan BETWEEN '$this->from' AND '$this->to'
             AND d.status = 'AKTIF'
             AND d.site_nirwana_id IN ('NAG','NAK','NAGD')
-            AND b.uuid_koreksi_upah != ''
+            AND b.jenis ='1'
         ORDER BY a.tgl_lembur ASC, a.dept ASC, e.employee_name ASC
     ");
 
@@ -110,15 +139,15 @@ class ExportInsentifNonSewing_All implements FromView, WithEvents, ShouldAutoSiz
     public function columnWidths(): array
     {
         return [
-            'E' => 28,
-            'G' => 20,
+            'F' => 28,
+            'H' => 20,
         ];
     }
     public function columnFormats(): array
     {
         return [
             'A' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'G' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
+            'H' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3,
         ];
     }
 }

@@ -698,6 +698,7 @@
                                                 <option value="TUNAI" selected>TUNAI</option>
                                                 <option value="BCA">BCA</option>
                                                 <option value="BNI">BNI</option>
+                                                <option value="BRI">BRI</option>
                                                 <option value="CIMB NIAGA">CIMB NIAGA</option>
                                             </select>
                                         </td>
@@ -815,6 +816,7 @@
                                         <td>
                                             <div class="input-group">
                                                 <input id="is_periksaenroll_id" type="hidden">
+                                                <input id="enroll_id_old" type="hidden">
                                                 <input id="enroll_id" type="text" class="form-control"
                                                     placeholder="Nomor Absen" maxlength="5" size="5">
                                                 <span class="input-group-append">
@@ -838,6 +840,7 @@
                                         <td>
                                             <div class="input-group">
                                                 <input id="is_periksanik" type="hidden">
+                                                <input id="nik_old" type="hidden">
                                                 <input id="nik" type="text" class="form-control" placeholder="NIP"
                                                     maxlength="10" size="10">
                                                 <span class="input-group-append">
@@ -1888,15 +1891,17 @@
         });
 
         $('body').on('click', '#btn-edit', function (event) {
+            $('#enroll_id_old').val($('#enroll_id').val());
+            $('#nik_old').val($('#nik').val());
             var enroll_id = $('#enroll_id').val();
 
             if (enroll_id.length > 0) {
                 $("#form1 :input").prop("disabled", false);
                 // $("#kode_grade").prop("disabled", true);
-                $("#enroll_id").attr("readonly", true);
-                $("#btn-periksa_enroll_id").attr("disabled", true);
-                $("#nik").attr("readonly", true);
-                $("#btn-periksa_nik").attr("disabled", true);
+                $("#enroll_id").attr("readonly", false);
+                $("#btn-periksa_enroll_id").attr("disabled", false);
+                $("#nik").attr("readonly", false);
+                $("#btn-periksa_nik").attr("disabled", false);
                 $("#btn-save").prop("disabled", false);
                 $("#btn-reset").prop("disabled", true);
                 $("#btn-cancel").prop("disabled", false);
@@ -2399,6 +2404,8 @@
         });
 
         $('body').on('click', '#btn-periksa_enroll_id', function () {
+            // enroll_id_old: $('#enroll_id_old').val();
+            $('#is_periksaenroll_id').val(0);
             var enroll_id = $('#enroll_id').val();
             var nik = $('#nik').val();
             var is_periksaenroll_id = $('#is_periksaenroll_id').val();
@@ -2417,6 +2424,7 @@
                         data: {
                             enroll_id: enroll_id,
                             nik: nik,
+                            enroll_id_old: $('#enroll_id_old').val(),
                         },
                         dataType: 'json',
                         success: function(res){
@@ -2491,7 +2499,8 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         data: {
                             nik:nik,
-                            enroll_id:enroll_id
+                            enroll_id:enroll_id,
+                            nik_old: $('#nik_old').val(),
                         },
                         dataType: 'json',
                         success: function(res){
@@ -2563,6 +2572,7 @@
             var rt = $('#rt').val();
             var rw = $('#rw').val();
             var kode_pos = $('#kode_pos').val();
+            var enroll_id_old = $('#enroll_id_old').val();
 
             if(!alamat_jalan)
             {
@@ -2954,6 +2964,7 @@
                                 rt:rt,
                                 rw:rw,
                                 kode_pos:kode_pos,
+                                enroll_id_old: enroll_id_old,
                             };
 
 
@@ -3140,6 +3151,7 @@
                     rt:rt,
                     rw:rw,
                     kode_pos:kode_pos,
+                    enroll_id_old: enroll_id_old,
                 };
 
                 if (is_periksaenroll_id == 1) {

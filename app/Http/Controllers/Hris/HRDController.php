@@ -839,56 +839,37 @@ class HRDController extends AdminBaseController
         $inStatusKontrak='';
         $today = date('Y-m-d');
 
-        if($status_kontrak=='One Day'){
+         if($status_kontrak=='One Day'){
             $one_days_later = date('Y-m-d', strtotime('+1 days'));
             $inStatusKontrak= 'AND (
-                CASE
-                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
-                    ELSE y.contract_end
-                END
-            ) >= "'.$today.'"
-            AND (
-                CASE
-                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
-                    ELSE y.contract_end
-                END
-            ) <= "'.$one_days_later.'"';
+                z.tanggal_resign IS NULL
+                OR z.tanggal_resign > y.contract_end
+            )
+            AND y.contract_end >= "'.$today.'"
+            AND y.contract_end <= "'.$one_days_later.'"';
         }else if($status_kontrak=='Nine Day'){
             $nine_days_later = date('Y-m-d', strtotime('+9 days'));
              $inStatusKontrak= 'AND (
-                CASE
-                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
-                    ELSE y.contract_end
-                END
-            ) >= "'.$today.'"
-            AND (
-                CASE
-                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
-                    ELSE y.contract_end
-                END
-            ) <= "'.$nine_days_later.'"';
+                z.tanggal_resign IS NULL
+                OR z.tanggal_resign > y.contract_end
+            )
+            AND y.contract_end >= "'.$today.'"
+            AND y.contract_end <= "'.$nine_days_later.'"';
         }else if($status_kontrak=='Thirty Day'){
             $thirty_days_later = date('Y-m-d', strtotime('+30 days'));
             $inStatusKontrak= 'AND (
-                CASE
-                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
-                    ELSE y.contract_end
-                END
-            ) >= "'.$today.'"
-            AND (
-                CASE
-                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
-                    ELSE y.contract_end
-                END
-            ) <= "'.$thirty_days_later.'"';
+                z.tanggal_resign IS NULL
+                OR z.tanggal_resign > y.contract_end
+            )
+            AND y.contract_end >= "'.$today.'"
+            AND y.contract_end <= "'.$thirty_days_later.'"';
         }else if($status_kontrak=='Sixty Day'){
             $thirty_day_more = date('Y-m-d',strtotime('+60 days',strtotime(date("Y-m-d")))) . PHP_EOL;
-            $inStatusKontrak= 'AND (
-                CASE
-                    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
-                    ELSE y.contract_end
-                END
-            ) >= "'.$thirty_day_more.'"';
+             $inStatusKontrak= 'AND (
+                z.tanggal_resign IS NULL
+                OR z.tanggal_resign > y.contract_end
+            )
+            AND y.contract_end >= "'.$sixty_days_later.'"';
         }
         else if($status_kontrak=='Not yet extended'){
             $inStatusKontrak= 'AND z.tanggal_resign IS NULL AND y.contract_end <= "'.$today.'"';
@@ -936,16 +917,33 @@ class HRDController extends AdminBaseController
             z.status_staff,
             z.tanggal_resign,
             z.ibu_kandung,
+            z.join_date,
+            z.status_jabatan,
             z.nomor_ktp,
             y.status_penilaian,
             y.id,
             y.contract,
+            CONCAT(
+							TIMESTAMPDIFF(YEAR,
+									z.join_date,
+									COALESCE(z.tanggal_resign, CURDATE())
+							),
+							' Tahun ',
+							MOD(
+									TIMESTAMPDIFF(MONTH,
+											z.join_date,
+											COALESCE(z.tanggal_resign, CURDATE())
+									),
+									12
+							),
+							' Bulan'
+					) AS masa_kerja,
             -- logika untuk mengganti contract_end dengan tanggal_resign jika ada
             -- CASE
             --    WHEN z.tanggal_resign IS NOT NULL THEN z.tanggal_resign
             --     ELSE y.contract_end
-            -- END y.contract_end AS contract_end
-            y.contract_end AS contract_end
+            -- END contract_end
+             y.contract_end AS contract_end
         FROM (
            SELECT
             a.enroll_id,
@@ -978,6 +976,8 @@ class HRDController extends AdminBaseController
                 sub_dept_name,
                 status_aktif,
                 status_staff,
+                join_date,
+                status_jabatan,
                 ibu_kandung,
                 nomor_ktp
             FROM employee_atribut
@@ -1031,7 +1031,7 @@ class HRDController extends AdminBaseController
         $start_contract=request()->start_contract;
         $last_date=request()->last_date;
         DB::update("UPDATE employee_contract
-        SET contract = ?, contract_end = ?
+        SET contract = ?, contract_end = ? ,status_penilaian = null
         WHERE id = ?", [$start_contract, $last_date, $id]);
 
         $updatedData = DB::table('employee_contract')->where('id', $id)->first();
@@ -1104,6 +1104,59 @@ public function new_employee_contract()
     //     'enroll_id' => $enroll_id
     // ]);
 }
+    public function new_employee_contract1(Request $request)    
+    {
+        DB::beginTransaction();
+
+        try {
+
+            $timestamp = Carbon::now();
+
+            DB::table('employee_contract')->insert([
+                'enroll_id'   => $request->id,
+                'contract'    => Carbon::createFromFormat('d-m-Y', $request->contract)
+                                    ->format('Y-m-d'),
+                'contract_end'=> Carbon::createFromFormat('d-m-Y', $request->end_contract)
+                                    ->format('Y-m-d'),
+                'created_at'  => $timestamp,
+                'updated_at'  => $timestamp,
+            ]);
+
+            // EmployeeAtribut::where('enroll_id', $request->id)
+            //     ->update([
+            //         'tanggal_mulai_kontrak' => Carbon::createFromFormat('d-m-Y', $request->contract)
+            //                                         ->format('Y-m-d'),
+            //         'tanggal_akhir_kontrak' => Carbon::createFromFormat('d-m-Y', $request->end_contract)
+            //                                         ->format('Y-m-d'),
+            //     ]);
+
+        //       DB::table('employee_contract')->insert([
+        //     'enroll_id'        => $enroll_id,
+        //     'contract'         => $contract,
+        //     'contract_end'     => $end_contract,
+        //     'status_penilaian' => null,
+        //     'created_at'       => $timestamp,
+        //     'updated_at'       => $timestamp,
+        // ]);
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Berhasil menambahkan kontrak.'
+            ]);
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return response()->json([
+        'status' => true,
+        'message' => 'Berhasil menambahkan kontrak.',
+        'enroll_id' => $request->id
+    ]);
+        }
+    }
 
     public function delete_employee_contract(){
         $id=request()->id;
@@ -1254,7 +1307,11 @@ public function new_employee_contract()
                     ) sub
                     WHERE rn = 1
                 ) d ON a.enroll_id = d.enroll_id
-                WHERE a.enroll_id IS NOT NULL
+                WHERE a.enroll_id IS NOT NULL AND (
+                        a.tanggal_resign IS NULL
+                        OR a.tanggal_resign > c.max_contract_end
+                    )
+                
                     $inSearchVariable
                     $inEnrollId
                     $inNoKTP
@@ -1271,7 +1328,7 @@ public function new_employee_contract()
     }
     public function print_pdf_kontrak(){
         $enroll_id=request()->enroll_id;
-        $no_form=request()->no_form;
+        // $no_form=request()->no_form;
 
         $data=DB::select("
                     SELECT
@@ -1328,9 +1385,9 @@ public function new_employee_contract()
             //     $tahun_umk = $end->year;
             // }
 
-            if ($tahun_umk <= 2020) {
-                $tahun_umk = 2021;
-            }
+            // if ($tahun_umk <= 2020) {
+            //     $tahun_umk = 2021;
+            // }
 
             $grading = GradingSalary::where('kode_grade', 'D')
                 ->where('periode_umk', $tahun_umk)
@@ -1339,17 +1396,36 @@ public function new_employee_contract()
             // SIMPAN KE DATA KONTRAK
             $item->umk = $grading->salary_bulanan;
             $item->umk_latin = $grading->salary_latin;
+            $bulanRomawi = [
+                            1  => 'I',
+                            2  => 'II',
+                            3  => 'III',
+                            4  => 'IV',
+                            5  => 'V',
+                            6  => 'VI',
+                            7  => 'VII',
+                            8  => 'VIII',
+                            9  => 'IX',
+                            10 => 'X',
+                            11 => 'XI',
+                            12 => 'XII',
+                        ];
+                $item->no_form = 'HRD-NAG/PKWT/' .
+                        $bulanRomawi[$start->month] . '/' .
+                        $start->year;
+
         }
 
 
         $fileName='PKS ' .request()->enroll_id.' ' .$data[0]->employee_name.' '.Carbon::parse($data[0]->contract)->translatedFormat('d-m-Y').' ';
         // $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan',["no_form"=>$no_form,"data" => $data,"umk"=>$umk])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
-        $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan',["no_form"=>$no_form,"data" => $data])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+        $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan',["data" => $data])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+        // $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan',["no_form"=>$no_form,"data" => $data])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
         return $pdf;
     }
     public function print_pdf_kontrak_2(){
         $enroll_id=request()->enroll_id;
-        $no_form=request()->no_form;
+        // $no_form=request()->no_form;
         $contract=request()->contract;
         $contract_end=request()->contract_end;
         // $data=DB::select("select a.status_staff,c.max_contract,mda.*,
@@ -1389,10 +1465,29 @@ public function new_employee_contract()
                     AND b.contract = '".$contract."'
                     AND b.contract_end = '".$contract_end."'
                 LEFT JOIN (
-                    SELECT mulai_jam_kerja, akhir_jam_kerja, tanggal_berjalan, enroll_id
-                    FROM master_data_absen_kehadiran
-                    WHERE tanggal_berjalan = CURDATE()
-                ) mda ON a.enroll_id = mda.enroll_id
+                    SELECT
+                        m1.enroll_id,
+                        m1.mulai_jam_kerja,
+                        m1.akhir_jam_kerja,
+                        m1.tanggal_berjalan
+                    FROM master_data_absen_kehadiran m1
+                    WHERE m1.tanggal_berjalan =
+                    (
+                        SELECT
+                            CASE
+                                WHEN ea.tanggal_resign IS NULL
+                                THEN CURDATE()
+                                ELSE MAX(m2.tanggal_berjalan)
+                            END
+                        FROM employee_atribut ea
+                        LEFT JOIN master_data_absen_kehadiran m2
+                            ON ea.enroll_id = m2.enroll_id
+                        WHERE ea.enroll_id = m1.enroll_id
+                        AND (m2.kode_hari NOT IN (5,6) OR m2.kode_hari IS NULL)
+                    )
+                ) mda
+                ON a.enroll_id = mda.enroll_id
+
                 WHERE a.enroll_id = ".$enroll_id."
             ");
             foreach ($data as $item) {   // agar sesua dengan kontrak dan enroll
@@ -1404,9 +1499,9 @@ public function new_employee_contract()
                 $tahun_umk = $start->year;
 
                 // Khusus 2020 ke bawah → pakai 2021
-                if ($tahun_umk <= 2020) {
-                    $tahun_umk = 2021;
-                }
+                // if ($tahun_umk <= 2020) {
+                //     $tahun_umk = 2021;
+                // }
 
                 $grading = GradingSalary::where('kode_grade', 'D')
                     ->where('periode_umk', $tahun_umk)
@@ -1414,12 +1509,30 @@ public function new_employee_contract()
 
                 $item->umk = $grading?->salary_bulanan ?? 0;
                 $item->umk_latin = ucwords(strtolower($grading?->salary_latin ?? ''));
+                $bulanRomawi = [
+                            1  => 'I',
+                            2  => 'II',
+                            3  => 'III',
+                            4  => 'IV',
+                            5  => 'V',
+                            6  => 'VI',
+                            7  => 'VII',
+                            8  => 'VIII',
+                            9  => 'IX',
+                            10 => 'X',
+                            11 => 'XI',
+                            12 => 'XII',
+                        ];
+                $item->no_form = 'HRD-NAG/PKWT/' .
+                        $bulanRomawi[$start->month] . '/' .
+                        $start->year;
             }
 
 
         // $umk=DasarPotBPJS::orderBy('created_at','desc')->limit(1)->first()->dasar_pot_bpjs_rupiah;
         $fileName='PKS ' .request()->enroll_id.' ' .$data[0]->employee_name.' '.Carbon::parse($contract)->translatedFormat('d-m-Y').' ';
-        $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan_2',["no_form"=>$no_form,"contract2"=>$contract,"contract_end2"=>$contract_end,"data" => $data])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+        $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan_2',["contract2"=>$contract,"contract_end2"=>$contract_end,"data" => $data])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
+        //  $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan_2',["no_form"=>$no_form,"contract2"=>$contract,"contract_end2"=>$contract_end,"data" => $data])->setPaper('A4', 'fotrait')->stream($fileName.'.pdf');
         return $pdf;
     }
 
@@ -1848,7 +1961,7 @@ public function new_employee_contract()
 
     public function print_all_pdf_kontrak(){
         $enroll_id = request()->enroll_id;
-        $no_form = request()->no_form;
+        // $no_form = request()->no_form;
 
      // 1. Ambil data karyawan dan kontrak
        $employee = DB::table('employee_atribut as a')
@@ -1939,7 +2052,24 @@ public function new_employee_contract()
 
             $item->umk = $grading?->salary_bulanan ?? 0;
             $item->umk_latin = ucwords(strtolower($grading?->salary_latin ?? ''));
-        }
+            $bulanRomawi = [
+                                1  => 'I',
+                                2  => 'II',
+                                3  => 'III',
+                                4  => 'IV',
+                                5  => 'V',
+                                6  => 'VI',
+                                7  => 'VII',
+                                8  => 'VIII',
+                                9  => 'IX',
+                                10 => 'X',
+                                11 => 'XI',
+                                12 => 'XII',
+                            ];
+                $item->no_form = 'HRD-NAG/PKWT/' .
+                            $bulanRomawi[$start->month] . '/' .
+                            $start->year;
+            }
 
 
         // UMK dan PDF
@@ -1949,7 +2079,7 @@ public function new_employee_contract()
         $pdf = PDF::loadView('hris.laporan.kontrak_kerja_karyawan', [
             "data" => $data_final,
             // "umk" => $umk,
-            "no_form" => $no_form
+            // "no_form" => $no_form
         ])->setPaper('A4', 'portrait')->stream($fileName . '.pdf');
 
         return $pdf;

@@ -29,11 +29,12 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use \Maatwebsite\Excel\Sheet;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
+use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 use Illuminate\Support\Facades\DB;
 
 use Auth;
 
-class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormatting, FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle
+class RekapPerhitunganLemburExport implements WithColumnWidths, WithColumnFormatting, FromQuery, WithMapping, ShouldAutoSize, WithEvents, WithCustomStartCell, WithTitle,WithStrictNullComparison
 {
     use Exportable;
 
